@@ -1,0 +1,23 @@
+1.) Sometimes Checkbox and Radioboxes do not change their 'checked'-depiction
+although the user clicked the component. The event triggered by the user-action
+seemed to be fired though. See Window1 online example.
+
+2.) Is there a possibility to fire resize events directly? We currently use
+changeHeight and changeWidth for emulation.
+
+3.) The label of a button does not automatically clip in case the size of the
+label is bigger than the size of the button's box. The same seems to be the
+case for a label widget.
+
+4.) How to property dispose of widgets? widget.dispose() seems not sufficient.
+In case of a shell, it stays visible but unusable, when trying to dispose of
+a text field that way nothing happens. Calling hide() before disposing of the
+widget seems to work. Is there more to take care of?
+
+5.) What is the difference between qx.ui.tree.Tree and 
+qx.ui.treefullcontrol.Tree? ...tree.Tree seems not able to hide the root node,
+that's right?
+
+6.) TextArea doesn't accept the wrap attribute
+
+7.) Color settings for table component are static contstants
