@@ -1,0 +1,92 @@
+/*******************************************************************************
+ * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
+ ******************************************************************************/
+
+package org.eclipse.rap.rwt.widgets;
+
+import junit.framework.TestCase;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Rectangle;
+
+public class Shell_Test extends TestCase {
+
+  public void testMenuBar() {
+    Display display = new Display();
+    Shell shell1 = new Shell( display , RWT.NONE );
+    Shell shell2 = new Shell( display , RWT.NONE );
+    Menu menu = new Menu( shell1, RWT.BAR );
+    shell1.setMenuBar( menu );
+    // Ensure that getMenuBar returns the very same shell that was set
+    assertSame( menu, shell1.getMenuBar() );
+    // Allow to 'reset' the menuBar
+    shell1.setMenuBar( null );
+    assertEquals( null, shell1.getMenuBar() );
+    // Ensure that shell does not return a disposed of menuBar
+    shell1.setMenuBar( menu );
+    menu.dispose();
+    assertNull( shell1.getMenuBar() );
+    // Ensure that the shell does not 'react' when disposing of a formerly
+    // owned menuBar
+    Menu shortTimeMenu = new Menu( shell1, RWT.BAR );
+    shell1.setMenuBar( shortTimeMenu );
+    Menu replacementMenu = new Menu( shell1, RWT.BAR );
+    shell1.setMenuBar( replacementMenu );
+    shortTimeMenu.dispose();
+    assertSame( replacementMenu, shell1.getMenuBar() );
+    // Shell must initially have no menu bar
+    assertEquals( null, shell2.getMenuBar() );
+    // setMenuBar allows only a menu that whose parent is *this* shell
+    try {
+      Menu shell1Menu = new Menu( shell1, RWT.BAR );
+      shell2.setMenuBar( shell1Menu );
+      fail( "Must not allow to set menu from different shell" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    // Ensure that setMenuBar does not accept disposed of Menus
+    try {
+      Menu disposedMenu = new Menu( shell2, RWT.BAR );
+      disposedMenu.dispose();
+      shell2.setMenuBar( disposedMenu );
+      fail( "Must not allow to set disposed of menu." );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    // Ensure that setMenuBar does not accept menus other than those constructed
+    // with RWT.BAR
+    try {
+      Shell shell3 = new Shell( display , RWT.NONE );
+      Menu popupMenu = new Menu( shell3, RWT.POP_UP );
+      shell3.setMenuBar( popupMenu );
+      fail( "Must only accept menus with style RWT.BAR" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+
+  public void testClientArea() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Rectangle clientAreaWithoutMenuBar = shell.getClientArea();
+    Menu menuBar = new Menu( shell, RWT.BAR );
+    shell.setMenuBar( menuBar );
+    Rectangle clientAreaWithMenuBar = shell.getClientArea();
+    assertTrue( clientAreaWithoutMenuBar.y < clientAreaWithMenuBar.y );
+  }
+
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
+  }
+}
