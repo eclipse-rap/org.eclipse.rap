@@ -75,6 +75,7 @@ public class RWTTestSuite {
     suite.addTestSuite( MenuHolder_Test.class );
     suite.addTestSuite( Table_Test.class );
     suite.addTestSuite( Combo_Test.class );
+    suite.addTestSuite( List_Test.class );
 
     suite.addTestSuite( DisplayLCA_Test.class );
     suite.addTestSuite( ControlLCA_Test.class );

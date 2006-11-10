@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import java.util.*;
+import java.util.List;
 
 /**
  * TODO: [fappel] comment

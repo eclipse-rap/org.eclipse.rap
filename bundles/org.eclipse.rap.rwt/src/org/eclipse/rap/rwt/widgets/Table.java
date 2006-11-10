@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import java.util.*;
+import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
