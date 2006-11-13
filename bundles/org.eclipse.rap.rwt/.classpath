@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.4"/>
 	<classpathentry kind="lib" path="lib/qooxdoo.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.rap.w4t"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.equinox.servlet.api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/javax.servlet"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -197,10 +197,11 @@ private static String createColWidthParam( final int colIndex ) {
     String key = createColWidthParam( 0 );
     Integer oldWidth = ( Integer )adapter.getPreserved( key );
     int newWidth = list.getBounds().width/* columns[ i ].getWidth() */;
-    if( !adapter.isInitialized() || oldWidth.intValue() != newWidth ) {
-      writer.set( "columnWidth", new int[]{
-        0, newWidth
-      } );
+    if(    !adapter.isInitialized() 
+        || oldWidth == null 
+        || oldWidth.intValue() != newWidth )
+    {
+      writer.set( "columnWidth", new int[] { 0, newWidth } );
     }
   }
 
