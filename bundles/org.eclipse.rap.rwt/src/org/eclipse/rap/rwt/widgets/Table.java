@@ -93,13 +93,7 @@ public class Table extends Composite {
 
   public int indexOf( final TableItem tableItem ) {
     ParamCheck.notNull( tableItem, "tableItem" );
-    int result = -1;
-    for( int i = 0; result == -1 && i < itemHolder.size(); i++ ) {
-      if( itemHolder.getItem( i ) == tableItem ) {
-        result = i;
-      }
-    }
-    return result;
+    return itemHolder.indexOf( tableItem );
   }
   
   public int getColumnCount() {
@@ -116,13 +110,7 @@ public class Table extends Composite {
 
   public int indexOf( final TableColumn tableColumn ) {
     ParamCheck.notNull( tableColumn, "tableColumn" );
-    int result = -1;
-    for( int i = 0; result == -1 && i < columnHolder.size(); i++ ) {
-      if( columnHolder.getItem( i ) == tableColumn ) {
-        result = i;
-      }
-    }
-    return result;
+    return columnHolder.indexOf( tableColumn );
   }
 
   public int getSelectionIndex() {

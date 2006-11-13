@@ -20,7 +20,7 @@ import com.w4t.ParamCheck;
  */
 public abstract class Item extends Widget {
 
-  private String text;
+  String text;
 
   public Item( final Widget parent, final int style ) {
     super( parent, style );

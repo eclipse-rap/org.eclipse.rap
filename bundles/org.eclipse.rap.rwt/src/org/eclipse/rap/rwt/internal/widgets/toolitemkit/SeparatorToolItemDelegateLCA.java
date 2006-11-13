@@ -1,0 +1,45 @@
+/*******************************************************************************
+ * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
+ ******************************************************************************/
+
+package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
+
+import java.io.IOException;
+import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.widgets.ToolItem;
+import org.eclipse.rap.rwt.widgets.Widget;
+
+public class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
+
+  // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
+  private static final String CREATE_SEPERATOR = 
+    "org.eclipse.rap.rwt.ToolItemUtil.createToolItemSeparatorUtil";
+  
+
+  public void delegateProcessAction( final Widget widget ) {
+    
+  }
+
+  public void delegateRenderInitialization( final Widget widget )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    ToolItem push = ( ToolItem )widget;
+    Object[] args = new Object[]{
+      WidgetUtil.getId( push ),
+      push.getParent()};
+    writer.callStatic( CREATE_SEPERATOR, args );
+  }
+
+  public void delegateRenderChanges( final Widget widget ) throws IOException {
+    
+  }
+}

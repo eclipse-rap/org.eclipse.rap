@@ -36,9 +36,10 @@ final class QooxdooResourcesUtil {
   private static final String SASH_JS = "org/eclipse/rap/rwt/Sash.js";
   private static final String TREE_JS = "org/eclipse/rap/rwt/TreeUtil.js";
   private static final String TAB_JS = "org/eclipse/rap/rwt/TabUtil.js";
-  private static final String CHECK_JS = "org/eclipse/rap/rwt/CheckUtil.js";
+  private static final String BUTTON_JS = "org/eclipse/rap/rwt/ButtonUtil.js";
   private static final String COMBO_JS = "org/eclipse/rap/rwt/ComboUtil.js";
-  private static final String RADIO_JS = "org/eclipse/rap/rwt/RadioUtil.js";
+  private static final String TOOL_ITEM_JS = 
+    "org/eclipse/rap/rwt/ToolItemUtil.js";
   private static final String MENU_UTIL_JS = "org/eclipse/rap/rwt/MenuUtil.js";
   private static final String TABLE_UTIL_JS
     = "org/eclipse/rap/rwt/TableUtil.js";
@@ -1494,8 +1495,8 @@ final class QooxdooResourcesUtil {
       register( TREE_JS );
       register( TAB_JS );
       register( COMBO_JS );
-      register( CHECK_JS );
-      register( RADIO_JS );
+      register( BUTTON_JS );
+      register( TOOL_ITEM_JS );
       register( MENU_UTIL_JS );
       register( TABLE_UTIL_JS );
       register( TABLE_MODEL_JS );

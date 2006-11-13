@@ -61,6 +61,13 @@ public final class ItemHolder implements IItemHolderAdapter {
     }
     return ( Item )items.get( index );
   }
+  
+  public int indexOf ( final Item item ) {
+    if( !items.contains( item ) ) {
+      throw new IllegalArgumentException( "Invalid Argument." );
+    }
+    return items.indexOf( item );
+  }
 
   public static boolean isItemHolder( final Widget widget ) {
     return widget.getAdapter( IItemHolderAdapter.class ) != null;
