@@ -56,7 +56,8 @@ qx.Proto.removeParameter = function( name ) {
  */
 qx.Proto.send = function() {
   // create and configure request object
-  var request = new qx.io.remote.RemoteRequest( "W4TDelegate", 
+  var action = org_eclipse_rap_rwt_requesthandler;
+  var request = new qx.io.remote.RemoteRequest( action, 
                                                 "POST", 
                                                 "text/javascript" );
   request.setAsynchronous( true );

@@ -176,8 +176,13 @@ public final class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String jsAppInitialization() {
-    return   "var app = new org.eclipse.rap.rwt.Application();" 
-           + "qx.core.Init.getInstance().setApplication( app );";
+    String code =   "var org_eclipse_rap_rwt_requesthandler = \"{0}\";"
+                  + "var app = new org.eclipse.rap.rwt.Application();" 
+                  + "qx.core.Init.getInstance().setApplication( app );";
+    Object[] param = new Object[] { 
+      ContextProvider.getRequest().getServletPath().substring( 1 )
+    };
+    return MessageFormat.format( code, param );
   }
   
   private static String jsSetUIRoot( final String id ) {

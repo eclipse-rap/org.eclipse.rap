@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RAP Widget Toolkit Test-Plugin
+Bundle-SymbolicName: org.eclipse.rap.rwt.test
+Bundle-Version: 0.0.0
+Bundle-Localization: plugin
+Bundle-Vendor: Eclipse.org
+Import-Package: javax.servlet;version="[2.3.0,2.5.0)",
+ javax.servlet.http;version="[2.3.0,2.5.0)"
+Require-Bundle: org.eclipse.rap.rwt,
+ org.junit,
+ org.eclipse.rap.w4t,
+ org.eclipse.rap.w4t.test
