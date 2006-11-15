@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Demo Plug-in
+Bundle-SymbolicName: org.eclipse.rap.demo; singleton := true
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.rap.ui.workbench,
+ org.eclipse.rap.rwt,
+ org.eclipse.rap.w4t
