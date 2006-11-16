@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.lifecycle.JSConst;
@@ -20,6 +21,7 @@ import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.Item;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.engine.service.ContextProvider;
+
 
 public abstract class ToolItemDelegateLCA {
   
@@ -35,21 +37,15 @@ public abstract class ToolItemDelegateLCA {
     delegateRenderChanges( widget );
   }
   
-  void processSelection ( final Widget widget, 
-                          final Item item ){
+  void processSelection( final Widget widget, final Item item ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
     if( WidgetUtil.getId( widget ).equals( id ) ) {
-      Rectangle bounds = new Rectangle( 0,0,0,0 );
-      SelectionEvent event = new SelectionEvent( widget, 
-                                                 item,
-                                                 SelectionEvent.WIDGET_SELECTED,
-                                                 bounds,
-                                                 true );
+      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
+      SelectionEvent event = newSelectionEvent( widget, bounds ,RWT.NONE);
       event.processEvent();
     }
   }
-  
 
   abstract public void delegateRenderChanges( final Widget widget )
     throws IOException;
@@ -58,5 +54,21 @@ public abstract class ToolItemDelegateLCA {
 
   abstract public void delegateRenderInitialization( final Widget widget )
     throws IOException;
+  
+  
+  /////////////////
+  // helper methods
+  
+  final SelectionEvent newSelectionEvent( final Widget widget,
+                                          final Rectangle bounds,
+                                          final int detail )
+  {
+    return new SelectionEvent( widget,
+                               null,
+                               SelectionEvent.WIDGET_SELECTED,
+                               bounds,
+                               true,
+                               detail );
+  }
   
 }

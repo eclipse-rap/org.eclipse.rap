@@ -50,7 +50,8 @@ public class MenuItemLCA extends AbstractWidgetLCA {
                                                  null,
                                                  SelectionEvent.WIDGET_SELECTED,
                                                  new Rectangle( 0, 0, 0, 0 ),
-                                                 true );
+                                                 true,
+                                                 RWT.NONE);
       event.processEvent();
     }
   }

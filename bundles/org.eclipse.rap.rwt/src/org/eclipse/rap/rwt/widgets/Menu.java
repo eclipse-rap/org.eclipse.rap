@@ -12,11 +12,18 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Point;
+import org.eclipse.rap.rwt.graphics.Rectangle;
+import com.w4t.ParamCheck;
+
 
 public class Menu extends Widget {
 
   private final Shell parent;
   private final ItemHolder itemHolder;
+  private int x;
+  private int y;
+  private boolean visible = false;
 
   public Menu( final Menu menu ) {
     this( menu.getParent(), RWT.DROP_DOWN );
@@ -56,7 +63,34 @@ public class Menu extends Widget {
     }
     return result;
   }
+  
+  public void setLocation( final int x, final int y ) {
+    if( ( style & ( RWT.BAR | RWT.DROP_DOWN ) ) == 0 ) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+  
+  public void setLocation( final Point location ) {
+    ParamCheck.notNull( location, "location" );
+    setLocation( location.x, location.y );
+  }
+  
+  public void setVisible( final boolean visible ) {
+    if( ( style & ( RWT.BAR | RWT.DROP_DOWN ) ) == 0 ) {
+      this.visible = visible;
+    }
+  }
+  
+  public boolean isVisible (){
+    return visible;
+  }
 
+  public Rectangle getBounds() {
+    // TODO: [fappel] how to calculate width and height?
+    return new Rectangle( x, y, 0, 0 );
+  }
+  
   
   // /////////////////////////
   // Management of menu items
@@ -72,7 +106,6 @@ public class Menu extends Widget {
   public MenuItem getItem( final int index ) {
     return ( MenuItem )itemHolder.getItem( index );
   }
-
   
   // /////////////////
   // Widget overrides

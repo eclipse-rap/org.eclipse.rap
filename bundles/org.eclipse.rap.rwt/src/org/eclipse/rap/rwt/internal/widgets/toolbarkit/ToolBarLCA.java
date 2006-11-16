@@ -21,6 +21,10 @@ import org.eclipse.rap.rwt.widgets.Widget;
 
 public class ToolBarLCA extends AbstractWidgetLCA {
 
+  private static final String ORIENTATION = "orientation";
+  private static final String VERTICAL_ORIENTATION 
+    = "qx.constant.Layout.ORIENTATION_VERTICAL";
+
   public void preserveValues( final  Widget widget ) {
     ToolBar toolBar = ( ToolBar )widget;
     ControlLCAUtil.preserveValues( toolBar );
@@ -51,7 +55,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.toolbar.ToolBar" );
     if( ( widget.getStyle() & RWT.VERTICAL ) != 0 ){
-      writer.set( "orientation", "qx.constant.Layout.ORIENTATION_VERTICAL" );
+      writer.set( ORIENTATION, VERTICAL_ORIENTATION );
     }
   }
 }

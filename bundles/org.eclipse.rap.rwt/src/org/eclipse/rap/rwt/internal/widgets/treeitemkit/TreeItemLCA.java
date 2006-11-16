@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.treeitemkit;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.ItemLCAUtil;
@@ -47,7 +48,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
                                                  treeItem,
                                                  SelectionEvent.WIDGET_SELECTED,
                                                  bounds,
-                                                 true );
+                                                 true,
+                                                 RWT.NONE );
       event.processEvent();
     }
   }

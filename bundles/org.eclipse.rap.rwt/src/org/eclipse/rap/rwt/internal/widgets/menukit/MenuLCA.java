@@ -20,6 +20,8 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class MenuLCA extends AbstractWidgetLCA {
 
+  private static final String SHOW_MENU 
+    = "org.eclipse.rap.rwt.MenuUtil.showMenu";
   // pseudo-property that denotes the shell which uses a menu for its menu bar
   private static final String MENU_BAR_SHELL = "menuBarShell";
   private static final String MENU_BAR_SHELL_CLIENT_AREA 
@@ -69,6 +71,16 @@ public class MenuLCA extends AbstractWidgetLCA {
     if( MenuLCAUtil.isBar( menu ) ) {
       writeBarParent( menu );
       writeBarBounds( menu );
+    } else if( MenuLCAUtil.isPopUp( menu ) && menu.isVisible() ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      Rectangle bounds = menu.getBounds();
+      Object[] args = new Object[] {
+        menu,
+        new Integer( bounds.x ),
+        new Integer( bounds.y )
+      };
+      writer.callStatic( SHOW_MENU, args );
+      menu.setVisible( false );
     }
   }
 

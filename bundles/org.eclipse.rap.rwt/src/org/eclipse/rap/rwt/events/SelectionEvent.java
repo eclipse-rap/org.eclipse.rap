@@ -34,13 +34,15 @@ public class SelectionEvent extends Event {
   public int height;
   public boolean doit;
   public Item item;
+  public int detail;
   
   
   public SelectionEvent( final Widget widget,
                          final Item item,
                          final int id,
                          final Rectangle bounds, 
-                         final boolean doit )
+                         final boolean doit,
+                         final int detail )
   {
     super( widget, id );
     this.x = bounds.x;
@@ -49,6 +51,7 @@ public class SelectionEvent extends Event {
     this.height = bounds.height;
     this.doit = doit;
     this.item = item;
+    this.detail = detail;
   }
 
   protected void dispatchToObserver( final Object listener ) {

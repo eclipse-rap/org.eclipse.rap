@@ -51,7 +51,8 @@ public class SelectionEvent_Test extends TestCase {
                                                null,
                                                SelectionEvent.WIDGET_SELECTED,
                                                new Rectangle( 10, 20, 30, 40 ),
-                                               true );
+                                               true,
+                                               RWT.NONE );
     event.processEvent();
     assertEquals( WIDGET_SELECTED, log );
   }
@@ -81,7 +82,8 @@ public class SelectionEvent_Test extends TestCase {
                                                item,
                                                SelectionEvent.WIDGET_SELECTED,
                                                new Rectangle( 0, 0, 0, 0 ),
-                                               true );
+                                               true,
+                                               RWT.NONE );
     event.processEvent();
     assertEquals( WIDGET_SELECTED, log );
   }

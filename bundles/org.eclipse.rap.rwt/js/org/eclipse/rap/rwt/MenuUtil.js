@@ -19,3 +19,11 @@ org.eclipse.rap.rwt.MenuUtil.contextMenu = function( evt ) {
     contextMenu.show();
   }
 };
+
+org.eclipse.rap.rwt.MenuUtil.showMenu = function( menu , x , y ) {
+  if( menu != null ) {
+    menu.setLocation( x, y );
+    menu.show();
+  }
+};
+

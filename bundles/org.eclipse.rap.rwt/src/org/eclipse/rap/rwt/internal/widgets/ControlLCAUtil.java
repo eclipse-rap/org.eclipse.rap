@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
@@ -137,7 +138,8 @@ public class ControlLCAUtil {
                                                  item,
                                                  SelectionEvent.WIDGET_SELECTED,
                                                  bounds,
-                                                 true );
+                                                 true,
+                                                 RWT.NONE);
       event.processEvent();
     }
   }

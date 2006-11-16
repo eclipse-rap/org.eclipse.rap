@@ -24,8 +24,10 @@ public class ComboLCA extends AbstractWidgetLCA {
   
   private static final String SELECTED_ITEM = "selectedItem";
   // Constants for ComboUtil.js
-  private static final String WIDGET_SELECTED = "org.eclipse.rap.rwt.ComboUtil.widgetSelected";
-  private static final String CREATE_COMBOBOX_ITEMS = "org.eclipse.rap.rwt.ComboUtil.createComboBoxItems";
+  private static final String WIDGET_SELECTED = 
+    "org.eclipse.rap.rwt.ComboUtil.widgetSelected";
+  private static final String CREATE_COMBOBOX_ITEMS = 
+    "org.eclipse.rap.rwt.ComboUtil.createComboBoxItems";
   
   private final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
@@ -67,7 +69,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeToolTip( combo );
     ControlLCAUtil.writeMenu( combo );
     Object[] params = new Object[]{
-      WidgetUtil.getId( combo ), combo.getItems()
+      WidgetUtil.getId( combo ),
+      combo.getItems()
     };
     writer.callStatic( CREATE_COMBOBOX_ITEMS,
                        params );

@@ -58,6 +58,16 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush = function( id , parent ) {
 };
 
 /**
+ * Creates a toolitem of type push for a drop down menu.
+ */
+org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu = function( id , parent ) {
+  var push = new qx.ui.toolbar.ToolBarButton("V");
+  parent.add(push);
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id );
+  push.setParent( parent );
+};
+
+/**
  * Creates a toolitem of type check.
  */
 org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil
@@ -67,5 +77,39 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil
   parent.add(push);
   org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id );
   push.setParent( parent );
+};
+
+org.eclipse.rap.rwt.ToolItemUtil.addEventListenerForDropDownButton = function( id , eventType , listener ){ 
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var item = widgetManager.findWidgetById( id );
+  item.addEventListener( "click" , org.eclipse.rap.rwt.ToolItemUtil.widgetSelected , null);
+};
+
+/**
+ * Creates a toolitem of type check.
+ */
+org.eclipse.rap.rwt.ToolItemUtil.widgetSelected = function( evt ){ 
+  var toolItem=evt.getTarget();
+  var toolBar = toolItem.getParent();
+  var index = toolBar.indexOf(toolItem);
+  var neighbour = toolBar.getChildren ()[index-1];
+  var el = neighbour.getElement();
+  var x = qx.dom.DomLocation.getPageBoxLeft(el);
+  var y = qx.dom.DomLocation.getPageBoxBottom(el);
+  var item = evt.getTarget();
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var itemId = widgetManager.findIdByWidget( item );
+  var req = org.eclipse.rap.rwt.Request.getInstance();
+  req.addParameter( itemId + ".boundsMenu.x", x );
+  req.addParameter( itemId + ".boundsMenu.y", y );
+  var left = item.getLeft();
+  var top = item.getTop();
+  var width = item.getWidth();
+  var height = item.getHeight();
+  org.eclipse.rap.rwt.EventUtil.doWidgetSelected( itemId, 
+                                                    left, 
+                                                    top, 
+                                                    width,
+                                                    height );
 };
 

@@ -37,6 +37,7 @@ public class RWT {
   public static final int PUSH = 1 << 3;
   public static final int RADIO = 1 << 4;
   public static final int CHECK = 1 << 5;
+  public static final int ARROW = 1 << 2;
   // menu flags
   public static final int BAR = 1 << 1;
   public static final int POP_UP = 1 << 3;
