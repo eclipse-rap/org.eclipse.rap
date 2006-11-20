@@ -33,30 +33,29 @@ public class ListLCA extends AbstractWidgetLCA {
                         "org.eclipse.rap.rwt.TableUtil.selectionChanged",
                         JSListenerType.STATE_AND_ACTION );
 
-public void preserveValues( final Widget widget ) {
-  List list = ( List  )widget;
-  ControlLCAUtil.preserveValues( list );
-  preserveColumnWidths( list );
-  preserveSelection( list );
-  IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-  adapter.preserve( Props.SELECTION_LISTENERS, 
-                    Boolean.valueOf( SelectionEvent.hasListener( list ) ) );
+  public void preserveValues( final Widget widget ) {
+    List list = ( List  )widget;
+    ControlLCAUtil.preserveValues( list );
+    preserveColumnWidths( list );
+    preserveSelection( list );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( Props.SELECTION_LISTENERS, 
+                      Boolean.valueOf( SelectionEvent.hasListener( list ) ) );
+  }
 
-}
-
-public void readData( final Widget widget ) {
-}
+  public void readData( final Widget widget ) {
+  }
 
   public void processAction( final Widget widget ) {
     List list = ( List )widget;
     HttpServletRequest request = ContextProvider.getRequest();
     String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
     if( WidgetUtil.getId( list ).equals( id ) ) {
-      StringBuffer value = 
-        new StringBuffer( WidgetUtil.readPropertyValue( widget,"selection" ) );
+      StringBuffer value = new StringBuffer();
+      value.append( WidgetUtil.readPropertyValue( widget, "selection" ) );
       int from = 0;
       int to = 0;
-      ArrayList indices = new ArrayList();
+      java.util.List indices = new ArrayList();
       while( value.indexOf( ",", from ) >= 0 ) {
         to = value.indexOf( ",", from );
         indices.add( new Integer( value.substring( from, to ) ) );
@@ -73,38 +72,39 @@ public void readData( final Widget widget ) {
     }
   }
 
-public void renderInitialization( final Widget widget ) throws IOException {
-  List list = ( List )widget;
-  // TODO: [fappel] react on content or column changes of the table
-  createTableContent( list );
-  createTableColumns( list );
-  createTableModel();
-  createTable( list );
-}
+  public void renderInitialization( final Widget widget ) throws IOException {
+    List list = ( List )widget;
+    // TODO: [fappel] react on content or column changes of the table
+    createTableContent( list );
+    createTableColumns( list );
+    createTableModel();
+    createTable( list );
+  }
 
-public void renderChanges( final Widget widget ) throws IOException {
-  List list = ( List )widget;
-  ControlLCAUtil.writeBounds( list );
-  ControlLCAUtil.writeToolTip( list );
-  // Note: [fappel] order is crucial here, first set the bounds of the control
-  //                before manipulating the column width
-  writeColWidths( list );
-  JSWriter writer = JSWriter.getWriterFor( list );
-  writer.updateListener( "selectionModel",
-                         JS_LISTENER_INFO, 
-                         Props.SELECTION_LISTENERS, 
-                         SelectionEvent.hasListener( list ) );
-  writeSelection( list );
-}
+  public void renderChanges( final Widget widget ) throws IOException {
+    List list = ( List )widget;
+    ControlLCAUtil.writeBounds( list );
+    ControlLCAUtil.writeToolTip( list );
+    ControlLCAUtil.setControlIntoToolItem( list );
+    // Note: [fappel] order is crucial here, first set the bounds of the control
+    //                before manipulating the column width
+    writeColWidths( list );
+    JSWriter writer = JSWriter.getWriterFor( list );
+    writer.updateListener( "selectionModel",
+                           JS_LISTENER_INFO, 
+                           Props.SELECTION_LISTENERS, 
+                           SelectionEvent.hasListener( list ) );
+    writeSelection( list );
+  }
 
-public void renderDispose( final Widget widget ) throws IOException {
-}
+  public void renderDispose( final Widget widget ) throws IOException {
+  }
 
 
-////////////////////////////////////////////////////////
-// helping methods for table creation and initialization
-
-static void createTableContent( final List list ) {
+  ////////////////////////////////////////////////////////
+  // helping methods for table creation and initialization
+  
+  static void createTableContent( final List list ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter writer = stateInfo.getResponseWriter();
     writer.append( "var tableData=[];" );
@@ -118,73 +118,69 @@ static void createTableContent( final List list ) {
     }
   }
 
-static void createTableColumns( final List list ) {
-  IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-  HtmlResponseWriter writer = stateInfo.getResponseWriter();
-  writer.append( "var tableColumns=[" );
-  writer.append( "\"" );
-  writer.append( "" );
-  writer.append( "\"" );
-  writer.append( "];" );
-}
+  static void createTableColumns( final List list ) {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    HtmlResponseWriter writer = stateInfo.getResponseWriter();
+    writer.append( "var tableColumns=[\"\"];" );
+  }
 
-static void createTableModel() {
-  IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-  HtmlResponseWriter writer = stateInfo.getResponseWriter();
-  writer.append( "var tableModel = " );
-  writer.append( "new org.eclipse.rap.rwt.UnsortableTableModel();" );
-  writer.append( "tableModel.setColumns( tableColumns );" );
-  writer.append( "tableModel.setData( tableData );" );
-}
+  static void createTableModel() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    HtmlResponseWriter writer = stateInfo.getResponseWriter();
+    writer.append( "var tableModel = " );
+    writer.append( "new org.eclipse.rap.rwt.UnsortableTableModel();" );
+    writer.append( "tableModel.setColumns( tableColumns );" );
+    writer.append( "tableModel.setData( tableData );" );
+  }
+  
+  
+  private static void createTable( final List list ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( list );
+    Object[] args = new Object[] { new JSVar( "tableModel" ) };
+    writer.newWidget( "qx.ui.table.Table", args );
+    writer.callFieldAssignment( new JSVar( "qx.ui.table.TablePane" ), 
+                                "CONTENT_BGCOL_EVEN", 
+                                "\"white\"" );
+    writer.set( "statusBarVisible", false );
+    writer.set( "columnVisibilityButtonVisible", false );
+    writer.addListener( "tableColumnModel",
+                        "widthChanged", 
+                        "org.eclipse.rap.rwt.TableUtil.columnWidthChanged" );
+    // this is needed to be able to get the table to which the 
+    // column width changes belong to on client side
+    writer.callFieldAssignment( new JSVar( "w.getTableColumnModel()" ), 
+                                "table", 
+                                "w" );
+    String[] propertyChain = new String[] { "selectionModel", "selectionMode" };
+    Object[] param = null;
+    if( ( list.getStyle() & RWT.MULTI ) != 0 ) {
+        param = new Object[]{
+          new JSVar( "qx.ui.table.SelectionModel.MULTIPLE_INTERVAL_SELECTION" )
+        };
+      } else if( ( list.getStyle() & RWT.SINGLE ) != 0 ) {
+        param = new Object[]{
+          new JSVar( "qx.ui.table.SelectionModel.SINGLE_INTERVAL_SELECTION" )
+        };
+      } 
+    writer.set( propertyChain, param );
+    // this is needed to be able to get the table to which the 
+    // selection changes belong to
+    writer.callFieldAssignment( new JSVar( "w.getSelectionModel()" ), 
+                                "table", 
+                                "w" );
+  }
+  
+  
+  ///////////////////////////////////////////////////
+  // helping methods for column width synchronization
 
-
-private static void createTable( final List list ) throws IOException {
-  JSWriter writer = JSWriter.getWriterFor( list );
-  Object[] args = new Object[] { new JSVar( "tableModel" ) };
-  writer.newWidget( "qx.ui.table.Table", args );
-  writer.callFieldAssignment( new JSVar( "qx.ui.table.TablePane" ), 
-                              "CONTENT_BGCOL_EVEN", 
-                              "\"white\"" );
-  writer.set( "statusBarVisible", false );
-  writer.set( "columnVisibilityButtonVisible", false );
-  writer.addListener( "tableColumnModel",
-                      "widthChanged", 
-                      "org.eclipse.rap.rwt.TableUtil.columnWidthChanged" );
-  // this is needed to be able to get the table to which the 
-  // column width changes belong to on client side
-  writer.callFieldAssignment( new JSVar( "w.getTableColumnModel()" ), 
-                              "table", 
-                              "w" );
-  String[] propertyChain = new String[] { "selectionModel", "selectionMode" };
-  Object[] param = null;
-  if( ( list.getStyle() & RWT.MULTI ) != 0 ) {
-      param = new Object[]{
-        new JSVar( "qx.ui.table.SelectionModel.MULTIPLE_INTERVAL_SELECTION" )
-      };
-    } else if( ( list.getStyle() & RWT.SINGLE ) != 0 ) {
-      param = new Object[]{
-        new JSVar( "qx.ui.table.SelectionModel.SINGLE_INTERVAL_SELECTION" )
-      };
-    } 
-  writer.set( propertyChain, param );
-  // this is needed to be able to get the table to which the 
-  // selection changes belong to
-  writer.callFieldAssignment( new JSVar( "w.getSelectionModel()" ), 
-                              "table", 
-                              "w" );
-}
-
-
-///////////////////////////////////////////////////
-// helping methods for column width synchronization
-
-private static String createColWidthParam( final int colIndex ) {
-  StringBuffer buffer = new StringBuffer();
-  buffer.append( "columnWidth_" );
-  buffer.append( colIndex );
-  return buffer.toString();
-}
-
+  private static String createColWidthParam( final int colIndex ) {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "columnWidth_" );
+    buffer.append( colIndex );
+    return buffer.toString();
+  }
+  
   private static void preserveColumnWidths( final List list ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
     adapter.preserve( createColWidthParam( 0 ),
@@ -206,29 +202,28 @@ private static String createColWidthParam( final int colIndex ) {
   }
 
 
-////////////////////////////////////////////////
-// helping methods for selection synchronization
+  ////////////////////////////////////////////////
+  // helping methods for selection synchronization
 
-private void preserveSelection( final List list ) {
-  IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
-  adapter.preserve( Props.SELECTION_INDICES, list.getSelectionIndices() );
-}
+  private void preserveSelection( final List list ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
+    adapter.preserve( Props.SELECTION_INDICES, list.getSelectionIndices() );
+  }
 
-
-private void writeSelection( final List list ) throws IOException {
-  JSWriter writer = JSWriter.getWriterFor( list );
-  IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
-  int[] oldIndices = ( int[] )adapter.getPreserved( Props.SELECTION_INDICES );
-  int[] currentIndices = list.getSelectionIndices();
-  if(    !adapter.isInitialized() 
-      || !Arrays.equals( currentIndices, oldIndices ) )
-  {
-    for( int i = 0; i < currentIndices.length; i++ ) {
-      Integer index = new Integer( currentIndices[ i ] );
-      Object[] args = new Object[] { index, index };
-      writer.call( list, "getSelectionModel().addSelectionInterval", args );
-      // TODO: [fappel] scroll into view
+  private void writeSelection( final List list ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( list );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
+    int[] oldIndices = ( int[] )adapter.getPreserved( Props.SELECTION_INDICES );
+    int[] currentIndices = list.getSelectionIndices();
+    if(    !adapter.isInitialized() 
+        || !Arrays.equals( currentIndices, oldIndices ) )
+    {
+      for( int i = 0; i < currentIndices.length; i++ ) {
+        Integer index = new Integer( currentIndices[ i ] );
+        Object[] args = new Object[] { index, index };
+        writer.call( list, "getSelectionModel().addSelectionInterval", args );
+        // TODO: [fappel] scroll into view
+      }
     }
   }
-}
 }

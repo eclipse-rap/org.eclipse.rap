@@ -38,17 +38,19 @@ org.eclipse.rap.rwt.ButtonUtil.createRadioButton
 org.eclipse.rap.rwt.ButtonUtil.radioSelected = function( evt ) {
     var radioManager = evt.getTarget();
     var radio = radioManager.getSelected();
-    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var radioId = widgetManager.findIdByWidget( radio );
-    var left = radio.getLeft();
-    var top = radio.getTop();
-    var width = radio.getWidth();
-    var height = radio.getHeight();
-    org.eclipse.rap.rwt.EventUtil.doWidgetSelected( radioId, 
-                                                    left, 
-                                                    top, 
-                                                    width,
-                                                    height );
+    if(radio){
+      var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var radioId = widgetManager.findIdByWidget( radio );
+      var left = radio.getLeft();
+      var top = radio.getTop();
+      var width = radio.getWidth();
+      var height = radio.getHeight();
+      org.eclipse.rap.rwt.EventUtil.doWidgetSelected( radioId, 
+                                                      left, 
+                                                      top, 
+                                                      width,
+                                                      height );
+   }
 };
 
 /**

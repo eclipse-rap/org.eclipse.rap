@@ -17,6 +17,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.widgets.toolitemkit.SeparatorToolItemDelegateLCA;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.engine.service.ContextProvider;
@@ -51,6 +52,15 @@ public class ControlLCAUtil {
     int xLocation = readControlXLocation( widget );
     int yLocation = readControlYLocation( widget );
     widget.setBounds( xLocation, yLocation, width, height );
+  }
+  
+  public static void setControlIntoToolItem ( final Control control ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    Runnable runnable = ( Runnable )adapter.getPreserved( 
+              SeparatorToolItemDelegateLCA.SET_CONTROL_FOR_SEPARATOR_RUNNABLE );
+    if (runnable!=null){
+      runnable.run();
+    }
   }
   
   public static void writeBounds( final Control control ) throws IOException {
@@ -92,8 +102,9 @@ public class ControlLCAUtil {
   
   public static void writeMenu( final Control control ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( control );
-    if( WidgetUtil.hasChanged( control, Props.MENU, control.getMenu(), null ) ) 
-    {
+    boolean hasChanged 
+      = WidgetUtil.hasChanged( control, Props.MENU, control.getMenu(), null );
+    if( hasChanged ) {
       writer.set( "contextMenu", control.getMenu() );
       if( control.getMenu() == null ) {
         writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU, 
@@ -143,6 +154,7 @@ public class ControlLCAUtil {
       event.processEvent();
     }
   }
+  
   
   //////////////////
   // helping methods

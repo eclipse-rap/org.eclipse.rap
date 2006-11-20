@@ -69,6 +69,7 @@ public class TextLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     ControlLCAUtil.writeBounds( text );
     ControlLCAUtil.writeToolTip( text );
+    ControlLCAUtil.setControlIntoToolItem( text );
     writer.set( Props.TEXT, "value", text.getText() );
   }
 

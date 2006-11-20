@@ -42,6 +42,7 @@ public class PushButtonDelegateLCA extends ButtonDelegateLCA {
     ControlLCAUtil.writeBounds( button );
     ControlLCAUtil.writeToolTip( button );
     ControlLCAUtil.writeMenu( button );
+    ControlLCAUtil.setControlIntoToolItem( button );
     writer.set( Props.TEXT, "label", button.getText() );
   }
 

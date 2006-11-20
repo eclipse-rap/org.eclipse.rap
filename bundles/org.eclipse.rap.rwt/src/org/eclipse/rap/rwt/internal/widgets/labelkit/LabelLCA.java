@@ -46,6 +46,7 @@ public class LabelLCA extends AbstractWidgetLCA {
     Label label = ( Label )widget;
     ControlLCAUtil.writeBounds( label );
     ControlLCAUtil.writeToolTip( label );
+    ControlLCAUtil.setControlIntoToolItem(  label );
     JSWriter writer = JSWriter.getWriterFor( widget );
     
     // TODO [rh] rendering text that contains html special chars (<, >, etc)

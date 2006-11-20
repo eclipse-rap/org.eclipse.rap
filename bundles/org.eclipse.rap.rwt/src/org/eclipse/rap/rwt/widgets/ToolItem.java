@@ -20,6 +20,8 @@ public class ToolItem extends Item {
 
   private final ToolBar parent;
   private boolean selected = false;
+  private Control control;
+  private int width = 0;
  
 
   public ToolItem( final ToolBar parent, final int style ) {
@@ -47,6 +49,34 @@ public class ToolItem extends Item {
   
   public ToolBar getParent () {
     return parent;
+  }
+  
+  public void setControl( final Control control ) {
+    if( control != null ) {
+      if( control.isDisposed() ) {
+        RWT.error( RWT.ERROR_INVALID_ARGUMENT );
+      }
+      if( control.getParent() != parent ) {
+        RWT.error( RWT.ERROR_INVALID_PARENT );
+      }
+    }
+    if( ( style & RWT.SEPARATOR ) != 0 ) {
+      this.control = control;
+    }
+  }
+
+  public Control getControl() {
+    return control;
+  }
+
+  public int getWidth() {
+    return width;
+  }
+
+  public void setWidth( final int width ) {
+    if( ( style & RWT.SEPARATOR ) != 0 &&  width >= 0  ) {
+      this.width = width;
+    }
   }
   
   public boolean getSelection() {

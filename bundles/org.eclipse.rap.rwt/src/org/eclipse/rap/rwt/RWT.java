@@ -52,6 +52,7 @@ public class RWT {
   public static final int ERROR_INVALID_ARGUMENT = 5;
   public static final int ERROR_INVALID_RANGE = 6;
   public static final int ERROR_CANNOT_BE_ZERO = 7;
+  public static final int ERROR_INVALID_PARENT = 32;
 
   public static void error( final int code ) {
   }

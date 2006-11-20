@@ -35,12 +35,13 @@ public final class JSWriter {
   public static JSVar WIDGET_REF = new JSVar( "w" );
   
   private static final JSVar TARGET_REF = new JSVar( "t" );
-
   private static final String WRITER_MAP = JSWriter.class.getName() + "Map";
   private static final String HAS_WINDOW_MANAGER 
     = JSWriter.class.getName() + ".hasWindowManager";
-  
   private static final String FORMAT_EMPTY = "";
+  
+  private final Widget widget;
+  private boolean hasWidgetRef;
   
   public static JSWriter getWriterFor( final Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
@@ -58,9 +59,6 @@ public final class JSWriter {
     }
     return result;
   }
-  
-  private final Widget widget;
-  private boolean hasWidgetRef;
   
   private JSWriter( final Widget widget ) {
     this.widget = widget;
@@ -486,16 +484,20 @@ public final class JSWriter {
   
   private static String createObjectArray( final Object[] objectArray ) {
     StringBuffer buffer = new StringBuffer();
-    buffer.append( "new Array(" );
-    buffer.append( '"' );
-    for( int i = 0; i < objectArray.length; i++ ) {
-      buffer.append( objectArray[ i ] );
+    if( objectArray.length > 0 ) {
+      buffer.append( "new Array(" );
       buffer.append( '"' );
-      buffer.append( ',' );
-      buffer.append( '"' );
+      for( int i = 0; i < objectArray.length; i++ ) {
+        buffer.append( objectArray[ i ] );
+        buffer.append( '"' );
+        buffer.append( ',' );
+        buffer.append( '"' );
+      }
+      buffer.replace( buffer.length() - 2, buffer.length(), "" );
+      buffer.append( ')' );
+    } else {
+      buffer.append( "new Array()" );
     }
-    buffer.replace( buffer.length() - 2, buffer.length(), "" );
-    buffer.append( ')' );
     return buffer.toString();
   }
   

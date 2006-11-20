@@ -14,6 +14,7 @@
  */
 qx.OO.defineClass( "org.eclipse.rap.rwt.ToolItemUtil" );
 
+
 /**
  * Creates a toolitem of type separator.
  */
@@ -27,12 +28,36 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemSeparatorUtil
 };
 
 /**
+ * Creates a toolitem of type separator.
+ */
+org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator
+  = function( id , parent , width, control)
+{
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var push = widgetManager.findWidgetById( id );
+  if ( width >0){
+    push.setWidth(width);
+    }
+  if (control){
+    if ( width >0){
+        control.setWidth(width);
+    }
+    var index = parent.indexOf(control);
+    parent.removeAt(index);
+    push.add(control);
+  }
+  parent.add(push);
+};
+
+/**
  * Creates a toolItem of type radio, registered to a RadioManager.
  */
+ 
 org.eclipse.rap.rwt.ToolItemUtil.createToolItemRadioButton
   = function( id , parent , selected , neighbour )
 {
   var radio = new qx.ui.toolbar.ToolBarRadioButton();
+  radio.setDisableUncheck(true);
   parent.add(radio);
   if( neighbour ){
     radio.radioManager = neighbour.radioManager;
@@ -60,7 +85,8 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush = function( id , parent ) {
 /**
  * Creates a toolitem of type push for a drop down menu.
  */
-org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu = function( id , parent ) {
+org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu = 
+    function( id , parent ) {
   var push = new qx.ui.toolbar.ToolBarButton("V");
   parent.add(push);
   org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id );
@@ -79,14 +105,21 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil
   push.setParent( parent );
 };
 
-org.eclipse.rap.rwt.ToolItemUtil.addEventListenerForDropDownButton = function( id , eventType , listener ){ 
+/**
+ * Creates an event listener for a drop down button.
+ */
+
+org.eclipse.rap.rwt.ToolItemUtil.addEventListenerForDropDownButton 
+    = function( id , eventType , listener ){ 
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var item = widgetManager.findWidgetById( id );
-  item.addEventListener( "click" , org.eclipse.rap.rwt.ToolItemUtil.widgetSelected , null);
+  item.addEventListener( "click" , 
+                         org.eclipse.rap.rwt.ToolItemUtil.widgetSelected , 
+                         null);
 };
 
 /**
- * Creates a toolitem of type check.
+ * widget selected for a drop down menu
  */
 org.eclipse.rap.rwt.ToolItemUtil.widgetSelected = function( evt ){ 
   var toolItem=evt.getTarget();
@@ -112,4 +145,6 @@ org.eclipse.rap.rwt.ToolItemUtil.widgetSelected = function( evt ){
                                                     width,
                                                     height );
 };
+
+
 
