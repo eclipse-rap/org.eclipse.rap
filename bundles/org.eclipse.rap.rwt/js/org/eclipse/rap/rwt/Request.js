@@ -58,7 +58,7 @@ qx.Proto.send = function() {
   // create and configure request object
   var action = org_eclipse_rap_rwt_requesthandler;
   var request = new qx.io.remote.RemoteRequest( action, 
-                                                "POST", 
+                                                "GET", 
                                                 "text/javascript" );
   request.setAsynchronous( true );
   // apply _parameters map which was filled during client interaction

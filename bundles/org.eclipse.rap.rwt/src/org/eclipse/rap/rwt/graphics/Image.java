@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.graphics;
 
 import java.util.*;
 import org.eclipse.rap.rwt.resources.ResourceManager;
+import com.w4t.IResourceManager;
 import com.w4t.ParamCheck;
 
 
@@ -22,13 +23,19 @@ public class Image {
   private Image () {
   }
   
-  public static synchronized Image find ( final String path ){
+  public static synchronized Image find ( final String path ) {
+    return find( path, null );
+  }
+  
+  public static synchronized Image find( final String path, 
+                                         final ClassLoader imageLoader )
+  {
     ParamCheck.notNull( path, "path" );
     Image result;
     if( images.containsKey( path ) ) {
       result = ( Image )images.get( path );
     } else {
-      result = createImage( path );
+      result = createImage( path, imageLoader );
     }
     return result;
   }
@@ -65,11 +72,19 @@ public class Image {
   //////////////////
   // helping methods
   
-  private static Image createImage( final String path ) {
+  private static Image createImage( final String path, 
+                                    final ClassLoader imageLoader )
+  {
     Image image = new Image();
-    ResourceManager.getInstance().register( path );
+    IResourceManager manager = ResourceManager.getInstance();
+    ClassLoader loaderBuffer = manager.getContextLoader();
+    manager.setContextLoader( imageLoader );
+    try {
+      manager.register( path );
+    } finally {
+      manager.setContextLoader( loaderBuffer );
+    }
     images.put( path, image );
     return image;
   }
 }
-

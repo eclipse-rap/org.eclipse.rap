@@ -17,9 +17,7 @@ import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.widgets.*;
-import com.w4t.IResourceManager;
 
 public class EntryPoint implements IEntryPoint {
 
@@ -175,17 +173,11 @@ public class EntryPoint implements IEntryPoint {
     ToolItem item4 = new ToolItem( toolBar, RWT.PUSH );
     item4.setText( "print" );
     
-    IResourceManager manager = ResourceManager.getInstance();
-    ClassLoader buffered = manager.getContextLoader();
-    manager.setContextLoader( getClass().getClassLoader() );
-    try {
-      item1.setImage( Image.find( "resources/newfile_wiz.gif" ) );
-      item2.setImage( Image.find( "resources/newfolder_wiz.gif" ) );
-      item3.setImage( Image.find( "resources/newprj_wiz.gif" ) );
-      item4.setImage( Image.find( "resources/search_src.gif" ) );
-    } finally {
-      manager.setContextLoader( buffered );
-    }
+    ClassLoader loader = getClass().getClassLoader();
+    item1.setImage( Image.find( "resources/newfile_wiz.gif", loader ) );
+    item2.setImage( Image.find( "resources/newfolder_wiz.gif", loader ) );
+    item3.setImage( Image.find( "resources/newprj_wiz.gif", loader ) );
+    item4.setImage( Image.find( "resources/search_src.gif", loader ) );
     
     final Composite content = new Composite( shell, RWT.NONE );
     content.setLayout( new FillLayout() );

@@ -9,12 +9,16 @@
 package org.eclipse.rap.rwt.graphics;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.resources.DefaultResourceManagerFactory;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import com.w4t.Fixture;
 import com.w4t.IResourceManager;
+import com.w4t.engine.util.ResourceRegistrationException;
 
 
 public class Image_Test extends TestCase {
@@ -24,8 +28,10 @@ public class Image_Test extends TestCase {
     = "resources/images/generated/a2fb9a01c602ae.gif";
   public static final String IMAGE1 
     = "resources/images/generated/82f7c683860a85c182.gif";
+  public static final String IMAGE3 
+    = "resources/images/generated/dff8c3a4e2b4c79080.gif";
 
-  public void testGetItemsAndGetItemCount() {
+  public void testImageFinder() {
     IResourceManager manager = ResourceManager.getInstance();
     // only if you comment initial registration in
     // org.eclipse.rap.rwt.internal.widgets.displaykit.QooxdooResourcesUtil
@@ -55,6 +61,27 @@ public class Image_Test extends TestCase {
     image1 = Image.find( IMAGE1 );
     assertTrue( manager.isRegistered( IMAGE1 ) );
     assertEquals( 1, Image.size() );
+    Image.clear();
+  }
+  
+  public void testImageFinderWithClassLoader() throws IOException {
+    File testGif = new File( Fixture.CONTEXT_DIR, "test.gif" );
+    Fixture.copyTestResource( IMAGE3, testGif );
+    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURL() };
+    URLClassLoader classLoader = new URLClassLoader( urls, null );
+    
+    IResourceManager manager = ResourceManager.getInstance();
+    assertFalse( manager.isRegistered( IMAGE3 ) );
+    assertEquals( 0, Image.size() );
+    try {
+      Image.find( "test.gif" );
+      fail( "Image not available on the classpath." );
+    } catch( final ResourceRegistrationException rre ) {
+      // expected
+    }
+    Image image = Image.find( "test.gif", classLoader );
+    assertNotNull( image );
+    
   }
 
   protected void setUp() throws Exception {
