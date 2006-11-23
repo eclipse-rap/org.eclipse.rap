@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -64,6 +65,11 @@ public class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     ControlLCAUtil.writeBounds( button );
     ControlLCAUtil.writeToolTip( button );
     ControlLCAUtil.writeMenu( button );
-    writer.set( Props.TEXT, "label", button.getText() );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText() );
+    if( button.getImage() != null ) {
+      writer.set( Props.IMAGE, 
+                  JSConst.QX_FIELD_ICON, 
+                  Image.getPath( button.getImage() ) );
+    }
   }
 }

@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Image;
 
 public class TabItem extends Item {
 
@@ -53,6 +54,13 @@ public class TabItem extends Item {
       }
     }
     this.control = control;
+  }
+  
+  public void setImage ( final Image image ) {
+    int index = parent.indexOf (this);
+    if (index > -1) {
+      super.setImage (image);
+    }
   }
   
   ///////////////////////////////////

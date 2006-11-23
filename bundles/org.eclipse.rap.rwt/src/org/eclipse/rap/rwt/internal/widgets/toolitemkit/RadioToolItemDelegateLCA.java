@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -61,18 +62,19 @@ public class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
     ToolBar bar = toolItem.getParent();
     int myIndex = bar.indexOf( toolItem );
     ToolItem neighbour = null;
-    if ( myIndex > 0 ){
-      neighbour = bar.getItem( myIndex -1 );
-      if ( ( neighbour.getStyle() & RWT.RADIO ) == 0 ){
-        neighbour=null;
+    if ( myIndex > 0 ) {
+      neighbour = bar.getItem( myIndex - 1 );
+      if( ( neighbour.getStyle() & RWT.RADIO ) == 0 ) {
+        neighbour = null;
       }
     }
     
-    Object[] args = new Object[]{
+    Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
       toolItem.getParent(),
       toolItem.getSelection() ? "true" : null,
-      neighbour};
+      neighbour
+    };
     writer.callStatic( CREATE_RADIO, args );
   }
 
@@ -85,8 +87,12 @@ public class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
     writer.updateListener( "manager" ,
                            JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( button )
-                           );
-    writer.set( Props.TEXT, "label", button.getText() );
+                           SelectionEvent.hasListener( button ) );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText() );
+    if( button.getImage() != null ) {
+      writer.set( Props.IMAGE,
+                  JSConst.QX_FIELD_ICON,
+                  Image.getPath( button.getImage() ) );
+    }
   }
 }

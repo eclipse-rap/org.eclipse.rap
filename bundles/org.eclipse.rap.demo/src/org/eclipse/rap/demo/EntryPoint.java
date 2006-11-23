@@ -8,13 +8,18 @@
  ******************************************************************************/
 package org.eclipse.rap.demo;
 
+import java.util.ArrayList;
+import org.eclipse.rap.jface.viewers.*;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.SashForm;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.IResourceManager;
 
 public class EntryPoint implements IEntryPoint {
 
@@ -25,21 +30,181 @@ public class EntryPoint implements IEntryPoint {
   private Text txtGroupNameTab1;
   private int previousTabSelected = 0;
   private int tabSelected = 0;
+  
+  class TreeObject {
+
+    private String name;
+    private TreeParent parent;
+
+    public TreeObject( String name ) {
+      this.name = name;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setParent( TreeParent parent ) {
+      this.parent = parent;
+    }
+
+    public TreeParent getParent() {
+      return parent;
+    }
+
+    public String toString() {
+      return getName();
+    }
+  }
+  
+  class TreeParent extends TreeObject {
+
+    private ArrayList children;
+
+    public TreeParent( String name ) {
+      super( name );
+      children = new ArrayList();
+    }
+
+    public void addChild( TreeObject child ) {
+      children.add( child );
+      child.setParent( this );
+    }
+
+    public void removeChild( TreeObject child ) {
+      children.remove( child );
+      child.setParent( null );
+    }
+
+    public TreeObject[] getChildren() {
+      return ( TreeObject[] )children.toArray( new TreeObject[ children.size() ] );
+    }
+
+    public boolean hasChildren() {
+      return children.size() > 0;
+    }
+  }
+  
+  class TreeViewerContentProvider
+    implements IStructuredContentProvider, ITreeContentProvider
+  {
+
+    private TreeParent invisibleRoot;
+
+    public void inputChanged( Viewer v, Object oldInput, Object newInput ) {
+    }
+
+    public void dispose() {
+    }
+
+    public Object[] getElements( Object parent ) {
+      if( parent instanceof IEntryPoint ) {
+        if( invisibleRoot == null )
+          initialize();
+        return getChildren( invisibleRoot );
+      }
+      return getChildren( parent );
+    }
+
+    public Object getParent( Object child ) {
+      if( child instanceof TreeObject ) {
+        return ( ( TreeObject )child ).getParent();
+      }
+      return null;
+    }
+
+    public Object[] getChildren( Object parent ) {
+      if( parent instanceof TreeParent ) {
+        return ( ( TreeParent )parent ).getChildren();
+      }
+      return new Object[ 0 ];
+    }
+
+    public boolean hasChildren( Object parent ) {
+      if( parent instanceof TreeParent )
+        return ( ( TreeParent )parent ).hasChildren();
+      return false;
+    }
+
+    /*
+     * We will set up a dummy model to initialize tree heararchy. In a real
+     * code, you will connect to a real model and expose its hierarchy.
+     */
+    private void initialize() {
+      TreeObject to1 = new TreeObject( "Leaf 1" );
+      TreeObject to2 = new TreeObject( "Leaf 2" );
+      TreeObject to3 = new TreeObject( "Leaf 3" );
+      TreeParent p1 = new TreeParent( "Parent 1" );
+      p1.addChild( to1 );
+      p1.addChild( to2 );
+      p1.addChild( to3 );
+      TreeObject to4 = new TreeObject( "Leaf 4" );
+      TreeParent p2 = new TreeParent( "Parent 2" );
+      p2.addChild( to4 );
+      TreeParent root = new TreeParent( "Root" );
+      root.addChild( p1 );
+      root.addChild( p2 );
+      invisibleRoot = new TreeParent( "" );
+      invisibleRoot.addChild( root );
+    }
+  }
+
 
   public Display createUI() {
     Display display = new Display();
-    Shell shell = new Shell( display, RWT.NONE );
+    final Shell shell = new Shell( display, RWT.NONE );
     shell.setBounds( 10, 10, 800, 600 );
-    shell.setLayout( new FillLayout() );
+    
     createMenu( shell );
-    SashForm sashForm = new SashForm( shell, RWT.HORIZONTAL );
+
+    final ToolBar toolBar = new ToolBar( shell, RWT.NONE );
+    ToolItem item1 = new ToolItem( toolBar, RWT.PUSH );
+    item1.setText( "new" );
+
+    ToolItem item2 = new ToolItem( toolBar, RWT.PUSH );
+    item2.setText( "open" );
+    item2.addSelectionListener( new SelectionListener() {
+      public void widgetSelected( final SelectionEvent event ) {
+        createShell2( shell.getDisplay() );
+      }
+    } );
+    
+    ToolItem item3 = new ToolItem( toolBar, RWT.PUSH );
+    item3.setText( "save as" );
+
+    ToolItem item4 = new ToolItem( toolBar, RWT.PUSH );
+    item4.setText( "print" );
+    
+    IResourceManager manager = ResourceManager.getInstance();
+    ClassLoader buffered = manager.getContextLoader();
+    manager.setContextLoader( getClass().getClassLoader() );
+    try {
+      item1.setImage( Image.find( "resources/newfile_wiz.gif" ) );
+      item2.setImage( Image.find( "resources/newfolder_wiz.gif" ) );
+      item3.setImage( Image.find( "resources/newprj_wiz.gif" ) );
+      item4.setImage( Image.find( "resources/search_src.gif" ) );
+    } finally {
+      manager.setContextLoader( buffered );
+    }
+    
+    final Composite content = new Composite( shell, RWT.NONE );
+    content.setLayout( new FillLayout() );
+    layoutShell( shell, toolBar, content );
+    
+    
+    SashForm sashForm = new SashForm( content, RWT.HORIZONTAL );
     Composite left = new Composite( sashForm, RWT.NONE );
     Composite right = new Composite( sashForm, RWT.NONE );
     sashForm.setWeights( new int[]{
-      25, 75
+      25, 
+      75
     } );
     left.setLayout( new FormLayout() );
-    Tree tree = new Tree( left, RWT.NONE );
+    TreeViewer viewer = new TreeViewer( left );
+    viewer.setContentProvider( new TreeViewerContentProvider() );
+    viewer.setInput( this );
+//    Tree tree = new Tree( left, RWT.NONE );
+    Tree tree = viewer.getTree();
     FormData treeData = new FormData();
     tree.setLayoutData( treeData );
     treeData.top = new FormAttachment( 0, 2 );
@@ -52,12 +217,12 @@ public class EntryPoint implements IEntryPoint {
         txtGroupNameTab1.setText( "treeItem selected: " + event.item.getText() );
       }
     } );
-    TreeItem item1 = new TreeItem( tree, RWT.NONE );
-    item1.setText( "item 1" );
-    TreeItem item2 = new TreeItem( tree, RWT.NONE );
-    item2.setText( "item 2" );
-    TreeItem item2sub1 = new TreeItem( item2, RWT.NONE );
-    item2sub1.setText( "subItem1" );
+//    TreeItem item1 = new TreeItem( tree, RWT.NONE );
+//    item1.setText( "item 1" );
+//    TreeItem item2 = new TreeItem( tree, RWT.NONE );
+//    item2.setText( "item 2" );
+//    TreeItem item2sub1 = new TreeItem( item2, RWT.NONE );
+//    item2sub1.setText( "subItem1" );
     right.setLayout( new FillLayout() );
     SashForm sashFormVertical = new SashForm( right, RWT.VERTICAL );
     Composite top = new Composite( sashFormVertical, RWT.NONE );
@@ -85,7 +250,30 @@ public class EntryPoint implements IEntryPoint {
                                   + item.getText() );
       }
     } );
+    content.layout();
+    shell.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent event ) {
+        layoutShell( shell, toolBar, content );
+      }
+    } );
     return display;
+  }
+
+  private void layoutShell( final Shell shell,
+                            final ToolBar toolBar,
+                            final Composite content )
+  {
+    Rectangle clientArea = shell.getClientArea();
+    int toolBarHeight = 30;
+    toolBar.setBounds( clientArea.x,
+                       clientArea.y,
+                       clientArea.width, 
+                       toolBarHeight );
+    content.setBounds( clientArea.x, 
+                       clientArea.y + toolBarHeight + 1, 
+                       clientArea.width, 
+                       clientArea.height - toolBarHeight - 1 );
+    content.layout();
   }
 
   private void createMenu( final Shell shell ) {

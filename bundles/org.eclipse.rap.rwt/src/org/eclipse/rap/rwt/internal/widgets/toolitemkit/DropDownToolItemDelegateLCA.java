@@ -15,10 +15,12 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.widgets.ToolItem;
+import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.engine.service.ContextProvider;
 
 public class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
@@ -90,10 +92,15 @@ public class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( push ));
-    writer.set( Props.TEXT, "label", push.getText() );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, push.getText() );
+    if( push.getImage() != null ) {
+      writer.set( Props.IMAGE, 
+                  JSConst.QX_FIELD_ICON,
+                  Image.getPath( push.getImage() ) );
+    }
     // event handler for the second push button
-    Object[] args = new Object[]{
-      WidgetUtil.getId( push ) + MENU_SUFFIX,
+    Object[] args = new Object[] {
+      getMenuId( push ),
       JSConst.QX_EVENT_CLICK,
       WIDGET_SELECTED
     };    

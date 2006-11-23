@@ -63,6 +63,9 @@ public final class JSConst {
   public static final String QX_EVENT_CONTEXTMENU = "contextmenu";
   public static final String QX_EVENT_CHANGE_SELECTED = "changeSelected";
   public static final String QX_EVENT_CHANGE_CHECKED = "changeChecked";
+  // field names
+  public static final String QX_FIELD_LABEL = "label";
+  public static final String QX_FIELD_ICON = "icon";
   
   private JSConst() {
     // prevent instantiation

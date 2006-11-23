@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
@@ -50,9 +51,10 @@ public class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( widget );
     ToolItem check = ( ToolItem )widget;
-    Object[] args = new Object[]{
+    Object[] args = new Object[] {
       WidgetUtil.getId( check ),
-      check.getParent()};
+      check.getParent()
+    };
     writer.callStatic( CREATE_CHECK, args );
     writer.set( "checked", check.getSelection() );
   }
@@ -66,6 +68,9 @@ public class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( check ) );
-    writer.set( Props.TEXT, "label", check.getText() );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, check.getText() );
+    if( check.getImage()!=null ){
+      writer.set( Props.IMAGE, JSConst.QX_FIELD_ICON, Image.getPath( check.getImage() ) );
+    }
   }
 }

@@ -6,4 +6,5 @@ Bundle-Version: 1.0.0
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.rap.ui.workbench,
  org.eclipse.rap.rwt,
- org.eclipse.rap.w4t
+ org.eclipse.rap.w4t,
+ org.eclipse.rap.jface

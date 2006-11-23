@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.rwt.widgets;
 
+
 /**
  * TODO: [fappel] comment
  */
@@ -74,7 +75,11 @@ public class TreeItem extends Item {
   public TreeItem[] getItems() {
     return ( TreeItem[] )itemHolder.getItems();
   }
-
+  
+  public TreeItem getItem( final int index ) {
+    return ( TreeItem )itemHolder.getItem( index );
+  }
+  
   
   ///////////////////////////////////
   // Methods to dispose of the widget

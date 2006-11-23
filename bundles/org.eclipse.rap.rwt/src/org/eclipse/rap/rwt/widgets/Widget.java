@@ -31,6 +31,7 @@ public abstract class Widget implements Adaptable {
   int style;
   private IEventAdapter eventAdapter;
   private boolean disposed;
+  private Object data;
 
   Widget() {
   }
@@ -56,6 +57,16 @@ public abstract class Widget implements Adaptable {
       result = W4TContext.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
+  }
+  
+  public Object getData() {
+    // TODO: [fappel] keyed data
+    return data;
+  }
+  
+  public void setData( final Object data ) {
+    // TODO: [fappel] keyed data
+    this.data = data;
   }
 
   public abstract Display getDisplay();

@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -58,10 +59,11 @@ public class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     
     JSWriter writer = JSWriter.getWriterFor( widget );
     Button button = ( Button )widget;
-    Object[] args = new Object[]{
+    Object[] args = new Object[] {
       WidgetUtil.getId( button ),
       button.getParent(),
-      button.getSelection() ? "true" : null};
+      button.getSelection() ? "true" : null
+    };
     writer.callStatic( CREATE_RADIO, args );
   }
 
@@ -74,11 +76,15 @@ public class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     writer.updateListener( "manager" ,
                            JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( button )
-                           );
+                           SelectionEvent.hasListener( button ) );
     ControlLCAUtil.writeBounds( button );
     ControlLCAUtil.writeToolTip( button );
     ControlLCAUtil.writeMenu( button );
-    writer.set( Props.TEXT, "label", button.getText() );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText() );
+    if( button.getImage() != null ) {
+      writer.set( Props.IMAGE,
+                  JSConst.QX_FIELD_ICON, 
+                  Image.getPath( button.getImage() ) );
+    }
   }
 }

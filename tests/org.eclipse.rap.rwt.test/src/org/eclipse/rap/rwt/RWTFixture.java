@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import javax.servlet.http.HttpSession;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -150,6 +151,7 @@ public final class RWTFixture {
 
   public static void registerResourceManager() {
     ResourceManager.register( new TestResourceManagerFactory() );
+    Image.clear();
   }
   
   public static void deregisterResourceManager() {

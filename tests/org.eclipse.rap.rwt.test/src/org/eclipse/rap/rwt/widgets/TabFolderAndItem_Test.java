@@ -14,6 +14,8 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.Image_Test;
 
 public class TabFolderAndItem_Test extends TestCase {
 
@@ -35,6 +37,10 @@ public class TabFolderAndItem_Test extends TestCase {
     TabFolder folder = new TabFolder( shell, RWT.NONE );
     TabItem item0 = new TabItem( folder, RWT.NONE );
     TabItem item1 = new TabItem( folder, RWT.NONE );
+    // indexOf:
+    assertEquals( 0, folder.indexOf( item0 ) );
+    assertEquals( 1, folder.indexOf( item1 ) );
+    // end indexOf
     TabItem[] selection = folder.getSelection();
     assertEquals( 0, selection.length );
     int selectionIndex = folder.getSelectionIndex();
@@ -104,6 +110,20 @@ public class TabFolderAndItem_Test extends TestCase {
     item1.dispose();
     assertEquals( 0, folder.getSelectionIndex() );
     assertSame( item0, folder.getSelection()[ 0 ] );
+  }
+  
+  public void testImages() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    TabFolder folder = new TabFolder( shell, RWT.NONE );
+    TabItem item0 = new TabItem( folder, RWT.NONE );
+    item0.setImage(Image.find( Image_Test.IMAGE1 ) );
+    assertSame( Image.find( Image_Test.IMAGE1 ), item0.getImage() );
+    assertEquals( 1, Image.size() );
+    TabItem item1 = new TabItem( folder, RWT.NONE );
+    item1.setImage(Image.find( Image_Test.IMAGE2 ) );
+    assertSame( Image.find( Image_Test.IMAGE2 ), item1.getImage() );
+    assertEquals( 2, Image.size() );
   }
 
   public void testHierarchy() {

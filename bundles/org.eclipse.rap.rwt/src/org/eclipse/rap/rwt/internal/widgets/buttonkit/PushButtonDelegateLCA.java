@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -43,7 +44,12 @@ public class PushButtonDelegateLCA extends ButtonDelegateLCA {
     ControlLCAUtil.writeToolTip( button );
     ControlLCAUtil.writeMenu( button );
     ControlLCAUtil.setControlIntoToolItem( button );
-    writer.set( Props.TEXT, "label", button.getText() );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText() );
+    if( button.getImage()!=null ){
+      writer.set( Props.IMAGE,
+                  JSConst.QX_FIELD_ICON,
+                  Image.getPath( button.getImage() ) );
+    }
   }
 
   public void delegateRenderInitialization( final Widget widget ) 

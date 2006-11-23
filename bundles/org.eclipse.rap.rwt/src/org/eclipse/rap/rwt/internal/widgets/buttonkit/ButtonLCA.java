@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Button;
@@ -47,6 +48,7 @@ public class ButtonLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( button );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( Props.TEXT, button.getText() );
+    adapter.preserve( Props.IMAGE, Image.getPath( button.getImage() ) );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
   }

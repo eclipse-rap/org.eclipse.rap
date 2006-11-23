@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
@@ -41,7 +42,12 @@ public class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( push ) );
-    writer.set( Props.TEXT, "label", push.getText() );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, push.getText() );
+    if( push.getImage() != null ) {
+      writer.set( Props.IMAGE,
+                  JSConst.QX_FIELD_ICON,
+                  Image.getPath( push.getImage() ) );
+    }
   }
 
   public void delegateRenderInitialization( final Widget widget ) 

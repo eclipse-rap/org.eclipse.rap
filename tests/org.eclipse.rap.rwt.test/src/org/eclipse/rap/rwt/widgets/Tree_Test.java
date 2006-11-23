@@ -14,6 +14,8 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.Image_Test;
 
 public class Tree_Test extends TestCase {
 
@@ -27,6 +29,21 @@ public class Tree_Test extends TestCase {
     assertEquals( 1, tree.getItemCount() );
     assertEquals( 1, tree.getItems().length );
     assertSame( item, tree.getItems()[ 0 ] );
+  }
+  
+  public void testImage() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.NONE );
+    assertEquals( 0, Image.size() );
+    TreeItem item1 = new TreeItem( tree, RWT.NONE );
+    item1.setImage(Image.find( Image_Test.IMAGE1 ) );
+    assertSame( Image.find( Image_Test.IMAGE1 ), item1.getImage() );
+    assertEquals( 1, Image.size() );
+    TreeItem item2 = new TreeItem( tree, RWT.NONE );
+    item2.setImage(Image.find( Image_Test.IMAGE2 ) );
+    assertSame( Image.find( Image_Test.IMAGE2 ), item2.getImage() );
+    assertEquals( 2, Image.size() );
   }
 
   public void testItemHierarchy() {

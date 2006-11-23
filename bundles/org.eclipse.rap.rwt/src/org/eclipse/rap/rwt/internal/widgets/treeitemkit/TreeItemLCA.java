@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.ItemLCAUtil;
 import org.eclipse.rap.rwt.internal.widgets.Props;
@@ -68,7 +69,12 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     JSWriter writer = JSWriter.getWriterFor( treeItem );
-    writer.set( Props.TEXT, "label", treeItem.getText() );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, treeItem.getText() );
+    if( treeItem.getImage() != null ) {
+      writer.set( Props.IMAGE,
+                  JSConst.QX_FIELD_ICON, 
+                  Image.getPath( treeItem.getImage() ) );
+    }
   }
   
   public void renderDispose( final Widget widget ) throws IOException {

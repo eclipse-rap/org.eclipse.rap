@@ -52,6 +52,10 @@ public class Tree extends Composite {
   public TreeItem[] getItems() {
     return ( TreeItem[] )itemHolder.getItems();
   }
+  
+  public TreeItem getItem( final int index ) {
+    return ( TreeItem )itemHolder.getItem( index );
+  }
 
   void releaseChildren() {
     TreeItem[] items = getItems();

@@ -112,6 +112,10 @@ public class TabFolder extends Composite {
     }
     return selectionIndex;
   }
+  
+  public int indexOf( final TabItem item ) {
+    return itemHolder.indexOf( item );
+  }
 
   public void layout() {
     Control[] children = getChildren();

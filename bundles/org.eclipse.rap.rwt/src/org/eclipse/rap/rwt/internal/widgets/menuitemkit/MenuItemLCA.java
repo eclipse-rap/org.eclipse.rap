@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -51,7 +52,7 @@ public class MenuItemLCA extends AbstractWidgetLCA {
                                                  SelectionEvent.WIDGET_SELECTED,
                                                  new Rectangle( 0, 0, 0, 0 ),
                                                  true,
-                                                 RWT.NONE);
+                                                 RWT.NONE );
       event.processEvent();
     }
   }
@@ -81,7 +82,14 @@ public class MenuItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     MenuItem menuItem = ( MenuItem )widget;
     if( ( menuItem.getStyle() & RWT.SEPARATOR ) == 0 ) {
-      writer.set( Props.TEXT, "label", menuItem.getText() );
+      writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, menuItem.getText() );
+      if(    ( menuItem.getStyle() & RWT.SEPARATOR ) == 0 
+          &&  menuItem.getImage() != null )
+      {
+        writer.set( Props.IMAGE, 
+                    JSConst.QX_FIELD_ICON, 
+                    Image.getPath( menuItem.getImage() ) );
+      }
       // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
       //      bounds of the widget that was clicked -> In the SelectionEvent 
       //      for MenuItem the bounds are undefined

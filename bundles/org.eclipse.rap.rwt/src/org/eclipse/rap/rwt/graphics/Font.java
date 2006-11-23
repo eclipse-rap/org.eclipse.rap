@@ -9,22 +9,8 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.internal.widgets;
-
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
-import org.eclipse.rap.rwt.widgets.Item;
+package org.eclipse.rap.rwt.graphics;
 
 
-public class ItemLCAUtil {
-
-  private ItemLCAUtil() {
-    // prevent instantiation
-  }
-  
-  public static void preserve( final Item item ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    adapter.preserve( Props.TEXT, item.getText() );
-    adapter.preserve( Props.IMAGE, Image.getPath( item.getImage() ) );
-  }
+public class Font {
 }

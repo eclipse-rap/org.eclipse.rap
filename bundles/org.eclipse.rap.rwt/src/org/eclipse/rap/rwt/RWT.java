@@ -15,6 +15,7 @@ package org.eclipse.rap.rwt;
  */
 public class RWT {
   
+  public static final int NULL = 0;
   public static final int NONE = 0;
 
   public static final int DEFAULT = -1;

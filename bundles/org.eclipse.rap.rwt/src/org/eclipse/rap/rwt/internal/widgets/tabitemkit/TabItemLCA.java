@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.tabitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -32,6 +33,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     TabItem tabItem = ( TabItem )widget;
     adapter.preserve( Props.CHECKED, Boolean.valueOf( isChecked( tabItem ) ) );
     adapter.preserve( Props.TEXT, tabItem.getText() );
+    adapter.preserve( Props.IMAGE, Image.getPath( tabItem.getImage() ) );
     
     // preserve the listener state of the parent tabfolder here, since the
     // javascript handling is added to the clientside tab buttons and therefore
@@ -82,7 +84,12 @@ public class TabItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( tabItem );
-    writer.set( Props.TEXT, "label", tabItem.getText() );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, tabItem.getText() );
+    if( tabItem.getImage()!=null ){
+      writer.set( Props.IMAGE, 
+                  JSConst.QX_FIELD_ICON,
+                  Image.getPath( tabItem.getImage() ) );
+    }
     writeCheckedState( widget );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 

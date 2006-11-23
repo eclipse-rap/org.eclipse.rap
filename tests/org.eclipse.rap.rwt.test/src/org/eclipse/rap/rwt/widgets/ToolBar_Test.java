@@ -14,6 +14,8 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.Image_Test;
 
 public class ToolBar_Test extends TestCase {
 
@@ -52,11 +54,18 @@ public class ToolBar_Test extends TestCase {
     // search operation indexOf
     ToolItem item1 = new ToolItem( toolBar, RWT.PUSH );
     ToolItem item2 = new ToolItem( toolBar, RWT.RADIO );
+    item2.setImage(Image.find( Image_Test.IMAGE1 ) );
+    assertSame( Image.find( Image_Test.IMAGE1 ), item2.getImage() );
+    assertEquals( 1, Image.size() );
     assertEquals( 3, toolBar.getItemCount() );
     assertEquals( 3, toolBar.getItems().length );
     assertEquals( 1, toolBar.indexOf( item1 ) );
     assertEquals( item1, toolBar.getItem( 1 ) );
     assertEquals( item2, toolBar.getItem( 2 ) );
+    ToolItem item3 = new ToolItem( toolBar, RWT.SEPARATOR );
+    item3.setImage(Image.find( Image_Test.IMAGE2 ) );
+    assertNull( item3.getImage() );
+    assertEquals( 2, Image.size() );
   }
 
   public void testToolItemTexts() {

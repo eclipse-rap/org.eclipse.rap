@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.graphics.Image;
 import com.w4t.ParamCheck;
 
 
@@ -90,6 +91,15 @@ public class ToolItem extends Item {
   public void setSelection( final boolean selected ) {
     if( ( style & ( RWT.CHECK | RWT.RADIO/* | SWT.TOGGLE */) ) != 0 ) {
       this.selected = selected;
+    }
+  }
+  
+  public void setImage( final Image image ) {
+    if( image == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( ( style & RWT.SEPARATOR ) == 0 ) {
+      super.setImage( image );
     }
   }
   

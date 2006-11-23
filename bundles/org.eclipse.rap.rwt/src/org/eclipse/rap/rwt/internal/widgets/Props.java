@@ -34,6 +34,8 @@ public final class Props {
   // Text properties
   public static final String TEXT = "text";
   
+  public static final String IMAGE = "image";
+  
   // TabFolder and TabItem properties
   public static final String SELECTION_INDEX = "selectionIndex";
   public static final String CHECKED = "checked";
