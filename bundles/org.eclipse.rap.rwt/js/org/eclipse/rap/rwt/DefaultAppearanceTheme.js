@@ -48,7 +48,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "client-document" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("threedface");
+      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
       this.color = new qx.renderer.color.ColorObject("windowtext");
     },
 
@@ -169,9 +169,9 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "button" : {
     setup : function() {
-      this.bgcolor_default = new qx.renderer.color.ColorObject("buttonface");
-      this.bgcolor_over = new qx.renderer.color.Color("#87BCE5");
-      this.bgcolor_left = new qx.renderer.color.Color("#FFF0C9");
+      this.bgcolor_default = new qx.renderer.color.ColorObject("#ece9d8");
+      this.bgcolor_over = new qx.renderer.color.ColorObject("#fcf9e8");
+      this.bgcolor_left = new qx.renderer.color.ColorObject("#e1e0d8");
 
       this.border_pressed = qx.renderer.border.BorderPresets.getInstance().inset;
       this.border_default = qx.renderer.border.BorderPresets.getInstance().outset;
@@ -217,7 +217,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "toolbar" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("threedface");
+      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {
@@ -294,8 +294,9 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "toolbar-button" : {
     setup : function() {
-      this.bgcolor_default = new qx.renderer.color.ColorObject("buttonface");
-      this.bgcolor_left = new qx.renderer.color.Color("#FFF0C9");
+      this.bgcolor_default = new qx.renderer.color.ColorObject("#ece9d8");
+      this.bgcolor_left = new qx.renderer.color.ColorObject("#e1e0d8");
+      this.bgcolor_over = new qx.renderer.color.ColorObject("#fcf9e8");
 
       this.border_pressed = qx.renderer.border.BorderPresets.getInstance().thinInset;
       this.border_over = qx.renderer.border.BorderPresets.getInstance().thinOutset;
@@ -328,7 +329,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         vReturn.paddingLeft = 4;
       } else if (vStates.over) {
         vReturn.border = this.border_over;
-
+        
         vReturn.paddingTop = vReturn.paddingBottom = 2;
         vReturn.paddingLeft = vReturn.paddingRight = 3;
       } else {
@@ -579,7 +580,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "window" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("threedface");
+      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
       this.color = new qx.renderer.color.ColorObject("windowtext");
     },
 
@@ -603,10 +604,10 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "window-captionbar" : {
     setup : function() {
-      this.bgcolor_active = new qx.renderer.color.ColorObject("activecaption");
-      this.color_active = new qx.renderer.color.ColorObject("captiontext");
-      this.bgcolor_inactive = new qx.renderer.color.ColorObject("inactivecaption");
-      this.color_inactive = new qx.renderer.color.ColorObject("inactivecaptiontext");
+      this.bgcolor_active = new qx.renderer.color.ColorObject("#316ac5");
+      this.color_active = new qx.renderer.color.ColorObject("#ffffff");
+      this.bgcolor_inactive = new qx.renderer.color.ColorObject("#ece9d8");
+      this.color_inactive = new qx.renderer.color.ColorObject("#000000");
     },
 
     initial : function(vTheme) {
@@ -794,7 +795,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "menu-button" : {
     setup : function() {
-      this.BGCOLOR_OVER = new qx.renderer.color.ColorObject("highlight");
+      this.BGCOLOR_OVER = new qx.renderer.color.ColorObject("#316ac5");
       this.BGCOLOR_OUT = null;
 
       this.COLOR_OVER = new qx.renderer.color.ColorObject("highlighttext");
@@ -896,7 +897,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "list-item" : {
     setup : function() {
-      this.bgcolor_selected = new qx.renderer.color.ColorObject("highlight");
+      this.bgcolor_selected = new qx.renderer.color.ColorObject("#316ac5");
       this.color_selected = new qx.renderer.color.ColorObject("highlighttext");
     },
 
@@ -1097,7 +1098,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "tree-element-label" : {
     setup : function() {
-      this.bgcolor_selected = new qx.renderer.color.ColorObject("highlight");
+      this.bgcolor_selected = new qx.renderer.color.ColorObject("#316ac5");
       this.color_selected = new qx.renderer.color.ColorObject("highlighttext");
     },
 
@@ -1234,7 +1235,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.border = new qx.renderer.border.Border;
       this.border.setBottom(1, "solid", "#e2e2e2");
 
-      this.bgcolor = new qx.renderer.color.Color("#f2f2f2");
+      this.bgcolor = new qx.renderer.color.ColorObject("#f2f2f2");
     },
 
     initial : function(vTheme) {
@@ -1286,7 +1287,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "list-view-header-separator" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.Color("#D6D5D9");
+      this.bgcolor = new qx.renderer.color.ColorObject("#D6D5D9");
     },
 
     initial : function(vTheme) {
@@ -1301,7 +1302,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "list-view-content-cell" : {
     setup : function() {
-      this.bgcolor_selected = new qx.renderer.color.ColorObject("highlight");
+      this.bgcolor_selected = new qx.renderer.color.ColorObject("#316ac5");
       this.color_selected = new qx.renderer.color.ColorObject("highlighttext");
     },
 
@@ -1400,9 +1401,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "tab-view-pane" : {
     setup : function() {
-      this.border = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#91A5BD");
-//      this.bgcolor = new qx.renderer.color.ColorObject("#FAFBFE");
-      this.bgcolor = new qx.renderer.color.ColorObject("threedface");
+      this.border = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
+      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {
@@ -1431,22 +1431,21 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "tab-view-button" : {
     setup : function() {
-//      this.bgcolor_normal = new qx.renderer.color.ColorObject("#E1EEFF");
-      this.bgcolor_normal = new qx.renderer.color.ColorObject("#e6e2e2");
-//      this.bgcolor_checked = new qx.renderer.color.ColorObject("#FAFBFE");
-      this.bgcolor_checked = new qx.renderer.color.ColorObject("threedface");
+      this.bgcolor_normal = new qx.renderer.color.ColorObject("#ece9d8");
+      this.bgcolor_checked = new qx.renderer.color.ColorObject("#ece9d8");
+      this.bgcolor_over = new qx.renderer.color.ColorObject("#fcf9e8");
 
-      this.border_top_normal = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#91A5BD");
+      this.border_top_normal = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
       this.border_top_normal.setBottomWidth(0);
 
-      this.border_top_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#91A5BD");
+      this.border_top_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
       this.border_top_checked.setBottomWidth(0);
       this.border_top_checked.setTop(3, qx.renderer.border.Border.STYLE_SOLID, "#FEC83C");
 
-      this.border_bottom_normal = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#91A5BD");
+      this.border_bottom_normal = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
       this.border_bottom_normal.setTopWidth(0);
 
-      this.border_bottom_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#91A5BD");
+      this.border_bottom_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
       this.border_bottom_checked.setTopWidth(0);
       this.border_bottom_checked.setBottom(3, qx.renderer.border.Border.STYLE_SOLID, "#FEC83C");
     },
@@ -1460,6 +1459,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
       if (vStates.checked) {
         vReturn = {
+          color : this.color_checked,
           backgroundColor : this.bgcolor_checked,
           zIndex : 1,
           paddingTop : 2,
@@ -1490,7 +1490,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       }
       else {
         vReturn = {
-          backgroundColor : vStates.over ? this.bgcolor_checked : this.bgcolor_normal,
+          color : this.color_normal,
+          backgroundColor : vStates.over ? this.bgcolor_over : this.bgcolor_normal,
           zIndex : 0,
           paddingTop : 2,
           paddingBottom : 2,
@@ -1543,7 +1544,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "field-set" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("threedface");
+      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {
@@ -1555,7 +1556,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "field-set-legend" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("threedface");
+      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {
@@ -1587,7 +1588,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "check-box-field-set-legend" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("threedface");
+      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {
@@ -1651,7 +1652,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       return qx.lang.Object.mergeWith(vTheme.initialFrom("image"), {
         height: qx.constant.Core.FLEX,
         width: 16,
-        backgroundColor: new qx.renderer.color.ColorObject("threedface")
+        backgroundColor: new qx.renderer.color.ColorObject("#ece9d8")
       });
     },
 
@@ -1670,7 +1671,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       return qx.lang.Object.mergeWith(vTheme.initialFrom("image"), {
         height: qx.constant.Core.FLEX,
         width: 16,
-        backgroundColor: new qx.renderer.color.ColorObject("threedface")
+        backgroundColor: new qx.renderer.color.ColorObject("#ece9d8")
       });
     },
 
@@ -1724,8 +1725,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "datechooser-toolbar-button" : {
     setup : function() {
-      this.bgcolor_default = new qx.renderer.color.ColorObject("buttonface");
-      this.bgcolor_left = new qx.renderer.color.Color("#FFF0C9");
+      this.bgcolor_default = new qx.renderer.color.ColorObject("#ece9d8");
+      this.bgcolor_left = new qx.renderer.color.ColorObject("#e1e0d8");
 
       this.border_pressed = qx.renderer.border.BorderPresets.getInstance().thinInset;
       this.border_over = qx.renderer.border.BorderPresets.getInstance().thinOutset;
@@ -1838,7 +1839,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
 
       this.selectedColor = new qx.renderer.color.ColorObject("highlightText");
-      this.selectedBgColor = new qx.renderer.color.ColorObject("highlight");
+      this.selectedBgColor = new qx.renderer.color.ColorObject("#316ac5");
       this.color = new qx.renderer.color.ColorObject("windowText");
       this.otherMonthColor = new qx.renderer.color.ColorObject("grayText");
 
@@ -1966,7 +1967,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
       this.mouseOverBackground = new qx.renderer.color.ColorObject("white");
 //      this.background = new qx.renderer.color.ColorObject("#ebeadb");
-      this.background = new qx.renderer.color.ColorObject("threedface");
+      this.background = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {
@@ -2013,7 +2014,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "splitpane-glasspane" :
   {
     setup : function() {
-      this.background = new qx.renderer.color.ColorObject("threedshadow");
+      this.background = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {
@@ -2034,7 +2035,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   {
     initial : function(vTheme) {
       return {
-        backgroundColor : "threedface"
+        backgroundColor : "#ece9d8"
       }
     }
   },
@@ -2050,7 +2051,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     state : function(vTheme, vStates) {
       return {
-        backgroundColor: vStates.dragging ? "threeddarkshadow" : "threedface"
+        backgroundColor: vStates.dragging ? "#ece9d8" : "#ece9d8"
       }
     }
   }
