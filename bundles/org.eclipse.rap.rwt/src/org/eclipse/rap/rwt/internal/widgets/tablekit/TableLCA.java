@@ -64,8 +64,7 @@ public class TableLCA extends AbstractWidgetLCA {
   
   public void renderChanges( final Widget widget ) throws IOException {
     Table table = ( Table )widget;
-    ControlLCAUtil.writeBounds( table );
-    ControlLCAUtil.writeToolTip( table );
+    ControlLCAUtil.writeChanges( table );
     // Note: [fappel] order is crucial here, first set the bounds of the control
     //                before manipulating the column width
     writeColWidths( table );

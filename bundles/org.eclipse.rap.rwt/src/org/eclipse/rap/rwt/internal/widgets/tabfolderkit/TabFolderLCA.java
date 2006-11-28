@@ -45,8 +45,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
-    ControlLCAUtil.writeBounds( ( Control )widget );
-    ControlLCAUtil.writeToolTip( ( Control )widget );
+    ControlLCAUtil.writeChanges( ( Control )widget );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

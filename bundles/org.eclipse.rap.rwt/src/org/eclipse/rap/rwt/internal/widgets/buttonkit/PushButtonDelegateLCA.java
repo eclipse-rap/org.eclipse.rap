@@ -40,10 +40,7 @@ public class PushButtonDelegateLCA extends ButtonDelegateLCA {
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
-    ControlLCAUtil.writeBounds( button );
-    ControlLCAUtil.writeToolTip( button );
-    ControlLCAUtil.writeMenu( button );
-    ControlLCAUtil.setControlIntoToolItem( button );
+    ControlLCAUtil.writeChanges( button );
     writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText() );
     if( button.getImage()!=null ){
       writer.set( Props.IMAGE,

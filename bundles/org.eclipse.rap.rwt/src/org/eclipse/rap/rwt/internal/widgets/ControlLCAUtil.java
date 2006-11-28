@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.graphics.IColor;
 import org.eclipse.rap.rwt.internal.widgets.toolitemkit.SeparatorToolItemDelegateLCA;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -44,6 +46,8 @@ public class ControlLCAUtil {
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     adapter.preserve( Props.TOOL_TIP_TEXT, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
+    adapter.preserve( Props.VISIBILITY, 
+                      Boolean.valueOf( control.isVisible() ) );
   }
   
   public static void readBounds( final Control widget ) {
@@ -78,6 +82,45 @@ public class ControlLCAUtil {
         writer.set( "minHeight", 0 );
       }
     }
+  }
+  public static void writeVisblility( final Control control ) 
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( control );
+    // TODO: [Ralf] there is no set(String, String, boolean) method yet
+    //              writer.set( Props.VISIBILITY, "visibility", control.isVisible() );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    Boolean isVisible = ( Boolean )adapter.getPreserved( Props.VISIBILITY );
+    if(   !adapter.isInitialized()
+        || isVisible == null
+        || control.isVisible() != isVisible.booleanValue() )
+    {
+      writer.set( "visibility", control.isVisible() );
+    }
+  }
+
+  public static void writeColors( final Control control ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( control );
+    Color fgColor = control.getForeground();
+    Color bgColor = control.getBackground();
+    if( fgColor != null ) {
+      writer.set( Props.FG_COLOR, "color", 
+                  ( ( IColor )fgColor ).toColorValue() );
+    }
+    if( bgColor != null ) {
+      writer.set( Props.BG_COLOR,
+                  "backgroundColor",
+                  ( ( IColor )bgColor ).toColorValue() );
+    }
+  }
+
+  public static void writeChanges( final Control control ) throws IOException {
+    writeBounds( control );
+    writeVisblility( control );
+    writeColors( control );
+    writeToolTip( control );
+    writeMenu( control );
+    setControlIntoToolItem( control );
   }
   
   public static void writeResizeNotificator( final Widget widget )

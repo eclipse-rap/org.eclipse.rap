@@ -53,8 +53,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   
   public void renderChanges( final Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
-    ControlLCAUtil.writeBounds( tree );
-    ControlLCAUtil.writeToolTip( tree );
+    ControlLCAUtil.writeChanges( tree );
     updateSelectionListener( tree, SelectionEvent.hasListener( tree ) );
   }
 

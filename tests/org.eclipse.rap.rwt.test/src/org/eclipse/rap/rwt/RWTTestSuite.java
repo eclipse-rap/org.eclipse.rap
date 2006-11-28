@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Image_Test;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.engine.AdapterFactoryRegistry_Test;
 import org.eclipse.rap.rwt.internal.engine.RWTServletContextListener_Test;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
@@ -80,6 +80,8 @@ public class RWTTestSuite {
     suite.addTestSuite( ToolBar_Test.class );
     
     suite.addTestSuite( Image_Test.class );
+    suite.addTestSuite( Color_Test.class );
+    suite.addTestSuite( RGB_Test.class );
 
     suite.addTestSuite( DisplayLCA_Test.class );
     suite.addTestSuite( ControlLCA_Test.class );

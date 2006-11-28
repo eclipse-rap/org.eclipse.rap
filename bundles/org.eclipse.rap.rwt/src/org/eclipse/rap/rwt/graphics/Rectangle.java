@@ -11,6 +11,8 @@
 
 package org.eclipse.rap.rwt.graphics;
 
+import org.eclipse.rap.rwt.RWT;
+
 
 /**
  * TODO: [fappel] comment
@@ -22,7 +24,10 @@ public class Rectangle {
   public int width;
   public int height;
 
-  public Rectangle( final int x, final int y, final int width, final int height )
+  public Rectangle( final int x, 
+                    final int y, 
+                    final int width, 
+                    final int height )
   {
     this.x = x;
     this.y = y;
@@ -34,6 +39,20 @@ public class Rectangle {
     this( rectangle.x, rectangle.y, rectangle.width, rectangle.height );
   }
 
+  public boolean contains( final int x, final int y ) {
+    return    x >= this.x 
+           && y >= this.y
+           && x - this.x < width 
+           && y - this.y < height;
+  }
+
+  public boolean contains( final Point point ) {
+    if( point == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    return contains( point.x, point.y );
+  }
+  
   public boolean equals( final Object object ) {
     boolean result = object == this;
     if( !result && object instanceof Rectangle ) {

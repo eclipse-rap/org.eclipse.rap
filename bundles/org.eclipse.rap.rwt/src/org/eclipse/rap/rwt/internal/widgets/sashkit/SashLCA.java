@@ -48,8 +48,7 @@ public class SashLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     Sash sash = ( Sash )widget;
-    ControlLCAUtil.writeBounds( sash );
-    ControlLCAUtil.writeToolTip( sash );
+    ControlLCAUtil.writeChanges( sash );
     JSWriter writer = JSWriter.getWriterFor( widget );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     Rectangle oldBounds = ( Rectangle )adapter.getPreserved( Props.BOUNDS );

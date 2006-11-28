@@ -39,11 +39,15 @@ public class RWT {
   public static final int RADIO = 1 << 4;
   public static final int CHECK = 1 << 5;
   public static final int ARROW = 1 << 2;
+  public static final int BORDER = 1 << 11;
+  public static final int FLAT = 1 << 23;
+  
   // menu flags
   public static final int BAR = 1 << 1;
   public static final int POP_UP = 1 << 3;
   public static final int DROP_DOWN = 1 << 2;
   public static final int CASCADE = 1 << 6;
+  
   // text flags
   public static final int SINGLE = 1 << 2;
   public static final int MULTI = 1 << 1;
@@ -54,7 +58,7 @@ public class RWT {
   public static final int ERROR_INVALID_RANGE = 6;
   public static final int ERROR_CANNOT_BE_ZERO = 7;
   public static final int ERROR_INVALID_PARENT = 32;
-
+  
   public static void error( final int code ) {
   }
 }

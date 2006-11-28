@@ -65,9 +65,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Combo combo = ( Combo )widget;
     JSWriter writer = JSWriter.getWriterFor( combo );
-    ControlLCAUtil.writeBounds( combo );
-    ControlLCAUtil.writeToolTip( combo );
-    ControlLCAUtil.writeMenu( combo );
+    ControlLCAUtil.writeChanges( combo );
     Object[] params = new Object[]{
       WidgetUtil.getId( combo ),
       combo.getItems()

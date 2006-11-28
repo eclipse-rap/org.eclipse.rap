@@ -57,6 +57,7 @@ qx.Proto.removeParameter = function( name ) {
 qx.Proto.send = function() {
   // create and configure request object
   var action = org_eclipse_rap_rwt_requesthandler;
+  // To solve bugzilla bug entry 165666 we use GET- instead of POST-method
   var request = new qx.io.remote.RemoteRequest( action, 
                                                 "GET", 
                                                 "text/javascript" );

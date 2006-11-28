@@ -83,9 +83,7 @@ public class ListLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     List list = ( List )widget;
-    ControlLCAUtil.writeBounds( list );
-    ControlLCAUtil.writeToolTip( list );
-    ControlLCAUtil.setControlIntoToolItem( list );
+    ControlLCAUtil.writeChanges( list );
     // Note: [fappel] order is crucial here, first set the bounds of the control
     //                before manipulating the column width
     writeColWidths( list );

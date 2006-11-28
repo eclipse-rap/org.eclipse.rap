@@ -42,8 +42,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
   
   public void renderChanges( final Widget widget ) throws IOException {
     ToolBar toolBar = ( ToolBar )widget;
-    ControlLCAUtil.writeBounds( toolBar );
-    ControlLCAUtil.writeToolTip( toolBar );
+    ControlLCAUtil.writeChanges( toolBar );
   }
 
   public void renderDispose( final  Widget widget ) throws IOException {

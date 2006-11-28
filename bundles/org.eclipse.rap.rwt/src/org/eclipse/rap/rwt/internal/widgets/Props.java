@@ -23,6 +23,9 @@ public final class Props {
   public static final String BOUNDS = "bounds";
   public static final String TOOL_TIP_TEXT = "toolTip";
   public static final String MENU = "menu";
+  public static final String VISIBILITY = "visibility";
+  public static final String BG_COLOR = "backgroundColor";
+  public static final String FG_COLOR = "foregroundColor";
   public static final String CONTROL_LISTENERS = "hasControlListeners";
   
   // Scrollable

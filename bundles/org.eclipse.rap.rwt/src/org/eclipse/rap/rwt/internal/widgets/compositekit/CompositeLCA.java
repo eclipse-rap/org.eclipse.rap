@@ -37,7 +37,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
-    ControlLCAUtil.writeBounds( ( Control )widget );
+    ControlLCAUtil.writeChanges( ( Control )widget );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

@@ -67,9 +67,7 @@ public class TextLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Text text = ( Text )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
-    ControlLCAUtil.writeBounds( text );
-    ControlLCAUtil.writeToolTip( text );
-    ControlLCAUtil.setControlIntoToolItem( text );
+    ControlLCAUtil.writeChanges( text );
     writer.set( Props.TEXT, "value", text.getText() );
   }
 

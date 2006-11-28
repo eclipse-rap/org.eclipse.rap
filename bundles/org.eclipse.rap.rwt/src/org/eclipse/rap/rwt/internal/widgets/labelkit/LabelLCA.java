@@ -44,9 +44,7 @@ public class LabelLCA extends AbstractWidgetLCA {
   
   public void renderChanges( final Widget widget ) throws IOException {
     Label label = ( Label )widget;
-    ControlLCAUtil.writeBounds( label );
-    ControlLCAUtil.writeToolTip( label );
-    ControlLCAUtil.setControlIntoToolItem(  label );
+    ControlLCAUtil.writeChanges( label );
     JSWriter writer = JSWriter.getWriterFor( widget );
     
     // TODO [rh] rendering text that contains html special chars (<, >, etc)

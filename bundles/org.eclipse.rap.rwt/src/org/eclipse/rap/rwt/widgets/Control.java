@@ -13,8 +13,7 @@ package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import com.w4t.ParamCheck;
 
 /**
@@ -31,6 +30,9 @@ public abstract class Control extends Widget {
   private String toolTipText;
   private Menu menu;
   private DisposeListener menuDisposeListener;
+  private boolean visible = true;
+  private Color foreground;
+  private Color background;
 
   Control() {
     this.parent = null;
@@ -53,6 +55,41 @@ public abstract class Control extends Widget {
   public Display getDisplay() {
     return parent.getDisplay();
   }
+
+  
+  /////////////
+  // visibility
+
+  public void setVisible( final boolean visible ) {
+    this.visible = visible;
+  }
+
+  public boolean isVisible() {
+    return visible;
+  }
+
+  
+  /////////
+  // Colors
+
+  public void setBackground( final Color color ) {
+    background = color;
+  }
+  
+  public Color getBackground () {
+    // Control control = findBackgroundControl ();
+    // if (control == null) control = this;
+    return background;
+  }
+
+  public void setForeground( final Color color ) {
+    foreground = color;
+  }
+
+  public Color getForeground () {
+    return foreground;
+  }
+  
 
   // ///////////////////////////////////////////////
   // Methods to manipulate the controls' dimensions
@@ -137,9 +174,11 @@ public abstract class Control extends Widget {
     // TODO: [fappel] reasonable implementation
     return 0;
   }
+  
 
   // ///////////////////////
   // Layout related methods
+  
   public Object getLayoutData() {
     return layoutData;
   }
@@ -147,9 +186,11 @@ public abstract class Control extends Widget {
   public void setLayoutData( final Object layoutData ) {
     this.layoutData = layoutData;
   }
+  
 
   // ///////////////////
   // ToolTip operations
+  
   public void setToolTipText( final String toolTipText ) {
     this.toolTipText = toolTipText;
   }
@@ -157,9 +198,11 @@ public abstract class Control extends Widget {
   public String getToolTipText() {
     return toolTipText;
   }
+  
 
   // ////////////////
   // Menu operations
+  
   public void setMenu( final Menu menu ) {
     if( this.menu != menu ) {
       if( menu != null ) {
@@ -188,9 +231,11 @@ public abstract class Control extends Widget {
   public Menu getMenu() {
     return menu;
   }
+  
 
   // ///////////////////////////////
   // Methods to add/remove listener
+  
   public void addControlListener( final ControlListener listener ) {
     ControlEvent.addListener( this, listener );
   }
@@ -198,9 +243,11 @@ public abstract class Control extends Widget {
   public void removeControlListener( final ControlListener listener ) {
     ControlEvent.removeListener( this, listener );
   }
+  
 
   // /////////
   // Disposal
+  
   void releaseParent() {
     ControlHolder.removeControl( getParent(), this );
   }
@@ -217,8 +264,10 @@ public abstract class Control extends Widget {
     // do nothing
   }
 
-  // ///////////////////////////////////////////////////
+  
+  /////////////////////////////////////////////////////
   // Helping methods that throw move- and resize-events
+  
   void notifyResize( final Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {
       new ControlEvent( this, ControlEvent.CONTROL_RESIZED ).processEvent();
@@ -231,8 +280,10 @@ public abstract class Control extends Widget {
     }
   }
 
+  
   // ////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menu
+  
   private void addMenuDisposeListener() {
     if( menu != null ) {
       if( menuDisposeListener == null ) {
