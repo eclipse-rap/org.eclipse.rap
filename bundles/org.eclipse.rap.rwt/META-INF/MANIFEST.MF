@@ -21,6 +21,8 @@ Export-Package: org.eclipse.rap.rwt,
  org.eclipse.rap.rwt.internal.widgets.combokit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.rap.rwt.internal.widgets.compositekit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.rap.rwt.internal.widgets.controlkit;x-friends:="org.eclipse.rap.rwt.test",
+ org.eclipse.rap.rwt.internal.widgets.custom.ctabfolderkit,
+ org.eclipse.rap.rwt.internal.widgets.custom.ctabitemkit,
  org.eclipse.rap.rwt.internal.widgets.displaykit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.rap.rwt.internal.widgets.labelkit;x-friends:="org.eclipse.rap.rwt.test",
  org.eclipse.rap.rwt.internal.widgets.listkit;x-friends:="org.eclipse.rap.rwt.test",
@@ -41,5 +43,6 @@ Export-Package: org.eclipse.rap.rwt,
  org.eclipse.rap.rwt.layout,
  org.eclipse.rap.rwt.lifecycle,
  org.eclipse.rap.rwt.resources,
- org.eclipse.rap.rwt.widgets
+ org.eclipse.rap.rwt.widgets,
+ org.eclipse.rap.rwt.widgets.custom
 

@@ -15,9 +15,11 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.widgets.custom.CTabFolder;
+import org.eclipse.rap.rwt.widgets.custom.CTabItem;
 import com.w4t.Fixture;
 
 public class ControlLCAUtil_Test extends TestCase {
@@ -99,9 +101,38 @@ public class ControlLCAUtil_Test extends TestCase {
     String expected = "wm.setToolTip( w, \"anotherTooltip\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
+  
+  public void testWriteImage() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, RWT.NONE );
+    CTabItem item = new CTabItem( folder, RWT.NONE );
+
+    // for an un-initialized control: no image -> no markup
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.writeImage( item, item.getImage() );
+    assertEquals( "", Fixture.getAllMarkup() );
+    
+    // for an un-initialized control: render image, if any
+    Fixture.fakeResponseWriter();
+    item.setImage( Image.find( Image_Test.IMAGE1 ) );
+    ControlLCAUtil.writeImage( item, item.getImage() );
+    String expected = "w.setIcon( \"" 
+                    + Image.getPath( item.getImage() ) 
+                    + "\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    
+    // for an initialized control with change image: render it
+    RWTFixture.markInitialized( item );
+    RWTFixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    item.setImage( null );
+    ControlLCAUtil.writeImage( item, item.getImage() );
+    assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( \"\" );" ) != -1 );
+  }
 
   protected void setUp() throws Exception {
-    RWTFixture.setUpWithoutResourceManager();
+    RWTFixture.setUp();
     Fixture.fakeResponseWriter();
   }
 

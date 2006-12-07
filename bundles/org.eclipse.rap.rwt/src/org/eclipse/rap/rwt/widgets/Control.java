@@ -248,11 +248,11 @@ public abstract class Control extends Widget {
   // /////////
   // Disposal
   
-  void releaseParent() {
+  protected void releaseParent() {
     ControlHolder.removeControl( getParent(), this );
   }
 
-  void releaseWidget() {
+  protected void releaseWidget() {
     if( menu != null ) {
       removeMenuDisposeListener();
       menu.dispose();
@@ -260,7 +260,7 @@ public abstract class Control extends Widget {
     }
   }
 
-  void releaseChildren() {
+  protected void releaseChildren() {
     // do nothing
   }
 

@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.controlkit.ControlLCA_Test;
+import org.eclipse.rap.rwt.internal.widgets.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.displaykit.DisplayLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.labelkit.LabelLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.menukit.MenuLCA_Test;
@@ -33,6 +34,8 @@ import org.eclipse.rap.rwt.internal.widgets.treekit.TreeLCA_Test;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager_Test;
 import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.widgets.custom.CTabFolder_Test;
+import org.eclipse.rap.rwt.widgets.custom.CTabItem_Test;
 
 
 public class RWTTestSuite {
@@ -78,6 +81,8 @@ public class RWTTestSuite {
     suite.addTestSuite( Combo_Test.class );
     suite.addTestSuite( List_Test.class );
     suite.addTestSuite( ToolBar_Test.class );
+    suite.addTestSuite( CTabFolder_Test.class );
+    suite.addTestSuite( CTabItem_Test.class );
     
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );
@@ -94,6 +99,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ShellLCA_Test.class );
     suite.addTestSuite( MenuLCA_Test.class );
     suite.addTestSuite( TableLCA_Test.class );
+    suite.addTestSuite( CTabFolderLCA_Test.class );
     return suite;
   }
 }

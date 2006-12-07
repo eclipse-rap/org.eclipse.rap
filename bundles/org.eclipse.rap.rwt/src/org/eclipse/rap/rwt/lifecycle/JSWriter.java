@@ -272,7 +272,7 @@ public final class JSWriter {
       write( "var {0} = {1};", refVariable, createFindWidgetById( target ) );
     }
     String params = createParamList( args );
-    write( "{0}.{1}({2});", refVariable, function, params.toString() );
+    write( "{0}.{1}({2});", refVariable, function, params );
   }
 
   public void call( final JSVar target, 

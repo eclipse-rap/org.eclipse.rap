@@ -77,11 +77,20 @@ public class ItemHolder_Test extends TestCase {
     TreeItem item = new TreeItem( tree, RWT.NONE );
     items = ItemHolder.getItems( tree );
     assertEquals( 1, items.length );
-    assertEquals( item, items[ 0 ] );
+    assertEquals( item, items[ 0 ] ); 
     assertEquals( 1, tree.getItemCount() );
+    assertEquals( 0, tree.indexOf( item ) );
     item.dispose();
     items = ItemHolder.getItems( tree );
     assertEquals( 0, items.length );
+    assertEquals( 0, tree.getItemCount() );
+    assertEquals( -1, tree.indexOf( item ) );
+    try {
+      tree.getItem( 0 );
+      fail( "Index out of bounds expected" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 
   protected void setUp() throws Exception {

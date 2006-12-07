@@ -41,6 +41,7 @@ public class RWT {
   public static final int ARROW = 1 << 2;
   public static final int BORDER = 1 << 11;
   public static final int FLAT = 1 << 23;
+  public static final int CLOSE = 1 << 6;
   
   // menu flags
   public static final int BAR = 1 << 1;
@@ -53,6 +54,7 @@ public class RWT {
   public static final int MULTI = 1 << 1;
   public static final int WRAP = 1 << 6;
   public static final int PASSWORD = 1 << 22;
+  
   public static final int ERROR_NULL_ARGUMENT = 4;
   public static final int ERROR_INVALID_ARGUMENT = 5;
   public static final int ERROR_INVALID_RANGE = 6;

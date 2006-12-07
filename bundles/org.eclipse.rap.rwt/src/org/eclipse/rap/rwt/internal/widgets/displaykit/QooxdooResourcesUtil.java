@@ -21,7 +21,8 @@ import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
 
 
-
+// TODO [rh] Should javaScript namespaces include widget and/or custom?
+//      e.g. org/eclipse/rap/rwt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
   
   private static final String APPEARANCE_JS
@@ -45,6 +46,11 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/TableUtil.js";
   private static final String TABLE_MODEL_JS
     = "org/eclipse/rap/rwt/UnsortableTableModel.js";
+  private static final String CTAB_FOLDER_JS 
+    = "org/eclipse/rap/rwt/custom/CTabFolder.js";
+  private static final String CTAB_FOLDER_BAR_JS 
+    = "org/eclipse/rap/rwt/custom/CTabFolderBar.js";
+  
   private QooxdooResourcesUtil() {
     // prevent intance creation
   }
@@ -1500,6 +1506,8 @@ final class QooxdooResourcesUtil {
       register( MENU_UTIL_JS );
       register( TABLE_UTIL_JS );
       register( TABLE_MODEL_JS );
+      register( CTAB_FOLDER_BAR_JS );
+      register( CTAB_FOLDER_JS );
     } finally {
       manager.setContextLoader( bufferedLoader );
     }

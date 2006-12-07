@@ -18,7 +18,6 @@ import org.eclipse.rap.rwt.RWTFixture;
 /**
  * @author georg
  */
-
 public class List_Test extends TestCase {
 
   public void testGetItemsAndGetItemCount() {

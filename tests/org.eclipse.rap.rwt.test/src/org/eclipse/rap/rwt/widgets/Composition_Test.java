@@ -49,13 +49,13 @@ public class Composition_Test extends TestCase {
         return null;
       }
 
-      void releaseChildren() {
+      protected void releaseChildren() {
       }
 
-      void releaseParent() {
+      protected void releaseParent() {
       }
 
-      void releaseWidget() {
+      protected void releaseWidget() {
       }
     };
     assertEquals( 0, shell.getChildren().length );

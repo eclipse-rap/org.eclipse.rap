@@ -84,14 +84,14 @@ public class TreeItem extends Item {
   ///////////////////////////////////
   // Methods to dispose of the widget
   
-  final void releaseChildren() {
+  protected final void releaseChildren() {
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].dispose();
     }
   }
 
-  final void releaseParent() {
+  protected final void releaseParent() {
     if( parentItem != null ) {
       ItemHolder.removeItem( parentItem, this );
     } else {
@@ -99,6 +99,6 @@ public class TreeItem extends Item {
     }
   }
 
-  final void releaseWidget() {
+  protected final void releaseWidget() {
   }
 }

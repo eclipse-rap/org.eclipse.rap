@@ -16,14 +16,14 @@ import com.w4t.IResourceManager;
 import com.w4t.ParamCheck;
 
 
-public class Image {
+public final class Image {
   
-  private static Map images = new HashMap();
+  private static final Map images = new HashMap();
   
   private Image () {
   }
   
-  public static synchronized Image find ( final String path ) {
+  public static synchronized Image find( final String path ) {
     return find( path, null );
   }
   
@@ -56,7 +56,7 @@ public class Image {
   public static synchronized String getPath ( final Image image ) {
     String result = null;
     if ( images.containsValue( image ) ) {
-      Iterator it =  images.entrySet().iterator();
+      Iterator it = images.entrySet().iterator();
       boolean next = true;
       while( next && it.hasNext() ) {
         Map.Entry entry = ( Map.Entry )it.next();

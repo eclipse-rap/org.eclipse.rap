@@ -66,13 +66,13 @@ public class TabItem extends Item {
   ///////////////////////////////////
   // Methods to dispose of the widget
 
-  void releaseChildren() {
+  protected void releaseChildren() {
   }
 
-  void releaseParent() {
+  protected void releaseParent() {
     ItemHolder.removeItem( parent, this );
   }
 
-  void releaseWidget() {
+  protected void releaseWidget() {
   }
 }

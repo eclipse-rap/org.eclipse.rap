@@ -28,13 +28,13 @@ public class Item_Test extends TestCase {
         return null;
       }
 
-      void releaseChildren() {
+      protected void releaseChildren() {
       }
 
-      void releaseParent() {
+      protected void releaseParent() {
       }
 
-      void releaseWidget() {
+      protected void releaseWidget() {
       }
     };
     assertEquals( "", item.getText() );
@@ -57,31 +57,33 @@ public class Item_Test extends TestCase {
         return null;
       }
 
-      void releaseChildren() {
+      protected void releaseChildren() {
       }
 
-      void releaseParent() {
+      protected void releaseParent() {
       }
 
-      void releaseWidget() {
+      protected void releaseWidget() {
       }
     };
     item.setImage( Image.find( Image_Test.IMAGE1 ) );
     assertSame( Image.find( Image_Test.IMAGE1 ), item.getImage() );
     assertEquals( 1, Image.size() );
+    item.setImage( null );
+    assertEquals( null, item.getImage() );
     Item item2 = new Item( shell, RWT.NONE ) {
 
       public Display getDisplay() {
         return null;
       }
 
-      void releaseChildren() {
+      protected void releaseChildren() {
       }
 
-      void releaseParent() {
+      protected void releaseParent() {
       }
 
-      void releaseWidget() {
+      protected void releaseWidget() {
       }
     };
     item2.setImage( Image.find( Image_Test.IMAGE2 ) );
@@ -98,13 +100,13 @@ public class Item_Test extends TestCase {
         return null;
       }
 
-      void releaseChildren() {
+      protected void releaseChildren() {
       }
 
-      void releaseParent() {
+      protected void releaseParent() {
       }
 
-      void releaseWidget() {
+      protected void releaseWidget() {
       }
     };
     item.dispose();

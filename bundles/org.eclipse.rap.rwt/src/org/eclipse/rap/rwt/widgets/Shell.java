@@ -121,11 +121,11 @@ public class Shell extends Composite {
 
   // //////////
   // Overrides
-  final void releaseParent() {
+  protected final void releaseParent() {
     display.removeShell( this );
   }
 
-  final void releaseWidget() {
+  protected final void releaseWidget() {
     removeMenuBarDisposeListener();
   }
 

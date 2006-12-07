@@ -26,7 +26,7 @@ public final class ItemHolder implements IItemHolderAdapter {
     items = new SlimList();
   }
 
-  int size() {
+  public int size() {
     return items.size();
   }
 
@@ -63,9 +63,6 @@ public final class ItemHolder implements IItemHolderAdapter {
   }
   
   public int indexOf ( final Item item ) {
-    if( !items.contains( item ) ) {
-      throw new IllegalArgumentException( "Invalid Argument." );
-    }
     return items.indexOf( item );
   }
 

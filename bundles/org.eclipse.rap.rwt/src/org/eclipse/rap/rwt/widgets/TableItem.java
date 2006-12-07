@@ -93,14 +93,14 @@ public class TableItem extends Item {
   ///////////////////////////////
   // helping methods for disposal
 
-  void releaseChildren() {
+  protected void releaseChildren() {
   }
 
-  void releaseParent() {
+  protected void releaseParent() {
     ItemHolder.removeItem( parent, this );
   }
 
-  void releaseWidget() {
+  protected void releaseWidget() {
   }
 
   

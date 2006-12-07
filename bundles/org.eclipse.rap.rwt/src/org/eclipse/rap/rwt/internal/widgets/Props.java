@@ -39,12 +39,21 @@ public final class Props {
   
   public static final String IMAGE = "image";
   
-  // TabFolder and TabItem properties
+  // CTabFolder, CTabItem, TabFolder and TabItem properties
   public static final String SELECTION_INDEX = "selectionIndex";
   public static final String CHECKED = "checked";
   
   // Table, TableItem and TableColumn properties
   public static final String SELECTION_INDICES = "selection";
+  
+  // CTabFolder properties
+  public static final String MINIMIZED = "minimized";
+  public static final String MAXIMIZED = "maximized";
+  public static final String MINIMIZE_VISIBLE = "minimizeVisible";
+  public static final String MAXIMIZE_VISIBLE = "maximizeVisible";
+  public static final String TAB_HEIGHT = "tabHeight";
+  public static final String TOP_RIGHT = "topRight";
+  public static final String TOP_RIGHT_ALIGNMENT = "topRightAlignment";
   
   
   private Props() {

@@ -39,7 +39,6 @@ public abstract class Item extends Widget {
   }
   
   public void setImage( final Image image ) {
-    ParamCheck.notNull( image, "image" );
     this.image = image;
   }
 

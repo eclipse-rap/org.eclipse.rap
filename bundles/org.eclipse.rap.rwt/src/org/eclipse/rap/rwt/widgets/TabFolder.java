@@ -57,7 +57,7 @@ public class TabFolder extends Composite {
     return result;
   }
 
-  void releaseChildren() {
+  protected void releaseChildren() {
     TabItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].dispose();

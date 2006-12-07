@@ -11,9 +11,8 @@
 package org.eclipse.rap.rwt.custom;
 
 
-import org.eclipse.rap.rwt.*;
-import org.eclipse.rap.rwt.graphics.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.widgets.Display;
 
 /**
  * Support for showing a Busy Cursor during a long running process.

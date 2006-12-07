@@ -32,7 +32,7 @@ public final class ControlEvent extends Event {
     switch( getID() ) {
       case CONTROL_MOVED:
         ( ( ControlListener )listener ).controlMoved( this );
-        break;
+      break;
       case CONTROL_RESIZED:
         ( ( ControlListener )listener ).controlResized( this );
       break;

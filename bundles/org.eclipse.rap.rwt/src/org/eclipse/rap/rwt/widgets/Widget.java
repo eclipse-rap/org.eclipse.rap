@@ -106,11 +106,11 @@ public abstract class Widget implements Adaptable {
     return disposed;
   }
 
-  abstract void releaseChildren();
+  protected abstract void releaseChildren();
 
-  abstract void releaseParent();
+  protected abstract void releaseParent();
 
-  abstract void releaseWidget();
+  protected abstract void releaseWidget();
 
   // copied from SWT
   static int checkBits( final int style,

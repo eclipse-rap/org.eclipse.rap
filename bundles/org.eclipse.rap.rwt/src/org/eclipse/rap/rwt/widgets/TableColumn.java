@@ -50,10 +50,10 @@ public class TableColumn extends Item {
   ///////////////////////////////////
   // Methods to dispose of the widget
 
-  void releaseChildren() {
+  protected void releaseChildren() {
   }
 
-  void releaseParent() {
+  protected void releaseParent() {
     TableItem[] items = parent.getItems();
     int index = parent.indexOf( this );
     for( int i = 0; i < items.length; i++ ) {
@@ -62,6 +62,6 @@ public class TableColumn extends Item {
     ItemHolder.removeItem( parent, this );
   }
 
-  void releaseWidget() {
+  protected void releaseWidget() {
   }
 }

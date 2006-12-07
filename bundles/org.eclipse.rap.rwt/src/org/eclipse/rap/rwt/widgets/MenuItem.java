@@ -85,7 +85,7 @@ public class MenuItem extends Item {
     return parent.getDisplay();
   }
 
-  final void releaseChildren() {
+  protected final void releaseChildren() {
     if( menu != null ) {
       removeMenuDisposeListener();
       menu.dispose();
@@ -93,11 +93,11 @@ public class MenuItem extends Item {
     }
   }
 
-  final void releaseParent() {
+  protected final void releaseParent() {
     ItemHolder.removeItem( parent, this );
   }
 
-  final void releaseWidget() {
+  protected final void releaseWidget() {
     // do nothing
   }
 

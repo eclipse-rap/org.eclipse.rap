@@ -119,15 +119,15 @@ public class ToolItem extends Item {
   ///////////////////////////////////
   // Methods to dispose the widget
   
-  void releaseChildren() {
+  protected void releaseChildren() {
     // TODO Auto-generated method stub
   }
 
-  void releaseParent() {
+  protected void releaseParent() {
     ItemHolder.removeItem( parent, this );
   }
 
-  void releaseWidget() {
+  protected void releaseWidget() {
     // TODO Auto-generated method stub
   }
 }

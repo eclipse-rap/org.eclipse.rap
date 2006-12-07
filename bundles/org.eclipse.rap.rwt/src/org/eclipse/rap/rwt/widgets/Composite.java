@@ -67,7 +67,7 @@ public class Composite extends Scrollable {
 
   // ///////////////////////////////////////////////
   // Internal methods to maintain the child controls
-  void releaseChildren() {
+  protected void releaseChildren() {
     Control[] children = getChildren();
     for( int i = 0; i < children.length; i++ ) {
       children[ i ].dispose();

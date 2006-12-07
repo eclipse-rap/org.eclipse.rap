@@ -111,17 +111,17 @@ public class Menu extends Widget {
   // Widget overrides
   // TODO [rh] disposal of Menu and its items not yet completely implemented
   
-  final void releaseChildren() {
+  protected final void releaseChildren() {
     MenuItem[] menuItems = ( MenuItem[] )ItemHolder.getItems( this );
     for( int i = 0; i < menuItems.length; i++ ) {
       menuItems[ i ].dispose();
     }
   }
 
-  final void releaseParent() {
+  protected final void releaseParent() {
   }
 
-  final void releaseWidget() {
+  protected final void releaseWidget() {
     MenuHolder.removeMenu( parent, this );
   }
 }

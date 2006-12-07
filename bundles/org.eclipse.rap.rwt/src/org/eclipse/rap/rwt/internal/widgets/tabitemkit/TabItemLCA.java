@@ -42,7 +42,6 @@ public class TabItemLCA extends AbstractWidgetLCA {
     boolean hasListeners = SelectionEvent.hasListener( parent );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListeners ) );
-
   }
   
   public void readData( final Widget widget ) {
@@ -85,7 +84,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     TabItem tabItem = ( TabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( tabItem );
     writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, tabItem.getText() );
-    if( tabItem.getImage()!=null ){
+    if( tabItem.getImage() != null ){
       writer.set( Props.IMAGE, 
                   JSConst.QX_FIELD_ICON,
                   Image.getPath( tabItem.getImage() ) );
@@ -127,7 +126,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     return selectionIndex != -1 && parent.getItem( selectionIndex ) == tabItem;
   }
   
-  private void setJSParent( final TabItem tabItem ) {
+  private static void setJSParent( final TabItem tabItem ) {
     Control control = tabItem.getControl();
     if( control != null ) {
       IWidgetAdapter itemAdapter = WidgetUtil.getAdapter( tabItem );

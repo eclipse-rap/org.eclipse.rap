@@ -16,8 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
 import org.eclipse.rap.rwt.internal.widgets.toolitemkit.SeparatorToolItemDelegateLCA;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -69,6 +68,7 @@ public class ControlLCAUtil {
   
   public static void writeBounds( final Control control ) throws IOException {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    // TODO [rh] replace code below with WidgetUtil.hasChanged
     Rectangle oldBounds = ( Rectangle )adapter.getPreserved( Props.BOUNDS );
     Rectangle newBounds = control.getBounds();
     if( !adapter.isInitialized() || !newBounds.equals( oldBounds ) ) {
@@ -99,25 +99,10 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void writeColors( final Control control ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
-    Color fgColor = control.getForeground();
-    Color bgColor = control.getBackground();
-    if( fgColor != null ) {
-      writer.set( Props.FG_COLOR, "color", 
-                  ( ( IColor )fgColor ).toColorValue() );
-    }
-    if( bgColor != null ) {
-      writer.set( Props.BG_COLOR,
-                  "backgroundColor",
-                  ( ( IColor )bgColor ).toColorValue() );
-    }
-  }
-
   public static void writeChanges( final Control control ) throws IOException {
     writeBounds( control );
     writeVisblility( control );
-    writeColors( control );
+    ControlLCAUtil.writeColors( control );
     writeToolTip( control );
     writeMenu( control );
     setControlIntoToolItem( control );
@@ -177,6 +162,33 @@ public class ControlLCAUtil {
       doWriteToolTip( widget, newText );
     }
   }
+  
+  public static void writeImage( final Widget widget, final Image newImage ) 
+    throws IOException
+  {
+    if( WidgetUtil.hasChanged( widget, Props.IMAGE, newImage, null ) ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      // work around qooxdoo, that interprets 'null' as an image path 
+      String path = newImage == null ? "" : Image.getPath( newImage );
+      writer.set( JSConst.QX_FIELD_ICON, path );
+    }
+  }
+
+  public static void writeColors( final Control control ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( control );
+    Color fgColor = control.getForeground();
+    Color bgColor = control.getBackground();
+    if( fgColor != null ) {
+      writer.set( Props.FG_COLOR, 
+                  JSConst.QX_FIELD_COLOR, 
+                  ( ( IColor )fgColor ).toColorValue() );
+    }
+    if( bgColor != null ) {
+      writer.set( Props.BG_COLOR,
+                  JSConst.QX_FIELD_BACKGROUND_COLOR,
+                  ( ( IColor )bgColor ).toColorValue() );
+    }
+  }
 
   public static void processSelection( final Control control, 
                                        final Item item )
@@ -193,7 +205,7 @@ public class ControlLCAUtil {
                                                  SelectionEvent.WIDGET_SELECTED,
                                                  bounds,
                                                  true,
-                                                 RWT.NONE);
+                                                 RWT.NONE );
       event.processEvent();
     }
   }

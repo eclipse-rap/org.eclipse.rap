@@ -785,12 +785,12 @@ public class JSWriter_Test extends TestCase {
     TestShell shell = new TestShell( display );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.dispose();
-    String expected = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-                      + "wm.dispose( \"w1\" );";
+    String expected 
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "wm.dispose( \"w1\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
   }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

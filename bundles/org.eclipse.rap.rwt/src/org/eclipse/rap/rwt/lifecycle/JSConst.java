@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.rwt.lifecycle;
 
+
 /**
  * TODO [rh] JavaDoc
  */
@@ -66,6 +67,9 @@ public final class JSConst {
   // field names
   public static final String QX_FIELD_LABEL = "label";
   public static final String QX_FIELD_ICON = "icon";
+  public static final String QX_FIELD_SELECTION = "selection";
+  public static final String QX_FIELD_COLOR = "color";
+  public static final String QX_FIELD_BACKGROUND_COLOR = "backgroundColor";
   
   private JSConst() {
     // prevent instantiation
