@@ -15,11 +15,11 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.custom.CTabFolder;
+import org.eclipse.rap.rwt.custom.CTabItem;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.widgets.*;
-import org.eclipse.rap.rwt.widgets.custom.CTabFolder;
-import org.eclipse.rap.rwt.widgets.custom.CTabItem;
 import com.w4t.Fixture;
 
 public class ControlLCAUtil_Test extends TestCase {

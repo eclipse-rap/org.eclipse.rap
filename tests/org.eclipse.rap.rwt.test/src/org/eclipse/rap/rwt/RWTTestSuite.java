@@ -13,15 +13,17 @@ package org.eclipse.rap.rwt;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.eclipse.rap.rwt.custom.CTabFolder_Test;
+import org.eclipse.rap.rwt.custom.CTabItem_Test;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.rap.rwt.internal.engine.AdapterFactoryRegistry_Test;
 import org.eclipse.rap.rwt.internal.engine.RWTServletContextListener_Test;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.controlkit.ControlLCA_Test;
-import org.eclipse.rap.rwt.internal.widgets.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.displaykit.DisplayLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.labelkit.LabelLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.menukit.MenuLCA_Test;
@@ -34,8 +36,6 @@ import org.eclipse.rap.rwt.internal.widgets.treekit.TreeLCA_Test;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager_Test;
 import org.eclipse.rap.rwt.widgets.*;
-import org.eclipse.rap.rwt.widgets.custom.CTabFolder_Test;
-import org.eclipse.rap.rwt.widgets.custom.CTabItem_Test;
 
 
 public class RWTTestSuite {
