@@ -20,8 +20,7 @@ import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.widgets.WidgetAdapterFactory;
-import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.*;
 import com.w4t.engine.requests.RequestParams;
@@ -116,7 +115,7 @@ public class DisplayLCA_Test extends TestCase {
     assertSame( button, log.get( 1 ) );
     assertSame( text, log.get( 2 ) );
   }
-
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     AdapterManager manager = W4TContext.getAdapterManager();

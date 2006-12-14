@@ -212,10 +212,14 @@ public class CTabFolderLCA extends AbstractWidgetLCA {
                                      final CTabFolder tabFolder ) 
     throws IOException 
   {
-    // TODO [rh] topRightControl is misplaced when 'rendered' the first time
-    Control topRight = tabFolder.getTopRight();
+    final Control topRight = tabFolder.getTopRight();
     if( WidgetUtil.hasChanged( tabFolder, Props.TOP_RIGHT, topRight, null ) ) {
-      writer.set( "topRight", topRight );
+      IWidgetAdapter adapter = WidgetUtil.getAdapter( tabFolder );
+      adapter.setRenderRunnable( new IRenderRunnable() {
+        public void afterRender() throws IOException {
+          writer.set( "topRight", topRight );
+        }
+      } );
     }
     if( topRight != null ) {
       adjustTopRightJSParent( topRight );

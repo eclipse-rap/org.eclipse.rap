@@ -18,7 +18,6 @@ import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
-import org.eclipse.rap.rwt.internal.widgets.toolitemkit.SeparatorToolItemDelegateLCA;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.engine.service.ContextProvider;
@@ -55,15 +54,6 @@ public class ControlLCAUtil {
     int xLocation = readControlXLocation( widget );
     int yLocation = readControlYLocation( widget );
     widget.setBounds( xLocation, yLocation, width, height );
-  }
-  
-  public static void setControlIntoToolItem ( final Control control ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    Runnable runnable = ( Runnable )adapter.getPreserved( 
-              SeparatorToolItemDelegateLCA.SET_CONTROL_FOR_SEPARATOR_RUNNABLE );
-    if (runnable!=null){
-      runnable.run();
-    }
   }
   
   public static void writeBounds( final Control control ) throws IOException {
@@ -105,7 +95,6 @@ public class ControlLCAUtil {
     ControlLCAUtil.writeColors( control );
     writeToolTip( control );
     writeMenu( control );
-    setControlIntoToolItem( control );
   }
   
   public static void writeResizeNotificator( final Widget widget )

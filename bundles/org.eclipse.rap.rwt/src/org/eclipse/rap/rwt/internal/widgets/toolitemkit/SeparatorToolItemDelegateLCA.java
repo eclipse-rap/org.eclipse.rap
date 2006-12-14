@@ -13,8 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
 import org.eclipse.rap.rwt.widgets.Widget;
 
@@ -55,14 +54,9 @@ public class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
     };
     if( push.getControl()!= null ) {
       IWidgetAdapter adapter = WidgetUtil.getAdapter( push.getControl() );
-      adapter.preserve( SET_CONTROL_FOR_SEPARATOR_RUNNABLE, new Runnable() {
-        public void run(){
-          try {
-            writer.callStatic( SET_CONTROL_FOR_SEPERATOR, args );
-          } catch( final IOException ioe ) {
-            // TODO: [fappel] reasonable exception handling
-            throw new RuntimeException( ioe );
-          }
+      adapter.setRenderRunnable( new IRenderRunnable() {
+        public void afterRender() throws IOException {
+          writer.callStatic( SET_CONTROL_FOR_SEPERATOR, args );
         }
     } );
     }

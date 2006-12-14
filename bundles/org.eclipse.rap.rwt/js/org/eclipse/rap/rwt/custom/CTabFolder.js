@@ -67,7 +67,6 @@ qx.Proto.createTab = function( tabId, canClose ) {
   this.getPane().add( page );
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( button, tabId );
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( page, tabId + "pg" );
-  // make sure that the top right area of the button bar stays right-most
   this.getBar()._layoutTopRightArea();
 }
 

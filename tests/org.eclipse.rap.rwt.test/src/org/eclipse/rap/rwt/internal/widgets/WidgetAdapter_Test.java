@@ -15,8 +15,8 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.lifecycle.DisplayUtil;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
 import com.w4t.engine.requests.RequestParams;
@@ -103,5 +103,43 @@ public class WidgetAdapter_Test extends TestCase {
     assertEquals( true, adapter.isInitialized() );
     DisplayUtil.getLCA( display ).render( display );
     assertEquals( true, adapter.isInitialized() );
+  }
+  
+  public void testRenderRunnable() throws IOException {
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+    IRenderRunnable runnable = new IRenderRunnable() {
+      public void afterRender() throws IOException {
+        log.append( "executed" );
+      }
+    };
+    adapter.setRenderRunnable( runnable );
+    assertSame( runnable, adapter.getRenderRunnable() );
+
+    // ensure that renderRunnable can only be set once
+    try {
+      IRenderRunnable otherRunnable = new IRenderRunnable() {
+        public void afterRender() throws IOException {
+          // do nothing
+        }
+      };
+      adapter.setRenderRunnable( otherRunnable );
+      fail( "Must not allow to set renderRunnable twice" );
+    } catch( IllegalStateException e ) {
+      // expected
+    }
+    
+    // ensure that renderRunnable is executed and cleared at the end of 
+    // request/DisplayLCA
+    log.setLength( 0 );
+    Fixture.fakeResponseWriter();
+    Fixture.fakeBrowser( new Ie6( true, true ) );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    displayLCA.render( display );
+    assertEquals( "executed", log.toString() );
+    assertEquals( null, adapter.getRenderRunnable() );
   }
 }

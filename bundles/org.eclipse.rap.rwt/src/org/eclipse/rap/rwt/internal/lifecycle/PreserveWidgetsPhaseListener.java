@@ -71,7 +71,7 @@ public final class PreserveWidgetsPhaseListener implements PhaseListener {
     displayAdapter.clearPreserved();
     Composite[] shells = display.getShells();
     for( int i = 0; i < shells.length; i++ ) {
-      WidgetTreeVisitor.accept( shells[i], new AllWidgetTreeVisitor() {
+      WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
         public boolean doVisit( final Widget widget ) {
           IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
           widgetAdapter.clearPreserved();

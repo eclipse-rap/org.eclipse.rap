@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.custom;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.custom.*;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.layout.FillLayout;

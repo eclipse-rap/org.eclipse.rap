@@ -36,20 +36,35 @@ public final class DisplayLCA implements IDisplayLifeCycleAdapter {
     private IOException ioProblem = null;
 
     public boolean doVisit( final Widget widget ) {
-      AbstractWidgetLCA adapter = WidgetUtil.getLCA( widget );
       boolean result = true;
       try {
-        adapter.render( widget );
+        render( widget );
+        runRenderRunnable( widget );
       } catch( final IOException ioe ) {
         ioProblem = ioe;
         result = false;
       }
       return result;
     }
-    
+
     private void reThrowProblem() throws IOException {
       if( ioProblem != null ) {
         throw ioProblem;
+      }
+    }
+    
+    private static void render( final Widget widget ) throws IOException {
+      AbstractWidgetLCA lca = WidgetUtil.getLCA( widget );
+      lca.render( widget );
+    }
+    
+    private static void runRenderRunnable( final Widget widget ) 
+      throws IOException 
+    {
+      WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
+      if( adapter.getRenderRunnable() != null ) {
+        adapter.getRenderRunnable().afterRender();
+        adapter.clearRenderRunnable();
       }
     }
   }

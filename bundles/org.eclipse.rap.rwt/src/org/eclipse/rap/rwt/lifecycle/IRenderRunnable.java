@@ -9,29 +9,15 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.internal.widgets;
+package org.eclipse.rap.rwt.lifecycle;
 
-import org.eclipse.rap.rwt.lifecycle.IRenderRunnable;
+import java.io.IOException;
+
 
 /**
- * TODO [rh] JavaDoc
- * <p></p>
+ * TODO [rh] JavaDoc 
  */
-public interface IWidgetAdapter {
+public interface IRenderRunnable {
   
-  String getId();
-
-  boolean isInitialized();
-  void setInitialized( boolean initialized );
-  
-  void preserve( String propertyName, Object value );
-  Object getPreserved( String propertyName );
-  void clearPreserved();
-
-  void setJSParent( String jsParent );
-  String getJSParent();
-
-  void setRenderRunnable( IRenderRunnable runnable );
-  IRenderRunnable getRenderRunnable();
-
+  void afterRender() throws IOException;
 }

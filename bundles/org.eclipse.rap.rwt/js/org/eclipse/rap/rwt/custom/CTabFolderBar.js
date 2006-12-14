@@ -21,6 +21,7 @@ qx.OO.defineClass(
     this._minButton = null;
     this._maxButton = null;
     this._topRight = null;
+    this._topRightProxy = null;
     this._initTopRightArea();
   }
 );
@@ -74,14 +75,13 @@ qx.Proto.setMinimized = function( value ) {
 }
 
 qx.Proto.setTopRight = function( value ) {
-this.debug( "value: " + value );     
   if( value == null ) {
     if( this._topRight != null ) {
-      this._topRightArea.remove( this._topRight );
+      this._topRightProxy.remove( this._topRight );
     }
   } else {
-    this._topRightArea.add( value );
-    value.moveSelfToBegin();
+    this._topRightProxy.add( value );
+//    value.moveSelfToBegin();
   }
   this._topRight = value;
 }
@@ -98,6 +98,11 @@ qx.Proto._initTopRightArea = function() {
   this._topRightArea.setAllowStretchY( true );
   this._topRightArea.setBackgroundColor( new qx.renderer.color.Color( "orange" ) );
   this.add( this._topRightArea );
+  
+  this._topRightProxy = new qx.ui.layout.CanvasLayout();
+  this._topRightProxy.setWidth( "1*" );
+  this._topRightProxy.setAllowStretchY( true );
+  this._topRightArea.add( this._topRightProxy );
 
   this._minMaxToolBar = new qx.ui.toolbar.ToolBar();
   this._minMaxToolBar.setWidth( "auto" );
@@ -116,16 +121,18 @@ qx.Proto._initTopRightArea = function() {
 }  
 
 qx.Proto._layoutTopRightArea = function() {
-  // make sure that _topRightArea is the rightmost widget in this bar
+  // make sure that _topRightArea is the rightmost widget in this bar and fully
+  // visible
   if( !this._topRightArea.isLastChild() ) {
     this._topRightArea.moveSelfToEnd();
   }
+  this._topRightArea.recursiveAddToStateQueue();
 }
 
 qx.Proto.registerTopRightArea = function() {
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var parentId = widgetManager.findIdByWidget( this.getParent() );
-  widgetManager.add( this._topRightArea, parentId + "topRight" );
+  widgetManager.add( this._topRightProxy, parentId + "topRight" );
 }
 
 // This detour is necessary since 'this.getParent()' is null when the event 

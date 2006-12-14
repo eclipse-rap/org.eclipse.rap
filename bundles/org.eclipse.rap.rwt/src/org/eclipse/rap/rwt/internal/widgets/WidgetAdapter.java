@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.rap.rwt.lifecycle.IRenderRunnable;
 
 public final class WidgetAdapter implements IWidgetAdapter {
   
@@ -20,6 +21,7 @@ public final class WidgetAdapter implements IWidgetAdapter {
   private boolean initialized;
   private final Map preservedValues;
   private String jsParent;
+  private IRenderRunnable renderRunnable;
 
   public WidgetAdapter() {
     id = IdGenerator.getInstance().newId();
@@ -56,5 +58,20 @@ public final class WidgetAdapter implements IWidgetAdapter {
 
   public void setJSParent( final String jsParent ) {
     this.jsParent = jsParent;
+  }
+
+  public void setRenderRunnable( final IRenderRunnable renderRunnable ) {
+    if( this.renderRunnable != null ) {
+      throw new IllegalStateException( "A renderRunnable was already set." );
+    }
+    this.renderRunnable = renderRunnable;
+  }
+
+  public IRenderRunnable getRenderRunnable() {
+    return renderRunnable;
+  }
+
+  public void clearRenderRunnable() {
+    renderRunnable = null;
   }
 }

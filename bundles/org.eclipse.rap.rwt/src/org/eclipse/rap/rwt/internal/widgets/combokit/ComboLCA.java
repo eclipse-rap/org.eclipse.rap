@@ -75,7 +75,6 @@ public class ComboLCA extends AbstractWidgetLCA {
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( combo ) );
-    ControlLCAUtil.setControlIntoToolItem ( combo );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
