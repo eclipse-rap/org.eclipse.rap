@@ -42,7 +42,7 @@ public class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     if( WidgetUtil.getId( check ).equals( id ) ) {
       String value = WidgetUtil.readPropertyValue( widget, SELECTED_ITEM );
       check.setSelection( new Boolean( value ).booleanValue() );
-      processSelection( ( ToolItem )widget, null );
+      processSelection( widget, null );
     }
   }
 

@@ -62,5 +62,6 @@ public class RWT {
   public static final int ERROR_INVALID_PARENT = 32;
   
   public static void error( final int code ) {
+    // TODO [rh] implementation missing
   }
 }

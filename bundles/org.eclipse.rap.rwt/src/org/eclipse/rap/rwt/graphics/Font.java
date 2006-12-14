@@ -13,4 +13,5 @@ package org.eclipse.rap.rwt.graphics;
 
 
 public class Font {
+  // placeholder to solve compile errors
 }

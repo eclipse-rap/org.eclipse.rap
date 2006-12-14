@@ -90,9 +90,11 @@ public class EntryPoint implements IEntryPoint {
     private TreeParent invisibleRoot;
 
     public void inputChanged( Viewer v, Object oldInput, Object newInput ) {
+      // do nothing
     }
 
     public void dispose() {
+      // do nothing
     }
 
     public Object[] getElements( Object parent ) {

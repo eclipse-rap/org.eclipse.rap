@@ -30,7 +30,7 @@ public class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
                         JSListenerType.ACTION );
 
   public void delegateProcessAction( final Widget widget ) {
-    processSelection( ( ToolItem )widget, null );
+    processSelection( widget, null );
   }
 
   public void delegateRenderChanges( final Widget widget ) throws IOException {

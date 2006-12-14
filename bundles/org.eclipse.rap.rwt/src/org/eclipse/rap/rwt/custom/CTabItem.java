@@ -62,6 +62,7 @@ public class CTabItem extends Item {
   // Widget overrides
 
   protected void releaseChildren() {
+    // do nothing
   }
 
   protected void releaseParent() {
@@ -69,6 +70,7 @@ public class CTabItem extends Item {
   }
 
   protected void releaseWidget() {
+    // do nothing
   }
 
   //////////////////

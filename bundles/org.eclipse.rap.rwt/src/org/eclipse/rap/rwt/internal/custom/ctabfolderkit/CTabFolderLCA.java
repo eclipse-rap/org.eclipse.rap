@@ -210,7 +210,6 @@ public class CTabFolderLCA extends AbstractWidgetLCA {
   
   private static void writeTopRight( final JSWriter writer, 
                                      final CTabFolder tabFolder ) 
-    throws IOException 
   {
     final Control topRight = tabFolder.getTopRight();
     if( WidgetUtil.hasChanged( tabFolder, Props.TOP_RIGHT, topRight, null ) ) {

@@ -119,6 +119,7 @@ public class Menu extends Widget {
   }
 
   protected final void releaseParent() {
+    // do nothing
   }
 
   protected final void releaseWidget() {

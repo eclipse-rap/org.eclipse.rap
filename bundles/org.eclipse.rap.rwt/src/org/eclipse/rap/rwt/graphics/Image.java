@@ -21,6 +21,7 @@ public final class Image {
   private static final Map images = new HashMap();
   
   private Image () {
+    // prevent instantiation from outside
   }
   
   public static synchronized Image find( final String path ) {

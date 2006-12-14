@@ -34,6 +34,7 @@ public abstract class Widget implements Adaptable {
   private Object data;
 
   Widget() {
+    // do nothing
   }
 
   public Widget( final Widget parent, final int style ) {

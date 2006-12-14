@@ -50,7 +50,7 @@ public class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
         }
       }
       button.setSelection( true );
-      processSelection( ( ToolItem )widget, null );
+      processSelection( widget, null );
     }
   }
 
