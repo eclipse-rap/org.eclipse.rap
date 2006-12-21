@@ -84,7 +84,9 @@ public class ItemHolder_Test extends TestCase {
     items = ItemHolder.getItems( tree );
     assertEquals( 0, items.length );
     assertEquals( 0, tree.getItemCount() );
-    assertEquals( -1, tree.indexOf( item ) );
+    Tree anotherTree = new Tree( shell, RWT.NONE );
+    TreeItem anotherItem = new TreeItem( anotherTree, RWT.NONE );
+    assertEquals( -1, tree.indexOf( anotherItem ) );
     try {
       tree.getItem( 0 );
       fail( "Index out of bounds expected" );

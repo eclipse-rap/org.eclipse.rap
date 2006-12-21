@@ -16,6 +16,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
+import com.w4t.ParamCheck;
 
 public class TableLCA_Test extends TestCase {
 
@@ -37,9 +38,17 @@ public class TableLCA_Test extends TestCase {
     TableColumn column1 = new TableColumn( table, RWT.NONE );
     column1.setText( "Column1" );
     TableItem tableItem0 = new TableItem( table, RWT.NONE );
-    tableItem0.setText( new String[] { "0-0", "0-1" } );
+    String[] texts = new String[] { "0-0", "0-1" };
+    ParamCheck.notNull( texts, "texts" );
+    for( int i = 0; i < texts.length; i++ ) {
+      tableItem0.setText( i, texts[ i ] );
+    }
     TableItem tableItem1 = new TableItem( table, RWT.NONE );
-    tableItem1.setText( new String[] { "1-0", "1-1" } );
+    String[] texts1 = new String[] { "1-0", "1-1" };
+    ParamCheck.notNull( texts1, "texts" );
+    for( int i = 0; i < texts1.length; i++ ) {
+      tableItem1.setText( i, texts1[ i ] );
+    }
     Fixture.fakeResponseWriter();
     TableLCA.createTableContent( table );
     String allMarkup = Fixture.getAllMarkup();

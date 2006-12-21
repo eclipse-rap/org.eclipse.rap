@@ -22,9 +22,8 @@ public class MenuItem extends Item {
 
   // TODO [rh] constructor MenuItem(Menu,int,int) missing
   public MenuItem( final Menu parent, final int style ) {
-    super( parent, style );
+    super( parent, checkStyle( style ) );
     this.parent = parent;
-    this.style = checkStyle( style );
     ItemHolder.addItem( parent, this );
   }
 

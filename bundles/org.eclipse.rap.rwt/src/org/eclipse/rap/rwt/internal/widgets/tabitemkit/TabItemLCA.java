@@ -14,8 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.tabitemkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.internal.widgets.Props;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -29,11 +28,10 @@ public class TabItemLCA extends AbstractWidgetLCA {
 
 
   public void preserveValues( final Widget widget ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     TabItem tabItem = ( TabItem )widget;
+    ItemLCAUtil.preserve( tabItem );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( Props.CHECKED, Boolean.valueOf( isChecked( tabItem ) ) );
-    adapter.preserve( Props.TEXT, tabItem.getText() );
-    adapter.preserve( Props.IMAGE, Image.getPath( tabItem.getImage() ) );
     
     // preserve the listener state of the parent tabfolder here, since the
     // javascript handling is added to the clientside tab buttons and therefore

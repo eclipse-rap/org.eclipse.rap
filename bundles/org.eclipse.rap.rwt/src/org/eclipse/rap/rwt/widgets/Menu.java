@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import com.w4t.ParamCheck;
 
 
 public class Menu extends Widget {
@@ -38,10 +37,8 @@ public class Menu extends Widget {
   }
 
   public Menu( final Shell parent, final int style ) {
-    super( parent, style );
+    super( parent, checkStyle( style ) );
     this.parent = parent;
-    this.style
-      = checkBits( style, RWT.POP_UP, RWT.BAR, RWT.DROP_DOWN, 0, 0, 0 );
     itemHolder = new ItemHolder( MenuItem.class );
     MenuHolder.addMenu( parent, this );
   }
@@ -72,7 +69,9 @@ public class Menu extends Widget {
   }
   
   public void setLocation( final Point location ) {
-    ParamCheck.notNull( location, "location" );
+    if( location == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     setLocation( location.x, location.y );
   }
   
@@ -107,6 +106,16 @@ public class Menu extends Widget {
     return ( MenuItem )itemHolder.getItem( index );
   }
   
+  public int indexOf( final MenuItem menuItem ) {
+    if( menuItem == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( menuItem.isDisposed() ) {
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
+    }
+    return itemHolder.indexOf( menuItem );
+  }
+  
   // /////////////////
   // Widget overrides
   // TODO [rh] disposal of Menu and its items not yet completely implemented
@@ -124,5 +133,12 @@ public class Menu extends Widget {
 
   protected final void releaseWidget() {
     MenuHolder.removeMenu( parent, this );
+  }
+
+  //////////////////
+  // Helping methods
+  
+  private static int checkStyle( int style ) {
+    return checkBits( style, RWT.POP_UP, RWT.BAR, RWT.DROP_DOWN, 0, 0, 0 );
   }
 }

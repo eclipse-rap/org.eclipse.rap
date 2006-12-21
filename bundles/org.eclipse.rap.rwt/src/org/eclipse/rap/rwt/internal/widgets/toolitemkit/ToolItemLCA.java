@@ -14,9 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.internal.widgets.Props;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
 import org.eclipse.rap.rwt.widgets.Widget;
@@ -56,9 +54,8 @@ public class ToolItemLCA extends AbstractWidgetLCA {
   public void preserveValues( final Widget widget ) {
     ToolItem button = ( ToolItem )widget;
 //    ControlLCAUtil.preserveValues( button );
+    ItemLCAUtil.preserve( button );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.TEXT, button.getText() );
-    adapter.preserve( Props.IMAGE, Image.getPath( button.getImage() ) );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
   }

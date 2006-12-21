@@ -15,7 +15,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.graphics.Image;
-import com.w4t.ParamCheck;
 
 
 /**
@@ -76,7 +75,6 @@ public class Button extends Control {
   }
   
   public void setImage( final Image image ) {
-    ParamCheck.notNull( image, "image" );
     if( ( style & RWT.ARROW ) == 0 ) {
       this.image = image;
     }

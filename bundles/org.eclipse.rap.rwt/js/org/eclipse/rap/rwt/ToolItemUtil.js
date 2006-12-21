@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 /**
- * This class contains static functions for combo.
+ * This class contains static functions for toolbar items.
  */
 qx.OO.defineClass( "org.eclipse.rap.rwt.ToolItemUtil" );
 
@@ -22,7 +22,7 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemSeparatorUtil
   = function( id , parent )
 {
   var push = new qx.ui.toolbar.ToolBarSeparator ();
-  parent.add(push);
+  parent.add( push );
   org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id );
   push.setParent( parent );
 };
@@ -35,30 +35,29 @@ org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator
 {
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var push = widgetManager.findWidgetById( id );
-  if ( width >0){
+  if( width > 0 ) {
     push.setWidth(width);
-    }
-  if (control){
-    if ( width >0){
-        control.setWidth(width);
-    }
-    var index = parent.indexOf(control);
-    parent.removeAt(index);
-    push.add(control);
   }
-  parent.add(push);
+  if( control ) {
+    if( width > 0 ) {
+      control.setWidth( width );
+    }
+    var index = parent.indexOf( control );
+    parent.removeAt( index );
+    push.add( control );
+  }
+  parent.add( push );
 };
 
 /**
  * Creates a toolItem of type radio, registered to a RadioManager.
  */
- 
 org.eclipse.rap.rwt.ToolItemUtil.createToolItemRadioButton
   = function( id , parent , selected , neighbour )
 {
   var radio = new qx.ui.toolbar.ToolBarRadioButton();
-  radio.setDisableUncheck(true);
-  parent.add(radio);
+  radio.setDisableUncheck( true );
+  parent.add( radio );
   if( neighbour ){
     radio.radioManager = neighbour.radioManager;
   } else {
@@ -77,19 +76,20 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemRadioButton
  */
 org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush = function( id , parent ) {
   var push = new qx.ui.toolbar.ToolBarButton();
-  parent.add(push);
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id );
+  parent.add( push );
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id );
   push.setParent( parent );
 };
 
 /**
  * Creates a toolitem of type push for a drop down menu.
  */
-org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu = 
-    function( id , parent ) {
-  var push = new qx.ui.toolbar.ToolBarButton("V");
-  parent.add(push);
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id );
+org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu 
+  = function( id , parent ) 
+{
+  var push = new qx.ui.toolbar.ToolBarButton( "V" );
+  parent.add( push );
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id );
   push.setParent( parent );
 };
 
@@ -100,8 +100,8 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil
   = function( id , parent )
 {
   var push = new qx.ui.toolbar.ToolBarCheckBox();
-  parent.add(push);
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id );
+  parent.add( push );
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id );
   push.setParent( parent );
 };
 
@@ -110,25 +110,26 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil
  */
 
 org.eclipse.rap.rwt.ToolItemUtil.addEventListenerForDropDownButton 
-    = function( id , eventType , listener ){ 
+  = function( id , eventType , listener )
+{ 
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var item = widgetManager.findWidgetById( id );
-  item.addEventListener( "click" , 
-                         org.eclipse.rap.rwt.ToolItemUtil.widgetSelected , 
-                         null);
+  item.addEventListener( "click", 
+                         org.eclipse.rap.rwt.ToolItemUtil.widgetSelected, 
+                         null );
 };
 
 /**
  * widget selected for a drop down menu
  */
 org.eclipse.rap.rwt.ToolItemUtil.widgetSelected = function( evt ){ 
-  var toolItem=evt.getTarget();
+  var toolItem = evt.getTarget();
   var toolBar = toolItem.getParent();
-  var index = toolBar.indexOf(toolItem);
-  var neighbour = toolBar.getChildren ()[index-1];
+  var index = toolBar.indexOf( toolItem );
+  var neighbour = toolBar.getChildren ()[ index - 1 ];
   var el = neighbour.getElement();
-  var x = qx.dom.DomLocation.getPageBoxLeft(el);
-  var y = qx.dom.DomLocation.getPageBoxBottom(el);
+  var x = qx.dom.DomLocation.getPageBoxLeft( el );
+  var y = qx.dom.DomLocation.getPageBoxBottom( el );
   var item = evt.getTarget();
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var itemId = widgetManager.findIdByWidget( item );
@@ -140,10 +141,10 @@ org.eclipse.rap.rwt.ToolItemUtil.widgetSelected = function( evt ){
   var width = item.getWidth();
   var height = item.getHeight();
   org.eclipse.rap.rwt.EventUtil.doWidgetSelected( itemId, 
-                                                    left, 
-                                                    top, 
-                                                    width,
-                                                    height );
+                                                  left, 
+                                                  top, 
+                                                  width,
+                                                  height );
 };
 
 

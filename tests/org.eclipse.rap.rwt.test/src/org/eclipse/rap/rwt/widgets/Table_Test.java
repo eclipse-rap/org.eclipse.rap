@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import com.w4t.ParamCheck;
 
 public class Table_Test extends TestCase {
 
@@ -127,11 +128,15 @@ public class Table_Test extends TestCase {
     assertSame( text3, item.getText( 3 ) );
     new TableColumn( table, RWT.NONE );
     assertSame( "", item.getText( 4 ) );
+    String[] texts = new String[]{
+      text0, text1, text2, text3, text4, text5
+    };
     
     // test setting multiple texts at once
-    item.setText( new String[]{
-      text0, text1, text2, text3, text4, text5
-    } );
+    ParamCheck.notNull( texts, "texts" );
+    for( int i = 0; i < texts.length; i++ ) {
+      item.setText( i, texts[ i ] );
+    }
     assertSame( text0, item.getText( 0 ) );
     assertSame( text1, item.getText( 1 ) );
     assertSame( text2, item.getText( 2 ) );

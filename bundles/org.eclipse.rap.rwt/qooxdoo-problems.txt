@@ -9,7 +9,7 @@ changeHeight and changeWidth for emulation.
 label is bigger than the size of the button's box. The same seems to be the
 case for a label widget.
 
-4.) How to property dispose of widgets? widget.dispose() seems not sufficient.
+4.) How to properly dispose of widgets? widget.dispose() seems not sufficient.
 In case of a shell, it stays visible but unusable, when trying to dispose of
 a text field that way nothing happens. Calling hide() before disposing of the
 widget seems to work. Is there more to take care of?
@@ -21,3 +21,5 @@ that's right?
 6.) TextArea doesn't accept the wrap attribute
 
 7.) Color settings for table component are static contstants
+
+8.) TreeFullControl sends selection event when expanding/collapsing node.

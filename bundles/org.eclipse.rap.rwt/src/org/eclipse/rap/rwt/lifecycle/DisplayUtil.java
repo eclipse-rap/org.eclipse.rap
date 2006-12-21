@@ -43,6 +43,10 @@ public class DisplayUtil {
     return result;
   }
   
+  public static String getId( final Display display ) {
+    return getAdapter( display ).getId();
+  }
+  
   private static void throwAdapterException( final Class clazz ) {
     String text =   "Could not retrieve an instance of ''{0}''. Probably the "
                   + "AdapterFactory was not properly registered.";

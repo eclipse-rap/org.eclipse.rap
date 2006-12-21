@@ -25,6 +25,7 @@ public class Composite extends Scrollable {
   private final ControlHolder controlHolder = new ControlHolder();
 
   Composite() {
+    // prevent instantiation from outside this package
   }
 
   public Composite( final Composite parent, final int style ) {
@@ -51,6 +52,7 @@ public class Composite extends Scrollable {
 
   // ///////////////
   // Layout methods
+  
   public void setLayout( final Layout layout ) {
     this.layout = layout;
   }
@@ -65,8 +67,9 @@ public class Composite extends Scrollable {
     }
   }
 
-  // ///////////////////////////////////////////////
+  /////////////////////////////////////////////////
   // Internal methods to maintain the child controls
+  
   protected void releaseChildren() {
     Control[] children = getChildren();
     for( int i = 0; i < children.length; i++ ) {
@@ -76,6 +79,7 @@ public class Composite extends Scrollable {
 
   // //////////////
   // Resize helper
+  
   void notifyResize( final Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {
       layout();

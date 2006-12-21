@@ -37,6 +37,22 @@ public class TreeItem_Test extends TestCase {
       // expected
     }
   }
+  
+  public void testRemoveAll() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.NONE );
+    TreeItem item1 = new TreeItem( tree, RWT.NONE );
+    TreeItem item11 = new TreeItem( item1, RWT.NONE );
+    TreeItem item111 = new TreeItem( item11, RWT.NONE );
+    TreeItem item2 = new TreeItem( tree, RWT.NONE );
+    item1.removeAll();
+    assertEquals( false, item1.isDisposed() );
+    assertEquals( true, item11.isDisposed() );
+    assertEquals( true, item111.isDisposed() );
+    assertEquals( 0, item1.getItemCount() );
+    assertEquals( false, item2.isDisposed() );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

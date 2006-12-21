@@ -55,7 +55,13 @@ public final class Props {
   public static final String TOP_RIGHT = "topRight";
   public static final String TOP_RIGHT_ALIGNMENT = "topRightAlignment";
   
+  // CoolBar/CoolItem properties
+  public static final String LOCKED = "locked";
+  public static final String CONTROL = "control";
   
+  // Tree/TreeItem properties
+  public static final String EXPANDED = "expanded";
+
   private Props() {
     // prevent instantiation
   }

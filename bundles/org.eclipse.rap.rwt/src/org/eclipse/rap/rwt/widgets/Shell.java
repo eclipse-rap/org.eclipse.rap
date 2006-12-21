@@ -26,6 +26,7 @@ public class Shell extends Composite {
   // TODO [rh] preliminary: constants extracted to be used in MenuLCA
   public static final int TITLE_BAR_HEIGHT = 15;
   public static final int MENU_BAR_HEIGHT = 20;
+  
   private final Display display;
   private Menu menuBar;
   private MenuHolder menuHolder;
@@ -34,7 +35,6 @@ public class Shell extends Composite {
   // TODO [rh] preliminary: yet no null-check, default/current substitute, etc
   public Shell( final Display display, final int style ) {
     super();
-    this.style = style;
     this.display = display;
     display.addShell( this );
   }

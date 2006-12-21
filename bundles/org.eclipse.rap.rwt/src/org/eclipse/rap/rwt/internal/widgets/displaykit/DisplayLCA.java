@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -152,6 +153,7 @@ public final class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
   
   public void readData( final Display display ) {
+    readBounds( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
         IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
@@ -244,6 +246,42 @@ public final class DisplayLCA implements IDisplayLifeCycleAdapter {
           result = knownLogLevels[ i ];
         }
       }
+    }
+    return result;
+  }
+
+  private static void readBounds( final Display display ) {
+    Rectangle bounds 
+      = new Rectangle( 0, 
+                       0, 
+                       readIntPropertyValue( display, "bounds.width", 0 ), 
+                       readIntPropertyValue( display, "bounds.height", 0 ) );
+    Object adapter = display.getAdapter( IDisplayAccessAdapter.class );
+    IDisplayAccessAdapter displayAdapter = ( IDisplayAccessAdapter )adapter;
+    displayAdapter.setBounds( bounds );
+  }
+  
+  private static String readPropertyValue( final Display display, 
+                                           final String propertyName ) 
+  {
+    HttpServletRequest request = ContextProvider.getRequest();
+    StringBuffer key = new StringBuffer();
+    key.append( DisplayUtil.getId( display ) );
+    key.append( "." );
+    key.append( propertyName );
+    return request.getParameter( key.toString() );
+  }
+
+  private static int readIntPropertyValue( final Display display, 
+                                           final String propertyName,
+                                           final int defaultValue ) 
+  {
+    String value = readPropertyValue( display, propertyName );
+    int result;
+    if( value == null ) {
+      result = defaultValue;
+    } else {
+      result = Integer.parseInt( value );
     }
     return result;
   }

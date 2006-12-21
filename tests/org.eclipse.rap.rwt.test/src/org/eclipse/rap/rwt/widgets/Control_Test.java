@@ -60,6 +60,8 @@ public class Control_Test extends TestCase {
     } catch( final NullPointerException npe ) {
       // expected
     }
+    control.setBounds( 0, 0, -1, -1 );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), control.getBounds() );
   }
 
   public void testLocation() {
@@ -106,6 +108,8 @@ public class Control_Test extends TestCase {
     } catch( final NullPointerException npe ) {
       // expected
     }
+    control.setSize( -2, -2 );
+    assertEquals( new Point( 0, 0 ), control.getSize() );
   }
 
   public void testGetShell() {

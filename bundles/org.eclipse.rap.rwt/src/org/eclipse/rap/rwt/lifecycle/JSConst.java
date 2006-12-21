@@ -27,6 +27,10 @@ public final class JSConst {
     = "org.eclipse.rap.rwt.events.widgetResized";
   public static final String EVENT_WIDGET_MOVED
     = "org.eclipse.rap.rwt.events.widgetMoved";
+  public static final String EVENT_TREE_EXPANDED 
+    = "org.eclipse.rap.rwt.events.treeExpanded";
+  public static final String EVENT_TREE_COLLAPSED 
+    = "org.eclipse.rap.rwt.events.treeCollapsed";
 
   /** 
    * <p>Indicates that a shell was closed on the client side. The parameter 
@@ -64,12 +68,20 @@ public final class JSConst {
   public static final String QX_EVENT_CONTEXTMENU = "contextmenu";
   public static final String QX_EVENT_CHANGE_SELECTED = "changeSelected";
   public static final String QX_EVENT_CHANGE_CHECKED = "changeChecked";
+  
   // field names
   public static final String QX_FIELD_LABEL = "label";
   public static final String QX_FIELD_ICON = "icon";
   public static final String QX_FIELD_SELECTION = "selection";
   public static final String QX_FIELD_COLOR = "color";
   public static final String QX_FIELD_BACKGROUND_COLOR = "backgroundColor";
+  public static final String QX_FIELD_ORIENTATION = "orientation";
+  
+  // constants
+  public static final JSVar QX_CONST_VERTICAL_ORIENTATION
+    = new JSVar( "qx.constant.Layout.ORIENTATION_VERTICAL" );
+  public static final JSVar QX_CONST_HORIZONTAL_ORIENTATION 
+    = new JSVar( "qx.constant.Layout.ORIENTATION_HORIZONTAL" );
   
   private JSConst() {
     // prevent instantiation

@@ -12,8 +12,6 @@
 package org.eclipse.rap.rwt.internal.widgets.listkit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
@@ -21,29 +19,42 @@ import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.List;
 import org.eclipse.rap.rwt.widgets.Widget;
-import com.w4t.HtmlResponseWriter;
 import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.IServiceStateInfo;
 
 
 public class ListLCA extends AbstractWidgetLCA {
   
-  private final static JSListenerInfo JS_LISTENER_INFO
-  = new JSListenerInfo( "selectionChanged",
-                        "org.eclipse.rap.rwt.TableUtil.selectionChanged",
-                        JSListenerType.STATE_AND_ACTION );
 
+  // Property names, used when preserving values
+  private static final String PROP_SELECTION = "selection";
+  private static final String PROP_ITEMS = "items";
+  
+  private static final Integer DEFAULT_SINGLE_SELECTION = new Integer( -1 );
+  private static final int[] DEFAULT_MULTI_SELECTION = new int[ 0 ];
+  private static final String[] DEFAUT_ITEMS = new String[ 0 ];
+
+  
   public void preserveValues( final Widget widget ) {
     List list = ( List  )widget;
     ControlLCAUtil.preserveValues( list );
-    preserveColumnWidths( list );
-    preserveSelection( list );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( Props.SELECTION_LISTENERS, 
                       Boolean.valueOf( SelectionEvent.hasListener( list ) ) );
+    adapter.preserve( PROP_ITEMS, list.getItems() );
+    preserveSelection( list );
   }
 
   public void readData( final Widget widget ) {
+    List list = ( List )widget;
+    String value = WidgetUtil.readPropertyValue( list, "selection" );
+    if( value != null ) {
+      String[] indiceStrings = value.split( "," );
+      int[] indices = new int[ indiceStrings.length ];
+      for( int i = 0; i < indices.length; i++ ) {
+        indices[ i ] = Integer.valueOf( indiceStrings[ i ] ).intValue();
+      }
+      list.setSelection( indices );
+    }
   }
 
   public void processAction( final Widget widget ) {
@@ -51,177 +62,97 @@ public class ListLCA extends AbstractWidgetLCA {
     HttpServletRequest request = ContextProvider.getRequest();
     String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
     if( WidgetUtil.getId( list ).equals( id ) ) {
-      StringBuffer value = new StringBuffer();
-      value.append( WidgetUtil.readPropertyValue( widget, "selection" ) );
-      int from = 0;
-      int to = 0;
-      java.util.List indices = new ArrayList();
-      while( value.indexOf( ",", from ) >= 0 ) {
-        to = value.indexOf( ",", from );
-        indices.add( new Integer( value.substring( from, to ) ) );
-        from = to;
-        from++;
-      }
-      int size = indices.size();
-      int[] result = new int[ size ];
-      for( int i = 0; i < size; i++ ) {
-        result[ i ] = ( ( Integer )indices.get( i ) ).intValue();
-      }
-      list.setSelection( result );
       ControlLCAUtil.processSelection( ( List )widget, null );
     }
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
     List list = ( List )widget;
-    // TODO: [fappel] react on content or column changes of the table
-    createTableContent( list );
-    createTableColumns( list );
-    createTableModel();
-    createTable( list );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    Boolean multiSelection = isSingle( list ) ? Boolean.FALSE : Boolean.TRUE;
+    writer.newWidget( "org.eclipse.rap.rwt.widgets.List", 
+                      new Object[] { multiSelection } );
   }
 
+  // TODO [rh] keep scroll position, even when exchanging items 
   public void renderChanges( final Widget widget ) throws IOException {
     List list = ( List )widget;
     ControlLCAUtil.writeChanges( list );
-    // Note: [fappel] order is crucial here, first set the bounds of the control
-    //                before manipulating the column width
-    writeColWidths( list );
-    JSWriter writer = JSWriter.getWriterFor( list );
-    writer.updateListener( "selectionModel",
-                           JS_LISTENER_INFO, 
-                           Props.SELECTION_LISTENERS, 
-                           SelectionEvent.hasListener( list ) );
+    writeItems( list );
     writeSelection( list );
+    updateSelectionListeners( list );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-  }
-
-
-  ////////////////////////////////////////////////////////
-  // helping methods for table creation and initialization
-  
-  static void createTableContent( final List list ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter writer = stateInfo.getResponseWriter();
-    writer.append( "var tableData=[];" );
-    String[] items = list.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      writer.append( "tableData.push([" );
-      writer.append( "\"" );
-      writer.append( items[ i ] );
-      writer.append( "\"" );
-      writer.append( "]);" );
-    }
-  }
-
-  static void createTableColumns( final List list ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter writer = stateInfo.getResponseWriter();
-    writer.append( "var tableColumns=[\"\"];" );
-  }
-
-  static void createTableModel() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter writer = stateInfo.getResponseWriter();
-    writer.append( "var tableModel = " );
-    writer.append( "new org.eclipse.rap.rwt.UnsortableTableModel();" );
-    writer.append( "tableModel.setColumns( tableColumns );" );
-    writer.append( "tableModel.setData( tableData );" );
-  }
-  
-  
-  private static void createTable( final List list ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( list );
-    Object[] args = new Object[] { new JSVar( "tableModel" ) };
-    writer.newWidget( "qx.ui.table.Table", args );
-    writer.callFieldAssignment( new JSVar( "qx.ui.table.TablePane" ), 
-                                "CONTENT_BGCOL_EVEN", 
-                                "\"white\"" );
-    writer.set( "statusBarVisible", false );
-    writer.set( "columnVisibilityButtonVisible", false );
-    writer.addListener( "tableColumnModel",
-                        "widthChanged", 
-                        "org.eclipse.rap.rwt.TableUtil.columnWidthChanged" );
-    // this is needed to be able to get the table to which the 
-    // column width changes belong to on client side
-    writer.callFieldAssignment( new JSVar( "w.getTableColumnModel()" ), 
-                                "table", 
-                                "w" );
-    String[] propertyChain = new String[] { "selectionModel", "selectionMode" };
-    Object[] param = null;
-    if( ( list.getStyle() & RWT.MULTI ) != 0 ) {
-        param = new Object[]{
-          new JSVar( "qx.ui.table.SelectionModel.MULTIPLE_INTERVAL_SELECTION" )
-        };
-      } else if( ( list.getStyle() & RWT.SINGLE ) != 0 ) {
-        param = new Object[]{
-          new JSVar( "qx.ui.table.SelectionModel.SINGLE_INTERVAL_SELECTION" )
-        };
-      } 
-    writer.set( propertyChain, param );
-    // this is needed to be able to get the table to which the 
-    // selection changes belong to
-    writer.callFieldAssignment( new JSVar( "w.getSelectionModel()" ), 
-                                "table", 
-                                "w" );
-  }
-  
-  
-  ///////////////////////////////////////////////////
-  // helping methods for column width synchronization
-
-  private static String createColWidthParam( final int colIndex ) {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append( "columnWidth_" );
-    buffer.append( colIndex );
-    return buffer.toString();
-  }
-  
-  private static void preserveColumnWidths( final List list ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
-    adapter.preserve( createColWidthParam( 0 ),
-                      new Integer( list.getBounds().width ) );
-  }
-
-  private static void writeColWidths( final List list ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( list );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
-    String key = createColWidthParam( 0 );
-    Integer oldWidth = ( Integer )adapter.getPreserved( key );
-    int newWidth = list.getBounds().width/* columns[ i ].getWidth() */;
-    if(    !adapter.isInitialized() 
-        || oldWidth == null 
-        || oldWidth.intValue() != newWidth )
-    {
-      writer.set( "columnWidth", new int[] { 0, newWidth } );
-    }
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
   }
 
 
   ////////////////////////////////////////////////
   // helping methods for selection synchronization
 
-  private void preserveSelection( final List list ) {
+  private static void preserveSelection( final List list ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
-    adapter.preserve( Props.SELECTION_INDICES, list.getSelectionIndices() );
+    Object selection;
+    if( isSingle( list ) ) {
+      selection = new Integer( list.getSelectionIndex() );
+    } else {
+      selection = list.getSelectionIndices();
+    }
+    adapter.preserve( PROP_SELECTION, selection );
   }
 
-  private void writeSelection( final List list ) throws IOException {
+  private static void writeItems( final List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
-    int[] oldIndices = ( int[] )adapter.getPreserved( Props.SELECTION_INDICES );
-    int[] currentIndices = list.getSelectionIndices();
-    if(    !adapter.isInitialized() 
-        || !Arrays.equals( currentIndices, oldIndices ) )
-    {
-      for( int i = 0; i < currentIndices.length; i++ ) {
-        Integer index = new Integer( currentIndices[ i ] );
-        Object[] args = new Object[] { index, index };
-        writer.call( list, "getSelectionModel().addSelectionInterval", args );
-        // TODO: [fappel] scroll into view
+    if( WidgetUtil.hasChanged( list, PROP_ITEMS, list.getItems(), DEFAUT_ITEMS ) ) {
+      
+    }
+    writer.set( PROP_ITEMS, new Object[]{ list.getItems() } );
+  }
+
+  private static void writeSelection( final List list ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( list );
+    String prop = PROP_SELECTION;
+    if( isSingle( list ) ) {
+      Integer newValue = new Integer( list.getSelectionIndex() );
+      Integer defValue = DEFAULT_SINGLE_SELECTION;
+      if( WidgetUtil.hasChanged( list, prop, newValue, defValue )) {
+        writer.call( "selectItem", new Object[] { newValue } );
+      }
+    } else {
+      int[] newValue = list.getSelectionIndices();
+      int[] defValue = DEFAULT_MULTI_SELECTION;
+      // TODO [rh] ensure that WidgetUtil#hasChanged can deal with arrays
+      if( WidgetUtil.hasChanged( list, prop, newValue, defValue ) ) {
+        if( list.getSelectionCount() == list.getItemCount() ) {
+          writer.call( "selectAll", null );
+        } else {
+          int[] selection = list.getSelectionIndices();
+          Integer[] newSelection = new Integer[ selection.length ];
+          for( int i = 0; i < newSelection.length; i++ ) {
+            newSelection[ i ] = new Integer( selection[ i ] );
+          }
+          writer.call( "selectItems", new Object[] { newSelection } );
+        }
       }
     }
+  }
+  
+  private static void updateSelectionListeners( final List list ) 
+    throws IOException
+  {
+    String prop = Props.SELECTION_LISTENERS;
+    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( list ) );
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetUtil.hasChanged( list, prop, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( list );
+      String value = newValue.booleanValue() ? "action" : "state"; 
+      writer.set( "changeSelectionNotification", value );
+    }
+  }
+
+  private static boolean isSingle( final List list ) {
+    return ( list.getStyle() & RWT.SINGLE ) != 0;
   }
 }

@@ -14,6 +14,9 @@ package org.eclipse.rap.rwt.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSession;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.widgets.IDisplayAccessAdapter;
 import com.w4t.Adaptable;
 import com.w4t.W4TContext;
 import com.w4t.engine.service.ContextProvider;
@@ -28,7 +31,10 @@ public class Display implements Adaptable {
   public static Display getCurrent() {
     return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
   }
+  
   private final List shells;
+  private Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
+  private IDisplayAccessAdapter accessAdapter;
 
   public Display() {
     HttpSession session = ContextProvider.getSession();
@@ -46,13 +52,26 @@ public class Display implements Adaptable {
     return result;
   }
 
+  public Rectangle getBounds() {
+    return new Rectangle( bounds );
+  }
+
   // TODO [rh] This is preliminary!
   public void dispose() {
     ContextProvider.getSession().removeAttribute( DISPLAY_ID );
   }
 
   public Object getAdapter( final Class adapter ) {
-    return W4TContext.getAdapterManager().getAdapter( this, adapter );
+    Object result = null;
+    if( adapter == IDisplayAccessAdapter.class ) {
+      if( accessAdapter == null ) {
+        accessAdapter = new DisplayAccessAdapter();
+      }
+      result = accessAdapter;
+    } else {
+      result = W4TContext.getAdapterManager().getAdapter( this, adapter );  
+    }
+    return result;
   }
 
   final void addShell( final Composite shell ) {
@@ -61,5 +80,18 @@ public class Display implements Adaptable {
 
   final void removeShell( final Composite shell ) {
     shells.remove( shell );
+  }
+  
+  ////////////////
+  // Inner classes
+
+  private final class DisplayAccessAdapter implements IDisplayAccessAdapter {
+
+    public void setBounds( final Rectangle bounds ) {
+      if( bounds == null ) {
+        RWT.error( RWT.ERROR_NULL_ARGUMENT );
+      }
+      Display.this.bounds = new Rectangle( bounds );
+    }
   }
 }

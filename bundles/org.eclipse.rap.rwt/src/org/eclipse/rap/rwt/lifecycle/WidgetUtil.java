@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.widgets.Widget;
@@ -21,6 +22,7 @@ import com.w4t.engine.service.ContextProvider;
 /**
  * TODO [rh] JavaDoc
  */
+// TODO [rh] should we split up methods into WidgetUtil and WidgetLCAUtil?
 public final class WidgetUtil {
   
   private WidgetUtil() {
@@ -136,12 +138,18 @@ public final class WidgetUtil {
   ////////////////////////////////////////
   // Helping methods to test for equality
   
+  // TODO [rh] implementation incomplete: equals for some primitive types 
+  //      missing
   static boolean equals( final Object object1, final Object object2 ) {
     boolean result;
     if( object1 == object2 ) {
       result = true;
     } else if( object1 == null ) {
       result = false;
+    } else if( object1 instanceof int[] && object2 instanceof int[] ) {
+      result = Arrays.equals( ( int[] )object1, ( int[] )object2 );
+    } else if( object1 instanceof Object[] && object2 instanceof Object[] ) {
+      result = Arrays.equals( ( Object[] )object1, ( Object[] )object2 );
     } else {
       result = object1.equals( object2 );
     }

@@ -57,6 +57,12 @@ public class ToolBar extends Composite {
   }
 
   public int indexOf( final ToolItem item) {
+    if( item == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( item.isDisposed() ) {
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
+    }
     return itemHolder.indexOf( item );
   }
 

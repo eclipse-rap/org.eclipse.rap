@@ -41,8 +41,8 @@ public class SashLCA extends AbstractWidgetLCA {
     writer.newWidget( "org.eclipse.rap.rwt.Sash" );
     Sash sash = ( Sash )widget;
     if( ( sash.getStyle() & RWT.HORIZONTAL ) != 0 ) {
-      writer.set( "orientation", 
-                  new JSVar( "qx.constant.Layout.ORIENTATION_VERTICAL" ) );
+      writer.set( JSConst.QX_FIELD_ORIENTATION, 
+                  JSConst.QX_CONST_VERTICAL_ORIENTATION );
     }
   }
 

@@ -25,6 +25,8 @@ public class ItemLCAUtil {
   public static void preserve( final Item item ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     adapter.preserve( Props.TEXT, item.getText() );
+    // TODO [rh] why preserve Imge.getPath(), wouldn't it be more straigtforward
+    //      to preserve item.getImage() directly?
     adapter.preserve( Props.IMAGE, Image.getPath( item.getImage() ) );
   }
 }

@@ -56,7 +56,50 @@ public class WidgetUtil_Test extends TestCase {
     hasChanged = WidgetUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
     assertEquals( true, hasChanged );
   }
+  
+  public void testHasChangedWidthArrays() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    List list = new List( shell, RWT.MULTI );
+    
+    boolean hasChanged;
+    hasChanged = WidgetUtil.hasChanged( list, "items", new String[] { "a" } );
+    assertEquals( true, hasChanged );
+    
+    list.setItems( new String[] { "a" } );
+    RWTFixture.preserveWidgets();
+    hasChanged = WidgetUtil.hasChanged( list, "items", new String[] { "a" } );
+    assertEquals( false, hasChanged );
 
+    list.setItems( new String[] { "a" } );
+    RWTFixture.preserveWidgets();
+    hasChanged = WidgetUtil.hasChanged( list, "items", new String[] { "b" } );
+    assertEquals( true, hasChanged );
+
+    list.setItems( new String[] { "a" } );
+    RWTFixture.preserveWidgets();
+    hasChanged 
+      = WidgetUtil.hasChanged( list, "items", new String[] { "a", "b" } );
+    assertEquals( true, hasChanged );
+
+    list.setItems( new String[] { "a" } );
+    RWTFixture.preserveWidgets();
+    hasChanged = WidgetUtil.hasChanged( list, "items", null );
+    assertEquals( true, hasChanged );
+    
+    list.setItems( new String[] { "a", "b", "c" } );
+    list.setSelection( new int[] { 0, 1, 2 } );
+    RWTFixture.preserveWidgets();
+    hasChanged = WidgetUtil.hasChanged( list, "selection", new int[] { 0, 1, 4 } );
+    assertEquals( true, hasChanged );
+
+    list.setItems( new String[] { "a", "b", "c" } );
+    list.setSelection( new int[] { 0, 1, 2 } );
+    RWTFixture.preserveWidgets();
+    hasChanged = WidgetUtil.hasChanged( list, "selection", new int[] { 0, 1, 2 } );
+    assertEquals( false, hasChanged );
+  }
+  
   public void testEquals() {
     assertTrue( WidgetUtil.equals( null, null ) );
     assertFalse( WidgetUtil.equals( null, "1" ) );

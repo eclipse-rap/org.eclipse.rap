@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
-import com.w4t.ParamCheck;
 
 /**
  * TODO: [fappel] comment
@@ -35,6 +34,7 @@ public abstract class Control extends Widget {
   private Color background;
 
   Control() {
+    // prevent instantiation from outside this package
     this.parent = null;
   }
 
@@ -99,10 +99,14 @@ public abstract class Control extends Widget {
   }
 
   public void setBounds( final Rectangle bounds ) {
-    ParamCheck.notNull( bounds, "bounds" );
+    if( bounds == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     Point oldLocation = getLocation();
     Point oldSize = getSize();
     this.bounds = new Rectangle( bounds );
+    this.bounds.width = Math.max( 0, this.bounds.width );
+    this.bounds.height = Math.max( 0, this.bounds.height );
     notifyMove( oldLocation );
     notifyResize( oldSize );
   }
@@ -116,12 +120,13 @@ public abstract class Control extends Widget {
   }
 
   public void setLocation( final Point location ) {
-    ParamCheck.notNull( location, "location" );
-    Rectangle current = getBounds();
+    if( location == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     Rectangle newBounds = new Rectangle( location.x,
                                          location.y,
-                                         current.width,
-                                         current.height );
+                                         this.bounds.width,
+                                         this.bounds.height );
     setBounds( newBounds );
   }
 
@@ -130,14 +135,14 @@ public abstract class Control extends Widget {
   }
 
   public Point getLocation() {
-    Rectangle currentBounds = getBounds();
-    return new Point( currentBounds.x, currentBounds.y );
+    return new Point( this.bounds.x, this.bounds.y );
   }
 
   public void setSize( final Point size ) {
-    ParamCheck.notNull( size, "size" );
-    Rectangle current = getBounds();
-    setBounds( new Rectangle( current.x, current.y, size.x, size.y ) );
+    if( size == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    setBounds( new Rectangle( this.bounds.x, this.bounds.y, size.x, size.y ) );
   }
 
   public void setSize( final int width, final int height ) {
@@ -145,8 +150,7 @@ public abstract class Control extends Widget {
   }
 
   public Point getSize() {
-    Rectangle currentBounds = getBounds();
-    return new Point( currentBounds.width, currentBounds.height );
+    return new Point( this.bounds.width, this.bounds.height );
   }
 
   public Point computeSize( final int wHint,

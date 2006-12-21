@@ -137,16 +137,22 @@ public class JSWriter_Test extends TestCase {
         + shellId
         + "\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
+    
     Fixture.fakeResponseWriter();
     writer.setParent( shell.button );
     expected = "w.setParent( wm.findWidgetById( \"" + shellId + "\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
+    
     Fixture.fakeResponseWriter();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell.button );
     adapter.setJSParent( "trallala" );
     writer.setParent( shell.button );
     expected = "w.setParent( wm.findWidgetById( \"trallala\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
+    
+    Fixture.fakeResponseWriter();
+    writer.setParent( "xyz" );
+    expected = "w.setParent( wm.findWidgetById( \"xyz\" ) );";
   }
 
   public void testSetString() throws Exception {
@@ -286,7 +292,7 @@ public class JSWriter_Test extends TestCase {
     display.dispose();
   }
 
-  public void testCallFieldAssignMent() throws IOException {
+  public void testCallFieldAssignment() throws IOException {
     Display display = new Display();
     TestShell shell = new TestShell( display );
     Fixture.fakeResponseWriter();
@@ -320,6 +326,11 @@ public class JSWriter_Test extends TestCase {
     };
     writer.callStatic( "doSomethingStaticWithButtonRef", args );
     expected = "doSomethingStaticWithButtonRef( w );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    Fixture.fakeResponseWriter();
+    args = new Object[] { new String[] { "xyz" } };
+    writer.callStatic( "doSomething", args );
+    expected = "doSomething( [ \"xyz\" ] );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
@@ -357,7 +368,14 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomething", args );
     expected =   "var t = wm.findWidgetById( \"w1\" );"
                + "t.doSomething( wm.findWidgetById( \"w1\" ), "
-               + "new Array(\"test\",\"test2\",\"test3\") );";
+               + "[ \"test\", \"test2\", \"test3\" ] );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    Fixture.fakeResponseWriter();
+    args = new Object[] { shell, new String[ 0 ] };
+    writer.call( shell, "doSomething", args );
+    expected =   "var t = wm.findWidgetById( \"w1\" );"
+               + "t.doSomething( wm.findWidgetById( \"w1\" ), "
+               + "[] );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     writer.call( shell, "doSomething", null );

@@ -52,7 +52,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
     if( WidgetUtil.getId( combo ).equals( id ) ) {
       String value = WidgetUtil.readPropertyValue( widget, SELECTED_ITEM );
-      combo.setSelectionIndex( new Integer( value ).intValue() );
+      combo.select( new Integer( value ).intValue() );
       ControlLCAUtil.processSelection( ( Combo )widget, null );
     }
   }
@@ -78,6 +78,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    // TODO Auto-generated method stub
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
   }
 }

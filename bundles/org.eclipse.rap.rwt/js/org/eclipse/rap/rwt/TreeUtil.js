@@ -38,6 +38,7 @@ org.eclipse.rap.rwt.TreeUtil.createTree = function( id, parent ) {
 org.eclipse.rap.rwt.TreeUtil.createTreeItem = function( tree, id, parentItem ) {
   // TODO [rh] check whether this is proper usage of TreeRowStructure
   var row = qx.ui.treefullcontrol.TreeRowStructure.getInstance();
+  // TODO [rh] remove this after TreeItem images are working properly
   var trs = row.standard( "", "resource/icon/nuvola/16/folder.png" );
   var treeItem = new qx.ui.treefullcontrol.TreeFolder( trs );
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( treeItem, id );
@@ -49,28 +50,36 @@ org.eclipse.rap.rwt.TreeUtil.createTreeItem = function( tree, id, parentItem ) {
 };
 
 /**
- * Adds the _widgetSelected listener (defined in same class) to the given tree.
+ * Adds the _onWidgetSelected listener (defined in same class) to the given tree.
  */
 org.eclipse.rap.rwt.TreeUtil.addSelectionListener = function( tree ) {
   var manager = tree.getManager();
   manager.addEventListener( "changeSelection",
-                            org.eclipse.rap.rwt.TreeUtil._widgetSelected );
+                            org.eclipse.rap.rwt.TreeUtil._onWidgetSelected );
 }
 
 /**
- * Removes the _widgetSelected listener (defined in same class) from the given 
+ * Removes the _onWidgetSelected listener (defined in same class) from the given 
  * tree.
  */
 org.eclipse.rap.rwt.TreeUtil.removeSelectionListener = function( tree ) {
   var manager = tree.getManager();
   manager.removeEventListener( "changeSelection", 
-                               org.eclipse.rap.rwt.TreeUtil._widgetSelected );
+                               org.eclipse.rap.rwt.TreeUtil._onWidgetSelected );
+}
+
+org.eclipse.rap.rwt.TreeUtil.addTreeListener = function( tree ) {
+  tree.setUserData( "fireTreeEvents", true );
+}
+
+org.eclipse.rap.rwt.TreeUtil.removeTreeListener = function( tree ) {
+  tree.setUserData( "fireTreeEvents", false );
 }
 
 /**
  * Fires a widgetSelected event if the tree item wasn't already selected.
  */
-org.eclipse.rap.rwt.TreeUtil._widgetSelected = function( evt ) {
+org.eclipse.rap.rwt.TreeUtil._onWidgetSelected = function( evt ) {
   // target is instance of qx.manager.selection.TreeFullControlSelectionManager
   var selectionManager = evt.getTarget();
   var treeItem = selectionManager.getSelectedItem();
@@ -78,3 +87,41 @@ org.eclipse.rap.rwt.TreeUtil._widgetSelected = function( evt ) {
   var treeItemId = widgetManager.findIdByWidget( treeItem );
   org.eclipse.rap.rwt.EventUtil.doWidgetSelected( treeItemId, 0, 0, 0, 0 );
 };
+
+org.eclipse.rap.rwt.TreeUtil.itemExpanded = function( evt ) {
+  var req = org.eclipse.rap.rwt.Request.getInstance();
+  var treeItem = evt.getData();
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var treeItemId = widgetManager.findIdByWidget( treeItem );
+  req.addParameter( treeItemId + ".state", "expanded" );
+}
+
+org.eclipse.rap.rwt.TreeUtil.itemExpandedAction = function( evt ) {
+  var req = org.eclipse.rap.rwt.Request.getInstance();
+  var treeItem = evt.getData();
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var treeItemId = widgetManager.findIdByWidget( treeItem );
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    req.addParameter( "org.eclipse.rap.rwt.events.treeExpanded", treeItemId );
+    req.send();
+  }
+}
+
+org.eclipse.rap.rwt.TreeUtil.itemCollapsed = function( evt ) {
+  var req = org.eclipse.rap.rwt.Request.getInstance();
+  var treeItem = evt.getData();
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var treeItemId = widgetManager.findIdByWidget( treeItem );
+  req.addParameter( treeItemId + ".state", "collapsed" );
+}
+
+org.eclipse.rap.rwt.TreeUtil.itemCollapsedAction = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    var treeItem = evt.getData();
+    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var treeItemId = widgetManager.findIdByWidget( treeItem );
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    req.addParameter( "org.eclipse.rap.rwt.events.treeCollapsed", treeItemId );
+    req.send();
+  }
+}

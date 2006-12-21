@@ -83,8 +83,22 @@ public class Menu_Test extends TestCase {
     assertEquals( 1, menu.getItemCount() );
     assertSame( item, menu.getItems()[ 0 ] );
     assertSame( item, menu.getItem( 0 ) );
+    assertEquals( 0, menu.indexOf( item ) );
     new MenuItem( menu, RWT.CASCADE );
     assertEquals( 2, menu.getItemCount() );
+    item.dispose();
+    try {
+      menu.indexOf( item );
+      fail( "Obtaining indexOf disposed menuItem is illegal" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      menu.indexOf( null );
+      fail( "indexOf( null ) not allowed" );
+    } catch( RuntimeException e ) {
+      // expected
+    }
   }
 
   public void testDispose() {

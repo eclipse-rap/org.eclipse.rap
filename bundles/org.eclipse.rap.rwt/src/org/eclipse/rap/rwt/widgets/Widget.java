@@ -11,9 +11,11 @@
 
 package org.eclipse.rap.rwt.widgets;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.DisposeEvent;
 import org.eclipse.rap.rwt.events.DisposeListener;
-import com.w4t.*;
+import com.w4t.Adaptable;
+import com.w4t.W4TContext;
 import com.w4t.event.EventAdapter;
 import com.w4t.event.IEventAdapter;
 
@@ -28,17 +30,20 @@ public abstract class Widget implements Adaptable {
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;
   static final int DEFAULT_HEIGHT = 64;
+  
   int style;
   private IEventAdapter eventAdapter;
   private boolean disposed;
   private Object data;
 
   Widget() {
-    // do nothing
+    // prevent instantiation from outside this package
   }
 
   public Widget( final Widget parent, final int style ) {
-    ParamCheck.notNull( parent, "parent" );
+    if( parent == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     this.style = style;
   }
 

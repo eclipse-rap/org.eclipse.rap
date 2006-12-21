@@ -11,9 +11,9 @@
 package org.eclipse.rap.rwt.graphics;
 
 import java.util.*;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import com.w4t.IResourceManager;
-import com.w4t.ParamCheck;
 
 
 public final class Image {
@@ -31,7 +31,9 @@ public final class Image {
   public static synchronized Image find( final String path, 
                                          final ClassLoader imageLoader )
   {
-    ParamCheck.notNull( path, "path" );
+    if( path == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     Image result;
     if( images.containsKey( path ) ) {
       result = ( Image )images.get( path );

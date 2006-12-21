@@ -11,6 +11,8 @@
 
 package org.eclipse.rap.rwt.widgets;
 
+import org.eclipse.rap.rwt.RWT;
+
 
 /**
  * TODO: [fappel] comment
@@ -20,6 +22,7 @@ public class TreeItem extends Item {
   private final TreeItem parentItem;
   private final Tree parent;
   private final ItemHolder itemHolder;
+  private boolean expanded;
 
   public TreeItem( final Tree parent, final int style ) {
     this( parent, null, style );
@@ -56,10 +59,16 @@ public class TreeItem extends Item {
     return result;
   }
 
+  /////////////////
+  // Item overrides
+  
   public final Display getDisplay() {
     return parent.getDisplay();
   }
 
+  /////////////////////////
+  // Parent/child relations
+  
   public final Tree getParent() {
     return parent;
   }
@@ -67,11 +76,23 @@ public class TreeItem extends Item {
   public TreeItem getParentItem() {
     return parentItem;
   }
+  
+  ////////////////
+  // Getter/Setter
 
-  public int getItemCount() {
-    return itemHolder.size();
+  public void setExpanded( final boolean expanded ) {
+    if( !expanded || getItemCount() > 0 ) {
+      this.expanded = expanded; 
+    }
+  }
+  
+  public boolean getExpanded() {
+    return expanded;
   }
 
+  ///////////////////////////////////////
+  // Methods to maintain (sub-) TreeItems
+  
   public TreeItem[] getItems() {
     return ( TreeItem[] )itemHolder.getItems();
   }
@@ -80,7 +101,27 @@ public class TreeItem extends Item {
     return ( TreeItem )itemHolder.getItem( index );
   }
   
+  public int getItemCount() {
+    return itemHolder.size();
+  }
   
+  public int indexOf( final TreeItem item ) {
+    if( item == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( item.isDisposed() ) {
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
+    }
+    return itemHolder.indexOf( item );
+  }
+
+  public void removeAll() {
+    TreeItem[] items = getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      items[ i ].dispose();
+    }
+  }
+
   ///////////////////////////////////
   // Methods to dispose of the widget
   
@@ -94,6 +135,9 @@ public class TreeItem extends Item {
   protected final void releaseParent() {
     if( parentItem != null ) {
       ItemHolder.removeItem( parentItem, this );
+      if( parentItem.getItemCount() == 0 ) {
+        parentItem.setExpanded( false );
+      }
     } else {
       ItemHolder.removeItem( parent, this );
     }

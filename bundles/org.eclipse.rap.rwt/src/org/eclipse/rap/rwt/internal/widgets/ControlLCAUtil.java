@@ -48,12 +48,12 @@ public class ControlLCAUtil {
                       Boolean.valueOf( control.isVisible() ) );
   }
   
-  public static void readBounds( final Control widget ) {
-    int width = readControlWidth( widget );
-    int height = readControlHeight( widget );
-    int xLocation = readControlXLocation( widget );
-    int yLocation = readControlYLocation( widget );
-    widget.setBounds( xLocation, yLocation, width, height );
+  public static void readBounds( final Control control ) {
+    int width = readControlWidth( control );
+    int height = readControlHeight( control );
+    int xLocation = readControlXLocation( control );
+    int yLocation = readControlYLocation( control );
+    control.setBounds( xLocation, yLocation, width, height );
   }
   
   public static void writeBounds( final Control control ) throws IOException {

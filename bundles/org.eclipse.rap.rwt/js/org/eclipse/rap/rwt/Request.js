@@ -31,6 +31,10 @@ qx.Proto.setUIRootId = function( uiRootId ) {
   this._uiRootId = uiRootId;
 };
 
+qx.Proto.getUIRootId = function() {
+  return this._uiRootId;  
+}
+
 qx.Proto.setRequestCounter = function( requestCounter ) {
   this._requestCounter = requestCounter;
 };

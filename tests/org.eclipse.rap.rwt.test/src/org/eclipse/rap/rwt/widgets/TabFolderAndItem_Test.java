@@ -15,7 +15,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Image_Test;
 
 public class TabFolderAndItem_Test extends TestCase {
 
@@ -117,12 +116,12 @@ public class TabFolderAndItem_Test extends TestCase {
     Composite shell = new Shell( display , RWT.NONE );
     TabFolder folder = new TabFolder( shell, RWT.NONE );
     TabItem item0 = new TabItem( folder, RWT.NONE );
-    item0.setImage(Image.find( Image_Test.IMAGE1 ) );
-    assertSame( Image.find( Image_Test.IMAGE1 ), item0.getImage() );
+    item0.setImage(Image.find( RWTFixture.IMAGE1 ) );
+    assertSame( Image.find( RWTFixture.IMAGE1 ), item0.getImage() );
     assertEquals( 1, Image.size() );
     TabItem item1 = new TabItem( folder, RWT.NONE );
-    item1.setImage(Image.find( Image_Test.IMAGE2 ) );
-    assertSame( Image.find( Image_Test.IMAGE2 ), item1.getImage() );
+    item1.setImage(Image.find( RWTFixture.IMAGE2 ) );
+    assertSame( Image.find( RWTFixture.IMAGE2 ), item1.getImage() );
     assertEquals( 2, Image.size() );
   }
 

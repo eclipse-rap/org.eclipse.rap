@@ -27,7 +27,7 @@ import com.w4t.engine.service.IServiceStateInfo;
  * <p>Note that the JavaScript code that is rendered relies on the client-side 
  * <code>org.eclipse.rap.rwt.WidgetManager</code> to be present. </p> 
  */
-// TODO [rh] decide whethermethod arguments are to be checked (not-null, etc)
+// TODO [rh] decide whether method arguments are to be checked (not-null, etc)
 //      this also applies for other 'SPI's. 
 public final class JSWriter {
   
@@ -89,10 +89,14 @@ public final class JSWriter {
   public void setParent( final Control control ) throws IOException {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     if( adapter.getJSParent() == null ) {
-      doSetParent( createFindWidgetById( control.getParent() ) );
+      setParent( WidgetUtil.getId( control.getParent() ) );
     } else {
-      doSetParent( createFindWidgetById( adapter.getJSParent() ) );
+      setParent( adapter.getJSParent() );
     }
+  }
+  
+  public void setParent( final String parentId ) throws IOException {
+    doSetParent( createFindWidgetById( parentId ) );
   }
   
   public void set( final String jsProperty, final String value ) 
@@ -468,7 +472,7 @@ public final class JSWriter {
         } else if( args[ i ] instanceof JSVar ) { 
           params.append( args[ i ] );
         } else if( args[ i ] instanceof Object[] ) { 
-          params.append( createObjectArray( ( Object[] )args[ i ] ) );
+          params.append( createArray( ( Object[] )args[ i ] ) );
         } else {
           params.append( args[ i ] );
         }
@@ -482,22 +486,21 @@ public final class JSWriter {
     return params.toString();
   }
   
-  private static String createObjectArray( final Object[] objectArray ) {
+  private static String createArray( final Object[] array ) {
     StringBuffer buffer = new StringBuffer();
-    if( objectArray.length > 0 ) {
-      buffer.append( "new Array(" );
-      buffer.append( '"' );
-      for( int i = 0; i < objectArray.length; i++ ) {
-        buffer.append( objectArray[ i ] );
-        buffer.append( '"' );
+    buffer.append( '[' );
+    for( int i = 0; i < array.length; i++ ) {
+      if( i > 0 ) {
         buffer.append( ',' );
-        buffer.append( '"' );
       }
-      buffer.replace( buffer.length() - 2, buffer.length(), "" );
-      buffer.append( ')' );
-    } else {
-      buffer.append( "new Array()" );
+      buffer.append( " \"" );
+      buffer.append( array[ i ] );
+      buffer.append( '"' );
+      if( i == array.length - 1 ) {
+        buffer.append( ' ' );
+      }
     }
+    buffer.append( ']' );
     return buffer.toString();
   }
   

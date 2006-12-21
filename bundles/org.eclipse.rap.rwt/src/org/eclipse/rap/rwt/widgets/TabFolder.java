@@ -15,7 +15,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import com.w4t.ParamCheck;
 
 public class TabFolder extends Composite {
 
@@ -89,7 +88,9 @@ public class TabFolder extends Composite {
   }
 
   public void setSelection( final TabItem[] items ) {
-    ParamCheck.notNull( items, "items" );
+    if( items == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     Item[] list = itemHolder.getItems();
     int newIndex = -1;
     for( int i = 0; i < list.length; i++ ) {
@@ -114,6 +115,12 @@ public class TabFolder extends Composite {
   }
   
   public int indexOf( final TabItem item ) {
+    if( item == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( item.isDisposed() ) {
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
+    }
     return itemHolder.indexOf( item );
   }
 

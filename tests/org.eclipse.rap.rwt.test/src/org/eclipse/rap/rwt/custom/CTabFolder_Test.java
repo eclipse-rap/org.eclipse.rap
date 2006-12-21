@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.rwt.custom;
 
+import java.util.Arrays;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
@@ -26,7 +27,11 @@ public class CTabFolder_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
     CTabFolder folder = new CTabFolder( shell, RWT.NONE );
+    assertEquals( 0, folder.getItemCount() );
+    assertTrue( Arrays.equals( new CTabItem[ 0 ], folder.getItems() ) );
+
     CTabItem item = new CTabItem( folder, RWT.NONE );
+    assertTrue( Composite.class.isAssignableFrom( folder.getClass() ) );
     assertSame( folder, item.getParent() );
     assertSame( display, item.getDisplay() );
     assertEquals( 1, folder.getItemCount() );

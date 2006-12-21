@@ -48,6 +48,9 @@ public class CTabItem extends Item {
       }
     }
     this.control = control;
+    if( this.control != null ) {
+      this.control.setBounds( getParent().getClientArea() );
+    }
   }
   
   public void setToolTipText( final String toolTipText ) {

@@ -18,8 +18,7 @@ public class Text extends Control {
   private String text;
 
   public Text( final Composite parent, final int style ) {
-    super( parent, style );
-    this.style = checkStyle( style );
+    super( parent, checkStyle( style ) );
   }
 
   public void setText( final String text ) {

@@ -12,7 +12,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Image_Test;
 
 /**
  * @author georg
@@ -22,14 +21,23 @@ public class Button_Test extends TestCase {
   public void testImage() {
     Display display = new Display();
     Composite shell = new Shell( display, RWT.NONE );
+    
     Button button = new Button( shell, RWT.NONE );
-    button.setImage( Image.find( Image_Test.IMAGE1 ) );
-    assertSame( Image.find( Image_Test.IMAGE1 ), button.getImage() );
+    button.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    assertSame( Image.find( RWTFixture.IMAGE1 ), button.getImage() );
     assertEquals( 1, Image.size() );
+    
     Button button2 = new Button( shell, RWT.NONE );
-    button2.setImage( Image.find( Image_Test.IMAGE2 ) );
-    assertSame( Image.find( Image_Test.IMAGE2 ), button2.getImage() );
+    button2.setImage( Image.find( RWTFixture.IMAGE2 ) );
+    assertSame( Image.find( RWTFixture.IMAGE2 ), button2.getImage() );
     assertEquals( 2, Image.size() );
+
+    button2.setImage( null );
+    assertEquals( null, button2.getImage() );
+
+    Button arrowButton = new Button( shell, RWT.ARROW );
+    arrowButton.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    assertEquals( null, arrowButton.getImage() );
   }
 
   protected void setUp() throws Exception {

@@ -17,6 +17,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.internal.widgets.WidgetAdapterFactory;
@@ -114,6 +115,17 @@ public class DisplayLCA_Test extends TestCase {
     assertSame( shell, log.get( 0 ) );
     assertSame( button, log.get( 1 ) );
     assertSame( text, log.get( 2 ) );
+  }
+  
+  public void testReadData() {
+    Display display = new Display();
+    IDisplayLifeCycleAdapter lca = DisplayUtil.getLCA( display );
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( displayId + ".bounds.width", "30" );
+    Fixture.fakeRequestParam( displayId + ".bounds.height", "70" );
+    lca.readData( display );
+    assertEquals( new Rectangle( 0, 0, 30, 70 ), display.getBounds() );
   }
   
   protected void setUp() throws Exception {

@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import java.lang.reflect.Array;
 import java.text.MessageFormat;
 import java.util.List;
-import com.w4t.ParamCheck;
+import org.eclipse.rap.rwt.RWT;
 
 public final class ItemHolder implements IItemHolderAdapter {
 
@@ -31,7 +31,9 @@ public final class ItemHolder implements IItemHolderAdapter {
   }
 
   public void add( final Item item ) {
-    ParamCheck.notNull( item, "item" );
+    if( item == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     if( items.contains( item ) ) {
       String msg = "The item was already added.";
       throw new IllegalArgumentException( msg );
@@ -40,7 +42,9 @@ public final class ItemHolder implements IItemHolderAdapter {
   }
 
   public void remove( final Item item ) {
-    ParamCheck.notNull( item, "item" );
+    if( item == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     if( !items.contains( item ) ) {
       String msg = "The item was not added to this item holder.";
       throw new IllegalArgumentException( msg );

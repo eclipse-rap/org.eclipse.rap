@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 
 public class Display_Test extends TestCase {
 
@@ -36,6 +37,15 @@ public class Display_Test extends TestCase {
     Composite shell2 = new Shell( display , RWT.NONE );
     Composite[] shells = display.getShells();
     assertTrue( shell2 == shells[ 0 ] || shell2 == display.getShells()[ 1 ] );
+  }
+  
+  public void testProperties() {
+    Display display = new Display();
+    assertEquals( 0, display.getShells().length );
+    Rectangle bounds = display.getBounds();
+    assertNotNull( bounds );
+    bounds.x += 1;
+    assertTrue( bounds.x != display.getBounds().x );
   }
 
   protected void setUp() throws Exception {

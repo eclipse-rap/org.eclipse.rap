@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
-import com.w4t.ParamCheck;
 
 
 
@@ -92,7 +91,9 @@ public class Table extends Composite {
   }
 
   public int indexOf( final TableItem tableItem ) {
-    ParamCheck.notNull( tableItem, "tableItem" );
+    if( tableItem == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     return itemHolder.indexOf( tableItem );
   }
   
@@ -109,7 +110,9 @@ public class Table extends Composite {
   }
 
   public int indexOf( final TableColumn tableColumn ) {
-    ParamCheck.notNull( tableColumn, "tableColumn" );
+    if( tableColumn == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     return columnHolder.indexOf( tableColumn );
   }
 
@@ -168,7 +171,9 @@ public class Table extends Composite {
   }
 
   public void setSelection( final int[] indices ) {
-    ParamCheck.notNull( indices, "indices" );
+    if( indices == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     // TODO: [fappel] style bits for single/multi selection
     
     Integer[] filteredIndices = filterIndices( indices );    
@@ -181,7 +186,9 @@ public class Table extends Composite {
   }
   
   public void setSelection( final TableItem[] items ) {
-    ParamCheck.notNull( items, "items" );
+    if( items == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     int[] indices = new int[ items.length ];
     for( int i = 0; i < items.length; i++ ) {
       indices[ i ] = indexOf( items[ i ] );

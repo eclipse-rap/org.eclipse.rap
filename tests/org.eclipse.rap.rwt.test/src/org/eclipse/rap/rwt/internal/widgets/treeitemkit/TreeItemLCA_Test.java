@@ -15,8 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
@@ -38,11 +37,13 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, RWT.NONE );
     treeItem.setText( "qwert" );
     TreeItem subTreeItem = new TreeItem( treeItem, RWT.NONE );
+    treeItem.setExpanded( true );
     new TreeLCA().preserveValues( tree );
     new TreeItemLCA().preserveValues( treeItem );
     new TreeItemLCA().preserveValues( subTreeItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     assertEquals( "qwert", adapter.getPreserved( Props.TEXT ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.EXPANDED ) );
   }
 
   public void testSelectionEvent() throws IOException {
@@ -70,6 +71,74 @@ public class TreeItemLCA_Test extends TestCase {
     new RWTLifeCycle().execute();
     assertSame( tree, selectedTree[ 0 ] );
     assertSame( treeItem, selectedTreeItem[ 0 ] );
+  }
+  
+  public void testTreeEvent() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    final Tree tree = new Tree( shell, RWT.NONE );
+    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
+    final TreeItem treeItem = new TreeItem( tree, RWT.NONE );
+    new TreeItem( treeItem, RWT.NONE );
+    final StringBuffer log = new StringBuffer();
+    TreeListener listener = new TreeListener() {
+      public void treeCollapsed( final TreeEvent event ) {
+        assertEquals( tree, event.getSource() );
+        assertEquals( treeItem, event.item );
+        assertEquals( RWT.NONE, event.detail );
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+        assertEquals( true, event.doit );
+        log.append( "collapsed" );
+      }
+      public void treeExpanded( final TreeEvent event ) {
+        assertEquals( tree, event.getSource() );
+        assertEquals( treeItem, event.item );
+        assertEquals( RWT.NONE, event.detail );
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+        assertEquals( true, event.doit );
+        log.append( "expanded" );
+      }
+    };
+    tree.addTreeListener( listener );
+    
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( treeItem );
+    String treeItemId = WidgetUtil.getId( treeItem );
+    Fixture.fakeRequestParam( treeItemId + ".state", "expanded" );
+    Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, treeItemId );
+    lca.processAction( treeItem );
+    assertEquals( "expanded", log.toString() );
+
+    log.setLength( 0 );
+    Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, null );
+    Fixture.fakeRequestParam( treeItemId + ".state", "collapsed" );
+    Fixture.fakeRequestParam( JSConst.EVENT_TREE_COLLAPSED, treeItemId );
+    lca.processAction( treeItem );
+    assertEquals( "collapsed", log.toString() );
+  }
+  
+  public void testExpandCollapse() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, RWT.NONE );
+    new TreeItem( treeItem, RWT.NONE );
+    treeItem.setExpanded( false );
+    
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( treeItem );
+    String treeItemId = WidgetUtil.getId( treeItem );
+    Fixture.fakeRequestParam( treeItemId + ".state", "expanded" );
+    lca.readData( treeItem );
+    assertEquals( true, treeItem.getExpanded() );
+    
+    Fixture.fakeRequestParam( treeItemId + ".state", "collapsed" );
+    lca.readData( treeItem );
+    assertEquals( false, treeItem.getExpanded() );
   }
 
   protected void setUp() throws Exception {

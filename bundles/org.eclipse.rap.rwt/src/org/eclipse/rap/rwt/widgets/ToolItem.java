@@ -14,7 +14,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.graphics.Image;
-import com.w4t.ParamCheck;
 
 
 public class ToolItem extends Item {
@@ -31,25 +30,21 @@ public class ToolItem extends Item {
     ItemHolder.addItem( parent, this );
   }
 
-  static int checkStyle( final int style ) {
-    return checkBits( style, 
-                      RWT.PUSH, 
-                      RWT.CHECK,
-                      RWT.RADIO, 
-                      RWT.SEPARATOR, 
-                      RWT.DROP_DOWN,
-                      0 );
+  public Display getDisplay() {
+    return parent.getDisplay();
+  }
+
+  public ToolBar getParent () {
+    return parent;
   }
   
   public void setText( final String text ) {
-    ParamCheck.notNull( text, "text" );
-    if( ( style & RWT.SEPARATOR ) == 0  && !text.equals( this.text ) ) {
+    if( text == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( ( style & RWT.SEPARATOR ) == 0  && !text.equals( getText() ) ) {
       super.setText( text );
     }
-  }
-  
-  public ToolBar getParent () {
-    return parent;
   }
   
   public void setControl( final Control control ) {
@@ -75,7 +70,7 @@ public class ToolItem extends Item {
   }
 
   public void setWidth( final int width ) {
-    if( ( style & RWT.SEPARATOR ) != 0 &&  width >= 0  ) {
+    if( ( style & RWT.SEPARATOR ) != 0 && width >= 0  ) {
       this.width = width;
     }
   }
@@ -111,13 +106,8 @@ public class ToolItem extends Item {
     SelectionEvent.removeListener( this, listener );
   }
   
-  public Display getDisplay() {
-    return parent.getDisplay();
-  }
-
-  
   ///////////////////////////////////
-  // Methods to dispose the widget
+  // Methods to dispose of the widget
   
   protected void releaseChildren() {
     // TODO Auto-generated method stub
@@ -130,4 +120,18 @@ public class ToolItem extends Item {
   protected void releaseWidget() {
     // TODO Auto-generated method stub
   }
+  
+  //////////////////
+  // Helping methods
+
+  private static int checkStyle( final int style ) {
+    return checkBits( style, 
+                      RWT.PUSH, 
+                      RWT.CHECK,
+                      RWT.RADIO, 
+                      RWT.SEPARATOR, 
+                      RWT.DROP_DOWN,
+                      0 );
+  }
+  
 }

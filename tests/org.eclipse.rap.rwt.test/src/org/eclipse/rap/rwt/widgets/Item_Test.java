@@ -15,7 +15,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Image_Test;
 
 public class Item_Test extends TestCase {
 
@@ -66,8 +65,8 @@ public class Item_Test extends TestCase {
       protected void releaseWidget() {
       }
     };
-    item.setImage( Image.find( Image_Test.IMAGE1 ) );
-    assertSame( Image.find( Image_Test.IMAGE1 ), item.getImage() );
+    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    assertSame( Image.find( RWTFixture.IMAGE1 ), item.getImage() );
     assertEquals( 1, Image.size() );
     item.setImage( null );
     assertEquals( null, item.getImage() );
@@ -86,8 +85,8 @@ public class Item_Test extends TestCase {
       protected void releaseWidget() {
       }
     };
-    item2.setImage( Image.find( Image_Test.IMAGE2 ) );
-    assertSame( Image.find( Image_Test.IMAGE2 ), item2.getImage() );
+    item2.setImage( Image.find( RWTFixture.IMAGE2 ) );
+    assertSame( Image.find( RWTFixture.IMAGE2 ), item2.getImage() );
     assertEquals( 2, Image.size() );
   }
 

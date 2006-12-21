@@ -12,7 +12,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import java.util.List;
-import com.w4t.ParamCheck;
+import org.eclipse.rap.rwt.RWT;
 
 class ControlHolder {
 
@@ -36,7 +36,9 @@ class ControlHolder {
   }
 
   void add( final Control control ) {
-    ParamCheck.notNull( control, "control" );
+    if( control == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     if( controls.contains( control ) ) {
       throw new IllegalArgumentException( "The control was already added." );
     }
@@ -44,7 +46,9 @@ class ControlHolder {
   }
 
   void remove( final Control control ) {
-    ParamCheck.notNull( control, "control" );
+    if( control == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     if( !controls.contains( control ) ) {
       String msg = "The control was not added to this control holder.";
       throw new IllegalArgumentException( msg );

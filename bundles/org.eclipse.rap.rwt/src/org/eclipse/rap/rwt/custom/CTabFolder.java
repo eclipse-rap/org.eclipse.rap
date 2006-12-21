@@ -15,7 +15,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.widgets.*;
-import com.w4t.ParamCheck;
 
 
 public class CTabFolder extends Composite {
@@ -73,6 +72,10 @@ public class CTabFolder extends Composite {
   public void setSelection( final int index ) {
     if( index >= 0 && index <= itemHolder.size() - 1 ) {
       selectionIndex = index;
+      Control control = getItem( selectionIndex ).getControl();
+      if( control != null ) {
+        control.setBounds( getClientArea() );
+      }
     }
   }
 
@@ -81,7 +84,9 @@ public class CTabFolder extends Composite {
   }
   
   public void setSelection( final CTabItem item ) {
-    ParamCheck.notNull( item, "item" );
+    if( item == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     int index = itemHolder.indexOf( item );
     setSelection( index );
   }
@@ -206,6 +211,18 @@ public class CTabFolder extends Composite {
   //////////////////////
   // Composite overrides
   
+  public Rectangle getClientArea() {
+    Rectangle current = getBounds();
+    int width = current.width;
+    int height = current.height;
+    int border = 1;
+    int hTabBar = 23;
+    return new Rectangle( -10,
+                          -10,
+                          width - border * 2,
+                          height - ( hTabBar + border * 2 ) );
+  }
+
   protected void releaseChildren() {
     CTabItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {

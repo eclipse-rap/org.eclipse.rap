@@ -24,8 +24,10 @@ import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.controlkit.ControlLCA_Test;
+import org.eclipse.rap.rwt.internal.widgets.coolbarkit.CoolBarLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.displaykit.DisplayLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.labelkit.LabelLCA_Test;
+import org.eclipse.rap.rwt.internal.widgets.listkit.ListLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.menukit.MenuLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.sashkit.SashLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.shellkit.ShellLCA_Test;
@@ -60,6 +62,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ControlEvent_Test.class );
     suite.addTestSuite( DisposeEvent_Test.class );
     suite.addTestSuite( ShellEvent_Test.class );
+    suite.addTestSuite( TreeEvent_Test.class );
 
     suite.addTestSuite( Display_Test.class );
     suite.addTestSuite( Shell_Test.class );
@@ -83,6 +86,8 @@ public class RWTTestSuite {
     suite.addTestSuite( ToolBar_Test.class );
     suite.addTestSuite( CTabFolder_Test.class );
     suite.addTestSuite( CTabItem_Test.class );
+    suite.addTestSuite( CoolBar_Test.class );
+    suite.addTestSuite( CoolItem_Test.class );
     
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );
@@ -100,6 +105,8 @@ public class RWTTestSuite {
     suite.addTestSuite( MenuLCA_Test.class );
     suite.addTestSuite( TableLCA_Test.class );
     suite.addTestSuite( CTabFolderLCA_Test.class );
+    suite.addTestSuite( CoolBarLCA_Test.class );
+    suite.addTestSuite( ListLCA_Test.class );
     return suite;
   }
 }

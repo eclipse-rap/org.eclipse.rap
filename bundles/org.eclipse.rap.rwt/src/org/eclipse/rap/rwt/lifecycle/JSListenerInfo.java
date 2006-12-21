@@ -12,7 +12,7 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 
-public class JSListenerInfo {
+public final class JSListenerInfo {
   
   private final String eventType;
   private final String jsListener;

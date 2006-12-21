@@ -29,19 +29,26 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/DefaultAppearanceTheme.js";
   private static final String APPLICATION_JS 
     = "org/eclipse/rap/rwt/Application.js";
-  private static final String REQUEST_JS = "org/eclipse/rap/rwt/Request.js";
+  private static final String REQUEST_JS 
+    = "org/eclipse/rap/rwt/Request.js";
   private static final String WIDGET_MANAGER_JS 
     = "org/eclipse/rap/rwt/WidgetManager.js";
   private static final String EVENT_UTIL_JS 
     = "org/eclipse/rap/rwt/EventUtil.js";
-  private static final String SASH_JS = "org/eclipse/rap/rwt/Sash.js";
-  private static final String TREE_JS = "org/eclipse/rap/rwt/TreeUtil.js";
-  private static final String TAB_JS = "org/eclipse/rap/rwt/TabUtil.js";
-  private static final String BUTTON_JS = "org/eclipse/rap/rwt/ButtonUtil.js";
-  private static final String COMBO_JS = "org/eclipse/rap/rwt/ComboUtil.js";
+  private static final String SASH_JS 
+    = "org/eclipse/rap/rwt/Sash.js";
+  private static final String TREE_UTIL_JS 
+    = "org/eclipse/rap/rwt/TreeUtil.js";
+  private static final String TAB_UTIL_JS 
+    = "org/eclipse/rap/rwt/TabUtil.js";
+  private static final String BUTTON_UTIL_JS 
+    = "org/eclipse/rap/rwt/ButtonUtil.js";
+  private static final String COMBO_UTIL_JS 
+    = "org/eclipse/rap/rwt/ComboUtil.js";
   private static final String TOOL_ITEM_JS = 
     "org/eclipse/rap/rwt/ToolItemUtil.js";
-  private static final String MENU_UTIL_JS = "org/eclipse/rap/rwt/MenuUtil.js";
+  private static final String MENU_UTIL_JS 
+    = "org/eclipse/rap/rwt/MenuUtil.js";
   private static final String TABLE_UTIL_JS
     = "org/eclipse/rap/rwt/TableUtil.js";
   private static final String TABLE_MODEL_JS
@@ -50,6 +57,11 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/custom/CTabFolder.js";
   private static final String CTAB_FOLDER_BAR_JS 
     = "org/eclipse/rap/rwt/custom/CTabFolderBar.js";
+  private static final String COOL_ITEM_JS 
+    = "org/eclipse/rap/rwt/widgets/CoolItem.js";
+  private static final String LIST_JS 
+    = "org/eclipse/rap/rwt/widgets/List.js";
+  
   
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -1498,16 +1510,18 @@ final class QooxdooResourcesUtil {
       register( WIDGET_MANAGER_JS );
       register( EVENT_UTIL_JS );
       register( SASH_JS );
-      register( TREE_JS );
-      register( TAB_JS );
-      register( COMBO_JS );
-      register( BUTTON_JS );
+      register( TREE_UTIL_JS );
+      register( TAB_UTIL_JS );
+      register( COMBO_UTIL_JS );
+      register( BUTTON_UTIL_JS );
       register( TOOL_ITEM_JS );
       register( MENU_UTIL_JS );
       register( TABLE_UTIL_JS );
       register( TABLE_MODEL_JS );
       register( CTAB_FOLDER_BAR_JS );
       register( CTAB_FOLDER_JS );
+      register( COOL_ITEM_JS );
+      register( LIST_JS );
     } finally {
       manager.setContextLoader( bufferedLoader );
     }

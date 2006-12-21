@@ -15,7 +15,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Image_Test;
 
 public class ToolBar_Test extends TestCase {
 
@@ -54,8 +53,8 @@ public class ToolBar_Test extends TestCase {
     // search operation indexOf
     ToolItem item1 = new ToolItem( toolBar, RWT.PUSH );
     ToolItem item2 = new ToolItem( toolBar, RWT.RADIO );
-    item2.setImage(Image.find( Image_Test.IMAGE1 ) );
-    assertSame( Image.find( Image_Test.IMAGE1 ), item2.getImage() );
+    item2.setImage(Image.find( RWTFixture.IMAGE1 ) );
+    assertSame( Image.find( RWTFixture.IMAGE1 ), item2.getImage() );
     assertEquals( 1, Image.size() );
     assertEquals( 3, toolBar.getItemCount() );
     assertEquals( 3, toolBar.getItems().length );
@@ -63,9 +62,31 @@ public class ToolBar_Test extends TestCase {
     assertEquals( item1, toolBar.getItem( 1 ) );
     assertEquals( item2, toolBar.getItem( 2 ) );
     ToolItem item3 = new ToolItem( toolBar, RWT.SEPARATOR );
-    item3.setImage(Image.find( Image_Test.IMAGE2 ) );
+    item3.setImage(Image.find( RWTFixture.IMAGE2 ) );
     assertNull( item3.getImage() );
     assertEquals( 2, Image.size() );
+  }
+  
+  public void testIndexOf() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    ToolBar bar = new ToolBar( shell, RWT.NONE );
+    ToolItem item = new ToolItem( bar, RWT.NONE );
+    assertEquals( 0, bar.indexOf( item ) );
+    
+    item.dispose();
+    try {
+      bar.indexOf( item );
+      fail( "indexOf must not answer for a disposed item" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      bar.indexOf( null );
+      fail( "indexOf must not answer for null item" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
   }
 
   public void testToolItemTexts() {

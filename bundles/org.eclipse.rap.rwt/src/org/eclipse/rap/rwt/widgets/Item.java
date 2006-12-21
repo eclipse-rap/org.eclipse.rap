@@ -11,8 +11,8 @@
 
 package org.eclipse.rap.rwt.widgets;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Image;
-import com.w4t.ParamCheck;
 
 /**
  * TODO [rh] JavaDoc
@@ -21,8 +21,8 @@ import com.w4t.ParamCheck;
  */
 public abstract class Item extends Widget {
 
-  String text;
-  Image image;
+  private String text;
+  private Image image;
 
   public Item( final Widget parent, final int style ) {
     super( parent, style );
@@ -30,7 +30,9 @@ public abstract class Item extends Widget {
   }
 
   public void setText( final String text ) {
-    ParamCheck.notNull( text, "text" );
+    if( text == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     this.text = text;
   }
 

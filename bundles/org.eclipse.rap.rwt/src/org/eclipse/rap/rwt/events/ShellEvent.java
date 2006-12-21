@@ -1,4 +1,3 @@
-package org.eclipse.rap.rwt.events;
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -9,6 +8,8 @@ package org.eclipse.rap.rwt.events;
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
+package org.eclipse.rap.rwt.events;
 
 import com.w4t.Adaptable;
 import com.w4t.event.Event;

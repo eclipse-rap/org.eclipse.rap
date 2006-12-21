@@ -11,7 +11,7 @@
 
 package org.eclipse.rap.rwt.widgets;
 
-import com.w4t.ParamCheck;
+import org.eclipse.rap.rwt.RWT;
 
 public class TableItem extends Item {
 
@@ -29,7 +29,9 @@ public class TableItem extends Item {
   }
 
   public void setText( final int index, final String text ) {
-    ParamCheck.notNull( text, "text" );
+    if( text == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     if( index == 0 ) {
       super.setText( text );
     } else {
@@ -63,13 +65,6 @@ public class TableItem extends Item {
       }
     }
     return result;
-  }
-
-  public void setText( final String[] texts ) {
-    ParamCheck.notNull( texts, "texts" );
-    for( int i = 0; i < texts.length; i++ ) {
-      setText( i, texts[ i ] );
-    }
   }
 
   void removeText( int index ) {

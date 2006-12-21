@@ -115,7 +115,7 @@ public class ControlLCAUtil_Test extends TestCase {
     
     // for an un-initialized control: render image, if any
     Fixture.fakeResponseWriter();
-    item.setImage( Image.find( Image_Test.IMAGE1 ) );
+    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
     ControlLCAUtil.writeImage( item, item.getImage() );
     String expected = "w.setIcon( \"" 
                     + Image.getPath( item.getImage() ) 

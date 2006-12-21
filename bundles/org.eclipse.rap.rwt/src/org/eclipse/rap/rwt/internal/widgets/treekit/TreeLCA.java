@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.treekit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.TreeEvent;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -29,6 +30,17 @@ public final class TreeLCA extends AbstractWidgetLCA {
     = "org.eclipse.rap.rwt.TreeUtil.removeSelectionListener";
   private static final String ADD_SELECTION_LISTENER 
     = "org.eclipse.rap.rwt.TreeUtil.addSelectionListener";
+  private final static JSListenerInfo JS_TREE_EXPANDED_LISTENER_INFO
+    = new JSListenerInfo( "treeOpenWithContent",
+                          "org.eclipse.rap.rwt.TreeUtil.itemExpanded",
+                          JSListenerType.STATE_AND_ACTION );
+  private final static JSListenerInfo JS_TREE_COLLAPSED_LISTENER_INFO
+    = new JSListenerInfo( "treeClose",
+                          "org.eclipse.rap.rwt.TreeUtil.itemCollapsed",
+                          JSListenerType.STATE_AND_ACTION );
+  
+  // Property names used by preserve mechanism
+  private static final String TREE_LISTENERS = "treeListeners";
   
   public void preserveValues( final Widget widget ) {
     Tree tree  = ( Tree )widget;
@@ -36,6 +48,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     adapter.preserve( Props.SELECTION_LISTENERS, 
                       Boolean.valueOf( SelectionEvent.hasListener( tree ) ) );
+    adapter.preserve( TreeLCA.TREE_LISTENERS, 
+                      Boolean.valueOf( TreeEvent.hasListener( tree ) ) );
   }
   
   public void readData( final Widget widget ) {
@@ -54,7 +68,14 @@ public final class TreeLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
     ControlLCAUtil.writeChanges( tree );
-    updateSelectionListener( tree, SelectionEvent.hasListener( tree ) );
+    updateSelectionListener( tree );
+    JSWriter writer = JSWriter.getWriterFor( tree );
+    writer.updateListener( JS_TREE_EXPANDED_LISTENER_INFO, 
+                           TREE_LISTENERS, 
+                           TreeEvent.hasListener( tree ) );
+    writer.updateListener( JS_TREE_COLLAPSED_LISTENER_INFO, 
+                           TREE_LISTENERS, 
+                           TreeEvent.hasListener( tree ) );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -63,10 +84,10 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
   
-  private static void updateSelectionListener( final Tree tree, 
-                                               final boolean hasListeners ) 
+  private static void updateSelectionListener( final Tree tree ) 
     throws IOException 
   {
+    boolean hasListeners = SelectionEvent.hasListener( tree );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     if( adapter.isInitialized() ) {
       Boolean hadListeners 
