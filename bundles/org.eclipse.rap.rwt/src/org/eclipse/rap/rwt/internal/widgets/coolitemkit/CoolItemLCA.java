@@ -71,10 +71,6 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
   
-  public void processAction( final Widget widget ) {
-    // TODO [rh] implementation missing
-  }
-
   public void renderInitialization( final Widget widget ) throws IOException {
     CoolItem coolItem = ( CoolItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );

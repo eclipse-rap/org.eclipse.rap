@@ -16,8 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.Label;
-import org.eclipse.rap.rwt.widgets.Widget;
+import org.eclipse.rap.rwt.widgets.*;
 
 
 public class LabelLCA extends AbstractWidgetLCA {
@@ -34,9 +33,6 @@ public class LabelLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
   }
   
-  public void processAction( final Widget widget ) {
-  }
-
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.basic.Label" );

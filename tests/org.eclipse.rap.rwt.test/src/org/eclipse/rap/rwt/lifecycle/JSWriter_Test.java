@@ -68,7 +68,7 @@ public class JSWriter_Test extends TestCase {
     String expected 
       =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
         + "var w = new qx.ui.form.Button();"
-        + "wm.add( w, \"w1\" );"
+        + "wm.add( w, \"w1\", true );"
         + "w.setParent( wm.findWidgetById( \"w2\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that the WidgetManager, once initialized, is not initialized
@@ -76,7 +76,7 @@ public class JSWriter_Test extends TestCase {
     writer = JSWriter.getWriterFor( shell.button );
     writer.newWidget( "qx.ui.form.Button" );
     expected +=   "var w = new qx.ui.form.Button();"
-                + "wm.add( w, \"w1\" );"
+                + "wm.add( w, \"w1\", true );"
                 + "w.setParent( wm.findWidgetById( \"w2\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that obtaining the widget reference (var w =) is only rendered
@@ -95,7 +95,7 @@ public class JSWriter_Test extends TestCase {
     String expected
       =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
         + "var w = new qx.ui.form.Button();"
-        + "wm.add( w, \"w1\" );"
+        + "wm.add( w, \"w1\", true );"
         + "w.setParent( wm.findWidgetById( \"w2\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
@@ -109,12 +109,14 @@ public class JSWriter_Test extends TestCase {
   public void testNewWidgetWithParams() throws Exception {
     Display display = new Display();
     TestShell shell = new TestShell( display );
+    Tree tree = new Tree( shell, RWT.NONE );
+    TreeItem item = new TreeItem( tree, RWT.NONE );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.newWidget( "qx.ui.form.Button", new Object[]{ "abc" } );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+        = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
         + "var w = new qx.ui.form.Button( \"abc\" );"
-        + "wm.add( w, \"w1\" );"
+        + "wm.add( w, \"w1\", true );"
         + "w.setParent( wm.findWidgetById( \"w2\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
@@ -122,7 +124,15 @@ public class JSWriter_Test extends TestCase {
     writer.set( "Text", "xyz" );
     expected = "w.setText( \"xyz\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
+    // Ensures that an Item is added and marked as a 'no-control' and setParent
+    // is not called
+    Fixture.fakeResponseWriter();
+    writer = JSWriter.getWriterFor( item );
+    writer.newWidget( "TreeItem", null );
+    expected
+      = "var w = new TreeItem();"
+      + "wm.add( w, \"w3\", false );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   public void testSetParent() throws IOException {

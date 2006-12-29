@@ -12,13 +12,11 @@
 package org.eclipse.rap.rwt.internal.widgets.combokit;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Combo;
 import org.eclipse.rap.rwt.widgets.Widget;
-import com.w4t.engine.service.ContextProvider;
 
 public class ComboLCA extends AbstractWidgetLCA {
   
@@ -43,17 +41,11 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
   
   public void readData( final Widget widget ) {
-    // TODO Auto-generated method stub
-  }
-  
-  public void processAction( Widget widget ) {
     Combo combo = ( Combo )widget;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    if( WidgetUtil.getId( combo ).equals( id ) ) {
+    if( WidgetUtil.wasEventSent( combo, JSConst.EVENT_WIDGET_SELECTED ) ) {
       String value = WidgetUtil.readPropertyValue( widget, SELECTED_ITEM );
       combo.select( new Integer( value ).intValue() );
-      ControlLCAUtil.processSelection( ( Combo )widget, null );
+      ControlLCAUtil.processSelection( combo, null, true );
     }
   }
   

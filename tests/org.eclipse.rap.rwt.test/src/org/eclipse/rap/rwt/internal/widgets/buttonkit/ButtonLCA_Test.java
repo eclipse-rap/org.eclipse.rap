@@ -34,7 +34,6 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
     SelectionListener selectionListener = new SelectionListener() {
-
       public void widgetSelected( final SelectionEvent event ) {
       }
     };
@@ -45,6 +44,40 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, hasListeners );
     display.dispose();
   }
+  
+  // TODO [rh] activate this test when Control#setEnabled exists
+//  public void testDisabledButtonSelection() {
+//    // 
+//    final StringBuffer log = new StringBuffer();
+//    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+//    Display display = new Display();
+//    Shell shell = new Shell( display, RWT.NONE );
+//    final Button button = new Button( shell, RWT.NONE );
+//    Label label = new Label( shell, RWT.NONE );
+//    ActivateEvent.addListener( button, new ActivateAdapter() {
+//      public void activated( ActivateEvent event ) {
+//        log.append( "widgetActivated|" );
+//        button.setEnabled( false );
+//      }
+//    } );
+//    button.addSelectionListener( new SelectionListener() {
+//      public void widgetSelected( final SelectionEvent event ) {
+//        log.append( "widgetSelected|" );
+//      }
+//    } );
+//    Object adapter = shell.getAdapter( IShellAdapter.class );
+//    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+//    shellAdapter.setActiveControl( label );
+//    
+//    String displayId = DisplayUtil.getId( display );
+//    String buttonId = WidgetUtil.getId( button );
+//    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+//    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+//    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
+//    
+//    RWTFixture.readDataAndProcessAction( display );
+//    assertEquals( "widgetActivated|", log.toString() );
+//  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

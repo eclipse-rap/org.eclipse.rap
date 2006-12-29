@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.shellkit;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.engine.service.ContextProvider;
@@ -21,31 +21,33 @@ import com.w4t.engine.service.ContextProvider;
 
 public class ShellLCA extends AbstractWidgetLCA {
   
+  private static final String PROP_ACTIVE_CONTROL = "activeControl";
+
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
+    Shell shell = ( Shell )widget;
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+    adapter.preserve( PROP_ACTIVE_CONTROL, getActiveControl( shell ) );
   }
 
   public void readData( final Widget widget ) { 
-    HttpServletRequest request = ContextProvider.getRequest();
-    String closedShellId = request.getParameter( JSConst.EVENT_SHELL_CLOSED );
-    if( WidgetUtil.getAdapter( widget ).getId().equals( closedShellId ) ) {
-      ( ( Shell )widget ).close();
+    Shell shell = ( Shell )widget;
+    ControlLCAUtil.readBounds( shell );
+    if( WidgetUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
+      shell.close();
     }
-  }
-
-  public void processAction( final Widget widget ) {
-    ControlLCAUtil.readBounds( ( Composite )widget );
+    processActivate( shell );
     // Note: call to preserveValues to avoid sending the bounds to the client,
     // the client application already knows them, because the new bounds are a 
-    // result of an user action. Sending the bounds could also cause trouble in
+    // result of a user action. Sending the bounds could also cause trouble in
     // case of a maximized shell, since the location portion of the
     // bounds are not correct.
-    ControlLCAUtil.preserveValues( ( Control )widget );
+    ControlLCAUtil.preserveValues( shell );
   }
-  
+
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "qx.ui.window.Window" );
+    writer.newWidget( "org.eclipse.rap.rwt.widgets.Shell" );
     ControlLCAUtil.writeResizeNotificator( widget );
     ControlLCAUtil.writeMoveNotificator( widget );
     writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 
@@ -55,11 +57,58 @@ public class ShellLCA extends AbstractWidgetLCA {
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
-    ControlLCAUtil.writeChanges( ( Control )widget );
+    Shell shell = ( Shell )widget;
+    ControlLCAUtil.writeChanges( shell );
+    writeActiveControl( shell );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  }
+
+  /////////////////////////////////////////////////////
+  // Methods to handle activeControl and ActivateEvents
+  
+  private static void writeActiveControl( Shell shell ) throws IOException {
+    Control activeControl = getActiveControl( shell );
+    String prop = PROP_ACTIVE_CONTROL;
+    if( WidgetUtil.hasChanged( shell, prop, activeControl, null ) ) {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      writer.set( "activeControl", new Object[] { activeControl } );
+    }
+  }
+  
+  // TODO [rh] is this safe for multiple shells?
+  private static void processActivate( final Shell shell ) {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String widgetId = request.getParameter( JSConst.EVENT_WIDGET_ACTIVATED );
+    if( widgetId != null ) {
+      Widget widget = WidgetUtil.find( shell, widgetId );
+      if( widget != null ) {
+        setActiveControl( shell, widget );
+      }
+    } else {
+      String activeControlId 
+      = WidgetUtil.readPropertyValue( shell, "activeControl" );
+      Widget widget = WidgetUtil.find( shell, activeControlId );
+      if( widget != null ) {
+        setActiveControl( shell, widget );
+      }
+    }
+  }
+
+  private static Control getActiveControl( final Shell shell ) {
+    Object adapter = shell.getAdapter( IShellAdapter.class );
+    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+    Control activeControl = shellAdapter.getActiveControl();
+    return activeControl;
+  }
+
+  private static void setActiveControl( final Shell shell, final Widget widget ) 
+  {
+    Object adapter = shell.getAdapter( IShellAdapter.class );
+    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+    shellAdapter.setActiveControl( ( Control )widget );
   }
 }

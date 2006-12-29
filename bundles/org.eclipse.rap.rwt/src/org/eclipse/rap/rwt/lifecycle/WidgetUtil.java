@@ -15,6 +15,9 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
+import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor;
+import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.rap.rwt.widgets.Composite;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.engine.service.ContextProvider;
 
@@ -51,7 +54,22 @@ public final class WidgetUtil {
     }
     return result;
   }
-
+  
+  public static Widget find( final Composite root, final String id ) {
+    final Widget[] result = { null };
+    if( id != null ) {
+      WidgetTreeVisitor.accept( root, new AllWidgetTreeVisitor() {
+        public boolean doVisit( final Widget widget ) {
+          if( getId( widget ).equals( id ) ) {
+            result[ 0 ] = widget;
+          }
+          return result[ 0 ] == null;
+        }
+      } );
+    }
+    return result[ 0 ];
+  }
+  
   /**
    * <p>Determines whether the property of the given <code>widget</code> has
    * changed in comparison to its 'preserved' value and thus 'something' needs 
@@ -125,6 +143,14 @@ public final class WidgetUtil {
     key.append( "." );
     key.append( propertyName );
     return request.getParameter( key.toString() );
+  }
+  
+  public static boolean wasEventSent( final Widget widget,
+                                      final String eventName ) 
+  {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String widgetId = request.getParameter( eventName );
+    return getId( widget ).equals( widgetId );
   }
   
   private static void throwAdapterException( final Class clazz ) {

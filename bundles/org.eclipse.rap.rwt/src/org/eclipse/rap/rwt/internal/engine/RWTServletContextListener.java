@@ -196,6 +196,7 @@ public class RWTServletContextListener implements ServletContextListener {
       }
     } else {
       phaseListeners.add( new PreserveWidgetsPhaseListener() );
+      phaseListeners.add( new CurrentPhase.Listener() );
     }
     PhaseListener[] registeredListeners;
     registeredListeners = new PhaseListener[ phaseListeners.size() ];
@@ -216,8 +217,8 @@ public class RWTServletContextListener implements ServletContextListener {
   }
   
   private static PhaseListener[] getRegisteredPhaseListeners( 
-    final ServletContext context ) 
+    final ServletContext ctx ) 
   {
-    return ( PhaseListener[] )context.getAttribute( REGISTERED_PHASE_LISTENERS );
+    return ( PhaseListener[] )ctx.getAttribute( REGISTERED_PHASE_LISTENERS );
   }
 }

@@ -12,15 +12,12 @@
 package org.eclipse.rap.rwt.internal.widgets;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.ControlEvent;
-import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
-import com.w4t.engine.service.ContextProvider;
 
 /**
  * TODO [rh] JavaDoc
@@ -32,6 +29,9 @@ public class ControlLCAUtil {
   private static final String PROPERTY_Y_LOCATION = "bounds.y";
   private static final String PROPERTY_WIDTH = "bounds.width";
   private static final String PROPERTY_HEIGHT = "bounds.height";
+
+  // Property name to preserve ActivateListener 
+  private static final String ACTIVATE_LISTENER = "activateListener";
 
   private ControlLCAUtil() {
     // prevent instance creation
@@ -46,6 +46,8 @@ public class ControlLCAUtil {
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBILITY, 
                       Boolean.valueOf( control.isVisible() ) );
+    adapter.preserve( ACTIVATE_LISTENER, 
+                      Boolean.valueOf( ActivateEvent.hasListener( control ) ) );
   }
   
   public static void readBounds( final Control control ) {
@@ -73,6 +75,7 @@ public class ControlLCAUtil {
       }
     }
   }
+  
   public static void writeVisblility( final Control control ) 
     throws IOException
   {
@@ -95,6 +98,7 @@ public class ControlLCAUtil {
     ControlLCAUtil.writeColors( control );
     writeToolTip( control );
     writeMenu( control );
+    writeActivateListener( control );
   }
   
   public static void writeResizeNotificator( final Widget widget )
@@ -178,27 +182,48 @@ public class ControlLCAUtil {
                   ( ( IColor )bgColor ).toColorValue() );
     }
   }
-
-  public static void processSelection( final Control control, 
-                                       final Item item )
+  
+  public static void writeActivateListener( final Control control ) 
+    throws IOException
   {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    if( WidgetUtil.getId( control ).equals( id ) ) {
-      Rectangle bounds = new Rectangle( readControlXLocation( control ), 
-                                        readControlYLocation( control ),
-                                        readControlWidth( control ),
-                                        readControlHeight( control ) );
-      SelectionEvent event = new SelectionEvent( control, 
-                                                 item,
-                                                 SelectionEvent.WIDGET_SELECTED,
-                                                 bounds,
-                                                 true,
-                                                 RWT.NONE );
-      event.processEvent();
+    Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
+    Boolean defValue = Boolean.FALSE;
+    String prop = ACTIVATE_LISTENER;
+    if( WidgetUtil.hasChanged( control, prop, newValue, defValue ) ) {
+      String function = newValue.booleanValue()
+                      ? "addActivateListenerWidget"
+                      : "removeActivateListenerWidget";
+      JSWriter writer = JSWriter.getWriterFor( control );
+      Object[] args = new Object[] { control };
+      writer.call( control.getShell(), function, args );
     }
   }
   
+  public static void processSelection( final Widget widget, 
+                                       final Item item, 
+                                       final boolean readBounds )
+  {
+    if( WidgetUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
+      Rectangle bounds;
+      if( widget instanceof Control && readBounds ) {
+        Control control = ( Control )widget;
+        bounds = new Rectangle( readControlXLocation( control ), 
+                                readControlYLocation( control ),
+                                readControlWidth( control ),
+                                readControlHeight( control ) );
+      } else {
+        bounds = new Rectangle( 0, 0, 0, 0 );
+      }
+      SelectionEvent event;
+      event = new SelectionEvent( widget, 
+                                  item,
+                                  SelectionEvent.WIDGET_SELECTED,
+                                  bounds,
+                                  true,
+                                  RWT.NONE );
+      event.processEvent();
+    }
+  }
   
   //////////////////
   // helping methods

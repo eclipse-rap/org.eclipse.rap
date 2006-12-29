@@ -17,9 +17,9 @@ import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
-import org.eclipse.rap.rwt.widgets.Widget;
 
-public class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
+final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
+  
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
   private static final String CREATE_PUSH = 
     "org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush";
@@ -29,35 +29,31 @@ public class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
                         JSConst.JS_WIDGET_SELECTED,
                         JSListenerType.ACTION );
 
-  public void delegateProcessAction( final Widget widget ) {
-    processSelection( widget, null );
+  void readData( final ToolItem toolItem ) {
+    processSelection( toolItem );
   }
 
-  public void delegateRenderChanges( final Widget widget ) throws IOException {
-    ToolItem push = ( ToolItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
+  public void renderInitialization( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
+    Object[] args = new Object[]{
+      WidgetUtil.getId( toolItem ),
+      toolItem.getParent()};
+    writer.callStatic( CREATE_PUSH, args );
+  }
+  
+  void renderChanges( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( push ) );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, push.getText() );
-    if( push.getImage() != null ) {
+                           SelectionEvent.hasListener( toolItem ) );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, toolItem.getText() );
+    if( toolItem.getImage() != null ) {
       writer.set( Props.IMAGE,
                   JSConst.QX_FIELD_ICON,
-                  Image.getPath( push.getImage() ) );
+                  Image.getPath( toolItem.getImage() ) );
     }
-  }
-
-  public void delegateRenderInitialization( final Widget widget ) 
-    throws IOException {
-    
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    ToolItem push = ( ToolItem )widget;
-    Object[] args = new Object[]{
-      WidgetUtil.getId( push ),
-      push.getParent()};
-    writer.callStatic( CREATE_PUSH, args );
   }
 }

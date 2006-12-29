@@ -73,13 +73,11 @@ public class CoolItem extends Item {
 
   public void setControl( final Control control ) {
     if( control != null ) {
-      // will become RWT.ERROR_INVALID_ARGUMENT
       if( control.isDisposed() ) {
-        throw new IllegalArgumentException( "Control is already disposed of." );
+        RWT.error( RWT.ERROR_INVALID_ARGUMENT );
       }
-      // will become RWT.ERROR_INVALID_PARENT
       if( control.getParent() != getParent() ) {
-        throw new IllegalArgumentException( "Invalid parent." );
+        RWT.error( RWT.ERROR_INVALID_PARENT );
       }
     }
     this.control = control;
@@ -205,34 +203,6 @@ public class CoolItem extends Item {
 
   void setOrder( final int order ) {
     this.order = order;
-  }
-  
-  // TODO [rh] check if needed any more and remove
-  void setOrder( final int newOrder, final boolean reorganize ) {
-    if( this.order != newOrder ) {
-      if( newOrder < 0 || newOrder > parent.getItemCount() - 1 ) {
-        throw new IndexOutOfBoundsException( "order" );
-      }
-      if( reorganize ) {
-        int[] itemOrder = parent.getItemOrder();
-        if( newOrder < this.order ) {
-          for( int i = 0; i < itemOrder.length; i++ ) {
-            CoolItem item = parent.getItem( i );
-            if( item != this && itemOrder[ i ] >= newOrder ) {
-              item.setOrder( itemOrder[ i ] + 1, false );
-            }
-          }
-        } else {
-          for( int i = 0; i < itemOrder.length; i++ ) {
-            CoolItem item = parent.getItem( i );
-            if( item != this && itemOrder[ i ] <= newOrder ) {
-              item.setOrder( itemOrder[ i ] - 1, false );
-            }
-          }
-        }
-      }
-      this.order = newOrder;
-    } 
   }
 
   private CoolItem[] getOrderedItems() {

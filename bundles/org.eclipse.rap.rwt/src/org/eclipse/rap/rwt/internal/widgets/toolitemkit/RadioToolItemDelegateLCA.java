@@ -12,17 +12,16 @@
 package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
-import com.w4t.engine.service.ContextProvider;
 
 
-public class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
+final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
+  
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
   private static final String CREATE_RADIO 
     = "org.eclipse.rap.rwt.ToolItemUtil.createToolItemRadioButton";
@@ -31,16 +30,13 @@ public class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
     = "org.eclipse.rap.rwt.ButtonUtil.radioSelected";
   
   private final JSListenerInfo JS_LISTENER_INFO 
-  = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
-                        WIDGET_SELECTED, 
-                        JSListenerType.ACTION );
+    = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
+                          WIDGET_SELECTED, 
+                          JSListenerType.ACTION );
   
-  public void delegateProcessAction( final Widget widget ) {
-    ToolItem button = ( ToolItem )widget;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    if( WidgetUtil.getId( button ).equals( id ) ) {
-      Control[] children = button.getParent().getChildren();
+  void readData( final ToolItem toolItem ) {
+    if( WidgetUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
+      Control[] children = toolItem.getParent().getChildren();
       for( int i = 0; i < children.length; i++ ) {
         Widget child = children[ i ];
         if( ( child instanceof ToolItem )
@@ -49,16 +45,13 @@ public class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
           ( ( ToolItem )child ).setSelection( false );
         }
       }
-      button.setSelection( true );
-      processSelection( widget, null );
+      toolItem.setSelection( true );
+      processSelection( toolItem );
     }
   }
 
-  public void delegateRenderInitialization( final Widget widget ) 
-    throws IOException {
-    
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    ToolItem toolItem = ( ToolItem )widget;
+  void renderInitialization( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
     ToolBar bar = toolItem.getParent();
     int myIndex = bar.indexOf( toolItem );
     ToolItem neighbour = null;
@@ -68,7 +61,6 @@ public class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
         neighbour = null;
       }
     }
-    
     Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
       toolItem.getParent(),
@@ -78,21 +70,20 @@ public class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
     writer.callStatic( CREATE_RADIO, args );
   }
 
-  public void delegateRenderChanges( final Widget widget ) throws IOException {
-    ToolItem button = ( ToolItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
+  void renderChanges( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for ToolItem the bounds are undefined
     writer.updateListener( "manager" ,
                            JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( button ) );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText() );
-    if( button.getImage() != null ) {
+                           SelectionEvent.hasListener( toolItem ) );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, toolItem.getText() );
+    if( toolItem.getImage() != null ) {
       writer.set( Props.IMAGE,
                   JSConst.QX_FIELD_ICON,
-                  Image.getPath( button.getImage() ) );
+                  Image.getPath( toolItem.getImage() ) );
     }
   }
 }

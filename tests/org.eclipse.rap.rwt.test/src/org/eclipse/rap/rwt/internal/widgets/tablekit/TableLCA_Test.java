@@ -39,7 +39,6 @@ public class TableLCA_Test extends TestCase {
     column1.setText( "Column1" );
     TableItem tableItem0 = new TableItem( table, RWT.NONE );
     String[] texts = new String[] { "0-0", "0-1" };
-    ParamCheck.notNull( texts, "texts" );
     for( int i = 0; i < texts.length; i++ ) {
       tableItem0.setText( i, texts[ i ] );
     }

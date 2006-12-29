@@ -16,7 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.IDisplayAccessAdapter;
+import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
 import com.w4t.Adaptable;
 import com.w4t.W4TContext;
 import com.w4t.engine.service.ContextProvider;
@@ -34,7 +34,7 @@ public class Display implements Adaptable {
   
   private final List shells;
   private Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-  private IDisplayAccessAdapter accessAdapter;
+  private IDisplayAdapter accessAdapter;
 
   public Display() {
     HttpSession session = ContextProvider.getSession();
@@ -63,9 +63,9 @@ public class Display implements Adaptable {
 
   public Object getAdapter( final Class adapter ) {
     Object result = null;
-    if( adapter == IDisplayAccessAdapter.class ) {
+    if( adapter == IDisplayAdapter.class ) {
       if( accessAdapter == null ) {
-        accessAdapter = new DisplayAccessAdapter();
+        accessAdapter = new DisplayAdapter();
       }
       result = accessAdapter;
     } else {
@@ -85,7 +85,7 @@ public class Display implements Adaptable {
   ////////////////
   // Inner classes
 
-  private final class DisplayAccessAdapter implements IDisplayAccessAdapter {
+  private final class DisplayAdapter implements IDisplayAdapter {
 
     public void setBounds( final Rectangle bounds ) {
       if( bounds == null ) {

@@ -102,7 +102,7 @@ org.eclipse.rap.rwt.TreeUtil.itemExpandedAction = function( evt ) {
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var treeItemId = widgetManager.findIdByWidget( treeItem );
   if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-    req.addParameter( "org.eclipse.rap.rwt.events.treeExpanded", treeItemId );
+    req.addEvent( "org.eclipse.rap.rwt.events.treeExpanded", treeItemId );
     req.send();
   }
 }
@@ -121,7 +121,7 @@ org.eclipse.rap.rwt.TreeUtil.itemCollapsedAction = function( evt ) {
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
     var treeItemId = widgetManager.findIdByWidget( treeItem );
     var req = org.eclipse.rap.rwt.Request.getInstance();
-    req.addParameter( "org.eclipse.rap.rwt.events.treeCollapsed", treeItemId );
+    req.addEvent( "org.eclipse.rap.rwt.events.treeCollapsed", treeItemId );
     req.send();
   }
 }

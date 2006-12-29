@@ -20,15 +20,20 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.WidgetManager", qx.core.Object,
     // Holds the association between widget-id's and widget-instances.
     // Key: id (string), value: widget instanace (qx.ui.core.Widget)
     this._map = {};
+    this._controls = new Array();
   }
 );
 
 /**
  * Registeres the given widget under the given id at the WidgetManager.
  */
-qx.Proto.add = function( widget, id ) {
-	this._map[ id ] = widget;
-	widget.setUserData( "id", id );
+qx.Proto.add = function( widget, id, isControl ) {
+  this._map[ id ] = widget;
+  if( isControl != "undefined" && isControl == true ) {
+//  qx.lang.Array.append( this._controls, widget );
+    this._controls.push( widget );
+  }
+  widget.setUserData( "id", id );
 };
 
 /**
@@ -44,8 +49,9 @@ qx.Proto.dispose = function( id ) {
     widget.setParent( null );
     this._removeToolTipPopup( widget );
     widget.dispose();
+  	qx.lang.Array.remove( this._controls, widget );
   }
-	delete this._map[ id ];
+  delete this._map[ id ];
 };
 
 /**
@@ -53,7 +59,7 @@ qx.Proto.dispose = function( id ) {
  * for the given id exists.
  */
 qx.Proto.findWidgetById = function( id ) {
-	return this._map[ id ];
+  return this._map[ id ];
 };
 
 /**
@@ -65,11 +71,19 @@ qx.Proto.findIdByWidget = function( widget ) {
 };
 
 /**
+ * Determines whether the given widget represents a server-side instance of
+ * Control (or one of its subclasses)
+ */
+qx.Proto.isControl = function( widget ) {
+  return widget != null && qx.lang.Array.contains( this._controls, widget );
+}
+
+/**
  * Sets the toolTipText for the given widget. An empty or null toolTipText
  * removes the tool tip of the widget.
  */
 qx.Proto.setToolTip = function( widget, toolTipText ) {
-  // remove and dispose an eventually existing tool tip
+  // remove and dispose of an eventually existing tool tip
   this._removeToolTipPopup( widget );
   // TODO [rh] can we avoid to destroy/create the tooltip every time its text
   //      gets changed?

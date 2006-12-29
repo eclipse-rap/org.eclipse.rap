@@ -18,8 +18,7 @@ import org.eclipse.rap.rwt.custom.CTabItem_Test;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
-import org.eclipse.rap.rwt.internal.engine.AdapterFactoryRegistry_Test;
-import org.eclipse.rap.rwt.internal.engine.RWTServletContextListener_Test;
+import org.eclipse.rap.rwt.internal.engine.*;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.internal.widgets.buttonkit.ButtonLCA_Test;
@@ -47,6 +46,7 @@ public class RWTTestSuite {
     suite.addTestSuite( EntryPointManager_Test.class );
     suite.addTestSuite( RWTServletContextListener_Test.class );
     suite.addTestSuite( AdapterFactoryRegistry_Test.class );
+    suite.addTestSuite( PhaseListenerRegistry_Test.class );
     suite.addTestSuite( RWTLifeCycle_Test.class );
     suite.addTestSuite( LifeCycleAdapter_Test.class );
     suite.addTestSuite( ResourceManager_Test.class );
@@ -63,9 +63,12 @@ public class RWTTestSuite {
     suite.addTestSuite( DisposeEvent_Test.class );
     suite.addTestSuite( ShellEvent_Test.class );
     suite.addTestSuite( TreeEvent_Test.class );
+    suite.addTestSuite( ActivateEvent_Test.class );
+    suite.addTestSuite( RWTEvent_Test.class );
 
     suite.addTestSuite( Display_Test.class );
     suite.addTestSuite( Shell_Test.class );
+    suite.addTestSuite( Widget_Test.class );
     suite.addTestSuite( Control_Test.class );
     suite.addTestSuite( Item_Test.class );
     suite.addTestSuite( ItemHolder_Test.class );
@@ -88,6 +91,7 @@ public class RWTTestSuite {
     suite.addTestSuite( CTabItem_Test.class );
     suite.addTestSuite( CoolBar_Test.class );
     suite.addTestSuite( CoolItem_Test.class );
+    suite.addTestSuite( Label_Test.class );
     
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );

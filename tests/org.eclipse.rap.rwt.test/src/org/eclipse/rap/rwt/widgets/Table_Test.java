@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import com.w4t.ParamCheck;
 
 public class Table_Test extends TestCase {
 
@@ -133,7 +132,6 @@ public class Table_Test extends TestCase {
     };
     
     // test setting multiple texts at once
-    ParamCheck.notNull( texts, "texts" );
     for( int i = 0; i < texts.length; i++ ) {
       item.setText( i, texts[ i ] );
     }

@@ -46,11 +46,9 @@ public class TableLCA extends AbstractWidgetLCA {
     readColumnWidths( table );
     readSelection( table );
     preserveSelection( table );
-  }
-  
-  public void processAction( final Widget widget ) {
     // TODO: [fappel] retrieve selected item...
-    ControlLCAUtil.processSelection( ( Table )widget, null );
+    // TODO [rh] clarify whether bounds should be sent (last parameter)
+    ControlLCAUtil.processSelection( widget, null, true );
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {

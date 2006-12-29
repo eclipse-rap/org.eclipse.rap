@@ -16,6 +16,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.widgets.Display;
 import org.eclipse.rap.rwt.widgets.Shell;
+import com.w4t.engine.lifecycle.PhaseId;
 
 
 public class ShellEvent_Test extends TestCase {
@@ -26,6 +27,7 @@ public class ShellEvent_Test extends TestCase {
   
   protected void setUp() throws Exception {
     RWTFixture.setUp();
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
   
   protected void tearDown() throws Exception {

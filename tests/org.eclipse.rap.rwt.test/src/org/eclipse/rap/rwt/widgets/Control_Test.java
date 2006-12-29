@@ -13,14 +13,17 @@ package org.eclipse.rap.rwt.widgets;
 
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import com.w4t.Fixture;
+import com.w4t.engine.lifecycle.PhaseId;
 
 public class Control_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {

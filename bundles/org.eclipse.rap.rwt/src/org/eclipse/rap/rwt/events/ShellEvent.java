@@ -12,7 +12,6 @@
 package org.eclipse.rap.rwt.events;
 
 import com.w4t.Adaptable;
-import com.w4t.event.Event;
 
 
 /**
@@ -20,7 +19,7 @@ import com.w4t.event.Event;
  * <p></p>
  */
 // TODO [rh] should we support the 'doit' flag, at least for shellClosed?
-public class ShellEvent extends Event {
+public class ShellEvent extends RWTEvent {
 
   public static final int SHELL_CLOSED = 0;
   

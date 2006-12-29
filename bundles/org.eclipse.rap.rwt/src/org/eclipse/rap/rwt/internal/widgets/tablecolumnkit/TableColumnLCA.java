@@ -25,9 +25,6 @@ public class TableColumnLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
   }
   
-  public void processAction( final Widget widget ) {
-  }
-  
   public void renderInitialization( final Widget widget ) throws IOException {
   }
 

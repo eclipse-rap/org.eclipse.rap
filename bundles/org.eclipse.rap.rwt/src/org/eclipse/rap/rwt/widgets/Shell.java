@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.widgets.IShellAdapter;
 import org.eclipse.rap.rwt.widgets.MenuHolder.IMenuHolderAdapter;
 
 /**
@@ -31,6 +32,8 @@ public class Shell extends Composite {
   private Menu menuBar;
   private MenuHolder menuHolder;
   private DisposeListener menuBarDisposeListener;
+  private Control lastActive;
+  private IShellAdapter shellAdapter;
 
   // TODO [rh] preliminary: yet no null-check, default/current substitute, etc
   public Shell( final Display display, final int style ) {
@@ -66,18 +69,13 @@ public class Shell extends Composite {
     if( this.menuBar != menuBar ) {
       if( menuBar != null ) {
         if( menuBar.isDisposed() ) {
-          // will become SWT.ERROR_INVALID_ARGUMENT
-          String msg = "The argument 'menuBar' is already disposed of.";
-          throw new IllegalArgumentException( msg );
+          RWT.error( RWT.ERROR_INVALID_ARGUMENT );
         }
         if( menuBar.getParent() != this ) {
-          // will become SWT.ERROR_INVALID_PARENT
-          String msg = "The argument 'menuBar' has an invalid parent.";
-          throw new IllegalArgumentException( msg );
+          RWT.error( RWT.ERROR_INVALID_PARENT );
         }
         if( ( menuBar.getStyle() & RWT.BAR ) == 0 ) {
-          String msg = "The argument 'menuBar' is not a BAR.";
-          throw new IllegalArgumentException( msg );
+          RWT.error( RWT.ERROR_MENU_NOT_BAR );
         }
       }
       removeMenuBarDisposeListener();
@@ -97,6 +95,18 @@ public class Shell extends Composite {
         menuHolder = new MenuHolder();
       }
       result = menuHolder;
+    } else if( adapter == IShellAdapter.class ) {
+      if( shellAdapter == null ) {
+        shellAdapter = new IShellAdapter() {
+          public Control getActiveControl() {
+            return Shell.this.lastActive;
+          }
+          public void setActiveControl( final Control control ) {
+            Shell.this.setActiveControl( control );
+          }
+        };
+      }
+      result = shellAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -111,6 +121,7 @@ public class Shell extends Composite {
 
   // ///////////////////////////////////////////////
   // Event listener registration and deregistration
+  
   public void addShellListener( final ShellListener listener ) {
     ShellEvent.addListener( this, listener );
   }
@@ -121,6 +132,7 @@ public class Shell extends Composite {
 
   // //////////
   // Overrides
+  
   protected final void releaseParent() {
     display.removeShell( this );
   }
@@ -131,6 +143,7 @@ public class Shell extends Composite {
 
   // ///////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menuBar
+  
   private void addMenuBarDisposeListener() {
     if( menuBar != null ) {
       if( menuBarDisposeListener == null ) {
@@ -149,5 +162,66 @@ public class Shell extends Composite {
     if( menuBar != null ) {
       menuBar.removeDisposeListener( menuBarDisposeListener );
     }
+  }
+  
+  ////////////////////////////////////////////////////////////
+  // Methods to maintain activeControl and send ActivateEvents
+
+  private void setActiveControl( final Control activateControl ) {
+    Control control = activateControl;
+    if( control != null && control.isDisposed() ) {
+      control = null;
+    }
+    if( lastActive != null && lastActive.isDisposed() ) {
+      lastActive = null;
+    }
+    if( lastActive != control ) {
+      // Compute the list of controls to be activated and deactivated by finding
+      // the first common parent control.
+      Control[] deactivate 
+        = ( lastActive == null ) ? new Control[ 0 ] : getPath( lastActive );
+      Control[] activate 
+        = ( control == null ) ? new Control[ 0 ] : getPath( control );
+      lastActive = control;
+      
+      int index = 0;
+      int length = Math.min( activate.length, deactivate.length );
+      while( index < length && activate[ index ] == deactivate[ index ] ) {
+        index++;
+      }
+      // It is possible (but unlikely), that application code could have
+      // destroyed some of the widgets. If this happens, keep processing those
+      // widgets that are not disposed.
+      ActivateEvent evt;
+      for( int i = deactivate.length - 1; i >= index; --i ) {
+        if( !deactivate[ i ].isDisposed() ) {
+          evt = new ActivateEvent( deactivate[ i ], ActivateEvent.DEACTIVATED );
+          evt.processEvent();
+        }
+      }
+      for( int i = activate.length - 1; i >= index; --i ) {
+        if( !activate[ i ].isDisposed() ) {
+          evt = new ActivateEvent( activate[ i ], ActivateEvent.ACTIVATED );
+          evt.processEvent();
+        }
+      }
+    }
+  }
+
+  private Control[] getPath( final Control ctrl ) {
+    int count = 0;
+    Control control = ctrl;
+    while( control != this ) {
+      count++;
+      control = control.getParent();
+    }
+    control = ctrl;
+    Control[] result = new Control[ count ];
+    while( control != this ) {
+      count--;
+      result[ count ] = control;
+      control = control.getParent();
+    }
+    return result;
   }
 }

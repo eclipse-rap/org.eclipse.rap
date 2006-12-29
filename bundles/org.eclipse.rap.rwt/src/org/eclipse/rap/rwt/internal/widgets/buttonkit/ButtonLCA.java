@@ -23,7 +23,6 @@ import org.eclipse.rap.rwt.widgets.Widget;
 
 public class ButtonLCA extends AbstractWidgetLCA {
   
-  
   private final static ButtonDelegateLCA PUSH = new PushButtonDelegateLCA();
   private final static ButtonDelegateLCA CHECK = new CheckButtonDelegateLCA();
   private final static ButtonDelegateLCA RADIO = new RadioButtonDelegateLCA();
@@ -54,11 +53,7 @@ public class ButtonLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    // TODO Auto-generated method stub
-  }
-
-  public void processAction( final Widget widget ) {
-    getLCADelegate( widget ).processAction( widget );
+    getLCADelegate( widget ).readData( widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

@@ -16,6 +16,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.engine.lifecycle.PhaseId;
 
 public class SelectionEvent_Test extends TestCase {
 
@@ -24,6 +25,7 @@ public class SelectionEvent_Test extends TestCase {
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {

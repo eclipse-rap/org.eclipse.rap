@@ -20,18 +20,24 @@ import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Button;
 import org.eclipse.rap.rwt.widgets.Widget;
 
-public class PushButtonDelegateLCA extends ButtonDelegateLCA {
+final class PushButtonDelegateLCA extends ButtonDelegateLCA {
 
   private final static JSListenerInfo JS_LISTENER_INFO = 
     new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
                         JSConst.JS_WIDGET_SELECTED,
                         JSListenerType.ACTION );
 
-  public void delegateProcessAction( final Widget widget ) {
-    ControlLCAUtil.processSelection( ( Button )widget, null );
+  void readData( final Widget widget ) {
+    // TODO [rh] clarify whether bounds should be sent (last parameter)
+    ControlLCAUtil.processSelection( widget, null, true );
+  }
+  
+  void renderInitialization( final Widget widget ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.newWidget( "qx.ui.form.Button" );
   }
 
-  public void delegateRenderChanges( final Widget widget ) throws IOException {
+  void renderChanges( final Widget widget ) throws IOException {
     Button button = ( Button )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
@@ -47,12 +53,5 @@ public class PushButtonDelegateLCA extends ButtonDelegateLCA {
                   JSConst.QX_FIELD_ICON,
                   Image.getPath( button.getImage() ) );
     }
-  }
-
-  public void delegateRenderInitialization( final Widget widget ) 
-    throws IOException {
-    
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "qx.ui.form.Button" );
   }
 }

@@ -97,7 +97,7 @@ qx.Proto._onHandleMouseUp = function( evt ) {
       var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = org.eclipse.rap.rwt.Request.getInstance();
-      req.addParameter( "org.eclipse.rap.rwt.events.widgetMoved", id );
+      req.addEvent( "org.eclipse.rap.rwt.events.widgetMoved", id );
       req.addParameter( id + ".bounds.x", this.getLeft() );
       req.addParameter( id + ".bounds.y", this.getTop() );
       req.send();

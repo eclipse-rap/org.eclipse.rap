@@ -17,10 +17,13 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.custom.CTabFolder;
 import org.eclipse.rap.rwt.custom.CTabItem;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
+import com.w4t.engine.lifecycle.PhaseId;
+import com.w4t.engine.requests.RequestParams;
 
 public class ControlLCAUtil_Test extends TestCase {
 
@@ -129,6 +132,94 @@ public class ControlLCAUtil_Test extends TestCase {
     item.setImage( null );
     ControlLCAUtil.writeImage( item, item.getImage() );
     assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( \"\" );" ) != -1 );
+  }
+  
+  public void testWriteActivateListener() throws IOException {
+    ActivateAdapter listener = new ActivateAdapter() {
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Composite composite = new Composite( shell, RWT.NONE );
+    Label label = new Label( composite, RWT.NONE );
+    
+    // A non-initialized widget with no listener attached must not render
+    // JavaScript code for adding activateListeners
+    AbstractWidgetLCA labelLCA = WidgetUtil.getLCA( label );
+    Fixture.fakeResponseWriter();
+    labelLCA.renderChanges( label );
+    String markup = Fixture.getAllMarkup();
+    assertEquals( false, WidgetUtil.getAdapter( label ).isInitialized() );
+    assertTrue( markup.length() > 0 );
+    assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
+    
+    // A non-initialized widget with a listener attached must render JavaScript 
+    // code for adding activateListeners
+    ActivateEvent.addListener( label, listener );
+    Fixture.fakeResponseWriter();
+    labelLCA.renderChanges( label );
+    markup = Fixture.getAllMarkup();
+    assertEquals( false, WidgetUtil.getAdapter( label ).isInitialized() );
+    assertTrue( markup.indexOf( "addActivateListenerWidget" ) != -1 );
+    
+    // An initialized widget with unchanged activateListeners must not render
+    // JavaScript code for adding activateListeners
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( label );
+    labelLCA.preserveValues( label );
+    labelLCA.renderChanges( label );
+    markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
+
+    // Removing an ActivateListener from an initialized widget must render
+    // JavaScript code for removing activateListeners
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( label );
+    labelLCA.preserveValues( label );
+    ActivateEvent.removeListener( label, listener );
+    labelLCA.renderChanges( label );
+    markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
+    assertTrue( markup.indexOf( "removeActivateListenerWidget" ) != -1 );
+  }
+  
+  public void testProcessSelection() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final StringBuffer log = new StringBuffer();
+    SelectionListener listener = new SelectionListener() {
+      public void widgetSelected( final SelectionEvent event ) {
+        log.append( "widgetSelected" );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    Button button = new Button( shell, RWT.PUSH );
+    button.addSelectionListener( listener );
+    String displayId = DisplayUtil.getId( display );
+    String buttonId = WidgetUtil.getId( button );
+
+    // Test that requestParams like '...events.widgetSelected=w3' cause the
+    // event to be fired
+    log.setLength( 0 );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    ControlLCAUtil.processSelection( button, null, true );
+    assertEquals( "widgetSelected", log.toString() );
+
+    // Test that requestParams like '...events.widgetSelected=w3,0' cause the
+    // event to be fired
+    log.setLength( 0 );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    ControlLCAUtil.processSelection( button, null, true );
+    assertEquals( "widgetSelected", log.toString() );
+
+    // Test that if requestParam '...events.widgetSelected' is null, no event
+    // gets fired
+    log.setLength( 0 );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, null );
+    ControlLCAUtil.processSelection( button, null, true );
+    assertEquals( "", log.toString() );
   }
 
   protected void setUp() throws Exception {

@@ -18,6 +18,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.DisposeEvent;
 import org.eclipse.rap.rwt.events.DisposeListener;
+import com.w4t.engine.lifecycle.PhaseId;
 
 public class Composition_Test extends TestCase {
 
@@ -123,6 +124,7 @@ public class Composition_Test extends TestCase {
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {

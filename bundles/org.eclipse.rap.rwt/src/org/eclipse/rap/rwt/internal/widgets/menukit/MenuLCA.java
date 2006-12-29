@@ -43,9 +43,6 @@ public class MenuLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
   }
   
-  public void processAction( final Widget widget ) {
-  }
-
   public void renderInitialization( final Widget widget ) throws IOException {
     Menu menu = ( Menu )widget;
     JSWriter writer = JSWriter.getWriterFor( menu );

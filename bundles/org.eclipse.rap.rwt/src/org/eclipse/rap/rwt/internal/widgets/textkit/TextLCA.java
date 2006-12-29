@@ -57,9 +57,6 @@ public class TextLCA extends AbstractWidgetLCA {
     }
   }
 
-  public void processAction( final Widget widget ) {
-  }
-
   public void renderInitialization( Widget widget ) throws IOException {
     getLCADelegate( widget ).renderInitialization( widget );
   }

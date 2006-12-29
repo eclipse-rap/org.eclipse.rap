@@ -15,12 +15,8 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
-import org.eclipse.rap.rwt.widgets.Widget;
 
-public class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
-
-  public static final String SET_CONTROL_FOR_SEPARATOR_RUNNABLE
-    = "setControlForSeparatorRunnable";
+final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
   private static final String CREATE_SEPERATOR = 
@@ -29,36 +25,33 @@ public class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
     "org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator";
   
 
-  public void delegateProcessAction( final Widget widget ) {
+  void readData( final ToolItem toolItem ) {
+    // do nothing
   }
-
-  public void delegateRenderInitialization( final Widget widget )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    ToolItem push = ( ToolItem )widget;
+  
+  void renderInitialization( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
     Object[] args = new Object[]{
-      WidgetUtil.getId( push ),
-      push.getParent()};
+      WidgetUtil.getId( toolItem ),
+      toolItem.getParent()};
     writer.callStatic( CREATE_SEPERATOR, args );
   }
 
-  public void delegateRenderChanges( final Widget widget ) throws IOException {
-    final JSWriter writer = JSWriter.getWriterFor( widget );
-    ToolItem push = ( ToolItem )widget;
-    final Object[] args = new Object[] {
-      WidgetUtil.getId( push ),
-      push.getParent(),
-      new Integer( push.getWidth() ),
-      push.getControl()
+  void renderChanges( final ToolItem toolItem ) throws IOException {
+    final JSWriter writer = JSWriter.getWriterFor( toolItem );
+    final Object[] args = new Object[]{
+      WidgetUtil.getId( toolItem ),
+      toolItem.getParent(),
+      new Integer( toolItem.getWidth() ),
+      toolItem.getControl()
     };
-    if( push.getControl()!= null ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( push.getControl() );
+    if( toolItem.getControl() != null ) {
+      IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem.getControl() );
       adapter.setRenderRunnable( new IRenderRunnable() {
         public void afterRender() throws IOException {
           writer.callStatic( SET_CONTROL_FOR_SEPERATOR, args );
         }
-    } );
+      } );
     }
   }
 }

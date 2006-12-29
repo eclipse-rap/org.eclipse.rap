@@ -64,9 +64,6 @@ public class TabItemLCA extends AbstractWidgetLCA {
     }
   }
   
-  public void processAction( final Widget widget ) {
-  }
-  
   public void renderInitialization( final Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );

@@ -12,14 +12,12 @@
 package org.eclipse.rap.rwt.internal.widgets.listkit;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.List;
 import org.eclipse.rap.rwt.widgets.Widget;
-import com.w4t.engine.service.ContextProvider;
 
 
 public class ListLCA extends AbstractWidgetLCA {
@@ -55,15 +53,7 @@ public class ListLCA extends AbstractWidgetLCA {
       }
       list.setSelection( indices );
     }
-  }
-
-  public void processAction( final Widget widget ) {
-    List list = ( List )widget;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    if( WidgetUtil.getId( list ).equals( id ) ) {
-      ControlLCAUtil.processSelection( ( List )widget, null );
-    }
+    ControlLCAUtil.processSelection( list, null, true );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -105,10 +95,10 @@ public class ListLCA extends AbstractWidgetLCA {
 
   private static void writeItems( final List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
-    if( WidgetUtil.hasChanged( list, PROP_ITEMS, list.getItems(), DEFAUT_ITEMS ) ) {
-      
+    String[] items = list.getItems();
+    if( WidgetUtil.hasChanged( list, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
+      writer.set( PROP_ITEMS, new Object[]{ items } );
     }
-    writer.set( PROP_ITEMS, new Object[]{ list.getItems() } );
   }
 
   private static void writeSelection( final List list ) throws IOException {

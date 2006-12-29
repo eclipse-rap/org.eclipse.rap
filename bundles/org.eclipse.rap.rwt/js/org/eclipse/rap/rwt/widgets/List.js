@@ -21,6 +21,7 @@ qx.OO.defineClass(
     // Should changeSelection events passed to the server-side? 
     // state == no, action == yes
     this._changeSelectionNotification = "state";
+    this.setMarkLeadingItem( true );
     var manager = this.getManager();
     manager.setMultiSelection( multiSelection );
     manager.addEventListener( "changeSelection", this._onChangeSelection, this );
@@ -29,12 +30,21 @@ qx.OO.defineClass(
 
 /** Sets the given aray of items. */
 qx.Proto.setItems = function( items ) {
-  // TODO [rh] preserve selection
+  // TODO [rh] preserving selection and focus does not work properly
+  var manager = this.getManager();
+  var oldLeadItem = manager.getLeadItem();
+  var oldAnchorItem = manager.getAnchorItem();
+  var oldSelection = manager.getSelectedItems();
   this.removeAll();
   // TODO [rh] improve: replace existing items with new string and
   //      add/remove only what's left
   for( var i = 0; i < items.length; i++ ) {
     this.add( new qx.ui.form.ListItem( items[ i ] ) );
+  }
+  manager.setSelectedItems( oldSelection );
+  manager.setLeadItem( oldLeadItem );
+  if( manager.getMultiSelection() ) {
+    manager.setAnchorItem( oldAnchorItem );
   }
 }
 
@@ -100,7 +110,7 @@ qx.Proto._onChangeSelection = function( evt ) {
     var req = org.eclipse.rap.rwt.Request.getInstance();
     req.addParameter( id + ".selection", selectionIndices );
     if( this._changeSelectionNotification == "action" ) {
-      req.addParameter( "org.eclipse.rap.rwt.events.widgetSelected", id );
+      req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
       req.send();
     }
   }

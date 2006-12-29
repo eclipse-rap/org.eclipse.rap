@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.rap.rwt.events.RWTEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.widgets.*;
@@ -30,7 +31,7 @@ import com.w4t.engine.requests.RequestParams;
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
 
-public final class DisplayLCA implements IDisplayLifeCycleAdapter {
+public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
@@ -169,18 +170,19 @@ public final class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
   
   public void processAction( final Display display ) {
-    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
-        IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
-        adapter.processAction( widget );
-        return true;
-      }
-    };
-    Composite[] shells = display.getShells();
-    for( int i = 0; i < shells.length; i++ ) {
-      Composite shell = shells[ i ];
-      WidgetTreeVisitor.accept( shell, visitor );
-    }
+//    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+//      public boolean doVisit( final Widget widget ) {
+//        IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
+//        adapter.processAction( widget );
+//        return true;
+//      }
+//    };
+//    Composite[] shells = display.getShells();
+//    for( int i = 0; i < shells.length; i++ ) {
+//      Composite shell = shells[ i ];
+//      WidgetTreeVisitor.accept( shell, visitor );
+//    }
+    RWTEvent.processScheduledEvents();
   }
 
   /////////////////////////////
@@ -193,6 +195,8 @@ public final class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String jsAppInitialization() {
+    // TODO [rh] change org_eclipse_rap_rwt_requesthandler to something like
+    //      request.set(ServerSide)Handler (see also request.js)
     String code =   "var org_eclipse_rap_rwt_requesthandler = \"{0}\";"
                   + "var app = new org.eclipse.rap.rwt.Application();" 
                   + "qx.core.Init.getInstance().setApplication( app );";
@@ -256,8 +260,8 @@ public final class DisplayLCA implements IDisplayLifeCycleAdapter {
                        0, 
                        readIntPropertyValue( display, "bounds.width", 0 ), 
                        readIntPropertyValue( display, "bounds.height", 0 ) );
-    Object adapter = display.getAdapter( IDisplayAccessAdapter.class );
-    IDisplayAccessAdapter displayAdapter = ( IDisplayAccessAdapter )adapter;
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setBounds( bounds );
   }
   

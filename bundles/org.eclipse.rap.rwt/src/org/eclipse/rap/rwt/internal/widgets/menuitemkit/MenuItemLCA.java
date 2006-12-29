@@ -12,16 +12,12 @@
 package org.eclipse.rap.rwt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.MenuItem;
-import org.eclipse.rap.rwt.widgets.Widget;
-import com.w4t.engine.service.ContextProvider;
+import org.eclipse.rap.rwt.widgets.*;
 
 
 public class MenuItemLCA extends AbstractWidgetLCA {
@@ -41,20 +37,18 @@ public class MenuItemLCA extends AbstractWidgetLCA {
   }
   
   public void readData( final Widget widget ) {
-  }
-
-  public void processAction( final Widget widget ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    if( WidgetUtil.getId( widget ).equals( id ) ) {
-      SelectionEvent event = new SelectionEvent( widget, 
-                                                 null,
-                                                 SelectionEvent.WIDGET_SELECTED,
-                                                 new Rectangle( 0, 0, 0, 0 ),
-                                                 true,
-                                                 RWT.NONE );
-      event.processEvent();
-    }
+    ControlLCAUtil.processSelection( widget, null, false );
+//    HttpServletRequest request = ContextProvider.getRequest();
+//    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
+//    if( WidgetUtil.getId( widget ).equals( id ) ) {
+//      SelectionEvent event = new SelectionEvent( widget, 
+//                                                 null,
+//                                                 SelectionEvent.WIDGET_SELECTED,
+//                                                 new Rectangle( 0, 0, 0, 0 ),
+//                                                 true,
+//                                                 RWT.NONE );
+//      event.processEvent();
+//    }
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {

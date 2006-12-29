@@ -72,12 +72,18 @@ public final class JSWriter {
     throws IOException 
   {
     ensureWidgetManager();
-    String paramList = createParamList( args );
     String code 
       = "var w = new {0}({1});"
-      + "{2}.add( w, \"{3}\" );";
-    String widgetId = WidgetUtil.getId( widget );
-    write( code, className, paramList, WIDGET_MANAGER_REF, widgetId );
+      + "{2}.add( w, \"{3}\", {4} );";
+    Object[] args1 = new Object[] { 
+      className, 
+      createParamList( args ), 
+      WIDGET_MANAGER_REF, 
+      WidgetUtil.getId( widget ), 
+      widget instanceof Control ? Boolean.TRUE : Boolean.FALSE
+    };
+    String out = MessageFormat.format( code, args1 );
+    getWriter().write( out );
     hasWidgetRef = true;
     if( widget instanceof Shell ) {
       call( "addToDocument", null );
@@ -582,18 +588,6 @@ public final class JSWriter {
   throws IOException 
   {
     Object[] args = new Object[] { arg1, arg2, arg3 };
-    String out = MessageFormat.format( pattern, args );
-    getWriter().write( out );
-  }
-  
-  private void write( final String pattern, 
-                      final Object arg1, 
-                      final Object arg2, 
-                      final Object arg3, 
-                      final Object arg4 ) 
-  throws IOException 
-  {
-    Object[] args = new Object[] { arg1, arg2, arg3, arg4 };
     String out = MessageFormat.format( pattern, args );
     getWriter().write( out );
   }

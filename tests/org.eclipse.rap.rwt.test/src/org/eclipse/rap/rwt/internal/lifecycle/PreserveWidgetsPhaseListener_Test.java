@@ -31,13 +31,13 @@ import com.w4t.util.browser.Ie6up;
 public class PreserveWidgetsPhaseListener_Test extends TestCase {
 
   public static final class TestEntryPointWithShell implements IEntryPoint {
-
     public Display createUI() {
       Display display = new Display();
       new Shell( display , RWT.NONE );
       return display;
     }
   }
+  
   private String savedLifeCycle;
 
   protected void setUp() throws Exception {
@@ -130,9 +130,6 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
 
             public void preserveValues( final Widget widget ) {
               log.append( widget.getClass().getName() );
-            }
-
-            public void processAction( final Widget widget ) {
             }
 
             public void readData( final Widget widget ) {

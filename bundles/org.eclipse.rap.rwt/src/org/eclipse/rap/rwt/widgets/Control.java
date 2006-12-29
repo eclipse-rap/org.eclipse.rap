@@ -58,7 +58,7 @@ public abstract class Control extends Widget {
 
   
   /////////////
-  // visibility
+  // Visibility
 
   public void setVisible( final boolean visible ) {
     this.visible = visible;
@@ -211,19 +211,13 @@ public abstract class Control extends Widget {
     if( this.menu != menu ) {
       if( menu != null ) {
         if( menu.isDisposed() ) {
-          // will become RWT.ERROR_INVALID_ARGUMENT
-          String msg = "The argument 'menu' is already disposed of.";
-          throw new IllegalArgumentException( msg );
+          RWT.error( RWT.ERROR_INVALID_ARGUMENT );
         }
         if( ( menu.getStyle() & RWT.POP_UP ) == 0 ) {
-          // will become RWT.ERROR_MENU_NOT_POP_UP
-          String msg = "The argument 'menu' is not a POP_UP.";
-          throw new IllegalArgumentException( msg );
+          RWT.error( RWT.ERROR_MENU_NOT_POP_UP );
         }
         if( menu.getParent() != getShell() ) {
-          // will become SWT.ERROR_INVALID_PARENT
-          String msg = "The argument 'menu' has an invalid parent.";
-          throw new IllegalArgumentException( msg );
+          RWT.error( RWT.ERROR_INVALID_PARENT );
         }
       }
       removeMenuDisposeListener();
@@ -236,7 +230,6 @@ public abstract class Control extends Widget {
     return menu;
   }
   
-
   // ///////////////////////////////
   // Methods to add/remove listener
   

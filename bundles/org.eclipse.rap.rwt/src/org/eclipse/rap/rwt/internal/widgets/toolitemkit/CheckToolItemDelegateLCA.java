@@ -12,16 +12,13 @@
 package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
-import org.eclipse.rap.rwt.widgets.Widget;
-import com.w4t.engine.service.ContextProvider;
 
-public class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
+final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   private static final String SELECTED_ITEM = "selectedItem"; 
   // check functions as defined in org.eclipse.rap.rwt.ButtonUtil
@@ -35,42 +32,37 @@ public class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
                         WIDGET_SELECTED,
                         JSListenerType.ACTION );
 
-  public void delegateProcessAction( final Widget widget ) {
-    ToolItem check = ( ToolItem )widget;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    if( WidgetUtil.getId( check ).equals( id ) ) {
-      String value = WidgetUtil.readPropertyValue( widget, SELECTED_ITEM );
-      check.setSelection( new Boolean( value ).booleanValue() );
-      processSelection( widget, null );
+  void readData( final ToolItem toolItem ) {
+    if( WidgetUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
+      String value = WidgetUtil.readPropertyValue( toolItem, SELECTED_ITEM );
+      toolItem.setSelection( new Boolean( value ).booleanValue() );
+      processSelection( toolItem );
     }
   }
 
-  public void delegateRenderInitialization( final Widget widget )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    ToolItem check = ( ToolItem )widget;
+  void renderInitialization( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
     Object[] args = new Object[] {
-      WidgetUtil.getId( check ),
-      check.getParent()
+      WidgetUtil.getId( toolItem ),
+      toolItem.getParent()
     };
     writer.callStatic( CREATE_CHECK, args );
-    writer.set( "checked", check.getSelection() );
+    writer.set( "checked", toolItem.getSelection() );
   }
 
-  public void delegateRenderChanges( final Widget widget ) throws IOException {
-    ToolItem check = ( ToolItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
+  void renderChanges( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for ToolItem the bounds are undefined
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( check ) );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, check.getText() );
-    if( check.getImage()!=null ){
-      writer.set( Props.IMAGE, JSConst.QX_FIELD_ICON, Image.getPath( check.getImage() ) );
+                           SelectionEvent.hasListener( toolItem ) );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, toolItem.getText() );
+    if( toolItem.getImage() != null ){
+      writer.set( Props.IMAGE, 
+                  JSConst.QX_FIELD_ICON, 
+                  Image.getPath( toolItem.getImage() ) );
     }
   }
 }

@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import com.w4t.engine.lifecycle.PhaseId;
 
 public class MenuItem_Test extends TestCase {
 
@@ -97,6 +98,7 @@ public class MenuItem_Test extends TestCase {
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {

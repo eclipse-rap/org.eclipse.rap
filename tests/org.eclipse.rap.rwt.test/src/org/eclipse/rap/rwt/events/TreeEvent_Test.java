@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.engine.lifecycle.PhaseId;
 
 
 public class TreeEvent_Test extends TestCase {
@@ -50,12 +51,14 @@ public class TreeEvent_Test extends TestCase {
     log = "";
     TreeEvent event 
       = new TreeEvent( tree, item, TreeEvent.TREE_COLLAPSED, true, RWT.NONE );
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     event.processEvent();
     assertEquals( TREE_COLLAPSED, log );
     
     log = "";
     event 
       = new TreeEvent( tree, item, TreeEvent.TREE_EXPANDED, true, RWT.NONE );
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     event.processEvent();
     assertEquals( TREE_EXPANDED, log );
   }

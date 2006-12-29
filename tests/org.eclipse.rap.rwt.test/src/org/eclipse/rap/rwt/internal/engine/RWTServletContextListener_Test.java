@@ -117,11 +117,6 @@ public class RWTServletContextListener_Test extends TestCase {
     deregisterResourceManager();
   }
 
-  private void deregisterResourceManager() {
-    Fixture.setPrivateField( ResourceManager.class, null, "_instance", null );
-    Fixture.setPrivateField( ResourceManager.class, null, "factory", null );
-  }
-  
   public void testEntryPointInitialization() {
     // org.eclipse.rap.rwt: TestEntryPoint
     RWTServletContextListener listener = new RWTServletContextListener();
@@ -229,5 +224,10 @@ public class RWTServletContextListener_Test extends TestCase {
     assertEquals( "", phaseListenerLog );
     deregisterResourceManager();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
+  }
+
+  private void deregisterResourceManager() {
+    Fixture.setPrivateField( ResourceManager.class, null, "_instance", null );
+    Fixture.setPrivateField( ResourceManager.class, null, "factory", null );
   }
 }

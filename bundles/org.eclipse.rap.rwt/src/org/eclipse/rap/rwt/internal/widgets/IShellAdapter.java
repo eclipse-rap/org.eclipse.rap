@@ -11,13 +11,11 @@
 
 package org.eclipse.rap.rwt.internal.widgets;
 
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.widgets.Control;
 
 
-/**
- * TODO [rh] JavaDoc
- */
-public interface IDisplayAccessAdapter {
+public interface IShellAdapter {
   
-  void setBounds( Rectangle bounds );
+  Control getActiveControl();
+  void setActiveControl( Control control );
 }

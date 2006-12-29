@@ -12,7 +12,6 @@
 package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
@@ -20,31 +19,28 @@ import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Button;
 import org.eclipse.rap.rwt.widgets.Widget;
-import com.w4t.engine.service.ContextProvider;
 
-public class CheckButtonDelegateLCA extends ButtonDelegateLCA {
+final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
   private static final String SELECTED_ITEM = "selectedItem";
   // radio functions as defined in org.eclipse.rap.rwt.CheckUtil
-  private static final String WIDGET_SELECTED = 
-    "org.eclipse.rap.rwt.ButtonUtil.checkSelected";
-  private final JSListenerInfo JS_LISTENER_INFO = 
-    new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
-                        WIDGET_SELECTED,
-                        JSListenerType.ACTION );
+  private static final String WIDGET_SELECTED 
+    = "org.eclipse.rap.rwt.ButtonUtil.checkSelected";
+  private final JSListenerInfo JS_LISTENER_INFO 
+    = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
+                          WIDGET_SELECTED,
+                          JSListenerType.ACTION );
 
-  public void delegateProcessAction( final Widget widget ) {
+  void readData( final Widget widget ) {
     Button button = ( Button )widget;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    if( WidgetUtil.getId( button ).equals( id ) ) {
+    if( WidgetUtil.wasEventSent( button, JSConst.EVENT_WIDGET_SELECTED ) ) {
       String value = WidgetUtil.readPropertyValue( widget, SELECTED_ITEM );
       button.setSelection( new Boolean( value ).booleanValue() );
-      ControlLCAUtil.processSelection( ( Button )widget, null );
+      ControlLCAUtil.processSelection( button, null, true );
     }
   }
-
-  public void delegateRenderInitialization( final Widget widget )
+  
+  void renderInitialization( final Widget widget )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( widget );
@@ -53,7 +49,7 @@ public class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     writer.set( "checked", button.getSelection() );
   }
 
-  public void delegateRenderChanges( final Widget widget ) throws IOException {
+  void renderChanges( final Widget widget ) throws IOException {
     Button button = ( Button )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send

@@ -61,6 +61,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/widgets/CoolItem.js";
   private static final String LIST_JS 
     = "org/eclipse/rap/rwt/widgets/List.js";
+  private static final String SHELL_JS 
+    = "org./eclipse/rap/rwt/widgets/Shell.js";
   
   
   private QooxdooResourcesUtil() {
@@ -1522,6 +1524,7 @@ final class QooxdooResourcesUtil {
       register( CTAB_FOLDER_JS );
       register( COOL_ITEM_JS );
       register( LIST_JS );
+      register( SHELL_JS );
     } finally {
       manager.setContextLoader( bufferedLoader );
     }

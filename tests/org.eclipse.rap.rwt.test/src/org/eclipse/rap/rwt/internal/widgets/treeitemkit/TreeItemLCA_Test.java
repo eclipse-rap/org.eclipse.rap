@@ -107,18 +107,17 @@ public class TreeItemLCA_Test extends TestCase {
     };
     tree.addTreeListener( listener );
     
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( treeItem );
     String treeItemId = WidgetUtil.getId( treeItem );
     Fixture.fakeRequestParam( treeItemId + ".state", "expanded" );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, treeItemId );
-    lca.processAction( treeItem );
+    RWTFixture.readDataAndProcessAction( treeItem );
     assertEquals( "expanded", log.toString() );
 
     log.setLength( 0 );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_EXPANDED, null );
     Fixture.fakeRequestParam( treeItemId + ".state", "collapsed" );
     Fixture.fakeRequestParam( JSConst.EVENT_TREE_COLLAPSED, treeItemId );
-    lca.processAction( treeItem );
+    RWTFixture.readDataAndProcessAction( treeItem );
     assertEquals( "collapsed", log.toString() );
   }
   

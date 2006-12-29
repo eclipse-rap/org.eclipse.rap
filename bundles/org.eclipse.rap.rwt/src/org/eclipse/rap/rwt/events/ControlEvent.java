@@ -12,12 +12,11 @@
 package org.eclipse.rap.rwt.events;
 
 import com.w4t.Adaptable;
-import com.w4t.event.Event;
 
 /**
  * TODO: [fappel] comment
  */
-public final class ControlEvent extends Event {
+public final class ControlEvent extends RWTEvent {
 
   public static final int CONTROL_MOVED = 0;
   public static final int CONTROL_RESIZED = 1;

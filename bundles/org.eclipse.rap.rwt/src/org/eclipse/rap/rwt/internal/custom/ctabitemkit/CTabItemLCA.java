@@ -33,9 +33,6 @@ public class CTabItemLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
   }
   
-  public void processAction( final Widget widget ) {
-  }
-
   public void renderInitialization( final Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( item );

@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.widgets.ToolItem;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.engine.service.ContextProvider;
 
-public class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
+final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   // part of the param name for the y-location of the menu
   private static final String BOUNDS_Y = ".boundsMenu.y";
@@ -46,61 +46,58 @@ public class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
                         WIDGET_SELECTED,
                         JSListenerType.ACTION );
 
-  public void delegateProcessAction( final Widget widget ) {
+  void readData( final ToolItem toolItem ) {
     HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    
-    if( WidgetUtil.getId( widget ).equals( id ) ) {
-      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-      SelectionEvent event = newSelectionEvent( widget, bounds ,RWT.NONE);
-      event.processEvent();
-    } else if( getMenuId( widget ).equals( id ) ) {
-      String paramX = request.getParameter( getMenuBoundsX( widget ) );
-      int x = Integer.parseInt( paramX );
-      String paramY = request.getParameter( getMenuBoundsY( widget ) );
-      int y = Integer.parseInt( paramY );
-      Rectangle bounds = new Rectangle( x, y, 0, 0 );
-      SelectionEvent event = newSelectionEvent( widget, bounds ,RWT.ARROW );
-      event.processEvent();
+    String widgetId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
+    if( widgetId != null ) {
+      if( WidgetUtil.getId( toolItem ).equals( widgetId ) ) {
+        Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
+        SelectionEvent event = newSelectionEvent( toolItem, bounds, RWT.NONE );
+        event.processEvent();
+      } else if( getMenuId( toolItem ).equals( widgetId ) ) {
+        String paramX = request.getParameter( getMenuBoundsX( toolItem ) );
+        int x = Integer.parseInt( paramX );
+        String paramY = request.getParameter( getMenuBoundsY( toolItem ) );
+        int y = Integer.parseInt( paramY );
+        Rectangle bounds = new Rectangle( x, y, 0, 0 );
+        SelectionEvent event = newSelectionEvent( toolItem, bounds, RWT.ARROW );
+        event.processEvent();
+      }
     }
   }
 
-  public void delegateRenderInitialization( final Widget widget ) 
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    ToolItem push = ( ToolItem )widget;
+  void renderInitialization( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
     Object[] args = new Object[] {
-      WidgetUtil.getId( push ),
-      push.getParent()
+      WidgetUtil.getId( toolItem ),
+      toolItem.getParent()
     };
     writer.callStatic( CREATE_PUSH, args );
     // the second push button
     args = new Object[] {
-      getMenuId( push ),
-      push.getParent()
+      getMenuId( toolItem ),
+      toolItem.getParent()
     };
     writer.callStatic( CREATE_PUSH_MENU, args );
   }
   
-  public void delegateRenderChanges( final Widget widget ) throws IOException {
-    ToolItem push = ( ToolItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
+  void renderChanges( final ToolItem toolItem ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( push ));
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, push.getText() );
-    if( push.getImage() != null ) {
+                           SelectionEvent.hasListener( toolItem ));
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, toolItem.getText() );
+    if( toolItem.getImage() != null ) {
       writer.set( Props.IMAGE, 
                   JSConst.QX_FIELD_ICON,
-                  Image.getPath( push.getImage() ) );
+                  Image.getPath( toolItem.getImage() ) );
     }
     // event handler for the second push button
     Object[] args = new Object[] {
-      getMenuId( push ),
+      getMenuId( toolItem ),
       JSConst.QX_EVENT_CLICK,
       WIDGET_SELECTED
     };    

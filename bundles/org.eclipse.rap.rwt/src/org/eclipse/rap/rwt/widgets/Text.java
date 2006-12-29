@@ -15,7 +15,7 @@ import org.eclipse.rap.rwt.RWT;
 
 public class Text extends Control {
 
-  private String text;
+  private String text = "";
 
   public Text( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );

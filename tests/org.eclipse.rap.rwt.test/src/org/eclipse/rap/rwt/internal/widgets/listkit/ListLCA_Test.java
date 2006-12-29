@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.rwt.internal.widgets.listkit;
 
+import java.io.IOException;
 import java.util.Arrays;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
@@ -95,14 +96,34 @@ public class ListLCA_Test extends TestCase {
         assertEquals( true, event.doit );
       }
     } );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( list );
     String listId = WidgetUtil.getId( list );
     Fixture.fakeRequestParam( listId + ".selection", "1" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, listId );
-    lca.readData( list );
-    lca.processAction( list );
+    RWTFixture.readDataAndProcessAction( list );
     assertEquals( "selectionEvent", log.toString() );
     assertEquals( 1, list.getSelectionIndex() );
+  }
+  
+  public void testRenderSetItems() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    List list = new List( shell, RWT.SINGLE );
+    
+    // Ensure that changed items are rendered
+    RWTFixture.markInitialized( list );
+    Fixture.fakeResponseWriter();
+    RWTFixture.preserveWidgets();
+    AbstractWidgetLCA listLCA = WidgetUtil.getLCA( list );
+    list.setItems( new String[] { "a" } );
+    listLCA.renderChanges( list );
+    assertTrue( Fixture.getAllMarkup().indexOf( "setItems" ) != -1 );
+
+    // Ensure that unchanged items do not cause unnecessary JavaScript code
+    RWTFixture.markInitialized( list );
+    Fixture.fakeResponseWriter();
+    RWTFixture.preserveWidgets();
+    listLCA.renderChanges( list );
+    assertTrue( Fixture.getAllMarkup().indexOf( "setItems" ) == -1 );
   }
   
   protected void setUp() throws Exception {

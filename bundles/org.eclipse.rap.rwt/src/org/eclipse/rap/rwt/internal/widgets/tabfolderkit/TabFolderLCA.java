@@ -25,9 +25,6 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   }
   
   public void readData( final Widget widget ) {
-  }
-  
-  public void processAction( final Widget widget ) {
     // TODO: [fappel] The selection event is currently only thrown in case
     //                of user action. May it also be thrown in case of changing
     //                the selectionIndex programatically?
@@ -36,7 +33,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     if( folder.getSelectionIndex() != -1 ) {
       item = folder.getItem( folder.getSelectionIndex() );
     }
-    ControlLCAUtil.processSelection( folder, item );
+    ControlLCAUtil.processSelection( folder, item, true );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

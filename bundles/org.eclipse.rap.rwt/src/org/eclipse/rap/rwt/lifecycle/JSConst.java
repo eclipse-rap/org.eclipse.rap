@@ -27,6 +27,8 @@ public final class JSConst {
     = "org.eclipse.rap.rwt.events.widgetResized";
   public static final String EVENT_WIDGET_MOVED
     = "org.eclipse.rap.rwt.events.widgetMoved";
+  public static final String EVENT_WIDGET_ACTIVATED 
+    = "org.eclipse.rap.rwt.events.controlActivated";
   public static final String EVENT_TREE_EXPANDED 
     = "org.eclipse.rap.rwt.events.treeExpanded";
   public static final String EVENT_TREE_COLLAPSED 

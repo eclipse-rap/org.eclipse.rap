@@ -11,6 +11,8 @@
 
 package org.eclipse.rap.rwt.widgets;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.DisposeEvent;
 import org.eclipse.rap.rwt.events.DisposeListener;
@@ -35,6 +37,7 @@ public abstract class Widget implements Adaptable {
   private IEventAdapter eventAdapter;
   private boolean disposed;
   private Object data;
+  private Map keyedData;
 
   Widget() {
     // prevent instantiation from outside this package
@@ -65,16 +68,38 @@ public abstract class Widget implements Adaptable {
     return result;
   }
   
+  ///////////////////////////////////////////
+  // Methods to get/set single and keyed data
+  
   public Object getData() {
-    // TODO: [fappel] keyed data
     return data;
   }
   
   public void setData( final Object data ) {
-    // TODO: [fappel] keyed data
     this.data = data;
   }
 
+  public Object getData( final String key ) {
+    if( key == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    Object result = null;
+    if( keyedData != null ) {
+      result = keyedData.get( key );
+    }
+    return result;
+  }
+  
+  public void setData( final String key, final Object value ) {
+    if( key == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( keyedData == null ) {
+      keyedData = new HashMap();
+    }
+    keyedData.put( key, value );
+  }
+  
   public abstract Display getDisplay();
 
   public int getStyle() {

@@ -17,9 +17,10 @@ import java.net.URL;
 import java.util.Enumeration;
 import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.widgets.*;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.IResourceManagerFactory;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.widgets.Display;
@@ -27,8 +28,7 @@ import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.*;
 import com.w4t.Fixture.TestRequest;
 import com.w4t.Fixture.TestResponse;
-import com.w4t.engine.lifecycle.PhaseEvent;
-import com.w4t.engine.lifecycle.PhaseId;
+import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.service.*;
 import com.w4t.util.browser.Ie6;
 
@@ -105,6 +105,8 @@ public final class RWTFixture {
 
   private static LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private static WidgetAdapterFactory widgetAdapterFactory;
+  private static PhaseListener currentPhaseListener 
+    = new CurrentPhase.Listener();
 
   private RWTFixture() {
     // prevent instantiation
@@ -115,6 +117,7 @@ public final class RWTFixture {
     Fixture.setUp();
     
     registerAdapterFactories();
+    PhaseListenerRegistry.add( currentPhaseListener );
     
     // registration of mockup resource manager
     registerResourceManager();
@@ -196,5 +199,30 @@ public final class RWTFixture {
     ContextProvider.setContext( serviceContext );
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6( true, true ) );
+  }
+  
+  public static void fakePhase( final PhaseId phase ) {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.setAttribute( CurrentPhase.class.getName() + "#value", 
+                            phase );
+  }
+  
+  public static void readDataAndProcessAction( final Widget widget ) {
+    AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
+    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    widgetLCA.readData( widget );
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = widget.getDisplay();
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display ); 
+    displayLCA.processAction( display );
+  }
+  
+  public static void readDataAndProcessAction( final Display display ) {
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    RWTFixture.fakePhase( PhaseId.READ_DATA );
+    displayLCA.readData( display );
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    displayLCA.processAction( display );
+    
   }
 }

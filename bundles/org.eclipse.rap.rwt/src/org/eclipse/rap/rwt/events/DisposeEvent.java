@@ -12,12 +12,11 @@
 package org.eclipse.rap.rwt.events;
 
 import com.w4t.Adaptable;
-import com.w4t.event.Event;
 
 /**
  * TODO: [fappel] comment
  */
-public final class DisposeEvent extends Event {
+public final class DisposeEvent extends RWTEvent {
 
   public static final int WIDGET_DISPOSED = 0;
   private static final Class LISTENER = DisposeListener.class;

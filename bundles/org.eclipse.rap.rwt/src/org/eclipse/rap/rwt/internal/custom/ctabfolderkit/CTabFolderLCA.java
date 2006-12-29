@@ -97,17 +97,13 @@ public class CTabFolderLCA extends AbstractWidgetLCA {
     if( value != null ) {
       tabFolder.setMaximized( !tabFolder.getMaximized() );
     }
+    CTabItem item = null;
+    if( tabFolder.getSelectionIndex() != -1 ) {
+      item = tabFolder.getItem( tabFolder.getSelectionIndex() );
+    }
+    ControlLCAUtil.processSelection( tabFolder, item, true );
   }
   
-  public void processAction( final Widget widget ) {
-    CTabFolder folder = ( CTabFolder )widget;
-    CTabItem item = null;
-    if( folder.getSelectionIndex() != -1 ) {
-      item = folder.getItem( folder.getSelectionIndex() );
-    }
-    ControlLCAUtil.processSelection( folder, item );
-  }
-
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "org.eclipse.rap.rwt.custom.CTabFolder" );

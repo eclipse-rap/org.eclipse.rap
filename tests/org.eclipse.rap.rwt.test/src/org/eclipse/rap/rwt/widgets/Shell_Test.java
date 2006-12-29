@@ -15,6 +15,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.widgets.IShellAdapter;
+import com.w4t.engine.lifecycle.PhaseId;
 
 public class Shell_Test extends TestCase {
 
@@ -81,9 +83,23 @@ public class Shell_Test extends TestCase {
     Rectangle clientAreaWithMenuBar = shell.getClientArea();
     assertTrue( clientAreaWithoutMenuBar.y < clientAreaWithMenuBar.y );
   }
+  
+  public void testInitialValues() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
 
+    // Active control must be null
+    Object adapter = shell.getAdapter( IShellAdapter.class );
+    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+    assertEquals( null, shellAdapter.getActiveControl() );
+    
+    // Shell initially has no layout
+    assertEquals( null, shell.getLayout() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {

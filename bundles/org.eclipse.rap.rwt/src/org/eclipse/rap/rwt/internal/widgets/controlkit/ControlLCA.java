@@ -28,10 +28,6 @@ public class ControlLCA extends AbstractWidgetLCA {
     // do nothing
   }
   
-  public void processAction( final Widget widget ) {
-    // do nothing
-  }
-  
   public void renderInitialization( final Widget widget ) throws IOException {
     // do nothing
   }

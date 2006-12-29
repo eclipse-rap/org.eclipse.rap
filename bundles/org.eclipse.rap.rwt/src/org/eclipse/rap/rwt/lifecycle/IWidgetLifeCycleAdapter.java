@@ -23,6 +23,5 @@ public interface IWidgetLifeCycleAdapter extends ILifeCycleAdapter {
 
   void preserveValues( Widget widget );
   void readData( Widget widget );
-  void processAction( Widget widget );
   void render( Widget widget ) throws IOException;
 }

@@ -19,6 +19,7 @@ import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.layout.FillLayout;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.engine.lifecycle.PhaseId;
 
 
 public class CTabFolder_Test extends TestCase {
@@ -129,6 +130,7 @@ public class CTabFolder_Test extends TestCase {
   }
   
   public void testSelectionWithEvent() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );

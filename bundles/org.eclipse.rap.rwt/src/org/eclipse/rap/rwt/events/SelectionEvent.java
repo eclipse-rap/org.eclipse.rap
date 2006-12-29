@@ -15,14 +15,13 @@ import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.widgets.Item;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.Adaptable;
-import com.w4t.event.Event;
 
 
 /**
  * TODO[rh] JavaDoc
  * <p></p>
  */
-public class SelectionEvent extends Event {
+public class SelectionEvent extends RWTEvent {
 
   public static final int WIDGET_SELECTED = 0;
   

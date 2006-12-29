@@ -22,7 +22,8 @@ import org.eclipse.rap.rwt.widgets.Widget;
 
 public class ToolItemLCA extends AbstractWidgetLCA {
   
-  private final static ToolItemDelegateLCA PUSH = new PushToolItemDelegateLCA();
+  private final static ToolItemDelegateLCA PUSH 
+    = new PushToolItemDelegateLCA();
   private final static ToolItemDelegateLCA CHECK
     = new CheckToolItemDelegateLCA();
   private final static ToolItemDelegateLCA RADIO
@@ -61,19 +62,15 @@ public class ToolItemLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    // TODO Auto-generated method stub
-  }
-
-  public void processAction( final Widget widget ) {
-    getLCADelegate( widget ).processAction( widget );
+    getLCADelegate( widget ).readData( ( ToolItem )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    getLCADelegate( widget ).renderInitialization( widget );
+    getLCADelegate( widget ).renderInitialization( ( ToolItem )widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
-    getLCADelegate( widget ).renderChanges( widget );
+    getLCADelegate( widget ).renderChanges( ( ToolItem )widget );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

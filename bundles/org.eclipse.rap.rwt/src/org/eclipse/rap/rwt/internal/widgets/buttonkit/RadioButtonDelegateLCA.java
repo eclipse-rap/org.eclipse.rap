@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.engine.service.ContextProvider;
 
 
-public class RadioButtonDelegateLCA extends ButtonDelegateLCA {
+final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   private static final String CREATE_RADIO 
     = "org.eclipse.rap.rwt.ButtonUtil.createRadioButton";
@@ -35,7 +35,7 @@ public class RadioButtonDelegateLCA extends ButtonDelegateLCA {
                           WIDGET_SELECTED, 
                           JSListenerType.ACTION );
   
-  public void delegateProcessAction( final Widget widget ) {
+  void readData( final Widget widget ) {
     Button button = ( Button )widget;
     HttpServletRequest request = ContextProvider.getRequest();
     String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
@@ -50,13 +50,12 @@ public class RadioButtonDelegateLCA extends ButtonDelegateLCA {
         }
       }
       button.setSelection( true );
-      ControlLCAUtil.processSelection( ( Button )widget, null );
+      // TODO [rh] clarify whether bounds should be sent (last parameter)
+      ControlLCAUtil.processSelection( widget, null, true );
     }
   }
 
-  public void delegateRenderInitialization( final Widget widget ) 
-    throws IOException {
-    
+  void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Button button = ( Button )widget;
     Object[] args = new Object[] {
@@ -67,7 +66,7 @@ public class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     writer.callStatic( CREATE_RADIO, args );
   }
 
-  public void delegateRenderChanges( final Widget widget ) throws IOException {
+  void renderChanges( final Widget widget ) throws IOException {
     Button button = ( Button )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send

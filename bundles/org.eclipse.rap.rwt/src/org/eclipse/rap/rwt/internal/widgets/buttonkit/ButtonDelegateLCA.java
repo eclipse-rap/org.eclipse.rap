@@ -14,25 +14,9 @@ package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.widgets.Widget;
 
-public abstract class ButtonDelegateLCA {
+abstract class ButtonDelegateLCA {
 
-  void renderInitialization( final Widget widget ) throws IOException {
-    delegateRenderInitialization( widget );
-  }
-
-  public void processAction( final Widget widget ) {
-    delegateProcessAction( widget );
-  }
-
-  public void renderChanges( final Widget widget ) throws IOException {
-    delegateRenderChanges( widget );
-  }
-
-  abstract public void delegateRenderChanges( final Widget widget )
-    throws IOException;
-
-  abstract public void delegateProcessAction( final Widget widget );
-
-  abstract public void delegateRenderInitialization( final Widget widget )
-    throws IOException;
+  abstract void readData( Widget widget );
+  abstract void renderInitialization( Widget widget ) throws IOException;
+  abstract void renderChanges( Widget widget ) throws IOException;
 }

@@ -49,15 +49,12 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       TreeItem treeItem = ( TreeItem )widget;
       treeItem.setExpanded( STATE_EXPANDED.equals( state ) );
     }
-  }
-  
-  public void processAction( final Widget widget ) {
     processWidgetSelectedEvent( widget );
     if( !processTreeExpandedEvent( widget ) ) {
       processTreeCollapsedEvent( widget );
     }
   }
-
+  
   public void renderInitialization( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
@@ -103,9 +100,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   
   private static boolean processWidgetSelectedEvent( final Widget widget ) {
     boolean result = false;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    if( WidgetUtil.getId( widget ).equals( id ) ) {
+    if( WidgetUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
       TreeItem treeItem = ( TreeItem )widget;
       Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
       SelectionEvent event = new SelectionEvent( treeItem.getParent(), 

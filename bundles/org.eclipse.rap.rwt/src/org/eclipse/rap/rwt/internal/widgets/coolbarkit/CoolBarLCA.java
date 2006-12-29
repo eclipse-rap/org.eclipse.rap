@@ -31,10 +31,6 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     // TODO [rh] implementation missing
   }
   
-  public void processAction( final Widget widget ) {
-    // TODO [rh] implementation missing
-  }
-
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.layout.CanvasLayout" );

@@ -108,8 +108,7 @@ public class CoolBar extends Composite {
     }
     int itemCount = getItemCount();
     if( itemOrder.length != itemCount ) {
-      // will become RWT.ERROR_INVALID_ARGUMENT
-      throw new IllegalArgumentException( "Invalid argument" );
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
     // Ensure that itemOrder does not contain any duplicates.
     boolean[] set = new boolean[ itemCount ];
@@ -127,7 +126,7 @@ public class CoolBar extends Composite {
     }
     for( int i = 0; i < itemOrder.length; i++ ) {
       CoolItem item = getItem( i );
-      item.setOrder( itemOrder[ i ], false );
+      item.setOrder( itemOrder[ i ] );
     }
   }
   

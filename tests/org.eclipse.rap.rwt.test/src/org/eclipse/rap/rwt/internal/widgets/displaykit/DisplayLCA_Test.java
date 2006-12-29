@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.*;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
@@ -71,7 +70,7 @@ public class DisplayLCA_Test extends TestCase {
     try {
       lcAdapter.render( display );
       String msg = "IOException of the renderer adapter in case of composite"
-                   + "should be rethrown.";
+                 + "should be rethrown.";
       fail( msg );
     } catch( final IOException ioe ) {
       // expected
@@ -79,25 +78,6 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( 2, log.size() );
     assertSame( shell1, log.get( 0 ) );
     assertSame( button1, log.get( 1 ) );
-  }
-
-  public void testProcessActionProcessing() {
-    Fixture.fakeResponseWriter();
-    // fake request param to simulate second request
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
-    Display display = new Display();
-    Composite shell1 = new Shell( display , RWT.NONE );
-    Button button1 = new Button( shell1, RWT.PUSH );
-    Composite shell2 = new Shell( display , RWT.NONE );
-    Button button2 = new Button( shell2, RWT.PUSH );
-    Object adapter = display.getAdapter( ILifeCycleAdapter.class );
-    IDisplayLifeCycleAdapter lcAdapter = ( IDisplayLifeCycleAdapter )adapter;
-    lcAdapter.processAction( display );
-    assertEquals( 4, log.size() );
-    assertSame( shell1, log.get( 0 ) );
-    assertSame( button1, log.get( 1 ) );
-    assertSame( shell2, log.get( 2 ) );
-    assertSame( button2, log.get( 3 ) );
   }
 
   public void testReadDataProcessing() {
@@ -144,10 +124,6 @@ public class DisplayLCA_Test extends TestCase {
           result = new AbstractWidgetLCA() {
 
             public void preserveValues( final Widget widget ) {
-            }
-
-            public void processAction( final Widget widget ) {
-              log.add( widget );
             }
 
             public void readData( final Widget widget ) {

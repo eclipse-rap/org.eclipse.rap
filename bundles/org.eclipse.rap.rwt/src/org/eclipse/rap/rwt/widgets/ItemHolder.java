@@ -60,8 +60,7 @@ public final class ItemHolder implements IItemHolderAdapter {
 
   public Item getItem( final int index ) {
     if( index < 0 || index >= items.size() ) {
-      // will become SWT.ERROR_INVALID_RANGE
-      throw new IllegalArgumentException( "Index out of bounds." );
+      RWT.error( RWT.ERROR_INVALID_RANGE );
     }
     return ( Item )items.get( index );
   }

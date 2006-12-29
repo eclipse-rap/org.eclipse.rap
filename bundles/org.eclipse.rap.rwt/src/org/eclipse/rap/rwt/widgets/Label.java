@@ -15,25 +15,28 @@ import org.eclipse.rap.rwt.RWT;
 
 public class Label extends Control {
 
-  private String text;
+  private String text = "";
 
   public Label( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
   }
 
-  static int checkStyle( final int style ) {
-    int result = RWT.NONE;
-    if( style > 0 ) {
-      result = style;
-    }
-    return result;
-  }
-
   public void setText( final String text ) {
+    if( text == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     this.text = text;
   }
 
   public String getText() {
     return text;
+  }
+
+  private static int checkStyle( final int style ) {
+    int result = RWT.NONE;
+    if( style > 0 ) {
+      result = style;
+    }
+    return result;
   }
 }

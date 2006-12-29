@@ -157,8 +157,7 @@ public class CTabFolder extends Composite {
     } else if( tabHeight >= 0 ) {
       this.tabHeight = tabHeight;
     } else {
-      // will become RWT.error( RWT.ERROR_INVALID_ARGUMENT );
-      throw new IllegalArgumentException( "Invalid tab height." );
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
   }
 
@@ -175,12 +174,11 @@ public class CTabFolder extends Composite {
 
   public void setTopRight( final Control control, final int alignment ) {
     if( alignment != RWT.RIGHT && alignment != RWT.FILL ) {
-      // will become RWT.error( RWT.ERROR_INVALID_ARGUMENT );
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
       throw new IllegalArgumentException( "Invalid alignment" );
     }
     if( control != null && control.getParent() != this ) {
-      // will become RWT.error( RWT.ERROR_INVALID_ARGUMENT );
-      throw new IllegalArgumentException( "Invalid parent" );
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
     topRight = control;
     topRightAlignment = alignment;

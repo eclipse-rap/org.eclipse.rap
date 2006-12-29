@@ -44,7 +44,7 @@ org.eclipse.rap.rwt.EventUtil.doWidgetSelected
 {
   if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
     var req = org.eclipse.rap.rwt.Request.getInstance();
-    req.addParameter( "org.eclipse.rap.rwt.events.widgetSelected", id );
+    req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
     req.addParameter( id + ".bounds.x", left );
     req.addParameter( id + ".bounds.y", top );
     req.addParameter( id + ".bounds.width", width );
@@ -110,7 +110,7 @@ org.eclipse.rap.rwt.EventUtil.shellClosed = function( evt ) {
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
     var id = widgetManager.findIdByWidget( evt.getTarget() );
     var req = org.eclipse.rap.rwt.Request.getInstance();
-    req.addParameter( "org.eclipse.rap.rwt.widgets.Shell_close", id );
+    req.addEvent( "org.eclipse.rap.rwt.widgets.Shell_close", id );
     req.send();
   }
 };

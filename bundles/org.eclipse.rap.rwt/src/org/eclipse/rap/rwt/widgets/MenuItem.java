@@ -34,24 +34,17 @@ public class MenuItem extends Item {
   public void setMenu( final Menu menu ) {
     if( this.menu != menu ) {
       if( ( style & RWT.CASCADE ) == 0 ) {
-        // will become RWT.ERROR_MENUITEM_NOT_CASCADE
-        throw new IllegalArgumentException( "The menu item is not a CASCADE" );
+        RWT.error( RWT.ERROR_MENUITEM_NOT_CASCADE );
       }
       if( menu != null ) {
         if( menu.isDisposed() ) {
-          // will become RWT.ERROR_INVALID_ARGUMENT
-          String msg = "The argument 'menu' was already disposed.";
-          throw new IllegalArgumentException( msg );
+          RWT.error( RWT.ERROR_INVALID_ARGUMENT );
         }
         if( ( menu.getStyle() & RWT.DROP_DOWN ) == 0 ) {
-          // will become RWT.ERROR_MENU_NOT_DROP_DOWN
-          String msg = "The argument 'Menu' must be a DROP_DOWN.";
-          throw new IllegalArgumentException( msg );
+          RWT.error( RWT.ERROR_MENU_NOT_DROP_DOWN );
         }
         if( menu.getParent() != getParent().getParent() ) {
-          // will become RWT.ERROR_INVALID_PARENT
-          String msg = "The argument 'menu' has an invalid parent.";
-          throw new IllegalArgumentException( msg );
+          RWT.error( RWT.ERROR_INVALID_PARENT );
         }
       }
       removeMenuDisposeListener();
