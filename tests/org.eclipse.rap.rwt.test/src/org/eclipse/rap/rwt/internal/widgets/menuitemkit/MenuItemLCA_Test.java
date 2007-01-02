@@ -55,6 +55,60 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
+  public void testCheckItemSelected() throws IOException {
+    final boolean[] wasEventFired = { false };
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Menu menuBar = new Menu( shell, RWT.BAR );
+    shell.setMenuBar( menuBar );
+    Menu menu = new Menu( menuBar );
+    final MenuItem menuItem = new MenuItem( menu, RWT.CHECK );
+    menuItem.addSelectionListener( new SelectionListener() {
+      public void widgetSelected( final SelectionEvent event ) {
+        wasEventFired[ 0 ] = true;
+        assertEquals( null, event.item );
+        assertSame( menuItem, event.getSource() );
+        assertEquals( true, event.doit );
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+        assertEquals( true, menuItem.getSelection() );
+      }
+    } );
+    
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String menuItemId = WidgetUtil.getId( menuItem );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( menuItemId + ".selection", "true" );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
+    new RWTLifeCycle().execute();
+    assertEquals( true, wasEventFired[ 0 ] );
+  }
+  
+  public void testRadioItemSelected() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Menu menuBar = new Menu( shell, RWT.BAR );
+    MenuItem menuBarItem = new MenuItem( menuBar, RWT.CASCADE );
+    Menu menu = new Menu( menuBarItem );
+    menuBarItem.setMenu( menu );
+    new MenuItem( menu, RWT.PUSH );
+    MenuItem radioItem1Group1 = new MenuItem( menu, RWT.RADIO );
+    MenuItem radioItem2Group1 = new MenuItem( menu, RWT.RADIO );
+    new MenuItem( menu, RWT.CHECK );
+    
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String radioItem1Group1Id = WidgetUtil.getId( radioItem1Group1 );
+    
+    radioItem2Group1.setSelection( true );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( radioItem1Group1Id + ".selection", "true" );
+    new RWTLifeCycle().execute();
+    assertEquals( true, radioItem1Group1.getSelection() );
+    assertEquals( false, radioItem2Group1.getSelection() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

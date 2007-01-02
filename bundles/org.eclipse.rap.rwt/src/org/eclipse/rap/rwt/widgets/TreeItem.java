@@ -25,26 +25,38 @@ public class TreeItem extends Item {
   private boolean expanded;
 
   public TreeItem( final Tree parent, final int style ) {
-    this( parent, null, style );
+    this( parent, null, style, -1 );
   }
 
   public TreeItem( final TreeItem parentItem, final int style ) {
-    this( parentItem == null
-                            ? null
-                            : parentItem.parent, parentItem, style );
+    this( parentItem == null ? null : parentItem.parent, 
+          parentItem,
+          style,
+          -1 );
   }
 
+  public TreeItem( final TreeItem parentItem, final int style, final int index ) 
+  {
+    this( parentItem == null ? null : parentItem.parent, 
+          parentItem, 
+          style,
+          -1 );
+  }
+  
   private TreeItem( final Tree parent,
                     final TreeItem parentItem,
-                    final int style )
+                    final int style,
+                    final int index )
   {
     super( parent, style );
     this.parent = parent;
     this.parentItem = parentItem;
     if( parentItem != null ) {
-      ItemHolder.addItem( parentItem, this );
+      int newIndex = index == -1 ? parentItem.getItemCount() : index;
+      ItemHolder.insertItem( parentItem, this, newIndex );
     } else {
-      ItemHolder.addItem( parent, this );
+      int newIndex = index == -1 ? parent.getItemCount() : index;
+      ItemHolder.insertItem( parent, this, newIndex );
     }
     itemHolder = new ItemHolder( TreeItem.class );
   }
@@ -122,8 +134,8 @@ public class TreeItem extends Item {
     }
   }
 
-  ///////////////////////////////////
-  // Methods to dispose of the widget
+  /////////////////////////////////
+  // Methods to dispose of the item
   
   protected final void releaseChildren() {
     TreeItem[] items = getItems();
@@ -135,14 +147,13 @@ public class TreeItem extends Item {
   protected final void releaseParent() {
     if( parentItem != null ) {
       ItemHolder.removeItem( parentItem, this );
-      if( parentItem.getItemCount() == 0 ) {
-        parentItem.setExpanded( false );
-      }
     } else {
       ItemHolder.removeItem( parent, this );
     }
+    parent.removeFromSelection( this );
   }
 
   protected final void releaseWidget() {
+    // do nothing
   }
 }

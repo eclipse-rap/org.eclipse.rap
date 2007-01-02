@@ -24,6 +24,7 @@ public class TreeItem_Test extends TestCase {
     TreeItem item = new TreeItem( tree, RWT.NONE );
     assertSame( display, item.getDisplay() );
     assertEquals( "", item.getText() );
+    assertSame( item, tree.getItem( tree.getItemCount() - 1 ) );
     try {
       new TreeItem( ( TreeItem )null, RWT.NONE );
       fail( "Must not allow null-parent" );

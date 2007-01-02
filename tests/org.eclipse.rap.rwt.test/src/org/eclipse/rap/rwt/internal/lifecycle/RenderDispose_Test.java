@@ -15,8 +15,10 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
-import org.eclipse.rap.rwt.lifecycle.DisplayUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
 import com.w4t.engine.lifecycle.*;
@@ -44,26 +46,18 @@ public class RenderDispose_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     lifeCycle.execute();
     // dispose of the button
-    RWTFixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.addPhaseListener( new PhaseListener() {
-
-      private static final long serialVersionUID = 1L;
-
-      public void beforePhase( PhaseEvent event ) {
+    button.addSelectionListener( new SelectionListener() {
+      public void widgetSelected( final SelectionEvent event ) {
         button.dispose();
       }
-
-      public void afterPhase( PhaseEvent event ) {
-      }
-
-      public PhaseId getPhaseId() {
-        return PhaseId.RENDER;
-      }
     } );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    String buttonId = WidgetUtil.getId( button );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     lifeCycle.execute();
     String expected 
-      =   "org.eclipse.rap.rwt.EventUtil.suspendEventHandling();"
+        = "org.eclipse.rap.rwt.EventUtil.suspendEventHandling();"
         + "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
         + "wm.dispose( \"w3\" );"
         + "qx.ui.core.Widget.flushGlobalQueues();"
@@ -91,12 +85,12 @@ public class RenderDispose_Test extends TestCase {
 
       private static final long serialVersionUID = 1L;
 
-      public void beforePhase( PhaseEvent event ) {
+      public void beforePhase( final PhaseEvent event ) {
         Button button = new Button( shell, RWT.PUSH );
         button.dispose();
       }
 
-      public void afterPhase( PhaseEvent event ) {
+      public void afterPhase( final PhaseEvent event ) {
       }
 
       public PhaseId getPhaseId() {

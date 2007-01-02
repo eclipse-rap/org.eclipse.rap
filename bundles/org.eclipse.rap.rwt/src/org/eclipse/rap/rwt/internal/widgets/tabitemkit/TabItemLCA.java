@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.widgets.tabitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -78,12 +77,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( tabItem );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, tabItem.getText() );
-    if( tabItem.getImage() != null ){
-      writer.set( Props.IMAGE, 
-                  JSConst.QX_FIELD_ICON,
-                  Image.getPath( tabItem.getImage() ) );
-    }
+    ItemLCAUtil.writeChanges( tabItem );
     writeCheckedState( widget );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 

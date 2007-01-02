@@ -70,6 +70,32 @@ public class SlimList_Test extends TestCase {
     assertEquals( 2, list.size() );
   }
 
+  public void testInsert() {
+    List list = new SlimList();
+    list.add( "a" );
+    list.add( "c" );
+    list.add( 1, "b" );
+    assertEquals( "a", list.get( 0 ) );
+    assertEquals( "b", list.get( 1 ) );
+    assertEquals( "c", list.get( 2 ) );
+
+    list.clear();
+    list.add( "b" );
+    list.add( "c" );
+    list.add( 0, "a" );
+    assertEquals( "a", list.get( 0 ) );
+    assertEquals( "b", list.get( 1 ) );
+    assertEquals( "c", list.get( 2 ) );
+
+    list.clear();
+    list.add( "a" );
+    list.add( "b" );
+    list.add( 2, "c" );
+    assertEquals( "a", list.get( 0 ) );
+    assertEquals( "b", list.get( 1 ) );
+    assertEquals( "c", list.get( 2 ) );
+  }
+  
   public void testClear() {
     List list = new SlimList();
     list.clear();

@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.rwt.internal.widgets.controlkit;
 
+import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
@@ -18,8 +19,10 @@ import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.events.ControlListener;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.internal.widgets.Props;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.Fixture;
 
 
 public class ControlLCA_Test extends TestCase {
@@ -45,8 +48,37 @@ public class ControlLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
     assertEquals( adapter.getPreserved( Props.BOUNDS ), shell.getBounds() );
-    Boolean asLlisteners;
-    asLlisteners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, asLlisteners );
+    Boolean listeners;
+    listeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    assertEquals( Boolean.TRUE, listeners );
+  }
+  
+  public void testWriteVisibility() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Button button = new Button( shell, RWT.PUSH );
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( button );
+    
+    // Initial JavaScript code must not contain setVisibility()
+    Fixture.fakeResponseWriter();
+    lca.renderInitialization( button );
+    lca.renderChanges( button );
+    assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) == -1 );
+    
+    // Unchanged visible attribute must not be rendered
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( button );
+    RWTFixture.preserveWidgets();
+    lca.renderInitialization( button );
+    lca.renderChanges( button );
+    assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) == -1 );
+
+    // Changed visible attribute must not be rendered
+    Fixture.fakeResponseWriter();
+    RWTFixture.preserveWidgets();
+    button.setVisible( false );
+    lca.renderInitialization( button );
+    lca.renderChanges( button );
+    assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) != -1 );
   }
 }

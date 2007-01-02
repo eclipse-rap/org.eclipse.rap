@@ -18,28 +18,23 @@ import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.engine.lifecycle.*;
 
-// TODO: [fappel] preserving the values should take place after the
-//                read data phase, since reseting a value programmatically
-//                in ProcessAction to the value it had before ReadData would 
-//                prevent that the UI will be updated with the correct value.
 public final class PreserveWidgetsPhaseListener implements PhaseListener {
 
   private static final long serialVersionUID = 1L;
 
   public void beforePhase( final PhaseEvent event ) {
+  }
+
+  public void afterPhase( final PhaseEvent event ) {
     if( PhaseId.READ_DATA.equals( event.getPhaseId() ) ) {
       Display display = Display.getCurrent();
       if( display != null ) {
         preserve( display );
       }
-    }
-  }
-
-  public void afterPhase( final PhaseEvent event ) {
-    if( PhaseId.RENDER.equals( event.getPhaseId() ) ) {
+    } else if( PhaseId.RENDER.equals( event.getPhaseId() ) ) {
       Display display = Display.getCurrent();
       if( display != null ) {
-        clearPreservd( display );
+        clearPreserved( display );
       }
     }
   }
@@ -66,7 +61,7 @@ public final class PreserveWidgetsPhaseListener implements PhaseListener {
     }
   }
   
-  private static void clearPreservd( final Display display ) {
+  private static void clearPreserved( final Display display ) {
     IWidgetAdapter displayAdapter = DisplayUtil.getAdapter( display );
     displayAdapter.clearPreserved();
     Composite[] shells = display.getShells();

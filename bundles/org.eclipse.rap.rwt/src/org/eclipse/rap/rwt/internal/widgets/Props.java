@@ -32,7 +32,7 @@ public final class Props {
   public static final String CLIENT_AREA = "clientArea";
 
   // Button properties
-  public static final String SELECTION_LISTENERS = "hasSelectionListeners";
+  public static final String SELECTION_LISTENERS = "selectionListeners";
   
   // Text properties
   public static final String TEXT = "text";

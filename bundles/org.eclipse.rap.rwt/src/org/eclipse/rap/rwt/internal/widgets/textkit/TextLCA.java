@@ -65,7 +65,7 @@ public class TextLCA extends AbstractWidgetLCA {
     Text text = ( Text )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     ControlLCAUtil.writeChanges( text );
-    writer.set( Props.TEXT, "value", text.getText() );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_VALUE, text.getText(), "" );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

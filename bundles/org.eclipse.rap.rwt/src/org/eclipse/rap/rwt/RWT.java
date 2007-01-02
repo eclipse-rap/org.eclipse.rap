@@ -40,6 +40,7 @@ public class RWT {
   public static final int RADIO = 1 << 4;
   public static final int CHECK = 1 << 5;
   public static final int ARROW = 1 << 2;
+  public static final int TOGGLE = 1 << 1;
   public static final int BORDER = 1 << 11;
   public static final int FLAT = 1 << 23;
   public static final int CLOSE = 1 << 6;

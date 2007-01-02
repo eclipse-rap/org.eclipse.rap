@@ -27,3 +27,57 @@ org.eclipse.rap.rwt.MenuUtil.showMenu = function( menu , x , y ) {
   }
 };
 
+org.eclipse.rap.rwt.MenuUtil.checkMenuItemSelected = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = wm.findIdByWidget( evt.getTarget() );    
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    req.addParameter( id + ".selection", evt.getTarget().getChecked() ); 
+  }
+}
+
+org.eclipse.rap.rwt.MenuUtil.checkMenuItemSelectedAction = function( evt ) {
+  org.eclipse.rap.rwt.MenuUtil.checkMenuItemSelected( evt );
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    org.eclipse.rap.rwt.EventUtil.widgetSelected( evt );
+  }
+}
+
+  
+org.eclipse.rap.rwt.MenuUtil.radioMenuItemSelected = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = wm.findIdByWidget( evt.getTarget() );    
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    req.addParameter( id + ".selection", evt.getTarget().getChecked() ); 
+  }
+}
+
+org.eclipse.rap.rwt.MenuUtil.radioMenuItemSelectedAction = function( evt ) {
+  org.eclipse.rap.rwt.MenuUtil.radioMenuItemSelected( evt );
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    org.eclipse.rap.rwt.EventUtil.widgetSelected( evt );
+  }
+}
+
+org.eclipse.rap.rwt.MenuUtil.createRadioManager = function( menuItem ) {
+  var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var name = wm.findIdByWidget( menuItem ) + "RadioMgr";
+  var manager = new qx.manager.selection.RadioManager( name );
+  menuItem.setManager( manager );
+}
+
+org.eclipse.rap.rwt.MenuUtil.assignRadioManager = function( firstMenuItem, menuItem ) {
+  var manager = firstMenuItem.getManager();
+  menuItem.setManager( manager );
+}
+
+org.eclipse.rap.rwt.MenuUtil.disposeRadioMenuItem = function( menuItem ) {
+  var manager = menuItem.getManager();
+  manager.remove( menuItem );
+  menuItem.dispose();
+  if( manager.getItems().length == 0 ) {
+    manager.dispose();
+  }
+}
+

@@ -77,15 +77,15 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
       private static final long serialVersionUID = 1L;
 
       public void beforePhase( final PhaseEvent event ) {
-      }
-
-      public void afterPhase( final PhaseEvent event ) {
-        if( PhaseId.READ_DATA.equals( event.getPhaseId() ) ) {
+        if( PhaseId.PROCESS_ACTION.equals( event.getPhaseId() ) ) {
           IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
           if( "hello".equals( adapter.getPreserved( Props.TEXT ) ) ) {
             log.append( "copy created" );
           }
         }
+      }
+
+      public void afterPhase( final PhaseEvent event ) {
       }
 
       public PhaseId getPhaseId() {
@@ -171,8 +171,8 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     RWTLifeCycle lifeCycle = new RWTLifeCycle();
     lifeCycle.execute();
     String expected = Display.class.getName()
-                      + Shell.class.getName()
-                      + Text.class.getName();
+                    + Shell.class.getName()
+                    + Text.class.getName();
     assertEquals( expected, log.toString() );
   }
 

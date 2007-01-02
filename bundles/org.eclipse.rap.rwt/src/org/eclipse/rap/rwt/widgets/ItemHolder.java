@@ -18,6 +18,29 @@ import org.eclipse.rap.rwt.RWT;
 
 public final class ItemHolder implements IItemHolderAdapter {
 
+  public static boolean isItemHolder( final Widget widget ) {
+    return widget.getAdapter( IItemHolderAdapter.class ) != null;
+  }
+
+  public static Item[] getItems( final Widget widget ) {
+    return getItemHolder( widget ).getItems();
+  }
+
+  public static void addItem( final Widget widget, final Item item ) {
+    getItemHolder( widget ).add( item );
+  }
+  
+  public static void insertItem( final Widget widget, 
+                                 final Item item, 
+                                 final int index ) 
+  {
+    getItemHolder( widget ).insert( item, index );
+  }
+
+  public static void removeItem( final Widget widget, final Item item ) {
+    getItemHolder( widget ).remove( item );
+  }
+
   private final List items;
   private final Class type;
 
@@ -41,6 +64,20 @@ public final class ItemHolder implements IItemHolderAdapter {
     items.add( item );
   }
 
+  public void insert( final Item item, final int index ) {
+    if( item == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( index < 0 || index > size() ) {
+      RWT.error( RWT.ERROR_INVALID_RANGE );
+    }
+    if( items.contains( item ) ) {
+      String msg = "The item was already added.";
+      throw new IllegalArgumentException( msg );
+    }
+    items.add( index, item );
+  }
+  
   public void remove( final Item item ) {
     if( item == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
@@ -51,7 +88,7 @@ public final class ItemHolder implements IItemHolderAdapter {
     }
     items.remove( item );
   }
-
+  
   public Item[] getItems() {
     Object[] result = ( Object[] )Array.newInstance( type, items.size() );
     items.toArray( result );
@@ -69,24 +106,9 @@ public final class ItemHolder implements IItemHolderAdapter {
     return items.indexOf( item );
   }
 
-  public static boolean isItemHolder( final Widget widget ) {
-    return widget.getAdapter( IItemHolderAdapter.class ) != null;
-  }
-
-  public static Item[] getItems( final Widget widget ) {
-    return getItemHolder( widget ).getItems();
-  }
-
-  public static void addItem( final Widget widget, final Item item ) {
-    getItemHolder( widget ).add( item );
-  }
-
-  public static void removeItem( final Widget widget, final Item item ) {
-    getItemHolder( widget ).remove( item );
-  }
-
   // ////////////////
   // helping methods
+  
   private static IItemHolderAdapter getItemHolder( final Widget widget ) {
     if( !isItemHolder( widget ) ) {
       Object[] params = new Object[]{

@@ -102,13 +102,13 @@ public final class JSWriter {
   }
   
   public void setParent( final String parentId ) throws IOException {
-    doSetParent( createFindWidgetById( parentId ) );
+    call( WIDGET_MANAGER_REF, "setParent", new Object[] { widget, parentId } );
   }
   
   public void set( final String jsProperty, final String value ) 
     throws IOException 
   {
-    set( null, jsProperty, value );
+    set( jsProperty, new String[] { value } );
   }
   
   public void set( final String jsProperty, final int value ) 
@@ -181,15 +181,23 @@ public final class JSWriter {
                    final String newValue ) 
     throws IOException 
   {
-    if( javaProperty == null ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    if(    !adapter.isInitialized()
+        || WidgetUtil.hasChanged( widget, javaProperty, newValue ) ) 
+    {
       set( jsProperty, new String[] { newValue } );
-    } else {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-      if(    !adapter.isInitialized()
-          || WidgetUtil.hasChanged( widget, javaProperty, newValue ) ) 
-      {
-        set( jsProperty, new String[] { newValue } );
-      }
+    }
+  }
+  
+  public void set( final String javaProperty, 
+                   final String jsProperty, 
+                   final Object newValue,
+                   final Object defaultValue ) 
+    throws IOException 
+  {
+    if( WidgetUtil.hasChanged( widget, javaProperty, newValue, defaultValue ) ) 
+    {
+      set( jsProperty, new Object[] { newValue } );
     }
   }
   
@@ -292,7 +300,7 @@ public final class JSWriter {
   {
     ensureWidgetManager();
     String params = createParamList( args );
-    write( "{0}.{1}({2});", target, function, params.toString() );
+    write( "{0}.{1}({2});", target, function, params );
   }
   
   // TODO [rh] should we name this call and make it a static method?
@@ -410,11 +418,6 @@ public final class JSWriter {
     }
   }
   
-  private void doSetParent( final String parentWidgetId ) throws IOException {
-    ensureWidgetManager();
-    write( "w.setParent( {0} );", parentWidgetId );
-  }
-
   private static String createFindWidgetById( final Widget widget ) {
     return createFindWidgetById( WidgetUtil.getId( widget ) );
   }

@@ -52,7 +52,7 @@ final class ListModel {
 
   void setSelection( final int selection ) {
     deselectAll();
-    if( selection >= 0 || selection <= getItemCount() - 1 ) {
+    if( selection >= 0 && selection <= getItemCount() - 1 ) {
       this.selection = new int[]{ selection };
     }
   }
@@ -127,6 +127,15 @@ final class ListModel {
           this.selection[ pos ] = indexOf( selection[ i ] );
           pos++;
         }
+      }
+    }
+  }
+
+  void selectAll() {
+    if( !single ) {
+      selection = new int[ items.size() ];
+      for( int i = 0; i < selection.length; i++ ) {
+        selection[ i ] = i;
       }
     }
   }
@@ -244,11 +253,11 @@ final class ListModel {
     boolean found = false;
     for( int i = 0; !found && i < selection.length; i++ ) {
       if( index == selection[ i ] ) {
+        int length = selection.length;
         int[] newSelection = new int[ selection.length - 1 ];
-        System.arraycopy( selection, 0, newSelection, 0, index );
-        if( index < selection.length - 1 ) {
-          int length = selection.length - index - 1;
-          System.arraycopy( selection, index + 1, newSelection, index, length );
+        System.arraycopy( selection, 0, newSelection, 0, i );
+        if( i < length - 1 ) {
+          System.arraycopy( selection, i + 1, newSelection, i, length - i - 1 );
         }
         selection = newSelection;
         found = true;

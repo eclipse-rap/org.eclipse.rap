@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Image;
 import com.w4t.engine.lifecycle.PhaseId;
 
 public class MenuItem_Test extends TestCase {
@@ -32,6 +33,7 @@ public class MenuItem_Test extends TestCase {
     } catch( NullPointerException e ) {
       // expected
     }
+    
   }
 
   public void testSetMenu() {
@@ -81,6 +83,58 @@ public class MenuItem_Test extends TestCase {
       // expected
     }
   }
+  
+  public void testSelection() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Menu menuBar = new Menu( shell, RWT.BAR );
+    MenuItem menuBarItem = new MenuItem( menuBar, RWT.CASCADE );
+    Menu menu = new Menu( menuBarItem );
+    menuBarItem.setMenu( menu );
+    MenuItem pushItem = new MenuItem( menu, RWT.PUSH );
+    MenuItem radioItem1 = new MenuItem( menu, RWT.RADIO );
+    MenuItem radioItem2 = new MenuItem( menu, RWT.RADIO );
+    MenuItem checkItem = new MenuItem( menu, RWT.CHECK );
+    
+    // Initial state
+    assertEquals( false, pushItem.getSelection() );
+    assertEquals( false, checkItem.getSelection() );
+    assertEquals( false, radioItem1.getSelection() );
+    assertEquals( false, radioItem2.getSelection() );
+    
+    // MenuItems with style PUSH must ignore selection changes
+    pushItem.setSelection( true );
+    assertEquals( false, pushItem.getSelection() );
+    
+    // MenuItems with style CHECK or RADIO must allow selection changes
+    checkItem.setSelection( true );
+    assertEquals( true, checkItem.getSelection() );
+    radioItem1.setSelection( true );
+    assertEquals( true, radioItem1.getSelection() );
+    
+    // When selecting MenuItem with style RADIO programatically, there is no
+    // automatic deselection of sibling radio items
+    radioItem1.setSelection( true );
+    radioItem2.setSelection( true );
+    assertEquals( true, radioItem1.getSelection() );
+    assertEquals( true, radioItem2.getSelection() );
+  }
+  
+  public void testImage() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Menu menuBar = new Menu( shell, RWT.BAR );
+    MenuItem menuBarItem = new MenuItem( menuBar, RWT.CASCADE );
+    Menu menu = new Menu( menuBarItem );
+    menuBarItem.setMenu( menu );
+    MenuItem separator = new MenuItem( menu, RWT.SEPARATOR );
+    
+    // Don't allow an image to be set on a separator menu item
+    Image image = Image.find( RWTFixture.IMAGE1 );
+    assertNotNull( image );
+    separator.setImage( image );
+    assertEquals( null, separator.getImage() );
+  }
 
   public void testDispose() {
     Display display = new Display();
@@ -95,7 +149,7 @@ public class MenuItem_Test extends TestCase {
     assertEquals( true, fileMenu.isDisposed() );
     assertEquals( true, exitMenuItem.isDisposed() );
   }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );

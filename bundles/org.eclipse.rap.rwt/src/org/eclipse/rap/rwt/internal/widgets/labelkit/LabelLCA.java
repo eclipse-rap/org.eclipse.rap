@@ -48,7 +48,7 @@ public class LabelLCA extends AbstractWidgetLCA {
     //      e.g. setText( "> <" ), setText( "<tralala>" );
     Matcher matcher = LINE_BREAK_PATTERN.matcher( label.getText() );
     String text = matcher.replaceAll( "<br/>" );
-    writer.set( Props.TEXT, "html", text );
+    writer.set( Props.TEXT, "html", text, "" );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

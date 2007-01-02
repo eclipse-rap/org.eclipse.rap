@@ -11,15 +11,38 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.internal.widgets.IListAdapter;
 
 
 public class List extends Scrollable {
 
   private final ListModel model;
+  private int focusIndex = -1;
+  private IListAdapter listAdapter;
 
   public List( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
-    model = new ListModel( ( ( style & RWT.SINGLE ) != 0 ) );
+    model = new ListModel( ( style & RWT.SINGLE ) != 0 );
+  }
+  
+  /////////////////////
+  // Adaptable override
+  
+  public Object getAdapter( final Class adapter ) {
+    Object result;
+    if( adapter == IListAdapter.class ) {
+      if( listAdapter == null ) {
+        listAdapter = new IListAdapter() {
+          public void setFocusIndex( final int focusIndex ) {
+            List.this.setFocusIndex( focusIndex );
+          }
+        };
+      }
+      result = listAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
   }
   
   ///////////////////////////////
@@ -39,53 +62,74 @@ public class List extends Scrollable {
 
   public void setSelection( final int selection ) {
     model.setSelection( selection );
+    updateFocusIndexAfterSelectionChange();
   }
 
   public void setSelection( final int[] selection ) {
     model.setSelection( selection );
+    updateFocusIndexAfterSelectionChange();
   }
   
   public void setSelection( final int start, final int end ) {
     model.setSelection( start, end );
+    updateFocusIndexAfterSelectionChange();
   }
   
   public void setSelection( final String[] selection ) {
     model.setSelection( selection );
+    updateFocusIndexAfterSelectionChange();
+  }
+  
+  public void selectAll() {
+    model.selectAll();
+    updateFocusIndexAfterSelectionChange();
   }
 
   public void deselectAll() {
     model.deselectAll();
+    updateFocusIndexAfterSelectionChange();
   }
   
+  public int getFocusIndex() {
+    return focusIndex;
+  }
+
   ////////////////////////////////
   // Methods to maintain the items
   
   public void add( final String string ) {
     model.add( string );
+    updateFocusIndexAfterItemChange();
   }
 
   public void add( final String string, final int index ) {
     model.add( string, index );
+    updateFocusIndexAfterItemChange();
   }
 
   public void remove( final int index ) {
     model.remove( index );
+    updateFocusIndexAfterItemChange();
   }
 
   public void remove( final int start, final int end ) {
     model.remove( start, end );
+    updateFocusIndexAfterItemChange();
   }
   
   public void remove( final int[] indices ) {
     model.remove( indices );
+    updateFocusIndexAfterItemChange();
   }
 
   public void remove( final String string ) {
     model.remove( string );
+    updateFocusIndexAfterItemChange();
   }
 
   public void removeAll() {
     model.removeAll();
+    updateFocusIndexAfterItemChange();
   }
 
   public void setItem( final int index, final String string ) {
@@ -119,6 +163,32 @@ public class List extends Scrollable {
     SelectionEvent.removeListener( this, listener );
   }
 
+  /////////////////////////////////
+  // Helping methods for focusIndex 
+  
+  private void setFocusIndex( final int focusIndex ) {
+    int count = model.getItemCount();
+    if( focusIndex == -1 || ( focusIndex >= 0 && focusIndex < count ) ) {
+      this.focusIndex = focusIndex;
+    }
+  }
+  
+  private void updateFocusIndexAfterSelectionChange() {
+    if( model.getSelectionIndex() == -1 ) {
+      focusIndex = 0;
+    } else {
+      focusIndex = model.getSelectionIndices()[ 0 ];
+    }
+  }
+
+  private void updateFocusIndexAfterItemChange() {
+    if( model.getItemCount() == 0 ) {
+      focusIndex = -1;
+    } else if( model.getSelectionIndex() == -1 ){
+      focusIndex = model.getItemCount() - 1;
+    }
+  }
+  
   //////////////////
   // Helping methods 
   

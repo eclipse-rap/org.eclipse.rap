@@ -50,6 +50,7 @@ public class CoolItem extends Item {
   private Point size = new Point( 0, 0 );
   private Control control;
 
+  // TODO [rh] constructor missing: CoolItem(CoolBar,int,int)
   public CoolItem( final CoolBar parent, final int style ) {
     super( parent, style );
     this.parent = parent;

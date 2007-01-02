@@ -11,8 +11,11 @@
 
 package org.eclipse.rap.rwt.widgets;
 
+import java.util.ArrayList;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor;
+import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
 /**
  * TODO: [fappel] comment
@@ -39,6 +42,9 @@ public class Tree extends Composite {
     }
     return result;
   }
+  
+  ///////////////////////////
+  // Methods to manage items 
 
   public int getItemCount() {
     return itemHolder.size();
@@ -60,6 +66,14 @@ public class Tree extends Composite {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
     return itemHolder.indexOf( item );
+  }
+  
+  public void removeAll() {
+    TreeItem[] items = getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      items[ i ].dispose();
+    }
+    selection = EMPTY_SELECTION;
   }
   
   /////////////////////////////////////
@@ -124,6 +138,22 @@ public class Tree extends Composite {
     }
   }
   
+  public void selectAll() {
+    if( ( style & RWT.MULTI ) != 0 ) {
+      final java.util.List allItems = new ArrayList();
+      WidgetTreeVisitor.accept( this, new AllWidgetTreeVisitor() {
+        public boolean doVisit( final Widget widget ) {
+          if( widget instanceof TreeItem ) {
+            allItems.add( widget );
+          }
+          return true;
+        }
+      } );
+      selection = new TreeItem[ allItems.size() ];
+      allItems.toArray( selection );
+    }
+  }
+  
   public void deselectAll() {
     this.selection = EMPTY_SELECTION;
   }
@@ -156,6 +186,24 @@ public class Tree extends Composite {
       items[ i ].dispose();
     }
     super.releaseChildren();
+  }
+  
+  void removeFromSelection( final TreeItem item ) {
+    int index = -1;
+    for( int i = 0; index == -1 && i < selection.length; i++ ) {
+      if( selection[ i ] == item ) {
+        index = i;
+      }
+    }
+    if( index != -1 ) {
+      TreeItem[] newSelection = new TreeItem[ selection.length - 1 ];
+      System.arraycopy( selection, 0, newSelection, 0, index );
+      if( index < selection.length - 1 ) {
+        int length = selection.length - index - 1;
+        System.arraycopy( selection, index + 1, newSelection, index, length );
+      }
+      selection = newSelection;
+    }
   }
   
   //////////////////

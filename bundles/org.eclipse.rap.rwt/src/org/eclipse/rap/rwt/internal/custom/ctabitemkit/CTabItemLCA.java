@@ -23,10 +23,9 @@ import org.eclipse.rap.rwt.widgets.Widget;
 public class CTabItemLCA extends AbstractWidgetLCA {
   
   public void preserveValues( final Widget widget ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     CTabItem tabItem = ( CTabItem )widget;
-    adapter.preserve( Props.TEXT, tabItem.getText() );
-    adapter.preserve( Props.IMAGE, tabItem.getImage() );
+    ItemLCAUtil.preserve( tabItem );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( Props.TOOL_TIP_TEXT, tabItem.getToolTipText() );
   }
   
@@ -47,10 +46,8 @@ public class CTabItemLCA extends AbstractWidgetLCA {
   
   public void renderChanges( final Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, item.getText() );
+    ItemLCAUtil.writeChanges( item );
     ControlLCAUtil.writeToolTip( widget, item.getToolTipText() );
-    ControlLCAUtil.writeImage( item, item.getImage() );    
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

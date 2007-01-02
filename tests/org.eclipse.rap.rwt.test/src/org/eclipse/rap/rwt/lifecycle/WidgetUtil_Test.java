@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.rwt.lifecycle;
 
+import java.util.Date;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
@@ -106,6 +107,27 @@ public class WidgetUtil_Test extends TestCase {
     assertFalse( WidgetUtil.equals( "1", null ) );
     assertFalse( WidgetUtil.equals( "1", "2" ) );
     assertTrue( WidgetUtil.equals( "1", "1" ) );
+    assertTrue( WidgetUtil.equals( new String[] { "1" }, 
+                                   new String[] { "1" } ) );
+    assertTrue( WidgetUtil.equals( new int[] { 1 }, 
+                                   new int[] { 1 } ) );
+    assertTrue( WidgetUtil.equals( new boolean[] { true }, 
+                                   new boolean[] { true } ) );
+    assertTrue( WidgetUtil.equals( new long[] { 232 }, 
+                                   new long[] { 232 } ) );
+    assertTrue( WidgetUtil.equals( new float[] { 232 }, 
+                                   new float[] { 232 } ) );
+    assertTrue( WidgetUtil.equals( new double[] { 345 }, 
+                                   new double[] { 345 } ) );
+    assertTrue( WidgetUtil.equals( new Date[] { new Date( 1 ) }, 
+                                   new Date[] { new Date( 1 ) } ) );
+    assertFalse( WidgetUtil.equals( new double[] { 345 }, 
+                                    new float[] { 345 } ) );
+    assertFalse( WidgetUtil.equals( new int[] { 345 }, 
+                                    new float[] { 345 } ) );
+    assertFalse( WidgetUtil.equals( new int[] { 345 }, 
+                                    new long[] { 345 } ) );
+    assertFalse( WidgetUtil.equals( new Date[] { new Date( 3 ) }, null ) );
   }
 
   protected void setUp() throws Exception {

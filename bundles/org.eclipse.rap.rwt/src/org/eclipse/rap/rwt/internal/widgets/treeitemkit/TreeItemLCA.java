@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.TreeEvent;
-import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -31,10 +30,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   private static final String STATE_COLLAPSED = "collapsed";
   private static final String STATE_EXPANDED = "expanded";
   
-  // tree item functions as defined in org.eclipse.rap.rwt.TreeUtil
-  private static final String CREATE_TREE_ITEM 
-    = "org.eclipse.rap.rwt.TreeUtil.createTreeItem";
-
   public void preserveValues( final Widget widget ) {
     TreeItem treeItem = ( TreeItem )widget;
     ItemLCAUtil.preserve( treeItem );
@@ -44,37 +39,31 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
+    // TODO [rh] TreeEvent behave different from SWT: SWT-style is to send
+    //      the event and afterwards set the expanded property of the item
     String state = WidgetUtil.readPropertyValue( widget, "state" );
     if( STATE_EXPANDED.equals( state ) || STATE_COLLAPSED.equals( state ) ) {
       TreeItem treeItem = ( TreeItem )widget;
       treeItem.setExpanded( STATE_EXPANDED.equals( state ) );
     }
     processWidgetSelectedEvent( widget );
-    if( !processTreeExpandedEvent( widget ) ) {
-      processTreeCollapsedEvent( widget );
-    }
+    processTreeExpandedEvent( widget );
+    processTreeCollapsedEvent( widget );
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     Object[] args = new Object[] { 
-      treeItem.getParent(), 
       WidgetUtil.getId( treeItem ), 
       treeItem.getParentItem()
     };
-    writer.callStatic( CREATE_TREE_ITEM, args );
+    writer.call( treeItem.getParent(), "createItem", args );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( treeItem );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, treeItem.getText() );
-    if( treeItem.getImage() != null ) {
-      writer.set( Props.IMAGE,
-                  JSConst.QX_FIELD_ICON, 
-                  Image.getPath( treeItem.getImage() ) );
-    }
+    ItemLCAUtil.writeChanges( treeItem );
     writeExpanded( treeItem );
   }
 
@@ -115,37 +104,27 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static boolean processTreeExpandedEvent( final Widget widget ) {
-    boolean result = false;
+  private static void processTreeExpandedEvent( final Widget widget ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String id = request.getParameter( JSConst.EVENT_TREE_EXPANDED );
     if( WidgetUtil.getId( widget ).equals( id ) ) {
       TreeItem treeItem = ( TreeItem )widget;
       TreeEvent event = new TreeEvent( treeItem.getParent(), 
                                        treeItem,
-                                       TreeEvent.TREE_EXPANDED,
-                                       true,
-                                       RWT.NONE );
+                                       TreeEvent.TREE_EXPANDED );
       event.processEvent();
-      result = true;
     }
-    return result;
   }
 
-  private static boolean processTreeCollapsedEvent( final Widget widget ) {
-    boolean result = false;
+  private static void processTreeCollapsedEvent( final Widget widget ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String id = request.getParameter( JSConst.EVENT_TREE_COLLAPSED );
     if( WidgetUtil.getId( widget ).equals( id ) ) {
       TreeItem treeItem = ( TreeItem )widget;
       TreeEvent event = new TreeEvent( treeItem.getParent(), 
                                        treeItem,
-                                       TreeEvent.TREE_COLLAPSED,
-                                       true,
-                                       RWT.NONE );
+                                       TreeEvent.TREE_COLLAPSED );
       event.processEvent();
-      result = true;
     }
-    return result;
   }
 }

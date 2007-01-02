@@ -26,10 +26,12 @@ public class ListLCA extends AbstractWidgetLCA {
   // Property names, used when preserving values
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_ITEMS = "items";
+  private static final String PROP_FOCUS_INDEX = "focusIndex";
   
   private static final Integer DEFAULT_SINGLE_SELECTION = new Integer( -1 );
   private static final int[] DEFAULT_MULTI_SELECTION = new int[ 0 ];
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
+  private static final Integer DEFAULT_FOCUS_INDEX = new Integer( -1 );
 
   
   public void preserveValues( final Widget widget ) {
@@ -39,6 +41,7 @@ public class ListLCA extends AbstractWidgetLCA {
     adapter.preserve( Props.SELECTION_LISTENERS, 
                       Boolean.valueOf( SelectionEvent.hasListener( list ) ) );
     adapter.preserve( PROP_ITEMS, list.getItems() );
+    adapter.preserve( PROP_FOCUS_INDEX, new Integer( list.getFocusIndex() ) );
     preserveSelection( list );
   }
 
@@ -46,13 +49,19 @@ public class ListLCA extends AbstractWidgetLCA {
     List list = ( List )widget;
     String value = WidgetUtil.readPropertyValue( list, "selection" );
     if( value != null ) {
-      String[] indiceStrings = value.split( "," );
+      String[] indiceStrings;
+      if( "".equals( value ) ) {
+        indiceStrings = new String[ 0 ];
+      } else {
+        indiceStrings = value.split( "," );
+      }
       int[] indices = new int[ indiceStrings.length ];
       for( int i = 0; i < indices.length; i++ ) {
-        indices[ i ] = Integer.valueOf( indiceStrings[ i ] ).intValue();
+        indices[ i ] = Integer.parseInt( indiceStrings[ i ] );
       }
       list.setSelection( indices );
     }
+    readFocusIndex( list );
     ControlLCAUtil.processSelection( list, null, true );
   }
 
@@ -68,8 +77,10 @@ public class ListLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     List list = ( List )widget;
     ControlLCAUtil.writeChanges( list );
+    // order of writeItems, writeSelection, writeFocus is crucial
     writeItems( list );
     writeSelection( list );
+    writeFocusIndex( list );
     updateSelectionListeners( list );
   }
 
@@ -139,6 +150,27 @@ public class ListLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( list );
       String value = newValue.booleanValue() ? "action" : "state"; 
       writer.set( "changeSelectionNotification", value );
+    }
+  }
+
+  ///////////////////////////////////////////
+  // Helping methods to maintain focused item
+  private static void readFocusIndex( final List list ) {
+    String paramValue = WidgetUtil.readPropertyValue( list, "focusIndex" );
+    if( paramValue != null ) {
+      int focusIndex = Integer.parseInt( paramValue );
+      Object adapter = list.getAdapter( IListAdapter.class );
+      IListAdapter listAdapter = ( IListAdapter )adapter;
+      listAdapter.setFocusIndex( focusIndex );
+    }
+  }
+
+  private static void writeFocusIndex( final List list ) throws IOException {
+    String prop = PROP_FOCUS_INDEX;
+    Integer newValue = new Integer( list.getFocusIndex() );
+    if( WidgetUtil.hasChanged( list, prop, newValue, DEFAULT_FOCUS_INDEX ) ) {
+      JSWriter writer = JSWriter.getWriterFor( list );
+      writer.call( "focusItem", new Object[] { newValue} );
     }
   }
 

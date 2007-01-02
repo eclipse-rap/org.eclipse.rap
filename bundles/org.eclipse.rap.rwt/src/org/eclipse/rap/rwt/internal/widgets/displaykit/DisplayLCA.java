@@ -170,18 +170,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
   
   public void processAction( final Display display ) {
-//    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-//      public boolean doVisit( final Widget widget ) {
-//        IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
-//        adapter.processAction( widget );
-//        return true;
-//      }
-//    };
-//    Composite[] shells = display.getShells();
-//    for( int i = 0; i < shells.length; i++ ) {
-//      Composite shell = shells[ i ];
-//      WidgetTreeVisitor.accept( shell, visitor );
-//    }
+    ProcessActionRunner.execute();
     RWTEvent.processScheduledEvents();
   }
 

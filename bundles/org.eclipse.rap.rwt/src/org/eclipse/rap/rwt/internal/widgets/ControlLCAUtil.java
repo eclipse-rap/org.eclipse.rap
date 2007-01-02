@@ -79,15 +79,11 @@ public class ControlLCAUtil {
   public static void writeVisblility( final Control control ) 
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( control );
-    // TODO: [Ralf] there is no set(String, String, boolean) method yet
-    //              writer.set( Props.VISIBILITY, "visibility", control.isVisible() );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    Boolean isVisible = ( Boolean )adapter.getPreserved( Props.VISIBILITY );
-    if(   !adapter.isInitialized()
-        || isVisible == null
-        || control.isVisible() != isVisible.booleanValue() )
+    Boolean newValue = Boolean.valueOf( control.isVisible() );
+    Boolean defValue = Boolean.TRUE;
+    if( WidgetUtil.hasChanged( control, Props.VISIBILITY, newValue, defValue ) ) 
     {
+      JSWriter writer = JSWriter.getWriterFor( control );
       writer.set( "visibility", control.isVisible() );
     }
   }

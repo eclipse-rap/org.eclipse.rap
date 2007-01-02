@@ -379,6 +379,34 @@ public class List_Test extends TestCase {
     } catch( NullPointerException e ) {
       // expected
     }
+    
+    // Select last item and remove it
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "last item" );
+    list.setSelection( list.getItemCount() - 1 );
+    list.remove( list.getItemCount() - 1 );
+    assertEquals( 1, list.getItemCount() );
+    assertEquals( -1, list.getSelectionIndex() );
+
+    // Select non-existing item
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.setSelection( 1 );
+    list.setSelection( 12345 );
+    assertEquals( -1, list.getSelectionIndex() );
+    
+    // selectAll must be ignored for single-select Lists
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.setSelection( 1 );
+    list.selectAll();
+    assertEquals( 1, list.getSelectionIndex() );
+    assertEquals( 1, list.getSelectionCount() );
   }
   
   public void testSelectionForMulti() {
@@ -536,6 +564,26 @@ public class List_Test extends TestCase {
     } catch( NullPointerException e ) {
       // expected
     }
+
+    // Select non-existing item
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.setSelection( 1 );
+    list.setSelection( 12345 );
+    assertEquals( -1, list.getSelectionIndex() );
+
+    // selectAll must be ignored for single-select Lists
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.selectAll();
+    assertEquals( 3, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    assertEquals( 2, list.getSelectionIndices()[ 2 ] );
   }
   
   public void testSetItem() {
@@ -653,7 +701,109 @@ public class List_Test extends TestCase {
     List list4 = new List( shell, RWT.SINGLE | RWT.MULTI );
     assertTrue( ( list4.getStyle() & RWT.SINGLE ) != 0 );
   }
+  
+  public void testFocusIndexForSingle() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    List list = new List( shell, RWT.SINGLE );
+    
+    // Initial focusIndex must be -1
+    assertEquals( -1, list.getFocusIndex() );
+    
+    // focusIndex must be 0 after adding the first item
+    list.removeAll();
+    list.add( "item0" );
+    assertEquals( 0, list.getFocusIndex() );
+    
+    // focusIndex must be -1 after removeing last item
+    list.removeAll();
+    list.add( "item0" );
+    list.remove( 0 );
+    assertEquals( -1, list.getFocusIndex() );
+    
+    // Test that focusIndex goes with the selection, if any
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.setSelection( 0 );
+    assertEquals( 0, list.getFocusIndex() );
+    list.remove( 1 );
+    assertEquals( 0, list.getFocusIndex() );
+    list.setSelection( 1 );
+    assertEquals( 1, list.getFocusIndex() );
 
+    // Setting a selection range must set the focusIndex to the selection start
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.setSelection( 1, 1 );
+    assertEquals( 1, list.getFocusIndex() );
+    
+    // Removing the last but not only item (when selected and focused)
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.setSelection( 2 );
+    list.remove( 2 );
+    assertEquals( 1, list.getFocusIndex() );
+    assertEquals( -1, list.getSelectionIndex() );
+    
+    // Don't move focusIndex when selection a non-existing item
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.setSelection( 0 );
+    list.setSelection( 1234 );
+    assertEquals( 0, list.getFocusIndex() );
+  }
+  
+  public void testFocusIndexForMulti() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    List list = new List( shell, RWT.MULTI );
+    
+    // Initial focusIndex must be -1
+    assertEquals( -1, list.getFocusIndex() );
+    
+    // focusIndex must be 0 after adding the first item
+    list.removeAll();
+    list.add( "item0" );
+    assertEquals( 0, list.getFocusIndex() );
+    
+    // focusIndex must be -1 after removeing last item
+    list.removeAll();
+    list.add( "item0" );
+    list.remove( 0 );
+    assertEquals( -1, list.getFocusIndex() );
+    
+    // Test that focusIndex goes with the selection, if any
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.setSelection( 0 );
+    assertEquals( 0, list.getFocusIndex() );
+    list.remove( 1 );
+    assertEquals( 0, list.getFocusIndex() );
+    list.setSelection( 1 );
+    assertEquals( 1, list.getFocusIndex() );
+    list.setSelection( -1 );
+    list.setSelection( 1, 2 );
+    assertEquals( 1, list.getFocusIndex() );
+    
+    // Setting a selection range must set the focusIndex to the selection start
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.setSelection( 1, 2 );
+    assertEquals( 1, list.getFocusIndex() );
+  }
+  
   public void testDispose() {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );

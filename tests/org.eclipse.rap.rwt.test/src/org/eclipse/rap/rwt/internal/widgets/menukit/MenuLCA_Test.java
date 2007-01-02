@@ -16,9 +16,14 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
+import org.eclipse.rap.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rap.rwt.lifecycle.DisplayUtil;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
+import com.w4t.engine.requests.RequestParams;
 import com.w4t.util.browser.Ie6;
 
 
@@ -95,6 +100,27 @@ public class MenuLCA_Test extends TestCase {
     shell.setBounds( new Rectangle( 5, 6, 7, 8 ) );
     menuLCA.renderChanges( menuBar );
     assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) == -1 );
+    
+    // Simulate client-side size-change of shell: menuBar must render new size
+    RWTFixture.clearPreserved();
+    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    shell.setMenuBar( menuBar );
+    String displayId = DisplayUtil.getId( display );
+    String shellId = WidgetUtil.getId( shell );
+    String menuId = WidgetUtil.getId( menuBar );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    lifeCycle.execute();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( shellId + ".bounds.x", "0" );
+    Fixture.fakeRequestParam( shellId + ".bounds.y", "0" );
+    Fixture.fakeRequestParam( shellId + ".bounds.width", "1234" );
+    Fixture.fakeRequestParam( shellId + ".bounds.height", "4321" );
+    lifeCycle.execute();
+    String expected = "wm.findWidgetById( \"" + menuId + "\" );w.setSpace";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
   
   protected void setUp() throws Exception {

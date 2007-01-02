@@ -25,22 +25,30 @@ qx.OO.defineClass(
     var manager = this.getManager();
     manager.setMultiSelection( multiSelection );
     manager.addEventListener( "changeSelection", this._onChangeSelection, this );
+    manager.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
   }
 );
 
 /** Sets the given aray of items. */
 qx.Proto.setItems = function( items ) {
-  // TODO [rh] preserving selection and focus does not work properly
+  // preserve selection and focused item
   var manager = this.getManager();
   var oldLeadItem = manager.getLeadItem();
   var oldAnchorItem = manager.getAnchorItem();
   var oldSelection = manager.getSelectedItems();
-  this.removeAll();
-  // TODO [rh] improve: replace existing items with new string and
-  //      add/remove only what's left
+  // exchange/add/remove items
+  var oldItems = this.getChildren();
   for( var i = 0; i < items.length; i++ ) {
-    this.add( new qx.ui.form.ListItem( items[ i ] ) );
+    if( i < oldItems.length ) {
+      oldItems[ i ].setLabel( items[ i ] );
+    } else {
+      this.add( new qx.ui.form.ListItem( items[ i ] ) );
+    }
   }
+  while( this.getChildrenLength() > items.length ) {
+    this.removeAt( this.getChildrenLength() - 1 );
+  }
+  // restore previous selection and focusItem
   manager.setSelectedItems( oldSelection );
   manager.setLeadItem( oldLeadItem );
   if( manager.getMultiSelection() ) {
@@ -77,6 +85,19 @@ qx.Proto.selectItems = function( itemIndices ) {
 }
 
 /**
+ * Sets the focused item the List to the item specified by the given 
+ * itemIndex (-1 for no focused item).
+ */
+qx.Proto.focusItem = function( itemIndex ) {
+  if( itemIndex == -1 ) {
+    this.getManager().setLeadItem( null );
+  } else {
+    var items = this.getManager().getItems();
+    this.getManager().setLeadItem( items[ itemIndex ] );
+  }
+}
+
+/**
  * Selects all item if the List is multi-select. Does nothing for single-
  * select Lists.
  */
@@ -88,6 +109,16 @@ qx.Proto.selectAll = function() {
 
 qx.Proto.setChangeSelectionNotification = function( value ) {
   this._changeSelectionNotification = value;
+}
+
+qx.Proto.dispose = function() {
+  if( this.getDisposed() ) {
+    return true;
+  }
+  var manager = this.getManager();
+  manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
+  manager.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+  return qx.ui.form.List.prototype.dispose.call( this );
 }
 
 qx.Proto._onChangeSelection = function( evt ) {
@@ -113,5 +144,15 @@ qx.Proto._onChangeSelection = function( evt ) {
       req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
       req.send();
     }
+  }
+}
+
+qx.Proto._onChangeLeadItem = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = widgetManager.findIdByWidget( this );
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    var focusIndex = this.indexOf( this.getManager().getLeadItem() );
+    req.addParameter( id + ".focusIndex", focusIndex );
   }
 }

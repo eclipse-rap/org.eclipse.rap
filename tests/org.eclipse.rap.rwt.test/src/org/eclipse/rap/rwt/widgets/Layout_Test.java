@@ -16,6 +16,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.layout.FillLayout;
+import com.w4t.engine.lifecycle.PhaseId;
 
 public class Layout_Test extends TestCase {
 
@@ -28,6 +29,7 @@ public class Layout_Test extends TestCase {
   }
 
   public void testLayoutCall() {
+    RWTFixture.fakePhase( PhaseId.PREPARE_UI_ROOT );
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
     Composite composite = new Composite( shell, RWT.NONE );

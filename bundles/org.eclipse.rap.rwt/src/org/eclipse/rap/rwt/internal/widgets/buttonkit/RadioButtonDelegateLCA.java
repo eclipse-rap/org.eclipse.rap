@@ -15,7 +15,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -35,8 +34,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
                           WIDGET_SELECTED, 
                           JSListenerType.ACTION );
   
-  void readData( final Widget widget ) {
-    Button button = ( Button )widget;
+  void readData( final Button button ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
     if( WidgetUtil.getId( button ).equals( id ) ) {
@@ -51,13 +49,12 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
       }
       button.setSelection( true );
       // TODO [rh] clarify whether bounds should be sent (last parameter)
-      ControlLCAUtil.processSelection( widget, null, true );
+      ControlLCAUtil.processSelection( button, null, true );
     }
   }
 
-  void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    Button button = ( Button )widget;
+  void renderInitialization( final Button button ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( button );
     Object[] args = new Object[] {
       WidgetUtil.getId( button ),
       button.getParent(),
@@ -66,9 +63,10 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     writer.callStatic( CREATE_RADIO, args );
   }
 
-  void renderChanges( final Widget widget ) throws IOException {
-    Button button = ( Button )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
+  // TODO [rh] qooxdoo radioButton cannot display images, should we ignore
+  //      setImage() calles when style is RWT.RADIO?
+  void renderChanges( final Button button ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( button );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
@@ -77,11 +75,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     ControlLCAUtil.writeChanges( button );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText() );
-    if( button.getImage() != null ) {
-      writer.set( Props.IMAGE,
-                  JSConst.QX_FIELD_ICON, 
-                  Image.getPath( button.getImage() ) );
-    }
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText(), "" );
+    writeAlignment( button );
   }
 }

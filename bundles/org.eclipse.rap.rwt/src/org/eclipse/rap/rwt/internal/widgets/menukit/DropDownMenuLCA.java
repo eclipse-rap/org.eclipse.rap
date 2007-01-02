@@ -11,55 +11,36 @@
 
 package org.eclipse.rap.rwt.internal.widgets.menukit;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.widgets.*;
 
 
-/**
- * <p>Static utility methods used by <code>MenuLCA</code>.</p> 
- */
-final class MenuLCAUtil {
-  
-  private MenuLCAUtil() {
-    // prevent instantiation
+final class DropDownMenuLCA extends MenuDelegateLCA {
+
+  void preserveValues( final Menu menu ) {
   }
   
-  /**
-   * <p>Returns whether the given <code>menu</code> is a <code>BAR</code>.</p>
-   */
-  static boolean isBar( final Menu menu ) {
-    return ( menu.getStyle() & RWT.BAR ) != 0;
+  void readData( Menu menu ) {
   }
   
-  /**
-   * <p>Returns whether the given <code>menu</code> is a <code>DROP_DOWN</code>.
-   * </p>
-   */
-  static boolean isDropDown( final Menu menu ) {
-    return ( menu.getStyle() & RWT.DROP_DOWN ) != 0;
-  }
-  
-  static boolean isPopUp( final Menu menu ) {
-    return ( menu.getStyle() & RWT.POP_UP ) != 0;
+  void renderInitialization( final Menu menu ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( menu );
+    // TODO [rh] check whether it is allowed (in SWT and/or Qooxdoo) to 
+    //      assign a Menu to more than one MenuItem
+    writer.newWidget( "qx.ui.menu.Menu" );
+    writer.call( "addToDocument", null );
+    MenuItem[] menuItems = DropDownMenuLCA.findReferringMenuItems( menu );
+    for( int i = 0; i < menuItems.length; i++ ) {
+      writer.call( menuItems[ i ], "setMenu", new Object[] { menu } );
+    }
   }
 
-  /**
-   * <p>Returns the shell that has the given <code>menu</code> set as its menu 
-   * bar.</p>
-   * <p>Returns <code>null</code> if the given <code>menu</code> is not a 
-   * <code>BAR</code> or if it is not assigned to its parent shell as the menu 
-   * bar.</p>
-   */
-  static Shell getMenuBarShell( final Menu menu ) {
-    Shell result = null;
-    if( menu.getParent().getMenuBar() == menu ) {
-      result = menu.getParent();
-    }
-    return result;
+  void renderChanges( final Menu menu ) throws IOException {
   }
 
   /**
@@ -67,7 +48,7 @@ final class MenuLCAUtil {
    * the given <code>menu</code>. An empty array is returned if no 
    * <code>MenuItem</code>s refer to the given <code>menu</code>.</p> 
    */
-  static MenuItem[] findReferringMenuItems( final Menu menu ) {
+  private static MenuItem[] findReferringMenuItems( final Menu menu ) {
     final List menuItems = new ArrayList();
     Shell shell = menu.getParent();
     WidgetTreeVisitor.accept( shell, new  AllWidgetTreeVisitor() {
@@ -78,7 +59,7 @@ final class MenuLCAUtil {
             menuItems.add( menuItem );
           }
         }
-        // TODO [rh] find a way to cancel visitor after all menus are done
+        // TODO [rh] find a way to cancel visitor after all menus are done?
         return true;
       }
     } );

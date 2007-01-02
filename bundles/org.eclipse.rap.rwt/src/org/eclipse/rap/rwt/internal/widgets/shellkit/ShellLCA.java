@@ -37,12 +37,6 @@ public class ShellLCA extends AbstractWidgetLCA {
       shell.close();
     }
     processActivate( shell );
-    // Note: call to preserveValues to avoid sending the bounds to the client,
-    // the client application already knows them, because the new bounds are a 
-    // result of a user action. Sending the bounds could also cause trouble in
-    // case of a maximized shell, since the location portion of the
-    // bounds are not correct.
-    ControlLCAUtil.preserveValues( shell );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -52,10 +46,9 @@ public class ShellLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeMoveNotificator( widget );
     writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 
                         JSConst.JS_SHELL_CLOSED );
-    ( ( Composite )widget ).layout();
     writer.call( "open", null );
   }
-
+  
   public void renderChanges( final Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     ControlLCAUtil.writeChanges( shell );

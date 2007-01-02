@@ -173,7 +173,7 @@ public final class RWTFixture {
   public static void preserveWidgets() {
     PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
     PhaseEvent event = new PhaseEvent( new RWTLifeCycle(), PhaseId.READ_DATA );
-    listener.beforePhase( event );
+    listener.afterPhase( event );
   }
 
   public static void clearPreserved() {

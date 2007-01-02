@@ -22,6 +22,9 @@ public class Text extends Control {
   }
 
   public void setText( final String text ) {
+    if( text == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     this.text = text;
   }
 
@@ -34,7 +37,7 @@ public class Text extends Control {
   }
 
   public String getLineDelimiter() {
-    return "\\n";
+    return "\n";
   }
 
   // taken as sample from org.eclipse.swt.widgets.Text, but without scrolling

@@ -48,5 +48,5 @@ org.eclipse.rap.rwt.ComboUtil.createComboBoxItems = function( id, items ) {
     var listItem = new qx.ui.form.ListItem( items[ i ] );
     combo.add( listItem );
   }
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add( combo, id );
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add( combo, id, false );
 };

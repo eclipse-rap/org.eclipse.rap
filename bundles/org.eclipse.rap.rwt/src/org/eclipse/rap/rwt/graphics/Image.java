@@ -58,15 +58,13 @@ public final class Image {
   
   public static synchronized String getPath ( final Image image ) {
     String result = null;
-    if ( images.containsValue( image ) ) {
-      Iterator it = images.entrySet().iterator();
-      boolean next = true;
-      while( next && it.hasNext() ) {
-        Map.Entry entry = ( Map.Entry )it.next();
-        if( entry.getValue().equals( image ) ) {
-          result = ( String )entry.getKey();
-          next = false;
-        }
+    Iterator it = images.entrySet().iterator();
+    boolean next = true;
+    while( next && it.hasNext() ) {
+      Map.Entry entry = ( Map.Entry )it.next();
+      if( entry.getValue().equals( image ) ) {
+        result = ( String )entry.getKey();
+        next = false;
       }
     }
     return result;

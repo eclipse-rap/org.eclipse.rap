@@ -16,6 +16,8 @@ package org.eclipse.rap.rwt.widgets;
 public interface IItemHolderAdapter {
 
   void add( Item item );
+  
+  void insert( Item item, int index );
 
   void remove( Item item );
 

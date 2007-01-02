@@ -49,7 +49,9 @@ public abstract class RWTEvent extends Event {
   }
   
   public final void processEvent() {
-    if( PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) {
+    if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
+        || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
+    {
       super.processEvent();
     } else {
       addToScheduledEvents( this );

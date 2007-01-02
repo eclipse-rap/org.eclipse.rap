@@ -30,6 +30,12 @@ public class ToolItem extends Item {
     ItemHolder.addItem( parent, this );
   }
 
+  public ToolItem( final ToolBar parent, final int style, final int index ) {
+    super( parent, checkStyle( style ) );
+    this.parent = parent;
+    ItemHolder.insertItem( parent, this, index );
+  }
+  
   public Display getDisplay() {
     return parent.getDisplay();
   }
@@ -42,7 +48,7 @@ public class ToolItem extends Item {
     if( text == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
-    if( ( style & RWT.SEPARATOR ) == 0  && !text.equals( getText() ) ) {
+    if( ( style & RWT.SEPARATOR ) == 0 ) {
       super.setText( text );
     }
   }
@@ -110,7 +116,7 @@ public class ToolItem extends Item {
   // Methods to dispose of the widget
   
   protected void releaseChildren() {
-    // TODO Auto-generated method stub
+    // do nothing
   }
 
   protected void releaseParent() {
@@ -118,7 +124,7 @@ public class ToolItem extends Item {
   }
 
   protected void releaseWidget() {
-    // TODO Auto-generated method stub
+    // do nothing
   }
   
   //////////////////

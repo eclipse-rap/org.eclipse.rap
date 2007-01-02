@@ -69,7 +69,7 @@ public class JSWriter_Test extends TestCase {
       =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
         + "var w = new qx.ui.form.Button();"
         + "wm.add( w, \"w1\", true );"
-        + "w.setParent( wm.findWidgetById( \"w2\" ) );";
+        + "wm.setParent( w, \"w2\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that the WidgetManager, once initialized, is not initialized
     // twice
@@ -77,7 +77,7 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "qx.ui.form.Button" );
     expected +=   "var w = new qx.ui.form.Button();"
                 + "wm.add( w, \"w1\", true );"
-                + "w.setParent( wm.findWidgetById( \"w2\" ) );";
+                + "wm.setParent( w, \"w2\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // ensure that obtaining the widget reference (var w =) is only rendered
     // once
@@ -96,7 +96,7 @@ public class JSWriter_Test extends TestCase {
       =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
         + "var w = new qx.ui.form.Button();"
         + "wm.add( w, \"w1\", true );"
-        + "w.setParent( wm.findWidgetById( \"w2\" ) );";
+        + "wm.setParent( w, \"w2\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
     Fixture.fakeResponseWriter();
@@ -117,7 +117,7 @@ public class JSWriter_Test extends TestCase {
         = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
         + "var w = new qx.ui.form.Button( \"abc\" );"
         + "wm.add( w, \"w1\", true );"
-        + "w.setParent( wm.findWidgetById( \"w2\" ) );";
+        + "wm.setParent( w, \"w2\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Ensures that the "widget reference is set"-flag is set
     Fixture.fakeResponseWriter();
@@ -139,30 +139,37 @@ public class JSWriter_Test extends TestCase {
     Display display = new Display();
     TestShell shell = new TestShell( display );
     String shellId = WidgetUtil.getId( shell );
+    String buttonId = WidgetUtil.getId( shell.button );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.setParent( shell.button );
     String expected
       =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "w.setParent( wm.findWidgetById( \""
+        + "wm.setParent( wm.findWidgetById( \""
+        + buttonId  
+        + "\" ), \""
         + shellId
-        + "\" ) );";
+        + "\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     
     Fixture.fakeResponseWriter();
+    writer.newWidget( "xyz" );
+    
+    Fixture.fakeResponseWriter();
     writer.setParent( shell.button );
-    expected = "w.setParent( wm.findWidgetById( \"" + shellId + "\" ) );";
+    expected = "wm.setParent( w, \"" + shellId + "\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     
     Fixture.fakeResponseWriter();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell.button );
     adapter.setJSParent( "trallala" );
     writer.setParent( shell.button );
-    expected = "w.setParent( wm.findWidgetById( \"trallala\" ) );";
+    expected = "wm.setParent( w, \"trallala\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     
     Fixture.fakeResponseWriter();
     writer.setParent( "xyz" );
-    expected = "w.setParent( wm.findWidgetById( \"xyz\" ) );";
+    expected = "wm.setParent( w, \"xyz\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   public void testSetString() throws Exception {

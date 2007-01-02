@@ -17,8 +17,7 @@ import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.Button;
-import org.eclipse.rap.rwt.widgets.Widget;
+import org.eclipse.rap.rwt.widgets.*;
 
 final class PushButtonDelegateLCA extends ButtonDelegateLCA {
 
@@ -27,19 +26,18 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
                         JSConst.JS_WIDGET_SELECTED,
                         JSListenerType.ACTION );
 
-  void readData( final Widget widget ) {
+  void readData( final Button button ) {
     // TODO [rh] clarify whether bounds should be sent (last parameter)
-    ControlLCAUtil.processSelection( widget, null, true );
+    ControlLCAUtil.processSelection( button, null, true );
   }
   
-  void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
+  void renderInitialization( final Button button ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( "qx.ui.form.Button" );
   }
 
-  void renderChanges( final Widget widget ) throws IOException {
-    Button button = ( Button )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
+  void renderChanges( final Button button ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( button );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
@@ -47,11 +45,21 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     ControlLCAUtil.writeChanges( button );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText() );
-    if( button.getImage()!=null ){
-      writer.set( Props.IMAGE,
-                  JSConst.QX_FIELD_ICON,
-                  Image.getPath( button.getImage() ) );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText(), "" );
+    writeAlignment( button );
+    writeImage( button );
+  }
+  
+  private static void writeImage( final Button button ) throws IOException {
+    if( WidgetUtil.hasChanged( button, Props.IMAGE, button.getImage(), null ) ) {
+      String imagePath;
+      if( button.getImage() == null ) {
+        imagePath = "";
+      } else {
+        imagePath = Image.getPath( button.getImage() );
+      }
+      JSWriter writer = JSWriter.getWriterFor( button );
+      writer.set( JSConst.QX_FIELD_ICON, imagePath );
     }
   }
 }

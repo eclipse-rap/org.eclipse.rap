@@ -34,8 +34,7 @@ public class TreeLCA_Test extends TestCase {
     Composite shell = new Shell( display , RWT.NONE );
     Tree tree = new Tree( shell, RWT.NONE );
     tree.addSelectionListener( new SelectionListener() {
-
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
       }
     } );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );

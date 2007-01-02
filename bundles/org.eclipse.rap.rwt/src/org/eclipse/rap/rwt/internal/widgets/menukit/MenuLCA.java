@@ -12,73 +12,36 @@
 package org.eclipse.rap.rwt.internal.widgets.menukit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.widgets.Menu;
+import org.eclipse.rap.rwt.widgets.Widget;
 
 
-public class MenuLCA extends AbstractWidgetLCA {
+public final class MenuLCA extends AbstractWidgetLCA {
 
-  private static final String SHOW_MENU 
-    = "org.eclipse.rap.rwt.MenuUtil.showMenu";
-  // pseudo-property that denotes the shell which uses a menu for its menu bar
-  private static final String MENU_BAR_SHELL = "menuBarShell";
-  private static final String MENU_BAR_SHELL_CLIENT_AREA 
-    = "menuBarShellClientArea";
+  private static final MenuBarLCA MENU_BAR_LCA 
+    = new MenuBarLCA();
+  private static final PopupMenuLCA POPUP_MENU_LCA 
+    = new PopupMenuLCA();
+  private static final DropDownMenuLCA DROP_DOWN_MENU_LCA 
+    = new DropDownMenuLCA();
 
   public void preserveValues( final Widget widget ) {
-    Menu menu = ( Menu )widget;
-    if( MenuLCAUtil.isBar( menu ) ) {
-      Shell menuBarShell = MenuLCAUtil.getMenuBarShell( menu );
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-      adapter.preserve( MENU_BAR_SHELL, menuBarShell );
-      if( menuBarShell != null ) {
-        Rectangle clientArea = menuBarShell.getClientArea();
-        adapter.preserve( MENU_BAR_SHELL_CLIENT_AREA, clientArea );
-      }
-    }
+    getDelegateLCA( widget ).preserveValues( ( Menu )widget );
   }
   
   public void readData( final Widget widget ) {
+    getDelegateLCA( widget ).readData( ( Menu )widget );
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
-    Menu menu = ( Menu )widget;
-    JSWriter writer = JSWriter.getWriterFor( menu );
-    if( MenuLCAUtil.isBar( menu ) ) {
-       writer.newWidget( "qx.ui.menu.MenuBar" );
-    } else if( MenuLCAUtil.isDropDown( menu ) ) {
-      // TODO [rh] check whether it is allowed (in SWT and/or Qooxdoo) to 
-      //      assign a Menu to more than one MenuItem
-      writer.newWidget( "qx.ui.menu.Menu" );
-      writer.call( "addToDocument", null );
-      MenuItem[] menuItems = MenuLCAUtil.findReferringMenuItems( menu );
-      for( int i = 0; i < menuItems.length; i++ ) {
-        writer.call( menuItems[ i ], "setMenu", new Object[] { menu } );
-      }
-    } else if( MenuLCAUtil.isPopUp( menu ) ) {
-      writer.newWidget( "qx.ui.menu.Menu" );
-      writer.call( "addToDocument", null );
-    }
+    getDelegateLCA( widget ).renderInitialization( ( Menu )widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
-    Menu menu = ( Menu )widget;
-    if( MenuLCAUtil.isBar( menu ) ) {
-      writeBarParent( menu );
-      writeBarBounds( menu );
-    } else if( MenuLCAUtil.isPopUp( menu ) && menu.isVisible() ) {
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      Rectangle bounds = menu.getBounds();
-      Object[] args = new Object[] {
-        menu,
-        new Integer( bounds.x ),
-        new Integer( bounds.y )
-      };
-      writer.callStatic( SHOW_MENU, args );
-      menu.setVisible( false );
-    }
+    getDelegateLCA( widget ).renderChanges( ( Menu )widget );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -86,39 +49,17 @@ public class MenuLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  /////////////////////////////////////////////////////////////////
-  // Helping method to write properties for Menu with style RWT.BAR
-  
-  private static void writeBarParent( Menu menu ) throws IOException {
-    Shell menuBarShell = MenuLCAUtil.getMenuBarShell( menu );
-    if( WidgetUtil.hasChanged( menu, MENU_BAR_SHELL, menuBarShell, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( menu );
-      writer.set( "parent", menuBarShell );
+  private static MenuDelegateLCA getDelegateLCA( final Widget widget ) {
+    MenuDelegateLCA result;
+    Menu menu = ( Menu )widget;
+    int style = menu.getStyle();
+    if( ( style & RWT.BAR ) != 0 ) {
+      result = MENU_BAR_LCA;
+    } else if( ( style & RWT.DROP_DOWN ) != 0 ) {
+      result = DROP_DOWN_MENU_LCA;
+    } else {
+      result = POPUP_MENU_LCA;
     }
-  }
-
-  private static void writeBarBounds( final Menu menu ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menu );
-    Shell menuBarShell = MenuLCAUtil.getMenuBarShell( menu );
-    Rectangle changedClientArea = null;
-    if( menuBarShell != null ) {
-      Rectangle clientArea = menuBarShell.getClientArea();
-      String prop = MENU_BAR_SHELL_CLIENT_AREA;
-      if( WidgetUtil.hasChanged( menu, prop, clientArea, null ) ) {
-        changedClientArea = menuBarShell.getClientArea();
-      }
-    }
-    if( changedClientArea != null ) { 
-      // parameter order of setSpace: x, width, y, height
-      Object[] args = new Object[] { 
-        new Integer( changedClientArea.x ), 
-        new Integer( changedClientArea.width ), 
-        new Integer( Shell.TITLE_BAR_HEIGHT + 5 ), 
-        new Integer( Shell.MENU_BAR_HEIGHT )
-      };
-      writer.set( "space", args );
-      writer.set( "clipWidth", changedClientArea.width );
-      writer.set( "clipHeight", Shell.MENU_BAR_HEIGHT );
-    }
+    return result;
   }
 }

@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Button;
@@ -27,6 +26,34 @@ public class ButtonLCA extends AbstractWidgetLCA {
   private final static ButtonDelegateLCA CHECK = new CheckButtonDelegateLCA();
   private final static ButtonDelegateLCA RADIO = new RadioButtonDelegateLCA();
   
+  public void preserveValues( final Widget widget ) {
+    Button button = ( Button )widget;
+    ControlLCAUtil.preserveValues( button );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( Props.TEXT, button.getText() );
+    adapter.preserve( Props.IMAGE, button.getImage() );
+    adapter.preserve( Props.SELECTION_LISTENERS,
+                      Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
+    ButtonDelegateLCA.preserveAlignment( button );
+  }
+
+  public void readData( final Widget widget ) {
+    getLCADelegate( widget ).readData( ( Button )widget );
+  }
+
+  public void renderInitialization( final Widget widget ) throws IOException {
+    getLCADelegate( widget ).renderInitialization( ( Button )widget );
+  }
+
+  public void renderChanges( final Widget widget ) throws IOException {
+    getLCADelegate( widget ).renderChanges( ( Button )widget );
+  }
+
+  public void renderDispose( final Widget widget ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
+  }
+
   private static ButtonDelegateLCA getLCADelegate( final Widget widget ) {
     ButtonDelegateLCA result;
     int style = ( ( Button )widget ).getStyle();
@@ -40,32 +67,5 @@ public class ButtonLCA extends AbstractWidgetLCA {
       result = PUSH;
     }
     return result;
-  }
-
-  public void preserveValues( final Widget widget ) {
-    Button button = ( Button )widget;
-    ControlLCAUtil.preserveValues( button );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.TEXT, button.getText() );
-    adapter.preserve( Props.IMAGE, Image.getPath( button.getImage() ) );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
-  }
-
-  public void readData( final Widget widget ) {
-    getLCADelegate( widget ).readData( widget );
-  }
-
-  public void renderInitialization( final Widget widget ) throws IOException {
-    getLCADelegate( widget ).renderInitialization( widget );
-  }
-
-  public void renderChanges( final Widget widget ) throws IOException {
-    getLCADelegate( widget ).renderChanges( widget );
-  }
-
-  public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
   }
 }

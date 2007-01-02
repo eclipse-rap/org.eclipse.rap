@@ -11,7 +11,10 @@
 
 package org.eclipse.rap.rwt.widgets;
 
+import org.eclipse.rap.rwt.events.ControlAdapter;
+import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.graphics.Point;
+import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.widgets.ControlHolder.IControlHolderAdapter;
 
 /**
@@ -77,12 +80,16 @@ public class Composite extends Scrollable {
     }
   }
 
-  // //////////////
+  ////////////////
   // Resize helper
   
   void notifyResize( final Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {
-      layout();
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          layout();
+        }
+      } );
     }
     super.notifyResize( oldSize );
   }

@@ -28,16 +28,25 @@ final class SlimList implements List {
     data = EMPTY;
   }
 
-  public boolean add( final Object o ) {
+  public boolean add( final Object element ) {
     Object[] newData = new Object[ data.length + 1 ];
     System.arraycopy( data, 0, newData, 0, data.length );
-    newData[ data.length ] = o;
+    newData[ data.length ] = element;
     data = newData;
     return true;
   }
 
   public void add( final int index, final Object element ) {
-    throw new UnsupportedOperationException();
+    if( index < 0 || index > size() ) {
+      String msg = "Index: " + index + ", Size: " + size();
+      throw new IndexOutOfBoundsException( msg );
+    }
+    Object[] newData = new Object[ data.length + 1 ];
+    System.arraycopy( data, 0, newData, 0, data.length );
+    int length = newData.length - 1 - index;
+    System.arraycopy( newData, index, newData, index + 1, length );
+    newData[ index ] = element;
+    data = newData;
   }
 
   public boolean addAll( final Collection c ) {

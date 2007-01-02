@@ -18,6 +18,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.internal.widgets.IListAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
@@ -47,6 +48,12 @@ public class ListLCA_Test extends TestCase {
     Fixture.fakeRequestParam( listId + ".selection", null );
     lca.readData( list );
     assertEquals( 1, list.getSelectionIndex() );
+
+    // Fake request that contains empty selection parameter -> must deselect all
+    list.setSelection( 1 );
+    Fixture.fakeRequestParam( listId + ".selection", "" );
+    lca.readData( list );
+    assertEquals( -1, list.getSelectionIndex() );
   }
   
   public void testReadDataForMulti() {
@@ -124,6 +131,40 @@ public class ListLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
     listLCA.renderChanges( list );
     assertTrue( Fixture.getAllMarkup().indexOf( "setItems" ) == -1 );
+  }
+  
+  public void testFocusedItem() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    List list = new List( shell, RWT.NONE );
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    String listId = WidgetUtil.getId( list );
+    
+    // Test with focusIndex -1
+    setFocusIndex( list, 0 );
+    Fixture.fakeRequestParam( listId + ".focusIndex", "-1" );
+    RWTFixture.readDataAndProcessAction( list );
+    assertEquals( -1, list.getFocusIndex() );
+
+    // Test with value focusIndex
+    setFocusIndex( list, 0 );
+    Fixture.fakeRequestParam( listId + ".focusIndex", "1" );
+    RWTFixture.readDataAndProcessAction( list );
+    assertEquals( 1, list.getFocusIndex() );
+    
+    // Test with focusIndex out of range
+    setFocusIndex( list, 0 );
+    Fixture.fakeRequestParam( listId + ".focusIndex", "22" );
+    RWTFixture.readDataAndProcessAction( list );
+    assertEquals( 0, list.getFocusIndex() );
+  }
+  
+  private static void setFocusIndex( final List list, final int focusIndex ) {
+    Object adapter = list.getAdapter( IListAdapter.class );
+    IListAdapter listAdapter = ( IListAdapter )adapter;
+    listAdapter.setFocusIndex( focusIndex );
   }
   
   protected void setUp() throws Exception {

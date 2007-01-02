@@ -164,16 +164,22 @@ public final class WidgetUtil {
   ////////////////////////////////////////
   // Helping methods to test for equality
   
-  // TODO [rh] implementation incomplete: equals for some primitive types 
-  //      missing
   static boolean equals( final Object object1, final Object object2 ) {
     boolean result;
     if( object1 == object2 ) {
       result = true;
     } else if( object1 == null ) {
       result = false;
+    } else if( object1 instanceof boolean[] && object2 instanceof boolean[] ) {
+      result = Arrays.equals( ( boolean[] )object1, ( boolean[] )object2 );
     } else if( object1 instanceof int[] && object2 instanceof int[] ) {
       result = Arrays.equals( ( int[] )object1, ( int[] )object2 );
+    } else if( object1 instanceof long[] && object2 instanceof long[] ) {
+      result = Arrays.equals( ( long[] )object1, ( long[] )object2 );
+    } else if( object1 instanceof float[] && object2 instanceof float[] ) {
+      result = Arrays.equals( ( float[] )object1, ( float[] )object2 );
+    } else if( object1 instanceof double[] && object2 instanceof double[] ) {
+      result = Arrays.equals( ( double[] )object1, ( double[] )object2 );
     } else if( object1 instanceof Object[] && object2 instanceof Object[] ) {
       result = Arrays.equals( ( Object[] )object1, ( Object[] )object2 );
     } else {

@@ -13,90 +13,68 @@ package org.eclipse.rap.rwt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.widgets.MenuItem;
+import org.eclipse.rap.rwt.widgets.Widget;
 
 
-public class MenuItemLCA extends AbstractWidgetLCA {
+public final class MenuItemLCA extends AbstractWidgetLCA {
 
-  private static final JSListenerInfo JS_LISTENER_INFO 
-    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE, 
-                          JSConst.JS_WIDGET_SELECTED, 
-                          JSListenerType.ACTION );
+  private static final BarMenuItemLCA BAR_MENU_ITEM_LCA 
+    = new BarMenuItemLCA();
+  private static final PushMenuItemLCA PUSH_MENU_ITEM_LCA 
+    = new PushMenuItemLCA();
+  private static final CheckMenuItemLCA CHECK_MENU_ITEM_LCA 
+    = new CheckMenuItemLCA();
+  private static final RadioMenuItemLCA RADIO_MENU_ITEM_LCA 
+    = new RadioMenuItemLCA();
+  private static final SeparatorMenuItemLCA SEPARATOR_MENU_ITEM_LCA 
+    = new SeparatorMenuItemLCA();
 
   public void preserveValues( final Widget widget ) {
     MenuItem menuItem = ( MenuItem )widget;
-    ItemLCAUtil.preserve( menuItem );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    boolean hasListener = SelectionEvent.hasListener( menuItem );
-    adapter.preserve( Props.SELECTION_LISTENERS, 
-                      Boolean.valueOf( hasListener ) );
+    getDelegateLCA( menuItem ).preserveValues( menuItem );
   }
   
   public void readData( final Widget widget ) {
-    ControlLCAUtil.processSelection( widget, null, false );
-//    HttpServletRequest request = ContextProvider.getRequest();
-//    String id = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-//    if( WidgetUtil.getId( widget ).equals( id ) ) {
-//      SelectionEvent event = new SelectionEvent( widget, 
-//                                                 null,
-//                                                 SelectionEvent.WIDGET_SELECTED,
-//                                                 new Rectangle( 0, 0, 0, 0 ),
-//                                                 true,
-//                                                 RWT.NONE );
-//      event.processEvent();
-//    }
+    MenuItem menuItem = ( MenuItem )widget;
+    getDelegateLCA( menuItem ).readData( menuItem );
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
     MenuItem menuItem = ( MenuItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    // the top-level items on a menu bar are always rendered as PUSH regardless
-    // of their actual style
-    if( isTopLevelMenuBarItem( menuItem ) ) {
-      writer.newWidget( "qx.ui.menu.MenuBarButton" );
-    } else if( ( menuItem.getStyle() & ( RWT.PUSH | RWT.CASCADE ) ) != 0 ) { 
-      writer.newWidget( "qx.ui.menu.MenuButton" );
-    } else if( ( menuItem.getStyle() & RWT.CHECK ) != 0 ) {
-      // TODO [rh] preliminary: no idea if that actually works
-      writer.newWidget( "qx.ui.menu.MenuCheckBox" );
-    } else if( ( menuItem.getStyle() & RWT.RADIO ) != 0 ) {
-      // TODO [rh] preliminary: no idea if that actually works
-      writer.newWidget( "qx.ui.menu.MenuRadioButton" );
-    } else if( ( menuItem.getStyle() & RWT.SEPARATOR ) != 0 ) {
-      writer.newWidget( "qx.ui.menu.MenuSeparator" );
-    }
-    writer.call( menuItem.getParent(), "add", new Object[] { menuItem } );
+    getDelegateLCA( menuItem ).renderInitialization( menuItem );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
     MenuItem menuItem = ( MenuItem )widget;
-    if( ( menuItem.getStyle() & RWT.SEPARATOR ) == 0 ) {
-      writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, menuItem.getText() );
-      if(    ( menuItem.getStyle() & RWT.SEPARATOR ) == 0 
-          &&  menuItem.getImage() != null )
-      {
-        writer.set( Props.IMAGE, 
-                    JSConst.QX_FIELD_ICON, 
-                    Image.getPath( menuItem.getImage() ) );
-      }
-      // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
-      //      bounds of the widget that was clicked -> In the SelectionEvent 
-      //      for MenuItem the bounds are undefined
-      writer.updateListener( JS_LISTENER_INFO, 
-                             Props.SELECTION_LISTENERS, 
-                             SelectionEvent.hasListener( menuItem ) );
-    }
+    getDelegateLCA( menuItem ).renderChanges( menuItem );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
+    MenuItem menuItem = ( MenuItem )widget;
+    getDelegateLCA( menuItem ).renderDispose( menuItem );
   }
 
   private static boolean isTopLevelMenuBarItem( final MenuItem menuItem ) {
     return ( menuItem.getParent().getStyle() & RWT.BAR ) != 0;
+  }
+  private static MenuItemDelegateLCA getDelegateLCA( final MenuItem menuItem ) 
+  {
+    MenuItemDelegateLCA result;
+    if( isTopLevelMenuBarItem( menuItem ) ) {
+      result = BAR_MENU_ITEM_LCA;
+    } else if( ( menuItem.getStyle() & ( RWT.PUSH | RWT.CASCADE ) ) != 0 ) { 
+      result = PUSH_MENU_ITEM_LCA;
+    } else if( ( menuItem.getStyle() & RWT.CHECK ) != 0 ) {
+      result = CHECK_MENU_ITEM_LCA;
+    } else if( ( menuItem.getStyle() & RWT.RADIO ) != 0 ) {
+      result = RADIO_MENU_ITEM_LCA;
+    } else if( ( menuItem.getStyle() & RWT.SEPARATOR ) != 0 ) {
+      result = SEPARATOR_MENU_ITEM_LCA;
+    } else {
+      throw new IllegalStateException( "Unknown menu item type." );
+    }
+    return result;
   }
 }

@@ -37,8 +37,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/EventUtil.js";
   private static final String SASH_JS 
     = "org/eclipse/rap/rwt/Sash.js";
-  private static final String TREE_UTIL_JS 
-    = "org/eclipse/rap/rwt/TreeUtil.js";
   private static final String TAB_UTIL_JS 
     = "org/eclipse/rap/rwt/TabUtil.js";
   private static final String BUTTON_UTIL_JS 
@@ -63,6 +61,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/widgets/List.js";
   private static final String SHELL_JS 
     = "org./eclipse/rap/rwt/widgets/Shell.js";
+  private static final String TREE_JS 
+    = "org/eclipse/rap/rwt/widgets/Tree.js";
   
   
   private QooxdooResourcesUtil() {
@@ -1512,7 +1512,6 @@ final class QooxdooResourcesUtil {
       register( WIDGET_MANAGER_JS );
       register( EVENT_UTIL_JS );
       register( SASH_JS );
-      register( TREE_UTIL_JS );
       register( TAB_UTIL_JS );
       register( COMBO_UTIL_JS );
       register( BUTTON_UTIL_JS );
@@ -1525,6 +1524,7 @@ final class QooxdooResourcesUtil {
       register( COOL_ITEM_JS );
       register( LIST_JS );
       register( SHELL_JS );
+      register( TREE_JS );
     } finally {
       manager.setContextLoader( bufferedLoader );
     }

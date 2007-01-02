@@ -89,7 +89,6 @@ public class Tree_Test extends TestCase {
   }
 
   public void testDispose() {
-    // TODO [rh] missing test-scenario: disposing of selected tree items
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
     Tree tree = new Tree( shell, RWT.NONE );
@@ -101,6 +100,22 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, tree.getItemCount() );
     assertEquals( 0, item.getItemCount() );
     assertEquals( 0, subItem.getItemCount() );
+  }
+  
+  public void testDisposeSelected() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.MULTI );
+    TreeItem item = new TreeItem( tree, RWT.NONE );
+    TreeItem subItem = new TreeItem( item, RWT.NONE );
+    TreeItem otherItem = new TreeItem( tree, RWT.NONE );
+    tree.setSelection( new TreeItem[] { subItem, otherItem } );
+    item.dispose();
+    assertEquals( true, item.isDisposed() );
+    assertEquals( true, subItem.isDisposed() );
+    assertEquals( false, otherItem.isDisposed() );
+    assertEquals( 1, tree.getSelectionCount() );
+    assertSame( otherItem, tree.getSelection()[ 0 ] );
   }
   
   public void testIndexOf() {
@@ -154,10 +169,10 @@ public class Tree_Test extends TestCase {
     // test that items without sub-items cannot be expanded 
     childlessItem.setExpanded( true );
     assertEquals( false, childlessItem.getExpanded() );
-    // test that an item is no longer expanded when it has no more sub items
+    // test that an item is still expanded when it has no more sub items
     item.setExpanded( true );
     subItem.dispose();
-    assertEquals( false, item.getExpanded() );
+    assertEquals( true, item.getExpanded() );
     // ensure that calling setExpanded does not rase any events
     assertEquals( "", log.toString() );
   }
@@ -319,6 +334,43 @@ public class Tree_Test extends TestCase {
     }
   }
 
+  public void testSelectAllForSingle() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.SINGLE );
+    TreeItem item1 = new TreeItem( tree, RWT.NONE );
+    new TreeItem( item1, RWT.NONE );
+    TreeItem item2 = new TreeItem( tree, RWT.NONE );
+    tree.setSelection( item2 );
+    tree.selectAll();
+    assertSame( item2, tree.getSelection()[ 0 ] );
+  }
+  
+  public void testSelectAllForMulti() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.MULTI );
+    TreeItem item1 = new TreeItem( tree, RWT.NONE );
+    TreeItem item11 = new TreeItem( item1, RWT.NONE );
+    TreeItem item2 = new TreeItem( tree, RWT.NONE );
+    tree.selectAll();
+    assertTrue( contains( tree.getSelection(), item1 ) );
+    assertTrue( contains( tree.getSelection(), item11 ) );
+    assertTrue( contains( tree.getSelection(), item2 ) );
+  }
+  
+  private static boolean contains( final TreeItem[] items, 
+                                   final TreeItem item ) 
+  {
+    boolean result = false;
+    for( int i = 0; !result && i < items.length; i++ ) {
+      if( item == items[ i ] ) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
   public void testDeselectAll() {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
@@ -329,6 +381,28 @@ public class Tree_Test extends TestCase {
     tree.deselectAll();
     assertEquals( 0, tree.getSelectionCount() );
     assertEquals( 0, tree.getSelection().length );
+  }
+  
+  public void testRemoveAll() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.MULTI );
+    
+    // Test removeAll on empty tree
+    tree.removeAll();
+    assertEquals( 0, tree.getItemCount() );
+    assertEquals( 0, tree.getSelection().length );
+    
+    // Test removeAll on populated tree
+    new TreeItem( tree, RWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, RWT.NONE );
+    TreeItem subTreeItem = new TreeItem( treeItem, RWT.NONE );
+    tree.setSelection( treeItem );
+    tree.removeAll();
+    assertEquals( 0, tree.getItemCount() );
+    assertEquals( 0, tree.getSelection().length );
+    assertEquals( true, treeItem.isDisposed() );
+    assertEquals( true, subTreeItem.isDisposed() );
   }
 
   protected void setUp() throws Exception {

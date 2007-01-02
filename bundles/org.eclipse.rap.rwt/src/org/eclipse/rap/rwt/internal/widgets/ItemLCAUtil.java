@@ -11,8 +11,9 @@
 
 package org.eclipse.rap.rwt.internal.widgets;
 
+import java.io.IOException;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Item;
 
 
@@ -25,8 +26,29 @@ public class ItemLCAUtil {
   public static void preserve( final Item item ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     adapter.preserve( Props.TEXT, item.getText() );
-    // TODO [rh] why preserve Imge.getPath(), wouldn't it be more straigtforward
-    //      to preserve item.getImage() directly?
-    adapter.preserve( Props.IMAGE, Image.getPath( item.getImage() ) );
+    adapter.preserve( Props.IMAGE, item.getImage() );
+  }
+  
+  public static void writeText( final Item item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, item.getText(), "" );
+  }
+  
+  public static void writeImage( final Item item ) throws IOException {
+    if( WidgetUtil.hasChanged( item, Props.IMAGE, item.getImage(), null ) ) {
+      String imagePath;
+      if( item.getImage() == null ) {
+        imagePath = "";
+      } else {
+        imagePath = Image.getPath( item.getImage() );
+      }
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( JSConst.QX_FIELD_ICON, imagePath );
+    }
+  }
+
+  public static void writeChanges( final Item item ) throws IOException {
+    writeText( item );
+    writeImage( item );
   }
 }

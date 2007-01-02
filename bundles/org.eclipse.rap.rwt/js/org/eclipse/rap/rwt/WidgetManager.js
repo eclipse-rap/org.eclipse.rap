@@ -20,7 +20,6 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.WidgetManager", qx.core.Object,
     // Holds the association between widget-id's and widget-instances.
     // Key: id (string), value: widget instanace (qx.ui.core.Widget)
     this._map = {};
-    this._controls = new Array();
   }
 );
 
@@ -30,8 +29,7 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.WidgetManager", qx.core.Object,
 qx.Proto.add = function( widget, id, isControl ) {
   this._map[ id ] = widget;
   if( isControl != "undefined" && isControl == true ) {
-//  qx.lang.Array.append( this._controls, widget );
-    this._controls.push( widget );
+    widget.setUserData( "isControl", true );
   }
   widget.setUserData( "id", id );
 };
@@ -49,7 +47,6 @@ qx.Proto.dispose = function( id ) {
     widget.setParent( null );
     this._removeToolTipPopup( widget );
     widget.dispose();
-  	qx.lang.Array.remove( this._controls, widget );
   }
   delete this._map[ id ];
 };
@@ -75,7 +72,22 @@ qx.Proto.findIdByWidget = function( widget ) {
  * Control (or one of its subclasses)
  */
 qx.Proto.isControl = function( widget ) {
-  return widget != null && qx.lang.Array.contains( this._controls, widget );
+  var data = null;
+  if( widget != null ) {
+    data = widget.getUserData( "isControl" );
+  }
+  return data != null && data == true;
+}
+
+/**
+ * Adds the given widget to the children of the widget denoted by parentId
+ */
+qx.Proto.setParent = function( widget, parentId ) {
+  var parent = this.findWidgetById( parentId );
+  // TODO [rh] there seems to be a difference between add and setParent
+  //      when using add sizes and clipping are treated differently
+//  parent.add( widget );
+  widget.setParent( parent );
 }
 
 /**

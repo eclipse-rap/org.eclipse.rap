@@ -15,8 +15,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.widgets.ItemLCAUtil;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
@@ -83,18 +83,13 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
   
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
+    ItemLCAUtil.writeChanges( toolItem );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( toolItem ));
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, toolItem.getText() );
-    if( toolItem.getImage() != null ) {
-      writer.set( Props.IMAGE, 
-                  JSConst.QX_FIELD_ICON,
-                  Image.getPath( toolItem.getImage() ) );
-    }
+                           SelectionEvent.hasListener( toolItem ) );
     // event handler for the second push button
     Object[] args = new Object[] {
       getMenuId( toolItem ),

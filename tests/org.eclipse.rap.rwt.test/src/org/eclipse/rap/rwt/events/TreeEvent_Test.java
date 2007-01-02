@@ -50,14 +50,14 @@ public class TreeEvent_Test extends TestCase {
     
     log = "";
     TreeEvent event 
-      = new TreeEvent( tree, item, TreeEvent.TREE_COLLAPSED, true, RWT.NONE );
+      = new TreeEvent( tree, item, TreeEvent.TREE_COLLAPSED );
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     event.processEvent();
     assertEquals( TREE_COLLAPSED, log );
     
     log = "";
     event 
-      = new TreeEvent( tree, item, TreeEvent.TREE_EXPANDED, true, RWT.NONE );
+      = new TreeEvent( tree, item, TreeEvent.TREE_EXPANDED );
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     event.processEvent();
     assertEquals( TREE_EXPANDED, log );

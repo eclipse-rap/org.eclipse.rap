@@ -13,12 +13,14 @@ package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.graphics.Image;
 
 public class MenuItem extends Item {
 
   private final Menu parent;
   private Menu menu;
   private DisposeListener menuDisposeListener;
+  private boolean selection;
 
   // TODO [rh] constructor MenuItem(Menu,int,int) missing
   public MenuItem( final Menu parent, final int style ) {
@@ -26,7 +28,14 @@ public class MenuItem extends Item {
     this.parent = parent;
     ItemHolder.addItem( parent, this );
   }
-
+  
+  public MenuItem( final Menu parent, final int style, final int index ) {
+    super( parent, checkStyle( style ) );
+    this.parent = parent;
+    ItemHolder.insertItem( parent, this, index );
+  }
+  
+  
   public Menu getParent() {
     return parent;
   }
@@ -57,6 +66,24 @@ public class MenuItem extends Item {
     return menu;
   }
   
+  public void setImage( final Image image ) {
+    if( ( style & RWT.SEPARATOR ) == 0 ) {
+      super.setImage( image );
+    }
+  }
+  
+  ////////////
+  // Selection
+  
+  public boolean getSelection() {
+    return selection;
+  }
+  
+  public void setSelection( final boolean selection ) {
+    if( ( style & ( RWT.CHECK | RWT.RADIO ) ) != 0 ) {
+      this.selection = selection;
+    } 
+  }
 
   ///////////////////////
   // Listener maintenance

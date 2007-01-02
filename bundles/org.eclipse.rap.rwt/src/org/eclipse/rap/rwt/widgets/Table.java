@@ -36,6 +36,13 @@ public class Table extends Composite {
         columnHolder.add( item );
       }
     }
+    public void insert( final Item item, final int index ) {
+      if( item instanceof TableItem ) {
+        itemHolder.insert( item, index );
+      } else {
+        columnHolder.insert( item, index );
+      }
+    }
     public void remove( final Item item ) {
       if( item instanceof TableItem ) {
         itemHolder.remove( item );

@@ -55,10 +55,6 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
     widgetAdapter.setInitialized( true );
   }
   
-  public final void processAction( Widget widget ) {
-    
-  }
-  
   public abstract void preserveValues( Widget widget );
   
   public abstract void renderInitialization( Widget widget ) throws IOException; 
