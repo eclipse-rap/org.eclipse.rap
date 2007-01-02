@@ -11,8 +11,6 @@
 
 package org.eclipse.rap.rwt.widgets;
 
-import org.eclipse.rap.rwt.events.ControlAdapter;
-import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.widgets.ControlHolder.IControlHolderAdapter;
