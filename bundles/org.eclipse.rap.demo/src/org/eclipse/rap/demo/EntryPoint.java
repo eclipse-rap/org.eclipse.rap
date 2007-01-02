@@ -90,11 +90,9 @@ public class EntryPoint implements IEntryPoint {
     private TreeParent invisibleRoot;
 
     public void inputChanged( Viewer v, Object oldInput, Object newInput ) {
-      // do nothing
     }
 
     public void dispose() {
-      // do nothing
     }
 
     public Object[] getElements( Object parent ) {
@@ -337,7 +335,6 @@ public class EntryPoint implements IEntryPoint {
 
   private void createShell2( final Display display ) {
     Shell shell = new Shell( display, RWT.NONE );
-    shell.setBounds( 250, 20, 400, 200 );
     shell.setLayout( new FillLayout() );
     Composite composite = new Composite( shell, RWT.NONE );
     composite.setLayout( new FillLayout() );
@@ -380,6 +377,7 @@ public class EntryPoint implements IEntryPoint {
                       + "]" );
       }
     } );
+    shell.setBounds( 250, 20, 400, 200 );
   }
 
   private void createTab2( final TabFolder folder ) {

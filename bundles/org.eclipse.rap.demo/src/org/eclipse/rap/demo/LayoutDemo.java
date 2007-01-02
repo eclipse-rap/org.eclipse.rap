@@ -42,7 +42,6 @@ public class LayoutDemo implements IEntryPoint {
   public Display createUI() {
     Display display = new Display();
     Shell shell = new Shell( display, RWT.NONE );
-    shell.setBounds( 10, 10, 500, 300 );
     shell.setLayout( new FillLayout() );
     SashForm sashForm = new SashForm( shell, RWT.VERTICAL );
     Composite compMain = new Composite( sashForm, RWT.NONE );
@@ -54,6 +53,7 @@ public class LayoutDemo implements IEntryPoint {
     createFootPart( compFoot );
     // shell.layout();
     // System.out.println( "after layput: " + buRight.getBounds() );s
+    shell.setBounds( 10, 10, 500, 300 );
     return display;
   }
 
@@ -211,9 +211,7 @@ public class LayoutDemo implements IEntryPoint {
     switchFgButton.setLayoutData( new RowData( 100, 30 ) );
     final int fgIndex[] = { 0 };
     switchFgButton.addSelectionListener( new SelectionListener() {
-      public void widgetDefaultSelected( final SelectionEvent e ) { 
-        // do nothing
-      }
+      public void widgetDefaultSelected( SelectionEvent e ) { }
       public void widgetSelected( SelectionEvent e ) {
         int i = ++fgIndex[0] % count;
         label.setForeground( fgColors[i] );
@@ -226,9 +224,7 @@ public class LayoutDemo implements IEntryPoint {
     switchBgButton.setLayoutData( new RowData( 100, 30 ) );
     final int bgIndex[] = { 0 };
     switchBgButton.addSelectionListener( new SelectionListener() {
-      public void widgetDefaultSelected( SelectionEvent e ) { 
-        // do nothing
-      }
+      public void widgetDefaultSelected( SelectionEvent e ) { }
       public void widgetSelected( SelectionEvent e ) {
         int i = ++bgIndex[0] % count;
         label.setBackground( bgColors[i] );
