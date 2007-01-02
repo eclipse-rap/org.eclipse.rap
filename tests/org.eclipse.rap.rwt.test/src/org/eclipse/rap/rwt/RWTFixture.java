@@ -76,6 +76,9 @@ public final class RWTFixture {
     public void register( final String name ) {
     }
 
+    public void register( final String name, final InputStream is ) {
+    }
+
     public void register( final String name, final String charset ) {
     }
 
@@ -87,6 +90,7 @@ public final class RWTFixture {
 
     public void setContextLoader( final ClassLoader classLoader ) {
     }
+
   }
 
   public static class TestEntryPoint implements IEntryPoint {

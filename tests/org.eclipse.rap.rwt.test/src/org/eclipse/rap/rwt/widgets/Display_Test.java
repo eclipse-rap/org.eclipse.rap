@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.layout.FillLayout;
 
 public class Display_Test extends TestCase {
 
@@ -48,6 +49,42 @@ public class Display_Test extends TestCase {
     assertTrue( bounds.x != display.getBounds().x );
   }
 
+  
+  public void testCoordinateMappings() {
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    Rectangle shellBounds = new Rectangle( 10, 10, 400, 400 );
+    shell.setBounds( shellBounds );
+    
+    Rectangle actual = display.map( shell, shell, 1, 2 , 3, 4 );
+    Rectangle expected = new Rectangle( 1, 2, 3, 4 );
+    assertEquals( expected, actual );
+    
+    actual = display.map( shell, null, 5, 6, 7, 8 );
+    expected = new Rectangle( shellBounds.x + 5,
+                              shellBounds.y + 6,
+                              7,
+                              8 );
+    assertEquals( expected, actual );
+    
+    shell.setLayout( new FillLayout() );
+    TabFolder folder = new TabFolder( shell, RWT.NONE );
+    shell.layout();
+    actual = display.map( folder, shell, 6, 7, 8, 9 );
+    expected = new Rectangle( folder.getBounds().x + 6,
+                              folder.getBounds().y + 7,
+                              8,
+                              9 );
+    assertEquals( expected, actual );
+    
+    actual = display.map( null, folder, 1, 2, 3, 4 );
+    expected = new Rectangle( 1 - shell.getBounds().x - folder.getBounds().x,
+                              2 - shell.getBounds().y - folder.getBounds().y,
+                              3,
+                              4 );
+    assertEquals( expected, actual );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

@@ -333,8 +333,6 @@ public class CBanner extends Composite {
 
   void onSepMove( int x, int width ) {
     Point size = getSize();
-    System.out.println( "Sash: " + x + "," + width );
-    System.out.println( "Size: " + size.x + "," + size.y );
     // int rightDragDisplacement = curveStart - x + curve_width - curve_indent;
     // rightWidth = Math.max(0, size.x - x - rightDragDisplacement);
     rightWidth = Math.max( 0, size.x - x - curve_width + 2 * curve_indent );
@@ -345,7 +343,6 @@ public class CBanner extends Composite {
     } else {
       rightWidth = Math.max( rightMinWidth, rightWidth );
     }
-    System.out.println( "rightWidth: " + rightWidth );
     layout();
   }
 

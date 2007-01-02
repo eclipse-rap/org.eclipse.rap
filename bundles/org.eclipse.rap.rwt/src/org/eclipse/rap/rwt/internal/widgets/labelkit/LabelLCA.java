@@ -46,9 +46,11 @@ public class LabelLCA extends AbstractWidgetLCA {
     // TODO [rh] rendering text that contains html special chars (<, >, etc)
     //      leads to strange results
     //      e.g. setText( "> <" ), setText( "<tralala>" );
-    Matcher matcher = LINE_BREAK_PATTERN.matcher( label.getText() );
-    String text = matcher.replaceAll( "<br/>" );
-    writer.set( Props.TEXT, "html", text, "" );
+    if( label.getText() != null ) {
+      Matcher matcher = LINE_BREAK_PATTERN.matcher( label.getText() );
+      String text = matcher.replaceAll( "<br/>" );
+      writer.set( Props.TEXT, "html", text );
+    }
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

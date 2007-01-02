@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.rap.rwt.events.DisposeEvent;
 import org.eclipse.rap.rwt.events.DisposeListener;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.engine.service.ContextProvider;
@@ -53,6 +54,11 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
     }
     renderChanges( widget );
     widgetAdapter.setInitialized( true );
+  }
+  
+  public Rectangle adjustCoordinates( final Rectangle newBounds ) {
+    // subclasses may override
+    return newBounds;
   }
   
   public abstract void preserveValues( Widget widget );

@@ -17,8 +17,7 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
-import com.w4t.Adaptable;
-import com.w4t.W4TContext;
+import com.w4t.*;
 import com.w4t.engine.service.ContextProvider;
 
 /**
@@ -56,6 +55,51 @@ public class Display implements Adaptable {
     return new Rectangle( bounds );
   }
 
+  
+  public Rectangle map( final Control from,
+                        final Control to,
+                        final Rectangle rectangle )
+  {
+    ParamCheck.notNull( rectangle, "rectangle" );
+    return map( from, 
+                to, 
+                rectangle.x, 
+                rectangle.y, 
+                rectangle.width, 
+                rectangle.height );
+  }
+  
+  public Rectangle map( final Control from, 
+                        final Control to, 
+                        final int x, 
+                        final int y, 
+                        final int width, 
+                        final int height )
+  {
+    int newX = x;
+    int newY = y;
+    if( from != null ) {
+      Control currentFrom = from;
+      do {
+        Rectangle bounds = currentFrom.getBounds();
+        newX += bounds.x;
+        newY += bounds.y;
+        currentFrom = currentFrom.getParent();
+      } while( currentFrom != null );
+    }
+    
+    if( to != null ) {
+      Control currentTo = to;
+      do {
+        Rectangle bounds = currentTo.getBounds();
+        newX -= bounds.x;
+        newY -= bounds.y;
+        currentTo = currentTo.getParent();
+      } while( currentTo != null );
+    }
+    return new Rectangle( newX, newY, width, height );
+  }
+  
   // TODO [rh] This is preliminary!
   public void dispose() {
     ContextProvider.getSession().removeAttribute( DISPLAY_ID );

@@ -69,6 +69,7 @@ public final class Image {
     }
     return result;
   }
+  
 
   //////////////////
   // helping methods

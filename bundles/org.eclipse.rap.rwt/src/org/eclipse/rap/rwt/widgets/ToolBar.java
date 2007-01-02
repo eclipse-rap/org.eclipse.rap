@@ -11,6 +11,8 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Point;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 
 
 public class ToolBar extends Composite {
@@ -30,6 +32,16 @@ public class ToolBar extends Composite {
       result = super.getAdapter( adapter );
     }
     return result;
+  }
+
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
+    // TODO: [fappel] reasonable implementation
+    Point result = super.computeSize( wHint, hHint, changed );
+    return new Point( result.x, 30 );
+  }
+  
+  public void setBounds( Rectangle bounds ) {
+    super.setBounds( bounds );
   }
 
   static int checkStyle( final int style ) {

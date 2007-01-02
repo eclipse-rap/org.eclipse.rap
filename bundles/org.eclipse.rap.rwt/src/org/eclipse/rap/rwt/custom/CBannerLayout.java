@@ -135,7 +135,6 @@ class CBannerLayout extends Layout {
   }
 
   protected void layout( Composite composite, boolean flushCache ) {
-    System.out.println( "--layout--" );
     CBanner banner = ( CBanner )composite;
     Control left = banner.left;
     Control right = banner.right;
@@ -145,7 +144,6 @@ class CBannerLayout extends Layout {
     boolean showCurve = left != null && right != null;
     int width = size.x - 2 * banner.getBorderWidth();
     int height = size.y - 2 * banner.getBorderWidth();
-    System.out.println( "heigt: " + height );
     Point bottomSize = new Point( 0, 0 );
     if( bottom != null ) {
       int trim = computeTrim( bottom );
@@ -153,13 +151,11 @@ class CBannerLayout extends Layout {
       bottomSize = computeChildSize( bottom, w, RWT.DEFAULT, flushCache );
       height -= bottomSize.y + CBanner.BORDER_STRIPE + 2;
     }
-    System.out.println( "heigt: " + height );
     if( showCurve )
       height -= CBanner.BORDER_TOP
                 + CBanner.BORDER_BOTTOM
                 + 2
                 * CBanner.BORDER_STRIPE;
-    System.out.println( "heigt: " + height );
     height = Math.max( 0, height );
     Point rightSize = new Point( 0, 0 );
     if( right != null ) {

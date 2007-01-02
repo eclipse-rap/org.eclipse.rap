@@ -15,6 +15,7 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.custom.CTabFolder;
 import org.eclipse.rap.rwt.custom.CTabItem;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager;
@@ -134,6 +135,16 @@ public class CTabFolderLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
+  
+  public Rectangle adjustCoordinates( final Rectangle bounds ) {
+    int border = 1;
+    int hTabBar = 23;
+    return new Rectangle( bounds.x - border - 10, 
+                          bounds.y - hTabBar - border -10, 
+                          bounds.width, 
+                          bounds.height );
+  }
+
 
   //////////////////////////////////////
   // Helping methods to write properties

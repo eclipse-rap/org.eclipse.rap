@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets.tabfolderkit;
 
 import java.io.IOException;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
@@ -49,5 +50,14 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     // TODO [rh] preliminary: find out how to properly dispose of a TabFolder 
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  }
+  
+  public Rectangle adjustCoordinates( final Rectangle newBounds ) {
+    int border = 1;
+    int hTabBar = 23;
+    return new Rectangle( newBounds.x - border - 10, 
+                          newBounds.y - hTabBar - border -10, 
+                          newBounds.width, 
+                          newBounds.height );
   }
 }

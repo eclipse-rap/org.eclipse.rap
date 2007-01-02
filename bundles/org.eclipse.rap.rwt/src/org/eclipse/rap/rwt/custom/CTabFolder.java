@@ -46,6 +46,7 @@ public class CTabFolder extends Composite {
       }
     } );
   }
+  
 
   //////////////////
   // Item management
@@ -175,7 +176,6 @@ public class CTabFolder extends Composite {
   public void setTopRight( final Control control, final int alignment ) {
     if( alignment != RWT.RIGHT && alignment != RWT.FILL ) {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
-      throw new IllegalArgumentException( "Invalid alignment" );
     }
     if( control != null && control.getParent() != this ) {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
@@ -206,6 +206,7 @@ public class CTabFolder extends Composite {
     return result;
   }
   
+  
   //////////////////////
   // Composite overrides
   
@@ -215,8 +216,8 @@ public class CTabFolder extends Composite {
     int height = current.height;
     int border = 1;
     int hTabBar = 23;
-    return new Rectangle( -10,
-                          -10,
+    return new Rectangle( border,
+                          hTabBar + border,
                           width - border * 2,
                           height - ( hTabBar + border * 2 ) );
   }

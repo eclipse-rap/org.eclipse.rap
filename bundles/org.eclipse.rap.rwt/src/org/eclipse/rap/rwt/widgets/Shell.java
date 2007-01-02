@@ -38,8 +38,15 @@ public class Shell extends Composite {
   // TODO [rh] preliminary: yet no null-check, default/current substitute, etc
   public Shell( final Display display, final int style ) {
     super();
+    this.style = style;
     this.display = display;
     display.addShell( this );
+  }
+
+  // TODO: [fappel] this is just a fake constructor for dialog shells,
+  //                but no special dialog support implemented yet.
+  public Shell( final Shell parent, final int style ) {
+    this( parent == null ? Display.getCurrent() : parent.getDisplay(), style );
   }
 
   public final Shell getShell() {

@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.rwt.internal.widgets;
 
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.lifecycle.IRenderRunnable;
 
 /**
@@ -33,5 +34,4 @@ public interface IWidgetAdapter {
 
   void setRenderRunnable( IRenderRunnable runnable );
   IRenderRunnable getRenderRunnable();
-
 }

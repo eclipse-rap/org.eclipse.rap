@@ -11,7 +11,9 @@
 
 package org.eclipse.rap.rwt.widgets;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Point;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rap.rwt.widgets.ControlHolder.IControlHolderAdapter;
 
@@ -66,6 +68,47 @@ public class Composite extends Scrollable {
     if( layout != null ) {
       layout.layout( this, true );
     }
+  }
+  
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
+//    checkWidget();
+    Point size;
+    if( layout != null ) {
+      if( wHint == RWT.DEFAULT || hHint == RWT.DEFAULT ) {
+        changed |= ( state & LAYOUT_CHANGED ) != 0;
+        state &= ~LAYOUT_CHANGED;
+        size = layout.computeSize( this, wHint, hHint, changed );
+      } else {
+        size = new Point( wHint, hHint );
+      }
+    } else {
+      size = minimumSize( wHint, hHint, changed );
+    }
+    if( size.x == 0 ) {
+      size.x = DEFAULT_WIDTH;
+    }
+    if( size.y == 0 ) {
+      size.y = DEFAULT_HEIGHT;
+    }
+    if( wHint != RWT.DEFAULT ) {
+      size.x = wHint;
+    }
+    if( hHint != RWT.DEFAULT ) {
+      size.y = hHint;
+    }
+    Rectangle trim = computeTrim( 0, 0, size.x, size.y );
+    return new Point( trim.width, trim.height );
+  }
+
+  Point minimumSize( final int wHint, final int hHint, final boolean changed ) {
+    Control[] children = getChildren();
+    int width = 0, height = 0;
+    for( int i = 0; i < children.length; i++ ) {
+      Rectangle rect = children[ i ].getBounds();
+      width = Math.max( width, rect.x + rect.width );
+      height = Math.max( height, rect.y + rect.height );
+    }
+    return new Point( width, height );
   }
 
   /////////////////////////////////////////////////

@@ -32,8 +32,10 @@ public abstract class Widget implements Adaptable {
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;
   static final int DEFAULT_HEIGHT = 64;
+  static final int LAYOUT_CHANGED = 1<<6;
   
   int style;
+  int state;
   private IEventAdapter eventAdapter;
   private boolean disposed;
   private Object data;
@@ -122,7 +124,7 @@ public abstract class Widget implements Adaptable {
   ///////////////////////////////////
   // Methods to dispose of the widget
   
-  public final void dispose() {
+  public void dispose() {
     if( !isDisposed() ) {
       DisposeEvent disposeEvent = new DisposeEvent( this );
       disposeEvent.processEvent();

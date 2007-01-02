@@ -64,6 +64,9 @@ public class RWT {
   public static final int WRAP = 1 << 6;
   public static final int PASSWORD = 1 << 22;
   
+  public static final int MIN = 1 << 7;
+  public static final int MAX = 1 << 10;
+  
   // Error codes
   public static final int ERROR_UNSPECIFIED = 1;
   public static final int ERROR_NO_HANDLES = 2;
@@ -104,8 +107,13 @@ public class RWT {
   public static final int ERROR_FAILED_EXEC = 46;
   public static final int ERROR_FAILED_LOAD_LIBRARY = 47;
   public static final int ERROR_INVALID_FONT = 48;
+  public static final int ALT = 1 << 16;
 
-  
+  public static final int SHIFT = 1 << 17;
+  public static final int CTRL = 1 << 18;
+  public static final int CONTROL = CTRL;
+  public static final int COMMAND = 1 << 22;
+
   public static void error( final int code ) {
     error( code, null );
   }

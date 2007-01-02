@@ -70,8 +70,8 @@ public class TabFolder extends Composite {
     int height = current.height;
     int border = 1;
     int hTabBar = 23;
-    return new Rectangle( -10,
-                          -10,
+    return new Rectangle( border,
+                          hTabBar + border,
                           width - border * 2,
                           height - ( hTabBar + border * 2 ) );
   }

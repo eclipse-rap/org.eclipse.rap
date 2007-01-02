@@ -63,7 +63,10 @@ public class CoolBar extends Composite {
   ///////////////////////
   // Size-related methods
   
-  public Point computeSize( final int wHint, final int hHint, final boolean changed ) {
+  public Point computeSize( final int wHint,
+                            final int hHint, 
+                            final boolean changed )
+  {
     // TODO [rh] replace with decent implementation
     Point result = super.computeSize( wHint, hHint, changed );
     return new Point( result.x, 30 );

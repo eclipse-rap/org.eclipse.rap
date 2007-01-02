@@ -18,6 +18,9 @@ import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.W4TContext;
+import com.w4t.engine.service.ContextProvider;
+import com.w4t.util.browser.Mozilla;
 
 /**
  * TODO [rh] JavaDoc
@@ -64,10 +67,40 @@ public class ControlLCAUtil {
     Rectangle oldBounds = ( Rectangle )adapter.getPreserved( Props.BOUNDS );
     Rectangle newBounds = control.getBounds();
     if( !adapter.isInitialized() || !newBounds.equals( oldBounds ) ) {
+
+      // the RWT coordinates for client area differ in some cases to
+      // the widget realisation of qooxdoo
+      Composite parent = control.getParent();
+      if( parent != null ) {
+        AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
+        newBounds = parentLCA.adjustCoordinates( newBounds ); 
+      }
+      
       JSWriter writer = JSWriter.getWriterFor( control );
-      int[] args = new int[] {
-        newBounds.x, newBounds.width, newBounds.y, newBounds.height
-      };
+      
+      //////////////////////////////////////////////////////////////////
+      // TODO: [fappel] height values of controls are not displayed 
+      //                proper in mozilla. This is a very rude approximation
+      //                and should be eighter solved in qooxdoo or by a more
+      //                sophisticated approach...
+      int[] args;
+      if( W4TContext.getBrowser() instanceof Mozilla ) {
+        if( newBounds.height > 5 ) {
+          args = new int[] {
+            newBounds.x, newBounds.width, newBounds.y, newBounds.height - 4
+          };
+        } else {
+          args = new int[] {
+            newBounds.x, newBounds.width, newBounds.y, newBounds.height
+          };
+        }
+      } else {
+        args = new int[] {
+          newBounds.x, newBounds.width, newBounds.y, newBounds.height
+        };
+      }
+      //////////////////////////////////////////////////////////////////
+      
       writer.set( "space", args );
       if( !WidgetUtil.getAdapter( control ).isInitialized() ) {
         writer.set( "minWidth", 0 );
