@@ -14,7 +14,6 @@ qx.OO.defineClass(
   qx.ui.layout.CanvasLayout,
   function( canClose ) {
     qx.ui.layout.CanvasLayout.call( this );
-    this.setBackgroundColor( "white" );
     //
     this._canClose = canClose;
     this._hasFolderListener = false;

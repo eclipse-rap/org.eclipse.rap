@@ -2100,27 +2100,13 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         backgroundColor : vStates.checked 
                         ? this.background_color_checked 
                         : this.background_color
-//,        allowStretchX : true,
-//        allowStretchY : true
       }
 
       if( vStates.checked ) {
         if ( vStates.barTop ) {
           vReturn.border = this.border_top_checked;
-          /*
-          vReturn.paddingTop = 3;
-          vReturn.paddingRight = 6;
-          vReturn.paddingBottom = 1;
-          vReturn.paddingLeft = 6;
-          * */
         } else {  // bar at bottom
           vReturn.border = this.border_bottom_checked;
-          /*
-          vReturn.paddingTop = 1;
-          vReturn.paddingRight = 6;
-          vReturn.paddingBottom = 3;
-          vReturn.paddingLeft = 6;
-          */
         }
         vReturn.color = this.color_checked;
       } else {
@@ -2130,15 +2116,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
           vReturn.border = this.border_bottom;
         }
         vReturn.color = this.color;
-//        vReturn.paddingTop = vReturn.paddingBottom = 4;
-//        vReturn.paddingRight = vReturn.paddingLeft = 7;
       }
-      /*
-      vReturn.marginTop = vReturn.marginBottom = 0;
-      vReturn.marginRight = vReturn.marginLeft = 1;
-      vReturn.width = qx.constant.Core.AUTO;
-      vReturn.height = null;
-      */
       return vReturn;
     }
   },
@@ -2151,7 +2129,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     initial : function( vTheme ) {
       return qx.lang.Object.mergeWith( vTheme.initialFrom( "image" ), {
-        backgroundColor : this.background_color,
+        backgroundColor : this.background_color
       } );
     },
 
@@ -2163,8 +2141,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       }
       return vReturn;
     }
-  },
-
+  }
 
   /*
   ---------------------------------------------------------------------------
