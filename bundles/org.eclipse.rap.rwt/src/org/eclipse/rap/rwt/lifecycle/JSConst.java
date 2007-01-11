@@ -33,7 +33,7 @@ public final class JSConst {
     = "org.eclipse.rap.rwt.events.treeExpanded";
   public static final String EVENT_TREE_COLLAPSED 
     = "org.eclipse.rap.rwt.events.treeCollapsed";
-
+  
   /** 
    * <p>Indicates that a shell was closed on the client side. The parameter 
    * value holds the id of the shell that was closed.</p> */

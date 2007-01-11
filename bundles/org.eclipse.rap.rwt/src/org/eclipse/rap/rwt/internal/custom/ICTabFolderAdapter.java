@@ -9,23 +9,16 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.custom;
+package org.eclipse.rap.rwt.internal.custom;
 
-public class CTabFolder2Adapter implements CTabFolder2Listener {
+import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.widgets.Menu;
 
-  public void close( final CTabFolderEvent event ) {
-  }
 
-  public void maximize( final CTabFolderEvent event ) {
-  }
-
-  public void minimize( final CTabFolderEvent event ) {
-  }
-
-  public void restore( final CTabFolderEvent event ) {
-  }
-
-  // TODO [rh] showList honors the doit flag and prevents list from showing
-  public void showList( final CTabFolderEvent event ) {
-  }
+public interface ICTabFolderAdapter {
+  
+  boolean getChevronVisible();
+  Rectangle getChevronRect();
+  
+  Menu getShowListMenu(); 
 }

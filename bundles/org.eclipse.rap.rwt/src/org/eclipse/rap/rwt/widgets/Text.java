@@ -32,33 +32,33 @@ public class Text extends Control {
     return text;
   }
 
-  public int getStyle() {
-    return style;
-  }
-
   public String getLineDelimiter() {
     return "\n";
   }
 
   // taken as sample from org.eclipse.swt.widgets.Text, but without scrolling
   // (so far)
-  static int checkStyle( int style ) {
-    if( ( style & RWT.SINGLE ) != 0 && ( style & RWT.MULTI ) != 0 ) {
-      style &= ~RWT.MULTI;
+  private static int checkStyle( final int style ) {
+    int result = style;
+    if( ( result & RWT.SINGLE ) != 0 && ( result & RWT.MULTI ) != 0 ) {
+      result &= ~RWT.MULTI;
     }
-    style = checkBits( style, RWT.LEFT, RWT.CENTER, RWT.RIGHT, 0, 0, 0 );
-    if( ( style & RWT.SINGLE ) != 0 )
-      style &= ~( /* RWT.H_SCROLL | RWT.V_SCROLL | */RWT.WRAP   );
-    if( ( style & RWT.WRAP ) != 0 ) {
-      style |= RWT.MULTI;
+    result = checkBits( result, RWT.LEFT, RWT.CENTER, RWT.RIGHT, 0, 0, 0 );
+    if( ( result & RWT.SINGLE ) != 0 ) {
+      result &= ~( /* RWT.H_SCROLL | RWT.V_SCROLL | */RWT.WRAP    );
+    }
+    if( ( result & RWT.WRAP ) != 0 ) {
+      result |= RWT.MULTI;
       /* style &= ~RWT.H_SCROLL; */
     }
-    if( ( style & RWT.MULTI ) != 0 )
-      style &= ~RWT.PASSWORD;
-    if( ( style & ( RWT.SINGLE | RWT.MULTI ) ) != 0 )
-      return style;
+    if( ( result & RWT.MULTI ) != 0 ) {
+      result &= ~RWT.PASSWORD;
+    }
+    if( ( result & ( RWT.SINGLE | RWT.MULTI ) ) != 0 ) {
+      return result;
+    }
     // if ((style & (RWT.H_SCROLL | RWT.V_SCROLL)) != 0) return style |
     // RWT.MULTI;
-    return style | RWT.SINGLE;
+    return result | RWT.SINGLE;
   }
 }

@@ -16,9 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.*;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
-import org.eclipse.rap.rwt.internal.lifecycle.LifeCycleAdapterFactory;
+import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
+import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -30,8 +32,19 @@ public class DisplayLCA_Test extends TestCase {
 
   private AdapterFactory lifeCycleAdapterFactory;
   private WidgetAdapterFactory widgetAdapterFactory;
-  private List log = new ArrayList();
+  private final List log = new ArrayList();
+  private final List renderInitLog = new ArrayList();
+  private final List renderChangesLog = new ArrayList();
+  private final List renderDisposeLog = new ArrayList();
 
+  private final class DisposeTestButton extends Button {
+
+    public DisposeTestButton( final Composite parent, final int style ) {
+      super( parent, style );
+    }
+    
+  }
+  
   public void testStartup() throws IOException {
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6up( true, true ) );
@@ -65,7 +78,7 @@ public class DisplayLCA_Test extends TestCase {
     assertSame( button1, log.get( 1 ) );
     assertSame( shell2, log.get( 2 ) );
     assertSame( button2, log.get( 3 ) );
-    log.clear();
+    clearLogs();
     new Composite( shell1, RWT.NONE );
     try {
       lcAdapter.render( display );
@@ -108,6 +121,41 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 30, 70 ), display.getBounds() );
   }
   
+  public void testRrenderChangedButDisposed() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    final Button button = new DisposeTestButton( shell, RWT.PUSH );
+    String displayId = DisplayUtil.getId( display );
+    String buttonId = WidgetUtil.getId( button );
+    
+    // Run requests to initialize the 'system'
+    RWTFixture.fakeNewRequest();
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.execute();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    lifeCycle.execute();
+    
+    // Run the actual test request: the button is clicked
+    // It changes its text and disposes itself 
+    clearLogs();
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        button.setText( "should be ignored" );
+        button.dispose();
+      }
+    } );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    lifeCycle.execute();
+    
+    assertEquals( 0, renderInitLog.size() );
+    assertFalse( renderChangesLog.contains( button ) );
+    assertTrue( renderDisposeLog.contains( button ) );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     AdapterManager manager = W4TContext.getAdapterManager();
@@ -128,11 +176,22 @@ public class DisplayLCA_Test extends TestCase {
 
             public void readData( final Widget widget ) {
               log.add( widget );
+              if( widget instanceof DisposeTestButton ) {
+                SelectionEvent event 
+                  = new SelectionEvent( widget, 
+                                        null, 
+                                        SelectionEvent.WIDGET_SELECTED, 
+                                        new Rectangle( 0, 0, 0, 0 ), 
+                                        true, 
+                                        0 );
+                event.processEvent();
+              }
             }
 
             public void renderInitialization( final Widget widget )
               throws IOException
             {
+              renderInitLog.add( widget );
             }
 
             public void renderChanges( final Widget widget ) throws IOException
@@ -141,10 +200,12 @@ public class DisplayLCA_Test extends TestCase {
                 throw new IOException();
               }
               log.add( widget );
+              renderChangesLog.add( widget );
             }
 
             public void renderDispose( final Widget widget ) throws IOException
             {
+              renderDisposeLog.add( widget );
             }
           };
         }
@@ -160,8 +221,10 @@ public class DisplayLCA_Test extends TestCase {
     widgetAdapterFactory = new WidgetAdapterFactory();
     manager.registerAdapters( widgetAdapterFactory, Display.class );
     manager.registerAdapters( widgetAdapterFactory, Widget.class );
-    log.clear();
+    clearLogs();
     RWTFixture.registerResourceManager();
+    PhaseListenerRegistry.add( new CurrentPhase.Listener() );
+    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
   }
 
   protected void tearDown() throws Exception {
@@ -172,5 +235,12 @@ public class DisplayLCA_Test extends TestCase {
     manager.deregisterAdapters( widgetAdapterFactory, Widget.class );
     RWTFixture.deregisterResourceManager();
     Fixture.tearDown();
+  }
+
+  private void clearLogs() {
+    log.clear();
+    renderInitLog.clear();
+    renderChangesLog.clear();
+    renderDisposeLog.clear();
   }
 }

@@ -67,6 +67,88 @@ public class RWT {
   public static final int MIN = 1 << 7;
   public static final int MAX = 1 << 10;
   
+  // Color constants
+  /**
+   * Default color white (value is 1).
+   */
+  public static final int COLOR_WHITE = 1;
+
+  /**
+   * Default color black (value is 2).
+   */
+  public static final int COLOR_BLACK = 2;
+
+  /**
+   * Default color red (value is 3).
+   */
+  public static final int COLOR_RED = 3;
+
+  /**
+   * Default color dark red (value is 4).
+   */
+  public static final int COLOR_DARK_RED = 4;
+
+  /**
+   * Default color green (value is 5).
+   */
+  public static final int COLOR_GREEN = 5;
+
+  /**
+   * Default color dark green (value is 6).
+   */
+  public static final int COLOR_DARK_GREEN = 6;
+
+  /**
+   * Default color yellow (value is 7).
+   */
+  public static final int COLOR_YELLOW = 7;
+
+  /**
+   * Default color dark yellow (value is 8).
+   */
+  public static final int COLOR_DARK_YELLOW = 8;
+
+  /**
+   * Default color blue (value is 9).
+   */
+  public static final int COLOR_BLUE = 9;
+
+  /**
+   * Default color dark blue (value is 10).
+   */
+  public static final int COLOR_DARK_BLUE = 10;
+
+  /**
+   * Default color magenta (value is 11).
+   */
+  public static final int COLOR_MAGENTA = 11;
+
+  /**
+   * Default color dark magenta (value is 12).
+   */
+  public static final int COLOR_DARK_MAGENTA = 12;
+
+  /**
+   * Default color cyan (value is 13).
+   */
+  public static final int COLOR_CYAN = 13;
+
+  /**
+   * Default color dark cyan (value is 14).
+   */
+  public static final int COLOR_DARK_CYAN = 14;
+
+  /**
+   * Default color gray (value is 15).
+   */
+  public static final int COLOR_GRAY = 15;
+
+  /**
+   * Default color dark gray (value is 16).
+   */
+  public static final int COLOR_DARK_GRAY = 16;
+  
+  
   // Error codes
   public static final int ERROR_UNSPECIFIED = 1;
   public static final int ERROR_NO_HANDLES = 2;
@@ -140,8 +222,8 @@ public class RWT {
     if( throwable instanceof RWTError ) {
       throw ( RWTError )throwable;
     }
-    if( throwable instanceof SWTException ) {
-      throw ( SWTException )throwable;
+    if( throwable instanceof RWTException ) {
+      throw ( RWTException )throwable;
     }
     String message = findErrorText( code );
     if( detail != null ) {
@@ -174,7 +256,7 @@ public class RWT {
       case ERROR_CANNOT_INVERT_MATRIX:
       case ERROR_NO_GRAPHICS_LIBRARY:
       case ERROR_IO:
-        SWTException exception = new SWTException( code, message );
+        RWTException exception = new RWTException( code, message );
         exception.throwable = throwable;
         throw exception;
       /* Operation System Errors (fatal, may occur only on some platforms) */

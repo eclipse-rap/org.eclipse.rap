@@ -41,14 +41,13 @@ public class LabelLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Label label = ( Label )widget;
     ControlLCAUtil.writeChanges( label );
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    
     // TODO [rh] rendering text that contains html special chars (<, >, etc)
     //      leads to strange results
     //      e.g. setText( "> <" ), setText( "<tralala>" );
     if( label.getText() != null ) {
       Matcher matcher = LINE_BREAK_PATTERN.matcher( label.getText() );
       String text = matcher.replaceAll( "<br/>" );
+      JSWriter writer = JSWriter.getWriterFor( widget );
       writer.set( Props.TEXT, "html", text );
     }
   }

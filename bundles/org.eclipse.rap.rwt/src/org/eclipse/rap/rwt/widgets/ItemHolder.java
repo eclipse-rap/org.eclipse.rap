@@ -40,7 +40,7 @@ public final class ItemHolder implements IItemHolderAdapter {
   public static void removeItem( final Widget widget, final Item item ) {
     getItemHolder( widget ).remove( item );
   }
-
+  
   private final List items;
   private final Class type;
 

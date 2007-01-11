@@ -23,3 +23,10 @@ that's right?
 7.) Color settings for table component are static contstants
 
 8.) TreeFullControl sends selection event when expanding/collapsing node.
+
+9.) Disposing of a currently visible toolTip fails with the following errors:
+  ERROR: qx.ui.popup.ToolTip[632]: Modification of property "visibility" failed 
+  with exception: TypeError - this._hideTimer has no properties
+  ERROR: qx.manager.object.ToolTipManager[42]: Modification of property 
+  "currentToolTip" failed with exception: TypeError - this._showTimer has 
+  no properties

@@ -23,7 +23,24 @@ import com.w4t.engine.lifecycle.PhaseId;
 
 
 public class CTabFolder_Test extends TestCase {
-
+  
+  public void testInitialValues() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, RWT.NONE );
+    
+    assertEquals( false, folder.getMRUVisible() );
+    assertEquals( true, folder.getMaximizeVisible() );
+    assertEquals( true, folder.getMinimizeVisible() );
+    assertEquals( false, folder.getMaximized() );
+    assertEquals( false, folder.getMinimized() );
+    assertEquals( false, folder.getSingle() );
+    assertEquals( RWT.TOP, folder.getTabPosition() );
+    assertEquals( null, folder.getToolTipText() );
+    assertEquals( 20, folder.getMinimumCharacters() );
+    assertEquals( false, folder.getBorderVisible() );
+  }
+  
   public void testHierarchy() {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
@@ -82,10 +99,31 @@ public class CTabFolder_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
     CTabFolder folder1 = new CTabFolder( shell, RWT.NONE );
-    assertEquals( RWT.NONE, folder1.getStyle() );
+    assertEquals( RWT.TOP | RWT.MULTI, folder1.getStyle() );
+    assertEquals( RWT.TOP, folder1.getTabPosition() );
+    assertEquals( false, folder1.getSingle() );
     
     CTabFolder folder2 = new CTabFolder( shell, -1 );
-    assertEquals( RWT.NONE, folder2.getStyle() );
+    assertTrue( ( folder2.getStyle() & RWT.MULTI ) != 0 );
+    assertTrue( ( folder2.getStyle() & RWT.TOP ) != 0 );
+
+    int styles = RWT.TOP | RWT.BOTTOM | RWT.SINGLE | RWT.MULTI;
+    CTabFolder folder3 = new CTabFolder( shell, styles );
+    assertTrue( ( folder3.getStyle() & RWT.MULTI ) != 0 );
+    assertTrue( ( folder3.getStyle() & RWT.TOP ) != 0 );
+
+    styles = RWT.BOTTOM | RWT.SINGLE;
+    CTabFolder folder4 = new CTabFolder( shell, styles );
+    assertTrue( ( folder4.getStyle() & RWT.SINGLE ) != 0 );
+    assertTrue( ( folder4.getStyle() & RWT.BOTTOM ) != 0 );
+    assertEquals( RWT.BOTTOM, folder4.getTabPosition() );
+    assertEquals( true, folder4.getSingle() );
+
+    CTabFolder folder5 = new CTabFolder( shell, RWT.BORDER );
+    assertEquals( true, folder5.getBorderVisible() );
+
+    CTabFolder folder6 = new CTabFolder( shell, RWT.NONE );
+    assertEquals( false, folder6.getBorderVisible() );
   }
   
   public void testSelectionIndex() {
@@ -127,6 +165,32 @@ public class CTabFolder_Test extends TestCase {
     
     item2.dispose();
     assertEquals( null, folder.getSelection() );
+  }
+  
+  public void testSelectionWithControl() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, RWT.MULTI );
+    folder.setSize( 100, 200 );
+    CTabItem item1 = new CTabItem( folder, RWT.NONE );
+    Control control1 = new Label( folder, RWT.NONE );
+    item1.setControl( control1 );
+    CTabItem item2 = new CTabItem( folder, RWT.NONE );
+    Control control2 = new Label( folder, RWT.NONE );
+    item2.setControl( control2 );
+    CTabItem item3 = new CTabItem( folder, RWT.NONE );
+    
+    folder.setSelection( item1 );
+    assertEquals( true, item1.getControl().isVisible() );
+    assertEquals( folder.getClientArea(), item1.getControl().getBounds() );
+    
+    folder.setSelection( item2 );
+    assertEquals( false, item1.getControl().isVisible() );
+    assertEquals( true, item2.getControl().isVisible() );
+    assertEquals( folder.getClientArea(), item2.getControl().getBounds() );
+    
+    folder.setSelection( item3 );
+    assertEquals( false, item2.getControl().isVisible() );
   }
   
   public void testSelectionWithEvent() {
@@ -236,10 +300,8 @@ public class CTabFolder_Test extends TestCase {
     // set toolbar
     folder.setTopRight( toolBar );
     assertSame( toolBar, folder.getTopRight() );
-    assertEquals( RWT.RIGHT, folder.getTopRightAlignment() );
     folder.setTopRight( toolBar, RWT.FILL );
     assertSame( toolBar, folder.getTopRight() );
-    assertEquals( RWT.FILL, folder.getTopRightAlignment() );
     folder.setTopRight( null );
     assertEquals( null, folder.getTopRight() );
     // Test illegal values
@@ -255,6 +317,11 @@ public class CTabFolder_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+    // Set invisible topRight control
+    ToolBar invisibleToolBar = new ToolBar( folder, RWT.NONE );
+    invisibleToolBar.setVisible( false );
+    folder.setTopRight( invisibleToolBar );
+    assertEquals( false, invisibleToolBar.isVisible() );
   }
   
   protected void setUp() throws Exception {

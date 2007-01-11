@@ -17,12 +17,12 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.events.ControlListener;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.internal.widgets.Props;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
+import com.w4t.util.browser.Mozilla1_7up;
 
 
 public class ControlLCA_Test extends TestCase {
@@ -80,5 +80,36 @@ public class ControlLCA_Test extends TestCase {
     lca.renderInitialization( button );
     lca.renderChanges( button );
     assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) != -1 );
+  }
+  
+  public void testWriteBounds() throws IOException {
+    Fixture.fakeBrowser( new Mozilla1_7up( true, true ) );
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Control control = new Button( shell, RWT.PUSH );
+    Composite parent = control.getParent();
+
+    // call writeBounds once to elimniate the uninteresting JavaScript prolog 
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.writeBounds( control, parent, control.getBounds(), false );
+
+    // Test without clip
+    Fixture.fakeResponseWriter();
+    control.setBounds( 1, 2, 100, 200 );
+    ControlLCAUtil.writeBounds( control, parent, control.getBounds(), false );
+    String expected 
+      = "w.setSpace( 1, 100, 2, 196 );" 
+      + "w.setMinWidth( 0 );w.setMinHeight( 0 );"; 
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+    // Test with clip
+    Fixture.fakeResponseWriter();
+    control.setBounds( 1, 2, 100, 200 );
+    ControlLCAUtil.writeBounds( control, parent, control.getBounds(), true );
+    expected 
+      = "w.setSpace( 1, 100, 2, 196 );" 
+      + "w.setMinWidth( 0 );w.setMinHeight( 0 );" 
+      + "w.setClipHeight( 196 );w.setClipWidth( 100 );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 }

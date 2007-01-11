@@ -23,7 +23,7 @@ public final class Props {
   public static final String BOUNDS = "bounds";
   public static final String TOOL_TIP_TEXT = "toolTip";
   public static final String MENU = "menu";
-  public static final String VISIBILITY = "visibility";
+  public static final String VISIBLE = "visibility";
   public static final String BG_COLOR = "backgroundColor";
   public static final String FG_COLOR = "foregroundColor";
   public static final String CONTROL_LISTENERS = "hasControlListeners";
@@ -40,20 +40,10 @@ public final class Props {
   public static final String IMAGE = "image";
   
   // CTabFolder, CTabItem, TabFolder and TabItem properties
-  public static final String SELECTION_INDEX = "selectionIndex";
   public static final String CHECKED = "checked";
   
   // Table, TableItem and TableColumn properties
   public static final String SELECTION_INDICES = "selection";
-  
-  // CTabFolder properties
-  public static final String MINIMIZED = "minimized";
-  public static final String MAXIMIZED = "maximized";
-  public static final String MINIMIZE_VISIBLE = "minimizeVisible";
-  public static final String MAXIMIZE_VISIBLE = "maximizeVisible";
-  public static final String TAB_HEIGHT = "tabHeight";
-  public static final String TOP_RIGHT = "topRight";
-  public static final String TOP_RIGHT_ALIGNMENT = "topRightAlignment";
   
   // CoolBar/CoolItem properties
   public static final String LOCKED = "locked";

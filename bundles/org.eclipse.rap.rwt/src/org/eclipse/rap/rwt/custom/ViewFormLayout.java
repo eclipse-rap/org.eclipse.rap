@@ -231,7 +231,7 @@ class ViewFormLayout extends Layout {
       if( top )
         y += topHeight + form.verticalSpacing;
     }
-    int oldSeperator = form.separator;
+//    int oldSeperator = form.separator;
     form.separator = -1;
     if( content != null && !content.isDisposed() ) {
       if( left != null || right != null || center != null ) {
@@ -247,11 +247,11 @@ class ViewFormLayout extends Layout {
                              - form.marginHeight
                              - form.highlight );
     }
-    if( oldSeperator != -1 && form.separator != -1 ) {
-      int t = Math.min( form.separator, oldSeperator );
-      int b = Math.max( form.separator, oldSeperator );
-      // form.redraw(form.borderLeft, t, form.getSize().x - form.borderLeft -
-      // form.borderRight, b - t, false);
-    }
+//    if( oldSeperator != -1 && form.separator != -1 ) {
+//      int t = Math.min( form.separator, oldSeperator );
+//      int b = Math.max( form.separator, oldSeperator );
+//      form.redraw(form.borderLeft, t, form.getSize().x - form.borderLeft -
+//      form.borderRight, b - t, false);
+//    }
   }
 }

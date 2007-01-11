@@ -53,8 +53,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/UnsortableTableModel.js";
   private static final String CTAB_FOLDER_JS 
     = "org/eclipse/rap/rwt/custom/CTabFolder.js";
-  private static final String CTAB_FOLDER_BAR_JS 
-    = "org/eclipse/rap/rwt/custom/CTabFolderBar.js";
+  private static final String CTAB_ITEM_JS 
+    = "org/eclipse/rap/rwt/custom/CTabItem.js";
   private static final String COOL_ITEM_JS 
     = "org/eclipse/rap/rwt/widgets/CoolItem.js";
   private static final String LIST_JS 
@@ -1519,7 +1519,7 @@ final class QooxdooResourcesUtil {
       register( MENU_UTIL_JS );
       register( TABLE_UTIL_JS );
       register( TABLE_MODEL_JS );
-      register( CTAB_FOLDER_BAR_JS );
+      register( CTAB_ITEM_JS );
       register( CTAB_FOLDER_JS );
       register( COOL_ITEM_JS );
       register( LIST_JS );

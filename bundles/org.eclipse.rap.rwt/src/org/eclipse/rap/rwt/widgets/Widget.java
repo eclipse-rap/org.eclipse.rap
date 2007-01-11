@@ -124,6 +124,8 @@ public abstract class Widget implements Adaptable {
   ///////////////////////////////////
   // Methods to dispose of the widget
   
+  // TODO [rh] ensure that this implementation aligns with SWT rules for
+  //      disposing (see The Standard Widget Toolkit, p 13)
   public void dispose() {
     if( !isDisposed() ) {
       DisposeEvent disposeEvent = new DisposeEvent( this );
@@ -138,6 +140,10 @@ public abstract class Widget implements Adaptable {
   public boolean isDisposed() {
     return disposed;
   }
+  
+  protected void checkWidget() {
+    // TODO [rh] implementation missing
+  }
 
   protected abstract void releaseChildren();
 
@@ -145,14 +151,14 @@ public abstract class Widget implements Adaptable {
 
   protected abstract void releaseWidget();
 
-  // copied from SWT
-  static int checkBits( final int style,
-                        final int int0,
-                        final int int1,
-                        final int int2,
-                        final int int3,
-                        final int int4,
-                        final int int5 )
+  // copied from SWT, made protected to allow access from ...custom package
+  protected static int checkBits( final int style,
+                                  final int int0,
+                                  final int int1,
+                                  final int int2,
+                                  final int int3,
+                                  final int int4,
+                                  final int int5 )
   {
     int mask = int0 | int1 | int2 | int3 | int4 | int5;
     int result = style;

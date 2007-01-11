@@ -56,8 +56,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
     
     private static void render( final Widget widget ) throws IOException {
-      AbstractWidgetLCA lca = WidgetUtil.getLCA( widget );
-      lca.render( widget );
+      WidgetUtil.getLCA( widget ).render( widget );
     }
     
     private static void runRenderRunnable( final Widget widget ) 

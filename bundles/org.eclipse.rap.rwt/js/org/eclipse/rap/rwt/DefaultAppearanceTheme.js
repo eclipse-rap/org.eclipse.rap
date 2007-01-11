@@ -1431,27 +1431,27 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "tab-view-button" : {
     setup : function() {
-      this.bgcolor_normal = new qx.renderer.color.ColorObject("#ece9d8");
-      this.bgcolor_checked = new qx.renderer.color.ColorObject("#ece9d8");
-      this.bgcolor_over = new qx.renderer.color.ColorObject("#fcf9e8");
+      this.bgcolor_normal = new qx.renderer.color.ColorObject( "#ece9d8" );
+      this.bgcolor_checked = new qx.renderer.color.ColorObject( "#ece9d8" );
+      this.bgcolor_over = new qx.renderer.color.ColorObject( "#fcf9e8" );
 
-      this.border_top_normal = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
-      this.border_top_normal.setBottomWidth(0);
+      this.border_top_normal = new qx.renderer.border.Border( 1, qx.renderer.border.Border.STYLE_SOLID, "#aca899" );
+      this.border_top_normal.setBottomWidth( 0 );
 
-      this.border_top_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
-      this.border_top_checked.setBottomWidth(0);
-      this.border_top_checked.setTop(3, qx.renderer.border.Border.STYLE_SOLID, "#FEC83C");
+      this.border_top_checked = new qx.renderer.border.Border( 1, qx.renderer.border.Border.STYLE_SOLID, "#aca899" );
+      this.border_top_checked.setBottomWidth( 0 );
+      this.border_top_checked.setTop( 3, qx.renderer.border.Border.STYLE_SOLID, "#FEC83C" );
 
-      this.border_bottom_normal = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
-      this.border_bottom_normal.setTopWidth(0);
+      this.border_bottom_normal = new qx.renderer.border.Border( 1, qx.renderer.border.Border.STYLE_SOLID, "#aca899" );
+      this.border_bottom_normal.setTopWidth( 0 );
 
-      this.border_bottom_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
-      this.border_bottom_checked.setTopWidth(0);
-      this.border_bottom_checked.setBottom(3, qx.renderer.border.Border.STYLE_SOLID, "#FEC83C");
+      this.border_bottom_checked = new qx.renderer.border.Border( 1, qx.renderer.border.Border.STYLE_SOLID, "#aca899" );
+      this.border_bottom_checked.setTopWidth( 0 );
+      this.border_bottom_checked.setBottom( 3, qx.renderer.border.Border.STYLE_SOLID, "#FEC83C" );
     },
 
-    initial : function(vTheme) {
-      return vTheme.initialFrom("atom");
+    initial : function( vTheme ) {
+      return vTheme.initialFrom( "atom" );
     },
 
     state : function(vTheme, vStates) {
@@ -2054,9 +2054,116 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         backgroundColor: vStates.dragging ? "#ece9d8" : "#ece9d8"
       }
     }
-  }
+  },
 
+  "c-tab-item" : {
+    setup : function() {
+      this.background_color = null; // new qx.renderer.color.ColorObject( "white" ); 
+      this.background_color_checked = new qx.renderer.color.ColorObject( "#316ac5" );
 
+      this.border_color = new qx.renderer.color.ColorObject( "threedshadow" );
+      this.border_color_checked = new qx.renderer.color.ColorObject( "black" );
+
+      this.color = new qx.renderer.color.ColorObject( "black" ); ;
+      this.color_checked = new qx.renderer.color.ColorObject( "white" ); 
+            
+      var solid = qx.renderer.border.Border.STYLE_SOLID;
+      
+      this.border_top = new qx.renderer.border.Border();
+      this.border_top.setLeft( 1, solid, this.border_color );
+      this.border_top.setRight( 1, solid, this.border_color );
+
+      this.border_top_checked = new qx.renderer.border.Border();
+      this.border_top_checked.setTop( 1, solid, this.border_color_checked );
+      this.border_top_checked.setLeft( 1, solid, this.border_color_checked );
+      this.border_top_checked.setRight( 1, solid, this.border_color_checked );
+      
+      this.border_bottom = new qx.renderer.border.Border();
+      this.border_bottom.setLeft( 1, solid, this.border_color );
+      this.border_bottom.setRight( 1, solid, this.border_color );
+
+      this.border_bottom_checked = new qx.renderer.border.Border();
+      this.border_bottom_checked.setTop( 1, solid, this.border_color_checked );
+      this.border_bottom_checked.setLeft( 1, solid, this.border_color_checked );
+      this.border_bottom_checked.setRight( 1, solid, this.border_color_checked );
+    },
+
+    initial : function( vTheme ) {
+      return qx.lang.Object.mergeWith( vTheme.initialFrom( "atom" ), {
+        backgroundColor : this.background_color,
+        border : this.border_top
+      } );
+    },
+
+    state : function( vTheme, vStates ) {
+      var vReturn = {
+        backgroundColor : vStates.checked 
+                        ? this.background_color_checked 
+                        : this.background_color
+//,        allowStretchX : true,
+//        allowStretchY : true
+      }
+
+      if( vStates.checked ) {
+        if ( vStates.barTop ) {
+          vReturn.border = this.border_top_checked;
+          /*
+          vReturn.paddingTop = 3;
+          vReturn.paddingRight = 6;
+          vReturn.paddingBottom = 1;
+          vReturn.paddingLeft = 6;
+          * */
+        } else {  // bar at bottom
+          vReturn.border = this.border_bottom_checked;
+          /*
+          vReturn.paddingTop = 1;
+          vReturn.paddingRight = 6;
+          vReturn.paddingBottom = 3;
+          vReturn.paddingLeft = 6;
+          */
+        }
+        vReturn.color = this.color_checked;
+      } else {
+        if( vStates.barTop ) {
+          vReturn.border = this.border_top;
+        } else {
+          vReturn.border = this.border_bottom;
+        }
+        vReturn.color = this.color;
+//        vReturn.paddingTop = vReturn.paddingBottom = 4;
+//        vReturn.paddingRight = vReturn.paddingLeft = 7;
+      }
+      /*
+      vReturn.marginTop = vReturn.marginBottom = 0;
+      vReturn.marginRight = vReturn.marginLeft = 1;
+      vReturn.width = qx.constant.Core.AUTO;
+      vReturn.height = null;
+      */
+      return vReturn;
+    }
+  },
+
+  "c-tab-close-button" : {
+    setup : function() {
+      this.background_color = null; 
+      this.background_color_hover = new qx.renderer.color.ColorObject( "#00008B" ); // DarkBlue
+    },
+
+    initial : function( vTheme ) {
+      return qx.lang.Object.mergeWith( vTheme.initialFrom( "image" ), {
+        backgroundColor : this.background_color,
+      } );
+    },
+
+    state : function( vTheme, vStates ) {
+      var vReturn = {
+        backgroundColor : vStates.over 
+                        ? this.background_color_hover
+                        : this.background_color
+      }
+      return vReturn;
+    }
+  },
 
 
   /*

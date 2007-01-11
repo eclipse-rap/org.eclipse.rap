@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
 import com.w4t.*;
@@ -55,6 +56,61 @@ public class Display implements Adaptable {
     return new Rectangle( bounds );
   }
 
+  // TODO [rh] preliminary: COLOR_WIDGET_XXX not yet supported
+  public Color getSystemColor( final int id ) {
+    int pixel = 0x02000000;
+    switch( id ) {
+      case RWT.COLOR_WHITE:
+        pixel = 0x02FFFFFF;
+      break;
+      case RWT.COLOR_BLACK:
+        pixel = 0x02000000;
+      break;
+      case RWT.COLOR_RED:
+        pixel = 0x020000FF;
+      break;
+      case RWT.COLOR_DARK_RED:
+        pixel = 0x02000080;
+      break;
+      case RWT.COLOR_GREEN:
+        pixel = 0x0200FF00;
+      break;
+      case RWT.COLOR_DARK_GREEN:
+        pixel = 0x02008000;
+      break;
+      case RWT.COLOR_YELLOW:
+        pixel = 0x0200FFFF;
+      break;
+      case RWT.COLOR_DARK_YELLOW:
+        pixel = 0x02008080;
+      break;
+      case RWT.COLOR_BLUE:
+        pixel = 0x02FF0000;
+      break;
+      case RWT.COLOR_DARK_BLUE:
+        pixel = 0x02800000;
+      break;
+      case RWT.COLOR_MAGENTA:
+        pixel = 0x02FF00FF;
+      break;
+      case RWT.COLOR_DARK_MAGENTA:
+        pixel = 0x02800080;
+      break;
+      case RWT.COLOR_CYAN:
+        pixel = 0x02FFFF00;
+      break;
+      case RWT.COLOR_DARK_CYAN:
+        pixel = 0x02808000;
+      break;
+      case RWT.COLOR_GRAY:
+        pixel = 0x02C0C0C0;
+      break;
+      case RWT.COLOR_DARK_GRAY:
+        pixel = 0x02808080;
+      break;
+    }
+    return Color.getColor( pixel );
+  }
   
   public Rectangle map( final Control from,
                         final Control to,
@@ -104,6 +160,9 @@ public class Display implements Adaptable {
   public void dispose() {
     ContextProvider.getSession().removeAttribute( DISPLAY_ID );
   }
+  
+  /////////////////////
+  // Adaptable override
 
   public Object getAdapter( final Class adapter ) {
     Object result = null;
@@ -118,6 +177,9 @@ public class Display implements Adaptable {
     return result;
   }
 
+  ///////////////////
+  // Shell management
+  
   final void addShell( final Composite shell ) {
     shells.add( shell );
   }

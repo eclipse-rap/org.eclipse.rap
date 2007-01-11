@@ -19,7 +19,6 @@ import org.eclipse.rap.rwt.internal.graphics.IColor;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.W4TContext;
-import com.w4t.engine.service.ContextProvider;
 import com.w4t.util.browser.Mozilla;
 
 /**
@@ -43,12 +42,11 @@ public class ControlLCAUtil {
   public static void preserveValues( final Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( Props.BOUNDS, control.getBounds() );
-    adapter.preserve( Props.CONTROL_LISTENERS, 
-                      Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     adapter.preserve( Props.TOOL_TIP_TEXT, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
-    adapter.preserve( Props.VISIBILITY, 
-                      Boolean.valueOf( control.isVisible() ) );
+    adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.isVisible() ) );
+    adapter.preserve( Props.CONTROL_LISTENERS, 
+                      Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     adapter.preserve( ACTIVATE_LISTENER, 
                       Boolean.valueOf( ActivateEvent.hasListener( control ) ) );
   }
@@ -62,21 +60,29 @@ public class ControlLCAUtil {
   }
   
   public static void writeBounds( final Control control ) throws IOException {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    writeBounds( control, control.getParent(), control.getBounds(), false );
+  }
+  
+  public static void writeBounds( final Widget widget, 
+                                  final Control parent, 
+                                  final Rectangle bounds, 
+                                  final boolean clip ) 
+    throws IOException 
+  {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     // TODO [rh] replace code below with WidgetUtil.hasChanged
     Rectangle oldBounds = ( Rectangle )adapter.getPreserved( Props.BOUNDS );
-    Rectangle newBounds = control.getBounds();
+    Rectangle newBounds = bounds;
     if( !adapter.isInitialized() || !newBounds.equals( oldBounds ) ) {
-
+      
       // the RWT coordinates for client area differ in some cases to
       // the widget realisation of qooxdoo
-      Composite parent = control.getParent();
       if( parent != null ) {
         AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
         newBounds = parentLCA.adjustCoordinates( newBounds ); 
       }
       
-      JSWriter writer = JSWriter.getWriterFor( control );
+      JSWriter writer = JSWriter.getWriterFor( widget );
       
       //////////////////////////////////////////////////////////////////
       // TODO: [fappel] height values of controls are not displayed 
@@ -102,9 +108,13 @@ public class ControlLCAUtil {
       //////////////////////////////////////////////////////////////////
       
       writer.set( "space", args );
-      if( !WidgetUtil.getAdapter( control ).isInitialized() ) {
+      if( !WidgetUtil.getAdapter( widget ).isInitialized() ) {
         writer.set( "minWidth", 0 );
         writer.set( "minHeight", 0 );
+      }
+      if( clip ) {
+        writer.set( "clipHeight", args[ 3 ] );
+        writer.set( "clipWidth", args[ 1 ] );
       }
     }
   }
@@ -114,7 +124,7 @@ public class ControlLCAUtil {
   {
     Boolean newValue = Boolean.valueOf( control.isVisible() );
     Boolean defValue = Boolean.TRUE;
-    if( WidgetUtil.hasChanged( control, Props.VISIBILITY, newValue, defValue ) ) 
+    if( WidgetUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) 
     {
       JSWriter writer = JSWriter.getWriterFor( control );
       writer.set( "visibility", control.isVisible() );

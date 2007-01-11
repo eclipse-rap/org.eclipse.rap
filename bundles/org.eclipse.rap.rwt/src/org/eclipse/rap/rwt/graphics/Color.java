@@ -156,11 +156,10 @@ public class Color {
     return "Color {" + getRed() + ", " + getGreen() + ", " + getBlue() + "}";
   }
 
-  public synchronized static Color getColor( final int red, 
-                                             final int green,
-                                             final int blue )
+  public static Color getColor( final int red, 
+                                final int green,
+                                final int blue )
   {
-    Color result;
     if(    red > 255
         || red < 0
         || green > 255
@@ -171,14 +170,7 @@ public class Color {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
     int colorNr = ( red << 16 ) | ( green << 8 ) | blue;
-    Integer key = new Integer( colorNr );
-    if( palette.containsKey( key ) ) {
-      result = ( Color )palette.get( key );
-    } else {
-      result = new ColorExt( colorNr );
-      palette.put( key, result );
-    }
-    return result;
+    return getColor( colorNr );
   }
 
   public static Color getColor( final RGB rgb ) {
@@ -186,5 +178,17 @@ public class Color {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
     return getColor( rgb.red, rgb.green, rgb.blue );
+  }
+
+  public static synchronized Color getColor( final int color ) {
+    Color result;
+    Integer key = new Integer( color );
+    if( palette.containsKey( key ) ) {
+      result = ( Color )palette.get( key );
+    } else {
+      result = new ColorExt( color );
+      palette.put( key, result );
+    }
+    return result;
   }
 }

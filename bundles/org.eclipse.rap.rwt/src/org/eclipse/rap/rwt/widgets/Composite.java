@@ -70,7 +70,8 @@ public class Composite extends Scrollable {
     }
   }
   
-  public Point computeSize( int wHint, int hHint, boolean changed ) {
+  public Point computeSize( final int wHint, final int hHint, boolean changed ) 
+  {
 //    checkWidget();
     Point size;
     if( layout != null ) {

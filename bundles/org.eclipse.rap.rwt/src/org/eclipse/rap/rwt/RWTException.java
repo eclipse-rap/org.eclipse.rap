@@ -28,7 +28,7 @@ package org.eclipse.rap.rwt;
  * @see RWTError
  */
 
-public class SWTException extends RuntimeException {
+public class RWTException extends RuntimeException {
 	/**
 	 * The SWT error code, one of SWT.ERROR_*.
 	 */
@@ -47,7 +47,7 @@ public class SWTException extends RuntimeException {
  * stack trace filled in. The error code is set to an
  * unspecified value.
  */
-public SWTException () {
+public RWTException () {
 	this (RWT.ERROR_UNSPECIFIED);
 }
 
@@ -59,7 +59,7 @@ public SWTException () {
  *
  * @param message the detail message for the exception
  */
-public SWTException (String message) {
+public RWTException (String message) {
 	this (RWT.ERROR_UNSPECIFIED, message);
 }
 
@@ -69,7 +69,7 @@ public SWTException (String message) {
  *
  * @param code the SWT error code
  */
-public SWTException (int code) {
+public RWTException (int code) {
 	this (code, RWT.findErrorText (code));
 }
 
@@ -82,7 +82,7 @@ public SWTException (int code) {
  * @param code the SWT error code
  * @param message the detail message for the exception
  */
-public SWTException (int code, String message) {
+public RWTException (int code, String message) {
 	super (message);
 	this.code = code;
 }

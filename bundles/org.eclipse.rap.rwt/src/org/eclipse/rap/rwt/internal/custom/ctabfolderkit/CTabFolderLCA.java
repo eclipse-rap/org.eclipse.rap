@@ -12,19 +12,56 @@
 package org.eclipse.rap.rwt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.custom.CTabFolder;
-import org.eclipse.rap.rwt.custom.CTabItem;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.custom.*;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager;
-import org.eclipse.rap.rwt.widgets.Control;
-import org.eclipse.rap.rwt.widgets.Widget;
+import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.IResourceManager;
 
 
-public class CTabFolderLCA extends AbstractWidgetLCA {
+public final class CTabFolderLCA extends AbstractWidgetLCA {
+  
+  // Request parameter that denotes the id of the selected tab item
+  private static final String PARAM_SELECTED_ITEM_ID = "selectedItemId";
+  // Request parameters for min/max state
+  private static final String PARAM_MAXIMIZED = "maximized";
+  private static final String PARAM_MINIMIZED = "minimized";
+
+  // Request parameters that denote CTabFolderEvents
+  private static final String EVENT_FOLDER_MINIMIZED
+    = "org.eclipse.rap.rwt.events.ctabFolderMinimized";
+  private static final String EVENT_FOLDER_MAXIMIZED
+    = "org.eclipse.rap.rwt.events.ctabFolderMaximized";
+  private static final String EVENT_FOLDER_RESTORED
+    = "org.eclipse.rap.rwt.events.ctabFolderRestored";
+  private static final String EVENT_SHOW_LIST
+    = "org.eclipse.rap.rwt.events.ctabFolderShowList";
+  
+  // Property names for preserveValues
+  public static final String PROP_SELECTION_INDEX = "selectionIndex";
+  public static final String PROP_MAXIMIZED = "maximized";
+  public static final String PROP_MINIMIZED = "minimized";
+  public static final String PROP_MINIMIZE_VISIBLE = "minimizeVisible";
+  public static final String PROP_MAXIMIZE_VISIBLE = "maximizeVisible";
+  public static final String PROP_FOLDER_LISTENERS = "folderListeners";
+  public static final String PROP_TOP_RIGHT = "topRight";
+  public static final String PROP_TOP_RIGHT_ALIGNMENT = "topRightAlignment";
+  public static final String PROP_TAB_HEIGHT = "tabHeight";
+  public static final String PROP_WIDTH = "width";
+  public static final String PROP_CHEVRON_VISIBLE = "chevronVisible";
+  public static final String PROP_CHEVRON_RECT = "chevronRect";
+  
+  // Width of min/max button, keep in sync with value in CTabFolder.js
+  private static final int MIN_MAX_BUTTON_WIDTH = 20;
+  // Keep in sync with value in CTabFolder.js
+  private static final Integer DEFAULT_TAB_HEIGHT = new Integer( 20 );
   
   // TODO [rh] establish a scheme for the location of images
   private static final String PREFIX = "org/eclipse/rap/rwt/custom/ctabfolder/";
@@ -32,16 +69,8 @@ public class CTabFolderLCA extends AbstractWidgetLCA {
   private static final String MINIMIZE_GIF = PREFIX + "minimize.gif";
   private static final String RESTORE_GIF = PREFIX + "restore.gif";
   private static final String CLOSE_GIF = PREFIX + "close.gif";
-  
-  private static final Integer DEFAULT_TAB_HEIGHT 
-    = new Integer( CTabFolder.DEFAULT_TAB_HEIGHT );
-  private static final Integer MINUS_ONE = new Integer( -1 );
-  private static final String WIDTH = "width";
-
-  private static final JSListenerInfo JS_LISTENER_INFO
-    = new JSListenerInfo( "changeSelection",
-                          "org.eclipse.rap.rwt.custom.CTabFolder.tabSelected",
-                          JSListenerType.STATE_AND_ACTION );
+  private static final String CLOSE_HOVER_GIF = PREFIX + "close_hover.gif";
+  private static final String CHEVRON_GIF = PREFIX + "chevron.gif";
 
   static {
     IResourceManager resourceManager = ResourceManager.getInstance();
@@ -52,83 +81,136 @@ public class CTabFolderLCA extends AbstractWidgetLCA {
       resourceManager.register( MINIMIZE_GIF );
       resourceManager.register( RESTORE_GIF );
       resourceManager.register( CLOSE_GIF );
+      resourceManager.register( CLOSE_HOVER_GIF );
+      resourceManager.register( CHEVRON_GIF );
     } finally {
       resourceManager.setContextLoader( bufferedLoader );
     }
   }
-  
+
   public void preserveValues( final Widget widget ) {
     CTabFolder tabFolder = ( CTabFolder )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
     ControlLCAUtil.preserveValues( tabFolder );
     boolean hasListeners = SelectionEvent.hasListener( tabFolder );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListeners ) );
-    adapter.preserve( Props.SELECTION_INDEX,
+    hasListeners = CTabFolderEvent.hasListener( tabFolder );
+    adapter.preserve( PROP_FOLDER_LISTENERS,
+                      Boolean.valueOf( hasListeners ) );
+    adapter.preserve( PROP_SELECTION_INDEX, 
                       new Integer( tabFolder.getSelectionIndex() ) );
-    adapter.preserve( WIDTH, new Integer( tabFolder.getBounds().width ) );
-    adapter.preserve( Props.MINIMIZE_VISIBLE, 
+    adapter.preserve( PROP_WIDTH, new Integer( tabFolder.getBounds().width ) );
+    adapter.preserve( PROP_MINIMIZE_VISIBLE, 
                       Boolean.valueOf( tabFolder.getMinimizeVisible() ) );
-    adapter.preserve( Props.MAXIMIZE_VISIBLE, 
+    adapter.preserve( PROP_MAXIMIZE_VISIBLE, 
                       Boolean.valueOf( tabFolder.getMaximizeVisible() ) );
-    adapter.preserve( Props.MINIMIZED, 
+    adapter.preserve( PROP_MINIMIZED, 
                       Boolean.valueOf( tabFolder.getMinimized() ) );
-    adapter.preserve( Props.MAXIMIZED, 
+    adapter.preserve( PROP_MAXIMIZED, 
                       Boolean.valueOf( tabFolder.getMaximized() ) );
-    adapter.preserve( Props.TAB_HEIGHT, 
+    adapter.preserve( CTabFolderLCA.PROP_TAB_HEIGHT, 
                       new Integer( tabFolder.getTabHeight() ) );
-    adapter.preserve( Props.TOP_RIGHT, tabFolder.getTopRight() );
-    adapter.preserve( Props.TOP_RIGHT_ALIGNMENT, 
-                      new Integer( tabFolder.getTopRightAlignment() ) );
+    adapter.preserve( PROP_TOP_RIGHT, tabFolder.getTopRight() );
+    adapter.preserve( PROP_CHEVRON_VISIBLE, 
+                      Boolean.valueOf( tabFolderAdapter.getChevronVisible() ) );
+    adapter.preserve( PROP_CHEVRON_RECT, tabFolderAdapter.getChevronRect() );
   }
-  
+
   public void readData( final Widget widget ) {
-    CTabFolder tabFolder = ( CTabFolder )widget;
-    String value = WidgetUtil.readPropertyValue( tabFolder, 
-                                                 Props.SELECTION_INDEX );
+    final CTabFolder tabFolder = ( CTabFolder )widget;
+    // Read minimized state
+    String value = WidgetUtil.readPropertyValue( tabFolder, PARAM_MINIMIZED );
     if( value != null ) {
-      int index = Integer.parseInt( value );
-      tabFolder.setSelection( index );
+      tabFolder.setMinimized( Boolean.valueOf( value ).booleanValue() );
     }
-    value = WidgetUtil.readPropertyValue( tabFolder, Props.MINIMIZED );
+    // Read maximized state
+    value = WidgetUtil.readPropertyValue( tabFolder, PARAM_MAXIMIZED );
     if( value != null ) {
-      tabFolder.setMinimized( !tabFolder.getMinimized() );
+      tabFolder.setMaximized( Boolean.valueOf( value ).booleanValue() );
     }
-    value = WidgetUtil.readPropertyValue( tabFolder, Props.MAXIMIZED );
-    if( value != null ) {
-      tabFolder.setMaximized( !tabFolder.getMaximized() );
+    // Minimized event
+    if( WidgetUtil.wasEventSent( tabFolder, EVENT_FOLDER_MINIMIZED ) ) {
+      CTabFolderEvent event = CTabFolderEvent.createMinimize( tabFolder ); 
+      event.processEvent();
     }
-    CTabItem item = null;
-    if( tabFolder.getSelectionIndex() != -1 ) {
-      item = tabFolder.getItem( tabFolder.getSelectionIndex() );
+    // Maximized event
+    if( WidgetUtil.wasEventSent( tabFolder, EVENT_FOLDER_MAXIMIZED ) ) {
+      CTabFolderEvent event = CTabFolderEvent.createMaximize( tabFolder ); 
+      event.processEvent();
     }
-    ControlLCAUtil.processSelection( tabFolder, item, true );
+    // Restore event
+    if( WidgetUtil.wasEventSent( tabFolder, EVENT_FOLDER_RESTORED )) {
+      CTabFolderEvent event = CTabFolderEvent.createRestore( tabFolder ); 
+      event.processEvent();
+    }
+    // TODO [rh] it's a hack: necessary because folder.setSelection changes
+    //      the visibility of tabItem.control; but preserveValues stores
+    //      the already changed visibility and thus no JavaScript is rendered
+    // Read selected item and process selection event
+    final String value1 = WidgetUtil.readPropertyValue( tabFolder, 
+                                                       PARAM_SELECTED_ITEM_ID );
+    if( value1 != null ) {
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          CTabItem tabItem = ( CTabItem )WidgetUtil.find( tabFolder, value1 );
+          tabFolder.setSelection( tabItem );
+          // TODO [rh] figure out if SWT provides bounds in this selectionEvent
+          ControlLCAUtil.processSelection( tabFolder, tabItem, false );
+        }
+      } );
+    }
+    if( WidgetUtil.wasEventSent( tabFolder, EVENT_SHOW_LIST ) ) {
+      // TODO [rh] what else need to be done when chevron was clicked?
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          CTabFolderEvent event = CTabFolderEvent.createShowList( tabFolder ); 
+          event.processEvent();
+          if( event.doit ) {
+            ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
+            Menu menu = adapter.getShowListMenu();
+            MenuItem[] items = menu.getItems();
+            for( int i = 0; i < items.length; i++ ) {
+              items[ i ].dispose();
+            }
+            CTabItem[] tabItems = tabFolder.getItems();
+            for( int i = 0; i < tabItems.length; i++ ) {
+              final CTabItem tabItem = tabItems[ i ];
+              MenuItem item = new MenuItem( menu, RWT.PUSH );
+              item.setText( tabItems[ i ].getText() );
+              item.addSelectionListener( new SelectionAdapter() {
+                public void widgetSelected( final SelectionEvent event ) {
+                  tabFolder.setSelection( tabItem );
+                }
+              } );
+            }
+            Rectangle chevronRect = adapter.getChevronRect();
+            Display display = tabFolder.getDisplay();
+            Rectangle menuRect = display.map( tabFolder, null, chevronRect );
+            Point location = new Point( menuRect.x, 
+                                        menuRect.y + menuRect.height + 1 );
+            menu.setLocation( location );
+            menu.setVisible( true );
+          }
+        }
+      } );
+    }
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "org.eclipse.rap.rwt.custom.CTabFolder" );
-    writer.call( "registerTopRightArea", null );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
     CTabFolder tabFolder = ( CTabFolder )widget;
     ControlLCAUtil.writeChanges( tabFolder );
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.updateListener( JS_LISTENER_INFO, 
-                           Props.SELECTION_LISTENERS, 
-                           SelectionEvent.hasListener( widget ) );
-    writeSelectionIndex( writer, tabFolder );
-    writeTabHeight( writer, tabFolder );
-    Integer width = new Integer( tabFolder.getBounds().width );
-    if( WidgetUtil.hasChanged( widget, WIDTH, width ) ) {
-      writer.set( "maxBarWidth", width );
-    }
-    writeMinimizeVisible( writer, tabFolder );
-    writeMaximizeVisible( writer, tabFolder );
-    writeMinimized( writer, tabFolder );
-    writeMaximized( writer, tabFolder );
-    writeTopRight( writer, tabFolder );
+    writeTabHeight( tabFolder );
+    writeMinMaxVisible( tabFolder );
+    writeMinMaxState( tabFolder );
+    writeListener( tabFolder );
+    writeChevron( tabFolder );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -136,108 +218,140 @@ public class CTabFolderLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
   
-  public Rectangle adjustCoordinates( final Rectangle bounds ) {
-    int border = 1;
-    int hTabBar = 23;
-    return new Rectangle( bounds.x - border - 10, 
-                          bounds.y - hTabBar - border -10, 
-                          bounds.width, 
-                          bounds.height );
-  }
+//  public Rectangle adjustCoordinates( final Rectangle bounds ) {
+//    int border = 1;
+//    int hTabBar = 23;
+//    return new Rectangle( bounds.x - border - 10, 
+//                          bounds.y - hTabBar - border -10, 
+//                          bounds.width, 
+//                          bounds.height );
+//  }
 
 
   //////////////////////////////////////
   // Helping methods to write properties
   
-  private static void writeSelectionIndex( final JSWriter writer, 
-                                           final CTabFolder tabFolder ) 
-    throws IOException 
-  {
-    Integer newIndex = new Integer( tabFolder.getSelectionIndex() );
-    String property = Props.SELECTION_INDEX;
-    if( WidgetUtil.hasChanged( tabFolder, property, newIndex, MINUS_ONE ) ) {
-      writer.set( JSConst.QX_FIELD_SELECTION, tabFolder.getSelectionIndex() );
-    }
-  }
-
-  private static void writeTabHeight( final JSWriter writer, 
-                                      final CTabFolder tabFolder ) 
+  private static void writeTabHeight( final CTabFolder tabFolder ) 
     throws IOException
   {
     Integer tabHeight = new Integer( tabFolder.getTabHeight() );
     Integer def = DEFAULT_TAB_HEIGHT;
-    if( WidgetUtil.hasChanged( tabFolder, Props.TAB_HEIGHT, tabHeight, def ) ) {
+    if( WidgetUtil.hasChanged( tabFolder, PROP_TAB_HEIGHT, tabHeight, def ) ) {
+      JSWriter writer = JSWriter.getWriterFor( tabFolder );
       writer.set( "tabHeight", tabFolder.getTabHeight() );
     }
   }
 
-  private static void writeMaximizeVisible( final JSWriter writer, 
-                                            final CTabFolder tabFolder ) 
+  // TODO [rh] revise this mess; layout code should go to CTabFolder
+  private static void writeMinMaxVisible( final CTabFolder tabFolder ) 
     throws IOException 
   {
+    JSWriter writer = JSWriter.getWriterFor( tabFolder );
+    // bounds changed?
+    String prop = Props.BOUNDS;
+    Rectangle newBounds = tabFolder.getBounds();
+    boolean boundsChanged 
+      = WidgetUtil.hasChanged( tabFolder, prop, newBounds, null );
+    // max button changed?
     Boolean maxVisible = Boolean.valueOf( tabFolder.getMaximizeVisible() );
-    String prop = Props.MAXIMIZE_VISIBLE;
-    if( WidgetUtil.hasChanged( tabFolder, prop, maxVisible, Boolean.TRUE ) ) {
-      writer.set( "maximizeVisible", tabFolder.getMaximizeVisible() );
-    }
-  }
-
-  private static void writeMinimizeVisible( final JSWriter writer, 
-                                            final CTabFolder tabFolder ) 
-    throws IOException 
-  {
+    prop = PROP_MAXIMIZE_VISIBLE;
+    boolean maxChanged 
+      = WidgetUtil.hasChanged( tabFolder, prop, maxVisible, Boolean.FALSE );
+    // min button changed?
     Boolean minVisible = Boolean.valueOf( tabFolder.getMinimizeVisible() );
-    String prop = Props.MINIMIZE_VISIBLE;
-    if( WidgetUtil.hasChanged( tabFolder, prop, minVisible, Boolean.TRUE ) ) {
-      writer.set( "minimizeVisible", tabFolder.getMinimizeVisible() );
+    prop = PROP_MINIMIZE_VISIBLE;
+    boolean minChanged 
+      = WidgetUtil.hasChanged( tabFolder, prop, minVisible, Boolean.FALSE );
+    
+    if( boundsChanged || minChanged || maxChanged ) {
+      int left = tabFolder.getClientArea().width;
+      if( tabFolder.getMaximizeVisible() ) {
+        left -= MIN_MAX_BUTTON_WIDTH;
+        writer.call( "showMaxButton", new Object[] { new Integer( left ) } );
+      } else {
+        writer.call( "hideMaxButton", null );
+      }
+      if( tabFolder.getMinimizeVisible() ) {
+        left -= MIN_MAX_BUTTON_WIDTH;
+        writer.call( "showMinButton", new Object[] { new Integer( left ) } );
+      } else {
+        writer.call( "hideMinButton", null );
+      }
     }
-  }
-
-  private static void writeMinimized( final JSWriter writer, 
-                                      final CTabFolder tabFolder )
-    throws IOException
-  {
-    String prop = Props.MINIMIZED;
-    Boolean minimized = Boolean.valueOf( tabFolder.getMinimized() );
-    if( WidgetUtil.hasChanged( tabFolder, prop, minimized, Boolean.FALSE ) ) {
-      writer.set( "minimized", tabFolder.getMinimized() );
-    }
-  }
-
-  private static void writeMaximized( final JSWriter writer, 
-                                      final CTabFolder tabFolder )
-    throws IOException
-  {
-    Boolean maximized = Boolean.valueOf( tabFolder.getMaximized() );
-    String prop = Props.MAXIMIZED;
-    if( WidgetUtil.hasChanged( tabFolder, prop, maximized, Boolean.FALSE ) ) {
-      writer.set( "maximized", tabFolder.getMaximized() );
+    if(    minChanged && minVisible.booleanValue() 
+        || maxChanged && maxVisible.booleanValue() ) 
+    {
+      Object[] args = new Object[] { "Minimize", "Maximize" };
+      writer.call( "setMinMaxToolTips", args );
     }
   }
   
-  private static void writeTopRight( final JSWriter writer, 
-                                     final CTabFolder tabFolder ) 
+  private static void writeMinMaxState( final CTabFolder tabFolder ) 
+    throws IOException 
   {
-    final Control topRight = tabFolder.getTopRight();
-    if( WidgetUtil.hasChanged( tabFolder, Props.TOP_RIGHT, topRight, null ) ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( tabFolder );
-      adapter.setRenderRunnable( new IRenderRunnable() {
-        public void afterRender() throws IOException {
-          writer.set( "topRight", topRight );
-        }
-      } );
-    }
-    if( topRight != null ) {
-      adjustTopRightJSParent( topRight );
+    JSWriter writer = JSWriter.getWriterFor( tabFolder );
+    String minProp = CTabFolderLCA.PARAM_MINIMIZED;
+    String maxProp = CTabFolderLCA.PARAM_MAXIMIZED;
+    Boolean minimized = Boolean.valueOf( tabFolder.getMinimized() );
+    Boolean maximized = Boolean.valueOf( tabFolder.getMaximized() );
+    Boolean defValue = Boolean.FALSE;
+    if(    WidgetUtil.hasChanged( tabFolder, minProp, minimized, defValue ) 
+        || WidgetUtil.hasChanged( tabFolder, maxProp, maximized, defValue ) ) 
+    {
+      String state;
+      if( !tabFolder.getMinimized() && !tabFolder.getMaximized() ) {
+        state = "normal";
+      } else if( tabFolder.getMinimized() ){
+        state = "min";
+      } else {
+        state = "max";
+      }
+      writer.set( "minMaxState", state );
     }
   }
 
-  private static void adjustTopRightJSParent( final Control control ) {
-    StringBuffer replacementId = new StringBuffer();
-    String parentId = WidgetUtil.getId( control.getParent() );
-    replacementId.append( parentId );
-    replacementId.append( "topRight" );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    adapter.setJSParent( replacementId.toString() );
+  private static void writeListener( final CTabFolder tabFolder ) 
+    throws IOException 
+  {
+    boolean hasListener = CTabFolderEvent.hasListener( tabFolder );
+    Boolean newValue = Boolean.valueOf( hasListener );
+    if( WidgetUtil.hasChanged( tabFolder, PROP_FOLDER_LISTENERS, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( tabFolder );
+      writer.set( "hasFolderListener", newValue );
+    }
+  }
+
+  private void writeChevron( final CTabFolder tabFolder ) throws IOException {
+    ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
+    Boolean visible = Boolean.valueOf( tabFolderAdapter.getChevronVisible() );
+    Boolean defValue = Boolean.FALSE;
+    String prop = PROP_CHEVRON_VISIBLE;
+    boolean visibilityChanged 
+      = WidgetUtil.hasChanged( tabFolder, prop, visible, defValue );
+    prop = PROP_CHEVRON_RECT;
+    Rectangle chevronRect = tabFolderAdapter.getChevronRect();
+    boolean rectangleChanged 
+      = WidgetUtil.hasChanged( tabFolder, prop, chevronRect, null );
+    if( visibilityChanged || rectangleChanged ) {
+      JSWriter writer = JSWriter.getWriterFor( tabFolder );
+      if( visible.booleanValue() ) {
+        Object[] args = new Object[] { 
+          new Integer( tabFolderAdapter.getChevronRect().x ) 
+        };
+        writer.call( "showChevron", args );
+        if( visibilityChanged && tabFolderAdapter.getChevronVisible() ) {
+          writer.set( "chevronToolTip", "Show List" );
+        }
+      } else {
+        writer.call( "hideChevron", null );
+      }
+    }
+  }
+
+  private static ICTabFolderAdapter getCTabFolderAdapter( 
+    final CTabFolder tabFolder ) 
+  {
+    Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
+    return ( ICTabFolderAdapter )adapter;
   }
 }

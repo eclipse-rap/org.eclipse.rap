@@ -64,6 +64,8 @@ public abstract class Control extends Widget {
     this.visible = visible;
   }
 
+  // TODO [rh] rename to getVisible, add isVisible (wich also evaluates parent
+  //      visibility)
   public boolean isVisible() {
     return visible;
   }
@@ -151,6 +153,10 @@ public abstract class Control extends Widget {
 
   public Point getSize() {
     return new Point( this.bounds.width, this.bounds.height );
+  }
+
+  public Point computeSize( final int wHint, final int hHint ) {
+    return computeSize( wHint, hHint, true );
   }
 
   public Point computeSize( final int wHint,

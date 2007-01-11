@@ -11,25 +11,54 @@
 
 package org.eclipse.rap.rwt.custom;
 
+import org.eclipse.rap.rwt.events.RWTEvent;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.Adaptable;
-import com.w4t.event.Event;
 
-
-public class CTabFolderEvent extends Event {
+public class CTabFolderEvent extends RWTEvent {
   
-  public static final int CLOSE = 0;
-  public static final int MINIMIZE = 1;
-  public static final int MAXIMIZE = 2;
+  private static final int CLOSE = 0;
+  private static final int MINIMIZE = 1;
+  private static final int MAXIMIZE = 2;
   private static final int RESTORE = 3;
   private static final int SHOW_LIST = 4;
-
   private static final Class LISTENER = CTabFolder2Listener.class;
-
-  public CTabFolderEvent( final Widget widget,
-                          final int id )
-  {
-    super( widget, id );
+  
+  public static CTabFolderEvent createClose( final CTabItem item ) {
+    CTabFolderEvent result = new CTabFolderEvent( item.getParent(), CLOSE );
+    result.item = item;
+    result.doit = true;
+    return result;
+  }
+  
+  public static CTabFolderEvent createMinimize( final CTabFolder tabFolder ) {
+    return new CTabFolderEvent( tabFolder, MINIMIZE );
+  }
+  
+  public static CTabFolderEvent createMaximize( final CTabFolder tabFolder ) {
+    return new CTabFolderEvent( tabFolder, MAXIMIZE );
+  }
+  
+  public static CTabFolderEvent createRestore( final CTabFolder tabFolder ) {
+    return new CTabFolderEvent( tabFolder, RESTORE );
+  }
+  
+  public static CTabFolderEvent createShowList( final CTabFolder tabFolder ) {
+    // TODO [rh] revise which fields have to be set
+    CTabFolderEvent result = new CTabFolderEvent( tabFolder, SHOW_LIST );
+    result.doit = true;
+    return result;
+  }
+  
+  public Widget item;
+  public boolean doit;
+  public int x;
+  public int y;
+  public int width;
+  public int height;
+  
+  private CTabFolderEvent( final Object source, final int id ) {
+    super( source, id );
   }
 
   protected void dispatchToObserver( final Object listener ) {

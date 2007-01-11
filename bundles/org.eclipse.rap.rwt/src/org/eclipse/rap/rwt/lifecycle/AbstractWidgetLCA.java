@@ -49,6 +49,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
       widget.addDisposeListener( new DisposeListener() {
         public void widgetDisposed( final DisposeEvent event ) {
           addToDisposeList( ( Widget )event.getSource() );
+          widget.removeDisposeListener( this );
         }
       } );
     }
@@ -56,9 +57,9 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
     widgetAdapter.setInitialized( true );
   }
   
-  public Rectangle adjustCoordinates( final Rectangle newBounds ) {
+  public Rectangle adjustCoordinates( final Rectangle bounds ) {
     // subclasses may override
-    return newBounds;
+    return bounds;
   }
   
   public abstract void preserveValues( Widget widget );

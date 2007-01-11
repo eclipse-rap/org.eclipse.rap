@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.events;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.rap.rwt.custom.CTabFolderEvent;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import com.w4t.engine.lifecycle.PhaseId;
 import com.w4t.engine.service.ContextProvider;
@@ -23,16 +24,21 @@ import com.w4t.event.Event;
 /**
  * TODO [rh] JavaDoc
  */
+// TODO [rh] event class hierarchy out of sync with SWT. If RWTEvent should be
+//      the counterpart for TypedEvent in SWT, it lacks the public fields for
+//      widget, display, etc.
 public abstract class RWTEvent extends Event {
 
   private static final String ATTR_SCHEDULED_EVENT_LIST 
     = RWTEvent.class.getName() + "_scheduledEventList";
-  
+
+  // TODO [rh] event order is preliminary
   private static final Class[] EVENT_ORDER = {
     ControlEvent.class,
     ActivateEvent.class,
     DisposeEvent.class,
     TreeEvent.class,
+    CTabFolderEvent.class,
     SelectionEvent.class,
     ShellEvent.class,
   };
