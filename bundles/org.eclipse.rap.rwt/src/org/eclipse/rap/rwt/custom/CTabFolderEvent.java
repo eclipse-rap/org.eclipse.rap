@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.custom;
 
 import org.eclipse.rap.rwt.events.RWTEvent;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.Adaptable;
 
@@ -43,9 +44,14 @@ public class CTabFolderEvent extends RWTEvent {
     return new CTabFolderEvent( tabFolder, RESTORE );
   }
   
-  public static CTabFolderEvent createShowList( final CTabFolder tabFolder ) {
+  public static CTabFolderEvent createShowList( final CTabFolder tabFolder,
+                                                final Rectangle chevronRect ) {
     // TODO [rh] revise which fields have to be set
     CTabFolderEvent result = new CTabFolderEvent( tabFolder, SHOW_LIST );
+    result.x = chevronRect.x;
+    result.y = chevronRect.y;
+    result.height = chevronRect.height;
+    result.width = chevronRect.width;
     result.doit = true;
     return result;
   }

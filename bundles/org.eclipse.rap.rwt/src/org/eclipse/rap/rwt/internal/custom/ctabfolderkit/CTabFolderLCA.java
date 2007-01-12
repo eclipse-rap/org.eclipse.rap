@@ -165,10 +165,12 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       // TODO [rh] what else need to be done when chevron was clicked?
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          CTabFolderEvent event = CTabFolderEvent.createShowList( tabFolder ); 
+          ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
+          Rectangle chevronRect = adapter.getChevronRect();
+          CTabFolderEvent event = CTabFolderEvent.createShowList( tabFolder, 
+                                                                  chevronRect ); 
           event.processEvent();
           if( event.doit ) {
-            ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
             Menu menu = adapter.getShowListMenu();
             MenuItem[] items = menu.getItems();
             for( int i = 0; i < items.length; i++ ) {
@@ -177,15 +179,24 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
             CTabItem[] tabItems = tabFolder.getItems();
             for( int i = 0; i < tabItems.length; i++ ) {
               final CTabItem tabItem = tabItems[ i ];
-              MenuItem item = new MenuItem( menu, RWT.PUSH );
-              item.setText( tabItems[ i ].getText() );
-              item.addSelectionListener( new SelectionAdapter() {
-                public void widgetSelected( final SelectionEvent event ) {
-                  tabFolder.setSelection( tabItem );
-                }
-              } );
+              if( !tabItem.isShowing() ) {
+                MenuItem item = new MenuItem( menu, RWT.PUSH );
+                item.setText( tabItems[ i ].getText() );
+                item.addSelectionListener( new SelectionAdapter() {
+                  public void widgetSelected( final SelectionEvent event ) {
+                    tabFolder.setSelection( tabItem );
+                    SelectionEvent selectionEvent 
+                      = new SelectionEvent( tabFolder, 
+                                            tabItem, 
+                                            SelectionEvent.WIDGET_SELECTED, 
+                                            new Rectangle( 0, 0, 0, 0 ), 
+                                            true, 
+                                            0 );
+                    selectionEvent.processEvent();
+                  }
+                } );
+              }
             }
-            Rectangle chevronRect = adapter.getChevronRect();
             Display display = tabFolder.getDisplay();
             Rectangle menuRect = display.map( tabFolder, null, chevronRect );
             Point location = new Point( menuRect.x, 
