@@ -225,6 +225,7 @@ public final class RWTFixture {
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     RWTFixture.fakePhase( PhaseId.READ_DATA );
     displayLCA.readData( display );
+    preserveWidgets();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     displayLCA.processAction( display );
     

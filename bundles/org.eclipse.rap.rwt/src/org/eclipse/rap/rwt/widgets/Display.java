@@ -34,7 +34,8 @@ public class Display implements Adaptable {
   
   private final List shells;
   private Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-  private IDisplayAdapter accessAdapter;
+  private Shell activeShell;
+  private IDisplayAdapter displayAdapter;
 
   public Display() {
     HttpSession session = ContextProvider.getSession();
@@ -167,10 +168,10 @@ public class Display implements Adaptable {
   public Object getAdapter( final Class adapter ) {
     Object result = null;
     if( adapter == IDisplayAdapter.class ) {
-      if( accessAdapter == null ) {
-        accessAdapter = new DisplayAdapter();
+      if( displayAdapter == null ) {
+        displayAdapter = new DisplayAdapter();
       }
-      result = accessAdapter;
+      result = displayAdapter;
     } else {
       result = W4TContext.getAdapterManager().getAdapter( this, adapter );  
     }
@@ -180,12 +181,27 @@ public class Display implements Adaptable {
   ///////////////////
   // Shell management
   
-  final void addShell( final Composite shell ) {
+  public Shell getActiveShell() {
+    return activeShell;
+  }
+  
+  final void setActiveShell( final Shell activeShell ) {
+    this.activeShell = activeShell;
+  }
+  
+  final void addShell( final Shell shell ) {
     shells.add( shell );
   }
 
-  final void removeShell( final Composite shell ) {
+  final void removeShell( final Shell shell ) {
     shells.remove( shell );
+    if( shell == activeShell ) {
+      if( shells.size() > 0 ) {
+        activeShell = ( Shell )shells.get( 0 );
+      } else {
+        activeShell = null;
+      }
+    }
   }
   
   ////////////////
@@ -198,6 +214,10 @@ public class Display implements Adaptable {
         RWT.error( RWT.ERROR_NULL_ARGUMENT );
       }
       Display.this.bounds = new Rectangle( bounds );
+    }
+    
+    public void setActiveShell( final Shell activeShell ) {
+      Display.this.setActiveShell( activeShell );
     }
   }
 }

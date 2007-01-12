@@ -12,16 +12,14 @@
 package org.eclipse.rap.rwt.events;
 
 
-import java.util.EventListener;
+public class ShellAdapter implements ShellListener {
 
-/**
- * TODO [rh] JavaDoc
- * <p></p>
- */
-public interface ShellListener extends EventListener {
-
-  void shellClosed( ShellEvent event );
+  public void shellClosed( final ShellEvent event ) {
+  }
   
-  void shellActivated( ShellEvent event );
-  void shellDeactivated( ShellEvent event );
+  public void shellActivated( final ShellEvent event ) {
+  }
+
+  public void shellDeactivated( final ShellEvent event ) {
+  }
 }

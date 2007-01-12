@@ -35,7 +35,7 @@ public class ShellEvent_Test extends TestCase {
   }
   
   public void testAddRemoveClosedListener() {
-    ShellListener listener = new ShellListener() {
+    ShellListener listener = new ShellAdapter() {
       public void shellClosed( final ShellEvent event ) {
         log += SHELL_CLOSED;
       }

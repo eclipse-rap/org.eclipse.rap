@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.internal.widgets.shellkit;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.rap.rwt.events.ActivateEvent;
+import org.eclipse.rap.rwt.events.ShellEvent;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -22,12 +24,14 @@ import com.w4t.engine.service.ContextProvider;
 public class ShellLCA extends AbstractWidgetLCA {
   
   private static final String PROP_ACTIVE_CONTROL = "activeControl";
+  private static final String PROP_ACTIVE_SHELL = "activeShell";
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     Shell shell = ( Shell )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
     adapter.preserve( PROP_ACTIVE_CONTROL, getActiveControl( shell ) );
+    adapter.preserve( PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
   }
 
   public void readData( final Widget widget ) { 
@@ -36,6 +40,7 @@ public class ShellLCA extends AbstractWidgetLCA {
     if( WidgetUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
       shell.close();
     }
+    processActiveShell( shell );
     processActivate( shell );
   }
 
@@ -52,12 +57,57 @@ public class ShellLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     ControlLCAUtil.writeChanges( shell );
+    writeActiveShell( shell );
     writeActiveControl( shell );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  }
+  
+  /////////////////////////////////////////////
+  // Methods to read and write the active shell
+  
+  private static void writeActiveShell( final Shell shell ) throws IOException {
+    Shell activeShell = shell.getDisplay().getActiveShell();
+    boolean hasChanged 
+      = WidgetUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
+    if( shell == activeShell && hasChanged ) {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      writer.set( "active", true );
+    }
+  }
+
+  private static void processActiveShell( final Shell shell ) {
+    if( WidgetUtil.wasEventSent( shell, JSConst.EVENT_SHELL_ACTIVATED ) ) {
+      Shell lastActiveShell = shell.getDisplay().getActiveShell();
+      setActiveShell( shell );
+      ActivateEvent event;
+      event = new ActivateEvent( lastActiveShell, ActivateEvent.DEACTIVATED );
+      event.processEvent();
+      event = new ActivateEvent( shell, ActivateEvent.ACTIVATED );
+      event.processEvent();
+      ShellEvent shellEvent;
+      shellEvent 
+        = new ShellEvent( lastActiveShell, ShellEvent.SHELL_DEACTIVATED );
+      shellEvent.processEvent();
+      shellEvent = new ShellEvent( shell, ShellEvent.SHELL_ACTIVATED );
+      shellEvent.processEvent();
+    } else {
+      String displayId = DisplayUtil.getId( shell.getDisplay() );
+      HttpServletRequest request = ContextProvider.getRequest();
+      String activeShellId = request.getParameter( displayId + ".activeShell" );
+      if( WidgetUtil.getId( shell ).equals( activeShellId ) ) {
+        setActiveShell( shell );
+      }
+    }
+  }
+
+  private static void setActiveShell( final Shell shell ) {
+    Object adapter = shell.getDisplay().getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    displayAdapter.setActiveShell( shell );
   }
 
   /////////////////////////////////////////////////////

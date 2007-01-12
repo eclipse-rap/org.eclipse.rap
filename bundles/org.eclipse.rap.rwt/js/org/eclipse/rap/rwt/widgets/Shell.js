@@ -17,6 +17,7 @@ qx.OO.defineClass(
     this._activeControl = null;
     this._activateListenerWidgets = new Array();
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
+    this.addEventListener( "changeActive", this._onChangeActive );
   }
 );
 
@@ -55,14 +56,14 @@ qx.Proto._isRelevantActivateEvent = function( widget ) {
 qx.Proto._onChangeActiveChild = function( evt ) {
   // Work around qooxdoo bug #254: the changeActiveChild is fired twice when
   // a widget was activated by keyboard (getData() is null in this case)
-  var widget = evt.getData();
-  var widgetMgr = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  if( !org_eclipse_rap_rwt_EventUtil_suspend && widgetMgr.isControl( widget ) ) 
-  {
+  var widget = this._getParentControl( evt.getData() );
+  if( !org_eclipse_rap_rwt_EventUtil_suspend  && widget != null )  {
+    var widgetMgr = org.eclipse.rap.rwt.WidgetManager.getInstance();
     var id = widgetMgr.findIdByWidget( widget );
     var shellId = widgetMgr.findIdByWidget( this );
     var req = org.eclipse.rap.rwt.Request.getInstance();
     if( this._isRelevantActivateEvent( widget ) ) {
+      this._activeControl = widget;
       req.removeParameter( shellId + ".activeControl" );
       req.addEvent( "org.eclipse.rap.rwt.events.controlActivated", id );
       req.send();    
@@ -71,3 +72,36 @@ qx.Proto._onChangeActiveChild = function( evt ) {
     }
   }
 }
+
+qx.Proto._onChangeActive = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend && this.getActive() ) {
+    var widgetMgr = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = widgetMgr.findIdByWidget( this );
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    if( qx.lang.Array.contains( this._activateListenerWidgets, this ) ) {
+      req.removeParameter( req.getUIRootId() + ".activeShell" );
+      req.addEvent( "org.eclipse.rap.rwt.events.shellActivated", id );
+      req.send();
+    } else {
+      req.addParameter( req.getUIRootId() + ".activeShell", id );
+    }
+  }
+}
+
+/**
+ * Returns the parent Control for the given widget. If widget is a Control 
+ * itself, the widget is returned. Otherwise its parent is returned or null
+ * if there is no parent
+ */
+qx.Proto._getParentControl = function( widget ) {
+  var widgetMgr = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var result = widget;
+  while( result != null && !widgetMgr.isControl( result ) ) {
+    if( result.getParent ) {
+      result = result.getParent();
+    } else {
+      result = null;
+    }
+  }
+  return result;
+}  

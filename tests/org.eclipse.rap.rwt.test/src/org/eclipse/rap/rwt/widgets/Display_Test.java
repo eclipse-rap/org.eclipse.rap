@@ -85,6 +85,39 @@ public class Display_Test extends TestCase {
     assertEquals( expected, actual );
   }
   
+  public void testActiveShell() {
+    // TODO [rh] This test needs to be reworked when Shell.open() is implemented
+    //      since it assumes opened shells.
+    Display display = new Display();
+    assertNull( display.getActiveShell() );
+    Shell shell1 = new Shell( display, RWT.NONE );
+//    assertNull( display.getActiveShell() );
+//    shell1.open();
+    assertSame( shell1, display.getActiveShell() );
+    Shell shell2 = new Shell( display, RWT.NONE );
+    assertSame( shell2, display.getActiveShell() );
+    shell2.dispose();
+    assertSame( shell1, display.getActiveShell() );
+    
+    // Test disposing of inactive shell
+    Shell inactiveShell = new Shell( display, RWT.NONE );
+    Shell activeShell = new Shell( display, RWT.NONE );
+//  inactiveShell.open();
+//  activeShell.open();
+    assertSame( activeShell, display.getActiveShell() );
+    inactiveShell.dispose();
+    assertSame( activeShell, display.getActiveShell() );
+    
+    // Test explicitly setting the active shell
+    Shell shell3 = new Shell( display, RWT.NONE );
+    Shell shell4 = new Shell( display, RWT.NONE );
+//    shell3.open();
+//    shell4.open();
+    assertSame( shell4, display.getActiveShell() );
+    shell3.setActive();
+    assertSame( shell3, display.getActiveShell() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

@@ -35,4 +35,8 @@ public class Point {
   public int hashCode() {
     return x ^ y;
   }
+
+  public String toString () {
+    return "Point {" + x + ", " + y + "}";
+  }
 }

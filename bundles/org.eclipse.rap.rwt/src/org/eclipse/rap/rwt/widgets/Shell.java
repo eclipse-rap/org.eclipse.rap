@@ -41,6 +41,7 @@ public class Shell extends Composite {
     this.style = style;
     this.display = display;
     display.addShell( this );
+    display.setActiveShell( this );
   }
 
   // TODO: [fappel] this is just a fake constructor for dialog shells,
@@ -70,6 +71,13 @@ public class Shell extends Composite {
                           hTitleBar + border,
                           width - border * 2,
                           height - ( hTitleBar + border * 2 ) - 3 );
+  }
+  
+  public void setActive () {
+    checkWidget();
+    if( isVisible() ) {
+      display.setActiveShell( this );
+    }
   }
 
   public void setMenuBar( final Menu menuBar ) {

@@ -11,11 +11,14 @@
 
 package org.eclipse.rap.rwt.internal.widgets.shellkit;
 
+import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.ShellEvent;
-import org.eclipse.rap.rwt.events.ShellListener;
+import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
+import org.eclipse.rap.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.widgets.IShellAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -29,7 +32,7 @@ public class ShellLCA_Test extends TestCase {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
-    shell.addShellListener( new ShellListener() {
+    shell.addShellListener( new ShellAdapter() {
       public void shellClosed( final ShellEvent event ) {
         log.append( "closed" );
       }
@@ -45,9 +48,9 @@ public class ShellLCA_Test extends TestCase {
     Shell shell = new Shell( display , RWT.NONE );
     Label label = new Label( shell, RWT.NONE );
     Label otherLabel = new Label( shell, RWT.NONE );
+    String displayId = DisplayUtil.getId( display );
     String shellId = WidgetUtil.getId( shell );
     String labelId = WidgetUtil.getId( label );
-    String displayId = DisplayUtil.getId( display );
     String otherLabelId = WidgetUtil.getId( otherLabel );
     
     setActiveControl( shell, otherLabel );
@@ -64,6 +67,75 @@ public class ShellLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, labelId );
     RWTFixture.readDataAndProcessAction( display );
     assertSame( label, getActiveControl( shell ) );
+  }
+  
+  public void testShellActivate() throws IOException {
+    final StringBuffer activateEventLog = new StringBuffer();
+    ActivateListener activateListener = new ActivateListener() {
+      public void activated( final ActivateEvent event ) {
+        Shell shell = ( Shell )event.getSource();
+        activateEventLog.append( "activated:" + shell.getData() + "|" );
+      }
+      public void deactivated( final ActivateEvent event ) {
+        Shell shell = ( Shell )event.getSource();
+        activateEventLog.append( "deactivated:" + shell.getData() + "|" );
+      }
+    };
+    final StringBuffer shellEventLog = new StringBuffer();
+    ShellListener shellListener = new ShellAdapter() {
+      public void shellActivated( ShellEvent event ) {
+        Shell shell = ( Shell )event.getSource();
+        shellEventLog.append( "activated:" + shell.getData() + "|" );
+      }
+      public void shellDeactivated( ShellEvent event ) {
+        Shell shell = ( Shell )event.getSource();
+        shellEventLog.append( "deactivated:" + shell.getData() + "|" );
+      }
+    };
+    Display display = new Display();
+    Shell shellToActivate = new Shell( display, RWT.NONE );
+    shellToActivate.setData( "shellToActivate" );
+    Shell activeShell = new Shell( display, RWT.NONE );
+    activeShell.setData( "activeShell" );
+    String displayId = DisplayUtil.getId( display );
+    String shellToActivateId = WidgetUtil.getId( shellToActivate );
+
+    // Set precondition and assert it
+    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
+    activeShell.setActive();
+    assertSame( activeShell, display.getActiveShell() );
+    
+    // Simulate shell activation without event listeners
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
+    Fixture.fakeRequestParam( displayId + ".activeShell", shellToActivateId );
+    new RWTLifeCycle().execute();
+    assertSame( shellToActivate, display.getActiveShell() );
+
+    // Set precondition and assert it
+    RWTFixture.markInitialized( activeShell );
+    RWTFixture.markInitialized( shellToActivate );
+    activeShell.setActive();
+    assertSame( activeShell, display.getActiveShell() );
+    
+    // Simulate shell activation with event listeners
+    ActivateEvent.addListener( shellToActivate, activateListener );
+    ActivateEvent.addListener( activeShell, activateListener );
+    shellToActivate.addShellListener( shellListener );
+    activeShell.addShellListener( shellListener );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
+    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, 
+                              shellToActivateId );
+    new RWTLifeCycle().execute();
+    assertSame( shellToActivate, display.getActiveShell() );
+    String expected = "deactivated:activeShell|activated:shellToActivate|";
+    assertEquals( expected, activateEventLog.toString() );
+    assertEquals( expected, shellEventLog.toString() );
+    // Ensure that no setActive javaScript code is rendered for client-side
+    // activated Shell
+System.out.println( Fixture.getAllMarkup() );    
+    assertEquals( -1, Fixture.getAllMarkup().indexOf( "setActive" ) );
   }
   
   protected void setUp() throws Exception {

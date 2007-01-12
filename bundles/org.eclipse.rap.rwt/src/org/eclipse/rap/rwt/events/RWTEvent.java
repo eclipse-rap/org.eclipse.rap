@@ -27,6 +27,7 @@ import com.w4t.event.Event;
 // TODO [rh] event class hierarchy out of sync with SWT. If RWTEvent should be
 //      the counterpart for TypedEvent in SWT, it lacks the public fields for
 //      widget, display, etc.
+// TODO [rh] SWT TypedEvent has fields display, widget and time, revise this 
 public abstract class RWTEvent extends Event {
 
   private static final String ATTR_SCHEDULED_EVENT_LIST 

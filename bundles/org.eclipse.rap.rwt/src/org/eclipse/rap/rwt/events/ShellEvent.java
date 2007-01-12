@@ -22,6 +22,8 @@ import com.w4t.Adaptable;
 public class ShellEvent extends RWTEvent {
 
   public static final int SHELL_CLOSED = 0;
+  public static final int SHELL_ACTIVATED = 1;
+  public static final int SHELL_DEACTIVATED = 2;
   
   private static final Class LISTENER = ShellListener.class;
   
@@ -33,6 +35,12 @@ public class ShellEvent extends RWTEvent {
     switch( getID() ) {
       case SHELL_CLOSED:
         ( ( ShellListener )listener ).shellClosed( this );
+        break;
+      case SHELL_ACTIVATED:
+        ( ( ShellListener )listener ).shellActivated( this );
+        break;
+      case SHELL_DEACTIVATED:
+        ( ( ShellListener )listener ).shellDeactivated( this );
         break;
       default:
         throw new IllegalStateException( "Invalid event handler type." );

@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.rwt.events;
 
+import org.eclipse.rap.rwt.widgets.Control;
 import com.w4t.Adaptable;
 
 /**
@@ -24,7 +25,7 @@ public final class ActivateEvent extends RWTEvent {
   private static final Class LISTENER = ActivateListener.class;
 
 
-  public ActivateEvent( final Object source, final int id ) {
+  public ActivateEvent( final Control source, final int id ) {
     super( source, id );
   }
 
