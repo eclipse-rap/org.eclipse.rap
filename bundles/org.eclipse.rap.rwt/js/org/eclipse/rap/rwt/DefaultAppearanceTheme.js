@@ -2100,7 +2100,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         backgroundColor : vStates.checked 
                         ? this.background_color_checked 
                         : this.background_color
-      }
+      };
 
       if( vStates.checked ) {
         if ( vStates.barTop ) {

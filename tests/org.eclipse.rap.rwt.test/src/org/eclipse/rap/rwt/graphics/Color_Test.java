@@ -9,7 +9,10 @@
 package org.eclipse.rap.rwt.graphics;
 
 import junit.framework.TestCase;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
+import org.eclipse.rap.rwt.widgets.Display;
 
 public class Color_Test extends TestCase {
 
@@ -25,6 +28,14 @@ public class Color_Test extends TestCase {
     assertEquals( 250, salmon.getRed() );
     assertEquals( 128, salmon.getGreen() );
     assertEquals( 114, salmon.getBlue() );
+  }
+  
+  public void testColorFromConstant() {
+    Display display = new Display();
+    Color color = display.getSystemColor( RWT.COLOR_RED );
+    assertEquals( 255, color.getRed() );
+    assertEquals( 0, color.getGreen() );
+    assertEquals( 0, color.getBlue() );
   }
 
   public void testEquality() {
@@ -52,5 +63,12 @@ public class Color_Test extends TestCase {
     RGB rgbSalmon = new RGB( 250, 128, 114 );
     assertEquals( rgbSalmon, Color.getColor( rgbSalmon ).getRGB() );
   }
-
+  
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+  }
+  
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
+  }
 }

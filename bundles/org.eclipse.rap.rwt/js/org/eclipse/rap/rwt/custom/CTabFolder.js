@@ -24,14 +24,13 @@ qx.OO.defineClass(
     this.setBorder( border );
     // Create horizontal line that separates the button bar from the rest of 
     // the client area
-    border = new qx.renderer.border.Border( 1, "solid", black );
-    border.setBottomStyle( "none" );
+    border = new qx.renderer.border.Border();
+    border.setTop( 1, "solid", black );
     this._separator = new qx.ui.basic.Atom();
     this._separator.setBorder( border );
     this._separator.setLeft( 0 );
     this._separator.setTop( this._tabHeight );
     this._separator.setHeight( 1 );
-    this.addEventListener( "changeWidth", this._onChangeWidth, this );
     this.add( this._separator );
     //
     this._topRight = null;
@@ -41,6 +40,36 @@ qx.OO.defineClass(
     this._minMaxState = "normal";  // valid states: min, max, normal
     this._maxButton = null;
     this._minButton = null;
+    //
+    var highlightBorder = new qx.renderer.border.Border();
+    highlightBorder.setLeft( 2, "solid", black );
+    this._highlightLeft = new qx.ui.basic.Atom();
+    this._highlightLeft.setBorder( highlightBorder );
+    this._highlightLeft.setWidth( 2 );
+    this.add( this._highlightLeft );
+    highlightBorder = new qx.renderer.border.Border();
+    highlightBorder.setRight( 2, "solid", black );
+    this._highlightRight = new qx.ui.basic.Atom();
+    this._highlightRight.setBorder( highlightBorder );
+    this._highlightRight.setWidth( 2 );
+    this.add( this._highlightRight );
+    highlightBorder = new qx.renderer.border.Border();
+    highlightBorder.setTop( 2, "solid", black );
+    this._highlightTop = new qx.ui.basic.Atom();
+    this._highlightTop.setBorder( highlightBorder );
+    this._highlightTop.setLeft( 0 );
+    this._highlightTop.setHeight( 2 );
+    this.add( this._highlightTop );
+    highlightBorder = new qx.renderer.border.Border();
+    highlightBorder.setBottom( 2, "solid", black );
+    this._highlightBottom = new qx.ui.basic.Atom();
+    this._highlightBottom.setBorder( highlightBorder );
+    this._highlightBottom.setLeft( 0 );
+    this._highlightBottom.setHeight( 2 );
+    this.add( this._highlightBottom );
+    //
+    this.addEventListener( "changeWidth", this._onChangeWidth, this );
+    this.addEventListener( "changeHeight", this._onChangeHeight, this );
   }
 );
 
@@ -49,6 +78,7 @@ org.eclipse.rap.rwt.custom.CTabFolder.BUTTON_SIZE = 18;
 qx.Proto.setTabHeight = function( tabHeight ) {
   this._tabHeight = tabHeight;
   this._separator.setTop( this._tabHeight );
+  this._highlightTop.setTop( this._separator.getTop() + this._separator.getHeight() );
   if( this._minButton != null ) {
     this._minButton.setTop( this._getButtonTop() );
   }
@@ -58,6 +88,13 @@ qx.Proto.setTabHeight = function( tabHeight ) {
   if( this._chevron != null ) {
     this._chevron.setTop( this._getButtonTop() );
   }
+}
+
+qx.Proto.setSelectionBackground = function( color ) {
+  this._highlightLeft.getBorder().setLeftColor( color );
+  this._highlightRight.getBorder().setRightColor( color );
+  this._highlightTop.getBorder().setTopColor( color );
+  this._highlightBottom.getBorder().setBottomColor( color );
 }
 
 qx.Proto._getButtonTop = function() {
@@ -200,11 +237,27 @@ qx.Proto.dispose = function() {
   this.hideMinButton();
   this.hideMaxButton();
   this.removeEventListener( "changeWidth", this._onChangeWidth, this );
+  this.removeEventListener( "changeHeight", this._onChangeHeight, this );
   return qx.ui.layout.CanvasLayout.prototype.dispose.call( this );
 }
 
 qx.Proto._onChangeWidth = function( evt ) {
   this._separator.setWidth( this.getWidth() - 2 );
+  this._highlightRight.setLeft(   this.getWidth() 
+                                - 2 
+                                - this._highlightRight.getWidth() );
+  this._highlightTop.setWidth( this.getWidth() - 2 );
+  this._highlightBottom.setWidth( this.getWidth() - 2 );
+}
+
+qx.Proto._onChangeHeight = function( evt ) {
+  var top = this._separator.getTop() + this._separator.getHeight() + 2;
+  var height = this.getHeight() - top - 4;
+  this._highlightLeft.setTop( top );
+  this._highlightLeft.setHeight( height );
+  this._highlightRight.setTop( top );
+  this._highlightRight.setHeight( height );
+  this._highlightBottom.setHeight( this.getHeight() - 2 );
 }
 
 qx.Proto._onChevronExecute = function( evt ) {

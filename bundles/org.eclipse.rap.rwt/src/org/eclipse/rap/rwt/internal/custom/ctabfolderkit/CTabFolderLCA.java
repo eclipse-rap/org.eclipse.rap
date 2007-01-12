@@ -16,8 +16,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.*;
 import org.eclipse.rap.rwt.events.SelectionAdapter;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -57,6 +56,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public static final String PROP_WIDTH = "width";
   public static final String PROP_CHEVRON_VISIBLE = "chevronVisible";
   public static final String PROP_CHEVRON_RECT = "chevronRect";
+  public static final String PROP_SELECTION_BG = "selectionBg";
   
   // Width of min/max button, keep in sync with value in CTabFolder.js
   private static final int MIN_MAX_BUTTON_WIDTH = 20;
@@ -113,6 +113,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     adapter.preserve( CTabFolderLCA.PROP_TAB_HEIGHT, 
                       new Integer( tabFolder.getTabHeight() ) );
     adapter.preserve( PROP_TOP_RIGHT, tabFolder.getTopRight() );
+    adapter.preserve( PROP_SELECTION_BG, tabFolder.getSelectionBackground() );
     adapter.preserve( PROP_CHEVRON_VISIBLE, 
                       Boolean.valueOf( tabFolderAdapter.getChevronVisible() ) );
     adapter.preserve( PROP_CHEVRON_RECT, tabFolderAdapter.getChevronRect() );
@@ -222,6 +223,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writeMinMaxState( tabFolder );
     writeListener( tabFolder );
     writeChevron( tabFolder );
+    writeColors( tabFolder );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -357,6 +359,14 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
         writer.call( "hideChevron", null );
       }
     }
+  }
+
+  private static void writeColors( final CTabFolder tabFolder ) 
+    throws IOException 
+  {
+    JSWriter writer = JSWriter.getWriterFor( tabFolder );
+    Color bg = tabFolder.getSelectionBackground();
+    writer.set( PROP_SELECTION_BG, "selectionBackground", bg, null );
   }
 
   private static ICTabFolderAdapter getCTabFolderAdapter( 

@@ -13,8 +13,7 @@ package org.eclipse.rap.rwt.custom;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -33,6 +32,8 @@ public class CTabFolder extends Composite {
 
   // width and height of minimize/maximize button
   static final int BUTTON_SIZE = 18; 
+
+  private static final int SELECTION_BG_DEFAULT = RWT.COLOR_BLUE;
 
   public int marginWidth = 0;
   public int marginHeight = 0;
@@ -70,6 +71,7 @@ public class CTabFolder extends Composite {
   private int borderLeft;
   private int borderBottom;
   private int borderTop;
+  private Color selectionBackground;
   
   public CTabFolder( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
@@ -80,8 +82,9 @@ public class CTabFolder extends Composite {
     borderLeft = borderRight;
     borderTop = onBottom ? borderLeft : 0;
     borderBottom = onBottom ? 0 : borderLeft;
-    highlight_header = (style & RWT.FLAT) != 0 ? 1 : 3;
-    highlight_margin = (style & RWT.FLAT) != 0 ? 0 : 2;
+    highlight_header = ( style & RWT.FLAT ) != 0 ? 1 : 3;
+    highlight_margin = ( style & RWT.FLAT ) != 0 ? 0 : 2;
+    selectionBackground = getDisplay().getSystemColor( SELECTION_BG_DEFAULT );
     resizeListener = new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
         updateItems();
@@ -391,6 +394,27 @@ public class CTabFolder extends Composite {
       showUnselectedClose = visible;
       updateItems();
     } 
+  }
+
+  /////////
+  // Colors
+  
+  public void setSelectionBackground ( final Color color) {
+    checkWidget();
+    if( selectionBackground != color ) {
+      // if (color == null) color = getDisplay().getSystemColor( SELECTION_BACKGROUND );
+      if( color == null ) {
+        Display display = getDisplay();
+        selectionBackground = display.getSystemColor( SELECTION_BG_DEFAULT );
+      } else {
+        selectionBackground = color;
+      }
+    } 
+  }
+  
+  public Color getSelectionBackground() {
+    checkWidget();
+    return selectionBackground;
   }
 
   // ///////////////////////////////

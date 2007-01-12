@@ -89,7 +89,7 @@ public class Color {
    *              </ul>
    */
   public int getBlue() {
-    return colorNr & 0xFF;
+    return ( colorNr & 0xFF0000 ) >> 16;
   }
 
   /**
@@ -117,7 +117,7 @@ public class Color {
    *              </ul>
    */
   public int getRed() {
-    return ( colorNr & 0xFF0000 ) >> 16;
+    return colorNr & 0xFF;
   }
 
   /**
@@ -169,7 +169,7 @@ public class Color {
     {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
-    int colorNr = ( red << 16 ) | ( green << 8 ) | blue;
+    int colorNr = red | ( green << 8 ) | ( blue << 16 );
     return getColor( colorNr );
   }
 

@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.rap.rwt.graphics.Color;
+import org.eclipse.rap.rwt.internal.graphics.IColor;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.HtmlResponseWriter;
@@ -480,6 +482,10 @@ public final class JSWriter {
           }
         } else if( args[ i ] instanceof JSVar ) { 
           params.append( args[ i ] );
+        } else if( args[i] instanceof Color ) {
+          params.append( '"' );
+          params.append( ( ( IColor )args[i] ).toColorValue() );
+          params.append( '"' );
         } else if( args[ i ] instanceof Object[] ) { 
           params.append( createArray( ( Object[] )args[ i ] ) );
         } else {
