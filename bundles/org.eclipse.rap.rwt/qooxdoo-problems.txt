@@ -30,3 +30,5 @@ that's right?
   ERROR: qx.manager.object.ToolTipManager[42]: Modification of property 
   "currentToolTip" failed with exception: TypeError - this._showTimer has 
   no properties
+  
+10.) Initial positioning of scrollbars (e.g. setScrollLeft) does not work

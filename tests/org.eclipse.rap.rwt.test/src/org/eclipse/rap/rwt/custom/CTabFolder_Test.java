@@ -17,6 +17,9 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.graphics.Color;
+import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.layout.FillLayout;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.engine.lifecycle.PhaseId;
@@ -39,6 +42,7 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( null, folder.getToolTipText() );
     assertEquals( 20, folder.getMinimumCharacters() );
     assertEquals( false, folder.getBorderVisible() );
+    assertNotNull( folder.getSelectionBackground() );
   }
   
   public void testHierarchy() {
@@ -324,11 +328,95 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( false, invisibleToolBar.isVisible() );
   }
   
+  public void testSelectionForegroundAndBackground() {
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, RWT.MULTI );
+    
+    // Set some background color
+    Color red = display.getSystemColor( RWT.COLOR_RED );
+    folder.setSelectionBackground( red );
+    assertEquals( red, folder.getSelectionBackground() );
+    
+    // Reset to background to default (pass null as parameter)
+    folder.setSelectionBackground( null );
+    assertNotNull( folder.getSelectionBackground() );
+
+    // Set some foreground color
+    Color white = display.getSystemColor( RWT.COLOR_WHITE );
+    folder.setSelectionForeground( white );
+    assertEquals( white, folder.getSelectionForeground() );
+    
+    // Reset to foreground to default (pass null as parameter)
+    folder.setSelectionForeground( null );
+    assertNotNull( folder.getSelectionForeground() );
+  }
+  
+  public void testChevronVisibilityInSingleStyle() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    shell.setSize( 150, 150 );
+    CTabFolder folder = new CTabFolder( shell, RWT.SINGLE | RWT.CLOSE | RWT.BORDER );
+    folder.setSize( 100, 100 );
+    folder.addCTabFolder2Listener( new CTabFolder2Adapter() );
+    shell.layout();
+    
+    // Chevron must be visible when there are no items
+    assertEquals( 0, folder.getItemCount() );  // ensure test condition
+    assertEquals( true, getChevronVisible( folder ) );
+    
+    // Behave as SWT does even if it may be a bug
+    // Chevron is visible but its bounds are zero if there is only *one* item 
+    // wich is *selected*
+    CTabItem item = new CTabItem( folder, RWT.NONE );
+    item.setText( "item" );
+    Label label = new Label( folder, RWT.NONE );
+    item.setControl( label );
+    folder.setSelection( item );
+    assertSame( item, folder.getSelection() );
+    assertEquals( 1, folder.getItemCount() );
+    assertEquals( true, getChevronVisible( folder ) );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), getChevronRect( folder ) );
+    
+    // Chevron must again be visible after the last item was removed
+    item.dispose();
+    label.dispose();
+    assertEquals( 0, folder.getItemCount() );
+    assertEquals( true, getChevronVisible( folder ) );
+    
+    // Chevron must be visible when there is more than one item regardless of
+    // selection
+    CTabItem item1 = new CTabItem( folder, RWT.NONE );
+    CTabItem item2 = new CTabItem( folder, RWT.NONE );
+    assertTrue( folder.getItemCount() > 1 ); // test precondition
+    assertEquals( null, folder.getSelection() ); // test precondition
+    assertEquals( true, getChevronVisible( folder ) );
+    folder.setSelection( 0 );
+    assertEquals( 0, folder.getSelectionIndex() );  // test precondition
+    assertEquals( true, getChevronVisible( folder ) );
+    // Clean up
+    item1.dispose();
+    item2.dispose();
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
+  }
+
+  private static Rectangle getChevronRect( final CTabFolder folder ) {
+    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
+    return folderAdapter.getChevronRect();
+  }
+  
+  private static boolean getChevronVisible( final CTabFolder folder ) {
+    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
+    return folderAdapter.getChevronVisible();
   }
 }

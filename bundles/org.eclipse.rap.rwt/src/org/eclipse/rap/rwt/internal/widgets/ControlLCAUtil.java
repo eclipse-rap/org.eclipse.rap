@@ -90,7 +90,9 @@ public class ControlLCAUtil {
       //                and should be eighter solved in qooxdoo or by a more
       //                sophisticated approach...
       int[] args;
-      if( W4TContext.getBrowser() instanceof Mozilla ) {
+      if(    W4TContext.getBrowser() instanceof Mozilla
+          && widget instanceof Control )
+      {
         if( newBounds.height > 5 ) {
           args = new int[] {
             newBounds.x, newBounds.width, newBounds.y, newBounds.height - 4
@@ -119,6 +121,10 @@ public class ControlLCAUtil {
     }
   }
   
+  // TODO [rh] there seems to be a qooxdoo problem when trying to change the
+  //      visibility of a newly created widget (no flushGlobalQueues was called)
+  //      MSG: Modification of property "visibility" failed with exception: 
+  //           Error - Element must be created previously!
   public static void writeVisblility( final Control control ) 
     throws IOException
   {
@@ -161,12 +167,16 @@ public class ControlLCAUtil {
   }
   
   public static void writeMenu( final Control control ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
-    boolean hasChanged 
-      = WidgetUtil.hasChanged( control, Props.MENU, control.getMenu(), null );
-    if( hasChanged ) {
-      writer.set( "contextMenu", control.getMenu() );
-      if( control.getMenu() == null ) {
+    writeMenu( control, control.getMenu() );
+  }
+  
+  public static void writeMenu( final Widget widget, final Menu menu )
+    throws IOException
+  {
+    if( WidgetUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      writer.set( "contextMenu", menu );
+      if( menu == null ) {
         writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU, 
                                JSConst.JS_CONTEXT_MENU );
       } else {
@@ -174,6 +184,7 @@ public class ControlLCAUtil {
                             JSConst.JS_CONTEXT_MENU );
       }
     }
+    
   }
   
   public static void writeToolTip( final Control control ) 
@@ -271,7 +282,7 @@ public class ControlLCAUtil {
     String value = WidgetUtil.readPropertyValue( control, PROPERTY_Y_LOCATION );
     return readCoordinate( value, control.getBounds().y );
   }
-  
+
   private static int readControlXLocation( final Control control ) {
     String value = WidgetUtil.readPropertyValue( control, PROPERTY_X_LOCATION );
     return readCoordinate( value, control.getBounds().x );

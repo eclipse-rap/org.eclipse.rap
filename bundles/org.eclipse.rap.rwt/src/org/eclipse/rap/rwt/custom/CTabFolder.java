@@ -33,7 +33,8 @@ public class CTabFolder extends Composite {
   // width and height of minimize/maximize button
   static final int BUTTON_SIZE = 18; 
 
-  private static final int SELECTION_BG_DEFAULT = RWT.COLOR_BLUE;
+  private static final int DEFAULT_SELECTION_BG = RWT.COLOR_BLUE;
+  private static final int DEFAULT_SELECTION_FG = RWT.COLOR_WHITE;
 
   public int marginWidth = 0;
   public int marginHeight = 0;
@@ -54,15 +55,19 @@ public class CTabFolder extends Composite {
   private boolean inDispose = false;
   private boolean minimized = false;
   private boolean maximized = false;
-  private Rectangle chevronRect = new Rectangle( 0, 0, 0, 0 );
+  private boolean onBottom;
+  private boolean single;
+  // Chevron
+  private final Rectangle chevronRect = new Rectangle( 0, 0, 0, 0 );
   private boolean showChevron = false;
+  // Tab bar
   private int fixedTabHeight = RWT.DEFAULT;
   private int tabHeight = 0;
+  // TopRight control
   private Control topRight;
   private int topRightAlignment = RWT.RIGHT;
   private final Rectangle topRightRect = new Rectangle( 0, 0, 0, 0 );
-  private boolean onBottom;
-  private boolean single;
+  // Client origin and border dimensions
   private int xClient;
   private int yClient;
   private final int highlight_margin;
@@ -71,7 +76,10 @@ public class CTabFolder extends Composite {
   private int borderLeft;
   private int borderBottom;
   private int borderTop;
+  // Colors
   private Color selectionBackground;
+  private Color selectionForeground;
+
   
   public CTabFolder( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
@@ -84,7 +92,8 @@ public class CTabFolder extends Composite {
     borderBottom = onBottom ? 0 : borderLeft;
     highlight_header = ( style & RWT.FLAT ) != 0 ? 1 : 3;
     highlight_margin = ( style & RWT.FLAT ) != 0 ? 0 : 2;
-    selectionBackground = getDisplay().getSystemColor( SELECTION_BG_DEFAULT );
+    selectionBackground = getDisplay().getSystemColor( DEFAULT_SELECTION_BG );
+    selectionForeground = getDisplay().getSystemColor( DEFAULT_SELECTION_FG );
     resizeListener = new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
         updateItems();
@@ -396,16 +405,16 @@ public class CTabFolder extends Composite {
     } 
   }
 
-  /////////
-  // Colors
+  ///////////////////
+  // Selection colors
   
   public void setSelectionBackground ( final Color color) {
     checkWidget();
     if( selectionBackground != color ) {
       // if (color == null) color = getDisplay().getSystemColor( SELECTION_BACKGROUND );
       if( color == null ) {
-        Display display = getDisplay();
-        selectionBackground = display.getSystemColor( SELECTION_BG_DEFAULT );
+        Color defaultBg = getDisplay().getSystemColor( DEFAULT_SELECTION_BG );
+        selectionBackground = defaultBg;
       } else {
         selectionBackground = color;
       }
@@ -416,7 +425,26 @@ public class CTabFolder extends Composite {
     checkWidget();
     return selectionBackground;
   }
+  
+  // TODO [rh] not yet rendered in LCA
+  public void setSelectionForeground( final Color color ) {
+    checkWidget();
+    if( selectionForeground != color ) {
+      if( color == null ) {
+        Color defaultFg = getDisplay().getSystemColor( DEFAULT_SELECTION_FG );
+        selectionForeground = defaultFg;
+      } else {
+        selectionForeground = color;
+      }
+    }
+  }
 
+  public Color getSelectionForeground() {
+    checkWidget();
+    return selectionForeground;
+  }
+
+  
   // ///////////////////////////////
   // Manipulation of topRight control 
 
@@ -499,6 +527,9 @@ public class CTabFolder extends Composite {
   
   protected void releaseWidget() {
     removeControlListener( resizeListener );
+    if( showListMenu != null ) {
+      showListMenu.dispose();
+    }
     super.releaseWidget();
   }
 
@@ -760,8 +791,8 @@ public class CTabFolder extends Composite {
             topRightRect.width = Math.max( 0, rightEdge - topRightRect.x );
           }
           topRightRect.y = onBottom 
-                                   ? size.y - borderBottom - tabHeight
-                                   : borderTop + 1;
+                         ? size.y - borderBottom - tabHeight
+                         : borderTop + 1;
           topRightRect.height = tabHeight - 1;
           break;
         }

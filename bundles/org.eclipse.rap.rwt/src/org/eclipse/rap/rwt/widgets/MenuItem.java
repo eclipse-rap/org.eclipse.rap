@@ -22,7 +22,6 @@ public class MenuItem extends Item {
   private DisposeListener menuDisposeListener;
   private boolean selection;
 
-  // TODO [rh] constructor MenuItem(Menu,int,int) missing
   public MenuItem( final Menu parent, final int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
@@ -34,7 +33,6 @@ public class MenuItem extends Item {
     this.parent = parent;
     ItemHolder.insertItem( parent, this, index );
   }
-  
   
   public Menu getParent() {
     return parent;

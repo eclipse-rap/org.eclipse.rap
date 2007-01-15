@@ -13,9 +13,10 @@ package org.eclipse.rap.rwt.internal.custom.ctabitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.custom.CTabFolderEvent;
-import org.eclipse.rap.rwt.custom.CTabItem;
+import org.eclipse.rap.rwt.custom.*;
+import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.custom.ctabfolderkit.CTabFolderLCA;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Widget;
@@ -26,11 +27,11 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   public static final String EVENT_ITEM_CLOSED
     = "org.eclipse.rap.rwt.events.ctabItemClosed";
   
-  private static final String PROP_BOUNDS = "bounds";
-  private static final String PROP_SELECTED = "selected";
-  private static final String PROP_UNSELECTED_CLOSE_VISIBLE 
+  public static final String PROP_BOUNDS = "bounds";
+  public static final String PROP_SELECTED = "selected";
+  public static final String PROP_SHOWING = "showing";
+  public static final String PROP_UNSELECTED_CLOSE_VISIBLE 
     = "unselectedCloseVisible";
-  private static final String PROP_SHOWING = "showing";
 
   public void preserveValues( final Widget widget ) {
     CTabItem item = ( CTabItem )widget;
@@ -82,6 +83,8 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeToolTip( item, item.getToolTipText() );
     writeShowing( item );
     writeUnselectedCloseVisible( item );
+    writeSelectionForeground( item );
+    writeSelectionBackground( item );
     writeSelection( item );
   }
 
@@ -111,6 +114,32 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void writeSelectionBackground( final CTabItem item ) 
+    throws IOException 
+  {
+    String prop = CTabFolderLCA.PROP_SELECTION_BG;
+    CTabFolder parent = item.getParent();
+    Color newValue = parent.getSelectionBackground();
+    boolean itemInitialized = WidgetUtil.getAdapter( item ).isInitialized();
+    if( !itemInitialized || WidgetUtil.hasChanged( parent, prop, newValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( "selectionBackground", newValue );
+    }
+  }
+
+  private static void writeSelectionForeground( final CTabItem item ) 
+  throws IOException 
+  {
+    String prop = CTabFolderLCA.PROP_SELECTION_FG;
+    CTabFolder parent = item.getParent();
+    Color newValue = parent.getSelectionForeground();
+    boolean itemInitialized = WidgetUtil.getAdapter( item ).isInitialized();
+    if( !itemInitialized || WidgetUtil.hasChanged( parent, prop, newValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( "selectionForeground", newValue );
+    }
+  }
+  
   private static void writeUnselectedCloseVisible( final CTabItem item )
     throws IOException
   {

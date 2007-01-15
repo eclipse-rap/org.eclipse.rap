@@ -826,6 +826,36 @@ public class JSWriter_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
   }
   
+  public void testWigetRef() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    Widget widget1 = new Label( shell, RWT.NONE );
+    Widget widget2 = new Label( shell, RWT.NONE );
+    JSWriter writer1 = JSWriter.getWriterFor( widget1 );
+    JSWriter writer2 = JSWriter.getWriterFor( widget2 );
+    
+    Fixture.fakeResponseWriter();
+    writer1.set( "visible", false );
+    String findWidget = "findWidgetById";
+    assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) != -1 );
+
+    Fixture.fakeResponseWriter();
+    writer1.set( "visible", true );
+    assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) == -1 );
+    
+    Fixture.fakeResponseWriter();
+    writer2.set( "visible", true );
+    assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) != -1 );
+    
+    Fixture.fakeResponseWriter();
+    writer2.set( "visible", true );
+    assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) == -1 );
+    
+    Fixture.fakeResponseWriter();
+    writer1.set( "visible", true );
+    assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) != -1 );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

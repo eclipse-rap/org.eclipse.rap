@@ -9,7 +9,10 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.OO.defineClass( "org.eclipse.rap.rwt.Request", qx.core.Object,
+/**
+ * @event send
+ */
+qx.OO.defineClass( "org.eclipse.rap.rwt.Request", qx.core.Target,
   function() {
     qx.core.Object.call( this );
 		// the map of parameters that will be posted with the next call to 'send()'
@@ -37,7 +40,7 @@ qx.Class.getInstance = qx.util.Return.returnInstance;
 
 qx.Proto.setUIRootId = function( uiRootId ) {
   this._uiRootId = uiRootId;
-};
+}
 
 qx.Proto.getUIRootId = function() {
   return this._uiRootId;  
@@ -45,21 +48,21 @@ qx.Proto.getUIRootId = function() {
 
 qx.Proto.setRequestCounter = function( requestCounter ) {
   this._requestCounter = requestCounter;
-};
+}
 
 /**
  * Adds a request parameter to this request with the given name and value
  */
 qx.Proto.addParameter = function( name, value ) {
   this._parameters[ name ] = value;
-};
+}
 
 /**
  * Removes the parameter denoted by name from this request.
  */
 qx.Proto.removeParameter = function( name ) {
   delete this._parameters[ name ];
-};
+}
 
 /**
  * Adds the given eventType to this request. The sourceId denotes the id of
@@ -81,9 +84,10 @@ qx.Proto.send = function() {
 // TODO [rh] optimize wait interval (below 60ms seems to not work reliable)    
     qx.client.Timer.once( this._sendImmediate, this, 60 );
   }
-};
+}
 
 qx.Proto._sendImmediate = function() {
+  this._dispatchSendEvent();
   // create and configure request object
   var action = org_eclipse_rap_rwt_requesthandler;
   // To solve bugzilla bug entry 165666 we use GET- instead of POST-method
@@ -120,7 +124,7 @@ qx.Proto._logSend = function() {
   }
   msg += " ]";
   this.debug( msg );
-};
+}
 
 qx.Proto._startWaitHintTimer = function () {
   this.debug( "starting request " );
@@ -128,7 +132,7 @@ qx.Proto._startWaitHintTimer = function () {
   this._waitHintTimer = new qx.client.Timer( 500 );
   this._waitHintTimer.addEventListener( "interval", this._showWaitHint, this );
   this._waitHintTimer.start();
-};
+}
 
 qx.Proto._showWaitHint = function() {
   // stop timer - we only need this to be triggered *once* 
@@ -136,7 +140,7 @@ qx.Proto._showWaitHint = function() {
     this._waitHintTimer.stop();
     this.debug( "showWaitHint" );
   }
-};
+}
 
 qx.Proto._hideWaitHint = function() {
   // stop eventually running timer (this happens when request completes before 
@@ -146,4 +150,11 @@ qx.Proto._hideWaitHint = function() {
     this._waitHintTimer = null;
   }
   this.debug( "hideWaitHint" );
-};
+}
+
+qx.Proto._dispatchSendEvent = function() {
+  if( this.hasEventListeners( "send" ) ) {
+    var event = new qx.event.type.DataEvent( "send", this );
+    this.dispatchEvent( event, true );
+  }
+}

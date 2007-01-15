@@ -63,6 +63,8 @@ final class QooxdooResourcesUtil {
     = "org./eclipse/rap/rwt/widgets/Shell.js";
   private static final String TREE_JS 
     = "org/eclipse/rap/rwt/widgets/Tree.js";
+  private static final String SCROLLED_COMPOSITE_JS 
+    = "org/eclipse/rap/rwt/custom/ScrolledComposite.js";
   
   
   private QooxdooResourcesUtil() {
@@ -1525,6 +1527,7 @@ final class QooxdooResourcesUtil {
       register( LIST_JS );
       register( SHELL_JS );
       register( TREE_JS );
+      register( SCROLLED_COMPOSITE_JS );
     } finally {
       manager.setContextLoader( bufferedLoader );
     }

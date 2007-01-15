@@ -16,8 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.ItemLCAUtil;
-import org.eclipse.rap.rwt.internal.widgets.Props;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
 import org.eclipse.rap.rwt.widgets.Widget;
@@ -84,6 +83,10 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeChanges( toolItem );
+    // TODO [rh] could be optimized in that way, that qooxdoo forwards the
+    //      right-click on a toolbar item to the toolbar iteself if the toolbar
+    //      item does not have a context menu assigned
+    ControlLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined

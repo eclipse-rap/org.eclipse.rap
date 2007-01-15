@@ -12,14 +12,23 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import com.w4t.ParamCheck;
+import com.w4t.engine.service.ContextProvider;
+import com.w4t.engine.service.IServiceStateInfo;
 
 /**
  * TODO [rh] JavaDoc
  */
 public final class JSVar {
   
+  private static final String UNIQUE_NUMBER 
+    = JSVar.class.getName() + "#uniqueNumber";
+  
   private final String name;
   
+  public JSVar() {
+    name = uniqueVarName();
+  }
+
   public JSVar( final String name ) {
     ParamCheck.notNull( name, "name" );
     if( name.length() == 0 ) {
@@ -31,5 +40,17 @@ public final class JSVar {
   
   public String toString() {
     return name;
+  }
+
+  private static String uniqueVarName() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Object attribute = stateInfo.getAttribute( UNIQUE_NUMBER );
+    Integer lastUniqueNumber = ( Integer )attribute;
+    if( lastUniqueNumber == null ) {
+      lastUniqueNumber = new Integer( -1 );
+    }
+    int uniqueNumber = lastUniqueNumber.intValue() + 1;
+    stateInfo.setAttribute( UNIQUE_NUMBER, new Integer( uniqueNumber ) );
+    return "v" + uniqueNumber;
   }
 }

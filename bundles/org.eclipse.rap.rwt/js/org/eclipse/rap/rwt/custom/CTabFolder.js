@@ -22,16 +22,6 @@ qx.OO.defineClass(
     var black = new qx.renderer.color.Color( "black" );
     var border = new qx.renderer.border.Border( 1, "solid", black );
     this.setBorder( border );
-    // Create horizontal line that separates the button bar from the rest of 
-    // the client area
-    border = new qx.renderer.border.Border();
-    border.setTop( 1, "solid", black );
-    this._separator = new qx.ui.basic.Atom();
-    this._separator.setBorder( border );
-    this._separator.setLeft( 0 );
-    this._separator.setTop( this._tabHeight );
-    this._separator.setHeight( 1 );
-    this.add( this._separator );
     //
     this._topRight = null;
     this._chevron = null;
@@ -40,7 +30,7 @@ qx.OO.defineClass(
     this._minMaxState = "normal";  // valid states: min, max, normal
     this._maxButton = null;
     this._minButton = null;
-    //
+    // Construct highlight border lines
     var highlightBorder = new qx.renderer.border.Border();
     highlightBorder.setLeft( 2, "solid", black );
     this._highlightLeft = new qx.ui.basic.Atom();
@@ -67,7 +57,17 @@ qx.OO.defineClass(
     this._highlightBottom.setLeft( 0 );
     this._highlightBottom.setHeight( 2 );
     this.add( this._highlightBottom );
-    //
+    // Create horizontal line that separates the button bar from the rest of 
+    // the client area
+    border = new qx.renderer.border.Border();
+    border.setTop( 1, "solid", black );
+    this._separator = new qx.ui.basic.Atom();
+    this._separator.setBorder( border );
+    this._separator.setLeft( 0 );
+    this._separator.setTop( this._tabHeight );
+    this._separator.setHeight( 1 );
+    this.add( this._separator );
+    // Add resize listeners to update selection border (this._highlightXXX)
     this.addEventListener( "changeWidth", this._onChangeWidth, this );
     this.addEventListener( "changeHeight", this._onChangeHeight, this );
   }
@@ -90,6 +90,7 @@ qx.Proto.setTabHeight = function( tabHeight ) {
   }
 }
 
+// TODO [rh] optimize usage of border objects (get, change, set)
 qx.Proto.setSelectionBackground = function( color ) {
   var borderColor = new qx.renderer.color.Color( color );
   
@@ -108,15 +109,7 @@ qx.Proto.setSelectionBackground = function( color ) {
   highlightBorder = new qx.renderer.border.Border();
   highlightBorder.setBottom( 2, "solid", borderColor );
   this._highlightBottom.setBorder( highlightBorder );
-
-/*
-  this._highlightLeft.getBorder().setLeftColor( color );
-  this._highlightRight.getBorder().setRightColor( color );
-  this._highlightTop.getBorder().setTopColor( color );
-  this._highlightBottom.getBorder().setBottomColor( color );
-*/
 }
-
 qx.Proto._getButtonTop = function() {
   return   ( this._tabHeight / 2 )
          - ( org.eclipse.rap.rwt.custom.CTabFolder.BUTTON_SIZE / 2 );

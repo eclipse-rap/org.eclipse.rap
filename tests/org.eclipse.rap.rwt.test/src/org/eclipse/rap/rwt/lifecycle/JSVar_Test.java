@@ -11,12 +11,20 @@
 
 package org.eclipse.rap.rwt.lifecycle;
 
+import org.eclipse.rap.rwt.RWTFixture;
 import junit.framework.TestCase;
 
 
 public class JSVar_Test extends TestCase {
   
   public void testConstructor() {
+    RWTFixture.fakeNewRequest();
+    JSVar var1Request1 = new JSVar();
+    JSVar var2Request1 = new JSVar();
+    assertFalse( var1Request1.toString().equals( var2Request1.toString() ) );
+    RWTFixture.fakeNewRequest();
+    JSVar var1Request2 = new JSVar();
+    assertEquals( var1Request2.toString(), var1Request1.toString() );
     try {
       new JSVar( null );
       fail( "Must not allow null variable name" );
@@ -34,5 +42,13 @@ public class JSVar_Test extends TestCase {
   public void testToString() {
     JSVar var = new JSVar( "x" );
     assertEquals( "x", var.toString() );
+  }
+  
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+  }
+  
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
   }
 }

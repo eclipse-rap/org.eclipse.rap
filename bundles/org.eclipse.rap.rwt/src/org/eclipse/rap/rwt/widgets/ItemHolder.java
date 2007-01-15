@@ -16,6 +16,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 
+//TODO [rh] is public to allow access from custom package, move to internal pkg
 public final class ItemHolder implements IItemHolderAdapter {
 
   public static boolean isItemHolder( final Widget widget ) {

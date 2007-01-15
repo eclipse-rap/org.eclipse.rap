@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
+import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -225,6 +226,33 @@ public class DisplayLCA_Test extends TestCase {
     RWTFixture.registerResourceManager();
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
+  }
+  
+  public void testIsInitializedState() throws IOException {
+    final Boolean[] compositeInitState = new Boolean[] { null };
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    final Composite composite = new Shell( shell, RWT.NONE );
+    Control control = new Button( composite, RWT.PUSH );
+    IWidgetAdapter controlAdapter = WidgetUtil.getAdapter( control );
+    controlAdapter.setRenderRunnable( new IRenderRunnable() {
+      public void afterRender() throws IOException {
+        boolean initState = WidgetUtil.getAdapter( composite ).isInitialized();
+        compositeInitState[ 0 ] = Boolean.valueOf( initState );
+      }
+    } );
+    
+    // Ensure that the isInitialized state is to to true *right* after a widget
+    // was rendered; as opposed to being set to true after the whole widget
+    // tree was rendered
+    Fixture.fakeResponseWriter();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    // check precondition
+    assertEquals( false, WidgetUtil.getAdapter( composite ).isInitialized() );
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    displayLCA.render( display );
+    assertEquals( Boolean.TRUE, compositeInitState[ 0 ] );
   }
 
   protected void tearDown() throws Exception {

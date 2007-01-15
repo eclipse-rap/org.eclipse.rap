@@ -2058,9 +2058,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "c-tab-item" : {
     setup : function() {
-      this.background_color = null; // new qx.renderer.color.ColorObject( "white" ); 
-      this.background_color_checked = new qx.renderer.color.ColorObject( "#316ac5" );
-
       this.border_color = new qx.renderer.color.ColorObject( "threedshadow" );
       this.border_color_checked = new qx.renderer.color.ColorObject( "black" );
 
@@ -2090,32 +2087,26 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     initial : function( vTheme ) {
       return qx.lang.Object.mergeWith( vTheme.initialFrom( "atom" ), {
-        backgroundColor : this.background_color,
         border : this.border_top
       } );
     },
 
     state : function( vTheme, vStates ) {
-      var vReturn = {
-        backgroundColor : vStates.checked 
-                        ? this.background_color_checked 
-                        : this.background_color
-      };
-
+      var vReturn = {};
       if( vStates.checked ) {
         if ( vStates.barTop ) {
           vReturn.border = this.border_top_checked;
         } else {  // bar at bottom
           vReturn.border = this.border_bottom_checked;
         }
-        vReturn.color = this.color_checked;
+//        vReturn.color = this.color_checked;
       } else {
         if( vStates.barTop ) {
           vReturn.border = this.border_top;
         } else {
           vReturn.border = this.border_bottom;
         }
-        vReturn.color = this.color;
+//        vReturn.color = this.color;
       }
       return vReturn;
     }

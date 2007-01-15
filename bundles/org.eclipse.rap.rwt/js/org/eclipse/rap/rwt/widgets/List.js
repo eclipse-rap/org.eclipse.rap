@@ -42,7 +42,11 @@ qx.Proto.setItems = function( items ) {
     if( i < oldItems.length ) {
       oldItems[ i ].setLabel( items[ i ] );
     } else {
-      this.add( new qx.ui.form.ListItem( items[ i ] ) );
+      // TODO [rh] optimize this: context menu should be handled by the List
+      //      itself for all its ListItems
+      var item = new qx.ui.form.ListItem( items[ i ] );
+      item.setContextMenu( this.getContextMenu() );
+      this.add( item );
     }
   }
   while( this.getChildrenLength() > items.length ) {

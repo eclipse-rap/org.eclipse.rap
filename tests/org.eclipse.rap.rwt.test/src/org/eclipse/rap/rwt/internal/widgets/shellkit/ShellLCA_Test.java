@@ -134,7 +134,6 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( expected, shellEventLog.toString() );
     // Ensure that no setActive javaScript code is rendered for client-side
     // activated Shell
-System.out.println( Fixture.getAllMarkup() );    
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setActive" ) );
   }
   

@@ -20,6 +20,8 @@ qx.OO.defineClass(
     this._selected = false;
     this._closeButton = null;
     this._unselectedCloseVisible = true;
+    this._selectionBackground = null;
+    this._selectionForeground = null;
     if( canClose ) {
       this._closeButton = new qx.ui.basic.Image();
       this._closeButton.setWidth( 20 );
@@ -69,8 +71,12 @@ qx.Proto.setSelected = function( selected ) {
   this._selected = selected;
   if( selected ) {
     this.addState( "checked" );
+    this.setBackgroundColor( this._selectionBackground );
+    this.setColor( this._selectionForeground );
   } else {
     this.removeState( "checked" );
+    this.setBackgroundColor( null );
+    this.setColor( null );
   }
   this._updateCloseButton();
 }
@@ -81,6 +87,20 @@ qx.Proto.isSelected = function() {
 
 qx.Proto.setUnselectedCloseVisible = function( value ) {
   this._unselectedCloseVisible = value;  
+}
+
+qx.Proto.setSelectionBackground = function( color ) {
+  this._selectionBackground = color;
+  if( this.isSelected() ) {
+    this.setBackgroundColor( this._selectionBackground );
+  } 
+}
+
+qx.Proto.setSelectionForeground = function( color ) {
+  this._selectionForeground = color;
+  if( this.isSelected() ) {
+    this.setColor( this._selectionForeground );
+  } 
 }
 
 qx.Proto._applyStateAppearance = function() {

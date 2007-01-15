@@ -15,6 +15,8 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 
+// TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
+//      are aded/removed
 public class Combo extends Scrollable {
 
   private final ListModel model;
@@ -35,7 +37,6 @@ public class Combo extends Scrollable {
     model.setSelection( selectionIndex );
   }
 
-  // TODO [rh] test case!
   public void deselect( final int index ) {
     if( index == model.getSelectionIndex() ) {
       model.setSelection( -1 );

@@ -15,10 +15,10 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.custom.CTabFolder;
-import org.eclipse.rap.rwt.custom.CTabItem;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.custom.*;
+import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.internal.custom.ctabitemkit.CTabItemLCA;
 import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
@@ -120,6 +120,90 @@ public class CTabFolderLCA_Test extends TestCase {
     assertSame( item2, folder.getSelection() );
     assertEquals( "visible=false", item1Control.markup.toString() );
     assertEquals( "visible=true", item2Control.markup.toString() );
+  }
+  
+  public void testSelectionEvent() {
+    final StringBuffer log = new StringBuffer();
+    SelectionListener listener = new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        log.append( "widgetSelected|" );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, RWT.MULTI );
+    folder.addSelectionListener( listener );
+    CTabItem item1 = new CTabItem( folder, RWT.NONE );
+    CTabItem item2 = new CTabItem( folder, RWT.NONE );
+    
+    // Select item1 and fake request that selects item2
+    folder.setSelection( item1 );
+    String folderId = WidgetUtil.getId( folder );
+    String item2Id = WidgetUtil.getId( item2 );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
+    String name = folderId + "." + CTabFolderLCA.PARAM_SELECTED_ITEM_ID;
+    Fixture.fakeRequestParam( name, item2Id );
+    RWTFixture.readDataAndProcessAction( folder );
+    assertSame( item2, folder.getSelection() );
+    assertEquals( "widgetSelected|", log.toString() );
+  }
+  
+  public void testShowListEvent() {
+    // Widgets for test
+    Display display= new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    final CTabFolder folder = new CTabFolder( shell, RWT.SINGLE );
+    folder.setSize( 30, 130 );
+    CTabItem item1 = new CTabItem( folder, RWT.NONE );
+    new CTabItem( folder, RWT.NONE );
+    // 
+    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    final ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
+    final StringBuffer log = new StringBuffer();
+    CTabFolder2Listener listener = new CTabFolder2Adapter() {
+      public void showList( final CTabFolderEvent event ) {
+        assertEquals( true, event.doit );
+        log.append( "showList|" );
+      }
+    };
+    CTabFolder2Listener vetoListener = new CTabFolder2Adapter() {
+      public void showList( final CTabFolderEvent event ) {
+        Rectangle chevronRect = folderAdapter.getChevronRect();
+        Rectangle eventRet 
+          = new Rectangle( event.x, event.y, event.width, event.height);
+        assertEquals( eventRet, chevronRect );
+        assertEquals( true, event.doit );
+        assertEquals( folder, event.getSource() );
+        log.append( "vetoShowList|" );
+        event.doit = false;
+      }
+    };
+    
+    // Test showList event with listeners that prevents menu form showing
+    // Note: this test must run first since it relies on the fact that the 
+    //       showList menu wan't populated by previous showList requests
+    folder.setSelection( item1 );
+    folder.addCTabFolder2Listener( vetoListener );
+    String folderId = WidgetUtil.getId( folder );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( CTabFolderLCA.EVENT_SHOW_LIST, folderId );
+    RWTFixture.readDataAndProcessAction( folder );
+    assertEquals( "vetoShowList|", log.toString() );
+    Menu menu = folderAdapter.getShowListMenu();
+    assertEquals( 0, menu.getItemCount() );
+    // clean up above test
+    folder.removeCTabFolder2Listener( vetoListener );
+
+    // Test showList event with listeners that does not veto showing
+    log.setLength( 0 );
+    folder.addCTabFolder2Listener( listener );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( CTabFolderLCA.EVENT_SHOW_LIST, folderId );
+    RWTFixture.readDataAndProcessAction( folder );
+    assertEquals( "showList|", log.toString() );
+    menu = folderAdapter.getShowListMenu();
+    assertEquals( 1, menu.getItemCount() );
   }
   
   protected void setUp() throws Exception {

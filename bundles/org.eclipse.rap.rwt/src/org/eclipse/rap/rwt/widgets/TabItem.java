@@ -47,10 +47,11 @@ public class TabItem extends Item {
 
   public void setControl( final Control control ) {
     if( control != null ) {
+      if( control.isDisposed() ) {
+        RWT.error( RWT.ERROR_INVALID_ARGUMENT );
+      }
       if( control.getParent() != parent ) {
-        String msg = "The control has not the same tabfolder-parent as "
-                     + "this tabitem.";
-        throw new IllegalArgumentException( msg );
+        RWT.error( RWT.ERROR_INVALID_PARENT );
       }
     }
     this.control = control;

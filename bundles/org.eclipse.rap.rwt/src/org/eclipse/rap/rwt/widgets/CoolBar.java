@@ -118,12 +118,10 @@ public class CoolBar extends Composite {
     for( int i = 0; i < itemOrder.length; i++ ) {
       int index = itemOrder[ i ];
       if( index < 0 || index >= itemCount ) {
-        // will bcome RWT.ERROR_INVALID_RANGE
-        throw new IllegalArgumentException( "Invalid range: " + index );
+        RWT.error( RWT.ERROR_INVALID_RANGE );
       }
       if( set[ index ] ) {
-        // will bcome RWT.ERROR_INVALID_ARGUMENT
-        throw new IllegalArgumentException( "Invalid argument" );
+        RWT.error( RWT.ERROR_INVALID_ARGUMENT );
       }
       set[ index ] = true;
     }

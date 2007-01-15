@@ -28,19 +28,19 @@ import com.w4t.IResourceManager;
 public final class CTabFolderLCA extends AbstractWidgetLCA {
   
   // Request parameter that denotes the id of the selected tab item
-  private static final String PARAM_SELECTED_ITEM_ID = "selectedItemId";
+  public static final String PARAM_SELECTED_ITEM_ID = "selectedItemId";
   // Request parameters for min/max state
-  private static final String PARAM_MAXIMIZED = "maximized";
-  private static final String PARAM_MINIMIZED = "minimized";
+  public static final String PARAM_MAXIMIZED = "maximized";
+  public static final String PARAM_MINIMIZED = "minimized";
 
   // Request parameters that denote CTabFolderEvents
-  private static final String EVENT_FOLDER_MINIMIZED
+  public static final String EVENT_FOLDER_MINIMIZED
     = "org.eclipse.rap.rwt.events.ctabFolderMinimized";
-  private static final String EVENT_FOLDER_MAXIMIZED
+  public static final String EVENT_FOLDER_MAXIMIZED
     = "org.eclipse.rap.rwt.events.ctabFolderMaximized";
-  private static final String EVENT_FOLDER_RESTORED
+  public static final String EVENT_FOLDER_RESTORED
     = "org.eclipse.rap.rwt.events.ctabFolderRestored";
-  private static final String EVENT_SHOW_LIST
+  public static final String EVENT_SHOW_LIST
     = "org.eclipse.rap.rwt.events.ctabFolderShowList";
   
   // Property names for preserveValues
@@ -57,6 +57,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public static final String PROP_CHEVRON_VISIBLE = "chevronVisible";
   public static final String PROP_CHEVRON_RECT = "chevronRect";
   public static final String PROP_SELECTION_BG = "selectionBg";
+  public static final String PROP_SELECTION_FG = "selectionFg";
   
   // Width of min/max button, keep in sync with value in CTabFolder.js
   private static final int MIN_MAX_BUTTON_WIDTH = 20;
@@ -114,6 +115,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       new Integer( tabFolder.getTabHeight() ) );
     adapter.preserve( PROP_TOP_RIGHT, tabFolder.getTopRight() );
     adapter.preserve( PROP_SELECTION_BG, tabFolder.getSelectionBackground() );
+    adapter.preserve( PROP_SELECTION_FG, tabFolder.getSelectionForeground() );
     adapter.preserve( PROP_CHEVRON_VISIBLE, 
                       Boolean.valueOf( tabFolderAdapter.getChevronVisible() ) );
     adapter.preserve( PROP_CHEVRON_RECT, tabFolderAdapter.getChevronRect() );
@@ -150,20 +152,18 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     //      the visibility of tabItem.control; but preserveValues stores
     //      the already changed visibility and thus no JavaScript is rendered
     // Read selected item and process selection event
-    final String value1 = WidgetUtil.readPropertyValue( tabFolder, 
-                                                       PARAM_SELECTED_ITEM_ID );
+    final String value1 
+      = WidgetUtil.readPropertyValue( tabFolder, PARAM_SELECTED_ITEM_ID );
     if( value1 != null ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           CTabItem tabItem = ( CTabItem )WidgetUtil.find( tabFolder, value1 );
           tabFolder.setSelection( tabItem );
-          // TODO [rh] figure out if SWT provides bounds in this selectionEvent
           ControlLCAUtil.processSelection( tabFolder, tabItem, false );
         }
       } );
     }
     if( WidgetUtil.wasEventSent( tabFolder, EVENT_SHOW_LIST ) ) {
-      // TODO [rh] what else need to be done when chevron was clicked?
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
@@ -174,6 +174,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           if( event.doit ) {
             Menu menu = adapter.getShowListMenu();
             MenuItem[] items = menu.getItems();
+            // TODO [rh] optimize: reuse existing menuItems if possible 
             for( int i = 0; i < items.length; i++ ) {
               items[ i ].dispose();
             }
@@ -203,7 +204,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
             Point location = new Point( menuRect.x, 
                                         menuRect.y + menuRect.height + 1 );
             menu.setLocation( location );
-            menu.setVisible( true );
+            // show menu if it contains any item
+            menu.setVisible( menu.getItemCount() > 0 ); 
           }
         }
       } );

@@ -48,7 +48,7 @@ final class PushMenuItemLCA extends MenuItemDelegateLCA {
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( menuItem ) );
   }
-  
+
   void renderDispose( final MenuItem menuItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     writer.dispose();

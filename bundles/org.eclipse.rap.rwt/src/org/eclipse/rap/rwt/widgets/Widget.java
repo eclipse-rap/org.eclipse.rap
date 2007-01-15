@@ -28,11 +28,17 @@ import com.w4t.event.IEventAdapter;
  */
 public abstract class Widget implements Adaptable {
 
-  // TODO: [gröver]: copy from swt
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;
   static final int DEFAULT_HEIGHT = 64;
-  static final int LAYOUT_CHANGED = 1<<6;
+  static final int LAYOUT_CHANGED = 1 << 6;
+  
+  /* Global state flags */
+//  static final int DISPOSED = 1 << 0;
+//  static final int CANVAS = 1 << 1;
+//  static final int KEYED_DATA = 1 << 2;
+  static final int DISABLED = 1 << 3;
+  static final int HIDDEN = 1 << 4;
   
   int style;
   int state;

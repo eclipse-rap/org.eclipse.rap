@@ -39,11 +39,12 @@ public final class JSWriter {
   private static final JSVar TARGET_REF = new JSVar( "t" );
   private static final String WRITER_MAP = JSWriter.class.getName() + "Map";
   private static final String HAS_WINDOW_MANAGER 
-    = JSWriter.class.getName() + ".hasWindowManager";
+    = JSWriter.class.getName() + "#hasWindowManager";
+  private static final String CURRENT_WIDGET_REF 
+    = JSWriter.class.getName() + "#currentWidgetRef";
   private static final String FORMAT_EMPTY = "";
   
   private final Widget widget;
-  private boolean hasWidgetRef;
   
   public static JSWriter getWriterFor( final Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
@@ -86,7 +87,7 @@ public final class JSWriter {
     };
     String out = MessageFormat.format( code, args1 );
     getWriter().write( out );
-    hasWidgetRef = true;
+    setCurrentWidgetRef( widget );
     if( widget instanceof Shell ) {
       call( "addToDocument", null );
     } else if( widget instanceof Control ){
@@ -413,11 +414,24 @@ public final class JSWriter {
 
   private void ensureWidgetRef() throws IOException {
     ensureWidgetManager();
-    if( !hasWidgetRef ) {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Object currentWidgetRef = stateInfo.getAttribute( CURRENT_WIDGET_REF );
+    if( widget != currentWidgetRef ) {
       String code = "var {0} = {1};";
       write( code, WIDGET_REF, createFindWidgetById( widget ) );
-      hasWidgetRef = true;
+      setCurrentWidgetRef( widget );
     }
+  }
+  
+  private static void setCurrentWidgetRef( final Widget widget ) {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.setAttribute( CURRENT_WIDGET_REF, widget );
+  }
+  
+  private static Widget getCurrentWidgetRef() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Widget result = ( Widget )stateInfo.getAttribute( CURRENT_WIDGET_REF );
+    return result;
   }
   
   private static String createFindWidgetById( final Widget widget ) {
@@ -475,7 +489,7 @@ public final class JSWriter {
           params.append( args[ i ] );
           params.append( '"' );
         } else if( args[ i ] instanceof Widget ) {
-          if( args[ i ] == widget && hasWidgetRef ) {
+          if( args[ i ] == getCurrentWidgetRef() ) {
             params.append( "w" );
           } else {
             params.append( createFindWidgetById( ( Widget )args[ i ] ) );

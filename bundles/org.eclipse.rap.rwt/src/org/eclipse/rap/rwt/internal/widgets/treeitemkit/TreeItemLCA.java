@@ -65,8 +65,21 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     TreeItem treeItem = ( TreeItem )widget;
     ItemLCAUtil.writeChanges( treeItem );
     writeExpanded( treeItem );
+    // TODO [rh] replace this with an optimized implementation. 
+    //      qooxdoo currently does not propagate right-clicks on tree items
+    //      to the tree they belong to. As a workaround we set the context menu
+    //      on each tree item.
+    ControlLCAUtil.writeMenu( treeItem, treeItem.getParent().getMenu() );
   }
 
+  public void renderDispose( final Widget widget ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
+  }
+
+  ///////////////////////////////////
+  // Helping methods to write changes
+  
   private static void writeExpanded( final TreeItem treeItem ) 
     throws IOException 
   {
@@ -78,15 +91,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       writer.set( "open", treeItem.getExpanded() );
     }
   }
-  
-  public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
-  }
 
-  /////////////////////////////////////
-  // Helping methods to dispatch events
-  
   private static boolean processWidgetSelectedEvent( final Widget widget ) {
     boolean result = false;
     if( WidgetUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {

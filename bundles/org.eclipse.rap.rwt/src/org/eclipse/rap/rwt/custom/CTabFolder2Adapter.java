@@ -25,7 +25,6 @@ public class CTabFolder2Adapter implements CTabFolder2Listener {
   public void restore( final CTabFolderEvent event ) {
   }
 
-  // TODO [rh] showList honors the doit flag and prevents list from showing
   public void showList( final CTabFolderEvent event ) {
   }
 }

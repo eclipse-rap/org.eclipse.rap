@@ -59,6 +59,7 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
   private static boolean isTopLevelMenuBarItem( final MenuItem menuItem ) {
     return ( menuItem.getParent().getStyle() & RWT.BAR ) != 0;
   }
+  
   private static MenuItemDelegateLCA getDelegateLCA( final MenuItem menuItem ) 
   {
     MenuItemDelegateLCA result;

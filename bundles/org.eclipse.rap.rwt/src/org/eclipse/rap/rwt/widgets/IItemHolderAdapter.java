@@ -11,8 +11,7 @@
 
 package org.eclipse.rap.rwt.widgets;
 
-// TODO [rh] had to make this interface public, since otherwise not visible
-//      from ...custom-package. Is OK?, should this be moved to another package?
+// TODO [rh] is public to allow access from custom package, move to internal pkg
 public interface IItemHolderAdapter {
 
   void add( Item item );
