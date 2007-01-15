@@ -43,6 +43,8 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( "qx.ui.form.CheckBox" );
     writer.set( "checked", button.getSelection() );
+    writer.set( "appearance", "checkbox" );
+    ControlLCAUtil.writeStyleFlags( button );
   }
 
   // TODO [rh] qooxdoo checkBox cannot display images, should we ignore

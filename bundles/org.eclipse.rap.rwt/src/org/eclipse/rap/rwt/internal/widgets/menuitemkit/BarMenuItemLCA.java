@@ -20,6 +20,8 @@ import org.eclipse.rap.rwt.widgets.MenuItem;
 
 final class BarMenuItemLCA extends MenuItemDelegateLCA {
 
+  private static final Object[] RWT_FLAT = new Object[] { "rwt_FLAT" };
+
   private static final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE, 
                           JSConst.JS_WIDGET_SELECTED, 
@@ -39,6 +41,8 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
     newItem( menuItem, "qx.ui.menu.MenuBarButton" );
+    JSWriter writer = JSWriter.getWriterFor( menuItem );
+    writer.call( "addState", RWT_FLAT );
   }
 
   // TODO [rh] qooxdoo does not handle bar menu items with images, should

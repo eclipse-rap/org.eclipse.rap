@@ -61,6 +61,8 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
       button.getSelection() ? "true" : null
     };
     writer.callStatic( CREATE_RADIO, args );
+    writer.set( "appearance", "radiobutton" );
+    ControlLCAUtil.writeStyleFlags( button );
   }
 
   // TODO [rh] qooxdoo radioButton cannot display images, should we ignore

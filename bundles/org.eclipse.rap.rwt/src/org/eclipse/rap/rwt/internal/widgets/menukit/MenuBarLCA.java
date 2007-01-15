@@ -27,7 +27,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     = "menuBarShell";
   private static final String PROP_SHELL_CLIENT_AREA 
     = "menuBarShellClientArea";
-
+  
   void preserveValues( final Menu menu ) {
     Shell shell = MenuBarLCA.getShell( menu );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
@@ -39,7 +39,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
 
   void renderInitialization( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
-     writer.newWidget( "qx.ui.menu.MenuBar" );
+    writer.newWidget( "qx.ui.menu.MenuBar" );
   }
 
   void renderChanges( final Menu menu ) throws IOException {

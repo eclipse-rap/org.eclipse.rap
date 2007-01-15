@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -47,6 +48,9 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     };
     writer.callStatic( CREATE_CHECK, args );
     writer.set( "checked", toolItem.getSelection() );
+    if ((toolItem.getParent().getStyle() & RWT.FLAT) != 0) {
+      writer.call( "addState", new Object[]{ "rwt_FLAT" } );
+    }
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {

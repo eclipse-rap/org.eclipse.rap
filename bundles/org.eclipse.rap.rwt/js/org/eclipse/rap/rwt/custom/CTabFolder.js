@@ -119,6 +119,7 @@ qx.Proto.showChevron = function( left ) {
   if( this._chevron == null ) {
     // Create chevron button
     this._chevron = new qx.ui.toolbar.ToolBarButton();
+    this._chevron.addState( "rwt_FLAT" );
     this._chevron.setTop( this._getButtonTop() );
     this._chevron.setHeight( org.eclipse.rap.rwt.custom.CTabFolder.BUTTON_SIZE );
     this._chevron.setWidth( org.eclipse.rap.rwt.custom.CTabFolder.BUTTON_SIZE );
@@ -187,6 +188,7 @@ qx.Proto.setMinMaxToolTips = function( minToolTipText, maxToolTipText ) {
 qx.Proto.showMaxButton = function( left ) {
   if( this._maxButton == null ) {
     this._maxButton = new qx.ui.toolbar.ToolBarButton();
+    this._maxButton.addState( "rwt_FLAT" );
     this._maxButton.setVerticalChildrenAlign( "middle" );
     this._maxButton.setHorizontalChildrenAlign( "center" );
     this.setMinMaxState( this._minMaxState ); // initializes the icon according to current state
@@ -213,6 +215,7 @@ qx.Proto.hideMaxButton = function() {
 qx.Proto.showMinButton = function( left ) {
   if( this._minButton == null ) {
     this._minButton = new qx.ui.toolbar.ToolBarButton();
+    this._minButton.addState( "rwt_FLAT" );
     this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
     this._minButton.setTop( this._getButtonTop() );
     this._minButton.setHeight( org.eclipse.rap.rwt.custom.CTabFolder.BUTTON_SIZE );

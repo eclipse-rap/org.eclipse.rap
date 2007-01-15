@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.shellkit;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ActivateEvent;
 import org.eclipse.rap.rwt.events.ShellEvent;
 import org.eclipse.rap.rwt.internal.widgets.*;
@@ -52,6 +53,13 @@ public class ShellLCA extends AbstractWidgetLCA {
     writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 
                         JSConst.JS_SHELL_CLOSED );
     writer.call( "open", null );
+    ControlLCAUtil.writeStyleFlags( widget );
+    int style = widget.getStyle();
+    writer.set( "resizeable", (style & RWT.RESIZE) != 0 );
+    writer.set( "showMinimize", (style & (RWT.MIN | RWT.MAX)) != 0 );
+    writer.set( "showMaximize", (style & (RWT.MIN | RWT.MAX)) != 0 );
+    writer.set( "showClose", (style & (RWT.MIN | RWT.MAX | RWT.CLOSE)) != 0 );
+    writer.call( "applyStyle", null );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

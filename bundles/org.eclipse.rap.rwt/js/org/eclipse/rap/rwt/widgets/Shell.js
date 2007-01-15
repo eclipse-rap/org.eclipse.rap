@@ -21,6 +21,17 @@ qx.OO.defineClass(
   }
 );
 
+/**
+ * Applies relevant RWT style bits that must have been passed using addState()
+ * before.
+ */
+qx.Proto.applyStyle = function( ) {
+  // If only one of the flags MIN and MAX is set, both buttons are shown in
+  // Windows and one of them is disbaled.
+  this._minimizeButton.setEnabled( this.hasState( "rwt_MIN" ) );
+  this._maximizeButton.setEnabled( this.hasState( "rwt_MAX" ) );
+}
+
 qx.Proto.setActiveControl = function( control ) {
   this._activeControl = control;  
 }

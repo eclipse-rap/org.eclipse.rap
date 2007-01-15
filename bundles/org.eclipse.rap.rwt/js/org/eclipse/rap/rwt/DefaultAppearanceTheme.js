@@ -94,18 +94,23 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     setup : function() {
       this.color_disabled = new qx.renderer.color.ColorObject("graytext");
       this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
+      // new qx.renderer.border.BorderObject(1, "inset");
     },
 
     initial : function(vTheme) {
       return {
         font: this.font,
-        wrap : false
+        wrap : false,
+        border : this.border_default
       }
     },
 
     state : function(vTheme, vStates) {
       return {
-        color : vStates.disabled ? this.color_disabled : null
+        color : vStates.disabled ? this.color_disabled : null,
+        border : vStates.rwt_BORDER ? this.border : this.border_default
       }
     }
   },
@@ -173,8 +178,11 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.bgcolor_over = new qx.renderer.color.ColorObject("#fcf9e8");
       this.bgcolor_left = new qx.renderer.color.ColorObject("#e1e0d8");
 
-      this.border_pressed = qx.renderer.border.BorderPresets.getInstance().inset;
-      this.border_default = qx.renderer.border.BorderPresets.getInstance().outset;
+      this.border = qx.renderer.border.BorderPresets.getInstance().thinOutset;
+      this.border_pressed = qx.renderer.border.BorderPresets.getInstance().thinInset;
+      this.border_BORDER = qx.renderer.border.BorderPresets.getInstance().outset;
+      this.border_BORDER_pressed = qx.renderer.border.BorderPresets.getInstance().inset;
+      this.border_FLAT = new qx.renderer.border.BorderObject(1, "solid", "black");
     },
 
     initial : function(vTheme) {
@@ -183,8 +191,17 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     state : function(vTheme, vStates) {
       var vReturn = {
-        backgroundColor : vStates.abandoned ? this.bgcolor_left : vStates.over ? this.bgcolor_over : this.bgcolor_default,
-        border : vStates.pressed || vStates.checked || vStates.abandoned ? this.border_pressed : this.border_default
+        backgroundColor : vStates.abandoned ? this.bgcolor_left : vStates.over ? this.bgcolor_over : this.bgcolor_default
+      }
+      
+      if (vStates.rwt_FLAT) {
+        vReturn.border = this.border_FLAT;
+      }
+      else if (vStates.rwt_BORDER) {
+        vReturn.border = vStates.pressed || vStates.checked || vStates.abandoned ? this.border_BORDER_pressed : this.border_BORDER;
+      }
+      else {
+        vReturn.border = vStates.pressed || vStates.checked || vStates.abandoned ? this.border_pressed : this.border;
       }
 
       if (vStates.pressed || vStates.abandoned) {
@@ -218,13 +235,20 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "toolbar" : {
     setup : function() {
       this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border = qx.renderer.border.BorderPresets.getInstance().thinOutset;
     },
 
     initial : function(vTheme) {
       return {
-        border : qx.renderer.border.BorderPresets.getInstance().thinOutset,
         backgroundColor : this.bgcolor,
         height : qx.constant.Core.AUTO
+      }
+    },
+    
+    state : function(vTheme, vStates) {
+      return {
+        border : vStates.rwt_BORDER ? this.border : this.border_default
       }
     }
   },
@@ -262,11 +286,21 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       return {
         width : 8
       }
+    },
+    
+    states : function(vTheme, vStates) {
+      return {
+        // TODO change separator visiblity
+        //      does this work?
+        visibility : vStates.rwt_FLAT ? true : false,
+        width: vStates.rwt_FLAT ? 8 : 16
+      }
     }
   },
 
   "toolbar-separator-line" : {
     setup : function() {
+      this.border_none = qx.renderer.border.BorderPresets.getInstance().none;
       var b = this.border = new qx.renderer.border.BorderObject;
 
       b.setLeftColor("threedshadow");
@@ -298,9 +332,9 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.bgcolor_left = new qx.renderer.color.ColorObject("#e1e0d8");
       this.bgcolor_over = new qx.renderer.color.ColorObject("#fcf9e8");
 
+      this.border_none = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border_raised = qx.renderer.border.BorderPresets.getInstance().thinOutset;
       this.border_pressed = qx.renderer.border.BorderPresets.getInstance().thinInset;
-      this.border_over = qx.renderer.border.BorderPresets.getInstance().thinOutset;
-      this.border_default = null;
 
       this.checked_background = "static/image/dotted_white.gif";
     },
@@ -327,14 +361,12 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         vReturn.paddingRight = 2;
         vReturn.paddingBottom = 1;
         vReturn.paddingLeft = 4;
-      } else if (vStates.over) {
-        vReturn.border = this.border_over;
-        
+      } else if ( !vStates.rwt_FLAT || vStates.over ) {
+        vReturn.border = this.border_raised;
         vReturn.paddingTop = vReturn.paddingBottom = 2;
         vReturn.paddingLeft = vReturn.paddingRight = 3;
       } else {
-        vReturn.border = this.border_default;
-
+        vReturn.border = this.border_none;
         vReturn.paddingTop = vReturn.paddingBottom = 3;
         vReturn.paddingLeft = vReturn.paddingRight = 4;
       }
@@ -873,8 +905,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
 
 
-
-
   /*
   ---------------------------------------------------------------------------
     LIST
@@ -884,13 +914,20 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "list" : {
     setup : function() {
       this.bgcolor = new qx.renderer.color.Color("white");
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border = qx.renderer.border.BorderPresets.getInstance().inset;
     },
 
     initial : function(vTheme) {
       return {
         overflow : qx.constant.Style.OVERFLOW_HIDDEN,
-        border : qx.renderer.border.BorderPresets.getInstance().thinInset,
         backgroundColor : this.bgcolor
+      }
+    },
+    
+    state : function(vTheme, vStates) {
+      return {
+        border : vStates.rwt_BORDER ? this.border : this.border_default
       }
     }
   },
@@ -940,15 +977,17 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "text-field" : {
     setup : function() {
       this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border = qx.renderer.border.BorderPresets.getInstance().inset;
     },
 
     initial : function(vTheme) {
       return {
         hideFocus : true,
-        border : qx.renderer.border.BorderPresets.getInstance().thinInset,
-        paddingTop : 1,
+        border: null,
+        paddingTop : 0,
         paddingRight : 3,
-        paddingBottom : 1,
+        paddingBottom : 0,
         paddingLeft : 3,
         allowStretchY : false,
         allowStretchX : true,
@@ -959,7 +998,14 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     },
 
     state : function(vTheme, vStates) {
-      return vTheme.stateFrom("label", vStates);
+      //var vResult = vTheme.stateFrom("label", vStates);
+      var vResult = {};
+      vResult.border = vStates.rwt_BORDER ? this.border : this.border_default;
+      vResult.paddingTop = vStates.rwt_BORDER ? 1 : 0;
+      vResult.paddingRight = vStates.rwt_BORDER ? 4 : 3;
+      vResult.paddingBottom = vStates.rwt_BORDER ? 1 : 0;
+      vResult.paddingLeft = vStates.rwt_BORDER ? 4 : 3;
+      return vResult;
     }
   },
 
@@ -997,6 +1043,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "combo-box" : {
     setup : function() {
       this.bgcolor = new qx.renderer.color.Color("white");
+      this.border = qx.renderer.border.BorderPresets.getInstance().inset;
     },
 
     initial : function(vTheme) {
@@ -1004,7 +1051,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         minWidth : 40,
         width : 120,
         height : qx.constant.Core.AUTO,
-        border : qx.renderer.border.BorderPresets.getInstance().inset,
+        border : this.border,
         backgroundColor : this.bgcolor,
         allowStretchY : false
       }
@@ -1183,9 +1230,20 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   },
 
   "tree-container" : {
+    setup : function() {
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border = qx.renderer.border.BorderPresets.getInstance().inset;
+    },
+  
     initial : function(vTheme) {
       return {
         verticalChildrenAlign : qx.constant.Layout.ALIGN_TOP
+      }
+    },
+    
+    state : function(vTheme, vStates) {
+      return {
+        border : vStates.rwt_BORDER ? this.border : this.border_default
       }
     }
   },
@@ -1384,9 +1442,22 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
    */
 
   "tab-view" : {
+    setup : function() {
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border = qx.renderer.border.BorderPresets.getInstance().inset;
+    },
+
     initial : function(vTheme) {
       return {
-        spacing : -1
+        spacing : -1,
+        border : qx.renderer.border.BorderPresets.getInstance().inset
+      };
+    },
+    
+    state : function(vTheme, vStates) {
+      return {
+      	border : vStates.rwt_BORDER ? this.border : this.border_default
+//      	,padding : vStates.rwt_BORDER ? 1 : 0
       };
     }
   },
@@ -1952,6 +2023,13 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         paddingTop: 0,
         paddingBottom: 0
       }
+    },
+    
+    state: function(vTheme, vStates) {
+      return {
+        border : vStates.rwt_BORDER ? qx.renderer.border.BorderPresets.getInstance().inset :
+          qx.renderer.border.BorderPresets.getInstance().none
+      }
     }
   },
 
@@ -1993,7 +2071,21 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     }
   },
 
+  "table" : {
+    initial : function(vTheme) {
+      return {
+        backgroundColor: new qx.renderer.color.ColorObject("white")
+      }
+    },
 
+    state : function(vTheme, vStates) {
+      return {
+        border : vStates.rwt_BORDER ?
+          qx.renderer.border.BorderPresets.getInstance().inset : 
+          qx.renderer.border.BorderPresets.getInstance().none
+      }
+    }
+  },
 
 
   /*
@@ -2004,9 +2096,21 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "splitpane" :
   {
+  
+    setup : function() {
+      this.border_none = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border_inset = qx.renderer.border.BorderPresets.getInstance().inset;
+    },
+
     initial : function(vTheme) {
       return {
         overflow : "hidden"
+      }
+    },
+    
+    state : function(vTheme, vStates) {
+      return {
+        border: vStates.rwt_BORDER ? this.border_inset : this.border_none
       }
     }
   },
@@ -2131,6 +2235,78 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
                         : this.background_color
       }
       return vReturn;
+    }
+  },
+
+  "composite" :
+  {
+    state : function(vTheme, vStates) {
+      return {
+        border: vStates.rwt_BORDER ?
+          qx.renderer.border.BorderPresets.getInstance().inset :
+          qx.renderer.border.BorderPresets.getInstance().none
+      }
+    }
+  },
+
+  "coolbar" :
+  {
+    state : function(vTheme, vStates) {
+      return {
+        border: vStates.rwt_BORDER ?
+          qx.renderer.border.BorderPresets.getInstance().inset :
+          qx.renderer.border.BorderPresets.getInstance().none
+      }
+    }
+  },
+
+  "checkbox" :
+  {
+    initial : function(vTheme) {
+    // TODO [ralf] merge with "atom"
+      return {
+        cursor : qx.constant.Core.DEFAULT,
+        spacing : 4,
+        width : qx.constant.Core.AUTO,
+        height : qx.constant.Core.AUTO,
+        horizontalChildrenAlign : qx.constant.Layout.ALIGN_CENTER,
+        verticalChildrenAlign : qx.constant.Layout.ALIGN_MIDDLE,
+        stretchChildrenOrthogonalAxis : false,
+        allowStretchY : false,
+        allowStretchX : false
+      }
+    },
+    state : function(vTheme, vStates) {
+      return {
+        border: vStates.rwt_BORDER ?
+          qx.renderer.border.BorderPresets.getInstance().inset :
+          qx.renderer.border.BorderPresets.getInstance().none
+      }
+    }
+  },
+
+  "radiobutton" :
+  {
+    initial : function(vTheme) {
+    // TODO [ralf] merge with "atom"
+      return {
+        cursor : qx.constant.Core.DEFAULT,
+        spacing : 4,
+        width : qx.constant.Core.AUTO,
+        height : qx.constant.Core.AUTO,
+        horizontalChildrenAlign : qx.constant.Layout.ALIGN_CENTER,
+        verticalChildrenAlign : qx.constant.Layout.ALIGN_MIDDLE,
+        stretchChildrenOrthogonalAxis : false,
+        allowStretchY : false,
+        allowStretchX : false
+      }
+    },
+    state : function(vTheme, vStates) {
+      return {
+        border: vStates.rwt_BORDER ?
+          qx.renderer.border.BorderPresets.getInstance().inset :
+          qx.renderer.border.BorderPresets.getInstance().none
+      }
     }
   }
 

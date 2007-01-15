@@ -67,6 +67,9 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
       neighbour
     };
     writer.callStatic( CREATE_RADIO, args );
+    if( ( toolItem.getParent().getStyle() & RWT.FLAT ) != 0 ) {
+      writer.call( "addState", new Object[]{ "rwt_FLAT" } );
+    }
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {

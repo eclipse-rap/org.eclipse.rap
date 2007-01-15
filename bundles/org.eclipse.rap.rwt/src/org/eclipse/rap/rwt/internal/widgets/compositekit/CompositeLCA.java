@@ -31,6 +31,8 @@ public class CompositeLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.layout.CanvasLayout" );
+    writer.set( "appearance", "composite" );
+    ControlLCAUtil.writeStyleFlags( widget );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

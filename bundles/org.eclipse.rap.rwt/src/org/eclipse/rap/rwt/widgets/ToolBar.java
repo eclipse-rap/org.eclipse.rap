@@ -37,7 +37,7 @@ public class ToolBar extends Composite {
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     // TODO: [fappel] reasonable implementation
     Point result = super.computeSize( wHint, hHint, changed );
-    return new Point( result.x, 30 );
+    return new Point( result.x, 24 );
   }
   
   public void setBounds( Rectangle bounds ) {

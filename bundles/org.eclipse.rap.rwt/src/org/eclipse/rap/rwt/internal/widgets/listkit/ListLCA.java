@@ -16,8 +16,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.List;
-import org.eclipse.rap.rwt.widgets.Widget;
+import org.eclipse.rap.rwt.widgets.*;
 
 
 public class ListLCA extends AbstractWidgetLCA {
@@ -71,6 +70,7 @@ public class ListLCA extends AbstractWidgetLCA {
     Boolean multiSelection = isSingle( list ) ? Boolean.FALSE : Boolean.TRUE;
     writer.newWidget( "org.eclipse.rap.rwt.widgets.List", 
                       new Object[] { multiSelection } );
+    ControlLCAUtil.writeStyleFlags( widget );
   }
 
   // TODO [rh] keep scroll position, even when exchanging items 

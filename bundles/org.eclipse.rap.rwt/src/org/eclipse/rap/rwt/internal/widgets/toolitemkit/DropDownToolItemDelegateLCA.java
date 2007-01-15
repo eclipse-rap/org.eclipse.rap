@@ -71,13 +71,20 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
       WidgetUtil.getId( toolItem ),
       toolItem.getParent()
     };
+    // TODO [rst] The first push button can also be created on the client side
+    //      within the CREATE_PUSH_MENU method.
     writer.callStatic( CREATE_PUSH, args );
+    boolean parentFlat = (toolItem.getParent().getStyle() & RWT.FLAT) != 0;
     // the second push button
     args = new Object[] {
       getMenuId( toolItem ),
-      toolItem.getParent()
+      toolItem.getParent(),
+      parentFlat ? "1" : ""
     };
     writer.callStatic( CREATE_PUSH_MENU, args );
+    if (parentFlat) {
+      writer.call( "addState", new Object[]{ "rwt_FLAT" } );
+    }
   }
   
   void renderChanges( final ToolItem toolItem ) throws IOException {

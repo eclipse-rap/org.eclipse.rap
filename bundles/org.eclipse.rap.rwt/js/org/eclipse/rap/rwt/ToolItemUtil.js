@@ -18,7 +18,7 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.ToolItemUtil" );
 /**
  * Creates a toolitem of type separator.
  */
-org.eclipse.rap.rwt.ToolItemUtil.createToolItemSeparatorUtil
+org.eclipse.rap.rwt.ToolItemUtil.createToolItemSeparator
   = function( id , parent )
 {
   var push = new qx.ui.toolbar.ToolBarSeparator ();
@@ -28,7 +28,7 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemSeparatorUtil
 };
 
 /**
- * Creates a toolitem of type separator.
+ * Sets the control used to fill the bounds of a toolitem of type separator.
  */
 org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator
   = function( id , parent , width, control)
@@ -78,19 +78,22 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush = function( id , parent ) {
   var push = new qx.ui.toolbar.ToolBarButton();
   parent.add( push );
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id );
-  push.setParent( parent );
+//  push.setParent( parent );
 };
 
 /**
  * Creates a toolitem of type push for a drop down menu.
  */
 org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu 
-  = function( id , parent ) 
+  = function( id , parent , isFlat )
 {
   var push = new qx.ui.toolbar.ToolBarButton( "V" );
   parent.add( push );
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id );
-  push.setParent( parent );
+  if ( isFlat ) {
+    push.addState( "rwt_FLAT" );
+  }
+//  push.setParent( parent );
 };
 
 /**
@@ -102,7 +105,7 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil
   var push = new qx.ui.toolbar.ToolBarCheckBox();
   parent.add( push );
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id );
-  push.setParent( parent );
+//  push.setParent( parent );
 };
 
 /**

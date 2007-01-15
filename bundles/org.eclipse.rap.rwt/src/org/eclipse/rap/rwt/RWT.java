@@ -43,7 +43,6 @@ public class RWT {
   public static final int TOGGLE = 1 << 1;
   public static final int BORDER = 1 << 11;
   public static final int FLAT = 1 << 23;
-  public static final int CLOSE = 1 << 6;
   public static final int NO_FOCUS = 1 << 19;
   public static final int H_SCROLL = 1 << 8;
   public static final int V_SCROLL = 1 << 9;
@@ -64,8 +63,16 @@ public class RWT {
   public static final int WRAP = 1 << 6;
   public static final int PASSWORD = 1 << 22;
   
+
+  // Shells
+  public static final int RESIZE = 1 << 4;
+  public static final int TITLE = 1 << 5;
+  public static final int CLOSE = 1 << 6;
   public static final int MIN = 1 << 7;
   public static final int MAX = 1 << 10;
+  public static final int SHELL_TRIM = CLOSE | TITLE | MIN | MAX | RESIZE;
+  public static final int DIALOG_TRIM = TITLE | CLOSE | BORDER;
+
   
   // Color constants
   /**

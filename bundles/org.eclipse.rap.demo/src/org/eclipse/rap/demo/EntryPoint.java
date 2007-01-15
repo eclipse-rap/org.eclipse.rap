@@ -150,12 +150,12 @@ public class EntryPoint implements IEntryPoint {
 
   public Display createUI() {
     Display display = new Display();
-    final Shell shell = new Shell( display, RWT.NONE );
+    final Shell shell = new Shell( display, RWT.SHELL_TRIM );
     shell.setBounds( 10, 10, 800, 600 );
     
     createMenu( shell );
 
-    final ToolBar toolBar = new ToolBar( shell, RWT.NONE );
+    final ToolBar toolBar = new ToolBar( shell, RWT.FLAT );
     ToolItem item1 = new ToolItem( toolBar, RWT.PUSH );
     item1.setText( "new" );
 
@@ -308,7 +308,7 @@ public class EntryPoint implements IEntryPoint {
     lblNameData.left = new FormAttachment( 0, 5 );
     lblNameData.right = new FormAttachment( 20, 0 );
     lblNameData.bottom = new FormAttachment( 0, 25 );
-    txtGroupNameTab1 = new Text( composite, RWT.MULTI );
+    txtGroupNameTab1 = new Text( composite, RWT.MULTI | RWT.BORDER );
     txtGroupNameTab1.setText( "" );
     FormData txtGroupNameData = new FormData();
     txtGroupNameTab1.setLayoutData( txtGroupNameData );
@@ -323,7 +323,7 @@ public class EntryPoint implements IEntryPoint {
     lblDescriptionData.top = new FormAttachment( lblName, 10 );
     lblDescriptionData.left = new FormAttachment( 0, 5 );
     lblDescriptionData.right = new FormAttachment( 20, 0 );
-    Text txtGroupDescription = new Text( composite, RWT.MULTI );
+    Text txtGroupDescription = new Text( composite, RWT.MULTI | RWT.BORDER );
     txtGroupDescription.setText( "Select a TreeItem" );
     FormData txtGroupDescriptionData = new FormData();
     txtGroupDescription.setLayoutData( txtGroupDescriptionData );
@@ -334,13 +334,13 @@ public class EntryPoint implements IEntryPoint {
   }
 
   private void createShell2( final Display display ) {
-    Shell shell = new Shell( display, RWT.NONE );
+    Shell shell = new Shell( display, RWT.SHELL_TRIM );
     shell.setLayout( new FillLayout() );
-    Composite composite = new Composite( shell, RWT.NONE );
+    Composite composite = new Composite( shell, RWT.SHELL_TRIM );
     composite.setLayout( new FillLayout() );
     Label label = new Label( composite, RWT.NONE );
     label.setText( "FillLayout" );
-    final Text text = new Text( composite, RWT.MULTI );
+    final Text text = new Text( composite, RWT.MULTI | RWT.BORDER );
     text.setText( "None ASCII characters: äöüß@, select the Sash or press the button" );
     Sash sash = new Sash( composite, RWT.NONE );
     sash.addSelectionListener( new SelectionListener() {
@@ -378,6 +378,7 @@ public class EntryPoint implements IEntryPoint {
       }
     } );
     shell.setBounds( 250, 20, 400, 200 );
+    shell.layout();
   }
 
   private void createTab2( final TabFolder folder ) {
@@ -393,7 +394,7 @@ public class EntryPoint implements IEntryPoint {
       25, 75
     } );
     composite1.setLayout( new FormLayout() );
-    Text txtLeft = new Text( composite1, RWT.NONE );
+    Text txtLeft = new Text( composite1, RWT.BORDER );
     txtLeft.setText( "This text is on a SashForm" );
     FormData txtLeftData = new FormData();
     txtLeft.setLayoutData( txtLeftData );
@@ -410,7 +411,7 @@ public class EntryPoint implements IEntryPoint {
     lblNameData.left = new FormAttachment( 0, 5 );
     lblNameData.right = new FormAttachment( 20, 0 );
     lblNameData.bottom = new FormAttachment( 0, 25 );
-    txtGroupNameSash = new Text( composite2, RWT.NONE );
+    txtGroupNameSash = new Text( composite2, RWT.BORDER );
     txtGroupNameSash.setText( "The previous tab you visited was: " );
     FormData txtGroupNameData = new FormData();
     txtGroupNameSash.setLayoutData( txtGroupNameData );
@@ -425,7 +426,7 @@ public class EntryPoint implements IEntryPoint {
     lblDescriptionData.top = new FormAttachment( lblName, 10 );
     lblDescriptionData.left = new FormAttachment( 0, 5 );
     lblDescriptionData.right = new FormAttachment( 20, 0 );
-    txtGroupDescriptionSash = new Text( composite2, RWT.NONE );
+    txtGroupDescriptionSash = new Text( composite2, RWT.BORDER );
     txtGroupDescriptionSash.setText( "try selecting single or multiple table rows" );
     FormData txtGroupDescriptionData = new FormData();
     txtGroupDescriptionSash.setLayoutData( txtGroupDescriptionData );
@@ -481,7 +482,7 @@ public class EntryPoint implements IEntryPoint {
     comboData.left = new FormAttachment( 0, 5 );
     comboData.right = new FormAttachment( 30, 0 );
     comboData.height = 24;
-    List list = new List( panel, RWT.MULTI );
+    List list = new List( panel, RWT.MULTI | RWT.BORDER );
     list.add( "Selection1" );
     list.add( "Selection2" );
     list.add( "Selection3" );

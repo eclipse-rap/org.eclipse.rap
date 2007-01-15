@@ -36,6 +36,7 @@ public class LabelLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.basic.Label" );
+    ControlLCAUtil.writeStyleFlags( widget );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

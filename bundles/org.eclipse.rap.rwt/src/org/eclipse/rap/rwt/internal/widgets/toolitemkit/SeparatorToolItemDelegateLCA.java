@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
@@ -20,7 +21,7 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
   private static final String CREATE_SEPERATOR = 
-    "org.eclipse.rap.rwt.ToolItemUtil.createToolItemSeparatorUtil";
+    "org.eclipse.rap.rwt.ToolItemUtil.createToolItemSeparator";
   private static final String SET_CONTROL_FOR_SEPERATOR = 
     "org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator";
   
@@ -33,8 +34,12 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     Object[] args = new Object[]{
       WidgetUtil.getId( toolItem ),
-      toolItem.getParent()};
+      toolItem.getParent()
+    };
     writer.callStatic( CREATE_SEPERATOR, args );
+    if ((toolItem.getParent().getStyle() & RWT.FLAT) == 0) {
+      writer.set( "visibility", false );
+    }
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {

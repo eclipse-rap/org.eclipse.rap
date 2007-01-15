@@ -6,33 +6,16 @@
  * Contributors: Innoopract Informationssysteme GmbH - initial API and
  * implementation
  ******************************************************************************/
-package org.eclipse.rap.demo;
+package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.custom.CBanner;
-import org.eclipse.rap.rwt.custom.SashForm;
-import org.eclipse.rap.rwt.custom.StackLayout;
-import org.eclipse.rap.rwt.custom.ViewForm;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.custom.*;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.rwt.layout.FillLayout;
-import org.eclipse.rap.rwt.layout.GridData;
-import org.eclipse.rap.rwt.layout.GridLayout;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
+import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.widgets.Button;
-import org.eclipse.rap.rwt.widgets.Composite;
-import org.eclipse.rap.rwt.widgets.Display;
-import org.eclipse.rap.rwt.widgets.Label;
-import org.eclipse.rap.rwt.widgets.Shell;
-import org.eclipse.rap.rwt.widgets.TabFolder;
-import org.eclipse.rap.rwt.widgets.TabItem;
-import org.eclipse.rap.rwt.widgets.Text;
-import org.eclipse.rap.rwt.widgets.ToolBar;
-import org.eclipse.rap.rwt.widgets.ToolItem;
+import org.eclipse.rap.rwt.widgets.*;
 
 public class LayoutDemo implements IEntryPoint {
 
@@ -41,7 +24,8 @@ public class LayoutDemo implements IEntryPoint {
 
   public Display createUI() {
     Display display = new Display();
-    Shell shell = new Shell( display, RWT.NONE );
+    Shell shell = new Shell( display, RWT.SHELL_TRIM );
+    shell.setBounds( 10, 10, 800, 600 );
     shell.setLayout( new FillLayout() );
     SashForm sashForm = new SashForm( shell, RWT.VERTICAL );
     Composite compMain = new Composite( sashForm, RWT.NONE );
@@ -51,9 +35,7 @@ public class LayoutDemo implements IEntryPoint {
     } );
     createMainPart( compMain );
     createFootPart( compFoot );
-    // shell.layout();
-    // System.out.println( "after layput: " + buRight.getBounds() );s
-    shell.setBounds( 10, 10, 500, 300 );
+    shell.layout();
     return display;
   }
 
@@ -176,7 +158,7 @@ public class LayoutDemo implements IEntryPoint {
     viewform.setTopRight( right );
   }
 
-  /** Creates a tab to display a Color */
+  /** Creates a tab to display Colors */
   private void createTabColor( TabFolder folder ) {
     TabItem item = new TabItem( folder, RWT.NONE );
     item.setText( "Color" );
@@ -210,8 +192,7 @@ public class LayoutDemo implements IEntryPoint {
     switchFgButton.setText( "Switch Foreground" );
     switchFgButton.setLayoutData( new RowData( 100, 30 ) );
     final int fgIndex[] = { 0 };
-    switchFgButton.addSelectionListener( new SelectionListener() {
-      public void widgetDefaultSelected( SelectionEvent e ) { }
+    switchFgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
         int i = ++fgIndex[0] % count;
         label.setForeground( fgColors[i] );
@@ -223,8 +204,7 @@ public class LayoutDemo implements IEntryPoint {
     switchBgButton.setText( "Switch Background" );
     switchBgButton.setLayoutData( new RowData( 100, 30 ) );
     final int bgIndex[] = { 0 };
-    switchBgButton.addSelectionListener( new SelectionListener() {
-      public void widgetDefaultSelected( SelectionEvent e ) { }
+    switchBgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
         int i = ++bgIndex[0] % count;
         label.setBackground( bgColors[i] );
@@ -241,13 +221,5 @@ public class LayoutDemo implements IEntryPoint {
     text = new Text( parent, RWT.MULTI );
     text.setText( "" );
   }
-
-  //	private void log(String msg) {
-  //		text.append(msg + text.getLineDelimiter());
-  //	}
-  //
-  //	private void clear() {
-  //		text.setText("");
-  //	}
 
 }

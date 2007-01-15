@@ -36,6 +36,7 @@ public class Shell extends Composite {
   private IShellAdapter shellAdapter;
 
   // TODO [rh] preliminary: yet no null-check, default/current substitute, etc
+  // TODO [rst] check style bits
   public Shell( final Display display, final int style ) {
     super();
     this.style = style;

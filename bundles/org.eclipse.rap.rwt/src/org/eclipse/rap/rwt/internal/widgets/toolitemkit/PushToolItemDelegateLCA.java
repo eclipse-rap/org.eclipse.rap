@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -36,8 +37,15 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     Object[] args = new Object[]{
       WidgetUtil.getId( toolItem ),
-      toolItem.getParent()};
+      toolItem.getParent()
+    };
     writer.callStatic( CREATE_PUSH, args );
+    // TODO [rst] Is this a reasonable way to transmit style to js?
+    //      The direct mapping between RWT.FLAG and rwt_FLAG is violated since
+    //      the style of the parent applies here.
+    if ((toolItem.getParent().getStyle() & RWT.FLAT) != 0) {
+      writer.call( "addState", new Object[]{ "rwt_FLAT" } );
+    }
   }
   
   void renderChanges( final ToolItem toolItem ) throws IOException {

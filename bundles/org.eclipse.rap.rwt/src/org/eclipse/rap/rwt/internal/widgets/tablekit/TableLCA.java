@@ -58,6 +58,9 @@ public class TableLCA extends AbstractWidgetLCA {
     createTableColumns( table );
     createTableModel();
     createTable( table );
+    ControlLCAUtil.writeStyleFlags( table );
+    JSWriter writer = JSWriter.getWriterFor( table );
+    writer.set( "appearance", "table" );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

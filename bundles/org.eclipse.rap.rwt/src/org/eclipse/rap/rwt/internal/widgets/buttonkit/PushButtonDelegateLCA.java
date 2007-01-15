@@ -34,6 +34,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
   void renderInitialization( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( "qx.ui.form.Button" );
+    ControlLCAUtil.writeStyleFlags( button );
   }
 
   void renderChanges( final Button button ) throws IOException {

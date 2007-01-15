@@ -93,7 +93,7 @@ public class ControlLCAUtil {
       if(    W4TContext.getBrowser() instanceof Mozilla
           && widget instanceof Control )
       {
-        if( newBounds.height > 5 ) {
+        if( newBounds.height > 30 ) {
           args = new int[] {
             newBounds.x, newBounds.width, newBounds.y, newBounds.height - 4
           };
@@ -140,7 +140,7 @@ public class ControlLCAUtil {
   public static void writeChanges( final Control control ) throws IOException {
     writeBounds( control );
     writeVisblility( control );
-    ControlLCAUtil.writeColors( control );
+    writeColors( control );
     writeToolTip( control );
     writeMenu( control );
     writeActivateListener( control );
@@ -184,7 +184,6 @@ public class ControlLCAUtil {
                             JSConst.JS_CONTEXT_MENU );
       }
     }
-    
   }
   
   public static void writeToolTip( final Control control ) 
@@ -232,7 +231,32 @@ public class ControlLCAUtil {
                   ( ( IColor )bgColor ).toColorValue() );
     }
   }
-  
+
+  /**
+   * Writes RWT style flags that must be handled on the client side (e.g.
+   * <code>RWT.BORDER</code>). Flags are transmitted as qooxdoo <q>states</q>
+   * that will be respected by the appearance that renders the widget.
+   * 
+   * @param widget
+   * @throws IOException
+   */
+  public static void writeStyleFlags( final Widget widget ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    if( ( widget.getStyle() & RWT.BORDER ) != 0 ) {
+      writer.call( "addState", new Object[]{ "rwt_BORDER" } );
+    }
+    if( ( widget.getStyle() & RWT.FLAT ) != 0 ) {
+      writer.call( "addState", new Object[]{ "rwt_FLAT" } );
+    }
+    // must be passed to disable mininimize or maximize button
+    if( ( widget.getStyle() & RWT.MIN ) != 0 ) {
+      writer.call( "addState", new Object[]{ "rwt_MIN" } );
+    }
+    if( ( widget.getStyle() & RWT.MAX ) != 0 ) {
+      writer.call( "addState", new Object[]{ "rwt_MAX" } );
+    }
+  }
+
   public static void writeActivateListener( final Control control ) 
     throws IOException
   {
@@ -282,7 +306,7 @@ public class ControlLCAUtil {
     String value = WidgetUtil.readPropertyValue( control, PROPERTY_Y_LOCATION );
     return readCoordinate( value, control.getBounds().y );
   }
-
+  
   private static int readControlXLocation( final Control control ) {
     String value = WidgetUtil.readPropertyValue( control, PROPERTY_X_LOCATION );
     return readCoordinate( value, control.getBounds().x );

@@ -11,8 +11,11 @@
         class="org.eclipse.rap.demo.EntryPoint"
         parameter="rwtdemo"/>
     <entrypoint
-        class="org.eclipse.rap.demo.LayoutDemo"
+        class="org.eclipse.rap.demo.controls.LayoutDemo"
         parameter="layout"/>
+    <entrypoint
+        class="org.eclipse.rap.demo.controls.ControlsDemo"
+        parameter="controls"/>
   </extension>
   
   <extension
