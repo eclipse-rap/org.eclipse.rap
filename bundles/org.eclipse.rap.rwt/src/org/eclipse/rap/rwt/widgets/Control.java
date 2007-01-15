@@ -184,8 +184,22 @@ public abstract class Control extends Widget {
     // TODO: [fappel] reasonable implementation
     return 0;
   }
-  
 
+  public Point toDisplay( final int x, final int y ) {
+    // TODO: [fappel] doesn't seem to work right, revise this
+    checkWidget();
+    Rectangle current = new Rectangle( x, y, 0, 0 );
+    Rectangle result = getDisplay().map( this, null, current );
+    return new Point( result.x, result.y );
+  }
+
+  public Point toDisplay( final Point point ) {
+    checkWidget();
+    if( point == null ) {
+      error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    return toDisplay( point.x, point.y );
+  }
   // ///////////////////////
   // Layout related methods
   

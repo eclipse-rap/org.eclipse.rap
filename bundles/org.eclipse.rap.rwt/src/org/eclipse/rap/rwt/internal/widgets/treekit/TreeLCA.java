@@ -39,6 +39,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
   
   public void readData( final Widget widget ) {
+    Tree tree = ( Tree )widget;
+    String value = WidgetUtil.readPropertyValue( widget, "selection" );
+    if( value != null ) {
+      String[] values = value.split( "," );
+      TreeItem[] selectedItems = new TreeItem[ values.length ];
+      for( int i = 0; i < values.length; i++ ) {
+        selectedItems[ i ] = ( TreeItem )WidgetUtil.find( tree, values[ i ] );
+      }
+      tree.setSelection( selectedItems );
+    }
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

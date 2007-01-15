@@ -185,4 +185,8 @@ public abstract class Widget implements Adaptable {
     }
     return result;
   }
+
+  void error( int code ) {
+    RWT.error( code );
+  }
 }

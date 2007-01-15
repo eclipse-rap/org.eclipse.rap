@@ -46,7 +46,6 @@ qx.Proto.createItem = function( id, parentItem ) {
   row.addIndent();
   row.addIcon( "resource/icon/nuvola/16/folder.png" );
   if( this._styleCheck ) {
-this.debug( "check this out" );    
     var checkBox = new qx.ui.form.CheckBox();
     row.addObject( checkBox, true );
   }
@@ -115,7 +114,6 @@ qx.Proto._onWidgetSelected = function( evt ) {
 
 qx.Proto._onItemExpanded = function( evt ) {
   if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-this.debug( "expand event" );    
     var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
     var treeItemId = wm.findIdByWidget( evt.getData() );
     var req = org.eclipse.rap.rwt.Request.getInstance();

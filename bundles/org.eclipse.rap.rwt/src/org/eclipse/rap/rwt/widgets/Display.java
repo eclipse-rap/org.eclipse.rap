@@ -47,8 +47,8 @@ public class Display implements Adaptable {
     shells = new ArrayList();
   }
 
-  public Composite[] getShells() {
-    Composite[] result = new Composite[ shells.size() ];
+  public Shell[] getShells() {
+    Shell[] result = new Shell[ shells.size() ];
     shells.toArray( result );
     return result;
   }

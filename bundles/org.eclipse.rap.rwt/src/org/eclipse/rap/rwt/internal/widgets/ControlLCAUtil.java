@@ -269,22 +269,20 @@ public class ControlLCAUtil {
 
   private static int readControlYLocation( final Control control ) {
     String value = WidgetUtil.readPropertyValue( control, PROPERTY_Y_LOCATION );
-    int result = 0;
-    if( value != null ) {
-      result = Integer.parseInt( value );
-    } else {
-      result = control.getBounds().y;
-    }
-    return result;
+    return readCoordinate( value, control.getBounds().y );
   }
-
+  
   private static int readControlXLocation( final Control control ) {
     String value = WidgetUtil.readPropertyValue( control, PROPERTY_X_LOCATION );
+    return readCoordinate( value, control.getBounds().x );
+  }
+
+  private static int readCoordinate( final String value, final int current ) {
     int result = 0;
-    if( value != null ) {
+    if( value != null && !"null".equals( value ) ) {
       result = Integer.parseInt( value );
     } else {
-      result = control.getBounds().x;
+      result = current;
     }
     return result;
   }

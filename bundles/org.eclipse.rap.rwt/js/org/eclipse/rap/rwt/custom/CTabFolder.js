@@ -91,10 +91,30 @@ qx.Proto.setTabHeight = function( tabHeight ) {
 }
 
 qx.Proto.setSelectionBackground = function( color ) {
+  var borderColor = new qx.renderer.color.Color( color );
+  
+  var highlightBorder = new qx.renderer.border.Border();
+  highlightBorder.setLeft( 2, "solid", borderColor );
+  this._highlightLeft.setBorder( highlightBorder );
+
+  highlightBorder = new qx.renderer.border.Border();
+  highlightBorder.setRight( 2, "solid", borderColor );
+  this._highlightRight.setBorder( highlightBorder );
+
+  highlightBorder = new qx.renderer.border.Border();
+  highlightBorder.setTop( 2, "solid", borderColor );
+  this._highlightTop.setBorder( highlightBorder );
+
+  highlightBorder = new qx.renderer.border.Border();
+  highlightBorder.setBottom( 2, "solid", borderColor );
+  this._highlightBottom.setBorder( highlightBorder );
+
+/*
   this._highlightLeft.getBorder().setLeftColor( color );
   this._highlightRight.getBorder().setRightColor( color );
   this._highlightTop.getBorder().setTopColor( color );
   this._highlightBottom.getBorder().setBottomColor( color );
+*/
 }
 
 qx.Proto._getButtonTop = function() {
