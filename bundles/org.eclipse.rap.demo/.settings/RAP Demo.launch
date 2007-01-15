@@ -2,15 +2,15 @@
 <launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
 <intAttribute key="default_start_level" value="4"/>
 <stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="deselected_workspace_plugins" value="org.eclipse.ui,mail,org.eclipse.jface,org.eclipse.ui.workbench,demo,org.eclipse.contribution.spider"/>
 <booleanAttribute key="tracing" value="false"/>
-<stringAttribute key="deselected_workspace_plugins" value="demo"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-console"/>
 <booleanAttribute key="clearConfig" value="false"/>
 <booleanAttribute key="automaticValidate" value="false"/>
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="target_bundles" value="org.apache.commons_logging@default:default,org.apache.jakarta_log4j@default:default,org.apache.xerces@default:default,org.eclipse.core.commands@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime@default:default,org.eclipse.core.runtime.compatibility.auth@default:default,org.eclipse.core.runtime.compatibility.registry@default:default,org.eclipse.equinox.common@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.servlet.api@default:default,org.eclipse.osgi@:,org.eclipse.osgi.services@default:default,org.junit@default:default"/>
+<stringAttribute key="target_bundles" value="com.ibm.icu@default:default,org.apache.commons_logging@default:default,org.apache.jakarta_log4j@default:default,org.apache.xerces@default:default,org.eclipse.atf.mozilla.ide.core@default:default,org.eclipse.atf.mozilla.swt.browser@default:default,org.eclipse.core.commands@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.expressions@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime@default:default,org.eclipse.core.runtime.compatibility.auth@default:default,org.eclipse.core.runtime.compatibility.registry@default:default,org.eclipse.equinox.common@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.equinox.servlet.api@default:default,org.eclipse.help@default:default,org.eclipse.osgi@:,org.eclipse.osgi.services@default:default,org.eclipse.swt@default:default,org.eclipse.swt.win32.win32.x86@default:default,org.junit@default:default,org.mozilla.xpcom@default:default"/>
 <stringAttribute key="workspace_bundles" value="javax.servlet@default:default,org.apache.commons.logging@default:default,org.eclipse.equinox.http.jetty@default:default,org.eclipse.equinox.http.registry@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.rap.demo@default:default,org.eclipse.rap.demo.test@default:default,org.eclipse.rap.jface@default:default,org.eclipse.rap.rwt@default:default,org.eclipse.rap.rwt.test@default:default,org.eclipse.rap.ui.workbench@default:default,org.eclipse.rap.w4t@default:default,org.eclipse.rap.w4t.test@default:default,org.mortbay.jetty@default:default"/>
 <booleanAttribute key="default_auto_start" value="true"/>
 <booleanAttribute key="automaticAdd" value="true"/>

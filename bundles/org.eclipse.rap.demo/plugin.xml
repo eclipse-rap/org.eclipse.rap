@@ -2,13 +2,62 @@
 <?eclipse version="3.0"?>
 <plugin>
   <extension
-        id="org.eclipse.rap.demo.demoentrypoint"
-        point="org.eclipse.rap.ui.workbench.entrypoint">
-     <entrypoint
-           class="org.eclipse.rap.demo.EntryPoint"
-           parameter="default"/>
-     <entrypoint
-           class="org.eclipse.rap.demo.LayoutDemo"
-           parameter="layout"/>
+      id="org.eclipse.rap.demo.demoentrypoint"
+      point="org.eclipse.rap.ui.workbench.entrypoint">
+    <entrypoint
+        class="org.eclipse.rap.demo.DemoWorkbench"
+        parameter="default"/>
+    <entrypoint
+        class="org.eclipse.rap.demo.EntryPoint"
+        parameter="rwtdemo"/>
+    <entrypoint
+        class="org.eclipse.rap.demo.LayoutDemo"
+        parameter="layout"/>
   </extension>
+  
+  <extension
+      point="org.eclipse.rap.ui.workbench.perspectives">
+    <perspective
+        name="Demo Perspective"
+        class="org.eclipse.rap.demo.Perspective"
+        id="org.eclipse.rap.demo.perspective">
+    </perspective>
+  </extension>
+  
+  <extension point="org.eclipse.rap.ui.workbench.views"> 
+      <!-- category 
+         id="com.xyz.views.XYZviews" 
+         name="XYZ"/--> 
+      <view 
+         id="org.eclipse.rap.demo.DemoTreeViewPartI" 
+         name="View I" 
+         class="org.eclipse.rap.demo.DemoTreeViewPart" /> 
+         <!-- category="com.xyz.views.XYZviews" --> 
+         <!-- icon="icons/XYZ.gif"/ -->
+      <view 
+         id="org.eclipse.rap.demo.DemoTreeViewPartII" 
+         name="View II" 
+         class="org.eclipse.rap.demo.DemoTreeViewPart" /> 
+         <!-- category="com.xyz.views.XYZviews" --> 
+         <!-- icon="icons/XYZ.gif"/ -->
+      <view 
+         id="org.eclipse.rap.demo.DemoTreeViewPartIII" 
+         name="View III" 
+         class="org.eclipse.rap.demo.DemoTreeViewPart" /> 
+         <!-- category="com.xyz.views.XYZviews" --> 
+         <!-- icon="icons/XYZ.gif"/ -->
+      <view 
+         id="org.eclipse.rap.demo.DemoTreeViewPartIV" 
+         name="View V" 
+         class="org.eclipse.rap.demo.DemoTreeViewPart" /> 
+         <!-- category="com.xyz.views.XYZviews" --> 
+         <!-- icon="icons/XYZ.gif"/ -->
+      <view 
+         id="org.eclipse.rap.demo.DemoTableViewPart" 
+         name="View IV" 
+         class="org.eclipse.rap.demo.DemoTableViewPart" /> 
+         <!-- category="com.xyz.views.XYZviews" --> 
+         <!-- icon="icons/XYZ.gif"/ -->
+   </extension> 
+  
 </plugin>
