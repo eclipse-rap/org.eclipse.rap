@@ -69,7 +69,9 @@ qx.Proto.selectItem = function( itemIndex ) {
     this.getManager().deselectAll();
   } else {
     var item = this.getChildren()[ itemIndex ];
-    this.getManager().setSelectedItem( item );  
+    this.getManager().setSelectedItem( item );
+    // TODO [rh] second parameter has no effect, figure out what it is for
+    this.getManager().scrollItemIntoView( item, false );
   }
 }
 
