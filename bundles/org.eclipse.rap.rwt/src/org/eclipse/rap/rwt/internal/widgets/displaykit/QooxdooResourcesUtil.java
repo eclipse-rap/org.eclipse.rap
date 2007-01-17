@@ -60,7 +60,7 @@ final class QooxdooResourcesUtil {
   private static final String LIST_JS 
     = "org/eclipse/rap/rwt/widgets/List.js";
   private static final String SHELL_JS 
-    = "org./eclipse/rap/rwt/widgets/Shell.js";
+    = "org/eclipse/rap/rwt/widgets/Shell.js";
   private static final String TREE_JS 
     = "org/eclipse/rap/rwt/widgets/Tree.js";
   private static final String SCROLLED_COMPOSITE_JS 
