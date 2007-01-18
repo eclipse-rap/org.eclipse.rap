@@ -18,7 +18,10 @@ import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 
 
-
+/**
+ * <p>Though Table inherits the font property from Control, it is currently
+ * not evaluated client-side.</p> 
+ */
 public class Table extends Composite {
   
   private static final TableItem[] EMPTY_SELECTION = new TableItem[ 0 ];

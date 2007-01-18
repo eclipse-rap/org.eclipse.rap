@@ -76,8 +76,8 @@ public class ListLCA extends AbstractWidgetLCA {
   // TODO [rh] keep scroll position, even when exchanging items 
   public void renderChanges( final Widget widget ) throws IOException {
     List list = ( List )widget;
+    // order of writeChanges, writeItems, writeSelection, writeFocus is crucial
     ControlLCAUtil.writeChanges( list );
-    // order of writeItems, writeSelection, writeFocus is crucial
     writeItems( list );
     writeSelection( list );
     writeFocusIndex( list );

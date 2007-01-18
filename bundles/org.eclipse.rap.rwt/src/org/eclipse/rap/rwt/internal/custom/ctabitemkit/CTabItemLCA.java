@@ -28,10 +28,12 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     = "org.eclipse.rap.rwt.events.ctabItemClosed";
   
   public static final String PROP_BOUNDS = "bounds";
+  private static final String PROP_FONT = "font";
   public static final String PROP_SELECTED = "selected";
   public static final String PROP_SHOWING = "showing";
   public static final String PROP_UNSELECTED_CLOSE_VISIBLE 
     = "unselectedCloseVisible";
+
 
   public void preserveValues( final Widget widget ) {
     CTabItem item = ( CTabItem )widget;
@@ -45,6 +47,8 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_UNSELECTED_CLOSE_VISIBLE, 
                       Boolean.valueOf( closeVisible ) );
     adapter.preserve( PROP_SHOWING, 
+                      Boolean.valueOf( item.isShowing() ) );
+    adapter.preserve( PROP_FONT, 
                       Boolean.valueOf( item.isShowing() ) );
   }
   
@@ -78,9 +82,10 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     Rectangle bounds = item.getBounds();
-    ControlLCAUtil.writeBounds( item, item.getParent(), bounds, true );
+    WidgetLCAUtil.writeBounds( item, item.getParent(), bounds, true );
     ItemLCAUtil.writeChanges( item );
-    ControlLCAUtil.writeToolTip( item, item.getToolTipText() );
+    ItemLCAUtil.writeFont( item, item.getFont() );
+    WidgetLCAUtil.writeToolTip( item, item.getToolTipText() );
     writeShowing( item );
     writeUnselectedCloseVisible( item );
     writeSelectionForeground( item );

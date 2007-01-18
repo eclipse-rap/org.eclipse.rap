@@ -21,13 +21,13 @@ import org.eclipse.rap.rwt.widgets.ToolItem;
 final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
   
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
-  private static final String CREATE_PUSH = 
-    "org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush";
+  private static final String CREATE_PUSH 
+    = "org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush";
 
-  private final static JSListenerInfo JS_LISTENER_INFO = 
-    new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
-                        JSConst.JS_WIDGET_SELECTED,
-                        JSListenerType.ACTION );
+  private final static JSListenerInfo JS_LISTENER_INFO 
+    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
+                          JSConst.JS_WIDGET_SELECTED,
+                          JSListenerType.ACTION );
 
   void readData( final ToolItem toolItem ) {
     processSelection( toolItem );
@@ -43,7 +43,7 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
     // TODO [rst] Is this a reasonable way to transmit style to js?
     //      The direct mapping between RWT.FLAG and rwt_FLAG is violated since
     //      the style of the parent applies here.
-    if ((toolItem.getParent().getStyle() & RWT.FLAT) != 0) {
+    if( ( toolItem.getParent().getStyle() & RWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
   }
@@ -51,10 +51,11 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeChanges( toolItem );
+    ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned
-    ControlLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
+    WidgetLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined

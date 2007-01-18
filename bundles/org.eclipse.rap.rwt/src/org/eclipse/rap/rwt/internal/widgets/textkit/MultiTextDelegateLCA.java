@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.textkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
 
-public class MultiTextDelegateLCA extends TextDelegateLCA {
+class MultiTextDelegateLCA extends TextDelegateLCA {
 
   public String getClassName() {
     return "qx.ui.form.TextArea";

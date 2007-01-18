@@ -14,8 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import com.w4t.Fixture;
 import com.w4t.engine.lifecycle.PhaseId;
 
@@ -193,5 +192,28 @@ public class Control_Test extends TestCase {
     controlB.setMenu( menu );
     controlA.dispose();
     assertEquals( true, menu.isDisposed() );
+  }
+  
+  public void testFont() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Composite composite = new Composite( shell, RWT.NONE );
+    Control control = new Button( shell, RWT.PUSH );
+
+    // Initially the system font is set
+    assertSame( display.getSystemFont(), control.getFont() );
+    
+    // Setting a parents' font must not affect the childrens font
+    Font compositeFont = Font.getFont( "Composite Font", 12, RWT.NORMAL );
+    composite.setFont( compositeFont );
+    assertNotSame( control.getFont(), compositeFont );
+    
+    // (re)setting a font to null assigns the system font to the control 
+    Label label = new Label( composite, RWT.NONE );
+    Font labelFont = Font.getFont( "label font", 14, RWT.BOLD );
+    label.setFont( labelFont );
+    assertSame( labelFont, label.getFont() );
+    label.setFont( null );
+    assertSame( display.getSystemFont(), label.getFont() );
   }
 }

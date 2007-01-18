@@ -12,6 +12,7 @@ import org.eclipse.rap.rwt.widgets.*;
 public class CoolBarTab extends ExampleTab {
 
   Image image1, image2, image3, image4;
+  private CoolBar coolBar;
   
   public CoolBarTab( TabFolder folder ) {
     super( folder, "CoolBar" );
@@ -20,6 +21,7 @@ public class CoolBarTab extends ExampleTab {
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
+    createFontChooser( new Control[] { coolBar } );
   }
 
   void createExampleControls( Composite top ) {
@@ -33,7 +35,7 @@ public class CoolBarTab extends ExampleTab {
     image3 = Image.find( "resources/newprj_wiz.gif", loader );
     image4 = Image.find( "resources/search_src.gif", loader );
     
-    CoolBar coolBar = new CoolBar( top, style );
+    coolBar = new CoolBar( top, style );
     coolBar.setLayoutData( new RowData( 260, 65 ) );
     
     // Create the push button toolbar cool item

@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Font;
 
 
 /**
@@ -22,6 +23,7 @@ public class TreeItem extends Item {
   private final TreeItem parentItem;
   private final Tree parent;
   private final ItemHolder itemHolder;
+  private Font font;
   private boolean expanded;
 
   public TreeItem( final Tree parent, final int style ) {
@@ -101,6 +103,23 @@ public class TreeItem extends Item {
   public boolean getExpanded() {
     return expanded;
   }
+
+  public void setFont( final Font font ) {
+    checkWidget();
+    this.font = font;
+  }
+  
+  public Font getFont() {
+    checkWidget();
+    Font result;
+    if( font == null ) {
+      result = getParent().getFont();
+    } else {
+      result = font;
+    }
+    return result;
+  }
+  
 
   ///////////////////////////////////////
   // Methods to maintain (sub-) TreeItems

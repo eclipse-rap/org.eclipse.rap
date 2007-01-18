@@ -33,6 +33,7 @@ qx.OO.defineClass(
     manager.addEventListener( "changeSelection", this._onWidgetSelected, this );
     this.addEventListener( "treeOpenWithContent", this._onItemExpanded, this );
     this.addEventListener( "treeClose", this._onItemCollapsed, this );
+    this.addEventListener( "contextmenu", this._onContextMenu, this );
   }
 );
 
@@ -136,4 +137,12 @@ qx.Proto._onItemCollapsed = function( evt ) {
       req.send();
     }
   }
+}
+
+qx.Proto._onContextMenu = function( evt ) {
+  var menu = this.getContextMenu();
+  menu.setLocation( evt.getPageX(), evt.getPageY() );
+  menu.setOpener( this );
+  menu.show();
+  evt.stopPropagation();
 }

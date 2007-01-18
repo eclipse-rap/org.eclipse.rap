@@ -28,7 +28,8 @@ function(vTitle) {
 });
 
 
-
+org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName
+  = '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif';
 
 qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   /*
@@ -93,7 +94,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "label" : {
     setup : function() {
       this.color_disabled = new qx.renderer.color.ColorObject("graytext");
-      this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
       this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
       // new qx.renderer.border.BorderObject(1, "inset");
@@ -680,7 +681,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "window-captionbar-title" : {
     setup : function() {
-      this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.font.setBold(true);
     },
 
@@ -976,7 +977,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "text-field" : {
     setup : function() {
-      this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
       this.border = qx.renderer.border.BorderPresets.getInstance().inset;
     },
@@ -1849,7 +1850,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "datechooser-monthyear" : {
     setup : function() {
-      this.font = new qx.renderer.font.Font(13, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.font = new qx.renderer.font.Font(13, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
     },
 
     initial : function(vTheme) {
@@ -1883,7 +1884,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.border.set({ bottomColor:"gray", bottomStyle :qx.renderer.border.Border.STYLE_SOLID, bottomWidth:1 });
       this.color = new qx.renderer.color.ColorObject("window");
       this.bgcolor = new qx.renderer.color.ColorObject("#6285BA");
-      this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.font.setBold(true);
     },
 
@@ -1907,7 +1908,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "datechooser-day" : {
     setup : function() {
-      this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
 
       this.selectedColor = new qx.renderer.color.ColorObject("highlightText");
       this.selectedBgColor = new qx.renderer.color.ColorObject("#316ac5");
@@ -1947,7 +1948,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.headerBorder.set({ rightColor:"gray", rightStyle :qx.renderer.border.Border.STYLE_SOLID, rightWidth:1,
       bottomColor:"gray", bottomStyle :qx.renderer.border.Border.STYLE_SOLID, bottomWidth:1 });
       this.color = new qx.renderer.color.ColorObject("#6285BA");
-      this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
     },
 
     initial : function(vTheme) {
@@ -1979,7 +1980,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "table-focus-statusbar" : {
     setup : function() {
-      this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.border = new qx.renderer.border.Border;
       this.border.set({ topColor:"threedshadow", topStyle :qx.renderer.border.Border.STYLE_SOLID, topWidth:1 });
     },
@@ -2011,7 +2012,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "table-editor-textfield" : {
     setup : function() {
-      this.font = new qx.renderer.font.Font(11, '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif');
+      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
     },
 
     initial : function(vTheme) {

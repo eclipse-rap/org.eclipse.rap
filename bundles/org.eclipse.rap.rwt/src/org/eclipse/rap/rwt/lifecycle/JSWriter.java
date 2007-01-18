@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
@@ -33,6 +35,9 @@ import com.w4t.engine.service.IServiceStateInfo;
 //      this also applies for other 'SPI's. 
 public final class JSWriter {
   
+  private static final Pattern ESCAPE_STRING_PATTERN 
+    = Pattern.compile( "(\"|\\\\)" );
+
   public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
   public static JSVar WIDGET_REF = new JSVar( "w" );
   
@@ -111,7 +116,8 @@ public final class JSWriter {
   public void set( final String jsProperty, final String value ) 
     throws IOException 
   {
-    set( jsProperty, new String[] { value } );
+    call( getSetterName( jsProperty ), new Object[] { value } );
+//    set( jsProperty, new String[] { value } );
   }
   
   public void set( final String jsProperty, final int value ) 
@@ -486,7 +492,7 @@ public final class JSWriter {
         }
         if( args[ i ] instanceof String ) {
           params.append( '"' );
-          params.append( args[ i ] );
+          params.append( escapeString( ( String )args[ i ] ) );
           params.append( '"' );
         } else if( args[ i ] instanceof Widget ) {
           if( args[ i ] == getCurrentWidgetRef() ) {
@@ -545,6 +551,43 @@ public final class JSWriter {
   }
 
 
+  ////////////////////////////////////////
+  // Helping methods to manipulate strings 
+  
+  private static String capitalize( final String text ) {
+    String result;
+    if( Character.isUpperCase( text.charAt( 0 ) ) ) {
+      result = text;
+    } else {
+      StringBuffer buffer = new StringBuffer( text );
+      char firstLetter = buffer.charAt( 0 );
+      firstLetter = Character.toUpperCase( firstLetter );
+      buffer.setCharAt( 0, firstLetter );
+      result = buffer.toString();
+    }
+    return result;
+  }
+  
+  private static String escapeString( final String input ) {
+    Matcher matcher = ESCAPE_STRING_PATTERN.matcher( input );
+    String result = matcher.replaceAll( "\\\\$1" );
+    return result;
+  }
+
+  private static String getSetterName( final String jsProperty ) {
+    StringBuffer functionName = new StringBuffer();
+    functionName.append( "set" );
+    functionName.append( capitalize( jsProperty ) );
+    return functionName.toString();
+  }
+  
+  private static String getGetterName( final String jsProperty ) {
+    StringBuffer functionName = new StringBuffer();
+    functionName.append( "get" );
+    functionName.append( capitalize( jsProperty ) );
+    return functionName.toString();
+  }
+  
   /////////////////////////////////////////////////////////
   // Helping methods to write to the actual response writer 
   
@@ -565,34 +608,6 @@ public final class JSWriter {
     arguments[ 0 ] = capitalize( propertyName );
     String out = MessageFormat.format( pattern, arguments );
     getWriter().write( out );
-  }
-  
-  private static String getSetterName( final String jsProperty ) {
-    StringBuffer functionName = new StringBuffer();
-    functionName.append( "set" );
-    functionName.append( capitalize( jsProperty ) );
-    return functionName.toString();
-  }
-  
-  private static String getGetterName( final String jsProperty ) {
-    StringBuffer functionName = new StringBuffer();
-    functionName.append( "get" );
-    functionName.append( capitalize( jsProperty ) );
-    return functionName.toString();
-  }
-  
-  private static String capitalize( final String text ) {
-    String result;
-    if( Character.isUpperCase( text.charAt( 0 ) ) ) {
-      result = text;
-    } else {
-      StringBuffer buffer = new StringBuffer( text );
-      char firstLetter = buffer.charAt( 0 );
-      firstLetter = Character.toUpperCase( firstLetter );
-      buffer.setCharAt( 0, firstLetter );
-      result = buffer.toString();
-    }
-    return result;
   }
   
   private void write( final String pattern, 

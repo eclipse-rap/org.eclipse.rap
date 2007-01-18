@@ -23,6 +23,7 @@ import org.eclipse.rap.rwt.graphics.*;
 public abstract class Control extends Widget {
 
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
+  
   private final Composite parent;
   private Rectangle bounds = EMPTY_RECTANGLE;
   private Object layoutData;
@@ -32,6 +33,7 @@ public abstract class Control extends Widget {
   private boolean visible = true;
   private Color foreground;
   private Color background;
+  private Font font;
 
   Control() {
     // prevent instantiation from outside this package
@@ -75,21 +77,44 @@ public abstract class Control extends Widget {
   // Colors
 
   public void setBackground( final Color color ) {
+    checkWidget();
     background = color;
   }
   
   public Color getBackground () {
+    checkWidget();
     // Control control = findBackgroundControl ();
     // if (control == null) control = this;
     return background;
   }
 
   public void setForeground( final Color color ) {
+    checkWidget();
     foreground = color;
   }
 
   public Color getForeground () {
+    checkWidget();
     return foreground;
+  }
+  
+  ////////
+  // Fonts
+  
+  public void setFont( final Font font ) {
+    checkWidget();
+    this.font = font;
+  }
+  
+  public Font getFont() {
+    checkWidget();
+    Font result;
+    if( font == null ) {
+      result = getDisplay().getSystemFont();
+    } else {
+      result = font;
+    }
+    return result;
   }
   
 

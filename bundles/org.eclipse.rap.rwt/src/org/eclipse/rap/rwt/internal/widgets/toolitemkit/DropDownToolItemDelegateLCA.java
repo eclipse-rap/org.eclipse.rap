@@ -31,14 +31,14 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
   // suffix (postfix) for the widget id of the second push button
   private static final String MENU_SUFFIX = "menu";
   //tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
-  private static final String CREATE_PUSH = 
-    "org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush";
-  private static final String CREATE_PUSH_MENU = 
-    "org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu";
-  private static final String WIDGET_SELECTED = 
-    "org.eclipse.rap.rwt.ToolItemUtil.widgetSelected";
-  private static final String UPDATE_LISTENER = 
-    "org.eclipse.rap.rwt.ToolItemUtil.addEventListenerForDropDownButton";
+  private static final String CREATE_PUSH 
+    = "org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush";
+  private static final String CREATE_PUSH_MENU 
+    = "org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu";
+  private static final String WIDGET_SELECTED 
+    = "org.eclipse.rap.rwt.ToolItemUtil.widgetSelected";
+  private static final String UPDATE_LISTENER 
+    = "org.eclipse.rap.rwt.ToolItemUtil.addEventListenerForDropDownButton";
   // radio functions as defined in org.eclipse.rap.rwt.ButtonUtil
   private final static JSListenerInfo JS_LISTENER_INFO = 
     new JSListenerInfo( JSConst.QX_EVENT_CLICK,
@@ -93,7 +93,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned
-    ControlLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
+    WidgetLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
@@ -107,6 +107,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
       WIDGET_SELECTED
     };    
     writer.callStatic( UPDATE_LISTENER, args );
+    ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
   }
   
   

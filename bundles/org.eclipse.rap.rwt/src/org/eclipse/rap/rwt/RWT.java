@@ -73,7 +73,25 @@ public class RWT {
   public static final int SHELL_TRIM = CLOSE | TITLE | MIN | MAX | RESIZE;
   public static final int DIALOG_TRIM = TITLE | CLOSE | BORDER;
 
+  // Font style constants
+  /**
+   * The font style constant indicating a normal weight, non-italic font
+   * (value is 0).
+   */
+  public static final int NORMAL = 0;
   
+  /**
+   * The font style constant indicating a bold weight font
+   * (value is 1&lt;&lt;0).
+   */
+  public static final int BOLD = 1 << 0;
+  
+  /**
+   * The font style constant indicating an italic font
+   * (value is 1&lt;&lt;1).
+   */
+  public static final int ITALIC = 1 << 1;
+
   // Color constants
   /**
    * Default color white (value is 1).

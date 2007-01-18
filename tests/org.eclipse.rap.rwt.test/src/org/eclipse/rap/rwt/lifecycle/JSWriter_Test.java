@@ -856,6 +856,39 @@ public class JSWriter_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) != -1 );
   }
   
+  public void testExcapeString() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display, RWT.NONE );
+    Label label = new Label( shell , RWT.NONE );
+    JSWriter writer = JSWriter.getWriterFor( label  );
+    // Run once, thus JSWriter will outut the prologue which is not under test
+    writer.set( "dummy", false );
+    
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "abc" );
+    assertEquals( "w.setHtml( \"abc\" );", Fixture.getAllMarkup() );
+    
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "a\"bc" );
+    assertEquals( "w.setHtml( \"a\\\"bc\" );", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "\"" );
+    assertEquals( "w.setHtml( \"\\\"\" );", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "back\\slash" );
+    assertEquals( "w.setHtml( \"back\\\\slash\" );", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "\\\"" );
+    assertEquals( "w.setHtml( \"\\\\\\\"\" );", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "\n" );
+    assertEquals( "w.setHtml( \"\n\" );", Fixture.getAllMarkup() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

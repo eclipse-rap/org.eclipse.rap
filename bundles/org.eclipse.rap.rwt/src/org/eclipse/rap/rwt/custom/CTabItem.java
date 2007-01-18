@@ -12,8 +12,7 @@
 package org.eclipse.rap.rwt.custom;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 
@@ -30,6 +29,7 @@ public class CTabItem extends Item {
   private final CTabFolder parent;
   private Control control;
   private String toolTipText;
+  private Font font;
   // TODO [rh] shortenedText is not yet calculated
   String shortenedText;
   int shortenedTextWidth;
@@ -78,6 +78,24 @@ public class CTabItem extends Item {
       super.setImage( image );
       parent.updateItems();
     }
+  }
+
+  /** <p>Changing font works, but tab size is not adjusted accordingly.</p> */
+  public void setFont( final Font font ) {
+    checkWidget();
+    if( font != this.font ) {
+      this.font = font;
+      if( !parent.updateTabHeight( false ) ) {
+        parent.updateItems();
+      }
+    }
+  }
+
+  public Font getFont() {
+    checkWidget();
+    if( font != null )
+      return font;
+    return parent.getFont();
   }
 
   public Control getControl() {
@@ -187,7 +205,7 @@ public class CTabItem extends Item {
           width += INTERNAL_SPACING;
         }
         // TODO [rh] fake calculation of text size...
-        width += text.length() * 12; 
+        width += text.length() * 4; 
       }
       if( canClose() && ( isSelected || parent.getUnselectedCloseVisible() ) ) {
         if( result > 0 ) {

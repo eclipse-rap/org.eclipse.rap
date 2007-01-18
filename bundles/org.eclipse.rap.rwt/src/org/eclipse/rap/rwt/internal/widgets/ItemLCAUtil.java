@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets;
 
 import java.io.IOException;
+import org.eclipse.rap.rwt.graphics.Font;
 import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Item;
@@ -45,6 +46,12 @@ public class ItemLCAUtil {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( JSConst.QX_FIELD_ICON, imagePath );
     }
+  }
+  
+  public static void writeFont( final Item item, final Font font ) 
+    throws IOException 
+  {
+    WidgetLCAUtil.writeFont( item, font );
   }
 
   public static void writeChanges( final Item item ) throws IOException {

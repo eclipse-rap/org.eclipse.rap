@@ -9,20 +9,23 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class ListTab extends ExampleTab {
 
+  private List list;
+
   public ListTab( TabFolder folder ) {
     super( folder, "List" );
   }
 
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
+    createFontChooser( new Control[] { list } );
   }
 
   void createExampleControls( Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
-    List list1 = new List( top, style );
-    list1.setLayoutData( new RowData(150, 150) );
-    list1.setItems( new String[] { "Test List ", "Item 2", "Item 3" } );
+    list = new List( top, style );
+    list.setLayoutData( new RowData(150, 150) );
+    list.setItems( new String[] { "Test List ", "Item 2", "Item 3" } );
   }
 
 }

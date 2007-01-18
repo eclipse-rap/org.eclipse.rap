@@ -20,6 +20,9 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class TabItemLCA extends AbstractWidgetLCA {
 
+  private static final String PROP_FONT = "font";
+  private static final String PROP_CHECKED = "checked";
+
   private final static JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( "changeChecked",
                           "org.eclipse.rap.rwt.TabUtil.tabSelected",
@@ -30,8 +33,8 @@ public class TabItemLCA extends AbstractWidgetLCA {
     TabItem tabItem = ( TabItem )widget;
     ItemLCAUtil.preserve( tabItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.CHECKED, Boolean.valueOf( isChecked( tabItem ) ) );
-    
+    adapter.preserve( PROP_CHECKED, Boolean.valueOf( isChecked( tabItem ) ) );
+    adapter.preserve( PROP_FONT, tabItem.getParent().getFont() );
     // preserve the listener state of the parent tabfolder here, since the
     // javascript handling is added to the clientside tab buttons and therefore
     // the jswriter will check the preserved state of the tabitem...
@@ -42,7 +45,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
   }
   
   public void readData( final Widget widget ) {
-    String value = WidgetUtil.readPropertyValue( widget, Props.CHECKED );
+    String value = WidgetUtil.readPropertyValue( widget, PROP_CHECKED );
     if( value != null && Boolean.valueOf( value ).booleanValue() ) {
       TabItem tabItem = ( TabItem )widget;
       TabFolder parent = tabItem.getParent();
@@ -52,10 +55,10 @@ public class TabItemLCA extends AbstractWidgetLCA {
           TabItem[] oldSelection = parent.getSelection();
           if( oldSelection.length == 1 ) {
             IWidgetAdapter adapter = WidgetUtil.getAdapter( oldSelection[ 0 ] );
-            adapter.preserve( Props.CHECKED, Boolean.FALSE );
+            adapter.preserve( PROP_CHECKED, Boolean.FALSE );
           }
           IWidgetAdapter adapter = WidgetUtil.getAdapter( tabItem );
-          adapter.preserve( Props.CHECKED, Boolean.TRUE );
+          adapter.preserve( PROP_CHECKED, Boolean.TRUE );
           // TODO: [fappel] see comment in TabFolderLCA.processAction
           parent.setSelection( i );
         }
@@ -78,6 +81,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     TabItem tabItem = ( TabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
+    ItemLCAUtil.writeFont( tabItem, tabItem.getParent().getFont() );
     writeCheckedState( widget );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 
@@ -96,15 +100,15 @@ public class TabItemLCA extends AbstractWidgetLCA {
   private void writeCheckedState( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    Boolean oldCheckState = ( Boolean )adapter.getPreserved( Props.CHECKED );
+    Boolean oldCheckState = ( Boolean )adapter.getPreserved( PROP_CHECKED );
     TabItem tabItem = ( TabItem )widget;
     if( !adapter.isInitialized() 
         || isChecked( tabItem ) != oldCheckState.booleanValue() )
     {
       if( isChecked( tabItem )  ) {
-        writer.set( Props.CHECKED, true );
+        writer.set( JSConst.QX_FIELD_CHECKED, true );
       } else {
-        writer.set( Props.CHECKED, false );
+        writer.set( JSConst.QX_FIELD_CHECKED, false );
       }
     }
   }

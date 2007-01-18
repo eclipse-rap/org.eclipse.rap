@@ -75,10 +75,11 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeChanges( toolItem );
+    ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned
-    ControlLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
+    WidgetLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for ToolItem the bounds are undefined

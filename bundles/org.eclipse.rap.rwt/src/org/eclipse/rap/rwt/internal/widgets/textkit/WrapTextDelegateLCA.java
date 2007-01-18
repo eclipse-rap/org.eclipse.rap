@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.textkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
 
-public class WrapTextDelegateLCA extends MultiTextDelegateLCA {
+final class WrapTextDelegateLCA extends MultiTextDelegateLCA {
 
   public JSWriter addProperty( final JSWriter writer ) throws IOException {
     writer.set( "wrap", true );

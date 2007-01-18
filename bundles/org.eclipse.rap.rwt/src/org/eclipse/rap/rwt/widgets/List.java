@@ -13,7 +13,7 @@ import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.internal.widgets.IListAdapter;
 
-
+// TODO [rh] H_SCROLL not yet implemented
 public class List extends Scrollable {
 
   private final ListModel model;
@@ -60,6 +60,7 @@ public class List extends Scrollable {
     return model.getSelectionCount();
   }
 
+  // TODO [rh] selection is not scrolled into view (see List.js)
   public void setSelection( final int selection ) {
     model.setSelection( selection );
     updateFocusIndexAfterSelectionChange();

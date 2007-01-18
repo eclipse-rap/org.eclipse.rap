@@ -81,6 +81,7 @@ public final class JSConst {
   public static final String QX_FIELD_BACKGROUND_COLOR = "backgroundColor";
   public static final String QX_FIELD_ORIENTATION = "orientation";
   public static final String QX_FIELD_VALUE = "value";
+  public static final String QX_FIELD_CHECKED = "checked";
   
   // constants
   public static final JSVar QX_CONST_VERTICAL_ORIENTATION

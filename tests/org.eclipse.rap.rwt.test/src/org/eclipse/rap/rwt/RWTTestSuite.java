@@ -96,6 +96,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );
     suite.addTestSuite( RGB_Test.class );
+    suite.addTestSuite( Font_Test.class );
 
     suite.addTestSuite( DisplayLCA_Test.class );
     suite.addTestSuite( ControlLCA_Test.class );

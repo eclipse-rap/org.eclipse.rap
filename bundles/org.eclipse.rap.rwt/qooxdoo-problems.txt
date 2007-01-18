@@ -34,3 +34,5 @@ that's right?
 10.) Button overwrites custom backgroundColor and border after mouse over.
 
 11.) Initial positioning of scrollbars (e.g. setScrollLeft) does not work
+
+12.) How to make a qx.ui.form.TextField read-only?

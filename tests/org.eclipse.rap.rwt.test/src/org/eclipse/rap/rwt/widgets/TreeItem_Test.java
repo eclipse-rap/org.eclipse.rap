@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Font;
 
 public class TreeItem_Test extends TestCase {
 
@@ -53,6 +54,24 @@ public class TreeItem_Test extends TestCase {
     assertEquals( true, item111.isDisposed() );
     assertEquals( 0, item1.getItemCount() );
     assertEquals( false, item2.isDisposed() );
+  }
+  
+  public void testFont() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.NONE );
+    Font treeFont = Font.getFont( "BeautifullyCraftedTreeFont", 15, RWT.BOLD );
+    tree.setFont( treeFont );
+    TreeItem item = new TreeItem( tree, RWT.NONE );
+    
+    assertSame( treeFont, item.getFont() );
+    
+    Font itemFont = Font.getFont( "ItemFont", 40, RWT.NORMAL );
+    item.setFont( itemFont );
+    assertSame( itemFont, item.getFont() );
+    
+    item.setFont( null );
+    assertSame( treeFont, item.getFont() );
   }
 
   protected void setUp() throws Exception {

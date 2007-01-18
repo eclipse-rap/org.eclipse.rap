@@ -91,12 +91,12 @@ public class ControlLCA_Test extends TestCase {
 
     // call writeBounds once to elimniate the uninteresting JavaScript prolog 
     Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeBounds( control, parent, control.getBounds(), false );
+    WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
 
     // Test without clip
     Fixture.fakeResponseWriter();
     control.setBounds( 1, 2, 100, 200 );
-    ControlLCAUtil.writeBounds( control, parent, control.getBounds(), false );
+    WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
     String expected 
       = "w.setSpace( 1, 100, 2, 196 );" 
       + "w.setMinWidth( 0 );w.setMinHeight( 0 );"; 
@@ -105,7 +105,7 @@ public class ControlLCA_Test extends TestCase {
     // Test with clip
     Fixture.fakeResponseWriter();
     control.setBounds( 1, 2, 100, 200 );
-    ControlLCAUtil.writeBounds( control, parent, control.getBounds(), true );
+    WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), true );
     expected 
       = "w.setSpace( 1, 100, 2, 196 );" 
       + "w.setMinWidth( 0 );w.setMinHeight( 0 );" 

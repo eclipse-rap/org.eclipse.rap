@@ -19,9 +19,15 @@ import org.eclipse.rap.rwt.graphics.Image;
 
 /**
  * TODO: [fappel] comment
- * <p>
- * </p>
+ * 
+ * <p>Current known limitations:</p>
+ * <ul><li>Font property does not have any effect client side</li>
+ * <li>Check- and radio button do not change ther selection state when there
+ * is no SelectionListener registered.</li>
+ * </ul>
  */
+// TODO [rh] selection state for check and radio buttons is only changed when a
+//      listener was added.
 public class Button extends Control {
 
   private String text = "";

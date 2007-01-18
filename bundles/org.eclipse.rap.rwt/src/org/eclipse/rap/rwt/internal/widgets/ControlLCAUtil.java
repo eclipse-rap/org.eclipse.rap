@@ -18,8 +18,6 @@ import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
-import com.w4t.W4TContext;
-import com.w4t.util.browser.Mozilla;
 
 /**
  * TODO [rh] JavaDoc
@@ -47,6 +45,7 @@ public class ControlLCAUtil {
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.isVisible() ) );
     adapter.preserve( Props.CONTROL_LISTENERS, 
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
+    adapter.preserve( Props.FONT, control.getFont() );
     adapter.preserve( ACTIVATE_LISTENER, 
                       Boolean.valueOf( ActivateEvent.hasListener( control ) ) );
   }
@@ -60,65 +59,8 @@ public class ControlLCAUtil {
   }
   
   public static void writeBounds( final Control control ) throws IOException {
-    writeBounds( control, control.getParent(), control.getBounds(), false );
-  }
-  
-  public static void writeBounds( final Widget widget, 
-                                  final Control parent, 
-                                  final Rectangle bounds, 
-                                  final boolean clip ) 
-    throws IOException 
-  {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    // TODO [rh] replace code below with WidgetUtil.hasChanged
-    Rectangle oldBounds = ( Rectangle )adapter.getPreserved( Props.BOUNDS );
-    Rectangle newBounds = bounds;
-    if( !adapter.isInitialized() || !newBounds.equals( oldBounds ) ) {
-      
-      // the RWT coordinates for client area differ in some cases to
-      // the widget realisation of qooxdoo
-      if( parent != null ) {
-        AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
-        newBounds = parentLCA.adjustCoordinates( newBounds ); 
-      }
-      
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      
-      //////////////////////////////////////////////////////////////////
-      // TODO: [fappel] height values of controls are not displayed 
-      //                proper in mozilla. This is a very rude approximation
-      //                and should be eighter solved in qooxdoo or by a more
-      //                sophisticated approach...
-      int[] args;
-      if(    W4TContext.getBrowser() instanceof Mozilla
-          && widget instanceof Control )
-      {
-        if( newBounds.height > 30 ) {
-          args = new int[] {
-            newBounds.x, newBounds.width, newBounds.y, newBounds.height - 4
-          };
-        } else {
-          args = new int[] {
-            newBounds.x, newBounds.width, newBounds.y, newBounds.height
-          };
-        }
-      } else {
-        args = new int[] {
-          newBounds.x, newBounds.width, newBounds.y, newBounds.height
-        };
-      }
-      //////////////////////////////////////////////////////////////////
-      
-      writer.set( "space", args );
-      if( !WidgetUtil.getAdapter( widget ).isInitialized() ) {
-        writer.set( "minWidth", 0 );
-        writer.set( "minHeight", 0 );
-      }
-      if( clip ) {
-        writer.set( "clipHeight", args[ 3 ] );
-        writer.set( "clipWidth", args[ 1 ] );
-      }
-    }
+    Composite parent = control.getParent();
+    WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
   }
   
   // TODO [rh] there seems to be a qooxdoo problem when trying to change the
@@ -141,6 +83,7 @@ public class ControlLCAUtil {
     writeBounds( control );
     writeVisblility( control );
     writeColors( control );
+    writeFont( control );
     writeToolTip( control );
     writeMenu( control );
     writeActivateListener( control );
@@ -167,51 +110,24 @@ public class ControlLCAUtil {
   }
   
   public static void writeMenu( final Control control ) throws IOException {
-    writeMenu( control, control.getMenu() );
-  }
-  
-  public static void writeMenu( final Widget widget, final Menu menu )
-    throws IOException
-  {
-    if( WidgetUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( "contextMenu", menu );
-      if( menu == null ) {
-        writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU, 
-                               JSConst.JS_CONTEXT_MENU );
-      } else {
-        writer.addListener( JSConst.QX_EVENT_CONTEXTMENU, 
-                            JSConst.JS_CONTEXT_MENU );
-      }
-    }
+    WidgetLCAUtil.writeMenu( control, control.getMenu() );
   }
   
   public static void writeToolTip( final Control control ) 
     throws IOException 
   {
-    writeToolTip( control, control.getToolTipText() );
+    WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
   }
   
-  public static void writeToolTip( final Widget widget, final String newText ) 
-    throws IOException 
-  {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    if( adapter.isInitialized() ) {
-      if( WidgetUtil.hasChanged( widget, Props.TOOL_TIP_TEXT, newText ) ) {
-        doWriteToolTip( widget, newText );
-      }
-    } else if( newText != null && !"".equals( newText ) ) {
-      doWriteToolTip( widget, newText );
-    }
-  }
-  
-  public static void writeImage( final Widget widget, final Image newImage ) 
+  // TODO [rh] move this to WidgetLCAUtil, move test case along, change LCA's
+  //      to use this instead of manually setting images
+  public static void writeImage( final Widget widget, final Image image ) 
     throws IOException
   {
-    if( WidgetUtil.hasChanged( widget, Props.IMAGE, newImage, null ) ) {
+    if( WidgetUtil.hasChanged( widget, Props.IMAGE, image, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       // work around qooxdoo, that interprets 'null' as an image path 
-      String path = newImage == null ? "" : Image.getPath( newImage );
+      String path = image == null ? "" : Image.getPath( image );
       writer.set( JSConst.QX_FIELD_ICON, path );
     }
   }
@@ -248,6 +164,8 @@ public class ControlLCAUtil {
     if( ( widget.getStyle() & RWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
+    // TODO [rh] revise this: it seems that min/max are only relevant for shell
+    //      thus the code below should be moved to ShellLCA
     // must be passed to disable mininimize or maximize button
     if( ( widget.getStyle() & RWT.MIN ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_MIN" } );
@@ -257,6 +175,10 @@ public class ControlLCAUtil {
     }
   }
 
+  public static void writeFont( final Control control ) throws IOException {
+    WidgetLCAUtil.writeFont( control, control.getFont() );
+  }
+  
   public static void writeActivateListener( final Control control ) 
     throws IOException
   {
@@ -346,13 +268,5 @@ public class ControlLCAUtil {
       result = widget.getBounds().height;
     }
     return result;
-  }
-
-  private static void doWriteToolTip( final Widget widget, final String text ) 
-    throws IOException 
-  {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    Object[] args = new Object[] { widget, text };
-    writer.call( JSWriter.WIDGET_MANAGER_REF, "setToolTip", args );
   }
 }

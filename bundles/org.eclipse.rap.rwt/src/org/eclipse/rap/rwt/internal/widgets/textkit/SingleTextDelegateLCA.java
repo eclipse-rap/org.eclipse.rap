@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.textkit;
 
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
 
-public class SingleTextDelegateLCA extends TextDelegateLCA {
+final class SingleTextDelegateLCA extends TextDelegateLCA {
 
   public String getClassName() {
     return "qx.ui.form.TextField";

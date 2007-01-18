@@ -90,6 +90,33 @@ qx.Proto.setParent = function( widget, parentId ) {
   widget.setParent( parent );
 }
 
+qx.Proto.setFont = function( widget, name, size, bold, italic ) {
+  // TODO [rh] revise this: is there a better way to change font
+  if( widget.setFont ) {  // test if font property is supported
+    var font = new qx.renderer.font.Font( size, name );
+    font.setBold( bold );
+    font.setItalic( italic );
+    widget.setFont( font );
+  } else if( widget.getLabelObject ) {
+    var font = new qx.renderer.font.Font( size, name );
+    font.setBold( bold );
+    font.setItalic( italic );
+    // Feature in qooxdo: when font is set with creation of widget, the 
+    // getLabelObject() function may return null since the label is not yet 
+    // created.
+    if( widget.getLabelObject() != null ) {
+      widget.getLabelObject().setFont( font );
+    } else {
+      // TODO [rh] revise this: how to remove/dispose of the listener?
+      widget.addEventListener( "appear", function( evt ) {
+        this.getLabelObject().setFont( value );
+      }, widget );
+    }
+  } else {
+    this.debug( widget.classname + " does not support fonts" );
+  }
+}
+
 /**
  * Sets the toolTipText for the given widget. An empty or null toolTipText
  * removes the tool tip of the widget.

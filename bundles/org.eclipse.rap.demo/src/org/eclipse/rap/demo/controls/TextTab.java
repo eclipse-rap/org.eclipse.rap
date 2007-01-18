@@ -9,20 +9,25 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class TextTab extends ExampleTab {
 
+  private Text text1;
+
   public TextTab( TabFolder folder ) {
     super( folder, "Text" );
   }
 
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
+    createStyleButton( "PASSWORD" );
     createStyleButton( "WRAP" );
-    createStyleButton( "READ_ONLY" );
+    // TODO [rh] bring READ_ONLY to work, than we can demonstrate it here
+//    createStyleButton( "READ_ONLY" );
+    createFontChooser( new Control[] { text1 } );
   }
 
   void createExampleControls( Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
-    Text text1 = new Text( top, style );
+    text1 = new Text( top, style );
     text1.setLayoutData( new RowData(150, 150) );
     text1.setText( "Lorem ipsum dolor sit amet, consectetur adipisicing "
                    + "elit, sed do eiusmod tempor incididunt ut labore et "

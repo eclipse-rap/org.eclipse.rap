@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Font;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.layout.FillLayout;
 
@@ -116,6 +117,12 @@ public class Display_Test extends TestCase {
     assertSame( shell4, display.getActiveShell() );
     shell3.setActive();
     assertSame( shell3, display.getActiveShell() );
+  }
+  
+  public void testSystemFont() {
+    Display display = new Display();
+    Font systemFont = display.getSystemFont();
+    assertNotNull( systemFont );
   }
   
   protected void setUp() throws Exception {

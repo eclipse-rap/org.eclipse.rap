@@ -8,14 +8,15 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.SashForm;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.layout.*;
+import org.eclipse.rap.rwt.layout.RowData;
+import org.eclipse.rap.rwt.layout.RowLayout;
 import org.eclipse.rap.rwt.widgets.*;
 
 abstract class ExampleTab {
   
   protected final TabFolder folder;
+  protected final Composite styleComp;
   private final Composite exmplComp;
-  private final Composite styleComp;
   private final SelectionListener listener;
 
   public ExampleTab( final TabFolder folder, final String title ) {
@@ -36,8 +37,8 @@ abstract class ExampleTab {
         exmplComp.layout();
       }
     };
-    createStyleControls( );
     createExampleControls( exmplComp );
+    createStyleControls();
   }
   
   abstract void createStyleControls( );
@@ -59,6 +60,10 @@ abstract class ExampleTab {
 //    button.setEnabled( style != RWT.NONE );
     button.setVisible( style != RWT.NONE );
     return button;
+  }
+  
+  protected void createFontChooser( final Control[] controls ) {
+    new FontChooser( styleComp, controls );
   }
 
   private Button createStyleButton( final String name, final int style ) {

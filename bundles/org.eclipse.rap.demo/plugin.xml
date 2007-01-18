@@ -61,6 +61,12 @@
          class="org.eclipse.rap.demo.DemoTableViewPart" /> 
          <!-- category="com.xyz.views.XYZviews" --> 
          <!-- icon="icons/XYZ.gif"/ -->
+      <view 
+         id="org.eclipse.rap.demo.DemoSelectionViewPart" 
+         name="Selection View" 
+         class="org.eclipse.rap.demo.DemoSelectionViewPart" /> 
+         <!-- category="com.xyz.views.XYZviews" --> 
+         <!-- icon="icons/XYZ.gif"/ -->
    </extension> 
   
 </plugin>

@@ -10,19 +10,22 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class TabFolderTab extends ExampleTab {
 
+  private TabFolder folder;
+
   public TabFolderTab( TabFolder parent ) {
     super( parent, "TabFolder" );
   }
 
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
+    createFontChooser( new Control[] { folder } );
   }
 
   void createExampleControls( Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
 
-    TabFolder folder = new TabFolder( top, style );
+    folder = new TabFolder( top, style );
     folder.setLayoutData( new RowData( 250, 200) );
     for( int i = 0; i < 3; i++ ) {
       TabItem item = new TabItem( folder, style );

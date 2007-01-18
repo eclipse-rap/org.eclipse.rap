@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
 import com.w4t.*;
 import com.w4t.engine.service.ContextProvider;
@@ -27,12 +26,18 @@ import com.w4t.engine.service.ContextProvider;
 public class Display implements Adaptable {
 
   private static final String DISPLAY_ID = "org.eclipse.rap.rwt.display";
+  
+  // TODO [rh] this must be in sync with font in DefaultAppearanceTheme.js
+  private static final String SYSTEM_FONT_NAME 
+    = "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", " 
+    + "sans-serif";
 
   public static Display getCurrent() {
     return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
   }
   
   private final List shells;
+  private final Font systemFont; 
   private Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
   private Shell activeShell;
   private IDisplayAdapter displayAdapter;
@@ -45,6 +50,7 @@ public class Display implements Adaptable {
     }
     session.setAttribute( DISPLAY_ID, this );
     shells = new ArrayList();
+    systemFont = Font.getFont( SYSTEM_FONT_NAME, 11, RWT.NORMAL );
   }
 
   public Shell[] getShells() {
@@ -111,6 +117,10 @@ public class Display implements Adaptable {
       break;
     }
     return Color.getColor( pixel );
+  }
+  
+  public Font getSystemFont() {
+    return systemFont;
   }
   
   public Rectangle map( final Control from,

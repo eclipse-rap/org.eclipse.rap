@@ -26,6 +26,7 @@ import com.w4t.engine.service.ContextProvider;
 
 public final class TreeItemLCA extends AbstractWidgetLCA {
 
+  private static final String PROP_FONT = "font";
   // Expanded/collapsed state constants, used by readData 
   private static final String STATE_COLLAPSED = "collapsed";
   private static final String STATE_EXPANDED = "expanded";
@@ -34,6 +35,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     TreeItem treeItem = ( TreeItem )widget;
     ItemLCAUtil.preserve( treeItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
+    adapter.preserve( PROP_FONT, treeItem.getFont() );
     adapter.preserve( Props.EXPANDED, 
                       Boolean.valueOf( treeItem.getExpanded() ) );
   }
@@ -64,12 +66,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     ItemLCAUtil.writeChanges( treeItem );
+    ItemLCAUtil.writeFont( treeItem, treeItem.getFont() );
     writeExpanded( treeItem );
-    // TODO [rh] replace this with an optimized implementation. 
-    //      qooxdoo currently does not propagate right-clicks on tree items
-    //      to the tree they belong to. As a workaround we set the context menu
-    //      on each tree item.
-    ControlLCAUtil.writeMenu( treeItem, treeItem.getParent().getMenu() );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

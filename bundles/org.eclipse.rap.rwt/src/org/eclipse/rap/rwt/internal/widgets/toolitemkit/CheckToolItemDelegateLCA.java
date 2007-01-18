@@ -22,15 +22,15 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   private static final String SELECTED_ITEM = "selectedItem"; 
   // check functions as defined in org.eclipse.rap.rwt.ButtonUtil
-  private static final String WIDGET_SELECTED = 
-    "org.eclipse.rap.rwt.ButtonUtil.checkSelected";
+  private static final String WIDGET_SELECTED 
+    = "org.eclipse.rap.rwt.ButtonUtil.checkSelected";
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
-  private static final String CREATE_CHECK = 
-    "org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil";
-  private final JSListenerInfo JS_LISTENER_INFO = 
-    new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
-                        WIDGET_SELECTED,
-                        JSListenerType.ACTION );
+  private static final String CREATE_CHECK 
+    = "org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil";
+  private final JSListenerInfo JS_LISTENER_INFO 
+    = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
+                          WIDGET_SELECTED,
+                          JSListenerType.ACTION );
 
   void readData( final ToolItem toolItem ) {
     if( WidgetUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
@@ -48,9 +48,10 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     };
     writer.callStatic( CREATE_CHECK, args );
     writer.set( "checked", toolItem.getSelection() );
-    if ((toolItem.getParent().getStyle() & RWT.FLAT) != 0) {
+    if( ( toolItem.getParent().getStyle() & RWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
+    ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
@@ -59,12 +60,13 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned
-    ControlLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
+    WidgetLCAUtil.writeMenu( toolItem, toolItem.getParent().getMenu() );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for ToolItem the bounds are undefined
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
+    ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
   }
 }

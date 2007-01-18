@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.widgets.*;
  * <li>showUnselectedClose (treated as if <code>true</code>)</li>
  * <li><em>simple</em> style (treated as <code>true</code>)</li>
  * <li>MRUVisible (treated as <code>false</code>)</li>
+ * <li>RWT.BORDER and RWT.FLAT styles are not fully implemented</li>
  * </ul> 
  */
 // TODO [rh] though there are some calls checkWidet this needs to be completed
@@ -487,6 +488,17 @@ public class CTabFolder extends Composite {
     return result;
   }
   
+  ////////////////////
+  // Control overrides
+  
+  public void setFont( final Font font ) {
+    if( font != getFont() ) {
+      super.setFont( font );
+      if( !updateTabHeight( false ) ) {
+        updateItems();
+      }
+    }
+  }
   
   //////////////////////
   // Composite overrides
@@ -555,7 +567,7 @@ public class CTabFolder extends Composite {
   ///////////////////////////////////
   // Helping mothods to arrange items
   
-  private void updateTabHeight( final boolean force ){
+  boolean updateTabHeight( final boolean force ){
     int oldHeight = tabHeight;
     if( fixedTabHeight != RWT.DEFAULT ) {
       // +1 for line drawn across top of tab
@@ -572,10 +584,15 @@ public class CTabFolder extends Composite {
         tabHeight = maxHeight;
       }
     }
+    boolean result;
     if( force || tabHeight != oldHeight ) {
       ControlEvent evt = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
       evt.processEvent();
-    } 
+      result = true;
+    } else {
+      result = false;
+    }
+    return result;
   }
 
   void updateItems() {

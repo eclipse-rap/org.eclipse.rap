@@ -45,6 +45,8 @@ qx.Proto.setItems = function( items ) {
       // TODO [rh] optimize this: context menu should be handled by the List
       //      itself for all its ListItems
       var item = new qx.ui.form.ListItem( items[ i ] );
+      // prevent items from being drawn outside the list
+      item.setOverflow( "hidden" ); 
       item.setContextMenu( this.getContextMenu() );
       this.add( item );
     }
@@ -71,7 +73,7 @@ qx.Proto.selectItem = function( itemIndex ) {
     var item = this.getChildren()[ itemIndex ];
     this.getManager().setSelectedItem( item );
     // TODO [rh] second parameter has no effect, figure out what it is for
-    this.getManager().scrollItemIntoView( item, false );
+    this.getManager().scrollItemIntoView( item, true );
   }
 }
 
@@ -115,6 +117,18 @@ qx.Proto.selectAll = function() {
 
 qx.Proto.setChangeSelectionNotification = function( value ) {
   this._changeSelectionNotification = value;
+}
+
+qx.Proto.setFont = function( value ) {
+  var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var items = this.getChildren();
+  for( var i = 0; i < items.length; i++ ) {
+    wm.setFont( items[ i ], 
+                value.getName(), 
+                value.getSize(), 
+                value.getBold(), 
+                value.getItalic() );
+  }
 }
 
 qx.Proto.dispose = function() {
