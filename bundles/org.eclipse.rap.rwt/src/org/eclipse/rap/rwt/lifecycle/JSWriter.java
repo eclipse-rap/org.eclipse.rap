@@ -35,8 +35,10 @@ import com.w4t.engine.service.IServiceStateInfo;
 //      this also applies for other 'SPI's. 
 public final class JSWriter {
   
-  private static final Pattern ESCAPE_STRING_PATTERN 
+  private static final Pattern ESCAPE_STRING_PATTERN_1 
     = Pattern.compile( "(\"|\\\\)" );
+  private static final Pattern ESCAPE_STRING_PATTERN_2 
+  = Pattern.compile( "\n" );
 
   public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
   public static JSVar WIDGET_REF = new JSVar( "w" );
@@ -568,9 +570,13 @@ public final class JSWriter {
     return result;
   }
   
+  // TODO [rh] try to unite the two regex patterns
+  // TODO [rh] revise how to handle newline characters (\n)
   private static String escapeString( final String input ) {
-    Matcher matcher = ESCAPE_STRING_PATTERN.matcher( input );
+    Matcher matcher = ESCAPE_STRING_PATTERN_1.matcher( input );
     String result = matcher.replaceAll( "\\\\$1" );
+    matcher = ESCAPE_STRING_PATTERN_2.matcher( result );
+    result = matcher.replaceAll( "" );
     return result;
   }
 
