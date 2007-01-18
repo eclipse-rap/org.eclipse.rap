@@ -122,6 +122,9 @@ public final class WidgetLCAUtil {
     writer.call( JSWriter.WIDGET_MANAGER_REF, "setToolTip", args );
   }
   
+  /////////////////////////////////////////////////
+  // write-methods used by other ...LCAUtil classes
+  
   static void writeFont( final Widget widget, final Font font )
     throws IOException
   {

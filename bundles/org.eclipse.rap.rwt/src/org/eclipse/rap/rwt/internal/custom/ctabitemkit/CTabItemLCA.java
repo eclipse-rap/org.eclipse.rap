@@ -49,7 +49,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SHOWING, 
                       Boolean.valueOf( item.isShowing() ) );
     adapter.preserve( PROP_FONT, 
-                      Boolean.valueOf( item.isShowing() ) );
+                      item.getFont() );
   }
   
   public void readData( final Widget widget ) {

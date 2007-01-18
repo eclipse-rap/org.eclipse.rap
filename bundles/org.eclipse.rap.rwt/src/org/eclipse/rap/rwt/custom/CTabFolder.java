@@ -1229,32 +1229,6 @@ public class CTabFolder extends Composite {
     updateItems();
   }
   
-//  void destroyItem( final CTabItem item ) {
-//    int index = indexOf( item );
-//    ItemHolder.removeItem( this, item );
-//    if( !inDispose ) {
-//      if( getItemCount() == 0 ) {
-//        selectedIndex = -1;
-//        Control control = item.getControl();
-//        if( control != null && !control.isDisposed() ) {
-//          control.setVisible( false );
-//        }
-//      } else { 
-//        // move the selection if this item is selected
-//        if( getSelectionIndex() == index ) {
-//          Control control = item.getControl();
-//          int nextSelection = Math.max( 0, index - 1 );
-//          setSelection( nextSelection, true );
-//          if( control != null && !control.isDisposed() ) {
-//            control.setVisible( false );
-//          }
-//        } else if( getSelectionIndex() > index ) {
-//          selectedIndex--;
-//        }
-//      }
-//    }
-//  }
-
   void destroyItem( final CTabItem item ) {
     int index = indexOf( item );
     if( !inDispose && index != -1  ) {
