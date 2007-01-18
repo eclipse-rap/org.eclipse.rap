@@ -25,7 +25,7 @@ public class Perspective implements IPerspectiveFactory {
     bottom.addView( "org.eclipse.rap.demo.DemoTreeViewPartIV" );
     IFolderLayout topRight = layout.createFolder( "topRight",
                                                   IPageLayout.RIGHT,
-                                                  0.75f,
+                                                  0.70f,
                                                   editorArea );
     topRight.addView( "org.eclipse.rap.demo.DemoSelectionViewPart" );
   }

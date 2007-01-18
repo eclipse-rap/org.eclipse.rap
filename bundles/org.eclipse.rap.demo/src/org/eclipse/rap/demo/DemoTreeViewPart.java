@@ -16,7 +16,7 @@ import org.eclipse.rap.jface.viewers.*;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.Composite;
 import org.eclipse.rap.rwt.widgets.Tree;
-import org.eclipse.rap.ui.*;
+import org.eclipse.rap.ui.IViewPart;
 import org.eclipse.rap.ui.part.ViewPart;
 
 
@@ -145,7 +145,6 @@ public class DemoTreeViewPart extends ViewPart {
     TreeViewer viewer = new TreeViewer( parent );
     viewer.setContentProvider( new TreeViewerContentProvider() );
     viewer.setInput( this );
-//    Tree tree = new Tree( left, RWT.NONE );
     Tree tree = viewer.getTree();
     FormData treeData = new FormData();
     tree.setLayoutData( treeData );
@@ -153,49 +152,6 @@ public class DemoTreeViewPart extends ViewPart {
     treeData.left = new FormAttachment( 0, 2 );
     treeData.right = new FormAttachment( 100, -2 );
     treeData.bottom = new FormAttachment( 100, -2 );
-    viewer.addSelectionChangedListener( new ISelectionChangedListener() {
-      public void selectionChanged( SelectionChangedEvent event ) {
-        IStructuredSelection selection
-          = ( IStructuredSelection )event.getSelection();
-        System.out.println(   "treeViewer selection: " 
-                            + selection.getFirstElement() );
-      }
-    } );
-    
-    // selection service
     getSite().setSelectionProvider( viewer );
-    IWorkbench workbench = PlatformUI.getWorkbench();
-    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-    ISelectionService selectionService = window.getSelectionService();
-    selectionService.addSelectionListener( new ISelectionListener() {
-      public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
-        System.out.println( part.getTitle() );
-        IStructuredSelection sselection = ( IStructuredSelection )selection;
-        System.out.println( sselection.getFirstElement() );
-      } 
-    } );
-    IWorkbenchPage activePage = window.getActivePage();
-    activePage.addPartListener( new IPartListener() {
-
-      public void partActivated( IWorkbenchPart part ) {
-        System.out.println( "activated: " + part.getTitle() );
-      }
-
-      public void partBroughtToTop( IWorkbenchPart part ) {
-        System.out.println( "brought to top: " + part.getTitle() );
-      }
-
-      public void partClosed( IWorkbenchPart part ) {
-        System.out.println( "closed: " + part.getTitle() );
-      }
-
-      public void partDeactivated( IWorkbenchPart part ) {
-        System.out.println( "deactivated: " + part.getTitle() );
-      }
-
-      public void partOpened( IWorkbenchPart part ) {
-        System.out.println( "opened: " + part.getTitle() );
-      }
-    } );
   }
 }

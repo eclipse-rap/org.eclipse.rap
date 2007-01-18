@@ -74,6 +74,7 @@ public class DemoTableViewPart extends ViewPart {
     formData.left = new FormAttachment( 0, 5 );
     formData.right = new FormAttachment( 100, -5 );
     formData.bottom = new FormAttachment( 100, -5 );
+    getSite().setSelectionProvider( viewer );
   }
 
   private String[] initColumnProperties( final Table table ) {

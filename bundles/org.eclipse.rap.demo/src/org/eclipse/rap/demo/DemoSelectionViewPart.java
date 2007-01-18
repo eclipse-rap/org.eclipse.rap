@@ -49,7 +49,11 @@ public class DemoSelectionViewPart extends ViewPart {
         if( firstElement == null ) {
           entry += "null";
         } else {
-          entry += firstElement.toString();
+          if( firstElement instanceof String[] ) {
+            entry += "Table count: " + sselection.size();
+          } else {
+            entry += firstElement.toString();
+          }
         }
         list.add( entry, 0 );
         list.setSelection( 0 );
