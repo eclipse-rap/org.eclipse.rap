@@ -148,7 +148,6 @@ public class CTabFolder extends Composite {
             oldControl.setVisible( false );
           }
         }
-//        updateItems();
       }
       showItem( getSelection() );
     }
@@ -407,6 +406,43 @@ public class CTabFolder extends Composite {
       updateItems();
     } 
   }
+
+  public Rectangle computeTrim( int x, int y, int width, int height ) {
+    checkWidget();
+    int trimX = x - marginWidth - highlight_margin - borderLeft;
+    int trimWidth = width
+                    + borderLeft
+                    + borderRight
+                    + 2
+                    * marginWidth
+                    + 2
+                    * highlight_margin;
+    if( minimized ) {
+      int trimY = onBottom
+                          ? y - borderTop
+                          : y - highlight_header - tabHeight - borderTop;
+      int trimHeight = borderTop + borderBottom + tabHeight + highlight_header;
+      return new Rectangle( trimX, trimY, trimWidth, trimHeight );
+    } else {
+      int trimY = onBottom
+                          ? y - marginHeight - highlight_margin - borderTop
+                          : y
+                            - marginHeight
+                            - highlight_header
+                            - tabHeight
+                            - borderTop;
+      int trimHeight = height
+                       + borderTop
+                       + borderBottom
+                       + 2
+                       * marginHeight
+                       + tabHeight
+                       + highlight_header
+                       + highlight_margin;
+      return new Rectangle( trimX, trimY, trimWidth, trimHeight );
+    }
+  }
+
 
   ///////////////////
   // Selection colors
