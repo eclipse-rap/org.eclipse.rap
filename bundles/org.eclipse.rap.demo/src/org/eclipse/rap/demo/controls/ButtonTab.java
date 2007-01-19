@@ -23,14 +23,9 @@ public class ButtonTab extends ExampleTab {
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
-    Control[] controls = new Control[] { 
-      button1, 
-      check1, 
-      radio1, 
-      radio2, 
-      radio3 
-    };
-    createFontChooser( controls );
+    createVisibilityButton( );
+    createEnablementButton( );
+    createFontChooser();
   }
 
   void createExampleControls( Composite top ) {
@@ -40,6 +35,11 @@ public class ButtonTab extends ExampleTab {
     button1 = new Button( top, style | RWT.PUSH );
     button1.setText( "Button" );
     button1.setLayoutData( data );
+//    button1.addSelectionListener( new SelectionAdapter() {
+//      public void widgetSelected( SelectionEvent event ) {
+//        log( "Button 1 pressed" );
+//      }
+//    } );
     check1 = new Button( top, style | RWT.CHECK );
     check1.setText( "Check" );
     check1.setLayoutData( data );
@@ -52,6 +52,11 @@ public class ButtonTab extends ExampleTab {
     radio3 = new Button( top, style | RWT.RADIO );
     radio3.setText( "Radio 3" );
     radio3.setLayoutData( data );
+    registerControl( button1 );
+    registerControl( check1 );
+    registerControl( radio1 );
+    registerControl( radio2 );
+    registerControl( radio3 );
   }
 
 }

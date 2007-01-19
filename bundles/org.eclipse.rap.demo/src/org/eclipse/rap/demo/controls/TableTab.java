@@ -18,13 +18,12 @@ public class TableTab extends ExampleTab {
 
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
+    createVisibilityButton();
+    createEnablementButton();
   }
 
   void createExampleControls( Composite top ) {
-    FillLayout layout = new FillLayout();
-    layout.marginWidth = 10;
-    layout.marginHeight = 10;
-    top.setLayout( layout );
+    top.setLayout( new FillLayout() );
     
     int style = getStyle();
     Table table = new Table( top, style );
@@ -42,6 +41,7 @@ public class TableTab extends ExampleTab {
       }
     }
     table.setSelection( 0 );
+    registerControl( table );
   }
 
 }

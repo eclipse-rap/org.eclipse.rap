@@ -39,6 +39,10 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/Sash.js";
   private static final String TAB_UTIL_JS 
     = "org/eclipse/rap/rwt/TabUtil.js";
+  private static final String TAB_FOLDER_UTIL_JS 
+    = "org/eclipse/rap/rwt/TabFolderUtil.js";
+  private static final String TOOLBAR_UTIL_JS 
+  = "org/eclipse/rap/rwt/ToolBarUtil.js";
   private static final String BUTTON_UTIL_JS 
     = "org/eclipse/rap/rwt/ButtonUtil.js";
   private static final String COMBO_UTIL_JS 
@@ -65,7 +69,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/widgets/Tree.js";
   private static final String SCROLLED_COMPOSITE_JS 
     = "org/eclipse/rap/rwt/custom/ScrolledComposite.js";
-  
   
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -1515,6 +1518,8 @@ final class QooxdooResourcesUtil {
       register( EVENT_UTIL_JS );
       register( SASH_JS );
       register( TAB_UTIL_JS );
+      register( TAB_FOLDER_UTIL_JS );
+      register( TOOLBAR_UTIL_JS );
       register( COMBO_UTIL_JS );
       register( BUTTON_UTIL_JS );
       register( TOOL_ITEM_JS );

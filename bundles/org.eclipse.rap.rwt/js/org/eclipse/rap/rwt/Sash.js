@@ -23,12 +23,14 @@ qx.Proto._onSplitterMouseDownX = function( e ) {
   }
   this._commonMouseDown();
 
-  // activate global cursor
-  this.getTopLevelWidget().setGlobalCursor( "col-resize" );
-  this._slider.addState( "dragging" );
+  if( this.getEnabled() ) {
+    // activate global cursor
+    this.getTopLevelWidget().setGlobalCursor( "col-resize" );
+    this._slider.addState( "dragging" );
 
-  // initialize the drag session
-  this._dragOffset = e.getPageX();
+    // initialize the drag session
+    this._dragOffset = e.getPageX();
+  }
 }
 
 qx.Proto._onSplitterMouseDownY = function( e ) {
@@ -37,12 +39,14 @@ qx.Proto._onSplitterMouseDownY = function( e ) {
   }
   this._commonMouseDown();
 
-  // activate global cursor
-  this.getTopLevelWidget().setGlobalCursor( "row-resize" );
-  this._slider.addState( "dragging" );
+  if( this.getEnabled() ) {
+    // activate global cursor
+    this.getTopLevelWidget().setGlobalCursor( "row-resize" );
+    this._slider.addState( "dragging" );
 
-  // initialize the drag session
-  this._dragOffset = e.getPageY();
+    // initialize the drag session
+    this._dragOffset = e.getPageY();
+  }
 }
 
 qx.Proto._commonMouseDown = function()
@@ -133,3 +137,18 @@ qx.Proto._normalizeY = function( e ) {
   }
   return toMove;
 }
+
+qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
+  // TODO [rst] call super._modifyEnabled ?
+  this._splitter.setEnabled( propValue );
+  if( propValue ) {
+    if ( this.getOrientation() == qx.constant.Layout.ORIENTATION_VERTICAL ) {
+      this._splitter.setCursor( "row-resize" );
+    } else {
+      this._splitter.setCursor( "col-resize" );
+    }
+  } else {
+    this._splitter.setCursor( null );
+  }
+  return true;
+};

@@ -51,5 +51,8 @@ public class ToolBarLCA extends AbstractWidgetLCA {
                   JSConst.QX_CONST_VERTICAL_ORIENTATION );
     }
     ControlLCAUtil.writeStyleFlags( widget );
+    writer.addListener( null,
+                        "changeEnabled",
+                        "org.eclipse.rap.rwt.ToolBarUtil.enablementChanged" );
   }
 }

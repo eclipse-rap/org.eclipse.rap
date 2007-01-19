@@ -13,7 +13,7 @@
  * This class encapulates the qx.ui.treefullcontrol.Tree o make it more
  * suitable for usage in RWT.
  */
-qx.OO.defineClass( 
+qx.OO.defineClass(
   "org.eclipse.rap.rwt.widgets.Tree", 
   qx.ui.treefullcontrol.Tree,
   function( style ) {
@@ -146,3 +146,31 @@ qx.Proto._onContextMenu = function( evt ) {
   menu.show();
   evt.stopPropagation();
 }
+
+/*
+ * Pass enablement to tree items
+ */
+qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
+  // TODO [rst] call super._modifyEnabled ?
+  var items = this.getItems();
+  for( var i = 0; i < items.length; i++ ) {
+    var item = items[ i ];
+    
+//    //--- hack from rh:
+    if( item.getLabelObject() != null ) {
+      var label = item.getLabelObject();
+      this.debug( "LABEL: " + label );
+      label.setBackgroundColor( "red" );
+      label.setEnabled( propValue );
+    } else {
+      // TODO [rh] revise this: how to remove/dispose of the listener?
+      item.addEventListener( "appear", function( evt ) {
+        this.getLabelObject().setEnabled( propValue );
+      }, item );
+    }
+//    //---
+    
+    item.setEnabled( propValue );
+  }
+  return true;
+};

@@ -93,8 +93,8 @@ public class ScrollBar extends Widget {
   public boolean isEnabled () {
     checkWidget();
     // TODO [rh] complete implementation when isEnabled is available
-//    return getEnabled() && parent.isEnabled();
-    return getEnabled(); 
+//    return getEnabled(); 
+    return getEnabled () && parent.isEnabled ();
   }
 
   public Point getSize() {

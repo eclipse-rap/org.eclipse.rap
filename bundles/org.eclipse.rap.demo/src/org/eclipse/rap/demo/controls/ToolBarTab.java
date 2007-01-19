@@ -13,25 +13,28 @@ public class ToolBarTab extends ExampleTab {
 
   private ToolBar toolBar;
 
-  public ToolBarTab( final TabFolder folder ) {
+  public ToolBarTab( TabFolder folder ) {
     super( folder, "ToolBar" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
-    createFontChooser( new Control[] { toolBar } );
+    createVisibilityButton();
+    createEnablementButton();
+    createFontChooser();
   }
 
-  void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout() );
+  void createExampleControls( Composite top ) {
+    top.setLayout( new RowLayout() );
     ClassLoader loader = getClass().getClassLoader();
     Image imageNewFile = Image.find( "resources/newfile_wiz.gif", loader );
     Image imagenewFolder = Image.find( "resources/newfolder_wiz.gif", loader );
     Image imageNewProj = Image.find( "resources/newprj_wiz.gif", loader );
     Image imageSearch = Image.find( "resources/search_src.gif", loader );
-    toolBar = new ToolBar( parent, getStyle() );
+    toolBar = new ToolBar( top, getStyle() );
     toolBar.setLayoutData( new RowData( 300, 50 ) );
+    registerControl( toolBar );
     ToolItem item1 = new ToolItem( toolBar, RWT.PUSH );
     item1.setText( "new" );
     item1.setImage( imageNewFile );
@@ -45,12 +48,9 @@ public class ToolBarTab extends ExampleTab {
     new ToolItem( toolBar, RWT.SEPARATOR );
     ToolItem item4 = new ToolItem( toolBar, RWT.CHECK );
     item4.setImage( imageSearch );
-    item4.setText( "Check Item" );
     ToolItem item5 = new ToolItem( toolBar, RWT.RADIO );
     item5.setImage( imageSearch );
-    item5.setText( "Radio 1" );
     ToolItem item6 = new ToolItem( toolBar, RWT.RADIO );
     item6.setImage( imageSearch );
-    item6.setText( "Radio 2" );
   }
 }

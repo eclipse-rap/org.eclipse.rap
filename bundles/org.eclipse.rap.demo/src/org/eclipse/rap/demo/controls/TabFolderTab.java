@@ -4,8 +4,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
+import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class TabFolderTab extends ExampleTab {
@@ -18,11 +17,13 @@ public class TabFolderTab extends ExampleTab {
 
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
-    createFontChooser( new Control[] { folder } );
+    createVisibilityButton();
+    createEnablementButton();
+    createFontChooser();
   }
 
   void createExampleControls( Composite top ) {
-    top.setLayout( new RowLayout() );
+    top.setLayout( new FillLayout() );
     int style = getStyle();
 
     folder = new TabFolder( top, style );
@@ -37,6 +38,7 @@ public class TabFolderTab extends ExampleTab {
       item.setControl(content);
     }
     folder.setSelection( 0 );
+    registerControl( folder );
   }
 
 }

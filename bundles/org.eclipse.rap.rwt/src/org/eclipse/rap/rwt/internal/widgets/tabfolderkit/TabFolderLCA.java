@@ -41,6 +41,9 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.pageview.tabview.TabView" );
     ControlLCAUtil.writeStyleFlags( widget );
+    writer.addListener( null,
+                        "changeEnabled",
+                        "org.eclipse.rap.rwt.TabFolderUtil.enablementChanged" );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

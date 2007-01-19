@@ -78,9 +78,10 @@ public final class JSConst {
   public static final String QX_FIELD_ICON = "icon";
   public static final String QX_FIELD_SELECTION = "selection";
   public static final String QX_FIELD_COLOR = "color";
-  public static final String QX_FIELD_BACKGROUND_COLOR = "backgroundColor";
+  public static final String QX_FIELD_BG_COLOR = "backgroundColor";
   public static final String QX_FIELD_ORIENTATION = "orientation";
   public static final String QX_FIELD_VALUE = "value";
+  public static final String QX_FIELD_CAPTION = "caption";
   public static final String QX_FIELD_CHECKED = "checked";
   
   // constants

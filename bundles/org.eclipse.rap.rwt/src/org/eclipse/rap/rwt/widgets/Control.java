@@ -30,10 +30,10 @@ public abstract class Control extends Widget {
   private String toolTipText;
   private Menu menu;
   private DisposeListener menuDisposeListener;
-  private boolean visible = true;
   private Color foreground;
   private Color background;
   private Font font;
+  private boolean enabled;
 
   Control() {
     // prevent instantiation from outside this package
@@ -63,16 +63,50 @@ public abstract class Control extends Widget {
   // Visibility
 
   public void setVisible( final boolean visible ) {
-    this.visible = visible;
+    state = visible ? state & ~HIDDEN : state | HIDDEN;
   }
 
-  // TODO [rh] rename to getVisible, add isVisible (wich also evaluates parent
-  //      visibility)
-  public boolean isVisible() {
+  public boolean isVisible () {
+    checkWidget();
+    boolean visible = getVisible() && parent.isVisible();
     return visible;
   }
 
+  public boolean getVisible() {
+    checkWidget();
+    return (state & HIDDEN) == 0;
+  }
+
+  /////////////
+  // Enablement
   
+  public void setEnabled( boolean enabled ) {
+    checkWidget();
+    /*
+     * TODO [rst] handle focus
+     * Feature in Windows.  If the receiver has focus, disabling
+     * the receiver causes no window to have focus.  The fix is
+     * to assign focus to the first ancestor window that takes
+     * focus.  If no window will take focus, set focus to the
+     * desktop.
+     */
+    if( enabled ) {
+      state &= ~DISABLED;
+    } else {
+      state |= DISABLED;
+    }
+  }
+
+  public boolean getEnabled() {
+    checkWidget();
+    return ( state & DISABLED ) == 0;
+  }
+
+  public boolean isEnabled () {
+    checkWidget();
+    return getEnabled () && parent.isEnabled ();
+  }
+
   /////////
   // Colors
 
@@ -117,7 +151,6 @@ public abstract class Control extends Widget {
     return result;
   }
   
-
   // ///////////////////////////////////////////////
   // Methods to manipulate the controls' dimensions
   

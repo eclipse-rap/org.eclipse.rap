@@ -21,7 +21,8 @@ public class CoolBarTab extends ExampleTab {
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
-    createFontChooser( new Control[] { coolBar } );
+    createVisibilityButton();
+    createEnablementButton();
   }
 
   void createExampleControls( Composite top ) {
@@ -52,6 +53,8 @@ public class CoolBarTab extends ExampleTab {
     CoolItem pushItem2 = new CoolItem (coolBar, style);
     pushItem2.setSize( 250, 25 );
     pushItem2.setControl( toolBar2 );
+    
+    registerControl( coolBar );
   }
 
   private ToolBar createToolBar( Composite parent, int style ) {

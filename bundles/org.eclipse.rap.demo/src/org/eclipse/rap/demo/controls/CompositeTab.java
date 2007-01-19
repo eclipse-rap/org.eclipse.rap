@@ -3,6 +3,8 @@
  */
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.rwt.events.ControlAdapter;
+import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.layout.FillLayout;
 import org.eclipse.rap.rwt.widgets.Composite;
@@ -16,23 +18,20 @@ public class CompositeTab extends ExampleTab {
 
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
+    createVisibilityButton();
   }
 
   void createExampleControls( Composite top ) {
-    FillLayout layout = new FillLayout();
-    layout.marginWidth = 20;
-    layout.marginHeight = 20;
-    top.setLayout( layout );
+    top.setLayout( new FillLayout() );
     int style = getStyle();
     final Composite comp = new Composite( top, style );
     comp.setBackground( Color.getColor( 240, 250, 190 ) );
-//    comp.addControlListener( new ControlListener() {
-//      public void controlMoved( ControlEvent event ) {
-//      }
-//      public void controlResized( ControlEvent event ) {
-//        System.out.println( "Composite Bounds:      " + comp.getBounds() );
-//        System.out.println( "Composite Client Area: " + comp.getClientArea() );
-//      }} );
+    registerControl( comp );
+    comp.addControlListener( new ControlAdapter() {
+      public void controlResized( ControlEvent event ) {
+        System.out.println( "Composite Bounds:      " + comp.getBounds() );
+        System.out.println( "Composite Client Area: " + comp.getClientArea() );
+      }} );
   }
 
 }

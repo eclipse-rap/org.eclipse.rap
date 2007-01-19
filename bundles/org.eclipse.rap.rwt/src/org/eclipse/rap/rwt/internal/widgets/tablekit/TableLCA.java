@@ -140,8 +140,11 @@ public class TableLCA extends AbstractWidgetLCA {
     writer.set( "statusBarVisible", false );
     writer.set( "columnVisibilityButtonVisible", false );
     writer.addListener( "tableColumnModel",
-                        "widthChanged", 
+                        "widthChanged",
                         "org.eclipse.rap.rwt.TableUtil.columnWidthChanged" );
+    writer.addListener( null,
+                        "changeEnabled",
+                        "org.eclipse.rap.rwt.TableUtil.enablementChanged" );
     // this is needed to be able to get the table to which the 
     // column width changes belong to on client side
     writer.callFieldAssignment( new JSVar( "w.getTableColumnModel()" ), 

@@ -35,4 +35,12 @@ that's right?
 
 11.) Initial positioning of scrollbars (e.g. setScrollLeft) does not work
 
-12.) How to make a qx.ui.form.TextField read-only?
+12.) Creating a table on an invisible tab within a tab folder yields error
+  message: 
+  Modification of property "maximum" failed with exception: TypeError -
+  vCurrentChild has no properties
+
+13.) Some parts of a table are drawn not until the first mouse move.
+
+14.) How to make a qx.ui.form.TextField read-only?
+

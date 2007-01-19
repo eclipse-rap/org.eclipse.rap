@@ -19,13 +19,12 @@ public class SashFormTab extends ExampleTab {
     createStyleButton( "SMOOTH" );
     createStyleButton( "VERTICAL" );
     createStyleButton( "HORIZONTAL" );
+    createVisibilityButton();
+    createEnablementButton();
   }
 
   void createExampleControls( Composite top ) {
-    FillLayout layout = new FillLayout();
-    layout.marginWidth = 10;
-    layout.marginHeight = 10;
-    top.setLayout( layout );
+    top.setLayout( new FillLayout() );
     int style = getStyle();
     SashForm sashForm = new SashForm( top, style );
     Text text = new Text( sashForm, RWT.MULTI | RWT.WRAP );
@@ -38,6 +37,7 @@ public class SashFormTab extends ExampleTab {
       items[i] = "Item " + (i+1);      
     }
     list.setItems( items );
+    registerControl( sashForm );
   }
 
 }

@@ -34,6 +34,7 @@ public class Shell extends Composite {
   private DisposeListener menuBarDisposeListener;
   private Control lastActive;
   private IShellAdapter shellAdapter;
+  private String text = "";
 
   // TODO [rh] preliminary: yet no null-check, default/current substitute, etc
   // TODO [rst] check style bits
@@ -41,8 +42,12 @@ public class Shell extends Composite {
     super();
     this.style = style;
     this.display = display;
+    state |= HIDDEN;
     display.addShell( this );
-    display.setActiveShell( this );
+  }
+  
+  public Shell( final Display display ) {
+    this( display, RWT.SHELL_TRIM );
   }
 
   // TODO: [fappel] this is just a fake constructor for dialog shells,
@@ -129,10 +134,61 @@ public class Shell extends Composite {
     return result;
   }
 
+  public boolean isVisible() {
+    checkWidget();
+    return getVisible();
+  }
+  
+  /////////////
+  // Enablement
+  //
+  //This methods exist in SWT, as Shell implementation differs from control. 
+
+//  public void setEnabled( boolean enabled ) {
+//    checkWidget();
+//    if( ( ( state & DISABLED ) == 0 ) != enabled ) {
+//      super.setEnabled( enabled );
+////      TODO [rst] restore focus
+////      if( enabled && handle == OS.GetActiveWindow() ) {
+////        if( !restoreFocus() )
+////          traverseGroup( true );
+////      }
+//    }
+//  }
+//
+//  public boolean getEnabled() {
+//    checkWidget();
+//    return (state & DISABLED) == 0;
+//  }
+
+  public boolean isEnabled () {
+    checkWidget ();
+    return getEnabled ();
+  }
+
+  public void open () {
+    checkWidget();
+    state &= ~HIDDEN;
+    display.setActiveShell( this );
+  }
+
   public void close() {
     ShellEvent shellEvent = new ShellEvent( this, ShellEvent.SHELL_CLOSED );
     shellEvent.processEvent();
     dispose();
+  }
+
+  public void setText(String string) {
+    checkWidget ();
+    if( string == null ) {
+      error (RWT.ERROR_NULL_ARGUMENT );
+    }
+    this.text = string;
+  }
+  
+  public String getText() {
+    checkWidget ();
+    return text;
   }
 
   // ///////////////////////////////////////////////

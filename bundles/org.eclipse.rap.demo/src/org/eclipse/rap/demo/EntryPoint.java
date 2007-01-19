@@ -248,6 +248,8 @@ public class EntryPoint implements IEntryPoint {
         layoutShell( shell, toolBar, content );
       }
     } );
+    shell.setText( "RWT Demo" );
+    shell.open();
     return display;
   }
 
@@ -379,6 +381,7 @@ public class EntryPoint implements IEntryPoint {
     } );
     shell.setBounds( 250, 20, 400, 200 );
     shell.layout();
+    shell.open();
   }
 
   private void createTab2( final TabFolder folder ) {

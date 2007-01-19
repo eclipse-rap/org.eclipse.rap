@@ -10,8 +10,8 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.*;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Color;
+import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -36,6 +36,8 @@ public class LayoutDemo implements IEntryPoint {
     createMainPart( compMain );
     createFootPart( compFoot );
     shell.layout();
+    shell.setText( "Layout Demo" );
+    shell.open();
     return display;
   }
 
@@ -46,7 +48,6 @@ public class LayoutDemo implements IEntryPoint {
     createTabStackedLayout( topFolder );
     createTabCBannerLayout( topFolder );
     createTabViewFormLayout( topFolder );
-    createTabColor( topFolder );
     topFolder.setSelection( 0 );
   }
 
@@ -156,62 +157,6 @@ public class LayoutDemo implements IEntryPoint {
     Button right = new Button( viewform, RWT.NONE );
     right.setText( "Close" );
     viewform.setTopRight( right );
-  }
-
-  /** Creates a tab to display Colors */
-  private void createTabColor( TabFolder folder ) {
-    TabItem item = new TabItem( folder, RWT.NONE );
-    item.setText( "Color" );
-    Composite comp = new Composite( folder, RWT.NONE );
-    item.setControl( comp );
-    comp.setLayout( new RowLayout() );
-    // colors
-    final int count = 3;
-    final Color[] bgColors = new Color[count];
-    final Color[] fgColors = new Color[count];
-    bgColors[0] = Color.getColor(139, 37, 0);
-    bgColors[1] = Color.getColor(105, 89, 205);
-    bgColors[2] = Color.getColor(139, 121, 94);
-    fgColors[0] = Color.getColor(255, 140, 0);
-    fgColors[1] = Color.getColor(255, 215, 0);
-    fgColors[2] = Color.getColor(154, 205, 50);
-    // label
-    final Label label = new Label( comp, RWT.WRAP );
-    label.setLayoutData( new RowData( 100, 100 ) );
-    label.setText( "Label" ); // TODO: Label without text fails!
-    label.setBackground( bgColors[0] );
-    label.setForeground( bgColors[1] );
-    // button
-    final Button button = new Button( comp, RWT.PUSH );
-    button.setLayoutData( new RowData( 100, 100 ) );
-    button.setText( "Button" );
-    button.setBackground( bgColors[0] );
-    button.setForeground( Color.getColor( 0, 128, 0 ) );
-    // switch foreground button
-    Button switchFgButton = new Button( comp, RWT.PUSH );
-    switchFgButton.setText( "Switch Foreground" );
-    switchFgButton.setLayoutData( new RowData( 100, 30 ) );
-    final int fgIndex[] = { 0 };
-    switchFgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        int i = ++fgIndex[0] % count;
-        label.setForeground( fgColors[i] );
-        button.setForeground( fgColors[i] );
-      }
-    } );
-    // switch background button
-    Button switchBgButton = new Button( comp, RWT.PUSH );
-    switchBgButton.setText( "Switch Background" );
-    switchBgButton.setLayoutData( new RowData( 100, 30 ) );
-    final int bgIndex[] = { 0 };
-    switchBgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        int i = ++bgIndex[0] % count;
-        label.setBackground( bgColors[i] );
-        button.setBackground( bgColors[i] );
-      }
-    } );
-    
   }
 
   // FOOT PART

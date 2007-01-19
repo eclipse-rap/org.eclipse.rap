@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.*;
-import org.eclipse.rap.rwt.internal.graphics.IColor;
+import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -43,6 +43,8 @@ public class ControlLCAUtil {
     adapter.preserve( Props.TOOL_TIP_TEXT, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.isVisible() ) );
+    adapter.preserve( Props.FG_COLOR, control.getForeground() );
+    adapter.preserve( Props.BG_COLOR, control.getBackground() );
     adapter.preserve( Props.CONTROL_LISTENERS, 
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     adapter.preserve( Props.FONT, control.getFont() );
@@ -70,18 +72,32 @@ public class ControlLCAUtil {
   public static void writeVisblility( final Control control ) 
     throws IOException
   {
-    Boolean newValue = Boolean.valueOf( control.isVisible() );
+    // we only need getVisible here (not isVisible), as qooxdoo also hides/shows
+    // contained controls
+    Boolean newValue = Boolean.valueOf( control.getVisible() );
     Boolean defValue = Boolean.TRUE;
     if( WidgetUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) 
     {
       JSWriter writer = JSWriter.getWriterFor( control );
-      writer.set( "visibility", control.isVisible() );
+      writer.set( Props.VISIBLE, newValue );
+    }
+  }
+
+  public static void writeEnablement( final Control control )
+    throws IOException
+  {
+    Boolean newValue = Boolean.valueOf( control.isEnabled() );
+    Boolean defValue = Boolean.TRUE;
+    if( WidgetUtil.hasChanged( control, Props.ENABLED, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      writer.set( Props.ENABLED, newValue );
     }
   }
 
   public static void writeChanges( final Control control ) throws IOException {
     writeBounds( control );
     writeVisblility( control );
+    writeEnablement( control );
     writeColors( control );
     writeFont( control );
     writeToolTip( control );
@@ -122,7 +138,7 @@ public class ControlLCAUtil {
   // TODO [rh] move this to WidgetLCAUtil, move test case along, change LCA's
   //      to use this instead of manually setting images
   public static void writeImage( final Widget widget, final Image image ) 
-    throws IOException
+    throws IOException 
   {
     if( WidgetUtil.hasChanged( widget, Props.IMAGE, image, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
@@ -134,18 +150,14 @@ public class ControlLCAUtil {
 
   public static void writeColors( final Control control ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( control );
-    Color fgColor = control.getForeground();
-    Color bgColor = control.getBackground();
-    if( fgColor != null ) {
-      writer.set( Props.FG_COLOR, 
-                  JSConst.QX_FIELD_COLOR, 
-                  ( ( IColor )fgColor ).toColorValue() );
-    }
-    if( bgColor != null ) {
-      writer.set( Props.BG_COLOR,
-                  JSConst.QX_FIELD_BACKGROUND_COLOR,
-                  ( ( IColor )bgColor ).toColorValue() );
-    }
+    writer.set( Props.FG_COLOR,
+                JSConst.QX_FIELD_COLOR,
+                control.getForeground(),
+                null );
+    writer.set( Props.BG_COLOR,
+                JSConst.QX_FIELD_BG_COLOR,
+                control.getBackground(),
+                null );
   }
 
   /**
@@ -163,15 +175,6 @@ public class ControlLCAUtil {
     }
     if( ( widget.getStyle() & RWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
-    }
-    // TODO [rh] revise this: it seems that min/max are only relevant for shell
-    //      thus the code below should be moved to ShellLCA
-    // must be passed to disable mininimize or maximize button
-    if( ( widget.getStyle() & RWT.MIN ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_MIN" } );
-    }
-    if( ( widget.getStyle() & RWT.MAX ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_MAX" } );
     }
   }
 

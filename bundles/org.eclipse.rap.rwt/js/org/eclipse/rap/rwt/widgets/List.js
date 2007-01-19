@@ -71,7 +71,7 @@ qx.Proto.selectItem = function( itemIndex ) {
     this.getManager().deselectAll();
   } else {
     var item = this.getChildren()[ itemIndex ];
-    this.getManager().setSelectedItem( item );
+    this.getManager().setSelectedItem( item );  
     // TODO [rh] second parameter has no effect, figure out what it is for
     this.getManager().scrollItemIntoView( item, true );
   }
@@ -176,3 +176,16 @@ qx.Proto._onChangeLeadItem = function( evt ) {
     req.addParameter( id + ".focusIndex", focusIndex );
   }
 }
+
+/*
+ * Pass enablement to list items (in SWT, there are no List Items)
+ */
+qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
+  // TODO [rst] call super._modifyEnabled ?
+  var items = this.getChildren();
+  for( var i = 0; i < items.length; i++ ) {
+    var item = items[ i ];
+    item.setEnabled( propValue );
+  }
+  return true;
+};

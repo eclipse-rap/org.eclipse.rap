@@ -9,29 +9,21 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.custom.SashForm;
 import org.eclipse.rap.rwt.layout.FillLayout;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class ControlsDemo implements IEntryPoint {
 
-  private Text text;
-
   public Display createUI() {
     Display display = new Display();
     Shell shell = new Shell( display, RWT.SHELL_TRIM );
-    shell.setBounds( 10, 10, 800, 500 );
+    shell.setBounds( 10, 10, 800, 600 );
     shell.setLayout( new FillLayout() );
-    SashForm sashForm = new SashForm( shell, RWT.VERTICAL );
-    Composite compMain = new Composite( sashForm, RWT.NONE );
-    Composite compFoot = new Composite( sashForm, RWT.NONE );
-    sashForm.setWeights( new int[]{
-      70, 30
-    } );
-    createMainPart( compMain );
-    createFootPart( compFoot );
+    createMainPart( shell );
     shell.layout();
+    shell.setText( "RWT Controls Demo" );
+    shell.open();
     return display;
   }
 
@@ -41,11 +33,12 @@ public class ControlsDemo implements IEntryPoint {
     final TabFolder topFolder = new TabFolder( parent, RWT.NONE );
     new ButtonTab( topFolder );
 //    new CBannerTab( topFolder );
+    new ComboTab( topFolder );
     new CompositeTab( topFolder );
     new CoolBarTab( topFolder );
     new LabelTab( topFolder );
     new ListTab( topFolder );
-    new SashTab( topFolder );
+//    new SashTab( topFolder );
     new SashFormTab( topFolder );
     new ShellTab( topFolder );
     new TabFolderTab( topFolder );
@@ -53,15 +46,8 @@ public class ControlsDemo implements IEntryPoint {
     new TextTab( topFolder );
     new ToolBarTab( topFolder );
     new TreeTab( topFolder );
+    new ContainmentTab( topFolder );
     topFolder.setSelection( 0 );
-  }
-
-  // FOOT PART
-  private void createFootPart( Composite parent ) {
-    FillLayout footLayout = new FillLayout();
-    parent.setLayout( footLayout );
-    text = new Text( parent, RWT.MULTI );
-    text.setText( "" );
   }
 
 }

@@ -33,6 +33,7 @@ public class ShellLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
     adapter.preserve( PROP_ACTIVE_CONTROL, getActiveControl( shell ) );
     adapter.preserve( PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
+    adapter.preserve( Props.TEXT, shell.getText() );
   }
 
   public void readData( final Widget widget ) { 
@@ -54,6 +55,12 @@ public class ShellLCA extends AbstractWidgetLCA {
                         JSConst.JS_SHELL_CLOSED );
     writer.call( "open", null );
     ControlLCAUtil.writeStyleFlags( widget );
+    if( ( widget.getStyle() & RWT.MIN ) != 0 ) {
+      writer.call( "addState", new Object[]{ "rwt_MIN" } );
+    }
+    if( ( widget.getStyle() & RWT.MAX ) != 0 ) {
+      writer.call( "addState", new Object[]{ "rwt_MAX" } );
+    }
     int style = widget.getStyle();
     writer.set( "resizeable", (style & RWT.RESIZE) != 0 );
     writer.set( "showMinimize", (style & (RWT.MIN | RWT.MAX)) != 0 );
@@ -65,6 +72,8 @@ public class ShellLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     ControlLCAUtil.writeChanges( shell );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_CAPTION, shell.getText(), "" );
     writeActiveShell( shell );
     writeActiveControl( shell );
   }

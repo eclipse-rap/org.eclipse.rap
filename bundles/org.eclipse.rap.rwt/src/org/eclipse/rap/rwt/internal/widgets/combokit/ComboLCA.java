@@ -52,6 +52,9 @@ public class ComboLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.form.ComboBox" );
+    writer.addListener( null,
+                        "changeEnabled",
+                        "org.eclipse.rap.rwt.ComboUtil.enablementChanged" );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

@@ -50,3 +50,18 @@ org.eclipse.rap.rwt.ComboUtil.createComboBoxItems = function( id, items ) {
   }
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( combo, id, false );
 };
+
+
+/**
+ * Listener for change of property enabled, passes enablement to children.
+ * TODO [rst] Once qx can disable a Combo completely (including gray-out),
+ *  this listener can be removed
+ */
+org.eclipse.rap.rwt.ComboUtil.enablementChanged = function( evt ) {
+  var enabled = evt.getData();
+  var items = this.getChildren();
+  for( var i = 0; i < items.length; i++ ) {
+    var item = items[ i ];
+    item.setEnabled( enabled );
+  }
+};

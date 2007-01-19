@@ -4,36 +4,47 @@
 package org.eclipse.rap.demo.controls;
 
 import java.lang.reflect.Field;
+import java.util.*;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.SashForm;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
+import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 abstract class ExampleTab {
   
   protected final TabFolder folder;
-  protected final Composite styleComp;
-  private final Composite exmplComp;
-  private final SelectionListener listener;
+  private final SelectionListener styleListener;
+  private final Collection controls;
 
+  private Composite exmplComp;
+  private Composite styleComp;
+  private Color[] bgColors;
+  private Color[] fgColors;
+  private int fgIndex;
+  private int bgIndex;
+
+  private boolean visible = true;
+  private boolean enabled = true;
+  private Text text;
+  private StringBuffer content = new StringBuffer();
+  
   public ExampleTab( final TabFolder folder, final String title ) {
     this.folder = folder;
     TabItem item = new TabItem( folder, RWT.NONE );
     item.setText( title );
-    SashForm sashForm = new SashForm( folder, RWT.HORIZONTAL );
+    Control sashForm = createForm();
     item.setControl( sashForm );
-
-    exmplComp = new Composite( sashForm, RWT.NONE );
-    styleComp = new Composite( sashForm, RWT.NONE );
-    styleComp.setLayout( new RowLayout( RWT.VERTICAL ) );
-    sashForm.setWeights( new int[] { 70, 30} );
-    listener = new SelectionListener() {
+    initColors();
+    controls = new ArrayList();
+    styleListener = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
+        controls.clear();
         destroyExampleControls( );
         createExampleControls( exmplComp );
+        setVisible( visible );
+        setEnabled( enabled );
         exmplComp.layout();
       }
     };
@@ -41,6 +52,39 @@ abstract class ExampleTab {
     createStyleControls();
   }
   
+  private Control createForm() {
+    SashForm vertSashForm = new SashForm( folder, RWT.VERTICAL );
+    SashForm horSashForm = new SashForm( vertSashForm, RWT.HORIZONTAL );
+    Composite leftComp = new Composite( horSashForm, RWT.NONE );
+    Composite rightComp = new Composite( horSashForm, RWT.NONE );
+    Composite footComp = new Composite( vertSashForm, RWT.NONE );
+    FillLayout layout = new FillLayout();
+    layout.marginWidth = 5;
+    layout.marginHeight = 5;
+    leftComp.setLayout( layout );
+    rightComp.setLayout( layout );
+    footComp.setLayout( layout );
+    exmplComp = new Composite( leftComp, RWT.NONE );
+    styleComp = new Composite( rightComp, RWT.NONE );
+    styleComp.setLayout( new RowLayout( RWT.VERTICAL ) );
+    horSashForm.setWeights( new int[] { 60, 40} );
+    vertSashForm.setWeights( new int[] { 80, 20} );
+    text = new Text( footComp, RWT.BORDER | RWT.READ_ONLY | RWT.MULTI );
+    text.setText( "" );
+    return vertSashForm;
+  }
+  
+  private void initColors() {
+    bgColors= new Color[3];
+    fgColors = new Color[3];
+    bgColors[0] = Color.getColor(139, 37, 0);
+    bgColors[1] = Color.getColor(105, 89, 205);
+    bgColors[2] = Color.getColor(139, 121, 94);
+    fgColors[0] = Color.getColor(255, 140, 0);
+    fgColors[1] = Color.getColor(255, 215, 0);
+    fgColors[2] = Color.getColor(154, 205, 50);
+  }
+
   abstract void createStyleControls( );
   
   abstract void createExampleControls( final Composite top );
@@ -51,32 +95,130 @@ abstract class ExampleTab {
       Field field = RWT.class.getField( fieldName );
       style = field.getInt( null );
     } catch( NoSuchFieldException e ) {
-      System.err.println("No such style flag: RWT." + fieldName);
     } catch( IllegalAccessException e ) {
       System.err.println("Cannot access style flag: RWT." + fieldName);
     }
     Button button = createStyleButton( "RWT." + fieldName, style );
-//    TODO [rst] when enabled works, change to:
-//    button.setEnabled( style != RWT.NONE );
-    button.setVisible( style != RWT.NONE );
+    button.setEnabled( style != RWT.NONE );
     return button;
   }
-  
-  protected void createFontChooser( final Control[] controls ) {
-    new FontChooser( styleComp, controls );
+
+  protected void createFontChooser() {
+    new FontChooser( styleComp,
+                     ( Control[] )controls.toArray( new Control[ controls.size() ] ) );
   }
 
   private Button createStyleButton( final String name, final int style ) {
     Button button = new Button( styleComp, RWT.CHECK );
     button.setText( name );
-    button.addSelectionListener( listener );
+    button.addSelectionListener( styleListener );
     button.setData( "style", new Integer( style ) );
     // preferred size does not work:
     button.setLayoutData( new RowData( 100, 20 ) );
     return button;
   }
+
+  protected Button createPropertyButton( final String name ) {
+    Button button = new Button( styleComp, RWT.CHECK );
+    button.setText( name );
+    // preferred size does not work:
+    button.setLayoutData( new RowData( 100, 20 ) );
+    return button;
+  }
   
-  protected void destroyExampleControls() {
+  /**
+   * Creates a checkbutton to show / hide the registered controls.
+   * 
+   * @return the created checkbutton
+   */
+  protected Button createVisibilityButton( ) {
+    final Button button = new Button( styleComp, RWT.CHECK );
+    button.setText( "Visble" );
+    button.setSelection( visible ); 
+    button.setLayoutData( new RowData( 100, 20 ) );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        visible = button.getSelection();
+        setVisible( visible );
+      }
+    } );
+    return button;
+  }
+
+  /**
+   * Creates a checkbutton to enable / disabled the registered controls.
+   * 
+   * @return the created checkbutton.
+   */
+  protected Button createEnablementButton( ) {
+    final Button button = new Button( styleComp, RWT.CHECK );
+    button.setText( "Enabled" );
+    button.setSelection( enabled );
+    button.setLayoutData( new RowData( 100, 20 ) );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        enabled = button.getSelection();
+        setEnabled( enabled );
+      }
+    } );
+    return button;
+  }
+
+  /**
+   * Creates a checkbutton to change the foreground color of the registered
+   * controls.
+   * 
+   * @return the created checkbutton.
+   */
+  protected Button createFgColorButton( ) {
+    final Button button = new Button( styleComp, RWT.PUSH );
+    button.setText( "Fg Color" );
+    button.setLayoutData( new RowData( 100, 20 ) );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        changeFgColor();
+      }
+    } );
+    return button;
+  }
+
+  /**
+   * Creates a checkbutton to change the background color of the registered
+   * controls.
+   * 
+   * @return the created checkbutton.
+   */
+  protected Button createBgColorButton( ) {
+    final Button button = new Button( styleComp, RWT.PUSH );
+    button.setText( "Bg Color" );
+    button.setLayoutData( new RowData( 100, 20 ) );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        changeBgColor();
+      }
+    } );
+    return button;
+  }
+
+  /**
+   * Adds a control to the list of registered controls. Registered controls can
+   * be hidden and disabled by the checkbuttons in the property area. This
+   * method is to be called within <code>createExampleControls</code>.
+   * 
+   * @param control A control that should be remote controlled.
+   */
+  protected void registerControl( Control control ) {
+    controls.add( control );
+  }
+  
+  protected void log(String msg) {
+    content.append( msg.trim() );
+    content.append( "\n" );
+    System.out.println( "LOG: " + msg.trim() );
+    text.setText( content.toString() );
+  }
+
+  private void destroyExampleControls() {
     Control[] ctrls = exmplComp.getChildren();
     for( int i = 0; i < ctrls.length; i++ ) {
       try {
@@ -105,61 +247,48 @@ abstract class ExampleTab {
     return result;
   }
 
-  /**
-   * TODO [rst] Integrate facility for changing colors into styleComp
-   */
-  private void createTabColor( TabFolder folder ) {
-    TabItem item = new TabItem( folder, RWT.NONE );
-    item.setText( "Color" );
-    Composite comp = new Composite( folder, RWT.NONE );
-    item.setControl( comp );
-    comp.setLayout( new RowLayout() );
-    // colors
-    final int count = 3;
-    final Color[] bgColors = new Color[count];
-    final Color[] fgColors = new Color[count];
-    bgColors[0] = Color.getColor(139, 37, 0);
-    bgColors[1] = Color.getColor(105, 89, 205);
-    bgColors[2] = Color.getColor(139, 121, 94);
-    fgColors[0] = Color.getColor(255, 140, 0);
-    fgColors[1] = Color.getColor(255, 215, 0);
-    fgColors[2] = Color.getColor(154, 205, 50);
-    // label
-    final Label label = new Label( comp, RWT.WRAP );
-    label.setLayoutData( new RowData( 100, 100 ) );
-    label.setText( "Label" ); // TODO: Label without text fails!
-    label.setBackground( bgColors[0] );
-    label.setForeground( bgColors[1] );
-    // button
-    final Button button = new Button( comp, RWT.PUSH );
-    button.setLayoutData( new RowData( 100, 100 ) );
-    button.setText( "Button" );
-    button.setBackground( bgColors[0] );
-    button.setForeground( Color.getColor( 0, 128, 0 ) );
-    // switch foreground button
-    Button switchFgButton = new Button( comp, RWT.PUSH );
-    switchFgButton.setText( "Switch Foreground" );
-    switchFgButton.setLayoutData( new RowData( 100, 30 ) );
-    final int fgIndex[] = { 0 };
-    switchFgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        int i = ++fgIndex[0] % count;
-        label.setForeground( fgColors[i] );
-        button.setForeground( fgColors[i] );
-      }
-    } );
-    // switch background button
-    Button switchBgButton = new Button( comp, RWT.PUSH );
-    switchBgButton.setText( "Switch Background" );
-    switchBgButton.setLayoutData( new RowData( 100, 30 ) );
-    final int bgIndex[] = { 0 };
-    switchBgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        int i = ++bgIndex[0] % count;
-        label.setBackground( bgColors[i] );
-        button.setBackground( bgColors[i] );
-      }
-    } );    
+  private void setVisible( boolean visible ) {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      control.setVisible( visible );
+    }
+  }
+  
+  private void setEnabled( boolean enabled ) {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      control.setEnabled( enabled );
+    }
+  }
+  
+  private void changeFgColor() {
+    Color color = null;
+    if( fgIndex >= 0 && fgIndex < fgColors.length ) {
+      color = fgColors[fgIndex++];
+    } else {
+      fgIndex = 0;
+    }
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      control.setForeground( color );
+    }
+  }
+
+  private void changeBgColor() {
+    Color color = null;
+    if( bgIndex >= 0 && bgIndex < bgColors.length ) {
+      color = bgColors[bgIndex++];
+    } else {
+      bgIndex = 0;
+    }
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      control.setBackground( color );
+    }
   }
 
 }
