@@ -47,20 +47,22 @@ public class CTabFolder extends Composite {
   private int selectedIndex = -1;
   private int firstIndex = -1; // index of the left most visible tab
 //  private final boolean simple = true;  // curvy tab style
-  private boolean mru = false;
+  private boolean mru;
   private int[] priority = new int[ 0 ];
   private boolean showUnselectedClose = true;
   private int minimumCharacters = 20;
   private boolean maximizeVisible = true;
   private boolean minimizeVisible = true;
-  private boolean inDispose = false;
-  private boolean minimized = false;
-  private boolean maximized = false;
+  private boolean inDispose;
+  private boolean minimized;
+  private boolean maximized;
   private boolean onBottom;
   private boolean single;
+  private final Rectangle maxRect = new Rectangle( 0, 0, 0, 0 );
+  private final Rectangle minRect = new Rectangle( 0, 0, 0, 0 );
   // Chevron
   private final Rectangle chevronRect = new Rectangle( 0, 0, 0, 0 );
-  private boolean showChevron = false;
+  private boolean showChevron;
   // Tab bar
   private int fixedTabHeight = RWT.DEFAULT;
   private int tabHeight = 0;
@@ -603,7 +605,7 @@ public class CTabFolder extends Composite {
     CTabItem[] items = getItems();
     if( !single && !mru && showIndex != -1 ) {
       // make sure selected item will be showing
-      firstIndex = showIndex;
+      int firstIndex = showIndex;
       if( priority[ 0 ] < showIndex ) {
         int maxWidth = getRightItemEdge() - borderLeft;
 //        if( !simple ) {
@@ -668,6 +670,17 @@ public class CTabFolder extends Composite {
     }
     setItemSize();
     setItemLocation();
+    // 
+    if( !single ) {
+      boolean needChevron = false;
+      for( int i = 0; i < items.length; i++ ) {
+        if( !items[i].isShowing() ) {
+          needChevron = true;
+        }
+      }
+      showChevron = needChevron;
+    }
+    //
     setButtonBounds();
     // TODO [rh] changing tabHeight does not change the clientArea of the 
     //      control that belongs to the current selection.
@@ -689,21 +702,22 @@ public class CTabFolder extends Composite {
 //    oldY = maxRect.y;
 //    oldWidth = maxRect.width;
 //    oldHeight = maxRect.height;
-//    maxRect.x = maxRect.y = maxRect.width = maxRect.height = 0;
-//    if( showMax ) {
-//      maxRect.x = size.x - borderRight - BUTTON_SIZE - 3;
-//      if( borderRight > 0 )
-//        maxRect.x += 1;
-//      maxRect.y = onBottom
-//                          ? size.y
-//                            - borderBottom
-//                            - tabHeight
-//                            + ( tabHeight - BUTTON_SIZE )
-//                            / 2
-//                          : borderTop + ( tabHeight - BUTTON_SIZE ) / 2;
-//      maxRect.width = BUTTON_SIZE;
-//      maxRect.height = BUTTON_SIZE;
-//    }
+    clearRectangle( maxRect );
+    if( maximizeVisible ) {
+      maxRect.x = size.x - borderRight - BUTTON_SIZE - 3;
+      if( borderRight > 0 ) {
+        maxRect.x += 1;
+      }
+      maxRect.y = onBottom
+                ?   size.y
+                  - borderBottom
+                  - tabHeight
+                  + ( tabHeight - BUTTON_SIZE )
+                  / 2
+                : borderTop + ( tabHeight - BUTTON_SIZE ) / 2;
+      maxRect.width = BUTTON_SIZE;
+      maxRect.height = BUTTON_SIZE;
+    }
 //    if( oldX != maxRect.x
 //        || oldWidth != maxRect.width
 //        || oldY != maxRect.y
@@ -716,26 +730,27 @@ public class CTabFolder extends Composite {
 //                        : borderTop + 1;
 //      redraw( left, top, right - left, tabHeight, false );
 //    }
-//    // min button
+    // min button
 //    oldX = minRect.x;
 //    oldY = minRect.y;
 //    oldWidth = minRect.width;
 //    oldHeight = minRect.height;
-//    minRect.x = minRect.y = minRect.width = minRect.height = 0;
-//    if( showMin ) {
-//      minRect.x = size.x - borderRight - maxRect.width - BUTTON_SIZE - 3;
-//      if( borderRight > 0 )
-//        minRect.x += 1;
-//      minRect.y = onBottom
-//                          ? size.y
-//                            - borderBottom
-//                            - tabHeight
-//                            + ( tabHeight - BUTTON_SIZE )
-//                            / 2
-//                          : borderTop + ( tabHeight - BUTTON_SIZE ) / 2;
-//      minRect.width = BUTTON_SIZE;
-//      minRect.height = BUTTON_SIZE;
-//    }
+    clearRectangle( minRect );
+    if( minimizeVisible ) {
+      minRect.x = size.x - borderRight - maxRect.width - BUTTON_SIZE - 3;
+      if( borderRight > 0 ) {
+        minRect.x += 1;
+      }
+      minRect.y = onBottom
+                ?   size.y 
+                  - borderBottom 
+                  - tabHeight 
+                  + ( tabHeight - BUTTON_SIZE )
+                  / 2
+                : borderTop + ( tabHeight - BUTTON_SIZE ) / 2;
+      minRect.width = BUTTON_SIZE;
+      minRect.height = BUTTON_SIZE;
+    }
 //    if( oldX != minRect.x
 //        || oldWidth != minRect.width
 //        || oldY != minRect.y
@@ -751,16 +766,16 @@ public class CTabFolder extends Composite {
     
     // Fake some variables to leave the code below unchanged
     // those variables are field in original SWT code
-    Rectangle maxRect = new Rectangle( 0, 0, 0, 0 );
-    if( getMaximizeVisible() ) {
-      maxRect.width = BUTTON_SIZE;
-      maxRect.height = tabHeight;
-    }
-    Rectangle minRect = new Rectangle( 0, 0, 0, 0 );
-    if( getMinimizeVisible() ) {
-      minRect.width = BUTTON_SIZE;
-      minRect.height = tabHeight;
-    }
+//    Rectangle maxRect = new Rectangle( 0, 0, 0, 0 );
+//    if( getMaximizeVisible() ) {
+//      maxRect.width = BUTTON_SIZE;
+//      maxRect.height = tabHeight;
+//    }
+//    Rectangle minRect = new Rectangle( 0, 0, 0, 0 );
+//    if( getMinimizeVisible() ) {
+//      minRect.width = BUTTON_SIZE;
+//      minRect.height = tabHeight;
+//    }
     CTabItem[] items = getItems();
     // top right control
     clearRectangle( topRightRect );
@@ -950,8 +965,8 @@ public class CTabFolder extends Composite {
         CTabItem item = items[ priority[ i ] ];
         width += item.width;
         item.showing = i == 0
-                             ? true
-                             : item.width > 0 && width <= maxWidth;
+                     ? true
+                     : item.width > 0 && width <= maxWidth;
 //        if( !simple && priority[ i ] == selectedIndex ) {
 //          width += curveWidth - 2 * curveIndent;
 //        }
@@ -1286,6 +1301,14 @@ public class CTabFolder extends Composite {
 
     public boolean getChevronVisible() {
       return CTabFolder.this.showChevron;
+    }
+    
+    public Rectangle getMinimizeRect() {
+      return new Rectangle( CTabFolder.this.minRect );
+    }
+
+    public Rectangle getMaximizeRect() {
+      return new Rectangle( CTabFolder.this.maxRect );
     }
     
     public Menu getShowListMenu() {

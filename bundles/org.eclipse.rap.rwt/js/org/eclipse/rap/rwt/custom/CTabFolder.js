@@ -174,18 +174,7 @@ qx.Proto.setMinMaxState = function( state ) {
   }
 }
 
-qx.Proto.setMinMaxToolTips = function( minToolTipText, maxToolTipText ) {
-  if( this._minButton != null ) {
-    var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    wm.setToolTip( this._minButton, minToolTipText );
-  }
-  if( this._maxButton != null ) {
-    var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    wm.setToolTip( this._maxButton, maxToolTipText );
-  }
-}
-
-qx.Proto.showMaxButton = function( left ) {
+qx.Proto.showMaxButton = function( left, toolTipText ) {
   if( this._maxButton == null ) {
     this._maxButton = new qx.ui.toolbar.ToolBarButton();
     this._maxButton.addState( "rwt_FLAT" );
@@ -197,6 +186,8 @@ qx.Proto.showMaxButton = function( left ) {
     this._maxButton.setWidth( org.eclipse.rap.rwt.custom.CTabFolder.BUTTON_SIZE );
     this._maxButton.addEventListener( "execute", this._onMinMaxExecute, this );
     this.add( this._maxButton );
+    var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    wm.setToolTip( this._maxButton, toolTipText );
   }
   this._maxButton.setLeft( left );
 }
@@ -212,7 +203,7 @@ qx.Proto.hideMaxButton = function() {
   }
 }
 
-qx.Proto.showMinButton = function( left ) {
+qx.Proto.showMinButton = function( left, toolTipText ) {
   if( this._minButton == null ) {
     this._minButton = new qx.ui.toolbar.ToolBarButton();
     this._minButton.addState( "rwt_FLAT" );
@@ -222,6 +213,8 @@ qx.Proto.showMinButton = function( left ) {
     this._minButton.setWidth( org.eclipse.rap.rwt.custom.CTabFolder.BUTTON_SIZE );
     this._minButton.addEventListener( "execute", this._onMinMaxExecute, this );
     this.add( this._minButton );
+    var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    wm.setToolTip( this._minButton, toolTipText );
   }
   this._minButton.setLeft( left );
 }

@@ -20,5 +20,8 @@ public interface ICTabFolderAdapter {
   boolean getChevronVisible();
   Rectangle getChevronRect();
   
+  Rectangle getMinimizeRect();
+  Rectangle getMaximizeRect();
+  
   Menu getShowListMenu(); 
 }

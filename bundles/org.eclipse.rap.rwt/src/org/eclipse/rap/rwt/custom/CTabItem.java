@@ -205,7 +205,11 @@ public class CTabItem extends Item {
           width += INTERNAL_SPACING;
         }
         // TODO [rh] fake calculation of text size...
-        width += text.length() * 4; 
+        int charWidth = 4;
+        if( ( getFont().getStyle() & RWT.BOLD ) != 0 ) {
+          charWidth++;
+        }
+        width += text.length() * charWidth; 
       }
       if( canClose() && ( isSelected || parent.getUnselectedCloseVisible() ) ) {
         if( result > 0 ) {

@@ -18,6 +18,8 @@ import org.eclipse.rap.rwt.widgets.MenuItem;
 import org.eclipse.rap.rwt.widgets.Widget;
 
 
+// TODO [rh] empty menu items (no text) should have the same height as non-
+//      empty ones. Currently they are drawn with a very small height.
 public final class MenuItemLCA extends AbstractWidgetLCA {
 
   private static final BarMenuItemLCA BAR_MENU_ITEM_LCA 

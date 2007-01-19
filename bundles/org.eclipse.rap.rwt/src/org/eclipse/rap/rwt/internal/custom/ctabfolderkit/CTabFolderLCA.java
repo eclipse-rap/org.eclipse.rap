@@ -49,6 +49,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public static final String PROP_MINIMIZED = "minimized";
   public static final String PROP_MINIMIZE_VISIBLE = "minimizeVisible";
   public static final String PROP_MAXIMIZE_VISIBLE = "maximizeVisible";
+  public static final String PROP_MINIMIZE_RECT = "minimizeRect";
+  public static final String PROP_MAXIMIZE_RECT = "maximizeRect";
   public static final String PROP_FOLDER_LISTENERS = "folderListeners";
   public static final String PROP_TOP_RIGHT = "topRight";
   public static final String PROP_TOP_RIGHT_ALIGNMENT = "topRightAlignment";
@@ -59,11 +61,11 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public static final String PROP_SELECTION_BG = "selectionBg";
   public static final String PROP_SELECTION_FG = "selectionFg";
   
-  // Width of min/max button, keep in sync with value in CTabFolder.js
-  private static final int MIN_MAX_BUTTON_WIDTH = 20;
   // Keep in sync with value in CTabFolder.js
   private static final Integer DEFAULT_TAB_HEIGHT = new Integer( 20 );
-  
+
+  private static final Rectangle ZERO_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
+
   // TODO [rh] establish a scheme for the location of images
   private static final String PREFIX = "org/eclipse/rap/rwt/custom/ctabfolder/";
   private static final String MAXIMIZE_GIF = PREFIX + "maximize.gif";
@@ -107,11 +109,15 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( tabFolder.getMinimizeVisible() ) );
     adapter.preserve( PROP_MAXIMIZE_VISIBLE, 
                       Boolean.valueOf( tabFolder.getMaximizeVisible() ) );
+    adapter.preserve( PROP_MINIMIZE_RECT, 
+                      tabFolderAdapter.getMinimizeRect() );
+    adapter.preserve( PROP_MAXIMIZE_RECT, 
+                      tabFolderAdapter.getMaximizeRect() );
     adapter.preserve( PROP_MINIMIZED, 
                       Boolean.valueOf( tabFolder.getMinimized() ) );
     adapter.preserve( PROP_MAXIMIZED, 
                       Boolean.valueOf( tabFolder.getMaximized() ) );
-    adapter.preserve( CTabFolderLCA.PROP_TAB_HEIGHT, 
+    adapter.preserve( PROP_TAB_HEIGHT, 
                       new Integer( tabFolder.getTabHeight() ) );
     adapter.preserve( PROP_TOP_RIGHT, tabFolder.getTopRight() );
     adapter.preserve( PROP_SELECTION_BG, tabFolder.getSelectionBackground() );
@@ -191,7 +197,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       = new SelectionEvent( tabFolder, 
                                             tabItem, 
                                             SelectionEvent.WIDGET_SELECTED, 
-                                            new Rectangle( 0, 0, 0, 0 ), 
+                                            ZERO_RECTANGLE, 
                                             true, 
                                             0 );
                     selectionEvent.processEvent();
@@ -257,48 +263,116 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
   }
 
-  // TODO [rh] revise this mess; layout code should go to CTabFolder
+//  // TODO [rh] revise this mess; layout code should go to CTabFolder
+//  private static void writeMinMaxVisible( final CTabFolder tabFolder ) 
+//    throws IOException 
+//  {
+//    JSWriter writer = JSWriter.getWriterFor( tabFolder );
+//    // bounds changed?
+//    String prop = Props.BOUNDS;
+//    Rectangle newBounds = tabFolder.getBounds();
+//    boolean boundsChanged 
+//      = WidgetUtil.hasChanged( tabFolder, prop, newBounds, null );
+//    // max button changed?
+//    Boolean maxVisible = Boolean.valueOf( tabFolder.getMaximizeVisible() );
+//    prop = PROP_MAXIMIZE_VISIBLE;
+//    boolean maxChanged 
+//      = WidgetUtil.hasChanged( tabFolder, prop, maxVisible, Boolean.FALSE );
+//    // min button changed?
+//    Boolean minVisible = Boolean.valueOf( tabFolder.getMinimizeVisible() );
+//    prop = PROP_MINIMIZE_VISIBLE;
+//    boolean minChanged 
+//      = WidgetUtil.hasChanged( tabFolder, prop, minVisible, Boolean.FALSE );
+//    
+//    if( boundsChanged || minChanged || maxChanged ) {
+//      int left = tabFolder.getClientArea().width;
+//      if( tabFolder.getMaximizeVisible() ) {
+//        left -= MIN_MAX_BUTTON_WIDTH;
+//        writer.call( "showMaxButton", new Object[] { new Integer( left ) } );
+//      } else {
+//        writer.call( "hideMaxButton", null );
+//      }
+//      if( tabFolder.getMinimizeVisible() ) {
+//        left -= MIN_MAX_BUTTON_WIDTH;
+//        writer.call( "showMinButton", new Object[] { new Integer( left ) } );
+//      } else {
+//        writer.call( "hideMinButton", null );
+//      }
+//    }
+//    if(    minChanged && minVisible.booleanValue() 
+//        || maxChanged && maxVisible.booleanValue() ) 
+//    {
+//      Object[] args = new Object[] { "Minimize", "Maximize" };
+//      writer.call( "setMinMaxToolTips", args );
+//    }
+//  }
+  
   private static void writeMinMaxVisible( final CTabFolder tabFolder ) 
     throws IOException 
   {
     JSWriter writer = JSWriter.getWriterFor( tabFolder );
-    // bounds changed?
-    String prop = Props.BOUNDS;
-    Rectangle newBounds = tabFolder.getBounds();
-    boolean boundsChanged 
-      = WidgetUtil.hasChanged( tabFolder, prop, newBounds, null );
-    // max button changed?
-    Boolean maxVisible = Boolean.valueOf( tabFolder.getMaximizeVisible() );
-    prop = PROP_MAXIMIZE_VISIBLE;
-    boolean maxChanged 
-      = WidgetUtil.hasChanged( tabFolder, prop, maxVisible, Boolean.FALSE );
-    // min button changed?
-    Boolean minVisible = Boolean.valueOf( tabFolder.getMinimizeVisible() );
-    prop = PROP_MINIMIZE_VISIBLE;
-    boolean minChanged 
-      = WidgetUtil.hasChanged( tabFolder, prop, minVisible, Boolean.FALSE );
-    
-    if( boundsChanged || minChanged || maxChanged ) {
-      int left = tabFolder.getClientArea().width;
+    boolean minChanged = hasMinChanged( tabFolder );
+    boolean maxChanged = hasMaxChanged( tabFolder );
+    if( minChanged || maxChanged ) {
+      Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
+      ICTabFolderAdapter tabFolderAdapter = ( ICTabFolderAdapter )adapter;
       if( tabFolder.getMaximizeVisible() ) {
-        left -= MIN_MAX_BUTTON_WIDTH;
-        writer.call( "showMaxButton", new Object[] { new Integer( left ) } );
+        int left = tabFolderAdapter.getMaximizeRect().x;
+        Object[] args = new Object[] { new Integer( left ), "Maximize" };
+        writer.call( "showMaxButton", args );
       } else {
         writer.call( "hideMaxButton", null );
       }
       if( tabFolder.getMinimizeVisible() ) {
-        left -= MIN_MAX_BUTTON_WIDTH;
-        writer.call( "showMinButton", new Object[] { new Integer( left ) } );
+        int left = tabFolderAdapter.getMinimizeRect().x;
+        Object[] args = new Object[] { new Integer( left ), "Minimize" };
+        writer.call( "showMinButton", args );
       } else {
         writer.call( "hideMinButton", null );
       }
     }
-    if(    minChanged && minVisible.booleanValue() 
-        || maxChanged && maxVisible.booleanValue() ) 
-    {
-      Object[] args = new Object[] { "Minimize", "Maximize" };
-      writer.call( "setMinMaxToolTips", args );
+  }
+  
+  private static boolean hasMinChanged( final CTabFolder tabFolder ) {
+    Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter tabFolderAdapter = ( ICTabFolderAdapter )adapter;
+    Boolean minVisible = Boolean.valueOf( tabFolder.getMinimizeVisible() );
+    boolean visibilityChanged;
+    visibilityChanged = WidgetUtil.hasChanged( tabFolder, 
+                                               PROP_MINIMIZE_VISIBLE, 
+                                               minVisible, 
+                                               Boolean.TRUE );
+    boolean boundsChanged = false;
+    if( !visibilityChanged ) {
+      Rectangle newBounds = tabFolderAdapter.getMinimizeRect();
+      boundsChanged = WidgetUtil.hasChanged( tabFolder, 
+                                             PROP_MINIMIZE_RECT, 
+                                             newBounds, 
+                                             ZERO_RECTANGLE );
+      
     }
+    return visibilityChanged || boundsChanged;
+  }
+  
+  private static boolean hasMaxChanged( final CTabFolder tabFolder ) {
+    Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter tabFolderAdapter = ( ICTabFolderAdapter )adapter;
+    Boolean maxVisible = Boolean.valueOf( tabFolder.getMaximizeVisible() );
+    boolean visibilityChanged;
+    visibilityChanged = WidgetUtil.hasChanged( tabFolder, 
+                                               PROP_MAXIMIZE_VISIBLE, 
+                                               maxVisible, 
+                                               Boolean.TRUE );
+    boolean boundsChanged = false;
+    if( !visibilityChanged ) {
+      Rectangle newBounds = tabFolderAdapter.getMaximizeRect();
+      boundsChanged = WidgetUtil.hasChanged( tabFolder, 
+                                             PROP_MAXIMIZE_RECT, 
+                                             newBounds, 
+                                             ZERO_RECTANGLE );
+      
+    }
+    return visibilityChanged || boundsChanged;
   }
   
   private static void writeMinMaxState( final CTabFolder tabFolder ) 
