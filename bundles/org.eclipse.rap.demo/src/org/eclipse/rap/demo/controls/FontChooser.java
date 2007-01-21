@@ -60,12 +60,12 @@ final class FontChooser {
     txtSize = new Text( composite, RWT.BORDER );
     txtSize.setLayoutData( new GridData( 90, 18 ) );
     btnBold = new Button( composite, RWT.CHECK );
-    btnBold.addSelectionListener( dummySelectionListener );
+//    btnBold.addSelectionListener( dummySelectionListener );
     gridData = new GridData( 80, 18 );
     btnBold.setLayoutData( gridData );
     btnBold.setText( "Bold" );
     btnItalic = new Button( composite, RWT.CHECK );
-    btnItalic.addSelectionListener( dummySelectionListener );
+//    btnItalic.addSelectionListener( dummySelectionListener );
     gridData = new GridData( 80, 18 );
     btnItalic.setLayoutData( gridData );
     btnItalic.setText( "Italic" );

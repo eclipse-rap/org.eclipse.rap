@@ -30,46 +30,48 @@ org.eclipse.rap.rwt.ButtonUtil.createRadioButton
   }
   org.eclipse.rap.rwt.WidgetManager.getInstance().add ( radio, id );
   radio.setParent( parent );
-};
+}
 
-/**
- * Fires a widgetSelected event if the radio button is selected.
- */
 org.eclipse.rap.rwt.ButtonUtil.radioSelected = function( evt ) {
     var radioManager = evt.getTarget();
-    var radio = radioManager.getSelected();
-    if(radio){
-      var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-      var radioId = widgetManager.findIdByWidget( radio );
-      var left = radio.getLeft();
-      var top = radio.getTop();
-      var width = radio.getWidth();
-      var height = radio.getHeight();
-      org.eclipse.rap.rwt.EventUtil.doWidgetSelected( radioId, 
-                                                      left, 
-                                                      top, 
-                                                      width,
-                                                      height );
-   }
-};
+    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    var radioButtons = radioManager.getItems();
+    for( var i = 0; i < radioButtons.length; i++ ) {
+      var selected = radioButtons[ i ] == radioManager.getSelected();
+      var id = widgetManager.findIdByWidget( radioButtons[ i ] );
+      req.addParameter( id + ".selection", selected );
+    }
+}
 
-/**
- * Fires a widgetSelected event if the list item wasn't laready selected.
- */
+org.eclipse.rap.rwt.ButtonUtil.radioSelectedAction = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    org.eclipse.rap.rwt.ButtonUtil.radioSelected( evt );
+    var radioManager = evt.getTarget();
+    var radio = radioManager.getSelected();
+    if( radio != null ) {
+      var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( radio );
+      org.eclipse.rap.rwt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+    }
+  }
+}
+
 org.eclipse.rap.rwt.ButtonUtil.checkSelected = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
     var check = evt.getTarget();
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var chkId = widgetManager.findIdByWidget( check );
+    var id = widgetManager.findIdByWidget( check );
     var req = org.eclipse.rap.rwt.Request.getInstance();
-    req.addParameter( chkId + ".selectedItem", check.getChecked() );
-    
-    var left = check.getLeft();
-    var top = check.getTop();
-    var width = check.getWidth();
-    var height = check.getHeight();
-    org.eclipse.rap.rwt.EventUtil.doWidgetSelected( chkId, 
-                                                    left, 
-                                                    top, 
-                                                    width,
-                                                    height );
-};
+    req.addParameter( id + ".selection", check.getChecked() );
+  }
+}
+
+org.eclipse.rap.rwt.ButtonUtil.checkSelectedAction = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    org.eclipse.rap.rwt.ButtonUtil.checkSelected( evt );
+    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = widgetManager.findIdByWidget( evt.getTarget() );
+    org.eclipse.rap.rwt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+  }
+}

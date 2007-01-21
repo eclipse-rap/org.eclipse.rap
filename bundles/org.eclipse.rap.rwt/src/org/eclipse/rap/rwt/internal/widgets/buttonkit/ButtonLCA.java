@@ -13,28 +13,20 @@ package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.internal.widgets.*;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.widgets.Button;
 import org.eclipse.rap.rwt.widgets.Widget;
 
 
-public class ButtonLCA extends AbstractWidgetLCA {
+public final class ButtonLCA extends AbstractWidgetLCA {
   
   private final static ButtonDelegateLCA PUSH = new PushButtonDelegateLCA();
   private final static ButtonDelegateLCA CHECK = new CheckButtonDelegateLCA();
   private final static ButtonDelegateLCA RADIO = new RadioButtonDelegateLCA();
   
   public void preserveValues( final Widget widget ) {
-    Button button = ( Button )widget;
-    ControlLCAUtil.preserveValues( button );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.TEXT, button.getText() );
-    adapter.preserve( Props.IMAGE, button.getImage() );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
-    ButtonDelegateLCA.preserveAlignment( button );
+    getLCADelegate( widget ).preserveValues( ( Button )widget );
   }
 
   public void readData( final Widget widget ) {

@@ -83,6 +83,7 @@ public final class JSConst {
   public static final String QX_FIELD_VALUE = "value";
   public static final String QX_FIELD_CAPTION = "caption";
   public static final String QX_FIELD_CHECKED = "checked";
+  public static final String QX_FIELD_APPEARANCE = "appearance";
   
   // constants
   public static final JSVar QX_CONST_VERTICAL_ORIENTATION

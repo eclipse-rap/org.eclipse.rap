@@ -13,9 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
-import org.eclipse.rap.rwt.internal.widgets.Props;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -25,6 +23,10 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
                         JSConst.JS_WIDGET_SELECTED,
                         JSListenerType.ACTION );
+
+  void preserveValues( final Button button ) {
+    ButtonLCAUtil.preserveValues( button );
+  }
 
   void readData( final Button button ) {
     // TODO [rh] clarify whether bounds should be sent (last parameter)
@@ -46,21 +48,13 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     ControlLCAUtil.writeChanges( button );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText(), "" );
-    writeAlignment( button );
-    writeImage( button );
+    ButtonLCAUtil.writeText( button );
+    ButtonLCAUtil.writeAlignment( button );
+    ButtonLCAUtil.writeImage( button );
   }
-  
-  private static void writeImage( final Button button ) throws IOException {
-    if( WidgetUtil.hasChanged( button, Props.IMAGE, button.getImage(), null ) ) {
-      String imagePath;
-      if( button.getImage() == null ) {
-        imagePath = "";
-      } else {
-        imagePath = Image.getPath( button.getImage() );
-      }
-      JSWriter writer = JSWriter.getWriterFor( button );
-      writer.set( JSConst.QX_FIELD_ICON, imagePath );
-    }
+
+  void renderDispose( final Button button ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( button );
+    writer.dispose();
   }
 }

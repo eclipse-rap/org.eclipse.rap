@@ -20,21 +20,22 @@ import org.eclipse.rap.rwt.widgets.Button;
 
 final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
-  private static final String SELECTED_ITEM = "selectedItem";
-  // radio functions as defined in org.eclipse.rap.rwt.CheckUtil
+  // check box event listner function, defined in org.eclipse.rap.rwt.ButtonUtil
   private static final String WIDGET_SELECTED 
     = "org.eclipse.rap.rwt.ButtonUtil.checkSelected";
+  
   private final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
                           WIDGET_SELECTED,
-                          JSListenerType.ACTION );
+                          JSListenerType. STATE_AND_ACTION );
+
+  void preserveValues( final Button button ) {
+    ButtonLCAUtil.preserveValues( button );
+  }
 
   void readData( final Button button ) {
-    if( WidgetUtil.wasEventSent( button, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      String value = WidgetUtil.readPropertyValue( button, SELECTED_ITEM );
-      button.setSelection( new Boolean( value ).booleanValue() );
-      ControlLCAUtil.processSelection( button, null, true );
-    }
+    ButtonLCAUtil.readSelection( button );
+    ControlLCAUtil.processSelection( button, null, true );
   }
   
   void renderInitialization( final Button button )
@@ -42,13 +43,12 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( "qx.ui.form.CheckBox" );
-    writer.set( "checked", button.getSelection() );
-    writer.set( "appearance", "checkbox" );
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "checkbox" );
     ControlLCAUtil.writeStyleFlags( button );
   }
 
   // TODO [rh] qooxdoo checkBox cannot display images, should we ignore
-  //      setImage() calles when style is RWT.CHECK?
+  //      setImage() calls when style is RWT.CHECK?
   void renderChanges( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
@@ -58,7 +58,13 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     ControlLCAUtil.writeChanges( button );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText(), "" );
-    writeAlignment( button );
+    ButtonLCAUtil.writeSelection( button );
+    ButtonLCAUtil.writeText( button );
+    ButtonLCAUtil.writeAlignment( button );
+  }
+
+  void renderDispose( final Button button ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( button );
+    writer.dispose();
   }
 }

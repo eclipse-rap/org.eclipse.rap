@@ -42,6 +42,7 @@ public class Button extends Control {
   // Getter/setter
   
   public void setText( final String text ) {
+    checkWidget();
     if( text == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -51,10 +52,12 @@ public class Button extends Control {
   }
 
   public String getText() {
+    checkWidget();
     return text;
   }
 
   public boolean getSelection() {
+    checkWidget();
     boolean result = false;
     if( ( style & ( RWT.CHECK | RWT.RADIO | RWT.TOGGLE ) ) != 0 ) {
       result = selected;
@@ -63,22 +66,26 @@ public class Button extends Control {
   }
   
   public void setSelection( final boolean selected ) {
+    checkWidget();
     if( ( style & ( RWT.CHECK | RWT.RADIO | RWT.TOGGLE ) ) != 0 ) {
       this.selected = selected;
     }
   }
   
   public Image getImage() {
+    checkWidget();
     return image;
   }
 
   public void setImage( final Image image ) {
+    checkWidget();
     if( ( style & RWT.ARROW ) == 0 ) {
       this.image = image;
     }
   }
   
   public int getAlignment() {
+    checkWidget();
     int result;
     if( ( style & RWT.ARROW ) != 0 ) {
       if( ( style & RWT.UP ) != 0 ) {
@@ -107,6 +114,7 @@ public class Button extends Control {
   }
   
   public void setAlignment( final int alignment ) {
+    checkWidget();
     if( ( style & RWT.ARROW ) != 0 ) {
       if( ( style & ( RWT.UP | RWT.DOWN | RWT.LEFT | RWT.RIGHT ) ) != 0 ) {
         style &= ~( RWT.UP | RWT.DOWN | RWT.LEFT | RWT.RIGHT );

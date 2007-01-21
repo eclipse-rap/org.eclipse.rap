@@ -4,12 +4,18 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class ButtonTab extends ExampleTab {
 
+  private static final String BUTTON_IMAGE
+    = "org/eclipse/rap/demo/controls/button-image.gif";
+  
   private Button button1;
   private Button check1;
   private Button radio1;
@@ -23,8 +29,24 @@ public class ButtonTab extends ExampleTab {
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
+    createStyleButton( "LEFT" );
+    createStyleButton( "CENTER" );
+    createStyleButton( "RIGHT" );
     createVisibilityButton( );
     createEnablementButton( );
+    final Button imageButton = new Button( styleComp, RWT.CHECK );
+    imageButton.setText( "Push Button with Image" );
+    imageButton.setLayoutData( new RowData( 80, 20 ) );
+    imageButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( imageButton.getSelection() ) {
+          ClassLoader classLoader = getClass().getClassLoader();
+          button1.setImage( Image.find( BUTTON_IMAGE, classLoader ) );
+        } else {
+          button1.setImage( null );
+        }
+      }
+    } );
     createFontChooser();
   }
 
@@ -58,5 +80,4 @@ public class ButtonTab extends ExampleTab {
     registerControl( radio2 );
     registerControl( radio3 );
   }
-
 }
