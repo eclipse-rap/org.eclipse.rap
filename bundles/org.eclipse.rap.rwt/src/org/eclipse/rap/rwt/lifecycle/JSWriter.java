@@ -496,6 +496,10 @@ public final class JSWriter {
           params.append( '"' );
           params.append( escapeString( ( String )args[ i ] ) );
           params.append( '"' );
+        } else if( args[ i ] instanceof Character ) {
+          params.append( '"' );
+          params.append( args[ i ] );
+          params.append( '"' );
         } else if( args[ i ] instanceof Widget ) {
           if( args[ i ] == getCurrentWidgetRef() ) {
             params.append( "w" );

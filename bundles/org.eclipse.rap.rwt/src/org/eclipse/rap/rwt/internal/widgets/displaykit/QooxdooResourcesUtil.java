@@ -69,6 +69,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/widgets/Tree.js";
   private static final String SCROLLED_COMPOSITE_JS 
     = "org/eclipse/rap/rwt/custom/ScrolledComposite.js";
+  private static final String SEPARATOR_JS 
+    = "org/eclipse/rap/rwt/widgets/Separator.js";
   
   private QooxdooResourcesUtil() {
     // prevent intance creation
@@ -1533,6 +1535,7 @@ final class QooxdooResourcesUtil {
       register( SHELL_JS );
       register( TREE_JS );
       register( SCROLLED_COMPOSITE_JS );
+      register( SEPARATOR_JS );
     } finally {
       manager.setContextLoader( bufferedLoader );
     }

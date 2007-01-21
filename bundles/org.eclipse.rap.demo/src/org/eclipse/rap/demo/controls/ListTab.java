@@ -11,27 +11,30 @@ public class ListTab extends ExampleTab {
 
   private List list;
 
-  public ListTab( TabFolder folder ) {
+  public ListTab( final TabFolder folder ) {
     super( folder, "List" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
+    createStyleButton( "H_SCROLL" );
+    createStyleButton( "V_SCROLL" );
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
   }
 
-  void createExampleControls( Composite top ) {
-    top.setLayout( new RowLayout() );
+  void createExampleControls( final Composite parent ) {
+    parent.setLayout( new RowLayout() );
     int style = getStyle();
-    list = new List( top, style );
-    list.setLayoutData( new RowData(200, 200) );
-    
+    list = new List( parent, style );
+    list.setLayoutData( new RowData( 200, 200 ) );
+    String text 
+      = "A very long item that demonstrates horizontal scrolling in a List";
+    list.add( text );
     for( int i = 1; i <= 25; i++ ) {
       list.add( "Item " + i );
     }
     registerControl( list );
   }
-
 }

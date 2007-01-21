@@ -33,7 +33,6 @@ public abstract class Control extends Widget {
   private Color foreground;
   private Color background;
   private Font font;
-  private boolean enabled;
 
   Control() {
     // prevent instantiation from outside this package
@@ -63,6 +62,7 @@ public abstract class Control extends Widget {
   // Visibility
 
   public void setVisible( final boolean visible ) {
+    checkWidget();
     state = visible ? state & ~HIDDEN : state | HIDDEN;
   }
 
@@ -74,7 +74,7 @@ public abstract class Control extends Widget {
 
   public boolean getVisible() {
     checkWidget();
-    return (state & HIDDEN) == 0;
+    return ( state & HIDDEN ) == 0;
   }
 
   /////////////

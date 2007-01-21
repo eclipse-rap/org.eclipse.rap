@@ -46,6 +46,8 @@ public class ControlsDemo implements IEntryPoint {
     new TextTab( topFolder );
     new ToolBarTab( topFolder );
     new TreeTab( topFolder );
+    new BrowserTab( topFolder );
+    new GroupTab( topFolder );
     new ContainmentTab( topFolder );
     topFolder.setSelection( 0 );
   }

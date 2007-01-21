@@ -112,8 +112,6 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   }
 
   private static void writeShowing( final CTabItem item ) throws IOException {
-//System.out.print( item.getText() + ".bounds:" + item.getBounds() );    
-//System.out.println( ", showing:" + item.isShowing() );    
     Boolean newValue = Boolean.valueOf( item.isShowing() );
     if( WidgetUtil.hasChanged( item, PROP_SHOWING, newValue, Boolean.TRUE ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );

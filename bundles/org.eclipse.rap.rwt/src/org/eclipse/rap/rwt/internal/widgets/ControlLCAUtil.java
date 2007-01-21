@@ -14,8 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -42,7 +41,11 @@ public class ControlLCAUtil {
     adapter.preserve( Props.BOUNDS, control.getBounds() );
     adapter.preserve( Props.TOOL_TIP_TEXT, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
+    // TODO [rh] revise visible: preserveValues and writeChanges should work on 
+    //      the same property values. Here isVisible is preserved but getVisible 
+    //      is rendered.
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.isVisible() ) );
+    adapter.preserve( Props.ENABLED, Boolean.valueOf( control.isEnabled() ) );
     adapter.preserve( Props.FG_COLOR, control.getForeground() );
     adapter.preserve( Props.BG_COLOR, control.getBackground() );
     adapter.preserve( Props.CONTROL_LISTENERS, 
@@ -69,35 +72,28 @@ public class ControlLCAUtil {
   //      visibility of a newly created widget (no flushGlobalQueues was called)
   //      MSG: Modification of property "visibility" failed with exception: 
   //           Error - Element must be created previously!
-  public static void writeVisblility( final Control control ) 
+  public static void writeVisible( final Control control ) 
     throws IOException
   {
     // we only need getVisible here (not isVisible), as qooxdoo also hides/shows
     // contained controls
     Boolean newValue = Boolean.valueOf( control.getVisible() );
-    Boolean defValue = Boolean.TRUE;
-    if( WidgetUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) 
-    {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      writer.set( Props.VISIBLE, newValue );
-    }
+    JSWriter writer = JSWriter.getWriterFor( control );
+    writer.set( Props.VISIBLE, "visibility", newValue, Boolean.TRUE );
   }
 
-  public static void writeEnablement( final Control control )
+  public static void writeEnabled( final Control control )
     throws IOException
   {
     Boolean newValue = Boolean.valueOf( control.isEnabled() );
-    Boolean defValue = Boolean.TRUE;
-    if( WidgetUtil.hasChanged( control, Props.ENABLED, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      writer.set( Props.ENABLED, newValue );
-    }
+    JSWriter writer = JSWriter.getWriterFor( control );
+    writer.set( Props.ENABLED, "enabled", newValue, Boolean.TRUE );
   }
 
   public static void writeChanges( final Control control ) throws IOException {
     writeBounds( control );
-    writeVisblility( control );
-    writeEnablement( control );
+    writeVisible( control );
+    writeEnabled( control );
     writeColors( control );
     writeFont( control );
     writeToolTip( control );
@@ -150,10 +146,13 @@ public class ControlLCAUtil {
 
   public static void writeColors( final Control control ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( control );
-    writer.set( Props.FG_COLOR,
-                JSConst.QX_FIELD_COLOR,
-                control.getForeground(),
-                null );
+    // Foreground color
+    Color color = control.getForeground();
+    if( WidgetUtil.hasChanged( control, Props.FG_COLOR, color, null ) ) {
+      Object[] args = new Object[] { control, color };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
+    }
+    // Background color
     writer.set( Props.BG_COLOR,
                 JSConst.QX_FIELD_BG_COLOR,
                 control.getBackground(),

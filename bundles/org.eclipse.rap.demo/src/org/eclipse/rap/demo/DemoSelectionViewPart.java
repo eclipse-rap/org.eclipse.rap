@@ -30,7 +30,7 @@ public class DemoSelectionViewPart extends ViewPart {
     Label label = new Label( parent, 0 );
     label.setText( "Selection Log" );
     label.setLayoutData( new GridData( 80, 15 ) );
-    list = new List( parent, RWT.FLAT );
+    list = new List( parent, RWT.FLAT | RWT.H_SCROLL | RWT.V_SCROLL );
     list.setLayoutData( new GridData( RWT.FILL, RWT.FILL, true, true ) );
     createSelectionListener();
   }

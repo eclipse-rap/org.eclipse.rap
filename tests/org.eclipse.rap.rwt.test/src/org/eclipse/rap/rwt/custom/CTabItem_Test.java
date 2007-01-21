@@ -88,19 +88,20 @@ public class CTabItem_Test extends TestCase {
     CTabItem item1 = new CTabItem( folder, RWT.NONE );
     Control item1Control = new Label( folder, RWT.NONE );
     item1Control.setSize( 1, 1 );
+    shell.open();
     
     // Set control for unselected item
     folder.setSelection( -1 );
     item1.setControl( item1Control );
     assertSame( item1Control, item1.getControl() );
-    assertEquals( false, item1Control.isVisible() );
+    assertEquals( false, item1Control.getVisible() );
     assertEquals( new Point( 1, 1 ), item1Control.getSize() );
     
     // Reset control: must set its visibility to false
     item1Control.setVisible( true );
     item1.setControl( null );
     assertEquals( null, item1.getControl() );
-    assertEquals( false, item1Control.isVisible() );
+    assertEquals( false, item1Control.getVisible() );
     
     // Set control for selected item
     CTabItem item2 = new CTabItem( folder, RWT.NONE );
@@ -108,7 +109,7 @@ public class CTabItem_Test extends TestCase {
     folder.setSelection( 1 );
     item2.setControl( item2Control );
     assertSame( item2Control, item2.getControl() );
-    assertEquals( true, item2Control.isVisible() );
+    assertEquals( true, item2Control.getVisible() );
     assertEquals( folder.getClientArea(), item2Control.getBounds() );
     
     // Try to set disposed of control 

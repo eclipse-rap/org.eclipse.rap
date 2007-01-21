@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Image;
 import junit.framework.TestCase;
 
 
@@ -23,6 +24,7 @@ public class Label_Test extends TestCase {
     Shell shell = new Shell( display , RWT.NONE );
     Label label = new Label( shell, RWT.NONE );
     assertEquals( "", label.getText() ); 
+    assertEquals( RWT.LEFT, label.getAlignment() ); 
   }
   
   public void testText() {
@@ -38,7 +40,48 @@ public class Label_Test extends TestCase {
       // expected
     }
   }
+  
+  public void testStyle() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Label label;
+    
+    label = new Label( shell, RWT.NONE );
+    assertTrue( ( label.getStyle() & RWT.SEPARATOR ) == 0 );
+    assertTrue( ( label.getStyle() & RWT.LEFT ) != 0 );
 
+    label = new Label( shell, RWT.SEPARATOR | RWT.VERTICAL | RWT.HORIZONTAL );
+    assertTrue( ( label.getStyle() & RWT.SEPARATOR ) != 0 );
+    assertTrue( ( label.getStyle() & RWT.VERTICAL ) != 0 );
+    assertFalse( ( label.getStyle() & RWT.HORIZONTAL ) != 0 );
+
+    label = new Label( shell, RWT.SEPARATOR | RWT.SHADOW_IN | RWT.SHADOW_OUT );
+    assertTrue( ( label.getStyle() & RWT.SEPARATOR ) != 0 );
+    assertTrue( ( label.getStyle() & RWT.VERTICAL ) != 0 );
+    assertTrue( ( label.getStyle() & RWT.SHADOW_OUT ) != 0 );
+    assertFalse( ( label.getStyle() & RWT.SHADOW_IN ) != 0 );
+  }
+  
+  public void testSeparatorLabel() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Label label = new Label( shell, RWT.SEPARATOR );
+    label.setText( "bla" );
+    assertEquals( "", label.getText() );
+    label.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    assertEquals( null, label.getImage() );
+  }
+
+  public void testImageAndText() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Label label = new Label( shell, RWT.NONE );
+    label.setText( "bla" );
+    label.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    assertNotNull( null, label.getImage() );
+    assertEquals( "bla", label.getText() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

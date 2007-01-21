@@ -82,7 +82,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
     ItemLCAUtil.writeFont( tabItem, tabItem.getParent().getFont() );
-    writeCheckedState( widget );
+    writeCheckedState( tabItem );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( tabItem.getParent() ) );
@@ -97,19 +97,12 @@ public class TabItemLCA extends AbstractWidgetLCA {
   //////////////////
   // helping methods
   
-  private void writeCheckedState( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    Boolean oldCheckState = ( Boolean )adapter.getPreserved( PROP_CHECKED );
-    TabItem tabItem = ( TabItem )widget;
-    if( !adapter.isInitialized() 
-        || isChecked( tabItem ) != oldCheckState.booleanValue() )
-    {
-      if( isChecked( tabItem )  ) {
-        writer.set( JSConst.QX_FIELD_CHECKED, true );
-      } else {
-        writer.set( JSConst.QX_FIELD_CHECKED, false );
-      }
+  private void writeCheckedState( final TabItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    Boolean oldValue = ( Boolean )adapter.getPreserved( PROP_CHECKED );
+    if( WidgetUtil.hasChanged( item, PROP_CHECKED, oldValue, Boolean.FALSE ) ) {
+      writer.set( JSConst.QX_FIELD_CHECKED, isChecked( item ) );
     }
   }
   

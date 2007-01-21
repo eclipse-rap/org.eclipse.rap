@@ -88,7 +88,7 @@ public class CTabFolderLCA_Test extends TestCase {
   
   public void testChangeSelection() throws IOException {
     Display display = new Display();
-    Composite shell = new Shell( display , RWT.MULTI );
+    Shell shell = new Shell( display , RWT.MULTI );
     CTabFolder folder = new CTabFolder( shell, RWT.MULTI );
     folder.setSize( 100, 100 );
     CTabItem item1 = new CTabItem( folder, RWT.NONE );
@@ -97,6 +97,7 @@ public class CTabFolderLCA_Test extends TestCase {
     CTabItem item2 = new CTabItem( folder, RWT.NONE );
     CTabItemControl item2Control = new CTabItemControl( folder, RWT.NONE );
     item2.setControl( item2Control );
+    shell.open();
     
     String displayId = DisplayUtil.getId( display );
     String folderId = WidgetUtil.getId( folder );

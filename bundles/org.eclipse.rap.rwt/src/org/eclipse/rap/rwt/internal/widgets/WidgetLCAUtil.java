@@ -13,8 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Font;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.W4TContext;
@@ -125,6 +124,21 @@ public final class WidgetLCAUtil {
   /////////////////////////////////////////////////
   // write-methods used by other ...LCAUtil classes
   
+  public static void writeImage( final Widget widget, final Image image ) 
+    throws IOException 
+  {
+    if( WidgetUtil.hasChanged( widget, Props.IMAGE, image, null ) ) {
+      String imagePath;
+      if( image == null ) {
+        imagePath = "";
+      } else {
+        imagePath = Image.getPath( image );
+      }
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      writer.set( JSConst.QX_FIELD_ICON, imagePath );
+    }
+  }
+
   static void writeFont( final Widget widget, final Font font )
     throws IOException
   {

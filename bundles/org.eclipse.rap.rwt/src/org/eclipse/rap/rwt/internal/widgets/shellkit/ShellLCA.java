@@ -62,10 +62,10 @@ public class ShellLCA extends AbstractWidgetLCA {
       writer.call( "addState", new Object[]{ "rwt_MAX" } );
     }
     int style = widget.getStyle();
-    writer.set( "resizeable", (style & RWT.RESIZE) != 0 );
-    writer.set( "showMinimize", (style & (RWT.MIN | RWT.MAX)) != 0 );
-    writer.set( "showMaximize", (style & (RWT.MIN | RWT.MAX)) != 0 );
-    writer.set( "showClose", (style & (RWT.MIN | RWT.MAX | RWT.CLOSE)) != 0 );
+    writer.set( "resizeable", ( style & RWT.RESIZE ) != 0 );
+    writer.set( "showMinimize", ( style & ( RWT.MIN | RWT.MAX ) ) != 0 );
+    writer.set( "showMaximize", ( style & ( RWT.MIN | RWT.MAX ) ) != 0 );
+    writer.set( "showClose", ( style & ( RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0 );
     writer.call( "applyStyle", null );
   }
   

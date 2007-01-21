@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.eclipse.rap.rwt.browser.Browser_Test;
 import org.eclipse.rap.rwt.custom.CTabFolder_Test;
 import org.eclipse.rap.rwt.custom.CTabItem_Test;
 import org.eclipse.rap.rwt.events.*;
@@ -92,6 +93,8 @@ public class RWTTestSuite {
     suite.addTestSuite( CoolBar_Test.class );
     suite.addTestSuite( CoolItem_Test.class );
     suite.addTestSuite( Label_Test.class );
+    suite.addTestSuite( Browser_Test.class );
+    suite.addTestSuite( Group_Test.class );
     
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );

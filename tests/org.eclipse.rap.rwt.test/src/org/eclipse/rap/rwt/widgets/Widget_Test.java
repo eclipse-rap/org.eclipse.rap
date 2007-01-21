@@ -61,4 +61,17 @@ public class Widget_Test extends TestCase {
       // expected
     }
   }
+  
+  public void testCheckBits() {
+    int style = RWT.VERTICAL | RWT.HORIZONTAL;
+    int result = Widget.checkBits( style, 
+                                   RWT.VERTICAL, 
+                                   RWT.HORIZONTAL, 
+                                   0, 
+                                   0, 
+                                   0, 
+                                   0 );
+    assertTrue( ( result & RWT.VERTICAL ) != 0 );
+    assertFalse( ( result & RWT.HORIZONTAL ) != 0 );
+  }
 }

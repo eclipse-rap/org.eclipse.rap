@@ -23,7 +23,7 @@ public final class Props {
   public static final String BOUNDS = "bounds";
   public static final String TOOL_TIP_TEXT = "toolTip";
   public static final String MENU = "menu";
-  public static final String VISIBLE = "visibility";
+  public static final String VISIBLE = "visible";
   public static final String ENABLED = "enabled";
   public static final String BG_COLOR = "backgroundColor";
   public static final String FG_COLOR = "foregroundColor";

@@ -29,8 +29,8 @@ public class CompositeTab extends ExampleTab {
     registerControl( comp );
     comp.addControlListener( new ControlAdapter() {
       public void controlResized( ControlEvent event ) {
-        System.out.println( "Composite Bounds:      " + comp.getBounds() );
-        System.out.println( "Composite Client Area: " + comp.getClientArea() );
+//        System.out.println( "Composite Bounds:      " + comp.getBounds() );
+//        System.out.println( "Composite Client Area: " + comp.getClientArea() );
       }} );
   }
 

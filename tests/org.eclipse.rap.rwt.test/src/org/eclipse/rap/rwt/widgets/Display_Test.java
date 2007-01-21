@@ -92,10 +92,11 @@ public class Display_Test extends TestCase {
     Display display = new Display();
     assertNull( display.getActiveShell() );
     Shell shell1 = new Shell( display, RWT.NONE );
-//    assertNull( display.getActiveShell() );
-//    shell1.open();
+    assertNull( display.getActiveShell() );
+    shell1.open();
     assertSame( shell1, display.getActiveShell() );
     Shell shell2 = new Shell( display, RWT.NONE );
+    shell2.open();
     assertSame( shell2, display.getActiveShell() );
     shell2.dispose();
     assertSame( shell1, display.getActiveShell() );
@@ -103,8 +104,8 @@ public class Display_Test extends TestCase {
     // Test disposing of inactive shell
     Shell inactiveShell = new Shell( display, RWT.NONE );
     Shell activeShell = new Shell( display, RWT.NONE );
-//  inactiveShell.open();
-//  activeShell.open();
+    inactiveShell.open();
+    activeShell.open();
     assertSame( activeShell, display.getActiveShell() );
     inactiveShell.dispose();
     assertSame( activeShell, display.getActiveShell() );
@@ -112,8 +113,8 @@ public class Display_Test extends TestCase {
     // Test explicitly setting the active shell
     Shell shell3 = new Shell( display, RWT.NONE );
     Shell shell4 = new Shell( display, RWT.NONE );
-//    shell3.open();
-//    shell4.open();
+    shell3.open();
+    shell4.open();
     assertSame( shell4, display.getActiveShell() );
     shell3.setActive();
     assertSame( shell3, display.getActiveShell() );

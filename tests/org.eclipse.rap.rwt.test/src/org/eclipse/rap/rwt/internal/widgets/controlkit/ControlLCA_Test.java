@@ -57,6 +57,7 @@ public class ControlLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
     Button button = new Button( shell, RWT.PUSH );
+    shell.open();
     AbstractWidgetLCA lca = WidgetUtil.getLCA( button );
     
     // Initial JavaScript code must not contain setVisibility()

@@ -17,7 +17,6 @@ qx.OO.defineClass(
   qx.ui.form.List,
   function( multiSelection ) {
     qx.ui.form.List.call( this );
-    this.setOverflow( "auto" );
     // Should changeSelection events passed to the server-side? 
     // state == no, action == yes
     this._changeSelectionNotification = "state";

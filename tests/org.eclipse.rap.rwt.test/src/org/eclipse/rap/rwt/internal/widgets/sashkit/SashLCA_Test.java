@@ -51,8 +51,9 @@ public class SashLCA_Test extends TestCase {
   public void testRenderChanges() throws IOException {
     Fixture.fakeResponseWriter();
     Display display = new Display();
-    Composite shell = new Shell( display , RWT.NONE );
+    Shell shell = new Shell( display , RWT.NONE );
     Sash sash = new Sash( shell, RWT.NONE );
+    shell.open();
     RWTFixture.markInitialized( sash );
     RWTFixture.preserveWidgets();
     sash.setBounds( new Rectangle( 20, 100, 50, 60 ) );

@@ -99,11 +99,11 @@ public final class RWTFixture {
     }
   }
 
-  // 2 images from org.eclipse.rap.w4t.test-project
-  public static final String IMAGE2 
-    = "resources/images/generated/a2fb9a01c602ae.gif";
+  // 3 images from org.eclipse.rap.w4t.test-project
   public static final String IMAGE1 
     = "resources/images/generated/82f7c683860a85c182.gif";
+  public static final String IMAGE2 
+    = "resources/images/generated/a2fb9a01c602ae.gif";
   public static final String IMAGE3 
     = "resources/images/generated/dff8c3a4e2b4c79080.gif";
 

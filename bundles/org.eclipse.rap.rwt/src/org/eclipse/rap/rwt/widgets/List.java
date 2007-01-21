@@ -13,7 +13,18 @@ import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.internal.widgets.IListAdapter;
 
-// TODO [rh] H_SCROLL not yet implemented
+/**
+ * <p>Not yet implemented:</p>
+ * <ul><li>topIndex</li>
+ * <li>itemHeight (may not be implemented at all)</li>
+ * <li>showSelection</li>
+ * <li>all select and deselect methods</li>
+ * </ul>
+ * <p><strong>Note:</strong> Setting only one of <code>H_SCROLL</code> or 
+ * <code>V_SCROLL</code> leads - at least in IE 7 - to unexpected behavior 
+ * (items are drawn outside list bounds). Setting none or both scroll style 
+ * flags works as expected. We will work on a solution for this.</p>
+ */
 public class List extends Scrollable {
 
   private final ListModel model;
@@ -91,6 +102,23 @@ public class List extends Scrollable {
     updateFocusIndexAfterSelectionChange();
   }
   
+  public boolean isSelected( final int index ) {
+    checkWidget();
+    boolean result;
+    if( ( style & RWT.SINGLE ) != 0 ) {
+      result = index == getSelectionIndex();
+    } else {
+      int[] selectionIndices = getSelectionIndices();
+      result = false;
+      for( int i = 0; !result && i < selectionIndices.length; i++ ) {
+        if( index == selectionIndices[ i ] ) {
+          result = true;
+        }
+      }
+    }
+    return result;
+  }
+
   public int getFocusIndex() {
     return focusIndex;
   }
@@ -151,6 +179,25 @@ public class List extends Scrollable {
 
   public String[] getItems() {
     return model.getItems();
+  }
+  
+  public int indexOf( final String string ) {
+    return indexOf( string, 0 );
+  }
+
+  public int indexOf( final String string, final int start ) {
+    checkWidget();
+    if( string == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    int result = -1;
+    int count = getItemCount();
+    for( int i = start; result == -1 && i < count; i++ ) {
+      if( string.equals( getItem( i ) ) ) {
+        result = i;
+      }
+    }
+    return result;
   }
 
   /////////////////////////////////////////

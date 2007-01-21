@@ -409,6 +409,19 @@ public class JSWriter_Test extends TestCase {
     expected = "var w = wm.findWidgetById( \"w2\" );w.buttonFunction();";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
+  
+  public void testCallWithCharacterParam() throws IOException {
+    Display display = new Display();
+    TestShell shell = new TestShell( display );
+    JSWriter writer = JSWriter.getWriterFor( shell.button );
+    Object[] args = new Object[] { new Character( 'A' ) };
+    writer.call( new JSVar( "a" ), "setChar", args );
+    String expected 
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "a.setChar( \"A\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+    
+  }
 
   public void testTargetedCallForJSVar() throws IOException {
     Display display = new Display();

@@ -2309,6 +2309,42 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
           qx.renderer.border.BorderPresets.getInstance().none
       }
     }
+  },
+
+  "browser" : {
+    initial: function( vTheme ) {
+      return {
+        border: qx.renderer.border.BorderPresets.getInstance().none,
+        backgroundColor: new qx.renderer.color.ColorObject( "white" )
+      }
+    },
+    state: function( vTheme, vStates ) {
+      return {
+        border: vStates.rwt_BORDER 
+          ? qx.renderer.border.BorderPresets.getInstance().inset 
+          : qx.renderer.border.BorderPresets.getInstance().none
+      }
+    }
+  },
+
+  //  the appearance for org.eclipse.rap.rwt.widgets.Separator
+  "separator" : {
+    setup: function() {
+      this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
+    },
+    initial: function( vTheme ) {
+      return {
+        border : this.border_default
+      }
+    },
+    state: function( vTheme, vStates ) {
+      return {
+        color : vStates.disabled ? this.color_disabled : null,
+        border : vStates.rwt_BORDER ? this.border : this.border_default
+      }
+    }
   }
 
   /*

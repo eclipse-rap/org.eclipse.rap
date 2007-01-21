@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.events;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.rap.rwt.browser.LocationEvent;
 import org.eclipse.rap.rwt.custom.CTabFolderEvent;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
 import com.w4t.engine.lifecycle.PhaseId;
@@ -41,6 +42,7 @@ public abstract class RWTEvent extends Event {
     TreeEvent.class,
     CTabFolderEvent.class,
     SelectionEvent.class,
+    LocationEvent.class,
     ShellEvent.class,
   };
   

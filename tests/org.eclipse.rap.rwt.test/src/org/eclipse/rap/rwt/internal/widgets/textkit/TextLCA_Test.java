@@ -46,9 +46,10 @@ public class TextLCA_Test extends TestCase {
   public void testRenderChanges() throws IOException {
     Fixture.fakeResponseWriter();
     Display display = new Display();
-    Composite shell = new Shell( display , RWT.NONE );
+    Shell shell = new Shell( display , RWT.NONE );
     Text text = new Text( shell, RWT.NONE );
     text.setText( "hello" );
+    shell.open();
     RWTFixture.markInitialized( text );
     TextLCA textLCA = new TextLCA();
     textLCA.renderChanges( text );

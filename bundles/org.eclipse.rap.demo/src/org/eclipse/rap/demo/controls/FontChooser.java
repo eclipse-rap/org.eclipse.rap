@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.demo.controls;
 
+import java.util.Iterator;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionAdapter;
 import org.eclipse.rap.rwt.events.SelectionEvent;
@@ -28,12 +29,10 @@ final class FontChooser {
   private Button btnBold;
   private Button btnItalic;
   // The controls whose font will be manipulated
-  private final Control[] targetControls;
+  private final java.util.List targetControls;
 
-  FontChooser( final Composite parent, final Control[] targetControls ) {
-    int length = targetControls.length;
-    this.targetControls = new Control[ length ];
-    System.arraycopy( targetControls, 0, this.targetControls, 0, length );
+  FontChooser( final Composite parent, final java.util.List targetControls ) {
+    this.targetControls = targetControls;
     createControls( parent );
   }
   
@@ -44,7 +43,7 @@ final class FontChooser {
     // Due to missing Group, use a labeled composite to 'group' the controls
     Composite composite = new Composite( parent, RWT.BORDER );
     Label lblFont = new Label( composite, RWT.NONE );
-    gridData = new GridData( 80, 18 );
+    gridData = new GridData( 80, 16 );
     gridData.horizontalSpan = 2;
     lblFont.setLayoutData( gridData );
     lblFont.setFont( boldSystemFont() );
@@ -63,13 +62,11 @@ final class FontChooser {
     btnBold = new Button( composite, RWT.CHECK );
     btnBold.addSelectionListener( dummySelectionListener );
     gridData = new GridData( 80, 18 );
-    gridData.horizontalSpan = 2;
     btnBold.setLayoutData( gridData );
     btnBold.setText( "Bold" );
     btnItalic = new Button( composite, RWT.CHECK );
     btnItalic.addSelectionListener( dummySelectionListener );
     gridData = new GridData( 80, 18 );
-    gridData.horizontalSpan = 2;
     btnItalic.setLayoutData( gridData );
     btnItalic.setText( "Italic" );
     Button btnApply = new Button( composite, RWT.PUSH );
@@ -84,7 +81,8 @@ final class FontChooser {
         try {
           size = Integer.parseInt( txtSize.getText() );
         } catch( NumberFormatException e ) {
-          size = targetControls[ 0 ].getFont().getSize();
+          Control control = ( Control )targetControls.get( 0 );
+          size = control.getFont().getSize();
         }
         int style = RWT.NORMAL;
         if( btnBold.getSelection() ) {
@@ -94,8 +92,10 @@ final class FontChooser {
           style |= RWT.ITALIC;
         }
         Font newFont = Font.getFont( name, size, style );
-        for( int i = 0; i < targetControls.length; i++ ) {
-          targetControls[ i ].setFont( newFont );
+        Iterator iter = targetControls.iterator();
+        while( iter.hasNext() ) {
+          Control control = ( Control )iter.next();
+          control.setFont( newFont );
         }
         updateFontControls();
       }
@@ -110,7 +110,8 @@ final class FontChooser {
   }
 
   private void updateFontControls() {
-    Font font = targetControls[ 0 ].getFont();
+    Control control = ( Control )targetControls.get( 0 );
+    Font font = control.getFont();
     txtName.setText( font.getName() );
     txtSize.setText( String.valueOf( font.getSize() ) );
     btnBold.setSelection( ( font.getStyle() & RWT.BOLD ) != 0 );

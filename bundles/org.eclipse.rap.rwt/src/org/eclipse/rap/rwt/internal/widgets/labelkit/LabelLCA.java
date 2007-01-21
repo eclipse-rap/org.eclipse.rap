@@ -12,49 +12,56 @@
 package org.eclipse.rap.rwt.internal.widgets.labelkit;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.eclipse.rap.rwt.internal.widgets.*;
-import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.widgets.Label;
+import org.eclipse.rap.rwt.widgets.Widget;
 
 
 public class LabelLCA extends AbstractWidgetLCA {
   
-  private static final Pattern LINE_BREAK_PATTERN = Pattern.compile( "\n" );
+  private static final AbstractLabelLCADelegate SEPARATOR_LCA 
+    = new SeparatorLabelLCA();
+  private static final AbstractLabelLCADelegate LABEL_LCA 
+    = new StandardLabelLCA();
   
   public void preserveValues( final Widget widget ) {
-    Label label = ( Label )widget;
-    ControlLCAUtil.preserveValues( label );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.TEXT, label.getText() );
+    if( ( widget.getStyle() & RWT.SEPARATOR ) != 0 ) {
+      SEPARATOR_LCA.preserveValues( ( Label )widget );
+    } else {
+      LABEL_LCA.preserveValues( ( Label )widget );
+    }
   }
   
   public void readData( final Widget widget ) {
+    if( ( widget.getStyle() & RWT.SEPARATOR ) != 0 ) {
+      SEPARATOR_LCA.readData( ( Label )widget );
+    } else {
+      LABEL_LCA.readData( ( Label )widget );
+    }
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "qx.ui.basic.Label" );
-    ControlLCAUtil.writeStyleFlags( widget );
+    if( ( widget.getStyle() & RWT.SEPARATOR ) != 0 ) {
+      SEPARATOR_LCA.renderInitialization( ( Label )widget );
+    } else {
+      LABEL_LCA.renderInitialization( ( Label )widget );
+    }
   }
-  
+
   public void renderChanges( final Widget widget ) throws IOException {
-    Label label = ( Label )widget;
-    ControlLCAUtil.writeChanges( label );
-    // TODO [rh] rendering text that contains html special chars (<, >, etc)
-    //      leads to strange results
-    //      e.g. setText( "> <" ), setText( "<tralala>" );
-    if( label.getText() != null ) {
-      Matcher matcher = LINE_BREAK_PATTERN.matcher( label.getText() );
-      String text = matcher.replaceAll( "<br/>" );
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( Props.TEXT, "html", text );
+    if( ( widget.getStyle() & RWT.SEPARATOR ) != 0 ) {
+      SEPARATOR_LCA.renderChanges( ( Label )widget );
+    } else {
+      LABEL_LCA.renderChanges( ( Label )widget );
     }
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    if( ( widget.getStyle() & RWT.SEPARATOR ) != 0 ) {
+      SEPARATOR_LCA.renderDispose( ( Label )widget );
+    } else {
+      LABEL_LCA.renderDispose( ( Label )widget );
+    }
   }
 }

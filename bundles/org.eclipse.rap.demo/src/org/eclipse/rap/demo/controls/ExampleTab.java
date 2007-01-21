@@ -5,6 +5,7 @@ package org.eclipse.rap.demo.controls;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.SashForm;
 import org.eclipse.rap.rwt.events.*;
@@ -16,10 +17,10 @@ abstract class ExampleTab {
   
   protected final TabFolder folder;
   private final SelectionListener styleListener;
-  private final Collection controls;
+  private final List controls;
 
   private Composite exmplComp;
-  private Composite styleComp;
+  protected Composite styleComp;
   private Color[] bgColors;
   private Color[] fgColors;
   private int fgIndex;
@@ -67,8 +68,8 @@ abstract class ExampleTab {
     exmplComp = new Composite( leftComp, RWT.NONE );
     styleComp = new Composite( rightComp, RWT.NONE );
     styleComp.setLayout( new RowLayout( RWT.VERTICAL ) );
-    horSashForm.setWeights( new int[] { 60, 40} );
-    vertSashForm.setWeights( new int[] { 80, 20} );
+    horSashForm.setWeights( new int[] { 60, 40 } );
+    vertSashForm.setWeights( new int[] { 90, 10 } );
     text = new Text( footComp, RWT.BORDER | RWT.READ_ONLY | RWT.MULTI );
     text.setText( "" );
     return vertSashForm;
@@ -96,7 +97,7 @@ abstract class ExampleTab {
       style = field.getInt( null );
     } catch( NoSuchFieldException e ) {
     } catch( IllegalAccessException e ) {
-      System.err.println("Cannot access style flag: RWT." + fieldName);
+      System.err.println( "Cannot access style flag: RWT." + fieldName );
     }
     Button button = createStyleButton( "RWT." + fieldName, style );
     button.setEnabled( style != RWT.NONE );
@@ -104,8 +105,7 @@ abstract class ExampleTab {
   }
 
   protected void createFontChooser() {
-    new FontChooser( styleComp,
-                     ( Control[] )controls.toArray( new Control[ controls.size() ] ) );
+    new FontChooser( styleComp, controls );
   }
 
   private Button createStyleButton( final String name, final int style ) {

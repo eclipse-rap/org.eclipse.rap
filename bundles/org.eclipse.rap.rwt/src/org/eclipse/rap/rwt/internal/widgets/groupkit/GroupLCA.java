@@ -9,35 +9,37 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.internal.widgets.compositekit;
+package org.eclipse.rap.rwt.internal.widgets.groupkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
-import org.eclipse.rap.rwt.widgets.Control;
+import org.eclipse.rap.rwt.widgets.Group;
 import org.eclipse.rap.rwt.widgets.Widget;
 
-
-public class CompositeLCA extends AbstractWidgetLCA {
+public class GroupLCA extends AbstractWidgetLCA {
   
+  private static final String PROP_TEXT = "text";
+
   public void preserveValues( final Widget widget ) {
-    ControlLCAUtil.preserveValues( ( Control )widget );
+    Group group = ( Group )widget;
+    ControlLCAUtil.preserveValues( group );
   }
   
   public void readData( final Widget widget ) {
   }
-
+  
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "qx.ui.layout.CanvasLayout" );
-    writer.set( "appearance", "composite" );
-    writer.set( "overflow", "hidden" );
-    ControlLCAUtil.writeStyleFlags( widget );
+    writer.newWidget( "qx.ui.groupbox.GroupBox" );
   }
-  
+
   public void renderChanges( final Widget widget ) throws IOException {
-    ControlLCAUtil.writeChanges( ( Control )widget );
+    Group group = ( Group )widget;
+    ControlLCAUtil.writeChanges( group );
+    JSWriter writer = JSWriter.getWriterFor( group );
+    writer.set( PROP_TEXT, "legend", group.getText(), "" );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

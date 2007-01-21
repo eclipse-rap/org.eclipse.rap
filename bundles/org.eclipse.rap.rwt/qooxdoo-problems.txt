@@ -44,3 +44,5 @@ that's right?
 
 14.) How to make a qx.ui.form.TextField read-only?
 
+15.) Setting font and/or foreground color is ignored when done in the same
+     JavaScript chunk in which the wiget is created

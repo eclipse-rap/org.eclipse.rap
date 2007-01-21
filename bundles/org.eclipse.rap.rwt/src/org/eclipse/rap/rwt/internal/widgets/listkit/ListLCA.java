@@ -20,7 +20,6 @@ import org.eclipse.rap.rwt.widgets.*;
 
 
 public class ListLCA extends AbstractWidgetLCA {
-  
 
   // Property names, used when preserving values
   private static final String PROP_SELECTION = "selection";
@@ -66,11 +65,12 @@ public class ListLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     List list = ( List )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    JSWriter writer = JSWriter.getWriterFor( list );
     Boolean multiSelection = isSingle( list ) ? Boolean.FALSE : Boolean.TRUE;
     writer.newWidget( "org.eclipse.rap.rwt.widgets.List", 
                       new Object[] { multiSelection } );
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( list );
+    writeOverflow( list );
   }
 
   // TODO [rh] keep scroll position, even when exchanging items 
@@ -155,6 +155,7 @@ public class ListLCA extends AbstractWidgetLCA {
 
   ///////////////////////////////////////////
   // Helping methods to maintain focused item
+
   private static void readFocusIndex( final List list ) {
     String paramValue = WidgetUtil.readPropertyValue( list, "focusIndex" );
     if( paramValue != null ) {
@@ -172,6 +173,23 @@ public class ListLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( list );
       writer.call( "focusItem", new Object[] { newValue} );
     }
+  }
+
+  private static void writeOverflow( final List list ) throws IOException {
+    boolean scrollX = ( list.getStyle() & RWT.H_SCROLL ) != 0;
+    boolean scrollY = ( list.getStyle() & RWT.V_SCROLL ) != 0;
+    String overflow;
+    if( scrollX && scrollY ) {
+      overflow = "auto";
+    } else if( scrollX ) {
+      overflow = "scrollX";
+    } else if( scrollY ) {
+      overflow = "scrollY";
+    } else {
+      overflow = "hidden";
+    }
+    JSWriter writer = JSWriter.getWriterFor( list );
+    writer.set( "overflow", overflow );
   }
 
   private static boolean isSingle( final List list ) {

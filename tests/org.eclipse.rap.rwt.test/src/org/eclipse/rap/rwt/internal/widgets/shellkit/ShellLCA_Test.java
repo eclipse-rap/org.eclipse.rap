@@ -95,8 +95,10 @@ public class ShellLCA_Test extends TestCase {
     Display display = new Display();
     Shell shellToActivate = new Shell( display, RWT.NONE );
     shellToActivate.setData( "shellToActivate" );
+    shellToActivate.open();
     Shell activeShell = new Shell( display, RWT.NONE );
     activeShell.setData( "activeShell" );
+    activeShell.open();
     String displayId = DisplayUtil.getId( display );
     String shellToActivateId = WidgetUtil.getId( shellToActivate );
 

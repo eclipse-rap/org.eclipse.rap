@@ -17,8 +17,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
-import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.layout.FillLayout;
 import org.eclipse.rap.rwt.widgets.*;
@@ -183,18 +182,19 @@ public class CTabFolder_Test extends TestCase {
     Control control2 = new Label( folder, RWT.NONE );
     item2.setControl( control2 );
     CTabItem item3 = new CTabItem( folder, RWT.NONE );
+    shell.open();
     
     folder.setSelection( item1 );
-    assertEquals( true, item1.getControl().isVisible() );
+    assertEquals( true, item1.getControl().getVisible() );
     assertEquals( folder.getClientArea(), item1.getControl().getBounds() );
     
     folder.setSelection( item2 );
-    assertEquals( false, item1.getControl().isVisible() );
-    assertEquals( true, item2.getControl().isVisible() );
+    assertEquals( false, item1.getControl().getVisible() );
+    assertEquals( true, item2.getControl().getVisible() );
     assertEquals( folder.getClientArea(), item2.getControl().getBounds() );
     
     folder.setSelection( item3 );
-    assertEquals( false, item2.getControl().isVisible() );
+    assertEquals( false, item2.getControl().getVisible() );
   }
   
   public void testSelectionWithEvent() {
@@ -264,6 +264,27 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( false, folder.getMinimizeVisible() );
     folder.setMaximizeVisible( false );
     assertEquals( false, folder.getMinimizeVisible() );
+  }
+  
+  public void testResize() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, RWT.NONE );
+    new CTabItem( folder, RWT.NONE );
+    // set initial size and store position of min/max button
+    folder.setSize( 200, 200 );
+    shell.layout();
+    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
+    Rectangle oldMinBounds = folderAdapter.getMinimizeRect();
+    Rectangle oldMaxBounds = folderAdapter.getMaximizeRect();
+    // resize folder: must move min/max buttons
+    folder.setSize( 150, folder.getSize().y );
+    Rectangle newMinBounds = folderAdapter.getMinimizeRect();
+    Rectangle newMaxBounds = folderAdapter.getMaximizeRect();
+    assertTrue( newMinBounds.x < oldMinBounds.x );
+    assertTrue( newMaxBounds.x < oldMaxBounds.x );
   }
   
   public void testLayout() {
@@ -352,7 +373,7 @@ public class CTabFolder_Test extends TestCase {
     assertNotNull( folder.getSelectionForeground() );
   }
   
-  public void testChevronVisibilityInSingleStyle() {
+  public void testChevronVisibilityWithSingleStyle() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display, RWT.NONE );
@@ -398,6 +419,66 @@ public class CTabFolder_Test extends TestCase {
     // Clean up
     item1.dispose();
     item2.dispose();
+  }
+  
+  // TODO [rh] misplaced chevron on CTabFolder with style MULTI and 
+  //      setMRUVisible( false );
+//  public void testChevronVisibilityWithMultiStyle() {
+//    Display display = new Display();
+//    Shell shell = new Shell( display, RWT.SHELL_TRIM );
+//    final CTabFolder folder = new CTabFolder( shell, RWT.MULTI );
+//    folder.setUnselectedCloseVisible( false );
+//    folder.setMRUVisible( false );
+//    folder.setBounds( new Rectangle( 7, 25, 480, 120 ) );    
+//    final Label topRight = new Label( folder, RWT.NONE );
+//    topRight.setText( "TopRight" );
+//    topRight.setSize( 100, 20 );
+//    folder.setTopRight( topRight );
+//    for( int i = 0; i < 5; i++ ) {
+//      createItem( folder );
+//    }
+//    shell.open();
+//    
+//    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+//    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
+//    // until here (5 items) no chevron should be shown
+//    assertEquals( false, folderAdapter.getChevronVisible() );
+//    assertEquals( 0, folderAdapter.getChevronRect().x );
+//    assertEquals( 0, folderAdapter.getChevronRect().y );
+//    assertEquals( 0, folderAdapter.getChevronRect().width );
+//    assertEquals( 0, folderAdapter.getChevronRect().height );
+//    
+//    // adding the 6th item should bring up the chevron
+//    createItem( folder );
+//    assertEquals( true, folderAdapter.getChevronVisible() );
+//    assertTrue( folderAdapter.getChevronRect().x > 0 );
+//    assertTrue( folderAdapter.getChevronRect().y > 0 );
+//    assertTrue( folderAdapter.getChevronRect().width > 0 );
+//    assertTrue( folderAdapter.getChevronRect().height > 0 );
+//    
+//    // selecting the 6th item (via chevron menu) should make it visible
+//    folder.setSelection( 5 );
+//    assertEquals( true, folder.getItem( 5 ).isShowing() );
+//  }
+  
+  private static CTabItem createItem( final CTabFolder folder ) {
+    CTabItem item = new CTabItem( folder, RWT.CLOSE );
+    item.setText( "Tab " + ( folder.getItemCount() + 1 ) );
+    item.setToolTipText( item.getText() );
+    item.setImage( searchImage() );
+    Font systemFont = folder.getDisplay().getSystemFont();
+    item.setFont( Font.getFont( systemFont.getName(), 
+                                systemFont.getSize(), 
+                                RWT.BOLD ) );
+    Label label = new Label( folder, RWT.NONE );
+    label.setText( "Content for: " + item.getText() );
+    item.setControl( label );
+    return item;
+  }
+  
+  private static Image searchImage() {
+    ClassLoader loader = CTabFolder_Test.class.getClassLoader();
+    return Image.find( "org/eclipse/rap/rwt/custom/search_src.gif", loader );
   }
   
   protected void setUp() throws Exception {
