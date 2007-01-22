@@ -6,6 +6,7 @@ public class Perspective implements IPerspectiveFactory {
 
   public void createInitialLayout( final IPageLayout layout ) {
     String editorArea = layout.getEditorArea();
+    layout.setEditorAreaVisible( false );
     IFolderLayout topLeft = layout.createFolder( "topLeft",
                                                  IPageLayout.LEFT,
                                                  0.25f,
