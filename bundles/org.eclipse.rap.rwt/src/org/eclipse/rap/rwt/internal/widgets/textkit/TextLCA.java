@@ -57,7 +57,7 @@ public class TextLCA extends AbstractWidgetLCA {
     }
   }
 
-  public void renderInitialization( Widget widget ) throws IOException {
+  public void renderInitialization( final Widget widget ) throws IOException {
     getLCADelegate( widget ).renderInitialization( widget );
   }
 
@@ -81,7 +81,7 @@ public class TextLCA extends AbstractWidgetLCA {
    */
   private String getRenderText( final Text text ) {
     String result = text.getText();
-    if ( (text.getStyle() & RWT.SINGLE) != 0 ) {
+    if( ( text.getStyle() & RWT.SINGLE ) != 0 ) {
       result = result.replaceAll( "\n", " " );
     }
     return result;

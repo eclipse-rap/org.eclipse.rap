@@ -78,8 +78,9 @@ public class ControlLCAUtil {
     // we only need getVisible here (not isVisible), as qooxdoo also hides/shows
     // contained controls
     Boolean newValue = Boolean.valueOf( control.getVisible() );
+    Boolean defValue = Boolean.TRUE;
     JSWriter writer = JSWriter.getWriterFor( control );
-    writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, Boolean.TRUE );
+    writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
   }
 
   public static void writeEnabled( final Control control )

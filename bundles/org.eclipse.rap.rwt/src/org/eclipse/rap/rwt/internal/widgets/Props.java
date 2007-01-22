@@ -35,7 +35,6 @@ public final class Props {
 
   // Button properties
   public static final String SELECTION_LISTENERS = "selectionListeners";
-  public static final String SELECTED = "selected";
   
   // Text properties
   public static final String TEXT = "text";

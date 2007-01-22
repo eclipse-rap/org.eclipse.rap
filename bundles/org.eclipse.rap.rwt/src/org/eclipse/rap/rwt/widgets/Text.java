@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 
 /**
- * <p>The followin style bite currntly do not have any effect: READ_ONLY,
- * H_SCROLL, V_SCROLL</p> 
+ * <p>The following style bits currently do not have any effect:  H_SCROLL, 
+ * V_SCROLL</p> 
  */
 public class Text extends Control {
 

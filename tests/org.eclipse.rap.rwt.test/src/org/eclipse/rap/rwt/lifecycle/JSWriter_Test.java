@@ -899,7 +899,7 @@ public class JSWriter_Test extends TestCase {
 
     Fixture.fakeResponseWriter();
     writer.set( "html", "\n" );
-    assertEquals( "w.setHtml( \"\" );", Fixture.getAllMarkup() );
+    assertEquals( "w.setHtml( \"\\n\" );", Fixture.getAllMarkup() );
   }
   
   protected void setUp() throws Exception {
