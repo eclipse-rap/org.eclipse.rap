@@ -53,6 +53,8 @@ qx.Proto.setRequestCounter = function( requestCounter ) {
 /**
  * Adds a request parameter to this request with the given name and value
  */
+ // TODO [rh] someone frequently adds an empty parameter, should we ignore
+ //      that, or even better treat this as an error?
 qx.Proto.addParameter = function( name, value ) {
   this._parameters[ name ] = value;
 }

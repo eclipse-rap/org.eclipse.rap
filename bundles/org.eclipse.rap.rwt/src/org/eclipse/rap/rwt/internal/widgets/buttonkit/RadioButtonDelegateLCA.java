@@ -45,8 +45,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( button );
     Object[] args = new Object[] {
       WidgetUtil.getId( button ),
-      button.getParent(),
-      button.getSelection() ? "true" : null
+      button.getParent()
     };
     writer.callStatic( CREATE_RADIO, args );
     writer.set( JSConst.QX_FIELD_APPEARANCE, "radiobutton" );
@@ -65,12 +64,15 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     ControlLCAUtil.writeChanges( button );
+    ButtonLCAUtil.writeSelection( button );
     ButtonLCAUtil.writeText( button );
     ButtonLCAUtil.writeAlignment( button );
   }
 
   void renderDispose( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
+    writer.callStatic( "org.eclipse.rap.rwt.ButtonUtil.disposeRadioButton", 
+                       new Object[] { button } );
     writer.dispose();
   }
 }

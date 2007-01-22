@@ -10,26 +10,27 @@
  ******************************************************************************/
 
 /**
- * This class contains static functions for combo.
+ * This class contains static functions for radio buttons and check boxes.
  */
 qx.OO.defineClass( "org.eclipse.rap.rwt.ButtonUtil" );
 
-/**
- * Creates a radioButton, registered to a RadioManager.
- */
 org.eclipse.rap.rwt.ButtonUtil.createRadioButton
-  = function( id , parent , selected )
+  = function( id, parent )
 {
   var radio = new qx.ui.form.RadioButton();
+  // TODO [rh] revise this: to me this seems strange usage of JavaScript
   if( !parent.radioManager ){
     parent.radioManager = new qx.manager.selection.RadioManager();
   }
-  parent.radioManager.add ( radio );
-  if ( selected ) {
-    parent.radioManager.setSelected ( radio ) ;
-  }
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( radio, id );
-  radio.setParent( parent );
+  parent.radioManager.add( radio );
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  widgetManager.add( radio, id );
+  var parentId = widgetManager.findIdByWidget( parent );
+  widgetManager.setParent( radio, parentId );
+}
+
+org.eclipse.rap.rwt.ButtonUtil.disposeRadioButton = function( button ) {
+  button.getManager().remove( button );
 }
 
 org.eclipse.rap.rwt.ButtonUtil.radioSelected = function( evt ) {

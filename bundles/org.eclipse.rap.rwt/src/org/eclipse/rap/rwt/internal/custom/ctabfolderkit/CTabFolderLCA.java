@@ -168,6 +168,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
         }
       } );
     }
+    // ShowList event
     if( WidgetUtil.wasEventSent( tabFolder, EVENT_SHOW_LIST ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {

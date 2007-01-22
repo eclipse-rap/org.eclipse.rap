@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.widgets.Button;
 import org.eclipse.rap.rwt.widgets.Widget;
 
@@ -42,8 +41,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    getLCADelegate( widget ).renderDispose( ( Button )widget );
   }
 
   private static ButtonDelegateLCA getLCADelegate( final Widget widget ) {
