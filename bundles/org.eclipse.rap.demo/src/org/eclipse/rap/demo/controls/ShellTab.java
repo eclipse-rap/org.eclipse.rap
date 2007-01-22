@@ -24,6 +24,7 @@ public class ShellTab extends ExampleTab {
     createStyleButton( "BORDER" );
     createStyleButton( "SHELL_TRIM" );
     createStyleButton( "DIALOG_TRIM" );
+//    createStyleButton( "APPLICATION_MODAL" );
     createStyleButton( "TITLE" );
     createStyleButton( "MIN" );
     createStyleButton( "MAX" );

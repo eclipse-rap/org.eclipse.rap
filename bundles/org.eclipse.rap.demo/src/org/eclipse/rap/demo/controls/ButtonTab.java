@@ -26,14 +26,14 @@ public class ButtonTab extends ExampleTab {
     super( folder, "Button" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
     createStyleButton( "LEFT" );
     createStyleButton( "CENTER" );
     createStyleButton( "RIGHT" );
-    createVisibilityButton( );
-    createEnablementButton( );
+    createVisibilityButton();
+    createEnablementButton();
     final Button imageButton = new Button( styleComp, RWT.CHECK );
     imageButton.setText( "Push Button with Image" );
     imageButton.setLayoutData( new RowData( 80, 20 ) );
@@ -80,4 +80,5 @@ public class ButtonTab extends ExampleTab {
     registerControl( radio2 );
     registerControl( radio3 );
   }
+
 }

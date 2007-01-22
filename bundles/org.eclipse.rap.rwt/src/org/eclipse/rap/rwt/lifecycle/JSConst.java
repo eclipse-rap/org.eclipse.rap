@@ -82,7 +82,10 @@ public final class JSConst {
   public static final String QX_FIELD_ORIENTATION = "orientation";
   public static final String QX_FIELD_VALUE = "value";
   public static final String QX_FIELD_CAPTION = "caption";
+  public static final String QX_FIELD_ENABLED = "enabled";
+  public static final String QX_FIELD_VISIBLE = "visibility";
   public static final String QX_FIELD_CHECKED = "checked";
+  public static final String QX_FIELD_READ_ONLY = "readOnly";
   public static final String QX_FIELD_APPEARANCE = "appearance";
   
   // constants

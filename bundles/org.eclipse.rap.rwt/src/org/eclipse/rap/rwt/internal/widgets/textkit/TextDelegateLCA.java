@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets.textkit;
 
 import java.io.IOException;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.JSConst;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
@@ -33,6 +34,9 @@ abstract class TextDelegateLCA {
     writer.addListener( JSConst.QX_EVENT_BLUR, JSConst.JS_TEXT_MODIFIED );
     writer.addListener( JSConst.QX_EVENT_INPUT, JSConst.JS_TEXT_MODIFIED );
     ControlLCAUtil.writeStyleFlags( widget );
+    if( ( widget.getStyle() & RWT.READ_ONLY ) != 0 ) {
+      writer.set( JSConst.QX_FIELD_READ_ONLY, true );
+    }
   }
 
   abstract public String getClassName();

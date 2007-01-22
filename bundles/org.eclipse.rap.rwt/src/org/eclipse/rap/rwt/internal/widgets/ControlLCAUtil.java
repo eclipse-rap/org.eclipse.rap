@@ -79,7 +79,7 @@ public class ControlLCAUtil {
     // contained controls
     Boolean newValue = Boolean.valueOf( control.getVisible() );
     JSWriter writer = JSWriter.getWriterFor( control );
-    writer.set( Props.VISIBLE, "visibility", newValue, Boolean.TRUE );
+    writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, Boolean.TRUE );
   }
 
   public static void writeEnabled( final Control control )
@@ -87,7 +87,7 @@ public class ControlLCAUtil {
   {
     Boolean newValue = Boolean.valueOf( control.isEnabled() );
     JSWriter writer = JSWriter.getWriterFor( control );
-    writer.set( Props.ENABLED, "enabled", newValue, Boolean.TRUE );
+    writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, Boolean.TRUE );
   }
 
   public static void writeChanges( final Control control ) throws IOException {

@@ -46,7 +46,7 @@ public class TextLCA extends AbstractWidgetLCA {
     Text text = ( Text )widget;
     ControlLCAUtil.preserveValues( text );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.TEXT, text.getText() );
+    adapter.preserve( Props.TEXT, getRenderText( text ) );
   }
 
   public void readData( final Widget widget ) {
@@ -65,11 +65,25 @@ public class TextLCA extends AbstractWidgetLCA {
     Text text = ( Text )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     ControlLCAUtil.writeChanges( text );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_VALUE, text.getText(), "" );
+    writer.set( Props.TEXT, JSConst.QX_FIELD_VALUE, getRenderText( text ), "" );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  }
+
+  /**
+   * Returns the text to be rendered for the <code>Text</code>. For single-line
+   * text widgets, newlines are replaced by white spaces.
+   * @param text the Text control in question.
+   * @return The text to be rendered. 
+   */
+  private String getRenderText( final Text text ) {
+    String result = text.getText();
+    if ( (text.getStyle() & RWT.SINGLE) != 0 ) {
+      result = result.replaceAll( "\n", " " );
+    }
+    return result;
   }
 }

@@ -21,6 +21,8 @@ class MultiTextDelegateLCA extends TextDelegateLCA {
   }
 
   public JSWriter addProperty( final JSWriter writer ) throws IOException {
+    // TODO: [rst] Added because !WRAP stopped working - doesn't help anyway
+    writer.set( "wrap", false );
     return writer;
   }
 }

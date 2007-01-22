@@ -38,7 +38,7 @@ public final class JSWriter {
   private static final Pattern ESCAPE_STRING_PATTERN_1 
     = Pattern.compile( "(\"|\\\\)" );
   private static final Pattern ESCAPE_STRING_PATTERN_2 
-  = Pattern.compile( "\n" );
+    = Pattern.compile( "\n" );
 
   public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
   public static JSVar WIDGET_REF = new JSVar( "w" );
@@ -580,7 +580,7 @@ public final class JSWriter {
     Matcher matcher = ESCAPE_STRING_PATTERN_1.matcher( input );
     String result = matcher.replaceAll( "\\\\$1" );
     matcher = ESCAPE_STRING_PATTERN_2.matcher( result );
-    result = matcher.replaceAll( "" );
+    result = matcher.replaceAll( "\\\\n" );
     return result;
   }
 

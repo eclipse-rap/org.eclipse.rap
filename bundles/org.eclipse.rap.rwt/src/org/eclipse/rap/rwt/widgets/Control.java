@@ -33,7 +33,7 @@ public abstract class Control extends Widget {
   private Color foreground;
   private Color background;
   private Font font;
-
+  
   Control() {
     // prevent instantiation from outside this package
     this.parent = null;
@@ -74,7 +74,7 @@ public abstract class Control extends Widget {
 
   public boolean getVisible() {
     checkWidget();
-    return ( state & HIDDEN ) == 0;
+    return (state & HIDDEN) == 0;
   }
 
   /////////////

@@ -55,6 +55,13 @@ public class ShellLCA extends AbstractWidgetLCA {
                         JSConst.JS_SHELL_CLOSED );
     writer.call( "open", null );
     ControlLCAUtil.writeStyleFlags( widget );
+//    if( ( widget.getStyle() & RWT.APPLICATION_MODAL ) != 0 ) {
+//      System.out.println("MODAL");
+//      writer.set( "modal", true );
+//    }
+    if( ( widget.getStyle() & RWT.TITLE ) == 0 ) {
+      writer.set( "showCaption", false );
+    }
     if( ( widget.getStyle() & RWT.MIN ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_MIN" } );
     }
@@ -62,10 +69,10 @@ public class ShellLCA extends AbstractWidgetLCA {
       writer.call( "addState", new Object[]{ "rwt_MAX" } );
     }
     int style = widget.getStyle();
-    writer.set( "resizeable", ( style & RWT.RESIZE ) != 0 );
-    writer.set( "showMinimize", ( style & ( RWT.MIN | RWT.MAX ) ) != 0 );
-    writer.set( "showMaximize", ( style & ( RWT.MIN | RWT.MAX ) ) != 0 );
-    writer.set( "showClose", ( style & ( RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0 );
+    writer.set( "resizeable", (style & RWT.RESIZE) != 0 );
+    writer.set( "showMinimize", (style & (RWT.MIN | RWT.MAX)) != 0 );
+    writer.set( "showMaximize", (style & (RWT.MIN | RWT.MAX)) != 0 );
+    writer.set( "showClose", (style & (RWT.MIN | RWT.MAX | RWT.CLOSE)) != 0 );
     writer.call( "applyStyle", null );
   }
   

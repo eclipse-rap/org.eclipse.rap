@@ -23,7 +23,6 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   // check box event listner function, defined in org.eclipse.rap.rwt.ButtonUtil
   private static final String WIDGET_SELECTED 
     = "org.eclipse.rap.rwt.ButtonUtil.checkSelected";
-  
   private final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
                           WIDGET_SELECTED,
@@ -35,8 +34,8 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
   void readData( final Button button ) {
     ButtonLCAUtil.readSelection( button );
-    ControlLCAUtil.processSelection( button, null, true );
-  }
+      ControlLCAUtil.processSelection( button, null, true );
+    }
   
   void renderInitialization( final Button button )
     throws IOException

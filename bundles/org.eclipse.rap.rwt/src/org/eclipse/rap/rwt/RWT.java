@@ -63,6 +63,7 @@ public class RWT {
   public static final int WRAP = 1 << 6;
   public static final int PASSWORD = 1 << 22;
   
+
   // Shells
   public static final int RESIZE = 1 << 4;
   public static final int TITLE = 1 << 5;
@@ -71,7 +72,8 @@ public class RWT {
   public static final int MAX = 1 << 10;
   public static final int SHELL_TRIM = CLOSE | TITLE | MIN | MAX | RESIZE;
   public static final int DIALOG_TRIM = TITLE | CLOSE | BORDER;
-  
+  public static final int APPLICATION_MODAL = 1 << 16;
+
   public static final int SHADOW_IN = 1 << 2;
   public static final int SHADOW_OUT = 1 << 3;
   public static final int SHADOW_NONE = 1 << 5;

@@ -10,11 +10,13 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.SashForm;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Color;
+import org.eclipse.rap.rwt.graphics.Font;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 abstract class ExampleTab {
   
+  private static final int MAX_COLORS = 4;
   protected final TabFolder folder;
   private final SelectionListener styleListener;
   private final List controls;
@@ -23,6 +25,7 @@ abstract class ExampleTab {
   protected Composite styleComp;
   private Color[] bgColors;
   private Color[] fgColors;
+  private Font font;
   private int fgIndex;
   private int bgIndex;
 
@@ -30,6 +33,7 @@ abstract class ExampleTab {
   private boolean enabled = true;
   private Text text;
   private StringBuffer content = new StringBuffer();
+  private FontChooser fontChooser;
   
   public ExampleTab( final TabFolder folder, final String title ) {
     this.folder = folder;
@@ -40,12 +44,24 @@ abstract class ExampleTab {
     initColors();
     controls = new ArrayList();
     styleListener = new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         controls.clear();
         destroyExampleControls( );
         createExampleControls( exmplComp );
-        setVisible( visible );
-        setEnabled( enabled );
+        // TODO [rh] workaround: qooxdoo can neither set font nor color when
+        //      widget was just created: reset all colors and font
+        fgIndex = 0;
+        bgIndex = 0;
+        Control control = ( Control )controls.get( 0 );
+        font = control.getFont();
+        if( fontChooser != null ) {
+          fontChooser.setFont( font );
+        }
+        updateVisible();
+        updateEnabled();
+        updateFgColor();
+        updateBgColor();
+        updateFont();
         exmplComp.layout();
       }
     };
@@ -68,7 +84,7 @@ abstract class ExampleTab {
     exmplComp = new Composite( leftComp, RWT.NONE );
     styleComp = new Composite( rightComp, RWT.NONE );
     styleComp.setLayout( new RowLayout( RWT.VERTICAL ) );
-    horSashForm.setWeights( new int[] { 60, 40 } );
+    horSashForm.setWeights( new int[] { 60, 40} );
     vertSashForm.setWeights( new int[] { 90, 10 } );
     text = new Text( footComp, RWT.BORDER | RWT.READ_ONLY | RWT.MULTI );
     text.setText( "" );
@@ -76,14 +92,16 @@ abstract class ExampleTab {
   }
   
   private void initColors() {
-    bgColors= new Color[3];
-    fgColors = new Color[3];
-    bgColors[0] = Color.getColor(139, 37, 0);
-    bgColors[1] = Color.getColor(105, 89, 205);
-    bgColors[2] = Color.getColor(139, 121, 94);
-    fgColors[0] = Color.getColor(255, 140, 0);
-    fgColors[1] = Color.getColor(255, 215, 0);
-    fgColors[2] = Color.getColor(154, 205, 50);
+    bgColors = new Color[ MAX_COLORS ];
+    fgColors = new Color[ MAX_COLORS ];
+    bgColors[ 0 ] = null;
+    bgColors[ 1 ] = Color.getColor( 139, 37, 0 );
+    bgColors[ 2 ] = Color.getColor( 105, 89, 205 );
+    bgColors[ 3 ] = Color.getColor( 139, 121, 94 );
+    fgColors[ 0 ] = null;
+    fgColors[ 1 ] = Color.getColor( 255, 140, 0 );
+    fgColors[ 2 ] = Color.getColor( 255, 215, 0 );
+    fgColors[ 3 ] = Color.getColor( 154, 205, 50 );
   }
 
   abstract void createStyleControls( );
@@ -97,7 +115,7 @@ abstract class ExampleTab {
       style = field.getInt( null );
     } catch( NoSuchFieldException e ) {
     } catch( IllegalAccessException e ) {
-      System.err.println( "Cannot access style flag: RWT." + fieldName );
+      System.err.println("Cannot access style flag: RWT." + fieldName);
     }
     Button button = createStyleButton( "RWT." + fieldName, style );
     button.setEnabled( style != RWT.NONE );
@@ -105,7 +123,15 @@ abstract class ExampleTab {
   }
 
   protected void createFontChooser() {
-    new FontChooser( styleComp, controls );
+    fontChooser = new FontChooser( styleComp );
+    Control control = ( Control )controls.get( 0 );
+    fontChooser.setFont( control.getFont() );
+    fontChooser.setChangeRunnable( new Runnable() {
+      public void run() {
+        font = fontChooser.getFont();
+        updateFont();
+      }
+    } );
   }
 
   private Button createStyleButton( final String name, final int style ) {
@@ -137,9 +163,9 @@ abstract class ExampleTab {
     button.setSelection( visible ); 
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         visible = button.getSelection();
-        setVisible( visible );
+        updateVisible();
       }
     } );
     return button;
@@ -156,16 +182,16 @@ abstract class ExampleTab {
     button.setSelection( enabled );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         enabled = button.getSelection();
-        setEnabled( enabled );
+        updateEnabled();
       }
     } );
     return button;
   }
 
   /**
-   * Creates a checkbutton to change the foreground color of the registered
+   * Creates a button to change the foreground color of the registered
    * controls.
    * 
    * @return the created checkbutton.
@@ -175,15 +201,17 @@ abstract class ExampleTab {
     button.setText( "Fg Color" );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        changeFgColor();
+      public void widgetSelected( final SelectionEvent event ) {
+        fgIndex = (fgIndex + 1) % MAX_COLORS;
+        updateFgColor();
       }
+
     } );
     return button;
   }
 
   /**
-   * Creates a checkbutton to change the background color of the registered
+   * Creates a button to change the background color of the registered
    * controls.
    * 
    * @return the created checkbutton.
@@ -193,8 +221,9 @@ abstract class ExampleTab {
     button.setText( "Bg Color" );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        changeBgColor();
+      public void widgetSelected( final SelectionEvent event ) {
+        bgIndex = (bgIndex + 1) % MAX_COLORS;
+        updateBgColor();
       }
     } );
     return button;
@@ -207,15 +236,16 @@ abstract class ExampleTab {
    * 
    * @param control A control that should be remote controlled.
    */
-  protected void registerControl( Control control ) {
+  protected void registerControl( final Control control ) {
     controls.add( control );
   }
   
-  protected void log(String msg) {
+  protected void log(final String msg) {
     content.append( msg.trim() );
-    content.append( "\n" );
+    content.append( text.getLineDelimiter() );
     System.out.println( "LOG: " + msg.trim() );
     text.setText( content.toString() );
+    // TODO: scroll to last line 
   }
 
   private void destroyExampleControls() {
@@ -247,7 +277,7 @@ abstract class ExampleTab {
     return result;
   }
 
-  private void setVisible( boolean visible ) {
+  private void updateVisible( ) {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
@@ -255,7 +285,7 @@ abstract class ExampleTab {
     }
   }
   
-  private void setEnabled( boolean enabled ) {
+  private void updateEnabled( ) {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
@@ -263,32 +293,27 @@ abstract class ExampleTab {
     }
   }
   
-  private void changeFgColor() {
-    Color color = null;
-    if( fgIndex >= 0 && fgIndex < fgColors.length ) {
-      color = fgColors[fgIndex++];
-    } else {
-      fgIndex = 0;
-    }
+  private void updateFgColor() {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
-      control.setForeground( color );
+      control.setForeground( fgColors[fgIndex] );
     }
   }
 
-  private void changeBgColor() {
-    Color color = null;
-    if( bgIndex >= 0 && bgIndex < bgColors.length ) {
-      color = bgColors[bgIndex++];
-    } else {
-      bgIndex = 0;
-    }
+  private void updateBgColor() {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
-      control.setBackground( color );
+      control.setBackground( bgColors[bgIndex] );
     }
   }
-
+  
+  private void updateFont() {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      control.setFont( font );
+    }
+  }
 }
