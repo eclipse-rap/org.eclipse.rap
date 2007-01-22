@@ -31,40 +31,46 @@
       <!-- category 
          id="com.xyz.views.XYZviews" 
          name="XYZ"/--> 
-      <view 
-         id="org.eclipse.rap.demo.DemoTreeViewPartI" 
-         name="View I" 
-         class="org.eclipse.rap.demo.DemoTreeViewPart" /> 
+      <view
+            class="org.eclipse.rap.demo.DemoTreeViewPart"
+            icon="icons/sample.gif"
+            id="org.eclipse.rap.demo.DemoTreeViewPartI"
+            name="View I"/> 
          <!-- category="com.xyz.views.XYZviews" --> 
          <!-- icon="icons/XYZ.gif"/ -->
-      <view 
-         id="org.eclipse.rap.demo.DemoTreeViewPartII" 
-         name="View II" 
-         class="org.eclipse.rap.demo.DemoTreeViewPart" /> 
+      <view
+            class="org.eclipse.rap.demo.DemoTreeViewPart"
+            icon="icons/sample.gif"
+            id="org.eclipse.rap.demo.DemoTreeViewPartII"
+            name="View II"/> 
          <!-- category="com.xyz.views.XYZviews" --> 
          <!-- icon="icons/XYZ.gif"/ -->
-      <view 
-         id="org.eclipse.rap.demo.DemoTreeViewPartIII" 
-         name="View III" 
-         class="org.eclipse.rap.demo.DemoTreeViewPart" /> 
+      <view
+            class="org.eclipse.rap.demo.DemoTreeViewPart"
+            icon="icons/sample.gif"
+            id="org.eclipse.rap.demo.DemoTreeViewPartIII"
+            name="View III"/> 
          <!-- category="com.xyz.views.XYZviews" --> 
          <!-- icon="icons/XYZ.gif"/ -->
-      <view 
-         id="org.eclipse.rap.demo.DemoTreeViewPartIV" 
-         name="View V" 
-         class="org.eclipse.rap.demo.DemoTreeViewPart" /> 
+      <view
+            class="org.eclipse.rap.demo.DemoTreeViewPart"
+            icon="icons/sample.gif"
+            id="org.eclipse.rap.demo.DemoTreeViewPartIV"
+            name="View V"/> 
          <!-- category="com.xyz.views.XYZviews" --> 
          <!-- icon="icons/XYZ.gif"/ -->
-      <view 
-         id="org.eclipse.rap.demo.DemoTableViewPart" 
-         name="View IV" 
-         class="org.eclipse.rap.demo.DemoTableViewPart" /> 
+      <view
+            class="org.eclipse.rap.demo.DemoTableViewPart"
+            icon="icons/sample.gif"
+            id="org.eclipse.rap.demo.DemoTableViewPart"
+            name="View IV"/> 
          <!-- category="com.xyz.views.XYZviews" --> 
          <!-- icon="icons/XYZ.gif"/ -->
-      <view 
-         id="org.eclipse.rap.demo.DemoSelectionViewPart" 
-         name="Selection View" 
-         class="org.eclipse.rap.demo.DemoSelectionViewPart" /> 
+      <view
+            class="org.eclipse.rap.demo.DemoSelectionViewPart"
+            icon="icons/sample.gif"
+            id="org.eclipse.rap.demo.DemoSelectionViewPart"
+            name="Selection View"/> 
          <!-- category="com.xyz.views.XYZviews" --> 
          <!-- icon="icons/XYZ.gif"/ -->
    </extension> 
