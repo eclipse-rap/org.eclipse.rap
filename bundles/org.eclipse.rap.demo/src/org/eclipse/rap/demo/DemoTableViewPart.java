@@ -61,19 +61,12 @@ public class DemoTableViewPart extends ViewPart {
   }
   
   public void createPartControl( final Composite parent ) {
-    parent.setLayout( new FormLayout() );
     TableViewer viewer = new TableViewer( parent, RWT.NONE );
     viewer.setContentProvider( new ViewContentProvider() );
     viewer.setLabelProvider( new ViewLabelProvider() );
     final Table table = viewer.getTable();
     viewer.setColumnProperties( initColumnProperties( table ) );
     viewer.setInput( this );
-    FormData formData = new FormData();
-    table.setLayoutData( formData );
-    formData.top = new FormAttachment( 0, 5 );
-    formData.left = new FormAttachment( 0, 5 );
-    formData.right = new FormAttachment( 100, -5 );
-    formData.bottom = new FormAttachment( 100, -5 );
     getSite().setSelectionProvider( viewer );
   }
 

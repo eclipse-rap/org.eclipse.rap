@@ -141,17 +141,10 @@ public class DemoTreeViewPart extends ViewPart {
   }
   
   public void createPartControl( final Composite parent ) {
-    parent.setLayout( new FormLayout() );
     TreeViewer viewer = new TreeViewer( parent );
     viewer.setContentProvider( new TreeViewerContentProvider() );
     viewer.setInput( this );
     Tree tree = viewer.getTree();
-    FormData treeData = new FormData();
-    tree.setLayoutData( treeData );
-    treeData.top = new FormAttachment( 0, 2 );
-    treeData.left = new FormAttachment( 0, 2 );
-    treeData.right = new FormAttachment( 100, -2 );
-    treeData.bottom = new FormAttachment( 100, -2 );
     getSite().setSelectionProvider( viewer );
   }
 }
