@@ -50,7 +50,7 @@ public final class Props {
   
   // Tree/TreeItem properties
   public static final String EXPANDED = "expanded";
-  
+
   private Props() {
     // prevent instantiation
   }

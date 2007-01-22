@@ -26,6 +26,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     "org.eclipse.rap.rwt.ComboUtil.widgetSelected";
   private static final String CREATE_COMBOBOX_ITEMS = 
     "org.eclipse.rap.rwt.ComboUtil.createComboBoxItems";
+  private static final String PROP_ITEMS = "items";
   
   private final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
@@ -35,9 +36,9 @@ public class ComboLCA extends AbstractWidgetLCA {
   public void preserveValues( final Widget widget ) {
     Combo combo = ( Combo )widget;
     ControlLCAUtil.preserveValues( combo );
+
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
+    adapter.preserve( PROP_ITEMS, combo.getItems() );
   }
   
   public void readData( final Widget widget ) {
@@ -61,12 +62,11 @@ public class ComboLCA extends AbstractWidgetLCA {
     Combo combo = ( Combo )widget;
     JSWriter writer = JSWriter.getWriterFor( combo );
     ControlLCAUtil.writeChanges( combo );
-    Object[] params = new Object[]{
-      WidgetUtil.getId( combo ),
-      combo.getItems()
-    };
-    writer.callStatic( CREATE_COMBOBOX_ITEMS,
-                       params );
+    String[] items = combo.getItems();
+    if( WidgetUtil.hasChanged( combo, PROP_ITEMS, items ) ) {
+      Object[] params = new Object[]{ WidgetUtil.getId( combo ), items };
+      writer.callStatic( CREATE_COMBOBOX_ITEMS, params );
+    }
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( combo ) );

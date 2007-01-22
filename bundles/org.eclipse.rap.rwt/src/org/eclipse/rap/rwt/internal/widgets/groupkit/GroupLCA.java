@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.widgets.groupkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Group;
 import org.eclipse.rap.rwt.widgets.Widget;
 
@@ -25,6 +25,9 @@ public class GroupLCA extends AbstractWidgetLCA {
   public void preserveValues( final Widget widget ) {
     Group group = ( Group )widget;
     ControlLCAUtil.preserveValues( group );
+    
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_TEXT, group.getText() );
   }
   
   public void readData( final Widget widget ) {

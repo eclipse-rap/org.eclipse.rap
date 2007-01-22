@@ -156,7 +156,7 @@ qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
   for( var i = 0; i < items.length; i++ ) {
     var item = items[ i ];
     
-//    //--- hack from rh:
+    //--- hack from rh:
     if( item.getLabelObject() != null ) {
       var label = item.getLabelObject();
       this.debug( "LABEL: " + label );
@@ -168,7 +168,7 @@ qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
         this.getLabelObject().setEnabled( propValue );
       }, item );
     }
-//    //---
+    //---
     
     item.setEnabled( propValue );
   }

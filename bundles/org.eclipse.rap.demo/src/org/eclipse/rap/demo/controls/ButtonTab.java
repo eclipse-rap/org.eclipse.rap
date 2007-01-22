@@ -13,9 +13,13 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class ButtonTab extends ExampleTab {
 
-  private static final String BUTTON_IMAGE
+  private static final String BUTTON_IMAGE_PATH
     = "org/eclipse/rap/demo/controls/button-image.gif";
+
+  private Image buttonImage;
   
+  private boolean showImage;
+
   private Button button1;
   private Button check1;
   private Button radio1;
@@ -39,12 +43,8 @@ public class ButtonTab extends ExampleTab {
     imageButton.setLayoutData( new RowData( 80, 20 ) );
     imageButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        if( imageButton.getSelection() ) {
-          ClassLoader classLoader = getClass().getClassLoader();
-          button1.setImage( Image.find( BUTTON_IMAGE, classLoader ) );
-        } else {
-          button1.setImage( null );
-        }
+        showImage = imageButton.getSelection();
+        updateButtonImage( button1 );
       }
     } );
     createFontChooser();
@@ -57,6 +57,7 @@ public class ButtonTab extends ExampleTab {
     button1 = new Button( top, style | RWT.PUSH );
     button1.setText( "Button" );
     button1.setLayoutData( data );
+    updateButtonImage( button1 );
 //    button1.addSelectionListener( new SelectionAdapter() {
 //      public void widgetSelected( SelectionEvent event ) {
 //        log( "Button 1 pressed" );
@@ -79,6 +80,18 @@ public class ButtonTab extends ExampleTab {
     registerControl( radio1 );
     registerControl( radio2 );
     registerControl( radio3 );
+  }
+
+  private void updateButtonImage( Button button ) {
+    if( showImage ) {
+      if( buttonImage == null ) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        buttonImage = Image.find( BUTTON_IMAGE_PATH, classLoader );
+      }
+      button.setImage( buttonImage );
+    } else {
+      button.setImage( null );
+    }
   }
 
 }

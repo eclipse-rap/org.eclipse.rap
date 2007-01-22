@@ -869,7 +869,7 @@ public class JSWriter_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) != -1 );
   }
   
-  public void testExcapeString() throws IOException {
+  public void testEscapeString() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display, RWT.NONE );
     Label label = new Label( shell , RWT.NONE );

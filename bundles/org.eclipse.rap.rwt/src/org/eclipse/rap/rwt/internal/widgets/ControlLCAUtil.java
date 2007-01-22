@@ -41,10 +41,7 @@ public class ControlLCAUtil {
     adapter.preserve( Props.BOUNDS, control.getBounds() );
     adapter.preserve( Props.TOOL_TIP_TEXT, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
-    // TODO [rh] revise visible: preserveValues and writeChanges should work on 
-    //      the same property values. Here isVisible is preserved but getVisible 
-    //      is rendered.
-    adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.isVisible() ) );
+    adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.getVisible() ) );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( control.isEnabled() ) );
     adapter.preserve( Props.FG_COLOR, control.getForeground() );
     adapter.preserve( Props.BG_COLOR, control.getBackground() );

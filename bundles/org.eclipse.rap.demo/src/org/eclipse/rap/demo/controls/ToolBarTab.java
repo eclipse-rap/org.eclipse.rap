@@ -4,7 +4,9 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
 import org.eclipse.rap.rwt.widgets.*;
@@ -12,6 +14,10 @@ import org.eclipse.rap.rwt.widgets.*;
 public class ToolBarTab extends ExampleTab {
 
   private ToolBar toolBar;
+  private SelectionAdapter dropDownListener;
+  private ToolItem dropDownItem;
+  private int count = 0;
+  private Menu dropDownMenu;
 
   public ToolBarTab( TabFolder folder ) {
     super( folder, "ToolBar" );
@@ -23,9 +29,17 @@ public class ToolBarTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
+    Button changeDDListenerButton = new Button( styleComp, RWT.PUSH );
+    changeDDListenerButton.setText( "Change DropDown Listener" );
+    changeDDListenerButton.setLayoutData( new RowData( 150, 25 ) );
+    changeDDListenerButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        changeDropDownListener();
+      }
+    } );
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     ClassLoader loader = getClass().getClassLoader();
     Image imageNewFile = Image.find( "resources/newfile_wiz.gif", loader );
@@ -42,9 +56,9 @@ public class ToolBarTab extends ExampleTab {
     item2.setText( "open" );
     item2.setImage( imagenewFolder );
     new ToolItem( toolBar, RWT.SEPARATOR );
-    ToolItem item3 = new ToolItem( toolBar, RWT.DROP_DOWN );
-    item3.setText( "select" );
-    item3.setImage( imageNewProj );
+    dropDownItem = new ToolItem( toolBar, RWT.DROP_DOWN );
+    dropDownItem.setText( "select" );
+    dropDownItem.setImage( imageNewProj );
     new ToolItem( toolBar, RWT.SEPARATOR );
     ToolItem item4 = new ToolItem( toolBar, RWT.CHECK );
     item4.setImage( imageSearch );
@@ -52,5 +66,27 @@ public class ToolBarTab extends ExampleTab {
     item5.setImage( imageSearch );
     ToolItem item6 = new ToolItem( toolBar, RWT.RADIO );
     item6.setImage( imageSearch );
+  }
+
+  private void changeDropDownListener() {
+    if( dropDownMenu != null ) {
+      dropDownMenu.dispose();
+    }
+    dropDownMenu = new Menu( toolBar.getShell(), RWT.POP_UP );
+    for( int i = 0; i < 5; i++ ) {
+      MenuItem item = new MenuItem( dropDownMenu, RWT.PUSH );
+      item.setText( "Item " + count++ );
+    }
+    dropDownListener = new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        if( event.detail == RWT.ARROW ) {
+          Point point = new Point( event.x, event.y );
+          // point = toolbar.getDisplay().map( toolBar, null, point );
+          dropDownMenu.setLocation( point );
+          dropDownMenu.setVisible( true );
+        }
+      }
+    };
+    dropDownItem.addSelectionListener( dropDownListener );
   }
 }

@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
+import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class ShellTab extends ExampleTab {
@@ -24,7 +23,7 @@ public class ShellTab extends ExampleTab {
     createStyleButton( "BORDER" );
     createStyleButton( "SHELL_TRIM" );
     createStyleButton( "DIALOG_TRIM" );
-//    createStyleButton( "APPLICATION_MODAL" );
+    createStyleButton( "APPLICATION_MODAL" );
     createStyleButton( "TITLE" );
     createStyleButton( "MIN" );
     createStyleButton( "MAX" );
@@ -94,13 +93,19 @@ public class ShellTab extends ExampleTab {
   private void createShell( int style ) {
     final Shell shell = new Shell( folder.getDisplay(), style );
     shell.setBounds( 100, 100, 300, 200 );
+    shell.setLayout( new FormLayout() );
     Button closeButton = new Button( shell, RWT.PUSH );
     closeButton.setText( "Close" );
+    FormData formData = new FormData();
+    formData.height = 25;
+    formData.left = new FormAttachment( 30 );
+    formData.right = new FormAttachment( 70 );
+    formData.bottom = new FormAttachment( 80 );
+    closeButton.setLayoutData( formData );
     closeButton.setBounds( 100, 100, 100, 25 );
     closeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
         shell.close();
-        shell.dispose();
       }
     } );
     shell.setText( "Test Shell" );

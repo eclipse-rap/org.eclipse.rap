@@ -114,7 +114,7 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil
 
 org.eclipse.rap.rwt.ToolItemUtil.addEventListenerForDropDownButton 
   = function( id , eventType , listener )
-{ 
+{
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var item = widgetManager.findWidgetById( id );
   item.addEventListener( "click", 

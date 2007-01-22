@@ -49,16 +49,11 @@ public class ShellLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "org.eclipse.rap.rwt.widgets.Shell" );
-    ControlLCAUtil.writeResizeNotificator( widget );
-    ControlLCAUtil.writeMoveNotificator( widget );
-    writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 
-                        JSConst.JS_SHELL_CLOSED );
-    writer.call( "open", null );
     ControlLCAUtil.writeStyleFlags( widget );
-//    if( ( widget.getStyle() & RWT.APPLICATION_MODAL ) != 0 ) {
-//      System.out.println("MODAL");
-//      writer.set( "modal", true );
-//    }
+    if( ( widget.getStyle() & RWT.APPLICATION_MODAL ) != 0 ) {
+      System.out.println("MODAL");
+      writer.set( "modal", true );
+    }
     if( ( widget.getStyle() & RWT.TITLE ) == 0 ) {
       writer.set( "showCaption", false );
     }
@@ -74,6 +69,11 @@ public class ShellLCA extends AbstractWidgetLCA {
     writer.set( "showMaximize", (style & (RWT.MIN | RWT.MAX)) != 0 );
     writer.set( "showClose", (style & (RWT.MIN | RWT.MAX | RWT.CLOSE)) != 0 );
     writer.call( "applyStyle", null );
+    ControlLCAUtil.writeResizeNotificator( widget );
+    ControlLCAUtil.writeMoveNotificator( widget );
+    writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 
+                        JSConst.JS_SHELL_CLOSED );
+    writer.call( "open", null );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
@@ -87,6 +87,7 @@ public class ShellLCA extends AbstractWidgetLCA {
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.call( "close", null );
     writer.dispose();
   }
   

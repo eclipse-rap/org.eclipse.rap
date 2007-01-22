@@ -34,6 +34,8 @@ abstract class ExampleTab {
   private Text text;
   private StringBuffer content = new StringBuffer();
   private FontChooser fontChooser;
+  private ColorChooser fgColorChooser;
+  private ColorChooser bgColorChooser;
   
   public ExampleTab( final TabFolder folder, final String title ) {
     this.folder = folder;
@@ -50,18 +52,24 @@ abstract class ExampleTab {
         createExampleControls( exmplComp );
         // TODO [rh] workaround: qooxdoo can neither set font nor color when
         //      widget was just created: reset all colors and font
-        fgIndex = 0;
-        bgIndex = 0;
-        Control control = ( Control )controls.get( 0 );
-        font = control.getFont();
-        if( fontChooser != null ) {
-          fontChooser.setFont( font );
-        }
         updateVisible();
         updateEnabled();
-        updateFgColor();
-        updateBgColor();
-        updateFont();
+        if( fgColorChooser != null ) {
+//          fgIndex = 0;
+          updateFgColor();
+        }
+        if( bgColorChooser != null ) {
+//          bgIndex = 0;
+          updateBgColor();
+        }
+        if( fontChooser != null ) {
+          //          Control control = ( Control )controls.get( 0 );
+          //          font = control.getFont();
+          if( font != null ) {
+            fontChooser.setFont( font );
+          }
+          updateFont();
+        }
         exmplComp.layout();
       }
     };
@@ -120,18 +128,6 @@ abstract class ExampleTab {
     Button button = createStyleButton( "RWT." + fieldName, style );
     button.setEnabled( style != RWT.NONE );
     return button;
-  }
-
-  protected void createFontChooser() {
-    fontChooser = new FontChooser( styleComp );
-    Control control = ( Control )controls.get( 0 );
-    fontChooser.setFont( control.getFont() );
-    fontChooser.setChangeRunnable( new Runnable() {
-      public void run() {
-        font = fontChooser.getFont();
-        updateFont();
-      }
-    } );
   }
 
   private Button createStyleButton( final String name, final int style ) {
@@ -197,6 +193,7 @@ abstract class ExampleTab {
    * @return the created checkbutton.
    */
   protected Button createFgColorButton( ) {
+    fgColorChooser = new ColorChooser();
     final Button button = new Button( styleComp, RWT.PUSH );
     button.setText( "Fg Color" );
     button.setLayoutData( new RowData( 100, 20 ) );
@@ -217,6 +214,7 @@ abstract class ExampleTab {
    * @return the created checkbutton.
    */
   protected Button createBgColorButton( ) {
+    bgColorChooser = new ColorChooser();
     final Button button = new Button( styleComp, RWT.PUSH );
     button.setText( "Bg Color" );
     button.setLayoutData( new RowData( 100, 20 ) );
@@ -227,6 +225,18 @@ abstract class ExampleTab {
       }
     } );
     return button;
+  }
+  
+  protected void createFontChooser() {
+    fontChooser = new FontChooser( styleComp );
+    Control control = ( Control )controls.get( 0 );
+    fontChooser.setFont( control.getFont() );
+    fontChooser.setChangeRunnable( new Runnable() {
+      public void run() {
+        font = fontChooser.getFont();
+        updateFont();
+      }
+    } );
   }
 
   /**

@@ -85,6 +85,14 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
     if (parentFlat) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
+    // event handler for the second push button
+    // TODO [rst] This is sent with every response
+    args = new Object[] {
+      getMenuId( toolItem ),
+      JSConst.QX_EVENT_CLICK,
+      WIDGET_SELECTED
+    };
+    writer.callStatic( UPDATE_LISTENER, args );
   }
   
   void renderChanges( final ToolItem toolItem ) throws IOException {
@@ -100,16 +108,8 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
-    // event handler for the second push button
-    Object[] args = new Object[] {
-      getMenuId( toolItem ),
-      JSConst.QX_EVENT_CLICK,
-      WIDGET_SELECTED
-    };    
-    writer.callStatic( UPDATE_LISTENER, args );
     ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
   }
-  
   
   //////////////////
   // helping methods
