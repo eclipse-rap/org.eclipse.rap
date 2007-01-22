@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
@@ -32,6 +33,54 @@ import com.w4t.engine.requests.RequestParams;
 
 public class CTabFolderLCA_Test extends TestCase {
   
+  private static final class CTabItemControl extends Composite {
+
+    public final StringBuffer markup = new StringBuffer();
+    
+    public CTabItemControl( final Composite parent, final int style ) {
+      super( parent, style );
+    }
+    
+    public Object getAdapter( final Class adapter ) {
+      Object result;
+      if( adapter == ILifeCycleAdapter.class ) {
+        result = new AbstractWidgetLCA() {
+          public void preserveValues( final Widget widget ) {
+            Control control = ( Control )widget;
+            IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+            Boolean visible = Boolean.valueOf( control.isVisible() );
+            adapter.preserve( "visible", visible );
+          }
+          public void renderChanges( final Widget widget ) throws IOException {
+            markup.setLength( 0 );
+            Control control = ( Control )widget;
+            Boolean visible = Boolean.valueOf( control.isVisible() );
+            if( WidgetUtil.hasChanged( widget, "visible", visible ) ) {
+              markup.append( "visible=" + visible );
+            }
+          }
+          public void renderDispose( final Widget widget ) throws IOException {
+          }
+          public void renderInitialization( final Widget widget ) throws IOException {
+          }
+          public void readData( final Widget widget ) {
+          }
+        };
+      } else {
+        result = super.getAdapter( adapter );
+      }
+      return result;
+    }
+  }
+
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
+  }
+
   public void testLCA() {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
@@ -183,7 +232,7 @@ public class CTabFolderLCA_Test extends TestCase {
     
     // Test showList event with listeners that prevents menu form showing
     // Note: this test must run first since it relies on the fact that the 
-    //       showList menu wan't populated by previous showList requests
+    //       showList menu wasn't populated by previous showList requests
     folder.setSelection( item1 );
     folder.addCTabFolder2Listener( vetoListener );
     String folderId = WidgetUtil.getId( folder );
@@ -191,8 +240,8 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.fakeRequestParam( CTabFolderLCA.EVENT_SHOW_LIST, folderId );
     RWTFixture.readDataAndProcessAction( folder );
     assertEquals( "vetoShowList|", log.toString() );
-    Menu menu = folderAdapter.getShowListMenu();
-    assertEquals( 0, menu.getItemCount() );
+    Menu menu = getShowListMenu( folder );
+    assertEquals( null, menu );
     // clean up above test
     folder.removeCTabFolder2Listener( vetoListener );
 
@@ -203,55 +252,19 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.fakeRequestParam( CTabFolderLCA.EVENT_SHOW_LIST, folderId );
     RWTFixture.readDataAndProcessAction( folder );
     assertEquals( "showList|", log.toString() );
-    menu = folderAdapter.getShowListMenu();
+    menu = getShowListMenu( folder );
     assertEquals( 1, menu.getItemCount() );
   }
   
-  protected void setUp() throws Exception {
-    RWTFixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
-  }
-
-  private static final class CTabItemControl extends Composite {
-
-    public final StringBuffer markup = new StringBuffer();
-    
-    public CTabItemControl( final Composite parent, final int style ) {
-      super( parent, style );
+  private static Menu getShowListMenu( final CTabFolder folder ) {
+    Menu result = null;
+    try {
+      Field field = CTabFolder.class.getDeclaredField( "showListMenu" );
+      field.setAccessible( true );
+      result = ( Menu )field.get( folder );
+    } catch( Exception e ) {
+      e.printStackTrace();
     }
-    
-    public Object getAdapter( final Class adapter ) {
-      Object result;
-      if( adapter == ILifeCycleAdapter.class ) {
-        result = new AbstractWidgetLCA() {
-          public void preserveValues( final Widget widget ) {
-            Control control = ( Control )widget;
-            IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-            Boolean visible = Boolean.valueOf( control.isVisible() );
-            adapter.preserve( "visible", visible );
-          }
-          public void renderChanges( final Widget widget ) throws IOException {
-            markup.setLength( 0 );
-            Control control = ( Control )widget;
-            Boolean visible = Boolean.valueOf( control.isVisible() );
-            if( WidgetUtil.hasChanged( widget, "visible", visible ) ) {
-              markup.append( "visible=" + visible );
-            }
-          }
-          public void renderDispose( final Widget widget ) throws IOException {
-          }
-          public void renderInitialization( final Widget widget ) throws IOException {
-          }
-          public void readData( final Widget widget ) {
-          }
-        };
-      } else {
-        result = super.getAdapter( adapter );
-      }
-      return result;
-    }
+    return result;
   }
 }

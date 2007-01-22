@@ -26,8 +26,6 @@ import org.eclipse.rap.rwt.graphics.Image;
  * is no SelectionListener registered.</li>
  * </ul>
  */
-// TODO [rh] selection state for check and radio buttons is only changed when a
-//      listener was added.
 public class Button extends Control {
 
   private String text = "";

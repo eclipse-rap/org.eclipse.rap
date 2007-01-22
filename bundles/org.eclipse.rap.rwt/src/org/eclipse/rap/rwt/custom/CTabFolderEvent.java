@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.custom;
 
 import org.eclipse.rap.rwt.events.RWTEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.Adaptable;
 
@@ -25,29 +26,30 @@ public class CTabFolderEvent extends RWTEvent {
   private static final int SHOW_LIST = 4;
   private static final Class LISTENER = CTabFolder2Listener.class;
   
-  public static CTabFolderEvent createClose( final CTabItem item ) {
+  public static CTabFolderEvent close( final CTabItem item ) {
     CTabFolderEvent result = new CTabFolderEvent( item.getParent(), CLOSE );
     result.item = item;
     result.doit = true;
     return result;
   }
   
-  public static CTabFolderEvent createMinimize( final CTabFolder tabFolder ) {
+  public static CTabFolderEvent minimize( final CTabFolder tabFolder ) {
     return new CTabFolderEvent( tabFolder, MINIMIZE );
   }
   
-  public static CTabFolderEvent createMaximize( final CTabFolder tabFolder ) {
+  public static CTabFolderEvent maximize( final CTabFolder tabFolder ) {
     return new CTabFolderEvent( tabFolder, MAXIMIZE );
   }
   
-  public static CTabFolderEvent createRestore( final CTabFolder tabFolder ) {
+  public static CTabFolderEvent restore( final CTabFolder tabFolder ) {
     return new CTabFolderEvent( tabFolder, RESTORE );
   }
   
-  public static CTabFolderEvent createShowList( final CTabFolder tabFolder,
-                                                final Rectangle chevronRect ) {
-    // TODO [rh] revise which fields have to be set
+  public static CTabFolderEvent showList( final CTabFolder tabFolder ) {
     CTabFolderEvent result = new CTabFolderEvent( tabFolder, SHOW_LIST );
+    Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
+    Rectangle chevronRect = folderAdapter.getChevronRect();    
     result.x = chevronRect.x;
     result.y = chevronRect.y;
     result.height = chevronRect.height;

@@ -17,7 +17,8 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
-import com.w4t.*;
+import com.w4t.Adaptable;
+import com.w4t.W4TContext;
 import com.w4t.engine.service.ContextProvider;
 
 /**
@@ -123,11 +124,32 @@ public class Display implements Adaptable {
     return systemFont;
   }
   
+  public Point map( final Control from, final Control to, final Point point ) {
+//    checkDevice ();
+    if( point == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    } 
+    return map( from, to, point.x, point.y );
+  }
+
+  public Point map( final Control from,
+                    final Control to,
+                    final int x,
+                    final int y )
+  {
+//    checkDevice ();
+    Rectangle rectangle = map( from, to, x, y, 0, 0 );
+    return new Point( rectangle.x, rectangle.y );
+  }
+  
   public Rectangle map( final Control from,
                         final Control to,
                         final Rectangle rectangle )
   {
-    ParamCheck.notNull( rectangle, "rectangle" );
+//    checkDevice ();
+    if( rectangle == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
     return map( from, 
                 to, 
                 rectangle.x, 
@@ -143,6 +165,7 @@ public class Display implements Adaptable {
                         final int width, 
                         final int height )
   {
+//    checkDevice ();
     int newX = x;
     int newY = y;
     if( from != null ) {

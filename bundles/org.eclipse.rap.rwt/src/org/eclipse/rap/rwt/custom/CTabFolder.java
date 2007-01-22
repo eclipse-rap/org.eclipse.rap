@@ -1248,6 +1248,47 @@ public class CTabFolder extends Composite {
     } );
   }
 
+  private void showListMenu() {
+    CTabItem[] items = getItems();
+    if( items.length == 0 || !showChevron ) {
+      return;
+    }
+    if( showListMenu == null || showListMenu.isDisposed() ) {
+      showListMenu = new Menu( this );
+    } else {
+      // TODO [rh] optimize: reuse existing menuItems if possible 
+      MenuItem[] menuItems = showListMenu.getItems();
+      for( int i = 0; i < menuItems.length; i++ ) {
+        menuItems[ i ].dispose();
+      }
+    }
+    final String id = "CTabFolder_showList_Index"; //$NON-NLS-1$
+    for( int i = 0; i < items.length; i++ ) {
+      CTabItem tab = items[ i ];
+      if( !tab.showing ) {
+        MenuItem item = new MenuItem( showListMenu, RWT.NONE );
+        item.setText( tab.getText() );
+        item.setImage( tab.getImage() );
+        item.setData( id, tab );
+        item.addSelectionListener( new SelectionAdapter() {
+          public void widgetSelected( final SelectionEvent event ) {
+            MenuItem menuItem = ( MenuItem )event.getSource();
+            int index = indexOf( ( CTabItem )menuItem.getData( id ) );
+            setSelection( index, true );
+          }
+        } );
+      } 
+    }
+    // show menu if it contains any item
+    if( showListMenu.getItemCount() > 0 ) {
+      int x = chevronRect.x;
+      int y = chevronRect.y + chevronRect.height + 1;
+      Point location = getDisplay().map( this, null, x, y );
+      showListMenu.setLocation( location.x, location.y );
+      showListMenu.setVisible( true );
+    }    
+  }
+
   private void setSelection( final int index, final boolean notify ) {
     int oldSelectedIndex = selectedIndex;
     setSelection( index );
@@ -1349,11 +1390,15 @@ public class CTabFolder extends Composite {
       return new Rectangle( CTabFolder.this.maxRect );
     }
     
+    public void showListMenu() {
+      CTabFolder.this.showListMenu();
+    }
+    
     public Menu getShowListMenu() {
       if( CTabFolder.this.showListMenu == null ) {
         CTabFolder.this.showListMenu = new Menu( getShell(), RWT.POP_UP );
       }
       return CTabFolder.this.showListMenu;
-    }
+    }    
   }
 }

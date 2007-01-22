@@ -57,7 +57,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     if( WidgetUtil.wasEventSent( item, EVENT_ITEM_CLOSED ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          CTabFolderEvent event = CTabFolderEvent.createClose( item );
+          CTabFolderEvent event = CTabFolderEvent.close( item );
           event.processEvent();
           if( event.doit ) {
             item.dispose();

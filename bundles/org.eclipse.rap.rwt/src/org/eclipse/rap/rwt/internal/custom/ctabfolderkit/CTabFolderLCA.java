@@ -12,16 +12,15 @@
 package org.eclipse.rap.rwt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.*;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.graphics.Color;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.IResourceManager;
 
 
@@ -141,17 +140,17 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
     // Minimized event
     if( WidgetUtil.wasEventSent( tabFolder, EVENT_FOLDER_MINIMIZED ) ) {
-      CTabFolderEvent event = CTabFolderEvent.createMinimize( tabFolder ); 
+      CTabFolderEvent event = CTabFolderEvent.minimize( tabFolder ); 
       event.processEvent();
     }
     // Maximized event
     if( WidgetUtil.wasEventSent( tabFolder, EVENT_FOLDER_MAXIMIZED ) ) {
-      CTabFolderEvent event = CTabFolderEvent.createMaximize( tabFolder ); 
+      CTabFolderEvent event = CTabFolderEvent.maximize( tabFolder ); 
       event.processEvent();
     }
     // Restore event
     if( WidgetUtil.wasEventSent( tabFolder, EVENT_FOLDER_RESTORED )) {
-      CTabFolderEvent event = CTabFolderEvent.createRestore( tabFolder ); 
+      CTabFolderEvent event = CTabFolderEvent.restore( tabFolder ); 
       event.processEvent();
     }
     // TODO [rh] it's a hack: necessary because folder.setSelection changes
@@ -172,46 +171,11 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     if( WidgetUtil.wasEventSent( tabFolder, EVENT_SHOW_LIST ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
-          Rectangle chevronRect = adapter.getChevronRect();
-          CTabFolderEvent event = CTabFolderEvent.createShowList( tabFolder, 
-                                                                  chevronRect ); 
+          CTabFolderEvent event = CTabFolderEvent.showList( tabFolder ); 
           event.processEvent();
           if( event.doit ) {
-            Menu menu = adapter.getShowListMenu();
-            MenuItem[] items = menu.getItems();
-            // TODO [rh] optimize: reuse existing menuItems if possible 
-            for( int i = 0; i < items.length; i++ ) {
-              items[ i ].dispose();
-            }
-            CTabItem[] tabItems = tabFolder.getItems();
-            for( int i = 0; i < tabItems.length; i++ ) {
-              final CTabItem tabItem = tabItems[ i ];
-              if( !tabItem.isShowing() ) {
-                MenuItem item = new MenuItem( menu, RWT.PUSH );
-                item.setText( tabItems[ i ].getText() );
-                item.addSelectionListener( new SelectionAdapter() {
-                  public void widgetSelected( final SelectionEvent event ) {
-                    tabFolder.setSelection( tabItem );
-                    SelectionEvent selectionEvent 
-                      = new SelectionEvent( tabFolder, 
-                                            tabItem, 
-                                            SelectionEvent.WIDGET_SELECTED, 
-                                            ZERO_RECTANGLE, 
-                                            true, 
-                                            0 );
-                    selectionEvent.processEvent();
-                  }
-                } );
-              }
-            }
-            Display display = tabFolder.getDisplay();
-            Rectangle menuRect = display.map( tabFolder, null, chevronRect );
-            Point location = new Point( menuRect.x, 
-                                        menuRect.y + menuRect.height + 1 );
-            menu.setLocation( location );
-            // show menu if it contains any item
-            menu.setVisible( menu.getItemCount() > 0 ); 
+            ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
+            adapter.showListMenu();
           }
         }
       } );

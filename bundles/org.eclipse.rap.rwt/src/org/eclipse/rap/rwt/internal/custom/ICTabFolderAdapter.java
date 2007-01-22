@@ -12,7 +12,6 @@
 package org.eclipse.rap.rwt.internal.custom;
 
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.widgets.Menu;
 
 
 public interface ICTabFolderAdapter {
@@ -23,5 +22,5 @@ public interface ICTabFolderAdapter {
   Rectangle getMinimizeRect();
   Rectangle getMaximizeRect();
   
-  Menu getShowListMenu(); 
+  void showListMenu();
 }
