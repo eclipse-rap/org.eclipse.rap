@@ -22,8 +22,8 @@ public class Shell_Test extends TestCase {
 
   public void testMenuBar() {
     Display display = new Display();
-    Shell shell1 = new Shell( display , RWT.NONE );
-    Shell shell2 = new Shell( display , RWT.NONE );
+    Shell shell1 = new Shell( display, RWT.NONE );
+    Shell shell2 = new Shell( display, RWT.NONE );
     Menu menu = new Menu( shell1, RWT.BAR );
     shell1.setMenuBar( menu );
     // Ensure that getMenuBar returns the very same shell that was set
@@ -86,15 +86,33 @@ public class Shell_Test extends TestCase {
   
   public void testInitialValues() {
     Display display = new Display();
-    Shell shell = new Shell( display , RWT.NONE );
-
+    Shell shell = new Shell( display, RWT.NONE );
+    // Must return the display it was created with
+    assertSame( display, shell.getDisplay() );
     // Active control must be null
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     assertEquals( null, shellAdapter.getActiveControl() );
-    
     // Shell initially has no layout
     assertEquals( null, shell.getLayout() );
+    // Text must be an empty string 
+    assertEquals( "", shell.getText() );
+    // Enabled
+    assertEquals( true, shell.getEnabled() );
+    // Shell is visible after open(), but not direectly after creation
+    assertEquals( false, shell.getVisible() );
+    assertEquals( false, shell.isVisible() );
+    // The Shell(Display) constructor must use style SHELL_TRIM
+    Shell trimShell = new Shell( display );
+    assertEquals( RWT.SHELL_TRIM, trimShell.getStyle() );
+  }
+  
+  public void testOpen() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    shell.open();
+    assertEquals( true, shell.getVisible() );
+    assertEquals( true, shell.isVisible() );
   }
   
   protected void setUp() throws Exception {

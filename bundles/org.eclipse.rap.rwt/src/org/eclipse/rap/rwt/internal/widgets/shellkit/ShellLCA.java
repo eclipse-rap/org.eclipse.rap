@@ -73,6 +73,8 @@ public class ShellLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeMoveNotificator( widget );
     writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 
                         JSConst.JS_SHELL_CLOSED );
+    // TODO [rh] what about invisible shells? This seems to open the shell in
+    //      any case (even if getVisible() is false)
     writer.call( "open", null );
   }
   

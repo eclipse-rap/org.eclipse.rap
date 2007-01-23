@@ -79,13 +79,16 @@ public class Shell extends Composite {
                           height - ( hTitleBar + border * 2 ) - 3 );
   }
   
-  public void setActive () {
+  public void setActive() {
     checkWidget();
     if( isVisible() ) {
       display.setActiveShell( this );
     }
   }
 
+  //////////
+  // MenuBar
+  
   public void setMenuBar( final Menu menuBar ) {
     if( this.menuBar != menuBar ) {
       if( menuBar != null ) {
@@ -108,6 +111,9 @@ public class Shell extends Composite {
   public Menu getMenuBar() {
     return menuBar;
   }
+  
+  /////////////////////
+  // Adaptable override
 
   public Object getAdapter( final Class adapter ) {
     Object result;
@@ -134,38 +140,22 @@ public class Shell extends Composite {
     return result;
   }
 
+  /////////////
+  // Enablement
+
+  public boolean isEnabled () {
+    checkWidget();
+    return getEnabled();
+  }
+  
+  /////////////
+  // Visibility
+
   public boolean isVisible() {
     checkWidget();
     return getVisible();
   }
   
-  /////////////
-  // Enablement
-  //
-  //This methods exist in SWT, as Shell implementation differs from control. 
-
-//  public void setEnabled( boolean enabled ) {
-//    checkWidget();
-//    if( ( ( state & DISABLED ) == 0 ) != enabled ) {
-//      super.setEnabled( enabled );
-////      TODO [rst] restore focus
-////      if( enabled && handle == OS.GetActiveWindow() ) {
-////        if( !restoreFocus() )
-////          traverseGroup( true );
-////      }
-//    }
-//  }
-//
-//  public boolean getEnabled() {
-//    checkWidget();
-//    return (state & DISABLED) == 0;
-//  }
-
-  public boolean isEnabled () {
-    checkWidget ();
-    return getEnabled ();
-  }
-
   public void open () {
     checkWidget();
     state &= ~HIDDEN;
@@ -178,16 +168,16 @@ public class Shell extends Composite {
     dispose();
   }
 
-  public void setText(String string) {
-    checkWidget ();
+  public void setText( final String string ) {
+    checkWidget();
     if( string == null ) {
-      error (RWT.ERROR_NULL_ARGUMENT );
+      error( RWT.ERROR_NULL_ARGUMENT );
     }
     this.text = string;
   }
   
   public String getText() {
-    checkWidget ();
+    checkWidget();
     return text;
   }
 
@@ -220,7 +210,6 @@ public class Shell extends Composite {
     if( menuBar != null ) {
       if( menuBarDisposeListener == null ) {
         menuBarDisposeListener = new DisposeListener() {
-
           public void widgetDisposed( final DisposeEvent event ) {
             Shell.this.menuBar = null;
           }

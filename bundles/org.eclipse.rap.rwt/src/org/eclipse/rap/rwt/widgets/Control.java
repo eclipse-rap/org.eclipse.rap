@@ -104,7 +104,7 @@ public abstract class Control extends Widget {
 
   public boolean isEnabled () {
     checkWidget();
-    return getEnabled () && parent.isEnabled ();
+    return getEnabled() && parent.isEnabled();
   }
 
   /////////

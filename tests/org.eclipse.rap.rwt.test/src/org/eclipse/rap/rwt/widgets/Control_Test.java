@@ -216,4 +216,53 @@ public class Control_Test extends TestCase {
     label.setFont( null );
     assertSame( display.getSystemFont(), label.getFont() );
   }
+  
+  public void testEnabled() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Composite composite = new Composite( shell, RWT.NONE );
+    Control control = new Button( composite, RWT.PUSH );
+
+    // Must be enabled, initially
+    assertEquals( true, control.getEnabled() );
+    assertEquals( true, control.isEnabled() );
+    
+    // Must react on setEnabled() 
+    control.setEnabled( false );
+    assertEquals( false, control.getEnabled() );
+    assertEquals( false, control.isEnabled() );
+    
+    // Test the difference between is- and getEnabled
+    control.setEnabled( true );
+    composite.setEnabled( false );
+    assertEquals( false, composite.getEnabled() );
+    assertEquals( false, composite.isEnabled() );
+    assertEquals( true, control.getEnabled() );
+    assertEquals( false, control.isEnabled() );
+  }
+
+  public void testVisible() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Composite composite = new Composite( shell, RWT.NONE );
+    Control control = new Button( composite, RWT.PUSH );
+    shell.open();
+    
+    // Must be enabled, initially
+    assertEquals( true, control.getVisible() );
+    assertEquals( true, control.isVisible() );
+    
+    // Must react on setEnabled() 
+    control.setVisible( false );
+    assertEquals( false, control.getVisible() );
+    assertEquals( false, control.isVisible() );
+    
+    // Test the difference between is- and getEnabled
+    control.setVisible( true );
+    composite.setVisible( false );
+    assertEquals( false, composite.getVisible() );
+    assertEquals( false, composite.isVisible() );
+    assertEquals( true, control.getVisible() );
+    assertEquals( false, control.isVisible() );
+  }
 }
