@@ -26,14 +26,6 @@ public class TabFolder extends Composite {
     super( parent, checkStyle( style ) );
   }
 
-  static int checkStyle( final int style ) {
-    int result = RWT.NONE;
-    if( style > 0 ) {
-      result = style;
-    }
-    return result;
-  }
-
   public TabItem[] getItems() {
     return ( TabItem[] )itemHolder.getItems();
   }
@@ -137,5 +129,20 @@ public class TabFolder extends Composite {
 
   public void removeSelectionListener( final SelectionListener listener ) {
     SelectionEvent.removeListener( this, listener );
+  }
+
+  ///////////////////
+  // Helping methods
+  
+  private static int checkStyle( final int style ) {
+    int result = checkBits( style, RWT.TOP, RWT.BOTTOM, 0, 0, 0, 0 );
+    /*
+    * Even though it is legal to create this widget
+    * with scroll bars, they serve no useful purpose
+    * because they do not automatically scroll the
+    * widget's client area.  The fix is to clear
+    * the SWT style.
+    */
+    return result & ~( RWT.H_SCROLL | RWT.V_SCROLL );
   }
 }

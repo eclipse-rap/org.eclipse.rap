@@ -51,7 +51,6 @@ public class ShellLCA extends AbstractWidgetLCA {
     writer.newWidget( "org.eclipse.rap.rwt.widgets.Shell" );
     ControlLCAUtil.writeStyleFlags( widget );
     if( ( widget.getStyle() & RWT.APPLICATION_MODAL ) != 0 ) {
-      System.out.println("MODAL");
       writer.set( "modal", true );
     }
     if( ( widget.getStyle() & RWT.TITLE ) == 0 ) {
@@ -64,10 +63,11 @@ public class ShellLCA extends AbstractWidgetLCA {
       writer.call( "addState", new Object[]{ "rwt_MAX" } );
     }
     int style = widget.getStyle();
-    writer.set( "resizeable", (style & RWT.RESIZE) != 0 );
-    writer.set( "showMinimize", (style & (RWT.MIN | RWT.MAX)) != 0 );
-    writer.set( "showMaximize", (style & (RWT.MIN | RWT.MAX)) != 0 );
-    writer.set( "showClose", (style & (RWT.MIN | RWT.MAX | RWT.CLOSE)) != 0 );
+    writer.set( "resizeable", ( style & RWT.RESIZE ) != 0 );
+    writer.set( "showMinimize", ( style & ( RWT.MIN | RWT.MAX ) ) != 0 );
+    writer.set( "showMaximize", ( style & ( RWT.MIN | RWT.MAX ) ) != 0 );
+    writer.set( "showClose", 
+                ( style & ( RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0 );
     writer.call( "applyStyle", null );
     ControlLCAUtil.writeResizeNotificator( widget );
     ControlLCAUtil.writeMoveNotificator( widget );

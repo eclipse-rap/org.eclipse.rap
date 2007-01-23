@@ -25,8 +25,7 @@ public class GroupLCA extends AbstractWidgetLCA {
   public void preserveValues( final Widget widget ) {
     Group group = ( Group )widget;
     ControlLCAUtil.preserveValues( group );
-    
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( group );
     adapter.preserve( PROP_TEXT, group.getText() );
   }
   

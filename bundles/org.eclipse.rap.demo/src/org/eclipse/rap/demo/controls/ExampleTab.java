@@ -88,8 +88,8 @@ abstract class ExampleTab {
     exmplComp = new Composite( leftComp, RWT.NONE );
     styleComp = new Composite( rightComp, RWT.NONE );
     styleComp.setLayout( new RowLayout( RWT.VERTICAL ) );
-    horSashForm.setWeights( new int[] { 60, 40} );
-    vertSashForm.setWeights( new int[] { 90, 10 } );
+    horSashForm.setWeights( new int[] { 60, 40 } );
+    vertSashForm.setWeights( new int[] { 95, 5 } );
     text = new Text( footComp, RWT.BORDER | RWT.READ_ONLY | RWT.MULTI );
     text.setText( "" );
     return vertSashForm;
@@ -119,7 +119,7 @@ abstract class ExampleTab {
       style = field.getInt( null );
     } catch( NoSuchFieldException e ) {
     } catch( IllegalAccessException e ) {
-      System.err.println("Cannot access style flag: RWT." + fieldName);
+      System.err.println( "Cannot access style flag: RWT." + fieldName );
     }
     Button button = createStyleButton( "RWT." + fieldName, style );
     button.setEnabled( style != RWT.NONE );

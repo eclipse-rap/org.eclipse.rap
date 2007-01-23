@@ -12,34 +12,14 @@
 package org.eclipse.rap.rwt.internal.widgets.textkit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.JSConst;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
-import org.eclipse.rap.rwt.widgets.Widget;
-import com.w4t.W4TContext;
-import com.w4t.util.browser.Mozilla;
+import org.eclipse.rap.rwt.widgets.Text;
 
 abstract class TextDelegateLCA {
 
-  void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( getClassName() );
-    writer = addProperty( writer );
-    // TODO [rh] this should be solved in qooxdoo
-    if( W4TContext.getBrowser() instanceof Mozilla ) {
-      Object[] args = new Object[] { "spellcheck", Boolean.FALSE };
-      writer.call( "setHtmlAttribute", args );
-    }
-    writer.addListener( JSConst.QX_EVENT_BLUR, JSConst.JS_TEXT_MODIFIED );
-    writer.addListener( JSConst.QX_EVENT_INPUT, JSConst.JS_TEXT_MODIFIED );
-    ControlLCAUtil.writeStyleFlags( widget );
-    if( ( widget.getStyle() & RWT.READ_ONLY ) != 0 ) {
-      writer.set( JSConst.QX_FIELD_READ_ONLY, true );
-    }
-  }
-
-  abstract public String getClassName();
-
-  abstract public JSWriter addProperty( JSWriter writer ) throws IOException;
+  abstract void preserveValues( Text text );
+  abstract void readData( Text text );
+  abstract void renderInitialization( Text text ) throws IOException;
+  abstract void renderChanges( Text text ) throws IOException;
+  abstract void renderDispose( Text text ) throws IOException;
+  
 }

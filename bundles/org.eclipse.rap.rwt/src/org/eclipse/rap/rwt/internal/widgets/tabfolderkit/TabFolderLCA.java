@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets.tabfolderkit;
 
 import java.io.IOException;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
@@ -40,6 +41,9 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.pageview.tabview.TabView" );
+    if( ( widget.getStyle() & RWT.BOTTOM ) != 0 ) {
+      writer.set( "placeBarOnTop", false );
+    }
     ControlLCAUtil.writeStyleFlags( widget );
     writer.addListener( null,
                         "changeEnabled",

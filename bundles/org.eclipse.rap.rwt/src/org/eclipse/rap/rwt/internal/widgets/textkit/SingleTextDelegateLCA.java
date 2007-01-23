@@ -11,15 +11,44 @@
 
 package org.eclipse.rap.rwt.internal.widgets.textkit;
 
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import java.io.IOException;
+import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.widgets.Text;
+
 
 final class SingleTextDelegateLCA extends TextDelegateLCA {
-
-  public String getClassName() {
-    return "qx.ui.form.TextField";
+  
+  void preserveValues( final Text text ) {
+    ControlLCAUtil.preserveValues( text );
+    TextLCAUtil.preserveText( text );
   }
 
-  public JSWriter addProperty( final JSWriter writer ) {
-    return writer;
+  void readData( final Text text ) {
+    TextLCAUtil.readText( text );
+  }
+
+  void renderInitialization( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    writer.newWidget( "qx.ui.form.TextField" );
+    ControlLCAUtil.writeStyleFlags( text );
+    TextLCAUtil.writeNoSpellCheck( text );
+    TextLCAUtil.writeModifyListeners( text );
+    TextLCAUtil.writeReadOnly( text );
+  }
+
+  void renderChanges( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    ControlLCAUtil.writeChanges( text );
+    String newValue = text.getText();
+    if( WidgetUtil.hasChanged( text, TextLCAUtil.PROP_TEXT, newValue, "" ) ) {
+      writer.set( "value", TextLCAUtil.getRenderText( newValue ) );
+    }
+//    writer.set( Props.TEXT, JSConst.QX_FIELD_VALUE, getRenderText( text ), "" );
+  }
+  
+  void renderDispose( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    writer.dispose();
   }
 }

@@ -54,11 +54,11 @@ public class BrowserLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( browser );
     JSWriter writer = JSWriter.getWriterFor( browser );
     if(    WidgetUtil.hasChanged( widget, PROP_TEXT, browser.getText(), null ) 
-        || WidgetUtil.hasChanged( widget, PROP_TEXT, browser.getUrl(), null ) ) 
+        || WidgetUtil.hasChanged( widget, PROP_URL, browser.getUrl(), null ) ) 
     {
       if( browser.getText() != null ) {
         String url = registerHtml( browser.getText() );
-        writer.set( PROP_URL, QX_FIELD_SOURCE, url );
+        writer.set( QX_FIELD_SOURCE, url );
       } else if( !"".equals( browser.getUrl() ) ) {
         writer.set( QX_FIELD_SOURCE, browser.getUrl() );
       } else {

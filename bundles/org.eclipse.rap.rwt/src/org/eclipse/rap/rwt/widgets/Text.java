@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 
 /**
- * <p>The following style bits currently do not have any effect:  H_SCROLL, 
- * V_SCROLL</p> 
+ * <p>Due to limitations of the JavaScript library, the current WRAP behavior 
+ * of a MULI line text is always as if WRAP was set.</p> 
  */
 public class Text extends Control {
 
@@ -40,8 +40,6 @@ public class Text extends Control {
     return "\n";
   }
 
-  // taken as sample from org.eclipse.swt.widgets.Text, but without scrolling
-  // (so far)
   private static int checkStyle( final int style ) {
     int result = style;
     if( ( result & RWT.SINGLE ) != 0 && ( result & RWT.MULTI ) != 0 ) {
@@ -49,11 +47,11 @@ public class Text extends Control {
     }
     result = checkBits( result, RWT.LEFT, RWT.CENTER, RWT.RIGHT, 0, 0, 0 );
     if( ( result & RWT.SINGLE ) != 0 ) {
-      result &= ~( /* RWT.H_SCROLL | RWT.V_SCROLL | */RWT.WRAP    );
+      result &= ~( RWT.H_SCROLL | RWT.V_SCROLL | RWT.WRAP );
     }
     if( ( result & RWT.WRAP ) != 0 ) {
       result |= RWT.MULTI;
-      /* style &= ~RWT.H_SCROLL; */
+      result &= ~RWT.H_SCROLL;
     }
     if( ( result & RWT.MULTI ) != 0 ) {
       result &= ~RWT.PASSWORD;
@@ -61,8 +59,9 @@ public class Text extends Control {
     if( ( result & ( RWT.SINGLE | RWT.MULTI ) ) != 0 ) {
       return result;
     }
-    // if ((style & (RWT.H_SCROLL | RWT.V_SCROLL)) != 0) return style |
-    // RWT.MULTI;
+    if( ( style & ( RWT.H_SCROLL | RWT.V_SCROLL ) ) != 0 ) {
+      return result | RWT.MULTI;
+    }
     return result | RWT.SINGLE;
   }
 }

@@ -17,6 +17,8 @@ public class TabFolderTab extends ExampleTab {
 
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
+    createStyleButton( "TOP" );
+    createStyleButton( "BOTTOM" );
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();

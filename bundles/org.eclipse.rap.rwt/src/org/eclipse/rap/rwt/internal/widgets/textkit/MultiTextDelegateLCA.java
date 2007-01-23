@@ -12,17 +12,41 @@
 package org.eclipse.rap.rwt.internal.widgets.textkit;
 
 import java.io.IOException;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.widgets.Text;
 
 class MultiTextDelegateLCA extends TextDelegateLCA {
 
-  public String getClassName() {
-    return "qx.ui.form.TextArea";
+  void preserveValues( final Text text ) {
+    ControlLCAUtil.preserveValues( text );
+    TextLCAUtil.preserveText( text );
   }
 
-  public JSWriter addProperty( final JSWriter writer ) throws IOException {
+  void readData( final Text text ) {
+    TextLCAUtil.readText( text );
+  }
+
+  void renderInitialization( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    writer.newWidget( "qx.ui.form.TextArea" );
+    ControlLCAUtil.writeStyleFlags( text );
+    TextLCAUtil.writeNoSpellCheck( text );
+    TextLCAUtil.writeModifyListeners( text );
+    TextLCAUtil.writeReadOnly( text );
     // TODO: [rst] Added because !WRAP stopped working - doesn't help anyway
-    writer.set( "wrap", false );
-    return writer;
+    writer.set( "wrap", ( text.getStyle() & RWT.WRAP ) != 0 );
+  }
+
+  void renderChanges( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    ControlLCAUtil.writeChanges( text );
+    writer.set( TextLCAUtil.PROP_TEXT, "value", text.getText(), "" );
+  }
+  
+  void renderDispose( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    writer.dispose();
   }
 }

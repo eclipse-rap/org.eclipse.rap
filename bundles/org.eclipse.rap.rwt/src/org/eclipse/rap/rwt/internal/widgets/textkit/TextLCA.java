@@ -23,24 +23,6 @@ public class TextLCA extends AbstractWidgetLCA {
   private final static TextDelegateLCA SINGLE = new SingleTextDelegateLCA();
   private final static TextDelegateLCA PASSWORD = new PasswordTextDelegateLCA();
   private final static TextDelegateLCA MULTI = new MultiTextDelegateLCA();
-  private final static TextDelegateLCA WRAP = new WrapTextDelegateLCA();
-
-  private static TextDelegateLCA getLCADelegate( final Widget widget ) {
-    TextDelegateLCA result;
-    int style = ( ( Text )widget ).getStyle();
-    if( ( style & RWT.PASSWORD ) != 0 ) {
-      result = PASSWORD;
-    } else if( ( style & RWT.SINGLE ) != 0 ) {
-      result = SINGLE;
-    } else if( ( style & RWT.WRAP ) != 0 ) {
-      result = WRAP;
-    } else if( ( style & RWT.MULTI ) != 0 ) {
-      result = MULTI;
-    } else {
-      result = SINGLE;
-    }
-    return result;
-  }
 
   public void preserveValues( final Widget widget ) {
     Text text = ( Text )widget;
@@ -58,14 +40,11 @@ public class TextLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    getLCADelegate( widget ).renderInitialization( widget );
+    getLCADelegate( widget ).renderInitialization( ( Text )widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
-    Text text = ( Text )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    ControlLCAUtil.writeChanges( text );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_VALUE, getRenderText( text ), "" );
+    getLCADelegate( widget ).renderChanges( ( Text )widget );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -83,6 +62,21 @@ public class TextLCA extends AbstractWidgetLCA {
     String result = text.getText();
     if( ( text.getStyle() & RWT.SINGLE ) != 0 ) {
       result = result.replaceAll( "\n", " " );
+    }
+    return result;
+  }
+
+  private static TextDelegateLCA getLCADelegate( final Widget widget ) {
+    TextDelegateLCA result;
+    int style = ( ( Text )widget ).getStyle();
+    if( ( style & RWT.PASSWORD ) != 0 ) {
+      result = PASSWORD;
+    } else if( ( style & RWT.SINGLE ) != 0 ) {
+      result = SINGLE;
+    } else if( ( style & RWT.MULTI ) != 0 ) {
+      result = MULTI;
+    } else {
+      result = SINGLE;
     }
     return result;
   }
