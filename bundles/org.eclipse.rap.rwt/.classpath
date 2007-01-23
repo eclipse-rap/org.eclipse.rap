@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="js"/>
-	<classpathentry exported="true" kind="lib" path="lib/qooxdoo.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry path="src" kind="src"/>
+	<classpathentry path="js" kind="src"/>
+	<classpathentry path="lib/qooxdoo.jar" exported="true" kind="lib"/>
+	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.4" kind="con"/>
+	<classpathentry path="org.eclipse.pde.core.requiredPlugins" kind="con"/>
+	<classpathentry path="bin" kind="output"/>
 </classpath>
