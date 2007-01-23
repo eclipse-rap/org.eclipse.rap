@@ -86,7 +86,9 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
     // event handler for the second push button
-    // TODO [rst] This is sent with every response
+    // TODO [rst] This was sent with every response - moved here
+    //      Still not a perfect solution - server side turnaround even when no
+    //      listener is registered
     args = new Object[] {
       getMenuId( toolItem ),
       JSConst.QX_EVENT_CLICK,

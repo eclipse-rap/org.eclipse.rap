@@ -36,9 +36,9 @@ public class ComboLCA extends AbstractWidgetLCA {
   public void preserveValues( final Widget widget ) {
     Combo combo = ( Combo )widget;
     ControlLCAUtil.preserveValues( combo );
-
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_ITEMS, combo.getItems() );
+    String[] items = combo.getItems();
+    adapter.preserve( PROP_ITEMS, items );
   }
   
   public void readData( final Widget widget ) {
@@ -63,7 +63,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( combo );
     ControlLCAUtil.writeChanges( combo );
     String[] items = combo.getItems();
-    if( WidgetUtil.hasChanged( combo, PROP_ITEMS, items ) ) {
+    if( WidgetUtil.hasChanged( combo, PROP_ITEMS, items, new String[ 0 ] ) ) {
       Object[] params = new Object[]{ WidgetUtil.getId( combo ), items };
       writer.callStatic( CREATE_COMBOBOX_ITEMS, params );
     }

@@ -50,24 +50,20 @@ abstract class ExampleTab {
         controls.clear();
         destroyExampleControls( );
         createExampleControls( exmplComp );
-        // TODO [rh] workaround: qooxdoo can neither set font nor color when
-        //      widget was just created: reset all colors and font
         updateVisible();
         updateEnabled();
         if( fgColorChooser != null ) {
-//          fgIndex = 0;
           updateFgColor();
         }
         if( bgColorChooser != null ) {
-//          bgIndex = 0;
           updateBgColor();
         }
         if( fontChooser != null ) {
-          //          Control control = ( Control )controls.get( 0 );
-          //          font = control.getFont();
-          if( font != null ) {
-            fontChooser.setFont( font );
-          }
+//          Control control = ( Control )controls.get( 0 );
+//          font = control.getFont();
+//          if( font != null ) {
+//            fontChooser.setFont( font );
+//          }
           updateFont();
         }
         exmplComp.layout();
