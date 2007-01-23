@@ -6,6 +6,7 @@
  * Contributors: Innoopract Informationssysteme GmbH - initial API and
  * implementation
  ******************************************************************************/
+
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;

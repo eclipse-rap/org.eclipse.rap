@@ -78,13 +78,11 @@ final class FontChooser {
     btnBold = new Button( composite, RWT.CHECK );
     btnBold.addSelectionListener( dummySelectionListener );
     gridData = new GridData( 80, 18 );
-    gridData.horizontalSpan = 2;
     btnBold.setLayoutData( gridData );
     btnBold.setText( "Bold" );
     btnItalic = new Button( composite, RWT.CHECK );
     btnItalic.addSelectionListener( dummySelectionListener );
     gridData = new GridData( 80, 18 );
-    gridData.horizontalSpan = 2;
     btnItalic.setLayoutData( gridData );
     btnItalic.setText( "Italic" );
     Button btnApply = new Button( composite, RWT.PUSH );
