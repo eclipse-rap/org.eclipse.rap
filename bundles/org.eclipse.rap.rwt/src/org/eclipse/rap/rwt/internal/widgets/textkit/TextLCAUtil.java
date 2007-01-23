@@ -30,7 +30,7 @@ final class TextLCAUtil {
 
   static void preserveText( final Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    adapter.preserve( PROP_TEXT, text );
+    adapter.preserve( PROP_TEXT, text.getText() );
   }
 
   static void readText( final Text text ) {
@@ -62,7 +62,10 @@ final class TextLCAUtil {
     writer.addListener( JSConst.QX_EVENT_INPUT, JSConst.JS_TEXT_MODIFIED );
   }
 
-  static String getRenderText( final String text ) {
+  /**
+   * Returns the given string with all newlines replaced with spaces.
+   */
+  static String stripNewlines( final String text ) {
     return text.replaceAll( "\n", " " );
   }
 }

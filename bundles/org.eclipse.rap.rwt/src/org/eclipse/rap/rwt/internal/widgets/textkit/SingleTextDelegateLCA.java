@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Text;
 
 
-final class SingleTextDelegateLCA extends TextDelegateLCA {
+final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
   
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
@@ -42,9 +42,8 @@ final class SingleTextDelegateLCA extends TextDelegateLCA {
     ControlLCAUtil.writeChanges( text );
     String newValue = text.getText();
     if( WidgetUtil.hasChanged( text, TextLCAUtil.PROP_TEXT, newValue, "" ) ) {
-      writer.set( "value", TextLCAUtil.getRenderText( newValue ) );
+      writer.set( "value", TextLCAUtil.stripNewlines( newValue ) );
     }
-//    writer.set( Props.TEXT, JSConst.QX_FIELD_VALUE, getRenderText( text ), "" );
   }
   
   void renderDispose( final Text text ) throws IOException {

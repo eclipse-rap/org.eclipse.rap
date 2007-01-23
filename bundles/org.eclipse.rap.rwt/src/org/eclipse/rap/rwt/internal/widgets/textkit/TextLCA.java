@@ -13,30 +13,23 @@ package org.eclipse.rap.rwt.internal.widgets.textkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.widgets.*;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.widgets.Text;
 import org.eclipse.rap.rwt.widgets.Widget;
 
 public class TextLCA extends AbstractWidgetLCA {
 
-  private final static TextDelegateLCA SINGLE = new SingleTextDelegateLCA();
-  private final static TextDelegateLCA PASSWORD = new PasswordTextDelegateLCA();
-  private final static TextDelegateLCA MULTI = new MultiTextDelegateLCA();
+  private final static AbstractTextDelegateLCA SINGLE = new SingleTextDelegateLCA();
+  private final static AbstractTextDelegateLCA PASSWORD = new PasswordTextDelegateLCA();
+  private final static AbstractTextDelegateLCA MULTI = new MultiTextDelegateLCA();
 
   public void preserveValues( final Widget widget ) {
-    Text text = ( Text )widget;
-    ControlLCAUtil.preserveValues( text );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.TEXT, getRenderText( text ) );
+    getLCADelegate( widget ).preserveValues( ( Text )widget );
   }
 
   public void readData( final Widget widget ) {
-    String newText = WidgetUtil.readPropertyValue( widget, "text" );
-    if( newText != null ) {
-      Text text = ( Text )widget;
-      text.setText( newText );
-    }
+    getLCADelegate( widget ).readData( ( Text )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -52,22 +45,8 @@ public class TextLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  /**
-   * Returns the text to be rendered for the <code>Text</code>. For single-line
-   * text widgets, newlines are replaced by white spaces.
-   * @param text the Text control in question.
-   * @return The text to be rendered. 
-   */
-  private String getRenderText( final Text text ) {
-    String result = text.getText();
-    if( ( text.getStyle() & RWT.SINGLE ) != 0 ) {
-      result = result.replaceAll( "\n", " " );
-    }
-    return result;
-  }
-
-  private static TextDelegateLCA getLCADelegate( final Widget widget ) {
-    TextDelegateLCA result;
+  private static AbstractTextDelegateLCA getLCADelegate( final Widget widget ) {
+    AbstractTextDelegateLCA result;
     int style = ( ( Text )widget ).getStyle();
     if( ( style & RWT.PASSWORD ) != 0 ) {
       result = PASSWORD;

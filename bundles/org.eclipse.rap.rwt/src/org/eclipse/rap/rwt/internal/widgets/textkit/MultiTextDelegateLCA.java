@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.widgets.Text;
 
-class MultiTextDelegateLCA extends TextDelegateLCA {
+class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
 
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );

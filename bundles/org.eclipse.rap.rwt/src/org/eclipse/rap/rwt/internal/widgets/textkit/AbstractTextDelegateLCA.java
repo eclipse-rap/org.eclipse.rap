@@ -14,12 +14,11 @@ package org.eclipse.rap.rwt.internal.widgets.textkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.widgets.Text;
 
-abstract class TextDelegateLCA {
+abstract class AbstractTextDelegateLCA {
 
   abstract void preserveValues( Text text );
   abstract void readData( Text text );
   abstract void renderInitialization( Text text ) throws IOException;
   abstract void renderChanges( Text text ) throws IOException;
   abstract void renderDispose( Text text ) throws IOException;
-  
 }
