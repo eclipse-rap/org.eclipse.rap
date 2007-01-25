@@ -30,7 +30,12 @@ org.eclipse.rap.rwt.ButtonUtil.createRadioButton
 }
 
 org.eclipse.rap.rwt.ButtonUtil.disposeRadioButton = function( button ) {
-  button.getManager().remove( button );
+  // TODO [rh] revise this: sometimes button.getManager is undefined
+  //      could this be related to strange usage of parent.radioManager (see
+  //      createRadioButton)
+  if( button.getManager ) {
+    button.getManager().remove( button );
+  }
 }
 
 org.eclipse.rap.rwt.ButtonUtil.radioSelected = function( evt ) {
