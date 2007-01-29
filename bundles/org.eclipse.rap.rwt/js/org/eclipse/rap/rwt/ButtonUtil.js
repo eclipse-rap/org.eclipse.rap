@@ -14,28 +14,31 @@
  */
 qx.OO.defineClass( "org.eclipse.rap.rwt.ButtonUtil" );
 
-org.eclipse.rap.rwt.ButtonUtil.createRadioButton
-  = function( id, parent )
-{
-  var radio = new qx.ui.form.RadioButton();
-  // TODO [rh] revise this: to me this seems strange usage of JavaScript
-  if( !parent.radioManager ){
-    parent.radioManager = new qx.manager.selection.RadioManager();
+org.eclipse.rap.rwt.ButtonUtil.createRadioButton = function( id, parent ) {
+  var button = new qx.ui.form.RadioButton();
+  var radioManager = parent.getUserData( "radioManager" );
+  if( radioManager == null ){
+    radioManager = new qx.manager.selection.RadioManager();
+    parent.setUserData( "radioManager", radioManager );
   }
-  parent.radioManager.add( radio );
+  radioManager.add( button );
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  widgetManager.add( radio, id );
+  widgetManager.add( button, id, true );
   var parentId = widgetManager.findIdByWidget( parent );
-  widgetManager.setParent( radio, parentId );
+  widgetManager.setParent( button, parentId );
 }
 
 org.eclipse.rap.rwt.ButtonUtil.disposeRadioButton = function( button ) {
-  // TODO [rh] revise this: sometimes button.getManager is undefined
-  //      could this be related to strange usage of parent.radioManager (see
-  //      createRadioButton)
-  if( button.getManager ) {
-    button.getManager().remove( button );
+  var parent = button.getParent();
+  if( parent != null ) { // parent may already have been disposed of 
+    var radioManager = parent.getUserData( "radioManager" );
+    radioManager.remove( button );
+    if( radioManager.getItems().length == 0 ) {
+      parent.setUserData( "radioManager", null );
+      radioManager.dispose();
+    }
   }
+  button.dispose();
 }
 
 org.eclipse.rap.rwt.ButtonUtil.radioSelected = function( evt ) {

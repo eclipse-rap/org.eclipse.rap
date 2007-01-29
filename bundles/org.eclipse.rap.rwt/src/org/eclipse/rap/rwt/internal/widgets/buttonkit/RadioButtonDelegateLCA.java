@@ -21,9 +21,10 @@ import org.eclipse.rap.rwt.widgets.Button;
 
 final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
-  private static final String CREATE_RADIO 
+  private static final String CREATE_RADIO_BUTTON
     = "org.eclipse.rap.rwt.ButtonUtil.createRadioButton";
-  
+  private static final String DISPOSE_RADIO_BUTTON 
+    = "org.eclipse.rap.rwt.ButtonUtil.disposeRadioButton";
   private static final String WIDGET_SELECTED 
     = "org.eclipse.rap.rwt.ButtonUtil.radioSelected";
   
@@ -47,13 +48,13 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
       WidgetUtil.getId( button ),
       button.getParent()
     };
-    writer.callStatic( CREATE_RADIO, args );
+    writer.callStatic( CREATE_RADIO_BUTTON, args );
     writer.set( JSConst.QX_FIELD_APPEARANCE, "radiobutton" );
     ControlLCAUtil.writeStyleFlags( button );
   }
 
   // TODO [rh] qooxdoo radioButton cannot display images, should we ignore
-  //      setImage() calles when style is RWT.RADIO?
+  //      setImage() calls when style is RWT.RADIO?
   void renderChanges( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
@@ -71,8 +72,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   void renderDispose( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
-    writer.callStatic( "org.eclipse.rap.rwt.ButtonUtil.disposeRadioButton", 
-                       new Object[] { button } );
-    writer.dispose();
+    writer.callStatic( DISPOSE_RADIO_BUTTON, 
+                       new Object[] { button, button.getParent() } );
   }
 }
