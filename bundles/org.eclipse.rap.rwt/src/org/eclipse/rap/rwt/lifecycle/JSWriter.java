@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
+import org.eclipse.rap.rwt.internal.widgets.WidgetLCAUtil;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.HtmlResponseWriter;
 import com.w4t.engine.service.ContextProvider;
@@ -194,7 +195,7 @@ public final class JSWriter {
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     if(    !adapter.isInitialized()
-        || WidgetUtil.hasChanged( widget, javaProperty, newValue ) ) 
+        || WidgetLCAUtil.hasChanged( widget, javaProperty, newValue ) ) 
     {
       set( jsProperty, new String[] { newValue } );
     }
@@ -206,7 +207,7 @@ public final class JSWriter {
                    final Object defaultValue ) 
     throws IOException 
   {
-    if( WidgetUtil.hasChanged( widget, javaProperty, newValue, defaultValue ) ) 
+    if( WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defaultValue ) ) 
     {
       set( jsProperty, new Object[] { newValue } );
     }

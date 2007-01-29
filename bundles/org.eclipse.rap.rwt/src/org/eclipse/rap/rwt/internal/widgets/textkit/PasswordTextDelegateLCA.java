@@ -13,8 +13,8 @@ package org.eclipse.rap.rwt.internal.widgets.textkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
+import org.eclipse.rap.rwt.internal.widgets.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.Text;
 
 final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
@@ -41,7 +41,7 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( text );
     ControlLCAUtil.writeChanges( text );
     String newValue = text.getText();
-    if( WidgetUtil.hasChanged( text, TextLCAUtil.PROP_TEXT, newValue, "" ) ) {
+    if( WidgetLCAUtil.hasChanged( text, TextLCAUtil.PROP_TEXT, newValue, "" ) ) {
       writer.set( "value", TextLCAUtil.stripNewlines( newValue ) );
     }
   }

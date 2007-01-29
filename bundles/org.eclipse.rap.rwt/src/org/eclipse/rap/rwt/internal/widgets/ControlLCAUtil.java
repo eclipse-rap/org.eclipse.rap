@@ -134,7 +134,7 @@ public class ControlLCAUtil {
   public static void writeImage( final Widget widget, final Image image ) 
     throws IOException 
   {
-    if( WidgetUtil.hasChanged( widget, Props.IMAGE, image, null ) ) {
+    if( WidgetLCAUtil.hasChanged( widget, Props.IMAGE, image, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       // work around qooxdoo, that interprets 'null' as an image path 
       String path = image == null ? "" : Image.getPath( image );
@@ -146,7 +146,7 @@ public class ControlLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( control );
     // Foreground color
     Color color = control.getForeground();
-    if( WidgetUtil.hasChanged( control, Props.FG_COLOR, color, null ) ) {
+    if( WidgetLCAUtil.hasChanged( control, Props.FG_COLOR, color, null ) ) {
       Object[] args = new Object[] { control, color };
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
     }
@@ -185,7 +185,7 @@ public class ControlLCAUtil {
     Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
     Boolean defValue = Boolean.FALSE;
     String prop = ACTIVATE_LISTENER;
-    if( WidgetUtil.hasChanged( control, prop, newValue, defValue ) ) {
+    if( WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) ) {
       String function = newValue.booleanValue()
                       ? "addActivateListenerWidget"
                       : "removeActivateListenerWidget";
@@ -199,7 +199,7 @@ public class ControlLCAUtil {
                                        final Item item, 
                                        final boolean readBounds )
   {
-    if( WidgetUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
       Rectangle bounds;
       if( widget instanceof Control && readBounds ) {
         Control control = ( Control )widget;
@@ -225,12 +225,12 @@ public class ControlLCAUtil {
   // helping methods
 
   private static int readControlYLocation( final Control control ) {
-    String value = WidgetUtil.readPropertyValue( control, PROPERTY_Y_LOCATION );
+    String value = WidgetLCAUtil.readPropertyValue( control, PROPERTY_Y_LOCATION );
     return readCoordinate( value, control.getBounds().y );
   }
   
   private static int readControlXLocation( final Control control ) {
-    String value = WidgetUtil.readPropertyValue( control, PROPERTY_X_LOCATION );
+    String value = WidgetLCAUtil.readPropertyValue( control, PROPERTY_X_LOCATION );
     return readCoordinate( value, control.getBounds().x );
   }
 
@@ -245,7 +245,7 @@ public class ControlLCAUtil {
   }
 
   private static int readControlWidth( final Control control ) {
-    String value = WidgetUtil.readPropertyValue( control, PROPERTY_WIDTH );
+    String value = WidgetLCAUtil.readPropertyValue( control, PROPERTY_WIDTH );
     int result = 0;
     if( value != null ) {
       result = Integer.parseInt( value );
@@ -260,7 +260,7 @@ public class ControlLCAUtil {
   //      NumberFormatExceptions) or ensure that the client side will not
   //      send illegal parameters
   private static int readControlHeight( final Control widget ) {
-    String value = WidgetUtil.readPropertyValue( widget, PROPERTY_HEIGHT );
+    String value = WidgetLCAUtil.readPropertyValue( widget, PROPERTY_HEIGHT );
     int result = 0;
     if( value != null ) {
       result = Integer.parseInt( value );

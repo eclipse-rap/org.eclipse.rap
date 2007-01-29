@@ -14,8 +14,7 @@ package org.eclipse.rap.rwt.internal.custom.scrolledcompositekit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.custom.ScrolledComposite;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -51,12 +50,12 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     ScrolledComposite composite = ( ScrolledComposite )widget;
     String value 
-      = WidgetUtil.readPropertyValue( widget, PARAM_HORIZONTAL_BAR_SELECTION );
+      = WidgetLCAUtil.readPropertyValue( widget, PARAM_HORIZONTAL_BAR_SELECTION );
     if( value != null && composite.getHorizontalBar() != null ) {
       composite.getHorizontalBar().setSelection( Integer.parseInt( value ) );
     }
     value 
-      = WidgetUtil.readPropertyValue( widget, PARAM_VERTICAL_BAR_SELECTION );
+      = WidgetLCAUtil.readPropertyValue( widget, PARAM_VERTICAL_BAR_SELECTION );
     if( value != null && composite.getVerticalBar() != null ) {
       composite.getVerticalBar().setSelection( Integer.parseInt( value ) );
     }
@@ -114,7 +113,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     throws IOException 
   {
     Rectangle bounds = composite.getBounds();
-    if( WidgetUtil.hasChanged( composite, PROP_BOUNDS, bounds, null ) ) {
+    if( WidgetLCAUtil.hasChanged( composite, PROP_BOUNDS, bounds, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( composite );
       writer.set( "clipWidth", bounds.width );
       writer.set( "clipHeight", bounds.height );

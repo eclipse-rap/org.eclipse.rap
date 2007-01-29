@@ -34,7 +34,7 @@ final class ButtonLCAUtil {
   }
   
   static void readSelection( final Button button ) {
-    String value = WidgetUtil.readPropertyValue( button, PARAM_SELECTION );
+    String value = WidgetLCAUtil.readPropertyValue( button, PARAM_SELECTION );
     if( value != null ) {
       button.setSelection( Boolean.valueOf( value ).booleanValue() );
     }
@@ -59,7 +59,7 @@ final class ButtonLCAUtil {
 
   static void writeImage( final Button button ) throws IOException {
     Image image = button.getImage();
-    if( WidgetUtil.hasChanged( button, Props.IMAGE, image, null ) ) {
+    if( WidgetLCAUtil.hasChanged( button, Props.IMAGE, image, null ) ) {
       String imagePath;
       if( image == null ) {
         imagePath = "";
@@ -75,7 +75,7 @@ final class ButtonLCAUtil {
     if( ( button.getStyle() & RWT.ARROW ) == 0 ) {
       Integer newValue = new Integer( button.getAlignment() );
       Integer defValue = DEFAULT_ALIGNMENT;
-      if( WidgetUtil.hasChanged( button, PROP_ALIGNMENT, newValue, defValue ) ) 
+      if( WidgetLCAUtil.hasChanged( button, PROP_ALIGNMENT, newValue, defValue ) ) 
       {
         JSWriter writer = JSWriter.getWriterFor( button );
         String value;

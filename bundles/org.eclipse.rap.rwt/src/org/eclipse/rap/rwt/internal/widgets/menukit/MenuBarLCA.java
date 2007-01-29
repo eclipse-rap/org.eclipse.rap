@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.menukit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
+import org.eclipse.rap.rwt.internal.widgets.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.Menu;
@@ -60,7 +61,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
 
   private static void writeParent( final Menu menu ) throws IOException {
     Shell shell = MenuBarLCA.getShell( menu );
-    if( WidgetUtil.hasChanged( menu, PROP_SHELL, shell, null ) ) {
+    if( WidgetLCAUtil.hasChanged( menu, PROP_SHELL, shell, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( menu );
       writer.set( "parent", shell );
     }
@@ -73,7 +74,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     if( shell != null ) {
       Rectangle clientArea = shell.getClientArea();
       String prop = PROP_SHELL_CLIENT_AREA;
-      if( WidgetUtil.hasChanged( menu, prop, clientArea, null ) ) {
+      if( WidgetLCAUtil.hasChanged( menu, prop, clientArea, null ) ) {
         changedClientArea = shell.getClientArea();
       }
     }

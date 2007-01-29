@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.widgets;
+package org.eclipse.rap.rwt.internal.widgets;
 
 import java.util.*;
 import java.util.List;
@@ -19,12 +19,12 @@ import java.util.List;
  * <p>
  * </p>
  */
-final class SlimList implements List {
+public final class SlimList implements List {
 
   private static final Object[] EMPTY = new Object[ 0 ];
   private Object[] data;
 
-  SlimList() {
+  public SlimList() {
     data = EMPTY;
   }
 

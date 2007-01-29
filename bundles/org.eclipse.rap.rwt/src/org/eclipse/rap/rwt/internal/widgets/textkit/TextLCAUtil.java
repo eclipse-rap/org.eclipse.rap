@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.textkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
+import org.eclipse.rap.rwt.internal.widgets.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Text;
 import com.w4t.W4TContext;
@@ -34,7 +35,7 @@ final class TextLCAUtil {
   }
 
   static void readText( final Text text ) {
-    String newText = WidgetUtil.readPropertyValue( text, "text" );
+    String newText = WidgetLCAUtil.readPropertyValue( text, "text" );
     if( newText != null ) {
       text.setText( newText );
     }

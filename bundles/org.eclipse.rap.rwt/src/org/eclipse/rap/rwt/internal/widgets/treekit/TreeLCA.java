@@ -40,7 +40,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   
   public void readData( final Widget widget ) {
     Tree tree = ( Tree )widget;
-    String value = WidgetUtil.readPropertyValue( widget, "selection" );
+    String value = WidgetLCAUtil.readPropertyValue( widget, "selection" );
     if( value != null ) {
       String[] values = value.split( "," );
       TreeItem[] selectedItems = new TreeItem[ values.length ];
@@ -82,7 +82,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( tree ) );
     String prop = PROP_SELECTION_LISTENERS;
-    if( WidgetUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
+    if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( tree );
       writer.set( "widgetSelectedListeners", newValue );
     }
@@ -93,7 +93,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   {
     Boolean newValue = Boolean.valueOf( TreeEvent.hasListener( tree ) );
     String prop = PROP_TREE_LISTENERS;
-    if( WidgetUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
+    if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( tree );
       writer.set( "treeListeners", newValue );
     }

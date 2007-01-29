@@ -58,6 +58,7 @@ public class RWTTestSuite {
     suite.addTestSuite( JSListenerType_Test.class );
     suite.addTestSuite( JSVar_Test.class );
     suite.addTestSuite( WidgetUtil_Test.class );
+    suite.addTestSuite( WidgetLCAUtil_Test.class );
     suite.addTestSuite( ControlLCAUtil_Test.class );
     suite.addTestSuite( SelectionEvent_Test.class );
     suite.addTestSuite( ControlEvent_Test.class );

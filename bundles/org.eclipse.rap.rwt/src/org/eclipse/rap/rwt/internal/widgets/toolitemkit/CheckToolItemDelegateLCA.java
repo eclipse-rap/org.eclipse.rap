@@ -33,8 +33,8 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
                           JSListenerType.ACTION );
 
   void readData( final ToolItem toolItem ) {
-    if( WidgetUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      String value = WidgetUtil.readPropertyValue( toolItem, SELECTED_ITEM );
+    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
+      String value = WidgetLCAUtil.readPropertyValue( toolItem, SELECTED_ITEM );
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
       processSelection( toolItem );
     }

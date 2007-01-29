@@ -23,8 +23,7 @@ import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.internal.custom.ctabitemkit.CTabItemLCA;
 import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.internal.widgets.Props;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
@@ -55,7 +54,7 @@ public class CTabFolderLCA_Test extends TestCase {
             markup.setLength( 0 );
             Control control = ( Control )widget;
             Boolean visible = Boolean.valueOf( control.isVisible() );
-            if( WidgetUtil.hasChanged( widget, "visible", visible ) ) {
+            if( WidgetLCAUtil.hasChanged( widget, "visible", visible ) ) {
               markup.append( "visible=" + visible );
             }
           }

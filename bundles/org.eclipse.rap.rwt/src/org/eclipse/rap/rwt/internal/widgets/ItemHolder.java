@@ -9,14 +9,14 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.widgets;
+package org.eclipse.rap.rwt.internal.widgets;
 
 import java.lang.reflect.Array;
 import java.text.MessageFormat;
 import java.util.List;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.widgets.*;
 
-//TODO [rh] is public to allow access from custom package, move to internal pkg
 public final class ItemHolder implements IItemHolderAdapter {
 
   public static boolean isItemHolder( final Widget widget ) {

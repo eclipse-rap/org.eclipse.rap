@@ -13,6 +13,8 @@ package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Font;
+import org.eclipse.rap.rwt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 
 
 /**

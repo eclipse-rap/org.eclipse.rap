@@ -43,7 +43,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     // TODO [rh] TreeEvent behave different from SWT: SWT-style is to send
     //      the event and afterwards set the expanded property of the item
-    String state = WidgetUtil.readPropertyValue( widget, "state" );
+    String state = WidgetLCAUtil.readPropertyValue( widget, "state" );
     if( STATE_EXPANDED.equals( state ) || STATE_COLLAPSED.equals( state ) ) {
       TreeItem treeItem = ( TreeItem )widget;
       treeItem.setExpanded( STATE_EXPANDED.equals( state ) );
@@ -83,7 +83,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   {
     Boolean newValue = Boolean.valueOf( treeItem.getExpanded() );
     Boolean defValue = Boolean.FALSE;
-    if( WidgetUtil.hasChanged( treeItem, Props.EXPANDED, newValue, defValue ) ) 
+    if( WidgetLCAUtil.hasChanged( treeItem, Props.EXPANDED, newValue, defValue ) ) 
     {
       JSWriter writer = JSWriter.getWriterFor( treeItem );
       writer.set( "open", treeItem.getExpanded() );
@@ -92,7 +92,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   private static boolean processWidgetSelectedEvent( final Widget widget ) {
     boolean result = false;
-    if( WidgetUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
       TreeItem treeItem = ( TreeItem )widget;
       Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
       SelectionEvent event = new SelectionEvent( treeItem.getParent(), 

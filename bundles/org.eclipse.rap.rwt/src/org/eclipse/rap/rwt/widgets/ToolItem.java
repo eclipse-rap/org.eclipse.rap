@@ -14,6 +14,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 
 
 public class ToolItem extends Item {

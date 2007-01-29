@@ -186,7 +186,7 @@ public class TableLCA extends AbstractWidgetLCA {
     TableColumn[] columns = table.getColumns();
     for( int i = 0; i < columns.length; i++ ) {
       String parmColWidth = createColWidthParam( i );
-      String newColWidth  = WidgetUtil.readPropertyValue( table, parmColWidth );
+      String newColWidth  = WidgetLCAUtil.readPropertyValue( table, parmColWidth );
       if( newColWidth != null ) {
         columns[ i ].setWidth( Integer.parseInt( newColWidth ) );
       }
@@ -217,7 +217,7 @@ public class TableLCA extends AbstractWidgetLCA {
   }
 
   private static void readSelection( final Table table ) {
-    String selection = WidgetUtil.readPropertyValue( table, "selection" );
+    String selection = WidgetLCAUtil.readPropertyValue( table, "selection" );
     if( selection != null ) {
       String[] split = selection.split( "," );
       int[] indices = new int[ split.length ];

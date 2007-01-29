@@ -9,16 +9,10 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.widgets;
+package org.eclipse.rap.rwt.internal.widgets;
 
-// TODO [rh] is public to allow access from custom package, move to internal pkg
-public interface IItemHolderAdapter {
 
-  void add( Item item );
+public interface IBrowserAdapter {
   
-  void insert( Item item, int index );
-
-  void remove( Item item );
-
-  Item[] getItems();
+  String getText();
 }

@@ -15,8 +15,8 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.widgets.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.JSConst;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.ToolItem;
 import org.eclipse.rap.rwt.widgets.Widget;
 
@@ -36,7 +36,7 @@ abstract class ToolItemDelegateLCA {
   // helper methods
   
   static void processSelection( final ToolItem toolItem ) {
-    if( WidgetUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
       Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
       SelectionEvent event = newSelectionEvent( toolItem, bounds, RWT.NONE );
       event.processEvent();

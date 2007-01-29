@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.browser;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.internal.widgets.IBrowserAdapter;
 import org.eclipse.rap.rwt.widgets.Display;
 import org.eclipse.rap.rwt.widgets.Shell;
 import com.w4t.engine.lifecycle.PhaseId;
@@ -35,7 +36,7 @@ public class Browser_Test extends TestCase {
     Browser browser = new Browser( shell, RWT.NONE );
     
     assertEquals( null, browser.getUrl() );
-    assertEquals( null, browser.getText() );
+    assertEquals( null, getText( browser ) );
   }
   
   public void testUrlAndText() {
@@ -44,7 +45,7 @@ public class Browser_Test extends TestCase {
     Browser browser = new Browser( shell, RWT.NONE );
     
     browser.setUrl( "http://eclipse.org/rap" );
-    assertEquals( null, browser.getText() );
+    assertEquals( null, getText( browser ) );
     browser.setText( "<html></head>..." );
     assertEquals( null, browser.getUrl() );
     
@@ -60,7 +61,7 @@ public class Browser_Test extends TestCase {
       browser.setText( null );
       fail( "Browser#setText: null not allowed" );
     } catch( NullPointerException e ) {
-      assertEquals( "oldValue", browser.getText() );
+      assertEquals( "oldValue", getText( browser ) );
     }
   }
   
@@ -140,9 +141,15 @@ public class Browser_Test extends TestCase {
     success = browser.setText( "New html" );
     assertEquals( false, success );
     assertEquals( "changingabout:blank|", log.toString() );
-    assertEquals( "Old html", browser.getText() );
+    assertEquals( "Old html", getText( browser ) );
     // clean up 
     log.setLength( 0 );
     browser.removeLocationListener( vetoListener );
-}
+  }
+
+  private static String getText( final Browser browser ) {
+    Object adapter = browser.getAdapter( IBrowserAdapter.class );
+    IBrowserAdapter browserAdapter = ( IBrowserAdapter )adapter;
+    return browserAdapter.getText();
+  }
 }

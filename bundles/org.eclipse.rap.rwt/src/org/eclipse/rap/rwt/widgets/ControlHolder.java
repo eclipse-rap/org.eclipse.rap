@@ -13,8 +13,9 @@ package org.eclipse.rap.rwt.widgets;
 
 import java.util.List;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.widgets.SlimList;
 
-class ControlHolder {
+final class ControlHolder {
 
   private final List controls;
   

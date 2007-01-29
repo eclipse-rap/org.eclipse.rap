@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rap.rwt.widgets.Label;
@@ -64,7 +63,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   // Helping methods to write JavaScript
 
   private static void writeText( final Label label ) throws IOException {
-    if( WidgetUtil.hasChanged( label, PROP_TEXT, label.getText(), "" ) ) {
+    if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, label.getText(), "" ) ) {
       // TODO [rh] rendering text that contains html special chars (<, >, etc)
       //      leads to strange results
       //      e.g. setText( "> <" ), setText( "<tralala>" );
@@ -78,7 +77,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   private static void writeAlignment( final Label label ) throws IOException {
     Integer alignment = new Integer( label.getAlignment() );
     Integer defValue = DEFAULT_ALIGNMENT;
-    if( WidgetUtil.hasChanged( label, PROP_ALIGNMENT, alignment, defValue ) ) 
+    if( WidgetLCAUtil.hasChanged( label, PROP_ALIGNMENT, alignment, defValue ) ) 
     {
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[] { getAlignment( label.getAlignment() ) };

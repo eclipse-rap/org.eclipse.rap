@@ -54,7 +54,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   
   public void readData( final Widget widget ) {
     final CTabItem item = ( CTabItem )widget;
-    if( WidgetUtil.wasEventSent( item, EVENT_ITEM_CLOSED ) ) {
+    if( WidgetLCAUtil.wasEventSent( item, EVENT_ITEM_CLOSED ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           CTabFolderEvent event = CTabFolderEvent.close( item );
@@ -105,7 +105,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( item );
     boolean selected = item == item.getParent().getSelection();
     Boolean newValue = Boolean.valueOf( selected );
-    if( WidgetUtil.hasChanged( item, PROP_SELECTED, newValue, Boolean.FALSE ) ) 
+    if( WidgetLCAUtil.hasChanged( item, PROP_SELECTED, newValue, Boolean.FALSE ) ) 
     {
       writer.set( "selected", Boolean.valueOf( selected ) );
     }
@@ -113,7 +113,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
 
   private static void writeShowing( final CTabItem item ) throws IOException {
     Boolean newValue = Boolean.valueOf( item.isShowing() );
-    if( WidgetUtil.hasChanged( item, PROP_SHOWING, newValue, Boolean.TRUE ) ) {
+    if( WidgetLCAUtil.hasChanged( item, PROP_SHOWING, newValue, Boolean.TRUE ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "visibility", newValue );
     }
@@ -126,7 +126,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     CTabFolder parent = item.getParent();
     Color newValue = parent.getSelectionBackground();
     boolean itemInitialized = WidgetUtil.getAdapter( item ).isInitialized();
-    if( !itemInitialized || WidgetUtil.hasChanged( parent, prop, newValue ) ) {
+    if( !itemInitialized || WidgetLCAUtil.hasChanged( parent, prop, newValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "selectionBackground", newValue );
     }
@@ -139,7 +139,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     CTabFolder parent = item.getParent();
     Color newValue = parent.getSelectionForeground();
     boolean itemInitialized = WidgetUtil.getAdapter( item ).isInitialized();
-    if( !itemInitialized || WidgetUtil.hasChanged( parent, prop, newValue ) ) {
+    if( !itemInitialized || WidgetLCAUtil.hasChanged( parent, prop, newValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "selectionForeground", newValue );
     }
@@ -151,7 +151,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     String prop = PROP_UNSELECTED_CLOSE_VISIBLE;
     Boolean newValue 
       = Boolean.valueOf( item.getParent().getUnselectedCloseVisible() );
-    if( WidgetUtil.hasChanged( item, prop, newValue, Boolean.TRUE) ) {
+    if( WidgetLCAUtil.hasChanged( item, prop, newValue, Boolean.TRUE) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "unselectedCloseVisible", newValue );
     }

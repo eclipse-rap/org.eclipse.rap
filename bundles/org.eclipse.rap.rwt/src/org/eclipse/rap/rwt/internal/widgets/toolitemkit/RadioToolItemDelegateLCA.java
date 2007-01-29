@@ -34,7 +34,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
                           JSListenerType.ACTION );
   
   void readData( final ToolItem toolItem ) {
-    if( WidgetUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
       Control[] children = toolItem.getParent().getChildren();
       for( int i = 0; i < children.length; i++ ) {
         Widget child = children[ i ];

@@ -45,7 +45,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
   }
   
   public void readData( final Widget widget ) {
-    String value = WidgetUtil.readPropertyValue( widget, PROP_CHECKED );
+    String value = WidgetLCAUtil.readPropertyValue( widget, PROP_CHECKED );
     if( value != null && Boolean.valueOf( value ).booleanValue() ) {
       TabItem tabItem = ( TabItem )widget;
       TabFolder parent = tabItem.getParent();
@@ -101,7 +101,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     Boolean oldValue = ( Boolean )adapter.getPreserved( PROP_CHECKED );
-    if( WidgetUtil.hasChanged( item, PROP_CHECKED, oldValue, Boolean.FALSE ) ) {
+    if( WidgetLCAUtil.hasChanged( item, PROP_CHECKED, oldValue, Boolean.FALSE ) ) {
       writer.set( JSConst.QX_FIELD_CHECKED, isChecked( item ) );
     }
   }

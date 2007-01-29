@@ -16,8 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.internal.widgets.Props;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.engine.service.ContextProvider;
@@ -42,7 +41,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     HttpServletRequest request = ContextProvider.getRequest();
     String movedWidgetId = request.getParameter( JSConst.EVENT_WIDGET_MOVED );
     if( WidgetUtil.getId( coolItem ).equals( movedWidgetId ) ) {
-      String value = WidgetUtil.readPropertyValue( coolItem, "bounds.x" );
+      String value = WidgetLCAUtil.readPropertyValue( coolItem, "bounds.x" );
       int x = Integer.parseInt( value );
       CoolItem[] items = coolItem.getParent().getItems();
       int newOrder = -1;
@@ -108,7 +107,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   private static void writeBounds( final CoolItem coolItem ) throws IOException 
   {
     Rectangle bounds = coolItem.getBounds();
-    if( WidgetUtil.hasChanged( coolItem, Props.BOUNDS, bounds, null ) ) { 
+    if( WidgetLCAUtil.hasChanged( coolItem, Props.BOUNDS, bounds, null ) ) { 
       int[] args = new int[] {
         bounds.x, bounds.width, bounds.y, bounds.height
       };
@@ -122,7 +121,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( coolItem );
     Boolean oldValue = Boolean.valueOf( coolItem.getParent().getLocked() );
-    if( WidgetUtil.hasChanged( coolItem.getParent(), Props.LOCKED, oldValue ) ) 
+    if( WidgetLCAUtil.hasChanged( coolItem.getParent(), Props.LOCKED, oldValue ) ) 
     {
       writer.set( "locked", coolItem.getParent().getLocked() );
     }

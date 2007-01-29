@@ -16,6 +16,8 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 
 
 /**

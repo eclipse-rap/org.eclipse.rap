@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import java.util.List;
+import org.eclipse.rap.rwt.internal.widgets.SlimList;
 
 public final class MenuHolder {
 

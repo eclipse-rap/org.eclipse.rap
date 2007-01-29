@@ -39,7 +39,7 @@ public class ShellLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) { 
     Shell shell = ( Shell )widget;
     ControlLCAUtil.readBounds( shell );
-    if( WidgetUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
+    if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
       shell.close();
     }
     processActiveShell( shell );
@@ -99,7 +99,7 @@ public class ShellLCA extends AbstractWidgetLCA {
   private static void writeActiveShell( final Shell shell ) throws IOException {
     Shell activeShell = shell.getDisplay().getActiveShell();
     boolean hasChanged 
-      = WidgetUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
+      = WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
     if( shell == activeShell && hasChanged ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
       writer.set( "active", true );
@@ -107,7 +107,7 @@ public class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void processActiveShell( final Shell shell ) {
-    if( WidgetUtil.wasEventSent( shell, JSConst.EVENT_SHELL_ACTIVATED ) ) {
+    if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_ACTIVATED ) ) {
       Shell lastActiveShell = shell.getDisplay().getActiveShell();
       setActiveShell( shell );
       ActivateEvent event;
@@ -143,7 +143,7 @@ public class ShellLCA extends AbstractWidgetLCA {
   private static void writeActiveControl( Shell shell ) throws IOException {
     Control activeControl = getActiveControl( shell );
     String prop = PROP_ACTIVE_CONTROL;
-    if( WidgetUtil.hasChanged( shell, prop, activeControl, null ) ) {
+    if( WidgetLCAUtil.hasChanged( shell, prop, activeControl, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
       writer.set( "activeControl", new Object[] { activeControl } );
     }
@@ -160,7 +160,7 @@ public class ShellLCA extends AbstractWidgetLCA {
       }
     } else {
       String activeControlId 
-      = WidgetUtil.readPropertyValue( shell, "activeControl" );
+      = WidgetLCAUtil.readPropertyValue( shell, "activeControl" );
       Widget widget = WidgetUtil.find( shell, activeControlId );
       if( widget != null ) {
         setActiveControl( shell, widget );

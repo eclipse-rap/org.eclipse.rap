@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.browser;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.widgets.IBrowserAdapter;
 import org.eclipse.rap.rwt.widgets.Composite;
 
 
@@ -26,6 +27,8 @@ public class Browser extends Composite {
   
   private String url;
   private String html;
+
+  private final IBrowserAdapter browserAdapter = new BrowserAdapter();
 
   /**
    * <p>The <code>style</code> flag is not yet evaluated.</p>
@@ -75,16 +78,27 @@ public class Browser extends Composite {
     return result;
   }
 
-  // TODO [rh] move getText to adapter, it is not part of the SWT Browser API 
-  public String getText() {
-    return html;
-  }
-  
   public void addLocationListener( final LocationListener listener ) {
     LocationEvent.addListener( this, listener );
   }
   
   public void removeLocationListener( final LocationListener listener ) {
     LocationEvent.removeListener( this, listener );
+  }
+  
+  public Object getAdapter( Class adapter ) {
+    Object result;
+    if( IBrowserAdapter.class.equals( adapter ) ) {
+      result = browserAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
+
+  private final class BrowserAdapter implements IBrowserAdapter {
+    public String getText() {
+      return Browser.this.html;
+    }
   }
 }

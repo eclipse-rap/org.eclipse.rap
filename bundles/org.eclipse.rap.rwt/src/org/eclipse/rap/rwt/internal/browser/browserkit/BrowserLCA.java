@@ -13,8 +13,7 @@ package org.eclipse.rap.rwt.internal.browser.browserkit;
 
 import java.io.*;
 import org.eclipse.rap.rwt.browser.Browser;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.widgets.Widget;
@@ -32,11 +31,11 @@ public class BrowserLCA extends AbstractWidgetLCA {
     ControlLCAUtil.preserveValues( browser );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( browser );
     adapter.preserve( PROP_URL, browser.getUrl() );
-    adapter.preserve( PROP_TEXT, browser.getText() );
+    adapter.preserve( PROP_TEXT, getText( browser ) );
   }
 
   public void readData( final Widget widget ) {
-    // TODO Auto-generated method stub
+    // do nothing
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -53,14 +52,16 @@ public class BrowserLCA extends AbstractWidgetLCA {
     //      not work
     ControlLCAUtil.writeChanges( browser );
     JSWriter writer = JSWriter.getWriterFor( browser );
-    if(    WidgetUtil.hasChanged( widget, PROP_TEXT, browser.getText(), null ) 
-        || WidgetUtil.hasChanged( widget, PROP_URL, browser.getUrl(), null ) ) 
+    String text = getText( browser );
+    String url = browser.getUrl();
+    if(    WidgetLCAUtil.hasChanged( widget, PROP_TEXT, text, null ) 
+        || WidgetLCAUtil.hasChanged( widget, PROP_URL, url, null ) ) 
     {
-      if( browser.getText() != null ) {
-        String url = registerHtml( browser.getText() );
+      if( text != null ) {
+        String textUrl = registerHtml( text );
+        writer.set( QX_FIELD_SOURCE, textUrl );
+      } else if( !"".equals( url ) ) {
         writer.set( QX_FIELD_SOURCE, url );
-      } else if( !"".equals( browser.getUrl() ) ) {
-        writer.set( QX_FIELD_SOURCE, browser.getUrl() );
       } else {
         writer.set( QX_FIELD_SOURCE, "" );
       }
@@ -93,5 +94,11 @@ public class BrowserLCA extends AbstractWidgetLCA {
     result.append( String.valueOf( html.hashCode() ) );
     result.append( ".html" );
     return result.toString();
+  }
+  
+  private static String getText( final Browser browser ) {
+    Object adapter = browser.getAdapter( IBrowserAdapter.class );
+    IBrowserAdapter browserAdapter = ( IBrowserAdapter )adapter;
+    return browserAdapter.getText();
   }
 }

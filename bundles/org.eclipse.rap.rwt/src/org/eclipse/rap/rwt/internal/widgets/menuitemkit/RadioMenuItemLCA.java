@@ -41,7 +41,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void readData( final MenuItem menuItem ) {
-    String paramValue = WidgetUtil.readPropertyValue( menuItem, "selection" );
+    String paramValue = WidgetLCAUtil.readPropertyValue( menuItem, "selection" );
     if( paramValue != null ) {
       boolean selection = Boolean.valueOf( paramValue ).booleanValue();
       if( selection ) {

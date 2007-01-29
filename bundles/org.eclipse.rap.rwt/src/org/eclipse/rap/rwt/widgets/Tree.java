@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import java.util.ArrayList;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor;
+import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
 /**

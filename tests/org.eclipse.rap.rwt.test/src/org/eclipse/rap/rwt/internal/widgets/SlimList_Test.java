@@ -9,9 +9,10 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.widgets;
+package org.eclipse.rap.rwt.internal.widgets;
 
 import java.util.List;
+import org.eclipse.rap.rwt.internal.widgets.SlimList;
 import junit.framework.TestCase;
 
 public class SlimList_Test extends TestCase {

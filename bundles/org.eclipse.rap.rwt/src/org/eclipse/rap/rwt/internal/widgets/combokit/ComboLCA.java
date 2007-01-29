@@ -43,8 +43,8 @@ public class ComboLCA extends AbstractWidgetLCA {
   
   public void readData( final Widget widget ) {
     Combo combo = ( Combo )widget;
-    if( WidgetUtil.wasEventSent( combo, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      String value = WidgetUtil.readPropertyValue( widget, SELECTED_ITEM );
+    if( WidgetLCAUtil.wasEventSent( combo, JSConst.EVENT_WIDGET_SELECTED ) ) {
+      String value = WidgetLCAUtil.readPropertyValue( widget, SELECTED_ITEM );
       combo.select( new Integer( value ).intValue() );
       ControlLCAUtil.processSelection( combo, null, true );
     }
@@ -63,7 +63,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( combo );
     ControlLCAUtil.writeChanges( combo );
     String[] items = combo.getItems();
-    if( WidgetUtil.hasChanged( combo, PROP_ITEMS, items, new String[ 0 ] ) ) {
+    if( WidgetLCAUtil.hasChanged( combo, PROP_ITEMS, items, new String[ 0 ] ) ) {
       Object[] params = new Object[]{ WidgetUtil.getId( combo ), items };
       writer.callStatic( CREATE_COMBOBOX_ITEMS, params );
     }

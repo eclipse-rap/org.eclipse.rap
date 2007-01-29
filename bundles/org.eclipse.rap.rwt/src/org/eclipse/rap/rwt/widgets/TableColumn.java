@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 
 public class TableColumn extends Item {
 

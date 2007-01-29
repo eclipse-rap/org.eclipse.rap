@@ -15,6 +15,8 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.rap.rwt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 import org.eclipse.rap.rwt.widgets.*;
 
 /**
@@ -350,7 +352,6 @@ public class CTabFolder extends Composite {
     return single;
   }
 
-  // TODO [rh] not yet evaluated in LCA 
   public void setSingle( final boolean single ) {
     checkWidget();
     if( this.single != single ) {
