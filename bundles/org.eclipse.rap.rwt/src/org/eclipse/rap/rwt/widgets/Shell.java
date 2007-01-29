@@ -36,24 +36,34 @@ public class Shell extends Composite {
   private IShellAdapter shellAdapter;
   private String text = "";
 
-  // TODO [rh] preliminary: yet no null-check, default/current substitute, etc
-  // TODO [rst] check style bits
-  public Shell( final Display display, final int style ) {
-    super();
-    this.style = style;
-    this.display = display;
-    state |= HIDDEN;
-    display.addShell( this );
-  }
-  
   public Shell( final Display display ) {
     this( display, RWT.SHELL_TRIM );
   }
-
+  
+  // TODO [rh] preliminary: yet no null-check, default/current substitute, etc
+  public Shell( final Display display, final int style ) {
+    super();
+    this.style = checkStyle( style );
+    if( display == null ) {
+      this.display = Display.getCurrent();
+    } else {
+      this.display = display;
+    }
+    state |= HIDDEN;
+    this.display.addShell( this );
+  }
+  
+  public Shell( final Shell parent ) {
+    this( parent, RWT.DIALOG_TRIM );
+  }
+  
   // TODO: [fappel] this is just a fake constructor for dialog shells,
   //                but no special dialog support implemented yet.
   public Shell( final Shell parent, final int style ) {
-    this( parent == null ? Display.getCurrent() : parent.getDisplay(), style );
+    this( checkParent( parent ) == null 
+                                ? Display.getCurrent()
+                                : parent.getDisplay(), 
+          style );
   }
 
   public final Shell getShell() {
@@ -284,5 +294,40 @@ public class Shell extends Composite {
       control = control.getParent();
     }
     return result;
+  }
+  
+  ///////////////////
+  // check... methods
+  
+  // TODO [rh] move to class Decorations as soon as it exists
+  static int Decorations_checkStyle( final int style ) {
+    int result = style;
+    if( ( result & RWT.NO_TRIM ) != 0 ) {
+      int trim = ( RWT.CLOSE 
+                 | RWT.TITLE 
+                 | RWT.MIN 
+                 | RWT.MAX 
+                 | RWT.RESIZE 
+                 | RWT.BORDER );
+      result &= ~trim;
+    }
+    if( ( result & ( /* RWT.MENU | */ RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0 ) {
+      result |= RWT.TITLE;
+    }
+    if( ( result & ( RWT.MIN | RWT.MAX ) ) != 0 ) {
+      result |= RWT.CLOSE;
+    }
+    return result;
+  }
+  
+  static int checkStyle( final int style ) {
+    return Decorations_checkStyle( style );
+  }
+
+  private static Shell checkParent( final Shell parent ) {
+    if( parent != null && parent.isDisposed() ) {
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
+    }
+    return parent;
   }
 }

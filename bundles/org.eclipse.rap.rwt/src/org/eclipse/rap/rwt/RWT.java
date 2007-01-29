@@ -65,6 +65,7 @@ public class RWT {
   
 
   // Shells
+  public static final int NO_TRIM = 1 << 3;
   public static final int RESIZE = 1 << 4;
   public static final int TITLE = 1 << 5;
   public static final int CLOSE = 1 << 6;

@@ -12,19 +12,15 @@ import org.eclipse.rap.rwt.RWT;
 
 public abstract class Dialog {
 
-  int style;
-  Shell parent;
-  String title;
+  private int style;
+  private Shell parent;
+  private String title;
 
-  public Dialog( Shell parent ) {
-    // TODO [rst] which one of APPLICATION_MODAL, SYSTEM_MODAL and PRIMARY_MODAL
-    // is
-    // suitable?
-    // this (parent, RWT.PRIMARY_MODAL);
+  public Dialog( final Shell parent ) {
     this( parent, RWT.APPLICATION_MODAL );
   }
 
-  public Dialog( Shell parent, int style ) {
+  public Dialog( final Shell parent, final int style ) {
     checkParent( parent );
     this.parent = parent;
     this.style = style;
@@ -38,13 +34,14 @@ public abstract class Dialog {
     // }
   }
 
-  void checkParent( Shell parent ) {
-    if( parent == null )
+  void checkParent( final Shell parent ) {
+    if( parent == null ) {
       error( RWT.ERROR_NULL_ARGUMENT );
+    }
     parent.checkWidget();
   }
 
-  void error( int code ) {
+  void error( final int code ) {
     RWT.error( code );
   }
 
@@ -60,9 +57,10 @@ public abstract class Dialog {
     return title;
   }
 
-  public void setText( String string ) {
-    if( string == null )
+  public void setText( final String string ) {
+    if( string == null ) {
       error( RWT.ERROR_NULL_ARGUMENT );
+    }
     title = string;
   }
 }

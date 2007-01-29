@@ -84,6 +84,21 @@ public class Shell_Test extends TestCase {
     assertTrue( clientAreaWithoutMenuBar.y < clientAreaWithMenuBar.y );
   }
   
+  public void testConstructor() {
+    Display display = new Display();
+    Shell shell = new Shell( ( Display )null, RWT.NONE );
+    assertSame( display, shell.getDisplay() );
+
+    shell = new Shell( display, RWT.NO_TRIM | RWT.CLOSE );
+    assertTrue( ( shell.getStyle() & RWT.CLOSE ) == 0 );
+    
+    shell = new Shell( ( Shell )null );
+    assertTrue( ( shell.getStyle() & RWT.DIALOG_TRIM ) != 0 );
+
+    shell = new Shell( display, RWT.MIN );
+    assertTrue( ( shell.getStyle() & RWT.CLOSE ) != 0 );
+  }
+  
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display, RWT.NONE );
