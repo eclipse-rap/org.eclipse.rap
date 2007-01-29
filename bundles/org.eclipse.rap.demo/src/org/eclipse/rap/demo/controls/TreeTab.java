@@ -16,13 +16,11 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class TreeTab extends ExampleTab {
 
-  private Tree tree;
-
-  public TreeTab( TabFolder folder ) {
+  public TreeTab( final TabFolder folder ) {
     super( folder, "Tree" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "CHECK" );
     createVisibilityButton();
@@ -30,19 +28,23 @@ public class TreeTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( Composite top ) {
-    top.setLayout( new RowLayout() );
+  void createExampleControls( final Composite parent ) {
+    parent.setLayout( new RowLayout() );
     int style = getStyle();
-    tree = new Tree( top, style );
+    Tree tree = new Tree( parent, style );
     tree.setLayoutData( new RowData( 200, 200 ) );
-    for (int i = 0; i < 4; i++) {
-        TreeItem item = new TreeItem (tree, RWT.NONE);
-        item.setText("Node_" + (i + 1));
-        if (i < 3) {
-            TreeItem subitem = new TreeItem (item, RWT.NONE);
-            subitem.setText("Subnode_" + (i + 1));
-        }
+    for( int i = 0; i < 4; i++ ) {
+      TreeItem item = new TreeItem( tree, RWT.NONE );
+      item.setText( "Node_" + ( i + 1 ) );
+      if( i < 3 ) {
+        TreeItem subitem = new TreeItem( item, RWT.NONE );
+        subitem.setText( "Subnode_" + ( i + 1 ) );
+      }
     }
+    Menu treeMenu = new Menu( tree );
+    MenuItem treeMenuItem = new MenuItem( treeMenu, RWT.PUSH );
+    treeMenuItem.setText( "TreeContextMenuItem" );
+    tree.setMenu( treeMenu );
     registerControl( tree );
   }
 

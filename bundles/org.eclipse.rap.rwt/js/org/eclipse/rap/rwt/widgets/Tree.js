@@ -141,10 +141,12 @@ qx.Proto._onItemCollapsed = function( evt ) {
 
 qx.Proto._onContextMenu = function( evt ) {
   var menu = this.getContextMenu();
-  menu.setLocation( evt.getPageX(), evt.getPageY() );
-  menu.setOpener( this );
-  menu.show();
-  evt.stopPropagation();
+  if( menu != null ) {
+    menu.setLocation( evt.getPageX(), evt.getPageY() );
+    menu.setOpener( this );
+    menu.show();
+    evt.stopPropagation();
+  }
 }
 
 /*
@@ -159,7 +161,6 @@ qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
     //--- hack from rh:
     if( item.getLabelObject() != null ) {
       var label = item.getLabelObject();
-      this.debug( "LABEL: " + label );
       label.setBackgroundColor( "red" );
       label.setEnabled( propValue );
     } else {
