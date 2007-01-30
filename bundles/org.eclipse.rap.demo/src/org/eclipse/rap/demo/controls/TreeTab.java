@@ -9,12 +9,17 @@
 
 package org.eclipse.rap.demo.controls;
 
+import java.text.MessageFormat;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class TreeTab extends ExampleTab {
+
+  private Tree tree;
 
   public TreeTab( final TabFolder folder ) {
     super( folder, "Tree" );
@@ -25,13 +30,16 @@ public class TreeTab extends ExampleTab {
     createStyleButton( "CHECK" );
     createVisibilityButton();
     createEnablementButton();
+    createLinesVisibleCheck();
+    createAddNodeButton();
     createFontChooser();
   }
 
   void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout() );
     int style = getStyle();
-    Tree tree = new Tree( parent, style );
+    tree = new Tree( parent, style );
+    tree.setLinesVisible( true );
     tree.setLayoutData( new RowData( 200, 200 ) );
     for( int i = 0; i < 4; i++ ) {
       TreeItem item = new TreeItem( tree, RWT.NONE );
@@ -48,4 +56,35 @@ public class TreeTab extends ExampleTab {
     registerControl( tree );
   }
 
+  private void createLinesVisibleCheck() {
+    final Button button = new Button( styleComp, RWT.CHECK );
+    button.setSelection( tree.getLinesVisible() );
+    button.setLayoutData( new RowData( 100, 20 ) );
+    button.setText( "Lines visible" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        tree.setLinesVisible( button.getSelection() );
+      }
+    } );
+  }
+
+  private void createAddNodeButton() {
+    Button button = new Button( styleComp, RWT.PUSH );
+    button.setText( "Add child item" );
+    button.setLayoutData( new RowData( 100, 20 ) );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( tree.getSelectionCount() > 0 ) {
+          TreeItem selection = tree.getSelection()[ 0 ];
+          TreeItem treeItem = new TreeItem( selection, RWT.NONE );
+          Object[] args = new Object[] { 
+            new Integer( selection.getItemCount() ), 
+            selection.getText()
+          };
+          String text = MessageFormat.format( "SubItem {0} of {1}", args );
+          treeItem.setText( text  );
+        }
+      }
+    } );
+  }
 }

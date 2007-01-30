@@ -27,6 +27,8 @@ public class Tree extends Composite {
   private final ItemHolder itemHolder;
   private TreeItem[] selection;
 
+  private boolean linesVisible;
+
   public Tree( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
     itemHolder = new ItemHolder( TreeItem.class );
@@ -47,18 +49,22 @@ public class Tree extends Composite {
   // Methods to manage items 
 
   public int getItemCount() {
+    checkWidget();
     return itemHolder.size();
   }
 
   public TreeItem[] getItems() {
+    checkWidget();
     return ( TreeItem[] )itemHolder.getItems();
   }
   
   public TreeItem getItem( final int index ) {
+    checkWidget();
     return ( TreeItem )itemHolder.getItem( index );
   }
   
   public int indexOf( final TreeItem item ) {
+    checkWidget();
     if( item == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -69,6 +75,7 @@ public class Tree extends Composite {
   }
   
   public void removeAll() {
+    checkWidget();
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].dispose();
@@ -80,16 +87,19 @@ public class Tree extends Composite {
   // Methods to get/set/clear selection
   
   public TreeItem[] getSelection() {
+    checkWidget();
     TreeItem[] result = new TreeItem[ selection.length ];
     System.arraycopy( selection, 0, result, 0, selection.length );
     return result;
   }
   
   public int getSelectionCount() {
+    checkWidget();
     return selection.length;
   }
   
   public void setSelection( final TreeItem selection ) {
+    checkWidget();
     if( selection == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -97,6 +107,7 @@ public class Tree extends Composite {
   }
 
   public void setSelection( final TreeItem[] selection ) {
+    checkWidget();
     if( selection == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -139,6 +150,7 @@ public class Tree extends Composite {
   }
   
   public void selectAll() {
+    checkWidget();
     if( ( style & RWT.MULTI ) != 0 ) {
       final java.util.List allItems = new ArrayList();
       WidgetTreeVisitor.accept( this, new AllWidgetTreeVisitor() {
@@ -155,25 +167,43 @@ public class Tree extends Composite {
   }
   
   public void deselectAll() {
+    checkWidget();
     this.selection = EMPTY_SELECTION;
+  }
+
+  ////////////////////////////////
+  // Methods to control appearance
+  
+  public void setLinesVisible( final boolean show ) {
+    checkWidget();
+    linesVisible = show;
+  }
+  
+  public boolean getLinesVisible() {
+    checkWidget();
+    return linesVisible;
   }
 
   //////////////////////////////////////
   // Listener registration/deregistration
   
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
   public void addTreeListener( final TreeListener listener ) {
+    checkWidget();
     TreeEvent.addListener( this, listener );
   }
   
   public void removeTreeListener( final TreeListener listener ) {
+    checkWidget();
     TreeEvent.removeListener( this, listener );
   }
 

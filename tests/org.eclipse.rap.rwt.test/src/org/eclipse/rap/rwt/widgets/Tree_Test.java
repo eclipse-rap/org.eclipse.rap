@@ -21,6 +21,14 @@ import org.eclipse.rap.rwt.graphics.Image;
 
 public class Tree_Test extends TestCase {
 
+  public void testInitialValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.NONE );
+
+    assertEquals( false, tree.getLinesVisible() );
+  }
+  
   public void testGetItemsAndGetItemCount() {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
@@ -359,18 +367,6 @@ public class Tree_Test extends TestCase {
     assertTrue( contains( tree.getSelection(), item2 ) );
   }
   
-  private static boolean contains( final TreeItem[] items, 
-                                   final TreeItem item ) 
-  {
-    boolean result = false;
-    for( int i = 0; !result && i < items.length; i++ ) {
-      if( item == items[ i ] ) {
-        result = true;
-      }
-    }
-    return result;
-  }
-
   public void testDeselectAll() {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
@@ -411,5 +407,17 @@ public class Tree_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
+  }
+
+  private static boolean contains( final TreeItem[] items, 
+                                   final TreeItem item ) 
+  {
+    boolean result = false;
+    for( int i = 0; !result && i < items.length; i++ ) {
+      if( item == items[ i ] ) {
+        result = true;
+      }
+    }
+    return result;
   }
 }
