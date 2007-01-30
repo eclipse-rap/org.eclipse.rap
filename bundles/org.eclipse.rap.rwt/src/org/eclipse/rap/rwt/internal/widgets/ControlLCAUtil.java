@@ -39,6 +39,7 @@ public class ControlLCAUtil {
   public static void preserveValues( final Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( Props.BOUNDS, control.getBounds() );
+    adapter.preserve( Props.Z_INDEX, new Integer( getZIndex(control) ) );
     adapter.preserve( Props.TOOL_TIP_TEXT, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.getVisible() ) );
@@ -63,6 +64,12 @@ public class ControlLCAUtil {
   public static void writeBounds( final Control control ) throws IOException {
     Composite parent = control.getParent();
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
+  }
+  
+  public static void writeZIndex( final Control control ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( control );
+    Integer newValue = new Integer( getZIndex( control ) );
+    writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
   }
   
   // TODO [rh] there seems to be a qooxdoo problem when trying to change the
@@ -90,6 +97,7 @@ public class ControlLCAUtil {
 
   public static void writeChanges( final Control control ) throws IOException {
     writeBounds( control );
+    writeZIndex( control );
     writeVisible( control );
     writeEnabled( control );
     writeColors( control );
@@ -268,5 +276,11 @@ public class ControlLCAUtil {
       result = widget.getBounds().height;
     }
     return result;
+  }
+  
+  private static int getZIndex( Control control ) {
+    IControlAdapter controlAdapter =
+      ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    return 100000 - controlAdapter.getIndex();
   }
 }

@@ -265,4 +265,42 @@ public class Control_Test extends TestCase {
     assertEquals( true, control.getVisible() );
     assertEquals( false, control.isVisible() );
   }
+  
+  public void testZOrder() {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    Button b1 = new Button( shell, RWT.PUSH );
+    Button b2 = new Button( shell, RWT.PUSH );
+    Button b3 = new Button( shell, RWT.PUSH );
+    assertEquals( 0, ControlHolder.indexOf( shell, b1 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, b2 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, b3 ) );
+    b3.moveAbove( b2 );
+    assertEquals( 0, ControlHolder.indexOf( shell, b1 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, b3 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, b2 ) );
+    b1.moveBelow( b3 );
+    assertEquals( 0, ControlHolder.indexOf( shell, b3 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, b1 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, b2 ) );
+    b2.moveAbove( null );
+    assertEquals( 0, ControlHolder.indexOf( shell, b2 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, b3 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, b1 ) );
+    b2.moveBelow( null );
+    assertEquals( 0, ControlHolder.indexOf( shell, b3 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, b1 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, b2 ) );
+    // control is already at the top / bottom
+    b3.moveAbove( null );
+    assertEquals( 0, ControlHolder.indexOf( shell, b3 ) );
+    b2.moveBelow( null );
+    assertEquals( 0, ControlHolder.indexOf( shell, b3 ) );
+    // try to move control above / below itself
+    b1.moveAbove( b1 );
+    assertEquals( 1, ControlHolder.indexOf( shell, b1 ) );
+    b1.moveBelow( b1 );
+    assertEquals( 1, ControlHolder.indexOf( shell, b1 ) );
+    shell.dispose();
+  }
 }

@@ -85,6 +85,7 @@ public final class JSConst {
   public static final String QX_FIELD_VISIBLE = "visibility";
   public static final String QX_FIELD_CHECKED = "checked";
   public static final String QX_FIELD_APPEARANCE = "appearance";
+  public static final String QX_FIELD_Z_INDEX = "zIndex";
   
   // constants
   public static final JSVar QX_CONST_VERTICAL_ORIENTATION

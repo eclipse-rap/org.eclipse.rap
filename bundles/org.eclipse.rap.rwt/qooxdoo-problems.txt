@@ -46,3 +46,7 @@ that's right?
 
 15.) Setting font and/or foreground color is ignored when done in the same
      JavaScript chunk in which the wiget is created
+
+16.) Sometimes, when an empty Text field is focussed and/or blurred using the
+     tab key, the getText() method returns the string "null". This is probably
+     also a qx problem.

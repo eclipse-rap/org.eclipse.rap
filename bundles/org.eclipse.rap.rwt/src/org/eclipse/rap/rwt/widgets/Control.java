@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.internal.widgets.IControlAdapter;
 
 /**
  * TODO: [fappel] comment
@@ -22,8 +23,22 @@ import org.eclipse.rap.rwt.graphics.*;
  */
 public abstract class Control extends Widget {
 
+  private class ControlAdapter implements IControlAdapter {
+    
+    public int getIndex() {
+      Composite parent = getParent();
+      int result = 0;
+      if( parent != null ) {
+        result = ControlHolder.indexOf( parent, Control.this );
+      }
+      return result;
+    }
+
+  }
+
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
   
+  private final IControlAdapter controlAdapter;
   private final Composite parent;
   private Rectangle bounds = EMPTY_RECTANGLE;
   private Object layoutData;
@@ -36,13 +51,16 @@ public abstract class Control extends Widget {
 
   Control() {
     // prevent instantiation from outside this package
+    // (called by Shell)
     this.parent = null;
+    controlAdapter = new ControlAdapter();
   }
 
   public Control( final Composite parent, final int style ) {
     super( parent, style );
     this.parent = parent;
     ControlHolder.addControl( parent, this );
+    controlAdapter = new ControlAdapter();
   }
 
   public final Composite getParent() {
@@ -325,6 +343,48 @@ public abstract class Control extends Widget {
     ControlEvent.removeListener( this, listener );
   }
   
+  /////////////
+  // Z-Order
+  
+  public void moveAbove( Control control ) {
+    checkWidget();
+    if( control != null && control.isDisposed ()) {
+      error(RWT.ERROR_INVALID_ARGUMENT);
+    }
+    if( control == null || control.parent == parent && control != this ) {
+      ControlHolder.removeControl( getParent(), this );
+      int index = 0;
+      if( control != null ) {
+        index = ControlHolder.indexOf( getParent(), control );
+      }
+      ControlHolder.addControl( getParent(), this, index );
+    }
+  }
+
+  public void moveBelow( Control control ) {
+    checkWidget();
+    if( control != null && control.isDisposed ()) {
+      error(RWT.ERROR_INVALID_ARGUMENT);
+    }
+    if( control == null || control.parent == parent && control != this ) {
+      ControlHolder.removeControl( getParent(), this );
+      int index = ControlHolder.size( getParent() );
+      if( control != null ) {
+        index = ControlHolder.indexOf( getParent(), control ) + 1;
+      }
+      ControlHolder.addControl( getParent(), this, index );
+    }
+  }
+
+  public Object getAdapter( Class adapter ) {
+    Object result = null;
+    if( adapter == IControlAdapter.class ) {
+      result = controlAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
 
   // /////////
   // Disposal

@@ -19,7 +19,7 @@ public class ControlsDemo implements IEntryPoint {
   public Display createUI() {
     Display display = new Display();
     Shell shell = new Shell( display, RWT.SHELL_TRIM );
-    shell.setBounds( 10, 10, 800, 600 );
+    shell.setBounds( 10, 10, 850, 600 );
     shell.setLayout( new FillLayout() );
     createMainPart( shell );
     shell.layout();
@@ -50,6 +50,7 @@ public class ControlsDemo implements IEntryPoint {
     new BrowserTab( topFolder );
     new GroupTab( topFolder );
     new ContainmentTab( topFolder );
+    new ZOrderTab( topFolder );
     topFolder.setSelection( 0 );
   }
 

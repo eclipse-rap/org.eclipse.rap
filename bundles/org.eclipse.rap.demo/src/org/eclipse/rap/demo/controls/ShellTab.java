@@ -12,7 +12,8 @@ package org.eclipse.rap.demo.controls;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -99,22 +100,28 @@ public class ShellTab extends ExampleTab {
   private void createShell( int style ) {
     final Shell shell = new Shell( folder.getDisplay(), style );
     shell.setBounds( 100, 100, 300, 200 );
-    shell.setLayout( new FormLayout() );
-    Button closeButton = new Button( shell, RWT.PUSH );
+    shell.setLayout( new FillLayout() );
+    // added composite to make bounds of the client area visible
+    Composite comp = new Composite( shell, RWT.BORDER );
+//    comp.setBackground( Color.getColor( 255, 255, 255 ) );
+    comp.setLayout( new FormLayout() );
+    Button closeButton = new Button( comp, RWT.PUSH );
     closeButton.setText( "Close" );
     FormData formData = new FormData();
     formData.height = 25;
     formData.left = new FormAttachment( 30 );
     formData.right = new FormAttachment( 70 );
     formData.bottom = new FormAttachment( 80 );
+    formData.width = 100;
+    formData.height = 25;
     closeButton.setLayoutData( formData );
-    closeButton.setBounds( 100, 100, 100, 25 );
     closeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
         shell.close();
       }
     } );
     shell.setText( "Test Shell" );
+    shell.layout();
     shell.open();
     shells.add( shell );
   }

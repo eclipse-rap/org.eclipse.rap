@@ -26,6 +26,7 @@ public class Shell extends Composite {
 
   // TODO [rh] preliminary: constants extracted to be used in MenuLCA
   public static final int TITLE_BAR_HEIGHT = 15;
+  public static final int TITLE_BAR_HEIGHT_NOTITLE = 3;
   public static final int MENU_BAR_HEIGHT = 20;
   
   private final Display display;
@@ -47,7 +48,7 @@ public class Shell extends Composite {
     if( display == null ) {
       this.display = Display.getCurrent();
     } else {
-      this.display = display;
+    this.display = display;
     }
     state |= HIDDEN;
     this.display.addShell( this );
@@ -56,7 +57,7 @@ public class Shell extends Composite {
   public Shell( final Shell parent ) {
     this( parent, RWT.DIALOG_TRIM );
   }
-  
+
   // TODO: [fappel] this is just a fake constructor for dialog shells,
   //                but no special dialog support implemented yet.
   public Shell( final Shell parent, final int style ) {
@@ -78,7 +79,9 @@ public class Shell extends Composite {
     Rectangle current = getBounds();
     int width = current.width;
     int height = current.height;
-    int hTitleBar = TITLE_BAR_HEIGHT;
+    int hTitleBar = ( style & RWT.TITLE ) != 0
+                      ? TITLE_BAR_HEIGHT
+                      : TITLE_BAR_HEIGHT_NOTITLE;
     if( getMenuBar() != null ) {
       hTitleBar += MENU_BAR_HEIGHT;
     }
@@ -89,7 +92,7 @@ public class Shell extends Composite {
                           height - ( hTitleBar + border * 2 ) - 3 );
   }
   
-  public void setActive() {
+  public void setActive () {
     checkWidget();
     if( isVisible() ) {
       display.setActiveShell( this );
@@ -121,7 +124,7 @@ public class Shell extends Composite {
   public Menu getMenuBar() {
     return menuBar;
   }
-  
+
   /////////////////////
   // Adaptable override
 
@@ -154,10 +157,10 @@ public class Shell extends Composite {
   // Enablement
 
   public boolean isEnabled () {
-    checkWidget();
-    return getEnabled();
+    checkWidget ();
+    return getEnabled ();
   }
-  
+
   /////////////
   // Visibility
 
@@ -179,15 +182,15 @@ public class Shell extends Composite {
   }
 
   public void setText( final String string ) {
-    checkWidget();
+    checkWidget ();
     if( string == null ) {
-      error( RWT.ERROR_NULL_ARGUMENT );
+      error (RWT.ERROR_NULL_ARGUMENT );
     }
     this.text = string;
   }
   
   public String getText() {
-    checkWidget();
+    checkWidget ();
     return text;
   }
 
@@ -220,6 +223,7 @@ public class Shell extends Composite {
     if( menuBar != null ) {
       if( menuBarDisposeListener == null ) {
         menuBarDisposeListener = new DisposeListener() {
+
           public void widgetDisposed( final DisposeEvent event ) {
             Shell.this.menuBar = null;
           }
@@ -310,7 +314,7 @@ public class Shell extends Composite {
                  | RWT.RESIZE 
                  | RWT.BORDER );
       result &= ~trim;
-    }
+}
     if( ( result & ( /* RWT.MENU | */ RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0 ) {
       result |= RWT.TITLE;
     }
@@ -319,7 +323,6 @@ public class Shell extends Composite {
     }
     return result;
   }
-  
   static int checkStyle( final int style ) {
     return Decorations_checkStyle( style );
   }

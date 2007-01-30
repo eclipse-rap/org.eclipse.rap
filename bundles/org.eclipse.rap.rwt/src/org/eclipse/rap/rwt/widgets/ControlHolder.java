@@ -37,13 +37,17 @@ final class ControlHolder {
   }
 
   void add( final Control control ) {
+    add( control, controls.size() );
+  }
+  
+  void add( final Control control, final int index ) {
     if( control == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
     if( controls.contains( control ) ) {
       throw new IllegalArgumentException( "The control was already added." );
     }
-    controls.add( control );
+    controls.add( index, control );
   }
 
   void remove( final Control control ) {
@@ -56,11 +60,26 @@ final class ControlHolder {
     }
     controls.remove( control );
   }
+  
+  int indexOf( final Control control ) {
+    if( control == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( !controls.contains( control ) ) {
+      String msg = "The control was not added to this control holder.";
+      throw new IllegalArgumentException( msg );
+    }
+    return controls.indexOf( control );
+  }
+  
+  static int size( Composite composite ) {
+    return getControlHolder( composite ).size();
+  }
 
   static Control[] getControls( final Composite composite ) {
     return getControlHolder( composite ).getControls();
   }
-
+  
   static void addControl( final Composite composite, final Control control ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
@@ -68,6 +87,16 @@ final class ControlHolder {
     getControlHolder( composite ).add( control );
   }
 
+  static void addControl( final Composite composite,
+                          final Control control,
+                          final int index )
+  {
+    if( control.getParent() != composite ) {
+      throw new IllegalArgumentException( "The control has the wrong parent" );
+    }
+    getControlHolder( composite ).add( control, index );
+  }
+  
   static void removeControl( final Composite composite, final Control control )
   {
     if( control.getParent() != composite ) {
@@ -76,6 +105,13 @@ final class ControlHolder {
     getControlHolder( composite ).remove( control );
   }
 
+  static int indexOf( final Composite composite, final Control control ) {
+    if( control.getParent() != composite ) {
+      throw new IllegalArgumentException( "The control has the wrong parent" );
+    }
+    return getControlHolder( composite ).indexOf( control );
+  }
+  
   // ////////////////
   // helping methods
   private static ControlHolder getControlHolder( final Composite composite ) {
