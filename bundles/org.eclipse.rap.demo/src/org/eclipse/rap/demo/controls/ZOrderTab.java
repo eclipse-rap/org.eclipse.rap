@@ -102,6 +102,5 @@ public class ZOrderTab extends ExampleTab {
     for( int i = 0; i < children.length; i++ ) {
       sb.append( ((Button) children[ i ]).getText() + " " );
     }
-    System.out.println( sb.toString() );
   }
 }

@@ -9,11 +9,43 @@
 
 package org.eclipse.rap.demo.controls;
 
+import java.util.ArrayList;
+import org.eclipse.rap.jface.viewers.*;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.browser.Browser;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class ListTab extends ExampleTab {
+
+  private static final java.util.List ELEMENTS;
+  static {
+    ELEMENTS = new ArrayList();
+    String text 
+      = "A very long item that demonstrates horizontal scrolling in a List";
+    ELEMENTS.add( text );
+    for( int i = 1; i <= 25; i++ ) {
+      ELEMENTS.add( "Item " + i );
+    }
+  }
+  
+  private static final class ListContentProvider 
+    implements IStructuredContentProvider 
+  {
+    public Object[] getElements( final Object inputElement ) {
+      return ( ( java.util.List )inputElement ).toArray();
+    }
+    public void inputChanged( final Viewer viewer, 
+                              final Object oldInput, 
+                              final Object newInput ) 
+    {
+      // do nothing
+    }
+    public void dispose() {
+      // do nothing
+    }
+  }
 
   private List list;
 
@@ -35,12 +67,37 @@ public class ListTab extends ExampleTab {
     int style = getStyle();
     list = new List( parent, style );
     list.setLayoutData( new RowData( 200, 200 ) );
-    String text 
-      = "A very long item that demonstrates horizontal scrolling in a List";
-    list.add( text );
-    for( int i = 1; i <= 25; i++ ) {
-      list.add( "Item " + i );
-    }
+    Menu menu = new Menu( list );
+    MenuItem menuItem = new MenuItem( menu, RWT.PUSH );
+    menuItem.setText( "Context menu item" );
+    list.setMenu( menu );
+    ListViewer viewer = new ListViewer( list );
+    viewer.setContentProvider( new ListContentProvider() );
+    viewer.setLabelProvider( new LabelProvider() );
+    viewer.setInput( ELEMENTS );
+    Browser browser = new Browser( parent, RWT.MULTI );
+    browser.setLayoutData( new RowData( 450, 250 ) );
+    String note
+      = "<html><head></head></body>"
+      + "<p>Please note that the content of the above List is provided by a " 
+      + "(JFace-like) ListViewer<br />"
+      + "The source code looks like this:</p>"
+      + "<pre>"
+      + "  class ListContentProvider implements IStructuredContentProvider {\n"
+      + "    public Object[] getElements( final Object inputElement ) {\n"
+      + "      return ( ( java.util.List )inputElement ).toArray();\n"
+      + "    }\n"
+      + "  }\n"
+      + "  ...\n"
+      + "  java.util.List elements = ...\n"
+      + "  ...\n"
+      + "  ListViewer viewer = new ListViewer( parent );\n"
+      + "  viewer.setContentProvider( new ListContentProvider() );\n"
+      + "  viewer.setLabelProvider( new LabelProvider() );\n"
+      + "  viewer.setInput( elements );\n"
+      + "</pre>"
+      + "</body>";
+    browser.setText( note );
     registerControl( list );
   }
 }
