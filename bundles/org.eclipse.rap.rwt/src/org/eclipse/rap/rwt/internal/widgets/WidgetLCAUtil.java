@@ -221,18 +221,22 @@ public final class WidgetLCAUtil {
   public static void writeImage( final Widget widget, final Image image ) 
     throws IOException 
   {
-    if( WidgetLCAUtil.hasChanged( widget, Props.IMAGE, image, null ) ) {
-      String imagePath;
-      if( image == null ) {
-        imagePath = "";
-      } else {
-        imagePath = Image.getPath( image );
-      }
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( JSConst.QX_FIELD_ICON, imagePath );
-    }
+    writeImage( widget, Props.IMAGE, JSConst.QX_FIELD_ICON, image );
   }
 
+  public static void writeImage( final Widget widget, 
+                                 final String javaProperty, 
+                                 final String jsProperty, 
+                                 final Image image ) 
+    throws IOException 
+  {
+    if( WidgetLCAUtil.hasChanged( widget, javaProperty, image, null ) ) {
+      String imagePath = image == null ? "" : Image.getPath( image );
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      writer.set( jsProperty, imagePath );
+    }
+  }
+  
   static void writeFont( final Widget widget, final Font font )
     throws IOException
   {

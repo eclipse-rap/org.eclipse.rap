@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.TreeEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -66,8 +67,17 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     ItemLCAUtil.writeChanges( treeItem );
+    writeSelectedImage( treeItem );
     ItemLCAUtil.writeFont( treeItem, treeItem.getFont() );
     writeExpanded( treeItem );
+  }
+
+  // TODO [rh] setting image for a newly created item does not work properly:
+  //      just after selecting and de-selected the item, the image is shown 
+  private void writeSelectedImage( final TreeItem treeItem ) throws IOException 
+  {
+    Image image = treeItem.getImage();
+    WidgetLCAUtil.writeImage( treeItem, Props.IMAGE, "iconSelected", image );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

@@ -13,6 +13,7 @@ import java.text.MessageFormat;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionAdapter;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
 import org.eclipse.rap.rwt.widgets.*;
@@ -83,6 +84,9 @@ public class TreeTab extends ExampleTab {
           };
           String text = MessageFormat.format( "SubItem {0} of {1}", args );
           treeItem.setText( text  );
+          Image image = Image.find( "resources/tree_item.gif", 
+                                    getClass().getClassLoader() );
+          treeItem.setImage( image );
         }
       }
     } );

@@ -28,14 +28,19 @@ org.eclipse.rap.rwt.ButtonUtil.createRadioButton = function( id, parent ) {
   widgetManager.setParent( button, parentId );
 }
 
+// TODO [rh] MEMORY LEAK: when parent of radioButton gets disposed, we need
+//      to find a way how to dispose of the radioManager that is stored in
+//      the parents' userData 
 org.eclipse.rap.rwt.ButtonUtil.disposeRadioButton = function( button ) {
   var parent = button.getParent();
   if( parent != null ) { // parent may already have been disposed of 
     var radioManager = parent.getUserData( "radioManager" );
-    radioManager.remove( button );
-    if( radioManager.getItems().length == 0 ) {
-      parent.setUserData( "radioManager", null );
-      radioManager.dispose();
+    if( radioManager != null ) {
+      radioManager.remove( button );
+      if( radioManager.getItems().length == 0 ) {
+        radioManager.dispose();
+        parent.setUserData( "radioManager", null );
+      }
     }
   }
   button.dispose();
