@@ -14,6 +14,16 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Image;
 
+/**
+ * A Label can display a text or an image, but not both. The label always
+ * displays those of both values that has been set last.
+ * <p>
+ * <strong>Note:</strong> Unlike in SWT, setting an image clears the text of the
+ * label and vice versa. Thus, after calling <code>setText()</code>, the method
+ * <code>getImage()</code> will return <code>null</code>, and after calling
+ * <code>setImage()</code>, <code>getText</code> will return the empty string.
+ * </p>
+ */
 public class Label extends Control {
 
   private String text = "";
@@ -30,6 +40,7 @@ public class Label extends Control {
     }
     if( ( style & RWT.SEPARATOR ) == 0 ) {
       this.text = text;
+      image = null;
     }
   }
 
@@ -46,7 +57,8 @@ public class Label extends Control {
     checkWidget();
     if( ( style & RWT.SEPARATOR ) == 0 ) {
       this.image = image;
-    } 
+      text = "";
+    }
   }
   
   public Image getImage() {
@@ -80,7 +92,7 @@ public class Label extends Control {
     }
     return result;
   }
-
+  
   private static int checkStyle( final int style ) {
     int result = style;
     result |= RWT.NO_FOCUS;

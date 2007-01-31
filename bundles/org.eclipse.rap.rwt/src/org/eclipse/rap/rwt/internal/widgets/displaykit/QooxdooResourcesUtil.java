@@ -45,6 +45,8 @@ final class QooxdooResourcesUtil {
   = "org/eclipse/rap/rwt/ToolBarUtil.js";
   private static final String BUTTON_UTIL_JS 
     = "org/eclipse/rap/rwt/ButtonUtil.js";
+  private static final String LABEL_UTIL_JS 
+  = "org/eclipse/rap/rwt/LabelUtil.js";
   private static final String COMBO_UTIL_JS 
     = "org/eclipse/rap/rwt/ComboUtil.js";
   private static final String TOOL_ITEM_JS = 
@@ -1524,6 +1526,7 @@ final class QooxdooResourcesUtil {
       register( TOOLBAR_UTIL_JS );
       register( COMBO_UTIL_JS );
       register( BUTTON_UTIL_JS );
+      register( LABEL_UTIL_JS );
       register( TOOL_ITEM_JS );
       register( MENU_UTIL_JS );
       register( TABLE_UTIL_JS );

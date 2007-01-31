@@ -91,26 +91,35 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     }
   },
 
+  // this applies to qooxdoo labels (as embedded in Atom, Button, etc.)
   "label" : {
     setup : function() {
-      this.color_disabled = new qx.renderer.color.ColorObject("graytext");
       this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
-      this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
-      // new qx.renderer.border.BorderObject(1, "inset");
+      this.color_disabled = new qx.renderer.color.ColorObject("graytext");
     },
 
     initial : function(vTheme) {
       return {
-        font: this.font,
-        wrap : false,
-        border : this.border_default
+        font: this.font
       }
     },
 
     state : function(vTheme, vStates) {
       return {
-        color : vStates.disabled ? this.color_disabled : null,
+        color : vStates.disabled ? this.color_disabled : null
+      }
+    }
+  },
+
+  // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
+  "label-wrapper" : {
+    setup : function() {
+      this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+    },
+
+    state : function(vTheme, vStates) {
+      return {
         border : vStates.rwt_BORDER ? this.border : this.border_default
       }
     }

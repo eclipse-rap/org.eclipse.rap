@@ -15,11 +15,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.*;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Label;
-
 
 public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
@@ -44,14 +43,18 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
-    writer.newWidget( "qx.ui.basic.Label" );
+    writer.newWidget( "qx.ui.basic.Atom" );
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "label-wrapper" );
     ControlLCAUtil.writeStyleFlags( label );
+    Object[] args = { label, Boolean.valueOf( ( label.getStyle() & RWT.WRAP ) != 0 ) };
+    writer.callStatic( "org.eclipse.rap.rwt.LabelUtil.setWrap", args  );
   }
   
   void renderChanges( final Label label ) throws IOException {
     ControlLCAUtil.writeChanges( label );
-    writeAlignment( label );
     writeText( label );
+    writeImage( label );
+    writeAlignment( label );
   }
 
   void renderDispose( final Label label ) throws IOException {
@@ -70,7 +73,25 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       Matcher matcher = LINE_BREAK_PATTERN.matcher( label.getText() );
       String text = matcher.replaceAll( "<br/>" );
       JSWriter writer = JSWriter.getWriterFor( label );
-      writer.set( "html", text );
+      Object[] args = new Object[]{ label, text };
+      writer.callStatic( "org.eclipse.rap.rwt.LabelUtil.setText", args );
+    }
+  }
+
+  private static void writeImage( final Label label ) throws IOException {
+    Image image = label.getImage();
+    if( WidgetLCAUtil.hasChanged( label, Props.IMAGE, image, null ) )
+    {
+      String imagePath;
+//      if( image == null ) {
+//        imagePath = null;
+//      } else {
+        imagePath = Image.getPath( image );
+        // TODO passing image bounds to qooxdoo can speed up rendering
+//      }
+      JSWriter writer = JSWriter.getWriterFor( label );
+      Object[] args = new Object[]{ label, imagePath };
+      writer.callStatic( "org.eclipse.rap.rwt.LabelUtil.setImage", args );
     }
   }
 
@@ -80,8 +101,10 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     if( WidgetLCAUtil.hasChanged( label, PROP_ALIGNMENT, alignment, defValue ) ) 
     {
       JSWriter writer = JSWriter.getWriterFor( label );
-      Object[] args = new Object[] { getAlignment( label.getAlignment() ) };
-      writer.set( "textAlign", args );
+      Object[] args = new Object[]{
+        label, getAlignment( label.getAlignment() )
+      };
+      writer.callStatic( "org.eclipse.rap.rwt.LabelUtil.setAlignment", args );
     }
   }
 

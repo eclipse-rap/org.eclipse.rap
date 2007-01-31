@@ -50,3 +50,11 @@ that's right?
 16.) Sometimes, when an empty Text field is focussed and/or blurred using the
      tab key, the getText() method returns the string "null". This is probably
      also a qx problem.
+
+17.) Is there a way to display characters "<" and ">" in the text of a
+     qx.ui.basic.Label? As Label accepts HTML input, "&lt;" and "&gt;" should be
+     rendered appropriately.
+
+18.) A qx.ui.basic.Atom displaying a wrapped and centered text in its label
+     does not align the label properly. It seems that the Boxlayout assumes the
+     width of the non-wrapped child.
