@@ -26,8 +26,6 @@ qx.OO.defineClass(
     //
     this._widgetSelectedListeners = false;
     this._treeListeners = false; 
-    // TODO:[fappel] remove this after introduction of RWT color objects...
-    this.setBackgroundColor( new qx.renderer.color.Color( [255, 255, 255] ) );
     var manager = this.getManager();
     manager.setMultiSelection( qx.lang.String.contains( style, "multi" ) );
     manager.addEventListener( "changeSelection", this._onWidgetSelected, this );

@@ -1247,6 +1247,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   
     initial : function(vTheme) {
       return {
+        backgroundColor : new qx.renderer.color.ColorObject("white"),
         verticalChildrenAlign : qx.constant.Layout.ALIGN_TOP
       }
     },
