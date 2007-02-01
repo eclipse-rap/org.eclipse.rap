@@ -23,8 +23,8 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   private static final String CREATE_RADIO_BUTTON
     = "org.eclipse.rap.rwt.ButtonUtil.createRadioButton";
-  private static final String DISPOSE_RADIO_BUTTON 
-    = "org.eclipse.rap.rwt.ButtonUtil.disposeRadioButton";
+  private static final String UNREGISTER_RADIO_BUTTON 
+    = "org.eclipse.rap.rwt.ButtonUtil.unregisterRadioButton";
   private static final String WIDGET_SELECTED 
     = "org.eclipse.rap.rwt.ButtonUtil.radioSelected";
   
@@ -72,7 +72,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   void renderDispose( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
-    writer.callStatic( DISPOSE_RADIO_BUTTON, 
-                       new Object[] { button, button.getParent() } );
+    writer.callStatic( UNREGISTER_RADIO_BUTTON, new Object[] { button } );
+    writer.dispose();
   }
 }

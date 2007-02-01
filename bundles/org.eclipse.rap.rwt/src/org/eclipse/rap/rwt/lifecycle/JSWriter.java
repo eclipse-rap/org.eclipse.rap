@@ -321,7 +321,7 @@ public final class JSWriter {
   {
     ensureWidgetManager();
     String params = createParamList( args );
-    write( "{0}({1});", function, params.toString() );
+    write( "{0}({1});", function, params );
   }
   
   public void callFieldAssignment( final JSVar target, 

@@ -32,7 +32,7 @@ public class ButtonTab extends ExampleTab {
   private Button radio2;
   private Button radio3;
 
-  public ButtonTab( TabFolder folder ) {
+  public ButtonTab( final TabFolder folder ) {
     super( folder, "Button" );
   }
 
@@ -46,7 +46,7 @@ public class ButtonTab extends ExampleTab {
     createEnablementButton();
     final Button imageButton = new Button( styleComp, RWT.CHECK );
     imageButton.setText( "Push Button with Image" );
-    imageButton.setLayoutData( new RowData( 80, 20 ) );
+    imageButton.setLayoutData( new RowData( 160, 20 ) );
     imageButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showImage = imageButton.getSelection();
@@ -56,7 +56,7 @@ public class ButtonTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout( RWT.VERTICAL ) );
     int style = getStyle();
     RowData data = new RowData( 100, 25 );
@@ -64,11 +64,6 @@ public class ButtonTab extends ExampleTab {
     button1.setText( "Button" );
     button1.setLayoutData( data );
     updateButtonImage( button1 );
-//    button1.addSelectionListener( new SelectionAdapter() {
-//      public void widgetSelected( SelectionEvent event ) {
-//        log( "Button 1 pressed" );
-//      }
-//    } );
     check1 = new Button( top, style | RWT.CHECK );
     check1.setText( "Check" );
     check1.setLayoutData( data );
@@ -88,7 +83,7 @@ public class ButtonTab extends ExampleTab {
     registerControl( radio3 );
   }
 
-  private void updateButtonImage( Button button ) {
+  private void updateButtonImage( final Button button ) {
     if( showImage ) {
       if( buttonImage == null ) {
         ClassLoader classLoader = getClass().getClassLoader();

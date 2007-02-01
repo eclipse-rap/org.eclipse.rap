@@ -25,15 +25,14 @@ org.eclipse.rap.rwt.LabelUtil.setText = function( widget, text ) {
     widget.setLabel( "(empty)" );
     widget.getLabelObject().setHtml( text );
   }
-  widget.debug( "setText: " + text );
   widget.setShow( qx.ui.basic.Atom.SHOW_LABEL );
 }
 
 org.eclipse.rap.rwt.LabelUtil.setImage = function( widget, imagePath ) {
   widget.setIcon( imagePath );
-    // could speed up rendering if available on the server side
-    // widget.setIconWidth();
-    // widget.setIconHeight();
+  // could speed up rendering if available on the server side
+  // widget.setIconWidth();
+  // widget.setIconHeight();
   if( imagePath != null ) {
     widget.setShow( qx.ui.basic.Atom.SHOW_ICON );
   } else {
