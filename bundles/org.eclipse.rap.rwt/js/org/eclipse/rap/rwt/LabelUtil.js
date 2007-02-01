@@ -21,7 +21,6 @@ org.eclipse.rap.rwt.LabelUtil.setText = function( widget, text ) {
   if( widget.getLabelObject() != null ) {
     widget.getLabelObject().setHtml( text );
   } else {
-    var oldLabel = widget.getLabel();
     widget.setLabel( "(empty)" );
     widget.getLabelObject().setHtml( text );
   }

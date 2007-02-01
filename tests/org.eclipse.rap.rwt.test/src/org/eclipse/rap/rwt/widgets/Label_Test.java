@@ -77,9 +77,13 @@ public class Label_Test extends TestCase {
     Shell shell = new Shell( display , RWT.NONE );
     Label label = new Label( shell, RWT.NONE );
     label.setText( "bla" );
-    label.setImage( Image.find( RWTFixture.IMAGE1 ) );
-    assertNotNull( null, label.getImage() );
-    assertEquals( "bla", label.getText() );
+    Image image = Image.find( RWTFixture.IMAGE1 );
+    label.setImage( image );
+    assertSame( image, label.getImage() );
+    assertEquals( "", label.getText() );
+    label.setText( "xyz" );
+    assertEquals( "xyz", label.getText() );
+    assertNull( label.getImage() );
   }
   
   protected void setUp() throws Exception {

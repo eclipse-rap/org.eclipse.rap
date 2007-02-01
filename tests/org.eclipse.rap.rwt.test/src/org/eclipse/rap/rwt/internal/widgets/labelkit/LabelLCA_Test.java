@@ -44,32 +44,38 @@ public class LabelLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     label.setText( "test" );
     lca.renderChanges( label );
-    String expected = "w.setHtml( \"test\" );";
+    String expected 
+      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"test\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "\ntest" );
     lca.renderChanges( label );
-    expected = "w.setHtml( \"<br/>test\" );";
+    expected 
+      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"<br/>test\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "te\nst" );
     lca.renderChanges( label );
-    expected = "w.setHtml( \"te<br/>st\" );";
+    expected 
+      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"te<br/>st\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "test\n" );
     lca.renderChanges( label );
-    expected = "w.setHtml( \"test<br/>\" );";
+    expected 
+      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"test<br/>\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "te\n\nst" );
     lca.renderChanges( label );
-    expected = "w.setHtml( \"te<br/><br/>st\" );";
+    expected 
+      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"te<br/><br/>st\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "te\ns\nt" );
     lca.renderChanges( label );
-    expected = "w.setHtml( \"te<br/>s<br/>t\" );";
+    expected 
+      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"te<br/>s<br/>t\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
