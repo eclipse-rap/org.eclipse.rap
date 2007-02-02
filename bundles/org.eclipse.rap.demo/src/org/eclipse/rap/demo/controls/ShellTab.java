@@ -20,6 +20,7 @@ import org.eclipse.rap.rwt.widgets.*;
 public class ShellTab extends ExampleTab {
 
   private ArrayList shells;
+  private boolean invisible = false;
 
   public ShellTab( TabFolder folder ) {
     super( folder, "Shell" );
@@ -38,6 +39,12 @@ public class ShellTab extends ExampleTab {
     createStyleButton( "RESIZE" );
     createStyleButton( "TOOL" );
     createStyleButton( "ON_TOP" );
+    final Button invisibleButton = createPropertyButton( "create invisible" );
+    invisibleButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        invisible = invisibleButton.getSelection();
+      }
+    } );
   }
 
   void createExampleControls( final Composite top ) {
@@ -101,8 +108,8 @@ public class ShellTab extends ExampleTab {
     final Shell shell = new Shell( folder.getDisplay(), style );
     shell.setBounds( 100, 100, 300, 200 );
     shell.setLayout( new FillLayout() );
-    // added composite to make bounds of the client area visible
-    Composite comp = new Composite( shell, RWT.BORDER );
+    // added composite to be able to make the bounds of the client area visible
+    Composite comp = new Composite( shell, RWT.NONE );
 //    comp.setBackground( Color.getColor( 255, 255, 255 ) );
     comp.setLayout( new FormLayout() );
     Button closeButton = new Button( comp, RWT.PUSH );
@@ -120,9 +127,12 @@ public class ShellTab extends ExampleTab {
         shell.close();
       }
     } );
-    shell.setText( "Test Shell" );
+    int num = shells.size() + 1;
+    shell.setText( "Test Shell #" + num );
     shell.layout();
-    shell.open();
+    if( !invisible ) {
+      shell.open();
+    }
     shells.add( shell );
   }
 

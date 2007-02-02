@@ -67,9 +67,12 @@ public class ControlLCAUtil {
   }
   
   public static void writeZIndex( final Control control ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( control );
-    Integer newValue = new Integer( getZIndex( control ) );
-    writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
+    // TODO [rst] find out what moveAbove/Below does on SWT shells
+    if( !( control instanceof Shell ) ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      Integer newValue = new Integer( getZIndex( control ) );
+      writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
+    }
   }
   
   // TODO [rh] there seems to be a qooxdoo problem when trying to change the
@@ -82,7 +85,7 @@ public class ControlLCAUtil {
     // we only need getVisible here (not isVisible), as qooxdoo also hides/shows
     // contained controls
     Boolean newValue = Boolean.valueOf( control.getVisible() );
-    Boolean defValue = Boolean.TRUE;
+    Boolean defValue = control instanceof Shell ? Boolean.FALSE : Boolean.TRUE;
     JSWriter writer = JSWriter.getWriterFor( control );
     writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
   }

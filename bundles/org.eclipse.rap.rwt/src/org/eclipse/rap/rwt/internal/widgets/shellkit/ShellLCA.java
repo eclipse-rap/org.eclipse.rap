@@ -56,26 +56,15 @@ public class ShellLCA extends AbstractWidgetLCA {
     if( ( widget.getStyle() & RWT.TITLE ) == 0 ) {
       writer.set( "showCaption", false );
     }
-    if( ( widget.getStyle() & RWT.MIN ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_MIN" } );
-    }
-    if( ( widget.getStyle() & RWT.MAX ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_MAX" } );
-    }
     int style = widget.getStyle();
     writer.set( "resizeable", ( style & RWT.RESIZE ) != 0 );
-    writer.set( "showMinimize", ( style & ( RWT.MIN | RWT.MAX ) ) != 0 );
-    writer.set( "showMaximize", ( style & ( RWT.MIN | RWT.MAX ) ) != 0 );
-    writer.set( "showClose", 
-                ( style & ( RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0 );
-    writer.call( "applyStyle", null );
+    writer.set( "showMinimize", ( style & RWT.MIN ) != 0 );
+    writer.set( "showMaximize", ( style & RWT.MAX ) != 0 );
+    writer.set( "showClose", ( style & RWT.CLOSE ) != 0 );
     ControlLCAUtil.writeResizeNotificator( widget );
     ControlLCAUtil.writeMoveNotificator( widget );
     writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 
                         JSConst.JS_SHELL_CLOSED );
-    // TODO [rh] what about invisible shells? This seems to open the shell in
-    //      any case (even if getVisible() is false)
-    writer.call( "open", null );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
@@ -83,6 +72,18 @@ public class ShellLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( shell );
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.set( Props.TEXT, JSConst.QX_FIELD_CAPTION, shell.getText(), "" );
+    
+    // TODO [rst] workaround: qx window should be opened only once.
+    Boolean defValue = Boolean.FALSE;
+    Boolean actValue = Boolean.valueOf( shell.getVisible() );
+    if( WidgetLCAUtil.hasChanged( widget, Props.VISIBLE, actValue, defValue )
+        && shell.getVisible() )
+    {
+      writer.call( "open", null );
+    }
+    
+    // Important: Order matters, writing setActive() before open() leads to
+    //            strange behavior!
     writeActiveShell( shell );
     writeActiveControl( shell );
   }

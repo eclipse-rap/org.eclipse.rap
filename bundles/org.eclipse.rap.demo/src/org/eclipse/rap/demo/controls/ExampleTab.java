@@ -328,4 +328,8 @@ abstract class ExampleTab {
       control.setFont( font );
     }
   }
+  
+  protected Display getDisplay() {
+    return folder.getDisplay();
+  }
 }

@@ -314,7 +314,7 @@ public class Shell extends Composite {
                  | RWT.RESIZE 
                  | RWT.BORDER );
       result &= ~trim;
-}
+    }
     if( ( result & ( /* RWT.MENU | */ RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0 ) {
       result |= RWT.TITLE;
     }
@@ -323,6 +323,7 @@ public class Shell extends Composite {
     }
     return result;
   }
+  
   static int checkStyle( final int style ) {
     return Decorations_checkStyle( style );
   }

@@ -21,19 +21,24 @@ qx.OO.defineClass(
   }
 );
 
-/**
- * Applies relevant RWT style bits that must have been passed using addState()
- * before.
- */
-qx.Proto.applyStyle = function( ) {
-  // If only one of the flags MIN and MAX is set, both buttons are shown in
-  // Windows and one of them is disbaled.
-  this._minimizeButton.setEnabled( this.hasState( "rwt_MIN" ) );
-  this._maximizeButton.setEnabled( this.hasState( "rwt_MAX" ) );
-}
-
 qx.Proto.setActiveControl = function( control ) {
   this._activeControl = control;  
+}
+
+/**
+ * Could be used to imitate Windows behavior: When SWT.MAX is set, the minimize
+ * button is still shown but disabled.
+ */
+qx.Proto.disableMinimize = function( ) {
+  this._minimizeButton.setEnabled( false );
+}
+
+/**
+ * Could be used to imitate Windows behavior: When SWT.MIN is set, the maximize
+ * button is still shown but disabled.
+ */
+qx.Proto.disableMinimize = function( ) {
+  this._maximizeButton.setEnabled( false );
 }
 
 /**
@@ -56,7 +61,7 @@ qx.Proto._isRelevantActivateEvent = function( widget ) {
   for( var i = 0; !result && i < this._activateListenerWidgets.length; i++ ) {
     var listeningWidget = this._activateListenerWidgets[ i ];
     if(    !listeningWidget.contains( this._activeControl ) 
-        && listeningWidget.contains( widget ) ) 
+        && listeningWidget.contains( widget ) )
     {
       result = true;  
     }
@@ -115,4 +120,16 @@ qx.Proto._getParentControl = function( widget ) {
     }
   }
   return result;
-}  
+}
+
+// This is a workaround to open the window only once.
+/*
+qx.Proto.openOnce = function() {
+  if ( ! this.windowOpened ) {
+    this.open( null );
+    this.windowOpened = true;
+    this.debug( "_______________ Window opened");
+  }
+  return true;
+};
+*/
