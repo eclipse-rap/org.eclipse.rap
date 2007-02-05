@@ -29,11 +29,14 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
   }
 
   protected void makeActions( final IWorkbenchWindow window ) {
-    ImageDescriptor image 
+    ImageDescriptor image1 
       = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
-                                                    "icons/sample.gif" );
+                                                    "icons/ttt.gif" );
+    ImageDescriptor image2 
+      = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
+                                                    "icons/help.gif" );
     exitAction = ActionFactory.QUIT.create( window );
-    exitAction.setImageDescriptor( image );
+    exitAction.setImageDescriptor( image1 );
     register( exitAction );
     
     aboutAction = new Action() {
@@ -43,7 +46,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     };
     aboutAction.setText( "About" );
     aboutAction.setId( "org.eclipse.rap.demo.about" );
-    aboutAction.setImageDescriptor( image );
+    aboutAction.setImageDescriptor( image2 );
     register( aboutAction );
   }
 

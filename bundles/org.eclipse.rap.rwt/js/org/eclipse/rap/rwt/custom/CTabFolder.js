@@ -19,8 +19,8 @@ qx.OO.defineClass(
     this._hasFolderListener = false;
     this._tabHeight = 20;
     // 
-    var black = new qx.renderer.color.Color( "black" );
-    var border = new qx.renderer.border.Border( 1, "solid", black );
+    var borderColor = new qx.renderer.color.Color( "#c0c0c0" );
+    var border = new qx.renderer.border.Border( 1, "solid", borderColor );
     this.setBorder( border );
     //
     this._topRight = null;
@@ -32,26 +32,26 @@ qx.OO.defineClass(
     this._minButton = null;
     // Construct highlight border lines
     var highlightBorder = new qx.renderer.border.Border();
-    highlightBorder.setLeft( 2, "solid", black );
+    highlightBorder.setLeft( 2, "solid", borderColor );
     this._highlightLeft = new qx.ui.basic.Atom();
     this._highlightLeft.setBorder( highlightBorder );
     this._highlightLeft.setWidth( 2 );
     this.add( this._highlightLeft );
     highlightBorder = new qx.renderer.border.Border();
-    highlightBorder.setRight( 2, "solid", black );
+    highlightBorder.setRight( 2, "solid", borderColor );
     this._highlightRight = new qx.ui.basic.Atom();
     this._highlightRight.setBorder( highlightBorder );
     this._highlightRight.setWidth( 2 );
     this.add( this._highlightRight );
     highlightBorder = new qx.renderer.border.Border();
-    highlightBorder.setTop( 2, "solid", black );
+    highlightBorder.setTop( 2, "solid", borderColor );
     this._highlightTop = new qx.ui.basic.Atom();
     this._highlightTop.setBorder( highlightBorder );
     this._highlightTop.setLeft( 0 );
     this._highlightTop.setHeight( 2 );
     this.add( this._highlightTop );
     highlightBorder = new qx.renderer.border.Border();
-    highlightBorder.setBottom( 2, "solid", black );
+    highlightBorder.setBottom( 2, "solid", borderColor );
     this._highlightBottom = new qx.ui.basic.Atom();
     this._highlightBottom.setBorder( highlightBorder );
     this._highlightBottom.setLeft( 0 );
@@ -60,7 +60,7 @@ qx.OO.defineClass(
     // Create horizontal line that separates the button bar from the rest of 
     // the client area
     border = new qx.renderer.border.Border();
-    border.setTop( 1, "solid", black );
+    border.setTop( 1, "solid", borderColor );
     this._separator = new qx.ui.basic.Atom();
     this._separator.setBorder( border );
     this._separator.setLeft( 0 );

@@ -2248,31 +2248,25 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   
   "c-tab-item" : {
     setup : function() {
-      this.border_color = new qx.renderer.color.ColorObject( "threedshadow" );
-      this.border_color_checked = new qx.renderer.color.ColorObject( "black" );
-
-      this.color = new qx.renderer.color.ColorObject( "black" ); ;
-      this.color_checked = new qx.renderer.color.ColorObject( "white" ); 
-            
+      var color = new qx.renderer.color.ColorObject( "#c0c0c0" ); ;
       var solid = qx.constant.Style.BORDER_SOLID;
       
       this.border_top = new qx.renderer.border.Border();
-      this.border_top.setLeft( 1, solid, this.border_color );
-      this.border_top.setRight( 1, solid, this.border_color );
+      this.border_top.setRight( 1, solid, color );
 
       this.border_top_checked = new qx.renderer.border.Border();
-      this.border_top_checked.setTop( 1, solid, this.border_color_checked );
-      this.border_top_checked.setLeft( 1, solid, this.border_color_checked );
-      this.border_top_checked.setRight( 1, solid, this.border_color_checked );
+      this.border_top_checked.setLeft( 1, "outset" );
+      this.border_top_checked.setTop( 1, "outset" );
+      this.border_top_checked.setRight( 1, solid, color );
       
       this.border_bottom = new qx.renderer.border.Border();
-      this.border_bottom.setLeft( 1, solid, this.border_color );
-      this.border_bottom.setRight( 1, solid, this.border_color );
+      this.border_bottom.setLeft( 1, solid, color );
+      this.border_bottom.setRight( 1, solid, color );
 
       this.border_bottom_checked = new qx.renderer.border.Border();
-      this.border_bottom_checked.setTop( 1, solid, this.border_color_checked );
-      this.border_bottom_checked.setLeft( 1, solid, this.border_color_checked );
-      this.border_bottom_checked.setRight( 1, solid, this.border_color_checked );
+      this.border_bottom_checked.setTop( 1, solid, color );
+      this.border_bottom_checked.setLeft( 1, solid, color );
+      this.border_bottom_checked.setRight( 1, solid, color );
     },
 
     initial : function( vTheme ) {
@@ -2289,14 +2283,12 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         } else {  // bar at bottom
           vReturn.border = this.border_bottom_checked;
         }
-//        vReturn.color = this.color_checked;
       } else {
         if( vStates.barTop ) {
           vReturn.border = this.border_top;
         } else {
           vReturn.border = this.border_bottom;
         }
-//        vReturn.color = this.color;
       }
       return vReturn;
     }
