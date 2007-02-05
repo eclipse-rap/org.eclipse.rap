@@ -69,16 +69,16 @@ public class SashForm extends Composite {
    * @see SWT#VERTICAL
    * @see #getStyle()
    */
-  // public SashForm(Composite parent, int style) {
-  // super(parent, checkStyle(style));
   public SashForm( final Composite parent, final int style ) {
-    super( parent, style );
+    super( parent, checkStyle( style ) );
     super.setLayout( new SashFormLayout() );
     sashStyle = ( ( style & RWT.VERTICAL ) != 0 )
                                                  ? RWT.HORIZONTAL
                                                  : RWT.VERTICAL;
-    // if ((style & SWT.BORDER) != 0) sashStyle |= SWT.BORDER;
-    // if ((style & SWT.SMOOTH) != 0) sashStyle |= SWT.SMOOTH;
+     if( ( style & RWT.BORDER ) != 0 ) {
+      sashStyle |= RWT.BORDER;
+    }
+//     if ((style & RWT.SMOOTH) != 0) sashStyle |= RWT.SMOOTH;
     sashListener = new SelectionListener() {
 
       public void widgetSelected( final SelectionEvent event ) {
@@ -87,10 +87,11 @@ public class SashForm extends Composite {
     };
   }
 
-  // static int checkStyle (int style) {
-  // int mask = SWT.BORDER | SWT.LEFT_TO_RIGHT | SWT.RIGHT_TO_LEFT;
-  // return style & mask;
-  // }
+   static int checkStyle( int style ) {
+    int mask = RWT.BORDER /* | RWT.LEFT_TO_RIGHT | RWT.RIGHT_TO_LEFT */;
+    return style & mask;
+  }
+   
   /**
    * Returns SWT.HORIZONTAL if the controls in the SashForm are laid out side by
    * side or SWT.VERTICAL if the controls in the SashForm are laid out top to
@@ -99,18 +100,17 @@ public class SashForm extends Composite {
    * @return SWT.HORIZONTAL or SWT.VERTICAL
    */
   public int getOrientation() {
-    // checkWidget();
-    return ( sashStyle & RWT.VERTICAL ) != 0
-                                            ? RWT.HORIZONTAL
-                                            : RWT.VERTICAL;
+    checkWidget();
+    return ( sashStyle & RWT.VERTICAL ) != 0 ? RWT.HORIZONTAL : RWT.VERTICAL;
   }
 
-  // public int getStyle() {
-  // int style = super.getStyle();
-  // style |= getOrientation() == SWT.VERTICAL ? SWT.VERTICAL : SWT.HORIZONTAL;
-  // if ((sashStyle & SWT.SMOOTH) != 0) style |= SWT.SMOOTH;
-  // return style;
-  // }
+   public int getStyle() {
+    int style = super.getStyle();
+    style |= getOrientation() == RWT.VERTICAL ? RWT.VERTICAL : RWT.HORIZONTAL;
+//    if( ( sashStyle & SWT.SMOOTH ) != 0 )
+//      style |= SWT.SMOOTH;
+    return style;
+  }
   /**
    * Answer the control that currently is maximized in the SashForm. This value
    * may be null.
@@ -118,7 +118,7 @@ public class SashForm extends Composite {
    * @return the control that currently is maximized or null
    */
   public Control getMaximizedControl() {
-    // checkWidget();
+    checkWidget();
     return this.maxControl;
   }
 
@@ -138,7 +138,7 @@ public class SashForm extends Composite {
    *              </ul>
    */
   public int[] getWeights() {
-    // checkWidget();
+     checkWidget();
     Control[] cArray = getControls( false );
     int[] ratios = new int[ cArray.length ];
     for( int i = 0; i < cArray.length; i++ ) {
@@ -284,7 +284,7 @@ public class SashForm extends Composite {
    *              </ul>
    */
   public void setOrientation( int orientation ) {
-    // checkWidget();
+    checkWidget();
     if( getOrientation() == orientation )
       return;
     if( orientation != RWT.HORIZONTAL && orientation != RWT.VERTICAL ) {
@@ -338,7 +338,7 @@ public class SashForm extends Composite {
    *              </ul>
    */
   public void setLayout( Layout layout ) {
-    // checkWidget();
+    checkWidget();
     return;
   }
 
@@ -395,7 +395,7 @@ public class SashForm extends Composite {
    *              </ul>
    */
   public void setWeights( int[] weights ) {
-    // checkWidget();
+    checkWidget();
     Control[] cArray = getControls( false );
     if( weights == null || weights.length != cArray.length ) {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );

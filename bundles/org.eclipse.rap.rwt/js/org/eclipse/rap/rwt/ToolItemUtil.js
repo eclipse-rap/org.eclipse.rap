@@ -15,28 +15,22 @@
 qx.OO.defineClass( "org.eclipse.rap.rwt.ToolItemUtil" );
 
 
-/**
- * Creates a toolitem of type separator.
- */
-org.eclipse.rap.rwt.ToolItemUtil.createToolItemSeparator
+org.eclipse.rap.rwt.ToolItemUtil.createSeparator
   = function( id , parent )
 {
-  var push = new qx.ui.toolbar.ToolBarSeparator ();
+  var push = new qx.ui.toolbar.Separator ();
   parent.add( push );
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id );
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id, false );
   push.setParent( parent );
 };
 
-/**
- * Sets the control used to fill the bounds of a toolitem of type separator.
- */
 org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator
   = function( id , parent , width, control)
 {
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var push = widgetManager.findWidgetById( id );
   if( width > 0 ) {
-    push.setWidth(width);
+    push.setWidth( width );
   }
   if( control ) {
     if( width > 0 ) {
@@ -49,13 +43,10 @@ org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator
   parent.add( push );
 };
 
-/**
- * Creates a toolItem of type radio, registered to a RadioManager.
- */
-org.eclipse.rap.rwt.ToolItemUtil.createToolItemRadioButton
-  = function( id , parent , selected , neighbour )
+org.eclipse.rap.rwt.ToolItemUtil.createRadio
+  = function( id, parent, selected, neighbour )
 {
-  var radio = new qx.ui.toolbar.ToolBarRadioButton();
+  var radio = new qx.ui.toolbar.RadioButton();
   radio.setDisableUncheck( true );
   parent.add( radio );
   if( neighbour ){
@@ -67,87 +58,68 @@ org.eclipse.rap.rwt.ToolItemUtil.createToolItemRadioButton
   if ( selected ) {
     radio.radioManager.setSelected ( radio ) ;
   }
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( radio, id );
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( radio, id, false );
   radio.setParent( parent );
 };
 
-/**
- * Creates a toolitem of type push.
- */
-org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush = function( id , parent ) {
-  var push = new qx.ui.toolbar.ToolBarButton();
-  parent.add( push );
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id );
-//  push.setParent( parent );
-};
-
-/**
- * Creates a toolitem of type push for a drop down menu.
- */
-org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu 
-  = function( id , parent , isFlat )
-{
-  var push = new qx.ui.toolbar.ToolBarButton( "V" );
-  parent.add( push );
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id );
-  if ( isFlat ) {
+org.eclipse.rap.rwt.ToolItemUtil.createPush = function( id, parent, isFlat ) {
+  var push = new qx.ui.toolbar.Button();
+  if( isFlat ) {
     push.addState( "rwt_FLAT" );
   }
-//  push.setParent( parent );
-};
-
-/**
- * Creates a toolitem of type check.
- */
-org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil
-  = function( id , parent )
-{
-  var push = new qx.ui.toolbar.ToolBarCheckBox();
   parent.add( push );
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id );
-//  push.setParent( parent );
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id, false );
 };
 
-/**
- * Creates an event listener for a drop down button.
- */
+org.eclipse.rap.rwt.ToolItemUtil.createDropDown = function( id, parent, isFlat ) 
+{
+  org.eclipse.rap.rwt.ToolItemUtil.createPush( id, parent, isFlat );
+  var dropDown = new qx.ui.toolbar.Button( "", "widget/arrows/down.gif" );
+  dropDown.setUserData( "buttonId", id );
+  if( isFlat ) {
+    dropDown.addState( "rwt_FLAT" );
+  }
+  parent.add( dropDown );
+  var dropDownId = id + "_dropDown";
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add( dropDown, 
+                                                       dropDownId, 
+                                                       false );
+};
 
-org.eclipse.rap.rwt.ToolItemUtil.addEventListenerForDropDownButton 
-  = function( id , eventType , listener )
+org.eclipse.rap.rwt.ToolItemUtil.updateDropDownListener = function( id, remove ) 
 {
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  var item = widgetManager.findWidgetById( id );
-  item.addEventListener( "click", 
-                         org.eclipse.rap.rwt.ToolItemUtil.widgetSelected, 
-                         null );
+  var dropDown = widgetManager.findWidgetById( id );
+  var listener = org.eclipse.rap.rwt.ToolItemUtil._dropDownSelected;
+  if( remove ) {
+    dropDown.removeEventListener( "execute", listener );
+  } else {
+    dropDown.addEventListener( "execute",  listener );
+  }
 };
 
-/**
- * widget selected for a drop down menu
- */
-org.eclipse.rap.rwt.ToolItemUtil.widgetSelected = function( evt ){ 
-  var toolItem = evt.getTarget();
-  var toolBar = toolItem.getParent();
-  var index = toolBar.indexOf( toolItem );
-  var neighbour = toolBar.getChildren ()[ index - 1 ];
-  var el = neighbour.getElement();
-  var x = qx.dom.DomLocation.getPageBoxLeft( el );
-  var y = qx.dom.DomLocation.getPageBoxBottom( el );
-  var item = evt.getTarget();
+org.eclipse.rap.rwt.ToolItemUtil.createCheck = function( id, parent ) {
+  var push = new qx.ui.toolbar.CheckBox();
+  parent.add( push );
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id, false );
+};
+
+org.eclipse.rap.rwt.ToolItemUtil._dropDownSelected = function( evt ) { 
+evt.getTarget().debug( "CALLED!")  ;
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  var itemId = widgetManager.findIdByWidget( item );
+  var dropDown = evt.getTarget();
+  var dropDownId = widgetManager.findIdByWidget( dropDown );
+  var buttonId = dropDown.getUserData( "buttonId" );
+  var button = widgetManager.findWidgetById( buttonId );
+  var element = button.getElement();
+  var left = qx.html.Location.getPageBoxLeft( element );
+  var top = qx.html.Location.getPageBoxBottom( element );
   var req = org.eclipse.rap.rwt.Request.getInstance();
-  req.addParameter( itemId + ".boundsMenu.x", x );
-  req.addParameter( itemId + ".boundsMenu.y", y );
-  var left = item.getLeft();
-  var top = item.getTop();
-  var width = item.getWidth();
-  var height = item.getHeight();
-  org.eclipse.rap.rwt.EventUtil.doWidgetSelected( itemId, 
+  org.eclipse.rap.rwt.EventUtil.doWidgetSelected( dropDownId, 
                                                   left, 
                                                   top, 
-                                                  width,
-                                                  height );
+                                                  0,
+                                                  0 );
 };
 
 

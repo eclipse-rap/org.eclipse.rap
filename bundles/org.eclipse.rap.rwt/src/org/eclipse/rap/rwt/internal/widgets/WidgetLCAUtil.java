@@ -25,8 +25,26 @@ import com.w4t.util.browser.Mozilla;
 
 public final class WidgetLCAUtil {
   
+  private static final String PARAM_X = "bounds.x";
+  private static final String PARAM_Y = "bounds.y";
+  private static final String PARAM_WIDTH = "bounds.width";
+  private static final String PARAM_HEIGHT = "bounds.height";
+  
+  private static final String PROP_TOOL_TIP_TEXT = "toolTip";
+
   private WidgetLCAUtil() {
     // prevent instantiation
+  }
+  
+  /////////////////////////////////////////////
+  // Methods to preserve common property values
+  
+  public static void preserveToolTipText( final Widget widget, 
+                                          final String toolTip ) 
+  {
+    String text = toolTip == null ? "" : toolTip;
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text );
   }
   
   ////////////////////////////////////////////////////
@@ -116,7 +134,23 @@ public final class WidgetLCAUtil {
     String widgetId = request.getParameter( eventName );
     return WidgetUtil.getId( widget ).equals( widgetId );
   }
+  
+  public static Rectangle readBounds( final Widget widget, 
+                                      final Rectangle defValue ) 
+  {
+    return readBounds( WidgetUtil.getId( widget ), defValue );
+  }
 
+  public static Rectangle readBounds( final String widgetId, 
+                                      final Rectangle defValue ) 
+  {
+    int x = readBoundsX( widgetId, defValue.x );
+    int y = readBoundsY( widgetId, defValue.y );
+    int width = readBoundsWidth( widgetId, defValue.width );
+    int height = readBoundsHeight( widgetId, defValue.height );
+    return new Rectangle( x, y, width, height );
+  }
+  
   /////////////////////////////////////////////////////////
   // Methods to write JavaScript code for widget properties
   
@@ -194,27 +228,17 @@ public final class WidgetLCAUtil {
     }
   }
 
-  public static void writeToolTip( final Widget widget, final String newText ) 
+  public static void writeToolTip( final Widget widget, final String toolTip ) 
     throws IOException 
   {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    if( adapter.isInitialized() ) {
-      if( WidgetLCAUtil.hasChanged( widget, Props.TOOL_TIP_TEXT, newText ) ) {
-        doWriteToolTip( widget, newText );
-      }
-    } else if( newText != null && !"".equals( newText ) ) {
-      doWriteToolTip( widget, newText );
+    String text = toolTip == null ? "" : toolTip;
+    if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      Object[] args = new Object[] { widget, text };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setToolTip", args );
     }
   }
 
-  private static void doWriteToolTip( final Widget widget, final String text ) 
-    throws IOException 
-  {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    Object[] args = new Object[] { widget, text };
-    writer.call( JSWriter.WIDGET_MANAGER_REF, "setToolTip", args );
-  }
-  
   /////////////////////////////////////////////////
   // write-methods used by other ...LCAUtil classes
   
@@ -252,6 +276,54 @@ public final class WidgetLCAUtil {
       };
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setFont", args );
     }
+  }
+
+  private static String readPropertyValue( final String widgetId, 
+                                           final String propertyName ) 
+  {
+    HttpServletRequest request = ContextProvider.getRequest();
+    StringBuffer key = new StringBuffer();
+    key.append( widgetId );
+    key.append( "." );
+    key.append( propertyName );
+    return request.getParameter( key.toString() );
+  }
+
+  //////////////////////////////////////////////////////////////////
+  // Helping methods to read bounds for a widget from request params
+  
+  private static int readBoundsY( final String widgetId, final int defValue ) {
+    String value = readPropertyValue( widgetId, PARAM_Y );
+    return readBoundsValue( value, defValue );
+  }
+  
+  private static int readBoundsX( final String widgetId, final int defValue ) {
+    String value = readPropertyValue( widgetId, PARAM_X );
+    return readBoundsValue( value, defValue );
+  }
+
+  private static int readBoundsWidth( final String widgetId, 
+                                      final int defValue ) 
+  {
+    String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_WIDTH );
+    return readBoundsValue( value, defValue );
+  }
+
+  private static int readBoundsHeight( final String widgetId, 
+                                       final int defValue ) 
+  {
+    String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_HEIGHT );
+    return readBoundsValue( value, defValue );
+  }
+  
+  private static int readBoundsValue( final String value, final int current ) {
+    int result;
+    if( value != null && !"null".equals( value ) ) {
+      result = Integer.parseInt( value );
+    } else {
+      result = current;
+    }
+    return result;
   }
 
   ////////////////////////////////////////

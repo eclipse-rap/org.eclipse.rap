@@ -39,7 +39,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     CTabItem item = ( CTabItem )widget;
     ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.TOOL_TIP_TEXT, item.getToolTipText() );
+    WidgetLCAUtil.preserveToolTipText( widget, item.getToolTipText() );
     adapter.preserve( PROP_BOUNDS, item.getBounds() );
     boolean selected = item == item.getParent().getSelection();
     adapter.preserve( PROP_SELECTED, Boolean.valueOf( selected ) );

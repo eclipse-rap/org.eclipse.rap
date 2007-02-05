@@ -20,10 +20,8 @@ import org.eclipse.rap.rwt.widgets.*;
 public class ToolBarTab extends ExampleTab {
 
   private ToolBar toolBar;
-  private SelectionAdapter dropDownListener;
   private ToolItem dropDownItem;
   private int count = 0;
-  private Menu dropDownMenu;
 
   public ToolBarTab( TabFolder folder ) {
     super( folder, "ToolBar" );
@@ -35,14 +33,6 @@ public class ToolBarTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
-    Button changeDDListenerButton = new Button( styleComp, RWT.PUSH );
-    changeDDListenerButton.setText( "Change DropDown Listener" );
-    changeDDListenerButton.setLayoutData( new RowData( 150, 25 ) );
-    changeDDListenerButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        changeDropDownListener();
-      }
-    } );
   }
 
   void createExampleControls( final Composite top ) {
@@ -72,19 +62,13 @@ public class ToolBarTab extends ExampleTab {
     item5.setImage( imageSearch );
     ToolItem item6 = new ToolItem( toolBar, RWT.RADIO );
     item6.setImage( imageSearch );
-  }
-
-  private void changeDropDownListener() {
-    if( dropDownMenu != null ) {
-      dropDownMenu.dispose();
-    }
-    dropDownMenu = new Menu( toolBar.getShell(), RWT.POP_UP );
+    final Menu dropDownMenu = new Menu( toolBar.getShell(), RWT.POP_UP );
     for( int i = 0; i < 5; i++ ) {
       MenuItem item = new MenuItem( dropDownMenu, RWT.PUSH );
       item.setText( "Item " + count++ );
     }
-    dropDownListener = new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+    dropDownItem.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
         if( event.detail == RWT.ARROW ) {
           Point point = new Point( event.x, event.y );
           // point = toolbar.getDisplay().map( toolBar, null, point );
@@ -92,7 +76,6 @@ public class ToolBarTab extends ExampleTab {
           dropDownMenu.setVisible( true );
         }
       }
-    };
-    dropDownItem.addSelectionListener( dropDownListener );
+    } );
   }
 }

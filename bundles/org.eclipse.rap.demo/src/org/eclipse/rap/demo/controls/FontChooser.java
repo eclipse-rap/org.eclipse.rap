@@ -96,6 +96,9 @@ final class FontChooser {
         int size;
         try {
           size = Integer.parseInt( txtSize.getText() );
+          if( size < 0 ) {
+            size = font.getSize();
+          }
         } catch( NumberFormatException e ) {
           size = font.getSize();
         }

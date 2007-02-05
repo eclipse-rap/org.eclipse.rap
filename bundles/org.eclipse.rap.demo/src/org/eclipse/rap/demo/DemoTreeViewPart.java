@@ -13,9 +13,7 @@ package org.eclipse.rap.demo;
 
 import java.util.ArrayList;
 import org.eclipse.rap.jface.viewers.*;
-import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.Composite;
-import org.eclipse.rap.rwt.widgets.Tree;
 import org.eclipse.rap.ui.IViewPart;
 import org.eclipse.rap.ui.part.ViewPart;
 
@@ -144,7 +142,6 @@ public class DemoTreeViewPart extends ViewPart {
     TreeViewer viewer = new TreeViewer( parent );
     viewer.setContentProvider( new TreeViewerContentProvider() );
     viewer.setInput( this );
-    Tree tree = viewer.getTree();
     getSite().setSelectionProvider( viewer );
   }
 }

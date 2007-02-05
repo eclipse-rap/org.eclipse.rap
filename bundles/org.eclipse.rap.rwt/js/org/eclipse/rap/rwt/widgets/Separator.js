@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 /**
- * This class represents Labels with style RWT.SEPARATOR
+ * This class represents RWT Labels with style RWT.SEPARATOR
  */
 qx.OO.defineClass( 
   "org.eclipse.rap.rwt.widgets.Separator", 
@@ -51,12 +51,12 @@ qx.Proto._updateLineBounds = function() {
   var clientWidth = this.getWidth() - ( 2 * borderSize );
   var clientHeight = this.getHeight() - ( 2 * borderSize )
   if( this._isHorizontal() ) {
-    this._line.setLeft( this._borderSize );    
+    this._line.setLeft( borderSize );    
     this._line.setTop( clientHeight / 2 );
     this._line.setWidth( clientWidth );
     this._line.setHeight( 2 );
   } else {
-    this._line.setTop( this._borderSize );    
+    this._line.setTop( borderSize );    
     this._line.setLeft( clientWidth / 2 );
     this._line.setHeight( clientHeight );
     this._line.setWidth( 2 );
@@ -66,13 +66,9 @@ qx.Proto._updateLineBounds = function() {
 qx.Proto._getLineBorder = function( style ) {
   var result = null;
   if( qx.lang.String.contains( style, "SHADOW_OUT" ) ) {
-    result = new qx.renderer.border.BorderObject( 
-      1, 
-      qx.renderer.border.Border.STYLE_OUTSET );
-  } else  if( qx.lang.String.contains( style, "SHADOW_IN" ) ) {
-    result = new qx.renderer.border.BorderObject( 
-      1, 
-      qx.renderer.border.Border.STYLE_SOLID, "white" );
+    result = new qx.renderer.border.BorderObject( 1, "outset" );
+  } else if( qx.lang.String.contains( style, "SHADOW_IN" ) ) {
+    result = new qx.renderer.border.BorderObject( 1, "solid", "white" );
   }
   if( result != null ) {
     if( this._isHorizontal() ) {

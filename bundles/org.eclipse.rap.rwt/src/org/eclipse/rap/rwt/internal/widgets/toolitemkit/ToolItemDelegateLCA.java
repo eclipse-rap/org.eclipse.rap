@@ -36,7 +36,8 @@ abstract class ToolItemDelegateLCA {
   // helper methods
   
   static void processSelection( final ToolItem toolItem ) {
-    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
+    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) 
+    {
       Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
       SelectionEvent event = newSelectionEvent( toolItem, bounds, RWT.NONE );
       event.processEvent();

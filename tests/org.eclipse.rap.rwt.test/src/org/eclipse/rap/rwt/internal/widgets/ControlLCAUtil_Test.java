@@ -222,6 +222,18 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( "", log.toString() );
   }
 
+  public void testMaxZOrder() {
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    for( int i = 0; i < ControlLCAUtil.MAX_STATIC_ZORDER; i++ ) {
+      new Button( shell, RWT.PUSH );
+    }
+    Control control = new Button( shell, RWT.PUSH );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control ); 
+    ControlLCAUtil.preserveValues( control );
+    assertEquals( new Integer( 1 ), adapter.getPreserved( Props.Z_INDEX ) );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

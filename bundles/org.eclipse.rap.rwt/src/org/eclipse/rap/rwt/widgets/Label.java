@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.graphics.Image;
  * <code>setImage()</code>, <code>getText</code> will return the empty string.
  * </p>
  */
+// TODO [rh] check what should happen with style == SEPARATOR and setForeground
 public class Label extends Control {
 
   private String text = "";

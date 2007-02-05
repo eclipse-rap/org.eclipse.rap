@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.rap.jface.viewers.*;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 import org.eclipse.rap.ui.part.ViewPart;
 

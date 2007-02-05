@@ -24,7 +24,6 @@ import org.eclipse.rap.rwt.internal.widgets.IControlAdapter;
 public abstract class Control extends Widget {
 
   private class ControlAdapter implements IControlAdapter {
-    
     public int getIndex() {
       Composite parent = getParent();
       int result = 0;
@@ -33,7 +32,6 @@ public abstract class Control extends Widget {
       }
       return result;
     }
-
   }
 
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );

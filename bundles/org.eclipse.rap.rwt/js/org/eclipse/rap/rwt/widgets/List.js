@@ -45,7 +45,7 @@ qx.Proto.setItems = function( items ) {
       //      itself for all its ListItems
       var item = new qx.ui.form.ListItem( items[ i ] );
       // prevent items from being drawn outside the list
-      item.setOverflow( "hidden" ); 
+      item.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN ); 
       item.setContextMenu( this.getContextMenu() );
       this.add( item );
     }

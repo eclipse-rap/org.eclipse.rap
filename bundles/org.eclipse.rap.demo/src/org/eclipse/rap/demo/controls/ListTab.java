@@ -75,26 +75,34 @@ public class ListTab extends ExampleTab {
     viewer.setContentProvider( new ListContentProvider() );
     viewer.setLabelProvider( new LabelProvider() );
     viewer.setInput( ELEMENTS );
+    int separatorStyle = RWT.SEPARATOR | RWT.HORIZONTAL | RWT.SHADOW_OUT;
+    Label separator = new Label( parent, separatorStyle );
+    separator.setLayoutData( new RowData( 440, 5 ) );
+    Label codeLabel = new Label( parent, RWT.WRAP );
+    codeLabel.setLayoutData( new RowData( 450, 35 ) );
+    String codeLabelText 
+      = "Please note that the content of the above List is provided by a " 
+      + "ListViewer with JFace API. The source code looks like this:";
+    codeLabel.setText( codeLabelText );
     Browser browser = new Browser( parent, RWT.MULTI );
-    browser.setLayoutData( new RowData( 450, 250 ) );
+    browser.setLayoutData( new RowData( 450, 210 ) );
     String note
       = "<html><head></head></body>"
-      + "<p>Please note that the content of the above List is provided by a " 
-      + "(JFace-like) ListViewer<br />"
-      + "The source code looks like this:</p>"
       + "<pre>"
-      + "  class ListContentProvider implements IStructuredContentProvider {\n"
-      + "    public Object[] getElements( final Object inputElement ) {\n"
-      + "      return ( ( java.util.List )inputElement ).toArray();\n"
-      + "    }\n"
+      + "class ListContentProvider implements IStructuredContentProvider {\n"
+      + "  public Object[] getElements( final Object inputElement ) {\n"
+      + "    return ( ( java.util.List )inputElement ).toArray();\n"
       + "  }\n"
-      + "  ...\n"
-      + "  java.util.List elements = ...\n"
-      + "  ...\n"
-      + "  ListViewer viewer = new ListViewer( parent );\n"
-      + "  viewer.setContentProvider( new ListContentProvider() );\n"
-      + "  viewer.setLabelProvider( new LabelProvider() );\n"
-      + "  viewer.setInput( elements );\n"
+      + "}\n"
+      + "...\n"
+      + "java.util.List elements = ...\n"
+      + "...\n"
+      + "ListViewer viewer = new ListViewer( parent );\n"
+      + "viewer.setContentProvider( new ListContentProvider() );\n"
+      + "viewer.setLabelProvider( new LabelProvider() );\n"
+      + "java.util.List input = new ArrayList();\n"
+      + "... // populate list\n"
+      + "viewer.setInput( input );\n"
       + "</pre>"
       + "</body>";
     browser.setText( note );

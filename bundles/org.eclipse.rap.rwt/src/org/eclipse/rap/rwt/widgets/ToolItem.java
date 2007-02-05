@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 public class ToolItem extends Item {
 
   private final ToolBar parent;
-  private boolean selected = false;
+  private boolean selected;
   private Control control;
   private int width = 0;
  
@@ -69,34 +69,40 @@ public class ToolItem extends Item {
   }
 
   public Control getControl() {
+    checkWidget();
     return control;
   }
 
   public int getWidth() {
+    checkWidget();
     return width;
   }
 
   public void setWidth( final int width ) {
+    checkWidget();
     if( ( style & RWT.SEPARATOR ) != 0 && width >= 0  ) {
       this.width = width;
     }
   }
   
   public boolean getSelection() {
+    checkWidget();
     boolean result = selected;
-    if( ( style & ( RWT.CHECK | RWT.RADIO /* | RWT.TOGGLE */) ) == 0 ) {
+    if( ( style & ( RWT.CHECK | RWT.RADIO ) ) == 0 ) {
       result = false;
     }
     return result;
   }
   
   public void setSelection( final boolean selected ) {
-    if( ( style & ( RWT.CHECK | RWT.RADIO/* | SWT.TOGGLE */) ) != 0 ) {
+    checkWidget();
+    if( ( style & ( RWT.CHECK | RWT.RADIO ) ) != 0 ) {
       this.selected = selected;
     }
   }
   
   public void setImage( final Image image ) {
+    checkWidget();
     if( image == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -106,10 +112,12 @@ public class ToolItem extends Item {
   }
   
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
   

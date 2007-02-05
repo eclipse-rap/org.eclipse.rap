@@ -80,14 +80,14 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // Available qooxdoo log level: 
     //   LEVEL_OFF, LEVEL_ALL, 
     //   LEVEL_DEBUG, LEVEL_INFO, LEVEL_WARN, LEVEL_ERROR, LEVEL_FATAL
-    LOG_LEVEL_MAP.put( Level.OFF, "qx.dev.log.Logger.LEVEL_OFF" );
-    LOG_LEVEL_MAP.put( Level.ALL, "qx.dev.log.Logger.LEVEL_ALL" );
-    LOG_LEVEL_MAP.put( Level.WARNING, "qx.dev.log.Logger.LEVEL_WARN" );
-    LOG_LEVEL_MAP.put( Level.INFO, "qx.dev.log.Logger.LEVEL_INFO" );
-    LOG_LEVEL_MAP.put( Level.SEVERE, "qx.dev.log.Logger.LEVEL_ERROR" );
-    LOG_LEVEL_MAP.put( Level.FINE, "qx.dev.log.Logger.LEVEL_DEBUG" );
-    LOG_LEVEL_MAP.put( Level.FINER, "qx.dev.log.Logger.LEVEL_DEBUG" );
-    LOG_LEVEL_MAP.put( Level.FINEST, "qx.dev.log.Logger.LEVEL_DEBUG" );
+    LOG_LEVEL_MAP.put( Level.OFF, "qx.log.Logger.LEVEL_OFF" );
+    LOG_LEVEL_MAP.put( Level.ALL, "qx.log.Logger.LEVEL_ALL" );
+    LOG_LEVEL_MAP.put( Level.WARNING, "qx.log.Logger.LEVEL_WARN" );
+    LOG_LEVEL_MAP.put( Level.INFO, "qx.log.Logger.LEVEL_INFO" );
+    LOG_LEVEL_MAP.put( Level.SEVERE, "qx.log.Logger.LEVEL_ERROR" );
+    LOG_LEVEL_MAP.put( Level.FINE, "qx.log.Logger.LEVEL_DEBUG" );
+    LOG_LEVEL_MAP.put( Level.FINER, "qx.log.Logger.LEVEL_DEBUG" );
+    LOG_LEVEL_MAP.put( Level.FINEST, "qx.log.Logger.LEVEL_DEBUG" );
   }
   
   ////////////////////////////////////////////////////////
@@ -126,6 +126,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       StringBuffer initScript = new StringBuffer();
       initScript.append( jsConfigureLogger( getClientLogLevel() ) );
       initScript.append( jsAppInitialization() );
+      initScript.append( jsThemeInitialization() );
       IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
       initScript.append( jsSetUIRoot( adapter.getId() ) );
       out.writeText( initScript.toString(), null );
@@ -178,7 +179,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static String jsConfigureLogger( final Level level ) {
     String jsLevel = ( String )LOG_LEVEL_MAP.get( level );
-    String code = "qx.dev.log.Logger.ROOT_LOGGER.setMinLevel( {0} );";
+    String code = "qx.log.Logger.ROOT_LOGGER.setMinLevel( {0} );";
     return MessageFormat.format( code, new Object[] { jsLevel } );
   }
 
@@ -186,12 +187,20 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // TODO [rh] change org_eclipse_rap_rwt_requesthandler to something like
     //      request.set(ServerSide)Handler (see also request.js)
     String code =   "var org_eclipse_rap_rwt_requesthandler = \"{0}\";"
-                  + "var app = new org.eclipse.rap.rwt.Application();" 
+                  + "var app = org.eclipse.rap.rwt.Application;" 
                   + "qx.core.Init.getInstance().setApplication( app );";
     Object[] param = new Object[] { 
       ContextProvider.getRequest().getServletPath().substring( 1 )
     };
     return MessageFormat.format( code, param );
+  }
+  
+  private static String jsThemeInitialization() {
+    String code 
+      = "var am = qx.manager.object.AppearanceManager.getInstance();"
+      + "var theme = new org.eclipse.rap.rwt.DefaultAppearanceTheme();"  
+      + "am.setAppearanceTheme( theme );";
+    return code;
   }
   
   private static String jsSetUIRoot( final String id ) {
@@ -243,11 +252,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void readBounds( final Display display ) {
-    Rectangle bounds 
-      = new Rectangle( 0, 
-                       0, 
-                       readIntPropertyValue( display, "bounds.width", 0 ), 
-                       readIntPropertyValue( display, "bounds.height", 0 ) );
+    int width = readIntPropertyValue( display, "bounds.width", 0 );
+    int height = readIntPropertyValue( display, "bounds.height", 0 );
+    Rectangle bounds = new Rectangle( 0, 0, width, height );
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setBounds( bounds );

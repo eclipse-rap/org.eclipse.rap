@@ -11,8 +11,7 @@
 
 /**
  * The parameter orientation must be one of 
- * qx.constant.Layout.ORIENTATION_VERTICAL or 
- * qx.constant.Layout.ORIENTATION_HORIZONTAL
+ * "vertical" or "horizontal"
  * Note that updateHandleBounds must be called after each size manipulation.
  */
 qx.OO.defineClass( 
@@ -57,7 +56,7 @@ qx.Proto.setLocked = function( value ) {
 /** Updates the size and position of the handle. */
 qx.Proto.updateHandleBounds = function() {
   // parameter order for setSpace: x, width, y, height
-  if( this._orientation == qx.constant.Layout.ORIENTATION_VERTICAL ) {
+  if( this._orientation == "vertical" ) {
     this._handle.setSpace( 0, this.getWidth(), 0, this._handleSize );
   } else {
     this._handle.setSpace( 0, this._handleSize, 0, this.getHeight() );
@@ -72,9 +71,9 @@ qx.Proto._onHandleMouseDown = function( evt ) {
     this._offsetY = evt.getPageY() - this.getTop();
     this._bufferedZIndex = this.getZIndex();
     if( typeof( this.getZIndex() ) == "number" ) {
-      this.setZIndex( this.getZIndex() + 99 );
+      this.setZIndex( this.getZIndex() + 100000 );
     } else {
-      this.setZIndex( 99 );
+      this.setZIndex( 100000 );
     }
   }
 }

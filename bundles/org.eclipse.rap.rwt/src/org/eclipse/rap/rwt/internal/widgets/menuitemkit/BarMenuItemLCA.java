@@ -40,7 +40,7 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    newItem( menuItem, "qx.ui.menu.MenuBarButton" );
+    newItem( menuItem, "qx.ui.menubar.Button" );
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     writer.call( "addState", RWT_FLAT );
   }

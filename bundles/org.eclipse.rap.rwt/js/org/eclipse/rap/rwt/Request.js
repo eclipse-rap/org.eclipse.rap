@@ -27,7 +27,7 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.Request", qx.core.Target,
     this._inDelayedSend = false;
     // Initialize the request queue to allow only one request at a time
     // and set the timout to 5 min (eases debuging)
-    var requestQueue = qx.io.remote.RemoteRequestQueue.getInstance();
+    var requestQueue = qx.io.remote.RequestQueue.getInstance();
     requestQueue.setDefaultTimeout( 60000 * 5 ); // 5 min
     requestQueue.setMaxConcurrentRequests( 1 );
   }
@@ -36,7 +36,7 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.Request", qx.core.Target,
 /**
  * Returns the sole instance of Request.
  */
-qx.Class.getInstance = qx.util.Return.returnInstance;
+qx.Class.getInstance = qx.lang.Function.returnInstance;
 
 qx.Proto.setUIRootId = function( uiRootId ) {
   this._uiRootId = uiRootId;
@@ -93,9 +93,7 @@ qx.Proto._sendImmediate = function() {
   // create and configure request object
   var action = org_eclipse_rap_rwt_requesthandler;
   // To solve bugzilla bug entry 165666 we use GET- instead of POST-method
-  var request = new qx.io.remote.RemoteRequest( action, 
-                                                "GET", 
-                                                "text/javascript" );
+  var request = new qx.io.remote.Request( action, "GET", "text/javascript" );
   request.setAsynchronous( true );
   // apply _parameters map which was filled during client interaction
   for( var parameterName in this._parameters ) {

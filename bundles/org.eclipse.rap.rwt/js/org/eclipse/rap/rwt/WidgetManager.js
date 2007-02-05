@@ -56,7 +56,11 @@ qx.Proto.dispose = function( id ) {
  * for the given id exists.
  */
 qx.Proto.findWidgetById = function( id ) {
-  return this._map[ id ];
+  var result = this._map[ id ]
+  if( result == null ) {
+    this.warn( "no widget registered for id " + id );
+  }
+  return result;
 };
 
 /**
@@ -169,4 +173,4 @@ qx.Proto._removeToolTipPopup = function( widget ) {
   }
 };
 
-qx.Class.getInstance = qx.util.Return.returnInstance;
+qx.Class.getInstance = qx.lang.Function.returnInstance;

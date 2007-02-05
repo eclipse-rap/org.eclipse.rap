@@ -24,11 +24,8 @@ import org.eclipse.rap.rwt.widgets.*;
  */
 public class ControlLCAUtil {
   
-  private static final String PROPERTY_X_LOCATION = "bounds.x";
-  private static final String PROPERTY_Y_LOCATION = "bounds.y";
-  private static final String PROPERTY_WIDTH = "bounds.width";
-  private static final String PROPERTY_HEIGHT = "bounds.height";
-
+  public static final int MAX_STATIC_ZORDER = 300;
+  
   // Property name to preserve ActivateListener 
   private static final String ACTIVATE_LISTENER = "activateListener";
 
@@ -39,8 +36,8 @@ public class ControlLCAUtil {
   public static void preserveValues( final Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( Props.BOUNDS, control.getBounds() );
-    adapter.preserve( Props.Z_INDEX, new Integer( getZIndex(control) ) );
-    adapter.preserve( Props.TOOL_TIP_TEXT, control.getToolTipText() );
+    adapter.preserve( Props.Z_INDEX, new Integer( getZIndex( control ) ) );
+    WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.getVisible() ) );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( control.isEnabled() ) );
@@ -54,11 +51,9 @@ public class ControlLCAUtil {
   }
   
   public static void readBounds( final Control control ) {
-    int width = readControlWidth( control );
-    int height = readControlHeight( control );
-    int xLocation = readControlXLocation( control );
-    int yLocation = readControlYLocation( control );
-    control.setBounds( xLocation, yLocation, width, height );
+    Rectangle current = control.getBounds();
+    Rectangle newBounds = WidgetLCAUtil.readBounds( control, current );
+    control.setBounds( newBounds );
   }
   
   public static void writeBounds( final Control control ) throws IOException {
@@ -214,10 +209,7 @@ public class ControlLCAUtil {
       Rectangle bounds;
       if( widget instanceof Control && readBounds ) {
         Control control = ( Control )widget;
-        bounds = new Rectangle( readControlXLocation( control ), 
-                                readControlYLocation( control ),
-                                readControlWidth( control ),
-                                readControlHeight( control ) );
+        bounds = WidgetLCAUtil.readBounds( control, control.getBounds() ); 
       } else {
         bounds = new Rectangle( 0, 0, 0, 0 );
       }
@@ -235,55 +227,13 @@ public class ControlLCAUtil {
   //////////////////
   // helping methods
 
-  private static int readControlYLocation( final Control control ) {
-    String value = WidgetLCAUtil.readPropertyValue( control, PROPERTY_Y_LOCATION );
-    return readCoordinate( value, control.getBounds().y );
-  }
-  
-  private static int readControlXLocation( final Control control ) {
-    String value = WidgetLCAUtil.readPropertyValue( control, PROPERTY_X_LOCATION );
-    return readCoordinate( value, control.getBounds().x );
-  }
-
-  private static int readCoordinate( final String value, final int current ) {
-    int result = 0;
-    if( value != null && !"null".equals( value ) ) {
-      result = Integer.parseInt( value );
-    } else {
-      result = current;
+  private static int getZIndex( final Control control ) {
+    Object adapter = control.getAdapter( IControlAdapter.class );
+    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+    int max = MAX_STATIC_ZORDER;
+    if( control.getParent() != null ) {
+      max = Math.max( control.getParent().getChildrenCount(), max );
     }
-    return result;
-  }
-
-  private static int readControlWidth( final Control control ) {
-    String value = WidgetLCAUtil.readPropertyValue( control, PROPERTY_WIDTH );
-    int result = 0;
-    if( value != null ) {
-      result = Integer.parseInt( value );
-    } else {
-      result = control.getBounds().width;
-    }
-    return result;
-  }
-
-  // TODO [rh] when maximizing/minimizing shell, the height might be 'null'.
-  //      Should we be prepared here for invalid parameters (e.g. catch 
-  //      NumberFormatExceptions) or ensure that the client side will not
-  //      send illegal parameters
-  private static int readControlHeight( final Control widget ) {
-    String value = WidgetLCAUtil.readPropertyValue( widget, PROPERTY_HEIGHT );
-    int result = 0;
-    if( value != null ) {
-      result = Integer.parseInt( value );
-    } else {
-      result = widget.getBounds().height;
-    }
-    return result;
-  }
-  
-  private static int getZIndex( Control control ) {
-    IControlAdapter controlAdapter =
-      ( IControlAdapter )control.getAdapter( IControlAdapter.class );
-    return 100000 - controlAdapter.getIndex();
+    return max - controlAdapter.getIndex();
   }
 }

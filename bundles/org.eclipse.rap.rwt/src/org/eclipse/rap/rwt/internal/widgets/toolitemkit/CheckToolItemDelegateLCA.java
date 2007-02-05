@@ -26,7 +26,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     = "org.eclipse.rap.rwt.ButtonUtil.checkSelected";
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
   private static final String CREATE_CHECK 
-    = "org.eclipse.rap.rwt.ToolItemUtil.createToolItemCheckUtil";
+    = "org.eclipse.rap.rwt.ToolItemUtil.createCheck";
   private final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
                           WIDGET_SELECTED,

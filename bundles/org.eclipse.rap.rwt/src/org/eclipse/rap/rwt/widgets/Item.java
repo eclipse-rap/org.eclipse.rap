@@ -30,6 +30,7 @@ public abstract class Item extends Widget {
   }
 
   public void setText( final String text ) {
+    checkWidget();
     if( text == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -37,14 +38,17 @@ public abstract class Item extends Widget {
   }
 
   public String getText() {
+    checkWidget();
     return text;
   }
   
   public void setImage( final Image image ) {
+    checkWidget();
     this.image = image;
   }
 
   public Image getImage() {
+    checkWidget();
     return image;
   }
 }

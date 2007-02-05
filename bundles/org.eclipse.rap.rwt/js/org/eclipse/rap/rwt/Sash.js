@@ -9,6 +9,8 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
+// TODO [rh] @fappel: please revise this. Removed glass pane handling (because 
+//      it was removed from SplitPane. As far as I can see, everything works.
 qx.OO.defineClass( 
   "org.eclipse.rap.rwt.Sash", 
   qx.ui.splitpane.SplitPane,
@@ -56,13 +58,6 @@ qx.Proto._commonMouseDown = function()
   // show the slider also outside of the sash's bounds
   this.setOverflow( "visible" );
   
-  // protect content
-  this._glass.setTop( 0 );
-  this._glass.setLeft( 0 );
-  this._glass.setWidth( this.getParent().getWidth() );
-  this._glass.setHeight( this.getParent().getHeight() );
-  this._glass.show();
-
   // initialize the slider
   if( !this.isLiveResize() ) {
     this._slider._applyRuntimeLeft( this._splitter.getOffsetLeft() );
@@ -92,10 +87,6 @@ qx.Proto._commonMouseUp = function() {
   var leftBuffer = this.getLeft() + this._slider.getOffsetLeft();
   var topBuffer = this.getTop() + this._slider.getOffsetTop();
   
-  // hide helpers
-  this._glass.hide();
-  this._slider.hide();
-
   // disable capturing
   this._splitter.setCapture(false);
 
@@ -142,7 +133,7 @@ qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
   // TODO [rst] call super._modifyEnabled ?
   this._splitter.setEnabled( propValue );
   if( propValue ) {
-    if ( this.getOrientation() == qx.constant.Layout.ORIENTATION_VERTICAL ) {
+    if ( this.getOrientation() == "vertical" ) {
       this._splitter.setCursor( "row-resize" );
     } else {
       this._splitter.setCursor( "col-resize" );

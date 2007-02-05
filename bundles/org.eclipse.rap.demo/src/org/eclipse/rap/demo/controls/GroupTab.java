@@ -12,8 +12,11 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.layout.FillLayout;
+import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.widgets.*;
 
 class GroupTab extends ExampleTab {
@@ -27,6 +30,8 @@ class GroupTab extends ExampleTab {
   void createStyleControls() {
     createVisibilityButton();
     createEnablementButton();
+    createChangeText();
+    createFontChooser();
   }
 
   void createExampleControls( final Composite parent ) {
@@ -40,4 +45,22 @@ class GroupTab extends ExampleTab {
     content.setBackground( white );
     registerControl( group );
   }
+
+  private void createChangeText() {
+    Label label = new Label( styleComp, RWT.NONE );
+    label.setText( "Text" );
+    label.setLayoutData( new RowData( 80, 20 ) );
+    final Text text = new Text( styleComp, RWT.BORDER );
+    text.setLayoutData( new RowData( 80, 20 ) );
+    text.setText( "Hello from inside the group box..." );
+    Button button = new Button( styleComp, RWT.PUSH );
+    button.setText( "Change text" );
+    button.setLayoutData( new RowData( 80, 20 ) );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        group.setText( text.getText() );
+      }
+    } ); 
+  }
+
 }

@@ -111,6 +111,29 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     }
   },
 
+  "label" : {
+    setup : function() {
+      this.color_disabled = new qx.renderer.color.ColorObject("graytext");
+      this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
+    },
+
+    initial : function(vTheme) {
+      return {
+        font: this.font,
+        wrap : false,
+        border : this.border_default
+      }
+    },
+
+    state : function(vTheme, vStates) {
+      return {
+        color : vStates.disabled ? this.color_disabled : null,
+        border : vStates.rwt_BORDER ? this.border : this.border_default
+      }
+    }
+  },
   // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
   "label-wrapper" : {
     setup : function() {
@@ -316,8 +339,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       b.setLeftColor("threedshadow");
       b.setRightColor("threedhighlight");
 
-      b.setLeftStyle(qx.renderer.border.Border.STYLE_SOLID);
-      b.setRightStyle(qx.renderer.border.Border.STYLE_SOLID);
+      b.setLeftStyle(qx.constant.Style.BORDER_SOLID);
+      b.setRightStyle(qx.constant.Style.BORDER_SOLID);
 
       b.setLeftWidth(1);
       b.setRightWidth(1);
@@ -445,16 +468,16 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.border_color = new qx.renderer.color.ColorObject("threedshadow");
 
       this.border_top = new qx.renderer.border.BorderObject;
-      this.border_top.setBottom(1, qx.renderer.border.Border.STYLE_SOLID, this.border_color);
+      this.border_top.setBottom(1, qx.constant.Style.BORDER_SOLID, this.border_color);
 
       this.border_bottom = new qx.renderer.border.BorderObject;
-      this.border_bottom.setTop(1, qx.renderer.border.Border.STYLE_SOLID, this.border_color);
+      this.border_bottom.setTop(1, qx.constant.Style.BORDER_SOLID, this.border_color);
 
       this.border_left = new qx.renderer.border.BorderObject;
-      this.border_left.setRight(1, qx.renderer.border.Border.STYLE_SOLID, this.border_color);
+      this.border_left.setRight(1, qx.constant.Style.BORDER_SOLID, this.border_color);
 
       this.border_right = new qx.renderer.border.BorderObject;
-      this.border_right.setLeft(1, qx.renderer.border.Border.STYLE_SOLID, this.border_color);
+      this.border_right.setLeft(1, qx.constant.Style.BORDER_SOLID, this.border_color);
     },
 
     initial : function(vTheme) {
@@ -527,17 +550,17 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.border_color = new qx.renderer.color.ColorObject("threedshadow");
       this.border_color_checked = new qx.renderer.color.ColorObject("#FEC83C");
 
-      this.border_top_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, this.border_color);
-      this.border_top_checked.setBottom(3, qx.renderer.border.Border.STYLE_SOLID, this.border_color_checked);
+      this.border_top_checked = new qx.renderer.border.Border(1, qx.constant.Style.BORDER_SOLID, this.border_color);
+      this.border_top_checked.setBottom(3, qx.constant.Style.BORDER_SOLID, this.border_color_checked);
 
-      this.border_bottom_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, this.border_color);
-      this.border_bottom_checked.setTop(3, qx.renderer.border.Border.STYLE_SOLID, this.border_color_checked);
+      this.border_bottom_checked = new qx.renderer.border.Border(1, qx.constant.Style.BORDER_SOLID, this.border_color);
+      this.border_bottom_checked.setTop(3, qx.constant.Style.BORDER_SOLID, this.border_color_checked);
 
-      this.border_left_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, this.border_color);
-      this.border_left_checked.setRight(3, qx.renderer.border.Border.STYLE_SOLID, this.border_color_checked);
+      this.border_left_checked = new qx.renderer.border.Border(1, qx.constant.Style.BORDER_SOLID, this.border_color);
+      this.border_left_checked.setRight(3, qx.constant.Style.BORDER_SOLID, this.border_color_checked);
 
-      this.border_right_checked = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, this.border_color);
-      this.border_right_checked.setLeft(3, qx.renderer.border.Border.STYLE_SOLID, this.border_color_checked);
+      this.border_right_checked = new qx.renderer.border.Border(1, qx.constant.Style.BORDER_SOLID, this.border_color);
+      this.border_right_checked.setLeft(3, qx.constant.Style.BORDER_SOLID, this.border_color_checked);
     },
 
     initial : function(vTheme) {
@@ -1457,39 +1480,35 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
       this.border = qx.renderer.border.BorderPresets.getInstance().inset;
     },
-
     initial : function(vTheme) {
       return {
-        spacing : -1,
-        border : qx.renderer.border.BorderPresets.getInstance().inset
+        spacing : -1
       };
     },
-    
-    state : function(vTheme, vStates) {
+    state: function( vTheme, vStates ) {
       return {
-      	border : vStates.rwt_BORDER ? this.border : this.border_default
-//      	,padding : vStates.rwt_BORDER ? 1 : 0
-      };
+        border : vStates.rwt_BORDER ? this.border : this.border_default
+      }
     }
   },
 
   "tab-view-bar" : {
     initial : function(vTheme) {
       return {
-        height : qx.constant.Core.AUTO
+        height : "auto"
       };
     }
   },
 
   "tab-view-pane" : {
     setup : function() {
-      this.border = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "#aca899");
+      this.border = new qx.renderer.border.Border(1, "solid", "#aca899");
       this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {
       return {
-        height : qx.constant.Core.FLEX,
+        height : "1*",
         backgroundColor : this.bgcolor,
         border : this.border,
         paddingTop : 10,
@@ -1513,27 +1532,26 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "tab-view-button" : {
     setup : function() {
-      this.bgcolor_normal = new qx.renderer.color.ColorObject( "#ece9d8" );
-      this.bgcolor_checked = new qx.renderer.color.ColorObject( "#ece9d8" );
-      this.bgcolor_over = new qx.renderer.color.ColorObject( "#fcf9e8" );
+      this.bgcolor_normal = new qx.renderer.color.ColorObject("#ece9d8");
+      this.bgcolor_checked = new qx.renderer.color.ColorObject("#ece9d8");
 
-      this.border_top_normal = new qx.renderer.border.Border( 1, qx.renderer.border.Border.STYLE_SOLID, "#aca899" );
-      this.border_top_normal.setBottomWidth( 0 );
+      this.border_top_normal = new qx.renderer.border.Border(1, "solid", "#aca899");
+      this.border_top_normal.setBottomWidth(0);
 
-      this.border_top_checked = new qx.renderer.border.Border( 1, qx.renderer.border.Border.STYLE_SOLID, "#aca899" );
-      this.border_top_checked.setBottomWidth( 0 );
-      this.border_top_checked.setTop( 3, qx.renderer.border.Border.STYLE_SOLID, "#FEC83C" );
+      this.border_top_checked = new qx.renderer.border.Border(1, "solid", "#aca899");
+      this.border_top_checked.setBottomWidth(0);
+      this.border_top_checked.setTop(3, "solid", "#fec83c");
 
-      this.border_bottom_normal = new qx.renderer.border.Border( 1, qx.renderer.border.Border.STYLE_SOLID, "#aca899" );
-      this.border_bottom_normal.setTopWidth( 0 );
+      this.border_bottom_normal = new qx.renderer.border.Border(1, "solid", "#aca899");
+      this.border_bottom_normal.setTopWidth(0);
 
-      this.border_bottom_checked = new qx.renderer.border.Border( 1, qx.renderer.border.Border.STYLE_SOLID, "#aca899" );
-      this.border_bottom_checked.setTopWidth( 0 );
-      this.border_bottom_checked.setBottom( 3, qx.renderer.border.Border.STYLE_SOLID, "#FEC83C" );
+      this.border_bottom_checked = new qx.renderer.border.Border(1, "solid", "#aca899");
+      this.border_bottom_checked.setTopWidth(0);
+      this.border_bottom_checked.setBottom(3, "solid", "#fec83c");
     },
 
-    initial : function( vTheme ) {
-      return vTheme.initialFrom( "atom" );
+    initial : function(vTheme) {
+      return vTheme.initialFrom("atom");
     },
 
     state : function(vTheme, vStates) {
@@ -1541,7 +1559,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
       if (vStates.checked) {
         vReturn = {
-          color : this.color_checked,
           backgroundColor : this.bgcolor_checked,
           zIndex : 1,
           paddingTop : 2,
@@ -1572,8 +1589,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       }
       else {
         vReturn = {
-          color : this.color_normal,
-          backgroundColor : vStates.over ? this.bgcolor_over : this.bgcolor_normal,
+          backgroundColor : vStates.over ? this.bgcolor_checked : this.bgcolor_normal,
           zIndex : 0,
           paddingTop : 2,
           paddingBottom : 2,
@@ -1615,9 +1631,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
 
 
-
-
-
   /*
   ---------------------------------------------------------------------------
     FIELDSET
@@ -1628,7 +1641,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     setup : function() {
       this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
     },
-
     initial : function(vTheme) {
       return {
         backgroundColor : this.bgcolor
@@ -1639,8 +1651,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "field-set-legend" : {
     setup : function() {
       this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
+      this.color_disabled = new qx.renderer.color.ColorObject("graytext");
     },
-
     initial : function(vTheme) {
       return qx.lang.Object.mergeWith(vTheme.initialFrom("atom"), {
         top : 1,
@@ -1648,7 +1660,10 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         backgroundColor : this.bgcolor,
         paddingRight : 3,
         paddingLeft : 4
-      });
+      } );
+    },
+    state : function(vTheme, vStates) {
+      color : vStates.disabled ? this.color_disabled : null;
     }
   },
 
@@ -1875,7 +1890,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "datechooser-datepane" : {
     setup : function() {
-      this.border = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_SOLID, "gray");
+      this.border = new qx.renderer.border.Border(1, qx.constant.Style.BORDER_SOLID, "gray");
       this.bgcolor = new qx.renderer.color.ColorObject("window");
     },
 
@@ -1891,7 +1906,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "datechooser-weekday" : {
     setup : function() {
       this.border = new qx.renderer.border.Border;
-      this.border.set({ bottomColor:"gray", bottomStyle :qx.renderer.border.Border.STYLE_SOLID, bottomWidth:1 });
+      this.border.set({ bottomColor:"gray", bottomStyle :qx.constant.Style.BORDER_SOLID, bottomWidth:1 });
       this.color = new qx.renderer.color.ColorObject("window");
       this.bgcolor = new qx.renderer.color.ColorObject("#6285BA");
       this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
@@ -1953,10 +1968,10 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "datechooser-week" : {
     setup : function() {
       this.border = new qx.renderer.border.Border;
-      this.border.set({ rightColor:"gray", rightStyle :qx.renderer.border.Border.STYLE_SOLID, rightWidth:1 });
+      this.border.set({ rightColor:"gray", rightStyle :qx.constant.Style.BORDER_SOLID, rightWidth:1 });
       this.headerBorder = new qx.renderer.border.Border;
-      this.headerBorder.set({ rightColor:"gray", rightStyle :qx.renderer.border.Border.STYLE_SOLID, rightWidth:1,
-      bottomColor:"gray", bottomStyle :qx.renderer.border.Border.STYLE_SOLID, bottomWidth:1 });
+      this.headerBorder.set({ rightColor:"gray", rightStyle :qx.constant.Style.BORDER_SOLID, rightWidth:1,
+      bottomColor:"gray", bottomStyle :qx.constant.Style.BORDER_SOLID, bottomWidth:1 });
       this.color = new qx.renderer.color.ColorObject("#6285BA");
       this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
     },
@@ -1992,7 +2007,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     setup : function() {
       this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.border = new qx.renderer.border.Border;
-      this.border.set({ topColor:"threedshadow", topStyle :qx.renderer.border.Border.STYLE_SOLID, topWidth:1 });
+      this.border.set({ topColor:"threedshadow", topStyle :qx.constant.Style.BORDER_SOLID, topWidth:1 });
     },
 
     initial : function(vTheme) {
@@ -2008,8 +2023,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "table-focus-indicator" : {
     setup : function() {
-      this.border = new qx.renderer.border.Border(3, qx.renderer.border.Border.STYLE_SOLID, "#b3d9ff");
-      this.editingBorder = new qx.renderer.border.Border(2, qx.renderer.border.Border.STYLE_SOLID, "#b3d9ff");
+      this.border = new qx.renderer.border.Border(3, qx.constant.Style.BORDER_SOLID, "#b3d9ff");
+      this.editingBorder = new qx.renderer.border.Border(2, qx.constant.Style.BORDER_SOLID, "#b3d9ff");
     },
 
     state : function(vTheme, vStates) {
@@ -2047,12 +2062,12 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "table-header-cell" : {
     setup : function() {
       this.border = new qx.renderer.border.Border;
-      this.border.set({ rightColor:"#d6d2c2", rightStyle :qx.renderer.border.Border.STYLE_SOLID, rightWidth:1,
-      bottomColor:"#d6d2c2", bottomStyle :qx.renderer.border.Border.STYLE_SOLID, bottomWidth:2 });
+      this.border.set({ rightColor:"#d6d2c2", rightStyle :qx.constant.Style.BORDER_SOLID, rightWidth:1,
+      bottomColor:"#d6d2c2", bottomStyle :qx.constant.Style.BORDER_SOLID, bottomWidth:2 });
 
       this.mouseOverBorder = new qx.renderer.border.Border;
-      this.mouseOverBorder.set({ rightColor:"#d6d2c2", rightStyle :qx.renderer.border.Border.STYLE_SOLID, rightWidth:1,
-      bottomColor:"#F9B119", bottomStyle :qx.renderer.border.Border.STYLE_SOLID, bottomWidth:2 });
+      this.mouseOverBorder.set({ rightColor:"#d6d2c2", rightStyle :qx.constant.Style.BORDER_SOLID, rightWidth:1,
+      bottomColor:"#F9B119", bottomStyle :qx.constant.Style.BORDER_SOLID, bottomWidth:2 });
 
       this.mouseOverBackground = new qx.renderer.color.ColorObject("white");
 //      this.background = new qx.renderer.color.ColorObject("#ebeadb");
@@ -2105,6 +2120,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   ---------------------------------------------------------------------------
    */
 
+/*
   "splitpane" :
   {
   
@@ -2125,14 +2141,35 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       }
     }
   },
+*/
+
+  "splitpane" :
+  {
+    setup : function() {
+      this.border_none = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border_inset = qx.renderer.border.BorderPresets.getInstance().inset;
+    },
+    initial : function(vTheme)
+    {
+      return {
+        overflow : "hidden"
+      }
+    },
+    state : function(vTheme, vStates) {
+      return {
+        border: vStates.rwt_BORDER ? this.border_inset : this.border_none
+      }
+    }
+  },
 
   "splitpane-glasspane" :
   {
     setup : function() {
-      this.background = new qx.renderer.color.ColorObject("#ece9d8");
+      this.background = new qx.renderer.color.ColorObject("threedshadow");
     },
 
-    initial : function(vTheme) {
+    initial : function(vTheme)
+    {
       return {
         zIndex : 1e7,
         backgroundColor : this.background
@@ -2150,27 +2187,65 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   {
     initial : function(vTheme) {
       return {
-        backgroundColor : "#ece9d8"
+        backgroundColor : "threedface"
       }
+    },
+
+    state : function(vTheme, vStates)
+    {
+      return {
+        cursor : vStates.horizontal ? "col-resize" : "row-resize"
+      };
     }
   },
 
   "splitpane-slider" :
   {
-    initial : function(vTheme) {
+    initial : function(vTheme)
+    {
       return {
         opacity: 0.5,
         zIndex : 1e8
       }
     },
 
-    state : function(vTheme, vStates) {
+    state : function(vTheme, vStates)
+    {
       return {
-        backgroundColor: vStates.dragging ? "#ece9d8" : "#ece9d8"
+        backgroundColor: vStates.dragging ? "threeddarkshadow" : "threedface"
       }
     }
   },
 
+  "splitpane-knob" :
+  {
+    state : function(vTheme, vStates)
+    {
+      var vReturn = {
+        opacity: vStates.dragging ? 0.5 : 1.0
+      }
+
+      if (vStates.horizontal)
+      {
+        vReturn.top = "33%";
+        vReturn.left = null;
+        vReturn.marginLeft = -6;
+        vReturn.marginTop = 0;
+        vReturn.cursor = "col-resize";
+      }
+      else if (vStates.vertical)
+      {
+        vReturn.top = null;
+        vReturn.left = "33%";
+        vReturn.marginTop = -6;
+        vReturn.marginLeft = 0;
+        vReturn.cursor = "row-resize";
+      }
+
+      return vReturn;
+    }
+  },
+  
   "c-tab-item" : {
     setup : function() {
       this.border_color = new qx.renderer.color.ColorObject( "threedshadow" );
@@ -2179,7 +2254,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.color = new qx.renderer.color.ColorObject( "black" ); ;
       this.color_checked = new qx.renderer.color.ColorObject( "white" ); 
             
-      var solid = qx.renderer.border.Border.STYLE_SOLID;
+      var solid = qx.constant.Style.BORDER_SOLID;
       
       this.border_top = new qx.renderer.border.Border();
       this.border_top.setLeft( 1, solid, this.border_color );
@@ -2337,7 +2412,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     }
   },
 
-  //  the appearance for org.eclipse.rap.rwt.widgets.Separator
+  // the appearance for org.eclipse.rap.rwt.widgets.Separator
   "separator" : {
     setup: function() {
       this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );
@@ -2377,7 +2452,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 /**
  * Singleton Instance Getter
  */
-qx.Class.getInstance = qx.util.Return.returnInstance;
+qx.Class.getInstance = qx.lang.Function.returnInstance;
 
 
 

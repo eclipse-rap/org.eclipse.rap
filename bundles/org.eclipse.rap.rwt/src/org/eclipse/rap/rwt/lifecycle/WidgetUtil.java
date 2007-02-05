@@ -30,10 +30,9 @@ public final class WidgetUtil {
   
   public static IWidgetAdapter getAdapter( final Widget widget ) {
     IWidgetAdapter result;
-    Class clazz = IWidgetAdapter.class;
-    result = ( IWidgetAdapter )widget.getAdapter( clazz );
+    result = ( IWidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
     if( result == null ) {
-      throwAdapterException( clazz );
+      throwAdapterException( IWidgetAdapter.class );
     }
     return result;   
   }

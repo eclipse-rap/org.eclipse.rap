@@ -24,41 +24,29 @@ import com.w4t.engine.service.ContextProvider;
 
 final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
 
-  // part of the param name for the y-location of the menu
-  private static final String BOUNDS_Y = ".boundsMenu.y";
-  // part of the param name for the y-location of the menu
-  private static final String BOUNDS_X = ".boundsMenu.x";
-  // suffix (postfix) for the widget id of the second push button
-  private static final String MENU_SUFFIX = "menu";
-  //tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
-  private static final String CREATE_PUSH 
-    = "org.eclipse.rap.rwt.ToolItemUtil.createToolItemPush";
-  private static final String CREATE_PUSH_MENU 
-    = "org.eclipse.rap.rwt.ToolItemUtil.createToolItemPushMenu";
-  private static final String WIDGET_SELECTED 
-    = "org.eclipse.rap.rwt.ToolItemUtil.widgetSelected";
-  private static final String UPDATE_LISTENER 
-    = "org.eclipse.rap.rwt.ToolItemUtil.addEventListenerForDropDownButton";
-  // radio functions as defined in org.eclipse.rap.rwt.ButtonUtil
-  private final static JSListenerInfo JS_LISTENER_INFO = 
-    new JSListenerInfo( JSConst.QX_EVENT_CLICK,
-                        WIDGET_SELECTED,
-                        JSListenerType.ACTION );
+  private static final String DROP_DOWN_SUFFIX = "_dropDown";
+
+  // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
+  private static final String CREATE_DROP_DOWN 
+    = "org.eclipse.rap.rwt.ToolItemUtil.createDropDown";
+  private static final String UPDATE_DROP_DOWN_LISTENER 
+    = "org.eclipse.rap.rwt.ToolItemUtil.updateDropDownListener";
+  
+  private final static JSListenerInfo JS_BUTTON_LISTENER_INFO 
+    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
+                          JSConst.JS_WIDGET_SELECTED,
+                          JSListenerType.ACTION );
 
   void readData( final ToolItem toolItem ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String widgetId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
-    if( widgetId != null ) {
-      if( WidgetUtil.getId( toolItem ).equals( widgetId ) ) {
-        Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-        SelectionEvent event = newSelectionEvent( toolItem, bounds, RWT.NONE );
-        event.processEvent();
-      } else if( getMenuId( toolItem ).equals( widgetId ) ) {
-        String paramX = request.getParameter( getMenuBoundsX( toolItem ) );
-        int x = Integer.parseInt( paramX );
-        String paramY = request.getParameter( getMenuBoundsY( toolItem ) );
-        int y = Integer.parseInt( paramY );
-        Rectangle bounds = new Rectangle( x, y, 0, 0 );
+    if( WidgetUtil.getId( toolItem ).equals( widgetId ) ) {
+      processSelection( toolItem );
+    } else {
+      String toolItemId = getDropDownId( toolItem );
+      if( toolItemId.equals( widgetId ) ) {
+        Rectangle defaultValue = new Rectangle( 0, 0, 0, 0 );
+        Rectangle bounds = WidgetLCAUtil.readBounds( toolItemId, defaultValue );
         SelectionEvent event = newSelectionEvent( toolItem, bounds, RWT.ARROW );
         event.processEvent();
       }
@@ -69,32 +57,10 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     Object[] args = new Object[] {
       WidgetUtil.getId( toolItem ),
-      toolItem.getParent()
-    };
-    // TODO [rst] The first push button can also be created on the client side
-    //      within the CREATE_PUSH_MENU method.
-    writer.callStatic( CREATE_PUSH, args );
-    boolean parentFlat = (toolItem.getParent().getStyle() & RWT.FLAT) != 0;
-    // the second push button
-    args = new Object[] {
-      getMenuId( toolItem ),
       toolItem.getParent(),
-      parentFlat ? "1" : ""
+      Boolean.valueOf( ( toolItem.getParent().getStyle() & RWT.FLAT ) != 0 )
     };
-    writer.callStatic( CREATE_PUSH_MENU, args );
-    if (parentFlat) {
-      writer.call( "addState", new Object[]{ "rwt_FLAT" } );
-    }
-    // event handler for the second push button
-    // TODO [rst] This was sent with every response - moved here
-    //      Still not a perfect solution - server side turnaround even when no
-    //      listener is registered
-    args = new Object[] {
-      getMenuId( toolItem ),
-      JSConst.QX_EVENT_CLICK,
-      WIDGET_SELECTED
-    };
-    writer.callStatic( UPDATE_LISTENER, args );
+    writer.callStatic( CREATE_DROP_DOWN, args );
   }
   
   void renderChanges( final ToolItem toolItem ) throws IOException {
@@ -107,35 +73,34 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
-    writer.updateListener( JS_LISTENER_INFO,
+    writer.updateListener( JS_BUTTON_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
+    writeDropDownListener( toolItem );
     ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
   }
   
   //////////////////
   // helping methods
   
-  private static String getMenuBoundsY( final Widget widget ) {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append( WidgetUtil.getId( widget ) );
-    buffer.append( MENU_SUFFIX );
-    buffer.append( BOUNDS_Y );
-    return buffer.toString();
+  private static void writeDropDownListener( final ToolItem toolItem ) 
+    throws IOException 
+  {
+    Boolean value = Boolean.valueOf( SelectionEvent.hasListener( toolItem ) );
+    String prop = Props.SELECTION_LISTENERS;
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( toolItem, prop, value, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( toolItem );
+      Boolean remove = Boolean.valueOf( !value.booleanValue() );
+      Object[] args = new Object[] { getDropDownId( toolItem ), remove };
+      writer.callStatic( UPDATE_DROP_DOWN_LISTENER, args );
+    }
   }
 
-  private static String getMenuBoundsX( final Widget widget ) {
+  private static String getDropDownId( final Widget widget ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( WidgetUtil.getId( widget ) );
-    buffer.append( MENU_SUFFIX );
-    buffer.append( BOUNDS_X );
-    return buffer.toString();
-  }
-
-  private static String getMenuId( final Widget widget ) {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append( WidgetUtil.getId( widget ) );
-    buffer.append( MENU_SUFFIX );
+    buffer.append( DROP_DOWN_SUFFIX );
     return buffer.toString();
   }
 }

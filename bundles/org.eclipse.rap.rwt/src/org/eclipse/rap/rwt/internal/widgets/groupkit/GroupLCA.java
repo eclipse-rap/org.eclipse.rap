@@ -34,7 +34,7 @@ public class GroupLCA extends AbstractWidgetLCA {
   
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "qx.ui.groupbox.GroupBox" );
+    writer.newWidget( "org.eclipse.rap.rwt.widgets.Group" );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

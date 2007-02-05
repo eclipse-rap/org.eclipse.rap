@@ -23,7 +23,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
   
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
   private static final String CREATE_RADIO 
-    = "org.eclipse.rap.rwt.ToolItemUtil.createToolItemRadioButton";
+    = "org.eclipse.rap.rwt.ToolItemUtil.createRadio";
   // radio functions as defined in org.eclipse.rap.rwt.ButtonUtil
   private static final String WIDGET_SELECTED 
     = "org.eclipse.rap.rwt.ButtonUtil.radioSelected";

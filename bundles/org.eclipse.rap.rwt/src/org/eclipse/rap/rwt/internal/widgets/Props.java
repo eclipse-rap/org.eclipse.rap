@@ -22,7 +22,6 @@ public final class Props {
   // Control properties
   public static final String BOUNDS = "bounds";
   public static final String Z_INDEX = "zindex";
-  public static final String TOOL_TIP_TEXT = "toolTip";
   public static final String MENU = "menu";
   public static final String VISIBLE = "visible";
   public static final String ENABLED = "enabled";

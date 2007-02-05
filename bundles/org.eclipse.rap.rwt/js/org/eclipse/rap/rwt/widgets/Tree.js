@@ -43,7 +43,8 @@ qx.OO.defineClass(
 qx.Proto.createItem = function( id, parentItem ) {
   var row = qx.ui.treefullcontrol.TreeRowStructure.getInstance().newRow();
   row.addIndent();
-  row.addIcon( "resource/icon/nuvola/16/folder.png" );
+  row.addIcon( "org/eclipse/rap/rwt/widgets/tree/folder_closed.gif",
+               "org/eclipse/rap/rwt/widgets/tree/folder_open.gif" );
   if( this._styleCheck ) {
     var checkBox = new qx.ui.form.CheckBox();
     row.addObject( checkBox, true );
