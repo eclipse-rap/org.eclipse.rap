@@ -21,8 +21,8 @@ import org.eclipse.rap.rwt.widgets.Button;
 
 final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
-  private static final String CREATE_RADIO_BUTTON
-    = "org.eclipse.rap.rwt.ButtonUtil.createRadioButton";
+  private static final String REGISTER_RADIO_BUTTON
+    = "org.eclipse.rap.rwt.ButtonUtil.registerRadioButton";
   private static final String UNREGISTER_RADIO_BUTTON 
     = "org.eclipse.rap.rwt.ButtonUtil.unregisterRadioButton";
   private static final String WIDGET_SELECTED 
@@ -44,11 +44,9 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   void renderInitialization( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
-    Object[] args = new Object[] {
-      WidgetUtil.getId( button ),
-      button.getParent()
-    };
-    writer.callStatic( CREATE_RADIO_BUTTON, args );
+    writer.newWidget( "qx.ui.form.RadioButton" );
+    Object[] args = new Object[] { button };
+    writer.callStatic( REGISTER_RADIO_BUTTON, args );
     writer.set( JSConst.QX_FIELD_APPEARANCE, "radiobutton" );
     ControlLCAUtil.writeStyleFlags( button );
   }

@@ -72,16 +72,7 @@ public class ShellLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( shell );
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.set( Props.TEXT, JSConst.QX_FIELD_CAPTION, shell.getText(), "" );
-    
-    // TODO [rst] workaround: qx window should be opened only once.
-    Boolean defValue = Boolean.FALSE;
-    Boolean actValue = Boolean.valueOf( shell.getVisible() );
-    if( WidgetLCAUtil.hasChanged( widget, Props.VISIBLE, actValue, defValue )
-        && shell.getVisible() )
-    {
-      writer.call( "open", null );
-    }
-    
+    writeOpen( shell );
     // Important: Order matters, writing setActive() before open() leads to
     //            strange behavior!
     writeActiveShell( shell );
@@ -94,6 +85,21 @@ public class ShellLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
   
+  //////////////////
+  // Helping methods
+  
+  private static void writeOpen( final Shell shell ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( shell );
+    // TODO [rst] workaround: qx window should be opened only once.
+    Boolean defValue = Boolean.FALSE;
+    Boolean actValue = Boolean.valueOf( shell.getVisible() );
+    if( WidgetLCAUtil.hasChanged( shell, Props.VISIBLE, actValue, defValue )
+        && shell.getVisible() )
+    {
+      writer.call( "open", null );
+    }
+  }
+
   /////////////////////////////////////////////
   // Methods to read and write the active shell
   

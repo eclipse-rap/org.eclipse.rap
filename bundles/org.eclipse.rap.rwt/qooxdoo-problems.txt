@@ -58,3 +58,11 @@ that's right?
 18.) A qx.ui.basic.Atom displaying a wrapped and centered text in its label
      does not align the label properly. It seems that the Boxlayout assumes the
      width of the non-wrapped child.
+
+19.) treefullcontrol causes debug message "Could not load: 
+     icon/16/places/folder.png" event though icon and selectedIcon were set
+     in TreeRowStructure
+
+20.) What happens with a RadioManager when a Composite with some radio buttons
+     gets disposed of? After that radioButton.getMaanger() return null, but
+     the RadioManagers' dispose methods seems not to be called.     

@@ -14,35 +14,40 @@
  */
 qx.OO.defineClass( "org.eclipse.rap.rwt.ButtonUtil" );
 
-org.eclipse.rap.rwt.ButtonUtil.createRadioButton = function( id, parent ) {
-  var button = new qx.ui.form.RadioButton();
-  var radioManager = parent.getUserData( "radioManager" );
-  if( radioManager == null ){
-    radioManager = new qx.manager.selection.RadioManager();
-    parent.setUserData( "radioManager", radioManager );
-  }
-  radioManager.add( button );
-  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  widgetManager.add( button, id, true );
-  var parentId = widgetManager.findIdByWidget( parent );
-  widgetManager.setParent( button, parentId );
-}
-
-// TODO [rh] MEMORY LEAK: when parent of radioButton gets disposed, we need
-//      to find a way how to dispose of the radioManager that is stored in
-//      the parents' userData 
-org.eclipse.rap.rwt.ButtonUtil.unregisterRadioButton = function( button ) {
+/**
+ * Registers the given button at the RadioManager of the first sibling 
+ * radio button. If there is not sibing radio button, a new RadioManager
+ * is created.
+ */
+org.eclipse.rap.rwt.ButtonUtil.registerRadioButton = function( button ) {
+  var radioManager = null;
   var parent = button.getParent();
-  if( parent != null ) { // parent may already have been disposed of 
-    var radioManager = parent.getUserData( "radioManager" );
-    if( radioManager != null ) {
-      radioManager.remove( button );
-      if( radioManager.getItems().length == 0 ) {
-        radioManager.dispose();
-        parent.setUserData( "radioManager", null );
-      }
+  var siblings = parent.getChildren();
+  for( var i = 0; radioManager == null && i < siblings.length; i++ ) {
+    if( siblings[ i ] != button && siblings[ i ].classname == button.classname )
+    {
+      radioManager = siblings[ i ].getManager();
     }
   }
+  if( radioManager == null ) {
+    radioManager = new qx.manager.selection.RadioManager();
+  }
+  radioManager.add( button );
+}
+
+/**
+ * Removes the given button from its RadioManager and disposes of the
+ * RadioManager if there are no more radio buttons that use this 
+ * RadioManager.
+ */
+org.eclipse.rap.rwt.ButtonUtil.unregisterRadioButton = function( button ) {
+  var radioManager = button.getManager();
+	if( radioManager != null ) {
+  	radioManager.remove( button );
+    if( radioManager.getItems().length == 0 ) {
+      radioManager.dispose();
+    }
+	}
 }
 
 org.eclipse.rap.rwt.ButtonUtil.radioSelected = function( evt ) {
