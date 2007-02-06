@@ -29,5 +29,6 @@ public class Perspective implements IPerspectiveFactory {
                                                   0.70f,
                                                   editorArea );
     topRight.addView( "org.eclipse.rap.demo.DemoSelectionViewPart" );
+    topRight.addView( "org.eclipse.rap.demo.DemoBrowserViewPart" );
   }
 }

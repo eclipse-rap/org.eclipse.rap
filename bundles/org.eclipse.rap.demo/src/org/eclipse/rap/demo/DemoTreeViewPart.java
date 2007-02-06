@@ -23,16 +23,26 @@ public class DemoTreeViewPart extends ViewPart {
   class TreeObject {
 
     private String name;
+    private String location;
     private TreeParent parent;
 
     public TreeObject( String name ) {
       this.name = name;
     }
 
+    public TreeObject( String name, String location ) {
+        this.name = name;
+        this.location = location;
+      }
+
     public String getName() {
       return name;
     }
 
+    public String getLocation() {
+      return location;
+    }
+    
     public void setParent( TreeParent parent ) {
       this.parent = parent;
     }
@@ -120,10 +130,10 @@ public class DemoTreeViewPart extends ViewPart {
      * code, you will connect to a real model and expose its hierarchy.
      */
     private void initialize() {
-      TreeObject to1 = new TreeObject( "Leaf 1" );
-      TreeObject to2 = new TreeObject( "Leaf 2" );
-      TreeObject to3 = new TreeObject( "Leaf 3" );
-      TreeParent p1 = new TreeParent( "Parent 1" );
+      TreeObject to1 = new TreeObject( "EclipseCon location", "http://maps.google.com/maps?q=5001%20Great%20America%20Pkwy%20Santa%20Clara%20CA%2095054" );
+      TreeObject to2 = new TreeObject( "Eclipse Foundation", "http://maps.google.com/maps?q=Ottawa" );
+      TreeObject to3 = new TreeObject( "Innoopract Inc", "http://maps.google.com/maps?q=Portland" );
+      TreeParent p1 = new TreeParent( "Locate in browser view" );
       p1.addChild( to1 );
       p1.addChild( to2 );
       p1.addChild( to3 );

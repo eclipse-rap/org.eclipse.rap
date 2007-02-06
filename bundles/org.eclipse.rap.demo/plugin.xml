@@ -73,6 +73,11 @@
             name="Selection View"/> 
          <!-- category="com.xyz.views.XYZviews" --> 
          <!-- icon="icons/XYZ.gif"/ -->
+      <view
+            class="org.eclipse.rap.demo.DemoBrowserViewPart"
+            icon="icons/internal_browser.gif"
+            id="org.eclipse.rap.demo.DemoBrowserViewPart"
+            name="Browser"/> 
    </extension> 
   
 </plugin>
