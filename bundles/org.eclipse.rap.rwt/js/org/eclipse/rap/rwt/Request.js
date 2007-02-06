@@ -98,7 +98,7 @@ qx.Proto._sendImmediate = function() {
   // apply _parameters map which was filled during client interaction
   for( var parameterName in this._parameters ) {
     var value = this._parameters[ parameterName ];
-    request.setParameter( parameterName, encodeURIComponent( value ) );
+    request.setParameter( parameterName, value );
   }
   // set mandatory parameters; do this after regular params to override them
   // in case of conflict
