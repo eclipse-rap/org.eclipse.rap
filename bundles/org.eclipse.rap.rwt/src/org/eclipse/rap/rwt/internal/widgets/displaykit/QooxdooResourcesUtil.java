@@ -183,7 +183,6 @@ final class QooxdooResourcesUtil {
     manager.register( "resource/widget/rap/arrows/previous.gif" );
     manager.register( "resource/widget/rap/arrows/rewind.gif" );
     manager.register( "resource/widget/rap/arrows/right.png" );
-    manager.register( "resource/widget/rap/arrows/Thumbs.db" );
     manager.register( "resource/widget/rap/arrows/up.gif" );
     manager.register( "resource/widget/rap/arrows/up_small.gif" );
     manager.register( "resource/widget/rap/arrows/up_tiny.gif" );
