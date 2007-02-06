@@ -22,10 +22,14 @@
 
  ************************************************************************ */
 
-qx.OO.defineClass("org.eclipse.rap.rwt.DefaultAppearanceTheme", qx.renderer.theme.AppearanceTheme,
-function(vTitle) {
-  qx.renderer.theme.AppearanceTheme.call(this, vTitle || "rap default appearance");
-});
+qx.OO.defineClass(
+  "org.eclipse.rap.rwt.DefaultAppearanceTheme", 
+  qx.renderer.theme.AppearanceTheme,
+  function(vTitle) {
+    qx.renderer.theme.AppearanceTheme.call( this, 
+                                            vTitle || "rap default appearance");
+  }
+);
 
 
 org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName
@@ -49,13 +53,14 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "client-document" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
+      this.bgcolor = new qx.renderer.color.ColorObject("#ffffff");
       this.color = new qx.renderer.color.ColorObject("windowtext");
     },
 
     initial : function(vTheme) {
       return {
         backgroundColor : this.bgcolor,
+        backgroundImage : "./org/eclipse/rap/rwt/widgets/display/bg.gif",
         color : this.color,
         hideFocus : true,
         enableElementFocus : false
@@ -209,7 +214,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     setup : function() {
       this.bgcolor_default = new qx.renderer.color.ColorObject("#ece9d8");
       this.bgcolor_over = new qx.renderer.color.ColorObject("#fcf9e8");
-      this.bgcolor_left = new qx.renderer.color.ColorObject("#e1e0d8");
 
       this.border = qx.renderer.border.BorderPresets.getInstance().thinOutset;
       this.border_pressed = qx.renderer.border.BorderPresets.getInstance().thinInset;
@@ -224,17 +228,15 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     state : function(vTheme, vStates) {
       var vReturn = {
-        backgroundColor : vStates.abandoned ? this.bgcolor_left : vStates.over ? this.bgcolor_over : this.bgcolor_default
+        backgroundColor : vStates.over ? this.bgcolor_over : null
       }
       
-      if (vStates.rwt_FLAT) {
+      if( vStates.rwt_FLAT ) {
         vReturn.border = this.border_FLAT;
-      }
-      else if (vStates.rwt_BORDER) {
-        vReturn.border = vStates.pressed || vStates.checked || vStates.abandoned ? this.border_BORDER_pressed : this.border_BORDER;
-      }
-      else {
-        vReturn.border = vStates.pressed || vStates.checked || vStates.abandoned ? this.border_pressed : this.border;
+      } else if (vStates.rwt_BORDER) {
+        vReturn.border = vStates.pressed || vStates.checked ? this.border_BORDER_pressed : this.border_BORDER;
+      } else {
+        vReturn.border = vStates.pressed || vStates.checked ? this.border_pressed : this.border;
       }
 
       if (vStates.pressed || vStates.abandoned) {
@@ -267,14 +269,12 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "toolbar" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
       this.border = qx.renderer.border.BorderPresets.getInstance().thinOutset;
     },
 
     initial : function(vTheme) {
       return {
-        backgroundColor : this.bgcolor,
         height : qx.constant.Core.AUTO
       }
     },
@@ -361,10 +361,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "toolbar-button" : {
     setup : function() {
-      this.bgcolor_default = new qx.renderer.color.ColorObject("#ece9d8");
-      this.bgcolor_left = new qx.renderer.color.ColorObject("#e1e0d8");
-      this.bgcolor_over = new qx.renderer.color.ColorObject("#fcf9e8");
-
       this.border_none = qx.renderer.border.BorderPresets.getInstance().none;
       this.border_raised = qx.renderer.border.BorderPresets.getInstance().thinOutset;
       this.border_pressed = qx.renderer.border.BorderPresets.getInstance().thinInset;
@@ -383,7 +379,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     state : function(vTheme, vStates) {
       var vReturn = {
-        backgroundColor : vStates.abandoned ? this.bgcolor_left : this.bgcolor_default,
         backgroundImage : vStates.checked && !vStates.over ? this.checked_background : null
       }
 
@@ -645,7 +640,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "window" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
+      this.bgcolor = new qx.renderer.color.ColorObject("#f8f8ff");
       this.color = new qx.renderer.color.ColorObject("windowtext");
     },
 
@@ -669,9 +664,9 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "window-captionbar" : {
     setup : function() {
-      this.bgcolor_active = new qx.renderer.color.ColorObject("#316ac5");
+      this.bgimage_active = "./org/eclipse/rap/rwt/widgets/shell/caption_active.gif";
+      this.bgimage_inactive = "./org/eclipse/rap/rwt/widgets/shell/caption_inactive.gif";
       this.color_active = new qx.renderer.color.ColorObject("#ffffff");
-      this.bgcolor_inactive = new qx.renderer.color.ColorObject("#ece9d8");
       this.color_inactive = new qx.renderer.color.ColorObject("#000000");
     },
 
@@ -689,7 +684,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     state : function(vTheme, vStates) {
       return {
-        backgroundColor : vStates.active ? this.bgcolor_active : this.bgcolor_inactive,
+        backgroundImage : vStates.active ? this.bgimage_active : this.bgimage_inactive,
         color : vStates.active ? this.color_active : this.color_inactive
       }
     }
@@ -728,67 +723,81 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   },
 
   "window-captionbar-button" : {
-    initial : function(vTheme) {
-      return vTheme.initialFrom("button");
+    setup : function() {
+      this.border = new qx.renderer.border.Border(1, "solid", "white");
     },
-
+    initial : function(vTheme) {
+      return qx.lang.Object.mergeWith(vTheme.initialFrom("button"), {
+        border : this.border,
+        paddingTop : 1,
+        paddingBottom : 1,
+        paddingRight : 2,
+        paddingLeft : 2
+      });
+    },
     state : function(vTheme, vStates) {
-      var vReturn = vTheme.stateFrom("button", vStates);
-
-      if (vStates.pressed || vStates.abandoned) {
-        vReturn.paddingTop = 2;
-        vReturn.paddingRight = 1;
-        vReturn.paddingBottom = 0;
-        vReturn.paddingLeft = 3;
-      }
-      else {
-        vReturn.paddingTop = vReturn.paddingBottom = 1;
-        vReturn.paddingRight = vReturn.paddingLeft = 2;
-      }
-
-      return vReturn;
+      return {};
     }
   },
 
   "window-captionbar-minimize-button" : {
+    setup : function() {
+      this.bgcolor = new qx.renderer.color.ColorObject("#339122");
+      this.bgcolor_over = new qx.renderer.color.ColorObject( "#00009D" );
+    },
     initial : function(vTheme) {
       return vTheme.initialFrom("window-captionbar-button");
     },
-
     state : function(vTheme, vStates) {
-      return vTheme.stateFrom("window-captionbar-button", vStates);
+      var vReturn = vTheme.stateFrom("window-captionbar-button", vStates);
+      vReturn.backgroundColor = vStates.over && !vStates.pressed ? this.bgcolor_over : this.bgcolor;
+      return vReturn;
     }
   },
 
   "window-captionbar-restore-button" : {
+    setup : function() {
+      this.bgcolor = new qx.renderer.color.ColorObject("#339122");
+      this.bgcolor_over = new qx.renderer.color.ColorObject( "#00009D" );
+    },
     initial : function(vTheme) {
       return vTheme.initialFrom("window-captionbar-button");
     },
-
     state : function(vTheme, vStates) {
-      return vTheme.stateFrom("window-captionbar-button", vStates);
+      var vReturn = vTheme.stateFrom("window-captionbar-button", vStates);
+      vReturn.backgroundColor = vStates.over && !vStates.pressed ? this.bgcolor_over : this.bgcolor;
+      return vReturn;
     }
   },
 
   "window-captionbar-maximize-button" : {
+    setup : function() {
+      this.bgcolor = new qx.renderer.color.ColorObject("#339122");
+      this.bgcolor_over = new qx.renderer.color.ColorObject( "#00009D" );
+    },
     initial : function(vTheme) {
       return vTheme.initialFrom("window-captionbar-button");
     },
 
     state : function(vTheme, vStates) {
-      return vTheme.stateFrom("window-captionbar-button", vStates);
+      var vReturn = vTheme.stateFrom("window-captionbar-button", vStates);
+      vReturn.backgroundColor = vStates.over && !vStates.pressed ? this.bgcolor_over : this.bgcolor;
+      return vReturn;
     }
   },
 
   "window-captionbar-close-button" : {
-    initial : function(vTheme) {
-      return qx.lang.Object.mergeWith(vTheme.initialFrom("window-captionbar-button"), {
-        marginLeft : 2
-      });
+    setup: function() {
+      this.bgcolor = new qx.renderer.color.ColorObject("#ff4454");
+      this.bgcolor_over = new qx.renderer.color.ColorObject( "#00009D" );
     },
-
+    initial : function(vTheme) {
+      return vTheme.initialFrom("window-captionbar-button");
+    },
     state : function(vTheme, vStates) {
-      return vTheme.stateFrom("window-captionbar-button", vStates);
+      var vReturn = vTheme.stateFrom("window-captionbar-button", vStates);
+      vReturn.backgroundColor = vStates.over && !vStates.pressed ? this.bgcolor_over : this.bgcolor;
+      return vReturn;
     }
   },
 
@@ -1503,13 +1512,11 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "tab-view-pane" : {
     setup : function() {
       this.border = new qx.renderer.border.Border(1, "solid", "#aca899");
-      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {
       return {
         height : "1*",
-        backgroundColor : this.bgcolor,
         border : this.border,
         paddingTop : 10,
         paddingRight : 10,
@@ -1532,9 +1539,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "tab-view-button" : {
     setup : function() {
-      this.bgcolor_normal = new qx.renderer.color.ColorObject("#ece9d8");
-      this.bgcolor_checked = new qx.renderer.color.ColorObject("#ece9d8");
-
       this.border_top_normal = new qx.renderer.border.Border(1, "solid", "#aca899");
       this.border_top_normal.setBottomWidth(0);
 
@@ -1559,7 +1563,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
       if (vStates.checked) {
         vReturn = {
-          backgroundColor : this.bgcolor_checked,
           zIndex : 1,
           paddingTop : 2,
           paddingBottom : 4,
@@ -1589,7 +1592,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       }
       else {
         vReturn = {
-          backgroundColor : vStates.over ? this.bgcolor_checked : this.bgcolor_normal,
           zIndex : 0,
           paddingTop : 2,
           paddingBottom : 2,
@@ -2120,29 +2122,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   ---------------------------------------------------------------------------
    */
 
-/*
-  "splitpane" :
-  {
-  
-    setup : function() {
-      this.border_none = qx.renderer.border.BorderPresets.getInstance().none;
-      this.border_inset = qx.renderer.border.BorderPresets.getInstance().inset;
-    },
-
-    initial : function(vTheme) {
-      return {
-        overflow : "hidden"
-      }
-    },
-    
-    state : function(vTheme, vStates) {
-      return {
-        border: vStates.rwt_BORDER ? this.border_inset : this.border_none
-      }
-    }
-  },
-*/
-
   "splitpane" :
   {
     setup : function() {
@@ -2185,12 +2164,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "splitpane-splitter" :
   {
-    initial : function(vTheme) {
-      return {
-        backgroundColor : "threedface"
-      }
-    },
-
     state : function(vTheme, vStates)
     {
       return {
@@ -2212,7 +2185,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     state : function(vTheme, vStates)
     {
       return {
-        backgroundColor: vStates.dragging ? "threeddarkshadow" : "threedface"
+        backgroundColor: vStates.dragging ? "threeddarkshadow" : null
       }
     }
   },

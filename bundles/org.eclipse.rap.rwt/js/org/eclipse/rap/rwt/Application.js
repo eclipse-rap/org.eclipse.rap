@@ -23,6 +23,8 @@ qx.OO.defineClass(
 qx.Proto.initialize = function( evt ) {
   qx.manager.object.AliasManager.getInstance().add( "org.eclipse.rap.rwt", 
                                                     "./resource" );
+  var theme = org.eclipse.rap.rwt.WidgetTheme.getInstance();                                                    
+  qx.manager.object.ImageManager.getInstance().setWidgetTheme( theme );
 };
 
 qx.Proto.main = function( evt ) {

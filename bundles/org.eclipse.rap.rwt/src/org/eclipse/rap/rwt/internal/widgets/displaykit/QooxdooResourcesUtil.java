@@ -25,6 +25,17 @@ import com.w4t.engine.service.IServiceStateInfo;
 //      e.g. org/eclipse/rap/rwt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
   
+  private static final String SHELL_CAPTION_INACTIVE_GIF 
+    = "org/eclipse/rap/rwt/widgets/shell/caption_inactive.gif";
+  private static final String SHELL_CAPTION_ACTIVE_GIF 
+    = "org/eclipse/rap/rwt/widgets/shell/caption_active.gif";
+  private static final String DISPLAY_BG_GIF 
+    = "org/eclipse/rap/rwt/widgets/display/bg.gif";
+  private static final String TREE_FOLDER_CLOSED_GIF 
+    = "org/eclipse/rap/rwt/widgets/tree/folder_closed.gif";
+  private static final String TREE_FOLDER_OPEN_GIF 
+    = "org/eclipse/rap/rwt/widgets/tree/folder_open.gif";
+  
   private static final String APPEARANCE_JS
     = "org/eclipse/rap/rwt/DefaultAppearanceTheme.js";
   private static final String APPLICATION_JS 
@@ -75,6 +86,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/LabelUtil.js";
   private static final String GROUP_JS
     = "org/eclipse/rap/rwt/widgets/Group.js";
+  private static final String WIDGET_THEME_JS
+    = "org/eclipse/rap/rwt/WidgetTheme.js";
   
   private static final String QX_CONSTANT_CORE_JS
     = "qx/constant/Core.js";
@@ -105,70 +118,20 @@ final class QooxdooResourcesUtil {
       manager.register( "resource/static/history/historyHelper.html", HTML.CHARSET_NAME_ISO_8859_1 );
       manager.register( "resource/static/image/blank.gif" );
       manager.register( "resource/static/image/dotted_white.gif" );
-      manager.register( "resource/widget/windows/arrows/down.gif" );
-      manager.register( "resource/widget/windows/arrows/down_small.gif" );
-      manager.register( "resource/widget/windows/arrows/down_tiny.gif" );
-      manager.register( "resource/widget/windows/arrows/first.png" );
-      manager.register( "resource/widget/windows/arrows/forward.gif" );
-      manager.register( "resource/widget/windows/arrows/last.png" );
-      manager.register( "resource/widget/windows/arrows/left.png" );
-      manager.register( "resource/widget/windows/arrows/minimize.gif" );
-      manager.register( "resource/widget/windows/arrows/next.gif" );
-      manager.register( "resource/widget/windows/arrows/previous.gif" );
-      manager.register( "resource/widget/windows/arrows/rewind.gif" );
-      manager.register( "resource/widget/windows/arrows/right.png" );
-      manager.register( "resource/widget/windows/arrows/Thumbs.db" );
-      manager.register( "resource/widget/windows/arrows/up.gif" );
-      manager.register( "resource/widget/windows/arrows/up_small.gif" );
-      manager.register( "resource/widget/windows/arrows/up_tiny.gif" );
-      manager.register( "resource/widget/windows/colorselector/brightness-field.jpg" );
-      manager.register( "resource/widget/windows/colorselector/brightness-handle.gif" );
-      manager.register( "resource/widget/windows/colorselector/huesaturation-field.jpg" );
-      manager.register( "resource/widget/windows/colorselector/huesaturation-handle.gif" );
-      manager.register( "resource/widget/windows/cursors/alias.gif" );
-      manager.register( "resource/widget/windows/cursors/copy.gif" );
-      manager.register( "resource/widget/windows/cursors/move.gif" );
-      manager.register( "resource/widget/windows/cursors/nodrop.gif" );
-      manager.register( "resource/widget/windows/datechooser/lastMonth.png" );
-      manager.register( "resource/widget/windows/datechooser/lastYear.png" );
-      manager.register( "resource/widget/windows/datechooser/nextMonth.png" );
-      manager.register( "resource/widget/windows/datechooser/nextYear.png" );
-      manager.register( "resource/widget/windows/menu/checkbox.gif" );
-      manager.register( "resource/widget/windows/menu/menu-blank.gif" );
-      manager.register( "resource/widget/windows/menu/radiobutton.gif" );
-      manager.register( "resource/widget/windows/splitpane/knob-horizontal.png" );
-      manager.register( "resource/widget/windows/splitpane/knob-vertical.png" );
-      manager.register( "resource/widget/windows/table/ascending.png" );
-      manager.register( "resource/widget/windows/table/boolean-false.png" );
-      manager.register( "resource/widget/windows/table/boolean-true.png" );
-      manager.register( "resource/widget/windows/table/descending.png" );
-      manager.register( "resource/widget/windows/table/selectColumnOrder.png" );
-      manager.register( "resource/widget/windows/tree/cross.gif" );
-      manager.register( "resource/widget/windows/tree/cross_minus.gif" );
-      manager.register( "resource/widget/windows/tree/cross_plus.gif" );
-      manager.register( "resource/widget/windows/tree/end.gif" );
-      manager.register( "resource/widget/windows/tree/end_minus.gif" );
-      manager.register( "resource/widget/windows/tree/end_plus.gif" );
-      manager.register( "resource/widget/windows/tree/line.gif" );
-      manager.register( "resource/widget/windows/tree/minus.gif" );
-      manager.register( "resource/widget/windows/tree/only_minus.gif" );
-      manager.register( "resource/widget/windows/tree/only_plus.gif" );
-      manager.register( "resource/widget/windows/tree/plus.gif" );
-      manager.register( "resource/widget/windows/tree/start_minus.gif" );
-      manager.register( "resource/widget/windows/tree/start_plus.gif" );
-      manager.register( "resource/widget/windows/window/close.gif" );
-      manager.register( "resource/widget/windows/window/maximize.gif" );
-      manager.register( "resource/widget/windows/window/minimize.gif" );
-      manager.register( "resource/widget/windows/window/restore.gif" );
       manager.register( "script/custom.js", HTML.CHARSET_NAME_ISO_8859_1, RegisterOptions.VERSION );
       responseWriter.useJSLibrary( "script/custom.js" );
 
 
       // end generated code
       ///////////////////////////////////////////////
+
+      registerWidgetTheme( manager );
       
-      manager.register( "org/eclipse/rap/rwt/widgets/tree/folder_open.gif" );
-      manager.register( "org/eclipse/rap/rwt/widgets/tree/folder_closed.gif" );
+      manager.register( TREE_FOLDER_OPEN_GIF );
+      manager.register( TREE_FOLDER_CLOSED_GIF );
+      manager.register( DISPLAY_BG_GIF );
+      manager.register( SHELL_CAPTION_ACTIVE_GIF );
+      manager.register( SHELL_CAPTION_INACTIVE_GIF );
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
       //      these three files are here o keep DefaultAppearanceTheme.js
       //      happy that makes heavy use of constants 
@@ -201,9 +164,68 @@ final class QooxdooResourcesUtil {
       register( SEPARATOR_JS );
       register( LABEL_UTIL_JS );
       register( GROUP_JS );
+      register( WIDGET_THEME_JS );
     } finally {
       manager.setContextLoader( bufferedLoader );
     }
+  }
+
+  private static void registerWidgetTheme( final IResourceManager manager ) {
+    manager.register( "resource/widget/rap/arrows/down.gif" );
+    manager.register( "resource/widget/rap/arrows/down_small.gif" );
+    manager.register( "resource/widget/rap/arrows/down_tiny.gif" );
+    manager.register( "resource/widget/rap/arrows/first.png" );
+    manager.register( "resource/widget/rap/arrows/forward.gif" );
+    manager.register( "resource/widget/rap/arrows/last.png" );
+    manager.register( "resource/widget/rap/arrows/left.png" );
+    manager.register( "resource/widget/rap/arrows/minimize.gif" );
+    manager.register( "resource/widget/rap/arrows/next.gif" );
+    manager.register( "resource/widget/rap/arrows/previous.gif" );
+    manager.register( "resource/widget/rap/arrows/rewind.gif" );
+    manager.register( "resource/widget/rap/arrows/right.png" );
+    manager.register( "resource/widget/rap/arrows/Thumbs.db" );
+    manager.register( "resource/widget/rap/arrows/up.gif" );
+    manager.register( "resource/widget/rap/arrows/up_small.gif" );
+    manager.register( "resource/widget/rap/arrows/up_tiny.gif" );
+    manager.register( "resource/widget/rap/colorselector/brightness-field.jpg" );
+    manager.register( "resource/widget/rap/colorselector/brightness-handle.gif" );
+    manager.register( "resource/widget/rap/colorselector/huesaturation-field.jpg" );
+    manager.register( "resource/widget/rap/colorselector/huesaturation-handle.gif" );
+    manager.register( "resource/widget/rap/cursors/alias.gif" );
+    manager.register( "resource/widget/rap/cursors/copy.gif" );
+    manager.register( "resource/widget/rap/cursors/move.gif" );
+    manager.register( "resource/widget/rap/cursors/nodrop.gif" );
+    manager.register( "resource/widget/rap/datechooser/lastMonth.png" );
+    manager.register( "resource/widget/rap/datechooser/lastYear.png" );
+    manager.register( "resource/widget/rap/datechooser/nextMonth.png" );
+    manager.register( "resource/widget/rap/datechooser/nextYear.png" );
+    manager.register( "resource/widget/rap/menu/checkbox.gif" );
+    manager.register( "resource/widget/rap/menu/menu-blank.gif" );
+    manager.register( "resource/widget/rap/menu/radiobutton.gif" );
+    manager.register( "resource/widget/rap/splitpane/knob-horizontal.png" );
+    manager.register( "resource/widget/rap/splitpane/knob-vertical.png" );
+    manager.register( "resource/widget/rap/table/ascending.png" );
+    manager.register( "resource/widget/rap/table/boolean-false.png" );
+    manager.register( "resource/widget/rap/table/boolean-true.png" );
+    manager.register( "resource/widget/rap/table/descending.png" );
+    manager.register( "resource/widget/rap/table/selectColumnOrder.png" );
+    manager.register( "resource/widget/rap/tree/cross.gif" );
+    manager.register( "resource/widget/rap/tree/cross_minus.gif" );
+    manager.register( "resource/widget/rap/tree/cross_plus.gif" );
+    manager.register( "resource/widget/rap/tree/end.gif" );
+    manager.register( "resource/widget/rap/tree/end_minus.gif" );
+    manager.register( "resource/widget/rap/tree/end_plus.gif" );
+    manager.register( "resource/widget/rap/tree/line.gif" );
+    manager.register( "resource/widget/rap/tree/minus.gif" );
+    manager.register( "resource/widget/rap/tree/only_minus.gif" );
+    manager.register( "resource/widget/rap/tree/only_plus.gif" );
+    manager.register( "resource/widget/rap/tree/plus.gif" );
+    manager.register( "resource/widget/rap/tree/start_minus.gif" );
+    manager.register( "resource/widget/rap/tree/start_plus.gif" );
+    manager.register( "resource/widget/rap/window/close.gif" );
+    manager.register( "resource/widget/rap/window/maximize.gif" );
+    manager.register( "resource/widget/rap/window/minimize.gif" );
+    manager.register( "resource/widget/rap/window/restore.gif" );
   }
   
   private static void register( final String libraryName ) {
