@@ -25,6 +25,8 @@ qx.OO.defineClass(
     manager.setMultiSelection( multiSelection );
     manager.addEventListener( "changeSelection", this._onChangeSelection, this );
     manager.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+    this.addEventListener( "focus", this._onFocusIn, this );
+    this.addEventListener( "blur", this._onFocusOut, this );
   }
 );
 
@@ -137,10 +139,13 @@ qx.Proto.dispose = function() {
   var manager = this.getManager();
   manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
   manager.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+  this.removeEventListener( "focusin", this._onFocusIn, this );
+  this.removeEventListener( "focusout", this._onFocusOut, this );
   return qx.ui.form.List.prototype.dispose.call( this );
 }
 
 qx.Proto._onChangeSelection = function( evt ) {
+  this._updateSelectedItemState();  
   if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
     var id = widgetManager.findIdByWidget( this );
@@ -188,3 +193,22 @@ qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
   }
   return true;
 };
+
+qx.Proto._onFocusIn = function( evt ) {
+  this._updateSelectedItemState();
+}
+
+qx.Proto._onFocusOut = function( evt ) {
+  this._updateSelectedItemState();
+}
+
+qx.Proto._updateSelectedItemState = function() {
+  var selectedItems = this.getManager().getSelectedItems();
+  for( var i = 0; i < selectedItems.length; i++ ) {
+    if( this.getFocused() ) {
+      selectedItems[ i ].addState( "focused" );
+    } else {
+      selectedItems[ i ].removeState( "focused" );
+    }
+  }
+}

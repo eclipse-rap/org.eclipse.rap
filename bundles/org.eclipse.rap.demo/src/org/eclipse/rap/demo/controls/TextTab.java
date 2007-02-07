@@ -18,7 +18,7 @@ public class TextTab extends ExampleTab {
 
   private Text text;
 
-  public TextTab( TabFolder folder ) {
+  public TextTab( final TabFolder folder ) {
     super( folder, "Text" );
   }
 
@@ -34,14 +34,14 @@ public class TextTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
     text = new Text( top, style );
-    if( (text.getStyle() & RWT.SINGLE) != 0 ) {
-      text.setLayoutData( new RowData(200, 20) );
+    if( ( text.getStyle() & RWT.SINGLE ) != 0 ) {
+      text.setLayoutData( new RowData( 200, 20 ) );
     } else {
-      text.setLayoutData( new RowData(200, 200) );
+      text.setLayoutData( new RowData( 200, 200 ) );
     }
     text.setText( "Lorem ipsum dolor sit amet, consectetur adipisici "
                  + "elit, sed do eiusmod tempor incididunt ut labore et "

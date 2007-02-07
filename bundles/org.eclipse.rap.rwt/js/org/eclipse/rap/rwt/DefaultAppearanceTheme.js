@@ -977,6 +977,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "list-item" : {
     setup : function() {
       this.bgcolor_selected = new qx.renderer.color.ColorObject("#316ac5");
+      this.bgcolor_selected_unfocused = new qx.renderer.color.ColorObject("#c0c0c0");
       this.color_selected = new qx.renderer.color.ColorObject("highlighttext");
     },
 
@@ -996,16 +997,18 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     },
 
     state : function(vTheme, vStates) {
-      return {
-        backgroundColor : vStates.selected ? this.bgcolor_selected : null,
-        color : vStates.selected ? this.color_selected : null
+      vResult = {};
+      vResult.color = vStates.selected ? this.color_selected : null;
+      if( vStates.selected ) {
+        vResult.backgroundColor = vStates.focused
+                                ? this.bgcolor_selected
+                                : this.bgcolor_selected_unfocused;
+      } else {
+        vResult.backgroundColor = null;
       }
+      return vResult;
     }
   },
-
-
-
-
 
 
 
@@ -1147,6 +1150,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     state : function(vTheme, vStates) {
       return qx.lang.Object.mergeWith(vTheme.stateFrom("button", vStates), {
+        backgroundColor : new qx.renderer.color.Color("#f8f8ff"),
         paddingTop : 0,
         paddingRight : 3,
         paddingBottom : 0,
@@ -2071,9 +2075,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.mouseOverBorder.set({ rightColor:"#d6d2c2", rightStyle :qx.constant.Style.BORDER_SOLID, rightWidth:1,
       bottomColor:"#F9B119", bottomStyle :qx.constant.Style.BORDER_SOLID, bottomWidth:2 });
 
+      this.background = new qx.renderer.color.ColorObject("#f8f8ff");
       this.mouseOverBackground = new qx.renderer.color.ColorObject("white");
-//      this.background = new qx.renderer.color.ColorObject("#ebeadb");
-      this.background = new qx.renderer.color.ColorObject("#ece9d8");
     },
 
     initial : function(vTheme) {

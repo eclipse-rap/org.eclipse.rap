@@ -11,6 +11,12 @@
 
 qx.OO.defineClass( "org.eclipse.rap.rwt.TableUtil" );
 
+org.eclipse.rap.rwt.TableUtil.initColors = function( table ) {
+  var colors = {};
+  colors.bgcolEven = "white";
+  table.getDataRowRenderer().setRowColors( colors );
+}
+
 org.eclipse.rap.rwt.TableUtil.columnWidthChanged = function( evt ) {
   var index = evt.getData().col;
   var width = evt.getData().newWidth;
@@ -47,7 +53,6 @@ org.eclipse.rap.rwt.TableUtil.selectionChangedAction = function( evt ) {
 };
 
 org.eclipse.rap.rwt.TableUtil.enablementChanged = function( evt ) {
-  this.debug( "TABLE ENABLED: " + evt.getData() );
   // TODO [rst] call super._modifyEnabled ?
   var items = this.getChildren();
   for( var i = 0; i < items.length; i++ ) {

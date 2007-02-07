@@ -112,7 +112,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       out.writeAttribute( HTML.CONTENT, HTML.CONTENT_TEXT_HTML_UTF_8, null );
       out.startElement( HTML.TITLE, null );
   //    out.writeText( shell.getTitle(), null );
-      out.endElement( HTML.TITLE );    
+      out.endElement( HTML.TITLE ); 
+      writeScrollBarStyle();
       String[] libraries = out.getJSLibraries();
       IResourceManager manager = ResourceManager.getInstance();
       for( int i = 0; i < libraries.length; i++ ) {      
@@ -228,6 +229,26 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.writeAttribute( HTML.SRC, library, null );
     out.writeAttribute( HTML.CHARSET, HTML.CHARSET_NAME_UTF_8, null );
     out.endElement( HTML.SCRIPT );
+  }
+
+  private static void writeScrollBarStyle() throws IOException {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    HtmlResponseWriter out = stateInfo.getResponseWriter();
+    out.startElement( HTML.STYLE, out );
+    out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_CSS, null );
+    StringBuffer css = new StringBuffer();
+    css.append( "html, body, iframe { " );
+    css.append( "scrollbar-base-color:#c0c0c0;" ); 
+    css.append( "scrollbar-3d-light-color:#f8f8ff;" );
+    css.append( "scrollbar-arrow-color:#0080c0;" );
+    css.append( "scrollbar-darkshadow-color:#f0f0f8;" );
+    css.append( "scrollbar-face-color:#f8f8ff;" );
+    css.append( "scrollbar-highlight-color:white;" );
+    css.append( "scrollbar-shadow-color:gray;" );
+    css.append( "scrollbar-track-color:#f0f0f8;" );
+    css.append( "}" ); 
+    out.write( css.toString() );
+    out.endElement( HTML.STYLE );
   }
 
   private static void markInitialized( final Display display ) {

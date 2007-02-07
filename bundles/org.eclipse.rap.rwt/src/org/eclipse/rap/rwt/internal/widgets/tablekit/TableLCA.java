@@ -26,7 +26,7 @@ import com.w4t.engine.service.IServiceStateInfo;
 public class TableLCA extends AbstractWidgetLCA {
 
   private final static JSListenerInfo JS_LISTENER_INFO
-    = new JSListenerInfo( "selectionChanged",
+    = new JSListenerInfo( "changeSelection",
                           "org.eclipse.rap.rwt.TableUtil.selectionChanged",
                           JSListenerType.STATE_AND_ACTION );
 
@@ -134,9 +134,8 @@ public class TableLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( table );
     Object[] args = new Object[] { new JSVar( "tableModel" ) };
     writer.newWidget( "qx.ui.table.Table", args );
-    writer.callFieldAssignment( new JSVar( "qx.ui.table.TablePane" ), 
-                                "CONTENT_BGCOL_EVEN", 
-                                "\"white\"" ); // TODO [rh] use Color
+    writer.callStatic( "org.eclipse.rap.rwt.TableUtil.initColors", 
+                       new Object[] { table } );
     writer.set( "statusBarVisible", false );
     writer.set( "columnVisibilityButtonVisible", false );
     writer.addListener( "tableColumnModel",
