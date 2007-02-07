@@ -33,5 +33,6 @@ public class DemoWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
     configurer.setInitialSize( new Point( 800, 600 ) );
     configurer.setShowCoolBar( true );
+    configurer.setTitle( "Workbench Demo" );
   }
 }

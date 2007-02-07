@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ActivateEvent;
 import org.eclipse.rap.rwt.events.ShellEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -34,6 +35,7 @@ public class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ACTIVE_CONTROL, getActiveControl( shell ) );
     adapter.preserve( PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
     adapter.preserve( Props.TEXT, shell.getText() );
+    adapter.preserve( Props.IMAGE, shell.getImage() );
   }
 
   public void readData( final Widget widget ) { 
@@ -48,7 +50,12 @@ public class ShellLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "org.eclipse.rap.rwt.widgets.Shell" );
+    // TODO [rst] Setting the "icon" property on a qx.ui.window.Window does not
+    // work with the current qx version. Remove this workaround as soon as this
+    // bug is fixed.
+    Shell shell = ( Shell )widget;
+    Object[] args = new Object[] { "", getImagePath( shell.getImage() ) };
+    writer.newWidget( "org.eclipse.rap.rwt.widgets.Shell", args  );
     ControlLCAUtil.writeStyleFlags( widget );
     if( ( widget.getStyle() & RWT.APPLICATION_MODAL ) != 0 ) {
       writer.set( "modal", true );
@@ -66,11 +73,12 @@ public class ShellLCA extends AbstractWidgetLCA {
     writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 
                         JSConst.JS_SHELL_CLOSED );
   }
-  
+
   public void renderChanges( final Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     ControlLCAUtil.writeChanges( shell );
     JSWriter writer = JSWriter.getWriterFor( widget );
+    writeImage( shell );
     writer.set( Props.TEXT, JSConst.QX_FIELD_CAPTION, shell.getText(), "" );
     writeOpen( shell );
     // Important: Order matters, writing setActive() before open() leads to
@@ -187,5 +195,23 @@ public class ShellLCA extends AbstractWidgetLCA {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     shellAdapter.setActiveControl( ( Control )widget );
+  }
+  
+  // TODO [rst] The same functionality exist in ButtonLCAUtil, move to a more
+  //      general util class?
+  private static void writeImage( final Shell shell ) throws IOException {
+    Image image = shell.getImage();
+    if( WidgetLCAUtil.hasChanged( shell, Props.IMAGE, image, null ) ) {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      writer.set( JSConst.QX_FIELD_ICON, getImagePath( image ) );
+    }
+  }
+  
+  private static String getImagePath( Image image ) {
+    String result = "";
+    if( image != null ) {
+      result = Image.getPath( image );
+    }
+    return result;
   }
 }

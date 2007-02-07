@@ -9,11 +9,14 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.OO.defineClass( 
+// TODO [rst] Setting the "icon" property on a qx.ui.window.Window does not
+//      work with the current qx version. Changed constructor to be able to set
+//      a window icon at all.
+qx.OO.defineClass(
   "org.eclipse.rap.rwt.widgets.Shell", 
   qx.ui.window.Window,
-  function() {
-    qx.ui.window.Window.call( this );
+  function( caption, icon ) {
+    qx.ui.window.Window.call( this, caption, icon );
     this._activeControl = null;
     this._activateListenerWidgets = new Array();
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
@@ -102,6 +105,11 @@ qx.Proto._onChangeActive = function( evt ) {
       req.addParameter( req.getUIRootId() + ".activeShell", id );
     }
   }
+  var active = evt.getData();
+  this._minimizeButton.setState( "active", active );
+  this._maximizeButton.setState( "active", active );
+  this._restoreButton.setState( "active", active );
+  this._closeButton.setState( "active", active );
 }
 
 /**

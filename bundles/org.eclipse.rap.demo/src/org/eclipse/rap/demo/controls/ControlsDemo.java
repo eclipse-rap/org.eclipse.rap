@@ -10,6 +10,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.layout.FillLayout;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.widgets.*;
@@ -24,6 +25,9 @@ public class ControlsDemo implements IEntryPoint {
     createMainPart( shell );
     shell.layout();
     shell.setText( "RWT Controls Demo" );
+    ClassLoader classLoader = getClass().getClassLoader();
+    Image image = Image.find( "resources/shell.gif", classLoader );
+    shell.setImage( image  );
     shell.open();
     return display;
   }

@@ -66,3 +66,6 @@ that's right?
 20.) What happens with a RadioManager when a Composite with some radio buttons
      gets disposed of? After that radioButton.getMaanger() return null, but
      the RadioManagers' dispose methods seems not to be called.     
+
+21.) Setting the property "icon" on qx.ui.window.Window has no effect. The
+     window icon can only be set using the constructor.

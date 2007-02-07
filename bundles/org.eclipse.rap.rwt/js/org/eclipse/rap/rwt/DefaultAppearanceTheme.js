@@ -25,7 +25,7 @@
 qx.OO.defineClass(
   "org.eclipse.rap.rwt.DefaultAppearanceTheme", 
   qx.renderer.theme.AppearanceTheme,
-  function(vTitle) {
+function(vTitle) {
     qx.renderer.theme.AppearanceTheme.call( this, 
                                             vTitle || "rap default appearance");
   }
@@ -99,25 +99,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   // this applies to qooxdoo labels (as embedded in Atom, Button, etc.)
   "label" : {
     setup : function() {
-      this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-      this.color_disabled = new qx.renderer.color.ColorObject("graytext");
-    },
-
-    initial : function(vTheme) {
-      return {
-        font: this.font
-      }
-    },
-
-    state : function(vTheme, vStates) {
-      return {
-        color : vStates.disabled ? this.color_disabled : null
-      }
-    }
-  },
-
-  "label" : {
-    setup : function() {
       this.color_disabled = new qx.renderer.color.ColorObject("graytext");
       this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
@@ -139,6 +120,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       }
     }
   },
+  
   // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
   "label-wrapper" : {
     setup : function() {
@@ -231,7 +213,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         backgroundColor : vStates.over ? this.bgcolor_over : null
       }
       
-      if( vStates.rwt_FLAT ) {
+      if (vStates.rwt_FLAT) {
         vReturn.border = this.border_FLAT;
       } else if (vStates.rwt_BORDER) {
         vReturn.border = vStates.pressed || vStates.checked ? this.border_BORDER_pressed : this.border_BORDER;
@@ -666,8 +648,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     setup : function() {
       this.bgimage_active = "./org/eclipse/rap/rwt/widgets/shell/caption_active.gif";
       this.bgimage_inactive = "./org/eclipse/rap/rwt/widgets/shell/caption_inactive.gif";
-      this.color_active = new qx.renderer.color.ColorObject("#ffffff");
-      this.color_inactive = new qx.renderer.color.ColorObject("#000000");
+      this.color_active = new qx.renderer.color.ColorObject( "#ffffff" );
+      this.color_inactive = new qx.renderer.color.ColorObject( "#dddddd" );
     },
 
     initial : function(vTheme) {
@@ -711,7 +693,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.font.setBold(true);
     },
-
     initial : function(vTheme) {
       return {
         cursor : qx.constant.Core.DEFAULT,
@@ -732,71 +713,89 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         paddingTop : 1,
         paddingBottom : 1,
         paddingRight : 2,
-        paddingLeft : 2
+        paddingLeft : 2,
+        marginLeft : 1
       });
     },
+
     state : function(vTheme, vStates) {
       return {};
-    }
+      }
   },
 
   "window-captionbar-minimize-button" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("#339122");
-      this.bgcolor_over = new qx.renderer.color.ColorObject( "#00009D" );
+      this.bgcolor = new qx.renderer.color.ColorObject( "#3ba929" );
+      this.bgcolor_over = new qx.renderer.color.ColorObject( "#75d066" );
+      this.bgcolor_inactive = new qx.renderer.color.ColorObject( "#87b87f" );
     },
     initial : function(vTheme) {
       return vTheme.initialFrom("window-captionbar-button");
     },
     state : function(vTheme, vStates) {
       var vReturn = vTheme.stateFrom("window-captionbar-button", vStates);
-      vReturn.backgroundColor = vStates.over && !vStates.pressed ? this.bgcolor_over : this.bgcolor;
+      vReturn.backgroundColor = vStates.active ?
+                                  vStates.over && !vStates.pressed ?
+                                    this.bgcolor_over : this.bgcolor :
+                                  this.bgcolor_inactive;
       return vReturn;
     }
   },
 
   "window-captionbar-restore-button" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("#339122");
-      this.bgcolor_over = new qx.renderer.color.ColorObject( "#00009D" );
+      this.bgcolor = new qx.renderer.color.ColorObject( "#3ba929" );
+      this.bgcolor_over = new qx.renderer.color.ColorObject( "#75d066" );
+      this.bgcolor_inactive = new qx.renderer.color.ColorObject( "#87b87f" );
+      
     },
     initial : function(vTheme) {
       return vTheme.initialFrom("window-captionbar-button");
     },
     state : function(vTheme, vStates) {
       var vReturn = vTheme.stateFrom("window-captionbar-button", vStates);
-      vReturn.backgroundColor = vStates.over && !vStates.pressed ? this.bgcolor_over : this.bgcolor;
+      vReturn.backgroundColor = vStates.active ?
+                                  vStates.over && !vStates.pressed ?
+                                    this.bgcolor_over : this.bgcolor :
+                                  this.bgcolor_inactive;
       return vReturn;
     }
   },
 
   "window-captionbar-maximize-button" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("#339122");
-      this.bgcolor_over = new qx.renderer.color.ColorObject( "#00009D" );
+      this.bgcolor = new qx.renderer.color.ColorObject( "#3ba929" );
+      this.bgcolor_over = new qx.renderer.color.ColorObject( "#75d066" );
+      this.bgcolor_inactive = new qx.renderer.color.ColorObject( "#87b87f" );
     },
     initial : function(vTheme) {
       return vTheme.initialFrom("window-captionbar-button");
     },
-
     state : function(vTheme, vStates) {
       var vReturn = vTheme.stateFrom("window-captionbar-button", vStates);
-      vReturn.backgroundColor = vStates.over && !vStates.pressed ? this.bgcolor_over : this.bgcolor;
+      vReturn.backgroundColor = vStates.active ?
+                                  vStates.over && !vStates.pressed ?
+                                    this.bgcolor_over : this.bgcolor :
+                                  this.bgcolor_inactive;
       return vReturn;
     }
   },
 
   "window-captionbar-close-button" : {
     setup: function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("#ff4454");
-      this.bgcolor_over = new qx.renderer.color.ColorObject( "#00009D" );
+      this.bgcolor = new qx.renderer.color.ColorObject( "#ef1d2f" );
+      this.bgcolor_over = new qx.renderer.color.ColorObject("#ff7884");
+      this.bgcolor_inactive = new qx.renderer.color.ColorObject( "#c67f85" );
     },
     initial : function(vTheme) {
       return vTheme.initialFrom("window-captionbar-button");
     },
     state : function(vTheme, vStates) {
       var vReturn = vTheme.stateFrom("window-captionbar-button", vStates);
-      vReturn.backgroundColor = vStates.over && !vStates.pressed ? this.bgcolor_over : this.bgcolor;
+      vReturn.backgroundColor = vStates.active ?
+                                  vStates.over && !vStates.pressed ?
+                                    this.bgcolor_over : this.bgcolor :
+                                  this.bgcolor_inactive;
       return vReturn;
     }
   },
@@ -1009,6 +1008,10 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       return vResult;
     }
   },
+
+
+
+
 
 
 
@@ -2127,6 +2130,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "splitpane" :
   {
+  
     setup : function() {
       this.border_none = qx.renderer.border.BorderPresets.getInstance().none;
       this.border_inset = qx.renderer.border.BorderPresets.getInstance().inset;
@@ -2380,7 +2384,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     }
   },
 
-  // the appearance for org.eclipse.rap.rwt.widgets.Separator
+  // appearance for org.eclipse.rap.rwt.widgets.Label with style RWT.SEPARATOR
   "separator" : {
     setup: function() {
       this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );

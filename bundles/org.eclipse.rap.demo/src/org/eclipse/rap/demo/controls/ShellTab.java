@@ -14,13 +14,16 @@ import java.util.Iterator;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionAdapter;
 import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class ShellTab extends ExampleTab {
 
+  private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
   private ArrayList shells;
   private boolean invisible = false;
+  private Image shellIconImage;
 
   public ShellTab( TabFolder folder ) {
     super( folder, "Shell" );
@@ -50,6 +53,11 @@ public class ShellTab extends ExampleTab {
   void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout( RWT.VERTICAL ) );
     final int style = getStyle();
+    
+    if( shellIconImage == null ) {
+      ClassLoader classLoader = getClass().getClassLoader();
+      shellIconImage = Image.find( ICON_IMAGE_PATH, classLoader );
+    }
     
     Button openShellButton = new Button( top, RWT.PUSH );
     openShellButton.setText( "Open Shell" );
@@ -128,7 +136,8 @@ public class ShellTab extends ExampleTab {
       }
     } );
     int num = shells.size() + 1;
-    shell.setText( "Test Shell #" + num );
+    shell.setText( "Test Shell " + num );
+    shell.setImage( shellIconImage );
     shell.layout();
     if( !invisible ) {
       shell.open();

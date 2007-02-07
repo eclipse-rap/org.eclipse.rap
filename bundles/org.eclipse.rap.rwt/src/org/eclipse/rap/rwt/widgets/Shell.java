@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IShellAdapter;
 import org.eclipse.rap.rwt.widgets.MenuHolder.IMenuHolderAdapter;
@@ -36,6 +37,7 @@ public class Shell extends Composite {
   private Control lastActive;
   private IShellAdapter shellAdapter;
   private String text = "";
+  private Image image;
 
   public Shell( final Display display ) {
     this( display, RWT.SHELL_TRIM );
@@ -299,7 +301,19 @@ public class Shell extends Composite {
     }
     return result;
   }
+
+  /* TODO [rst] move to Decorations as soon as it exists */
+  public void setImage( Image image ) {
+    checkWidget();
+    this.image = image;
+  }
   
+  /* TODO [rst] move to Decorations as soon as it exists */
+  public Image getImage () {
+    checkWidget ();
+    return image;
+  }
+
   ///////////////////
   // check... methods
   
