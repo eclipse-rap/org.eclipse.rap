@@ -193,8 +193,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "button" : {
     setup : function() {
-      this.bgcolor_default = new qx.renderer.color.ColorObject("#f7f7fb"); //f3f3f5
-      this.bgcolor_over = new qx.renderer.color.ColorObject("#FbFbFe"); // d3e7df // f1f1f7
+      this.bgcolor_default = new qx.renderer.color.ColorObject("#f7f7fb");
+      this.bgcolor_over = new qx.renderer.color.ColorObject("#FbFbFe"); 
 
       this.border = new qx.renderer.border.BorderObject();
       this.border.setTop( 1, "solid", "white" );
