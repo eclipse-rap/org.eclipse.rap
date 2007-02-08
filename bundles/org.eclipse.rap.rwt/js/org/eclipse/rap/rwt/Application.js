@@ -30,8 +30,6 @@ qx.Proto.initialize = function( evt ) {
 qx.Proto.main = function( evt ) {
   var doc = qx.ui.core.ClientDocument.getInstance();
   // Observe window size
-  // TODO [rh] event below isn't fired but is necessary to track browser window 
-  //      resizes  
   doc.addEventListener( "windowresize", 
                         org.eclipse.rap.rwt.Application._onResize );  
   // Initial request to obtain startup-shell
@@ -71,4 +69,5 @@ org.eclipse.rap.rwt.Application._onResize = function( evt ) {
   }  
   req.addParameter( id + ".bounds.width", String( width ) );
   req.addParameter( id + ".bounds.height", String( height ) );
+  req.send();
 };

@@ -155,6 +155,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
   
   public void readData( final Display display ) {
+    Rectangle oldBounds = display.getBounds();
     readBounds( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
@@ -163,10 +164,20 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         return true;
       }
     };
-    Composite[] shells = display.getShells();
+    Shell[] shells = display.getShells();
     for( int i = 0; i < shells.length; i++ ) {
       Composite shell = shells[ i ];
       WidgetTreeVisitor.accept( shell, visitor );
+    }
+    
+    // TODO: [fappel] since there is no possibility yet to determine whether
+    //                a shell is maximized, we use this hack to adjust 
+    //                the bounds of a maximized shell in case of a document
+    //                resize event
+    for( int i = 0; i < shells.length; i++ ) {
+      if( shells[ i ].getBounds().equals( oldBounds ) ) {
+        shells[ i ].setBounds( display.getBounds() );
+      }
     }
   }
   
@@ -273,8 +284,11 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void readBounds( final Display display ) {
-    int width = readIntPropertyValue( display, "bounds.width", 0 );
-    int height = readIntPropertyValue( display, "bounds.height", 0 );
+    Rectangle oldBounds = display.getBounds();
+    int width 
+      = readIntPropertyValue( display, "bounds.width", oldBounds.width );
+    int height
+      = readIntPropertyValue( display, "bounds.height", oldBounds.height );
     Rectangle bounds = new Rectangle( 0, 0, width, height );
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
