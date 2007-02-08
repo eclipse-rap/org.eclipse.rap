@@ -68,7 +68,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
     ControlLCAUtil.writeChanges( tree );
-    writeLinesVisible( tree );
     updateSelectionListener( tree );
     updateTreeListener( tree );
   }
@@ -80,12 +79,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   /////////////////////////////////////////////////////////////
   // Helping methods to write JavaScript for changed properties
-  
-  private static void writeLinesVisible( final Tree tree ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( tree );
-    Boolean newValue = Boolean.valueOf( tree.getLinesVisible() );
-    writer.set( "linesVisible", "useTreeLines", newValue, Boolean.TRUE );
-  }
 
   private static void updateSelectionListener( final Tree tree ) 
     throws IOException 

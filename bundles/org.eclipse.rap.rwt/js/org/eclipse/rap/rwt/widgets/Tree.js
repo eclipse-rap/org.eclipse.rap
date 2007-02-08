@@ -21,6 +21,7 @@ qx.OO.defineClass(
     qx.ui.treefullcontrol.Tree.call( this, trs );
     this.setOverflow( "auto" );
     this.setHideNode( true );
+    this.setUseTreeLines( true );
     // evaluate 'poor mans' bit field
     this._styleCheck = qx.lang.String.contains( style, "check" );
     //

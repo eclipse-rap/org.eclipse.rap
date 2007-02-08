@@ -20,14 +20,6 @@ import org.eclipse.rap.rwt.events.TreeListener;
 import org.eclipse.rap.rwt.graphics.Image;
 
 public class Tree_Test extends TestCase {
-
-  public void testInitialValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display , RWT.NONE );
-    Tree tree = new Tree( shell, RWT.NONE );
-
-    assertEquals( false, tree.getLinesVisible() );
-  }
   
   public void testGetItemsAndGetItemCount() {
     Display display = new Display();

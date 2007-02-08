@@ -31,7 +31,6 @@ public class TreeTab extends ExampleTab {
     createStyleButton( "CHECK" );
     createVisibilityButton();
     createEnablementButton();
-    createLinesVisibleCheck();
     createAddNodeButton();
     createFontChooser();
   }
@@ -40,7 +39,6 @@ public class TreeTab extends ExampleTab {
     parent.setLayout( new RowLayout() );
     int style = getStyle();
     tree = new Tree( parent, style );
-    tree.setLinesVisible( true );
     tree.setLayoutData( new RowData( 200, 200 ) );
     for( int i = 0; i < 4; i++ ) {
       TreeItem item = new TreeItem( tree, RWT.NONE );
@@ -55,18 +53,6 @@ public class TreeTab extends ExampleTab {
     treeMenuItem.setText( "TreeContextMenuItem" );
     tree.setMenu( treeMenu );
     registerControl( tree );
-  }
-
-  private void createLinesVisibleCheck() {
-    final Button button = new Button( styleComp, RWT.CHECK );
-    button.setSelection( tree.getLinesVisible() );
-    button.setLayoutData( new RowData( 100, 20 ) );
-    button.setText( "Lines visible" );
-    button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        tree.setLinesVisible( button.getSelection() );
-      }
-    } );
   }
 
   private void createAddNodeButton() {

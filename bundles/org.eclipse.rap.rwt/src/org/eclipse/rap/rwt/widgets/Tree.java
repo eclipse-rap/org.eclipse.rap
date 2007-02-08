@@ -27,7 +27,6 @@ public class Tree extends Composite {
   private final ItemHolder itemHolder;
   private TreeItem[] selection;
 
-  private boolean linesVisible;
 
   public Tree( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
@@ -169,19 +168,6 @@ public class Tree extends Composite {
   public void deselectAll() {
     checkWidget();
     this.selection = EMPTY_SELECTION;
-  }
-
-  ////////////////////////////////
-  // Methods to control appearance
-  
-  public void setLinesVisible( final boolean show ) {
-    checkWidget();
-    linesVisible = show;
-  }
-  
-  public boolean getLinesVisible() {
-    checkWidget();
-    return linesVisible;
   }
 
   //////////////////////////////////////
