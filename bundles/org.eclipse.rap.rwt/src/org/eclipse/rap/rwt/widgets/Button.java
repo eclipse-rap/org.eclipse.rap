@@ -14,8 +14,8 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
-import org.eclipse.rap.rwt.graphics.Image;
-
+import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 
 /**
  * TODO: [fappel] comment
@@ -28,6 +28,11 @@ import org.eclipse.rap.rwt.graphics.Image;
  */
 public class Button extends Control {
 
+  private static final int MARGIN = 4;
+  // Width of checkboxes and radiobuttons
+  private static final int CHECK_WIDTH = 13;
+  // Height of checkboxes and radiobuttons
+  private static final int CHECK_HEIGHT = 13;
   private String text = "";
   private boolean selected = false;
   private Image image;
@@ -158,4 +163,54 @@ public class Button extends Control {
     }
     return result;
   }
+  
+  public Point computeSize (int wHint, int hHint, boolean changed) {
+    checkWidget();
+    int width = 0, height = 0, border = getBorderWidth();
+//    if ((style & RWT.ARROW) != 0) {
+//      if ((style & (RWT.UP | RWT.DOWN)) != 0) {
+//        width += OS.GetSystemMetrics (OS.SM_CXVSCROLL);
+//        height += OS.GetSystemMetrics (OS.SM_CYVSCROLL);
+//      } else {
+//        width += OS.GetSystemMetrics (OS.SM_CXHSCROLL);
+//        height += OS.GetSystemMetrics (OS.SM_CYHSCROLL);
+//      }
+//      if (wHint != RWT.DEFAULT) width = wHint;
+//      if (hHint != RWT.DEFAULT) height = hHint;
+//      width += border * 2; height += border * 2;
+//      return new Point (width, height);
+//    }
+    int extra = 0;
+    boolean hasImage = image != null;
+    boolean hasText = text.length() > 0;
+    if (hasImage) {
+      // TODO: implement something to get rect bounds
+      // Rectangle rect = image.getBounds ();
+      width = 16;
+      height = 16;
+      extra = MARGIN * 2;
+      if( hasText ) {
+        width += MARGIN * 2;
+      }
+    }
+    if( hasText ) {
+      FontSizeEstimation sizeEst = FontSizeEstimation.getInstance( getFont() );
+      Point extent = sizeEst.stringExtent( text );
+      height = Math.max( height, extent.y );
+      width += extent.x;
+    }
+    if ((style & (RWT.CHECK | RWT.RADIO)) != 0) {
+      width += CHECK_WIDTH + extra;
+      height = Math.max (height, CHECK_HEIGHT + 3);
+    }
+    if ((style & (RWT.PUSH | RWT.TOGGLE)) != 0) {
+      width += 12;  height += 10;
+    }
+    if (wHint != RWT.DEFAULT) width = wHint;
+    if (hHint != RWT.DEFAULT) height = hHint;
+    width += border * 2;
+    height += border * 2;
+    return new Point (width, height);
+  }
+
 }

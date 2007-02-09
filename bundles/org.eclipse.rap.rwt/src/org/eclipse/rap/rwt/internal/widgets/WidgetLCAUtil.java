@@ -174,31 +174,9 @@ public final class WidgetLCAUtil {
       }
       
       JSWriter writer = JSWriter.getWriterFor( widget );
-      
-      //////////////////////////////////////////////////////////////////
-      // TODO: [fappel] height values of controls are not displayed 
-      //                proper in mozilla. This is a very rude approximation
-      //                and should be eighter solved in qooxdoo or by a more
-      //                sophisticated approach...
-      int[] args;
-      if(    W4TContext.getBrowser() instanceof Mozilla
-          && widget instanceof Control )
-      {
-        if( newBounds.height > 30 ) {
-          args = new int[] {
-            newBounds.x, newBounds.width, newBounds.y, newBounds.height - 4
-          };
-        } else {
-          args = new int[] {
-            newBounds.x, newBounds.width, newBounds.y, newBounds.height
-          };
-        }
-      } else {
-        args = new int[] {
-          newBounds.x, newBounds.width, newBounds.y, newBounds.height
-        };
-      }
-      //////////////////////////////////////////////////////////////////
+      int[] args = new int[]{
+        newBounds.x, newBounds.width, newBounds.y, newBounds.height
+      };
       
       writer.set( "space", args );
       if( !WidgetUtil.getAdapter( widget ).isInitialized() ) {

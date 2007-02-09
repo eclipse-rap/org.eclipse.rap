@@ -12,7 +12,8 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 
 /**
  * A Label can display a text or an image, but not both. The label always
@@ -109,5 +110,47 @@ public class Label extends Control {
     }
     result = checkBits( result, RWT.LEFT, RWT.CENTER, RWT.RIGHT, 0, 0, 0 );
     return result;
-  } 
+  }
+  
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
+    checkWidget();
+    int width = 0, height = 0, border = getBorderWidth();
+    if( ( style & RWT.SEPARATOR ) != 0 ) {
+      int lineWidth = 2;
+      if( ( style & RWT.HORIZONTAL ) != 0 ) {
+        width = DEFAULT_WIDTH;
+        height = lineWidth;
+      } else {
+        width = lineWidth;
+        height = DEFAULT_HEIGHT;
+      }
+    } else if( ( image != null ) ) {
+      // TODO [rst] obtain image bounds
+      // Rectangle rect = image.getBounds();
+      width = 16;
+      height = 16;
+    } else if( ( text.length() > 0 ) ) {
+      int wrapWidth = 0;
+      if( ( style & RWT.WRAP ) != 0 && wHint != RWT.DEFAULT ) {
+        wrapWidth = wHint;
+      }
+      FontSizeEstimation sizeEst = FontSizeEstimation.getInstance( getFont() );
+      Point extent = sizeEst.textExtent( text, wrapWidth );
+      width = extent.x + 8;
+      height = extent.y + 2;
+    }
+    if( wHint != RWT.DEFAULT ) {
+      width = wHint;
+    }
+    if( hHint != RWT.DEFAULT ) {
+      height = hHint;
+    }
+    width += border * 2;
+    height += border * 2;
+    return new Point( width, height );
+  }
+  
+  public int getBorderWidth() {
+    return ( ( style & RWT.BORDER ) != 0 ) ? 1 : 0;
+  }
 }

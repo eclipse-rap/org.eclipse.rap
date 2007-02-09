@@ -17,6 +17,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ActivateEvent;
 import org.eclipse.rap.rwt.events.ShellEvent;
 import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -54,7 +55,10 @@ public class ShellLCA extends AbstractWidgetLCA {
     // work with the current qx version. Remove this workaround as soon as this
     // bug is fixed.
     Shell shell = ( Shell )widget;
-    Object[] args = new Object[] { "", getImagePath( shell.getImage() ) };
+    Object[] args = new Object[]{
+      "",
+      showImage( shell ) ? getImagePath( shell.getImage() ) : ""
+    };
     writer.newWidget( "org.eclipse.rap.rwt.widgets.Shell", args  );
     ControlLCAUtil.writeStyleFlags( widget );
     if( ( widget.getStyle() & RWT.APPLICATION_MODAL ) != 0 ) {
@@ -82,7 +86,9 @@ public class ShellLCA extends AbstractWidgetLCA {
     if( shell.getBounds().equals( shell.getDisplay().getBounds() ) ) {
       writer.call( "maximize", new Object[ 0 ] );
     }
-    writeImage( shell );
+    if( showImage( shell ) ) {
+      writeImage( shell );
+    }
     writer.set( Props.TEXT, JSConst.QX_FIELD_CAPTION, shell.getText(), "" );
     writeOpen( shell );
     // Important: Order matters, writing setActive() before open() leads to
@@ -201,8 +207,6 @@ public class ShellLCA extends AbstractWidgetLCA {
     shellAdapter.setActiveControl( ( Control )widget );
   }
   
-  // TODO [rst] The same functionality exist in ButtonLCAUtil, move to a more
-  //      general util class?
   private static void writeImage( final Shell shell ) throws IOException {
     Image image = shell.getImage();
     if( WidgetLCAUtil.hasChanged( shell, Props.IMAGE, image, null ) ) {
@@ -211,11 +215,11 @@ public class ShellLCA extends AbstractWidgetLCA {
     }
   }
   
+  private static boolean showImage( Shell shell) {
+    return (shell.getStyle() & ( RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0;
+  }
+  
   private static String getImagePath( Image image ) {
-    String result = "";
-    if( image != null ) {
-      result = Image.getPath( image );
-    }
-    return result;
+    return image != null ? Image.getPath( image ) : "";
   }
 }

@@ -8,10 +8,11 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.jface.dialogs.IInputValidator;
+import org.eclipse.rap.jface.dialogs.InputDialog;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.widgets.*;
 
 class DialogsTab extends ExampleTab {
@@ -28,16 +29,28 @@ class DialogsTab extends ExampleTab {
 
   void createExampleControls( final Composite parent ) {
     shell = parent.getShell();
-    parent.setLayout( new RowLayout() );
     Button loginButton = new Button( parent, RWT.PUSH );
     loginButton.setText( "Login Dialog" );
-    loginButton.setLayoutData( new RowData( 100, 25 ) );
+    loginButton.setBounds( 10, 10, 80, 20 );
     loginButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
         showLoginDialog();
       }
     } );
     registerControl( loginButton );
+
+    // JFace input dialog
+    final Label label = new Label( parent, RWT.NONE );
+    label.setText( "User input from InputDialog: " );
+    label.setBounds( 10, 40, 100, 20 );
+    Button showInputDlgButton = new Button( parent, RWT.PUSH );
+    showInputDlgButton.setText( "Input Dialog" );
+    showInputDlgButton.setBounds( 10, 70, 80, 20 );
+    showInputDlgButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        showInputDialog();
+      }
+    });
   }
 
   private void showLoginDialog() {
@@ -57,4 +70,29 @@ class DialogsTab extends ExampleTab {
     loginDialog.setTitle( "Login" );
     loginDialog.open();
   }
+
+  private void showInputDialog() {
+    final IInputValidator val = new IInputValidator() {
+      public String isValid( String newText ) {
+        String result = null;
+        if ( newText.length() < 5 ) {
+          result = "Input text too short!";
+        }
+        return result;
+      }
+    };
+    String title = "Input Dialog";
+    String mesg = "Enter at least five characters";
+    String def = "default text";
+    InputDialog dlg = new InputDialog( getShell(), title, mesg, def, val );
+    // if (dlg.open() == Window.OK) {
+    //   // User clicked OK; update the label with the input
+    //   label.setText(dlg.getValue());
+    // }
+    // dlg.setCallback( new Runnable() {
+    // public void run() {
+    // label.setText(dlg.getValue());
+    dlg.open();
+  }
+
 }

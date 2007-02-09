@@ -68,4 +68,4 @@ that's right?
      the RadioManagers' dispose methods seems not to be called.     
 
 21.) Setting the property "icon" on qx.ui.window.Window has no effect. The
-     window icon can only be set using the constructor.
+     window icon can only be set using the constructor. (Qx Bug 87)

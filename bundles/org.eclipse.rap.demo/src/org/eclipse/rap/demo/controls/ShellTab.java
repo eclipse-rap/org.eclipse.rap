@@ -12,9 +12,8 @@ package org.eclipse.rap.demo.controls;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -112,32 +111,74 @@ public class ShellTab extends ExampleTab {
       }} );
   }
 
+//  private void createShell( int style ) {
+//    final Shell shell = new Shell( folder.getDisplay(), style );
+////    shell.setBounds( 100, 100, 300, 200 );
+//    shell.setLocation( 100, 100 );
+//    shell.setLayout( new RowLayout() );
+//    // added composite to be able to make the bounds of the client area visible
+////    Composite comp = new Composite( shell, RWT.NONE );
+////    comp.setBackground( Color.getColor( 255, 255, 255 ) );
+////    comp.setLayout( new FormLayout() );
+//    Button closeButton = new Button( shell, RWT.PUSH );
+//    closeButton.setText( "Close This Window" );
+//    closeButton.setBackground( Color.getColor( 25, 55, 55 ) );
+////    FormData formData = new FormData();
+////    formData.height = 25;
+////    formData.left = new FormAttachment( 30 );
+////    formData.right = new FormAttachment( 70 );
+////    formData.bottom = new FormAttachment( 80 );
+////    formData.width = 100;
+////    formData.height = 25;
+////    closeButton.setLayoutData( formData );
+//    closeButton.setLayoutData( new RowData( 200, 80 ) );
+//    closeButton.addSelectionListener( new SelectionAdapter() {
+//      public void widgetSelected( SelectionEvent event ) {
+//        shell.close();
+//      }
+//    } );
+//    int num = shells.size() + 1;
+//    shell.setText( "Test Shell " + num );
+//    shell.setImage( shellIconImage );
+////    shell.setSize( 300, 200 );
+////    shell.layout();
+////    Point pref = shell.computeSize( RWT.DEFAULT, RWT.DEFAULT, true );
+//    shell.pack();
+//    if( !invisible ) {
+//      shell.open();
+//    }
+//    shells.add( shell );
+//  }
+
   private void createShell( int style ) {
     final Shell shell = new Shell( folder.getDisplay(), style );
+//    shell.setLayout( new FillLayout() );
     shell.setBounds( 100, 100, 300, 200 );
-    shell.setLayout( new FillLayout() );
-    // added composite to be able to make the bounds of the client area visible
-    Composite comp = new Composite( shell, RWT.NONE );
-//    comp.setBackground( Color.getColor( 255, 255, 255 ) );
-    comp.setLayout( new FormLayout() );
-    Button closeButton = new Button( comp, RWT.PUSH );
-    closeButton.setText( "Close" );
-    FormData formData = new FormData();
-    formData.height = 25;
-    formData.left = new FormAttachment( 30 );
-    formData.right = new FormAttachment( 70 );
-    formData.bottom = new FormAttachment( 80 );
-    formData.width = 100;
-    formData.height = 25;
-    closeButton.setLayoutData( formData );
-    closeButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        shell.close();
+    final Composite comp = new Composite( shell, RWT.NONE );
+    comp.setBackground( Color.getColor( 25, 55, 55 ) );
+    Rectangle ca = shell.getClientArea();
+    comp.setBounds( ca.x, ca.y, ca.width, ca.height );
+//    comp.setLayoutData( new RowData( 200, 200 ) );
+//    Button closeButton = new Button( comp, RWT.PUSH );
+//    closeButton.setText( "Close This Window" );
+//    closeButton.setBackground( Color.getColor( 55, 55, 55 ) );
+//    closeButton.setLayoutData( new RowData( 200, 80 ) );
+//    closeButton.addSelectionListener( new SelectionAdapter() {
+//      public void widgetSelected( SelectionEvent event ) {
+//        shell.close();
+//      }
+//    } );
+    shell.addControlListener( new ControlAdapter() {
+      public void controlResized( ControlEvent event ) {
+        super.controlResized( event );
+        Rectangle ca = shell.getClientArea();
+        comp.setBounds( ca.x, ca.y, ca.width, ca.height );
       }
     } );
     int num = shells.size() + 1;
     shell.setText( "Test Shell " + num );
     shell.setImage( shellIconImage );
+//    shell.pack();
     shell.layout();
     if( !invisible ) {
       shell.open();

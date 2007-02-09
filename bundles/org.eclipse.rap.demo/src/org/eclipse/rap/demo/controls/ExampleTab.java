@@ -24,7 +24,6 @@ abstract class ExampleTab {
   
   private static final int MAX_COLORS = 4;
   protected final TabFolder folder;
-  private final SelectionListener styleListener;
   private final List controls;
 
   private Composite exmplComp;
@@ -51,54 +50,67 @@ abstract class ExampleTab {
     item.setControl( sashForm );
     initColors();
     controls = new ArrayList();
-    styleListener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        controls.clear();
-        destroyExampleControls( );
-        createExampleControls( exmplComp );
-        updateVisible();
-        updateEnabled();
-        if( fgColorChooser != null ) {
-          updateFgColor();
-        }
-        if( bgColorChooser != null ) {
-          updateBgColor();
-        }
-        if( fontChooser != null ) {
-//          Control control = ( Control )controls.get( 0 );
-//          font = control.getFont();
-//          if( font != null ) {
-//            fontChooser.setFont( font );
-//          }
-          updateFont();
-        }
-        exmplComp.layout();
-      }
-    };
     createExampleControls( exmplComp );
     createStyleControls();
   }
   
+  protected void createNew() {
+      controls.clear();
+      destroyExampleControls( );
+      createExampleControls( exmplComp );
+      updateVisible();
+      updateEnabled();
+      if( fgColorChooser != null ) {
+        updateFgColor();
+      }
+      if( bgColorChooser != null ) {
+        updateBgColor();
+      }
+      if( fontChooser != null ) {
+  //          Control control = ( Control )controls.get( 0 );
+  //          font = control.getFont();
+  //          if( font != null ) {
+  //            fontChooser.setFont( font );
+  //          }
+        updateFont();
+      }
+      exmplComp.layout();
+    }
+
   private Control createForm() {
     SashForm vertSashForm = new SashForm( folder, RWT.VERTICAL );
     SashForm horSashForm = new SashForm( vertSashForm, RWT.HORIZONTAL );
     Composite leftComp = new Composite( horSashForm, RWT.NONE );
     Composite rightComp = new Composite( horSashForm, RWT.NONE );
     Composite footComp = new Composite( vertSashForm, RWT.NONE );
-    FillLayout layout = new FillLayout();
-    layout.marginWidth = 5;
-    layout.marginHeight = 5;
-    leftComp.setLayout( layout );
-    rightComp.setLayout( layout );
-    footComp.setLayout( layout );
-    exmplComp = new Composite( leftComp, RWT.NONE );
-    styleComp = new Composite( rightComp, RWT.NONE );
-    styleComp.setLayout( new RowLayout( RWT.VERTICAL ) );
+    createLeft( leftComp );
+    createRight( rightComp );
+    createFoot( footComp );
     horSashForm.setWeights( new int[] { 60, 40 } );
     vertSashForm.setWeights( new int[] { 95, 5 } );
-    text = new Text( footComp, RWT.BORDER | RWT.READ_ONLY | RWT.MULTI );
-    text.setText( "" );
     return vertSashForm;
+  }
+  
+  private void createLeft( Composite parent ) {
+    parent.setLayout( new FillLayout() );
+    Group exmplGroup = new Group( parent, RWT.NONE );
+    exmplGroup.setLayout( new FillLayout() );
+    exmplComp = new Composite( exmplGroup, RWT.NONE );
+  }
+  
+  private void createRight( Composite parent ) {
+    parent.setLayout( new FillLayout() );
+    Group styleGroup = new Group( parent, RWT.NONE );
+    styleGroup.setText( "Styles and Parameters" );
+    styleGroup.setLayout( new FillLayout() );
+    styleComp = new Composite( styleGroup, RWT.NONE );
+    styleComp.setLayout( new RowLayout( RWT.VERTICAL ) );
+  }
+  
+  private void createFoot( Composite parent ) {
+    parent.setLayout( new FillLayout() );
+    text = new Text( parent, RWT.BORDER | RWT.READ_ONLY | RWT.MULTI );
+    text.setText( "" );
   }
   
   private void initColors() {
@@ -135,16 +147,24 @@ abstract class ExampleTab {
   private Button createStyleButton( final String name, final int style ) {
     Button button = new Button( styleComp, RWT.CHECK );
     button.setText( name );
-    button.addSelectionListener( styleListener );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        createNew();
+      }
+    } );
     button.setData( "style", new Integer( style ) );
     // preferred size does not work:
     button.setLayoutData( new RowData( 100, 20 ) );
     return button;
   }
 
-  protected Button createPropertyButton( final String name ) {
-    Button button = new Button( styleComp, RWT.CHECK );
-    button.setText( name );
+  protected Button createPropertyButton( final String text ) {
+    return createPropertyButton( text, RWT.CHECK );
+  }
+  
+  protected Button createPropertyButton( final String text, final int style ) {
+    Button button = new Button( styleComp, style );
+    button.setText( text );
     // preferred size does not work:
     button.setLayoutData( new RowData( 100, 20 ) );
     return button;
@@ -329,7 +349,7 @@ abstract class ExampleTab {
     }
   }
   
-  protected Display getDisplay() {
-    return folder.getDisplay();
+  protected Shell getShell() {
+    return folder.getShell();
   }
 }

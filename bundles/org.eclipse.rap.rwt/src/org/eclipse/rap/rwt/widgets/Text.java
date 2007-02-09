@@ -12,6 +12,8 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 
 /**
  * <p>Due to limitations of the JavaScript library, the current WRAP behavior 
@@ -38,6 +40,41 @@ public class Text extends Control {
 
   public String getLineDelimiter() {
     return "\n";
+  }
+  
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
+    checkWidget();
+    int height = 0, width = 0;
+    if( wHint == RWT.DEFAULT || hHint == RWT.DEFAULT ) {
+      FontSizeEstimation sizeEst = FontSizeEstimation.getInstance( getFont() );
+      boolean wrap = ( style & RWT.MULTI ) != 0 && ( style & RWT.WRAP ) != 0;
+      int wrapWidth = 0;
+      if( wrap && wHint != RWT.DEFAULT ) {
+        wrapWidth = wHint;
+      }
+      Point extent = sizeEst.textExtent( getText(), wrapWidth  );
+      if( extent.x != 0 ) {
+        width = extent.x + 12;
+      }
+      if( extent.y != 0 ) {
+        height = extent.y + 6;
+      }
+    }
+    if( width == 0 ) {
+      width = DEFAULT_WIDTH;
+    }
+    if( height == 0 ) {
+      height = DEFAULT_HEIGHT;
+    }
+    if( wHint != RWT.DEFAULT ) {
+      width = wHint;
+    }
+    if( hHint != RWT.DEFAULT ) {
+      height = hHint;
+    }
+//    Rectangle trim = computeTrim( 0, 0, width, height );
+//    return new Point( trim.width, trim.height );
+    return new Point( width, height );
   }
 
   private static int checkStyle( final int style ) {

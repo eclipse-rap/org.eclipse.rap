@@ -19,6 +19,18 @@ import org.eclipse.rap.rwt.RWT;
 //      widget missing: TableItem, TreeColumn and TreeItem
 public final class Font {
   
+  private static final Map fonts = new HashMap();
+  
+  private final String name;
+  private final int size;
+  private final int style;
+  
+  private Font( final String name, final int size, final int style ) {
+    this.name = name;
+    this.size = size;
+    this.style = style;
+  }
+  
   public static Font getFont( final String name, 
                               final int size, 
                               final int style ) 
@@ -35,18 +47,6 @@ public final class Font {
       }
     }
     return result;
-  }
-
-  private static final Map fonts = new HashMap();
-
-  private final String name;
-  private final int size;
-  private final int style;
-  
-  private Font( final String name, final int size, final int style ) {
-    this.name = name;
-    this.size = size;
-    this.style = style;
   }
 
   public String getName() {

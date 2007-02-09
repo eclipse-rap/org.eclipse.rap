@@ -50,7 +50,7 @@ public class Shell extends Composite {
     if( display == null ) {
       this.display = Display.getCurrent();
     } else {
-    this.display = display;
+      this.display = display;
     }
     state |= HIDDEN;
     this.display.addShell( this );
@@ -87,13 +87,40 @@ public class Shell extends Composite {
     if( getMenuBar() != null ) {
       hTitleBar += MENU_BAR_HEIGHT;
     }
+// TODO [rst] Revise this calculation.
+// --- orig ---
+//    int border = 5;
+//    return new Rectangle( border - 3,
+//                          hTitleBar + border,
+//                          width - border * 2,
+//                          height - ( hTitleBar + border * 2 ) - 3 );
+// ---
     int border = 5;
-    return new Rectangle( border - 3,
-                          hTitleBar + border,
-                          width - border * 2,
-                          height - ( hTitleBar + border * 2 ) - 3 );
+    return new Rectangle( border,
+                          hTitleBar + border + 2,
+                          width - border * 2 - 6,
+                          height - hTitleBar - border * 2 - 6 );
   }
   
+  /* 
+   * TODO [rst] Move to class Decorations, as soon as it exists
+   */
+  public Rectangle computeTrim( int x, int y, int width, int height ) {
+    checkWidget ();
+    int hTitleBar = ( style & RWT.TITLE ) != 0
+                                              ? TITLE_BAR_HEIGHT
+                                              : TITLE_BAR_HEIGHT_NOTITLE;
+    if( getMenuBar() != null ) {
+      hTitleBar += MENU_BAR_HEIGHT;
+    }
+    int border = 2;
+    Rectangle rect = new Rectangle( x - border,
+                                    y - hTitleBar - border - 3,
+                                    width + border * 2 + 6,
+                                    height + hTitleBar + border * 2 + 6 );
+    return rect;    
+  }
+
   public void setActive () {
     checkWidget();
     if( isVisible() ) {

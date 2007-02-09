@@ -254,6 +254,16 @@ public abstract class Control extends Widget {
     return new Point( width, height );
   }
 
+  public void pack() {
+    checkWidget();
+    pack( true );
+  }
+
+  public void pack( boolean changed ) {
+    checkWidget();
+    setSize( computeSize( RWT.DEFAULT, RWT.DEFAULT, changed ) );
+  }
+
   public int getBorderWidth() {
     // TODO: [fappel] reasonable implementation
     // TODO: [rst] This must be kept in sync with appearances, controls using
