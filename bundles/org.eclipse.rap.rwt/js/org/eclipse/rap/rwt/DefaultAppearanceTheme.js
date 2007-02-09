@@ -25,7 +25,7 @@
 qx.OO.defineClass(
   "org.eclipse.rap.rwt.DefaultAppearanceTheme", 
   qx.renderer.theme.AppearanceTheme,
-  function(vTitle) {
+function(vTitle) {
     qx.renderer.theme.AppearanceTheme.call( this, 
                                             vTitle || "rap default appearance");
   }
@@ -120,6 +120,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       }
     }
   },
+  
   // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
   "label-wrapper" : {
     setup : function() {
@@ -194,7 +195,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "button" : {
     setup : function() {
       this.bgcolor_default = new qx.renderer.color.ColorObject("#f7f7fb");
-      this.bgcolor_over = new qx.renderer.color.ColorObject("#FbFbFe"); 
+      this.bgcolor_over = new qx.renderer.color.ColorObject("#fbfbfe");
 
       this.border = new qx.renderer.border.BorderObject();
       this.border.setTop( 1, "solid", "white" );
@@ -215,7 +216,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       var vReturn = {};
       vReturn.backgroundColor = vStates.over ? this.bgcolor_over : this.bgcolor_default;
       
-      if( vStates.rwt_FLAT ) {
+      if (vStates.rwt_FLAT) {
         vReturn.border = this.border_FLAT;
       } else if (vStates.rwt_BORDER) {
         vReturn.border = vStates.pressed || vStates.checked ? this.border_BORDER_pressed : this.border_BORDER;
@@ -650,7 +651,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     setup : function() {
       this.bgimage_active = "./org/eclipse/rap/rwt/widgets/shell/caption_active.gif";
       this.bgimage_inactive = "./org/eclipse/rap/rwt/widgets/shell/caption_inactive.gif";
-      this.color_active = new qx.renderer.color.ColorObject("#ffffff");
+      this.color_active = new qx.renderer.color.ColorObject( "#ffffff" );
       this.color_inactive = new qx.renderer.color.ColorObject( "#dddddd" );
     },
 
@@ -695,7 +696,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.font.setBold(true);
     },
-
     initial : function(vTheme) {
       return {
         cursor : qx.constant.Core.DEFAULT,
@@ -715,14 +715,15 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         border : this.border,
         paddingTop : 1,
         paddingBottom : 1,
-        paddingRight : 2,
-        paddingLeft : 2,
+        paddingRight : 1,
+        paddingLeft : 1,
         marginLeft : 1
       });
     },
+
     state : function(vTheme, vStates) {
       return {};
-    }
+      }
   },
 
   "window-captionbar-minimize-button" : {
@@ -773,7 +774,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     initial : function(vTheme) {
       return vTheme.initialFrom("window-captionbar-button");
     },
-
     state : function(vTheme, vStates) {
       var vReturn = vTheme.stateFrom("window-captionbar-button", vStates);
       vReturn.backgroundColor = vStates.active ?
@@ -1011,6 +1011,10 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       return vResult;
     }
   },
+
+
+
+
 
 
 
@@ -1647,7 +1651,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "field-set" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
+      this.bgcolor = new qx.renderer.color.ColorObject( "#f8f8ff" );
     },
     initial : function(vTheme) {
       return {
@@ -1658,11 +1662,11 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "field-set-legend" : {
     setup : function() {
-      this.bgcolor = new qx.renderer.color.ColorObject("#ece9d8");
-      this.color_disabled = new qx.renderer.color.ColorObject("graytext");
+      this.bgcolor = new qx.renderer.color.ColorObject( "#f8f8ff" );
+      this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );
     },
     initial : function(vTheme) {
-      return qx.lang.Object.mergeWith(vTheme.initialFrom("atom"), {
+      return qx.lang.Object.mergeWith(vTheme.initialFrom( "atom" ), {
         top : 1,
         left : 10,
         backgroundColor : this.bgcolor,
@@ -2129,6 +2133,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "splitpane" :
   {
+  
     setup : function() {
       this.border_none = qx.renderer.border.BorderPresets.getInstance().none;
       this.border_inset = qx.renderer.border.BorderPresets.getInstance().inset;
