@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: RAP Widget Toolkit
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.rwt
-Bundle-Version: 0.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
  lib/qooxdoo-0.6.5.jar
 Bundle-Localization: plugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.rap.w4t
 Import-Package: javax.servlet;version="[2.3.0,2.5.0)",
  javax.servlet.http;version="[2.3.0,2.5.0)"
