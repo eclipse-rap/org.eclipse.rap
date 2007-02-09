@@ -11,14 +11,16 @@
 
 package org.eclipse.rap.rwt.widgets;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
 import com.w4t.Adaptable;
 import com.w4t.W4TContext;
+import com.w4t.engine.requests.RequestParams;
 import com.w4t.engine.service.ContextProvider;
 
 /**
@@ -39,7 +41,7 @@ public class Display implements Adaptable {
   
   private final List shells;
   private final Font systemFont; 
-  private Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
+  private Rectangle bounds;
   private Shell activeShell;
   private IDisplayAdapter displayAdapter;
 
@@ -51,7 +53,8 @@ public class Display implements Adaptable {
     }
     session.setAttribute( DISPLAY_ID, this );
     shells = new ArrayList();
-    systemFont = Font.getFont( SYSTEM_FONT_NAME, 11, RWT.NORMAL );
+    systemFont = Font.getFont( SYSTEM_FONT_NAME, 11, RWT.NORMAL );    
+    readInitialBounds();
   }
 
   public Shell[] getShells() {
@@ -252,5 +255,24 @@ public class Display implements Adaptable {
     public void setActiveShell( final Shell activeShell ) {
       Display.this.setActiveShell( activeShell );
     }
+  }
+  
+  
+  //////////////////
+  // helping methods
+  
+  private void readInitialBounds() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String widthVal = request.getParameter( RequestParams.AVAILABLE_WIDTH );
+    int width = 1024;
+    if( widthVal != null ) {
+      width = Integer.parseInt( widthVal );
+    }
+    String height_val = request.getParameter( RequestParams.AVAILABLE_HEIGHT );
+    int height = 768;
+    if( height_val != null ) {
+      height = Integer.parseInt( height_val );
+    }
+    bounds = new Rectangle( 0, 0, width, height );
   }
 }

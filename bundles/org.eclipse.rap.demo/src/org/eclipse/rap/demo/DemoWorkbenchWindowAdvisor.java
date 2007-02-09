@@ -12,6 +12,7 @@
 package org.eclipse.rap.demo;
 
 import org.eclipse.rap.rwt.graphics.Point;
+import org.eclipse.rap.ui.*;
 import org.eclipse.rap.ui.entrypoint.*;
 
 
@@ -34,5 +35,11 @@ public class DemoWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     configurer.setInitialSize( new Point( 800, 600 ) );
     configurer.setShowCoolBar( true );
     configurer.setTitle( "Workbench Demo" );
+  }
+  
+  public void postWindowOpen() {
+    IWorkbench workbench = PlatformUI.getWorkbench();
+    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+    window.getShell().setLocation( 70, 25 );
   }
 }

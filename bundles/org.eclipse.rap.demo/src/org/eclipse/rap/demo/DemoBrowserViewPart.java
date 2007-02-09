@@ -9,10 +9,11 @@
 package org.eclipse.rap.demo;
 
 import org.eclipse.rap.demo.DemoTreeViewPart.TreeObject;
-import org.eclipse.rap.jface.viewers.ISelection;
-import org.eclipse.rap.jface.viewers.IStructuredSelection;
+import org.eclipse.rap.jface.viewers.*;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.browser.Browser;
+import org.eclipse.rap.rwt.events.ControlAdapter;
+import org.eclipse.rap.rwt.events.ControlEvent;
 import org.eclipse.rap.rwt.widgets.Composite;
 import org.eclipse.rap.ui.*;
 import org.eclipse.rap.ui.part.ViewPart;
@@ -25,6 +26,11 @@ public class DemoBrowserViewPart extends ViewPart {
     browser = new Browser( parent, RWT.NONE );
     browser.setUrl( "http://www.eclipse.org/birt/phoenix/examples/solution/TopSellingProducts.html" );
     createSelectionListener();
+    browser.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent event ) {
+        browser.setUrl( browser.getUrl() + "%20" );
+      }
+    } );
   }
 
   private void createSelectionListener() {
@@ -36,15 +42,19 @@ public class DemoBrowserViewPart extends ViewPart {
       public void selectionChanged( final IWorkbenchPart part,
                                     final ISelection selection )
       {
-        IStructuredSelection sselection = ( IStructuredSelection )selection;
-        Object firstElement = sselection.getFirstElement();
-        if( firstElement instanceof TreeObject ) {
-          String location = ( ( TreeObject )firstElement ).getLocation();
-          if( location != null ) {
-            browser.setUrl( location );
-          }
-        }
+        setUrlFromSelection( selection );
       }
     } );
+  }
+
+  private void setUrlFromSelection( final ISelection selection ) {
+    IStructuredSelection sselection = ( IStructuredSelection )selection;
+    Object firstElement = sselection.getFirstElement();
+    if( firstElement instanceof TreeObject ) {
+      String location = ( ( TreeObject )firstElement ).getLocation();
+      if( location != null ) {
+        browser.setUrl( location );
+      }
+    }
   }
 }

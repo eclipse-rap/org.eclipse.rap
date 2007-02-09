@@ -78,6 +78,9 @@ public class ShellLCA extends AbstractWidgetLCA {
     Shell shell = ( Shell )widget;
     ControlLCAUtil.writeChanges( shell );
     JSWriter writer = JSWriter.getWriterFor( widget );
+    if( shell.getBounds().equals( shell.getDisplay().getBounds() ) ) {
+      writer.call( "maximize", new Object[ 0 ] );
+    }
     writeImage( shell );
     writer.set( Props.TEXT, JSConst.QX_FIELD_CAPTION, shell.getText(), "" );
     writeOpen( shell );
