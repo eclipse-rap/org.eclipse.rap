@@ -241,12 +241,15 @@ public class List_Test extends TestCase {
     // Test initials state of selection
     assertEquals( -1, list.getSelectionIndex() );
     assertEquals( 0, list.getSelectionCount() );
+    assertEquals( 0, list.getSelection().length );
     
     // Test selecting single item
     list.add( "test1" );
     list.setSelection( 0 );
     assertEquals( 0, list.getSelectionIndex() );
     assertTrue( Arrays.equals( new int[] { 0 }, list.getSelectionIndices() ) );
+    assertEquals( 1, list.getSelection().length );
+    assertEquals( "test1", list.getSelection()[ 0 ] );
     
     // Test selecting single item with setSelection(int[])
     list.removeAll();
@@ -263,6 +266,7 @@ public class List_Test extends TestCase {
     list.setSelection( 1 );
     list.setSelection( new int[] { 0, 2 } );
     assertEquals( 0, list.getSelectionCount() );
+    assertEquals( 0, list.getSelection().length );
     
     // Test setSelection(int[]) with invaid arguments
     list.removeAll();
@@ -417,12 +421,14 @@ public class List_Test extends TestCase {
     // Test initials state of selection
     assertEquals( -1, list.getSelectionIndex() );
     assertEquals( 0, list.getSelectionCount() );
+    assertEquals( 0, list.getSelection().length );
     
     // Test selecting single item
     list.add( "test1" );
     list.setSelection( 0 );
     assertEquals( 0, list.getSelectionIndex() );
     assertTrue( Arrays.equals( new int[] { 0 }, list.getSelectionIndices() ) );
+    assertEquals( "test1", list.getSelection()[ 0 ] );
     
     // Test selecting single item with setSelection(int[])
     list.removeAll();
@@ -441,6 +447,8 @@ public class List_Test extends TestCase {
     list.setSelection( selection );
     assertEquals( 2, list.getSelectionCount() );
     assertTrue( Arrays.equals( selection, list.getSelectionIndices() ) );
+    assertEquals( "item0", list.getSelection()[ 0 ] );
+    assertEquals( "item2", list.getSelection()[ 1 ] );
     
     // Test setSelection(int[]) with (partially) invaid arguments
     list.removeAll();
@@ -457,12 +465,14 @@ public class List_Test extends TestCase {
     list.setSelection( 0 );
     list.setSelection( new int[]{ 10, 12 } );
     assertEquals( -1, list.getSelectionIndex() );
+    assertEquals( 0, list.getSelection().length );
     list.removeAll();
     list.add( "test1" );
-    list.add( "test1" );
+    list.add( "test2" );
     list.setSelection( 0 );
     list.setSelection( new int[]{ 1, 8 } );
     assertEquals( 1, list.getSelectionIndex() );
+    assertEquals( "test2", list.getSelection()[ 0 ] );
     
     // Ensure that adding an item does not change selection
     list.removeAll();

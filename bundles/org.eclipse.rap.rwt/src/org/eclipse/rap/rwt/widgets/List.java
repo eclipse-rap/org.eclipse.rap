@@ -59,45 +59,64 @@ public class List extends Scrollable {
   ///////////////////////////////
   // Methods to get/set selection
 
+  public String [] getSelection() {
+    checkWidget();
+    int[] selectionIndices = model.getSelectionIndices();
+    String[] result = new String[ selectionIndices.length ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = model.getItem( selectionIndices[ i ] );
+    }
+    return result;
+  }
+  
   public int getSelectionIndex() {
+    checkWidget();
     return model.getSelectionIndex();
   }
 
   public int[] getSelectionIndices() {
+    checkWidget();
     return model.getSelectionIndices();
   }
   
   public int getSelectionCount() {
+    checkWidget();
     return model.getSelectionCount();
   }
 
   // TODO [rh] selection is not scrolled into view (see List.js)
   public void setSelection( final int selection ) {
+    checkWidget();
     model.setSelection( selection );
     updateFocusIndexAfterSelectionChange();
   }
 
   public void setSelection( final int[] selection ) {
+    checkWidget();
     model.setSelection( selection );
     updateFocusIndexAfterSelectionChange();
   }
   
   public void setSelection( final int start, final int end ) {
+    checkWidget();
     model.setSelection( start, end );
     updateFocusIndexAfterSelectionChange();
   }
   
   public void setSelection( final String[] selection ) {
+    checkWidget();
     model.setSelection( selection );
     updateFocusIndexAfterSelectionChange();
   }
   
   public void selectAll() {
+    checkWidget();
     model.selectAll();
     updateFocusIndexAfterSelectionChange();
   }
 
   public void deselectAll() {
+    checkWidget();
     model.deselectAll();
     updateFocusIndexAfterSelectionChange();
   }
@@ -120,6 +139,7 @@ public class List extends Scrollable {
   }
 
   public int getFocusIndex() {
+    checkWidget();
     return focusIndex;
   }
 
@@ -127,61 +147,74 @@ public class List extends Scrollable {
   // Methods to maintain the items
   
   public void add( final String string ) {
+    checkWidget();
     model.add( string );
     updateFocusIndexAfterItemChange();
   }
 
   public void add( final String string, final int index ) {
+    checkWidget();
     model.add( string, index );
     updateFocusIndexAfterItemChange();
   }
 
   public void remove( final int index ) {
+    checkWidget();
     model.remove( index );
     updateFocusIndexAfterItemChange();
   }
 
   public void remove( final int start, final int end ) {
+    checkWidget();
     model.remove( start, end );
     updateFocusIndexAfterItemChange();
   }
   
   public void remove( final int[] indices ) {
+    checkWidget();
     model.remove( indices );
     updateFocusIndexAfterItemChange();
   }
 
   public void remove( final String string ) {
+    checkWidget();
     model.remove( string );
     updateFocusIndexAfterItemChange();
   }
 
   public void removeAll() {
+    checkWidget();
     model.removeAll();
     updateFocusIndexAfterItemChange();
   }
 
   public void setItem( final int index, final String string ) {
+    checkWidget();
     model.setItem( index, string );
   }
 
   public void setItems( final String[] items ) {
+    checkWidget();
     model.setItems( items );
   }
 
   public String getItem( final int index ) {
+    checkWidget();
     return model.getItem( index );
   }
 
   public int getItemCount() {
+    checkWidget();
     return model.getItemCount();
   }
 
   public String[] getItems() {
+    checkWidget();
     return model.getItems();
   }
   
   public int indexOf( final String string ) {
+    checkWidget();
     return indexOf( string, 0 );
   }
 
@@ -204,10 +237,12 @@ public class List extends Scrollable {
   // Listener registration/de-registration
 
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
