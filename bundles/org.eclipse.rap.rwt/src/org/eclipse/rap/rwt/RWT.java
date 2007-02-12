@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt;
 
+import java.io.*;
+
 
 /**
  * TODO: [fappel] comment
@@ -446,5 +448,5 @@ public class RWT {
         result = "Unknown error"; //$NON-NLS-1$
     }
     return result;
-  }
+  }  
 }

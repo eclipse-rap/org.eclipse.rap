@@ -11,8 +11,7 @@
 
 package org.eclipse.rap.rwt;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 import javax.servlet.http.HttpSession;
@@ -230,4 +229,25 @@ public final class RWTFixture {
     displayLCA.processAction( display );
     
   }
+  
+  
+  /**
+   *  Simple program that prints the constant definitions of the RWT
+   *  class which can be used for updates of the SWT class. Not very
+   *  sophisticated, but it works for the moment...
+   */
+  public static void main( final String[] arx ) throws IOException {
+    String rwtDir = System.getProperty( "user.dir" ).replace( ".test", "" );
+    String path = RWT.class.getName().replace( '.', '/' );
+    String src = rwtDir + "/src/" + path + ".java";
+    BufferedReader reader = new BufferedReader( new FileReader( src ) );
+    String line = reader.readLine();
+    while( line != null ) {
+      if( line.startsWith( "  public static final " ) ) {
+        System.out.println( line );
+      }
+      line = reader.readLine();
+    }
+  }
+
 }
