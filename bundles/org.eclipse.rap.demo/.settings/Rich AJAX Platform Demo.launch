@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="workspace_bundles" value="org.eclipse.rap.demo@default:default"/>
+<stringAttribute key="configLocation" value=""/>
+<booleanAttribute key="default_auto_start" value="true"/>
+<intAttribute key="default_start_level" value="4"/>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="includeOptional" value="false"/>
+<booleanAttribute key="clearConfig" value="false"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dorg.osgi.service.http.port=82"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="target_bundles" value="javax.servlet@default:default,org.apache.commons.logging@default:default,org.eclipse.core.commands@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime@default:true,org.eclipse.core.runtime.compatibility.auth@default:default,org.eclipse.core.runtime.compatibility.registry@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.http.jetty@default:default,org.eclipse.equinox.http.registry@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.osgi@:,org.eclipse.osgi.services@default:default,org.eclipse.rap.jface@default:default,org.eclipse.rap.rwt@default:default,org.eclipse.rap.ui.workbench@default:default,org.eclipse.rap.w4t@default:default,org.mortbay.jetty@default:default"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-console"/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+</launchConfiguration>
