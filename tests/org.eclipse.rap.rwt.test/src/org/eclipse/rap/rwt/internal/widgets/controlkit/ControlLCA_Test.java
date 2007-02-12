@@ -99,7 +99,7 @@ public class ControlLCA_Test extends TestCase {
     control.setBounds( 1, 2, 100, 200 );
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
     String expected 
-      = "w.setSpace( 1, 100, 2, 196 );" 
+      = "w.setSpace( 1, 100, 2, 200 );" 
       + "w.setMinWidth( 0 );w.setMinHeight( 0 );"; 
     assertEquals( expected, Fixture.getAllMarkup() );
     
@@ -108,9 +108,9 @@ public class ControlLCA_Test extends TestCase {
     control.setBounds( 1, 2, 100, 200 );
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), true );
     expected 
-      = "w.setSpace( 1, 100, 2, 196 );" 
+      = "w.setSpace( 1, 100, 2, 200 );" 
       + "w.setMinWidth( 0 );w.setMinHeight( 0 );" 
-      + "w.setClipHeight( 196 );w.setClipWidth( 100 );";
+      + "w.setClipHeight( 200 );w.setClipWidth( 100 );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 }
