@@ -237,7 +237,7 @@ public final class RWTFixture {
    *  sophisticated, but it works for the moment...
    */
   public static void main( final String[] arx ) throws IOException {
-    String rwtDir = System.getProperty( "user.dir" ).replace( ".test", "" );
+    String rwtDir = System.getProperty( "user.dir" ).replaceAll( ".test", "" );
     String path = RWT.class.getName().replace( '.', '/' );
     String src = rwtDir + "/src/" + path + ".java";
     BufferedReader reader = new BufferedReader( new FileReader( src ) );
