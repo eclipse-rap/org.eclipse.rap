@@ -265,14 +265,9 @@ public abstract class Control extends Widget {
   }
 
   public int getBorderWidth() {
-    // TODO: [fappel] reasonable implementation
     // TODO: [rst] This must be kept in sync with appearances, controls using
-    //             different borders must probably overwrite this mehtod
-    int result = 0;
-    if( ( style & RWT.BORDER ) != 0 ) {
-      result = 2;
-    }
-    return result;
+    //             different borders must overwrite this mehtod
+    return ( style & RWT.BORDER ) != 0 ? 2 : 0;
   }
 
   public Point toDisplay( final int x, final int y ) {

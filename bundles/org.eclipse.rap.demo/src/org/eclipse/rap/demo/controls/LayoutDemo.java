@@ -24,8 +24,7 @@ public class LayoutDemo implements IEntryPoint {
     Display display = new Display();
     Shell shell = new Shell( display, RWT.SHELL_TRIM );
     shell.setBounds( 10, 10, 800, 600 );
-    shell.setLayout( new FillLayout() );
-    createMainPart( shell );
+    createContents( shell );
     shell.setText( "RWT Layout Demo" );
     shell.layout();
     shell.pack();
@@ -33,8 +32,7 @@ public class LayoutDemo implements IEntryPoint {
     return display;
   }
 
-  // MAIN PART
-  private void createMainPart( Composite parent ) {
+  private void createContents( Composite parent ) {
     parent.setLayout( new FillLayout() );
     final TabFolder topFolder = new TabFolder( parent, RWT.NONE );
     new RowLayoutTab( topFolder );
@@ -44,7 +42,11 @@ public class LayoutDemo implements IEntryPoint {
     topFolder.setSelection( 0 );
   }
 
-  /** Creates a tab to display a CBannerLayout */
+  /**
+   * Creates a tab to display a CBannerLayout.
+   * 
+   * TODO [rst] make this a class of its own
+   */
   private void createTabCBannerLayout( TabFolder folder ) {
     TabItem item = new TabItem( folder, RWT.NONE );
     item.setText( "CBannerLayout" );
@@ -69,7 +71,11 @@ public class LayoutDemo implements IEntryPoint {
     chkSimple.setSelection( true );
   }
 
-  /** Creates a tab to display a ViewFormLayout */
+  /**
+   * Creates a tab to display a ViewFormLayout.
+   * 
+   * TODO [rst] make this a class of its own
+   */
   private void createTabViewFormLayout( TabFolder folder ) {
     TabItem item = new TabItem( folder, RWT.NONE );
     item.setText( "ViewFormLayout" );

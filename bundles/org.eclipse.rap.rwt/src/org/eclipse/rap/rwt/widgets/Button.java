@@ -194,8 +194,7 @@ public class Button extends Control {
       }
     }
     if( hasText ) {
-      FontSizeEstimation sizeEst = FontSizeEstimation.getInstance( getFont() );
-      Point extent = sizeEst.stringExtent( text );
+      Point extent = FontSizeEstimation.stringExtent( text, getFont() );
       height = Math.max( height, extent.y );
       width += extent.x;
     }

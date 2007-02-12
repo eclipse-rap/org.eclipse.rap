@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.widgets.*;
 abstract class ExampleTab {
   
   private static final int MAX_COLORS = 4;
-  protected final TabFolder folder;
+  private final TabFolder folder;
   private final List controls;
 
   private Composite exmplComp;
@@ -298,7 +298,7 @@ abstract class ExampleTab {
       if( ctrls[ i ] instanceof Button ) {
         Button button = ( Button )ctrls[ i ];
         if (button.getSelection()) {
-          Object data = button.getData("style");
+          Object data = button.getData( "style" );
           if( data != null && data instanceof Integer ) {
             int style = (( Integer )data).intValue();
             result |= style;

@@ -26,8 +26,7 @@ import org.eclipse.rap.rwt.widgets.MenuHolder.IMenuHolderAdapter;
 public class Shell extends Composite {
 
   // TODO [rh] preliminary: constants extracted to be used in MenuLCA
-  public static final int TITLE_BAR_HEIGHT = 15;
-  public static final int TITLE_BAR_HEIGHT_NOTITLE = 3;
+  public static final int TITLE_BAR_HEIGHT = 18 + 1;
   public static final int MENU_BAR_HEIGHT = 20;
   
   private final Display display;
@@ -77,29 +76,24 @@ public class Shell extends Composite {
     return display;
   }
 
+  /* 
+   * TODO [rst] Move to class Decorations, as soon as it exists
+   */
   public Rectangle getClientArea() {
+    checkWidget ();
     Rectangle current = getBounds();
     int width = current.width;
     int height = current.height;
-    int hTitleBar = ( style & RWT.TITLE ) != 0
-                      ? TITLE_BAR_HEIGHT
-                      : TITLE_BAR_HEIGHT_NOTITLE;
+    int hTitleBar = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT : 0;
     if( getMenuBar() != null ) {
       hTitleBar += MENU_BAR_HEIGHT;
     }
-// TODO [rst] Revise this calculation.
-// --- orig ---
-//    int border = 5;
-//    return new Rectangle( border - 3,
-//                          hTitleBar + border,
-//                          width - border * 2,
-//                          height - ( hTitleBar + border * 2 ) - 3 );
-// ---
-    int border = 5;
-    return new Rectangle( border,
-                          hTitleBar + border + 2,
-                          width - border * 2 - 6,
-                          height - hTitleBar - border * 2 - 6 );
+    int border = getBorderWidth();
+    int margin = ( style & RWT.TITLE ) != 0 ? 2 : 0;
+    return new Rectangle( 0 + margin,
+                          hTitleBar + margin,
+                          width - margin * 2 - border * 2,
+                          height - hTitleBar - margin * 2 - border * 2 );
   }
   
   /* 
@@ -107,18 +101,21 @@ public class Shell extends Composite {
    */
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget ();
-    int hTitleBar = ( style & RWT.TITLE ) != 0
-                                              ? TITLE_BAR_HEIGHT
-                                              : TITLE_BAR_HEIGHT_NOTITLE;
+    int hTitleBar = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT : 0;
     if( getMenuBar() != null ) {
       hTitleBar += MENU_BAR_HEIGHT;
     }
-    int border = 2;
-    Rectangle rect = new Rectangle( x - border,
-                                    y - hTitleBar - border - 3,
-                                    width + border * 2 + 6,
-                                    height + hTitleBar + border * 2 + 6 );
-    return rect;    
+    int border = getBorderWidth();
+    int margin = ( style & RWT.TITLE ) != 0 ? 2 : 0;
+    Rectangle rect = new Rectangle( x - margin - border,
+                                    y - hTitleBar - margin - border,
+                                    width + margin * 2 + border * 2,
+                                    height + hTitleBar + margin * 2 + border * 2 );
+    return rect;
+  }
+  
+  public int getBorderWidth() {
+    return ( style & ( RWT.BORDER | RWT.TITLE ) ) != 0 ? 2 : 1;
   }
 
   public void setActive () {

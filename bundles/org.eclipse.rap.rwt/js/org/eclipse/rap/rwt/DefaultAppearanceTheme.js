@@ -632,17 +632,16 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     initial : function(vTheme) {
       return {
         backgroundColor : this.bgcolor,
-        color : this.color,
-        paddingTop : 1,
-        paddingRight : 1,
-        paddingBottom : 1,
-        paddingLeft : 1
+        color : this.color
       }
     },
 
     state : function(vTheme, vStates) {
       return {
-        border : vStates.maximized ? qx.renderer.border.BorderPresets.getInstance().none : qx.renderer.border.BorderPresets.getInstance().outset
+        border : ( vStates.rwt_TITLE || vStates.rwt_BORDER )
+                 && !vStates.maximized
+          ? qx.renderer.border.BorderPresets.getInstance().outset
+          : qx.renderer.border.BorderPresets.getInstance().black
       }
     }
   },
@@ -659,8 +658,9 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       return {
         paddingTop : 1,
         paddingRight : 2,
-        paddingBottom : 2,
+        paddingBottom : 1,
         paddingLeft : 2,
+        marginBottom : 1,
         verticalChildrenAlign : qx.constant.Layout.ALIGN_MIDDLE,
         height : qx.constant.Core.AUTO,
         overflow : qx.constant.Style.OVERFLOW_HIDDEN
@@ -669,6 +669,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     state : function(vTheme, vStates) {
       return {
+        minHeight : vStates.rwt_TITLE ? 18 : 0,
+        maxHeight : vStates.rwt_TITLE ? 18 : 0,
         backgroundImage : vStates.active ? this.bgimage_active : this.bgimage_inactive,
         color : vStates.active ? this.color_active : this.color_inactive
       }

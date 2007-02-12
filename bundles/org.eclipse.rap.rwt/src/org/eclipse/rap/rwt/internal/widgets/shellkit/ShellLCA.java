@@ -17,7 +17,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ActivateEvent;
 import org.eclipse.rap.rwt.events.ShellEvent;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -61,13 +60,14 @@ public class ShellLCA extends AbstractWidgetLCA {
     };
     writer.newWidget( "org.eclipse.rap.rwt.widgets.Shell", args  );
     ControlLCAUtil.writeStyleFlags( widget );
-    if( ( widget.getStyle() & RWT.APPLICATION_MODAL ) != 0 ) {
+    int style = widget.getStyle();
+    if( ( style & RWT.APPLICATION_MODAL ) != 0 ) {
       writer.set( "modal", true );
     }
-    if( ( widget.getStyle() & RWT.TITLE ) == 0 ) {
-      writer.set( "showCaption", false );
+    if( ( style & RWT.TITLE ) != 0 ) {
+      writer.call( "addState", new Object[]{ "rwt_TITLE" } );
     }
-    int style = widget.getStyle();
+    writer.call( "fixTitlebar", new Object[ 0 ] );
     writer.set( "resizeable", ( style & RWT.RESIZE ) != 0 );
     writer.set( "showMinimize", ( style & RWT.MIN ) != 0 );
     writer.set( "showMaximize", ( style & RWT.MAX ) != 0 );

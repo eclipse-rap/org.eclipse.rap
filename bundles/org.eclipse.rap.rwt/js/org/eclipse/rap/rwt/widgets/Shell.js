@@ -29,10 +29,21 @@ qx.Proto.setActiveControl = function( control ) {
 }
 
 /**
+ * To be called after rwt_TITLE is set
+ */
+qx.Proto.fixTitlebar = function() {
+  if( this.hasState( "rwt_TITLE" ) ) {
+    this._captionBar.addState( "rwt_TITLE" );
+  } else {
+    this.setShowCaption( false );
+  }
+}
+
+/**
  * Could be used to imitate Windows behavior: When SWT.MAX is set, the minimize
  * button is still shown but disabled.
  */
-qx.Proto.disableMinimize = function( ) {
+qx.Proto.disableMinimize = function() {
   this._minimizeButton.setEnabled( false );
 }
 
@@ -40,7 +51,7 @@ qx.Proto.disableMinimize = function( ) {
  * Could be used to imitate Windows behavior: When SWT.MIN is set, the maximize
  * button is still shown but disabled.
  */
-qx.Proto.disableMinimize = function( ) {
+qx.Proto.disableMinimize = function() {
   this._maximizeButton.setEnabled( false );
 }
 

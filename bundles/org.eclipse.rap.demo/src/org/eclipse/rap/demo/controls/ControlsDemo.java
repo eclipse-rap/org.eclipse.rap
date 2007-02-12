@@ -21,8 +21,7 @@ public class ControlsDemo implements IEntryPoint {
     Display display = new Display();
     Shell shell = new Shell( display, RWT.SHELL_TRIM );
     shell.setBounds( 10, 10, 850, 600 );
-    shell.setLayout( new FillLayout() );
-    createMainPart( shell );
+    createContent( shell );
     shell.layout();
     shell.setText( "RWT Controls Demo" );
     ClassLoader classLoader = getClass().getClassLoader();
@@ -32,8 +31,7 @@ public class ControlsDemo implements IEntryPoint {
     return display;
   }
 
-  // MAIN PART
-  private void createMainPart( Composite parent ) {
+  private void createContent( Composite parent ) {
     parent.setLayout( new FillLayout() );
     final TabFolder topFolder = new TabFolder( parent, RWT.NONE );
     new ButtonTab( topFolder );
@@ -41,6 +39,7 @@ public class ControlsDemo implements IEntryPoint {
     new ComboTab( topFolder );
     new CompositeTab( topFolder );
     new CoolBarTab( topFolder );
+//    new DialogsTab( topFolder );
     new LabelTab( topFolder );
     new ListTab( topFolder );
 //    new SashTab( topFolder );

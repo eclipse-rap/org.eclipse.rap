@@ -17,34 +17,22 @@ import org.eclipse.rap.rwt.graphics.Point;
 
 public class FontSizeEstimation {
 
-  private static FontSizeEstimation instance;
-  private final Font font;
-
-  private FontSizeEstimation( Font font ) {
-    this.font = font;
-    // prevent instantiation
-  }
-  
-  public static FontSizeEstimation getInstance( Font font ) {
-    if( instance == null ) {
-      instance = new FontSizeEstimation( font );
-    }
-    return instance;
-  }
-  
-  public Point stringExtent( String string ) {    
+  public static Point stringExtent( String string, Font font ) {    
     if ( string == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
-    int width = getLineWidth( string );
-    int height = getCharHeight() + 2;
+    int width = getLineWidth( string, font );
+    int height = getCharHeight( font ) + 2;
     return new Point( width, height );
   }
   
   /**
    * respects line breaks and wrap
    */
-  public Point textExtent( final String string, final int wrapWidth ) {
+  public static Point textExtent( final String string,
+                                  final int wrapWidth,
+                                  Font font )
+  {
     if ( string == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -53,14 +41,14 @@ public class FontSizeEstimation {
     String[] lines = string.split( "\n" );
     for( int i = 0; i < lines.length; i++ ) {
       String line = lines[ i ];
-      int width = getLineWidth( line );
-      if( wrapWidth > 0 && getLineWidth( line ) > wrapWidth ) {
+      int width = getLineWidth( line, font );
+      if( wrapWidth > 0 && getLineWidth( line, font ) > wrapWidth ) {
         // line too long
         int index = 0;
         int nextIndex = 0;
         while( ( nextIndex = line.indexOf( ' ', index ) ) != -1 ) {
           String subStr = line.substring( 0, nextIndex );
-          int newWidth = getLineWidth( subStr );
+          int newWidth = getLineWidth( subStr, font );
           if( newWidth > wrapWidth ) {
             maxWidth = Math.max( maxWidth, width );
             lineCount++;
@@ -78,20 +66,20 @@ public class FontSizeEstimation {
       maxWidth = Math.max( maxWidth, width );
       lineCount++;
     }
-    int height = Math.round( getCharHeight() * 1.3f * lineCount );
+    int height = Math.round( getCharHeight( font ) * 1.3f * lineCount );
     return new Point( maxWidth, height );
   }
   
-  public int getCharHeight() {
+  public static int getCharHeight( Font font ) {
     // at 72 dpi, 1 pt == 1 px
     return font.getSize();
   }
   
-  public float getAvgCharWidth() {
+  public static float getAvgCharWidth( Font font ) {
     return font.getSize() * 0.45f;
   }
   
-  private int getLineWidth( String string ) {
-    return Math.round( getAvgCharWidth() * string.length() );
+  private static int getLineWidth( String string, Font font ) {
+    return Math.round( getAvgCharWidth( font ) * string.length() );
   }
 }

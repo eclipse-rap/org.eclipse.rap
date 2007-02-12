@@ -46,13 +46,14 @@ public class Text extends Control {
     checkWidget();
     int height = 0, width = 0;
     if( wHint == RWT.DEFAULT || hHint == RWT.DEFAULT ) {
-      FontSizeEstimation sizeEst = FontSizeEstimation.getInstance( getFont() );
       boolean wrap = ( style & RWT.MULTI ) != 0 && ( style & RWT.WRAP ) != 0;
       int wrapWidth = 0;
       if( wrap && wHint != RWT.DEFAULT ) {
         wrapWidth = wHint;
       }
-      Point extent = sizeEst.textExtent( getText(), wrapWidth  );
+      Point extent = FontSizeEstimation.textExtent( getText(),
+                                                    wrapWidth,
+                                                    getFont() );
       if( extent.x != 0 ) {
         width = extent.x + 12;
       }

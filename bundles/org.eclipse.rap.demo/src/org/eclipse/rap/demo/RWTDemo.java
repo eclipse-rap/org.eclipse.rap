@@ -19,7 +19,8 @@ import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rap.rwt.widgets.*;
 
-public class EntryPoint implements IEntryPoint {
+// TODO: Do we still need this demo ?
+public class RWTDemo implements IEntryPoint {
 
   private static final int ROWS = 40;
   private static final int COLUMNS = 10;

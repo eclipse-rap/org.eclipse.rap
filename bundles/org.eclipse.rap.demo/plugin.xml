@@ -8,7 +8,7 @@
         class="org.eclipse.rap.demo.DemoWorkbench"
         parameter="default"/>
     <entrypoint
-        class="org.eclipse.rap.demo.EntryPoint"
+        class="org.eclipse.rap.demo.RWTDemo"
         parameter="rwtdemo"/>
     <entrypoint
         class="org.eclipse.rap.demo.controls.LayoutDemo"

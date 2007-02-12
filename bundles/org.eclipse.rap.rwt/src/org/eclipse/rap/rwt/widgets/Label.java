@@ -134,8 +134,7 @@ public class Label extends Control {
       if( ( style & RWT.WRAP ) != 0 && wHint != RWT.DEFAULT ) {
         wrapWidth = wHint;
       }
-      FontSizeEstimation sizeEst = FontSizeEstimation.getInstance( getFont() );
-      Point extent = sizeEst.textExtent( text, wrapWidth );
+      Point extent = FontSizeEstimation.textExtent( text, wrapWidth, getFont() );
       width = extent.x + 8;
       height = extent.y + 2;
     }

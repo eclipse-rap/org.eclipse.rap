@@ -31,7 +31,9 @@ public class ShellTab extends ExampleTab {
 
   void createStyleControls( ) {
     createStyleButton( "BORDER" );
-    createStyleButton( "SHELL_TRIM" );
+    Button shellTrimCheck = createStyleButton( "SHELL_TRIM" );
+// TODO [rst] preselected style bit is not respected
+//    shellTrimCheck.setSelection( true );
     createStyleButton( "DIALOG_TRIM" );
     createStyleButton( "APPLICATION_MODAL" );
     createStyleButton( "TITLE" );
@@ -63,7 +65,7 @@ public class ShellTab extends ExampleTab {
     openShellButton.setLayoutData( new RowData( 150, 25 ) );
     openShellButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
-        createShell(style);
+        createShell( style );
       }} );
 
     Button showAllButton = new Button( top, RWT.PUSH );
@@ -111,81 +113,90 @@ public class ShellTab extends ExampleTab {
       }} );
   }
 
-//  private void createShell( int style ) {
-//    final Shell shell = new Shell( folder.getDisplay(), style );
-////    shell.setBounds( 100, 100, 300, 200 );
-//    shell.setLocation( 100, 100 );
-//    shell.setLayout( new RowLayout() );
-//    // added composite to be able to make the bounds of the client area visible
-////    Composite comp = new Composite( shell, RWT.NONE );
-////    comp.setBackground( Color.getColor( 255, 255, 255 ) );
-////    comp.setLayout( new FormLayout() );
-//    Button closeButton = new Button( shell, RWT.PUSH );
-//    closeButton.setText( "Close This Window" );
-//    closeButton.setBackground( Color.getColor( 25, 55, 55 ) );
-////    FormData formData = new FormData();
-////    formData.height = 25;
-////    formData.left = new FormAttachment( 30 );
-////    formData.right = new FormAttachment( 70 );
-////    formData.bottom = new FormAttachment( 80 );
-////    formData.width = 100;
-////    formData.height = 25;
-////    closeButton.setLayoutData( formData );
-//    closeButton.setLayoutData( new RowData( 200, 80 ) );
-//    closeButton.addSelectionListener( new SelectionAdapter() {
-//      public void widgetSelected( SelectionEvent event ) {
-//        shell.close();
-//      }
-//    } );
-//    int num = shells.size() + 1;
-//    shell.setText( "Test Shell " + num );
-//    shell.setImage( shellIconImage );
-////    shell.setSize( 300, 200 );
-////    shell.layout();
-////    Point pref = shell.computeSize( RWT.DEFAULT, RWT.DEFAULT, true );
-//    shell.pack();
-//    if( !invisible ) {
-//      shell.open();
-//    }
-//    shells.add( shell );
-//  }
-
   private void createShell( int style ) {
-    final Shell shell = new Shell( folder.getDisplay(), style );
-//    shell.setLayout( new FillLayout() );
-    shell.setBounds( 100, 100, 300, 200 );
-    final Composite comp = new Composite( shell, RWT.NONE );
-    comp.setBackground( Color.getColor( 25, 55, 55 ) );
-    Rectangle ca = shell.getClientArea();
-    comp.setBounds( ca.x, ca.y, ca.width, ca.height );
-//    comp.setLayoutData( new RowData( 200, 200 ) );
-//    Button closeButton = new Button( comp, RWT.PUSH );
-//    closeButton.setText( "Close This Window" );
-//    closeButton.setBackground( Color.getColor( 55, 55, 55 ) );
-//    closeButton.setLayoutData( new RowData( 200, 80 ) );
-//    closeButton.addSelectionListener( new SelectionAdapter() {
-//      public void widgetSelected( SelectionEvent event ) {
-//        shell.close();
-//      }
-//    } );
-    shell.addControlListener( new ControlAdapter() {
-      public void controlResized( ControlEvent event ) {
-        super.controlResized( event );
-        Rectangle ca = shell.getClientArea();
-        comp.setBounds( ca.x, ca.y, ca.width, ca.height );
-      }
-    } );
+    final Shell shell = new Shell( getShell().getDisplay(), style );
+    shell.setLocation( getNextShellLocation() );
+    if( true ) {
+      createShellContents1( shell );      
+    } else {
+      createShellContents2( shell );      
+    }
     int num = shells.size() + 1;
     shell.setText( "Test Shell " + num );
     shell.setImage( shellIconImage );
-//    shell.pack();
-    shell.layout();
     if( !invisible ) {
       shell.open();
     }
     shells.add( shell );
   }
 
+  /*
+   * Creates a shell with a size of 300 x 200 px and displays the bounds of its
+   * client area.
+   */
+  private void createShellContents1( final Shell shell ) {
+    shell.setSize( 300, 200 );
+    final Composite comp1 = new Composite( shell, RWT.NONE );
+    final Composite comp2 = new Composite( shell, RWT.NONE );
+    comp2.moveAbove( comp1 );
+    // can be used to test client area bounds
+    if( false ) {
+      comp1.setBackground( Color.getColor( 200, 0, 0 ) );
+      comp2.setBackground( Color.getColor( 200, 200, 200 ) );
+    }
+    Rectangle ca = shell.getClientArea();
+    comp1.setBounds( ca.x, ca.y, ca.width, ca.height );
+    comp2.setBounds( ca.x + 1, ca.y + 1, ca.width - 2, ca.height - 2 );
+    Button closeButton = new Button( shell, RWT.PUSH );
+    closeButton.setText( "Close This Window" );
+    closeButton.moveAbove( comp2 );
+    int centerX = (ca.width - ca.x) / 2;
+    closeButton.setBounds( centerX - 55, ca.height - 45, 110, 25 );
+    closeButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        shell.close();
+      }
+    } );
+    shell.addControlListener( new ControlAdapter() {
+      public void controlResized( ControlEvent event ) {
+        Rectangle ca = shell.getClientArea();
+        comp1.setBounds( ca.x, ca.y, ca.width, ca.height );
+        comp2.setBounds( ca.x + 1, ca.y + 1, ca.width - 2, ca.height - 2 );
+      }
+    } );
+  }
+
+  /*
+   * Alternative implementation:
+   * Creates a shell with that contains only a button with a predefined size of
+   * 140 x 40 px. Can be used to test the Shell.computeTrim mehtod.
+   */
+  private void createShellContents2( final Shell shell ) {
+    RowLayout layout = new RowLayout();
+    layout.marginLeft = 0;
+    layout.marginTop = 0;
+    layout.marginRight = 0;
+    layout.marginBottom = 0;
+    shell.setLayout( layout );
+    Button closeButton = new Button( shell, RWT.PUSH );
+    closeButton.setText( "Close This Window" );
+    closeButton.setBackground( Color.getColor( 25, 55, 55 ) );
+    closeButton.setLayoutData( new RowData( 140, 40 ) );
+    closeButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        shell.close();
+      }
+    } );
+  }
+  
+  private Point getNextShellLocation() {
+    Point result = getShell().getLocation();
+    int count = shells.size() % 12;
+    result.x += 50 + count * 10;
+    result.y += 50 + count * 10;
+    return result ;
+  }
+  
   private void closeShells() {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {

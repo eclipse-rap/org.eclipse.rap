@@ -69,3 +69,7 @@ that's right?
 
 21.) Setting the property "icon" on qx.ui.window.Window has no effect. The
      window icon can only be set using the constructor. (Qx Bug 87)
+
+22.) If the property "resizable" is set to false on a qx.ui.window.Window, the
+     maximize button is grayed out and the window cannot be maximized even if
+     "allowMaximize" is true.
