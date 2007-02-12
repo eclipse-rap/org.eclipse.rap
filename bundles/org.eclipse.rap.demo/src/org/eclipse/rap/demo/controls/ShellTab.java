@@ -24,14 +24,14 @@ public class ShellTab extends ExampleTab {
   private boolean invisible = false;
   private Image shellIconImage;
 
-  public ShellTab( TabFolder folder ) {
+  public ShellTab( final TabFolder folder ) {
     super( folder, "Shell" );
     shells = new ArrayList();
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
-    Button shellTrimCheck = createStyleButton( "SHELL_TRIM" );
+    createStyleButton( "SHELL_TRIM" );
 // TODO [rst] preselected style bit is not respected
 //    shellTrimCheck.setSelection( true );
     createStyleButton( "DIALOG_TRIM" );
@@ -45,7 +45,7 @@ public class ShellTab extends ExampleTab {
     createStyleButton( "ON_TOP" );
     final Button invisibleButton = createPropertyButton( "create invisible" );
     invisibleButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         invisible = invisibleButton.getSelection();
       }
     } );
@@ -64,7 +64,7 @@ public class ShellTab extends ExampleTab {
     openShellButton.setText( "Open Shell" );
     openShellButton.setLayoutData( new RowData( 150, 25 ) );
     openShellButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         createShell( style );
       }} );
 
@@ -72,7 +72,7 @@ public class ShellTab extends ExampleTab {
     showAllButton.setText( "Show All Shells" );
     showAllButton.setLayoutData( new RowData( 150, 25 ) );
     showAllButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         setShellsVisible( true );
       }
     } );
@@ -81,7 +81,7 @@ public class ShellTab extends ExampleTab {
     hideAllButton.setText( "Hide All Shells" );
     hideAllButton.setLayoutData( new RowData( 150, 25 ) );
     hideAllButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         setShellsVisible( false );
       }
     } );
@@ -90,7 +90,7 @@ public class ShellTab extends ExampleTab {
     enableAllButton.setText( "Enable All Shells" );
     enableAllButton.setLayoutData( new RowData( 150, 25 ) );
     enableAllButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         setShellsEnabled( true );
       }
     } );
@@ -99,7 +99,7 @@ public class ShellTab extends ExampleTab {
     disableAllButton.setText( "Disable All Shells" );
     disableAllButton.setLayoutData( new RowData( 150, 25 ) );
     disableAllButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         setShellsEnabled( false );
       }
     } );
@@ -108,12 +108,12 @@ public class ShellTab extends ExampleTab {
     closeAllButton.setText( "Close All Shells" );
     closeAllButton.setLayoutData( new RowData( 150, 25 ) );
     closeAllButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         closeShells();
       }} );
   }
 
-  private void createShell( int style ) {
+  private void createShell( final int style ) {
     final Shell shell = new Shell( getShell().getDisplay(), style );
     shell.setLocation( getNextShellLocation() );
     if( true ) {
@@ -153,12 +153,12 @@ public class ShellTab extends ExampleTab {
     int centerX = (ca.width - ca.x) / 2;
     closeButton.setBounds( centerX - 55, ca.height - 45, 110, 25 );
     closeButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         shell.close();
       }
     } );
     shell.addControlListener( new ControlAdapter() {
-      public void controlResized( ControlEvent event ) {
+      public void controlResized( final ControlEvent event ) {
         Rectangle ca = shell.getClientArea();
         comp1.setBounds( ca.x, ca.y, ca.width, ca.height );
         comp2.setBounds( ca.x + 1, ca.y + 1, ca.width - 2, ca.height - 2 );
@@ -183,7 +183,7 @@ public class ShellTab extends ExampleTab {
     closeButton.setBackground( Color.getColor( 25, 55, 55 ) );
     closeButton.setLayoutData( new RowData( 140, 40 ) );
     closeButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         shell.close();
       }
     } );
@@ -207,7 +207,7 @@ public class ShellTab extends ExampleTab {
     shells.clear();
   }
   
-  private void setShellsVisible( boolean visible ) {
+  private void setShellsVisible( final boolean visible ) {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();
@@ -215,7 +215,7 @@ public class ShellTab extends ExampleTab {
     }
   }
   
-  private void setShellsEnabled( boolean enabled ) {
+  private void setShellsEnabled( final boolean enabled ) {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();

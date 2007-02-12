@@ -28,14 +28,14 @@ class RowLayoutTab extends ExampleTab {
     createStyleButton( "VERTICAL" );
     final Button prefSizeButton = createPropertyButton( "Preferred Size" );
     prefSizeButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         propPrefSize = prefSizeButton.getSelection();
         createNew();
       }
     } );
     final Button wrapButton = createPropertyButton( "wrap" );
     wrapButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         propWrap = wrapButton.getSelection();
         createNew();
       }
@@ -64,7 +64,7 @@ class RowLayoutTab extends ExampleTab {
     l1.setText( "Label" );
     Text t1 = new Text( comp, RWT.BORDER | RWT.SINGLE );
     t1.setText( "Lorem ipsum dolor sit amet" );
-    Text t2 = new Text( comp, RWT.BORDER | RWT.SINGLE );
+    new Text( comp, RWT.BORDER | RWT.SINGLE );
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );
     } else {

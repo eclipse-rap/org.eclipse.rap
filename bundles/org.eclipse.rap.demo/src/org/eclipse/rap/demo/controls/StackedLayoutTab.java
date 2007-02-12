@@ -31,7 +31,7 @@ class StackedLayoutTab extends ExampleTab {
     switchButton.setLocation( 5, 220 );
     switchButton.addSelectionListener( new SelectionListener() {
       int index = 1;
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         stackLayout.topControl = bArray[ index ];
         stackedComp.layout();
         index = ( index + 1 ) % COUNT;

@@ -26,7 +26,7 @@ public class LabelTab extends ExampleTab {
     super( parent, "Label" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "SEPARATOR" );
     createStyleButton( "HORIZONTAL" );
@@ -64,7 +64,7 @@ public class LabelTab extends ExampleTab {
     text1Button.setText( "Text 1" );
     text1Button.setBounds( 100, 110, 80, 20 );
     text1Button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         label2.setText( text1 );
         System.out.println( "Text:  " + label2.getText());
         System.out.println( "Image: " + label2.getImage());
@@ -74,7 +74,7 @@ public class LabelTab extends ExampleTab {
     text2Button.setText( "Text 2" );
     text2Button.setBounds( 100, 135, 80, 20 );
     text2Button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         label2.setText( text2 );
         System.out.println( "Text:  " + label2.getText());
         System.out.println( "Image: " + label2.getImage());
@@ -84,7 +84,7 @@ public class LabelTab extends ExampleTab {
     image1Button.setText( "Image 1" );
     image1Button.setBounds( 100, 160, 80, 20 );
     image1Button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         createImages();
         label2.setImage( image1 );
         System.out.println( "Text:  " + label2.getText());
@@ -95,7 +95,7 @@ public class LabelTab extends ExampleTab {
     image2Button.setText( "Image 2" );
     image2Button.setBounds( 100, 185, 80, 20 );
     image2Button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         createImages();
         label2.setImage( image2 );
         System.out.println( "Text:  " + label2.getText());
@@ -114,5 +114,4 @@ public class LabelTab extends ExampleTab {
       image2 = Image.find( "resources/newfile_wiz.gif", classLoader );
     }
   }
-
 }

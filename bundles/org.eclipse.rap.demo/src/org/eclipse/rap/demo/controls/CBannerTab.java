@@ -16,15 +16,15 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class CBannerTab extends ExampleTab {
 
-  public CBannerTab( TabFolder parent ) {
+  public CBannerTab( final TabFolder parent ) {
     super( parent, "CBanner" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout(RWT.VERTICAL) );
     int style = getStyle();
     
@@ -49,5 +49,4 @@ public class CBannerTab extends ExampleTab {
 //    Label contentLabel = new Label( banner, RWT.BORDER );
 //    contentLabel.setToolTipText( "Content" );
   }
-
 }

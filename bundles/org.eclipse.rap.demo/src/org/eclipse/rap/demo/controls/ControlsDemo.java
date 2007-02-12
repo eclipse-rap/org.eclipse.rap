@@ -31,7 +31,7 @@ public class ControlsDemo implements IEntryPoint {
     return display;
   }
 
-  private void createContent( Composite parent ) {
+  private void createContent( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     final TabFolder topFolder = new TabFolder( parent, RWT.NONE );
     new ButtonTab( topFolder );

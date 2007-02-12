@@ -32,7 +32,7 @@ public class LayoutDemo implements IEntryPoint {
     return display;
   }
 
-  private void createContents( Composite parent ) {
+  private void createContents( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     final TabFolder topFolder = new TabFolder( parent, RWT.NONE );
     new RowLayoutTab( topFolder );
@@ -47,7 +47,7 @@ public class LayoutDemo implements IEntryPoint {
    * 
    * TODO [rst] make this a class of its own
    */
-  private void createTabCBannerLayout( TabFolder folder ) {
+  private void createTabCBannerLayout( final TabFolder folder ) {
     TabItem item = new TabItem( folder, RWT.NONE );
     item.setText( "CBannerLayout" );
     Composite comp = new Composite( folder, RWT.NONE );
@@ -76,7 +76,7 @@ public class LayoutDemo implements IEntryPoint {
    * 
    * TODO [rst] make this a class of its own
    */
-  private void createTabViewFormLayout( TabFolder folder ) {
+  private void createTabViewFormLayout( final TabFolder folder ) {
     TabItem item = new TabItem( folder, RWT.NONE );
     item.setText( "ViewFormLayout" );
     Composite comp = new Composite( folder, RWT.NONE );

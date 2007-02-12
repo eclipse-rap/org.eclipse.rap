@@ -18,17 +18,17 @@ public class TableTab extends ExampleTab {
   private static final int COLUMNS = 5;
   private static final int ROWS = 8;
 
-  public TableTab( TabFolder folder ) {
+  public TableTab( final TabFolder folder ) {
     super( folder, "Table" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
     createVisibilityButton();
     createEnablementButton();
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     
     int style = getStyle();

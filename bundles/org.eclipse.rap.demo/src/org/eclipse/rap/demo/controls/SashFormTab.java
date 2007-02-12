@@ -16,11 +16,11 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class SashFormTab extends ExampleTab {
 
-  public SashFormTab( TabFolder parent ) {
+  public SashFormTab( final TabFolder parent ) {
     super( parent, "SashForm" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "SMOOTH" );
     createStyleButton( "VERTICAL" );
@@ -29,7 +29,7 @@ public class SashFormTab extends ExampleTab {
     createEnablementButton();
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     int style = getStyle();
     SashForm sashForm = new SashForm( top, style );
@@ -45,5 +45,4 @@ public class SashFormTab extends ExampleTab {
     list.setItems( items );
     registerControl( sashForm );
   }
-
 }

@@ -20,18 +20,18 @@ public class CoolBarTab extends ExampleTab {
   Image image1, image2, image3, image4;
   private CoolBar coolBar;
   
-  public CoolBarTab( TabFolder folder ) {
+  public CoolBarTab( final TabFolder folder ) {
     super( folder, "CoolBar" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
     createVisibilityButton();
     createEnablementButton();
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
     int toolBarStyle = (style & (RWT.HORIZONTAL | RWT.VERTICAL));
@@ -63,7 +63,7 @@ public class CoolBarTab extends ExampleTab {
     registerControl( coolBar );
   }
 
-  private ToolBar createToolBar( Composite parent, int style ) {
+  private ToolBar createToolBar( final Composite parent, final int style ) {
     ToolBar toolBar = new ToolBar( parent, style );
     //toolBar.setLayoutData( new RowData( 500, 50) );
     ToolItem item1 = new ToolItem (toolBar, RWT.PUSH);

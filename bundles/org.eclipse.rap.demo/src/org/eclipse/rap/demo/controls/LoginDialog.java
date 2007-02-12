@@ -90,7 +90,7 @@ public class LoginDialog {
   
   public void setCallback( final Runnable callback ) {
     loginButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         callback.run();
         shell.close();
       }

@@ -91,14 +91,14 @@ abstract class ExampleTab {
     return vertSashForm;
   }
   
-  private void createLeft( Composite parent ) {
+  private void createLeft( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     Group exmplGroup = new Group( parent, RWT.NONE );
     exmplGroup.setLayout( new FillLayout() );
     exmplComp = new Composite( exmplGroup, RWT.NONE );
   }
   
-  private void createRight( Composite parent ) {
+  private void createRight( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     Group styleGroup = new Group( parent, RWT.NONE );
     styleGroup.setText( "Styles and Parameters" );
@@ -107,7 +107,7 @@ abstract class ExampleTab {
     styleComp.setLayout( new RowLayout( RWT.VERTICAL ) );
   }
   
-  private void createFoot( Composite parent ) {
+  private void createFoot( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     text = new Text( parent, RWT.BORDER | RWT.READ_ONLY | RWT.MULTI );
     text.setText( "" );
@@ -126,7 +126,7 @@ abstract class ExampleTab {
     fgColors[ 3 ] = Color.getColor( 154, 205, 50 );
   }
 
-  abstract void createStyleControls( );
+  abstract void createStyleControls();
   
   abstract void createExampleControls( final Composite top );
 

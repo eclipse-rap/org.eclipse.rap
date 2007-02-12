@@ -17,11 +17,11 @@ public class TabFolderTab extends ExampleTab {
 
   private TabFolder folder;
 
-  public TabFolderTab( TabFolder parent ) {
+  public TabFolderTab( final TabFolder parent ) {
     super( parent, "TabFolder" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "TOP" );
     createStyleButton( "BOTTOM" );
@@ -30,20 +30,19 @@ public class TabFolderTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     int style = getStyle();
-
     folder = new TabFolder( top, style );
-    folder.setLayoutData( new RowData( 250, 200) );
+    folder.setLayoutData( new RowData( 250, 200 ) );
     for( int i = 0; i < 3; i++ ) {
       TabItem item = new TabItem( folder, style );
-      item.setText( "Tab " + (i+1) );
-      Text content = new Text(folder, RWT.WRAP | RWT.MULTI);
-      content.setText( "Lorem ipsum dolor sit amet, consectetur adipisicing "
+      item.setText( "Tab " + ( i + 1 ) );
+      Text content = new Text( folder, RWT.WRAP | RWT.MULTI );
+      content.setText(   "Lorem ipsum dolor sit amet, consectetur adipisicing "
                        + "elit, sed do eiusmod tempor incididunt ut labore et "
                        + "dolore magna aliqua." );
-      item.setControl(content);
+      item.setControl( content );
     }
     folder.setSelection( 0 );
     registerControl( folder );

@@ -16,7 +16,7 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class SashTab extends ExampleTab {
 
-  public SashTab( TabFolder parent ) {
+  public SashTab( final TabFolder parent ) {
     super( parent, "Sash" );
   }
 
@@ -29,7 +29,7 @@ public class SashTab extends ExampleTab {
     createEnablementButton();
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
     Label label = new Label( top, RWT.NONE );

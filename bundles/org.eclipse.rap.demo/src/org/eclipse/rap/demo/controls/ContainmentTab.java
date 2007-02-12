@@ -31,11 +31,11 @@ public class ContainmentTab extends ExampleTab {
     color3 = Color.getColor( 240, 250, 190 );
   }
 
-  public ContainmentTab( TabFolder parent ) {
+  public ContainmentTab( final TabFolder parent ) {
     super( parent, "Containment" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     Button visibleButton = createVisibilityButton();
     Button enabledButton = createEnablementButton();
     // change button labels
@@ -43,18 +43,18 @@ public class ContainmentTab extends ExampleTab {
     enabledButton.setText( "Blue Enabled" );
     // add listener for sysout
     visibleButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         changeVisible();
       }
     } );
     enabledButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         changeEnabled();
       }
     } );
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     int style = getStyle();
     FillLayout layout = new FillLayout();

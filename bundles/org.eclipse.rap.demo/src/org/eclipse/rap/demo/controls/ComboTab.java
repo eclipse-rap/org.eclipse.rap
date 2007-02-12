@@ -15,17 +15,17 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class ComboTab extends ExampleTab {
   
-  public ComboTab( TabFolder parent ) {
+  public ComboTab( final TabFolder parent ) {
     super( parent, "Combo" );
   }
 
-  void createStyleControls( ) {
+  void createStyleControls() {
     createStyleButton( "BORDER" );
     createVisibilityButton();
     createEnablementButton();
   }
 
-  void createExampleControls( Composite top ) {
+  void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
     RowData data = new RowData( 100, 25 );
@@ -35,5 +35,4 @@ public class ComboTab extends ExampleTab {
     combo.select( 0 );
     registerControl( combo );
   }
-
 }

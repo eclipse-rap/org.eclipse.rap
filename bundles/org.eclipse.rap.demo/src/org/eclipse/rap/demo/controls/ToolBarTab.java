@@ -23,7 +23,7 @@ public class ToolBarTab extends ExampleTab {
   private ToolItem dropDownItem;
   private int count = 0;
 
-  public ToolBarTab( TabFolder folder ) {
+  public ToolBarTab( final TabFolder folder ) {
     super( folder, "ToolBar" );
   }
 
@@ -71,7 +71,6 @@ public class ToolBarTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         if( event.detail == RWT.ARROW ) {
           Point point = new Point( event.x, event.y );
-          // point = toolbar.getDisplay().map( toolBar, null, point );
           dropDownMenu.setLocation( point );
           dropDownMenu.setVisible( true );
         }

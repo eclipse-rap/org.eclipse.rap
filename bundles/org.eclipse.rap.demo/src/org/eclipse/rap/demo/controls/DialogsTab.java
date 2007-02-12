@@ -33,7 +33,7 @@ class DialogsTab extends ExampleTab {
     loginButton.setText( "Login Dialog" );
     loginButton.setBounds( 10, 10, 80, 20 );
     loginButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         showLoginDialog();
       }
     } );
@@ -47,7 +47,7 @@ class DialogsTab extends ExampleTab {
     showInputDlgButton.setText( "Input Dialog" );
     showInputDlgButton.setBounds( 10, 70, 80, 20 );
     showInputDlgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         showInputDialog();
       }
     });
