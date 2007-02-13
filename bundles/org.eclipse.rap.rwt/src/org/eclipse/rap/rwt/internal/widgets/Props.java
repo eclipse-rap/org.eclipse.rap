@@ -48,9 +48,6 @@ public final class Props {
   public static final String LOCKED = "locked";
   public static final String CONTROL = "control";
   
-  // Tree/TreeItem properties
-  public static final String EXPANDED = "expanded";
-
   private Props() {
     // prevent instantiation
   }

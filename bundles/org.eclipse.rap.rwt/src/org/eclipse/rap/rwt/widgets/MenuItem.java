@@ -36,10 +36,12 @@ public class MenuItem extends Item {
   }
   
   public Menu getParent() {
+    checkWidget();
     return parent;
   }
 
   public void setMenu( final Menu menu ) {
+    checkWidget();
     if( this.menu != menu ) {
       if( ( style & RWT.CASCADE ) == 0 ) {
         RWT.error( RWT.ERROR_MENUITEM_NOT_CASCADE );
@@ -62,10 +64,12 @@ public class MenuItem extends Item {
   }
 
   public Menu getMenu() {
+    checkWidget();
     return menu;
   }
   
   public void setImage( final Image image ) {
+    checkWidget();
     if( ( style & RWT.SEPARATOR ) == 0 ) {
       super.setImage( image );
     }
@@ -75,10 +79,12 @@ public class MenuItem extends Item {
   // Selection
   
   public boolean getSelection() {
+    checkWidget();
     return selection;
   }
   
   public void setSelection( final boolean selection ) {
+    checkWidget();
     if( ( style & ( RWT.CHECK | RWT.RADIO ) ) != 0 ) {
       this.selection = selection;
     } 
@@ -88,10 +94,12 @@ public class MenuItem extends Item {
   // Listener maintenance
   
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
@@ -100,6 +108,7 @@ public class MenuItem extends Item {
   // Item overrides
   
   public Display getDisplay() {
+    checkWidget();
     return parent.getDisplay();
   }
 
@@ -143,7 +152,6 @@ public class MenuItem extends Item {
     }
   }
 
-  
   // ////////////////////////////////////
   // Helping methods to verify arguments
   

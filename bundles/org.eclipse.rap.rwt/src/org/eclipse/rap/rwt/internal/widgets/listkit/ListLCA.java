@@ -124,7 +124,6 @@ public class ListLCA extends AbstractWidgetLCA {
     } else {
       int[] newValue = list.getSelectionIndices();
       int[] defValue = DEFAULT_MULTI_SELECTION;
-      // TODO [rh] ensure that WidgetUtil#hasChanged can deal with arrays
       if( WidgetLCAUtil.hasChanged( list, prop, newValue, defValue ) ) {
         if( list.getSelectionCount() == list.getItemCount() ) {
           writer.call( "selectAll", null );

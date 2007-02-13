@@ -78,6 +78,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/widgets/Shell.js";
   private static final String TREE_JS 
     = "org/eclipse/rap/rwt/widgets/Tree.js";
+  private static final String TREE_ITEM_JS 
+    = "org/eclipse/rap/rwt/widgets/TreeItem.js";
   private static final String SCROLLED_COMPOSITE_JS 
     = "org/eclipse/rap/rwt/custom/ScrolledComposite.js";
   private static final String SEPARATOR_JS 
@@ -160,6 +162,7 @@ final class QooxdooResourcesUtil {
       register( LIST_JS );
       register( SHELL_JS );
       register( TREE_JS );
+      register( TREE_ITEM_JS );
       register( SCROLLED_COMPOSITE_JS );
       register( SEPARATOR_JS );
       register( LABEL_UTIL_JS );

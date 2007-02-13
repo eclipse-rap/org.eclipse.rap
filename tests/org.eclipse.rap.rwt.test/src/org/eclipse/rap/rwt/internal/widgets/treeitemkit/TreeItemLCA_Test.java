@@ -43,7 +43,8 @@ public class TreeItemLCA_Test extends TestCase {
     new TreeItemLCA().preserveValues( subTreeItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     assertEquals( "qwert", adapter.getPreserved( Props.TEXT ) );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.EXPANDED ) );
+    assertEquals( Boolean.TRUE, 
+                  adapter.getPreserved( TreeItemLCA.PROP_EXPANDED ) );
   }
 
   public void testSelectionEvent() throws IOException {
@@ -138,6 +139,21 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( treeItemId + ".state", "collapsed" );
     lca.readData( treeItem );
     assertEquals( false, treeItem.getExpanded() );
+  }
+  
+  public void testChecked() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.CHECK );
+    TreeItem treeItem = new TreeItem( tree, RWT.NONE );
+    
+    String displayId = DisplayUtil.getId( display );
+    String treeItemId = WidgetUtil.getId( treeItem );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( treeItemId + ".checked", "true" );
+    new RWTLifeCycle().execute();
+    assertEquals( true, treeItem.getChecked() );
   }
 
   protected void setUp() throws Exception {

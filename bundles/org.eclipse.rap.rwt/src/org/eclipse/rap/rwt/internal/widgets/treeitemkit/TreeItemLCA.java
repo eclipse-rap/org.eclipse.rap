@@ -27,7 +27,10 @@ import com.w4t.engine.service.ContextProvider;
 
 public final class TreeItemLCA extends AbstractWidgetLCA {
 
-  private static final String PROP_FONT = "font";
+  public static final String PROP_FONT = "font";
+  public static final String PROP_CHECKED = "checked";
+  public static final String PROP_EXPANDED = "expanded";
+
   // Expanded/collapsed state constants, used by readData 
   private static final String STATE_COLLAPSED = "collapsed";
   private static final String STATE_EXPANDED = "expanded";
@@ -37,16 +40,21 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     ItemLCAUtil.preserve( treeItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     adapter.preserve( PROP_FONT, treeItem.getFont() );
-    adapter.preserve( Props.EXPANDED, 
+    adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
+    adapter.preserve( TreeItemLCA.PROP_EXPANDED, 
                       Boolean.valueOf( treeItem.getExpanded() ) );
   }
 
   public void readData( final Widget widget ) {
+    TreeItem treeItem = ( TreeItem )widget;
+    String value = WidgetLCAUtil.readPropertyValue( widget, "checked" );
+    if( value != null ) {
+      treeItem.setChecked( Boolean.valueOf( value ).booleanValue() );
+    }
     // TODO [rh] TreeEvent behave different from SWT: SWT-style is to send
     //      the event and afterwards set the expanded property of the item
     String state = WidgetLCAUtil.readPropertyValue( widget, "state" );
     if( STATE_EXPANDED.equals( state ) || STATE_COLLAPSED.equals( state ) ) {
-      TreeItem treeItem = ( TreeItem )widget;
       treeItem.setExpanded( STATE_EXPANDED.equals( state ) );
     }
     processWidgetSelectedEvent( widget );
@@ -57,11 +65,16 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
+    Object parent;
+    if( treeItem.getParentItem() == null ) {
+      parent = treeItem.getParent();
+    } else {
+      parent = treeItem.getParentItem();
+    }
     Object[] args = new Object[] { 
-      WidgetUtil.getId( treeItem ), 
-      treeItem.getParentItem()
+      parent
     };
-    writer.call( treeItem.getParent(), "createItem", args );
+    writer.newWidget( "org.eclipse.rap.rwt.widgets.TreeItem", args );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -70,6 +83,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     writeSelectedImage( treeItem );
     ItemLCAUtil.writeFont( treeItem, treeItem.getFont() );
     writeExpanded( treeItem );
+    writeChecked( treeItem );
   }
 
   // TODO [rh] setting image for a newly created item does not work properly:
@@ -91,13 +105,16 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   private static void writeExpanded( final TreeItem treeItem ) 
     throws IOException 
   {
+    JSWriter writer = JSWriter.getWriterFor( treeItem );
     Boolean newValue = Boolean.valueOf( treeItem.getExpanded() );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( treeItem, Props.EXPANDED, newValue, defValue ) ) 
-    {
-      JSWriter writer = JSWriter.getWriterFor( treeItem );
-      writer.set( "open", treeItem.getExpanded() );
-    }
+    writer.set( PROP_EXPANDED, "open", newValue, Boolean.FALSE );
+  }
+
+  private static void writeChecked( final TreeItem treeItem ) throws IOException 
+  {
+    JSWriter writer = JSWriter.getWriterFor( treeItem );
+    Boolean newValue = Boolean.valueOf( treeItem.getChecked() );
+    writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
   }
 
   private static boolean processWidgetSelectedEvent( final Widget widget ) {

@@ -28,6 +28,7 @@ public class Text extends Control {
   }
 
   public void setText( final String text ) {
+    checkWidget();
     if( text == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -35,6 +36,7 @@ public class Text extends Control {
   }
 
   public String getText() {
+    checkWidget();
     return text;
   }
 

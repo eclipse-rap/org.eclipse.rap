@@ -36,16 +36,17 @@ import com.w4t.engine.service.IServiceStateInfo;
 //      this also applies for other 'SPI's. 
 public final class JSWriter {
   
+  public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
+  public static JSVar WIDGET_REF = new JSVar( "w" );
+  
   private static final Pattern ESCAPE_STRING_PATTERN_1 
     = Pattern.compile( "(\"|\\\\)" );
   private static final Pattern ESCAPE_STRING_PATTERN_2 
     = Pattern.compile( "\n" );
-
-  public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
-  public static JSVar WIDGET_REF = new JSVar( "w" );
-  
   private static final JSVar TARGET_REF = new JSVar( "t" );
-  private static final String WRITER_MAP = JSWriter.class.getName() + "Map";
+  
+  private static final String WRITER_MAP 
+    = JSWriter.class.getName() + "#map";
   private static final String HAS_WINDOW_MANAGER 
     = JSWriter.class.getName() + "#hasWindowManager";
   private static final String CURRENT_WIDGET_REF 
@@ -186,8 +187,6 @@ public final class JSWriter {
     call( widget, createPropertyChain( jsPropertyChain ), values );
   }
 
-  // TODO [rh] the client side default value (relevant at initial rendering) is 
-  //      not yet taken into account
   public void set( final String javaProperty, 
                    final String jsProperty, 
                    final String newValue ) 
@@ -204,10 +203,10 @@ public final class JSWriter {
   public void set( final String javaProperty, 
                    final String jsProperty, 
                    final Object newValue,
-                   final Object defaultValue ) 
+                   final Object defValue ) 
     throws IOException 
   {
-    if( WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defaultValue ) ) 
+    if( WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defValue ) ) 
     {
       set( jsProperty, new Object[] { newValue } );
     }

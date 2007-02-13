@@ -12,6 +12,8 @@
 /**
  * This class encapulates the qx.ui.treefullcontrol.Tree o make it more
  * suitable for usage in RWT.
+ * The style parameter mimics the RWT style flag. Possible values (strings)
+ * are: multi, check
  */
 qx.OO.defineClass(
   "org.eclipse.rap.rwt.widgets.Tree", 
@@ -22,8 +24,7 @@ qx.OO.defineClass(
     this.setOverflow( "auto" );
     this.setHideNode( true );
     this.setUseTreeLines( true );
-    // evaluate 'poor mans' bit field
-    this._styleCheck = qx.lang.String.contains( style, "check" );
+    this._rwtStyle = style;
     //
     this._widgetSelectedListeners = false;
     this._treeListeners = false; 
@@ -35,30 +36,6 @@ qx.OO.defineClass(
     this.addEventListener( "contextmenu", this._onContextMenu, this );
   }
 );
-
-/**
- * Creates a new tree item. The new tree item is assigned the given 'id '. 
- * 'parentItem' is the direct parent tree item of the item to be created 
- * or null for a root tree item.
- */
-qx.Proto.createItem = function( id, parentItem ) {
-  var row = qx.ui.treefullcontrol.TreeRowStructure.getInstance().newRow();
-  row.addIndent();
-  row.addIcon( "org/eclipse/rap/rwt/widgets/tree/folder_closed.gif",
-               "org/eclipse/rap/rwt/widgets/tree/folder_open.gif" );
-  if( this._styleCheck ) {
-    var checkBox = new qx.ui.form.CheckBox();
-    row.addObject( checkBox, true );
-  }
-  row.addLabel( "" );
-  var treeItem = new qx.ui.treefullcontrol.TreeFolder( row );
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add( treeItem, id, false );
-  if( parentItem == null ) {
-    this.add( treeItem );
-  } else {
-    parentItem.add( treeItem );
-  }
-};
 
 /**
  * Are there any server-side SelectionListeners attached? If so, selecting an
@@ -74,6 +51,10 @@ qx.Proto.setWidgetSelectedListeners = function( value ) {
  */
 qx.Proto.setTreeListeners = function( value ) {
   this._treeListeners = value;  
+}
+
+qx.Proto.getRWTStyle = function() {
+  return this._rwtStyle;  
 }
 
 qx.Proto.dispose = function() {

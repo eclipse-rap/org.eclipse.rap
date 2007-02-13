@@ -18,9 +18,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
-import com.w4t.W4TContext;
 import com.w4t.engine.service.ContextProvider;
-import com.w4t.util.browser.Mozilla;
 
 
 public final class WidgetLCAUtil {
@@ -95,7 +93,7 @@ public final class WidgetLCAUtil {
     if( adapter.isInitialized() ) {
       result = hasChanged( widget, property, newValue );
     } else {
-      result = !WidgetLCAUtil.equals( newValue, defaultValue );
+      result = !equals( newValue, defaultValue );
     }
     return result;
   }

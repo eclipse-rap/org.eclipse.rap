@@ -56,7 +56,7 @@ qx.Proto._commonMouseDown = function()
   // enable capturing
   this._splitter.setCapture( true );
   // show the slider also outside of the sash's bounds
-  this.setOverflow( "visible" );
+  this.setOverflow( qx.constant.OVERFLOW_VISIBLE );
   
   // initialize the slider
   if( !this.isLiveResize() ) {
@@ -133,7 +133,7 @@ qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
   // TODO [rst] call super._modifyEnabled ?
   this._splitter.setEnabled( propValue );
   if( propValue ) {
-    if ( this.getOrientation() == "vertical" ) {
+    if ( this.getOrientation() == qx.constant.ORIENTATION_VERTICAL ) {
       this._splitter.setCursor( "row-resize" );
     } else {
       this._splitter.setCursor( "col-resize" );

@@ -30,20 +30,24 @@ public class Combo extends Scrollable {
   // Methods to manipulate the selection
   
   public int getSelectionIndex() {
+    checkWidget();
     return model.getSelectionIndex();
   }
 
   public void select( final int selectionIndex ) {
+    checkWidget();
     model.setSelection( selectionIndex );
   }
 
   public void deselect( final int index ) {
+    checkWidget();
     if( index == model.getSelectionIndex() ) {
       model.setSelection( -1 );
     }
   }
   
   public void deselectAll() {
+    checkWidget();
     model.deselectAll();
   }
   
@@ -51,46 +55,57 @@ public class Combo extends Scrollable {
   // Methods to manipulate and get items
   
   public void add( final String string ) {
+    checkWidget();
     model.add( string );
   }
   
   public void add( final String string, final int index ) {
+    checkWidget();
     model.add( string, index );
   }
   
   public void remove( final int index ) {
+    checkWidget();
     model.remove( index );
   }
   
   public void remove( final int start, final int end ) {
+    checkWidget();
     model.remove( start, end );
   }
   
   public void remove( final String string ) {
+    checkWidget();
     model.remove( string );
   }
   
   public void removeAll() {
+    checkWidget();
     model.removeAll();
   }
   
   public void setItem( final int index, final String string ) {
+    checkWidget();
     model.setItem( index, string );
   }
 
   public void setItems( final String[] items ) {
+    checkWidget();
     model.setItems( items );
   }
   
   public String getItem( final int index ) {
+    checkWidget();
     return model.getItem( index );
   }
   
   public String[] getItems() {
+    checkWidget();
     return model.getItems();
   }
   
   public int getItemCount() {
+    checkWidget();
     return model.getItemCount();
   }
 
@@ -98,10 +113,12 @@ public class Combo extends Scrollable {
   // Listener registration/de-registration
 
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 

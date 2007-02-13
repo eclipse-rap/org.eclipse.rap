@@ -34,13 +34,13 @@ public class SashFormTab extends ExampleTab {
     int style = getStyle();
     SashForm sashForm = new SashForm( top, style );
     Text text = new Text( sashForm, RWT.MULTI | RWT.WRAP );
-    text.setText( "Lorem ipsum dolor sit amet, consectetur adipisicing "
+    text.setText(    "Lorem ipsum dolor sit amet, consectetur adipisicing "
                    + "elit, sed do eiusmod tempor incididunt ut labore et "
                    + "dolore magna aliqua." );
     List list = new List( sashForm, RWT.MULTI );
-    String[] items = new String[8];
+    String[] items = new String[ 8 ];
     for( int i = 0; i < items.length; i++ ) {
-      items[i] = "Item " + (i+1);      
+      items[ i ] = "Item " + ( i + 1 );      
     }
     list.setItems( items );
     registerControl( sashForm );

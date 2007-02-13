@@ -39,28 +39,34 @@ public class ToolBar extends Composite {
                             final int hHint, 
                             final boolean changed ) 
   {
+    checkWidget();
     // TODO: [fappel] reasonable implementation
     Point result = super.computeSize( wHint, hHint, changed );
     return new Point( result.x, 24 );
   }
   
   public ToolItem getItem( final int index ) {
+    checkWidget();
     return ( ToolItem ) itemHolder.getItem( index );
   }
   
   public int getItemCount() {
+    checkWidget();
     return itemHolder.size();
   }
 
   public ToolItem[] getItems() {
+    checkWidget();
     return ( ToolItem[] ) itemHolder.getItems();
   }
   
   public int getRowCount() {
+    checkWidget();
     return itemHolder.size();
   }
 
   public int indexOf( final ToolItem item ) {
+    checkWidget();
     if( item == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }

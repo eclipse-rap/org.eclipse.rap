@@ -63,6 +63,7 @@ public class CoolItem extends Item {
   // Widget overrides 
   
   public Display getDisplay() {
+    checkWidget();
     return parent.getDisplay();
   }
   
@@ -70,10 +71,12 @@ public class CoolItem extends Item {
   // Getter/setter
   
   public CoolBar getParent () {
+    checkWidget();
     return parent;
   }
 
   public void setControl( final Control control ) {
+    checkWidget();
     if( control != null ) {
       if( control.isDisposed() ) {
         RWT.error( RWT.ERROR_INVALID_ARGUMENT );
@@ -86,6 +89,7 @@ public class CoolItem extends Item {
   }
 
   public Control getControl() {
+    checkWidget();
     return control;
   }
   
@@ -93,6 +97,7 @@ public class CoolItem extends Item {
   // Size-related methods
   
   public Point computeSize( final int wHint, final int hHint ) {
+    checkWidget();
     Point result;
     int index = parent.indexOf( this );
     if( index == -1 ) {
@@ -117,6 +122,7 @@ public class CoolItem extends Item {
   }
 
   public void setPreferredSize( final Point preferredSize ) {
+    checkWidget();
     if( preferredSize == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -124,6 +130,7 @@ public class CoolItem extends Item {
   }
 
   public void setPreferredSize( final int wHint, final int hHint ) {
+    checkWidget();
     if( parent.indexOf( this ) != -1 ) {
       int width = Math.max( 0, wHint );
       int height = Math.max( 0, hHint );
@@ -140,6 +147,7 @@ public class CoolItem extends Item {
   }
   
   public void setSize( final int wHint, final int hHint ) {
+    checkWidget();
     if( parent.indexOf( this ) != -1 ) {
       int width = Math.max( 0, wHint );
       int height = Math.max( 0, hHint );
@@ -157,6 +165,7 @@ public class CoolItem extends Item {
   }
   
   public void setSize( final Point size ) {
+    checkWidget();
     if( size == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -164,10 +173,12 @@ public class CoolItem extends Item {
   }
   
   public Point getSize() {
+    checkWidget();
     return new Point( size.x, size.y );
   }
   
   public Rectangle getBounds() {
+    checkWidget();
     int left = 0;
     int top = 0;
     CoolItem[] items = getOrderedItems();

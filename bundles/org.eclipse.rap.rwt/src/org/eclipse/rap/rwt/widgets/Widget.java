@@ -80,14 +80,17 @@ public abstract class Widget implements Adaptable {
   // Methods to get/set single and keyed data
   
   public Object getData() {
+    checkWidget();
     return data;
   }
   
   public void setData( final Object data ) {
+    checkWidget();
     this.data = data;
   }
 
   public Object getData( final String key ) {
+    checkWidget();
     if( key == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -99,6 +102,7 @@ public abstract class Widget implements Adaptable {
   }
   
   public void setData( final String key, final Object value ) {
+    checkWidget();
     if( key == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -111,6 +115,7 @@ public abstract class Widget implements Adaptable {
   public abstract Display getDisplay();
 
   public int getStyle() {
+    checkWidget();
     return style;
   }
 
@@ -119,10 +124,12 @@ public abstract class Widget implements Adaptable {
   // Registration and deregistration of listeners
   
   public void addDisposeListener( final DisposeListener listener ) {
+    checkWidget();
     DisposeEvent.addListener( this, listener );
   }
 
   public void removeDisposeListener( final DisposeListener listener ) {
+    checkWidget();
     DisposeEvent.removeListener( this, listener );
   }
   

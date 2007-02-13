@@ -70,6 +70,7 @@ public class TreeTab extends ExampleTab {
           };
           String text = MessageFormat.format( "SubItem {0} of {1}", args );
           treeItem.setText( text  );
+          treeItem.setChecked( true );
           Image image = Image.find( "resources/tree_item.gif", 
                                     getClass().getClassLoader() );
           treeItem.setImage( image );

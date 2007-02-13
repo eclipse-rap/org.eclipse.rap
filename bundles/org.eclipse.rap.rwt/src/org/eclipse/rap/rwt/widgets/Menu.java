@@ -46,10 +46,12 @@ public class Menu extends Widget {
   }
 
   public final Display getDisplay() {
+    checkWidget();
     return parent.getDisplay();
   }
 
   public final Shell getParent() {
+    checkWidget();
     return parent;
   }
 
@@ -64,6 +66,7 @@ public class Menu extends Widget {
   }
   
   public void setLocation( final int x, final int y ) {
+    checkWidget();
     if( ( style & ( RWT.BAR | RWT.DROP_DOWN ) ) == 0 ) {
       this.x = x;
       this.y = y;
@@ -71,6 +74,7 @@ public class Menu extends Widget {
   }
   
   public void setLocation( final Point location ) {
+    checkWidget();
     if( location == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -78,16 +82,19 @@ public class Menu extends Widget {
   }
   
   public void setVisible( final boolean visible ) {
+    checkWidget();
     if( ( style & ( RWT.BAR | RWT.DROP_DOWN ) ) == 0 ) {
       this.visible = visible;
     }
   }
   
   public boolean isVisible (){
+    checkWidget();
     return visible;
   }
 
   public Rectangle getBounds() {
+    checkWidget();
     // TODO: [fappel] how to calculate width and height?
     return new Rectangle( x, y, 0, 0 );
   }
@@ -97,18 +104,22 @@ public class Menu extends Widget {
   // Management of menu items
   
   public int getItemCount() {
+    checkWidget();
     return itemHolder.size();
   }
 
   public MenuItem[] getItems() {
+    checkWidget();
     return ( MenuItem[] )itemHolder.getItems();
   }
 
   public MenuItem getItem( final int index ) {
+    checkWidget();
     return ( MenuItem )itemHolder.getItem( index );
   }
   
   public int indexOf( final MenuItem menuItem ) {
+    checkWidget();
     if( menuItem == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -140,7 +151,7 @@ public class Menu extends Widget {
   //////////////////
   // Helping methods
   
-  private static int checkStyle( int style ) {
+  private static int checkStyle( final int style ) {
     return checkBits( style, RWT.POP_UP, RWT.BAR, RWT.DROP_DOWN, 0, 0, 0 );
   }
 }

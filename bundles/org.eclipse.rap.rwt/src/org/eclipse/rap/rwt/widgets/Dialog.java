@@ -27,24 +27,6 @@ public abstract class Dialog {
     title = "";
   }
 
-  protected void checkSubclass() {
-    // TODO [rst] Do we copy this mechanism?
-    // if (!Display.isValidClass (getClass ())) {
-    // error (RWT.ERROR_INVALID_SUBCLASS);
-    // }
-  }
-
-  void checkParent( final Shell parent ) {
-    if( parent == null ) {
-      error( RWT.ERROR_NULL_ARGUMENT );
-    }
-    parent.checkWidget();
-  }
-
-  void error( final int code ) {
-    RWT.error( code );
-  }
-
   public Shell getParent() {
     return parent;
   }
@@ -62,5 +44,23 @@ public abstract class Dialog {
       error( RWT.ERROR_NULL_ARGUMENT );
     }
     title = string;
+  }
+
+  protected void checkSubclass() {
+    // TODO [rst] Do we copy this mechanism?
+    // if (!Display.isValidClass (getClass ())) {
+    // error (RWT.ERROR_INVALID_SUBCLASS);
+    // }
+  }
+
+  void checkParent( final Shell parent ) {
+    if( parent == null ) {
+      error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    parent.checkWidget();
+  }
+
+  void error( final int code ) {
+    RWT.error( code );
   }
 }

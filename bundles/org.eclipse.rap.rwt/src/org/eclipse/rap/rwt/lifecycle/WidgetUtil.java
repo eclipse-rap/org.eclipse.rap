@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.widgets.Widget;
 /**
  * TODO [rh] JavaDoc
  */
-// TODO [rh] should we split up methods into WidgetUtil and WidgetLCAUtil?
 public final class WidgetUtil {
   
   private WidgetUtil() {

@@ -27,18 +27,22 @@ public class TabItem extends Item {
   }
 
   public TabFolder getParent() {
+    checkWidget();
     return parent;
   }
 
   public Display getDisplay() {
+    checkWidget();
     return parent.getDisplay();
   }
 
   public Control getControl() {
+    checkWidget();
     return control;
   }
 
   public void setControl( final Control control ) {
+    checkWidget();
     if( control != null ) {
       if( control.isDisposed() ) {
         RWT.error( RWT.ERROR_INVALID_ARGUMENT );
@@ -51,6 +55,7 @@ public class TabItem extends Item {
   }
   
   public void setImage ( final Image image ) {
+    checkWidget();
     int index = parent.indexOf (this);
     if (index > -1) {
       super.setImage (image);

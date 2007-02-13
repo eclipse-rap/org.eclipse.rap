@@ -79,7 +79,7 @@ public class Shell extends Composite {
    * TODO [rst] Move to class Decorations, as soon as it exists
    */
   public Rectangle getClientArea() {
-    checkWidget ();
+    checkWidget();
     Rectangle current = getBounds();
     int width = current.width;
     int height = current.height;
@@ -99,7 +99,7 @@ public class Shell extends Composite {
    * TODO [rst] Move to class Decorations, as soon as it exists
    */
   public Rectangle computeTrim( int x, int y, int width, int height ) {
-    checkWidget ();
+    checkWidget();
     int hTitleBar = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT : 0;
     if( getMenuBar() != null ) {
       hTitleBar += MENU_BAR_HEIGHT;
@@ -182,7 +182,7 @@ public class Shell extends Composite {
   // Enablement
 
   public boolean isEnabled () {
-    checkWidget ();
+    checkWidget();
     return getEnabled ();
   }
 
@@ -207,7 +207,7 @@ public class Shell extends Composite {
   }
 
   public void setText( final String string ) {
-    checkWidget ();
+    checkWidget();
     if( string == null ) {
       error (RWT.ERROR_NULL_ARGUMENT );
     }
@@ -215,7 +215,7 @@ public class Shell extends Composite {
   }
   
   public String getText() {
-    checkWidget ();
+    checkWidget();
     return text;
   }
 
@@ -333,7 +333,7 @@ public class Shell extends Composite {
   
   /* TODO [rst] move to Decorations as soon as it exists */
   public Image getImage () {
-    checkWidget ();
+    checkWidget();
     return image;
   }
 

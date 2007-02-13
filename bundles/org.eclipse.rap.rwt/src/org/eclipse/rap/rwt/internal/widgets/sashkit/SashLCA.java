@@ -52,6 +52,7 @@ public class SashLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     Rectangle oldBounds = ( Rectangle )adapter.getPreserved( Props.BOUNDS );
     Rectangle newBounds = sash.getBounds();
+    // TODO [rh] 
     if(    !adapter.isInitialized() 
         || oldBounds == null 
         || oldBounds.width != newBounds.width ) 

@@ -73,6 +73,25 @@ public class TreeItem_Test extends TestCase {
     item.setFont( null );
     assertSame( treeFont, item.getFont() );
   }
+  
+  public void testChecked() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Tree tree = new Tree( shell, RWT.NONE );
+    TreeItem item = new TreeItem( tree, RWT.NONE );
+    Tree checkedTree = new Tree( shell, RWT.CHECK );
+    TreeItem checkedItem = new TreeItem( checkedTree, RWT.NONE );
+    // Ensure that checked-property on a treeItem cannot be changed when tree 
+    // is missing CHECK style
+    assertEquals( false, item.getChecked() );
+    item.setChecked( true );
+    assertEquals( false, item.getChecked() );
+    // The check-property for a treeItem on a tree with style CHECK may be
+    // changed
+    assertEquals( false, checkedItem.getChecked() );
+    checkedItem.setChecked( true );
+    assertEquals( true, checkedItem.getChecked() );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

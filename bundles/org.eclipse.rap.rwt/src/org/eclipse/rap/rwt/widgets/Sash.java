@@ -21,19 +21,24 @@ public class Sash extends Control {
     super( parent, checkStyle( style ) );
   }
 
-  static int checkStyle( final int style ) {
+  public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
+    SelectionEvent.addListener( this, listener );
+  }
+
+  public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
+    SelectionEvent.removeListener( this, listener );
+  }
+
+  //////////////////
+  // Helping methods 
+  
+  private static int checkStyle( final int style ) {
     int result = RWT.NONE;
     if( style > 0 ) {
       result = style;
     }
     return result;
-  }
-
-  public void addSelectionListener( final SelectionListener listener ) {
-    SelectionEvent.addListener( this, listener );
-  }
-
-  public void removeSelectionListener( final SelectionListener listener ) {
-    SelectionEvent.removeListener( this, listener );
   }
 }

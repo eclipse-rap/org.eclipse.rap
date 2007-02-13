@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 
 // TODO [rh] font property (according and LCA functinality) for the following
-//      widget missing: TableItem, TreeColumn and TreeItem
+//      widget missing: TableItem, TreeColumn
 public final class Font {
   
   private static final Map fonts = new HashMap();

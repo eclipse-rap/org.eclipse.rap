@@ -51,6 +51,7 @@ final class TextLCAUtil {
   static void writeNoSpellCheck( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     // TODO [rh] this should be solved in qooxdoo
+    //      see http://bugzilla.qooxdoo.org/show_bug.cgi?id=291
     if( W4TContext.getBrowser() instanceof Mozilla ) {
       Object[] args = new Object[] { "spellcheck", Boolean.FALSE };
       writer.call( "setHtmlAttribute", args );

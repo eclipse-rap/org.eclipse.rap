@@ -38,14 +38,17 @@ public class ToolItem extends Item {
   }
   
   public Display getDisplay() {
+    checkWidget();
     return parent.getDisplay();
   }
 
   public ToolBar getParent () {
+    checkWidget();
     return parent;
   }
   
   public void setText( final String text ) {
+    checkWidget();
     if( text == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -55,6 +58,7 @@ public class ToolItem extends Item {
   }
   
   public void setControl( final Control control ) {
+    checkWidget();
     if( control != null ) {
       if( control.isDisposed() ) {
         RWT.error( RWT.ERROR_INVALID_ARGUMENT );

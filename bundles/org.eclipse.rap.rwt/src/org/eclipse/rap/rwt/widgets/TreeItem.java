@@ -27,6 +27,7 @@ public class TreeItem extends Item {
   private final ItemHolder itemHolder;
   private Font font;
   private boolean expanded;
+  private boolean checked;
 
   public TreeItem( final Tree parent, final int style ) {
     this( parent, null, style, -1 );
@@ -122,7 +123,18 @@ public class TreeItem extends Item {
     return result;
   }
   
-
+  public void setChecked( final boolean checked ) {
+    checkWidget();
+    if( ( parent.getStyle() & RWT.CHECK ) != 0 ) {
+      this.checked = checked;
+    }
+  }
+  
+  public boolean getChecked() {
+    checkWidget();
+    return checked;
+  }
+  
   ///////////////////////////////////////
   // Methods to maintain (sub-) TreeItems
   

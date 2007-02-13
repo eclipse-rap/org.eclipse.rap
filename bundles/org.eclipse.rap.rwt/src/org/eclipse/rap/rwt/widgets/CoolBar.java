@@ -54,11 +54,13 @@ public class CoolBar extends Composite {
   
   
   public void setLocked( final boolean locked ) {
+    checkWidget();
     this.locked = locked;
   }
 
   
   public boolean getLocked() {
+    checkWidget();
     return locked;
   }
   
@@ -69,6 +71,7 @@ public class CoolBar extends Composite {
                             final int hHint, 
                             final boolean changed )
   {
+    checkWidget();
     // TODO [rh] replace with decent implementation
     Point result = super.computeSize( wHint, hHint, changed );
     return new Point( result.x, 30 );
@@ -78,18 +81,22 @@ public class CoolBar extends Composite {
   // Management of CoolItems
   
   public int getItemCount() {
+    checkWidget();
     return itemHolder.size();
   }
   
   public CoolItem[] getItems() {
+    checkWidget();
     return ( CoolItem[] )itemHolder.getItems();
   }
   
   public CoolItem getItem( final int index ) {
+    checkWidget();
     return ( CoolItem )itemHolder.getItem( index );
   }
   
   public int indexOf( final CoolItem item ) {
+    checkWidget();
     if( item == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -100,6 +107,7 @@ public class CoolBar extends Composite {
   }
   
   public int[] getItemOrder() {
+    checkWidget();
     int[] result = new int[ getItemCount() ];
     for( int i = 0; i < result.length; i++ ) {
       result[ i ] = getItem( i ).getOrder();
@@ -108,6 +116,7 @@ public class CoolBar extends Composite {
   }
   
   public void setItemOrder( final int[] itemOrder ) {
+    checkWidget();
     if( itemOrder == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }

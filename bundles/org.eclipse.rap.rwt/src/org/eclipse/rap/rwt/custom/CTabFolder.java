@@ -30,7 +30,7 @@ import org.eclipse.rap.rwt.widgets.*;
  * <li>RWT.BORDER and RWT.FLAT styles are not fully implemented</li>
  * </ul> 
  */
-// TODO [rh] though there are some calls checkWidet this needs to be completed
+// TODO [rh] though there are some calls to checkWidet this needs to be completed
 public class CTabFolder extends Composite {
 
   // width and height of minimize/maximize button
