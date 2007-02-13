@@ -62,14 +62,17 @@ public abstract class Control extends Widget {
   }
 
   public final Composite getParent() {
+    checkWidget();
     return parent;
   }
 
   public Shell getShell() {
+    checkWidget();
     return parent.getShell();
   }
 
   public Display getDisplay() {
+    checkWidget();
     return parent.getDisplay();
   }
 
@@ -96,7 +99,7 @@ public abstract class Control extends Widget {
   /////////////
   // Enablement
   
-  public void setEnabled( boolean enabled ) {
+  public void setEnabled( final boolean enabled ) {
     checkWidget();
     /*
      * TODO [rst] handle focus
@@ -167,14 +170,16 @@ public abstract class Control extends Widget {
     return result;
   }
   
-  // ///////////////////////////////////////////////
-  // Methods to manipulate the controls' dimensions
+  // ///////////////////////////////////////////////////////////////////
+  // Methods to manipulate, transform and query the controls' dimensions
   
   public Rectangle getBounds() {
+    checkWidget();
     return new Rectangle( bounds );
   }
 
   public void setBounds( final Rectangle bounds ) {
+    checkWidget();
     if( bounds == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -226,6 +231,7 @@ public abstract class Control extends Widget {
   }
 
   public Point getSize() {
+    checkWidget();
     return new Point( this.bounds.width, this.bounds.height );
   }
 
@@ -239,7 +245,7 @@ public abstract class Control extends Widget {
   {
     // TODO: [fappel] reasonable implementation
     // TODO: [gröver]: copied from swt:
-    // checkWidget ();
+    checkWidget();
     int width = DEFAULT_WIDTH;
     int height = DEFAULT_HEIGHT;
     if( wHint != RWT.DEFAULT ) {
@@ -259,7 +265,7 @@ public abstract class Control extends Widget {
     pack( true );
   }
 
-  public void pack( boolean changed ) {
+  public void pack( final boolean changed ) {
     checkWidget();
     setSize( computeSize( RWT.DEFAULT, RWT.DEFAULT, changed ) );
   }
@@ -267,6 +273,7 @@ public abstract class Control extends Widget {
   public int getBorderWidth() {
     // TODO: [rst] This must be kept in sync with appearances, controls using
     //             different borders must overwrite this mehtod
+    checkWidget();
     return ( style & RWT.BORDER ) != 0 ? 2 : 0;
   }
 
@@ -285,14 +292,17 @@ public abstract class Control extends Widget {
     }
     return toDisplay( point.x, point.y );
   }
+  
   // ///////////////////////
   // Layout related methods
   
   public Object getLayoutData() {
+    checkWidget();
     return layoutData;
   }
 
   public void setLayoutData( final Object layoutData ) {
+    checkWidget();
     this.layoutData = layoutData;
   }
   
@@ -335,21 +345,10 @@ public abstract class Control extends Widget {
     return menu;
   }
   
-  // ///////////////////////////////
-  // Methods to add/remove listener
-  
-  public void addControlListener( final ControlListener listener ) {
-    ControlEvent.addListener( this, listener );
-  }
-
-  public void removeControlListener( final ControlListener listener ) {
-    ControlEvent.removeListener( this, listener );
-  }
-  
   /////////////
   // Z-Order
   
-  public void moveAbove( Control control ) {
+  public void moveAbove( final Control control ) {
     checkWidget();
     if( control != null && control.isDisposed ()) {
       error(RWT.ERROR_INVALID_ARGUMENT);
@@ -364,7 +363,7 @@ public abstract class Control extends Widget {
     }
   }
 
-  public void moveBelow( Control control ) {
+  public void moveBelow( final Control control ) {
     checkWidget();
     if( control != null && control.isDisposed ()) {
       error(RWT.ERROR_INVALID_ARGUMENT);
@@ -379,7 +378,7 @@ public abstract class Control extends Widget {
     }
   }
 
-  public Object getAdapter( Class adapter ) {
+  public Object getAdapter( final Class adapter ) {
     Object result = null;
     if( adapter == IControlAdapter.class ) {
       result = controlAdapter;
@@ -389,7 +388,18 @@ public abstract class Control extends Widget {
     return result;
   }
 
-  // /////////
+  //////////////////////////////////
+  // Methods to add/remove listener
+  
+  public void addControlListener( final ControlListener listener ) {
+    ControlEvent.addListener( this, listener );
+  }
+
+  public void removeControlListener( final ControlListener listener ) {
+    ControlEvent.removeListener( this, listener );
+  }
+  
+  ////////////
   // Disposal
   
   protected void releaseParent() {

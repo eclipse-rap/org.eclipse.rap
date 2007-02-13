@@ -12,7 +12,6 @@ package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 
@@ -36,25 +35,16 @@ public class ToolBar extends Composite {
     return result;
   }
 
-  public Point computeSize( int wHint, int hHint, boolean changed ) {
+  public Point computeSize( final int wHint, 
+                            final int hHint, 
+                            final boolean changed ) 
+  {
     // TODO: [fappel] reasonable implementation
     Point result = super.computeSize( wHint, hHint, changed );
     return new Point( result.x, 24 );
   }
   
-  public void setBounds( Rectangle bounds ) {
-    super.setBounds( bounds );
-  }
-
-  static int checkStyle( final int style ) {
-    int result = RWT.NONE;
-    if( style > 0 ) {
-      result = style;
-    }
-    return result;
-  }
-  
-  public ToolItem getItem( final int index) {
+  public ToolItem getItem( final int index ) {
     return ( ToolItem ) itemHolder.getItem( index );
   }
   
@@ -70,7 +60,7 @@ public class ToolBar extends Composite {
     return itemHolder.size();
   }
 
-  public int indexOf( final ToolItem item) {
+  public int indexOf( final ToolItem item ) {
     if( item == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -80,4 +70,14 @@ public class ToolBar extends Composite {
     return itemHolder.indexOf( item );
   }
 
+  //////////////////
+  // Helping methods
+  
+  private static int checkStyle( final int style ) {
+    int result = RWT.NONE;
+    if( style > 0 ) {
+      result = style;
+    }
+    return result;
+  }
 }

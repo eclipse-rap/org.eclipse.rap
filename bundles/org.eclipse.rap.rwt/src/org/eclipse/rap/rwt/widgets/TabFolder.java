@@ -28,6 +28,16 @@ public class TabFolder extends Composite {
     super( parent, checkStyle( style ) );
   }
 
+  public Object getAdapter( final Class adapter ) {
+    Object result;
+    if( adapter == IItemHolderAdapter.class ) {
+      result = itemHolder;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
+  
   public TabItem[] getItems() {
     return ( TabItem[] )itemHolder.getItems();
   }
@@ -38,16 +48,6 @@ public class TabFolder extends Composite {
 
   public int getItemCount() {
     return itemHolder.size();
-  }
-
-  public Object getAdapter( final Class adapter ) {
-    Object result;
-    if( adapter == IItemHolderAdapter.class ) {
-      result = itemHolder;
-    } else {
-      result = super.getAdapter( adapter );
-    }
-    return result;
   }
 
   protected void releaseChildren() {

@@ -26,14 +26,6 @@ public class TabItem extends Item {
     ItemHolder.addItem( parent, this );
   }
 
-  static int checkStyle( final int style ) {
-    int result = RWT.NONE;
-    if( style > 0 ) {
-      result = style;
-    }
-    return result;
-  }
-
   public TabFolder getParent() {
     return parent;
   }
@@ -76,5 +68,16 @@ public class TabItem extends Item {
   }
 
   protected void releaseWidget() {
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static int checkStyle( final int style ) {
+    int result = RWT.NONE;
+    if( style > 0 ) {
+      result = style;
+    }
+    return result;
   }
 }

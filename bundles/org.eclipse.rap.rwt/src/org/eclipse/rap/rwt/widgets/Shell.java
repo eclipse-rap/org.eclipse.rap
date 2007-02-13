@@ -42,7 +42,6 @@ public class Shell extends Composite {
     this( display, RWT.SHELL_TRIM );
   }
   
-  // TODO [rh] preliminary: yet no null-check, default/current substitute, etc
   public Shell( final Display display, final int style ) {
     super();
     this.style = checkStyle( style );
@@ -362,7 +361,7 @@ public class Shell extends Composite {
     return result;
   }
   
-  static int checkStyle( final int style ) {
+  private static int checkStyle( final int style ) {
     return Decorations_checkStyle( style );
   }
 

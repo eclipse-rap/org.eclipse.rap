@@ -95,23 +95,6 @@ public class Label extends Control {
     return result;
   }
   
-  private static int checkStyle( final int style ) {
-    int result = style;
-    result |= RWT.NO_FOCUS;
-    if( ( style & RWT.SEPARATOR ) != 0 ) {
-      result = checkBits( result, RWT.VERTICAL, RWT.HORIZONTAL, 0, 0, 0, 0 );
-      result = checkBits ( result, 
-                           RWT.SHADOW_OUT, 
-                           RWT.SHADOW_IN, 
-                           RWT.SHADOW_NONE, 
-                           0, 
-                           0, 
-                           0 );
-    }
-    result = checkBits( result, RWT.LEFT, RWT.CENTER, RWT.RIGHT, 0, 0, 0 );
-    return result;
-  }
-  
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0, height = 0, border = getBorderWidth();
@@ -151,5 +134,25 @@ public class Label extends Control {
   
   public int getBorderWidth() {
     return ( ( style & RWT.BORDER ) != 0 ) ? 1 : 0;
+  }
+
+  //////////////////
+  // Helping methods
+  
+  private static int checkStyle( final int style ) {
+    int result = style;
+    result |= RWT.NO_FOCUS;
+    if( ( style & RWT.SEPARATOR ) != 0 ) {
+      result = checkBits( result, RWT.VERTICAL, RWT.HORIZONTAL, 0, 0, 0, 0 );
+      result = checkBits ( result, 
+                           RWT.SHADOW_OUT, 
+                           RWT.SHADOW_IN, 
+                           RWT.SHADOW_NONE, 
+                           0, 
+                           0, 
+                           0 );
+    }
+    result = checkBits( result, RWT.LEFT, RWT.CENTER, RWT.RIGHT, 0, 0, 0 );
+    return result;
   }
 }

@@ -42,7 +42,10 @@ public class Text extends Control {
     return "\n";
   }
   
-  public Point computeSize( int wHint, int hHint, boolean changed ) {
+  public Point computeSize( final int wHint, 
+                            final int hHint, 
+                            final boolean changed ) 
+  {
     checkWidget();
     int height = 0, width = 0;
     if( wHint == RWT.DEFAULT || hHint == RWT.DEFAULT ) {
