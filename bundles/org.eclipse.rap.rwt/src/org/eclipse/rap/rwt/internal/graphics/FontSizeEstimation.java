@@ -31,7 +31,7 @@ public class FontSizeEstimation {
    */
   public static Point textExtent( final String string,
                                   final int wrapWidth,
-                                  Font font )
+                                  final Font font )
   {
     if ( string == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
@@ -41,45 +41,74 @@ public class FontSizeEstimation {
     String[] lines = string.split( "\n" );
     for( int i = 0; i < lines.length; i++ ) {
       String line = lines[ i ];
+      lineCount++;
       int width = getLineWidth( line, font );
-      if( wrapWidth > 0 && getLineWidth( line, font ) > wrapWidth ) {
-        // line too long
-        int index = 0;
-        int nextIndex = 0;
-        while( ( nextIndex = line.indexOf( ' ', index ) ) != -1 ) {
-          String subStr = line.substring( 0, nextIndex );
-          int newWidth = getLineWidth( subStr, font );
-          if( newWidth > wrapWidth ) {
+      if( wrapWidth > 0 ) {
+        boolean done = false;
+        while( !done ) {
+          int index = getLongestMatch( line, wrapWidth, font );
+          if( index == 0 || index == line.length() ) {
+            // line fits or cannot be wrapped
+            done = true;
+          } else {
+            // wrap line
+            String substr = line.substring( 0, index );
+            width = getLineWidth( substr, font );
             maxWidth = Math.max( maxWidth, width );
+            line = line.substring( index, line.length() );
             lineCount++;
-            if( index <= line.length() ) {
-              line = line.substring( index, line.length() );
-            } else {
-              line = "";
-            }
           }
-          width = newWidth;
-          index = nextIndex + 1;
         }
-        lineCount++;
       }
       maxWidth = Math.max( maxWidth, width );
-      lineCount++;
     }
-    int height = Math.round( getCharHeight( font ) * 1.3f * lineCount );
+    int height = Math.round( getCharHeight( font ) * 1.25f * lineCount );
     return new Point( maxWidth, height );
   }
   
-  public static int getCharHeight( Font font ) {
+  public static int getCharHeight( final Font font ) {
     // at 72 dpi, 1 pt == 1 px
     return font.getSize();
   }
   
-  public static float getAvgCharWidth( Font font ) {
-    return font.getSize() * 0.45f;
+  public static float getAvgCharWidth( final Font font ) {
+    float width = font.getSize() * 0.48f;
+    if( ( font.getStyle() & RWT.BOLD ) != 0 ) {
+      width *= 1.45;
+    }
+    return width;
   }
   
-  private static int getLineWidth( String string, Font font ) {
+  /**
+   * @return The length of the longest substring, whose width is smaller or
+   *         equal to wrapWidth. If there is no such substring, zero is
+   *         returned. The result is never negative.
+   */
+  private static int getLongestMatch( final String string,
+                                      final int wrapWidth,
+                                      final Font font )
+  {
+    int result = 0;
+    int index = 0;
+    int width = getLineWidth( string, font );
+    if( width < wrapWidth ) {
+      result = string.length();
+    } else {
+      while( ( index = string.indexOf( ' ', index ) ) != -1 ) {
+        String subStr = string.substring( 0, index );
+        width = getLineWidth( subStr, font );
+        index++;
+        if( width <= wrapWidth ) {
+          result = index;
+        } else {
+          break; // I know, you don't like it, but anything else would complicate the algorithm
+        }
+      }
+    }
+    return result;
+  }
+  
+  private static int getLineWidth( final String string, final Font font ) {
     return Math.round( getAvgCharWidth( font ) * string.length() );
   }
 }

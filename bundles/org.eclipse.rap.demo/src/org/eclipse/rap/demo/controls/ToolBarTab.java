@@ -27,7 +27,7 @@ public class ToolBarTab extends ExampleTab {
     super( folder, "ToolBar" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
     createVisibilityButton();
@@ -35,7 +35,7 @@ public class ToolBarTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     ClassLoader loader = getClass().getClassLoader();
     Image imageNewFile = Image.find( "resources/newfile_wiz.gif", loader );

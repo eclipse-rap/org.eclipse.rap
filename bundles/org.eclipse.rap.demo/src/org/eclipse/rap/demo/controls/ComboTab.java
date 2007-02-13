@@ -19,13 +19,13 @@ public class ComboTab extends ExampleTab {
     super( parent, "Combo" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createVisibilityButton();
     createEnablementButton();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
     RowData data = new RowData( 100, 25 );

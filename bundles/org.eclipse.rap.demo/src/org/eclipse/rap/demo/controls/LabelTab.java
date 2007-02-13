@@ -26,7 +26,7 @@ public class LabelTab extends ExampleTab {
     super( parent, "Label" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "SEPARATOR" );
     createStyleButton( "HORIZONTAL" );
@@ -45,27 +45,31 @@ public class LabelTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     int style = getStyle();
-    Label label1 = new Label( top, style );
+    final Label label1 = new Label( top, style );
     label1.setText( "Label One" );
-    label1.setBounds( 10, 10, 80, 20 );
+    label1.setLocation( 10, 10 );
+    label1.pack();
     final Label label2 = new Label( top, style );
     label2.setText( "Label Two" );
-    label2.setBounds( 100, 40, 80, 20 );
-    Label label3 = new Label( top, style );
-    label3.setText( "Label Three with some very long text" );
-    label3.setBounds( 190, 70, 80, 20 );
+    label2.setLocation( 110, 40 );
+    label2.pack();
+    final Label label3 = new Label( top, style );
+    label3.setText( "Fixed Size Label with some very long text\nand another line" );
+    label3.setLocation( 210, 70 );
+    label3.setSize( 100, 100 );
     registerControl( label1 );
     registerControl( label2 );
     registerControl( label3 );
-        
+    
     Button text1Button = new Button( top, RWT.PUSH );
     text1Button.setText( "Text 1" );
     text1Button.setBounds( 100, 110, 80, 20 );
     text1Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         label2.setText( text1 );
+        label2.pack();
         System.out.println( "Text:  " + label2.getText());
         System.out.println( "Image: " + label2.getImage());
       }
@@ -76,6 +80,7 @@ public class LabelTab extends ExampleTab {
     text2Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         label2.setText( text2 );
+        label2.pack();
         System.out.println( "Text:  " + label2.getText());
         System.out.println( "Image: " + label2.getImage());
       }
@@ -87,6 +92,7 @@ public class LabelTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent e ) {
         createImages();
         label2.setImage( image1 );
+        label2.pack();
         System.out.println( "Text:  " + label2.getText());
         System.out.println( "Image: " + label2.getImage());
       }
@@ -98,6 +104,7 @@ public class LabelTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent e ) {
         createImages();
         label2.setImage( image2 );
+        label2.pack();
         System.out.println( "Text:  " + label2.getText());
         System.out.println( "Image: " + label2.getImage());
       }
@@ -114,4 +121,5 @@ public class LabelTab extends ExampleTab {
       image2 = Image.find( "resources/newfile_wiz.gif", classLoader );
     }
   }
+
 }

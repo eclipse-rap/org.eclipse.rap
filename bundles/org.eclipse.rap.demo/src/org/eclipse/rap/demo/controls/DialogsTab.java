@@ -24,10 +24,10 @@ class DialogsTab extends ExampleTab {
     super( folder, "Dialogs" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
   }
 
-  void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( final Composite parent ) {
     shell = parent.getShell();
     Button loginButton = new Button( parent, RWT.PUSH );
     loginButton.setText( "Login Dialog" );

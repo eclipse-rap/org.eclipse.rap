@@ -72,4 +72,4 @@ that's right?
 
 22.) If the property "resizable" is set to false on a qx.ui.window.Window, the
      maximize button is grayed out and the window cannot be maximized even if
-     "allowMaximize" is true.
+     "allowMaximize" is true. (Qx Bug 288)

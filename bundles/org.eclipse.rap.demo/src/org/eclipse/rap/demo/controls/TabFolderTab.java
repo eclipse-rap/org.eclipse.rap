@@ -21,7 +21,7 @@ public class TabFolderTab extends ExampleTab {
     super( parent, "TabFolder" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "TOP" );
     createStyleButton( "BOTTOM" );
@@ -30,7 +30,7 @@ public class TabFolderTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     int style = getStyle();
     folder = new TabFolder( top, style );

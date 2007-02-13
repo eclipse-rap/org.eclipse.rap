@@ -20,20 +20,20 @@ import org.eclipse.rap.rwt.widgets.*;
 public class ShellTab extends ExampleTab {
 
   private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
+  
   private ArrayList shells;
-  private boolean invisible = false;
+  private boolean invisible;
   private Image shellIconImage;
 
   public ShellTab( final TabFolder folder ) {
     super( folder, "Shell" );
     shells = new ArrayList();
+    setDefaultStyle( RWT.SHELL_TRIM );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls( ) {
     createStyleButton( "BORDER" );
-    createStyleButton( "SHELL_TRIM" );
-// TODO [rst] preselected style bit is not respected
-//    shellTrimCheck.setSelection( true );
+    createStyleButton( "SHELL_TRIM", true );
     createStyleButton( "DIALOG_TRIM" );
     createStyleButton( "APPLICATION_MODAL" );
     createStyleButton( "TITLE" );
@@ -51,9 +51,8 @@ public class ShellTab extends ExampleTab {
     } );
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout( RWT.VERTICAL ) );
-    final int style = getStyle();
     
     if( shellIconImage == null ) {
       ClassLoader classLoader = getClass().getClassLoader();
@@ -65,7 +64,7 @@ public class ShellTab extends ExampleTab {
     openShellButton.setLayoutData( new RowData( 150, 25 ) );
     openShellButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        createShell( style );
+        createShell();
       }} );
 
     Button showAllButton = new Button( top, RWT.PUSH );
@@ -113,7 +112,8 @@ public class ShellTab extends ExampleTab {
       }} );
   }
 
-  private void createShell( final int style ) {
+  private void createShell() {
+    final int style = getStyle();
     final Shell shell = new Shell( getShell().getDisplay(), style );
     shell.setLocation( getNextShellLocation() );
     if( true ) {
@@ -129,7 +129,7 @@ public class ShellTab extends ExampleTab {
     }
     shells.add( shell );
   }
-
+  
   /*
    * Creates a shell with a size of 300 x 200 px and displays the bounds of its
    * client area.

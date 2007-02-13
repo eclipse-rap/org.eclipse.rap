@@ -35,7 +35,7 @@ public class ContainmentTab extends ExampleTab {
     super( parent, "Containment" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     Button visibleButton = createVisibilityButton();
     Button enabledButton = createEnablementButton();
     // change button labels
@@ -54,7 +54,7 @@ public class ContainmentTab extends ExampleTab {
     } );
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     int style = getStyle();
     FillLayout layout = new FillLayout();

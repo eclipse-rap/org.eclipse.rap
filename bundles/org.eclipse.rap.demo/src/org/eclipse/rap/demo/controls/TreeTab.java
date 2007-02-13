@@ -26,7 +26,7 @@ public class TreeTab extends ExampleTab {
     super( folder, "Tree" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "CHECK" );
     createVisibilityButton();
@@ -35,7 +35,7 @@ public class TreeTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout() );
     int style = getStyle();
     tree = new Tree( parent, style );

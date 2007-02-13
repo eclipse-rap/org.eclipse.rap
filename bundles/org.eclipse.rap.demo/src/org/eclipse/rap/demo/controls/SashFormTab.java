@@ -20,7 +20,7 @@ public class SashFormTab extends ExampleTab {
     super( parent, "SashForm" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "SMOOTH" );
     createStyleButton( "VERTICAL" );
@@ -29,7 +29,7 @@ public class SashFormTab extends ExampleTab {
     createEnablementButton();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     int style = getStyle();
     SashForm sashForm = new SashForm( top, style );

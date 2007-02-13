@@ -26,7 +26,7 @@ class StackedLayoutTab extends ExampleTab {
     super( folder, "StackedLayout" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     Button switchButton = createPropertyButton( "Next", RWT.PUSH );
     switchButton.setLocation( 5, 220 );
     switchButton.addSelectionListener( new SelectionListener() {
@@ -39,7 +39,7 @@ class StackedLayoutTab extends ExampleTab {
     } );
   }
 
-  void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     stackedComp = new Composite( parent, RWT.NONE );
     stackLayout = new StackLayout();

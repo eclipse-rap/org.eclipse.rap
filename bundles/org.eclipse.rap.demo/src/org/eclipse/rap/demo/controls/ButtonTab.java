@@ -36,7 +36,7 @@ public class ButtonTab extends ExampleTab {
     super( folder, "Button" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
     createStyleButton( "LEFT" );
@@ -56,7 +56,7 @@ public class ButtonTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout( RWT.VERTICAL ) );
     int style = getStyle();
     button1 = new Button( top, style | RWT.PUSH );

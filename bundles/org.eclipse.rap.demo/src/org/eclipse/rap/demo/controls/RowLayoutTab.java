@@ -23,7 +23,7 @@ class RowLayoutTab extends ExampleTab {
     super( folder, "RowLayout" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "HORIZONTAL" );
     createStyleButton( "VERTICAL" );
     final Button prefSizeButton = createPropertyButton( "Preferred Size" );
@@ -44,7 +44,7 @@ class RowLayoutTab extends ExampleTab {
 //    createPropertyButton( "justify" );
   }
 
-  void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( final Composite parent ) {
     int style = getStyle();
     GridLayout parentLayout = new GridLayout();
     parentLayout.marginWidth = 5;

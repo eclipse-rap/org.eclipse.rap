@@ -24,14 +24,14 @@ public class CoolBarTab extends ExampleTab {
     super( folder, "CoolBar" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
     createVisibilityButton();
     createEnablementButton();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
     int toolBarStyle = (style & (RWT.HORIZONTAL | RWT.VERTICAL));

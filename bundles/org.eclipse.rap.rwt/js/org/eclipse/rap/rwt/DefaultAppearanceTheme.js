@@ -641,7 +641,9 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         border : ( vStates.rwt_TITLE || vStates.rwt_BORDER )
                  && !vStates.maximized
           ? qx.renderer.border.BorderPresets.getInstance().outset
-          : qx.renderer.border.BorderPresets.getInstance().black
+          : qx.renderer.border.BorderPresets.getInstance().black,
+        minWidth : vStates.rwt_TITLE ? 80 : 5,
+        minHeight : vStates.rwt_TITLE ? 25 : 5
       }
     }
   },

@@ -23,10 +23,10 @@ public class ZOrderTab extends ExampleTab {
     super( folder, "Z-Order" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout( RWT.VERTICAL ) );
     final Composite comp = new Composite( top, RWT.NONE );
     final Button b1 = new Button( comp, RWT.PUSH );

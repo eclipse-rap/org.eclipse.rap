@@ -20,12 +20,12 @@ public class CompositeTab extends ExampleTab {
     super( parent, "Composite" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createVisibilityButton();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     int style = getStyle();
     final Composite comp = new Composite( top, style );

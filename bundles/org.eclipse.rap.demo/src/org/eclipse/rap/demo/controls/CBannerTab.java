@@ -20,11 +20,11 @@ public class CBannerTab extends ExampleTab {
     super( parent, "CBanner" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout(RWT.VERTICAL) );
     int style = getStyle();
     

@@ -41,6 +41,7 @@ abstract class ExampleTab {
   private FontChooser fontChooser;
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
+  private int defaultStyle = RWT.NONE;
   
   public ExampleTab( final TabFolder folder, final String title ) {
     this.folder = folder;
@@ -55,27 +56,27 @@ abstract class ExampleTab {
   }
   
   protected void createNew() {
-      controls.clear();
-      destroyExampleControls( );
-      createExampleControls( exmplComp );
-      updateVisible();
-      updateEnabled();
-      if( fgColorChooser != null ) {
-        updateFgColor();
-      }
-      if( bgColorChooser != null ) {
-        updateBgColor();
-      }
-      if( fontChooser != null ) {
-  //          Control control = ( Control )controls.get( 0 );
-  //          font = control.getFont();
-  //          if( font != null ) {
-  //            fontChooser.setFont( font );
-  //          }
-        updateFont();
-      }
-      exmplComp.layout();
+    controls.clear();
+    destroyExampleControls( );
+    createExampleControls( exmplComp );
+    updateVisible();
+    updateEnabled();
+    if( fgColorChooser != null ) {
+      updateFgColor();
     }
+    if( bgColorChooser != null ) {
+      updateBgColor();
+    }
+    if( fontChooser != null ) {
+      // Control control = ( Control )controls.get( 0 );
+      // font = control.getFont();
+      // if( font != null ) {
+      //   fontChooser.setFont( font );
+      // }
+      updateFont();
+    }
+    exmplComp.layout();
+  }
 
   private Control createForm() {
     SashForm vertSashForm = new SashForm( folder, RWT.VERTICAL );
@@ -126,11 +127,24 @@ abstract class ExampleTab {
     fgColors[ 3 ] = Color.getColor( 154, 205, 50 );
   }
 
-  abstract void createStyleControls();
+  protected abstract void createStyleControls( );
   
-  abstract void createExampleControls( final Composite top );
-
+  protected abstract void createExampleControls( final Composite top );
+  
+  /**
+   * TODO [rst] Refactor ExampleTab to evaluate style controls before example
+   *      controls are created.
+   */
+  protected void setDefaultStyle( final int style ) {
+    this.defaultStyle = style;
+  }
+  
   protected Button createStyleButton( final String fieldName ) {
+    return createStyleButton( fieldName, false );
+  }
+  
+  protected Button createStyleButton( final String fieldName,
+                                      final boolean checked ) {
     int style = RWT.NONE;
     try {
       Field field = RWT.class.getField( fieldName );
@@ -139,12 +153,14 @@ abstract class ExampleTab {
     } catch( IllegalAccessException e ) {
       System.err.println( "Cannot access style flag: RWT." + fieldName );
     }
-    Button button = createStyleButton( "RWT." + fieldName, style );
+    Button button = createStyleButton( "RWT." + fieldName, style, checked );
     button.setEnabled( style != RWT.NONE );
     return button;
   }
-
-  private Button createStyleButton( final String name, final int style ) {
+  
+  private Button createStyleButton( final String name,
+                                    final int style,
+                                    final boolean checked ) {
     Button button = new Button( styleComp, RWT.CHECK );
     button.setText( name );
     button.addSelectionListener( new SelectionAdapter() {
@@ -155,6 +171,7 @@ abstract class ExampleTab {
     button.setData( "style", new Integer( style ) );
     // preferred size does not work:
     button.setLayoutData( new RowData( 100, 20 ) );
+    button.setSelection( checked );
     return button;
   }
 
@@ -294,14 +311,18 @@ abstract class ExampleTab {
   protected int getStyle() {
     int result = RWT.NONE;
     Control[] ctrls = styleComp.getChildren();
-    for( int i = 0; i < ctrls.length; i++ ) {
-      if( ctrls[ i ] instanceof Button ) {
-        Button button = ( Button )ctrls[ i ];
-        if (button.getSelection()) {
-          Object data = button.getData( "style" );
-          if( data != null && data instanceof Integer ) {
-            int style = (( Integer )data).intValue();
-            result |= style;
+    if( ctrls.length == 0 ) {
+      result = defaultStyle;
+    } else {
+      for( int i = 0; i < ctrls.length; i++ ) {
+        if( ctrls[ i ] instanceof Button ) {
+          Button button = ( Button )ctrls[ i ];
+          if (button.getSelection()) {
+            Object data = button.getData( "style" );
+            if( data != null && data instanceof Integer ) {
+              int style = (( Integer )data).intValue();
+              result |= style;
+            }
           }
         }
       }

@@ -27,14 +27,14 @@ class GroupTab extends ExampleTab {
     super( folder, "Group" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createVisibilityButton();
     createEnablementButton();
     createChangeText();
     createFontChooser();
   }
 
-  void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     group = new Group( parent, RWT.NONE );
     group.setLayout( new FillLayout() );

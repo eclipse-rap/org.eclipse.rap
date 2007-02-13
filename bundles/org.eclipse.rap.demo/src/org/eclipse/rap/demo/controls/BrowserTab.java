@@ -32,7 +32,7 @@ class BrowserTab extends ExampleTab {
   }
 
   // TODO [rh] change signature to createStyleControls( Composite parent )
-  void createStyleControls() {
+  protected void createStyleControls() {
     // TODO [th] reactivate when implemented in Browser widget
 //    createStyleButton( "BORDER" );
 //    createStyleButton( "FLAT" );
@@ -42,7 +42,7 @@ class BrowserTab extends ExampleTab {
     createHtmlSelector( styleComp );
   }
 
-  void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     browser = new Browser( parent, RWT.NONE );
     registerControl( browser );

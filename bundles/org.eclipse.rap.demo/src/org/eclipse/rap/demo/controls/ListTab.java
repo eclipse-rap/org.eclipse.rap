@@ -53,7 +53,7 @@ public class ListTab extends ExampleTab {
     super( folder, "List" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "H_SCROLL" );
     createStyleButton( "V_SCROLL" );
@@ -62,7 +62,7 @@ public class ListTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout() );
     int style = getStyle();
     list = new List( parent, style );

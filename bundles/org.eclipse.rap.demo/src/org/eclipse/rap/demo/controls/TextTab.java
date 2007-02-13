@@ -22,7 +22,7 @@ public class TextTab extends ExampleTab {
     super( folder, "Text" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "WRAP" );
     createStyleButton( "SINGLE" );
@@ -34,7 +34,7 @@ public class TextTab extends ExampleTab {
     createFontChooser();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
     text = new Text( top, style );

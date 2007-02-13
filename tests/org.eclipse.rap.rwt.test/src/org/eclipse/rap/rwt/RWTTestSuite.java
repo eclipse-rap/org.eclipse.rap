@@ -20,6 +20,7 @@ import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.rap.rwt.internal.engine.*;
+import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation_Test;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.internal.widgets.buttonkit.ButtonLCA_Test;
@@ -101,6 +102,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Color_Test.class );
     suite.addTestSuite( RGB_Test.class );
     suite.addTestSuite( Font_Test.class );
+    suite.addTestSuite( FontSizeEstimation_Test.class );
 
     suite.addTestSuite( DisplayLCA_Test.class );
     suite.addTestSuite( ControlLCA_Test.class );

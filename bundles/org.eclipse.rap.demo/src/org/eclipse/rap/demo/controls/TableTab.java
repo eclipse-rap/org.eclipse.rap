@@ -22,13 +22,13 @@ public class TableTab extends ExampleTab {
     super( folder, "Table" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createVisibilityButton();
     createEnablementButton();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     
     int style = getStyle();

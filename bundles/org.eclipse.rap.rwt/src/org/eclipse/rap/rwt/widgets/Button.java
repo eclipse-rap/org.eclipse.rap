@@ -33,7 +33,6 @@ public class Button extends Control {
   private static final int CHECK_WIDTH = 13;
   // Height of checkboxes and radiobuttons
   private static final int CHECK_HEIGHT = 13;
-
   private String text = "";
   private boolean selected = false;
   private Image image;
@@ -202,11 +201,12 @@ public class Button extends Control {
       height = Math.max( height, extent.y );
       width += extent.x;
     }
-    if( ( style & ( RWT.CHECK | RWT.RADIO ) ) != 0 ) {
-      width += CHECK_WIDTH + extra;
-      height = Math.max( height, CHECK_HEIGHT + 3 );
+    if ((style & (RWT.CHECK | RWT.RADIO)) != 0) {
+      width += CHECK_WIDTH + 12 + extra;
+      height = Math.max (height, CHECK_HEIGHT + 3);
+      height += 4;
     }
-    if( ( style & ( RWT.PUSH | RWT.TOGGLE ) ) != 0 ) {
+    if ((style & (RWT.PUSH | RWT.TOGGLE)) != 0) {
       width += 12;
       height += 10;
     }
@@ -218,6 +218,7 @@ public class Button extends Control {
     }
     width += border * 2;
     height += border * 2;
-    return new Point( width, height );
+    return new Point (width, height);
   }
+
 }

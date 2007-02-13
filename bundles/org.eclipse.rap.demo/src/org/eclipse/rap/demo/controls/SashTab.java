@@ -20,7 +20,7 @@ public class SashTab extends ExampleTab {
     super( parent, "Sash" );
   }
 
-  void createStyleControls() {
+  protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "SMOOTH" );
     createStyleButton( "VERTICAL" );
@@ -29,7 +29,7 @@ public class SashTab extends ExampleTab {
     createEnablementButton();
   }
 
-  void createExampleControls( final Composite top ) {
+  protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
     Label label = new Label( top, RWT.NONE );
