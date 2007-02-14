@@ -9,26 +9,18 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.custom.StackLayout;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.graphics.Font;
-import org.eclipse.rap.rwt.layout.GridData;
-import org.eclipse.rap.rwt.layout.GridLayout;
+import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
-class StackedLayoutTab extends ExampleTab {
+class GridLayoutTab extends ExampleTab {
 
-  private static final int COUNT = 5;
-  private Composite comp;
-  private StackLayout stackLayout;
-  private Control[] bArray;
-  private int index;
   private boolean propPrefSize;
+  private boolean propEqualWidth;
 
-  public StackedLayoutTab( final TabFolder folder ) {
-    super( folder, "StackedLayout" );
-    index = 0;
+  public GridLayoutTab( final TabFolder folder ) {
+    super( folder, "GridLayout" );
   }
 
   protected void createStyleControls() {
@@ -39,11 +31,11 @@ class StackedLayoutTab extends ExampleTab {
         createNew();
       }
     } );
-    Button switchButton = createPropertyButton( "Next", RWT.PUSH );
-    switchButton.setLocation( 5, 220 );
-    switchButton.addSelectionListener( new SelectionListener() {
+    final Button equalButton = createPropertyButton( "Make Columns Equal Width" );
+    equalButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        showNext();
+        propEqualWidth = equalButton.getSelection();
+        createNew();
       }
     } );
   }
@@ -52,21 +44,41 @@ class StackedLayoutTab extends ExampleTab {
     GridLayout parentLayout = new GridLayout();
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
-    
-    comp = new Composite( parent, RWT.NONE );
+
+    Composite comp = new Composite( parent, RWT.NONE );
     comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
-    stackLayout = new StackLayout();
-    stackLayout.marginWidth = 3;
-    stackLayout.marginHeight = 3;
-    comp.setLayout( stackLayout );
-    bArray = new Button[ COUNT ];
-    for( int i = 0; i < COUNT; i++ ) {
-      Button button = new Button( comp, RWT.PUSH );
-      button.setText( "Control " + ( i+1 ) );
-      button.setFont( Font.getFont( "Serif", 24, RWT.BOLD ) );
-      bArray[ i ] = button;
-    }
-    stackLayout.topControl = bArray[ 0 ];
+    GridLayout gridLayout = new GridLayout();
+    gridLayout.numColumns = 3;
+    gridLayout.marginWidth = 3;
+    gridLayout.marginHeight = 3;
+    gridLayout.makeColumnsEqualWidth = propEqualWidth;
+    comp.setLayout( gridLayout );
+
+    Button button1 = new Button(comp, RWT.PUSH);
+    button1.setText("B1");
+    GridData gridData = new GridData();
+    gridData.verticalAlignment = GridData.FILL;
+    button1.setLayoutData(gridData);
+
+    new Button(comp, RWT.PUSH).setText( "Wide Button 2" );
+
+    Button button3 = new Button( comp, RWT.PUSH );
+    button3.setText("Button 3");
+    gridData = new GridData();
+    gridData.verticalAlignment = GridData.FILL;
+    gridData.verticalSpan = 2;
+    gridData.grabExcessVerticalSpace = true;
+    gridData.horizontalAlignment = GridData.FILL;
+    gridData.grabExcessHorizontalSpace = true;
+    button3.setLayoutData(gridData);
+
+    Button button4 = new Button( comp, RWT.PUSH);
+    button4.setText("B4");
+    gridData = new GridData();
+    gridData.verticalAlignment = GridData.FILL;
+    button4.setLayoutData(gridData);
+
+    new Button( comp, RWT.PUSH).setText("Button 5");    
 
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );
@@ -75,11 +87,5 @@ class StackedLayoutTab extends ExampleTab {
     }
     comp.layout();
     registerControl( comp );
-  }
-
-  private void showNext() {
-    index = ( index + 1 ) % COUNT;
-    stackLayout.topControl = bArray[ index ];
-    comp.layout();
   }
 }

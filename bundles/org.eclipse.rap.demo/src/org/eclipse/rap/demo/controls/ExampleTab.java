@@ -43,14 +43,24 @@ abstract class ExampleTab {
   private ColorChooser bgColorChooser;
   private int defaultStyle = RWT.NONE;
   
-  public ExampleTab( final TabFolder folder, final String title ) {
-    this.folder = folder;
-    TabItem item = new TabItem( folder, RWT.NONE );
+  public static final Color BG_COLOR_GREEN = Color.getColor( 154, 205, 50 );
+  public static final Color BG_COLOR_BLUE = Color.getColor( 105, 89, 205 );
+  public static final Color BG_COLOR_BROWN = Color.getColor( 192, 172, 137 );
+  public static final Color FG_COLOR_RED = Color.getColor( 194, 0, 23 );
+  public static final Color FG_COLOR_BLUE = Color.getColor( 28, 96, 141 );
+  public static final Color FG_COLOR_ORANGE = Color.getColor( 249, 158, 0 );
+
+  public ExampleTab( final TabFolder parent, final String title ) {
+    folder = parent;
+    controls = new ArrayList();
+    TabItem item = new TabItem( parent, RWT.NONE );
     item.setText( title );
-    Control sashForm = createForm();
+    Control sashForm = createSashForm();
     item.setControl( sashForm );
     initColors();
-    controls = new ArrayList();
+  }
+
+  public void createContents() {
     createExampleControls( exmplComp );
     createStyleControls();
   }
@@ -78,7 +88,7 @@ abstract class ExampleTab {
     exmplComp.layout();
   }
 
-  private Control createForm() {
+  private Control createSashForm() {
     SashForm vertSashForm = new SashForm( folder, RWT.VERTICAL );
     SashForm horSashForm = new SashForm( vertSashForm, RWT.HORIZONTAL );
     Composite leftComp = new Composite( horSashForm, RWT.NONE );
@@ -118,13 +128,13 @@ abstract class ExampleTab {
     bgColors = new Color[ MAX_COLORS ];
     fgColors = new Color[ MAX_COLORS ];
     bgColors[ 0 ] = null;
-    bgColors[ 1 ] = Color.getColor( 139, 37, 0 );
-    bgColors[ 2 ] = Color.getColor( 105, 89, 205 );
-    bgColors[ 3 ] = Color.getColor( 139, 121, 94 );
+    bgColors[ 1 ] = BG_COLOR_GREEN;
+    bgColors[ 2 ] = BG_COLOR_BLUE;
+    bgColors[ 3 ] = BG_COLOR_BROWN;
     fgColors[ 0 ] = null;
-    fgColors[ 1 ] = Color.getColor( 255, 140, 0 );
-    fgColors[ 2 ] = Color.getColor( 255, 215, 0 );
-    fgColors[ 3 ] = Color.getColor( 154, 205, 50 );
+    fgColors[ 1 ] = FG_COLOR_RED;
+    fgColors[ 2 ] = FG_COLOR_BLUE;
+    fgColors[ 3 ] = FG_COLOR_ORANGE;
   }
 
   protected abstract void createStyleControls( );
@@ -238,7 +248,7 @@ abstract class ExampleTab {
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        fgIndex = (fgIndex + 1) % MAX_COLORS;
+        fgIndex = ( fgIndex + 1 ) % MAX_COLORS;
         updateFgColor();
       }
 
@@ -259,7 +269,7 @@ abstract class ExampleTab {
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        bgIndex = (bgIndex + 1) % MAX_COLORS;
+        bgIndex = ( bgIndex + 1 ) % MAX_COLORS;
         updateBgColor();
       }
     } );
@@ -350,7 +360,7 @@ abstract class ExampleTab {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
-      control.setForeground( fgColors[fgIndex] );
+      control.setForeground( fgColors[ fgIndex ] );
     }
   }
 
@@ -358,7 +368,7 @@ abstract class ExampleTab {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
-      control.setBackground( bgColors[bgIndex] );
+      control.setBackground( bgColors[ bgIndex ] );
     }
   }
   

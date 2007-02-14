@@ -33,7 +33,7 @@ class RowLayoutTab extends ExampleTab {
         createNew();
       }
     } );
-    final Button wrapButton = createPropertyButton( "wrap" );
+    final Button wrapButton = createPropertyButton( "Wrap" );
     wrapButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         propWrap = wrapButton.getSelection();
@@ -64,6 +64,7 @@ class RowLayoutTab extends ExampleTab {
     l1.setText( "Label" );
     Text t1 = new Text( comp, RWT.BORDER | RWT.SINGLE );
     t1.setText( "Lorem ipsum dolor sit amet" );
+//    createTabFolder( comp );
     new Text( comp, RWT.BORDER | RWT.SINGLE );
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );
@@ -72,5 +73,26 @@ class RowLayoutTab extends ExampleTab {
     }
     comp.layout();
     registerControl( comp );
+  }
+
+  private TabFolder createTabFolder( Composite parent ) {
+    TabFolder tf = new TabFolder( parent, RWT.BORDER );
+    TabItem tab1 = new TabItem( tf, RWT.NONE );
+    tab1.setText( "Tab1" );
+    Label tla1 = new Label( tf, RWT.NONE );
+    tla1.setText( "Content 1" );
+    tab1.setControl( tla1 );
+    TabItem tab2 = new TabItem( tf, RWT.NONE );
+    tab2.setText( "Tab2" );
+    Label tla2 = new Label( tf, RWT.NONE );
+    tla2.setText( "Content 2\nwith two lines" );
+    tab2.setControl( tla2 );
+    TabItem tab3 = new TabItem( tf, RWT.NONE );
+    tab3.setText( "Tab3" );
+    Label tla3 = new Label( tf, RWT.NONE );
+    tla3.setText( "Content 3 is somewhat longer" );
+    tab3.setControl( tla3 );
+    tf.setSelection( 0 );
+    return tf;
   }
 }

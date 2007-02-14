@@ -12,24 +12,14 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionAdapter;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.layout.FillLayout;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class ContainmentTab extends ExampleTab {
 
-  private static Color color1;
-  private static Color color2;
-  private static Color color3;
   private Composite comp2;
   private Composite comp3;
   private Composite comp1;
-
-  static {
-    color1 = Color.getColor( 154, 205, 50 );
-    color2 = Color.getColor( 105, 89, 205 );
-    color3 = Color.getColor( 240, 250, 190 );
-  }
 
   public ContainmentTab( final TabFolder parent ) {
     super( parent, "Containment" );
@@ -37,16 +27,14 @@ public class ContainmentTab extends ExampleTab {
 
   protected void createStyleControls() {
     Button visibleButton = createVisibilityButton();
-    Button enabledButton = createEnablementButton();
-    // change button labels
     visibleButton.setText( "Blue Visible" );
-    enabledButton.setText( "Blue Enabled" );
-    // add listener for sysout
     visibleButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         changeVisible();
       }
     } );
+    Button enabledButton = createEnablementButton();
+    enabledButton.setText( "Blue Enabled" );
     enabledButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         changeEnabled();
@@ -61,13 +49,13 @@ public class ContainmentTab extends ExampleTab {
     layout.marginWidth = 20;
     layout.marginHeight = 20;
     comp1 = new Composite( top, style );
-    comp1.setBackground( color1 );
+    comp1.setBackground( BG_COLOR_GREEN );
     comp1.setLayout( layout );
     comp2 = new Composite( comp1, style );
-    comp2.setBackground( color2 );
+    comp2.setBackground( BG_COLOR_BLUE );
     comp2.setLayout( layout );
     comp3 = new Composite( comp2, style );
-    comp3.setBackground( color3 );
+    comp3.setBackground( BG_COLOR_BROWN );
     comp3.setLayout( layout );
     Button button = new Button( comp3, RWT.PUSH );
     button.setText( "Button" );

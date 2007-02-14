@@ -17,13 +17,22 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class LabelTab extends ExampleTab {
 
-  private Image image1;
-  private Image image2;
-  private String text1 = "Some Text";
-  private String text2 = "Some Other Text";
+  private final Image image1;
+  private final Image image2;
+  private final String text1;
+  private final String text2;
+  private Image labelImage;
+  private String labelText;
 
   public LabelTab( final TabFolder parent ) {
     super( parent, "Label" );
+    ClassLoader classLoader = getClass().getClassLoader();
+    image1 = Image.find( "resources/button-image.gif", classLoader );
+    image2 = Image.find( "resources/newfile_wiz.gif", classLoader );
+    text1 = "Some Text";
+    text2 = "Some Other Text";
+    labelImage = null;
+    labelText = "A Label";
   }
 
   protected void createStyleControls() {
@@ -48,78 +57,62 @@ public class LabelTab extends ExampleTab {
   protected void createExampleControls( final Composite top ) {
     int style = getStyle();
     final Label label1 = new Label( top, style );
-    label1.setText( "Label One" );
     label1.setLocation( 10, 10 );
-    label1.pack();
+    updateLabel2( label1 );
     final Label label2 = new Label( top, style );
-    label2.setText( "Label Two" );
-    label2.setLocation( 110, 40 );
-    label2.pack();
-    final Label label3 = new Label( top, style );
-    label3.setText( "Fixed Size Label with some very long text\nand another line" );
-    label3.setLocation( 210, 70 );
-    label3.setSize( 100, 100 );
+    label2.setText( "Fixed size Label with some very long text\n"
+                    + "and another line" );
+    label2.setLocation( 150, 10 );
+    label2.setSize( 100, 100 );
     registerControl( label1 );
     registerControl( label2 );
-    registerControl( label3 );
     
     Button text1Button = new Button( top, RWT.PUSH );
     text1Button.setText( "Text 1" );
-    text1Button.setBounds( 100, 110, 80, 20 );
+    text1Button.setBounds( 10, 50, 80, 20 );
     text1Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        label2.setText( text1 );
-        label2.pack();
-        System.out.println( "Text:  " + label2.getText());
-        System.out.println( "Image: " + label2.getImage());
+        labelText = text1;
+        labelImage = null;
+        updateLabel2( label1 );
       }
     } );
     Button text2Button = new Button( top, RWT.PUSH );
     text2Button.setText( "Text 2" );
-    text2Button.setBounds( 100, 135, 80, 20 );
+    text2Button.setBounds( 10, 75, 80, 20 );
     text2Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        label2.setText( text2 );
-        label2.pack();
-        System.out.println( "Text:  " + label2.getText());
-        System.out.println( "Image: " + label2.getImage());
+        labelText = text2;
+        labelImage = null;
+        updateLabel2( label1 );
       }
     } );
     Button image1Button = new Button( top, RWT.PUSH );
     image1Button.setText( "Image 1" );
-    image1Button.setBounds( 100, 160, 80, 20 );
+    image1Button.setBounds( 10, 100, 80, 20 );
     image1Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        createImages();
-        label2.setImage( image1 );
-        label2.pack();
-        System.out.println( "Text:  " + label2.getText());
-        System.out.println( "Image: " + label2.getImage());
+        labelImage = image1;
+        updateLabel2( label1 );
       }
     } );
     Button image2Button = new Button( top, RWT.PUSH );
     image2Button.setText( "Image 2" );
-    image2Button.setBounds( 100, 185, 80, 20 );
+    image2Button.setBounds( 10, 125, 80, 20 );
     image2Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        createImages();
-        label2.setImage( image2 );
-        label2.pack();
-        System.out.println( "Text:  " + label2.getText());
-        System.out.println( "Image: " + label2.getImage());
+        labelImage = image2;
+        updateLabel2( label1 );
       }
     } );
   }
-
-  private void createImages() {
-    if( image1 == null ) {
-      ClassLoader classLoader = getClass().getClassLoader();
-      image1 = Image.find( "resources/button-image.gif", classLoader );
+  
+  private void updateLabel2( Label label ) {
+    if( labelImage != null ) {
+      label.setImage( labelImage );
+    } else {
+      label.setText( labelText );
     }
-    if( image2 == null ) {
-      ClassLoader classLoader = getClass().getClassLoader();
-      image2 = Image.find( "resources/newfile_wiz.gif", classLoader );
-    }
+    label.pack();
   }
-
 }

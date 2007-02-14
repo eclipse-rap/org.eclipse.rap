@@ -14,14 +14,14 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
-import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 import org.eclipse.rap.rwt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 
 public class TabFolder extends Composite {
 
   private static final TabItem[] EMPTY_TAB_ITEMS = new TabItem[ 0 ];
-  
   private final ItemHolder itemHolder = new ItemHolder( TabItem.class );
   private int selectionIndex = -1;
 
@@ -137,6 +137,41 @@ public class TabFolder extends Composite {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
+  
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
+    checkWidget ();
+    Point itemsSize = new Point( 0, 0 );
+    Point contentsSize = new Point( 0, 0 );
+    TabItem[] items = getItems();
+    // TODO: one item should be enough since layout already includes all items
+    for( int i = 0; i < items.length; i++ ) {
+      Point thisItemSize = computeItemSize( items[ i ] );
+      itemsSize.x += thisItemSize.x;
+      itemsSize.y = Math.max( itemsSize.y, thisItemSize.y );
+      Control control = items[ i ].getControl();
+      Point thisSize = control.getSize();
+      contentsSize.x = Math.max( contentsSize.x, thisSize.x );
+      contentsSize.y = Math.max( contentsSize.y, thisSize.y );
+    }
+    int width = Math.max( itemsSize.x, contentsSize.x );
+    int height = itemsSize.y + contentsSize.y;
+    int border = getBorderWidth();
+    if( width == 0 ) {
+      width = DEFAULT_WIDTH;
+    }
+    if( height == 0 ) {
+      height = DEFAULT_HEIGHT;
+    }
+    if ( wHint != RWT.DEFAULT ) {
+      width = wHint;
+    }
+    if ( hHint != RWT.DEFAULT ) {
+      height = hHint;
+    }
+    width += 2* border;
+    height += 2 * border;
+    return new Point( width, height );
+  }
 
   ///////////
   // Disposal
@@ -151,6 +186,23 @@ public class TabFolder extends Composite {
 
   ///////////////////
   // Helping methods
+  
+  private Point computeItemSize( final TabItem item ) {
+    Point result = new Point( 0, 0 );
+    String text = item.getText();
+    if( text != null ) {
+      Point extent = FontSizeEstimation.stringExtent( text, getFont() );
+      result.x += extent.x + 10;
+      result.y = extent.y + 4;
+    }
+    Image image = item.getImage();
+    if( image != null ) {
+      Point size = new Point( 16, 16 );
+      result.x += size.x + 4;
+      result.y = Math.max( size.x, result.x );
+    }
+    return result;
+  }
   
   private static int checkStyle( final int style ) {
     int result = checkBits( style, RWT.TOP, RWT.BOTTOM, 0, 0, 0, 0 );

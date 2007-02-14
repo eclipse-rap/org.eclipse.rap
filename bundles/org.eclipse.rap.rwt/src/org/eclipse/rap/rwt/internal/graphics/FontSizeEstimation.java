@@ -89,26 +89,36 @@ public class FontSizeEstimation {
                                       final Font font )
   {
     int result = 0;
-    int index = 0;
-    int width = getLineWidth( string, font );
-    if( width < wrapWidth ) {
+    if( getLineWidth( string, font ) < wrapWidth ) {
       result = string.length();
     } else {
-      while( ( index = string.indexOf( ' ', index ) ) != -1 ) {
-        String subStr = string.substring( 0, index );
-        width = getLineWidth( subStr, font );
-        index++;
-        if( width <= wrapWidth ) {
-          result = index;
-        } else {
-          break; // I know, you don't like it, but anything else would complicate the algorithm
-        }
+      String subStr = nextSubLine( string, 0 );
+      while( getLineWidth( subStr, font ) <= wrapWidth ) {
+        result = subStr.length();
+        subStr = nextSubLine( string, subStr.length() + 1 );
       }
     }
     return result;
   }
   
-  private static int getLineWidth( final String string, final Font font ) {
-    return Math.round( getAvgCharWidth( font ) * string.length() );
+  /**
+   * Returns the next substring that can be wrapped.
+   */
+  private static String nextSubLine( final String line, 
+                                     final int startIndex ) 
+  {
+    String result = line;
+    int index = line.indexOf( ' ', startIndex );
+    if( index != -1 ) {
+      result = line.substring( 0, index );
+    }
+    return result;
+  }
+  
+  /**
+   * Returns the width of a given string in pixels. Linebreaks are ignored.
+   */
+  private static int getLineWidth( final String line, final Font font ) {
+    return Math.round( getAvgCharWidth( font ) * line.length() );
   }
 }

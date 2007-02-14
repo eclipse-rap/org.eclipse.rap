@@ -70,20 +70,23 @@ public class Composite extends Scrollable {
     }
   }
   
-  public Point computeSize( final int wHint, final int hHint, boolean changed ) 
+  public Point computeSize( final int wHint,
+                            final int hHint,
+                            final boolean changed )
   {
     checkWidget();
     Point size;
+    boolean hasChanged = changed;
     if( layout != null ) {
       if( wHint == RWT.DEFAULT || hHint == RWT.DEFAULT ) {
-        changed |= ( state & LAYOUT_CHANGED ) != 0;
+        hasChanged |= ( state & LAYOUT_CHANGED ) != 0;
         state &= ~LAYOUT_CHANGED;
-        size = layout.computeSize( this, wHint, hHint, changed );
+        size = layout.computeSize( this, wHint, hHint, hasChanged );
       } else {
         size = new Point( wHint, hHint );
       }
     } else {
-      size = minimumSize( wHint, hHint, changed );
+      size = minimumSize( wHint, hHint, hasChanged );
     }
     if( size.x == 0 ) {
       size.x = DEFAULT_WIDTH;

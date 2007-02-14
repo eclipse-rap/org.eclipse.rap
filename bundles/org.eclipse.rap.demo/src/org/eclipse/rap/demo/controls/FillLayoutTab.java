@@ -9,29 +9,22 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.custom.StackLayout;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.graphics.Font;
-import org.eclipse.rap.rwt.layout.GridData;
-import org.eclipse.rap.rwt.layout.GridLayout;
+import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
-class StackedLayoutTab extends ExampleTab {
+class FillLayoutTab extends ExampleTab {
 
-  private static final int COUNT = 5;
-  private Composite comp;
-  private StackLayout stackLayout;
-  private Control[] bArray;
-  private int index;
   private boolean propPrefSize;
 
-  public StackedLayoutTab( final TabFolder folder ) {
-    super( folder, "StackedLayout" );
-    index = 0;
+  public FillLayoutTab( final TabFolder folder ) {
+    super( folder, "FillLayout" );
   }
 
   protected void createStyleControls() {
+    createStyleButton( "HORIZONTAL" );
+    createStyleButton( "VERTICAL" );
     final Button prefSizeButton = createPropertyButton( "Preferred Size" );
     prefSizeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -39,34 +32,28 @@ class StackedLayoutTab extends ExampleTab {
         createNew();
       }
     } );
-    Button switchButton = createPropertyButton( "Next", RWT.PUSH );
-    switchButton.setLocation( 5, 220 );
-    switchButton.addSelectionListener( new SelectionListener() {
-      public void widgetSelected( final SelectionEvent event ) {
-        showNext();
-      }
-    } );
   }
 
   protected void createExampleControls( final Composite parent ) {
+    int style = getStyle();
     GridLayout parentLayout = new GridLayout();
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
     
-    comp = new Composite( parent, RWT.NONE );
+    Composite comp = new Composite( parent, RWT.NONE );
     comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
-    stackLayout = new StackLayout();
-    stackLayout.marginWidth = 3;
-    stackLayout.marginHeight = 3;
-    comp.setLayout( stackLayout );
-    bArray = new Button[ COUNT ];
-    for( int i = 0; i < COUNT; i++ ) {
-      Button button = new Button( comp, RWT.PUSH );
-      button.setText( "Control " + ( i+1 ) );
-      button.setFont( Font.getFont( "Serif", 24, RWT.BOLD ) );
-      bArray[ i ] = button;
-    }
-    stackLayout.topControl = bArray[ 0 ];
+    
+    FillLayout fillLayout = new FillLayout( style );
+    fillLayout.marginWidth = 3;
+    fillLayout.marginHeight = 3;
+    fillLayout.spacing = 3;
+    comp.setLayout( fillLayout );
+    Button b1 = new Button( comp, RWT.PUSH );
+    b1.setText( "Button 1" );
+    Button b2 = new Button( comp, RWT.PUSH );
+    b2.setText( "Button 2" );
+    Button b3 = new Button( comp, RWT.PUSH );
+    b3.setText( "Button 3" );
 
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );
@@ -75,11 +62,5 @@ class StackedLayoutTab extends ExampleTab {
     }
     comp.layout();
     registerControl( comp );
-  }
-
-  private void showNext() {
-    index = ( index + 1 ) % COUNT;
-    stackLayout.topControl = bArray[ index ];
-    comp.layout();
   }
 }

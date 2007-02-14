@@ -11,6 +11,7 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.*;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
@@ -26,8 +27,10 @@ public class LayoutDemo implements IEntryPoint {
     shell.setBounds( 10, 10, 800, 600 );
     createContents( shell );
     shell.setText( "RWT Layout Demo" );
+    ClassLoader classLoader = getClass().getClassLoader();
+    Image image = Image.find( "resources/shell.gif", classLoader );
+    shell.setImage( image  );
     shell.layout();
-    shell.pack();
     shell.open();
     return display;
   }
@@ -35,10 +38,17 @@ public class LayoutDemo implements IEntryPoint {
   private void createContents( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     final TabFolder topFolder = new TabFolder( parent, RWT.NONE );
-    new RowLayoutTab( topFolder );
-    new StackedLayoutTab( topFolder );
-    createTabCBannerLayout( topFolder );
-    createTabViewFormLayout( topFolder );
+    ExampleTab tab;
+    tab = new FillLayoutTab( topFolder );
+    tab.createContents();
+    tab = new RowLayoutTab( topFolder );
+    tab.createContents();
+    tab = new GridLayoutTab( topFolder );
+    tab.createContents();
+    tab = new StackedLayoutTab( topFolder );
+    tab.createContents();
+    tab = new TextSizeTab( topFolder );
+    tab.createContents();
     topFolder.setSelection( 0 );
   }
 
