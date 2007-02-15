@@ -23,6 +23,7 @@ that's right?
 7.) Color settings for table component are static contstants
 
 8.) TreeFullControl sends selection event when expanding/collapsing node.
+    --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=289
 
 9.) Disposing of a currently visible toolTip fails with the following errors:
   ERROR: qx.ui.popup.ToolTip[632]: Modification of property "visibility" failed 
@@ -43,9 +44,10 @@ that's right?
 13.) Some parts of a table are drawn not until the first mouse move.
 
 14.) How to make a qx.ui.form.TextField read-only?
+     --> SOLVED
 
 15.) Setting font and/or foreground color is ignored when done in the same
-     JavaScript chunk in which the wiget is created
+     JavaScript chunk in which the widget is created
 
 16.) Sometimes, when an empty Text field is focussed and/or blurred using the
      tab key, the getText() method returns the string "null". This is probably
@@ -60,7 +62,7 @@ that's right?
      width of the non-wrapped child.
 
 19.) treefullcontrol causes debug message "Could not load: 
-     icon/16/places/folder.png" event though icon and selectedIcon were set
+     icon/16/places/folder.png" even though icon and selectedIcon were set
      in TreeRowStructure
 
 20.) What happens with a RadioManager when a Composite with some radio buttons
