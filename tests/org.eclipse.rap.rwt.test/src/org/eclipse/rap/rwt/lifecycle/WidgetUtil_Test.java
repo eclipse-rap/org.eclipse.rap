@@ -19,18 +19,25 @@ import org.eclipse.rap.rwt.widgets.Shell;
 
 public class WidgetUtil_Test extends TestCase {
 
-  public void testGetAdapter() {
-    RWTFixture.deregisterAdapterFactories();
-    Display display = new Display();
-    Shell shell = new Shell( display , RWT.NONE );
-    try {
-      WidgetUtil.getAdapter( shell );
-      fail( "Must throw exception if no adapter could be found." );
-    } catch( IllegalStateException e ) {
-      // expected
-    }
-  }
+  // TODO [rh] this test is currently obsolete since IWidgetAdapter is obtained
+  //      in Widget#getAdapter (see comment there) and not via the 
+  //      AdapterManager anymore -- testDummy is here to prevent JUnit warning
+//  public void testGetAdapter() {
+//    RWTFixture.deregisterAdapterFactories();
+//    Display display = new Display();
+//    Shell shell = new Shell( display, RWT.NONE );
+//    try {
+//      WidgetUtil.getAdapter( shell );
+//      fail( "Must throw exception if no adapter could be found." );
+//    } catch( IllegalStateException e ) {
+//      // expected
+//    }
+//  }
 
+  public void testDummy() {
+    assertTrue( true );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
