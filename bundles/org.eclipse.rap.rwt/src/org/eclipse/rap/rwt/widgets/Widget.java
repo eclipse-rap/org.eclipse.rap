@@ -16,8 +16,9 @@ import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.DisposeEvent;
 import org.eclipse.rap.rwt.events.DisposeListener;
-import com.w4t.Adaptable;
-import com.w4t.W4TContext;
+import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
+import org.eclipse.rap.rwt.internal.widgets.WidgetAdapter;
+import com.w4t.*;
 import com.w4t.event.EventAdapter;
 import com.w4t.event.IEventAdapter;
 
@@ -46,6 +47,8 @@ public abstract class Widget implements Adaptable {
   private boolean disposed;
   private Object data;
   private Map keyedData;
+  private AdapterManager adapterManager;
+  private WidgetAdapter widgetAdapter;
 
   Widget() {
     // prevent instantiation from outside this package
@@ -70,8 +73,23 @@ public abstract class Widget implements Adaptable {
         eventAdapter = new EventAdapter();
       }
       result = eventAdapter;
+    } else if( adapter == IWidgetAdapter.class ) {
+      // TODO: [fappel] this is done for performance improvement and replaces
+      //                the lookup in WidgetAdapterFactory. Since this is still
+      //                a matter of investigation WidgetAdapterFactory is not 
+      //                changed yet.
+      if( widgetAdapter == null ) {
+        widgetAdapter = new WidgetAdapter();
+      }
+      result = widgetAdapter;
     } else {
-      result = W4TContext.getAdapterManager().getAdapter( this, adapter );
+      // TODO: [fappel] buffer the adapterManager for performance improvement.
+      //                Note: this is still a matter of investigation since
+      //                we improve cpu time on cost of memory consumption.
+      if( adapterManager == null ) {
+        adapterManager = W4TContext.getAdapterManager();
+      }
+      result = adapterManager.getAdapter( this, adapter );
     }
     return result;
   }
@@ -146,6 +164,7 @@ public abstract class Widget implements Adaptable {
       releaseChildren();
       releaseParent();
       releaseWidget();
+      adapterManager = null;
       disposed = true;
     }
   }

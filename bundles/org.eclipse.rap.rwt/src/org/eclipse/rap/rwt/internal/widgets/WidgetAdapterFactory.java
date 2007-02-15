@@ -11,8 +11,8 @@
 
 package org.eclipse.rap.rwt.internal.widgets;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 import org.eclipse.rap.rwt.widgets.Display;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.AdapterFactory;
@@ -30,17 +30,22 @@ public final class WidgetAdapterFactory implements AdapterFactory {
 
   // Map keeping the association between extensions and a set of objects. 
   // Key: Object (adaptable), value: IWidgetAdapter (adapter).
-  private final Map map = new WeakHashMap();
+  private final Map map = new HashMap();
 
   public Object getAdapter( final Object adaptable, final Class adapter ) {
+    // Note [fappel]: Since this code is performance critical, don't change
+    //                anything without checking it against a profiler.
     Object result = null;
     if (   ( adaptable instanceof Display || adaptable instanceof Widget ) 
          && adapter == IWidgetAdapter.class ) 
     {
-      result = map.get( adaptable );
-      if ( result == null ) {
+      // [fappel] We use a hash as key to avoid using WeakHashMap, which doesn't
+      //          perform as well as a simple HashMap.
+      Integer hash = new Integer( adaptable.hashCode() );
+      result = map.get( hash );
+      if( result == null ) {
         result = new WidgetAdapter();
-        map.put( adaptable, result );
+        map.put( hash, result );
       }
     }
     return result;

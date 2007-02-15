@@ -83,7 +83,10 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   private static synchronized ILifeCycleAdapter getWidgetLCA( 
     final Class clazz ) 
   {
-    if( !widgetAdapters.containsKey( clazz ) ) {
+    // Note [fappel]: Since this code is performance critical, don't change
+    //                anything without checking it against a profiler.
+    ILifeCycleAdapter result = ( ILifeCycleAdapter )widgetAdapters.get( clazz );
+    if( result == null ) {
       ILifeCycleAdapter adapter = null;
       Class superClass = clazz;
       while( !Object.class.equals( superClass ) && adapter == null ) {
@@ -93,8 +96,8 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
         }
       }
       widgetAdapters.put( clazz, adapter );
+      result = adapter;
     }
-    ILifeCycleAdapter result = ( ILifeCycleAdapter )widgetAdapters.get( clazz );
     if( result == null ) {
       String text = "Failed to obtain life cycle adapter for class ''{0}\''.";
       Object[] params = new Object[]{ clazz.getName() };

@@ -91,6 +91,7 @@ public class RWTLifeCycle extends LifeCycle {
   private void initialize() {
     if( ContextProvider.getSession().getAttribute( INITIALIZED ) == null ) {
       AdapterFactoryRegistry.register();
+      ContextProvider.getSession().setAttribute( INITIALIZED, Boolean.TRUE );
     }    
   }
 
