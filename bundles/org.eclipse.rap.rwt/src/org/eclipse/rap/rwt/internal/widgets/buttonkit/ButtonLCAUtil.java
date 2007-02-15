@@ -54,7 +54,10 @@ final class ButtonLCAUtil {
   
   static void writeText( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, button.getText(), "" );
+    
+    if( WidgetLCAUtil.hasChanged( button, Props.TEXT, button.getText(), "" ) ) {
+      writer.set( JSConst.QX_FIELD_LABEL, processMnemonics( button.getText() ) );      
+    }
   }
 
   static void writeImage( final Button button ) throws IOException {
@@ -103,5 +106,12 @@ final class ButtonLCAUtil {
     Boolean defValue = Boolean.FALSE;
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.set( PROP_SELECTION, JSConst.QX_FIELD_CHECKED, newValue, defValue );
+  }
+  
+  private static String processMnemonics( String input ) {
+    // TODO [rst] Change replacement to "$1<u>$2</u>" when we support
+    // client-side mnemonics
+    return input.replaceAll( "(^|[^&])&(\\p{Alnum})", "$1$2" )
+      .replaceAll( "&&", "&" );
   }
 }

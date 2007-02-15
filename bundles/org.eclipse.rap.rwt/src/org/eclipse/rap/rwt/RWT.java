@@ -80,6 +80,37 @@ public class RWT {
   public static final int SHADOW_OUT = 1 << 3;
   public static final int SHADOW_NONE = 1 << 5;
 
+  // Dialog Icons
+
+  /**
+   * The <code>MessageBox</code> style constant for error icon
+   * behavior (value is 1).
+   */
+  public static final int ICON_ERROR = 1;
+
+  /**
+   * The <code>MessageBox</code> style constant for information icon
+   * behavior (value is 1&lt;&lt;1).
+   */
+  public static final int ICON_INFORMATION = 1 << 1;
+
+  /**
+   * The <code>MessageBox</code> style constant for question icon
+   * behavior (value is 1&lt;&lt;2).
+   */
+  public static final int ICON_QUESTION = 1 << 2;
+
+  /**
+   * The <code>MessageBox</code> style constant for warning icon
+   * behavior (value is 1&lt;&lt;3).
+   */
+  public static final int ICON_WARNING = 1 << 3;
+
+  /**
+   * The <code>MessageBox</code> style constant for "working" icon
+   * behavior (value is 1&lt;&lt;4).
+   */
+  public static final int ICON_WORKING = 1 << 4;
 
   // Font style constants
   /**

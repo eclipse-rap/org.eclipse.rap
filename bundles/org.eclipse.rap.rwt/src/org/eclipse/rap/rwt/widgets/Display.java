@@ -35,6 +35,16 @@ public class Display implements Adaptable {
     = "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", " 
     + "sans-serif";
 
+  private static final String ICON_PATH = "resource/widget/rap/dialog";
+  
+  private static final String ERROR_IMAGE_PATH = ICON_PATH + "/error.png";
+
+  private static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";
+
+  private static final String QUESTION_IMAGE_PATH = ICON_PATH + "/question.png";
+
+  private static final String WARNING_IMAGE_PATH = ICON_PATH + "/warning.png";
+
   public static Display getCurrent() {
     return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
   }
@@ -44,6 +54,11 @@ public class Display implements Adaptable {
   private Rectangle bounds;
   private Shell activeShell;
   private IDisplayAdapter displayAdapter;
+
+  private Image errorImage;
+  private Image infoImage;
+  private Image questionImage;
+  private Image warningImage;
 
   public Display() {
     HttpSession session = ContextProvider.getSession();
@@ -125,6 +140,43 @@ public class Display implements Adaptable {
   
   public Font getSystemFont() {
     return systemFont;
+  }
+  
+  public Image getSystemImage( int id ) {
+    ClassLoader classLoader = getClass().getClassLoader();
+    Image result = null;
+    switch( id ) {
+      case RWT.ICON_ERROR: {
+        if( errorImage == null ) {
+          errorImage = Image.find( ERROR_IMAGE_PATH, classLoader );
+        }
+        result = errorImage;
+        break;
+      }
+      case RWT.ICON_WORKING:
+      case RWT.ICON_INFORMATION: {
+        if( infoImage == null ) {
+          infoImage = Image.find( INFO_IMAGE_PATH, classLoader );
+        }
+        result = infoImage;
+        break;
+      }
+      case RWT.ICON_QUESTION: {
+        if( questionImage == null ) {
+          questionImage = Image.find( QUESTION_IMAGE_PATH, classLoader );
+        }
+        result = questionImage;
+        break;
+      }
+      case RWT.ICON_WARNING: {
+        if( warningImage == null ) {
+          warningImage = Image.find( WARNING_IMAGE_PATH, classLoader );
+        }
+        result = warningImage;
+        break;
+      }
+    }
+    return result;
   }
   
   public Point map( final Control from, final Control to, final Point point ) {

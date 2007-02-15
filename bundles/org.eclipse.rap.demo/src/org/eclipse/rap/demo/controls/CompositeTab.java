@@ -9,7 +9,6 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.layout.FillLayout;
 import org.eclipse.rap.rwt.widgets.Composite;
 import org.eclipse.rap.rwt.widgets.TabFolder;
@@ -23,14 +22,13 @@ public class CompositeTab extends ExampleTab {
   protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createVisibilityButton();
+    createBgColorButton();
   }
 
   protected void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
     int style = getStyle();
     final Composite comp = new Composite( top, style );
-    Color bgColor = Color.getColor( 240, 250, 190 );
-    comp.setBackground( bgColor );
     registerControl( comp );
   }
 }

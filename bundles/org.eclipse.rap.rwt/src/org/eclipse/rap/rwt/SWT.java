@@ -73,6 +73,11 @@ public class SWT {
   public static final int SHADOW_IN = 1 << 2;
   public static final int SHADOW_OUT = 1 << 3;
   public static final int SHADOW_NONE = 1 << 5;
+  public static final int ICON_ERROR = 1;
+  public static final int ICON_INFORMATION = 1 << 1;
+  public static final int ICON_QUESTION = 1 << 2;
+  public static final int ICON_WARNING = 1 << 3;
+  public static final int ICON_WORKING = 1 << 4;
   public static final int NORMAL = 0;
   public static final int BOLD = 1 << 0;
   public static final int ITALIC = 1 << 1;

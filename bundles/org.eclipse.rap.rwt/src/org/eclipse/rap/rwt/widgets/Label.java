@@ -110,8 +110,8 @@ public class Label extends Control {
     } else if( ( image != null ) ) {
       // TODO [rst] obtain image bounds
       // Rectangle rect = image.getBounds();
-      width = 16;
-      height = 16;
+      width = 32;
+      height = 32;
     } else if( ( text.length() > 0 ) ) {
       int wrapWidth = 0;
       if( ( style & RWT.WRAP ) != 0 && wHint != RWT.DEFAULT ) {

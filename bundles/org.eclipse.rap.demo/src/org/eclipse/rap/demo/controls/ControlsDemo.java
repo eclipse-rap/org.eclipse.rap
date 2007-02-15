@@ -37,21 +37,21 @@ public class ControlsDemo implements IEntryPoint {
     ExampleTab tab = new ButtonTab( topFolder );
     tab.createContents();
 //    tab = new CBannerTab( topFolder );
-//    tab.init();
+//    tab.createContents();
     tab = new ComboTab( topFolder );
     tab.createContents();
     tab = new CompositeTab( topFolder );
     tab.createContents();
     tab = new CoolBarTab( topFolder );
     tab.createContents();
-//    tab = new DialogsTab( topFolder );
-//    tab.init();
+    tab = new DialogsTab( topFolder );
+    tab.createContents();
     tab = new LabelTab( topFolder );
     tab.createContents();
     tab = new ListTab( topFolder );
     tab.createContents();
 //    tab = new SashTab( topFolder );
-//    tab.init();
+//    tab.createContents();
     tab = new SashFormTab( topFolder );
     tab.createContents();
     tab = new ShellTab( topFolder );
@@ -68,8 +68,9 @@ public class ControlsDemo implements IEntryPoint {
     tab.createContents();
     tab = new BrowserTab( topFolder );
     tab.createContents();
-    tab = new GroupTab( topFolder );
-    tab.createContents();
+//    TODO [rst] We don't need this tab anymore, since Groups are displayed all over
+//    tab = new GroupTab( topFolder );
+//    tab.createContents();
     tab = new ContainmentTab( topFolder );
     tab.createContents();
     tab = new ZOrderTab( topFolder );

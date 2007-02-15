@@ -71,6 +71,35 @@ public class Shell extends Composite {
     return this;
   }
 
+  /*
+   * Returns an array containing all shells which are descendents of the
+   * receiver.
+   */
+  public Shell [] getShells () {
+    checkWidget ();
+    int count = 0;
+    Shell [] shells = display.getShells ();
+    for (int i=0; i<shells.length; i++) {
+        Control shell = shells[i];
+        do {
+            shell = shell.getParent();
+        } while (shell != null && shell != this);
+        if (shell == this) count++;
+    }
+    int index = 0;
+    Shell [] result = new Shell [count];
+    for (int i=0; i<shells.length; i++) {
+        Control shell = shells [i];
+        do {
+            shell = shell.getParent();
+        } while (shell != null && shell != this);
+        if (shell == this) {
+            result [index++] = shells [i];
+        }
+    }
+    return result;
+  }
+
   public final Display getDisplay() {
     return display;
   }

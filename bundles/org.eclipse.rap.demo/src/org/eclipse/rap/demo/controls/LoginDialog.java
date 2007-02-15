@@ -11,39 +11,50 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.jface.dialogs.Dialog;
+import org.eclipse.rap.jface.dialogs.IDialogConstants;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.layout.*;
+import org.eclipse.rap.rwt.layout.GridData;
+import org.eclipse.rap.rwt.layout.GridLayout;
 import org.eclipse.rap.rwt.widgets.*;
 
-public class LoginDialog {
+public class LoginDialog extends Dialog {
 
-  private static final int STYLE = RWT.DIALOG_TRIM
-                                 | RWT.APPLICATION_MODAL
-                                 | RWT.RESIZE;
-  private final Shell shell;
+  private static final int LOGIN_ID = IDialogConstants.CLIENT_ID + 1;
   private Text userText;
   private Text passText;
   private Label mesgLabel;
-  private Button loginButton;
+  private String title;
+  private String message;
+  private String username;
+  private String password;
 
-  public LoginDialog( final Shell parent ) {
-    shell = new Shell( parent, STYLE );
-    create();
+  public LoginDialog( final Shell parent,
+                       final String title,
+                       final String message,
+                       final String defaultUsername ) {
+    super( parent );
+    this.title = title;
+    this.message = message;
+    this.username = defaultUsername;
   }
-
-  public LoginDialog( final Display display ) {
-    shell = new Shell( display, STYLE );
-    create();
+  
+  protected void createButtonsForButtonBar( Composite parent ) {
+    createButton( parent,
+                  LOGIN_ID,
+                  "Login",
+                  true );
   }
-
-  private void create() {
+  
+  protected Control createDialogArea( Composite parent ) {
+    // create composite
+    Composite composite = (Composite) super.createDialogArea( parent );
     GridLayout gridLayout = new GridLayout();
     gridLayout.numColumns = 2;
-    shell.setBounds( 100, 100, 300, 200 );
-    shell.setLayout( gridLayout );
+    composite.setLayout( gridLayout );
+    
     // message label
-    mesgLabel = new Label( shell, RWT.NONE );
+    mesgLabel = new Label( composite, RWT.NONE );
     GridData data = new GridData();
     data.horizontalAlignment = GridData.CENTER;
     data.verticalAlignment = GridData.CENTER;
@@ -51,80 +62,66 @@ public class LoginDialog {
     data.widthHint = 280;
     data.heightHint = 25;
     mesgLabel.setLayoutData( data );
+    if( message != null ) {
+      mesgLabel.setText( message );
+    }
+
     // user label and input field
-    Label userLabel = new Label( shell, RWT.NONE );
+    Label userLabel = new Label( composite, RWT.NONE );
     userLabel.setText( "Username:" );
     data = new GridData();
     data.widthHint = 60;
     data.heightHint = 20;
     data.verticalAlignment = GridData.CENTER;
     userLabel.setLayoutData( data );
-    userText = new Text( shell, RWT.BORDER );
+    userText = new Text( composite, RWT.BORDER );
     data = new GridData( GridData.FILL_HORIZONTAL );
     data.heightHint = 20;
     userText.setLayoutData( data );
+    if( username != null ) {
+      userText.setText( username );
+    }
+    
     // password label and input field
-    Label passLabel = new Label( shell, RWT.NONE );
+    Label passLabel = new Label( composite, RWT.NONE );
     passLabel.setText( "Password:" );
     data = new GridData();
     data.widthHint = 60;
     data.heightHint = 20;
     data.verticalAlignment = GridData.CENTER;
-    passText = new Text( shell, RWT.BORDER | RWT.PASSWORD );
+    passText = new Text( composite, RWT.BORDER | RWT.PASSWORD );
     passLabel.setLayoutData( data );
     data = new GridData( GridData.FILL_HORIZONTAL );
     data.heightHint = 20;
     passText.setLayoutData( data );
-    loginButton = new Button( shell, RWT.PUSH );
-    loginButton.setText( "Login" );
-//    TODO
-//    shell.setDefaultButton( loginButton );
-    data = new GridData();
-    data.horizontalAlignment = GridData.END;
-    data.verticalAlignment = GridData.END;
-    data.horizontalSpan = 2;
-    data.widthHint = 100;
-    data.heightHint = 25;
-    loginButton.setLayoutData( data );
-  }
-  
-  public void setCallback( final Runnable callback ) {
-    loginButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
-        callback.run();
-        shell.close();
-      }
-    } );
+
+    return composite;
   }
 
-  public void open() {
-    shell.layout();
-    shell.open();
+  protected void configureShell( final Shell shell ) {
+    super.configureShell( shell );
+    if ( title != null ) {
+      shell.setText( title );
+    }
   }
 
-  public void close() {
-    shell.close();
+  protected void buttonPressed( final int buttonId ) {
+    if( buttonId == LOGIN_ID ) {
+      username = userText.getText();
+      password = passText.getText();
+      setReturnCode( OK );
+      close();
+    } else {
+      password = null;
+    }
+    super.buttonPressed( buttonId );
   }
-  
+
   public String getPassword() {
-    String result = passText.getText();
-    return "null".equals(result)? "" : result.trim();
-  }
-
-  public void setUsername( final String username ) {
-    userText.setText( username );
+    return password;
   }
 
   public String getUsername() {
-    String result = userText.getText();
-    return "null".equals(result)? "" : result.trim();
-  }
-  
-  public void setMessage( final String message ) {
-    mesgLabel.setText( message );
-  }
-
-  public void setTitle( final String title ) {
-    shell.setText( title );
+    return username;
   }
 }
