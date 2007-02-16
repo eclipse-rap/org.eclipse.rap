@@ -15,8 +15,7 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.custom.SashForm;
 import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.graphics.Font;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -38,7 +37,7 @@ abstract class ExampleTab {
   private boolean enabled = true;
   private Text text;
   private StringBuffer content = new StringBuffer();
-  private FontChooser fontChooser;
+  private SimpleFontDialog fontChooser;
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
   private int defaultStyle = RWT.NONE;
@@ -276,16 +275,24 @@ abstract class ExampleTab {
     return button;
   }
   
-  protected void createFontChooser() {
-    fontChooser = new FontChooser( styleComp );
+  protected Button createFontChooser() {
+    fontChooser = new SimpleFontDialog( getShell() );
     Control control = ( Control )controls.get( 0 );
     fontChooser.setFont( control.getFont() );
-    fontChooser.setChangeRunnable( new Runnable() {
-      public void run() {
-        font = fontChooser.getFont();
-        updateFont();
+    final Button button = new Button( styleComp, RWT.PUSH );
+    button.setText( "Font" );
+    button.setLayoutData( new RowData( 100, 20 ) );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        fontChooser.open( new Runnable() {
+          public void run() {
+            font = fontChooser.getFont();
+            updateFont();            
+          }
+        } );
       }
     } );
+    return button;
   }
 
   /**

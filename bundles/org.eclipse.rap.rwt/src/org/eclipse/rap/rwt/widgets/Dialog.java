@@ -12,9 +12,9 @@ import org.eclipse.rap.rwt.RWT;
 
 public abstract class Dialog {
 
-  private int style;
-  private Shell parent;
-  private String title;
+  protected int style;
+  protected Shell parent;
+  protected String title;
 
   public Dialog( final Shell parent ) {
     this( parent, RWT.APPLICATION_MODAL );
