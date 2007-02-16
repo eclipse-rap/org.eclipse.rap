@@ -19,6 +19,7 @@ qx.ui.treefullcontrol.Tree? ...tree.Tree seems not able to hide the root node,
 that's right?
 
 6.) TextArea doesn't accept the wrap attribute
+    --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=300
 
 7.) Color settings for table component are static contstants
 
