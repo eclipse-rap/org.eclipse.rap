@@ -51,6 +51,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     ButtonLCAUtil.writeText( button );
     ButtonLCAUtil.writeAlignment( button );
     ButtonLCAUtil.writeImage( button );
+    ButtonLCAUtil.writeDefault( button );
   }
 
   void renderDispose( final Button button ) throws IOException {

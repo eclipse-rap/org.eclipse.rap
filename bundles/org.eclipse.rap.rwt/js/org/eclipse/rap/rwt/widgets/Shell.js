@@ -21,8 +21,12 @@ qx.OO.defineClass(
     this._activateListenerWidgets = new Array();
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeActive", this._onChangeActive );
+    this.addEventListener( "keydown", this._onKeydown );    
   }
 );
+
+qx.OO.addProperty( { name : "defaultButton",
+                     type : "object" } );
 
 qx.Proto.setActiveControl = function( control ) {
   this._activeControl = control;  
@@ -122,6 +126,19 @@ qx.Proto._onChangeActive = function( evt ) {
   this._restoreButton.setState( "active", active );
   this._closeButton.setState( "active", active );
 }
+
+qx.Proto._onKeydown = function( evt ) {
+  if( evt.getKeyIdentifier() == "Enter" ) {
+    var defButton = this.getDefaultButton();
+    if( defButton != null ) {
+    	defButton.execute();
+    }
+  }
+}
+
+//qx.Proto.setDefaultButton = function( widget ) {
+//  this._defaultButton = widget;
+//}
 
 /**
  * Returns the parent Control for the given widget. If widget is a Control 

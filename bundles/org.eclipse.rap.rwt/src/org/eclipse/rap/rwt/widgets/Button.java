@@ -36,6 +36,7 @@ public class Button extends Control {
   private String text = "";
   private boolean selected = false;
   private Image image;
+  private boolean isDefault;
 
   public Button( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
@@ -73,6 +74,14 @@ public class Button extends Control {
     if( ( style & ( RWT.CHECK | RWT.RADIO | RWT.TOGGLE ) ) != 0 ) {
       this.selected = selected;
     }
+  }
+  
+  void setDefault( final boolean value ) {
+    isDefault = value;
+  }
+  
+  boolean getDefault() {
+    return isDefault;
   }
   
   public Image getImage() {

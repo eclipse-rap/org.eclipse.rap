@@ -26,8 +26,10 @@ final class ButtonLCAUtil {
 
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_SELECTION = "selection";
+  private static final String PROP_DEFAULT = "defaultButton";
 
   private static final Integer DEFAULT_ALIGNMENT = new Integer( RWT.CENTER );
+
   
   private ButtonLCAUtil() {
     // prevent instantiation
@@ -50,6 +52,7 @@ final class ButtonLCAUtil {
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
     adapter.preserve( PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
+    adapter.preserve( PROP_DEFAULT, new Boolean( isDefaultButton( button ) ) );
   }
   
   static void writeText( final Button button ) throws IOException {
@@ -106,6 +109,22 @@ final class ButtonLCAUtil {
     Boolean defValue = Boolean.FALSE;
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.set( PROP_SELECTION, JSConst.QX_FIELD_CHECKED, newValue, defValue );
+  }
+  
+  static void writeDefault( Button button ) throws IOException {
+    boolean isDefault = isDefaultButton( button );
+    Boolean defValue = Boolean.valueOf( false );
+    Boolean actValue = Boolean.valueOf( isDefault );
+    if( WidgetLCAUtil.hasChanged( button, PROP_DEFAULT, actValue, defValue ) ) {
+      if( isDefault ) {
+        JSWriter writer = JSWriter.getWriterFor( button.getShell() );
+        writer.set( "defaultButton", new Object[] { button } );        
+      }
+    }
+  }
+  
+  private static boolean isDefaultButton( final Button button ) {
+    return button.getShell().getDefaultButton() == button;
   }
   
   private static String processMnemonics( String input ) {

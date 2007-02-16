@@ -37,6 +37,8 @@ public class Shell extends Composite {
   private IShellAdapter shellAdapter;
   private String text = "";
   private Image image;
+  private Button defaultButton;
+  private Button saveDefault;
 
   public Shell( final Display display ) {
     this( display, RWT.SHELL_TRIM );
@@ -353,7 +355,7 @@ public class Shell extends Composite {
     }
     return result;
   }
-
+  
   /* TODO [rst] move to Decorations as soon as it exists */
   public void setImage( Image image ) {
     checkWidget();
@@ -364,6 +366,62 @@ public class Shell extends Composite {
   public Image getImage () {
     checkWidget();
     return image;
+  }
+  
+  ///////////////////
+  // methods for default button
+  
+  // TODO [rst] move to class Decorations as soon as it exists
+  public void setDefaultButton( final Button button ) {
+    checkWidget();
+    if( button != null ) {
+      if( button.isDisposed() ) {
+        error( RWT.ERROR_INVALID_ARGUMENT );
+      }
+//      TODO
+//      if( button.menuShell() != this ) {
+      if( button.getShell() != this ) {
+        error( RWT.ERROR_INVALID_PARENT );
+      }
+    }
+    setDefaultButton( button, true );
+  }
+
+  // TODO [rst] move to class Decorations as soon as it exists
+  void setDefaultButton( final Button button, final boolean save ) {
+    if( button == null ) {
+      if( defaultButton == saveDefault ) {
+        if( save )
+          saveDefault = null;
+        return;
+      }
+    } else {
+      if( ( button.getStyle() & RWT.PUSH ) == 0 )
+        return;
+      if( button == defaultButton )
+        return;
+    }
+    
+    if( defaultButton != null ) {
+      if( !defaultButton.isDisposed() )
+        defaultButton.setDefault( false );
+    }
+    if( ( defaultButton = button ) == null )
+      defaultButton = saveDefault;
+    if( defaultButton != null ) {
+      if( !defaultButton.isDisposed() )
+        defaultButton.setDefault( true );
+    }
+    if( save )
+      saveDefault = defaultButton;
+    if( saveDefault != null && saveDefault.isDisposed() )
+      saveDefault = null;
+  }
+
+  // TODO [rst] move to class Decorations as soon as it exists
+  public Button getDefaultButton () {
+    checkWidget ();
+    return defaultButton;
   }
 
   ///////////////////
