@@ -31,8 +31,8 @@ public class ScrollBar extends Widget {
 
   // TODO [rh] scroll bar size could be determined in index.html and be held 
   //      individually per session
-  private static final int SCROLL_BAR_WIDTH = 16;
-  private static final int SCROLL_BAR_HEIGHT = 16;
+  static final int SCROLL_BAR_WIDTH = 16;
+  static final int SCROLL_BAR_HEIGHT = 16;
 
   private final Scrollable parent;
   private int thumb;

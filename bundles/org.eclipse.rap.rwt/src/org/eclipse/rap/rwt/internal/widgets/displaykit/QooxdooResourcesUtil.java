@@ -92,6 +92,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/WidgetTheme.js";
   private static final String TEXT_UTIL_JS
     = "org/eclipse/rap/rwt/TextUtil.js";
+  private static final String SPINNER_JS
+  = "org/eclipse/rap/rwt/widgets/spinner.js";
   
   private static final String QX_CONSTANT_CORE_JS
     = "qx/constant/Core.js";
@@ -171,6 +173,7 @@ final class QooxdooResourcesUtil {
       register( GROUP_JS );
       register( WIDGET_THEME_JS );
       register( TEXT_UTIL_JS );
+      register( SPINNER_JS );
     } finally {
       manager.setContextLoader( bufferedLoader );
     }

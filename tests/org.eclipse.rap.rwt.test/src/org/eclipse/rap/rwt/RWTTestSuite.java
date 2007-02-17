@@ -32,6 +32,7 @@ import org.eclipse.rap.rwt.internal.widgets.listkit.ListLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.menukit.MenuLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.sashkit.SashLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.shellkit.ShellLCA_Test;
+import org.eclipse.rap.rwt.internal.widgets.spinnerkit.SpinnerLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.tablekit.TableLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.textkit.TextLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.treeitemkit.TreeItemLCA_Test;
@@ -97,6 +98,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Label_Test.class );
     suite.addTestSuite( Browser_Test.class );
     suite.addTestSuite( Group_Test.class );
+    suite.addTestSuite( Spinner_Test.class );
     
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );
@@ -118,6 +120,7 @@ public class RWTTestSuite {
     suite.addTestSuite( CTabFolderLCA_Test.class );
     suite.addTestSuite( CoolBarLCA_Test.class );
     suite.addTestSuite( ListLCA_Test.class );
+    suite.addTestSuite( SpinnerLCA_Test.class );
     return suite;
   }
 }

@@ -1739,10 +1739,14 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     initial : function(vTheme) {
       return {
-        width : 60,
-        height : 22,
-        border : qx.renderer.border.BorderPresets.getInstance().inset,
         backgroundColor : this.bgcolor
+      }
+    },
+    state : function( vTheme, vStates ) {
+      return {
+        border : vStates.rwt_BORDER
+               ? qx.renderer.border.BorderPresets.getInstance().inset 
+               : qx.renderer.border.BorderPresets.getInstance().none
       }
     }
   },
@@ -1768,14 +1772,17 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         backgroundColor: new qx.renderer.color.ColorObject("#ece9d8")
       });
     },
-
     state : function(vTheme, vStates) {
-      return qx.lang.Object.mergeWith(vTheme.stateFrom("button", vStates), {
+      var vReturn = qx.lang.Object.mergeWith(vTheme.stateFrom("button", vStates), {
         paddingTop : 0,
         paddingRight : 0,
         paddingBottom: 0,
         paddingLeft : 3
-      });
+      } );
+      if( vStates.rwt_FLAT ) {
+        vReturn.border = qx.renderer.border.BorderPresets.getInstance().none;
+      }
+      return vReturn;
     }
   },
 
@@ -1787,20 +1794,19 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         backgroundColor: new qx.renderer.color.ColorObject("#ece9d8")
       });
     },
-
     state : function(vTheme, vStates) {
-      return qx.lang.Object.mergeWith(vTheme.stateFrom("button", vStates), {
-        paddingTop : 1,
+      var vReturn = qx.lang.Object.mergeWith(vTheme.stateFrom("button", vStates), {
+        paddingTop : 0,
         paddingRight : 0,
         paddingBottom: 0,
         paddingLeft : 3
-      });
+      } );
+      if( vStates.rwt_FLAT ) {
+        vReturn.border = qx.renderer.border.BorderPresets.getInstance().none;
+      }
+      return vReturn;
     }
   },
-
-
-
-
 
   /*
   ---------------------------------------------------------------------------
