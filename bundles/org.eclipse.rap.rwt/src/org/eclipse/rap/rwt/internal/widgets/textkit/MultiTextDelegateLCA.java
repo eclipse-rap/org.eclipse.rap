@@ -40,8 +40,8 @@ class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
   }
 
   void renderChanges( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
     ControlLCAUtil.writeChanges( text );
+    JSWriter writer = JSWriter.getWriterFor( text );
     writer.set( TextLCAUtil.PROP_TEXT, "value", text.getText(), "" );
   }
   

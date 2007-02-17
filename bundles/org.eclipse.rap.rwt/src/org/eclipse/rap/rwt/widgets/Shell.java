@@ -77,27 +77,29 @@ public class Shell extends Composite {
    * Returns an array containing all shells which are descendents of the
    * receiver.
    */
-  public Shell [] getShells () {
-    checkWidget ();
+  public Shell [] getShells() {
+    checkWidget();
     int count = 0;
-    Shell [] shells = display.getShells ();
-    for (int i=0; i<shells.length; i++) {
-        Control shell = shells[i];
-        do {
-            shell = shell.getParent();
-        } while (shell != null && shell != this);
-        if (shell == this) count++;
+    Shell[] shells = display.getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      Control shell = shells[ i ];
+      do {
+        shell = shell.getParent();
+      } while( shell != null && shell != this );
+      if( shell == this ) {
+        count++;
+      }
     }
     int index = 0;
-    Shell [] result = new Shell [count];
-    for (int i=0; i<shells.length; i++) {
-        Control shell = shells [i];
-        do {
-            shell = shell.getParent();
-        } while (shell != null && shell != this);
-        if (shell == this) {
-            result [index++] = shells [i];
-        }
+    Shell[] result = new Shell[ count ];
+    for( int i = 0; i < shells.length; i++ ) {
+      Control shell = shells[ i ];
+      do {
+        shell = shell.getParent();
+      } while( shell != null && shell != this );
+      if( shell == this ) {
+        result[ index++ ] = shells[ i ];
+      }
     }
     return result;
   }
@@ -129,7 +131,7 @@ public class Shell extends Composite {
   /* 
    * TODO [rst] Move to class Decorations, as soon as it exists
    */
-  public Rectangle computeTrim( int x, int y, int width, int height ) {
+  public Rectangle computeTrim( final int x, final int y, final int width, final int height ) {
     checkWidget();
     int hTitleBar = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT : 0;
     if( getMenuBar() != null ) {
@@ -145,6 +147,7 @@ public class Shell extends Composite {
   }
   
   public int getBorderWidth() {
+    checkWidget();
     return ( style & ( RWT.BORDER | RWT.TITLE ) ) != 0 ? 2 : 1;
   }
 
@@ -159,6 +162,7 @@ public class Shell extends Composite {
   // MenuBar
   
   public void setMenuBar( final Menu menuBar ) {
+    checkWidget();
     if( this.menuBar != menuBar ) {
       if( menuBar != null ) {
         if( menuBar.isDisposed() ) {
@@ -178,6 +182,7 @@ public class Shell extends Composite {
   }
 
   public Menu getMenuBar() {
+    checkWidget();
     return menuBar;
   }
 
@@ -232,17 +237,21 @@ public class Shell extends Composite {
   }
 
   public void close() {
+    checkWidget();
     ShellEvent shellEvent = new ShellEvent( this, ShellEvent.SHELL_CLOSED );
     shellEvent.processEvent();
     dispose();
   }
 
-  public void setText( final String string ) {
+  ///////////////////////////
+  // Title bar text and image
+  
+  public void setText( final String text ) {
     checkWidget();
-    if( string == null ) {
-      error (RWT.ERROR_NULL_ARGUMENT );
+    if( text == null ) {
+      error( RWT.ERROR_NULL_ARGUMENT );
     }
-    this.text = string;
+    this.text = text;
   }
   
   public String getText() {
@@ -250,7 +259,80 @@ public class Shell extends Composite {
     return text;
   }
 
-  // ///////////////////////////////////////////////
+  /* TODO [rst] move to Decorations as soon as it exists */
+  public void setImage( final Image image ) {
+    checkWidget();
+    this.image = image;
+  }
+  
+  /* TODO [rst] move to Decorations as soon as it exists */
+  public Image getImage () {
+    checkWidget();
+    return image;
+  }
+  
+  //////////////////////////////
+  // Methods for default button
+  
+  // TODO [rst] move to class Decorations as soon as it exists
+  public void setDefaultButton( final Button button ) {
+    checkWidget();
+    if( button != null ) {
+      if( button.isDisposed() ) {
+        error( RWT.ERROR_INVALID_ARGUMENT );
+      }
+      if( button.getShell() != this ) {
+        error( RWT.ERROR_INVALID_PARENT );
+      }
+    }
+    setDefaultButton( button, true );
+  }
+
+  // TODO [rst] move to class Decorations as soon as it exists
+  void setDefaultButton( final Button button, final boolean save ) {
+    if( button == null ) {
+      if( defaultButton == saveDefault ) {
+        if( save ) {
+          saveDefault = null;
+        }
+        return;
+      }
+    } else {
+      if( ( button.getStyle() & RWT.PUSH ) == 0 ) {
+        return;
+      }
+      if( button == defaultButton ) {
+        return;
+      }
+    }
+    if( defaultButton != null ) {
+      if( !defaultButton.isDisposed() ) {
+        defaultButton.setDefault( false );
+      }
+    }
+    if( ( defaultButton = button ) == null ) {
+      defaultButton = saveDefault;
+    }
+    if( defaultButton != null ) {
+      if( !defaultButton.isDisposed() ) {
+        defaultButton.setDefault( true );
+      }
+    }
+    if( save ) {
+      saveDefault = defaultButton;
+    }
+    if( saveDefault != null && saveDefault.isDisposed() ) {
+      saveDefault = null;
+    }
+  }
+
+  // TODO [rst] move to class Decorations as soon as it exists
+  public Button getDefaultButton() {
+    checkWidget();
+    return defaultButton;
+  }
+
+  /////////////////////////////////////////////////
   // Event listener registration and deregistration
   
   public void addShellListener( final ShellListener listener ) {
@@ -261,7 +343,7 @@ public class Shell extends Composite {
     ShellEvent.removeListener( this, listener );
   }
 
-  // //////////
+  /////////////
   // Overrides
   
   protected final void releaseParent() {
@@ -272,7 +354,7 @@ public class Shell extends Composite {
     removeMenuBarDisposeListener();
   }
 
-  // ///////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menuBar
   
   private void addMenuBarDisposeListener() {
@@ -356,74 +438,6 @@ public class Shell extends Composite {
     return result;
   }
   
-  /* TODO [rst] move to Decorations as soon as it exists */
-  public void setImage( Image image ) {
-    checkWidget();
-    this.image = image;
-  }
-  
-  /* TODO [rst] move to Decorations as soon as it exists */
-  public Image getImage () {
-    checkWidget();
-    return image;
-  }
-  
-  ///////////////////
-  // methods for default button
-  
-  // TODO [rst] move to class Decorations as soon as it exists
-  public void setDefaultButton( final Button button ) {
-    checkWidget();
-    if( button != null ) {
-      if( button.isDisposed() ) {
-        error( RWT.ERROR_INVALID_ARGUMENT );
-      }
-//      TODO
-//      if( button.menuShell() != this ) {
-      if( button.getShell() != this ) {
-        error( RWT.ERROR_INVALID_PARENT );
-      }
-    }
-    setDefaultButton( button, true );
-  }
-
-  // TODO [rst] move to class Decorations as soon as it exists
-  void setDefaultButton( final Button button, final boolean save ) {
-    if( button == null ) {
-      if( defaultButton == saveDefault ) {
-        if( save )
-          saveDefault = null;
-        return;
-      }
-    } else {
-      if( ( button.getStyle() & RWT.PUSH ) == 0 )
-        return;
-      if( button == defaultButton )
-        return;
-    }
-    
-    if( defaultButton != null ) {
-      if( !defaultButton.isDisposed() )
-        defaultButton.setDefault( false );
-    }
-    if( ( defaultButton = button ) == null )
-      defaultButton = saveDefault;
-    if( defaultButton != null ) {
-      if( !defaultButton.isDisposed() )
-        defaultButton.setDefault( true );
-    }
-    if( save )
-      saveDefault = defaultButton;
-    if( saveDefault != null && saveDefault.isDisposed() )
-      saveDefault = null;
-  }
-
-  // TODO [rst] move to class Decorations as soon as it exists
-  public Button getDefaultButton () {
-    checkWidget ();
-    return defaultButton;
-  }
-
   ///////////////////
   // check... methods
   

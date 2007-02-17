@@ -19,12 +19,6 @@ import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 
 /**
  * TODO: [fappel] comment
- * 
- * <p>Current known limitations:</p>
- * <ul><li>Font property does not have any effect client side</li>
- * <li>Check- and radio button do not change ther selection state when there
- * is no SelectionListener registered.</li>
- * </ul>
  */
 public class Button extends Control {
 
@@ -33,8 +27,9 @@ public class Button extends Control {
   private static final int CHECK_WIDTH = 13;
   // Height of checkboxes and radiobuttons
   private static final int CHECK_HEIGHT = 13;
+
   private String text = "";
-  private boolean selected = false;
+  private boolean selected;
   private Image image;
   private boolean isDefault;
 
@@ -74,14 +69,6 @@ public class Button extends Control {
     if( ( style & ( RWT.CHECK | RWT.RADIO | RWT.TOGGLE ) ) != 0 ) {
       this.selected = selected;
     }
-  }
-  
-  void setDefault( final boolean value ) {
-    isDefault = value;
-  }
-  
-  boolean getDefault() {
-    return isDefault;
   }
   
   public Image getImage() {
@@ -140,39 +127,6 @@ public class Button extends Control {
     }
   }
 
-  ///////////////////////////////////////
-  // Listener registration/deregistration
-  
-  public void addSelectionListener( final SelectionListener listener ) {
-    SelectionEvent.addListener( this, listener );
-  }
-
-  public void removeSelectionListener( final SelectionListener listener ) {
-    SelectionEvent.removeListener( this, listener );
-  }
-
-  //////////////////
-  // Helping methods
-  
-  private static int checkStyle( final int style ) {
-    int result = checkBits( style,
-                            RWT.PUSH,
-                            RWT.ARROW,
-                            RWT.CHECK,
-                            RWT.RADIO,
-                            RWT.TOGGLE,
-                            0 );
-    if( ( result & ( RWT.PUSH | RWT.TOGGLE ) ) != 0 ) {
-      result = checkBits( result, RWT.CENTER, RWT.LEFT, RWT.RIGHT, 0, 0, 0 );
-    } else if( ( result & ( RWT.CHECK | RWT.RADIO ) ) != 0 ) {
-      result = checkBits( result, RWT.LEFT, RWT.RIGHT, RWT.CENTER, 0, 0, 0 );
-    } else if( ( result & RWT.ARROW ) != 0 ) {
-      result |= RWT.NO_FOCUS;
-      result = checkBits( result, RWT.UP, RWT.DOWN, RWT.LEFT, RWT.RIGHT, 0, 0 );
-    }
-    return result;
-  }
-  
   public Point computeSize( final int wHint,
                             final int hHint,
                             final boolean changed )
@@ -195,7 +149,7 @@ public class Button extends Control {
     int extra = 0;
     boolean hasImage = image != null;
     boolean hasText = text.length() > 0;
-    if (hasImage) {
+    if( hasImage ) {
       // TODO: implement something to get rect bounds
       // Rectangle rect = image.getBounds ();
       width = 16;
@@ -210,12 +164,12 @@ public class Button extends Control {
       height = Math.max( height, extent.y );
       width += extent.x;
     }
-    if ((style & (RWT.CHECK | RWT.RADIO)) != 0) {
+    if( ( style & ( RWT.CHECK | RWT.RADIO ) ) != 0 ) {
       width += CHECK_WIDTH + 12 + extra;
-      height = Math.max (height, CHECK_HEIGHT + 3);
+      height = Math.max( height, CHECK_HEIGHT + 3 );
       height += 4;
     }
-    if ((style & (RWT.PUSH | RWT.TOGGLE)) != 0) {
+    if( ( style & ( RWT.PUSH | RWT.TOGGLE ) ) != 0 ) {
       width += 12;
       height += 10;
     }
@@ -227,7 +181,50 @@ public class Button extends Control {
     }
     width += border * 2;
     height += border * 2;
-    return new Point (width, height);
+    return new Point( width, height );
   }
 
+  ///////////////////////////////////////
+  // Listener registration/deregistration
+  
+  public void addSelectionListener( final SelectionListener listener ) {
+    SelectionEvent.addListener( this, listener );
+  }
+
+  public void removeSelectionListener( final SelectionListener listener ) {
+    SelectionEvent.removeListener( this, listener );
+  }
+
+  //////////////////////////
+  // Default Button handling
+  
+  void setDefault( final boolean isDefault ) {
+    this.isDefault = isDefault;
+  }
+  
+  boolean getDefault() {
+    return isDefault;
+  }
+  
+  //////////////////
+  // Helping methods
+  
+  private static int checkStyle( final int style ) {
+    int result = checkBits( style,
+                            RWT.PUSH,
+                            RWT.ARROW,
+                            RWT.CHECK,
+                            RWT.RADIO,
+                            RWT.TOGGLE,
+                            0 );
+    if( ( result & ( RWT.PUSH | RWT.TOGGLE ) ) != 0 ) {
+      result = checkBits( result, RWT.CENTER, RWT.LEFT, RWT.RIGHT, 0, 0, 0 );
+    } else if( ( result & ( RWT.CHECK | RWT.RADIO ) ) != 0 ) {
+      result = checkBits( result, RWT.LEFT, RWT.RIGHT, RWT.CENTER, 0, 0, 0 );
+    } else if( ( result & RWT.ARROW ) != 0 ) {
+      result |= RWT.NO_FOCUS;
+      result = checkBits( result, RWT.UP, RWT.DOWN, RWT.LEFT, RWT.RIGHT, 0, 0 );
+    }
+    return result;
+  }
 }
