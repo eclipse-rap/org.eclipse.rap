@@ -93,7 +93,7 @@ final class QooxdooResourcesUtil {
   private static final String TEXT_UTIL_JS
     = "org/eclipse/rap/rwt/TextUtil.js";
   private static final String SPINNER_JS
-  = "org/eclipse/rap/rwt/widgets/spinner.js";
+  = "org/eclipse/rap/rwt/widgets/Spinner.js";
   
   private static final String QX_CONSTANT_CORE_JS
     = "qx/constant/Core.js";
