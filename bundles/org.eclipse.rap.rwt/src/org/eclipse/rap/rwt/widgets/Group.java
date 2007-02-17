@@ -42,7 +42,7 @@ public class Group extends Composite {
     return text;
   }
   
-  public Rectangle getClientArea () {
+  public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
     int x = CLIENT_INSET;

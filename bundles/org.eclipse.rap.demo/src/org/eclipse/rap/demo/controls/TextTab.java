@@ -9,14 +9,15 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeEvent;
+import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeListener;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
+import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.graphics.Point;
+import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class TextTab extends ExampleTab {
-
-  private Text text;
 
   public TextTab( final TabFolder folder ) {
     super( folder, "Text" );
@@ -34,24 +35,132 @@ public class TextTab extends ExampleTab {
     createFontChooser();
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new RowLayout() );
-    int style = getStyle();
-    text = new Text( top, style );
-    if( ( text.getStyle() & RWT.SINGLE ) != 0 ) {
-      text.setLayoutData( new RowData( 200, 20 ) );
-    } else {
-      text.setLayoutData( new RowData( 200, 200 ) );
-    }
-    text.setText(   "Lorem ipsum dolor sit amet, consectetur adipisici "
-                  + "elit, sed do eiusmod tempor incididunt ut labore et "
-                  + "dolore magna aliqua.\n"
-                  + "Ut enim ad minim veniam, quis nostrud exercitation "
-                  + "ullamco laboris nisi ut aliquip ex ea commodo "
-                  + "consequat.\n"
-                  + "Duis aute irure dolor in reprehenderit in voluptate"
-                  + " velit esse cillum dolore eu fugiat nulla pariatur." );    
-    registerControl( text );
+  protected void createExampleControls( final Composite parent ) {
+    parent.setLayout( new RowLayout( RWT.VERTICAL ) );
+    registerControl( createText( parent, getStyle() ) );
+    registerControl( createModifyText( parent, getStyle() ) );
   }
 
+  private static Text createText( final Composite parent, final int style ) {
+    Group grpContainer = new Group( parent, RWT.NONE );
+    grpContainer.setText( "Simple Text" );
+    grpContainer.setLayout( new GridLayout( 3, false ) );
+    grpContainer.setLayoutData( new RowData( 400, 200 ) );
+    GridData gridData;
+    final Button btnChangeIsDefault = new Button( grpContainer, RWT.CHECK );
+    String buttonText = "Make the 'Change' button the default button";
+    btnChangeIsDefault.setText( buttonText );
+    gridData = new GridData( RWT.FILL, RWT.NONE, true, false );
+    gridData.horizontalSpan = 3;
+    btnChangeIsDefault.setLayoutData( gridData );
+    Label lblEnterText = new Label( grpContainer, RWT.NONE );
+    lblEnterText.setText( "Enter some text, please" );
+    final Text result = new Text( grpContainer, style );
+    Point preferred = getPreferredSize( result );
+    result.setLayoutData( new GridData( preferred.x, preferred.y ) );
+    result.setText(   "Lorem ipsum dolor sit amet, consectetur adipisici "
+                      + "elit, sed do eiusmod tempor incididunt ut labore et "
+                      + "dolore magna aliqua.\n"
+                      + "Ut enim ad minim veniam, quis nostrud exercitation "
+                      + "ullamco laboris nisi ut aliquip ex ea commodo "
+                      + "consequat.\n"
+                      + "Duis aute irure dolor in reprehenderit in voluptate "
+                      + "velit esse cillum dolore eu fugiat nulla pariatur." );
+    final Button btnChange = new Button( grpContainer, RWT.PUSH );
+    final Label lblTextContent = new Label( grpContainer, RWT.WRAP );
+    gridData = new GridData( RWT.FILL, RWT.FILL, true, true );
+    gridData.horizontalSpan = 3;
+    lblTextContent.setLayoutData( gridData );
+    lblTextContent.setText( "You entered: " + result.getText() );
+    btnChange.setText( "Change" );
+    btnChangeIsDefault.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Shell shell = btnChangeIsDefault.getShell();
+        if( btnChangeIsDefault.getSelection() ) {
+          DefaultButtonManager.getInstance().change( shell, btnChange );
+        } else {
+          DefaultButtonManager.getInstance().change( shell, null );
+        }
+      }
+    } );
+    btnChange.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        lblTextContent.setText( "You entered: " + result.getText() );        
+      }
+    } );
+    DefaultButtonManager.getInstance().addChangeListener( new ChangeListener() {
+      public void defaultButtonChanged( final ChangeEvent event ) {
+        Shell shell = ( Shell )event.getSource();
+        boolean selection = shell.getDefaultButton() == btnChange;
+        btnChangeIsDefault.setSelection( selection );
+      }
+    } );
+    return result;
+  }
+
+  private Text createModifyText( final Composite parent, final int style ) {
+    Group grpContainer = new Group( parent, RWT.NONE );
+    grpContainer.setText( "Text width ModifyListener" );
+    grpContainer.setLayout( new GridLayout( 3, false ) );
+    grpContainer.setLayoutData( new RowData( 400, 200 ) );
+    GridData gridData;
+    final Button btnChangeIsDefault = new Button( grpContainer, RWT.CHECK );
+    String buttonText = "Make the 'Change' button the default button";
+    btnChangeIsDefault.setText( buttonText );
+    gridData = new GridData( RWT.FILL, RWT.NONE, true, false );
+    gridData.horizontalSpan = 3;
+    btnChangeIsDefault.setLayoutData( gridData );
+    Label lblEnterText = new Label( grpContainer, RWT.NONE );
+    lblEnterText.setText( "Enter some text, please" );
+    final Text result = new Text( grpContainer, style );
+    Point preferred = getPreferredSize( result );
+    result.setLayoutData( new GridData( preferred.x, preferred.y ) );
+    final Button btnChange = new Button( grpContainer, RWT.PUSH );
+    final Label lblTextContent = new Label( grpContainer, RWT.WRAP );
+    gridData = new GridData( RWT.FILL, RWT.FILL, true, true );
+    gridData.horizontalSpan = 3;
+    lblTextContent.setLayoutData( gridData );
+    lblTextContent.setText( "You entered: " );
+    btnChange.setText( "Change" );
+    btnChangeIsDefault.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Shell shell = btnChangeIsDefault.getShell();
+        if( btnChangeIsDefault.getSelection() ) {
+          DefaultButtonManager.getInstance().change( shell, btnChange );
+        } else {
+          DefaultButtonManager.getInstance().change( shell, null );
+        }
+      }
+    } );
+    result.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        String msg = "ModifyEvent -> You entered: ";
+        lblTextContent.setText( msg + result.getText() );        
+      }
+    } );
+    btnChange.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        String msg = "Change button -> You entered: ";
+        lblTextContent.setText( msg + result.getText() );        
+      }
+    } );
+    DefaultButtonManager.getInstance().addChangeListener( new ChangeListener() {
+      public void defaultButtonChanged( final ChangeEvent event ) {
+        Shell shell = ( Shell )event.getSource();
+        boolean selection = shell.getDefaultButton() == btnChange;
+        btnChangeIsDefault.setSelection( selection );
+      }
+    } );
+    return result;
+  }
+
+  private static Point getPreferredSize( final Text text ) {
+    Point result;
+    if( ( text.getStyle() & RWT.SINGLE ) != 0 ) {
+      result = new Point( 200, 20 );
+    } else {
+      result = new Point( 200, 200 );
+    }
+    return result;
+  }
 }

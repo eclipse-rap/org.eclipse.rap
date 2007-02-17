@@ -39,6 +39,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     ControlLCAUtil.writeStyleFlags( button );
   }
 
+  // TODO [rh] highligh default button (e.g. with thick border as in Windows)
   void renderChanges( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send

@@ -91,20 +91,6 @@ org.eclipse.rap.rwt.EventUtil.widgetMoved = function( evt ) {
   }
 };
 
-/**
- * Listener for 'input' events.
- * Adds a parameter 'id.value' to the current request, were 'id' is the id 
- * of the target widget. This function does not send the request.
- */
-org.eclipse.rap.rwt.EventUtil.modify = function( evt ) {
-  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( evt.getTarget() );
-    var req = org.eclipse.rap.rwt.Request.getInstance();
-    req.addParameter( id + ".text", evt.getTarget().getValue() );
-  }
-};
-
 org.eclipse.rap.rwt.EventUtil.shellClosed = function( evt ) {
   if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();

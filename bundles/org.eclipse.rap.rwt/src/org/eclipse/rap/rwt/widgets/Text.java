@@ -12,7 +12,9 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.events.ModifyEvent;
+import org.eclipse.rap.rwt.events.ModifyListener;
+import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 
 /**
@@ -82,7 +84,23 @@ public class Text extends Control {
 //    return new Point( trim.width, trim.height );
     return new Point( width, height );
   }
+  
+  ///////////////////////////////////////
+  // Listener registration/deregistration
+  
+  public void addModifyListener( final ModifyListener listener ) {
+    checkWidget();
+    ModifyEvent.addListener( this, listener );
+  }
 
+  public void removeModifyListener( final ModifyListener listener ) {
+    checkWidget();
+    ModifyEvent.removeListener( this, listener );
+  }
+
+  ///////////////////////////////////////
+  // Helping method to adjust style flags 
+  
   private static int checkStyle( final int style ) {
     int result = style;
     if( ( result & RWT.SINGLE ) != 0 && ( result & RWT.MULTI ) != 0 ) {

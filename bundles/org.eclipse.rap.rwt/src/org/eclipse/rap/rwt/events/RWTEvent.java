@@ -39,6 +39,7 @@ public abstract class RWTEvent extends Event {
     ControlEvent.class,
     ActivateEvent.class,
     DisposeEvent.class,
+    ModifyEvent.class,
     TreeEvent.class,
     CTabFolderEvent.class,
     SelectionEvent.class,

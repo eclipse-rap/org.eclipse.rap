@@ -21,11 +21,12 @@ class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
 
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
-    TextLCAUtil.preserveText( text );
+    TextLCAUtil.preserveValues( text );
   }
 
   void readData( final Text text ) {
     TextLCAUtil.readText( text );
+    TextLCAUtil.readModifyEvent( text );
   }
 
   void renderInitialization( final Text text ) throws IOException {
@@ -33,16 +34,16 @@ class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     writer.newWidget( "qx.ui.form.TextArea" );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeNoSpellCheck( text );
-    TextLCAUtil.writeModifyListeners( text );
     TextLCAUtil.writeReadOnly( text );
     // TODO: [rst] Added because !WRAP stopped working - doesn't help anyway
     writer.set( "wrap", ( text.getStyle() & RWT.WRAP ) != 0 );
   }
 
   void renderChanges( final Text text ) throws IOException {
-    ControlLCAUtil.writeChanges( text );
     JSWriter writer = JSWriter.getWriterFor( text );
+    ControlLCAUtil.writeChanges( text );
     writer.set( TextLCAUtil.PROP_TEXT, "value", text.getText(), "" );
+    TextLCAUtil.writeModifyListener( text );
   }
   
   void renderDispose( final Text text ) throws IOException {

@@ -35,6 +35,8 @@ public final class JSConst {
     = "org.eclipse.rap.rwt.events.treeExpanded";
   public static final String EVENT_TREE_COLLAPSED 
     = "org.eclipse.rap.rwt.events.treeCollapsed";
+  public static final String EVENT_MODIFY_TEXT
+    = "org.eclipse.rap.rwt.events.modifyText";
   
   /** 
    * <p>Indicates that a shell was closed on the client side. The parameter 
@@ -49,8 +51,6 @@ public final class JSConst {
     = "org.eclipse.rap.rwt.EventUtil.widgetResized";
   public static final String JS_WIDGET_MOVED
     = "org.eclipse.rap.rwt.EventUtil.widgetMoved";
-  public static final String JS_TEXT_MODIFIED
-    = "org.eclipse.rap.rwt.EventUtil.modify";
   public static final String JS_SHELL_CLOSED
     = "org.eclipse.rap.rwt.EventUtil.shellClosed";
   public static final String JS_TREE_SELECTED 
@@ -61,14 +61,15 @@ public final class JSConst {
   // keys of the Qooxdoo listeners, used to register the client side 
   // eventhandlers 
   public static final String QX_EVENT_EXECUTE = "execute";
+  public static final String QX_EVENT_INPUT = "input";
+  public static final String QX_EVENT_BLUR = "blur";
+  public static final String QX_EVENT_CLICK = "click";
+  public static final String QX_EVENT_KEYINPUT = "keyinput";
   public static final String QX_EVENT_CHANGE_LOCATION_X = "changeLeft";
   public static final String QX_EVENT_CHANGE_LOCATION_Y = "changeTop";
   public static final String QX_EVENT_CHANGE_WIDTH = "changeWidth";
   public static final String QX_EVENT_CHANGE_HEIGHT = "changeHeight";
   public static final String QX_EVENT_CHANGE_VISIBILITY = "changeVisibility";
-  public static final String QX_EVENT_INPUT = "input";
-  public static final String QX_EVENT_BLUR = "blur";
-  public static final String QX_EVENT_CLICK = "click";
   public static final String QX_EVENT_CONTEXTMENU = "contextmenu";
   public static final String QX_EVENT_CHANGE_SELECTED = "changeSelected";
   public static final String QX_EVENT_CHANGE_CHECKED = "changeChecked";

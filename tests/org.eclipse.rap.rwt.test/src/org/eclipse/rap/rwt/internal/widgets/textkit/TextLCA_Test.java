@@ -15,11 +15,15 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.events.ModifyEvent;
+import org.eclipse.rap.rwt.events.ModifyListener;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.internal.widgets.Props;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
+import com.w4t.engine.requests.RequestParams;
 
 public class TextLCA_Test extends TestCase {
 
@@ -61,6 +65,28 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "", Fixture.getAllMarkup() );
   }
 
+  public void testModifyEvent() throws IOException {
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    final Text text = new Text( shell, RWT.NONE );
+    text.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        assertEquals( text, event.getSource() );
+        log.append( "modifyText" );
+      }
+    } );
+    shell.open();
+    String displayId = DisplayUtil.getId( display );
+    String textId = WidgetUtil.getId( text );
+    
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+    new RWTLifeCycle().execute();
+    assertEquals( "modifyText", log.toString() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

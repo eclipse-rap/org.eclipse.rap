@@ -136,10 +136,6 @@ qx.Proto._onKeydown = function( evt ) {
   }
 }
 
-//qx.Proto.setDefaultButton = function( widget ) {
-//  this._defaultButton = widget;
-//}
-
 /**
  * Returns the parent Control for the given widget. If widget is a Control 
  * itself, the widget is returned. Otherwise its parent is returned or null
@@ -157,15 +153,3 @@ qx.Proto._getParentControl = function( widget ) {
   }
   return result;
 }
-
-// This is a workaround to open the window only once.
-/*
-qx.Proto.openOnce = function() {
-  if ( ! this.windowOpened ) {
-    this.open( null );
-    this.windowOpened = true;
-    this.debug( "_______________ Window opened");
-  }
-  return true;
-};
-*/
