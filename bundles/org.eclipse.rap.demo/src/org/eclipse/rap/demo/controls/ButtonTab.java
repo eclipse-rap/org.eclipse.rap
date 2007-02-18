@@ -9,12 +9,13 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.jface.dialogs.MessageDialog;
+import org.eclipse.rap.jface.window.IWindowCallback;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionAdapter;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
+import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class ButtonTab extends ExampleTab {
@@ -26,8 +27,9 @@ public class ButtonTab extends ExampleTab {
   
   private boolean showImage;
 
-  private Button button1;
-  private Button check1;
+  private Button button;
+  private Button defaultButton;
+  private Button check;
   private Button radio1;
   private Button radio2;
   private Button radio3;
@@ -50,7 +52,7 @@ public class ButtonTab extends ExampleTab {
     imageButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showImage = imageButton.getSelection();
-        updateButtonImage( button1 );
+        updateButtonImage( button );
       }
     } );
     createFontChooser();
@@ -59,22 +61,46 @@ public class ButtonTab extends ExampleTab {
   protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout( RWT.VERTICAL ) );
     int style = getStyle();
-    button1 = new Button( top, style | RWT.PUSH );
-    button1.setText( "Button" );
-    updateButtonImage( button1 );
-    check1 = new Button( top, style | RWT.CHECK );
-    check1.setText( "Check" );
+    button = new Button( top, style | RWT.PUSH );
+    button.setText( "Button" );
+    updateButtonImage( button );
+    check = new Button( top, style | RWT.CHECK );
+    check.setText( "Check" );
     radio1 = new Button( top, style | RWT.RADIO );
     radio1.setText( "Radio 1" );
     radio2 = new Button( top, style | RWT.RADIO );
     radio2.setText( "Radio 2" );
     radio3 = new Button( top, style | RWT.RADIO );
     radio3.setText( "Radio 3" );
-    registerControl( button1 );
-    registerControl( check1 );
+    registerControl( button );
+    registerControl( check );
     registerControl( radio1 );
     registerControl( radio2 );
     registerControl( radio3 );
+    final Group group = new Group( top, RWT.NONE );
+    group.setLayoutData( new RowData( 370, 60 ) );
+    group.setText( "Default Button" );
+    group.setLayout( new GridLayout( 3, false ) );
+    Label label = new Label( group, RWT.NONE );
+    label.setText( "Enter some text and press Return" );
+    final Text text = new Text( group, RWT.BORDER | RWT.SINGLE );
+    defaultButton = new Button( group, style | RWT.PUSH );
+    defaultButton.setText( "Default Button" );
+    defaultButton.getShell().setDefaultButton( defaultButton );
+    defaultButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        String message = "The text You entered: " + text.getText();
+        IWindowCallback windowCallback = new IWindowCallback() {
+          public void windowClosed( final int returnCode ) {
+            // do nothing
+          }
+        };
+        MessageDialog.openInformation( group.getShell(), 
+                                       "Information", 
+                                       message, 
+                                       windowCallback );
+      }
+    } );
   }
 
   private void updateButtonImage( final Button button ) {
