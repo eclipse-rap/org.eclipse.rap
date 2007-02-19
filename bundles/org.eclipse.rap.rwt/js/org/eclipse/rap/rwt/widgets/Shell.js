@@ -43,6 +43,10 @@ qx.Proto.fixTitlebar = function() {
   }
 }
 
+qx.Proto.setDialogWindow = function() {
+  this._isDialogWindow = true;
+}
+
 /**
  * Could be used to imitate Windows behavior: When SWT.MAX is set, the minimize
  * button is still shown but disabled.
@@ -55,7 +59,7 @@ qx.Proto.disableMinimize = function() {
  * Could be used to imitate Windows behavior: When SWT.MIN is set, the maximize
  * button is still shown but disabled.
  */
-qx.Proto.disableMinimize = function() {
+qx.Proto.disableMaximize = function() {
   this._maximizeButton.setEnabled( false );
 }
 
@@ -128,11 +132,14 @@ qx.Proto._onChangeActive = function( evt ) {
 }
 
 qx.Proto._onKeydown = function( evt ) {
-  if( evt.getKeyIdentifier() == "Enter" ) {
+  var keyId = evt.getKeyIdentifier();
+  if( keyId == "Enter" ) {
     var defButton = this.getDefaultButton();
     if( defButton != null && defButton.isSeeable() ) {
       defButton.execute();
     }
+  } else if ( keyId == "Escape" && this._isDialogWindow ) {
+    this.close();
   }
 }
 

@@ -73,6 +73,9 @@ public class ShellLCA extends AbstractWidgetLCA {
     writer.set( "showMaximize", ( style & RWT.MAX ) != 0 );
     writer.set( "showClose", ( style & RWT.CLOSE ) != 0 );
     writer.set( "overflow", "hidden" );
+    if( shell.getParent() instanceof Shell ) {
+      writer.call( "setDialogWindow", new Object[ 0 ] );
+    }
     ControlLCAUtil.writeResizeNotificator( widget );
     ControlLCAUtil.writeMoveNotificator( widget );
     writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 

@@ -22,7 +22,8 @@ public class ShellTab extends ExampleTab {
   private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
   
   private ArrayList shells;
-  private boolean invisible;
+  private boolean createInvisible;
+  private boolean createAsDialog;
   private Image shellIconImage;
 
   public ShellTab( final TabFolder folder ) {
@@ -46,7 +47,13 @@ public class ShellTab extends ExampleTab {
     final Button invisibleButton = createPropertyButton( "create invisible" );
     invisibleButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        invisible = invisibleButton.getSelection();
+        createInvisible = invisibleButton.getSelection();
+      }
+    } );
+    final Button dialogButton = createPropertyButton( "create as dialog" );
+    dialogButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        createAsDialog = dialogButton.getSelection();
       }
     } );
   }
@@ -114,7 +121,12 @@ public class ShellTab extends ExampleTab {
 
   private void createShell() {
     final int style = getStyle();
-    final Shell shell = new Shell( getShell().getDisplay(), style );
+    final Shell shell;
+    if( createAsDialog ) {
+      shell = new Shell( getShell(), style );      
+    } else {
+      shell = new Shell( getShell().getDisplay(), style );
+    }
     shell.setLocation( getNextShellLocation() );
     if( true ) {
       createShellContents1( shell );      
@@ -124,7 +136,7 @@ public class ShellTab extends ExampleTab {
     int num = shells.size() + 1;
     shell.setText( "Test Shell " + num );
     shell.setImage( shellIconImage );
-    if( !invisible ) {
+    if( !createInvisible ) {
       shell.open();
     }
     shells.add( shell );
