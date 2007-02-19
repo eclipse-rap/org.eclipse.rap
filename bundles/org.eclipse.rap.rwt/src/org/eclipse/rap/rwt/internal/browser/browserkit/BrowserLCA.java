@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.browser.browserkit;
 
 import java.io.*;
 import org.eclipse.rap.rwt.browser.Browser;
-import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.internal.widgets.IBrowserAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.widgets.Widget;

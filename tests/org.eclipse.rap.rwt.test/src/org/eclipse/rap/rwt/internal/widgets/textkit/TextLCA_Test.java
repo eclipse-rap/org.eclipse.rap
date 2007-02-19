@@ -18,7 +18,6 @@ import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.ModifyEvent;
 import org.eclipse.rap.rwt.events.ModifyListener;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;

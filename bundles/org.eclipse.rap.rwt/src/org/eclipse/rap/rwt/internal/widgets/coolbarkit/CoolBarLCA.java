@@ -12,7 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets.coolbarkit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.CoolBar;
 import org.eclipse.rap.rwt.widgets.Widget;

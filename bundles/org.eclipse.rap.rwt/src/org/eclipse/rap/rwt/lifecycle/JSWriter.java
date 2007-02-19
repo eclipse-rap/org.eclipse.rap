@@ -19,8 +19,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.internal.widgets.WidgetLCAUtil;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.HtmlResponseWriter;
 import com.w4t.engine.service.ContextProvider;

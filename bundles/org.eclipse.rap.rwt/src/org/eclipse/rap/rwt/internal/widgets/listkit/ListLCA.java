@@ -14,9 +14,11 @@ package org.eclipse.rap.rwt.internal.widgets.listkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.internal.widgets.IListAdapter;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.widgets.List;
+import org.eclipse.rap.rwt.widgets.Widget;
 
 
 public class ListLCA extends AbstractWidgetLCA {

@@ -14,9 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.tabfolderkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 

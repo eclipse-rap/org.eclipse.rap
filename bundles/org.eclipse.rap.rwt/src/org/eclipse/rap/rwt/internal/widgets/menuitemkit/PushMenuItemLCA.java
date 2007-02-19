@@ -13,7 +13,8 @@ package org.eclipse.rap.rwt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.internal.widgets.ItemLCAUtil;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.MenuItem;
 

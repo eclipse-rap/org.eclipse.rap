@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rap.rwt.widgets.Display;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.AdapterFactory;

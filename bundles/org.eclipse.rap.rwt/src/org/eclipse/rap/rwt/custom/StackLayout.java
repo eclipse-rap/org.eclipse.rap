@@ -10,8 +10,9 @@ package org.eclipse.rap.rwt.custom;
 // import org.eclipse.swt.*;
 // import org.eclipse.swt.graphics.*;
 // import org.eclipse.rap.widgets.*;
-import org.eclipse.rap.rwt.*;
-import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.graphics.Point;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.widgets.*;
 
 /**

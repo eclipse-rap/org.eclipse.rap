@@ -8,10 +8,19 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.internal.widgets;
 
-public interface IControlAdapter {
+package org.eclipse.rap.rwt.resources;
 
-  public abstract int getIndex();
-  
+import com.w4t.IResourceManager.RegisterOptions;
+
+/**
+ * TODO: [fappel] comment
+ */
+public interface IResource {
+  ClassLoader getLoader();
+  String getLocation();
+  String getCharset();
+  RegisterOptions getOptions();
+  boolean isJSLibrary();
+  boolean isExternal();
 }

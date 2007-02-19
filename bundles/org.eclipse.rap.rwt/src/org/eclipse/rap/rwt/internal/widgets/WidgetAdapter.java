@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.rap.rwt.lifecycle.IRenderRunnable;
+import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
 
 public final class WidgetAdapter implements IWidgetAdapter {
   

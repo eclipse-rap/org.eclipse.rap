@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.tablekit;
 import java.io.IOException;
 import java.util.Arrays;
 import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.HtmlResponseWriter;

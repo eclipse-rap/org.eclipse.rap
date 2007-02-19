@@ -12,8 +12,6 @@
 package org.eclipse.rap.rwt.internal.widgets.groupkit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Group;
 import org.eclipse.rap.rwt.widgets.Widget;

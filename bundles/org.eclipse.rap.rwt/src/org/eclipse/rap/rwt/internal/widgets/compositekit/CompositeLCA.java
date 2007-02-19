@@ -12,9 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets.compositekit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Control;
 import org.eclipse.rap.rwt.widgets.Widget;
 

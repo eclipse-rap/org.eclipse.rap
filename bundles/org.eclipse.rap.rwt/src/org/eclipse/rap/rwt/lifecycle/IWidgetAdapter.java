@@ -9,9 +9,8 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.internal.widgets;
+package org.eclipse.rap.rwt.lifecycle;
 
-import org.eclipse.rap.rwt.lifecycle.IRenderRunnable;
 
 /**
  * TODO [rh] JavaDoc

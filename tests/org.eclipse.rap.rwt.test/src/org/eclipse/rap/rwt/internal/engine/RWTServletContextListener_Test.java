@@ -19,11 +19,13 @@ import org.eclipse.rap.rwt.RWTFixture.TestResourceManagerFactory;
 import org.eclipse.rap.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rap.rwt.resources.IResource;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
 import com.w4t.W4TContext;
 import com.w4t.Fixture.*;
+import com.w4t.IResourceManager.RegisterOptions;
 import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.util.IInitialization;
@@ -40,6 +42,8 @@ public class RWTServletContextListener_Test extends TestCase {
     = RWTServletContextListener.ADAPTER_FACTORY_PARAM;
   private static final String PHASE_LISTENER_PARAM 
     = RWTServletContextListener.PHASE_LISTENER_PARAM;
+  private static final String RESOURCE_PARAM 
+    = RWTServletContextListener.RESOURCE_PARAM;
 
   private static String phaseListenerLog = "";
 
@@ -64,6 +68,27 @@ public class RWTServletContextListener_Test extends TestCase {
     }
     public PhaseId getPhaseId() {
       return PhaseId.ANY;
+    }
+  }
+  
+  public static class TestResource implements IResource {
+    public String getCharset() {
+      return null;
+    }
+    public ClassLoader getLoader() {
+      return null;
+    }
+    public String getLocation() {
+      return null;
+    }
+    public RegisterOptions getOptions() {
+      return null;
+    }
+    public boolean isExternal() {
+      return false;
+    }
+    public boolean isJSLibrary() {
+      return false;
     }
   }
   
@@ -222,6 +247,44 @@ public class RWTServletContextListener_Test extends TestCase {
     phaseListenerLog = "";
     lifeCycle.execute();
     assertEquals( "", phaseListenerLog );
+    deregisterResourceManager();
+    EntryPointManager.deregister( EntryPointManager.DEFAULT );
+  }
+
+  public void testResourceInitialization() throws Exception  {
+    ContextProvider.disposeContext();
+    // read phase listener from servlet context init parameter
+    RWTServletContextListener listener = new RWTServletContextListener();
+    TestServletContext servletContext = new TestServletContext();
+    servletContext.setInitParameter( RESOURCE_PARAM,
+                                     TestResource.class.getName() );
+    String factoryName = TestResourceManagerFactory.class.getName();
+    servletContext.setInitParameter( RESOURCE_MANAGER_FACTORY, 
+                                     factoryName );
+    listener.contextInitialized( new ServletContextEvent( servletContext ) );
+    
+    // Prepare and execute a life cycle to ensure that the phase listener
+    // was loaded and gets executed
+    TestResponse response = new TestResponse();
+    TestRequest request = new TestRequest();
+    request.setSession( new TestSession() );
+    Fixture.fakeContextProvider( response, request );
+    EntryPointManager.register( EntryPointManager.DEFAULT, 
+                                TestEntryPointWithShell.class );
+    Fixture.fakeResponseWriter();
+    Fixture.fakeBrowser( new Ie6up( true, true ) );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )W4TContext.getLifeCycle();
+    lifeCycle.execute();
+
+    assertTrue( ResourceRegistry.get()[ 0 ] instanceof TestResource );
+    assertTrue( ResourceRegistry.get().length == 1 );
+    
+    // Ensure that phase listeners are removed when context is destroyed
+    listener = new RWTServletContextListener();
+    listener.contextDestroyed( new ServletContextEvent( servletContext ) );
+
+    assertTrue( ResourceRegistry.get().length == 0 );
+
     deregisterResourceManager();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }

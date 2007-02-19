@@ -14,7 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
-import org.eclipse.rap.rwt.internal.widgets.IControlAdapter;
+import org.eclipse.rap.rwt.lifecycle.IControlAdapter;
 
 /**
  * TODO: [fappel] comment

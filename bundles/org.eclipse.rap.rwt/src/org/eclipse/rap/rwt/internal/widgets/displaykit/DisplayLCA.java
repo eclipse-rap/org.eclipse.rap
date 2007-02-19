@@ -20,10 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rap.rwt.events.RWTEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.engine.ResourceRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.resources.IResource;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.*;
@@ -114,12 +116,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   //    out.writeText( shell.getTitle(), null );
       out.endElement( HTML.TITLE ); 
       writeScrollBarStyle();
-      String[] libraries = out.getJSLibraries();
-      IResourceManager manager = ResourceManager.getInstance();
-      for( int i = 0; i < libraries.length; i++ ) {      
-        String location = manager.getLocation( libraries[ i ] );
-        writeScriptTag( out, location );
-      }
+      writeJSLibraries();
       out.endElement( HTML.HEAD );
       out.startElement( HTML.BODY, null );
       out.startElement( HTML.SCRIPT, null );
@@ -151,6 +148,24 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       out.write( "qx.ui.core.Widget.flushGlobalQueues();" );
       out.write( "org.eclipse.rap.rwt.EventUtil.resumeEventHandling();" );
       markInitialized( display );
+    }
+  }
+
+  private void writeJSLibraries() throws IOException {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    HtmlResponseWriter out = stateInfo.getResponseWriter();
+    String[] libraries = out.getJSLibraries();
+    IResourceManager manager = ResourceManager.getInstance();
+    for( int i = 0; i < libraries.length; i++ ) {      
+      String location = manager.getLocation( libraries[ i ] );
+      writeScriptTag( out, location );
+    }
+    
+    IResource[] resources = ResourceRegistry.get();
+    for( int i = 0; i < resources.length; i++ ) {
+      if( resources[ i ].isExternal() ) {
+        writeScriptTag( out, resources[ i ].getLocation() );
+      }
     }
   }
   

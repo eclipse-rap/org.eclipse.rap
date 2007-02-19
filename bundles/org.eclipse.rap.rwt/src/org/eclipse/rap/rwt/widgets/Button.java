@@ -14,7 +14,8 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
-import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 
 /**

@@ -9,13 +9,13 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.internal.widgets;
+package org.eclipse.rap.rwt.lifecycle;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.widgets.*;
 
 /**

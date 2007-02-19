@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.custom.*;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.custom.ctabfolderkit.CTabFolderLCA;
-import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.internal.widgets.ItemLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Widget;
 

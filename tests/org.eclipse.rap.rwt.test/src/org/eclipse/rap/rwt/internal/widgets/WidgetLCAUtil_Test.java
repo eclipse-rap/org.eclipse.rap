@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets;
 import java.util.Date;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.widgets.*;
 import junit.framework.TestCase;
 

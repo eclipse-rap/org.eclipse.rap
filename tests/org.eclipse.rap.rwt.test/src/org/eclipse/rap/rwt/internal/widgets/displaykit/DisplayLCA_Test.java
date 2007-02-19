@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.internal.lifecycle.*;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;

@@ -11,7 +11,6 @@
 
 package org.eclipse.rap.rwt.internal.lifecycle;
 
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.rap.rwt.lifecycle.*;

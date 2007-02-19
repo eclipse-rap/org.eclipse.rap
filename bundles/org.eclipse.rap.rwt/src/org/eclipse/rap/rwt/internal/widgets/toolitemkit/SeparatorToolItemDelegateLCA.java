@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.ToolItem;
 

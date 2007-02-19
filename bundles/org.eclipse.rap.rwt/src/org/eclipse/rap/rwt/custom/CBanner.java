@@ -8,6 +8,7 @@
 package org.eclipse.rap.rwt.custom;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.RWTException;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.graphics.Rectangle;

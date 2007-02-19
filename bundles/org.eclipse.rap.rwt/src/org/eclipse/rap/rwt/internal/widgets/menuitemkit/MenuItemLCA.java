@@ -13,7 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rap.rwt.widgets.MenuItem;
 import org.eclipse.rap.rwt.widgets.Widget;
 

@@ -12,7 +12,7 @@
 package org.eclipse.rap.rwt.lifecycle;
 
 import java.text.MessageFormat;
-import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.rap.rwt.widgets.Composite;
 import org.eclipse.rap.rwt.widgets.Widget;

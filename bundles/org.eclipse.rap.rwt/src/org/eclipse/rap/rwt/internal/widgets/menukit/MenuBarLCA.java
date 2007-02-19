@@ -13,10 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.menukit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.internal.widgets.WidgetLCAUtil;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Menu;
 import org.eclipse.rap.rwt.widgets.Shell;
 

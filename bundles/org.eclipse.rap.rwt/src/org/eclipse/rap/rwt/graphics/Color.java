@@ -8,7 +8,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.graphics;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.graphics.IColor;
 

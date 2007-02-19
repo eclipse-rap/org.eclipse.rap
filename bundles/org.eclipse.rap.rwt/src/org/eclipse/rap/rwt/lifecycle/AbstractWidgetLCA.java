@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.rap.rwt.events.DisposeEvent;
 import org.eclipse.rap.rwt.events.DisposeListener;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;

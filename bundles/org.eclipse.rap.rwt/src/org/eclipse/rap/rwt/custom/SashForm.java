@@ -8,6 +8,7 @@
 package org.eclipse.rap.rwt.custom;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.SWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.graphics.Color;

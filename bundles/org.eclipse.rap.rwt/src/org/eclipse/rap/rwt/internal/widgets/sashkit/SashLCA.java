@@ -15,7 +15,7 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 

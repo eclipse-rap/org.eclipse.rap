@@ -12,7 +12,6 @@
 package org.eclipse.rap.rwt.internal.widgets.textkit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Text;
 

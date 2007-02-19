@@ -35,11 +35,15 @@ public class RWTServletContextListener implements ServletContextListener {
     = "org.eclipse.rap.rwt.adapterFactories";
   public static final String PHASE_LISTENER_PARAM 
     = "com.w4t.engine.lifecycle.phaselistener";
+  public static final String RESOURCE_PARAM
+    = "org.eclipse.rap.rwt.resources";
   
   private static final String REGISTERED_ENTRY_POINTS
     = "org.eclipse.rap.rwt.registeredEntryPoints";
   private static final String REGISTERED_PHASE_LISTENERS 
     = "org.eclipse.rap.rwt.registeredPhaseListeners";
+  private static final String REGISTERED_RESOURCES
+    = "org.eclipse.rap.rwt.registeredResources";
   
   ///////////////////////////////////////////
   // implementation of ServletContextListener
@@ -49,17 +53,19 @@ public class RWTServletContextListener implements ServletContextListener {
     registerResourceManagerFactory( evt.getServletContext() );
     registerAdapterFactories( evt.getServletContext() );
     registerPhaseListener( evt.getServletContext() );
+    registerResources( evt.getServletContext() );
   }
 
   public void contextDestroyed( final ServletContextEvent evt ) {
     deregisterEntryPoints( evt.getServletContext() );
     deregisterPhaseListeners( evt.getServletContext() );
+    deregisterResources( evt.getServletContext() );
   }
   
   
   ////////////////////////////////////////////////////////////
   // helping methods - entry point registration/deregistration
-  
+
   private static void registerEntryPoints( final ServletContext context ) {
     Set registeredEntryPoints = new HashSet();
     String value = context.getInitParameter( ENTRYPOINT_PARAM );
@@ -221,4 +227,35 @@ public class RWTServletContextListener implements ServletContextListener {
   {
     return ( PhaseListener[] )ctx.getAttribute( REGISTERED_PHASE_LISTENERS );
   }
+  
+  private void registerResources( final ServletContext context ) {
+    List resources = new ArrayList();
+    String initParam = context.getInitParameter( RESOURCE_PARAM );
+    if( initParam != null ) {
+      String[] resourceClassNames = initParam.split( "," );
+      for( int i = 0; i < resourceClassNames.length; i++ ) {
+        String className = resourceClassNames[ i ].trim();
+        try {
+          Class clazz = Class.forName( className );
+          IResource resource = ( IResource )clazz.newInstance();
+          resources.add( resource );
+        } catch( Throwable thr ) {
+          String text = "Failed to register resource ''{0}''.";
+          String msg = MessageFormat.format( text, new Object[] { className } );
+          context.log( msg, thr );
+        }
+      }
+    }
+    IResource[] registeredResources;
+    registeredResources = new IResource[ resources.size() ];
+    resources.toArray( registeredResources );
+    for( int i = 0; i < registeredResources.length; i++ ) {
+      ResourceRegistry.add( registeredResources[ i ] );
+    }
+    context.setAttribute( REGISTERED_RESOURCES, registeredResources );
+  }
+  
+  private void deregisterResources( final ServletContext context ) {
+    ResourceRegistry.clear();
+  }  
 }

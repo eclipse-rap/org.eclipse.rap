@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.internal.widgets.*;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
 

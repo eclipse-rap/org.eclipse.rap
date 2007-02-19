@@ -19,7 +19,6 @@ import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;

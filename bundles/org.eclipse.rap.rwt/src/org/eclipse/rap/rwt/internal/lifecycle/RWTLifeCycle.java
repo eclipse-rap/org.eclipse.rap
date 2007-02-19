@@ -16,9 +16,12 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.rap.rwt.internal.engine.AdapterFactoryRegistry;
-import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
+import org.eclipse.rap.rwt.internal.engine.*;
+import org.eclipse.rap.rwt.resources.IResource;
+import org.eclipse.rap.rwt.resources.ResourceManager;
+import com.w4t.IResourceManager;
 import com.w4t.ParamCheck;
+import com.w4t.IResourceManager.RegisterOptions;
 import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.service.ContextProvider;
 
@@ -46,7 +49,7 @@ public class RWTLifeCycle extends LifeCycle {
   
   public RWTLifeCycle() {
     listeners = new HashSet();
-    listeners.addAll( Arrays.asList( PhaseListenerRegistry.get() ) );
+    listeners.addAll( Arrays.asList( PhaseListenerRegistry.get() ) );    
   }
   
   public void execute() throws IOException {

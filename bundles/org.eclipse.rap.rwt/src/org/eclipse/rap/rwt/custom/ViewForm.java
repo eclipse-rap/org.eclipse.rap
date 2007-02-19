@@ -7,10 +7,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.custom;
 
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.SWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.widgets.*;
-import org.eclipse.rap.rwt.*;
 
 /**
  * Instances of this class implement a Composite that positions and sizes

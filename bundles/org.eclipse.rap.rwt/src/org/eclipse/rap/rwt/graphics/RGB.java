@@ -8,7 +8,7 @@
 package org.eclipse.rap.rwt.graphics;
 
 // import org.eclipse.rap.rwt.internal.SerializableCompatibility;
-import org.eclipse.rap.rwt.*;
+import org.eclipse.rap.rwt.RWT;
 
 /**
  * Instances of this class are descriptions of colors in terms of the primary

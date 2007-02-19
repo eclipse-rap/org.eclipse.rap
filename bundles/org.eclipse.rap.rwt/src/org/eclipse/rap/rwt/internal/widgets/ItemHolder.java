@@ -15,7 +15,8 @@ import java.lang.reflect.Array;
 import java.text.MessageFormat;
 import java.util.List;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.widgets.Item;
+import org.eclipse.rap.rwt.widgets.Widget;
 
 public final class ItemHolder implements IItemHolderAdapter {
 

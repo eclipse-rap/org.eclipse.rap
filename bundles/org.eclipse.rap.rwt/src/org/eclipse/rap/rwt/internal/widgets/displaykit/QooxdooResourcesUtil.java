@@ -14,6 +14,8 @@ package org.eclipse.rap.rwt.internal.widgets.displaykit;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.zip.ZipFile;
+import org.eclipse.rap.rwt.internal.engine.ResourceRegistry;
+import org.eclipse.rap.rwt.resources.IResource;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import com.w4t.*;
 import com.w4t.IResourceManager.RegisterOptions;
@@ -174,8 +176,41 @@ final class QooxdooResourcesUtil {
       register( WIDGET_THEME_JS );
       register( TEXT_UTIL_JS );
       register( SPINNER_JS );
+      
+      // register contributions
+      registerContributions();
     } finally {
       manager.setContextLoader( bufferedLoader );
+    }
+  }
+
+  private static void registerContributions() {
+    IResourceManager manager = ResourceManager.getInstance();
+    ClassLoader contextLoader = manager.getContextLoader();
+    try {
+      IResource[] resources = ResourceRegistry.get();
+      for( int i = 0; i < resources.length; i++ ) {
+        if( !resources[ i ].isExternal() ) {
+          manager.setContextLoader( resources[ i ].getLoader() );
+          String charset = resources[ i ].getCharset();
+          RegisterOptions options = resources[ i ].getOptions();
+          String location = resources[ i ].getLocation();
+          if( charset == null && options == null ) {
+            manager.register( location );
+          } else if( options == null ) {
+            manager.register( location, charset );
+          } else {
+            manager.register( location, charset, options );
+          }
+          if( resources[ i ].isJSLibrary() ) {
+            IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+            HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
+            responseWriter.useJSLibrary( location );
+          }
+        }
+      }
+    } finally {
+      manager.setContextLoader( contextLoader );
     }
   }
 

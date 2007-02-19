@@ -22,10 +22,12 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.SWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.graphics.RGB;
-import org.eclipse.rap.rwt.layout.*;
+import org.eclipse.rap.rwt.layout.RowData;
+import org.eclipse.rap.rwt.layout.RowLayout;
 
 /**
  * Instances of this class allow the user to select a color

@@ -14,9 +14,9 @@ package org.eclipse.rap.rwt.internal.custom.scrolledcompositekit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.custom.ScrolledComposite;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.rap.rwt.widgets.ScrollBar;
+import org.eclipse.rap.rwt.widgets.Widget;
 
 
 public final class ScrolledCompositeLCA extends AbstractWidgetLCA {

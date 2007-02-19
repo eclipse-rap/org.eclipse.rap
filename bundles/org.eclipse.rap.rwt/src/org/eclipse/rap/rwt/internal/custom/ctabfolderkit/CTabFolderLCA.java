@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
-import org.eclipse.rap.rwt.internal.widgets.*;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import org.eclipse.rap.rwt.widgets.Widget;

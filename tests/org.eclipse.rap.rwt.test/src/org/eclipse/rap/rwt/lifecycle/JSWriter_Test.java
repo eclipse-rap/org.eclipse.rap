@@ -17,7 +17,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;

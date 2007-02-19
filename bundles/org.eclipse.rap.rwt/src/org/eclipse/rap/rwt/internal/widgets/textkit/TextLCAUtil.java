@@ -14,8 +14,6 @@ package org.eclipse.rap.rwt.internal.widgets.textkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ModifyEvent;
-import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
-import org.eclipse.rap.rwt.internal.widgets.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Text;
 import com.w4t.W4TContext;

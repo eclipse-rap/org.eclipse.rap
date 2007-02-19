@@ -11,7 +11,7 @@
 
 package org.eclipse.rap.rwt.widgets;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

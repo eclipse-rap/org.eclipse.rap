@@ -12,8 +12,8 @@
 package org.eclipse.rap.rwt.internal.widgets.controlkit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.internal.widgets.ControlLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.rap.rwt.widgets.Control;
 import org.eclipse.rap.rwt.widgets.Widget;
 

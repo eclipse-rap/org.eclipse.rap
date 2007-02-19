@@ -9,14 +9,14 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.internal.widgets;
+package org.eclipse.rap.rwt.lifecycle;
 
 import java.io.IOException;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.*;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.engine.service.ContextProvider;
 
@@ -237,7 +237,7 @@ public final class WidgetLCAUtil {
     }
   }
   
-  static void writeFont( final Widget widget, final Font font )
+  public static void writeFont( final Widget widget, final Font font )
     throws IOException
   {
     Font systemFont = widget.getDisplay().getSystemFont();
@@ -305,7 +305,7 @@ public final class WidgetLCAUtil {
   ////////////////////////////////////////
   // Helping methods to test for equality
   
-  static boolean equals( final Object object1, final Object object2 ) {
+  public static boolean equals( final Object object1, final Object object2 ) {
     boolean result;
     if( object1 == object2 ) {
       result = true;

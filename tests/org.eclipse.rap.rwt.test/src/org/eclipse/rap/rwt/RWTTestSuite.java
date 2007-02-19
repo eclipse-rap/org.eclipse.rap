@@ -50,6 +50,7 @@ public class RWTTestSuite {
     suite.addTestSuite( RWTServletContextListener_Test.class );
     suite.addTestSuite( AdapterFactoryRegistry_Test.class );
     suite.addTestSuite( PhaseListenerRegistry_Test.class );
+    suite.addTestSuite( ResourceRegistry_Test.class );
     suite.addTestSuite( RWTLifeCycle_Test.class );
     suite.addTestSuite( LifeCycleAdapter_Test.class );
     suite.addTestSuite( ResourceManager_Test.class );
