@@ -130,8 +130,8 @@ qx.Proto._onChangeActive = function( evt ) {
 qx.Proto._onKeydown = function( evt ) {
   if( evt.getKeyIdentifier() == "Enter" ) {
     var defButton = this.getDefaultButton();
-    if( defButton != null ) {
-    	defButton.execute();
+    if( defButton != null && defButton.isSeeable() ) {
+      defButton.execute();
     }
   }
 }
