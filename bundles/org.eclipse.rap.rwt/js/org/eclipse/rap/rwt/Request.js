@@ -102,7 +102,7 @@ qx.Proto._sendImmediate = function() {
   }
   // set mandatory parameters; do this after regular params to override them
   // in case of conflict
-  request.setParameter( "uiRoot", this.uiRootId );
+  request.setParameter( "uiRoot", this._uiRootId );
   request.setParameter( "requestCounter", this._requestCounter );
   this._inDelayedSend = false;
   this._startWaitHintTimer();

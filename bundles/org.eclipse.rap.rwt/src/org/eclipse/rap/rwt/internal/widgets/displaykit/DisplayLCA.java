@@ -133,8 +133,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       out.endElement( HTML.HTML );
     } else {
       response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
-      IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-      jsSetUIRoot( adapter.getId() );
       
       out.write( "org.eclipse.rap.rwt.EventUtil.suspendEventHandling();" );
       disposeWidgets();
