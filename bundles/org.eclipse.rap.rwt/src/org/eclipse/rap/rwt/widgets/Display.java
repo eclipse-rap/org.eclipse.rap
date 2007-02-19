@@ -54,11 +54,13 @@ public class Display implements Adaptable {
   private Rectangle bounds;
   private Shell activeShell;
   private IDisplayAdapter displayAdapter;
+  public Control focusControl;
 
   private Image errorImage;
   private Image infoImage;
   private Image questionImage;
   private Image warningImage;
+
 
   public Display() {
     HttpSession session = ContextProvider.getSession();
@@ -73,17 +75,28 @@ public class Display implements Adaptable {
   }
 
   public Shell[] getShells() {
+//    checkDevice ();
     Shell[] result = new Shell[ shells.size() ];
     shells.toArray( result );
     return result;
   }
 
   public Rectangle getBounds() {
+//    checkDevice ();
     return new Rectangle( bounds );
   }
+  
+  public Control getFocusControl() {
+//    checkDevice ();
+    return focusControl;
+  }
 
+  ///////////////////////////
+  // Systen colors and images
+  
   // TODO [rh] preliminary: COLOR_WIDGET_XXX not yet supported
   public Color getSystemColor( final int id ) {
+//    checkDevice ();
     int pixel = 0x02000000;
     switch( id ) {
       case RWT.COLOR_WHITE:
@@ -142,7 +155,9 @@ public class Display implements Adaptable {
     return systemFont;
   }
   
-  public Image getSystemImage( int id ) {
+  // TODO [rh] revise this: why are Image.find() results store in fields?  
+  public Image getSystemImage( final int id ) {
+//  checkDevice ();
     ClassLoader classLoader = getClass().getClassLoader();
     Image result = null;
     switch( id ) {
@@ -178,6 +193,9 @@ public class Display implements Adaptable {
     }
     return result;
   }
+  
+  /////////////////////
+  // Coordinate mapping 
   
   public Point map( final Control from, final Control to, final Point point ) {
 //    checkDevice ();
@@ -307,11 +325,15 @@ public class Display implements Adaptable {
     public void setActiveShell( final Shell activeShell ) {
       Display.this.setActiveShell( activeShell );
     }
+
+    public void setFocusControl( final Control focusControl ) {
+      Display.this.focusControl = focusControl;
+    }
   }
   
   
   //////////////////
-  // helping methods
+  // Helping methods
   
   private void readInitialBounds() {
     HttpServletRequest request = ContextProvider.getRequest();

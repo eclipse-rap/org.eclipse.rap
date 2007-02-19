@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets;
 
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.widgets.Control;
 import org.eclipse.rap.rwt.widgets.Shell;
 
 
@@ -22,4 +23,5 @@ public interface IDisplayAdapter {
   
   void setBounds( Rectangle bounds );
   void setActiveShell( Shell shell );
+  void setFocusControl( Control control );
 }

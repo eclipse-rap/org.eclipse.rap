@@ -170,6 +170,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   public void readData( final Display display ) {
     Rectangle oldBounds = display.getBounds();
     readBounds( display );
+    readFocusControl( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
         IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
@@ -303,11 +304,31 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     int height
       = readIntPropertyValue( display, "bounds.height", oldBounds.height );
     Rectangle bounds = new Rectangle( 0, 0, width, height );
-    Object adapter = display.getAdapter( IDisplayAdapter.class );
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
-    displayAdapter.setBounds( bounds );
+    getDisplayAdapter( display ).setBounds( bounds );
   }
-  
+
+  private static void readFocusControl( final Display display ) {
+    // TODO [rh] revise this: traversing the widget tree once more only to find
+    //      out which control is focus. Could that be optimized?
+    HttpServletRequest request = ContextProvider.getRequest();
+    StringBuffer focusControlParam = new StringBuffer();
+    focusControlParam.append( DisplayUtil.getId( display ) );
+    focusControlParam.append( ".focusControl" );
+    String id = request.getParameter( focusControlParam.toString() );
+    Control focusControl = null;
+    if( id != null ) {
+      Shell[] shells = display.getShells();
+      for( int i = 0; focusControl == null && i < shells.length; i++ ) {
+        Widget widget = WidgetUtil.find( shells[ i ], id );
+        if( widget instanceof Control ) {
+          focusControl = ( Control )widget;
+        }
+      }
+    }
+    getDisplayAdapter( display ).setFocusControl( focusControl );
+System.out.println( "focusControl: " + focusControl );    
+  }
+
   private static String readPropertyValue( final Display display, 
                                            final String propertyName ) 
   {
@@ -331,5 +352,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       result = Integer.parseInt( value );
     }
     return result;
+  }
+
+  private static IDisplayAdapter getDisplayAdapter( final Display display ) {
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    return ( IDisplayAdapter )adapter;
   }
 }

@@ -251,6 +251,20 @@ public class DisplayLCA_Test extends TestCase {
     displayLCA.render( display );
     assertEquals( Boolean.TRUE, compositeInitState[ 0 ] );
   }
+  
+  public void testFocusControl() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    Control control = new Button( shell, RWT.PUSH );
+    String displayId = DisplayUtil.getId( display );
+    String controlId = WidgetUtil.getId( control );
+    
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
+    new RWTLifeCycle().execute();
+    assertEquals( control, display.getFocusControl() );
+  }
 
   protected void tearDown() throws Exception {
     AdapterManager manager = W4TContext.getAdapterManager();

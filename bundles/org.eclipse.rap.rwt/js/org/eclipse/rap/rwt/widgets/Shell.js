@@ -22,6 +22,8 @@ qx.OO.defineClass(
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeActive", this._onChangeActive );
     this.addEventListener( "keydown", this._onKeydown );    
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    req.addEventListener( "send", this._onSend, this );
   }
 );
 
@@ -140,6 +142,17 @@ qx.Proto._onKeydown = function( evt ) {
     }
   } else if ( keyId == "Escape" && this._isDialogWindow ) {
     this.close();
+  }
+}
+
+qx.Proto._onSend = function( evt ) {
+  if( this.getActive() ) {
+    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var focusedChildId =  widgetManager.findIdByWidget( this.getFocusedChild() );
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    if( focusedChildId != null ) {
+      req.addParameter( req.getUIRootId() + ".focusControl", focusedChildId );
+    }
   }
 }
 

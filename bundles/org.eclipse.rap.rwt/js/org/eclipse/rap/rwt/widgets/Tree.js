@@ -25,6 +25,8 @@ qx.OO.defineClass(
     this.setHideNode( true );
     this.setUseTreeLines( true );
     this.setUseDoubleClick( true );
+    // TODO [rh] this is only to make the tree fousable at all
+    this.setTabIndex( 1 );
     this._rwtStyle = style;
     //
     this._widgetSelectedListeners = false;

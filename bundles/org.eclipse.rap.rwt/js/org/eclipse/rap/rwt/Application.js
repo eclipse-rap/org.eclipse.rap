@@ -45,10 +45,8 @@ qx.Proto.close = function( evt ) {
 };
 
 qx.Proto.terminate = function( evt ) {
-  // TODO [rh] code below causes error (this._onResize is undefined)
-  //      Is it necessary to remove eventListener anyway?
-//  var doc = qx.ui.core.ClientDocument.getInstance();
-//  doc.removeEventListener( "windowresize", this._onResize );  
+  var doc = qx.ui.core.ClientDocument.getInstance();
+  doc.removeEventListener( "windowresize", this._onResize );  
 };
 
 org.eclipse.rap.rwt.Application._onResize = function( evt ) {
