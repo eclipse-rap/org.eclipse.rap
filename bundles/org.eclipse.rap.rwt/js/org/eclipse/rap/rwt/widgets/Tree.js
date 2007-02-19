@@ -21,9 +21,10 @@ qx.OO.defineClass(
   function( style ) {
     var trs = qx.ui.treefullcontrol.TreeRowStructure.getInstance().standard( "" );
     qx.ui.treefullcontrol.Tree.call( this, trs );
-    this.setOverflow( "auto" );
+    this.setOverflow( qx.constant.Style.OVERFLOW_AUTO );
     this.setHideNode( true );
     this.setUseTreeLines( true );
+    this.setUseDoubleClick( true );
     this._rwtStyle = style;
     //
     this._widgetSelectedListeners = false;
@@ -43,6 +44,10 @@ qx.OO.defineClass(
  */
 qx.Proto.setWidgetSelectedListeners = function( value ) {
   this._widgetSelectedListeners = value;
+}
+
+qx.Proto.hasWidgetSelectedListeners = function() {
+  return this._widgetSelectedListeners;
 }
 
 /**

@@ -25,7 +25,6 @@ public class SpinnerTab extends ExampleTab {
 
   protected void createStyleControls( ) {
     createStyleButton( "BORDER" );
-    createStyleButton( "WRAP" );
     createStyleButton( "READ_ONLY" );
     createVisibilityButton();
     createEnablementButton();

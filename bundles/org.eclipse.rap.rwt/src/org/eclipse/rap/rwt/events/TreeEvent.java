@@ -12,8 +12,6 @@
 package org.eclipse.rap.rwt.events;
 
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.widgets.Item;
 import org.eclipse.rap.rwt.widgets.Widget;
 import com.w4t.Adaptable;
@@ -36,7 +34,7 @@ public final class TreeEvent extends SelectionEvent {
                     final Item item,
                     final int id )
   {
-    super( widget, item, id, new Rectangle( 0, 0, 0, 0 ), true, RWT.NONE );
+    super( widget, item, id );
   }
 
   protected void dispatchToObserver( final Object listener ) {

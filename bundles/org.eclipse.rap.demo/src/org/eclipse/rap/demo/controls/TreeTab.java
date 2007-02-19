@@ -10,9 +10,10 @@
 package org.eclipse.rap.demo.controls;
 
 import java.text.MessageFormat;
+import org.eclipse.rap.jface.dialogs.MessageDialog;
+import org.eclipse.rap.jface.window.IWindowCallback;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
@@ -36,7 +37,7 @@ public class TreeTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout() );
+    parent.setLayout( new RowLayout( RWT.VERTICAL ) );
     int style = getStyle();
     tree = new Tree( parent, style );
     tree.setLayoutData( new RowData( 200, 200 ) );
@@ -48,10 +49,53 @@ public class TreeTab extends ExampleTab {
         subitem.setText( "Subnode_" + ( i + 1 ) );
       }
     }
+    final Label lblTreeEvent = new Label( parent, RWT.NONE );
+    lblTreeEvent.setLayoutData( new RowData( 200, 22 ) );
     Menu treeMenu = new Menu( tree );
     MenuItem treeMenuItem = new MenuItem( treeMenu, RWT.PUSH );
+    treeMenuItem.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        IWindowCallback windowCallback = new IWindowCallback() {
+          public void windowClosed( final int returnCode ) {
+            // do nothing
+          }
+        };
+        TreeItem item = tree.getSelection()[ 0 ];
+        String itemText = "null";
+        if( item != null ) {
+          item.getText();
+        }
+        String message = "You requested a context menu for: " + itemText;
+        MessageDialog.openInformation( tree.getShell(), 
+                                       "Information", 
+                                       message, 
+                                       windowCallback );
+      }
+    } );
     treeMenuItem.setText( "TreeContextMenuItem" );
     tree.setMenu( treeMenu );
+    tree.addTreeListener( new TreeListener() {
+      public void treeCollapsed( final TreeEvent event ) {
+        lblTreeEvent.setText( "Collapsed: "  + event.item.getText() );
+      }
+      public void treeExpanded( final TreeEvent event ) {
+        lblTreeEvent.setText( "Expanded: "  + event.item.getText() );
+      }
+    } );
+    tree.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        String msg = "Selected: " + event.item.getText();
+        switch( event.detail ) {
+          case RWT.NONE:
+            msg +=", detail: RWT.NONE";
+            break;
+          case RWT.CHECK:
+            msg +=", detail: RWT.CHECK";
+            break;
+        }
+        lblTreeEvent.setText( msg );
+      }
+    } );
     registerControl( tree );
   }
 

@@ -26,7 +26,7 @@ final class TextLCAUtil {
   static final String PROP_MODIFY_LISTENER = "modifyListener";
 
   private static final JSListenerInfo JS_MODIFY_LISTENER_INFO 
-    = new JSListenerInfo( JSConst.QX_EVENT_KEYINPUT, 
+    = new JSListenerInfo( "keypress", // JSConst.QX_EVENT_KEYINPUT, 
                           "org.eclipse.rap.rwt.TextUtil.modifyText", 
                           JSListenerType.STATE_AND_ACTION );
   private static final JSListenerInfo JS_BLUR_LISTENER_INFO 
@@ -77,14 +77,16 @@ final class TextLCAUtil {
   }
 
   static void writeModifyListener( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    boolean hasListener = ModifyEvent.hasListener( text );
-    writer.updateListener( JS_MODIFY_LISTENER_INFO, 
-                           PROP_MODIFY_LISTENER, 
-                           hasListener );
-    writer.updateListener( JS_BLUR_LISTENER_INFO, 
-                           PROP_MODIFY_LISTENER, 
-                           hasListener );
+    if( ( text.getStyle() & RWT.READ_ONLY ) == 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( text );
+      boolean hasListener = ModifyEvent.hasListener( text );
+      writer.updateListener( JS_MODIFY_LISTENER_INFO, 
+                             PROP_MODIFY_LISTENER, 
+                             hasListener );
+      writer.updateListener( JS_BLUR_LISTENER_INFO, 
+                             PROP_MODIFY_LISTENER, 
+                             hasListener );
+    }
   }
 
   /**

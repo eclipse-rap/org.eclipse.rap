@@ -15,7 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.TestCase;
-import org.eclipse.rap.rwt.*;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.SelectionAdapter;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Rectangle;
@@ -180,10 +181,7 @@ public class DisplayLCA_Test extends TestCase {
                 SelectionEvent event 
                   = new SelectionEvent( widget, 
                                         null, 
-                                        SelectionEvent.WIDGET_SELECTED, 
-                                        new Rectangle( 0, 0, 0, 0 ), 
-                                        true, 
-                                        0 );
+                                        SelectionEvent.WIDGET_SELECTED );
                 event.processEvent();
               }
             }

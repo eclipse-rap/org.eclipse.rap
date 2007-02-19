@@ -1296,10 +1296,7 @@ public class CTabFolder extends Composite {
     if( notify && selectedIndex != oldSelectedIndex && selectedIndex != -1 ) {
       SelectionEvent event = new SelectionEvent( this, 
                                                  getSelection(), 
-                                                 SelectionEvent.WIDGET_SELECTED, 
-                                                 new Rectangle( 0, 0, 0, 0 ), 
-                                                 true, 
-                                                 0 );
+                                                 SelectionEvent.WIDGET_SELECTED );
       event.processEvent();
     }
   }

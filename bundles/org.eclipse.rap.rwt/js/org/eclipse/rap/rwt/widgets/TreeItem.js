@@ -61,11 +61,10 @@ qx.Proto._onChangeChecked = function( evt ) {
     var id = wm.findIdByWidget( this );
     var req = org.eclipse.rap.rwt.Request.getInstance();
     req.addParameter( id + ".checked", this._checkBox.getChecked() );
-    /*
-    if( has selection listeners ) {
+    if( this.getTree().hasWidgetSelectedListeners() ) {
+      req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected.detail", "check" );
       req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
       req.send();
     }
-    */
   }
 }

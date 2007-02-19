@@ -16,6 +16,7 @@ qx.OO.defineClass(
     qx.ui.form.Spinner.call( this );
     this._textfield.setReadOnly( readOnly );
     this._isModified = false;
+    this._readOnly = readOnly;
     if( border ) {
       this.addState( "rwt_BORDER" );
     }
@@ -23,10 +24,13 @@ qx.OO.defineClass(
       this._upbutton.addState( "rwt_FLAT" );
       this._downbutton.addState( "rwt_FLAT" );
     }
-    this._manager.addEventListener( "changeValue", this._onChangeValue, this );
-    this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
-    this._textfield.addEventListener( "blur", this._sendModifyText, this );
-    this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+    if( !readOnly ) {
+      this._manager.addEventListener( "changeValue", this._onChangeValue, this );
+      this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
+      this._textfield.addEventListener( "blur", this._sendModifyText, this );
+      this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+    }
+    this._updateButtonEnablement();
   }
 );
 
@@ -40,11 +44,29 @@ qx.Proto.dispose = function() {
   if( this.getDisposed() ) {
     return;
   }
-  this._manager.removeEventListener( "changeValue", this._onChangeValue, this );
-  this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
-  this._textfield.removeEventListener( "blur", this._sendModifyText, this );
-  this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
+  if( !this._readOnly ) {
+    this._manager.removeEventListener( "changeValue", this._onChangeValue, this );
+    this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
+    this._textfield.removeEventListener( "blur", this._sendModifyText, this );
+    this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
+  }
   return qx.ui.form.Spinner.prototype.dispose.call( this );
+}
+
+/**
+ * HACK: override qx.ui.form.Spinner._increment and _pageIncrement to achieve
+ * read-only beavior.
+ */
+qx.Proto._increment = function() {
+  if( !this._readOnly ) {
+    qx.ui.form.Spinner.prototype._increment.call( this )
+  }
+}
+
+qx.Proto._pageIncrement = function() {
+  if( !this._readOnly ) {
+    qx.ui.form.Spinner.prototype._pageIncrement.call( this )
+  }
 }
 
 qx.Proto._onChangeValue = function( evt ) {
@@ -60,8 +82,17 @@ qx.Proto._onChangeValue = function( evt ) {
 
 qx.Proto._onChangeEnabled = function( evt ) {
   this._textfield.setEnabled( this.getEnabled() );
-  this._upbutton.setEnabled( this.getEnabled() );
-  this._downbutton.setEnabled( this.getEnabled() );
+  this._updateButtonEnablement();
+}
+
+qx.Proto._updateButtonEnablement = function() {
+  if( this.getEnabled() ) {
+    this._upbutton.setEnabled( !this._readOnly );
+    this._downbutton.setEnabled( !this._readOnly );
+  } else {
+    this._upbutton.setEnabled( false );
+    this._downbutton.setEnabled( false );
+  }
 }
 
 qx.Proto._onSend = function( evt ) {

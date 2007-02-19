@@ -20,9 +20,12 @@ import org.eclipse.rap.rwt.widgets.Widget;
 
 public class TextLCA extends AbstractWidgetLCA {
 
-  private final static AbstractTextDelegateLCA SINGLE = new SingleTextDelegateLCA();
-  private final static AbstractTextDelegateLCA PASSWORD = new PasswordTextDelegateLCA();
-  private final static AbstractTextDelegateLCA MULTI = new MultiTextDelegateLCA();
+  private final static AbstractTextDelegateLCA SINGLE 
+    = new SingleTextDelegateLCA();
+  private final static AbstractTextDelegateLCA PASSWORD 
+    = new PasswordTextDelegateLCA();
+  private final static AbstractTextDelegateLCA MULTI 
+    = new MultiTextDelegateLCA();
 
   public void preserveValues( final Widget widget ) {
     getLCADelegate( widget ).preserveValues( ( Text )widget );

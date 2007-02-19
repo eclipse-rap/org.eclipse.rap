@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.rwt.events;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.widgets.Item;
 import org.eclipse.rap.rwt.widgets.Widget;
@@ -23,9 +24,11 @@ import com.w4t.Adaptable;
  */
 public class SelectionEvent extends RWTEvent {
 
+
   public static final int WIDGET_SELECTED = 0;
   
   private static final Class LISTENER = SelectionListener.class;
+  private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
   
   public int x;
   public int y;
@@ -36,6 +39,13 @@ public class SelectionEvent extends RWTEvent {
   public int detail;
   
   
+  public SelectionEvent( final Widget widget,
+                         final Item item,
+                         final int id )
+  {
+    this( widget, item, id, EMPTY_RECTANGLE, true, RWT.NONE );
+  }
+
   public SelectionEvent( final Widget widget,
                          final Item item,
                          final int id,
@@ -52,7 +62,7 @@ public class SelectionEvent extends RWTEvent {
     this.item = item;
     this.detail = detail;
   }
-
+  
   protected void dispatchToObserver( final Object listener ) {
     ( ( SelectionListener )listener ).widgetSelected( this );
   }

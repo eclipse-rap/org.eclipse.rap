@@ -14,7 +14,6 @@ package org.eclipse.rap.rwt.internal.widgets.spinnerkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ModifyEvent;
-import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Spinner;
 import org.eclipse.rap.rwt.widgets.Widget;
@@ -110,9 +109,12 @@ public class SpinnerLCA extends AbstractWidgetLCA {
   private static void writeModifyListener( final Spinner spinner ) 
     throws IOException 
   {
-    JSWriter writer = JSWriter.getWriterFor( spinner );
-    Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( spinner ) );
-    Boolean defValue = Boolean.FALSE;
-    writer.set( PROP_MODIFY_LISTENER, "hasModifyListener", newValue, defValue );
+    if( ( spinner.getStyle() & RWT.READ_ONLY ) == 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( spinner );
+      String prop = PROP_MODIFY_LISTENER;
+      Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( spinner ) );
+      Boolean defValue = Boolean.FALSE;
+      writer.set( prop, "hasModifyListener", newValue, defValue );
+    }
   }
 }

@@ -23,6 +23,8 @@ public final class JSConst {
   // RWT keys used to identify which kind of RWT-Event is requested
   public static final String EVENT_WIDGET_SELECTED 
     = "org.eclipse.rap.rwt.events.widgetSelected";
+  public static final String EVENT_WIDGET_SELECTED_DETAIL 
+    = "org.eclipse.rap.rwt.events.widgetSelected.detail";
   public static final String EVENT_WIDGET_RESIZED 
     = "org.eclipse.rap.rwt.events.widgetResized";
   public static final String EVENT_WIDGET_MOVED
