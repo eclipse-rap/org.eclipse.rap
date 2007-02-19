@@ -45,7 +45,6 @@ public class TextTab extends ExampleTab {
     Group grpContainer = new Group( parent, RWT.NONE );
     grpContainer.setText( "Simple Text" );
     grpContainer.setLayout( new GridLayout( 3, false ) );
-    grpContainer.setLayoutData( new RowData( 400, 200 ) );
     GridData gridData;
     final Button btnChangeIsDefault = new Button( grpContainer, RWT.CHECK );
     String buttonText = "Make the 'Change' button the default button";
@@ -58,14 +57,15 @@ public class TextTab extends ExampleTab {
     final Text result = new Text( grpContainer, style );
     Point preferred = getPreferredSize( result );
     result.setLayoutData( new GridData( preferred.x, preferred.y ) );
+    grpContainer.setLayoutData( new RowData( 400, 140 + preferred.y ) );
     result.setText(   "Lorem ipsum dolor sit amet, consectetur adipisici "
-                      + "elit, sed do eiusmod tempor incididunt ut labore et "
-                      + "dolore magna aliqua.\n"
-                      + "Ut enim ad minim veniam, quis nostrud exercitation "
-                      + "ullamco laboris nisi ut aliquip ex ea commodo "
-                      + "consequat.\n"
-                      + "Duis aute irure dolor in reprehenderit in voluptate "
-                      + "velit esse cillum dolore eu fugiat nulla pariatur." );
+                    + "elit, sed do eiusmod tempor incididunt ut labore et "
+                    + "dolore magna aliqua.\n"
+                    + "Ut enim ad minim veniam, quis nostrud exercitation "
+                    + "ullamco laboris nisi ut aliquip ex ea commodo "
+                    + "consequat.\n"
+                    + "Duis aute irure dolor in reprehenderit in voluptate "
+                    + "velit esse cillum dolore eu fugiat nulla pariatur." );
     final Button btnChange = new Button( grpContainer, RWT.PUSH );
     final Label lblTextContent = new Label( grpContainer, RWT.WRAP );
     gridData = new GridData( RWT.FILL, RWT.FILL, true, true );
@@ -102,7 +102,6 @@ public class TextTab extends ExampleTab {
     Group grpContainer = new Group( parent, RWT.NONE );
     grpContainer.setText( "Text width ModifyListener" );
     grpContainer.setLayout( new GridLayout( 3, false ) );
-    grpContainer.setLayoutData( new RowData( 400, 200 ) );
     GridData gridData;
     final Button btnChangeIsDefault = new Button( grpContainer, RWT.CHECK );
     String buttonText = "Make the 'Change' button the default button";
@@ -114,6 +113,7 @@ public class TextTab extends ExampleTab {
     lblEnterText.setText( "Enter some text, please" );
     final Text result = new Text( grpContainer, style );
     Point preferred = getPreferredSize( result );
+    grpContainer.setLayoutData( new RowData( 400, 140 + preferred.y ) );
     result.setLayoutData( new GridData( preferred.x, preferred.y ) );
     final Button btnChange = new Button( grpContainer, RWT.PUSH );
     final Label lblTextContent = new Label( grpContainer, RWT.WRAP );
@@ -159,7 +159,7 @@ public class TextTab extends ExampleTab {
     if( ( text.getStyle() & RWT.SINGLE ) != 0 ) {
       result = new Point( 200, 20 );
     } else {
-      result = new Point( 200, 200 );
+      result = new Point( 200, 100 );
     }
     return result;
   }

@@ -43,7 +43,7 @@ final class DefaultButtonManager extends SessionSingletonBase {
   }
   
   void change( final Shell shell, final Button defaultButton ) {
-    defaultButton.getShell().setDefaultButton( defaultButton );
+    shell.setDefaultButton( defaultButton );
     if( changeListeners.size() > 0 ) {
       ChangeListener[] listeners = new ChangeListener[ changeListeners.size() ]; 
       changeListeners.toArray( listeners );
