@@ -24,6 +24,7 @@ qx.OO.defineClass(
     this._checkBox = null;
     if( qx.lang.String.contains( parent.getTree().getRWTStyle(), "check" ) ) {
       this._checkBox = new qx.ui.form.CheckBox();
+      this._checkBox.setTabIndex( -1 );
       this._checkBox.addEventListener( "changeChecked", this._onChangeChecked, this );
       row.addObject( this._checkBox, false );
     }
