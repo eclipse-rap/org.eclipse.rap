@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.spinnerkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.events.ModifyEvent;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Spinner;
@@ -26,6 +27,7 @@ public class SpinnerLCA extends AbstractWidgetLCA {
   private static final String PROP_MAXIMUM = "maximum";
   private static final String PROP_MINIMUM = "minimum";
   private static final String PROP_INCREMENT = "increment";
+  private static final String PROP_MODIFY_LISTENER = "modifyListener";
 
   public void preserveValues( final Widget widget ) {
     Spinner spinner = ( Spinner )widget;
@@ -36,13 +38,19 @@ public class SpinnerLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_MAXIMUM, new Integer( spinner.getMaximum() ) );
     adapter.preserve( PROP_PAGE_INCREMENT, 
                       new Integer( spinner.getPageIncrement() ) );
+    adapter.preserve( PROP_MODIFY_LISTENER, 
+                      Boolean.valueOf( ModifyEvent.hasListener( spinner ) ) );
   }
 
   public void readData( final Widget widget ) {
+    Spinner spinner = ( Spinner )widget;
     String value = WidgetLCAUtil.readPropertyValue( widget, "selection" );
     if( value != null ) {
-      Spinner spinner = ( Spinner )widget;
       spinner.setSelection( Integer.parseInt( value ) );
+    }
+    if( WidgetLCAUtil.wasEventSent( spinner, JSConst.EVENT_MODIFY_TEXT ) ) {
+      ModifyEvent event = new ModifyEvent( spinner );
+      event.processEvent();
     }
   }
 
@@ -74,6 +82,7 @@ public class SpinnerLCA extends AbstractWidgetLCA {
                  spinner.getPageIncrement(), 
                  10 );
     writeSetInt( spinner, PROP_SELECTION, "value", spinner.getSelection(), 0 );
+    writeModifyListener( spinner );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -98,10 +107,12 @@ public class SpinnerLCA extends AbstractWidgetLCA {
                 new Integer( defValue ) );
   }
 
-  static void writeReadOnly( final Spinner spinner ) throws IOException {
+  private static void writeModifyListener( final Spinner spinner ) 
+    throws IOException 
+  {
     JSWriter writer = JSWriter.getWriterFor( spinner );
-    if( ( spinner.getStyle() & RWT.READ_ONLY ) != 0 ) {
-      writer.set( "readOnly", true );
-    }
+    Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( spinner ) );
+    Boolean defValue = Boolean.FALSE;
+    writer.set( PROP_MODIFY_LISTENER, "hasModifyListener", newValue, defValue );
   }
 }

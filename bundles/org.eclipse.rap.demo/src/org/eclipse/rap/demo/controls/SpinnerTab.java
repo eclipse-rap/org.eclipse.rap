@@ -10,14 +10,14 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class SpinnerTab extends ExampleTab {
 
   private Spinner spinner;
+  private Spinner modifySpinner;
 
   public SpinnerTab( final TabFolder folder ) {
     super( folder, "Spinner" );
@@ -34,10 +34,26 @@ public class SpinnerTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout() );
+    parent.setLayout( new GridLayout( 2, false ) );
+    Label label = new Label( parent, RWT.NONE );
+    label.setText( "Simple Spinner" );
     spinner = new Spinner( parent, getStyle() );
-    spinner.setLayoutData( new RowData( 60, 22 ) );
+    spinner.setLayoutData( new GridData( 60, 22 ) );
+    label = new Label( parent, RWT.NONE );
+    label.setText( "Spinner with ModifyListener" );
+    modifySpinner = new Spinner( parent, getStyle() );
+    modifySpinner.setLayoutData( new GridData( 60, 22 ) );
+    label = new Label( parent, RWT.NONE );
+    label.setText( "Current value" );
+    final Label lblSpinnerValue = new Label( parent, RWT.NONE );
+    modifySpinner.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        String value = String.valueOf( modifySpinner.getSelection() );
+        lblSpinnerValue.setText( value );
+      }
+    } );
     registerControl( spinner );
+    registerControl( modifySpinner );
   }
 
   private void createRangeControls( final Composite parent ) {

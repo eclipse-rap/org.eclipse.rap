@@ -11,7 +11,7 @@
 
 package org.eclipse.rap.rwt.events;
 
-import org.eclipse.rap.rwt.widgets.Widget;
+import org.eclipse.rap.rwt.widgets.Control;
 import com.w4t.Adaptable;
 
 
@@ -21,7 +21,7 @@ public class ModifyEvent extends RWTEvent {
   
   private static final Class LISTENER = ModifyListener.class;
 
-  public ModifyEvent( final Widget source ) {
+  public ModifyEvent( final Control source ) {
     super( source, MODIFY_TEXT );
   }
   

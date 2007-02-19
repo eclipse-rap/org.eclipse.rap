@@ -14,6 +14,8 @@ package org.eclipse.rap.rwt.widgets;
 import java.text.*;
 import java.util.Locale;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.events.ModifyEvent;
+import org.eclipse.rap.rwt.events.ModifyListener;
 import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
@@ -196,6 +198,17 @@ public class Spinner extends Composite {
     }
     result.width += ScrollBar.SCROLL_BAR_WIDTH;
     return result;
+  }
+  
+  /////////////////////////////////////////////
+  // Event listener registration/deregistration
+  
+  public void addModifyListener( final ModifyListener listener ) {
+    ModifyEvent.addListener( this, listener );
+  }
+  
+  public void removeModifyListener( final ModifyListener listener ) {
+    ModifyEvent.removeListener( this, listener );
   }
   
   //////////////////

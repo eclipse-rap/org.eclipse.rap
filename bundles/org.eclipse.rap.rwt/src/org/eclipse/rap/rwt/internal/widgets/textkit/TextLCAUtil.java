@@ -12,7 +12,6 @@
 package org.eclipse.rap.rwt.internal.widgets.textkit;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ModifyEvent;
 import org.eclipse.rap.rwt.internal.widgets.IWidgetAdapter;
@@ -20,7 +19,6 @@ import org.eclipse.rap.rwt.internal.widgets.WidgetLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Text;
 import com.w4t.W4TContext;
-import com.w4t.engine.service.ContextProvider;
 import com.w4t.util.browser.Mozilla;
 
 
@@ -37,10 +35,6 @@ final class TextLCAUtil {
     = new JSListenerInfo( JSConst.QX_EVENT_BLUR, 
                           "org.eclipse.rap.rwt.TextUtil.modifyTextOnBlur", 
                           JSListenerType.ACTION );
-//  private static final JSListenerInfo JS_INPUT_LISTENER_INFO 
-//    = new JSListenerInfo( JSConst.QX_EVENT_INPUT, 
-//                          JS_MODIFY_TEXT, 
-//                          JSListenerType.ACTION );
 
   private TextLCAUtil() {
     // prevent instantiation
@@ -61,9 +55,7 @@ final class TextLCAUtil {
   }
   
   static void readModifyEvent( final Text text ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String id = request.getParameter( JSConst.EVENT_MODIFY_TEXT );
-    if( WidgetUtil.getId( text ).equals( id ) ) {
+    if( WidgetLCAUtil.wasEventSent( text, JSConst.EVENT_MODIFY_TEXT ) ) {
       ModifyEvent event = new ModifyEvent( text );
       event.processEvent();
     }
