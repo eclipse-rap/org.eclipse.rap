@@ -15,8 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -46,7 +45,7 @@ public class RenderDispose_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     lifeCycle.execute();
     // dispose of the button
-    button.addSelectionListener( new SelectionListener() {
+    button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         button.dispose();
       }

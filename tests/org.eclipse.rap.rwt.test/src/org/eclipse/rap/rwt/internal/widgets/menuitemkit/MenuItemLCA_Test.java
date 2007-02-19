@@ -15,8 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -34,7 +33,7 @@ public class MenuItemLCA_Test extends TestCase {
     Menu menu = new Menu( shell, RWT.BAR );
     shell.setMenuBar( menu );
     final MenuItem menuItem = new MenuItem( menu, RWT.PUSH );
-    menuItem.addSelectionListener( new SelectionListener() {
+    menuItem.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
@@ -63,7 +62,7 @@ public class MenuItemLCA_Test extends TestCase {
     shell.setMenuBar( menuBar );
     Menu menu = new Menu( menuBar );
     final MenuItem menuItem = new MenuItem( menu, RWT.CHECK );
-    menuItem.addSelectionListener( new SelectionListener() {
+    menuItem.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );

@@ -162,7 +162,7 @@ public class RWTDemo implements IEntryPoint {
 
     ToolItem item2 = new ToolItem( toolBar, RWT.PUSH );
     item2.setText( "open" );
-    item2.addSelectionListener( new SelectionListener() {
+    item2.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         createShell2( shell.getDisplay() );
       }
@@ -204,8 +204,7 @@ public class RWTDemo implements IEntryPoint {
     treeData.left = new FormAttachment( 0, 2 );
     treeData.right = new FormAttachment( 100, -2 );
     treeData.bottom = new FormAttachment( 100, -2 );
-    tree.addSelectionListener( new SelectionListener() {
-
+    tree.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         txtGroupNameTab1.setText( "treeItem selected: " + event.item.getText() );
       }
@@ -233,8 +232,7 @@ public class RWTDemo implements IEntryPoint {
     createTab4( downFolder );
     topFolder.setSelection( 0 );
     downFolder.setSelection( 0 );
-    topFolder.addSelectionListener( new SelectionListener() {
-
+    topFolder.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         previousTabSelected = tabSelected;
         tabSelected = ( ( TabFolder )event.getSource() ).getSelectionIndex();
@@ -280,7 +278,7 @@ public class RWTDemo implements IEntryPoint {
     fileMenuItem.setMenu( fileMenu );
     MenuItem openItem = new MenuItem( fileMenu, RWT.PUSH );
     openItem.setText( "Open" );
-    openItem.addSelectionListener( new SelectionListener() {
+    openItem.addSelectionListener( new SelectionAdapter() {
 
       public void widgetSelected( final SelectionEvent event ) {
         createShell2( shell.getDisplay() );
@@ -346,7 +344,7 @@ public class RWTDemo implements IEntryPoint {
     final Text text = new Text( composite, RWT.MULTI | RWT.BORDER );
     text.setText( "None ASCII characters: äöüß@, select the Sash or press the button" );
     Sash sash = new Sash( composite, RWT.NONE );
-    sash.addSelectionListener( new SelectionListener() {
+    sash.addSelectionListener( new SelectionAdapter() {
 
       public void widgetSelected( SelectionEvent event ) {
         text.setText( "widgetSelected: "
@@ -364,7 +362,7 @@ public class RWTDemo implements IEntryPoint {
     } );
     Button button = new Button( composite, RWT.NONE );
     button.setText( "Push Me" );
-    button.addSelectionListener( new SelectionListener() {
+    button.addSelectionListener( new SelectionAdapter() {
 
       public void widgetSelected( final SelectionEvent event ) {
         text.setText( "widgetSelected: "
@@ -494,7 +492,7 @@ public class RWTDemo implements IEntryPoint {
     list.add( "Selection5" );
     list.add( "Selection6" );
     list.setToolTipText( "I'm a list" );
-    list.addSelectionListener( new SelectionListener() {
+    list.addSelectionListener( new SelectionAdapter() {
 
       public void widgetSelected( SelectionEvent e ) {
         List list = ( List )e.getSource();
@@ -543,7 +541,7 @@ public class RWTDemo implements IEntryPoint {
       }
     }
     table.setSelection( 0 );
-    table.addSelectionListener( new SelectionListener() {
+    table.addSelectionListener( new SelectionAdapter() {
 
       public void widgetSelected( final SelectionEvent event ) {
         String selected = "";

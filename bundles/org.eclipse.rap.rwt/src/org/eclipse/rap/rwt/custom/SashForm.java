@@ -8,9 +8,7 @@
 package org.eclipse.rap.rwt.custom;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.SWT;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Color;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.widgets.*;
@@ -80,7 +78,7 @@ public class SashForm extends Composite {
       sashStyle |= RWT.BORDER;
     }
 //     if ((style & RWT.SMOOTH) != 0) sashStyle |= RWT.SMOOTH;
-    sashListener = new SelectionListener() {
+    sashListener = new SelectionAdapter() {
 
       public void widgetSelected( final SelectionEvent event ) {
         onDragSash( event );

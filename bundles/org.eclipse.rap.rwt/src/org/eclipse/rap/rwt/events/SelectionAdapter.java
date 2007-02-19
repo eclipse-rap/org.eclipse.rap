@@ -16,4 +16,7 @@ public abstract class SelectionAdapter implements SelectionListener {
 
   public void widgetSelected( final SelectionEvent event ) {
   }
+  
+  public void widgetDefaultSelected( final SelectionEvent event ) {
+  }
 }

@@ -58,7 +58,7 @@ public class RWTEvent_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, RWT.NONE );
     Button button = new Button( shell, RWT.PUSH );
-    button.addSelectionListener( new SelectionListener() {
+    button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         log.append( EVENT_FIRED );
       }
@@ -103,7 +103,7 @@ public class RWTEvent_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, RWT.NONE );
     Button button = new Button( shell, RWT.PUSH );
-    button.addSelectionListener( new SelectionListener() {
+    button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         eventLog.add( event );
       }

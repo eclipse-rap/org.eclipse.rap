@@ -95,7 +95,7 @@ public class CBanner extends Composite {
     super( parent, checkStyle( style ) );
     super.setLayout( new CBannerLayout() );
     separator = new Sash( this, RWT.VERTICAL );
-    separator.addSelectionListener( new SelectionListener() {
+    separator.addSelectionListener( new SelectionAdapter() {
 
       public void widgetSelected( SelectionEvent event ) {
         // TODO: check RWT.DRAG in event.details ?

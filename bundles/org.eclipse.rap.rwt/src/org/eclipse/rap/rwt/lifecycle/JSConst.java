@@ -25,6 +25,8 @@ public final class JSConst {
     = "org.eclipse.rap.rwt.events.widgetSelected";
   public static final String EVENT_WIDGET_SELECTED_DETAIL 
     = "org.eclipse.rap.rwt.events.widgetSelected.detail";
+  public static final String EVENT_WIDGET_DEFAULT_SELECTED 
+    = "org.eclipse.rap.rwt.events.widgetDefaultSelected";
   public static final String EVENT_WIDGET_RESIZED 
     = "org.eclipse.rap.rwt.events.widgetResized";
   public static final String EVENT_WIDGET_MOVED

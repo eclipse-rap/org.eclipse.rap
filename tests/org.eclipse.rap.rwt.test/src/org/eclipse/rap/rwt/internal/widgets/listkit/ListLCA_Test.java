@@ -16,8 +16,7 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.internal.widgets.IListAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -90,7 +89,7 @@ public class ListLCA_Test extends TestCase {
     list.add( "item1" );
     list.add( "item2" );
     list.setSelection( -1 );
-    list.addSelectionListener( new SelectionListener() {
+    list.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         log.append( "selectionEvent" );
         assertSame( list, event.getSource() );

@@ -185,7 +185,7 @@ public class ControlLCAUtil_Test extends TestCase {
   public void testProcessSelection() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
-    SelectionListener listener = new SelectionListener() {
+    SelectionListener listener = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         log.append( "widgetSelected" );
       }

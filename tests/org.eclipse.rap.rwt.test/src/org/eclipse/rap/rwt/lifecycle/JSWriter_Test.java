@@ -26,13 +26,18 @@ public class JSWriter_Test extends TestCase {
 
   private static final String PROPERTY_NAME = "propertyName";
 
+  // TODO [rst] replace with SelectionAdapter?
   private static final class TestSelectionListener
     implements SelectionListener
   {
     public void widgetSelected( final SelectionEvent event ) {
       // do nothing
     }
+    public void widgetDefaultSelected( SelectionEvent event ) {
+      // do nothing
+    }
   }
+  
   private final class TestShell extends Shell {
 
     final Button button;

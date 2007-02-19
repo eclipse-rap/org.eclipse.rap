@@ -36,8 +36,7 @@ public class SelectionEvent_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
     final Button button = new Button( shell, RWT.PUSH );
-    button.addSelectionListener( new SelectionListener() {
-
+    button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         assertSame( button, event.getSource() );
         assertNull( event.item );
@@ -53,7 +52,7 @@ public class SelectionEvent_Test extends TestCase {
                                                null,
                                                SelectionEvent.WIDGET_SELECTED,
                                                new Rectangle( 10, 20, 30, 40 ),
-                                               true, 
+                                               true,
                                                RWT.NONE );
     event.processEvent();
     assertEquals( WIDGET_SELECTED, log );
@@ -67,7 +66,7 @@ public class SelectionEvent_Test extends TestCase {
     Composite composite = new Composite( folder, RWT.NONE );
     item.setControl( composite );
     folder.setSelection( 0 );
-    folder.addSelectionListener( new SelectionListener() {
+    folder.addSelectionListener( new SelectionAdapter() {
 
       public void widgetSelected( SelectionEvent event ) {
         assertSame( folder, event.getSource() );

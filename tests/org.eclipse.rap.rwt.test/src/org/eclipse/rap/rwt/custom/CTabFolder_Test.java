@@ -15,8 +15,7 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.rap.rwt.layout.FillLayout;
@@ -75,7 +74,7 @@ public class CTabFolder_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
     CTabFolder folder1 = new CTabFolder( shell, RWT.NONE );
-    folder1.addSelectionListener( new SelectionListener() {
+    folder1.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         log.append( "selectionEvent" );
       }
@@ -205,7 +204,7 @@ public class CTabFolder_Test extends TestCase {
     final CTabFolder folder = new CTabFolder( shell, RWT.NONE );
     final CTabItem item1 = new CTabItem( folder, RWT.NONE );
     CTabItem item2 = new CTabItem( folder, RWT.NONE );
-    folder.addSelectionListener( new SelectionListener() {
+    folder.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         assertSame( folder, event.getSource() );
         assertSame( item1, event.item );

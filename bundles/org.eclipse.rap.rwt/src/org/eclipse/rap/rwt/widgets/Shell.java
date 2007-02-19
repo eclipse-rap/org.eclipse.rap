@@ -60,15 +60,13 @@ public class Shell extends Composite {
     this( parent, RWT.DIALOG_TRIM );
   }
 
-  // TODO: [fappel] this is just a fake constructor for dialog shells,
-  //                but no special dialog support implemented yet.
   public Shell( final Shell parent, final int style ) {
-    this( checkParent( parent ) == null 
-                                ? Display.getCurrent()
-                                : parent.getDisplay(), 
-          style );
+    super( checkParent( parent ), checkStyle( style ) );
+    display = parent.getDisplay();
+    state |= HIDDEN;
+    this.display.addShell( this );
   }
-
+  
   public final Shell getShell() {
     return this;
   }

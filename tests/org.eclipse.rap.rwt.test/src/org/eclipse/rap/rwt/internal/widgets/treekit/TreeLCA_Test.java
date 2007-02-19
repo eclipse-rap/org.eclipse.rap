@@ -15,8 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.widgets.Props;
@@ -32,7 +31,7 @@ public class TreeLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
     Tree tree = new Tree( shell, RWT.NONE );
-    tree.addSelectionListener( new SelectionListener() {
+    tree.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
       }
     } );
@@ -54,8 +53,7 @@ public class TreeLCA_Test extends TestCase {
     final Tree tree = new Tree( shell, RWT.NONE );
     final TreeItem treeItem = new TreeItem( tree, RWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
-    tree.addSelectionListener( new SelectionListener() {
-
+    tree.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         log.append( "itemSelected" );
         assertEquals( tree, event.getSource() );

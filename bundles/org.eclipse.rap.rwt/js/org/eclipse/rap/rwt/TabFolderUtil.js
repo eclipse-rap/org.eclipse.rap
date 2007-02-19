@@ -13,7 +13,7 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.TabFolderUtil" );
 
 /**
  * Listener for change of property enabled, passes enablement to children
- * TODO: [rst] Once qx can properly disable a List, this listener can be removed
+ * TODO: [rst] Once qx can properly disable a TabView, this listener can be removed
  */
 org.eclipse.rap.rwt.TabFolderUtil.enablementChanged = function( evt ) {
   var enabled = evt.getData();

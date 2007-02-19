@@ -18,6 +18,9 @@ import java.util.EventListener;
  * <p></p>
  */
 public interface SelectionListener extends EventListener {
-
+  
   void widgetSelected( SelectionEvent event );
+  
+  void widgetDefaultSelected( SelectionEvent event );
+  
 }

@@ -15,8 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
@@ -35,8 +34,7 @@ public class SashLCA_Test extends TestCase {
     Object[] listeners;
     listeners = ( Object[] )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( 0, listeners.length );
-    SelectionListener listener = new SelectionListener() {
-
+    SelectionListener listener = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
       }
     };

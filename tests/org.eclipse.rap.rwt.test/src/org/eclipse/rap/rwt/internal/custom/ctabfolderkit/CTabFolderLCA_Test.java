@@ -93,7 +93,7 @@ public class CTabFolderLCA_Test extends TestCase {
   }
   
   public void testPreserveValues() {
-    SelectionListener selectionListener = new SelectionListener() {
+    SelectionListener selectionListener = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
       }
     };

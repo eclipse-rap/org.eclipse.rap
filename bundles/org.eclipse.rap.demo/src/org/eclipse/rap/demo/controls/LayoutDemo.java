@@ -45,7 +45,7 @@ public class LayoutDemo implements IEntryPoint {
     tab.createContents();
     tab = new GridLayoutTab( topFolder );
     tab.createContents();
-    tab = new StackedLayoutTab( topFolder );
+    tab = new StackLayoutTab( topFolder );
     tab.createContents();
     tab = new TextSizeTab( topFolder );
     tab.createContents();

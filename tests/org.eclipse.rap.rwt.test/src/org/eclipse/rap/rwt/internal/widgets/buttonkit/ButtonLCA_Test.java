@@ -35,10 +35,7 @@ public class ButtonLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     RWTFixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionListener() {
-      public void widgetSelected( final SelectionEvent event ) {
-      }
-    };
+    SelectionListener selectionListener = new SelectionAdapter() {};
     button.addSelectionListener( selectionListener );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
@@ -48,7 +45,6 @@ public class ButtonLCA_Test extends TestCase {
   }
   
   public void testDisabledButtonSelection() {
-    // 
     final StringBuffer log = new StringBuffer();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -61,7 +57,7 @@ public class ButtonLCA_Test extends TestCase {
         button.setEnabled( false );
       }
     } );
-    button.addSelectionListener( new SelectionListener() {
+    button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         log.append( "widgetSelected|" );
       }
@@ -69,7 +65,7 @@ public class ButtonLCA_Test extends TestCase {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     shellAdapter.setActiveControl( label );
-    
+
     String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );

@@ -24,8 +24,9 @@ import com.w4t.Adaptable;
  */
 public class SelectionEvent extends RWTEvent {
 
-
   public static final int WIDGET_SELECTED = 0;
+
+  public static final int WIDGET_DEFAULT_SELECTED = 1;
   
   private static final Class LISTENER = SelectionListener.class;
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
@@ -62,9 +63,19 @@ public class SelectionEvent extends RWTEvent {
     this.item = item;
     this.detail = detail;
   }
-  
+
   protected void dispatchToObserver( final Object listener ) {
-    ( ( SelectionListener )listener ).widgetSelected( this );
+    switch( getID() ) {
+      case WIDGET_SELECTED:
+        ( ( SelectionListener )listener ).widgetSelected( this );
+      break;
+      case WIDGET_DEFAULT_SELECTED:
+        ( ( SelectionListener )listener ).widgetSelected( this );
+        ( ( SelectionListener )listener ).widgetDefaultSelected( this );        
+        break;
+      default:
+        throw new IllegalStateException( "Invalid event handler type." );
+    }
   }
 
   protected Class getListenerType() {

@@ -17,7 +17,7 @@ import org.eclipse.rap.rwt.layout.GridData;
 import org.eclipse.rap.rwt.layout.GridLayout;
 import org.eclipse.rap.rwt.widgets.*;
 
-class StackedLayoutTab extends ExampleTab {
+class StackLayoutTab extends ExampleTab {
 
   private static final int COUNT = 5;
   private Composite comp;
@@ -26,8 +26,9 @@ class StackedLayoutTab extends ExampleTab {
   private int index;
   private boolean propPrefSize;
 
-  public StackedLayoutTab( final TabFolder folder ) {
-    super( folder, "StackedLayout" );
+  // TODO [rst] This layout should be reimplemented using z-order
+  public StackLayoutTab( final TabFolder folder ) {
+    super( folder, "StackLayout" );
     index = 0;
   }
 
@@ -41,7 +42,7 @@ class StackedLayoutTab extends ExampleTab {
     } );
     Button switchButton = createPropertyButton( "Next", RWT.PUSH );
     switchButton.setLocation( 5, 220 );
-    switchButton.addSelectionListener( new SelectionListener() {
+    switchButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showNext();
       }

@@ -56,8 +56,7 @@ public class TreeItemLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
     Tree tree = new Tree( shell, RWT.NONE );
-    tree.addSelectionListener( new SelectionListener() {
-
+    tree.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         selectedTree[ 0 ] = event.getSource();
         selectedTreeItem[ 0 ] = event.item;
