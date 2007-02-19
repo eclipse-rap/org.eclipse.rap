@@ -75,9 +75,15 @@ qx.Proto._onChangeValue = function( evt ) {
     var req = org.eclipse.rap.rwt.Request.getInstance();
     req.addEventListener( "send", this._onSend, this );
     if( this.getHasModifyListener() ) {
+      this._addModifyTextEvent();
       qx.client.Timer.once( this._sendModifyText, this, 500 );
     }
   }
+}
+
+qx.Proto._onBlur = function( evt ) {
+  this._addModifyTextEvent();
+  this._sendModifyText();
 }
 
 qx.Proto._onChangeEnabled = function( evt ) {
@@ -95,6 +101,13 @@ qx.Proto._updateButtonEnablement = function() {
   }
 }
 
+qx.Proto._addModifyTextEvent = function() {
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var id = widgetManager.findIdByWidget( this );
+  var req = org.eclipse.rap.rwt.Request.getInstance();
+  req.addEvent( "org.eclipse.rap.rwt.events.modifyText", id );
+}
+
 qx.Proto._onSend = function( evt ) {
   this._isModified = false;
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
@@ -106,10 +119,7 @@ qx.Proto._onSend = function( evt ) {
 
 qx.Proto._sendModifyText = function( evt ) {
   if( this._isModified ) {
-    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( this );
     var req = org.eclipse.rap.rwt.Request.getInstance();
-    req.addEvent( "org.eclipse.rap.rwt.events.modifyText", id );
     req.send();
     this._isModified = false;
   }
