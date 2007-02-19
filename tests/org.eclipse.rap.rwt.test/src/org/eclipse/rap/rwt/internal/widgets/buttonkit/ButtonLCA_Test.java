@@ -14,12 +14,14 @@ package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.internal.widgets.IShellAdapter;
 import org.eclipse.rap.rwt.internal.widgets.Props;
-import org.eclipse.rap.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rap.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.Fixture;
+import com.w4t.engine.lifecycle.PhaseId;
+import com.w4t.engine.requests.RequestParams;
 
 public class ButtonLCA_Test extends TestCase {
 
@@ -45,39 +47,38 @@ public class ButtonLCA_Test extends TestCase {
     display.dispose();
   }
   
-  // TODO [rh] activate this test when Control#setEnabled exists
-//  public void testDisabledButtonSelection() {
-//    // 
-//    final StringBuffer log = new StringBuffer();
-//    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-//    Display display = new Display();
-//    Shell shell = new Shell( display, RWT.NONE );
-//    final Button button = new Button( shell, RWT.NONE );
-//    Label label = new Label( shell, RWT.NONE );
-//    ActivateEvent.addListener( button, new ActivateAdapter() {
-//      public void activated( ActivateEvent event ) {
-//        log.append( "widgetActivated|" );
-//        button.setEnabled( false );
-//      }
-//    } );
-//    button.addSelectionListener( new SelectionListener() {
-//      public void widgetSelected( final SelectionEvent event ) {
-//        log.append( "widgetSelected|" );
-//      }
-//    } );
-//    Object adapter = shell.getAdapter( IShellAdapter.class );
-//    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
-//    shellAdapter.setActiveControl( label );
-//    
-//    String displayId = DisplayUtil.getId( display );
-//    String buttonId = WidgetUtil.getId( button );
-//    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-//    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-//    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
-//    
-//    RWTFixture.readDataAndProcessAction( display );
-//    assertEquals( "widgetActivated|", log.toString() );
-//  }
+  public void testDisabledButtonSelection() {
+    // 
+    final StringBuffer log = new StringBuffer();
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    final Button button = new Button( shell, RWT.NONE );
+    Label label = new Label( shell, RWT.NONE );
+    ActivateEvent.addListener( button, new ActivateAdapter() {
+      public void activated( ActivateEvent event ) {
+        log.append( "widgetActivated|" );
+        button.setEnabled( false );
+      }
+    } );
+    button.addSelectionListener( new SelectionListener() {
+      public void widgetSelected( final SelectionEvent event ) {
+        log.append( "widgetSelected|" );
+      }
+    } );
+    Object adapter = shell.getAdapter( IShellAdapter.class );
+    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+    shellAdapter.setActiveControl( label );
+    
+    String displayId = DisplayUtil.getId( display );
+    String buttonId = WidgetUtil.getId( button );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
+    
+    RWTFixture.readDataAndProcessAction( display );
+    assertEquals( "widgetActivated|", log.toString() );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

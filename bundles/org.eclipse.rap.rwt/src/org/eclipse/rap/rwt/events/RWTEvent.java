@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.rap.rwt.browser.LocationEvent;
 import org.eclipse.rap.rwt.custom.CTabFolderEvent;
 import org.eclipse.rap.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rap.rwt.widgets.Control;
 import com.w4t.engine.lifecycle.PhaseId;
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
@@ -100,9 +101,22 @@ public abstract class RWTEvent extends Event {
   private static void processEventClass( final Class eventClass ) {
     RWTEvent[] scheduledEvents = getScheduledEvents();
     for( int i = 0; i < scheduledEvents.length; i++ ) {
-      if( eventClass.equals( scheduledEvents[ i ].getClass() ) ) {
+      if(    eventClass.equals( scheduledEvents[ i ].getClass() ) 
+          && isSourceEnabled( scheduledEvents[ i ] ) ) 
+      {
         scheduledEvents[ i ].processEvent();
       }
     }
+  }
+
+  // TODO [rh] preliminary: maybe it would be better to handle this in the
+  //      respective LCAs
+  private static boolean isSourceEnabled( final RWTEvent event ) {
+    boolean result = true;
+    if( event.getSource() instanceof Control ) {
+      Control control = ( Control ) event.getSource();
+      result = control.getEnabled();
+    }
+    return result;
   }
 }
