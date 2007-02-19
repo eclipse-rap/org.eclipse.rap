@@ -276,14 +276,14 @@ abstract class ExampleTab {
   }
   
   protected Button createFontChooser() {
-    fontChooser = new SimpleFontDialog( getShell() );
-    Control control = ( Control )controls.get( 0 );
-    fontChooser.setFont( control.getFont() );
     final Button button = new Button( styleComp, RWT.PUSH );
     button.setText( "Font" );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
+        fontChooser = new SimpleFontDialog( getShell() );
+        Control control = ( Control )controls.get( 0 );
+        fontChooser.setFont( control.getFont() );
         fontChooser.open( new Runnable() {
           public void run() {
             font = fontChooser.getFont();

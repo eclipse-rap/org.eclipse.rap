@@ -12,8 +12,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -34,11 +33,19 @@ final class SimpleFontDialog extends Dialog {
     this( parent, RWT.DIALOG_TRIM | RWT.APPLICATION_MODAL );
   }
   
+  // TODO [rst] When shell close can be prevented, this dialog chould be
+  //            implemented as SessionSingleton
   public SimpleFontDialog( final Shell parent, final int style ) {
     super( parent, style );
     title = "Font Dialog";
     shell = new Shell( parent, style );
     createControls( shell );
+//    shell.addShellListener( new ShellAdapter() {
+//      public void shellClosed( ShellEvent event ) {
+//         shell.setVisible( false );
+//         event.doit = false;
+//      }
+//    } );
   }
 
   public void open( final Runnable callback ) {
@@ -121,6 +128,7 @@ final class SimpleFontDialog extends Dialog {
     if( callback != null ) {
       callback.run();
     }
-    shell.setVisible( false );
+//    shell.setVisible( false );
+    shell.close();
   }
 }
