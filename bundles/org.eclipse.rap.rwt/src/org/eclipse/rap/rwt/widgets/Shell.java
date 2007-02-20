@@ -45,15 +45,7 @@ public class Shell extends Composite {
   }
   
   public Shell( final Display display, final int style ) {
-    super();
-    this.style = checkStyle( style );
-    if( display == null ) {
-      this.display = Display.getCurrent();
-    } else {
-      this.display = display;
-    }
-    state |= HIDDEN;
-    this.display.addShell( this );
+    this ( display, null, style, 0 );
   }
   
   public Shell( final Shell parent ) {
@@ -61,12 +53,25 @@ public class Shell extends Composite {
   }
 
   public Shell( final Shell parent, final int style ) {
-    super( checkParent( parent ), checkStyle( style ) );
-    display = parent.getDisplay();
-    state |= HIDDEN;
-    this.display.addShell( this );
+    this( parent != null ? parent.display : null, parent, style, 0 );
   }
   
+  Shell( Display display, Shell parent, int style, int handle ) {
+    super();
+    if( parent != null && parent.isDisposed () ) {
+        error( RWT.ERROR_INVALID_ARGUMENT ); 
+    }
+    this.parent = parent;
+    if( display != null ) {
+      this.display = display;
+    } else {
+      this.display = Display.getCurrent();
+    }
+    this.style = checkStyle( style ); 
+    state |= HIDDEN;
+    this.display.addShell( this );    
+  }
+
   public final Shell getShell() {
     return this;
   }

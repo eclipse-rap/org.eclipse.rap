@@ -37,7 +37,7 @@ public abstract class Control extends Widget {
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
   
   private final IControlAdapter controlAdapter;
-  private final Composite parent;
+  Composite parent;
   private Rectangle bounds = EMPTY_RECTANGLE;
   private Object layoutData;
   private String toolTipText;
