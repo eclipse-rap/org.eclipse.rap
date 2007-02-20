@@ -96,6 +96,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   // interface implementation of IDisplayLifeCycleAdapter
   
   public void preserveValues( final Display display ) {
+    // TODO [rh] preserve focusControl
   }
   
   public void render( final Display display ) throws IOException {
@@ -326,7 +327,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       }
     }
     getDisplayAdapter( display ).setFocusControl( focusControl );
-System.out.println( "focusControl: " + focusControl );    
   }
 
   private static String readPropertyValue( final Display display, 
