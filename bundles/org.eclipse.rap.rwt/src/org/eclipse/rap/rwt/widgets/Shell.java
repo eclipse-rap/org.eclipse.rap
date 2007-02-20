@@ -40,6 +40,23 @@ public class Shell extends Composite {
   private Button defaultButton;
   private Button saveDefault;
 
+  private Shell( final Display display, 
+                 final Shell parent, 
+                 final int style, 
+                 final int handle ) 
+  {
+    super();
+    this.parent = checkParent( parent );
+    if( display != null ) {
+      this.display = display;
+    } else {
+      this.display = Display.getCurrent();
+    }
+    this.style = checkStyle( style ); 
+    state |= HIDDEN;
+    this.display.addShell( this );    
+  }
+
   public Shell( final Display display ) {
     this( display, RWT.SHELL_TRIM );
   }
@@ -56,22 +73,6 @@ public class Shell extends Composite {
     this( parent != null ? parent.display : null, parent, style, 0 );
   }
   
-  Shell( Display display, Shell parent, int style, int handle ) {
-    super();
-    if( parent != null && parent.isDisposed () ) {
-        error( RWT.ERROR_INVALID_ARGUMENT ); 
-    }
-    this.parent = parent;
-    if( display != null ) {
-      this.display = display;
-    } else {
-      this.display = Display.getCurrent();
-    }
-    this.style = checkStyle( style ); 
-    state |= HIDDEN;
-    this.display.addShell( this );    
-  }
-
   public final Shell getShell() {
     return this;
   }
@@ -220,7 +221,7 @@ public class Shell extends Composite {
   /////////////
   // Enablement
 
-  public boolean isEnabled () {
+  public boolean isEnabled() {
     checkWidget();
     return getEnabled ();
   }
@@ -233,7 +234,7 @@ public class Shell extends Composite {
     return getVisible();
   }
   
-  public void open () {
+  public void open() {
     checkWidget();
     state &= ~HIDDEN;
     display.setActiveShell( this );
@@ -269,7 +270,7 @@ public class Shell extends Composite {
   }
   
   /* TODO [rst] move to Decorations as soon as it exists */
-  public Image getImage () {
+  public Image getImage() {
     checkWidget();
     return image;
   }
@@ -350,11 +351,15 @@ public class Shell extends Composite {
   // Overrides
   
   protected final void releaseParent() {
+    // Do not call super.releaseParent() 
+    // This method would try to remove a child-shell from its ControlHolder
+    // but shells are currently not added to the ControlHolder of its parent
     display.removeShell( this );
   }
 
   protected final void releaseWidget() {
     removeMenuBarDisposeListener();
+    super.releaseWidget();
   }
 
   //////////////////////////////////////////////////////////
@@ -364,7 +369,6 @@ public class Shell extends Composite {
     if( menuBar != null ) {
       if( menuBarDisposeListener == null ) {
         menuBarDisposeListener = new DisposeListener() {
-
           public void widgetDisposed( final DisposeEvent event ) {
             Shell.this.menuBar = null;
           }
