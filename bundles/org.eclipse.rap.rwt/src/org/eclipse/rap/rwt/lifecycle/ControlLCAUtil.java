@@ -36,7 +36,9 @@ public class ControlLCAUtil {
   public static void preserveValues( final Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( Props.BOUNDS, control.getBounds() );
-    adapter.preserve( Props.Z_INDEX, new Integer( getZIndex( control ) ) );
+    if( !( control instanceof Shell ) ) {
+      adapter.preserve( Props.Z_INDEX, new Integer( getZIndex( control ) ) );
+    }
     WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.getVisible() ) );
@@ -54,6 +56,20 @@ public class ControlLCAUtil {
     Rectangle current = control.getBounds();
     Rectangle newBounds = WidgetLCAUtil.readBounds( control, current );
     control.setBounds( newBounds );
+  }
+  
+  public static void readSelectionEvent( final Widget widget ) {
+    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_DEFAULT_SELECTED ) ) {
+      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
+      int detail = RWT.NONE;
+      SelectionEvent event = new SelectionEvent( widget,
+                                                 null,
+                                                 SelectionEvent.WIDGET_DEFAULT_SELECTED,
+                                                 bounds,
+                                                 true,
+                                                 detail );
+      event.processEvent();
+    }
   }
   
   public static void writeBounds( final Control control ) throws IOException {
