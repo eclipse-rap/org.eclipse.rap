@@ -100,9 +100,8 @@ public class TabItemLCA extends AbstractWidgetLCA {
   
   private void writeCheckedState( final TabItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    Boolean oldValue = ( Boolean )adapter.getPreserved( PROP_CHECKED );
-    if( WidgetLCAUtil.hasChanged( item, PROP_CHECKED, oldValue, Boolean.FALSE ) ) {
+    Boolean newValue = Boolean.valueOf( isChecked( item ) );
+    if( WidgetLCAUtil.hasChanged( item, PROP_CHECKED, newValue, Boolean.FALSE ) ) {
       writer.set( JSConst.QX_FIELD_CHECKED, isChecked( item ) );
     }
   }

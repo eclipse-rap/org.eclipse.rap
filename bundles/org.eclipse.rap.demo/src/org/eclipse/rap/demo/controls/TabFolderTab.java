@@ -10,7 +10,10 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.layout.*;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.layout.FillLayout;
+import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class TabFolderTab extends ExampleTab {
@@ -28,6 +31,28 @@ public class TabFolderTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
+    Button button1 = createPropertyButton( "Select Tab 1", RWT.RADIO );
+    button1.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        folder.setSelection( 0 );
+        System.out.println( "tab 1 selected" );
+      };
+    } );
+    button1.setSelection( true );
+    Button button2 = createPropertyButton( "Select Tab 2", RWT.RADIO );
+    button2.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        folder.setSelection( 1 );
+        System.out.println( "tab 2 selected" );
+      };
+    } );
+    Button button3 = createPropertyButton( "Select Tab 3", RWT.RADIO );
+    button3.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        folder.setSelection( 2 );
+        System.out.println( "tab 3 selected" );
+      };
+    } );
   }
 
   protected void createExampleControls( final Composite top ) {
