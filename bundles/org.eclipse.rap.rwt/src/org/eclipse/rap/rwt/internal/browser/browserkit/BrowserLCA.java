@@ -16,6 +16,7 @@ import org.eclipse.rap.rwt.browser.Browser;
 import org.eclipse.rap.rwt.internal.widgets.IBrowserAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager;
+import org.eclipse.rap.rwt.widgets.Control;
 import org.eclipse.rap.rwt.widgets.Widget;
 
 
@@ -35,7 +36,7 @@ public class BrowserLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    // do nothing
+    ControlLCAUtil.readData( ( Control )widget );
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -43,6 +44,8 @@ public class BrowserLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( browser );
     writer.newWidget( "qx.ui.embed.Iframe" );
     writer.set( "appearance", "browser" );
+    // TODO [rh] preliminary workaround to make Browser accessible by tab 
+    writer.set( "tabIndex", 1 );
     // TODO [rh] nice-to-have: prevent popup menu from showing, disable widget
   }
 

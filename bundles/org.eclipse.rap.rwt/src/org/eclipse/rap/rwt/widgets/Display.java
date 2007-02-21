@@ -75,19 +75,19 @@ public class Display implements Adaptable {
   }
 
   public Shell[] getShells() {
-//    checkDevice ();
+    checkDevice();
     Shell[] result = new Shell[ shells.size() ];
     shells.toArray( result );
     return result;
   }
 
   public Rectangle getBounds() {
-//    checkDevice ();
+    checkDevice();
     return new Rectangle( bounds );
   }
   
   public Control getFocusControl() {
-//    checkDevice ();
+    checkDevice();
     return focusControl;
   }
 
@@ -96,7 +96,7 @@ public class Display implements Adaptable {
   
   // TODO [rh] preliminary: COLOR_WIDGET_XXX not yet supported
   public Color getSystemColor( final int id ) {
-//    checkDevice ();
+    checkDevice();
     int pixel = 0x02000000;
     switch( id ) {
       case RWT.COLOR_WHITE:
@@ -152,12 +152,13 @@ public class Display implements Adaptable {
   }
   
   public Font getSystemFont() {
+    checkDevice();
     return systemFont;
   }
   
   // TODO [rh] revise this: why are Image.find() results store in fields?  
   public Image getSystemImage( final int id ) {
-//  checkDevice ();
+    checkDevice();
     ClassLoader classLoader = getClass().getClassLoader();
     Image result = null;
     switch( id ) {
@@ -198,7 +199,7 @@ public class Display implements Adaptable {
   // Coordinate mapping 
   
   public Point map( final Control from, final Control to, final Point point ) {
-//    checkDevice ();
+    checkDevice();
     if( point == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     } 
@@ -210,7 +211,7 @@ public class Display implements Adaptable {
                     final int x,
                     final int y )
   {
-//    checkDevice ();
+    checkDevice();
     Rectangle rectangle = map( from, to, x, y, 0, 0 );
     return new Point( rectangle.x, rectangle.y );
   }
@@ -219,7 +220,7 @@ public class Display implements Adaptable {
                         final Control to,
                         final Rectangle rectangle )
   {
-//    checkDevice ();
+    checkDevice();
     if( rectangle == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -238,7 +239,7 @@ public class Display implements Adaptable {
                         final int width, 
                         final int height )
   {
-//    checkDevice ();
+    checkDevice();
     int newX = x;
     int newY = y;
     if( from != null ) {
@@ -263,9 +264,19 @@ public class Display implements Adaptable {
     return new Rectangle( newX, newY, width, height );
   }
   
+  //////////
+  // Dispose
+  
   // TODO [rh] This is preliminary!
   public void dispose() {
     ContextProvider.getSession().removeAttribute( DISPLAY_ID );
+  }
+
+  /////////////////////
+  // Consistency check
+  
+  protected void checkDevice() {
+    // TODO [rh] implementation missing
   }
   
   /////////////////////
@@ -288,10 +299,12 @@ public class Display implements Adaptable {
   // Shell management
   
   public Shell getActiveShell() {
+    checkDevice();
     return activeShell;
   }
   
   final void setActiveShell( final Shell activeShell ) {
+    checkDevice();
     if( this.activeShell != null ) {
       this.activeShell.saveFocus();
     }
@@ -336,7 +349,6 @@ public class Display implements Adaptable {
       Display.this.focusControl = focusControl;
     }
   }
-  
   
   //////////////////
   // Helping methods

@@ -15,8 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.ControlEvent;
-import org.eclipse.rap.rwt.events.ControlListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.internal.widgets.*;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -111,5 +110,33 @@ public class ControlLCA_Test extends TestCase {
       + "w.setMinWidth( 0 );w.setMinHeight( 0 );" 
       + "w.setClipHeight( 200 );w.setClipWidth( 100 );";
     assertEquals( expected, Fixture.getAllMarkup() );
+  }
+  
+  public void testWriteFocusListener() throws IOException {
+    FocusAdapter focusListener = new FocusAdapter() {
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Label label = new Label( shell, RWT.NONE );
+    label.addFocusListener( focusListener );
+    Button button = new Button( shell, RWT.PUSH );
+    button.addFocusListener( focusListener );
+    // Test that JavaScript focus listeners are rendered for a focusable control 
+    // (e.g. button) 
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.writeChanges( button ); // calls writeFocusListener
+    String focusGained = "org.eclipse.rap.rwt.EventUtil.focusGained";
+    String focusLost = "org.eclipse.rap.rwt.EventUtil.focusLost";
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( focusGained ) != -1 );
+    assertTrue( markup.indexOf( focusLost ) != -1 );
+    
+    // Test that for a non-focusable control (e.g. label), no focus-listener
+    // JavaScript code is emitted 
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.writeChanges( label ); 
+    markup = Fixture.getAllMarkup();
+    assertEquals( -1, markup.indexOf( focusGained ) );
+    assertEquals( -1, markup.indexOf( focusLost ) );
   }
 }

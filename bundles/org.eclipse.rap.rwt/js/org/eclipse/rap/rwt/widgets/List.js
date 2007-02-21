@@ -229,12 +229,10 @@ qx.Proto._onDblClick = function( evt ) {
 qx.Proto._suspendClicks = function() {
   this._clicksSuspended = true;
   qx.client.Timer.once( this._enableClicks, this, 500 );
-  this.debug( "_____ clicks suspended" );
 }
 
 qx.Proto._enableClicks = function() {
   this._clicksSuspended = false;
-  this.debug( "_____ clicks enabled" );
 }
 
 /*

@@ -1509,6 +1509,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     },
     initial : function(vTheme) {
       return {
+        hideFocus : true,
         spacing : -1
       };
     },
@@ -2315,6 +2316,11 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
   "composite" :
   {
+    initial : function( vTheme ) {
+      return {
+        hideFocus : true
+      };
+    },
     state : function(vTheme, vStates) {
       return {
         border: vStates.rwt_BORDER ?

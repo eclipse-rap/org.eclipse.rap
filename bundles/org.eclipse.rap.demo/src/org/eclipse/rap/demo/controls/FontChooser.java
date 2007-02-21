@@ -115,6 +115,7 @@ final class FontChooser {
         }
       }
     } );
+    txtName.setFocus();
   }
   
   private static Font boldSystemFont() {

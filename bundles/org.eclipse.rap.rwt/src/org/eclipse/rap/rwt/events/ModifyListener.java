@@ -29,5 +29,5 @@ public interface ModifyListener extends EventListener {
    * 
    * @param e an event containing information about the modify
    */
-  public void modifyText( ModifyEvent e );
+  public void modifyText( ModifyEvent event );
 }

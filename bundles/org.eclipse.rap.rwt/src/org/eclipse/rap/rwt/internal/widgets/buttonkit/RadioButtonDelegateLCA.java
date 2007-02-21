@@ -38,6 +38,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   void readData( final Button button ) {
     ButtonLCAUtil.readSelection( button );
+    ControlLCAUtil.readData( button );
     ControlLCAUtil.processSelection( button, null, true );
   }
 

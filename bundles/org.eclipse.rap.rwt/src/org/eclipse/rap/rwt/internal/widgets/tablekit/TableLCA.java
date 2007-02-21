@@ -43,6 +43,7 @@ public class TableLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     Table table = ( Table )widget;
+    ControlLCAUtil.readData( table );
     readColumnWidths( table );
     readSelection( table );
     preserveSelection( table );
@@ -61,6 +62,9 @@ public class TableLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeStyleFlags( table );
     JSWriter writer = JSWriter.getWriterFor( table );
     writer.set( "appearance", "table" );
+    // TODO [rh] this is preliminary and can be removed once a tabOrder is 
+    //      available
+    writer.set( "tabIndex", 1 );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

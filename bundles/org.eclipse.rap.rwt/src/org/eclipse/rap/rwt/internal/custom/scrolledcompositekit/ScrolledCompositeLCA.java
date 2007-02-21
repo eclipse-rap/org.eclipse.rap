@@ -15,8 +15,7 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.custom.ScrolledComposite;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.lifecycle.*;
-import org.eclipse.rap.rwt.widgets.ScrollBar;
-import org.eclipse.rap.rwt.widgets.Widget;
+import org.eclipse.rap.rwt.widgets.*;
 
 
 public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
@@ -24,9 +23,9 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static final Integer ZERO = new Integer( 0 );
 
   // Request parameter names
-  private static final String PARAM_HORIZONTAL_BAR_SELECTION 
+  private static final String PARAM_H_BAR_SELECTION 
     = "horizontalBar.selection"; 
-  private static final String PARAM_VERTICAL_BAR_SELECTION 
+  private static final String PARAM_V_BAR_SELECTION 
     = "verticalBar.selection"; 
   
   // Property names for preserve value mechanism
@@ -49,13 +48,13 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     ScrolledComposite composite = ( ScrolledComposite )widget;
+    ControlLCAUtil.readData( composite );
     String value 
-      = WidgetLCAUtil.readPropertyValue( widget, PARAM_HORIZONTAL_BAR_SELECTION );
+      = WidgetLCAUtil.readPropertyValue( widget, PARAM_H_BAR_SELECTION );
     if( value != null && composite.getHorizontalBar() != null ) {
       composite.getHorizontalBar().setSelection( Integer.parseInt( value ) );
     }
-    value 
-      = WidgetLCAUtil.readPropertyValue( widget, PARAM_VERTICAL_BAR_SELECTION );
+    value = WidgetLCAUtil.readPropertyValue( widget, PARAM_V_BAR_SELECTION );
     if( value != null && composite.getVerticalBar() != null ) {
       composite.getVerticalBar().setSelection( Integer.parseInt( value ) );
     }

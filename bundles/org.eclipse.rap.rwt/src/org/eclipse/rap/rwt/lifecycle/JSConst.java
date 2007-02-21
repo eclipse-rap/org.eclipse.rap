@@ -41,6 +41,10 @@ public final class JSConst {
     = "org.eclipse.rap.rwt.events.treeCollapsed";
   public static final String EVENT_MODIFY_TEXT
     = "org.eclipse.rap.rwt.events.modifyText";
+  public static final String EVENT_FOCUS_GAINED
+    = "org.eclipse.rap.rwt.events.focusGained";
+  public static final String EVENT_FOCUS_LOST
+    = "org.eclipse.rap.rwt.events.focusLost";
   
   /** 
    * <p>Indicates that a shell was closed on the client side. The parameter 

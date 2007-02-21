@@ -33,6 +33,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     if( folder.getSelectionIndex() != -1 ) {
       item = folder.getItem( folder.getSelectionIndex() );
     }
+    ControlLCAUtil.readData( folder );
     ControlLCAUtil.processSelection( folder, item, true );
   }
 
@@ -46,6 +47,8 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     writer.addListener( null,
                         "changeEnabled",
                         "org.eclipse.rap.rwt.TabFolderUtil.enablementChanged" );
+    // TODO [rh] preliminary workaround to make TabFolder accessible by tab 
+    writer.set( "tabIndex", 1 );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

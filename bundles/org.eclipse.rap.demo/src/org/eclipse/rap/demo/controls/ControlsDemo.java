@@ -75,8 +75,8 @@ public class ControlsDemo implements IEntryPoint {
     tab.createContents();
     tab = new ZOrderTab( topFolder );
     tab.createContents();
-    tab = new FocusTab( topFolder );
-    tab.createContents();
+//    tab = new FocusTab( topFolder );
+//    tab.createContents();
     topFolder.setSelection( 0 );
   }
 }

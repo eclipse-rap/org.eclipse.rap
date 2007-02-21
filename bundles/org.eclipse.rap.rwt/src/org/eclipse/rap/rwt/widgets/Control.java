@@ -442,6 +442,14 @@ public abstract class Control extends Widget {
     ControlEvent.removeListener( this, listener );
   }
   
+  public void addFocusListener( final FocusListener listener ) {
+    FocusEvent.addListener( this, listener );
+  }
+  
+  public void removeFocusListener( final FocusListener listener ) {
+    FocusEvent.removeListener( this, listener );
+  }
+  
   ////////////
   // Disposal
   

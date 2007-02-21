@@ -11,10 +11,12 @@
 
 package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 
+import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.widgets.IShellAdapter;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -52,7 +54,7 @@ public class ButtonLCA_Test extends TestCase {
     final Button button = new Button( shell, RWT.NONE );
     Label label = new Label( shell, RWT.NONE );
     ActivateEvent.addListener( button, new ActivateAdapter() {
-      public void activated( ActivateEvent event ) {
+      public void activated( final ActivateEvent event ) {
         log.append( "widgetActivated|" );
         button.setEnabled( false );
       }
@@ -74,6 +76,33 @@ public class ButtonLCA_Test extends TestCase {
     
     RWTFixture.readDataAndProcessAction( display );
     assertEquals( "widgetActivated|", log.toString() );
+  }
+  
+  public void testSelectionEvent() throws IOException {
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Button button = new Button( shell, RWT.PUSH );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+        assertSame( button, event.getSource() );
+        assertEquals( 0, event.detail );
+        log.append( "widgetSelected" );
+      }
+    } );
+    String displayId = DisplayUtil.getId( display );
+    String buttonId = WidgetUtil.getId( button );
+
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( "org.eclipse.rap.rwt.events.widgetSelected", 
+                              buttonId );
+    new RWTLifeCycle().execute();
+    assertEquals( "widgetSelected", log.toString() );
   }
 
   protected void setUp() throws Exception {

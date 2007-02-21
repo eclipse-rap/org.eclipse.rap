@@ -69,6 +69,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ShellEvent_Test.class );
     suite.addTestSuite( TreeEvent_Test.class );
     suite.addTestSuite( ActivateEvent_Test.class );
+    suite.addTestSuite( FocusEvent_Test.class );
     suite.addTestSuite( RWTEvent_Test.class );
 
     suite.addTestSuite( Display_Test.class );

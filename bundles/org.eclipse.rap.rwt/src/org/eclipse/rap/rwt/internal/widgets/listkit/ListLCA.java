@@ -62,6 +62,7 @@ public class ListLCA extends AbstractWidgetLCA {
       list.setSelection( indices );
     }
     readFocusIndex( list );
+    ControlLCAUtil.readData( list );
     ControlLCAUtil.processSelection( list, null, true );
   }
 

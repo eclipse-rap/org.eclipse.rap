@@ -101,3 +101,22 @@ org.eclipse.rap.rwt.EventUtil.shellClosed = function( evt ) {
   }
 };
 
+org.eclipse.rap.rwt.EventUtil.focusGained = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = widgetManager.findIdByWidget( evt.getTarget() );
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    req.addEvent( "org.eclipse.rap.rwt.events.focusGained", id );
+    req.send();
+  }
+}
+
+org.eclipse.rap.rwt.EventUtil.focusLost = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = widgetManager.findIdByWidget( evt.getTarget() );
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    req.addEvent( "org.eclipse.rap.rwt.events.focusLost", id );
+    req.send();
+  }
+}

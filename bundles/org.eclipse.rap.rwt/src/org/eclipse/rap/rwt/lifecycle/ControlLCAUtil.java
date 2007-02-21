@@ -23,14 +23,23 @@ import org.eclipse.rap.rwt.widgets.*;
  * <p></p>
  */
 public class ControlLCAUtil {
-  
+
   public static final int MAX_STATIC_ZORDER = 300;
   
-  // Property name to preserve ActivateListener 
-  private static final String ACTIVATE_LISTENER = "activateListener";
-
+  private static final JSListenerInfo FOCUS_GAINED_LISTENER_INFO 
+    = new JSListenerInfo( "focusin", 
+                          "org.eclipse.rap.rwt.EventUtil.focusGained", 
+                          JSListenerType.ACTION );
+  private static final JSListenerInfo FOCUS_LOST_LISTENER_INFO 
+    = new JSListenerInfo( "focusout", 
+                          "org.eclipse.rap.rwt.EventUtil.focusLost", 
+                          JSListenerType.ACTION );
+  
+  // Property names to preserve widget property values 
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_FOREGROUND = "foreground";
+  private static final String PROP_ACTIVATE_LISTENER = "activateListener";
+  private static final String PROP_FOCUS_LISTENER = "focusListener";
   
   private ControlLCAUtil() {
     // prevent instance creation
@@ -52,8 +61,12 @@ public class ControlLCAUtil {
     adapter.preserve( Props.FONT, control.getFont() );
     adapter.preserve( Props.CONTROL_LISTENERS, 
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
-    adapter.preserve( ACTIVATE_LISTENER, 
+    adapter.preserve( PROP_ACTIVATE_LISTENER, 
                       Boolean.valueOf( ActivateEvent.hasListener( control ) ) );
+    if( ( control.getStyle() & RWT.NO_FOCUS ) == 0 ) {
+      adapter.preserve( PROP_FOCUS_LISTENER, 
+                        Boolean.valueOf( FocusEvent.hasListener( control ) ) );
+    }
   }
   
   public static void readBounds( final Control control ) {
@@ -62,6 +75,23 @@ public class ControlLCAUtil {
     control.setBounds( newBounds );
   }
   
+  public static void readData( final Control control ) {
+    readFocusEvent( control );
+  }
+  
+  public static void readFocusEvent( final Control control ) {
+    if( ( control.getStyle() & RWT.NO_FOCUS ) == 0 ) {
+      if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_FOCUS_GAINED ) ) {
+        FocusEvent event = FocusEvent.focusGained( control );
+        event.processEvent();
+      }
+      if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_FOCUS_LOST ) ) {
+        FocusEvent event = FocusEvent.focusLost( control );
+        event.processEvent();
+      }
+    }
+  }
+
   public static void writeBounds( final Control control ) throws IOException {
     Composite parent = control.getParent();
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
@@ -110,6 +140,7 @@ public class ControlLCAUtil {
     writeToolTip( control );
     writeMenu( control );
     writeActivateListener( control );
+    writeFocusListener( control );
   }
   
   public static void writeResizeNotificator( final Widget widget )
@@ -199,7 +230,7 @@ public class ControlLCAUtil {
   {
     Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
     Boolean defValue = Boolean.FALSE;
-    String prop = ACTIVATE_LISTENER;
+    String prop = PROP_ACTIVATE_LISTENER;
     if( WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) ) {
       String function = newValue.booleanValue()
                       ? "addActivateListenerWidget"
@@ -210,6 +241,21 @@ public class ControlLCAUtil {
     }
   }
   
+  private static void writeFocusListener( final Control control ) 
+    throws IOException 
+  {
+    if( ( control.getStyle() & RWT.NO_FOCUS ) == 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      boolean hasListener = FocusEvent.hasListener( control );
+      writer.updateListener( FOCUS_GAINED_LISTENER_INFO, 
+                             PROP_FOCUS_LISTENER, 
+                             hasListener );
+      writer.updateListener( FOCUS_LOST_LISTENER_INFO, 
+                             PROP_FOCUS_LISTENER, 
+                             hasListener );
+    }
+  }
+
   public static void processSelection( final Widget widget, 
                                        final Item item, 
                                        final boolean readBounds )
@@ -242,14 +288,14 @@ public class ControlLCAUtil {
     Rectangle bounds;
     if( widget instanceof Control && readBounds ) {
       Control control = ( Control )widget;
-      bounds = WidgetLCAUtil.readBounds( control, control.getBounds() );
+      bounds = WidgetLCAUtil.readBounds( control, control.getBounds() ); 
     } else {
       bounds = new Rectangle( 0, 0, 0, 0 );
     }
     return new SelectionEvent( widget, item, type, bounds, true, RWT.NONE );
   }
   
-  // ////////////////
+  //////////////////
   // helping methods
 
   private static int getZIndex( final Control control ) {

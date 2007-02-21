@@ -20,8 +20,10 @@ import org.eclipse.rap.rwt.widgets.Composite;
  * <p>Currently implemented</p>
  * <ul><li>text and url property</li></ul>
  * <p>The enabled property in not (yet) evaluated.</p>
+ * <p>Focus events are not yet implemented</p>
  */
 // TODO [rh] implement refresh method
+// TODO [rh] bring focus events to work
 public class Browser extends Composite {
 
   private static final String ABOUT_BLANK = "about:blank";

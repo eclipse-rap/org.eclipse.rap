@@ -43,9 +43,12 @@ public class ComboLCA extends AbstractWidgetLCA {
   
   public void readData( final Widget widget ) {
     Combo combo = ( Combo )widget;
-    if( WidgetLCAUtil.wasEventSent( combo, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      String value = WidgetLCAUtil.readPropertyValue( widget, SELECTED_ITEM );
+    String value = WidgetLCAUtil.readPropertyValue( widget, SELECTED_ITEM );
+    if( value != null ) {
       combo.select( new Integer( value ).intValue() );
+    }
+    ControlLCAUtil.readData( combo );
+    if( WidgetLCAUtil.wasEventSent( combo, JSConst.EVENT_WIDGET_SELECTED ) ) {
       ControlLCAUtil.processSelection( combo, null, true );
     }
   }

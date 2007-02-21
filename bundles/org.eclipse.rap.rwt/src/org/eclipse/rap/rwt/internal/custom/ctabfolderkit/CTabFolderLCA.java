@@ -128,6 +128,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     final CTabFolder tabFolder = ( CTabFolder )widget;
+    // Standard control events and properties
+    ControlLCAUtil.readData( tabFolder );
     // Read minimized state
     String value = WidgetLCAUtil.readPropertyValue( tabFolder, PARAM_MINIMIZED );
     if( value != null ) {

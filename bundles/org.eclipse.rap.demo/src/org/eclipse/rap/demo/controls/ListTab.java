@@ -23,6 +23,7 @@ import org.eclipse.rap.rwt.widgets.*;
 public class ListTab extends ExampleTab {
 
   private static final java.util.List ELEMENTS;
+  
   static {
     ELEMENTS = new ArrayList();
     String text 
@@ -80,10 +81,10 @@ public class ListTab extends ExampleTab {
     viewer.setInput( ELEMENTS );
     list.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
-        System.out.println( "___ selected" );
+//        System.out.println( "___ selected" );
       }
       public void widgetDefaultSelected( SelectionEvent event ) {
-        System.out.println( "___ default selected" );
+//        System.out.println( "___ default selected" );
         int index = list.getSelectionIndex();
         String message = "Item " + index + " selected";
         MessageDialog.openInformation( getShell(), "Selection", message, null );
@@ -107,8 +108,6 @@ public class ListTab extends ExampleTab {
       + "ListViewer with JFace API. The source code looks like this:";
     codeLabel.setText( codeLabelText );
     createDescription( parent );
-    
-    
   }
   
   private void createDescription( final Composite parent ) {

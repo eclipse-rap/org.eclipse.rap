@@ -29,8 +29,8 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
   }
 
   void readData( final Button button ) {
-    // TODO [rh] clarify whether bounds should be sent (last parameter)
-    ControlLCAUtil.processSelection( button, null, true );
+    ControlLCAUtil.processSelection( button, null, false );
+    ControlLCAUtil.readData( button );
   }
   
   void renderInitialization( final Button button ) throws IOException {
