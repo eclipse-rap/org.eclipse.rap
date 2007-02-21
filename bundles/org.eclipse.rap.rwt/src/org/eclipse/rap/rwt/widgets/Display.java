@@ -292,7 +292,13 @@ public class Display implements Adaptable {
   }
   
   final void setActiveShell( final Shell activeShell ) {
+    if( this.activeShell != null ) {
+      this.activeShell.saveFocus();
+    }
     this.activeShell = activeShell;
+    if( this.activeShell != null ) {
+      this.activeShell.restoreFocus();
+    }
   }
   
   final void addShell( final Shell shell ) {
@@ -303,9 +309,9 @@ public class Display implements Adaptable {
     shells.remove( shell );
     if( shell == activeShell ) {
       if( shells.size() > 0 ) {
-        activeShell = ( Shell )shells.get( 0 );
+        setActiveShell( ( Shell )shells.get( 0 ) );
       } else {
-        activeShell = null;
+        setActiveShell( null );
       }
     }
   }

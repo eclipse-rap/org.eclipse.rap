@@ -134,7 +134,8 @@ class DialogsTab extends ExampleTab {
     String title = "Input Dialog";
     String mesg = "Enter at least five characters";
     String def = "default text";
-    final InputDialog dlg = new InputDialog( getShell(), title, mesg, def, val );
+    final InputDialog dlg;
+    dlg = new InputDialog( getShell(), title, mesg, def, val );
     dlg.open( new IWindowCallback() {
       public void windowClosed( final int returnCode ) {
         if( returnCode == InputDialog.OK ) {

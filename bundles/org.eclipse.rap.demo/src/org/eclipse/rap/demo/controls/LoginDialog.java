@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.widgets.*;
 public class LoginDialog extends Dialog {
 
   private static final int LOGIN_ID = IDialogConstants.CLIENT_ID + 1;
+  
   private Text userText;
   private Text passText;
   private Label mesgLabel;
@@ -32,21 +33,19 @@ public class LoginDialog extends Dialog {
   public LoginDialog( final Shell parent,
                        final String title,
                        final String message,
-                       final String defaultUsername ) {
+                       final String defaultUsername ) 
+  {
     super( parent );
     this.title = title;
     this.message = message;
     this.username = defaultUsername;
   }
   
-  protected void createButtonsForButtonBar( Composite parent ) {
-    createButton( parent,
-                  LOGIN_ID,
-                  "Login",
-                  true );
+  protected void createButtonsForButtonBar( final Composite parent ) {
+    createButton( parent, LOGIN_ID, "Login", true );
   }
   
-  protected Control createDialogArea( Composite parent ) {
+  protected Control createDialogArea( final Composite parent ) {
     // create composite
     Composite composite = (Composite) super.createDialogArea( parent );
     GridLayout gridLayout = new GridLayout();
@@ -81,6 +80,7 @@ public class LoginDialog extends Dialog {
     if( username != null ) {
       userText.setText( username );
     }
+    userText.setFocus();
     
     // password label and input field
     Label passLabel = new Label( composite, RWT.NONE );
@@ -94,7 +94,6 @@ public class LoginDialog extends Dialog {
     data = new GridData( GridData.FILL_HORIZONTAL );
     data.heightHint = 20;
     passText.setLayoutData( data );
-
     return composite;
   }
 

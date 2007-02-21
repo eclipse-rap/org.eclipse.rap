@@ -39,7 +39,8 @@ public class Shell extends Composite {
   private Image image;
   private Button defaultButton;
   private Button saveDefault;
-
+  private Control savedFocus;  // TODO [rh] move to Decorations when exist
+  
   private Shell( final Display display, 
                  final Shell parent, 
                  final int style, 
@@ -135,7 +136,11 @@ public class Shell extends Composite {
   /* 
    * TODO [rst] Move to class Decorations, as soon as it exists
    */
-  public Rectangle computeTrim( final int x, final int y, final int width, final int height ) {
+  public Rectangle computeTrim( final int x, 
+                                final int y, 
+                                final int width, 
+                                final int height ) 
+  {
     checkWidget();
     int hTitleBar = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT : 0;
     if( getMenuBar() != null ) {
@@ -238,6 +243,9 @@ public class Shell extends Composite {
     checkWidget();
     state &= ~HIDDEN;
     display.setActiveShell( this );
+    if( !restoreFocus() && !traverseGroup( true ) ) {
+      setFocus();
+    }
   }
 
   public void close() {
@@ -445,6 +453,54 @@ public class Shell extends Composite {
     return result;
   }
   
+  /////////////////////////
+  // Focus handling methods
+
+  // TODO [rh] move to Decorations as soon as exists
+  void setSavedFocus( final Control control ) {
+    savedFocus = control;
+  }
+  
+  // TODO [rh] move to Decorations as soon as exists
+  void saveFocus() {
+    Control control = display.getFocusControl();
+    if( control != null && control != this && this == control.getShell() ) {
+      setSavedFocus( control );
+    }
+  }
+  
+  // TODO [rh] move to Decorations as soon as exists
+  boolean restoreFocus() {
+//    if (display.ignoreRestoreFocus) return true;
+    if( savedFocus != null && savedFocus.isDisposed() ) {
+      savedFocus = null;
+    }
+    if( savedFocus != null && savedFocus.setSavedFocus() ) {
+      return true;
+    }
+    /*
+    * This code is intentionally commented.  When no widget
+    * has been given focus, some platforms give focus to the
+    * default button.  Windows doesn't do this.
+    */
+//    if (defaultButton != null && !defaultButton.isDisposed ()) {
+//      if (defaultButton.setFocus ()) return true;
+//    }
+    return false;
+  }
+  
+  ////////////////
+  // Tab traversal
+  
+  private boolean traverseGroup( final boolean next ) {
+    // TODO [rh] fake implementation
+    boolean result = false;
+    if( getChildren().length > 0 ) {
+      result = getChildren()[ 0 ].forceFocus();
+    }
+    return result;
+  }
+
   ///////////////////
   // check... methods
   

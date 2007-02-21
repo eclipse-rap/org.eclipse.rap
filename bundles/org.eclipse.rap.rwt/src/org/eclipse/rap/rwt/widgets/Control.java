@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
 import org.eclipse.rap.rwt.lifecycle.IControlAdapter;
 
 /**
@@ -169,8 +170,50 @@ public abstract class Control extends Widget {
     }
     return result;
   }
+
+  /////////////////
+  // Focus handling
   
-  // ///////////////////////////////////////////////////////////////////
+  public boolean setFocus() {
+    checkWidget();
+    boolean result = false;
+    if( ( style & RWT.NO_FOCUS ) == 0 ) {
+      result = forceFocus();
+    } 
+    return result;
+  }
+
+  public boolean forceFocus() {
+    checkWidget();
+// if (display.focusEvent == SWT.FocusOut) return false;
+    Shell shell = getShell(); // was: Decorations shell = menuShell();
+    shell.setSavedFocus( this );
+    if( !isEnabled() || !isVisible() /* || !isActive() */ ) {
+      return false;
+    }
+    if( isFocusControl() ) {
+      return true;
+    }
+    shell.setSavedFocus( null );
+    setFocusControl( this ); // was: OS.SetFocus( handle );
+    if( isDisposed() ) {
+      return false;
+    }
+    shell.setSavedFocus( this );
+    return isFocusControl();
+  }
+  
+  public boolean isFocusControl() {
+    checkWidget();
+    return this == getDisplay().getFocusControl();
+  }
+
+  // TODO [rh] check whether saveFocus is actually necessary
+  boolean setSavedFocus() {
+    return forceFocus();
+  }
+
+  //////////////////////////////////////////////////////////////////////
   // Methods to manipulate, transform and query the controls' dimensions
   
   public Rectangle getBounds() {
@@ -293,7 +336,7 @@ public abstract class Control extends Widget {
     return toDisplay( point.x, point.y );
   }
   
-  // ///////////////////////
+  //////////////////////////
   // Layout related methods
   
   public Object getLayoutData() {
@@ -307,7 +350,7 @@ public abstract class Control extends Widget {
   }
   
 
-  // ///////////////////
+  //////////////////////
   // ToolTip operations
   
   public void setToolTipText( final String toolTipText ) {
@@ -319,7 +362,7 @@ public abstract class Control extends Widget {
   }
   
 
-  // ////////////////
+  ///////////////////
   // Menu operations
   
   public void setMenu( final Menu menu ) {
@@ -403,7 +446,9 @@ public abstract class Control extends Widget {
   // Disposal
   
   protected void releaseParent() {
-    ControlHolder.removeControl( getParent(), this );
+    if( getParent() != null ) {
+      ControlHolder.removeControl( getParent(), this );
+    }
   }
 
   protected void releaseWidget() {
@@ -411,6 +456,18 @@ public abstract class Control extends Widget {
       removeMenuDisposeListener();
       menu.dispose();
       menu = null;
+    }
+    if( getDisplay().getFocusControl() == this ) {
+      Control focusControl = null;
+      Control parent = getParent();
+      while( focusControl == null && parent != null ) {
+        if( !parent.isDisposed() ) {
+          focusControl = parent;
+        } else {
+          parent = parent.getParent();
+        }
+      }
+      setFocusControl( focusControl );
     }
   }
 
@@ -434,8 +491,17 @@ public abstract class Control extends Widget {
     }
   }
 
+  /////////////////////////////////////////////////////
+  // Helping method to set the focus control on display
   
-  // ////////////////////////////////////////////////////
+  private void setFocusControl( final Control control ) {
+    Object adapter = getDisplay().getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    displayAdapter.setFocusControl( control );
+    
+  }
+
+  ///////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menu
   
   private void addMenuDisposeListener() {

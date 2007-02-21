@@ -127,7 +127,11 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
     },
-
+    initial : function(vTheme) {
+      return {
+        hideFocus : true
+      }
+    },
     state : function(vTheme, vStates) {
       return {
         border : vStates.rwt_BORDER ? this.border : this.border_default

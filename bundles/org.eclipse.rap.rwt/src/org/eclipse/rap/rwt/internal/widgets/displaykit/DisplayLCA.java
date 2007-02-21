@@ -78,6 +78,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   // Maps Java Level to the closest qooxdoo log level
   private static final Map LOG_LEVEL_MAP = new HashMap( 8 + 1, 1f );
 
+  private static final String PROP_FOCUS_CONTROL = "focusControl";
+
   static {
     // Available qooxdoo log level: 
     //   LEVEL_OFF, LEVEL_ALL, 
@@ -96,7 +98,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   // interface implementation of IDisplayLifeCycleAdapter
   
   public void preserveValues( final Display display ) {
-    // TODO [rh] preserve focusControl
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
   }
   
   public void render( final Display display ) throws IOException {
@@ -144,6 +147,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         WidgetTreeVisitor.accept( shell, visitor );
         visitor.reThrowProblem();
       }
+      writeFocus( display );
       out.write( "qx.ui.core.Widget.flushGlobalQueues();" );
       out.write( "org.eclipse.rap.rwt.EventUtil.resumeEventHandling();" );
       markInitialized( display );
@@ -277,6 +281,21 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.endElement( HTML.STYLE );
   }
 
+  private static void writeFocus( final Display display ) throws IOException {
+    IWidgetAdapter displayAdapter = DisplayUtil.getAdapter( display );
+    Object oldValue = displayAdapter.getPreserved( PROP_FOCUS_CONTROL );
+    if( oldValue != display.getFocusControl() ) {
+      // TODO [rh] use JSWriter to output focus JavaScript 
+      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+      HtmlResponseWriter out = stateInfo.getResponseWriter();
+      String id = WidgetUtil.getId( display.getFocusControl() );
+      out.write(   "org.eclipse.rap.rwt.WidgetManager.getInstance()." 
+                 + "focus( \"" 
+                 + id 
+                 + "\" );" );
+    }
+  }
+  
   private static void markInitialized( final Display display ) {
     WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
     adapter.setInitialized( true );

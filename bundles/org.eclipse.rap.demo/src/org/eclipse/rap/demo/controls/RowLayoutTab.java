@@ -75,7 +75,7 @@ class RowLayoutTab extends ExampleTab {
     registerControl( comp );
   }
 
-  private TabFolder createTabFolder( Composite parent ) {
+  private TabFolder createTabFolder( final Composite parent ) {
     TabFolder tf = new TabFolder( parent, RWT.BORDER );
     TabItem tab1 = new TabItem( tf, RWT.NONE );
     tab1.setText( "Tab1" );

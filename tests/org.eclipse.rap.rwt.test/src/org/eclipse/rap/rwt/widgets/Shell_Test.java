@@ -97,6 +97,15 @@ public class Shell_Test extends TestCase {
 
     shell = new Shell( display, RWT.MIN );
     assertTrue( ( shell.getStyle() & RWT.CLOSE ) != 0 );
+    
+    try {
+      Shell disposedShell = new Shell( display, RWT.NONE );
+      disposedShell.dispose();
+      shell = new Shell( disposedShell );
+      fail( "The constructor mut not accept a disposed shell" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
   
   public void testInitialValues() {
@@ -128,6 +137,15 @@ public class Shell_Test extends TestCase {
     shell.open();
     assertEquals( true, shell.getVisible() );
     assertEquals( true, shell.isVisible() );
+  }
+  
+  public void testDisposeChildShell() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    shell.open();
+    Shell childShell = new Shell( shell );
+    childShell.dispose();
+    assertTrue( childShell.isDisposed() );
   }
   
   protected void setUp() throws Exception {

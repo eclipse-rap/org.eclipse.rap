@@ -104,6 +104,34 @@ public class Composite extends Scrollable {
     return new Point( trim.width, trim.height );
   }
 
+  ////////////////////
+  // setFocus override 
+  
+  public boolean setFocus() {
+    checkWidget();
+    Control[] children = getChildren();
+//     for( int i = 0; i < children.length; i++ ) {
+//      Control child = children[ i ];
+//      if( child.setRadioFocus() )
+//        return true;
+//    }
+    Control focusedChild = null;
+    for( int i = 0; focusedChild == null && i < children.length; i++ ) {
+      Control child = children[ i ];
+      if( child.setFocus() ) {
+        focusedChild = child;
+      }
+    }
+    boolean result = true;
+    if( focusedChild == null ) {
+      result = super.setFocus();
+    } 
+    return result;
+  }
+
+  /////////////////////////////////////
+  // Helping method used by computeSize
+  
   Point minimumSize( final int wHint, final int hHint, final boolean changed ) {
     Control[] children = getChildren();
     int width = 0, height = 0;

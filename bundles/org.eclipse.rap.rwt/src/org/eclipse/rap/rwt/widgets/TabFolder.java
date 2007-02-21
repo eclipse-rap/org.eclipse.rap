@@ -22,6 +22,7 @@ import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 public class TabFolder extends Composite {
 
   private static final TabItem[] EMPTY_TAB_ITEMS = new TabItem[ 0 ];
+  
   private final ItemHolder itemHolder = new ItemHolder( TabItem.class );
   private int selectionIndex = -1;
 
@@ -38,6 +39,9 @@ public class TabFolder extends Composite {
     }
     return result;
   }
+
+  //////////////////
+  // Item management
   
   public TabItem[] getItems() {
     checkWidget();
@@ -54,19 +58,20 @@ public class TabFolder extends Composite {
     return itemHolder.size();
   }
 
-  public Rectangle getClientArea() {
+  public int indexOf( final TabItem item ) {
     checkWidget();
-    Rectangle current = getBounds();
-    int width = current.width;
-    int height = current.height;
-    int border = 1;
-    int hTabBar = 23;
-    return new Rectangle( border,
-                          hTabBar + border,
-                          width - border * 2,
-                          height - ( hTabBar + border * 2 ) );
+    if( item == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( item.isDisposed() ) {
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
+    }
+    return itemHolder.indexOf( item );
   }
 
+  /////////////////////
+  // Seletion handling
+  
   public TabItem[] getSelection() {
     checkWidget();
     TabItem[] result = EMPTY_TAB_ITEMS;
@@ -109,16 +114,8 @@ public class TabFolder extends Composite {
     return selectionIndex;
   }
   
-  public int indexOf( final TabItem item ) {
-    checkWidget();
-    if( item == null ) {
-      RWT.error( RWT.ERROR_NULL_ARGUMENT );
-    }
-    if( item.isDisposed() ) {
-      RWT.error( RWT.ERROR_INVALID_ARGUMENT );
-    }
-    return itemHolder.indexOf( item );
-  }
+  ///////////////////////////////
+  // Layout and size computations
 
   public void layout() {
     checkWidget();
@@ -128,18 +125,25 @@ public class TabFolder extends Composite {
     }
   }
 
-  public void addSelectionListener( final SelectionListener listener ) {
+  public Rectangle getClientArea() {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    Rectangle current = getBounds();
+    int width = current.width;
+    int height = current.height;
+    int border = 1;
+    int hTabBar = 23;
+    return new Rectangle( border,
+                          hTabBar + border,
+                          width - border * 2,
+                          height - ( hTabBar + border * 2 ) );
   }
 
-  public void removeSelectionListener( final SelectionListener listener ) {
+  // TODO [rh] computeSize throws NPE when one of its tabItems has null-control
+  public Point computeSize( final int wHint, 
+                            final int hHint, 
+                            final boolean changed ) 
+  {
     checkWidget();
-    SelectionEvent.removeListener( this, listener );
-  }
-  
-  public Point computeSize( int wHint, int hHint, boolean changed ) {
-    checkWidget ();
     Point itemsSize = new Point( 0, 0 );
     Point contentsSize = new Point( 0, 0 );
     TabItem[] items = getItems();
@@ -162,17 +166,30 @@ public class TabFolder extends Composite {
     if( height == 0 ) {
       height = DEFAULT_HEIGHT;
     }
-    if ( wHint != RWT.DEFAULT ) {
+    if( wHint != RWT.DEFAULT ) {
       width = wHint;
     }
-    if ( hHint != RWT.DEFAULT ) {
+    if( hHint != RWT.DEFAULT ) {
       height = hHint;
     }
-    width += 2* border;
+    width += 2 * border;
     height += 2 * border;
     return new Point( width, height );
   }
 
+  ///////////////////////////////////////
+  // Listener registration/deregistration
+  
+  public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
+    SelectionEvent.addListener( this, listener );
+  }
+
+  public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
+    SelectionEvent.removeListener( this, listener );
+  }
+  
   ///////////
   // Disposal
   

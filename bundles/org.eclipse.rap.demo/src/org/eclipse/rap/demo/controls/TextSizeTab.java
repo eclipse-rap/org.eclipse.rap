@@ -43,7 +43,7 @@ public class TextSizeTab extends ExampleTab {
     } );
     Button nextButton = createPropertyButton( "Next Text", RWT.PUSH );
     nextButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         switchText();
         createNew();
       }

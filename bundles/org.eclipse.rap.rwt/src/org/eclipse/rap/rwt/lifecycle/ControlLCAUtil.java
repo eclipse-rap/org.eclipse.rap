@@ -29,6 +29,9 @@ public class ControlLCAUtil {
   // Property name to preserve ActivateListener 
   private static final String ACTIVATE_LISTENER = "activateListener";
 
+  private static final String PROP_BACKGROUND = "background";
+  private static final String PROP_FOREGROUND = "foreground";
+  
   private ControlLCAUtil() {
     // prevent instance creation
   }
@@ -36,6 +39,7 @@ public class ControlLCAUtil {
   public static void preserveValues( final Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( Props.BOUNDS, control.getBounds() );
+    // TODO [rh] revise this (see also writeZIndex)
     if( !( control instanceof Shell ) ) {
       adapter.preserve( Props.Z_INDEX, new Integer( getZIndex( control ) ) );
     }
@@ -43,11 +47,11 @@ public class ControlLCAUtil {
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.getVisible() ) );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( control.isEnabled() ) );
-    adapter.preserve( Props.FG_COLOR, control.getForeground() );
-    adapter.preserve( Props.BG_COLOR, control.getBackground() );
+    adapter.preserve( PROP_FOREGROUND, control.getForeground() );
+    adapter.preserve( PROP_BACKGROUND, control.getBackground() );
+    adapter.preserve( Props.FONT, control.getFont() );
     adapter.preserve( Props.CONTROL_LISTENERS, 
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
-    adapter.preserve( Props.FONT, control.getFont() );
     adapter.preserve( ACTIVATE_LISTENER, 
                       Boolean.valueOf( ActivateEvent.hasListener( control ) ) );
   }
@@ -114,7 +118,8 @@ public class ControlLCAUtil {
     writeZIndex( control );
     writeVisible( control );
     writeEnabled( control );
-    writeColors( control );
+    writeForeground( control );
+    writeBackground( control );
     writeFont( control );
     writeToolTip( control );
     writeMenu( control );
@@ -164,21 +169,23 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void writeColors( final Control control ) throws IOException {
+  public static void writeForeground( final Control control ) throws IOException 
+  {
     JSWriter writer = JSWriter.getWriterFor( control );
-    // Foreground color
     Color color = control.getForeground();
-    if( WidgetLCAUtil.hasChanged( control, Props.FG_COLOR, color, null ) ) {
+    if( WidgetLCAUtil.hasChanged( control, PROP_FOREGROUND, color, null ) ) {
       Object[] args = new Object[] { control, color };
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
     }
-    // Background color
-    writer.set( Props.BG_COLOR,
-                JSConst.QX_FIELD_BG_COLOR,
-                control.getBackground(),
-                null );
   }
 
+  public static void writeBackground( final Control control ) throws IOException 
+  {
+    JSWriter writer = JSWriter.getWriterFor( control );
+    Color newValue = control.getBackground();
+    writer.set( PROP_BACKGROUND, JSConst.QX_FIELD_BG_COLOR, newValue, null );
+  }
+  
   /**
    * Writes RWT style flags that must be handled on the client side (e.g.
    * <code>RWT.BORDER</code>). Flags are transmitted as qooxdoo <q>states</q>

@@ -70,12 +70,11 @@ public class ControlsDemo implements IEntryPoint {
     tab.createContents();
     tab = new BrowserTab( topFolder );
     tab.createContents();
-//    TODO [rst] We don't need this tab anymore, since Groups are displayed all over
-//    tab = new GroupTab( topFolder );
-//    tab.createContents();
     tab = new ContainmentTab( topFolder );
     tab.createContents();
     tab = new ZOrderTab( topFolder );
+    tab.createContents();
+    tab = new FocusTab( topFolder );
     tab.createContents();
     topFolder.setSelection( 0 );
   }

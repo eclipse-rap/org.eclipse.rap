@@ -15,18 +15,17 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.graphics.*;
-import com.w4t.Fixture;
 import com.w4t.engine.lifecycle.PhaseId;
 
 public class Control_Test extends TestCase {
 
   protected void setUp() throws Exception {
-    Fixture.setUp();
+    RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
 
   protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    RWTFixture.tearDown();
   }
 
   public void testBounds() {
@@ -269,38 +268,106 @@ public class Control_Test extends TestCase {
   public void testZOrder() {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
-    Button b1 = new Button( shell, RWT.PUSH );
-    Button b2 = new Button( shell, RWT.PUSH );
-    Button b3 = new Button( shell, RWT.PUSH );
-    assertEquals( 0, ControlHolder.indexOf( shell, b1 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, b2 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, b3 ) );
-    b3.moveAbove( b2 );
-    assertEquals( 0, ControlHolder.indexOf( shell, b1 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, b3 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, b2 ) );
-    b1.moveBelow( b3 );
-    assertEquals( 0, ControlHolder.indexOf( shell, b3 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, b1 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, b2 ) );
-    b2.moveAbove( null );
-    assertEquals( 0, ControlHolder.indexOf( shell, b2 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, b3 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, b1 ) );
-    b2.moveBelow( null );
-    assertEquals( 0, ControlHolder.indexOf( shell, b3 ) );
-    assertEquals( 1, ControlHolder.indexOf( shell, b1 ) );
-    assertEquals( 2, ControlHolder.indexOf( shell, b2 ) );
+    Control control1 = new Button( shell, RWT.PUSH );
+    Control control2 = new Button( shell, RWT.PUSH );
+    Control control3 = new Button( shell, RWT.PUSH );
+    assertEquals( 0, ControlHolder.indexOf( shell, control1 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, control2 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, control3 ) );
+    control3.moveAbove( control2 );
+    assertEquals( 0, ControlHolder.indexOf( shell, control1 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, control3 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, control2 ) );
+    control1.moveBelow( control3 );
+    assertEquals( 0, ControlHolder.indexOf( shell, control3 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, control1 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, control2 ) );
+    control2.moveAbove( null );
+    assertEquals( 0, ControlHolder.indexOf( shell, control2 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, control3 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, control1 ) );
+    control2.moveBelow( null );
+    assertEquals( 0, ControlHolder.indexOf( shell, control3 ) );
+    assertEquals( 1, ControlHolder.indexOf( shell, control1 ) );
+    assertEquals( 2, ControlHolder.indexOf( shell, control2 ) );
     // control is already at the top / bottom
-    b3.moveAbove( null );
-    assertEquals( 0, ControlHolder.indexOf( shell, b3 ) );
-    b2.moveBelow( null );
-    assertEquals( 0, ControlHolder.indexOf( shell, b3 ) );
+    control3.moveAbove( null );
+    assertEquals( 0, ControlHolder.indexOf( shell, control3 ) );
+    control2.moveBelow( null );
+    assertEquals( 0, ControlHolder.indexOf( shell, control3 ) );
     // try to move control above / below itself
-    b1.moveAbove( b1 );
-    assertEquals( 1, ControlHolder.indexOf( shell, b1 ) );
-    b1.moveBelow( b1 );
-    assertEquals( 1, ControlHolder.indexOf( shell, b1 ) );
+    control1.moveAbove( control1 );
+    assertEquals( 1, ControlHolder.indexOf( shell, control1 ) );
+    control1.moveBelow( control1 );
+    assertEquals( 1, ControlHolder.indexOf( shell, control1 ) );
     shell.dispose();
+  }
+  
+  public void testFocus() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Control control1 = new Button( shell, RWT.PUSH );
+
+    // When shell is closed, creating a control does not affect its focus
+    assertSame( null, display.getFocusControl() );
+    
+    shell.open();
+    assertSame( control1, display.getFocusControl() );
+    assertTrue( control1.isFocusControl() );
+  }
+  
+  public void testFocusOnClosedShell() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Control control1 = new Button( shell, RWT.PUSH );
+    Control control2 = new Button( shell, RWT.PUSH );
+    
+    // focus control on closed shell, returns false 
+    boolean result = control2.forceFocus();
+    assertFalse( result );
+    // ...but will set the focus once the shell is opened
+    shell.open();
+    assertSame( control2, display.getFocusControl() );
+    assertFalse( control1.isFocusControl() );
+    assertTrue( control2.isFocusControl() );
+  }
+  
+  public void testNoFocusControls() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Control control = new Button( shell, RWT.NONE );
+    control.forceFocus();
+    Control noFocusControl = new Label( shell, RWT.NONE );
+    shell.open();
+    // calling setFocus on controls with NO_FOCUS bit has no effect
+    boolean result = noFocusControl.setFocus();
+    assertFalse( result );
+    assertFalse( noFocusControl.isFocusControl() );
+    // ... but calling forceFocus marks even the NO_FOCUS control as focused 
+    result = noFocusControl.forceFocus();
+    assertTrue( result );
+    assertTrue( noFocusControl.isFocusControl() );
+  }
+  
+  public void testDisposeOfFocused() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Control control1 = new Button( shell, RWT.PUSH );
+    Composite composite = new Composite( shell, RWT.NONE );
+    Control control2 = new Button( composite, RWT.PUSH );
+    Control control3 = new Button( composite, RWT.PUSH );
+    shell.open();
+    // Disposing of a control focuses its parent if the parent itself was not
+    // disposed of
+    control1.dispose();
+    assertSame( shell, display.getFocusControl() );
+    control3.setFocus();
+    control3.dispose();
+    assertSame( composite, display.getFocusControl() );
+    control2.setFocus();
+    composite.dispose();
+    assertSame( shell, display.getFocusControl() );
+    shell.dispose();
+    assertSame( null, display.getFocusControl() );
   }
 }

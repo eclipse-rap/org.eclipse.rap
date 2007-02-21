@@ -33,7 +33,7 @@ public class TabFolderTab extends ExampleTab {
     createFontChooser();
     Button button1 = createPropertyButton( "Select Tab 1", RWT.RADIO );
     button1.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         folder.setSelection( 0 );
         System.out.println( "tab 1 selected" );
       };
@@ -41,14 +41,14 @@ public class TabFolderTab extends ExampleTab {
     button1.setSelection( true );
     Button button2 = createPropertyButton( "Select Tab 2", RWT.RADIO );
     button2.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         folder.setSelection( 1 );
         System.out.println( "tab 2 selected" );
       };
     } );
     Button button3 = createPropertyButton( "Select Tab 3", RWT.RADIO );
     button3.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         folder.setSelection( 2 );
         System.out.println( "tab 3 selected" );
       };

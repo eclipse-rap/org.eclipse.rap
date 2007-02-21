@@ -94,6 +94,27 @@ qx.Proto.setParent = function( widget, parentId ) {
   widget.setParent( parent );
 }
 
+qx.Proto.focus = function( widgetId ) {
+  var widget = this.findWidgetById( widgetId );
+  if( widget.isMaterialized() ) {
+    widget.focus();
+  } else {
+    widget.addEventListener( 
+      "appear", 
+      org.eclipse.rap.rwt.WidgetManager._onAppearFocus, 
+      widget );
+  }
+}
+
+org.eclipse.rap.rwt.WidgetManager._onAppearFocus = function( evt ) {
+  var widget = this;
+  widget.focus();
+  evt.getTarget().removeEventListener( 
+    "appear", 
+    org.eclipse.rap.rwt.WidgetManager._onAppearFocus,
+    widget );
+}
+
 qx.Proto.setForeground = function( widget, color ) {
   if( widget.isMaterialized() ) {  // TODO [rh] isMaterialized or isCreated?
     widget.setColor( color );

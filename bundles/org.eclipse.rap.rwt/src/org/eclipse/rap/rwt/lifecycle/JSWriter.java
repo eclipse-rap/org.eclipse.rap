@@ -119,7 +119,6 @@ public final class JSWriter {
     throws IOException 
   {
     call( getSetterName( jsProperty ), new Object[] { value } );
-//    set( jsProperty, new String[] { value } );
   }
   
   public void set( final String jsProperty, final int value ) 
@@ -312,7 +311,7 @@ public final class JSWriter {
     write( "{0}.{1}({2});", target, function, params );
   }
   
-  // TODO [rh] should we name this call and make it a static method?
+  // TODO [rh] should we name this method 'call' and make it a static method?
   public void callStatic( final String function, final Object[] args ) 
     throws IOException 
   {
@@ -409,7 +408,7 @@ public final class JSWriter {
   /////////////////////////////////////////////////////////////////////
   // Helping methods for JavaScript WidgetManager and Widget references
   
-  private void ensureWidgetManager() throws IOException {
+  private static void ensureWidgetManager() throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     if( stateInfo.getAttribute( HAS_WINDOW_MANAGER ) == null ) {
       write( "var {0} = org.eclipse.rap.rwt.WidgetManager.getInstance();", 
@@ -452,8 +451,8 @@ public final class JSWriter {
   ///////////////////////////////////////////////
   // Helping methods tp construct parameter lists
   
-  private String createSetPatternForPrimitives( final int parameterCount,
-                                                final String typeAndStyle )
+  private static String createSetPatternForPrimitives( final int parameterCount,
+                                                       final String typeAndStyle )
   {
     StringBuffer buffer = new StringBuffer( "w.set{0}(" );
     for( int i = 0; i < parameterCount; i++ ) {
@@ -483,7 +482,7 @@ public final class JSWriter {
     return buffer.toString();
   }
   
-  private String createParamList( final Object[] args ) {
+  private static String createParamList( final Object[] args ) {
     StringBuffer params = new StringBuffer();
     if( args != null ) {
       for( int i = 0; i < args.length; i++ ) {
@@ -599,16 +598,16 @@ public final class JSWriter {
   /////////////////////////////////////////////////////////
   // Helping methods to write to the actual response writer 
   
-  private void write( final String pattern, final Object arg1 ) 
+  private static void write( final String pattern, final Object arg1 ) 
     throws IOException 
   {
     String out = MessageFormat.format( pattern, new Object[] { arg1 } );
     getWriter().write( out );
   }
   
-  private void writeProperty( final String pattern, 
-                              final String propertyName,
-                              final Object[] arx )
+  private static void writeProperty( final String pattern, 
+                                     final String propertyName,
+                                     final Object[] arx )
     throws IOException
   {
     Object[] arguments = new Object[ arx.length + 1 ];
@@ -618,19 +617,19 @@ public final class JSWriter {
     getWriter().write( out );
   }
   
-  private void write( final String pattern, 
-                      final Object arg1, 
-                      final Object arg2 ) 
+  private static void write( final String pattern, 
+                             final Object arg1, 
+                             final Object arg2 ) 
     throws IOException 
   {
     String out = MessageFormat.format( pattern, new Object[] { arg1, arg2 } );
     getWriter().write( out );
   }
   
-  private void write( final String pattern, 
-                      final Object arg1, 
-                      final Object arg2, 
-                      final Object arg3 ) 
+  private static void write( final String pattern, 
+                             final Object arg1, 
+                             final Object arg2, 
+                             final Object arg3 ) 
   throws IOException 
   {
     Object[] args = new Object[] { arg1, arg2, arg3 };

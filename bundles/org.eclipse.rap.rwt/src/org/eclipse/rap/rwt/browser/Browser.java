@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.widgets.Composite;
  * <ul><li>text and url property</li></ul>
  * <p>The enabled property in not (yet) evaluated.</p>
  */
+// TODO [rh] implement refresh method
 public class Browser extends Composite {
 
   private static final String ABOUT_BLANK = "about:blank";

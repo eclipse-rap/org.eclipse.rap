@@ -25,8 +25,6 @@ public final class Props {
   public static final String MENU = "menu";
   public static final String VISIBLE = "visible";
   public static final String ENABLED = "enabled";
-  public static final String BG_COLOR = "backgroundColor";
-  public static final String FG_COLOR = "foregroundColor";
   public static final String FONT = "font";
   public static final String CONTROL_LISTENERS = "hasControlListeners";
   
