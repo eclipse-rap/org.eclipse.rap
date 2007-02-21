@@ -10,9 +10,12 @@
 package org.eclipse.rap.demo.controls;
 
 import java.util.ArrayList;
+import org.eclipse.rap.jface.dialogs.MessageDialog;
 import org.eclipse.rap.jface.viewers.*;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.browser.Browser;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
 import org.eclipse.rap.rwt.widgets.*;
@@ -75,15 +78,40 @@ public class ListTab extends ExampleTab {
     viewer.setContentProvider( new ListContentProvider() );
     viewer.setLabelProvider( new LabelProvider() );
     viewer.setInput( ELEMENTS );
+    list.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        System.out.println( "___ selected" );
+      }
+      public void widgetDefaultSelected( SelectionEvent event ) {
+        System.out.println( "___ default selected" );
+        int index = list.getSelectionIndex();
+        String message = "Item " + index + " selected";
+        MessageDialog.openInformation( getShell(), "Selection", message, null );
+      }
+    } );
+    registerControl( list );
+    // ---
+    List list2 = new List( parent, style );
+    list2.add( "Item 1" );
+    list2.add( "Item 2" );
+    list2.add( "Item 3" );
+    list2.setLayoutData( new RowData( 200, 200 ) );
+    // ---
     int separatorStyle = RWT.SEPARATOR | RWT.HORIZONTAL | RWT.SHADOW_OUT;
     Label separator = new Label( parent, separatorStyle );
     separator.setLayoutData( new RowData( 440, 5 ) );
     Label codeLabel = new Label( parent, RWT.WRAP );
     codeLabel.setLayoutData( new RowData( 450, 35 ) );
     String codeLabelText 
-      = "Please note that the content of the above List is provided by a " 
+      = "Please note that the content of the left above List is provided by a " 
       + "ListViewer with JFace API. The source code looks like this:";
     codeLabel.setText( codeLabelText );
+    createDescription( parent );
+    
+    
+  }
+  
+  private void createDescription( final Composite parent ) {
     Browser browser = new Browser( parent, RWT.MULTI );
     browser.setLayoutData( new RowData( 450, 210 ) );
     String note
@@ -106,6 +134,5 @@ public class ListTab extends ExampleTab {
       + "</pre>"
       + "</body>";
     browser.setText( note );
-    registerControl( list );
   }
 }

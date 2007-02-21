@@ -70,7 +70,6 @@ public class SelectionEvent extends RWTEvent {
         ( ( SelectionListener )listener ).widgetSelected( this );
       break;
       case WIDGET_DEFAULT_SELECTED:
-        ( ( SelectionListener )listener ).widgetSelected( this );
         ( ( SelectionListener )listener ).widgetDefaultSelected( this );        
         break;
       default:

@@ -21,14 +21,17 @@ qx.OO.defineClass(
     // state == no, action == yes
     this._changeSelectionNotification = "state";
     this.setMarkLeadingItem( true );
+    // qx.manager.selection.SelectionManager
     var manager = this.getManager();
     manager.setMultiSelection( multiSelection );
     manager.addEventListener( "changeSelection", this._onChangeSelection, this );
     manager.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
     this.addEventListener( "focus", this._onFocusIn, this );
     this.addEventListener( "blur", this._onFocusOut, this );
-  }
-);
+    this.addEventListener( "click", this._onClick, this );
+    this.addEventListener( "dblclick", this._onDblClick, this );
+    this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+  } );
 
 /** Sets the given aray of items. */
 qx.Proto.setItems = function( items ) {
@@ -139,36 +142,47 @@ qx.Proto.dispose = function() {
   var manager = this.getManager();
   manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
   manager.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
-  this.removeEventListener( "focusin", this._onFocusIn, this );
-  this.removeEventListener( "focusout", this._onFocusOut, this );
+  this.removeEventListener( "focus", this._onFocusIn, this );
+  this.removeEventListener( "blur", this._onFocusOut, this );
+  this.removeEventListener( "click", this._onClick, this );
+  this.removeEventListener( "dblclick", this._onDblClick, this );
+  this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
   return qx.ui.form.List.prototype.dispose.call( this );
 }
 
 qx.Proto._onChangeSelection = function( evt ) {
-  this._updateSelectedItemState();  
-  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+  this._updateSelectedItemState();
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var id = widgetManager.findIdByWidget( this );
+  var req = org.eclipse.rap.rwt.Request.getInstance();
+  req.addParameter( id + ".selection", this._getSelectionIndices() );
+  if( this._changeSelectionNotification == "action" ) {
+    this._suspendClicks();
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
     var id = widgetManager.findIdByWidget( this );
-    var selectionIndices = "";
-    var selectedItems = this.getManager().getSelectedItems();
-    for( var i = 0; i < selectedItems.length; i++ ) {
-      var index = this.indexOf( selectedItems[ i ] );
-      // TODO [rh] find out why sometimes index == -1, cannot be reproduced
-      //      in standalone qooxdoo application
-      if( index >= 0 ) {  
-        if( selectionIndices != "" ) {
-          selectionIndices += ",";
-        }
-        selectionIndices += String( index );
-      }
-    }
     var req = org.eclipse.rap.rwt.Request.getInstance();
-    req.addParameter( id + ".selection", selectionIndices );
-    if( this._changeSelectionNotification == "action" ) {
-      req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
-      req.send();
+    req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
+    req.send();
+  }
+}
+
+qx.Proto._getSelectionIndices = function() {
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var id = widgetManager.findIdByWidget( this );
+  var selectionIndices = "";
+  var selectedItems = this.getManager().getSelectedItems();
+  for( var i = 0; i < selectedItems.length; i++ ) {
+    var index = this.indexOf( selectedItems[ i ] );
+    // TODO [rh] find out why sometimes index == -1, cannot be reproduced
+    //      in standalone qooxdoo application
+    if( index >= 0 ) {  
+      if( selectionIndices != "" ) {
+        selectionIndices += ",";
+      }
+      selectionIndices += String( index );
     }
   }
+  return selectionIndices;
 }
 
 qx.Proto._onChangeLeadItem = function( evt ) {
@@ -181,18 +195,59 @@ qx.Proto._onChangeLeadItem = function( evt ) {
   }
 }
 
+qx.Proto._onClick = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    if( this._changeSelectionNotification == "action" ) {
+      if( !this._clicksSuspended ) {
+        this._suspendClicks();
+        var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        var req = org.eclipse.rap.rwt.Request.getInstance();
+        req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
+        req.send();
+      }
+    }
+  }
+}
+
+qx.Proto._onDblClick = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    if( this._changeSelectionNotification == "action" ) {
+      var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var req = org.eclipse.rap.rwt.Request.getInstance();
+      req.addEvent( "org.eclipse.rap.rwt.events.widgetDefaultSelected", id );
+      req.send();
+    }
+  }
+}
+
 /*
- * Pass enablement to list items (in SWT, there are no List Items)
+ * Suspends the processing of click events to avoid sending multiple
+ * widgetSelected events to the server.
  */
-qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
-  // TODO [rst] call super._modifyEnabled ?
+qx.Proto._suspendClicks = function() {
+  this._clicksSuspended = true;
+  qx.client.Timer.once( this._enableClicks, this, 500 );
+  this.debug( "_____ clicks suspended" );
+}
+
+qx.Proto._enableClicks = function() {
+  this._clicksSuspended = false;
+  this.debug( "_____ clicks enabled" );
+}
+
+/*
+ * Passes enablement to list items
+ */
+qx.Proto._onChangeEnabled = function( evt ) {
+  var newValue = evt.getData();
   var items = this.getChildren();
   for( var i = 0; i < items.length; i++ ) {
     var item = items[ i ];
-    item.setEnabled( propValue );
+    item.setEnabled( newValue );
   }
-  return true;
-};
+}
 
 qx.Proto._onFocusIn = function( evt ) {
   this._updateSelectedItemState();

@@ -62,20 +62,6 @@ public class ControlLCAUtil {
     control.setBounds( newBounds );
   }
   
-  public static void readSelectionEvent( final Widget widget ) {
-    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_DEFAULT_SELECTED ) ) {
-      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-      int detail = RWT.NONE;
-      SelectionEvent event = new SelectionEvent( widget,
-                                                 null,
-                                                 SelectionEvent.WIDGET_DEFAULT_SELECTED,
-                                                 bounds,
-                                                 true,
-                                                 detail );
-      event.processEvent();
-    }
-  }
-  
   public static void writeBounds( final Control control ) throws IOException {
     Composite parent = control.getParent();
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
@@ -228,26 +214,42 @@ public class ControlLCAUtil {
                                        final Item item, 
                                        final boolean readBounds )
   {
-    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      Rectangle bounds;
-      if( widget instanceof Control && readBounds ) {
-        Control control = ( Control )widget;
-        bounds = WidgetLCAUtil.readBounds( control, control.getBounds() ); 
-      } else {
-        bounds = new Rectangle( 0, 0, 0, 0 );
-      }
+    String eventId = JSConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
       SelectionEvent event;
-      event = new SelectionEvent( widget, 
-                                  item,
-                                  SelectionEvent.WIDGET_SELECTED,
-                                  bounds,
-                                  true,
-                                  RWT.NONE );
+      event = createSelectionEvent( widget,
+                                    item,
+                                    readBounds,
+                                    SelectionEvent.WIDGET_SELECTED );
+      event.processEvent();
+    }
+    eventId = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
+      SelectionEvent event;
+      event = createSelectionEvent( widget,
+                                    item,
+                                    readBounds,
+                                    SelectionEvent.WIDGET_DEFAULT_SELECTED );
       event.processEvent();
     }
   }
+
+  private static SelectionEvent createSelectionEvent( final Widget widget,
+                                                      final Item item,
+                                                      final boolean readBounds,
+                                                      final int type )
+  {
+    Rectangle bounds;
+    if( widget instanceof Control && readBounds ) {
+      Control control = ( Control )widget;
+      bounds = WidgetLCAUtil.readBounds( control, control.getBounds() );
+    } else {
+      bounds = new Rectangle( 0, 0, 0, 0 );
+    }
+    return new SelectionEvent( widget, item, type, bounds, true, RWT.NONE );
+  }
   
-  //////////////////
+  // ////////////////
   // helping methods
 
   private static int getZIndex( final Control control ) {
