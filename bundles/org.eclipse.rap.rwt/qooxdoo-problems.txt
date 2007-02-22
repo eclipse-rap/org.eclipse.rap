@@ -119,3 +119,7 @@ that's right?
      
 34.) Sometimes caret of text box not shown in Firefox
      --> investigate http://qooxdoo.org/documentation/snippets/show_caret_in_dialogs_in_ff     
+     
+35.) treefullcontrol: when a TreeFolder is created without specifying icons in 
+     the underlying RowStructure (e.g. row.addIcon), it is not possible to set 
+     icons afterwards.
