@@ -52,20 +52,7 @@ public class ListLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     List list = ( List )widget;
-    String value = WidgetLCAUtil.readPropertyValue( list, "selection" );
-    if( value != null ) {
-      String[] indiceStrings;
-      if( "".equals( value ) ) {
-        indiceStrings = new String[ 0 ];
-      } else {
-        indiceStrings = value.split( "," );
-      }
-      int[] indices = new int[ indiceStrings.length ];
-      for( int i = 0; i < indices.length; i++ ) {
-        indices[ i ] = Integer.parseInt( indiceStrings[ i ] );
-      }
-      list.setSelection( indices );
-    }
+    readSelection( list );
     readFocusIndex( list );
     ControlLCAUtil.processSelection( list, null, true );
   }
@@ -96,10 +83,9 @@ public class ListLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-
-  ////////////////////////////////////////////////
-  // helping methods for selection synchronization
-
+  ////////////////////////////////////
+  // Helping methods to preserve state
+  
   private static void preserveSelection( final List list ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
     Object selection;
@@ -111,11 +97,14 @@ public class ListLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION, selection );
   }
 
+  ///////////////////////////////////////////
+  // Helping methods to write JavaScript code
+  
   private static void writeItems( final List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
     String[] items = list.getItems();
     if( WidgetLCAUtil.hasChanged( list, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
-      // Convert newlines nto whitespaces
+      // Convert newlines into whitespaces
       for( int i = 0; i < items.length; i++ ) {
         Matcher matcher = NEWLINE_PATTERN.matcher( items[ i ] );
         items[ i ] = matcher.replaceAll( " " );
@@ -151,32 +140,6 @@ public class ListLCA extends AbstractWidgetLCA {
     }
   }
   
-  private static void updateSelectionListeners( final List list ) 
-    throws IOException
-  {
-    String prop = Props.SELECTION_LISTENERS;
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( list ) );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( list, prop, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( list );
-      String value = newValue.booleanValue() ? "action" : "state"; 
-      writer.set( "changeSelectionNotification", value );
-    }
-  }
-
-  ///////////////////////////////////////////
-  // Helping methods to maintain focused item
-
-  private static void readFocusIndex( final List list ) {
-    String paramValue = WidgetLCAUtil.readPropertyValue( list, "focusIndex" );
-    if( paramValue != null ) {
-      int focusIndex = Integer.parseInt( paramValue );
-      Object adapter = list.getAdapter( IListAdapter.class );
-      IListAdapter listAdapter = ( IListAdapter )adapter;
-      listAdapter.setFocusIndex( focusIndex );
-    }
-  }
-
   private static void writeFocusIndex( final List list ) throws IOException {
     String prop = PROP_FOCUS_INDEX;
     Integer newValue = new Integer( list.getFocusIndex() );
@@ -203,6 +166,52 @@ public class ListLCA extends AbstractWidgetLCA {
     writer.set( "overflow", overflow );
   }
 
+  private static void updateSelectionListeners( final List list ) 
+    throws IOException
+  {
+    String prop = Props.SELECTION_LISTENERS;
+    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( list ) );
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( list, prop, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( list );
+      String value = newValue.booleanValue() ? "action" : "state"; 
+      writer.set( "changeSelectionNotification", value );
+    }
+  }
+
+  ////////////////////////////////////////////
+  // Helping methods to read client-side state
+
+  private static void readSelection( final List list ) {
+    String value = WidgetLCAUtil.readPropertyValue( list, "selection" );
+    if( value != null ) {
+      String[] indiceStrings;
+      if( "".equals( value ) ) {
+        indiceStrings = new String[ 0 ];
+      } else {
+        indiceStrings = value.split( "," );
+      }
+      int[] indices = new int[ indiceStrings.length ];
+      for( int i = 0; i < indices.length; i++ ) {
+        indices[ i ] = Integer.parseInt( indiceStrings[ i ] );
+      }
+      list.setSelection( indices );
+    }
+  }
+
+  private static void readFocusIndex( final List list ) {
+    String paramValue = WidgetLCAUtil.readPropertyValue( list, "focusIndex" );
+    if( paramValue != null ) {
+      int focusIndex = Integer.parseInt( paramValue );
+      Object adapter = list.getAdapter( IListAdapter.class );
+      IListAdapter listAdapter = ( IListAdapter )adapter;
+      listAdapter.setFocusIndex( focusIndex );
+    }
+  }
+
+  //////////////////
+  // Helping methods 
+  
   private static boolean isSingle( final List list ) {
     return ( list.getStyle() & RWT.SINGLE ) != 0;
   }

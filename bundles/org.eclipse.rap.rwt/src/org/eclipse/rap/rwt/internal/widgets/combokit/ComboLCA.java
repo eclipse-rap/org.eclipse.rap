@@ -12,6 +12,8 @@
 package org.eclipse.rap.rwt.internal.widgets.combokit;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -20,7 +22,11 @@ import org.eclipse.rap.rwt.widgets.Widget;
 
 public class ComboLCA extends AbstractWidgetLCA {
   
-  private static final String SELECTED_ITEM = "selectedItem";
+  private static final Pattern NEWLINE_PATTERN 
+    = Pattern.compile( "\n" );
+
+  private static final String[] DEFAUT_ITEMS = new String[ 0 ];
+  
   // Constants for ComboUtil.js
   private static final String WIDGET_SELECTED = 
     "org.eclipse.rap.rwt.ComboUtil.widgetSelected";
@@ -28,7 +34,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     "org.eclipse.rap.rwt.ComboUtil.createComboBoxItems";
   private static final String PROP_ITEMS = "items";
   
-  private final JSListenerInfo JS_LISTENER_INFO 
+  private static final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
                           WIDGET_SELECTED, 
                           JSListenerType.ACTION );
@@ -43,7 +49,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   
   public void readData( final Widget widget ) {
     Combo combo = ( Combo )widget;
-    String value = WidgetLCAUtil.readPropertyValue( widget, SELECTED_ITEM );
+    String value = WidgetLCAUtil.readPropertyValue( widget, "selectedItem" );
     if( value != null ) {
       combo.select( new Integer( value ).intValue() );
     }
@@ -62,22 +68,29 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     Combo combo = ( Combo )widget;
-    JSWriter writer = JSWriter.getWriterFor( combo );
     ControlLCAUtil.writeChanges( combo );
-    String[] items = combo.getItems();
-    if( WidgetLCAUtil.hasChanged( combo, PROP_ITEMS, items, new String[ 0 ] ) ) {
-      Object[] params = new Object[]{ WidgetUtil.getId( combo ), items };
-      // TODO [rh] figure out whether items that contain control chars (newline, 
-      //      tab, etc) can break the JavaScript code when executed
-      writer.callStatic( CREATE_COMBOBOX_ITEMS, params );
-    }
-    writer.updateListener( JS_LISTENER_INFO,
-                           Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( combo ) );
+    writeItems( combo );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  }
+
+  private static void writeItems( final Combo combo ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( combo );
+    String[] items = combo.getItems();
+    if( WidgetLCAUtil.hasChanged( combo, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
+      // Convert newlines into whitespaces
+      for( int i = 0; i < items.length; i++ ) {
+        Matcher matcher = NEWLINE_PATTERN.matcher( items[ i ] );
+        items[ i ] = matcher.replaceAll( " " );
+      }
+      Object[] args = new Object[]{ WidgetUtil.getId( combo ), items };
+      writer.callStatic( CREATE_COMBOBOX_ITEMS, args );
+    }
+    writer.updateListener( JS_LISTENER_INFO,
+                           Props.SELECTION_LISTENERS,
+                           SelectionEvent.hasListener( combo ) );
   }
 }
