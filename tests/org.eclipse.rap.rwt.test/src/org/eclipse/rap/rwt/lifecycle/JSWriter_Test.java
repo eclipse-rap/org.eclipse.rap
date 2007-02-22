@@ -207,23 +207,44 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.set( "allowStretchY", true );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w1\" );w.setAllowStretchY( true );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w1\" );w.setAllowStretchY( true );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
   }
 
-  public void testSetStringArray() throws Exception {
+  public void testCallWithStringArray() throws Exception {
     Display display = new Display();
     TestShell shell = new TestShell( display );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
-    writer.set( "textValues", new String[] { "abc", "xyz" } );
+    // test regular strings
+    Fixture.fakeResponseWriter();
+    writer.call( "setTextValues", new String[] { "abc", "xyz" } );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w1\" );"
-        + "w.setTextValues( \"abc\", \"xyz\" );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w1\" );"
+      + "w.setTextValues( \"abc\", \"xyz\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
+    // test string with newline
+    Fixture.fakeResponseWriter();
+    writer.call( "setTextValues", new String[] { "new\nline" } );
+    expected = "w.setTextValues( \"new\\nline\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+  
+  public void testCallWithObjectArray() throws IOException {
+    Display display = new Display();
+    TestShell shell = new TestShell( display );
+    JSWriter writer = JSWriter.getWriterFor( shell.button );
+    // test regular strings
+    Fixture.fakeResponseWriter();
+    Integer[] values = new Integer[] { new Integer( 1 ), new Integer( 2 ) };
+    writer.call( "setIntegerValues", values );
+    String expected
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w1\" );"
+      + "w.setIntegerValues( 1, 2 );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   public void testSetIntArray() throws Exception {
@@ -232,9 +253,9 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.set( "intValues", new int[] { 1, 2 } );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w1\" );"
-        + "w.setIntValues( 1, 2 );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w1\" );"
+      + "w.setIntValues( 1, 2 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
   }
@@ -245,9 +266,9 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.set( "boolValues", new boolean[] { true, false } );
     String expected 
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w1\" );"
-        + "w.setBoolValues( true, false );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w1\" );"
+      + "w.setBoolValues( true, false );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
   }
@@ -259,9 +280,9 @@ public class JSWriter_Test extends TestCase {
     writer.set( new String[] { "prop1", "prop2" }, 
                 new Object[] { new JSVar( "var1" ), new JSVar( "var2" ) } );
     String expected 
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w1\" );"
-        + "w.getProp1().setProp2( var1, var2 );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w1\" );"
+      + "w.getProp1().setProp2( var1, var2 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
     
@@ -276,9 +297,9 @@ public class JSWriter_Test extends TestCase {
     RWTFixture.preserveWidgets();
     writer.set( "text", "value", shell.text.getText() );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w4\" );"
-        + "w.setValue( \"\" );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w4\" );"
+      + "w.setValue( \"\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     RWTFixture.markInitialized( shell.text );
@@ -303,9 +324,9 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( "function1", null );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w1\" );"
-        + "w.function1();";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w1\" );"
+      + "w.function1();";
     assertEquals( expected, Fixture.getAllMarkup() );
     writer.call( "function2", null );
     expected += "w.function2();";
@@ -330,8 +351,8 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer.callStatic( "doSomethingStatic", null );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "doSomethingStatic();";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "doSomethingStatic();";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     Object[] args = new Object[]{
@@ -364,9 +385,9 @@ public class JSWriter_Test extends TestCase {
     };
     writer.call( shell, "doSomethingWithShell", args );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var t = wm.findWidgetById( \"w1\" );"
-        + "t.doSomethingWithShell( wm.findWidgetById( \"w1\" ) );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var t = wm.findWidgetById( \"w1\" );"
+      + "t.doSomethingWithShell( wm.findWidgetById( \"w1\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     writer.call( shell, "doSomething", new Object[ 0 ] );
@@ -434,8 +455,8 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer.call( new JSVar( "a" ), "doSomething", null );
     String expected 
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "a.doSomething();";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "a.doSomething();";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
@@ -446,9 +467,9 @@ public class JSWriter_Test extends TestCase {
     // add listener directly to the widget
     writer.addListener( "execute", "buttonExecuted1" );
     String expected 
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w1\" );"
-        + "w.addEventListener( \"execute\", buttonExecuted1 );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w1\" );"
+      + "w.addEventListener( \"execute\", buttonExecuted1 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     writer.addListener( "execute", "buttonExecuted2" );
     expected += "w.addEventListener( \"execute\", buttonExecuted2 );";
@@ -469,9 +490,9 @@ public class JSWriter_Test extends TestCase {
     // add listener directly to the widget 
     writer.removeListener( "execute", "buttonExecuted1" );
     String expected 
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();" 
-        + "var w = wm.findWidgetById( \"w1\" );" 
-        + "w.removeEventListener( \"execute\", buttonExecuted1 );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();" 
+      + "var w = wm.findWidgetById( \"w1\" );" 
+      + "w.removeEventListener( \"execute\", buttonExecuted1 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     writer.removeListener( "execute", "buttonExecuted2" );
     expected += "w.removeEventListener( \"execute\", buttonExecuted2 );";
@@ -513,9 +534,9 @@ public class JSWriter_Test extends TestCase {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w3\" );"
-        + "w.addEventListener( \"execute\", selectedEvent );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w3\" );"
+      + "w.addEventListener( \"execute\", selectedEvent );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Test adding the first listeners
     Fixture.fakeResponseWriter();
@@ -579,9 +600,9 @@ public class JSWriter_Test extends TestCase {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( folder ) );
     String expected
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w4\" );"
-        + "w.addEventListener( \"type\", event );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w4\" );"
+      + "w.addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Test rendering with action listener added
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
@@ -616,8 +637,8 @@ public class JSWriter_Test extends TestCase {
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( folder ) );
-    expected =   "w.removeEventListener( \"type\", eventAction );"
-               + "w.addEventListener( \"type\", event );";
+    expected = "w.removeEventListener( \"type\", eventAction );"
+             + "w.addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
   
@@ -645,9 +666,9 @@ public class JSWriter_Test extends TestCase {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( folder ) );
     String expected 
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w4\" );"
-        + "w.addEventListener( \"type\", eventAction );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w4\" );"
+      + "w.addEventListener( \"type\", eventAction );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Test adding a further listener: leads to no markup
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
@@ -670,8 +691,8 @@ public class JSWriter_Test extends TestCase {
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( folder ) );
-    expected =   "w.removeEventListener( \"type\", eventAction );"
-               + "w.addEventListener( \"type\", event );";
+    expected = "w.removeEventListener( \"type\", eventAction );"
+             + "w.addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
   
@@ -706,9 +727,9 @@ public class JSWriter_Test extends TestCase {
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( button ) );
     String expected 
-      =   "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();" 
-        + "var w = wm.findWidgetById( \"w3\" );" 
-        + "w.getPropertyName().addEventListener( \"execute\", selectedEvent );";
+      = "var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();" 
+      + "var w = wm.findWidgetById( \"w3\" );" 
+      + "w.getPropertyName().addEventListener( \"execute\", selectedEvent );";
     assertEquals( expected, Fixture.getAllMarkup() );
     
     // Test adding the first listeners
@@ -746,8 +767,8 @@ public class JSWriter_Test extends TestCase {
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( button ) );
     expected
-      =   "w.getPropertyName().removeEventListener"
-        + "( \"execute\", selectedEvent );";
+      = "w.getPropertyName().removeEventListener"
+      + "( \"execute\", selectedEvent );";
     assertEquals( expected, 
                   Fixture.getAllMarkup() );
     
@@ -800,8 +821,8 @@ public class JSWriter_Test extends TestCase {
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( folder ) );
     expected 
-      =    "w.getPropertyName().removeEventListener( \"type\", event );"
-         + "w.getPropertyName().addEventListener( \"type\", eventAction );";
+      = "w.getPropertyName().removeEventListener( \"type\", event );"
+      + "w.getPropertyName().addEventListener( \"type\", eventAction );";
     assertEquals( expected, Fixture.getAllMarkup() );
     
     // Test adding a further listener: leads to no markup
@@ -827,8 +848,8 @@ public class JSWriter_Test extends TestCase {
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( folder ) );
     expected 
-      =   "w.getPropertyName().removeEventListener( \"type\", eventAction );"
-        + "w.getPropertyName().addEventListener( \"type\", event );";
+      = "w.getPropertyName().removeEventListener( \"type\", eventAction );"
+      + "w.getPropertyName().addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

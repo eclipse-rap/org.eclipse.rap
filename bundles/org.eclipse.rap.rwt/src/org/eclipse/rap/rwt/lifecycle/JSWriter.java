@@ -133,14 +133,6 @@ public final class JSWriter {
     set( jsProperty, new boolean[] { value } );
   }
   
-  public void set( final String jsProperty, final String[] values )
-    throws IOException
-  {
-    ensureWidgetRef();
-    String pattern = createSetPatternForStrings( values.length );
-    writeProperty( pattern, jsProperty, values );
-  }
-  
   public void set( final String jsProperty, final int[] values )
     throws IOException
   {
@@ -193,7 +185,7 @@ public final class JSWriter {
     if(    !adapter.isInitialized()
         || WidgetLCAUtil.hasChanged( widget, javaProperty, newValue ) ) 
     {
-      set( jsProperty, new String[] { newValue } );
+      set( jsProperty, newValue );
     }
   }
   
@@ -468,20 +460,6 @@ public final class JSWriter {
     return buffer.toString();
   }
   
-  private static String createSetPatternForStrings( final int parameterCount ) {
-    StringBuffer buffer = new StringBuffer( "w.set{0}(" );
-    for( int i = 0; i < parameterCount; i++ ) {
-      buffer.append( " \"{" );
-      buffer.append( i + 1  );
-      buffer.append( "}\"" );
-      if( i + 1 < parameterCount ) {
-        buffer.append( "," );
-      }
-    }
-    buffer.append( " );" );
-    return buffer.toString();
-  }
-  
   private static String createParamList( final Object[] args ) {
     StringBuffer params = new StringBuffer();
     if( args != null ) {
@@ -531,9 +509,13 @@ public final class JSWriter {
       if( i > 0 ) {
         buffer.append( ',' );
       }
-      buffer.append( " \"" );
-      buffer.append( array[ i ] );
-      buffer.append( '"' );
+      if( array[ i ] instanceof String ) {
+        buffer.append( " \"" );
+        buffer.append( escapeString( array[ i ].toString() ) );
+        buffer.append( '"' );
+      } else {
+        buffer.append( array[ i ] );
+      }
       if( i == array.length - 1 ) {
         buffer.append( ' ' );
       }

@@ -12,6 +12,8 @@
 package org.eclipse.rap.rwt.internal.widgets.listkit;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.internal.widgets.IListAdapter;
@@ -106,14 +108,19 @@ public class ListLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION, selection );
   }
 
+  private static final Pattern NEWLINE_PATTERN 
+    = Pattern.compile( "\n" );
+
   private static void writeItems( final List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
     String[] items = list.getItems();
     if( WidgetLCAUtil.hasChanged( list, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
-      // TODO [rh] when an item contains a newline char, it breaks the 
-      //      JavaScript code. A possible solution might be to convert them
-      //      (and possibly other control chars) to whitespaces
-      writer.set( PROP_ITEMS, new Object[]{ items } );
+      // Convert newlines nto whitespaces
+      for( int i = 0; i < items.length; i++ ) {
+        Matcher matcher = NEWLINE_PATTERN.matcher( items[ i ] );
+        items[ i ] = matcher.replaceAll( " " );
+      }
+      writer.set( "items", new Object[]{ items } );
     }
   }
 

@@ -29,6 +29,10 @@ public class ListTab extends ExampleTab {
     String text 
       = "A very long item that demonstrates horizontal scrolling in a List";
     ELEMENTS.add( text );
+    text = "An item with a linebreak\n(converted to a whitespace)"; 
+    ELEMENTS.add( text );
+    text = "...and other control chars: \u0003 \t \u0004 \u000F";
+    ELEMENTS.add( text );
     for( int i = 1; i <= 25; i++ ) {
       ELEMENTS.add( "Item " + i );
     }
