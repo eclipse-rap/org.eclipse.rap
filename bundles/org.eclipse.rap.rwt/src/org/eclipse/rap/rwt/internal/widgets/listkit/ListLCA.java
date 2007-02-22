@@ -25,6 +25,9 @@ import org.eclipse.rap.rwt.widgets.Widget;
 
 public class ListLCA extends AbstractWidgetLCA {
 
+  private static final Pattern NEWLINE_PATTERN 
+    = Pattern.compile( "\n" );
+
   // Property names, used when preserving values
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_ITEMS = "items";
@@ -107,9 +110,6 @@ public class ListLCA extends AbstractWidgetLCA {
     }
     adapter.preserve( PROP_SELECTION, selection );
   }
-
-  private static final Pattern NEWLINE_PATTERN 
-    = Pattern.compile( "\n" );
 
   private static void writeItems( final List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
