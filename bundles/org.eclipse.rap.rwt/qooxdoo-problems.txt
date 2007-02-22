@@ -49,14 +49,15 @@ that's right?
 
 15.) Setting font and/or foreground color is ignored when done in the same
      JavaScript chunk in which the widget is created
-
+     --> WORKAROUND IS USED
+     
 16.) Sometimes, when an empty Text field is focussed and/or blurred using the
      tab key, the getText() method returns the string "null". This is probably
      also a qx problem.
 
-17.) Is there a way to display characters "<" and ">" in the text of a
-     qx.ui.basic.Label? As Label accepts HTML input, "&lt;" and "&gt;" should be
-     rendered appropriately.
+17.) Label drops text in angle brackets
+     This also applies to all widgets that internally use labels
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=193
 
 18.) A qx.ui.basic.Atom displaying a wrapped and centered text in its label
      does not align the label properly. It seems that the Boxlayout assumes the
@@ -77,4 +78,43 @@ that's right?
      maximize button is grayed out and the window cannot be maximized even if
      "allowMaximize" is true. (Qx Bug 288)
 
+23.) TreeFullControl: Item expands when clicked
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=289
+     --> PARTIALLY SOLVED
      
+24.) TreeFullControl: when changing an icon or adding an item with a different 
+     icon, the icon is not shown the first time. After the item is selected - 
+     deselected - selected, the actual icon is shown.
+
+25.) Under some (yet not reproducible) circumstances a tooltip for a widget
+     does not disappear but stays orphaned even though the associated widget is
+     not under the mouse cursor or invisible or disposed of.
+     
+26.) Gap in border of GroupBox with no legend
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=286
+     
+27.) TabView should scroll TabButtons
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=287
+     
+28.) Disable spell check feature on FF 2.0
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=291
+     --> WORKAROUND IS USED               
+     
+29.) List with scrollY overflows in IE7
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=299
+     
+30.) TextArea: wrap property broken
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=300
+     
+31.) Wrap behavior for Spinner
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=301      
+     
+32.) Checkbox/radio-button focus rectangle discussion 
+     (additional issue: what to do when focus was set programmatically?)
+     --> news://news.gmane.org:119/emuhs6$fv1$1@sea.gmane.org
+     
+33.) Scroll ListItem into view
+     --> news://news.gmane.org:119/eokqbs$q4n$1@sea.gmane.org
+     
+34.) Sometimes caret of text box not shown in Firefox
+     --> investigate http://qooxdoo.org/documentation/snippets/show_caret_in_dialogs_in_ff     
