@@ -48,7 +48,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     ScrolledComposite composite = ( ScrolledComposite )widget;
-    ControlLCAUtil.readData( composite );
     String value 
       = WidgetLCAUtil.readPropertyValue( widget, PARAM_H_BAR_SELECTION );
     if( value != null && composite.getHorizontalBar() != null ) {

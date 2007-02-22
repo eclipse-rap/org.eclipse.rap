@@ -26,7 +26,6 @@ class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
 
   void readData( final Text text ) {
     TextLCAUtil.readText( text );
-    ControlLCAUtil.readData( text );
     TextLCAUtil.readModifyEvent( text );
   }
 

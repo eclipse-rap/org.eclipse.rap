@@ -14,6 +14,8 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.events.FocusAdapter;
+import org.eclipse.rap.rwt.events.FocusEvent;
 import org.eclipse.rap.rwt.graphics.*;
 import com.w4t.engine.lifecycle.PhaseId;
 
@@ -307,10 +309,9 @@ public class Control_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
     Control control1 = new Button( shell, RWT.PUSH );
-
     // When shell is closed, creating a control does not affect its focus
     assertSame( null, display.getFocusControl() );
-    
+    // When no focus was set, the first control is forceFocus'ed
     shell.open();
     assertSame( control1, display.getFocusControl() );
     assertTrue( control1.isFocusControl() );
@@ -369,5 +370,29 @@ public class Control_Test extends TestCase {
     assertSame( shell, display.getFocusControl() );
     shell.dispose();
     assertSame( null, display.getFocusControl() );
+  }
+  
+  public void testFocusEventsForForceFocus() {
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    final Control control1 = new Button( shell, RWT.PUSH );
+    control1.addFocusListener( new FocusAdapter() {
+      public void focusGained( final FocusEvent event ) {
+        assertSame( control1, event.getSource() );
+        log.append( "focusGained" );
+      }
+      public void focusLost( final FocusEvent event ) {
+        log.append( "focusLost" );
+      }
+    } );
+    shell.open();
+    // Changing focus programmatically must throw event 
+    control1.forceFocus();
+    assertEquals( "focusGained", log.toString() );
+    // Focusing the same control again must not cause an event. 
+    log.setLength( 0 );
+    control1.forceFocus();
+    assertEquals( "", log.toString() );
   }
 }

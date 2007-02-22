@@ -16,6 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.events.FocusEvent;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
 import com.w4t.Adaptable;
@@ -89,6 +90,20 @@ public class Display implements Adaptable {
   public Control getFocusControl() {
     checkDevice();
     return focusControl;
+  }
+  
+  private void setFocusControl( final Control focusControl ) {
+    if( this.focusControl != focusControl ) {
+      if( this.focusControl != null ) {
+        FocusEvent event = FocusEvent.focusLost( this.focusControl );
+        event.processEvent();
+      }
+      this.focusControl = focusControl;
+      if( this.focusControl != null ) {
+        FocusEvent event = FocusEvent.focusGained( this.focusControl );
+        event.processEvent();
+      }
+    }
   }
 
   ///////////////////////////
@@ -346,7 +361,7 @@ public class Display implements Adaptable {
     }
 
     public void setFocusControl( final Control focusControl ) {
-      Display.this.focusControl = focusControl;
+      Display.this.setFocusControl( focusControl );
     }
   }
   

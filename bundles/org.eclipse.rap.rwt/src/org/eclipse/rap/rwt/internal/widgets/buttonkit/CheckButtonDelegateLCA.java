@@ -35,7 +35,6 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   void readData( final Button button ) {
     ButtonLCAUtil.readSelection( button );
     ControlLCAUtil.processSelection( button, null, true );
-    ControlLCAUtil.readData( button );
   }
   
   void renderInitialization( final Button button )

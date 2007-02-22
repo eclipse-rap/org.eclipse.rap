@@ -47,7 +47,6 @@ public class ComboLCA extends AbstractWidgetLCA {
     if( value != null ) {
       combo.select( new Integer( value ).intValue() );
     }
-    ControlLCAUtil.readData( combo );
     if( WidgetLCAUtil.wasEventSent( combo, JSConst.EVENT_WIDGET_SELECTED ) ) {
       ControlLCAUtil.processSelection( combo, null, true );
     }
@@ -68,6 +67,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     String[] items = combo.getItems();
     if( WidgetLCAUtil.hasChanged( combo, PROP_ITEMS, items, new String[ 0 ] ) ) {
       Object[] params = new Object[]{ WidgetUtil.getId( combo ), items };
+      // TODO [rh] figure out whether items that contain control chars (newline, 
+      //      tab, etc) can break the JavaScript code when executed
       writer.callStatic( CREATE_COMBOBOX_ITEMS, params );
     }
     writer.updateListener( JS_LISTENER_INFO,

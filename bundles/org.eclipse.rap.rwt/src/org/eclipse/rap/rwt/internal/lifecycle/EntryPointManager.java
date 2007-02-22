@@ -65,7 +65,7 @@ public final class EntryPointManager {
   public static synchronized Display createUI( final String name ) {
     ParamCheck.notNull( name, "name" );
     if( !registry.containsKey( name ) ) {
-      String text = "An entry point named ''{0}'' does not exists.";
+      String text = "An entry point named ''{0}'' does not exist.";
       String msg = MessageFormat.format( text, new Object[] { name } );
       throw new IllegalArgumentException( msg );
     }

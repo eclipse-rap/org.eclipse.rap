@@ -75,23 +75,6 @@ public class ControlLCAUtil {
     control.setBounds( newBounds );
   }
   
-  public static void readData( final Control control ) {
-    readFocusEvent( control );
-  }
-  
-  public static void readFocusEvent( final Control control ) {
-    if( ( control.getStyle() & RWT.NO_FOCUS ) == 0 ) {
-      if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_FOCUS_GAINED ) ) {
-        FocusEvent event = FocusEvent.focusGained( control );
-        event.processEvent();
-      }
-      if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_FOCUS_LOST ) ) {
-        FocusEvent event = FocusEvent.focusLost( control );
-        event.processEvent();
-      }
-    }
-  }
-
   public static void writeBounds( final Control control ) throws IOException {
     Composite parent = control.getParent();
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
@@ -241,6 +224,15 @@ public class ControlLCAUtil {
     }
   }
   
+  /**
+   * Note that there is no corresponding readData metod to fire the focus events
+   * that are send by the JavaScript event listeners that are registered below.
+   * FocusEvents are thrown when the focus is changed programmatically and when
+   * it is change by the user.
+   * Therefore the methods in Display that maintain the current focusControl
+   * also fire FocusEvents. The current client-side focusControl is read in
+   * DisplayLCA#readData.
+   */
   private static void writeFocusListener( final Control control ) 
     throws IOException 
   {

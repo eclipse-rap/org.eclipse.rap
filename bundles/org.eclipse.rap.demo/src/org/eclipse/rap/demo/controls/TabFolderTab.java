@@ -31,34 +31,31 @@ public class TabFolderTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
-    Button button1 = createPropertyButton( "Select Tab 1", RWT.RADIO );
-    button1.addSelectionListener( new SelectionAdapter() {
+    Button rbSelectTab0 = createPropertyButton( "Select Tab 1", RWT.RADIO );
+    rbSelectTab0.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         folder.setSelection( 0 );
-        System.out.println( "tab 1 selected" );
-      };
+      }
     } );
-    button1.setSelection( true );
-    Button button2 = createPropertyButton( "Select Tab 2", RWT.RADIO );
-    button2.addSelectionListener( new SelectionAdapter() {
+    rbSelectTab0.setSelection( true );
+    Button rbSelectTab1 = createPropertyButton( "Select Tab 2", RWT.RADIO );
+    rbSelectTab1.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         folder.setSelection( 1 );
-        System.out.println( "tab 2 selected" );
-      };
+      }
     } );
-    Button button3 = createPropertyButton( "Select Tab 3", RWT.RADIO );
-    button3.addSelectionListener( new SelectionAdapter() {
+    Button rbSelectTab2 = createPropertyButton( "Select Tab 3", RWT.RADIO );
+    rbSelectTab2.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         folder.setSelection( 2 );
-        System.out.println( "tab 3 selected" );
-      };
+      }
     } );
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new FillLayout() );
+  protected void createExampleControls( final Composite parent ) {
+    parent.setLayout( new FillLayout() );
     int style = getStyle();
-    folder = new TabFolder( top, style );
+    folder = new TabFolder( parent, style );
     folder.setLayoutData( new RowData( 250, 200 ) );
     for( int i = 0; i < 3; i++ ) {
       TabItem item = new TabItem( folder, style );

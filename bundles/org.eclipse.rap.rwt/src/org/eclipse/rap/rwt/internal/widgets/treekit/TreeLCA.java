@@ -48,7 +48,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
       }
       tree.setSelection( selectedItems );
     }
-    ControlLCAUtil.readData( tree );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

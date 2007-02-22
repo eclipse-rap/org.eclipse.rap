@@ -33,7 +33,6 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     if( folder.getSelectionIndex() != -1 ) {
       item = folder.getItem( folder.getSelectionIndex() );
     }
-    ControlLCAUtil.readData( folder );
     ControlLCAUtil.processSelection( folder, item, true );
   }
 
@@ -44,11 +43,12 @@ public class TabFolderLCA extends AbstractWidgetLCA {
       writer.set( "placeBarOnTop", false );
     }
     ControlLCAUtil.writeStyleFlags( widget );
-    writer.addListener( null,
-                        "changeEnabled",
-                        "org.eclipse.rap.rwt.TabFolderUtil.enablementChanged" );
+    writer.addListener( "changeEnabled",
+                        "org.eclipse.rap.rwt.TabUtil.onChangeEnabled" );
     // TODO [rh] preliminary workaround to make TabFolder accessible by tab 
     writer.set( "tabIndex", 1 );
+    writer.addListener( "keypress", 
+                        "org.eclipse.rap.rwt.TabUtil.onTabFolderKeyPress" );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
@@ -56,7 +56,6 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    // TODO [rh] preliminary: find out how to properly dispose of a TabFolder 
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }

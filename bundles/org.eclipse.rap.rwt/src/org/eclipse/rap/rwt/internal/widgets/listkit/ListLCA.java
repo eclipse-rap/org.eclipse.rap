@@ -62,7 +62,6 @@ public class ListLCA extends AbstractWidgetLCA {
       list.setSelection( indices );
     }
     readFocusIndex( list );
-    ControlLCAUtil.readData( list );
     ControlLCAUtil.processSelection( list, null, true );
   }
 
@@ -111,6 +110,9 @@ public class ListLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( list );
     String[] items = list.getItems();
     if( WidgetLCAUtil.hasChanged( list, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
+      // TODO [rh] when an item contains a newline char, it breaks the 
+      //      JavaScript code. A possible solution might be to convert them
+      //      (and possibly other control chars) to whitespaces
       writer.set( PROP_ITEMS, new Object[]{ items } );
     }
   }

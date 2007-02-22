@@ -30,7 +30,6 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
 
   void readData( final Button button ) {
     ControlLCAUtil.processSelection( button, null, false );
-    ControlLCAUtil.readData( button );
   }
   
   void renderInitialization( final Button button ) throws IOException {

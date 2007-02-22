@@ -457,12 +457,12 @@ public class Shell extends Composite {
   // Focus handling methods
 
   // TODO [rh] move to Decorations as soon as exists
-  void setSavedFocus( final Control control ) {
+  final void setSavedFocus( final Control control ) {
     savedFocus = control;
   }
   
   // TODO [rh] move to Decorations as soon as exists
-  void saveFocus() {
+  final void saveFocus() {
     Control control = display.getFocusControl();
     if( control != null && control != this && this == control.getShell() ) {
       setSavedFocus( control );
@@ -470,23 +470,15 @@ public class Shell extends Composite {
   }
   
   // TODO [rh] move to Decorations as soon as exists
-  boolean restoreFocus() {
-//    if (display.ignoreRestoreFocus) return true;
+  final boolean restoreFocus() {
     if( savedFocus != null && savedFocus.isDisposed() ) {
       savedFocus = null;
     }
+    boolean result = false;
     if( savedFocus != null && savedFocus.setSavedFocus() ) {
-      return true;
+      result = true;
     }
-    /*
-    * This code is intentionally commented.  When no widget
-    * has been given focus, some platforms give focus to the
-    * default button.  Windows doesn't do this.
-    */
-//    if (defaultButton != null && !defaultButton.isDisposed ()) {
-//      if (defaultButton.setFocus ()) return true;
-//    }
-    return false;
+    return result;
   }
   
   ////////////////

@@ -37,23 +37,27 @@ public class FocusEvent_Test extends TestCase {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display );
-    final Control control = new Button( shell, RWT.PUSH );
-    control.addFocusListener( new FocusAdapter() {
+    final Control unfocusControl = new Button( shell, RWT.PUSH );
+    shell.open();
+    unfocusControl.setFocus();
+    unfocusControl.addFocusListener( new FocusAdapter() {
       public void focusLost( final FocusEvent event ) {
         log.append( "focusLost" );
-        assertSame( control, event.getSource() );
+        assertSame( unfocusControl, event.getSource() );
       }
       public void focusGained( final FocusEvent e ) {
         fail( "Unexpected event: focusGained" );
       }
     } );
+    Control focusControl = new Button( shell, RWT.PUSH );
     String displayId = DisplayUtil.getId( display );
-    String controlId = WidgetUtil.getId( control );
+    String focusControlId = WidgetUtil.getId( focusControl );
 
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( displayId + ".focusControl", focusControlId );
     Fixture.fakeRequestParam( "org.eclipse.rap.rwt.events.focusLost", 
-                              controlId );
+                              focusControlId );
     new RWTLifeCycle().execute();
     assertEquals( "focusLost", log.toString() );
   }
@@ -62,6 +66,7 @@ public class FocusEvent_Test extends TestCase {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display );
+    shell.open();
     final Control control = new Button( shell, RWT.PUSH );
     control.addFocusListener( new FocusAdapter() {
       public void focusLost( final FocusEvent e ) {
@@ -77,6 +82,7 @@ public class FocusEvent_Test extends TestCase {
     
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
     Fixture.fakeRequestParam( "org.eclipse.rap.rwt.events.focusGained", 
                               controlId );
     new RWTLifeCycle().execute();

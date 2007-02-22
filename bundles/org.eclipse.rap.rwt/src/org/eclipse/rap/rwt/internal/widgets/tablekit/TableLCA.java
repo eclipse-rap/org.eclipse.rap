@@ -43,7 +43,6 @@ public class TableLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     Table table = ( Table )widget;
-    ControlLCAUtil.readData( table );
     readColumnWidths( table );
     readSelection( table );
     preserveSelection( table );

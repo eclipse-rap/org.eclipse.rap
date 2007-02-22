@@ -16,7 +16,6 @@ import org.eclipse.rap.rwt.browser.Browser;
 import org.eclipse.rap.rwt.internal.widgets.IBrowserAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.resources.ResourceManager;
-import org.eclipse.rap.rwt.widgets.Control;
 import org.eclipse.rap.rwt.widgets.Widget;
 
 
@@ -36,7 +35,6 @@ public class BrowserLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    ControlLCAUtil.readData( ( Control )widget );
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
