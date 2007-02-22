@@ -80,19 +80,11 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
-    ItemLCAUtil.writeChanges( treeItem );
-    writeSelectedImage( treeItem );
+    ItemLCAUtil.writeText( treeItem );
+    writeImage( treeItem );
     ItemLCAUtil.writeFont( treeItem, treeItem.getFont() );
     writeExpanded( treeItem );
     writeChecked( treeItem );
-  }
-
-  // TODO [rh] setting image for a newly created item does not work properly:
-  //      just after selecting and de-selected the item, the image is shown 
-  private void writeSelectedImage( final TreeItem treeItem ) throws IOException 
-  {
-    Image image = treeItem.getImage();
-    WidgetLCAUtil.writeImage( treeItem, Props.IMAGE, "iconSelected", image );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -103,6 +95,13 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   ///////////////////////////////////
   // Helping methods to write changes
   
+  // TODO [rh] workaround for qx bug #260 (TreeFullControl doesn't update icon 
+  //      when it is changed) 
+  private static void writeImage( final TreeItem treeItem ) throws IOException {
+    Image image = treeItem.getImage();
+    WidgetLCAUtil.writeImage( treeItem, Props.IMAGE, "image", image );
+  }
+
   private static void writeExpanded( final TreeItem treeItem ) 
     throws IOException 
   {

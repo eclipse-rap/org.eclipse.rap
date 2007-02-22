@@ -29,6 +29,8 @@ qx.OO.defineClass(
       row.addObject( this._checkBox, false );
     }
     // Image
+    // TODO [rh] these dummy images are necessary since it is currently not 
+    //      possible to change images when they were not set here initially
     row.addIcon( "org/eclipse/rap/rwt/widgets/tree/folder_closed.gif",
                  "org/eclipse/rap/rwt/widgets/tree/folder_open.gif" );
     // Text
@@ -43,6 +45,14 @@ qx.Proto.setChecked = function( value ){
   if( this._checkBox != null ) {
     this._checkBox.setChecked( value );    
   }
+}
+
+// TODO [rh] workaround for qx bug #260 (TreeFullControl doesn't update icon 
+//      when it is changed
+qx.Proto.setImage = function( image ) {
+  this.setIcon( image );
+  this.getIconObject().setSource( this._evalCurrentIcon() );
+  this.setIconSelected( image );  
 }
 
 qx.Proto.dispose = function() {

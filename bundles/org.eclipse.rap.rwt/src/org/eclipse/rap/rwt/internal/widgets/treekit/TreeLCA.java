@@ -39,15 +39,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   
   public void readData( final Widget widget ) {
     Tree tree = ( Tree )widget;
-    String value = WidgetLCAUtil.readPropertyValue( widget, "selection" );
-    if( value != null ) {
-      String[] values = value.split( "," );
-      TreeItem[] selectedItems = new TreeItem[ values.length ];
-      for( int i = 0; i < values.length; i++ ) {
-        selectedItems[ i ] = ( TreeItem )WidgetUtil.find( tree, values[ i ] );
-      }
-      tree.setSelection( selectedItems );
-    }
+    readSelection( tree );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -74,6 +66,21 @@ public final class TreeLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  }
+
+  ////////////////////////////////////////////
+  // Helping methods to read client-side state
+
+  private static void readSelection( final Tree tree ) {
+    String value = WidgetLCAUtil.readPropertyValue( tree, "selection" );
+    if( value != null ) {
+      String[] values = value.split( "," );
+      TreeItem[] selectedItems = new TreeItem[ values.length ];
+      for( int i = 0; i < values.length; i++ ) {
+        selectedItems[ i ] = ( TreeItem )WidgetUtil.find( tree, values[ i ] );
+      }
+      tree.setSelection( selectedItems );
+    }
   }
 
   /////////////////////////////////////////////////////////////

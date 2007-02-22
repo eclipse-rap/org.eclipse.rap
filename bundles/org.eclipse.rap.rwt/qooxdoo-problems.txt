@@ -83,8 +83,9 @@ that's right?
      --> PARTIALLY SOLVED
      
 24.) TreeFullControl: when changing an icon or adding an item with a different 
-     icon, the icon is not shown the first time. After the item is selected - 
-     deselected - selected, the actual icon is shown.
+     icon, the icon is not shown the first time. After the item is once selected
+     the actual icon is shown.
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=260
 
 25.) Under some (yet not reproducible) circumstances a tooltip for a widget
      does not disappear but stays orphaned even though the associated widget is

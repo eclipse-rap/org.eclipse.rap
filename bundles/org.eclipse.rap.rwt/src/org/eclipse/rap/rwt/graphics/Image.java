@@ -43,19 +43,6 @@ public final class Image {
     return result;
   }
   
-  public static synchronized int size(){
-    return images.size();
-  }
-  
-  public static synchronized void clear(){
-    // TODO: [GR]can we deregister ressources?
-//    Iterator it = images.keySet().iterator();
-//    while ( it.hasNext() ) {
-//      manager.deregister((String)it.next());
-//    }
-    images.clear();
-  }
-  
   public static synchronized String getPath ( final Image image ) {
     String result = null;
     Iterator it = images.entrySet().iterator();
@@ -70,9 +57,21 @@ public final class Image {
     return result;
   }
   
-
+  public static synchronized int size(){
+    return images.size();
+  }
+  
+  public static synchronized void clear(){
+    // TODO: [GR]can we deregister ressources?
+//    Iterator it = images.keySet().iterator();
+//    while ( it.hasNext() ) {
+//      manager.deregister((String)it.next());
+//    }
+    images.clear();
+  }
+  
   //////////////////
-  // helping methods
+  // Helping methods
   
   private static Image createImage( final String path, 
                                     final ClassLoader imageLoader )
