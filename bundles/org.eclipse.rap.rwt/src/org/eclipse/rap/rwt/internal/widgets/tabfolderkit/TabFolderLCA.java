@@ -49,6 +49,8 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     writer.set( "tabIndex", 1 );
     writer.addListener( "keypress", 
                         "org.eclipse.rap.rwt.TabUtil.onTabFolderKeyPress" );
+    writer.addListener( "changeFocused", 
+                        "org.eclipse.rap.rwt.TabUtil.onTabFolderChangeFocused" );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

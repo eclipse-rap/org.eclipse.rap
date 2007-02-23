@@ -14,64 +14,20 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.TabUtil" );
 org.eclipse.rap.rwt.TabUtil.createTabItem = function( id, parent ) {
   var tabButton = new qx.ui.pageview.tabview.Button();
   tabButton.setTabIndex( -1 );
-  // TODO [rh] remove event listener on dispose
-  tabButton.addEventListener( "keypress", 
-                              org.eclipse.rap.rwt.TabUtil._onTabItemKeyPress );
+  tabButton.setEnableElementFocus( false );
+  // TODO [rh] remove event listener when tabButton gets disposed of
+  tabButton.addEventListener( "changeFocused", 
+                              org.eclipse.rap.rwt.TabUtil._onTabItemChangeFocus );
+  tabButton.addEventListener( "click", 
+                              org.eclipse.rap.rwt.TabUtil._onTabItemClick );
   var tabView
     = org.eclipse.rap.rwt.WidgetManager.getInstance().findWidgetById( parent );
   tabView.getBar().add( tabButton );
   tabButton.tabView = tabView;
   var tabViewPage = new qx.ui.pageview.tabview.Page( tabButton );
   tabView.getPane().add( tabViewPage );
-  
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( tabButton, id );
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( tabViewPage, id + "pg" );
-}
-
-org.eclipse.rap.rwt.TabUtil._onTabItemKeyPress = function( evt ) {
-  /*
-  var item = evt.getTarget();
-  switch( evt.getKeyIdentifier() ) {
-    case "Left":
-      var prev = item.getPreviousActiveSibling();
-      if( prev && prev != this ) {
-        prev.setChecked( true );
-      }
-      evt.stopPropagation();
-      break;
-    case "Right":
-      var next = this.getNextActiveSibling();
-      if( next && next != this ) {
-        next.setChecked( true );
-      }
-      evt.stopPropagation();
-      break;
-  }
-  */
-}
-
-org.eclipse.rap.rwt.TabUtil.onTabFolderKeyPress = function( evt ) {
-  var folder = evt.getTarget();
-  if( folder.classname != "qx.ui.pageview.tabview.TabView" ) {
-    return;
-  }
-org.eclipse.rap.rwt.Request.getInstance().debug( "folder: " + folder );  
-  var manager = folder.getBar().getManager();
-  var item = manager.getSelected();
-folder.debug( "item: " + item )  ;
-  if( item == null ) {
-    return;
-  }
-  switch( evt.getKeyIdentifier() ) {
-    case "Left":
-      manager.selectPrevious( item );
-      evt.stopPropagation();
-      break;
-    case "Right":
-      manager.selectNext( item );
-      evt.stopPropagation();
-      break;
-  }
 }
 
 org.eclipse.rap.rwt.TabUtil._onTabItemChangeFocus = function( evt ) {
@@ -81,9 +37,41 @@ org.eclipse.rap.rwt.TabUtil._onTabItemChangeFocus = function( evt ) {
   }
 }
 
+org.eclipse.rap.rwt.TabUtil._onTabItemClick = function( evt ) {
+  // Focus the tabFolder the item belongs to when the item is clicked
+  var folder = evt.getTarget().getParent().getParent();
+  if( !folder.getFocused() ) {
+     folder.focus();
+  }
+}
+
+org.eclipse.rap.rwt.TabUtil.onTabFolderKeyPress = function( evt ) {
+  var folder = evt.getTarget();
+  if( folder.classname == "qx.ui.pageview.tabview.TabView" ) {
+    var manager = folder.getBar().getManager();
+    var item = manager.getSelected();
+    if( item != null ) {
+      switch( evt.getKeyIdentifier() ) {
+        case "Left":
+          manager.selectPrevious( item );
+          org.eclipse.rap.rwt.TabUtil.markTabItemFocused( evt.getTarget() );
+          evt.stopPropagation();
+          break;
+        case "Right":
+          manager.selectNext( item );
+          org.eclipse.rap.rwt.TabUtil.markTabItemFocused( evt.getTarget() );
+          evt.stopPropagation();
+          break;
+      }
+    }
+  }
+}
+
 /**
- * Listener for change of property enabled, passes enablement to children
- * TODO: [rst] Once qx can properly disable a TabView, this listener can be removed
+ * Listener for change of property enabled on TabView, passes enablement to 
+ * children
+ * TODO: [rst] Once qx can properly disable a TabView, this listener can be 
+ * removed
  */
 org.eclipse.rap.rwt.TabUtil.onChangeEnabled = function( evt ) {
   var enabled = evt.getData();
@@ -92,6 +80,24 @@ org.eclipse.rap.rwt.TabUtil.onChangeEnabled = function( evt ) {
     var item = items[ i ];
     item.setEnabled( enabled );
   }
+}
+
+org.eclipse.rap.rwt.TabUtil.onTabFolderChangeFocused = function( evt ) {
+  var folder = evt.getTarget();
+  var item = folder.getBar().getManager().getSelected();
+  org.eclipse.rap.rwt.TabUtil.markTabItemFocused( item );
+}
+
+org.eclipse.rap.rwt.TabUtil.markTabItemFocused = function( item ) {
+  var items = item.getParent().getManager().getItems();
+  for( var i = 0; i < items.length; i++ ) {
+    items[ i ].removeState( "focused" );    
+  }
+  // add state to the selected item if the tabFolder is focused
+  var folder = item.getParent().getParent();
+  if( folder.getFocused() ) {
+    item.addState( "focused" );  
+  } 
 }
 
 org.eclipse.rap.rwt.TabUtil.tabSelected = function( evt ) {
