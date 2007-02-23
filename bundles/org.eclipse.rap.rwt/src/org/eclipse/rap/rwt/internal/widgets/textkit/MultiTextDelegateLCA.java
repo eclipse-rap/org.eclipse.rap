@@ -43,6 +43,7 @@ class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( text );
     ControlLCAUtil.writeChanges( text );
     writer.set( TextLCAUtil.PROP_TEXT, "value", text.getText(), "" );
+    TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );
   }
   

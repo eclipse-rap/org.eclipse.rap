@@ -19,6 +19,9 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class TextTab extends ExampleTab {
 
+  private Text simpleText;
+  private Text modifyText;
+
   public TextTab( final TabFolder folder ) {
     super( folder, "Text" );
   }
@@ -33,12 +36,15 @@ public class TextTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
+    createLimitText( styleComp );
   }
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout( RWT.VERTICAL ) );
-    registerControl( createText( parent, getStyle() ) );
-    registerControl( createModifyText( parent, getStyle() ) );
+    simpleText = createText( parent, getStyle() );
+    registerControl( simpleText );
+    modifyText = createModifyText( parent, getStyle() );
+    registerControl( modifyText );
   }
 
   private static Text createText( final Composite parent, final int style ) {
@@ -152,6 +158,33 @@ public class TextTab extends ExampleTab {
       }
     } );
     return result;
+  }
+
+  private void createLimitText( final Composite parent ) {
+    Composite composite = new Composite( parent, RWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label label = new Label( composite, RWT.NONE );
+    label.setText( "TextLimit" );
+    final Text text = new Text( composite, RWT.BORDER );
+    Button button = new Button( composite, RWT.PUSH );
+    button.setText( "Change" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int currentLimit = simpleText.getTextLimit();
+        int limit = currentLimit;
+        try {
+          limit = Integer.parseInt( text.getText() );
+        } catch( NumberFormatException e ) {
+          // ignore
+        }
+        if( limit == 0 ) {
+          limit = currentLimit;
+        }
+        modifyText.setTextLimit( limit );
+        simpleText.setTextLimit( limit );
+        text.setText( String.valueOf( limit ) );
+      }
+    } );
   }
 
   private static Point getPreferredSize( final Text text ) {

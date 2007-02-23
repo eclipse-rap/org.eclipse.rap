@@ -44,6 +44,7 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     {
       writer.set( "value", TextLCAUtil.stripNewlines( newValue ) );
     }
+    TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );
   }
   

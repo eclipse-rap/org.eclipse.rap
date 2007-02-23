@@ -100,6 +100,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Label_Test.class );
     suite.addTestSuite( Browser_Test.class );
     suite.addTestSuite( Group_Test.class );
+    suite.addTestSuite( Text_Test.class );
     suite.addTestSuite( Spinner_Test.class );
     
     suite.addTestSuite( Image_Test.class );

@@ -23,10 +23,14 @@ import com.w4t.util.browser.Mozilla;
 final class TextLCAUtil {
   
   static final String PROP_TEXT = "text";
+  static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_MODIFY_LISTENER = "modifyListener";
 
+  private static final Integer DEFAULT_TEXT_LIMIT 
+    = new Integer( Text.MAX_LIMIT_TEXT );
+
   private static final JSListenerInfo JS_MODIFY_LISTENER_INFO 
-    = new JSListenerInfo( "keypress", // JSConst.QX_EVENT_KEYINPUT, 
+    = new JSListenerInfo( "keypress", 
                           "org.eclipse.rap.rwt.TextUtil.modifyText", 
                           JSListenerType.STATE_AND_ACTION );
   private static final JSListenerInfo JS_BLUR_LISTENER_INFO 
@@ -41,6 +45,7 @@ final class TextLCAUtil {
   static void preserveValues( final Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_TEXT, text.getText() );
+    adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
     boolean hasListener = ModifyEvent.hasListener( text );
     adapter.preserve( PROP_MODIFY_LISTENER, Boolean.valueOf( hasListener ) );
   }
@@ -76,6 +81,14 @@ final class TextLCAUtil {
     }
   }
 
+  static void writeTextLimit( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    Integer newValue = new Integer( text.getTextLimit() );
+    writer.set( PROP_TEXT_LIMIT, "maxLength", newValue, DEFAULT_TEXT_LIMIT );
+
+  }
+
+  
   static void writeModifyListener( final Text text ) throws IOException {
     if( ( text.getStyle() & RWT.READ_ONLY ) == 0 ) {
       JSWriter writer = JSWriter.getWriterFor( text );

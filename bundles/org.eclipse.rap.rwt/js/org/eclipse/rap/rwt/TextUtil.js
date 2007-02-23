@@ -25,8 +25,10 @@ org.eclipse.rap.rwt.TextUtil.modifyText = function( evt ) {
   }
 }
 
-// This function gets assigned to the 'keypress' event of a text widget if there
-// was a server-side ModifyListener registered
+/*
+ * This function gets assigned to the 'keypress' event of a text widget if there
+ * was a server-side ModifyListener registered
+ */
 org.eclipse.rap.rwt.TextUtil.modifyTextAction = function( evt ) {
   if(    !org_eclipse_rap_rwt_EventUtil_suspend 
       && !org.eclipse.rap.rwt.TextUtil._isModified( evt.getTarget() ) 
@@ -45,8 +47,10 @@ org.eclipse.rap.rwt.TextUtil.modifyTextAction = function( evt ) {
   }
 };
 
-// This function gets assigned to the 'blur' event of a text widget if there
-// was a server-side ModifyListener registered
+/**
+ * This function gets assigned to the 'blur' event of a text widget if there
+ * was a server-side ModifyListener registered
+ */
 org.eclipse.rap.rwt.TextUtil.modifyTextOnBlur = function( evt ) {
   if(    !org_eclipse_rap_rwt_EventUtil_suspend 
       && org.eclipse.rap.rwt.TextUtil._isModified( evt.getTarget() ) )
