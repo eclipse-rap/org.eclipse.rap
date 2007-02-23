@@ -85,14 +85,23 @@ qx.Proto._onChangeSelection = function( evt ) {
     var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
     var req = org.eclipse.rap.rwt.Request.getInstance();
     var id = wm.findIdByWidget( this );
+    var item = this.getManager().getLeadItem();
     req.addParameter( id + ".selection", this._getSelectionIndices() );
-    if( this._selectionListeners ) {
-      this._suspendClicks();
-      var itemId = wm.findIdByWidget( this.getManager().getLeadItem() );
-      var eventName = "org.eclipse.rap.rwt.events.widgetSelected";
-      req.addEvent( eventName, id );
-      req.addParameter( eventName + ".item", itemId );
-      req.send();
+    // TODO [rst] Prevent selecting the root item.
+    //      When first visible item is selected and arrow up is pressed the root
+    //      item ( == this ) is selected which results in an invisible selection. 
+    if( item == this ) {
+//      this.getFirstVisibleChildOfFolder().setSelected( true );
+//      this.setSelected( false );
+    } else {
+      if( this._selectionListeners ) {
+        this._suspendClicks();
+        var itemId = wm.findIdByWidget( item );
+        var eventName = "org.eclipse.rap.rwt.events.widgetSelected";
+        req.addEvent( eventName, id );
+        req.addParameter( eventName + ".item", itemId );
+        req.send();
+      }
     }
   }
 }
