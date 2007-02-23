@@ -26,6 +26,7 @@ qx.OO.defineClass(
       this._checkBox = new qx.ui.form.CheckBox();
       this._checkBox.setTabIndex( -1 );
       this._checkBox.addEventListener( "changeChecked", this._onChangeChecked, this );
+      this._checkBox.addEventListener( "dblclick", this._onCheckBoxDblClick, this );    
       row.addObject( this._checkBox, false );
     }
     // Image
@@ -37,11 +38,13 @@ qx.OO.defineClass(
     row.addLabel( "" );
     // Construct TreeItem
     qx.ui.treefullcontrol.TreeFolder.call( this, row );
+    this.addEventListener( "click", this._onClick, this );
+    this.addEventListener( "dblclick", this._onDblClick, this );
     parent.add( this );
   }
 );
 
-qx.Proto.setChecked = function( value ){
+qx.Proto.setChecked = function( value ) {
   if( this._checkBox != null ) {
     this._checkBox.setChecked( value );    
   }
@@ -61,21 +64,62 @@ qx.Proto.dispose = function() {
   }
   if( this._checkBox != null ) {
     this._checkBox.removeEventListener( "changeChecked", this._onChangeChecked, this );
+    this._checkBox.removeEventListener( "dblclick", this._onCheckBoxDblClick, this );    
     this._checkBox.dispose();
   }
+  this.removeEventListener( "click", this._onClick, this );
+  this.removeEventListener( "dblclick", this._onDblClick, this );
   return qx.ui.treefullcontrol.TreeFolder.prototype.dispose.call( this );
 }
 
-qx.Proto._onChangeChecked = function( evt ) {
-  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-    var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var id = wm.findIdByWidget( this );
-    var req = org.eclipse.rap.rwt.Request.getInstance();
-    req.addParameter( id + ".checked", this._checkBox.getChecked() );
-    if( this.getTree().hasWidgetSelectedListeners() ) {
-      req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected.detail", "check" );
-      req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
-      req.send();
-    }
+/*
+ * Notifies tree of clicks on the item's area.
+ */
+qx.Proto._onClick = function( evt ) {
+  if( this._checkEventTarget( evt ) ) {
+    this.getTree()._notifyItemClick( this );
   }
+}
+
+/*
+ * Notifies tree of double clicks the item's area.
+ */
+qx.Proto._onDblClick = function( evt ) {
+  if( this._checkEventTarget( evt ) ) {
+    this.getTree()._notifyItemDblClick( this );
+  }
+}
+
+/*
+ * Checks if a given event should be handled or not.
+ * Returns true if the event's original target is eiher the icon or the label.
+ */
+qx.Proto._checkEventTarget = function( evt ) {
+  var result = false;
+  var target = evt.getOriginalTarget();
+  if( target && target == this._iconObject || target == this._labelObject ) {
+    result = true;
+  }
+  return result;
+}
+
+/*
+ * Prevent double clicks on check boxes from being propageted to the tree.
+ */
+qx.Proto._onCheckBoxDblClick = function( evt ) {
+  evt.stopPropagation();
+}
+
+qx.Proto._onChangeChecked = function( evt ) {
+  var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var id = wm.findIdByWidget( this );
+  var req = org.eclipse.rap.rwt.Request.getInstance();
+  req.addParameter( id + ".checked", this._checkBox.getChecked() );
+  this.getTree()._notifyChangeItemCheck( this );
+}
+
+/*
+ * Prevent auto expand on click
+ */
+qx.Proto._onmouseup = function( evt ) {
 }

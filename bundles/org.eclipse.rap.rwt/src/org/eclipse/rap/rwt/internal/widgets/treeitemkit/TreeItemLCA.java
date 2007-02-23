@@ -13,11 +13,8 @@ package org.eclipse.rap.rwt.internal.widgets.treeitemkit;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.TreeEvent;
 import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.ItemLCAUtil;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -58,7 +55,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     if( STATE_EXPANDED.equals( state ) || STATE_COLLAPSED.equals( state ) ) {
       treeItem.setExpanded( STATE_EXPANDED.equals( state ) );
     }
-    processWidgetSelectedEvent( widget );
     processTreeExpandedEvent( widget );
     processTreeCollapsedEvent( widget );
   }
@@ -115,23 +111,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( treeItem );
     Boolean newValue = Boolean.valueOf( treeItem.getChecked() );
     writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
-  }
-
-  private static boolean processWidgetSelectedEvent( final Widget widget ) {
-    boolean result = false;
-    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      TreeItem treeItem = ( TreeItem )widget;
-      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-      SelectionEvent event = new SelectionEvent( treeItem.getParent(), 
-                                                 treeItem,
-                                                 SelectionEvent.WIDGET_SELECTED,
-                                                 bounds,
-                                                 true,
-                                                 RWT.NONE );
-      event.processEvent();
-      result = true;
-    }
-    return result;
   }
 
   private static void processTreeExpandedEvent( final Widget widget ) {

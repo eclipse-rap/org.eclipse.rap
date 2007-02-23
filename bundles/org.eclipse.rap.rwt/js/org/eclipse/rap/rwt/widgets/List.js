@@ -152,23 +152,20 @@ qx.Proto.dispose = function() {
 
 qx.Proto._onChangeSelection = function( evt ) {
   this._updateSelectedItemState();
-  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  var id = widgetManager.findIdByWidget( this );
+  var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var id = wm.findIdByWidget( this );
   var req = org.eclipse.rap.rwt.Request.getInstance();
   req.addParameter( id + ".selection", this._getSelectionIndices() );
   if( this._changeSelectionNotification == "action" ) {
     this._suspendClicks();
-    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( this );
-    var req = org.eclipse.rap.rwt.Request.getInstance();
     req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
     req.send();
   }
 }
 
 qx.Proto._getSelectionIndices = function() {
-  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  var id = widgetManager.findIdByWidget( this );
+  var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var id = wm.findIdByWidget( this );
   var selectionIndices = "";
   var selectedItems = this.getManager().getSelectedItems();
   for( var i = 0; i < selectedItems.length; i++ ) {
@@ -187,8 +184,8 @@ qx.Proto._getSelectionIndices = function() {
 
 qx.Proto._onChangeLeadItem = function( evt ) {
   if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( this );
+    var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = wm.findIdByWidget( this );
     var req = org.eclipse.rap.rwt.Request.getInstance();
     var focusIndex = this.indexOf( this.getManager().getLeadItem() );
     req.addParameter( id + ".focusIndex", focusIndex );
@@ -200,8 +197,8 @@ qx.Proto._onClick = function( evt ) {
     if( this._changeSelectionNotification == "action" ) {
       if( !this._clicksSuspended ) {
         this._suspendClicks();
-        var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( this );
+        var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+        var id = wm.findIdByWidget( this );
         var req = org.eclipse.rap.rwt.Request.getInstance();
         req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
         req.send();
@@ -213,8 +210,8 @@ qx.Proto._onClick = function( evt ) {
 qx.Proto._onDblClick = function( evt ) {
   if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
     if( this._changeSelectionNotification == "action" ) {
-      var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
+      var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var id = wm.findIdByWidget( this );
       var req = org.eclipse.rap.rwt.Request.getInstance();
       req.addEvent( "org.eclipse.rap.rwt.events.widgetDefaultSelected", id );
       req.send();

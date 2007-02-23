@@ -39,7 +39,7 @@ org.eclipse.rap.rwt.TableUtil.selectionChanged = function( evt ) {
     }
     var req = org.eclipse.rap.rwt.Request.getInstance();
     var id = wm.findIdByWidget( evt.getTarget().table );
-    req.addParameter( id + ".selection", selection ); 
+    req.addParameter( id + ".selection", selection );
   }
 };
 

@@ -16,7 +16,7 @@
  * are: multi, check
  */
 qx.OO.defineClass(
-  "org.eclipse.rap.rwt.widgets.Tree", 
+  "org.eclipse.rap.rwt.widgets.Tree",
   qx.ui.treefullcontrol.Tree,
   function( style ) {
     var trs = qx.ui.treefullcontrol.TreeRowStructure.getInstance().standard( "" );
@@ -24,19 +24,19 @@ qx.OO.defineClass(
     this.setOverflow( qx.constant.Style.OVERFLOW_AUTO );
     this.setHideNode( true );
     this.setUseTreeLines( true );
-    this.setUseDoubleClick( true );
+    this.setUseDoubleClick( false ); // true supresses dblclick events !
     // TODO [rh] this is only to make the tree fousable at all
     this.setTabIndex( 1 );
     this._rwtStyle = style;
-    //
-    this._widgetSelectedListeners = false;
-    this._treeListeners = false; 
+    this._selectionListeners = false;
+    this._treeListeners = false;
     var manager = this.getManager();
     manager.setMultiSelection( qx.lang.String.contains( style, "multi" ) );
-    manager.addEventListener( "changeSelection", this._onWidgetSelected, this );
+    manager.addEventListener( "changeSelection", this._onChangeSelection, this );
     this.addEventListener( "treeOpenWithContent", this._onItemExpanded, this );
     this.addEventListener( "treeClose", this._onItemCollapsed, this );
     this.addEventListener( "contextmenu", this._onContextMenu, this );
+    this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   }
 );
 
@@ -44,12 +44,12 @@ qx.OO.defineClass(
  * Are there any server-side SelectionListeners attached? If so, selecting an
  * item causes a request to be sent that informs the server-side listeners.
  */
-qx.Proto.setWidgetSelectedListeners = function( value ) {
-  this._widgetSelectedListeners = value;
+qx.Proto.setSelectionListeners = function( value ) {
+  this._selectionListeners = value;
 }
 
-qx.Proto.hasWidgetSelectedListeners = function() {
-  return this._widgetSelectedListeners;
+qx.Proto.hasSelectionListeners = function() {
+  return this._selectionListeners;
 }
 
 /**
@@ -69,34 +69,30 @@ qx.Proto.dispose = function() {
     return true;
   }
   var manager = this.getManager();
-  manager.removeEventListener( "changeSelection", this._onWidgetSelected, this );
+  manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
   this.removeEventListener( "treeOpenWithContent", this._onItemExpanded, this );
   this.removeEventListener( "treeClose", this._onItemCollapsed, this );
+  this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
   return qx.ui.treefullcontrol.Tree.prototype.dispose.call( this );
 }
 
-// TODO [rh] handle multi selection
-qx.Proto._onWidgetSelected = function( evt ) {
+//
+// Event Listener
+//
+
+qx.Proto._onChangeSelection = function( evt ) {
   if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
     var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var selectedItemIds = "";
-    if( this.getManager().getMultiSelection() ) {
-      var selectedItems = this.getManager().getSelectedItems();
-      for( var i = 0; i < selectedItems.length; i++ ) {
-        if( i > 0 ) {
-          selectedItemIds += ",";
-        }
-        selectedItemIds += wm.findIdByWidget( selectedItems[ i ] );
-      }
-    } else {
-      selectedItemIds = wm.findIdByWidget( this.getManager().getSelectedItem() );
-    }
     var req = org.eclipse.rap.rwt.Request.getInstance();
     var id = wm.findIdByWidget( this );
-    req.addParameter( id + ".selection", selectedItemIds );
-    if( this._widgetSelectedListeners ) {
+    req.addParameter( id + ".selection", this._getSelectionIndices() );
+    if( this._selectionListeners ) {
+      this._suspendClicks();
       var itemId = wm.findIdByWidget( this.getManager().getLeadItem() );
-      org.eclipse.rap.rwt.EventUtil.doWidgetSelected( itemId, 0, 0, 0, 0 );
+      var eventName = "org.eclipse.rap.rwt.events.widgetSelected";
+      req.addEvent( eventName, id );
+      req.addParameter( eventName + ".item", itemId );
+      req.send();
     }
   }
 }
@@ -140,26 +136,113 @@ qx.Proto._onContextMenu = function( evt ) {
 /*
  * Pass enablement to tree items
  */
-qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
-  // TODO [rst] call super._modifyEnabled ?
+qx.Proto._onChangeEnabled = function( evt ) {
+  var newValue = evt.getData();
   var items = this.getItems();
   for( var i = 0; i < items.length; i++ ) {
     var item = items[ i ];
-    
-    //--- hack from rh:
     if( item.getLabelObject() != null ) {
       var label = item.getLabelObject();
-      label.setBackgroundColor( "red" );
-      label.setEnabled( propValue );
+      label.setEnabled( newValue );
     } else {
       // TODO [rh] revise this: how to remove/dispose of the listener?
       item.addEventListener( "appear", function( evt ) {
-        this.getLabelObject().setEnabled( propValue );
+        this.getLabelObject().setEnabled( newValue );
       }, item );
     }
-    //---
-    
-    item.setEnabled( propValue );
+    item.setEnabled( newValue );
   }
-  return true;
-};
+}
+
+/*
+ * handle click on tree item
+ * called by org.eclipse.rap.rwt.widgets.TreeItem
+ */
+qx.Proto._notifyItemClick = function( item ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    if( this._selectionListeners && !this._clicksSuspended ) {
+      this._suspendClicks();
+      var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var id = wm.findIdByWidget( this );
+      var itemId = wm.findIdByWidget( item );
+      var req = org.eclipse.rap.rwt.Request.getInstance();
+      var eventName = "org.eclipse.rap.rwt.events.widgetSelected";
+      req.addEvent( eventName, id );
+      req.addParameter( eventName + ".item", itemId );
+      req.send();
+    }
+  }
+}
+
+/*
+ * handle double click on tree item
+ * called by org.eclipse.rap.rwt.widgets.TreeItem
+ */
+qx.Proto._notifyItemDblClick = function( item ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    if( this._selectionListeners ) {
+      var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var id = wm.findIdByWidget( this );
+      var itemId = wm.findIdByWidget( item );
+      var req = org.eclipse.rap.rwt.Request.getInstance();
+      var eventName = "org.eclipse.rap.rwt.events.widgetDefaultSelected";
+      req.addEvent( eventName, id );
+      req.addParameter( eventName + ".item", itemId );
+      req.send();
+    }
+  }
+}
+
+/*
+ * handle change of the check state of a tree item's check box
+ * called by org.eclipse.rap.rwt.widgets.TreeItem
+ */
+qx.Proto._notifyChangeItemCheck = function( item ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    if( this._selectionListeners ) {
+      var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var id = wm.findIdByWidget( this );
+      var itemId = wm.findIdByWidget( item );
+      var req = org.eclipse.rap.rwt.Request.getInstance();
+      var eventName = "org.eclipse.rap.rwt.events.widgetSelected";
+      req.addEvent( eventName, id );
+      req.addParameter( eventName + ".item", itemId );
+      req.addParameter( eventName + ".detail", "check" );
+      req.send();
+    }
+  }
+}
+
+/*
+ * Returns the current selection as comma separated string
+ */
+// TODO [rh] handle multi selection
+qx.Proto._getSelectionIndices = function() {
+  var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var selectedItemIds = "";
+  if( this.getManager().getMultiSelection() ) {
+    var selectedItems = this.getManager().getSelectedItems();
+    for( var i = 0; i < selectedItems.length; i++ ) {
+      if( i > 0 ) {
+        selectedItemIds += ",";
+      }
+      selectedItemIds += wm.findIdByWidget( selectedItems[ i ] );
+    }
+  } else {
+    selectedItemIds = wm.findIdByWidget( this.getManager().getSelectedItem() );
+  }
+  return selectedItemIds;
+}
+
+/*
+ * Suspends the processing of click events to avoid sending multiple
+ * widgetSelected events to the server.
+ */
+qx.Proto._suspendClicks = function() {
+  this._clicksSuspended = true;
+  qx.client.Timer.once( this._enableClicks, this, 500 );
+}
+
+qx.Proto._enableClicks = function() {
+  this._clicksSuspended = false;
+}

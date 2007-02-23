@@ -12,15 +12,15 @@
 package org.eclipse.rap.rwt.internal.widgets.treekit;
 
 import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.TreeEvent;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.engine.service.ContextProvider;
 
-
-// TODO [rh] selection semantics differ from SWT: in SWT selecting an already
-//      selected item fires a widgetSelected event, in RWT it does not.
 public final class TreeLCA extends AbstractWidgetLCA {
 
   // Property names used by preserve mechanism
@@ -40,6 +40,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     Tree tree = ( Tree )widget;
     readSelection( tree );
+    processSelectionEvents( tree );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -68,6 +69,36 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
+  private static void processSelectionEvents( final Tree tree ) {
+    processSelectionEvent( tree,
+                           JSConst.EVENT_WIDGET_SELECTED,
+                           SelectionEvent.WIDGET_SELECTED );
+    processSelectionEvent( tree,
+                           JSConst.EVENT_WIDGET_DEFAULT_SELECTED,
+                           SelectionEvent.WIDGET_DEFAULT_SELECTED );
+  }
+
+  private static void processSelectionEvent( final Tree tree,
+                                             final String eventName,
+                                             final int eventType )
+  {
+    HttpServletRequest request = ContextProvider.getRequest();
+    if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
+      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
+      String itemId = request.getParameter( eventName + ".item" );
+      TreeItem treeItem = ( TreeItem )WidgetUtil.find( tree, itemId );
+      String detailStr = request.getParameter( eventName + ".detail" );
+      int detail = "check".equals( detailStr ) ? RWT.CHECK : RWT.NONE;
+      SelectionEvent event = new SelectionEvent( tree,
+                                                 treeItem,
+                                                 eventType,
+                                                 bounds,
+                                                 true,
+                                                 detail );
+      event.processEvent();
+    }
+  }
+
   ////////////////////////////////////////////
   // Helping methods to read client-side state
 
@@ -93,7 +124,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     String prop = PROP_SELECTION_LISTENERS;
     if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( tree );
-      writer.set( "widgetSelectedListeners", newValue );
+      writer.set( "selectionListeners", newValue );
     }
   }
 

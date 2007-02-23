@@ -84,16 +84,26 @@ public class TreeTab extends ExampleTab {
     } );
     tree.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        String msg = "Selected: " + event.item.getText();
+        String msg = "Selected: ";
+        if( ( getStyle() & RWT.CHECK ) != 0 ) {
+          TreeItem item = ( TreeItem )event.item;
+          msg += ( item.getChecked() ? "[x] " : "[ ] " );
+        }
+        msg += event.item.getText();
         switch( event.detail ) {
           case RWT.NONE:
-            msg +=", detail: RWT.NONE";
+            msg += ", detail: RWT.NONE";
             break;
           case RWT.CHECK:
-            msg +=", detail: RWT.CHECK";
+            msg += ", detail: RWT.CHECK";
             break;
         }
         lblTreeEvent.setText( msg );
+      }
+      public void widgetDefaultSelected( SelectionEvent event ) {
+        String title = "Double Click";
+        String message = "Double click on " + event.item.getText() + " received";
+        MessageDialog.openInformation( getShell(), title, message, null );
       }
     } );
     registerControl( tree );
