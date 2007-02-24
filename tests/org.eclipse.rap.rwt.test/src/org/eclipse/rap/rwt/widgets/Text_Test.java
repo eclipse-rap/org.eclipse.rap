@@ -38,11 +38,11 @@ public class Text_Test extends TestCase {
     Shell shell = new Shell( display );
     Text text = new Text( shell, RWT.NONE );
     text.setTextLimit( -1 );
-    assertEquals( 2147483646, text.getTextLimit() );
+    assertEquals( -1, text.getTextLimit() );
     text.setTextLimit( -20 );
-    assertEquals( 2147483646, text.getTextLimit() );
+    assertEquals( -20, text.getTextLimit() );
     text.setTextLimit( -12345 );
-    assertEquals( 2147483646, text.getTextLimit() );
+    assertEquals( -12345, text.getTextLimit() );
     text.setTextLimit( 20 );
     assertEquals( 20, text.getTextLimit() );
     try {

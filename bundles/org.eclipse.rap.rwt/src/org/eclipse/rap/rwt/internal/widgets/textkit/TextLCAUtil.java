@@ -27,7 +27,7 @@ final class TextLCAUtil {
   static final String PROP_MODIFY_LISTENER = "modifyListener";
 
   private static final Integer DEFAULT_TEXT_LIMIT 
-    = new Integer( Text.MAX_LIMIT_TEXT );
+    = new Integer( Text.MAX_TEXT_LIMIT );
 
   private static final JSListenerInfo JS_MODIFY_LISTENER_INFO 
     = new JSListenerInfo( "keypress", 
@@ -84,8 +84,16 @@ final class TextLCAUtil {
   static void writeTextLimit( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     Integer newValue = new Integer( text.getTextLimit() );
-    writer.set( PROP_TEXT_LIMIT, "maxLength", newValue, DEFAULT_TEXT_LIMIT );
-
+    Integer defValue = DEFAULT_TEXT_LIMIT;
+    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, defValue ) ) 
+    {
+      // Negative values are treated as 'no limit' which is achieved by passing
+      // null to the client-side maxLength property
+      if( newValue.intValue() < 0 ) {
+        newValue = null;
+      }
+      writer.set( "maxLength", newValue );
+    }
   }
 
   

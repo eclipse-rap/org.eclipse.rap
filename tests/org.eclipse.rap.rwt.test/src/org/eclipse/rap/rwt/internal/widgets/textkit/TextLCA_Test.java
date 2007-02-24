@@ -51,10 +51,12 @@ public class TextLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
     Text text = new Text( shell, RWT.NONE );
-    text.setText( "hello" );
     shell.open();
     RWTFixture.markInitialized( text );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
     TextLCA textLCA = new TextLCA();
+    text.setText( "hello" );
     textLCA.renderChanges( text );
     assertTrue( Fixture.getAllMarkup().endsWith( "setValue( \"hello\" );" ) );
     Fixture.fakeResponseWriter();
@@ -84,6 +86,41 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
     new RWTLifeCycle().execute();
     assertEquals( "modifyText", log.toString() );
+  }
+  
+  public void testTextLimit() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Text text = new Text( shell, RWT.NONE );
+    TextLCA lca = new TextLCA();
+    // run LCA one to dump the here uninteresting prolog
+    Fixture.fakeResponseWriter();
+    lca.renderChanges( text ); 
+    
+    // Initially no textLimit must be rendered if the initial value is untouched
+    Fixture.fakeResponseWriter();
+    lca.renderChanges( text );
+    assertEquals( -1, Fixture.getAllMarkup().indexOf( "setMaxLength" ) );
+    
+    // Positive textLimit is written as setMaxLength( ... )
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( text );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    text.setTextLimit( 12 );
+    lca.renderChanges( text );
+    String expected = "setMaxLength( 12 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    
+    // Negative textLimit is tread as 'no limit'
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( text );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    text.setTextLimit( -50 );
+    lca.renderChanges( text );
+    expected = "setMaxLength( null );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
   
   protected void setUp() throws Exception {

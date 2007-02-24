@@ -23,10 +23,10 @@ import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
  */
 public class Text extends Control {
 
-  public static final int MAX_LIMIT_TEXT = 2147483646;
+  public static final int MAX_TEXT_LIMIT = -1;
   
   private String text = "";
-  private int textLimit = 2147483646;
+  private int textLimit = MAX_TEXT_LIMIT;
 
   public Text( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
@@ -54,12 +54,10 @@ public class Text extends Control {
     if( textLimit == 0 ) {
       error( RWT.ERROR_CANNOT_BE_ZERO );
     }
-    // TODO [rh] Note that we mimic here the exact behavior of SWT on Windows 
-    if( textLimit  < 0 ) {
-      this.textLimit = MAX_LIMIT_TEXT;
-    } else {
-      this.textLimit = textLimit;
-    }
+    // Note that we mimic here the behavior of SWT Text with style MULTI on 
+    // Windows. In SWT, other operating systems and/or style flags behave 
+    // different.  
+    this.textLimit = textLimit;
   }
 
   public int getTextLimit() {
