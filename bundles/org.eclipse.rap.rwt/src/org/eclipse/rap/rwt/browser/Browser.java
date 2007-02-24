@@ -26,6 +26,12 @@ import org.eclipse.rap.rwt.widgets.Composite;
 // TODO [rh] bring focus events to work
 public class Browser extends Composite {
 
+  private final class BrowserAdapter implements IBrowserAdapter {
+    public String getText() {
+      return Browser.this.html;
+    }
+  }
+  
   private static final String ABOUT_BLANK = "about:blank";
   
   private String url;
@@ -89,7 +95,7 @@ public class Browser extends Composite {
     LocationEvent.removeListener( this, listener );
   }
   
-  public Object getAdapter( Class adapter ) {
+  public Object getAdapter( final Class adapter ) {
     Object result;
     if( IBrowserAdapter.class.equals( adapter ) ) {
       result = browserAdapter;
@@ -97,11 +103,5 @@ public class Browser extends Composite {
       result = super.getAdapter( adapter );
     }
     return result;
-  }
-
-  private final class BrowserAdapter implements IBrowserAdapter {
-    public String getText() {
-      return Browser.this.html;
-    }
   }
 }

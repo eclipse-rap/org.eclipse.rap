@@ -30,6 +30,7 @@ public class TableItem extends Item {
   }
 
   public void setText( final int index, final String text ) {
+    checkWidget();
     if( text == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -50,6 +51,7 @@ public class TableItem extends Item {
   }
 
   public String getText( final int index ) {
+    checkWidget();
     String result = "";
     if( index == 0 ) {
       result = super.getText();

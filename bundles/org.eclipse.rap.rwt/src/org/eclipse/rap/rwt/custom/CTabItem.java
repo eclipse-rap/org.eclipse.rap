@@ -62,6 +62,7 @@ public class CTabItem extends Item {
   // Getter/setter for principal properties
   
   public void setText( final String text ) {
+    checkWidget();
     if( text == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -74,6 +75,7 @@ public class CTabItem extends Item {
   }
   
   public void setImage( final Image image ) {
+    checkWidget();
     if( image != getImage() ) {
       super.setImage( image );
       parent.updateItems();
@@ -99,10 +101,12 @@ public class CTabItem extends Item {
   }
 
   public Control getControl() {
+    checkWidget();
     return control;
   }
 
   public void setControl( final Control control ) {
+    checkWidget();
     if( control != null ) {
       if( control.isDisposed() ) {
         RWT.error( RWT.ERROR_INVALID_ARGUMENT );
@@ -127,10 +131,12 @@ public class CTabItem extends Item {
   }
   
   public void setToolTipText( final String toolTipText ) {
+    checkWidget();
     this.toolTipText = toolTipText;
   }
   
   public String getToolTipText () {
+    checkWidget();
     String result = toolTipText;
     if( result == null && shortenedText != null ) {
       String text = getText();
@@ -145,10 +151,12 @@ public class CTabItem extends Item {
   // Bounds and visibility
   
   public boolean isShowing () {
+    checkWidget();
     return showing;
   }
   
   public Rectangle getBounds() {
+    checkWidget();
     return new Rectangle( x, y, width, height );
   }
   

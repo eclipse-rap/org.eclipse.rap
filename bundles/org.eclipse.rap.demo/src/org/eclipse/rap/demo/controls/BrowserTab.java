@@ -25,6 +25,7 @@ class BrowserTab extends ExampleTab {
     + "<head></head>"
     + "<body><p>Hello World</p></body>"
     + "</html>";
+  
   private Browser browser;
 
   public BrowserTab( final TabFolder folder ) {
@@ -33,8 +34,8 @@ class BrowserTab extends ExampleTab {
 
   // TODO [rh] change signature to createStyleControls( Composite parent )
   protected void createStyleControls() {
-    // TODO [th] reactivate when implemented in Browser widget
-//    createStyleButton( "BORDER" );
+    // TODO [rh] reactivate when implemented in Browser widget
+    createStyleButton( "BORDER" );
 //    createStyleButton( "FLAT" );
     createVisibilityButton();
 //    createEnablementButton();
@@ -44,7 +45,7 @@ class BrowserTab extends ExampleTab {
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
-    browser = new Browser( parent, RWT.NONE );
+    browser = new Browser( parent, getStyle() );
     registerControl( browser );
   }
 

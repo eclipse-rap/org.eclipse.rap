@@ -36,10 +36,12 @@ public class Composite extends Scrollable {
   }
 
   public Control[] getChildren() {
+    checkWidget();
     return controlHolder.getControls();
   }
 
   public int getChildrenCount() {
+    checkWidget();
     return controlHolder.size();
   }
 
@@ -57,14 +59,17 @@ public class Composite extends Scrollable {
   // Layout methods
   
   public void setLayout( final Layout layout ) {
+    checkWidget();
     this.layout = layout;
   }
 
   public Layout getLayout() {
+    checkWidget();
     return layout;
   }
 
   public void layout() {
+    checkWidget();
     if( layout != null ) {
       layout.layout( this, true );
     }

@@ -21,6 +21,7 @@ public abstract class Scrollable extends Control {
   }
 
   public Rectangle getClientArea() {
+    checkWidget();
     Rectangle current = getBounds();
     // TODO [rst] better implementation
     return new Rectangle( 0,
@@ -34,6 +35,7 @@ public abstract class Scrollable extends Control {
                                 final int width,
                                 final int height )
   {
+    checkWidget();
     // TODO: [fappel] reasonable implementation;
     return new Rectangle( x, y, width, height );
   }

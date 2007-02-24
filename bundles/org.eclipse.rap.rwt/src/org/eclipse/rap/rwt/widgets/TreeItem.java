@@ -80,6 +80,7 @@ public class TreeItem extends Item {
   // Item overrides
   
   public final Display getDisplay() {
+    checkWidget();
     return parent.getDisplay();
   }
 
@@ -87,10 +88,12 @@ public class TreeItem extends Item {
   // Parent/child relations
   
   public final Tree getParent() {
+    checkWidget();
     return parent;
   }
 
   public TreeItem getParentItem() {
+    checkWidget();
     return parentItem;
   }
   
@@ -98,12 +101,14 @@ public class TreeItem extends Item {
   // Getter/Setter
 
   public void setExpanded( final boolean expanded ) {
+    checkWidget();
     if( !expanded || getItemCount() > 0 ) {
       this.expanded = expanded; 
     }
   }
   
   public boolean getExpanded() {
+    checkWidget();
     return expanded;
   }
 
@@ -139,18 +144,22 @@ public class TreeItem extends Item {
   // Methods to maintain (sub-) TreeItems
   
   public TreeItem[] getItems() {
+    checkWidget();
     return ( TreeItem[] )itemHolder.getItems();
   }
   
   public TreeItem getItem( final int index ) {
+    checkWidget();
     return ( TreeItem )itemHolder.getItem( index );
   }
   
   public int getItemCount() {
+    checkWidget();
     return itemHolder.size();
   }
   
   public int indexOf( final TreeItem item ) {
+    checkWidget();
     if( item == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -161,6 +170,7 @@ public class TreeItem extends Item {
   }
 
   public void removeAll() {
+    checkWidget();
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].dispose();

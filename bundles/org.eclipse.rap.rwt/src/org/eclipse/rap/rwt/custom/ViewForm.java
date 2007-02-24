@@ -173,9 +173,8 @@ public class ViewForm extends Composite {
   }
 
   static int checkStyle( int style ) {
-    // int mask = RWT.FLAT | RWT.LEFT_TO_RIGHT | RWT.RIGHT_TO_LEFT;
-    // return style & mask | RWT.NO_REDRAW_RESIZE;
-    return style;
+    int mask = RWT.FLAT /* | RWT.LEFT_TO_RIGHT | RWT.RIGHT_TO_LEFT */ ;
+    return style & mask /* | RWT.NO_REDRAW_RESIZE */ ;
   }
 
   // protected void checkSubclass () {
@@ -186,7 +185,7 @@ public class ViewForm extends Composite {
   // }
   // }
   public Rectangle computeTrim( int x, int y, int width, int height ) {
-    // checkWidget ();
+    checkWidget();
     int trimX = x - borderLeft - highlight;
     int trimY = y - borderTop - highlight;
     int trimWidth = width + borderLeft + borderRight + 2 * highlight;
@@ -195,7 +194,7 @@ public class ViewForm extends Composite {
   }
 
   public Rectangle getClientArea() {
-    // checkWidget();
+    checkWidget();
     Rectangle clientArea = super.getClientArea();
     clientArea.x += borderLeft;
     clientArea.y += borderTop;
@@ -210,7 +209,7 @@ public class ViewForm extends Composite {
    * @return the control in the content area of the pane or null
    */
   public Control getContent() {
-    // checkWidget();
+    checkWidget();
     return content;
   }
 
@@ -221,7 +220,7 @@ public class ViewForm extends Composite {
    * @return the control in the top center of the pane or null
    */
   public Control getTopCenter() {
-    // checkWidget();
+    checkWidget();
     return topCenter;
   }
 
@@ -232,7 +231,7 @@ public class ViewForm extends Composite {
    * @return the control in the top left corner of the pane or null
    */
   public Control getTopLeft() {
-    // checkWidget();
+    checkWidget();
     return topLeft;
   }
 
@@ -243,7 +242,7 @@ public class ViewForm extends Composite {
    * @return the control in the top right corner of the pane or null
    */
   public Control getTopRight() {
-    // checkWidget();
+    checkWidget();
     return topRight;
   }
 
@@ -311,7 +310,7 @@ public class ViewForm extends Composite {
    *              </ul>
    */
   public void setContent( Control content ) {
-    // checkWidget();
+    checkWidget();
     if( content != null && content.getParent() != this ) {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
@@ -340,12 +339,12 @@ public class ViewForm extends Composite {
    *              </ul>
    */
   public void setLayout( Layout layout ) {
-    // checkWidget();
+    checkWidget();
     return;
   }
 
   void setSelectionBackground( Color color ) {
-    // checkWidget();
+    checkWidget();
     if( selectionBackground == color )
       return;
     // if (color == null) color =
@@ -371,7 +370,7 @@ public class ViewForm extends Composite {
    *              </ul>
    */
   public void setTopCenter( Control topCenter ) {
-    // checkWidget();
+    checkWidget();
     if( topCenter != null && topCenter.getParent() != this ) {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
@@ -401,7 +400,7 @@ public class ViewForm extends Composite {
    *              </ul>
    */
   public void setTopLeft( Control c ) {
-    // checkWidget();
+    checkWidget();
     if( c != null && c.getParent() != this ) {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
@@ -432,7 +431,7 @@ public class ViewForm extends Composite {
    *              </ul>
    */
   public void setTopRight( Control c ) {
-    // checkWidget();
+    checkWidget();
     if( c != null && c.getParent() != this ) {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
@@ -457,7 +456,7 @@ public class ViewForm extends Composite {
    *              </ul>
    */
   public void setBorderVisible( boolean show ) {
-    // checkWidget();
+    checkWidget();
     if( showBorder == show )
       return;
     showBorder = show;
@@ -489,7 +488,7 @@ public class ViewForm extends Composite {
    *              </ul>
    */
   public void setTopCenterSeparate( boolean show ) {
-    // checkWidget();
+    checkWidget();
     separateTopCenter = show;
     // layout(false);
     layout();

@@ -46,6 +46,7 @@ public class Text extends Control {
   }
 
   public String getLineDelimiter() {
+    checkWidget();
     return "\n";
   }
   

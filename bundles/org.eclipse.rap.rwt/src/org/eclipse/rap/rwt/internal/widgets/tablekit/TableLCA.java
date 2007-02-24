@@ -63,7 +63,7 @@ public class TableLCA extends AbstractWidgetLCA {
     writer.set( "appearance", "table" );
     // TODO [rh] this is preliminary and can be removed once a tabOrder is 
     //      available
-    writer.set( "tabIndex", 1 );
+    writer.set( JSConst.QX_FIELD_TAB_INDEX, 1 );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

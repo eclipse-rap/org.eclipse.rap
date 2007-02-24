@@ -54,7 +54,7 @@ public class Spinner extends Composite {
   // Methods to control range and increment 
   
   public int getIncrement () {
-    checkWidget ();
+    checkWidget();
     return increment;
   }
 
@@ -66,7 +66,7 @@ public class Spinner extends Composite {
   }
   
   public int getMinimum () {
-    checkWidget ();
+    checkWidget();
     return minimum;
   }
   
@@ -81,7 +81,7 @@ public class Spinner extends Composite {
   }
   
   public int getMaximum () {
-    checkWidget ();
+    checkWidget();
     return maximum;
   }
 
@@ -96,7 +96,7 @@ public class Spinner extends Composite {
   }
   
   public int getPageIncrement () {
-    checkWidget ();
+    checkWidget();
     return pageIncrement;
   }
   

@@ -41,10 +41,11 @@ public class BrowserLCA extends AbstractWidgetLCA {
     Browser browser = ( Browser )widget;
     JSWriter writer = JSWriter.getWriterFor( browser );
     writer.newWidget( "qx.ui.embed.Iframe" );
-    writer.set( "appearance", "browser" );
+    writer.set( JSConst.QX_FIELD_APPEARANCE , "browser" );
     // TODO [rh] preliminary workaround to make Browser accessible by tab 
-    writer.set( "tabIndex", 1 );
+    writer.set( JSConst.QX_FIELD_TAB_INDEX, 1 );
     // TODO [rh] nice-to-have: prevent popup menu from showing, disable widget
+    ControlLCAUtil.writeStyleFlags( widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

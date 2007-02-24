@@ -208,7 +208,6 @@ public abstract class Control extends Widget {
     return this == getDisplay().getFocusControl();
   }
 
-  // TODO [rh] check whether saveFocus is actually necessary
   boolean setSavedFocus() {
     return forceFocus();
   }
