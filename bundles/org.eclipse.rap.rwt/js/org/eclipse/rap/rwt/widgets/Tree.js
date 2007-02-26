@@ -48,10 +48,6 @@ qx.Proto.setSelectionListeners = function( value ) {
   this._selectionListeners = value;
 }
 
-qx.Proto.hasSelectionListeners = function() {
-  return this._selectionListeners;
-}
-
 /**
  * Are there any server-side TreeListeners attached? If so, expanding/collapsing
  * an item causes a request to be sent that informs the server-side listeners.
@@ -86,21 +82,24 @@ qx.Proto._onChangeSelection = function( evt ) {
     var req = org.eclipse.rap.rwt.Request.getInstance();
     var id = wm.findIdByWidget( this );
     var item = this.getManager().getLeadItem();
-    req.addParameter( id + ".selection", this._getSelectionIndices() );
-    // TODO [rst] Prevent selecting the root item.
-    //      When first visible item is selected and arrow up is pressed the root
-    //      item ( == this ) is selected which results in an invisible selection. 
-    if( item == this ) {
-//      this.getFirstVisibleChildOfFolder().setSelected( true );
-//      this.setSelected( false );
-    } else {
-      if( this._selectionListeners ) {
-        this._suspendClicks();
-        var itemId = wm.findIdByWidget( item );
-        var eventName = "org.eclipse.rap.rwt.events.widgetSelected";
-        req.addEvent( eventName, id );
-        req.addParameter( eventName + ".item", itemId );
-        req.send();
+    var selection = this._getSelectionIndices();
+    if( selection != "" ) {
+      req.addParameter( id + ".selection", this._getSelectionIndices() );
+      // TODO [rst] Prevent selecting the root item.
+      //      When first visible item is selected and arrow up is pressed the root
+      //      item ( == this ) is selected which results in an invisible selection. 
+      if( item == this ) {
+//        this.getFirstVisibleChildOfFolder().setSelected( true );
+//        this.setSelected( false );
+      } else {
+        if( this._selectionListeners ) {
+          this._suspendClicks();
+          var itemId = wm.findIdByWidget( item );
+          var eventName = "org.eclipse.rap.rwt.events.widgetSelected";
+          req.addEvent( eventName, id );
+          req.addParameter( eventName + ".item", itemId );
+          req.send();
+        }
       }
     }
   }
@@ -228,19 +227,25 @@ qx.Proto._notifyChangeItemCheck = function( item ) {
 // TODO [rh] handle multi selection
 qx.Proto._getSelectionIndices = function() {
   var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  var selectedItemIds = "";
+  var result = "";
   if( this.getManager().getMultiSelection() ) {
     var selectedItems = this.getManager().getSelectedItems();
     for( var i = 0; i < selectedItems.length; i++ ) {
-      if( i > 0 ) {
-        selectedItemIds += ",";
+      var item = selectedItems[ i ];
+      if( item != this ) {
+        if( result == "" ) {
+          result += ",";
+        }
+        result += wm.findIdByWidget( item );
       }
-      selectedItemIds += wm.findIdByWidget( selectedItems[ i ] );
     }
   } else {
-    selectedItemIds = wm.findIdByWidget( this.getManager().getSelectedItem() );
+    var item = this.getManager().getSelectedItem();
+    if( item != this ) {
+      result = wm.findIdByWidget( item );
+    }
   }
-  return selectedItemIds;
+  return result;
 }
 
 /*
