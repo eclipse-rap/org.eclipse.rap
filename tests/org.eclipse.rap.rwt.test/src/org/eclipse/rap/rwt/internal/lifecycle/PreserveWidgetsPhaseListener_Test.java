@@ -62,6 +62,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     // and executes at the designated phases
     Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
+    RWTFixture.registerAdapterFactories();
     Fixture.createContext();
     RWTServletContextListener listener = new RWTServletContextListener();
     TestServletContext servletContext = new TestServletContext();
@@ -70,6 +71,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     Composite shell = new Shell( display , RWT.NONE );
     final Text text = new Text( shell, RWT.NONE );
     text.setText( "hello" );
+    RWTFixture.markInitialized( display );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )W4TContext.getLifeCycle();
     final StringBuffer log = new StringBuffer();
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -101,6 +103,8 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   public void testExecutionOrder() throws Exception {
     // Build test environment:
     final StringBuffer log = new StringBuffer();
+    Fixture.fakeResponseWriter();
+    Fixture.fakeBrowser( new Ie6up( true, true ) );
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
     AdapterFactory lifeCycleAdapterFactory = new AdapterFactory() {
 
@@ -168,6 +172,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     Composite shell = new Shell( display , RWT.NONE );
     new Text( shell, RWT.NONE );
     // Execute life cycle
+    RWTFixture.markInitialized( display );
     RWTLifeCycle lifeCycle = new RWTLifeCycle();
     lifeCycle.execute();
     String expected = Display.class.getName()

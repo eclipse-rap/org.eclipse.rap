@@ -284,16 +284,21 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static void writeFocus( final Display display ) throws IOException {
     IWidgetAdapter displayAdapter = DisplayUtil.getAdapter( display );
     Object oldValue = displayAdapter.getPreserved( PROP_FOCUS_CONTROL );
-    if( oldValue != display.getFocusControl() ) {
+    if( isInitialRequest( display ) || oldValue != display.getFocusControl() ) {
       // TODO [rh] use JSWriter to output focus JavaScript 
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
       HtmlResponseWriter out = stateInfo.getResponseWriter();
       String id = WidgetUtil.getId( display.getFocusControl() );
-      out.write(   "org.eclipse.rap.rwt.WidgetManager.getInstance()." 
-                 + "focus( \"" 
-                 + id 
-                 + "\" );" );
+      out.write( "org.eclipse.rap.rwt.WidgetManager.getInstance()." ); 
+      out.write( "focus( \"" ); 
+      out.write( id ); 
+      out.write( "\" );" );
     }
+  }
+
+  private static boolean isInitialRequest( final Display display ) {
+    IWidgetAdapter displayAdapter = DisplayUtil.getAdapter( display );
+    return !displayAdapter.isInitialized() && display.getFocusControl() != null;
   }
   
   private static void markInitialized( final Display display ) {
@@ -344,8 +349,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
           focusControl = ( Control )widget;
         }
       }
+      getDisplayAdapter( display ).setFocusControl( focusControl );
     }
-    getDisplayAdapter( display ).setFocusControl( focusControl );
   }
 
   private static String readPropertyValue( final Display display, 

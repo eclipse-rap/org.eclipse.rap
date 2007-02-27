@@ -16,7 +16,8 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.internal.widgets.IListAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -116,6 +117,7 @@ public class ListLCA_Test extends TestCase {
     List list = new List( shell, RWT.SINGLE );
     
     // Ensure that changed items are rendered
+    RWTFixture.markInitialized( display );
     RWTFixture.markInitialized( list );
     Fixture.fakeResponseWriter();
     RWTFixture.preserveWidgets();

@@ -47,16 +47,19 @@ public final class PreserveWidgetsPhaseListener implements PhaseListener {
 
   private static void preserve( final Display display ) {
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
-    displayLCA.preserveValues( display );
-    Composite[] shells = display.getShells();
-    for( int i = 0; i < shells.length; i++ ) {
-      WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
-        public boolean doVisit( final Widget widget ) {
-          AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
-          widgetLCA.preserveValues( widget );
-          return true;
-        }
-      } );
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    if( adapter.isInitialized() ) {
+      displayLCA.preserveValues( display );
+      Composite[] shells = display.getShells();
+      for( int i = 0; i < shells.length; i++ ) {
+        WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
+          public boolean doVisit( final Widget widget ) {
+            AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
+            widgetLCA.preserveValues( widget );
+            return true;
+          }
+        } );
+      }
     }
   }
   

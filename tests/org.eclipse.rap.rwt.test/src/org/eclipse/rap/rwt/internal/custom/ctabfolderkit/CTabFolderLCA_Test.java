@@ -102,6 +102,7 @@ public class CTabFolderLCA_Test extends TestCase {
     CTabFolder folder = new CTabFolder( shell, RWT.NONE );
     Label label = new Label( folder, RWT.NONE );
     folder.setTopRight( label, RWT.FILL );
+    RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( folder );
     Boolean hasListeners;

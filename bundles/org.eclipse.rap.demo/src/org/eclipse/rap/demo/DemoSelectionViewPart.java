@@ -35,6 +35,10 @@ public class DemoSelectionViewPart extends ViewPart {
     createSelectionListener();
   }
   
+  public void setFocus() {
+    list.setFocus();
+  }
+  
   private void createSelectionListener() {
     IWorkbench workbench = PlatformUI.getWorkbench();
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();

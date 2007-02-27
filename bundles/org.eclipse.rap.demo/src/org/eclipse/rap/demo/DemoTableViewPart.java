@@ -24,6 +24,7 @@ public class DemoTableViewPart extends ViewPart {
 
   private static final int ROWS = 40;
   private static final int COLUMNS = 10;
+  private TableViewer viewer;
 
   private class ViewContentProvider implements IStructuredContentProvider {
     public Object[] getElements( Object inputElement ) {
@@ -60,13 +61,17 @@ public class DemoTableViewPart extends ViewPart {
   }
   
   public void createPartControl( final Composite parent ) {
-    TableViewer viewer = new TableViewer( parent, RWT.NONE );
+    viewer = new TableViewer( parent, RWT.NONE );
     viewer.setContentProvider( new ViewContentProvider() );
     viewer.setLabelProvider( new ViewLabelProvider() );
     final Table table = viewer.getTable();
     viewer.setColumnProperties( initColumnProperties( table ) );
     viewer.setInput( this );
     getSite().setSelectionProvider( viewer );
+  }
+  
+  public void setFocus() {
+    viewer.getTable().setFocus();
   }
 
   private String[] initColumnProperties( final Table table ) {

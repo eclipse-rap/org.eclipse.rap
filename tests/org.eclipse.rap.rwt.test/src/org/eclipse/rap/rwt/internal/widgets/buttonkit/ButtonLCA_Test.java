@@ -31,6 +31,7 @@ public class ButtonLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
     Button button = new Button( shell, RWT.PUSH );
+    RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     Boolean hasListeners;

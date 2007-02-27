@@ -31,6 +31,7 @@ public class ControlLCAUtil_Test extends TestCase {
     // Ensure that bounds for an uninitialized widget are rendered
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
+    RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeBounds( shell );
@@ -113,6 +114,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
     // for an un-initialized control: no image -> no markup
     Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
     ControlLCAUtil.writeImage( item, item.getImage() );
     assertEquals( "", Fixture.getAllMarkup() );
     

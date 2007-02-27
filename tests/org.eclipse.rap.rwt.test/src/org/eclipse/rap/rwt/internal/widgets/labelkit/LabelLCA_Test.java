@@ -29,6 +29,7 @@ public class LabelLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
     assertEquals( null, adapter.getPreserved( Props.TEXT ) );
     label.setText( "xyz" );
+    RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     assertEquals( label.getText(), adapter.getPreserved( Props.TEXT ) );
     display.dispose();

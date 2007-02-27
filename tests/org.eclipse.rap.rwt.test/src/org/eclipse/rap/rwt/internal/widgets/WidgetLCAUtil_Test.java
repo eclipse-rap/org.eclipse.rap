@@ -35,6 +35,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     hasChanged = WidgetLCAUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
     assertEquals( true, hasChanged );
     // test subsequent behaviour (when already initialized)
+    RWTFixture.markInitialized( display );
     RWTFixture.markInitialized( text );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
@@ -57,6 +58,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( true, hasChanged );
     
     list.setItems( new String[] { "a" } );
+    RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", new String[] { "a" } );
     assertEquals( false, hasChanged );

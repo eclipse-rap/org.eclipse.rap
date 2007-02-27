@@ -302,6 +302,7 @@ public class JSWriter_Test extends TestCase {
       + "w.setValue( \"\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
     RWTFixture.markInitialized( shell.text );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
@@ -514,6 +515,7 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with no listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     JSWriter writer = JSWriter.getWriterFor( button );
@@ -589,6 +591,7 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with no action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     JSWriter writer = JSWriter.getWriterFor( item );
@@ -652,6 +655,7 @@ public class JSWriter_Test extends TestCase {
     TabItem item = new TabItem( folder, RWT.NONE );
     // Test initial rendering with action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
+    RWTFixture.markInitialized( display );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
@@ -705,6 +709,7 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with no listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     JSWriter writer = JSWriter.getWriterFor( button );
@@ -793,6 +798,7 @@ public class JSWriter_Test extends TestCase {
     // Test initial rendering with no action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     JSWriter writer = JSWriter.getWriterFor( item );

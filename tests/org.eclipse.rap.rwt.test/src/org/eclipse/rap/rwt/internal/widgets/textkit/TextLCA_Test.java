@@ -32,6 +32,7 @@ public class TextLCA_Test extends TestCase {
     Composite shell = new Shell( display , RWT.NONE );
     Text text = new Text( shell, RWT.NONE );
     text.setText( "abc" );
+    RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     assertEquals( text.getText(), adapter.getPreserved( Props.TEXT ) );
@@ -61,6 +62,7 @@ public class TextLCA_Test extends TestCase {
     Shell shell = new Shell( display , RWT.NONE );
     Text text = new Text( shell, RWT.NONE );
     shell.open();
+    RWTFixture.markInitialized( display );
     RWTFixture.markInitialized( text );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();

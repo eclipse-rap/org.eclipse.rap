@@ -39,6 +39,7 @@ public class MenuLCA_Test extends TestCase {
     // is rendered but without settings its parent
     Fixture.fakeResponseWriter();
     MenuLCA lca = new MenuLCA();
+    RWTFixture.markInitialized( display );
     lca.renderInitialization( menuBar );
     lca.renderChanges( menuBar );
     assertTrue( Fixture.getAllMarkup().indexOf( "setParent" ) == -1 );

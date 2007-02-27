@@ -29,6 +29,7 @@ public class SashLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
     Sash sash = new Sash( shell, RWT.NONE );
+    RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( sash );
     Object[] listeners;
@@ -52,6 +53,7 @@ public class SashLCA_Test extends TestCase {
     Shell shell = new Shell( display , RWT.NONE );
     Sash sash = new Sash( shell, RWT.NONE );
     shell.open();
+    RWTFixture.markInitialized( display );
     RWTFixture.markInitialized( sash );
     RWTFixture.preserveWidgets();
     sash.setBounds( new Rectangle( 20, 100, 50, 60 ) );

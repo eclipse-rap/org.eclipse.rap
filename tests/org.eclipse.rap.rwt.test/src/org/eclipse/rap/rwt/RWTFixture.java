@@ -189,6 +189,12 @@ public final class RWTFixture {
     WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
     widgetAdapter.setInitialized( true );
   }
+  
+  public static void markInitialized( final Display display ) {
+    Object adapter = display.getAdapter( IWidgetAdapter.class );
+    WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
+    widgetAdapter.setInitialized( true );
+  }
 
   public static void fakeNewRequest() {
     HttpSession session = ContextProvider.getSession();

@@ -72,12 +72,16 @@ public class RWTLifeCycle extends LifeCycle {
 
   public void addPhaseListener( final PhaseListener listener ) {
     ParamCheck.notNull( listener, "listener" );
-    listeners.add( listener );
+    synchronized( listeners ) {
+      listeners.add( listener );
+    }
   }
 
   public void removePhaseListener( final PhaseListener listener ) {
     ParamCheck.notNull( listener, "listener" );
-    listeners.remove( listener );
+    synchronized( listeners ) {
+      listeners.remove( listener );
+    }
   }
   
   public Scope getScope() {
@@ -137,8 +141,10 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private PhaseListener[] getPhaseListeners() {
-    PhaseListener[] result = new PhaseListener[ listeners.size() ];
-    listeners.toArray( result );
-    return result;
+    synchronized( listeners ) {
+      PhaseListener[] result = new PhaseListener[ listeners.size() ];
+      listeners.toArray( result );
+      return result;
+    }
   }
 }

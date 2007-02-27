@@ -32,6 +32,10 @@ public class DemoBrowserViewPart extends ViewPart {
     setUrlFromSelection( selection );
     createSelectionListener();
   }
+  
+  public void setFocus() {
+    browser.setFocus();
+  }
 
   private void createSelectionListener() {
     IWorkbench workbench = PlatformUI.getWorkbench();

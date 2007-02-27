@@ -20,6 +20,8 @@ import org.eclipse.rap.ui.part.ViewPart;
 
 public class DemoTreeViewPart extends ViewPart {
 
+  private TreeViewer viewer;
+
   class TreeObject {
 
     private String name;
@@ -149,9 +151,13 @@ public class DemoTreeViewPart extends ViewPart {
   }
   
   public void createPartControl( final Composite parent ) {
-    TreeViewer viewer = new TreeViewer( parent );
+    viewer = new TreeViewer( parent );
     viewer.setContentProvider( new TreeViewerContentProvider() );
     viewer.setInput( this );
     getSite().setSelectionProvider( viewer );
+  }
+  
+  public void setFocus() {
+    viewer.getTree().setFocus();
   }
 }

@@ -43,6 +43,7 @@ public class ControlLCA_Test extends TestCase {
       }
     };
     shell.addControlListener( controlListener );
+    RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
     assertEquals( adapter.getPreserved( Props.BOUNDS ), shell.getBounds() );
@@ -66,6 +67,7 @@ public class ControlLCA_Test extends TestCase {
     
     // Unchanged visible attribute must not be rendered
     Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
     RWTFixture.markInitialized( button );
     RWTFixture.preserveWidgets();
     lca.renderInitialization( button );
