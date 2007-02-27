@@ -100,4 +100,20 @@ public class SelectionEvent extends RWTEvent {
   public static Object[] getListeners( final Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
+  
+  public String toString() {
+    String string = super.toString ();
+    return string.substring (0, string.length() - 1) // remove trailing '}'
+        + " item=" + item
+        + " detail=" + detail
+        + " x=" + x
+        + " y=" + y
+        + " width=" + width
+        + " height=" + height
+//        + " stateMask=" + stateMask
+//        + " text=" + text
+        + " doit=" + doit
+        + "}";
+  }
+
 }

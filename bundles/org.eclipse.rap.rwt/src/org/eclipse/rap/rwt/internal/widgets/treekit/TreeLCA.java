@@ -40,7 +40,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     Tree tree = ( Tree )widget;
     readSelection( tree );
-    processSelectionEvents( tree );
+    processWidgetSelectedEvent( tree );
+    processWidgetDefaultSelectedEvent( tree );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -69,26 +70,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  private static void processSelectionEvents( final Tree tree ) {
-    processSelectionEvent( tree,
-                           JSConst.EVENT_WIDGET_SELECTED,
-                           SelectionEvent.WIDGET_SELECTED );
-    processSelectionEvent( tree,
-                           JSConst.EVENT_WIDGET_DEFAULT_SELECTED,
-                           SelectionEvent.WIDGET_DEFAULT_SELECTED );
-  }
-
-  private static void processSelectionEvent( final Tree tree,
-                                             final String eventName,
-                                             final int eventType )
-  {
+  private static void processWidgetSelectedEvent( final Tree tree ) {
     HttpServletRequest request = ContextProvider.getRequest();
+    String eventName = JSConst.EVENT_WIDGET_SELECTED;
     if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
       Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
       String itemId = request.getParameter( eventName + ".item" );
-      TreeItem treeItem = ( TreeItem )WidgetUtil.find( tree, itemId );
+      Item treeItem = ( Item )WidgetUtil.find( tree, itemId );
       String detailStr = request.getParameter( eventName + ".detail" );
       int detail = "check".equals( detailStr ) ? RWT.CHECK : RWT.NONE;
+      int eventType = SelectionEvent.WIDGET_SELECTED;
       SelectionEvent event = new SelectionEvent( tree,
                                                  treeItem,
                                                  eventType,
@@ -98,8 +89,27 @@ public final class TreeLCA extends AbstractWidgetLCA {
       event.processEvent();
     }
   }
+  
+  private static void processWidgetDefaultSelectedEvent( final Tree tree ) {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String eventName = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
+      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
+      String itemId = request.getParameter( eventName + ".item" );
+      Item treeItem = ( Item )WidgetUtil.find( tree, itemId );
+      int detail = RWT.NONE;
+      int eventType = SelectionEvent.WIDGET_DEFAULT_SELECTED;
+      SelectionEvent event = new SelectionEvent( tree,
+                                                 treeItem,
+                                                 eventType ,
+                                                 bounds,
+                                                 true,
+                                                 detail );
+      event.processEvent();
+    }
+  }
 
-  ////////////////////////////////////////////
+  // //////////////////////////////////////////
   // Helping methods to read client-side state
 
   private static void readSelection( final Tree tree ) {
