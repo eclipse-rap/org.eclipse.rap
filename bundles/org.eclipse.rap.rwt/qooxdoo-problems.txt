@@ -33,7 +33,11 @@ that's right?
   "currentToolTip" failed with exception: TypeError - this._showTimer has 
   no properties
 
-10.) Button overwrites custom backgroundColor and border after mouse over.
+10.) Hover color on Button overwrites a custom background color. On mouse out,
+     the default backgroundColor is restored instead of the custom one.
+     This is a general problem with the property handling of qooxdoo.
+     --> https://bugs.eclipse.org/bugs/show_bug.cgi?id=175499
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=16
 
 11.) Initial positioning of scrollbars (e.g. setScrollLeft) does not work
 
@@ -123,3 +127,7 @@ that's right?
 35.) treefullcontrol: when a TreeFolder is created without specifying icons in 
      the underlying RowStructure (e.g. row.addIcon), it is not possible to set 
      icons afterwards.
+     
+36.) TextArea: scrollIntoView does not work with Firefox. In Firefox and IE, the
+     current selection is cleared.
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=305

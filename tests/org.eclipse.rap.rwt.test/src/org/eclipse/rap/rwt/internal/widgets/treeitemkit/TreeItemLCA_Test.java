@@ -45,33 +45,7 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, 
                   adapter.getPreserved( TreeItemLCA.PROP_EXPANDED ) );
   }
-
-  public void testSelectionEvent() throws IOException {
-    final Object[] selectedTree = {
-      null
-    };
-    final Object[] selectedTreeItem = {
-      null
-    };
-    Display display = new Display();
-    Composite shell = new Shell( display , RWT.NONE );
-    Tree tree = new Tree( shell, RWT.NONE );
-    tree.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        selectedTree[ 0 ] = event.getSource();
-        selectedTreeItem[ 0 ] = event.item;
-      }
-    } );
-    TreeItem treeItem = new TreeItem( tree, RWT.NONE );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
-    String treeItemId = WidgetUtil.getId( treeItem );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeItemId );
-    new RWTLifeCycle().execute();
-    assertSame( tree, selectedTree[ 0 ] );
-    assertSame( treeItem, selectedTreeItem[ 0 ] );
-  }
-  
+    
   public void testTreeEvent() {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );

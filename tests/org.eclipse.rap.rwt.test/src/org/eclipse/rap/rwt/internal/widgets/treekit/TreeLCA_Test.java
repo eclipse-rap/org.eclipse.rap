@@ -66,14 +66,16 @@ public class TreeLCA_Test extends TestCase {
         assertEquals( 0, event.height );
       }
     } );
+    String treeId = WidgetUtil.getId( tree );
     String treeItemId = WidgetUtil.getId( treeItem );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeItemId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", treeItemId );
     new RWTLifeCycle().execute();
     assertEquals( "itemSelected", log.toString() );
   }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();
