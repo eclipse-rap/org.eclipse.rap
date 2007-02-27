@@ -18,7 +18,7 @@ import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.widgets.Text;
 import org.eclipse.rap.rwt.widgets.Widget;
 
-public class TextLCA extends AbstractWidgetLCA {
+public final class TextLCA extends AbstractWidgetLCA {
 
   private final static AbstractTextDelegateLCA SINGLE 
     = new SingleTextDelegateLCA();

@@ -34,7 +34,7 @@ final class TextLCAUtil {
     = new Point( 0, 0 );
 
   private static final JSListenerInfo JS_MODIFY_LISTENER_INFO 
-    = new JSListenerInfo( "keypress", 
+    = new JSListenerInfo( "keyup", 
                           "org.eclipse.rap.rwt.TextUtil.modifyText", 
                           JSListenerType.STATE_AND_ACTION );
   private static final JSListenerInfo JS_BLUR_LISTENER_INFO 

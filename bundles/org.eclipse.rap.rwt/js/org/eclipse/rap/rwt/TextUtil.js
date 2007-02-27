@@ -15,7 +15,7 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.TextUtil" );
 // Functions for ModifyEvents and maintenance of the text/value
 
 /**
- * This function gets assigned to the 'keypress' event of a text widget.
+ * This function gets assigned to the 'keyup' event of a text widget.
  */
 org.eclipse.rap.rwt.TextUtil.modifyText = function( evt ) {
   var text = evt.getTarget();
@@ -34,7 +34,7 @@ org.eclipse.rap.rwt.TextUtil.modifyText = function( evt ) {
 }
 
 /**
- * This function gets assigned to the 'keypress' event of a text widget if there
+ * This function gets assigned to the 'keyup' event of a text widget if there
  * was a server-side ModifyListener registered.
  */
 org.eclipse.rap.rwt.TextUtil.modifyTextAction = function( evt ) {
