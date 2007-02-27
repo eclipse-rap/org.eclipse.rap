@@ -11,10 +11,17 @@
 
 qx.OO.defineClass( "org.eclipse.rap.rwt.TextUtil" );
 
-// This function gets assigned to the 'keypress' event of a text widget
+///////////////////////////////////////////////////////////////
+// Functions for ModifyEvents and maintenance of the text/value
+
+/**
+ * This function gets assigned to the 'keypress' event of a text widget.
+ */
 org.eclipse.rap.rwt.TextUtil.modifyText = function( evt ) {
-  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-    var text = evt.getTarget();
+  var text = evt.getTarget();
+  if(    !org_eclipse_rap_rwt_EventUtil_suspend 
+      && org.eclipse.rap.rwt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) )
+  {
     // if not yet done, register an event listener that adds a request param
     // with the text widgets' content just before the request is sent
     if( !org.eclipse.rap.rwt.TextUtil._isModified( text ) ) {
@@ -23,33 +30,40 @@ org.eclipse.rap.rwt.TextUtil.modifyText = function( evt ) {
       org.eclipse.rap.rwt.TextUtil._setModified( text, true );
     }
   }
+  org.eclipse.rap.rwt.TextUtil.updateSelection( text );
 }
 
-/*
+/**
  * This function gets assigned to the 'keypress' event of a text widget if there
- * was a server-side ModifyListener registered
+ * was a server-side ModifyListener registered.
  */
 org.eclipse.rap.rwt.TextUtil.modifyTextAction = function( evt ) {
+  var text = evt.getTarget();
   if(    !org_eclipse_rap_rwt_EventUtil_suspend 
-      && !org.eclipse.rap.rwt.TextUtil._isModified( evt.getTarget() ) 
+      && !org.eclipse.rap.rwt.TextUtil._isModified( text ) 
       && org.eclipse.rap.rwt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) )
   {
-    org.eclipse.rap.rwt.TextUtil.modifyText( evt );
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    // Register 'send'-listener that adds a request param with current text
+    if( !org.eclipse.rap.rwt.TextUtil._isModified( text ) ) {
+      req.addEventListener( "send", org.eclipse.rap.rwt.TextUtil._onSend, text );
+      org.eclipse.rap.rwt.TextUtil._setModified( text, true );
+    }
     // add modifyText-event with sender-id to request parameters
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( evt.getTarget() );
-    var req = org.eclipse.rap.rwt.Request.getInstance();
+    var id = widgetManager.findIdByWidget( text );
     req.addEvent( "org.eclipse.rap.rwt.events.modifyText", id );
     // register listener that is notified when a request is sent
     qx.client.Timer.once( org.eclipse.rap.rwt.TextUtil._delayedModifyText, 
-                          evt.getTarget(), 
+                          text, 
                           500 );
   }
+  org.eclipse.rap.rwt.TextUtil.updateSelection( text );
 };
 
 /**
  * This function gets assigned to the 'blur' event of a text widget if there
- * was a server-side ModifyListener registered
+ * was a server-side ModifyListener registered.
  */
 org.eclipse.rap.rwt.TextUtil.modifyTextOnBlur = function( evt ) {
   if(    !org_eclipse_rap_rwt_EventUtil_suspend 
@@ -72,6 +86,10 @@ org.eclipse.rap.rwt.TextUtil._onSend = function( evt ) {
   // remove the _onSend listener and change the text widget state to 'unmodified'
   req.removeEventListener( "send", org.eclipse.rap.rwt.TextUtil._onSend, this );
   org.eclipse.rap.rwt.TextUtil._setModified( this, false );
+  //
+  if( this.getFocused() ) {
+    this.setValue( this.getComputedValue() );
+  }
 }
 
 org.eclipse.rap.rwt.TextUtil._delayedModifyText = function( evt ) {
@@ -143,4 +161,43 @@ org.eclipse.rap.rwt.TextUtil._isModifyingKey = function( keyIdentifier ) {
       result = true;
   }
   return result;
+}
+
+///////////////////////////////////////////////////////////////////
+// Functions to maintain the selection-start and -length properties
+
+org.eclipse.rap.rwt.TextUtil.onMouseUp = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    org.eclipse.rap.rwt.TextUtil.updateSelection( evt.getTarget() );
+  }
+}
+
+org.eclipse.rap.rwt.TextUtil.updateSelection = function( text ) {
+  // TODO [rh] executing the code below for a TextArea leads to Illegal Argument
+  if( text.classname != "qx.ui.form.TextArea" ) { 
+    var start = text.getSelectionStart();
+    var length = text.getSelectionLength();
+    if( text.getUserData( "selectionStart" ) != start ) {
+      text.setUserData( "selectionStart", start ); 
+      org.eclipse.rap.rwt.TextUtil._setPropertyParam( text, "selectionStart", start );
+    }
+    if( text.getUserData( "selectionLength" ) != length ) {
+      text.setUserData( "selectionLength", length );
+      org.eclipse.rap.rwt.TextUtil._setPropertyParam( text, "selectionCount", length );
+    }
+  }
+}
+
+org.eclipse.rap.rwt.TextUtil._setPropertyParam = function( widget, name, value ) {
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var id = widgetManager.findIdByWidget( widget );
+  var req = org.eclipse.rap.rwt.Request.getInstance();
+  req.addParameter( id + "." + name, value );
+}
+
+org.eclipse.rap.rwt.TextUtil.setSelection = function( text, start, length ) {
+  text.setUserData( "selectionStart", start );
+  text.getSelectionStart( start );
+  text.setUserData( "selectionLength", length );
+  text.getSelectionLength( length );
 }

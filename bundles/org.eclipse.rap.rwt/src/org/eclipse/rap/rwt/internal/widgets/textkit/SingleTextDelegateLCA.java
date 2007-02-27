@@ -24,7 +24,9 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
   }
 
   void readData( final Text text ) {
+    // order is crucial: first read text then read what part of it is selected
     TextLCAUtil.readText( text );
+    TextLCAUtil.readSelection( text );
     TextLCAUtil.readModifyEvent( text );
   }
 
@@ -44,6 +46,7 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     {
       writer.set( "value", TextLCAUtil.stripNewlines( newValue ) );
     }
+    TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );
   }

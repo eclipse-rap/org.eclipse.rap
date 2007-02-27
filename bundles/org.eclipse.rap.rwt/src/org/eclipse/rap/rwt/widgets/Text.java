@@ -27,6 +27,7 @@ public class Text extends Control {
   
   private String text = "";
   private int textLimit = MAX_TEXT_LIMIT;
+  private final Point selection = new Point( 0, 0 );
 
   public Text( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
@@ -38,6 +39,8 @@ public class Text extends Control {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
     this.text = text;
+    selection.x = 0;
+    selection.y = 0;
   }
 
   public String getText() {
@@ -49,6 +52,9 @@ public class Text extends Control {
     checkWidget();
     return "\n";
   }
+  
+  //////////////////////////
+  // Imput length constraint
   
   public void setTextLimit( final int textLimit ) {
     checkWidget();
@@ -65,6 +71,62 @@ public class Text extends Control {
     checkWidget ();
     return textLimit;
   }
+  
+  ///////////////////////////////////////////
+  // Selection start, count and selected text
+  
+  public void setSelection( final int start ) {
+    checkWidget();
+    setSelection( start, start );
+ }
+
+  public void setSelection( final int start, final int end ) {
+    checkWidget();
+    if( start >= 0 && end >= 0 && start <= end ) {
+      int validatedStart = Math.min( start, text.length() );
+      int validatedEnd = Math.min( end, text.length() );
+      selection.x = validatedStart;
+      selection.y = validatedEnd;
+    }
+  }
+
+  public void setSelection( final Point selection ) {
+    checkWidget();
+    if( selection == null ) {
+      error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    setSelection( selection.x, selection.y );
+  }
+
+  public Point getSelection() {
+    checkWidget();
+    return new Point( selection.x, selection.y );
+  }
+
+  public int getSelectionCount() {
+    checkWidget();
+    return selection.y - selection.x;
+  }
+
+  public String getSelectionText() {
+    checkWidget();
+    return text.substring( selection.x, selection.y );
+  }
+  
+  public void clearSelection() {
+    checkWidget();
+    selection.x = 0;
+    selection.y = 0;
+  }
+  
+  public void selectAll() {
+    checkWidget();
+    selection.x = 0;
+    selection.y = text.length();
+  }
+
+  ////////////////////
+  // Widget dimensions
   
   public Point computeSize( final int wHint, 
                             final int hHint, 

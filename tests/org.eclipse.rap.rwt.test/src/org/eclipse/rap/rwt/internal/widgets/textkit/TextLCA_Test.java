@@ -17,6 +17,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
 import org.eclipse.rap.rwt.events.ModifyEvent;
 import org.eclipse.rap.rwt.events.ModifyListener;
+import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -41,9 +42,17 @@ public class TextLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
     Text text = new Text( shell, RWT.NONE );
-    Fixture.fakeRequestParam( WidgetUtil.getId( text ) + ".text", "abc" );
+    String textId = WidgetUtil.getId( text );
+    // read changed text
+    Fixture.fakeRequestParam( textId + ".text", "abc" );
     WidgetUtil.getLCA( text ).readData( text );
     assertEquals( "abc", text.getText() );
+    // read changed selection
+    Fixture.fakeRequestParam( textId + ".text", "abc" );
+    Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
+    Fixture.fakeRequestParam( textId + ".selectionCount", "1" );
+    WidgetUtil.getLCA( text ).readData( text );
+    assertEquals( new Point( 1, 2 ), text.getSelection() );
   }
 
   public void testRenderChanges() throws IOException {

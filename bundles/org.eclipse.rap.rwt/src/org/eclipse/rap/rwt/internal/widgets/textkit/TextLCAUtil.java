@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.textkit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.ModifyEvent;
+import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Text;
 import com.w4t.W4TContext;
@@ -24,10 +25,13 @@ final class TextLCAUtil {
   
   static final String PROP_TEXT = "text";
   static final String PROP_TEXT_LIMIT = "textLimit";
+  static final String PROP_SELECTION = "selection";
   static final String PROP_MODIFY_LISTENER = "modifyListener";
 
   private static final Integer DEFAULT_TEXT_LIMIT 
     = new Integer( Text.MAX_TEXT_LIMIT );
+  private static final Point DEFAULT_SELECTION
+    = new Point( 0, 0 );
 
   private static final JSListenerInfo JS_MODIFY_LISTENER_INFO 
     = new JSListenerInfo( "keypress", 
@@ -46,6 +50,7 @@ final class TextLCAUtil {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_TEXT, text.getText() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
+    adapter.preserve( PROP_SELECTION, text.getSelection() );
     boolean hasListener = ModifyEvent.hasListener( text );
     adapter.preserve( PROP_MODIFY_LISTENER, Boolean.valueOf( hasListener ) );
   }
@@ -55,6 +60,19 @@ final class TextLCAUtil {
     if( newText != null ) {
       text.setText( newText );
     }
+  }
+  
+  static void readSelection( final Text text ) {
+    Point selection = text.getSelection();
+    String value = WidgetLCAUtil.readPropertyValue( text, "selectionStart" );
+    if( value != null ) {
+      selection.x = Integer.parseInt( value );
+    }
+    value = WidgetLCAUtil.readPropertyValue( text, "selectionCount" );
+    if( value != null ) {
+      selection.y = selection.x + Integer.parseInt( value );
+    }
+    text.setSelection( selection );
   }
   
   static void readModifyEvent( final Text text ) {
@@ -96,6 +114,24 @@ final class TextLCAUtil {
     }
   }
 
+  static void writeSelection( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+    if( !adapter.isInitialized() ) {
+      writer.addListener( "mouseup", "org.eclipse.rap.rwt.TextUtil.onMouseUp" );
+    }
+    Point newValue = text.getSelection();
+    Point defValue = DEFAULT_SELECTION;
+    // TODO [rh] could be optimized: when text was changed and selection is 0,0
+    //      there is no need to write JavaScript since the client resets the
+    //      selection as well whn the new text is set.
+    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, defValue ) ) { 
+      Integer start = new Integer( newValue.x );
+      Integer count = new Integer( text.getSelectionCount() );
+      writer.callStatic( "org.eclipse.rap.rwt.TextUtil.setSelection", 
+                         new Object[] { text, start, count } );
+    }
+  }
   
   static void writeModifyListener( final Text text ) throws IOException {
     if( ( text.getStyle() & RWT.READ_ONLY ) == 0 ) {
