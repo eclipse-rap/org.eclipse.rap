@@ -151,6 +151,14 @@ public class Shell_Test extends TestCase {
     assertTrue( childShell.isDisposed() );
   }
   
+  public void testCreateDescendantShell() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Shell descendantShell = new Shell( shell );
+    assertEquals( 0, shell.getChildrenCount() );
+    assertSame( shell, descendantShell.getParent() );
+  }
+  
   public void testFocusAfterReEnable() {
     Display display = new Display();
     Shell shell = new Shell( display );

@@ -24,7 +24,7 @@ import org.eclipse.rap.rwt.lifecycle.IControlAdapter;
  */
 public abstract class Control extends Widget {
 
-  private class ControlAdapter implements IControlAdapter {
+  private final class ControlAdapter implements IControlAdapter {
     public int getIndex() {
       Composite parent = getParent();
       int result = 0;
@@ -387,13 +387,13 @@ public abstract class Control extends Widget {
     return menu;
   }
   
-  /////////////
+  //////////
   // Z-Order
   
   public void moveAbove( final Control control ) {
     checkWidget();
-    if( control != null && control.isDisposed ()) {
-      error(RWT.ERROR_INVALID_ARGUMENT);
+    if( control != null && control.isDisposed() ) {
+      error( RWT.ERROR_INVALID_ARGUMENT );
     }
     if( control == null || control.parent == parent && control != this ) {
       ControlHolder.removeControl( getParent(), this );
@@ -407,8 +407,8 @@ public abstract class Control extends Widget {
 
   public void moveBelow( final Control control ) {
     checkWidget();
-    if( control != null && control.isDisposed ()) {
-      error(RWT.ERROR_INVALID_ARGUMENT);
+    if( control != null && control.isDisposed() ) {
+      error( RWT.ERROR_INVALID_ARGUMENT );
     }
     if( control == null || control.parent == parent && control != this ) {
       ControlHolder.removeControl( getParent(), this );
