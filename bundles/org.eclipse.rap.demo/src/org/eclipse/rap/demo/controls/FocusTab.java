@@ -141,6 +141,9 @@ public class FocusTab extends ExampleTab {
     CTabFolder tabFolder2 = new CTabFolder( parent, RWT.NONE );
     CTabItem tabItem2 = new CTabItem( tabFolder2, RWT.NONE );
     tabItem2.setText( "Item 1" );
+    Label ctabItemControl = new Label( tabFolder2, RWT.NONE );
+    ctabItemControl.setText( "Content control of item 1" );
+    tabItem2.setControl( ctabItemControl );
     tabItem2 = new CTabItem( tabFolder2, RWT.NONE );
     tabItem2.setText( "Item 2" );
     addFocusListener( tabFolder2 );
