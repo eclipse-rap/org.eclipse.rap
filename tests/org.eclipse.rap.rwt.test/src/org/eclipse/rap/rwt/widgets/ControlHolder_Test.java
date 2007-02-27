@@ -72,7 +72,7 @@ public class ControlHolder_Test extends TestCase {
     control.dispose();
     controls = ControlHolder.getControls( shell );
     assertEquals( 0, controls.length );
-    Control extended = new Control() {
+    Control extended = new Control( null ) {
     };
     try {
       ControlHolder.addControl( shell, extended );

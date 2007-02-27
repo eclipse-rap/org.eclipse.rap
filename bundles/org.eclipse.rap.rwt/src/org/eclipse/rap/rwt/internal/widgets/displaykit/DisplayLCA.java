@@ -340,13 +340,18 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     focusControlParam.append( DisplayUtil.getId( display ) );
     focusControlParam.append( ".focusControl" );
     String id = request.getParameter( focusControlParam.toString() );
-    Control focusControl = null;
     if( id != null ) {
-      Shell[] shells = display.getShells();
-      for( int i = 0; focusControl == null && i < shells.length; i++ ) {
-        Widget widget = WidgetUtil.find( shells[ i ], id );
-        if( widget instanceof Control ) {
-          focusControl = ( Control )widget;
+      Control focusControl = null;
+      // Even though the loop below would anyway result in focusControl == null
+      // the client may send 'null' to indicate that there no control on the
+      // active shell currently has the input focus.
+      if( !"null".equals(  id ) ) {
+        Shell[] shells = display.getShells();
+        for( int i = 0; focusControl == null && i < shells.length; i++ ) {
+          Widget widget = WidgetUtil.find( shells[ i ], id );
+          if( widget instanceof Control ) {
+            focusControl = ( Control )widget;
+          }
         }
       }
       getDisplayAdapter( display ).setFocusControl( focusControl );

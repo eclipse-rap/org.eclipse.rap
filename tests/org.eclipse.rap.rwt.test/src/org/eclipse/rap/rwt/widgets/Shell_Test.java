@@ -151,6 +151,19 @@ public class Shell_Test extends TestCase {
     assertTrue( childShell.isDisposed() );
   }
   
+  public void testFocusAfterReEnable() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Control focusedWhileDisabled = new Button( shell, RWT.PUSH );
+    Control focusedControl = new Button( shell, RWT.PUSH );
+    shell.open();
+    focusedWhileDisabled.forceFocus();
+    shell.setEnabled( false );
+    focusedControl.forceFocus();
+    shell.setEnabled( true );
+    assertEquals( focusedControl, display.getFocusControl() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );

@@ -15,6 +15,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
 import org.eclipse.rap.rwt.internal.widgets.IShellAdapter;
 import org.eclipse.rap.rwt.widgets.MenuHolder.IMenuHolderAdapter;
 
@@ -46,8 +47,7 @@ public class Shell extends Composite {
                  final int style, 
                  final int handle ) 
   {
-    super();
-    this.parent = checkParent( parent );
+    super( checkParent( parent ) );
     if( display != null ) {
       this.display = display;
     } else {
@@ -74,14 +74,14 @@ public class Shell extends Composite {
     this( parent != null ? parent.display : null, parent, style, 0 );
   }
   
+  public final Display getDisplay() {
+    return display;
+  }
+
   public final Shell getShell() {
     return this;
   }
 
-  /*
-   * Returns an array containing all shells which are descendents of the
-   * receiver.
-   */
   public Shell [] getShells() {
     checkWidget();
     int count = 0;
@@ -109,13 +109,17 @@ public class Shell extends Composite {
     return result;
   }
 
-  public final Display getDisplay() {
-    return display;
+  public void setActive () {
+    checkWidget();
+    if( isVisible() ) {
+      display.setActiveShell( this );
+    }
   }
 
-  /* 
-   * TODO [rst] Move to class Decorations, as soon as it exists
-   */
+  /////////////////////
+  // Shell measurements
+  
+  // TODO [rst] Move to class Decorations, as soon as it exists
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle current = getBounds();
@@ -133,9 +137,7 @@ public class Shell extends Composite {
                           height - hTitleBar - margin * 2 - border * 2 );
   }
   
-  /* 
-   * TODO [rst] Move to class Decorations, as soon as it exists
-   */
+  // TODO [rst] Move to class Decorations, as soon as it exists
   public Rectangle computeTrim( final int x, 
                                 final int y, 
                                 final int width, 
@@ -158,13 +160,6 @@ public class Shell extends Composite {
   public int getBorderWidth() {
     checkWidget();
     return ( style & ( RWT.BORDER | RWT.TITLE ) ) != 0 ? 2 : 1;
-  }
-
-  public void setActive () {
-    checkWidget();
-    if( isVisible() ) {
-      display.setActiveShell( this );
-    }
   }
 
   //////////
@@ -226,6 +221,18 @@ public class Shell extends Composite {
   /////////////
   // Enablement
 
+  public void setEnabled( final boolean enabled ) {
+    checkWidget();
+    if( getEnabled() != enabled ) {
+      super.setEnabled( enabled );
+      if( enabled ) {
+        if( !restoreFocus() ) {
+          traverseGroup( true );
+        }
+      }
+    }
+  }
+  
   public boolean isEnabled() {
     checkWidget();
     return getEnabled ();
@@ -241,8 +248,9 @@ public class Shell extends Composite {
   
   public void open() {
     checkWidget();
-    state &= ~HIDDEN;
+    bringToTop();
     display.setActiveShell( this );
+    setVisible( true );
     if( !restoreFocus() && !traverseGroup( true ) ) {
       setFocus();
     }
@@ -355,8 +363,8 @@ public class Shell extends Composite {
     ShellEvent.removeListener( this, listener );
   }
 
-  /////////////
-  // Overrides
+  ///////////
+  // Disposal
   
   protected final void releaseParent() {
     // Do not call super.releaseParent() 
@@ -481,6 +489,12 @@ public class Shell extends Composite {
     return result;
   }
   
+  private void bringToTop() {
+    Object adapter = display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    displayAdapter.setFocusControl( this );
+  }
+
   ////////////////
   // Tab traversal
   

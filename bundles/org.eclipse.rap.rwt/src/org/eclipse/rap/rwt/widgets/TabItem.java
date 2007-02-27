@@ -23,9 +23,15 @@ public class TabItem extends Item {
   public TabItem( final TabFolder parent, final int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
-    ItemHolder.addItem( parent, this );
+    parent.createItem( this, parent.getItemCount() );
   }
 
+  public TabItem( final TabFolder parent, final int style, final int index ) {
+    super( parent, checkStyle( style ) );
+    this.parent = parent;
+    parent.createItem( this, index );
+  }
+  
   public TabFolder getParent() {
     checkWidget();
     return parent;
@@ -54,7 +60,7 @@ public class TabItem extends Item {
     this.control = control;
   }
   
-  public void setImage ( final Image image ) {
+  public void setImage( final Image image ) {
     checkWidget();
     int index = parent.indexOf (this);
     if (index > -1) {

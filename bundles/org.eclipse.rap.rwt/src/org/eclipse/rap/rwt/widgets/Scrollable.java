@@ -12,8 +12,9 @@ import org.eclipse.rap.rwt.graphics.Rectangle;
 
 public abstract class Scrollable extends Control {
 
-  Scrollable() {
+  Scrollable( final Composite parent ) {
     // prevent instantiation from outside this package
+    super( parent );
   }
 
   public Scrollable( final Composite parent, final int style ) {

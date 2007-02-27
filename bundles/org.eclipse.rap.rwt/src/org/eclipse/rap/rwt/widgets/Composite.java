@@ -27,8 +27,9 @@ public class Composite extends Scrollable {
   private Layout layout;
   private final ControlHolder controlHolder = new ControlHolder();
 
-  Composite() {
+  Composite( final Composite parent ) {
     // prevent instantiation from outside this package
+    super( parent );
   }
 
   public Composite( final Composite parent, final int style ) {

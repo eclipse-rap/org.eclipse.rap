@@ -14,8 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.FocusAdapter;
-import org.eclipse.rap.rwt.events.FocusEvent;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
 import com.w4t.engine.lifecycle.PhaseId;
 
@@ -319,18 +318,43 @@ public class Control_Test extends TestCase {
   
   public void testFocusOnClosedShell() {
     Display display = new Display();
-    Shell shell = new Shell( display , RWT.NONE );
+    final Shell shell = new Shell( display , RWT.NONE );
     Control control1 = new Button( shell, RWT.PUSH );
-    Control control2 = new Button( shell, RWT.PUSH );
-    
+    final Control control2 = new Button( shell, RWT.PUSH );
+    final StringBuffer log = new StringBuffer();
+    FocusListener focusListener = new FocusListener() {
+      public void focusGained( final FocusEvent event ) {
+        if( event.getSource() == shell ) {
+          log.append( "shell.focusGained|" );
+        } else if( event.getSource() == control2 ) {
+          log.append( "control2.focusGained|" );
+        } else {
+          fail( "Unexpected event: focusGained" );
+        }
+      }
+      public void focusLost( final FocusEvent event ) {
+        if( event.getSource() == shell ) {
+          log.append( "shell.focusLost|" );
+        } else if( event.getSource() == control2 ) {
+          log.append( "control2.focusLost|" );
+        } else {
+          fail( "Unexpected event: focusLost" );
+        }
+      }
+    };
+    shell.addFocusListener( focusListener );
+    control2.addFocusListener( focusListener );
     // focus control on closed shell, returns false 
     boolean result = control2.forceFocus();
     assertFalse( result );
+    assertNotSame( control2, display.getFocusControl() );
     // ...but will set the focus once the shell is opened
     shell.open();
     assertSame( control2, display.getFocusControl() );
     assertFalse( control1.isFocusControl() );
     assertTrue( control2.isFocusControl() );
+    assertEquals( "shell.focusGained|shell.focusLost|control2.focusGained|", 
+                  log.toString() );
   }
   
   public void testNoFocusControls() {

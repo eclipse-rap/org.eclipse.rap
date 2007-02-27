@@ -14,6 +14,8 @@ qx.OO.defineClass(
   qx.ui.layout.CanvasLayout,
   function( canClose ) {
     qx.ui.layout.CanvasLayout.call( this );
+    this.setTabIndex( 1 );
+    this.setHideFocus( true );
     //
     this._canClose = canClose;
     this._hasFolderListener = false;
@@ -70,6 +72,8 @@ qx.OO.defineClass(
     // Add resize listeners to update selection border (this._highlightXXX)
     this.addEventListener( "changeWidth", this._onChangeWidth, this );
     this.addEventListener( "changeHeight", this._onChangeHeight, this );
+    // Add keypress listener to select items with left/right keys
+    this.addEventListener( "keypress", this._onKeyPress, this );
   }
 );
 
@@ -248,6 +252,7 @@ qx.Proto.dispose = function() {
   this.hideMaxButton();
   this.removeEventListener( "changeWidth", this._onChangeWidth, this );
   this.removeEventListener( "changeHeight", this._onChangeHeight, this );
+  this.removeEventListener( "keypress", this._onKeyPress, this );
   return qx.ui.layout.CanvasLayout.prototype.dispose.call( this );
 }
 
@@ -312,5 +317,18 @@ qx.Proto._onMinMaxExecute = function( evt ) {
       req.addEvent( event, id );
       req.send();
     }
+  }
+}
+
+qx.Proto._onKeyPress = function( evt ) {
+  switch( evt.getKeyIdentifier() ) {
+    case "Left":
+      // TODO [rh] implementatin missing: select tab item to the left
+      evt.stopPropagation();
+      break;
+    case "Right":
+      // TODO [rh] implementatin missing: select tab item to the right
+      evt.stopPropagation();
+      break;
   }
 }

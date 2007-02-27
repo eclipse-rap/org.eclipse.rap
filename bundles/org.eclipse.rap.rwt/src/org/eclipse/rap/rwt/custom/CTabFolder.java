@@ -45,6 +45,7 @@ public class CTabFolder extends Composite {
   private final ICTabFolderAdapter tabFolderAdapter = new CTabFolderAdapter();
   private final ItemHolder itemHolder = new ItemHolder( CTabItem.class );
   private final ControlListener resizeListener;
+  private FocusListener focusListener;
   private Menu showListMenu;
   private int selectedIndex = -1;
   private int firstIndex = -1; // index of the left most visible tab
@@ -105,7 +106,7 @@ public class CTabFolder extends Composite {
       }
     };
     addControlListener( resizeListener );
-    observeDispose();
+    registerDisposeListener();
     updateTabHeight( false );
   }
 
@@ -580,6 +581,7 @@ public class CTabFolder extends Composite {
   
   protected void releaseWidget() {
     removeControlListener( resizeListener );
+    unregisterFocusListener();
     if( showListMenu != null ) {
       showListMenu.dispose();
     }
@@ -1240,13 +1242,41 @@ public class CTabFolder extends Composite {
     return result;
   }
   
-  private void observeDispose() {
+  private void registerDisposeListener() {
     addDisposeListener( new DisposeListener() {
       public void widgetDisposed( final DisposeEvent event ) {
         inDispose = true;
         CTabFolder.this.removeDisposeListener( this );
       }
     } );
+  }
+  
+  private void registerFocusListener() {
+    if( focusListener == null ) {
+      focusListener = new FocusListener( ) {
+        public void focusGained( final FocusEvent event ) {
+          onFocus();
+        }
+        public void focusLost( final FocusEvent event ) {
+          onFocus();
+        }
+      };
+      addFocusListener( focusListener );
+    }
+  }
+  
+  private void onFocus() {
+    if( selectedIndex < 0 ) {
+      setSelection( 0, true );
+    }
+    unregisterFocusListener();
+  }
+
+  private void unregisterFocusListener() {
+    if( focusListener != null ) {
+      addFocusListener( focusListener );
+      focusListener = null;
+    }    
   }
 
   private void showListMenu() {
@@ -1294,9 +1324,9 @@ public class CTabFolder extends Composite {
     int oldSelectedIndex = selectedIndex;
     setSelection( index );
     if( notify && selectedIndex != oldSelectedIndex && selectedIndex != -1 ) {
-      SelectionEvent event = new SelectionEvent( this, 
-                                                 getSelection(), 
-                                                 SelectionEvent.WIDGET_SELECTED );
+      CTabItem selection = getSelection();
+      SelectionEvent event 
+        = new SelectionEvent( this, selection, SelectionEvent.WIDGET_SELECTED );
       event.processEvent();
     }
   }
@@ -1319,6 +1349,9 @@ public class CTabFolder extends Composite {
     newPriority[ priorityIndex ] = index;
     priority = newPriority;
     updateItems();
+    if( getItemCount() == 1 ) {
+      registerFocusListener();
+    }
   }
   
   void destroyItem( final CTabItem item ) {
@@ -1364,6 +1397,9 @@ public class CTabFolder extends Composite {
         }
       }
       updateItems();
+      if( getItemCount() == 0 ) {
+        unregisterFocusListener();
+      }
     }    
   }
   

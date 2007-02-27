@@ -30,6 +30,20 @@ public class TabFolderAndItem_Test extends TestCase {
     assertSame( item, folder.getItems()[ 0 ] );
   }
 
+  public void testInitialSelection() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    TabFolder folder = new TabFolder( shell, RWT.NONE );
+    
+    assertEquals( -1, folder.getSelectionIndex() );
+    assertEquals( 0, folder.getSelection().length );
+    
+    TabItem item = new TabItem( folder, RWT.NONE );
+    assertEquals( 0, folder.getSelectionIndex() );
+    assertEquals( 1, folder.getSelection().length );
+    assertSame( item, folder.getSelection()[ 0 ] );
+  }
+  
   public void testSelection() {
     Display display = new Display();
     Composite shell = new Shell( display , RWT.NONE );
@@ -40,17 +54,13 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 0, folder.indexOf( item0 ) );
     assertEquals( 1, folder.indexOf( item1 ) );
     // end indexOf
-    TabItem[] selection = folder.getSelection();
-    assertEquals( 0, selection.length );
-    int selectionIndex = folder.getSelectionIndex();
-    assertEquals( -1, selectionIndex );
     folder.setSelection( new TabItem[]{
       item0
     } );
-    selection = folder.getSelection();
+    TabItem[] selection = folder.getSelection();
     assertEquals( 1, selection.length );
     assertSame( item0, selection[ 0 ] );
-    selectionIndex = folder.getSelectionIndex();
+    int selectionIndex = folder.getSelectionIndex();
     assertEquals( 0, selectionIndex );
     folder.setSelection( new TabItem[]{
       item1, item0

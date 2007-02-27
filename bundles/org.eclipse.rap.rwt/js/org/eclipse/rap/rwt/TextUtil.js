@@ -86,7 +86,8 @@ org.eclipse.rap.rwt.TextUtil._onSend = function( evt ) {
   // remove the _onSend listener and change the text widget state to 'unmodified'
   req.removeEventListener( "send", org.eclipse.rap.rwt.TextUtil._onSend, this );
   org.eclipse.rap.rwt.TextUtil._setModified( this, false );
-  //
+  // Update the value property (which is qooxdoo-wise only updated on 
+  // focus-lost) to be in sync with server-side
   if( this.getFocused() ) {
     this.setValue( this.getComputedValue() );
   }

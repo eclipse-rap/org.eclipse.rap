@@ -25,11 +25,9 @@ import com.w4t.Adaptable;
 public class SelectionEvent extends RWTEvent {
 
   public static final int WIDGET_SELECTED = 0;
-
   public static final int WIDGET_DEFAULT_SELECTED = 1;
   
   private static final Class LISTENER = SelectionListener.class;
-  private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
   
   public int x;
   public int y;
@@ -44,7 +42,7 @@ public class SelectionEvent extends RWTEvent {
                          final Item item,
                          final int id )
   {
-    this( widget, item, id, EMPTY_RECTANGLE, true, RWT.NONE );
+    this( widget, item, id, new Rectangle( 0, 0, 0, 0 ), true, RWT.NONE );
   }
 
   public SelectionEvent( final Widget widget,
@@ -103,17 +101,23 @@ public class SelectionEvent extends RWTEvent {
   
   public String toString() {
     String string = super.toString ();
-    return string.substring (0, string.length() - 1) // remove trailing '}'
-        + " item=" + item
-        + " detail=" + detail
-        + " x=" + x
-        + " y=" + y
-        + " width=" + width
-        + " height=" + height
-//        + " stateMask=" + stateMask
-//        + " text=" + text
-        + " doit=" + doit
-        + "}";
+    return   string.substring( 0, string.length() - 1 ) // remove trailing '}'
+           + " item="
+           + item
+           + " detail="
+           + detail
+           + " x="
+           + x
+           + " y="
+           + y
+           + " width="
+           + width
+           + " height="
+           + height
+           // + " stateMask=" + stateMask
+           //        + " text=" + text
+           + " doit="
+           + doit
+           + "}";
   }
-
 }

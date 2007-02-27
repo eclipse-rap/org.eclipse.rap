@@ -148,11 +148,12 @@ qx.Proto._onKeydown = function( evt ) {
 qx.Proto._onSend = function( evt ) {
   if( this.getActive() ) {
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-    var focusedChildId =  widgetManager.findIdByWidget( this.getFocusedChild() );
-    var req = org.eclipse.rap.rwt.Request.getInstance();
-    if( focusedChildId != null ) {
-      req.addParameter( req.getUIRootId() + ".focusControl", focusedChildId );
+    var focusedChildId = null;
+    if( this.getFocusedChild() != null ) {
+      focusedChildId = widgetManager.findIdByWidget( this.getFocusedChild() );
     }
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    req.addParameter( req.getUIRootId() + ".focusControl", focusedChildId );
   }
 }
 

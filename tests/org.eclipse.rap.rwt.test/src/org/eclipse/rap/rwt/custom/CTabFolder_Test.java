@@ -156,6 +156,12 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( 0, folder.getSelectionIndex() );
     assertSame( item1, folder.getSelection() );
 
+    // Test that there is no way to unset a selection
+    folder.setSelection( 0 );
+    folder.setSelection( -1 );
+    assertEquals( 0, folder.getSelectionIndex() );
+    assertSame( item1, folder.getSelection() );
+    
     CTabItem item2 = new CTabItem( folder, RWT.NONE );
     folder.setSelection( item2 );
     assertEquals( 1, folder.getSelectionIndex() );

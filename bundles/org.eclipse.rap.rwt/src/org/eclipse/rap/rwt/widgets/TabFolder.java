@@ -200,6 +200,17 @@ public class TabFolder extends Composite {
     }
     super.releaseChildren();
   }
+  
+  ////////////////
+  // Item creation
+  
+  void createItem( final TabItem item, final int index ) {
+    itemHolder.insert( item, index );
+    if( getItemCount() == 1 ) {
+      // TODO [rh] mismatch to SWT: SWT fires a SelectionEvent here
+      setSelection( 0 );
+    }
+  }
 
   ///////////////////
   // Helping methods

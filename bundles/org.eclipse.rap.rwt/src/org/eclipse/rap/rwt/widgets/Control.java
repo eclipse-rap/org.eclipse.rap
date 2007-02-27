@@ -38,7 +38,7 @@ public abstract class Control extends Widget {
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
   
   private final IControlAdapter controlAdapter;
-  Composite parent;
+  final Composite parent;
   private Rectangle bounds = EMPTY_RECTANGLE;
   private Object layoutData;
   private String toolTipText;
@@ -48,10 +48,10 @@ public abstract class Control extends Widget {
   private Color background;
   private Font font;
 
-  Control() {
-    // prevent instantiation from outside this package
-    // (called by Shell)
-    this.parent = null;
+  Control( final Composite parent ) {
+    // prevent instantiation from outside this package; only called by Shell
+    // and its super-classes
+    this.parent = parent;
     controlAdapter = new ControlAdapter();
   }
 

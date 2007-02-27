@@ -17,6 +17,7 @@ qx.OO.defineClass(
     this.setAppearance( "c-tab-item" );
     this.setVerticalChildrenAlign( "middle" );
     this.setHorizontalChildrenAlign( "left" );
+    this.setTabIndex( -1 );
     this._selected = false;
     this._closeButton = null;
     this._unselectedCloseVisible = true;

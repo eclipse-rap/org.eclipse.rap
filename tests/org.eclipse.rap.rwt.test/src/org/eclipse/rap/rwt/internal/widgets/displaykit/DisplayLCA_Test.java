@@ -259,11 +259,18 @@ public class DisplayLCA_Test extends TestCase {
     String displayId = DisplayUtil.getId( display );
     String controlId = WidgetUtil.getId( control );
     
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
-    new RWTLifeCycle().execute();
+    lifeCycle.execute();
     assertEquals( control, display.getFocusControl() );
+
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
+    new RWTLifeCycle().execute();
+    assertEquals( null, display.getFocusControl() );
   }
 
   protected void tearDown() throws Exception {
