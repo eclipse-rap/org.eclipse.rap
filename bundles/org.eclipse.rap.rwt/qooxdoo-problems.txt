@@ -131,3 +131,6 @@ that's right?
 36.) TextArea: scrollIntoView does not work with Firefox. In Firefox and IE, the
      current selection is cleared.
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=305
+
+37.) Backspace does not issue a keypress event in IE 7
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=307

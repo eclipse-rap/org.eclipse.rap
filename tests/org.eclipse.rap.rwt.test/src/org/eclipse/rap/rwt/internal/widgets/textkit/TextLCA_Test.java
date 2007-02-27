@@ -94,6 +94,7 @@ public class TextLCA_Test extends TestCase {
     
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( textId + ".text", "new text" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
     new RWTLifeCycle().execute();
     assertEquals( "modifyText", log.toString() );

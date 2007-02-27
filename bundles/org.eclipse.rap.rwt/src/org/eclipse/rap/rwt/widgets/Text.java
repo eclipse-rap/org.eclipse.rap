@@ -41,6 +41,8 @@ public class Text extends Control {
     this.text = text;
     selection.x = 0;
     selection.y = 0;
+    ModifyEvent modifyEvent = new ModifyEvent( this );
+    modifyEvent.processEvent();
   }
 
   public String getText() {

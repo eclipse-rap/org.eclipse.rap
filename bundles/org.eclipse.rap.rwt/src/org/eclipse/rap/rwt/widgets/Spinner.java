@@ -116,6 +116,8 @@ public class Spinner extends Composite {
   public void setSelection( final int value ) {
     checkWidget();
     selection = Math.min( Math.max( minimum, value ), maximum );
+    ModifyEvent modifyEvent = new ModifyEvent( this );
+    modifyEvent.processEvent();
   }
   
   public void setValues( final int selection,

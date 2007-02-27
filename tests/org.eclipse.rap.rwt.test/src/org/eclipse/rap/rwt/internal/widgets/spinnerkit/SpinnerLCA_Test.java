@@ -51,15 +51,16 @@ public class SpinnerLCA_Test extends TestCase {
   public void testModifyEvent() throws IOException {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
-    Shell shell = new Shell( display , RWT.NONE );
+    Shell shell = new Shell( display, RWT.NONE );
     final Spinner spinner = new Spinner( shell, RWT.NONE );
     shell.open();
     String displayId = DisplayUtil.getId( display );
-    String textId = WidgetUtil.getId( spinner );
+    String spinnerId = WidgetUtil.getId( spinner );
 
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+    Fixture.fakeRequestParam( spinnerId + ".selection", "1" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, spinnerId );
     new RWTLifeCycle().execute();
     assertEquals( "", log.toString() );
     
@@ -72,7 +73,8 @@ public class SpinnerLCA_Test extends TestCase {
     } );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+    Fixture.fakeRequestParam( spinnerId + ".selection", "2" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, spinnerId );
     new RWTLifeCycle().execute();
     assertEquals( "modifyText", log.toString() );
   }

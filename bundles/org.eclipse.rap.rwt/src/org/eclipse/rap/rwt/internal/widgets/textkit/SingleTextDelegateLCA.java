@@ -23,6 +23,10 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.preserveValues( text );
   }
 
+  /* (intentionally non-JavaDoc'ed)
+   * readData does not explicitly handle modifyEvents. They are fired implicitly
+   * by updating the text property in TextLCAUtil.readText( Text ).
+   */
   void readData( final Text text ) {
     // order is crucial: first read text then read what part of it is selected
     TextLCAUtil.readText( text );

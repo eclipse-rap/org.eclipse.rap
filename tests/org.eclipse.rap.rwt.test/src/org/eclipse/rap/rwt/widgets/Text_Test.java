@@ -14,7 +14,10 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.events.ModifyEvent;
+import org.eclipse.rap.rwt.events.ModifyListener;
 import org.eclipse.rap.rwt.graphics.Point;
+import com.w4t.engine.lifecycle.PhaseId;
 
 
 public class Text_Test extends TestCase {
@@ -100,5 +103,26 @@ public class Text_Test extends TestCase {
     text.setSelection( 1, 2 );
     text.setText( text.getText() );
     assertEquals( new Point( 0, 0 ), text.getSelection() );
+  }
+  
+  public void testModifyEvent() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Text text = new Text( shell, RWT.NONE );
+    text.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        log.append( "modifyEvent|" );
+        assertSame( text, event.getSource() );
+      }
+    } );
+    // Changing the text fires a modifyEvent
+    text.setText( "abc" );
+    assertEquals( "modifyEvent|", log.toString() );
+    // Setting the same value also fires a modifyEvent
+    log.setLength( 0 );
+    text.setText( "abc" );
+    assertEquals( "modifyEvent|", log.toString() );
   }
 }

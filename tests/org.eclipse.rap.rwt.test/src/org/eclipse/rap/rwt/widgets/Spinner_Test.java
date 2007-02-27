@@ -11,9 +11,12 @@
 
 package org.eclipse.rap.rwt.widgets;
 
+import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import junit.framework.TestCase;
+import org.eclipse.rap.rwt.events.ModifyEvent;
+import org.eclipse.rap.rwt.events.ModifyListener;
+import com.w4t.engine.lifecycle.PhaseId;
 
 
 public class Spinner_Test extends TestCase {
@@ -94,5 +97,32 @@ public class Spinner_Test extends TestCase {
     assertEquals( 10, spinner.getPageIncrement() );
     spinner.setIncrement( -1 );
     assertEquals( 10, spinner.getPageIncrement() );
+  }
+  
+  public void testModifyEvent() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    final Spinner spinner = new Spinner( shell, RWT.NONE );
+    spinner.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        assertSame( spinner, event.getSource() );
+        log.append( "modifyEvent" );
+      }
+    } );
+    // Changing the selection causes a modifyEvent
+    spinner.setSelection( spinner.getSelection() + 1 );
+    assertEquals( "modifyEvent", log.toString() );
+    // Setting the selection to its current value also causes a modifyEvent
+    log.setLength( 0 );
+    spinner.setSelection( spinner.getSelection() );
+    assertEquals( "modifyEvent", log.toString() );
+    // setValues which indirectly changes the selection also causes a 
+    // modifyEvent
+    log.setLength( 0 );
+    spinner.setValues( 1, 0, 100, 0, 1, 10 );
+    assertEquals( "modifyEvent", log.toString() );
+    
   }
 }

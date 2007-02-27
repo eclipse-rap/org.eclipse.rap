@@ -41,15 +41,15 @@ public class SpinnerLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( ModifyEvent.hasListener( spinner ) ) );
   }
 
+  /* (intentionally non-JavaDoc'ed)
+   * readData does not explicitly handle modifyEvents. They are fired implicitly
+   * by updating the selection property.
+   */
   public void readData( final Widget widget ) {
     Spinner spinner = ( Spinner )widget;
     String value = WidgetLCAUtil.readPropertyValue( widget, "selection" );
     if( value != null ) {
       spinner.setSelection( Integer.parseInt( value ) );
-    }
-    if( WidgetLCAUtil.wasEventSent( spinner, JSConst.EVENT_MODIFY_TEXT ) ) {
-      ModifyEvent event = new ModifyEvent( spinner );
-      event.processEvent();
     }
   }
 

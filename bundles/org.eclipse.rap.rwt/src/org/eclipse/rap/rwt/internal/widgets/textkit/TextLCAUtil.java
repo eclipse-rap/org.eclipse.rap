@@ -76,10 +76,10 @@ final class TextLCAUtil {
   }
   
   static void readModifyEvent( final Text text ) {
-    if( WidgetLCAUtil.wasEventSent( text, JSConst.EVENT_MODIFY_TEXT ) ) {
-      ModifyEvent event = new ModifyEvent( text );
-      event.processEvent();
-    }
+//    if( WidgetLCAUtil.wasEventSent( text, JSConst.EVENT_MODIFY_TEXT ) ) {
+//      ModifyEvent event = new ModifyEvent( text );
+//      event.processEvent();
+//    }
   }
 
   static void writeReadOnly( final Text text ) throws IOException {
