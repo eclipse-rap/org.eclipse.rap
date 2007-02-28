@@ -134,3 +134,7 @@ that's right?
 
 37.) Backspace does not issue a keypress event in IE 7
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=307
+
+38.) Window: There is currently no way to veto the closing of a Window when the
+     user clicks on the window's close button.
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=30

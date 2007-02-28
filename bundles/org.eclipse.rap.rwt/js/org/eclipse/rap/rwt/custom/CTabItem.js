@@ -39,6 +39,7 @@ qx.OO.defineClass(
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
     this.addEventListener( "click", this._onClick, this );
+    this.addEventListener( "dblclick", this._onDblClick, this );
   }
 );
 
@@ -145,21 +146,14 @@ qx.Proto._onMouseOut = function( evt ) {
 qx.Proto._onClick = function( evt ) {
   if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
     if( evt.getTarget() != this._closeButton ) {
-      // deselect any previous selected CTabItem
-      var items = this.getParent().getChildren();
-      for( var i = 0; i < items.length; i++ ) {
-        if( items[ i ].classname == "org.eclipse.rap.rwt.custom.CTabItem" ) {
-          items[ i ].setSelected( false );
-        }
-      }
-      this.setSelected( true );
-      var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-      var req = org.eclipse.rap.rwt.Request.getInstance();
-      var id = widgetManager.findIdByWidget( evt.getTarget() );
-      var folderId = widgetManager.findIdByWidget( evt.getTarget().getParent() );
-      req.addParameter( folderId + ".selectedItemId", id );
-      org.eclipse.rap.rwt.EventUtil.doWidgetSelected( folderId, 0, 0, 0, 0 );
+      evt.getTarget().getParent()._notifyItemClick( evt.getTarget() );
     }
+  }
+}
+
+qx.Proto._onDblClick = function( evt ) {
+  if( evt.getTarget() != this._closeButton ) {
+    evt.getTarget().getParent()._notifyItemDblClick( evt.getTarget() );
   }
 }
 

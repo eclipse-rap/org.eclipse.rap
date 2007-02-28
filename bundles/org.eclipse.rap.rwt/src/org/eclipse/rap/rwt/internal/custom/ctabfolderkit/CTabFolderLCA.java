@@ -373,6 +373,13 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( tabFolder );
       writer.set( "hasFolderListener", newValue );
     }
+    hasListener = SelectionEvent.hasListener( tabFolder );
+    newValue = Boolean.valueOf( hasListener );
+    String prop = Props.SELECTION_LISTENERS;
+    if( WidgetLCAUtil.hasChanged( tabFolder, prop, newValue, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( tabFolder );
+      writer.set( "hasSelectionListener", newValue );
+    }
   }
 
   private void writeChevron( final CTabFolder tabFolder ) throws IOException {

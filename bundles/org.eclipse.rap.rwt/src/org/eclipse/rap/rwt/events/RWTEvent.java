@@ -69,6 +69,24 @@ public abstract class RWTEvent extends Event {
       addToScheduledEvents( this );
     }
   }
+
+  // this implementation is extended by subclasses
+  public String toString() {
+    return getName()
+        + "{"
+//        TODO [rst] uncomment when these public fields are implemented
+//        + widget + " time=" + time + " data=" + data
+        + "}";
+  }
+  
+  private String getName() {
+    String result = getClass().getName ();
+    int index = result.lastIndexOf('.');
+    if( index != -1 ) {
+      result = result.substring (index + 1, result.length ());
+    }
+    return result;
+  }
   
   ///////////////////////////////////////////////
   // Methods to maintain list of scheduled events

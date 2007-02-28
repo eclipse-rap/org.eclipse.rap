@@ -19,6 +19,7 @@ qx.OO.defineClass(
     //
     this._canClose = canClose;
     this._hasFolderListener = false;
+    this._hasSelectionListener = false;
     this._tabHeight = 20;
     // 
     var borderColor = new qx.renderer.color.Color( "#c0c0c0" );
@@ -243,6 +244,10 @@ qx.Proto.setHasFolderListener = function( hasFolderListener ) {
   this._hasFolderListener = hasFolderListener;
 }
 
+qx.Proto.setHasSelectionListener = function( value ) {
+  this._hasSelectionListener = value;
+}
+
 qx.Proto.dispose = function() {
   if ( this.getDisposed() ) {
     return;
@@ -330,5 +335,45 @@ qx.Proto._onKeyPress = function( evt ) {
       // TODO [rh] implementatin missing: select tab item to the right
       evt.stopPropagation();
       break;
+  }
+}
+
+// TODO [rst] Change to respect _hasSelectionListener as soon as server-side
+// code is revised accordingly -> CTabFolderLCA.readData().
+qx.Proto._notifyItemClick = function( item ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    if( !item.isSelected() ) {
+      // deselect any previous selected CTabItem
+      var items = this.getChildren();
+      for( var i = 0; i < items.length; i++ ) {
+        if( items[ i ].classname == "org.eclipse.rap.rwt.custom.CTabItem" ) {
+          items[ i ].setSelected( false );
+        }
+      }
+      item.setSelected( true );
+      var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var req = org.eclipse.rap.rwt.Request.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var itemId = widgetManager.findIdByWidget( item );
+      req.addParameter( id + ".selectedItemId", itemId );
+      req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
+      req.send();
+    }
+  }
+}
+
+qx.Proto._notifyItemDblClick = function( item ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    if( this._hasSelectionListener ) {
+      var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var req = org.eclipse.rap.rwt.Request.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var itemId = widgetManager.findIdByWidget( item );
+      // TODO [rst] remove this parameter as soon as server-side code is revised
+      //      -> CTabFolderLCA.readData()
+      req.addParameter( id + ".selectedItemId", itemId );
+      req.addEvent( "org.eclipse.rap.rwt.events.widgetDefaultSelected", id );
+      req.send();
+    }
   }
 }

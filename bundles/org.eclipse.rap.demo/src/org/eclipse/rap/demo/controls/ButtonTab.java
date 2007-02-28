@@ -55,6 +55,8 @@ public class ButtonTab extends ExampleTab {
         updateButtonImage( button );
       }
     } );
+    createFgColorButton();
+//    createBgColorButton();
     createFontChooser();
   }
 
