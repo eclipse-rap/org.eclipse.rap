@@ -15,8 +15,8 @@
 qx.OO.defineClass(
   "org.eclipse.rap.rwt.widgets.Shell", 
   qx.ui.window.Window,
-  function( caption, icon ) {
-    qx.ui.window.Window.call( this, caption, icon );
+  function( icon ) {
+    qx.ui.window.Window.call( this, "", icon );
     this._activeControl = null;
     this._activateListenerWidgets = new Array();
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
@@ -27,8 +27,7 @@ qx.OO.defineClass(
   }
 );
 
-qx.OO.addProperty( { name : "defaultButton",
-                     type : "object" } );
+qx.OO.addProperty( { name : "defaultButton", type : "object" } );
 
 qx.Proto.setActiveControl = function( control ) {
   this._activeControl = control;  

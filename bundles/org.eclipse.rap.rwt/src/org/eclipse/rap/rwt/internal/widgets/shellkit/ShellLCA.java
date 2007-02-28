@@ -54,8 +54,7 @@ public class ShellLCA extends AbstractWidgetLCA {
     // work with the current qx version. Remove this workaround as soon as this
     // bug is fixed.
     Shell shell = ( Shell )widget;
-    Object[] args = new Object[]{
-      "",
+    Object[] args = new Object[] {
       showImage( shell ) ? getImagePath( shell.getImage() ) : ""
     };
     writer.newWidget( "org.eclipse.rap.rwt.widgets.Shell", args  );
@@ -89,9 +88,7 @@ public class ShellLCA extends AbstractWidgetLCA {
     if( shell.getBounds().equals( shell.getDisplay().getBounds() ) ) {
       writer.call( "maximize", new Object[ 0 ] );
     }
-    if( showImage( shell ) ) {
-      writeImage( shell );
-    }
+    writeImage( shell );
     writer.set( Props.TEXT, JSConst.QX_FIELD_CAPTION, shell.getText(), "" );
     writeOpen( shell );
     // Important: Order matters, writing setActive() before open() leads to
@@ -106,21 +103,6 @@ public class ShellLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
   
-  //////////////////
-  // Helping methods
-  
-  private static void writeOpen( final Shell shell ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( shell );
-    // TODO [rst] workaround: qx window should be opened only once.
-    Boolean defValue = Boolean.FALSE;
-    Boolean actValue = Boolean.valueOf( shell.getVisible() );
-    if( WidgetLCAUtil.hasChanged( shell, Props.VISIBLE, actValue, defValue )
-        && shell.getVisible() )
-    {
-      writer.call( "open", null );
-    }
-  }
-
   /////////////////////////////////////////////
   // Methods to read and write the active shell
   
@@ -168,7 +150,7 @@ public class ShellLCA extends AbstractWidgetLCA {
   /////////////////////////////////////////////////////
   // Methods to handle activeControl and ActivateEvents
   
-  private static void writeActiveControl( Shell shell ) throws IOException {
+  private static void writeActiveControl( final Shell shell ) throws IOException {
     Control activeControl = getActiveControl( shell );
     String prop = PROP_ACTIVE_CONTROL;
     if( WidgetLCAUtil.hasChanged( shell, prop, activeControl, null ) ) {
@@ -210,19 +192,36 @@ public class ShellLCA extends AbstractWidgetLCA {
     shellAdapter.setActiveControl( ( Control )widget );
   }
   
+  //////////////////
+  // Helping methods
+  
+  private static void writeOpen( final Shell shell ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( shell );
+    // TODO [rst] workaround: qx window should be opened only once.
+    Boolean defValue = Boolean.FALSE;
+    Boolean actValue = Boolean.valueOf( shell.getVisible() );
+    if(    WidgetLCAUtil.hasChanged( shell, Props.VISIBLE, actValue, defValue )
+        && shell.getVisible() )
+    {
+      writer.call( "open", null );
+    }
+  }
+
   private static void writeImage( final Shell shell ) throws IOException {
-    Image image = shell.getImage();
-    if( WidgetLCAUtil.hasChanged( shell, Props.IMAGE, image, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.set( JSConst.QX_FIELD_ICON, getImagePath( image ) );
+    if( showImage( shell ) ) {
+      Image image = shell.getImage();
+      if( WidgetLCAUtil.hasChanged( shell, Props.IMAGE, image, null ) ) {
+        JSWriter writer = JSWriter.getWriterFor( shell );
+        writer.set( JSConst.QX_FIELD_ICON, getImagePath( image ) );
+      }
     }
   }
   
-  private static boolean showImage( Shell shell) {
-    return (shell.getStyle() & ( RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0;
+  private static boolean showImage( final Shell shell ) {
+    return ( shell.getStyle() & ( RWT.MIN | RWT.MAX | RWT.CLOSE ) ) != 0;
   }
   
-  private static String getImagePath( Image image ) {
+  private static String getImagePath( final Image image ) {
     return image != null ? Image.getPath( image ) : "";
   }
 }
