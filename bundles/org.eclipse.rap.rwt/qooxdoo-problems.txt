@@ -138,3 +138,6 @@ that's right?
 38.) Window: There is currently no way to veto the closing of a Window when the
      user clicks on the window's close button.
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=30
+
+39.) In IE 7, the maximize/restore button on Shell is 1 px smaller than the
+     minimize- and close-button (only notable on Rüdigers computer)
