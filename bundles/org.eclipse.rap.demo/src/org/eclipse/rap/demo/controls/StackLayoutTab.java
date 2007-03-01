@@ -26,7 +26,6 @@ class StackLayoutTab extends ExampleTab {
   private int index;
   private boolean propPrefSize;
 
-  // TODO [rst] This layout should be reimplemented using z-order
   public StackLayoutTab( final TabFolder folder ) {
     super( folder, "StackLayout" );
     index = 0;

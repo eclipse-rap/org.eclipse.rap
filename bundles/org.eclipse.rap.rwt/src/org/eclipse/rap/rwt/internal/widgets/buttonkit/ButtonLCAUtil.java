@@ -127,10 +127,12 @@ final class ButtonLCAUtil {
     return button.getShell().getDefaultButton() == button;
   }
   
-  private static String processMnemonics( String input ) {
+  private static String processMnemonics( final String input ) {
+    String result = input;
     // TODO [rst] Change replacement to "$1<u>$2</u>" when we support
     // client-side mnemonics
-    return input.replaceAll( "(^|[^&])&(\\p{Alnum})", "$1$2" )
-      .replaceAll( "&&", "&" );
+    result = result.replaceAll( "(^|[^&])&(\\p{Alnum})", "$1$2" );
+    result = result.replaceAll( "&&", "&" );
+    return result;
   }
 }

@@ -43,7 +43,6 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeNoSpellCheck( text );
     TextLCAUtil.writeReadOnly( text );
-    // TODO: [rst] Added because !WRAP stopped working - doesn't help anyway
     writer.set( "wrap", ( text.getStyle() & RWT.WRAP ) != 0 );
   }
 

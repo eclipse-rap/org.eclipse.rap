@@ -15,8 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
@@ -26,18 +25,6 @@ public class JSWriter_Test extends TestCase {
 
   private static final String PROPERTY_NAME = "propertyName";
 
-  // TODO [rst] replace with SelectionAdapter?
-  private static final class TestSelectionListener
-    implements SelectionListener
-  {
-    public void widgetSelected( final SelectionEvent event ) {
-      // do nothing
-    }
-    public void widgetDefaultSelected( SelectionEvent event ) {
-      // do nothing
-    }
-  }
-  
   private final class TestShell extends Shell {
 
     final Button button;
@@ -526,7 +513,7 @@ public class JSWriter_Test extends TestCase {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     assertEquals( "", Fixture.getAllMarkup() );
-    TestSelectionListener selectionListener = new TestSelectionListener();
+    SelectionListener selectionListener = new SelectionAdapter() {};
     // Test initial rendering with listeners
     button.addSelectionListener( selectionListener );
     Fixture.fakeResponseWriter();
@@ -554,7 +541,7 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    TestSelectionListener selectionListener2 = new TestSelectionListener();
+    SelectionListener selectionListener2 = new SelectionAdapter() {};
     button.addSelectionListener( selectionListener2 );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
@@ -612,7 +599,7 @@ public class JSWriter_Test extends TestCase {
     adapter.setInitialized( true );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    TestSelectionListener selectionListener = new TestSelectionListener();
+    SelectionListener selectionListener = new SelectionAdapter() {};
     SelectionEvent.addListener( folder, selectionListener );
     Fixture.fakeResponseWriter();
     writer.updateListener( jsListenerInfo,
@@ -625,7 +612,7 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    TestSelectionListener selectionListener2 = new TestSelectionListener();
+    SelectionListener selectionListener2 = new SelectionAdapter() {};
     SelectionEvent.addListener( folder, selectionListener2 );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
@@ -659,7 +646,7 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    TestSelectionListener selectionListener = new TestSelectionListener();
+    SelectionListener selectionListener = new SelectionAdapter() {};
     SelectionEvent.addListener( folder, selectionListener );
     JSWriter writer = JSWriter.getWriterFor( item );
     JSListenerInfo jsListenerInfo
@@ -680,7 +667,7 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    TestSelectionListener selectionListener2 = new TestSelectionListener();
+    SelectionListener selectionListener2 = new SelectionAdapter() {};
     SelectionEvent.addListener( folder, selectionListener2 );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
@@ -721,7 +708,7 @@ public class JSWriter_Test extends TestCase {
                            SelectionEvent.hasListener( button ) );
     assertEquals( "", Fixture.getAllMarkup() );
     
-    TestSelectionListener selectionListener = new TestSelectionListener();
+    SelectionListener selectionListener = new SelectionAdapter() {};
     // Test initial rendering with listeners
     button.addSelectionListener( selectionListener );
     Fixture.fakeResponseWriter();
@@ -753,7 +740,7 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    TestSelectionListener selectionListener2 = new TestSelectionListener();
+    SelectionListener selectionListener2 = new SelectionAdapter() {};
     button.addSelectionListener( selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
                            jsListenerInfo, 
@@ -819,7 +806,7 @@ public class JSWriter_Test extends TestCase {
     adapter.setInitialized( true );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    TestSelectionListener selectionListener = new TestSelectionListener();
+    SelectionListener selectionListener = new SelectionAdapter() {};
     SelectionEvent.addListener( folder, selectionListener );
     Fixture.fakeResponseWriter();
     writer.updateListener( PROPERTY_NAME,
@@ -835,7 +822,7 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    TestSelectionListener selectionListener2 = new TestSelectionListener();
+    SelectionListener selectionListener2 = new SelectionAdapter() {};
     SelectionEvent.addListener( folder, selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
                            jsListenerInfo, 

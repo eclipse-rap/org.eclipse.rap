@@ -42,9 +42,9 @@ that's right?
 11.) Initial positioning of scrollbars (e.g. setScrollLeft) does not work
 
 12.) Creating a table on an invisible tab within a tab folder yields error
-  message: 
-  Modification of property "maximum" failed with exception: TypeError -
-  vCurrentChild has no properties
+     message: 
+     Modification of property "maximum" failed with exception: TypeError -
+     vCurrentChild has no properties
 
 13.) Some parts of a table are drawn not until the first mouse move.
 
@@ -76,11 +76,13 @@ that's right?
      the RadioManagers' dispose methods seems not to be called.     
 
 21.) Setting the property "icon" on qx.ui.window.Window has no effect. The
-     window icon can only be set using the constructor. (Qx Bug 87)
+     window icon can only be set using the constructor.
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=87
 
 22.) If the property "resizable" is set to false on a qx.ui.window.Window, the
      maximize button is grayed out and the window cannot be maximized even if
-     "allowMaximize" is true. (Qx Bug 288)
+     "allowMaximize" is true.
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=288
 
 23.) TreeFullControl: Item expands when clicked
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=289

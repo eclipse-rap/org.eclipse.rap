@@ -16,8 +16,17 @@ qx.OO.defineClass(
   qx.ui.splitpane.SplitPane,
   function() {
     qx.ui.splitpane.SplitPane.call( this );
+    this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   }
 );
+
+qx.Proto.dispose = function() {
+  if( this.getDisposed() ) {
+    return true;
+  }
+  this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
+  return qx.ui.splitpane.SplitPane.prototype.dispose.call( this );
+}
 
 qx.Proto._onSplitterMouseDownX = function( e ) {
   if( !e.isLeftButtonPressed() ) {
@@ -129,17 +138,17 @@ qx.Proto._normalizeY = function( e ) {
   return toMove;
 }
 
-qx.Proto._modifyEnabled = function( propValue, propOldValue, propData ) {
-  // TODO [rst] call super._modifyEnabled ?
-  this._splitter.setEnabled( propValue );
-  if( propValue ) {
+qx.Proto._onChangeEnabled = function( evt ) {
+  var newValue = evt.getData();
+  if( newValue ) {
     if ( this.getOrientation() == qx.constant.ORIENTATION_VERTICAL ) {
       this._splitter.setCursor( "row-resize" );
     } else {
       this._splitter.setCursor( "col-resize" );
     }
   } else {
+    // TODO [rst] find out why the resize cursor is still shown.
     this._splitter.setCursor( null );
   }
-  return true;
-};
+  this._splitter.setEnabled( newValue );
+}

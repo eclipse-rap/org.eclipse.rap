@@ -53,7 +53,6 @@ org.eclipse.rap.rwt.TableUtil.selectionChangedAction = function( evt ) {
 };
 
 org.eclipse.rap.rwt.TableUtil.enablementChanged = function( evt ) {
-  // TODO [rst] call super._modifyEnabled ?
   var items = this.getChildren();
   for( var i = 0; i < items.length; i++ ) {
     var item = items[ i ];
