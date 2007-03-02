@@ -140,15 +140,6 @@ qx.Proto._normalizeY = function( e ) {
 
 qx.Proto._onChangeEnabled = function( evt ) {
   var newValue = evt.getData();
-  if( newValue ) {
-    if ( this.getOrientation() == qx.constant.ORIENTATION_VERTICAL ) {
-      this._splitter.setCursor( "row-resize" );
-    } else {
-      this._splitter.setCursor( "col-resize" );
-    }
-  } else {
-    // TODO [rst] find out why the resize cursor is still shown.
-    this._splitter.setCursor( null );
-  }
+  this._splitter.setState( "disabled", !newValue );
   this._splitter.setEnabled( newValue );
 }

@@ -2192,7 +2192,11 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     state : function(vTheme, vStates)
     {
       return {
-        cursor : vStates.horizontal ? "col-resize" : "row-resize"
+        cursor : vStates.disabled
+                   ? null
+                   : vStates.horizontal
+                     ? "col-resize"
+                     : "row-resize"
       };
     }
   },
