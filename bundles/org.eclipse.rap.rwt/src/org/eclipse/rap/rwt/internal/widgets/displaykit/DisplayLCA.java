@@ -109,35 +109,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     HttpServletRequest request = ContextProvider.getRequest();
     // TODO [rh] should be replaced by requestCounter == 0
     if( request.getParameter( RequestParams.UIROOT ) == null ) {
-      response.setContentType( HTML.CONTENT_TEXT_HTML_UTF_8 );  
-      QooxdooResourcesUtil.registerResources();
-      out.startElement( HTML.HTML, null );
-      out.startElement( HTML.HEAD, null );
-      out.startElement( HTML.META, null );
-      out.writeAttribute( HTML.HTTP_EQUIV, HTML.CONTENT_TYPE, null );
-      out.writeAttribute( HTML.CONTENT, HTML.CONTENT_TEXT_HTML_UTF_8, null );
-      out.startElement( HTML.TITLE, null );
-  //    out.writeText( shell.getTitle(), null );
-      out.endElement( HTML.TITLE ); 
-      writeScrollBarStyle();
-      writeJSLibraries();
-      out.endElement( HTML.HEAD );
-      out.startElement( HTML.BODY, null );
-      out.startElement( HTML.SCRIPT, null );
-      out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
-      StringBuffer initScript = new StringBuffer();
-      initScript.append( jsConfigureLogger( getClientLogLevel() ) );
-      initScript.append( jsAppInitialization() );
-      initScript.append( jsThemeInitialization() );
-      IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-      initScript.append( jsSetUIRoot( adapter.getId() ) );
-      out.writeText( initScript.toString(), null );
-      out.endElement( HTML.SCRIPT );    
-      out.endElement( HTML.BODY );
-      out.endElement( HTML.HTML );
+      writeClientDocument( display );
     } else {
       response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
-      
       out.write( "org.eclipse.rap.rwt.EventUtil.suspendEventHandling();" );
       disposeWidgets();
       RenderVisitor visitor = new RenderVisitor();
@@ -154,9 +128,56 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private void writeJSLibraries() throws IOException {
+  private static void writeClientDocument( final Display display )
+    throws IOException
+  {
+    HttpServletResponse response = ContextProvider.getResponse();
+    response.setContentType( HTML.CONTENT_TEXT_HTML_UTF_8 );
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter out = stateInfo.getResponseWriter();
+    out.startElement( HTML.HTML, null );
+    out.startElement( HTML.HEAD, null );
+    out.startElement( HTML.META, null );
+    out.writeAttribute( HTML.HTTP_EQUIV, HTML.CONTENT_TYPE, null );
+    out.writeAttribute( HTML.CONTENT, HTML.CONTENT_TEXT_HTML_UTF_8, null );
+    out.startElement( HTML.TITLE, null );
+ //    out.writeText( shell.getTitle(), null );
+    out.endElement( HTML.TITLE ); 
+    
+    writeLibraries();
+    
+    out.endElement( HTML.HEAD );
+    out.startElement( HTML.BODY, null );
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    String id = adapter.getId();
+    out.startElement( HTML.SCRIPT, null );
+    out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
+
+    writeAppScript( id );    
+    
+    out.endElement( HTML.SCRIPT );
+    out.endElement( HTML.BODY );
+    out.endElement( HTML.HTML );
+  }
+
+  public static void writeAppScript( final String id ) throws IOException {
+    StringBuffer initScript = new StringBuffer();
+    initScript.append( jsConfigureLogger( getClientLogLevel() ) );
+    initScript.append( jsAppInitialization() );
+    initScript.append( jsThemeInitialization() );
+    initScript.append( jsSetUIRoot( id ) );
+    HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
+    out.writeText( initScript.toString(), null );
+  }
+
+  public static void writeLibraries() throws IOException {
+    QooxdooResourcesUtil.registerResources();
+    writeScrollBarStyle();
+    writeJSLibraries();
+  }
+
+  private static void writeJSLibraries() throws IOException {
+    HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
     String[] libraries = out.getJSLibraries();
     IResourceManager manager = ResourceManager.getInstance();
     for( int i = 0; i < libraries.length; i++ ) {      
@@ -262,8 +283,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void writeScrollBarStyle() throws IOException {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    HtmlResponseWriter out = stateInfo.getResponseWriter();
+    HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
     out.startElement( HTML.STYLE, out );
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_CSS, null );
     StringBuffer css = new StringBuffer();
