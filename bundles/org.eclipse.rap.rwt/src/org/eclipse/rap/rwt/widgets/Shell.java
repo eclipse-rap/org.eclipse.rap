@@ -325,18 +325,15 @@ public class Shell extends Composite {
         return;
       }
     }
-    if( defaultButton != null ) {
-      if( !defaultButton.isDisposed() ) {
-        defaultButton.setDefault( false );
-      }
+    if( defaultButton != null && !defaultButton.isDisposed() ) {
+      defaultButton.setDefault( false );
     }
-    if( ( defaultButton = button ) == null ) {
+    defaultButton = button;
+    if( defaultButton == null ) {
       defaultButton = saveDefault;
     }
-    if( defaultButton != null ) {
-      if( !defaultButton.isDisposed() ) {
-        defaultButton.setDefault( true );
-      }
+    if( defaultButton != null && !defaultButton.isDisposed() ) {
+      defaultButton.setDefault( true );
     }
     if( save ) {
       saveDefault = defaultButton;

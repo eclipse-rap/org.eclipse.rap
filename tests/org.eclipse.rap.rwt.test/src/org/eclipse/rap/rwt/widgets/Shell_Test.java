@@ -172,6 +172,68 @@ public class Shell_Test extends TestCase {
     assertEquals( focusedControl, display.getFocusControl() );
   }
   
+  public void testInvalidDefaultButton() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Shell anotherShell = new Shell( display );
+    Button anotherButton = new Button( anotherShell, RWT.PUSH );
+    
+    // Setting button that belongs to different shell causes exception
+    try {
+      shell.setDefaultButton( anotherButton );
+      fail( "Not allowed to set default button that belongs to another shell" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    
+    // Setting button that is disposed causes exception
+    try {
+      Button disposedButton = new Button( shell, RWT.PUSH );
+      disposedButton.dispose();
+      shell.setDefaultButton( disposedButton );
+      fail( "Not allowed to set default button that is disposed" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    
+    // Set a default button for the following tests 
+    Button defaultButton = new Button( shell, RWT.PUSH );
+    shell.setDefaultButton( defaultButton );
+    assertSame( defaultButton, shell.getDefaultButton() );
+    
+    // Try to set radio-button as default is ignored
+    Button radio = new Button( shell, RWT.RADIO );
+    shell.setDefaultButton( radio );
+    assertSame( defaultButton, shell.getDefaultButton() );
+
+    // Try to set check-box as default is ignored
+    Button check = new Button( shell, RWT.RADIO );
+    shell.setDefaultButton( check );
+    assertSame( defaultButton, shell.getDefaultButton() );
+  }
+  
+  public void testSaveDefaultButton() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Button button1 = new Button( shell, RWT.PUSH );
+    Button button2 = new Button( shell, RWT.PUSH );
+    
+    shell.setDefaultButton( button1 );
+    assertSame( button1, shell.getDefaultButton() );
+    shell.setDefaultButton( null );
+    assertSame( button1, shell.getDefaultButton() );
+    
+    shell.setDefaultButton( button1 );
+    shell.setDefaultButton( button2 );
+    assertSame( button2, shell.getDefaultButton() );
+    shell.setDefaultButton( null );
+    assertSame( button2, shell.getDefaultButton() );
+    
+    button2.dispose();
+    shell.setDefaultButton( null );
+    assertEquals( null, shell.getDefaultButton() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
