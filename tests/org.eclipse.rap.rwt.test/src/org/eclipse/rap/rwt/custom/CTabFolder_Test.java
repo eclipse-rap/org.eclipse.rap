@@ -31,8 +31,8 @@ public class CTabFolder_Test extends TestCase {
     CTabFolder folder = new CTabFolder( shell, RWT.NONE );
     
     assertEquals( false, folder.getMRUVisible() );
-    assertEquals( true, folder.getMaximizeVisible() );
-    assertEquals( true, folder.getMinimizeVisible() );
+    assertEquals( false, folder.getMaximizeVisible() );
+    assertEquals( false, folder.getMinimizeVisible() );
     assertEquals( false, folder.getMaximized() );
     assertEquals( false, folder.getMinimized() );
     assertEquals( false, folder.getSingle() );
@@ -261,9 +261,6 @@ public class CTabFolder_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
     CTabFolder folder = new CTabFolder( shell, RWT.NONE );
-    // Ensure initial state
-    assertEquals( true, folder.getMinimizeVisible() );
-    assertEquals( true, folder.getMaximizeVisible() );
     // test getter/setter
     folder.setMinimizeVisible( false );
     assertEquals( false, folder.getMinimizeVisible() );
@@ -276,6 +273,8 @@ public class CTabFolder_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
     CTabFolder folder = new CTabFolder( shell, RWT.NONE );
+    folder.setMinimizeVisible( true );
+    folder.setMaximizeVisible( true );
     new CTabItem( folder, RWT.NONE );
     // set initial size and store position of min/max button
     folder.setSize( 200, 200 );

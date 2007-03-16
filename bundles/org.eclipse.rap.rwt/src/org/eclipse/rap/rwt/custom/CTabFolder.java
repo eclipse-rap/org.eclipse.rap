@@ -28,8 +28,6 @@ import org.eclipse.rap.rwt.widgets.*;
  * <li><em>simple</em> style (treated as <code>true</code>)</li>
  * <li>MRUVisible (treated as <code>false</code>)</li>
  * <li>RWT.BORDER and RWT.FLAT styles are not fully implemented</li>
- * <li>minimizeVisible and maximizeVisible are <code>true</code> by default in
- * RWT which differs from SWT (<code>false</code> by default)</li>
  * </ul> 
  */
 public class CTabFolder extends Composite {
@@ -55,8 +53,8 @@ public class CTabFolder extends Composite {
   private int[] priority = new int[ 0 ];
   private boolean showUnselectedClose = true;
   private int minimumCharacters = 20;
-  private boolean maximizeVisible = true;
-  private boolean minimizeVisible = true;
+  private boolean maximizeVisible;
+  private boolean minimizeVisible;
   private boolean inDispose;
   private boolean minimized;
   private boolean maximized;
