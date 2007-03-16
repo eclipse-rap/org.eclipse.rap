@@ -147,3 +147,6 @@ that's right?
 40.) Resizing or dragging shells in IE7 mostly causes underlying text to become 
      selected.
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=311     
+     
+41.) Limiting RequestQueue to one concurrent request (setMaxConcurrentRequests)
+     does not work.     

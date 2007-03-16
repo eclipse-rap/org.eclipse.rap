@@ -236,11 +236,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String jsAppInitialization() {
-    // TODO [rh] change org_eclipse_rap_rwt_requesthandler to something like
-    //      request.set(ServerSide)Handler (see also request.js)
-    String code =   "var org_eclipse_rap_rwt_requesthandler = \"{0}\";"
-                  + "var app = org.eclipse.rap.rwt.Application;" 
-                  + "qx.core.Init.getInstance().setApplication( app );";
+    String code 
+      = "org.eclipse.rap.rwt.Request.getInstance().setUrl( \"{0}\" );"
+      + "var app = org.eclipse.rap.rwt.Application;" 
+      + "qx.core.Init.getInstance().setApplication( app );";
     Object[] param = new Object[] { 
       ContextProvider.getRequest().getServletPath().substring( 1 )
     };

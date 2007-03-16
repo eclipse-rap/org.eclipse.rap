@@ -15,6 +15,8 @@
 qx.OO.defineClass( "org.eclipse.rap.rwt.Request", qx.core.Target,
   function() {
     qx.core.Object.call( this );
+    // the URL to which the requests are sent
+    this._url = "";
 		// the map of parameters that will be posted with the next call to 'send()'
 		this._parameters = {};
 		// instance variables that hold the essential request parameters
@@ -38,6 +40,18 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.Request", qx.core.Target,
  */
 qx.Class.getInstance = qx.lang.Function.returnInstance;
 
+qx.Proto.dispose = function() {
+  if( this.getDisposed() ) {
+    return;
+  }
+  this._currentRequest = null;
+  return qx.core.Target.prototype.dispose.call( this );
+}
+
+qx.Proto.setUrl = function( url ) {
+  this._url = url;  
+}
+
 qx.Proto.setUIRootId = function( uiRootId ) {
   this._uiRootId = uiRootId;
 }
@@ -53,8 +67,6 @@ qx.Proto.setRequestCounter = function( requestCounter ) {
 /**
  * Adds a request parameter to this request with the given name and value
  */
- // TODO [rh] someone frequently adds an empty parameter, should we ignore
- //      that, or even better treat this as an error?
 qx.Proto.addParameter = function( name, value ) {
   this._parameters[ name ] = value;
 }
@@ -91,9 +103,8 @@ qx.Proto.send = function() {
 qx.Proto._sendImmediate = function() {
   this._dispatchSendEvent();
   // create and configure request object
-  var action = org_eclipse_rap_rwt_requesthandler;
   // To solve bugzilla bug entry 165666 we use GET- instead of POST-method
-  var request = new qx.io.remote.Request( action, "GET", "text/javascript" );
+  var request = new qx.io.remote.Request( this._url, "GET", "text/javascript" );
   request.setAsynchronous( true );
   // apply _parameters map which was filled during client interaction
   for( var parameterName in this._parameters ) {
@@ -121,7 +132,7 @@ qx.Proto._logSend = function() {
   var msg
     = "sending request [ "
     + "uiRoot=" + this._uiRootId + "; "
-    + "requestCounter=" + this._requestCounter + "; ";
+    + "requestCounter=" + this._requestCounter;
   for( var parameterName in this._parameters ) {
     msg += "; " + parameterName + "=" + this._parameters[ parameterName ];
   }
