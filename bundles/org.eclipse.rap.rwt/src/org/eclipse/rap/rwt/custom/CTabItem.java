@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.custom;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 import org.eclipse.rap.rwt.widgets.*;
 
 
@@ -55,6 +56,7 @@ public class CTabItem extends Item {
   }
   
   public CTabFolder getParent() {
+    checkWidget();
     return parent;
   }
   
@@ -150,7 +152,7 @@ public class CTabItem extends Item {
   ////////////////////////
   // Bounds and visibility
   
-  public boolean isShowing () {
+  public boolean isShowing() {
     checkWidget();
     return showing;
   }
@@ -212,12 +214,7 @@ public class CTabItem extends Item {
         if( width > 0 ) {
           width += INTERNAL_SPACING;
         }
-        // TODO [rh] fake calculation of text size...
-        int charWidth = 4;
-        if( ( getFont().getStyle() & RWT.BOLD ) != 0 ) {
-          charWidth++;
-        }
-        width += text.length() * charWidth; 
+        width += FontSizeEstimation.stringExtent( text, getFont() ).x;
       }
       if( canClose() && ( isSelected || parent.getUnselectedCloseVisible() ) ) {
         if( result > 0 ) {

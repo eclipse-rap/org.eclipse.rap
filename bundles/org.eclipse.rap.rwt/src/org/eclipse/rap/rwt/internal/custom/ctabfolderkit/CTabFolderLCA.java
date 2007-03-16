@@ -304,17 +304,16 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     Boolean minVisible = Boolean.valueOf( tabFolder.getMinimizeVisible() );
     boolean visibilityChanged;
     visibilityChanged = WidgetLCAUtil.hasChanged( tabFolder, 
-                                               PROP_MINIMIZE_VISIBLE, 
-                                               minVisible, 
-                                               Boolean.TRUE );
+                                                  PROP_MINIMIZE_VISIBLE, 
+                                                  minVisible, 
+                                                  Boolean.TRUE );
     boolean boundsChanged = false;
     if( !visibilityChanged ) {
       Rectangle newBounds = tabFolderAdapter.getMinimizeRect();
       boundsChanged = WidgetLCAUtil.hasChanged( tabFolder, 
-                                             PROP_MINIMIZE_RECT, 
-                                             newBounds, 
-                                             ZERO_RECTANGLE );
-      
+                                                PROP_MINIMIZE_RECT, 
+                                                newBounds, 
+                                                ZERO_RECTANGLE );
     }
     return visibilityChanged || boundsChanged;
   }
@@ -325,17 +324,16 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     Boolean maxVisible = Boolean.valueOf( tabFolder.getMaximizeVisible() );
     boolean visibilityChanged;
     visibilityChanged = WidgetLCAUtil.hasChanged( tabFolder, 
-                                               PROP_MAXIMIZE_VISIBLE, 
-                                               maxVisible, 
-                                               Boolean.TRUE );
+                                                  PROP_MAXIMIZE_VISIBLE, 
+                                                  maxVisible, 
+                                                  Boolean.TRUE );
     boolean boundsChanged = false;
     if( !visibilityChanged ) {
       Rectangle newBounds = tabFolderAdapter.getMaximizeRect();
       boundsChanged = WidgetLCAUtil.hasChanged( tabFolder, 
-                                             PROP_MAXIMIZE_RECT, 
-                                             newBounds, 
-                                             ZERO_RECTANGLE );
-      
+                                                PROP_MAXIMIZE_RECT, 
+                                                newBounds, 
+                                                ZERO_RECTANGLE );
     }
     return visibilityChanged || boundsChanged;
   }

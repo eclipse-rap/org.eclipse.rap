@@ -28,9 +28,10 @@ import org.eclipse.rap.rwt.widgets.*;
  * <li><em>simple</em> style (treated as <code>true</code>)</li>
  * <li>MRUVisible (treated as <code>false</code>)</li>
  * <li>RWT.BORDER and RWT.FLAT styles are not fully implemented</li>
+ * <li>minimizeVisible and maximizeVisible are <code>true</code> by default in
+ * RWT which differs from SWT (<code>false</code> by default)</li>
  * </ul> 
  */
-// TODO [rh] though there are some calls to checkWidet this needs to be completed
 public class CTabFolder extends Composite {
 
   // width and height of minimize/maximize button
@@ -114,18 +115,22 @@ public class CTabFolder extends Composite {
   // Item management
   
   public CTabItem[] getItems() {
+    checkWidget();
     return ( CTabItem[] )itemHolder.getItems();
   }
 
   public CTabItem getItem( final int index ) {
+    checkWidget();
     return ( CTabItem )itemHolder.getItem( index );
   }
 
   public int getItemCount() {
+    checkWidget();
     return itemHolder.size();
   }
 
   public int indexOf( final CTabItem item ) {
+    checkWidget();
     return itemHolder.indexOf( item );
   }
 
@@ -133,6 +138,7 @@ public class CTabFolder extends Composite {
   // Selection management
   
   public void setSelection( final int index ) {
+    checkWidget();
     if( index >= 0 && index <= itemHolder.size() - 1 ) {
       if( selectedIndex != index ) {
         int oldSelectionIndex = selectedIndex;
@@ -157,10 +163,12 @@ public class CTabFolder extends Composite {
   }
 
   public int getSelectionIndex() {
+    checkWidget();
     return selectedIndex;
   }
   
   public void setSelection( final CTabItem item ) {
+    checkWidget();
     if( item == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
@@ -169,6 +177,7 @@ public class CTabFolder extends Composite {
   }
   
   public CTabItem getSelection() {
+    checkWidget();
     CTabItem result = null;
     if( selectedIndex != -1 ) {
       result = ( CTabItem )itemHolder.getItem( selectedIndex );
@@ -249,6 +258,7 @@ public class CTabFolder extends Composite {
   // Minimize / Maximize / Restore
   
   public void setMaximizeVisible( final boolean maximizeVisible ) {
+    checkWidget();
     if( this.maximizeVisible != maximizeVisible ) {
       this.maximizeVisible = maximizeVisible;
       updateItems();
@@ -256,10 +266,12 @@ public class CTabFolder extends Composite {
   }
   
   public boolean getMaximizeVisible() {
+    checkWidget();
     return maximizeVisible;
   }
   
   public void setMinimizeVisible( final boolean minimizeVisible ) {
+    checkWidget();
     if( this.minimizeVisible != minimizeVisible ) {
       this.minimizeVisible = minimizeVisible;
       updateItems();
@@ -267,10 +279,12 @@ public class CTabFolder extends Composite {
   }
 
   public boolean getMinimizeVisible() {
+    checkWidget();
     return minimizeVisible;
   }
   
   public void setMinimized( final boolean minimized ) {
+    checkWidget();
     if( this.minimized != minimized ) {
       if( minimized && this.maximized ) {
         setMaximized( false );
@@ -280,10 +294,12 @@ public class CTabFolder extends Composite {
   }
 
   public boolean getMinimized() {
+    checkWidget();
     return minimized;
   }
   
   public void setMaximized( final boolean maximized ) {
+    checkWidget();
     if( this.maximized != maximized ) {
       if( maximized && this.minimized ) {
         setMinimized( false );
@@ -293,6 +309,7 @@ public class CTabFolder extends Composite {
   }
 
   public boolean getMaximized() {
+    checkWidget();
     return maximized;
   }
 
@@ -305,6 +322,7 @@ public class CTabFolder extends Composite {
   }
 
   public void setTabHeight( final int height ) {
+    checkWidget();
     if( height < -1 ) {
       RWT.error( RWT.ERROR_INVALID_ARGUMENT );
     }
@@ -313,6 +331,7 @@ public class CTabFolder extends Composite {
   }
 
   public int getTabHeight() {
+    checkWidget();
     int result;
     if( fixedTabHeight != RWT.DEFAULT ) {
       result = fixedTabHeight;
@@ -323,10 +342,12 @@ public class CTabFolder extends Composite {
   }
 
   public int getMinimumCharacters() {
-    return minimumCharacters ;
+    checkWidget();
+    return minimumCharacters;
   }
 
   public void setMinimumCharacters( final int minimumCharacters ) {
+    checkWidget();
     if( minimumCharacters < 0 ) {
       RWT.error( RWT.ERROR_INVALID_RANGE );
     }
@@ -337,6 +358,7 @@ public class CTabFolder extends Composite {
   }
   
   public int getStyle() {
+    checkWidget();
     int result = super.getStyle();
     result &= ~( RWT.TOP | RWT.BOTTOM );
     result |= onBottom ? RWT.BOTTOM : RWT.TOP;

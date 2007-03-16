@@ -2273,7 +2273,8 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     initial : function( vTheme ) {
       return qx.lang.Object.mergeWith( vTheme.initialFrom( "atom" ), {
-        border : this.border_top
+        border : this.border_top,
+        paddingLeft : 4
       } );
     },
 
