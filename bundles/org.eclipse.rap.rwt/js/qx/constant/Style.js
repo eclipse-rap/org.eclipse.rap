@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.OO.defineClass("qx.constant.Style",
+qx.OO.defineClass( "qx.constant.Style",
 {
   POSITION_ABSOLUTE : "absolute",
   POSITION_RELATIVE : "relative",

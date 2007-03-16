@@ -20,8 +20,6 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.Request", qx.core.Target,
 		// instance variables that hold the essential request parameters
 		this._uiRootId = "";
 		this._requestCounter = 0;
-		//
-    this._waitHintTimer = null;
     // Flag that is set to true if send() was called but the delay timeout
     // has not yet timed out
     this._inDelayedSend = false;
@@ -30,6 +28,8 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.Request", qx.core.Target,
     var requestQueue = qx.io.remote.RequestQueue.getInstance();
     requestQueue.setDefaultTimeout( 60000 * 5 ); // 5 min
     requestQueue.setMaxConcurrentRequests( 1 );
+    // References the currently running request or null if no request is active
+    this._currentRequest = null;
   }
 );
 
@@ -105,10 +105,13 @@ qx.Proto._sendImmediate = function() {
   request.setParameter( "uiRoot", this._uiRootId );
   request.setParameter( "requestCounter", this._requestCounter );
   this._inDelayedSend = false;
-  this._startWaitHintTimer();
+  // notify user when request takes longer than 500 ms
+  qx.client.Timer.once( this._showWaitHint, this, 500 );
   request.addEventListener( "completed", this._hideWaitHint, this );
   this._logSend();  
   // queue request to be sent
+// TODO [rh] check that there is no currently active request  
+  this._currentRequest = request;  
   request.send();
   // clear the parameter list
   this._parameters = {};
@@ -126,29 +129,18 @@ qx.Proto._logSend = function() {
   this.debug( msg );
 }
 
-qx.Proto._startWaitHintTimer = function () {
-  this.debug( "starting request " );
-  // notify user when request takes longer than 500 ms
-  this._waitHintTimer = new qx.client.Timer( 500 );
-  this._waitHintTimer.addEventListener( "interval", this._showWaitHint, this );
-  this._waitHintTimer.start();
-}
-
 qx.Proto._showWaitHint = function() {
-  // stop timer - we only need this to be triggered *once* 
-  if( this._waitHintTimer != null ) {
-    this._waitHintTimer.stop();
+  if( this._currentRequest != null ) {
     this.debug( "showWaitHint" );
+    var doc = qx.ui.core.ClientDocument.getInstance();
+    doc.setGlobalCursor( qx.constant.Style.CURSOR_PROGRESS );
   }
 }
 
 qx.Proto._hideWaitHint = function() {
-  // stop eventually running timer (this happens when request completes before 
-  // timer interval 
-  if( this._waitHintTimer != null ) {
-    this._waitHintTimer.dispose();
-    this._waitHintTimer = null;
-  }
+  this._currentRequest = null;
+  var doc = qx.ui.core.ClientDocument.getInstance();
+  doc.setGlobalCursor( null );
   this.debug( "hideWaitHint" );
 }
 

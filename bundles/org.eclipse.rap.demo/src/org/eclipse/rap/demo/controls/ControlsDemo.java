@@ -37,6 +37,8 @@ public class ControlsDemo implements IEntryPoint {
     final TabFolder topFolder = new TabFolder( parent, RWT.NONE );
     ExampleTab tab = new ButtonTab( topFolder );
     tab.createContents();
+//    tab = new RequestTab( topFolder );
+//    tab.createContents();
 //    tab = new CBannerTab( topFolder );
 //    tab.createContents();
     tab = new ComboTab( topFolder );
