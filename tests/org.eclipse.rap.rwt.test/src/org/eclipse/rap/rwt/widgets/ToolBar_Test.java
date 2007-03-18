@@ -62,7 +62,7 @@ public class ToolBar_Test extends TestCase {
     assertEquals( item1, toolBar.getItem( 1 ) );
     assertEquals( item2, toolBar.getItem( 2 ) );
     ToolItem item3 = new ToolItem( toolBar, RWT.SEPARATOR );
-    item3.setImage(Image.find( RWTFixture.IMAGE2 ) );
+    item3.setImage( Image.find( RWTFixture.IMAGE2 ) );
     assertNull( item3.getImage() );
     assertEquals( 2, Image.size() );
   }
@@ -92,14 +92,20 @@ public class ToolBar_Test extends TestCase {
   public void testToolItemTexts() {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
-    ToolBar table = new ToolBar( shell, RWT.NONE );
-    ToolItem item = new ToolItem( table, RWT.NONE );
+    ToolBar toolbar = new ToolBar( shell, RWT.NONE );
+    ToolItem item = new ToolItem( toolbar, RWT.NONE );
+    ToolItem separator = new ToolItem( toolbar, RWT.SEPARATOR );
     String text0 = "text0";
     String text1 = "text1";
     
+    // Test 'normal' tool item
     item.setText( text0 );
-    assertSame( text0, item.getText() );
+    assertEquals( text0, item.getText() );
     item.setText( text1 );
-    assertSame( text1, item.getText() );
+    assertEquals( text1, item.getText() );
+    // Test separator tool item
+    assertEquals( "", separator.getText() );
+    separator.setText( text1 );
+    assertEquals( "", separator.getText() );
   }
 }

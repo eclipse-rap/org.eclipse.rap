@@ -78,9 +78,6 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     writer.setParent( WidgetUtil.getId( coolItem.getParent() ) );
     writer.set( "minWidth", 0 );
     writer.set( "minHeight", 0 );
-    // TODO [rh] could omit this if ensured that client-side handleSize is in
-    //      sync with CoolItem.HANDLE_SIZE
-    writer.set( "handleSize", CoolItem.HANDLE_SIZE );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -88,10 +85,12 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     writeBounds( coolItem );
     setJSParent( coolItem );
     // TODO [rh] find a decent solution to place the ctrl contained in CoolItem 
-    if( coolItem.getControl() != null ) {
-      Point location = coolItem.getControl().getLocation();
+    Control control = coolItem.getControl();
+    if( control != null ) {
+      Point location = control.getLocation();
       location.x = CoolItem.HANDLE_SIZE;
-      coolItem.getControl().setLocation( location );
+      location.y = 0;
+      control.setLocation( location );
     }
     writeLocked( coolItem );
   }
@@ -107,12 +106,9 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   private static void writeBounds( final CoolItem coolItem ) throws IOException 
   {
     Rectangle bounds = coolItem.getBounds();
-    if( WidgetLCAUtil.hasChanged( coolItem, Props.BOUNDS, bounds, null ) ) { 
-      int[] args = new int[] {
-        bounds.x, bounds.width, bounds.y, bounds.height
-      };
+    WidgetLCAUtil.writeBounds( coolItem, coolItem.getParent(), bounds, false );
+    if( WidgetLCAUtil.hasChanged( coolItem, Props.BOUNDS, bounds, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( coolItem );
-      writer.set( "space", args );
       writer.call( "updateHandleBounds", null );
     }
   }
@@ -120,10 +116,11 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   private static void writeLocked( final CoolItem coolItem ) throws IOException 
   {
     JSWriter writer = JSWriter.getWriterFor( coolItem );
-    Boolean oldValue = Boolean.valueOf( coolItem.getParent().getLocked() );
-    if( WidgetLCAUtil.hasChanged( coolItem.getParent(), Props.LOCKED, oldValue ) ) 
+    CoolBar parent = coolItem.getParent();
+    Boolean oldValue = Boolean.valueOf( parent.getLocked() );
+    if( WidgetLCAUtil.hasChanged( parent, Props.LOCKED, oldValue ) ) 
     {
-      writer.set( "locked", coolItem.getParent().getLocked() );
+      writer.set( "locked", parent.getLocked() );
     }
   }
 

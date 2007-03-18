@@ -19,12 +19,12 @@ qx.OO.defineClass(
   qx.ui.layout.CanvasLayout,
   function( orientation ) {
     qx.ui.layout.CanvasLayout.call( this );
+    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this._orientation = orientation;
-    this._handleSize = 8;
     this._locked = false;
     // Create handle to drag this CoolItem around
     this._handle = new qx.ui.basic.Terminator();
-    this._handle.setAppearance( "toolbar-part-handle-line" );
+    this._handle.setBorder( qx.renderer.border.BorderPresets.getInstance().thinOutset );
     this._handle.addEventListener( "mousedown", this._onHandleMouseDown, this );
     this._handle.addEventListener( "mousemove", this._onHandleMouseMove, this );
     this._handle.addEventListener( "mouseup", this._onHandleMouseUp, this );
@@ -34,21 +34,6 @@ qx.OO.defineClass(
   }
 );
 
-/**
- * The size of the 'handle' with which the user can drag around the CoolItem.
- * Depending on the orientation that was passed to the constructor this
- * either denotes the height (vertical orientation) or width (horizontal
- * orientation) of the handle.
- * Note that updateHandleBounds must be called afterwards to reflect the change
- */
-qx.Proto.setHandleSize = function( handleSize ) {
-  this._handleSize = handleSize;
-}
-
-qx.Proto.getHandleSize = function() {
-  return this._handleSize;
-}
-
 qx.Proto.setLocked = function( value ) {
   this._locked = value;
 }
@@ -57,9 +42,9 @@ qx.Proto.setLocked = function( value ) {
 qx.Proto.updateHandleBounds = function() {
   // parameter order for setSpace: x, width, y, height
   if( this._orientation == "vertical" ) {
-    this._handle.setSpace( 0, this.getWidth(), 0, this._handleSize );
+    this._handle.setSpace( 0, this.getWidth(), 0, 3 );
   } else {
-    this._handle.setSpace( 0, this._handleSize, 0, this.getHeight() );
+    this._handle.setSpace( 0, 3, 0, this.getHeight() );
   }
 }
 

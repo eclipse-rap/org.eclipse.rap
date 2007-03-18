@@ -13,39 +13,46 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
-import org.eclipse.rap.rwt.graphics.Image;
+import org.eclipse.rap.rwt.graphics.*;
+import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 
 
 public class ToolItem extends Item {
 
+  private static final int DEFAULT_WIDTH = 24;
+  private static final int DEFAULT_HEIGHT = 22;
+  private static final int DROP_DOWN_ARROW_WIDTH = 13;
+
   private final ToolBar parent;
   private boolean selected;
   private Control control;
-  private int width = 0;
+  private int width;
  
 
   public ToolItem( final ToolBar parent, final int style ) {
-    super( parent, checkStyle( style ) );
-    this.parent = parent;
-    ItemHolder.addItem( parent, this );
+    this( checkParent( parent ), checkStyle( style ), parent.getItemCount() );
   }
 
   public ToolItem( final ToolBar parent, final int style, final int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     ItemHolder.insertItem( parent, this, index );
+    computeInitialWidth();
   }
-  
+
   public Display getDisplay() {
     checkWidget();
     return parent.getDisplay();
   }
 
-  public ToolBar getParent () {
+  public ToolBar getParent() {
     checkWidget();
     return parent;
   }
+
+  ////////////////////////////////////////
+  // Displayed content (text, image, etc.)
   
   public void setText( final String text ) {
     checkWidget();
@@ -54,6 +61,16 @@ public class ToolItem extends Item {
     }
     if( ( style & RWT.SEPARATOR ) == 0 ) {
       super.setText( text );
+    }
+  }
+  
+  public void setImage( final Image image ) {
+    checkWidget();
+    if( image == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    if( ( style & RWT.SEPARATOR ) == 0 ) {
+      super.setImage( image );
     }
   }
   
@@ -76,18 +93,52 @@ public class ToolItem extends Item {
     checkWidget();
     return control;
   }
+  
+  /////////////
+  // Dimensions
+  
+  // TODO [rh] decent implementation for VERTICAL adlignment missing
+  public Rectangle getBounds() {
+    checkWidget();
+    Rectangle clientArea = parent.getClientArea();
+    int left = clientArea.x;
+    int top = clientArea.y;
+    int index = parent.indexOf( this );
+    for( int i = 0; i < index; i++ ) {
+      left += parent.getItem( i ).getBounds().width;
+    }
+    return new Rectangle( left, top, getWidth(), DEFAULT_HEIGHT );
+  }
 
   public int getWidth() {
     checkWidget();
-    return width;
+    int result;
+    if( ( style & RWT.SEPARATOR ) != 0 ) {
+      result = width;
+    } else {
+      // TODO [rh] must be kept in sync with DefaultAppearanceTheme.js
+      result = 7; // approx left + right padding as defined in appearance theme 
+      if( getImage() != null ) {
+        result += 16; // TODO [rh] replace with actual image width
+      }
+      Font font = parent.getFont();
+      result += FontSizeEstimation.stringExtent( getText(), font ).x;
+      if( ( style & RWT.DROP_DOWN ) != 0 ) {
+        result += DROP_DOWN_ARROW_WIDTH;
+      }
+    }
+    return result;
   }
 
   public void setWidth( final int width ) {
     checkWidget();
-    if( ( style & RWT.SEPARATOR ) != 0 && width >= 0  ) {
+    if( ( style & RWT.SEPARATOR ) != 0 && width >= 0 ) {
       this.width = width;
     }
   }
+  
+  ////////////
+  // Selection
   
   public boolean getSelection() {
     checkWidget();
@@ -104,16 +155,9 @@ public class ToolItem extends Item {
       this.selected = selected;
     }
   }
-  
-  public void setImage( final Image image ) {
-    checkWidget();
-    if( image == null ) {
-      RWT.error( RWT.ERROR_NULL_ARGUMENT );
-    }
-    if( ( style & RWT.SEPARATOR ) == 0 ) {
-      super.setImage( image );
-    }
-  }
+
+  ///////////////////////////////////////////
+  // Listener registration and deregistration
   
   public void addSelectionListener( final SelectionListener listener ) {
     checkWidget();
@@ -143,6 +187,24 @@ public class ToolItem extends Item {
   //////////////////
   // Helping methods
 
+  private void computeInitialWidth() {
+    if( ( style & RWT.SEPARATOR ) == 0 ) {
+      width = 8;
+    } else {
+      width = DEFAULT_WIDTH;
+      if( ( style & RWT.DROP_DOWN ) != 0 ) {
+        width += DROP_DOWN_ARROW_WIDTH;
+      }
+    }
+  }
+  
+  private static ToolBar checkParent( final ToolBar parent ) {
+    if( parent == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    return parent;
+  }
+
   private static int checkStyle( final int style ) {
     return checkBits( style, 
                       RWT.PUSH, 
@@ -152,5 +214,4 @@ public class ToolItem extends Item {
                       RWT.DROP_DOWN,
                       0 );
   }
-  
 }

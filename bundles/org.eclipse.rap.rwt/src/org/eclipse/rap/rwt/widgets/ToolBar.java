@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Point;
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 
@@ -20,9 +21,21 @@ public class ToolBar extends Composite {
   
   private final ItemHolder itemHolder = new ItemHolder( ToolItem.class );
 
-
   public ToolBar( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
+    /*
+    * Ensure that either of HORIZONTAL or VERTICAL is set.
+    * NOTE: HORIZONTAL and VERTICAL have the same values
+    * as H_SCROLL and V_SCROLL so it is necessary to first
+    * clear these bits to avoid scroll bars and then reset
+    * the bits using the original style supplied by the
+    * programmer.
+    */
+    if( ( style & RWT.VERTICAL ) != 0 ) {
+      this.style |= RWT.VERTICAL;
+    } else {
+      this.style |= RWT.HORIZONTAL;
+    }
   }
   
   public Object getAdapter( final Class adapter ) {
@@ -35,19 +48,12 @@ public class ToolBar extends Composite {
     return result;
   }
 
-  public Point computeSize( final int wHint, 
-                            final int hHint, 
-                            final boolean changed ) 
-  {
-    checkWidget();
-    // TODO: [fappel] reasonable implementation
-    Point result = super.computeSize( wHint, hHint, changed );
-    return new Point( result.x, 24 );
-  }
+  //////////////////
+  // Item management
   
   public ToolItem getItem( final int index ) {
     checkWidget();
-    return ( ToolItem ) itemHolder.getItem( index );
+    return ( ToolItem )itemHolder.getItem( index );
   }
   
   public int getItemCount() {
@@ -57,14 +63,9 @@ public class ToolBar extends Composite {
 
   public ToolItem[] getItems() {
     checkWidget();
-    return ( ToolItem[] ) itemHolder.getItems();
+    return ( ToolItem[] )itemHolder.getItems();
   }
   
-  public int getRowCount() {
-    checkWidget();
-    return itemHolder.size();
-  }
-
   public int indexOf( final ToolItem item ) {
     checkWidget();
     if( item == null ) {
@@ -76,14 +77,67 @@ public class ToolBar extends Composite {
     return itemHolder.indexOf( item );
   }
 
+  ////////////////////
+  // Size computations
+
+  // TODO [rh] decent size computation for VERTICAL alignment missing
+  public Point computeSize( final int wHint, 
+                            final int hHint, 
+                            final boolean changed ) 
+  {
+    checkWidget();
+    int width = 0;
+    int height = 0;
+    for( int i = 0; i < itemHolder.size(); i++ ) {
+      ToolItem item = ( ToolItem )itemHolder.getItem( i );
+      Rectangle itemBounds = item.getBounds();
+      height = Math.max( height, itemBounds.height );
+      width += itemBounds.width;
+    }
+    if( width == 0 ) {
+      width = DEFAULT_WIDTH;
+    }
+    if( height == 0 ) {
+      height = DEFAULT_HEIGHT;
+    }
+    if( wHint != RWT.DEFAULT ) {
+      width = wHint;
+    }
+    if( hHint != RWT.DEFAULT ) {
+      height = hHint;
+    }
+    Rectangle trim = computeTrim( 0, 0, width, height );
+    width = trim.width;
+    height = trim.height;
+    return new Point( width, height );
+  }
+  
+//  public Rectangle computeTrim( final int x,
+//                                final int y,
+//                                final int width,
+//                                final int height )
+//  {
+//    checkWidget();
+//    Rectangle trim = super.computeTrim( x, y, width, height );
+//    return trim;
+//  }
+  
+  public int getRowCount() {
+    checkWidget();
+    return itemHolder.size();
+  }
+
   //////////////////
   // Helping methods
   
   private static int checkStyle( final int style ) {
-    int result = RWT.NONE;
-    if( style > 0 ) {
-      result = style;
-    }
-    return result;
+    /*
+    * Even though it is legal to create this widget
+    * with scroll bars, they serve no useful purpose
+    * because they do not automatically scroll the
+    * widget's client area.  The fix is to clear
+    * the SWT style.
+    */
+    return style & ~( RWT.H_SCROLL | RWT.V_SCROLL );
   }
 }

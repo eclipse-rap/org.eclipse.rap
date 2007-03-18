@@ -22,8 +22,6 @@ import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
  */
 public class CoolBar extends Composite {
 
-  static final int SEPARATOR_WIDTH = 8;
-
   private final ItemHolder itemHolder = new ItemHolder( CoolItem.class );
   private boolean locked;
   
@@ -167,6 +165,6 @@ public class CoolBar extends Composite {
   }
 
   int getMargin( final int index ) {
-    return SEPARATOR_WIDTH;
+    return CoolItem.HANDLE_SIZE;
   }
 }

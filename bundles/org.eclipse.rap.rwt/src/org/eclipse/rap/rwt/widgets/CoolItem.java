@@ -42,7 +42,8 @@ public class CoolItem extends Item {
     }
   }
 
-  // Keep in sync with defaultValue for handleSize in CoolItem.js
+  // Keep in sync with defaultValue for handleSize in CoolItem.js 
+  // (see function updateHandleBounds)
   public static final int HANDLE_SIZE = 3; 
   
   private final CoolBar parent;
@@ -191,6 +192,18 @@ public class CoolItem extends Item {
       }
     }
     return new Rectangle( left, top, size.x, size.y );
+  }
+  
+  public Rectangle getClientArea() {
+    checkWidget();
+    Rectangle size = getBounds();
+    Rectangle result;
+    if( ( parent.style & RWT.VERTICAL ) != 0 ) {
+      result = new Rectangle( 0, HANDLE_SIZE, size.x, size.y - HANDLE_SIZE );
+    } else {
+      result = new Rectangle( HANDLE_SIZE, 0, size.x - HANDLE_SIZE, size.y );
+    }
+    return result;
   }
 
   ////////////////////////////

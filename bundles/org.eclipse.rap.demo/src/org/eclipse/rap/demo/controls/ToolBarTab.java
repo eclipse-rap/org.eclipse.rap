@@ -10,10 +10,10 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -35,15 +35,14 @@ public class ToolBarTab extends ExampleTab {
     createFontChooser();
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new RowLayout() );
+  protected void createExampleControls( final Composite parent ) {
+    parent.setLayout( new RowLayout() );
     ClassLoader loader = getClass().getClassLoader();
     Image imageNewFile = Image.find( "resources/newfile_wiz.gif", loader );
     Image imagenewFolder = Image.find( "resources/newfolder_wiz.gif", loader );
     Image imageNewProj = Image.find( "resources/newprj_wiz.gif", loader );
     Image imageSearch = Image.find( "resources/search_src.gif", loader );
-    toolBar = new ToolBar( top, getStyle() );
-    toolBar.setLayoutData( new RowData( 300, 50 ) );
+    toolBar = new ToolBar( parent, getStyle() );
     registerControl( toolBar );
     ToolItem item1 = new ToolItem( toolBar, RWT.PUSH );
     item1.setText( "new" );

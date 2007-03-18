@@ -173,16 +173,16 @@ public abstract class Widget implements Adaptable {
     return disposed;
   }
   
-  protected void checkWidget() {
-    // TODO [rh] implementation missing
-  }
-
   protected abstract void releaseChildren();
 
   protected abstract void releaseParent();
 
   protected abstract void releaseWidget();
 
+  protected void checkWidget() {
+    // TODO [rh] implementation missing
+  }
+  
   // copied from SWT, made protected to allow access from ...custom package
   protected static int checkBits( final int style,
                                   final int int0,
@@ -218,7 +218,7 @@ public abstract class Widget implements Adaptable {
     return result;
   }
 
-  void error( int code ) {
+  void error( final int code ) {
     RWT.error( code );
   }
 }
