@@ -59,11 +59,9 @@ public class MenuItem extends Item {
       }
       removeMenuDisposeListener();
       /* Assign the new menu */
-      Menu oldMenu = this.menu;
-      if (oldMenu == menu)
-        return;
-      if (oldMenu != null)
-        oldMenu.cascade = null;
+      if( this.menu != null ) {
+        this.menu.cascade = null;
+      }
       this.menu = menu;
       if( menu != null ) {
         menu.cascade = this;
@@ -84,13 +82,15 @@ public class MenuItem extends Item {
     }
   }
   
-  /////////////
+  //////////
   // Enabled
 
   public void setEnabled( final boolean enabled ) {
     checkWidget();
     state &= ~DISABLED;
-    if( !enabled ) state |= DISABLED;
+    if( !enabled ) {
+      state |= DISABLED;
+    }
   }
   
   public boolean getEnabled() {

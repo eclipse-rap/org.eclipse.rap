@@ -55,6 +55,19 @@ public class Menu extends Widget {
     return parent;
   }
 
+  public MenuItem getParentItem() {
+    checkWidget ();
+    return cascade;
+  }
+  
+  public Menu getParentMenu() {
+    checkWidget();
+    if( cascade != null ) {
+      return cascade.getParent();
+    }
+    return null;
+  }
+  
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
@@ -81,6 +94,12 @@ public class Menu extends Widget {
     setLocation( location.x, location.y );
   }
   
+  public Rectangle getBounds() {
+    checkWidget();
+    // TODO: [fappel] how to calculate width and height?
+    return new Rectangle( x, y, 0, 0 );
+  }
+  
   public void setVisible( final boolean visible ) {
     checkWidget();
     if( ( style & ( RWT.BAR | RWT.DROP_DOWN ) ) == 0 ) {
@@ -93,43 +112,29 @@ public class Menu extends Widget {
     return visible;
   }
 
-  public Rectangle getBounds() {
-    checkWidget();
-    // TODO: [fappel] how to calculate width and height?
-    return new Rectangle( x, y, 0, 0 );
-  }
-  
-  /////////////////////
+  ///////////
   // Enabled
   
-  public void setEnabled (boolean enabled) {
-    checkWidget ();
+  public void setEnabled( boolean enabled ) {
+    checkWidget();
     state &= ~DISABLED;
-    if (!enabled) state |= DISABLED;
+    if( !enabled ) {
+      state |= DISABLED;
+    }
   }
 
-  public boolean getEnabled () {
-    checkWidget ();
-    return (state & DISABLED) == 0;
+  public boolean getEnabled() {
+    checkWidget();
+    return ( state & DISABLED ) == 0;
   }
-  
-  public boolean isEnabled () {
-    checkWidget ();
-    Menu parentMenu = getParentMenu ();
-    if (parentMenu == null) return getEnabled ();
-    return getEnabled () && parentMenu.isEnabled ();
-  }
-  
-  public MenuItem getParentItem() {
-    checkWidget ();
-    return cascade;
-  }
-  
-  public Menu getParentMenu() {
-    checkWidget ();
-    if (cascade != null)
-      return cascade.getParent();
-    return null;
+
+  public boolean isEnabled() {
+    checkWidget();
+    Menu parentMenu = getParentMenu();
+    if( parentMenu == null ) {
+      return getEnabled();
+    }
+    return getEnabled() && parentMenu.isEnabled();
   }
   
   // /////////////////////////
