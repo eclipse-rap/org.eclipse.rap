@@ -221,28 +221,66 @@ public class ShellTab extends ExampleTab {
   }
   
   private void createMenuBar( final Shell shell ) {
+    // menu bar
     Menu menuBar = new Menu( shell, RWT.BAR );
     shell.setMenuBar( menuBar );
     MenuItem fileItem = new MenuItem( menuBar, RWT.CASCADE );
     fileItem.setText( "File" );
+    MenuItem editItem = new MenuItem( menuBar, RWT.CASCADE );
+    editItem.setText( "Edit" );
+    MenuItem searchItem = new MenuItem( menuBar, RWT.CASCADE );
+    searchItem.setText( "Search" );
+    MenuItem disabledItem = new MenuItem( menuBar, RWT.CASCADE );
+    disabledItem.setText( "Disabled" );
+    disabledItem.setEnabled( false );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 6" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 7" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 8" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 9" );
+    // file menu
     Menu fileMenu = new Menu( shell, RWT.DROP_DOWN );
     fileItem.setMenu( fileMenu );
     new MenuItem( fileMenu, RWT.PUSH ).setText( "New" );
     new MenuItem( fileMenu, RWT.PUSH ).setText( "Open" );
     new MenuItem( fileMenu, RWT.PUSH ).setText( "Close" );
-    MenuItem editItem = new MenuItem( menuBar, RWT.CASCADE );
-    editItem.setText( "Edit" );
+    // edit menu
     Menu editMenu = new Menu( shell, RWT.DROP_DOWN );
     editItem.setMenu( editMenu );
+    MenuItem item;
     new MenuItem( editMenu, RWT.PUSH ).setText( "Copy" );
     new MenuItem( editMenu, RWT.PUSH ).setText( "Paste" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 3" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 4" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 5" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 6" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 7" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 8" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 9" );
+    new MenuItem( editMenu, RWT.SEPARATOR );
+    // cascade menu
+    item = new MenuItem( editMenu, RWT.CASCADE );
+    item.setText( "Insert" );
+    Menu cascadeMenu = new Menu( shell, RWT.DROP_DOWN );
+    item.setMenu( cascadeMenu );
+    new MenuItem( cascadeMenu, RWT.PUSH ).setText( "Date" );
+    new MenuItem( cascadeMenu, RWT.PUSH ).setText( "Line Break" );
+    // search 
+    Menu searchMenu = new Menu( shell, RWT.DROP_DOWN );
+    searchItem.setMenu( searchMenu );
+    new MenuItem( searchMenu, RWT.PUSH ).setText( "Enabled" );
+    item = new MenuItem( searchMenu, RWT.PUSH );
+    item.setText( "Disabled" );
+    item.setEnabled( false );
+    new MenuItem( searchMenu, RWT.PUSH ).setText( "Push" );
+    new MenuItem( searchMenu, RWT.SEPARATOR );
+    item = new MenuItem( searchMenu, RWT.CHECK );
+    item.setText( "Check" );
+    item = new MenuItem( searchMenu, RWT.RADIO );
+    item.setText( "Radio 1" );
+    item = new MenuItem( searchMenu, RWT.RADIO );
+    item.setText( "Radio 2" );
+    item = new MenuItem( searchMenu, RWT.RADIO );
+    item.setText( "Radio 3" );
+    item.setEnabled( false );
+    // disabled
+    Menu disabledMenu = new Menu( shell, RWT.DROP_DOWN );
+    disabledMenu.setEnabled( false );
+    disabledItem.setMenu( disabledMenu );
+    new MenuItem( disabledMenu, RWT.PUSH ).setText( "Import" );
+    new MenuItem( disabledMenu, RWT.PUSH ).setText( "Export" );
   }
   
   private Point getNextShellLocation() {

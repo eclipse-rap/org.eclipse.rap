@@ -34,6 +34,8 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
     boolean hasListener = SelectionEvent.hasListener( menuItem );
     adapter.preserve( Props.SELECTION_LISTENERS, 
                       Boolean.valueOf( hasListener ) );
+    adapter.preserve( Props.ENABLED,
+                      Boolean.valueOf( menuItem.getEnabled() ) );
   }
 
   void readData( final MenuItem menuItem ) {
@@ -54,6 +56,7 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( menuItem ) );
+    MenuItemLCAUtil.writeEnabled( menuItem );
   }
   
   void renderDispose( final MenuItem menuItem ) throws IOException {

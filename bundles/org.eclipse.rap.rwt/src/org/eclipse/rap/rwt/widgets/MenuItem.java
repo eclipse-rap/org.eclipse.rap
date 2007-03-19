@@ -58,7 +58,16 @@ public class MenuItem extends Item {
         }
       }
       removeMenuDisposeListener();
+      /* Assign the new menu */
+      Menu oldMenu = this.menu;
+      if (oldMenu == menu)
+        return;
+      if (oldMenu != null)
+        oldMenu.cascade = null;
       this.menu = menu;
+      if( menu != null ) {
+        menu.cascade = this;
+      }
       addMenuDisposeListener();
     }
   }
@@ -73,6 +82,24 @@ public class MenuItem extends Item {
     if( ( style & RWT.SEPARATOR ) == 0 ) {
       super.setImage( image );
     }
+  }
+  
+  /////////////
+  // Enabled
+
+  public void setEnabled( final boolean enabled ) {
+    checkWidget();
+    state &= ~DISABLED;
+    if( !enabled ) state |= DISABLED;
+  }
+  
+  public boolean getEnabled() {
+    checkWidget();
+    return ( state & DISABLED ) == 0;
+  }
+  
+  public boolean isEnabled() {
+    return getEnabled() && parent.isEnabled();
   }
   
   ////////////

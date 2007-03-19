@@ -14,15 +14,18 @@ package org.eclipse.rap.rwt.internal.widgets.menukit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.rap.rwt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 
 final class DropDownMenuLCA extends MenuDelegateLCA {
 
   void preserveValues( final Menu menu ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
+    adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
   }
   
   void readData( Menu menu ) {
@@ -41,6 +44,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
   }
 
   void renderChanges( final Menu menu ) throws IOException {
+    MenuLCAUtil.writeEnabled( menu );
   }
 
   /**

@@ -17,7 +17,6 @@ import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
 
-
 public class Menu extends Widget {
 
   private final Shell parent;
@@ -25,6 +24,7 @@ public class Menu extends Widget {
   private int x;
   private int y;
   private boolean visible = false;
+  MenuItem cascade;
 
   public Menu( final Menu menu ) {
     this( menu.getParent(), RWT.DROP_DOWN );
@@ -99,6 +99,38 @@ public class Menu extends Widget {
     return new Rectangle( x, y, 0, 0 );
   }
   
+  /////////////////////
+  // Enabled
+  
+  public void setEnabled (boolean enabled) {
+    checkWidget ();
+    state &= ~DISABLED;
+    if (!enabled) state |= DISABLED;
+  }
+
+  public boolean getEnabled () {
+    checkWidget ();
+    return (state & DISABLED) == 0;
+  }
+  
+  public boolean isEnabled () {
+    checkWidget ();
+    Menu parentMenu = getParentMenu ();
+    if (parentMenu == null) return getEnabled ();
+    return getEnabled () && parentMenu.isEnabled ();
+  }
+  
+  public MenuItem getParentItem() {
+    checkWidget ();
+    return cascade;
+  }
+  
+  public Menu getParentMenu() {
+    checkWidget ();
+    if (cascade != null)
+      return cascade.getParent();
+    return null;
+  }
   
   // /////////////////////////
   // Management of menu items

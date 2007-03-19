@@ -36,6 +36,8 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
                       Boolean.valueOf( hasListener ) );
     adapter.preserve( PROP_SELECTION, 
                       Boolean.valueOf( menuItem.getSelection() ) );
+    adapter.preserve( Props.ENABLED,
+                      Boolean.valueOf( menuItem.getEnabled() ) );
   }
 
   void readData( final MenuItem menuItem ) {
@@ -47,7 +49,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
   }
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    newItem( menuItem, "qx.ui.menu.MenuCheckBox" );
+    newItem( menuItem, "qx.ui.menu.CheckBox" );
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {
@@ -62,6 +64,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
                 "checked", 
                 Boolean.valueOf( menuItem.getSelection() ), 
                 Boolean.FALSE );
+    MenuItemLCAUtil.writeEnabled( menuItem );
   }
   
   void renderDispose( final MenuItem menuItem ) throws IOException {

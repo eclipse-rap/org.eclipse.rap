@@ -13,7 +13,9 @@ package org.eclipse.rap.rwt.internal.widgets.menukit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.lifecycle.JSWriter;
+import org.eclipse.rap.rwt.internal.widgets.Props;
+import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.widgets.Control;
 import org.eclipse.rap.rwt.widgets.Menu;
 
 
@@ -23,6 +25,8 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     = "org.eclipse.rap.rwt.MenuUtil.showMenu";
   
   void preserveValues( final Menu menu ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
+    adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
   }
   
   void readData( Menu menu ) {
@@ -46,5 +50,15 @@ final class PopupMenuLCA extends MenuDelegateLCA {
       writer.callStatic( SHOW_MENU, args );
       menu.setVisible( false );  
     }
+    MenuLCAUtil.writeEnabled( menu );
   }
+  
+  public static void writeEnabled( final Control control )
+    throws IOException
+  {
+    Boolean newValue = Boolean.valueOf( control.isEnabled() );
+    JSWriter writer = JSWriter.getWriterFor( control );
+    writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, Boolean.TRUE );
+  }
+
 }

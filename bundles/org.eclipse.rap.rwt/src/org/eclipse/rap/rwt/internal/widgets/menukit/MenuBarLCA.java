@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.internal.widgets.menukit;
 import java.io.IOException;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IShellAdapter;
+import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Menu;
 import org.eclipse.rap.rwt.widgets.Shell;
@@ -31,6 +32,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     Shell shell = MenuBarLCA.getShell( menu );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_SHELL, shell );
+    adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
   }
   
   void readData( Menu menu ) {
@@ -44,8 +46,9 @@ final class MenuBarLCA extends MenuDelegateLCA {
   void renderChanges( final Menu menu ) throws IOException {
     writeParent( menu );
     writeBounds( menu );
+    MenuLCAUtil.writeEnabled( menu );
   }
-
+  
   //////////////////////////////////////////////////
   // Helping method to write properties for menu bar
   
