@@ -26,9 +26,8 @@ import org.eclipse.rap.rwt.widgets.MenuHolder.IMenuHolderAdapter;
  */
 public class Shell extends Composite {
 
-  // TODO [rh] preliminary: constants extracted to be used in MenuLCA
-  public static final int TITLE_BAR_HEIGHT = 18 + 1;
-  public static final int MENU_BAR_HEIGHT = 20;
+  private static final int TITLE_BAR_HEIGHT = 18;
+  private static final int MENU_BAR_HEIGHT = 20;
   
   private final Display display;
   private Menu menuBar;
@@ -122,19 +121,17 @@ public class Shell extends Composite {
   // TODO [rst] Move to class Decorations, as soon as it exists
   public Rectangle getClientArea() {
     checkWidget();
-    Rectangle current = getBounds();
-    int width = current.width;
-    int height = current.height;
-    int hTitleBar = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT : 0;
+    Rectangle bounds = getBounds();
+    int hTopTrim = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT + 1 : 0;
     if( getMenuBar() != null ) {
-      hTitleBar += MENU_BAR_HEIGHT;
+      hTopTrim += MENU_BAR_HEIGHT;
     }
+    int margin = getMargin();
     int border = getBorderWidth();
-    int margin = ( style & RWT.TITLE ) != 0 ? 2 : 0;
     return new Rectangle( 0 + margin,
-                          hTitleBar + margin,
-                          width - margin * 2 - border * 2,
-                          height - hTitleBar - margin * 2 - border * 2 );
+                          hTopTrim + margin,
+                          bounds.width - margin * 2 - border * 2,
+                          bounds.height - hTopTrim - margin * 2 - border * 2 );
   }
   
   // TODO [rst] Move to class Decorations, as soon as it exists
@@ -144,16 +141,16 @@ public class Shell extends Composite {
                                 final int height ) 
   {
     checkWidget();
-    int hTitleBar = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT : 0;
+    int hTopTrim = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT + 1 : 0;
     if( getMenuBar() != null ) {
-      hTitleBar += MENU_BAR_HEIGHT;
+      hTopTrim += MENU_BAR_HEIGHT;
     }
+    int margin = getMargin();
     int border = getBorderWidth();
-    int margin = ( style & RWT.TITLE ) != 0 ? 2 : 0;
     Rectangle rect = new Rectangle( x - margin - border,
-                                    y - hTitleBar - margin - border,
+                                    y - hTopTrim - margin - border,
                                     width + margin * 2 + border * 2,
-                                    height + hTitleBar + margin * 2 + border * 2 );
+                                    height + hTopTrim + margin * 2 + border * 2 );
     return rect;
   }
   
@@ -162,6 +159,26 @@ public class Shell extends Composite {
     return ( style & ( RWT.BORDER | RWT.TITLE ) ) != 0 ? 2 : 1;
   }
 
+  private Rectangle getMenuBounds() {
+    Rectangle result = null;
+    if( getMenuBar() != null ) {
+      Rectangle bounds = getBounds();
+      int hTop = ( style & RWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT : 0;
+      int margin = getMargin();
+      int border = getBorderWidth();
+      result = new Rectangle( margin,
+                              hTop + margin,
+                              bounds.width - margin * 2 - border * 2,
+                              MENU_BAR_HEIGHT );
+    }
+    return result;
+  }
+  
+  // margin of the client area
+  private int getMargin() {
+    return ( style & RWT.TITLE ) != 0 ? 2 : 0;
+  }
+  
   //////////
   // MenuBar
   
@@ -208,6 +225,9 @@ public class Shell extends Composite {
           }
           public void setActiveControl( final Control control ) {
             Shell.this.setActiveControl( control );
+          }
+          public Rectangle getMenuBounds() {
+            return Shell.this.getMenuBounds();
           }
         };
       }

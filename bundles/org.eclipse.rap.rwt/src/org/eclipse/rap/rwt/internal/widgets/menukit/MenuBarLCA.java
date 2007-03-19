@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.internal.widgets.menukit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.graphics.Rectangle;
+import org.eclipse.rap.rwt.internal.widgets.IShellAdapter;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Menu;
 import org.eclipse.rap.rwt.widgets.Shell;
@@ -23,7 +24,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
   // pseudo-property that denotes the shell which uses a menu for its menu bar
   private static final String PROP_SHELL 
     = "menuBarShell";
-  private static final String PROP_SHELL_CLIENT_AREA 
+  private static final String PROP_SHELL_MENU_BOUNDS 
     = "menuBarShellClientArea";
   
   void preserveValues( final Menu menu ) {
@@ -67,31 +68,27 @@ final class MenuBarLCA extends MenuDelegateLCA {
   private static void writeBounds( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
     Shell shell = getShell( menu );
-    Rectangle changedClientArea = null;
     if( shell != null ) {
-      Rectangle clientArea = shell.getClientArea();
-      String prop = PROP_SHELL_CLIENT_AREA;
-      if( WidgetLCAUtil.hasChanged( menu, prop, clientArea, null ) ) {
-        changedClientArea = shell.getClientArea();
+      IShellAdapter shellAdapter
+        = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+      Rectangle menuBounds = shellAdapter.getMenuBounds();
+      String prop = PROP_SHELL_MENU_BOUNDS;
+      if( WidgetLCAUtil.hasChanged( menu, prop, menuBounds, null ) ) {
+        // parameter order of setSpace: x, width, y, height
+        Object[] args = new Object[] {
+          new Integer( menuBounds.x ),
+          new Integer( menuBounds.width ),
+          new Integer( menuBounds.y ),
+          new Integer( menuBounds.height )
+        };
+        writer.set( "space", args );
+        writer.set( "clipWidth", menuBounds.width );
+        writer.set( "clipHeight", menuBounds.height );
       }
-    }
-    if( changedClientArea != null ) { 
-      // parameter order of setSpace: x, width, y, height
-      Object[] args = new Object[] { 
-        new Integer( changedClientArea.x ), 
-        new Integer( changedClientArea.width ), 
-        new Integer( Shell.TITLE_BAR_HEIGHT + 5 ), 
-        new Integer( Shell.MENU_BAR_HEIGHT )
-      };
-      writer.set( "space", args );
-      writer.set( "clipWidth", changedClientArea.width );
-      writer.set( "clipHeight", Shell.MENU_BAR_HEIGHT );
-    }
-    // We can't preserve values in the right phase because client-side changes
-    // wouldn't be noticed this way (perserveValues happens after readData)
-    if( shell != null ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-      adapter.preserve( PROP_SHELL_CLIENT_AREA, shell.getClientArea() );
+      // We can't preserve values in the right phase because client-side changes
+      // wouldn't be noticed this way (perserveValues happens after readData)
+      IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( menu );
+      widgetAdapter.preserve( PROP_SHELL_MENU_BOUNDS, menuBounds );
     }
   }
 }

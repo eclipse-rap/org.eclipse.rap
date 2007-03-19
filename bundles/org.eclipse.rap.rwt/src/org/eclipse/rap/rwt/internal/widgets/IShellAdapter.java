@@ -11,11 +11,15 @@
 
 package org.eclipse.rap.rwt.internal.widgets;
 
+import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.widgets.Control;
 
 
 public interface IShellAdapter {
   
   Control getActiveControl();
+  
   void setActiveControl( Control control );
+  
+  Rectangle getMenuBounds();
 }

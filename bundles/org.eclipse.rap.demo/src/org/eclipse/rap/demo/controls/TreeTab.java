@@ -30,6 +30,7 @@ public class TreeTab extends ExampleTab {
   protected void createStyleControls() {
     createStyleButton( "BORDER" );
     createStyleButton( "CHECK" );
+    createStyleButton( "MULTI" );
     createVisibilityButton();
     createEnablementButton();
     createAddNodeButton();

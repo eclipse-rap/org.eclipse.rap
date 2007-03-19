@@ -22,8 +22,10 @@ public class ShellTab extends ExampleTab {
   private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
   
   private ArrayList shells;
-  private boolean createInvisible;
-  private boolean createAsDialog;
+  private boolean createInvisible = false;
+  private boolean createAsDialog = false;
+  private boolean createMenu = false;
+  private boolean showClientArea = false;
   private Image shellIconImage;
 
   public ShellTab( final TabFolder folder ) {
@@ -44,16 +46,28 @@ public class ShellTab extends ExampleTab {
     createStyleButton( "RESIZE" );
     createStyleButton( "TOOL" );
     createStyleButton( "ON_TOP" );
-    final Button invisibleButton = createPropertyButton( "create invisible" );
+    final Button invisibleButton = createPropertyButton( "Create invisible" );
     invisibleButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         createInvisible = invisibleButton.getSelection();
       }
     } );
-    final Button dialogButton = createPropertyButton( "create as dialog" );
+    final Button dialogButton = createPropertyButton( "Create as dialog" );
     dialogButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         createAsDialog = dialogButton.getSelection();
+      }
+    } );
+    final Button menuButton = createPropertyButton( "Add menu" );
+    menuButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        createMenu = menuButton.getSelection();
+      }
+    } );
+    final Button clientAreaButton = createPropertyButton( "Show client area" );
+    clientAreaButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        showClientArea = clientAreaButton.getSelection();
       }
     } );
   }
@@ -148,11 +162,13 @@ public class ShellTab extends ExampleTab {
    */
   private void createShellContents1( final Shell shell ) {
     shell.setSize( 300, 200 );
+    if( createMenu ) {
+      createMenuBar( shell );
+    }
     final Composite comp1 = new Composite( shell, RWT.NONE );
     final Composite comp2 = new Composite( shell, RWT.NONE );
     comp2.moveAbove( comp1 );
-    // can be used to test client area bounds
-    if( false ) {
+    if( showClientArea ) {
       comp1.setBackground( Color.getColor( 200, 0, 0 ) );
       comp2.setBackground( Color.getColor( 200, 200, 200 ) );
     }
@@ -184,6 +200,9 @@ public class ShellTab extends ExampleTab {
    * 140 x 40 px. Can be used to test the Shell.computeTrim mehtod.
    */
   private void createShellContents2( final Shell shell ) {
+    if( createMenu ) {
+      createMenuBar( shell );
+    }
     RowLayout layout = new RowLayout();
     layout.marginLeft = 0;
     layout.marginTop = 0;
@@ -199,6 +218,31 @@ public class ShellTab extends ExampleTab {
         shell.close();
       }
     } );
+  }
+  
+  private void createMenuBar( final Shell shell ) {
+    Menu menuBar = new Menu( shell, RWT.BAR );
+    shell.setMenuBar( menuBar );
+    MenuItem fileItem = new MenuItem( menuBar, RWT.CASCADE );
+    fileItem.setText( "File" );
+    Menu fileMenu = new Menu( shell, RWT.DROP_DOWN );
+    fileItem.setMenu( fileMenu );
+    new MenuItem( fileMenu, RWT.PUSH ).setText( "New" );
+    new MenuItem( fileMenu, RWT.PUSH ).setText( "Open" );
+    new MenuItem( fileMenu, RWT.PUSH ).setText( "Close" );
+    MenuItem editItem = new MenuItem( menuBar, RWT.CASCADE );
+    editItem.setText( "Edit" );
+    Menu editMenu = new Menu( shell, RWT.DROP_DOWN );
+    editItem.setMenu( editMenu );
+    new MenuItem( editMenu, RWT.PUSH ).setText( "Copy" );
+    new MenuItem( editMenu, RWT.PUSH ).setText( "Paste" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 3" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 4" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 5" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 6" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 7" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 8" );
+    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 9" );
   }
   
   private Point getNextShellLocation() {
