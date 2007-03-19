@@ -98,11 +98,12 @@ public class WidgetTreeVisitor_Test extends TestCase {
     final int[] count = {
       0
     };
+    // Ensure that regards in which order columns and or items are created
+    // the order is first column then items
     final Object[] elements = new Object[]{
-      shell, table, tableItem, tableColumn
+      shell, table, tableColumn, tableItem
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-
       public boolean doVisit( final Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
@@ -112,7 +113,6 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-
       public boolean doVisit( final Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;

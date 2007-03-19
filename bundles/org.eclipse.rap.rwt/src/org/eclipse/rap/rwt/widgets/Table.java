@@ -56,11 +56,11 @@ public class Table extends Composite {
       }
     }
     public Item[] getItems() {
-      Item[] iTable = itemHolder.getItems();
-      Item[] iColumn = columnHolder.getItems();
-      Item[] result = new Item[ iTable.length + iColumn.length ];
-      System.arraycopy( iTable, 0, result, 0, iTable.length );
-      System.arraycopy( iColumn, 0, result, iTable.length, iColumn.length );
+      Item[] columns = columnHolder.getItems();
+      Item[] items = itemHolder.getItems();
+      Item[] result = new Item[ columns.length + items.length ];
+      System.arraycopy( columns, 0, result, 0, columns.length );
+      System.arraycopy( items, 0, result, columns.length, items.length );
       return result;
     }
   }
