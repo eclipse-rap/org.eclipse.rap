@@ -50,7 +50,7 @@ class RowLayoutTab extends ExampleTab {
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
     Composite comp = new Composite( parent, RWT.NONE );
-    comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
+    comp.setBackground( BG_COLOR_BROWN );
     RowLayout layout = new RowLayout( style );
     layout.wrap = propWrap;
     comp.setLayout( layout );

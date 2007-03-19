@@ -17,8 +17,10 @@ import org.eclipse.rap.rwt.graphics.Rectangle;
 
 public class Group extends Composite {
   
-  private static final int CLIENT_INSET = 6;
-  private static final int FONT_HEIGHT = 15;
+  private static final int TRIM_LEFT = 5;
+  private static final int TRIM_TOP = 15;
+  private static final int TRIM_RIGHT = 5;
+  private static final int TRIM_BOTTOM = 5;
 
   private String text = "";
 
@@ -41,17 +43,25 @@ public class Group extends Composite {
     checkWidget();
     return text;
   }
-  
+    
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    int x = CLIENT_INSET;
-    int y = FONT_HEIGHT;
-    int width = Math.max( 0, bounds.width - CLIENT_INSET * 2 );
-    int height = Math.max( 0, bounds.height - y - CLIENT_INSET );
-    return new Rectangle( x, y, width, height );
+    int width = Math.max( 0, bounds.width - TRIM_LEFT - TRIM_RIGHT );
+    int height = Math.max( 0, bounds.height - TRIM_TOP - TRIM_BOTTOM );
+    return new Rectangle( TRIM_LEFT, TRIM_TOP, width, height );
   }
-
+  
+  public Rectangle computeTrim( final int x,
+                                final int y,
+                                final int width,
+                                final int height ) {
+    return super.computeTrim( x - TRIM_LEFT,
+                              y - TRIM_TOP,
+                              width + TRIM_LEFT + TRIM_RIGHT,
+                              height + TRIM_TOP + TRIM_BOTTOM );
+  }
+  
   private static int checkStyle( final int style ) {
     int result = style | RWT.NO_FOCUS;
     /*

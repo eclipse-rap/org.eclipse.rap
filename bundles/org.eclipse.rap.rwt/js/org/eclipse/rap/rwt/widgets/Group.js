@@ -32,7 +32,6 @@ qx.Proto._onChangeEnabled = function( evt ) {
 qx.Proto._getLabelObject = function() {
   if( this.getLegendObject().getLabelObject() == null ) {
     this.setLegend( "(empty)" );
-    this.getLegendObject().setFont( value );
     this.setLegend( "" );
   }
   return this.getLegendObject().getLabelObject();

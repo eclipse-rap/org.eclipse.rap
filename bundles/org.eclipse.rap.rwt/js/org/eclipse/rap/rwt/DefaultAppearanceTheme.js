@@ -1689,17 +1689,20 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   },
 
   "field-set-frame" : {
+    setup : function() {
+      // TODO [rst] share border objects
+      this.border
+        = new qx.renderer.border.Border( 1,
+                                         qx.constant.Style.BORDER_SOLID,
+                                         "#aca899" );
+    },
     initial : function(vTheme) {
       return {
         top : 8,
         left : 2,
         right : 2,
         bottom : 2,
-        paddingTop : 12,
-        paddingRight : 9,
-        paddingBottom : 12,
-        paddingLeft : 9,
-        border : qx.renderer.border.BorderPresets.getInstance().groove
+        border : this.border
       }
     }
   },
