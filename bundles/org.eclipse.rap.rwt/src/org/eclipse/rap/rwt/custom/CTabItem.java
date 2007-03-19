@@ -42,7 +42,7 @@ public class CTabItem extends Item {
   int height;
   
   public CTabItem( final CTabFolder parent, final int style ) {
-    this( checkParent( parent ), style, parent.getItemCount() );
+    this( parent, style, checkNull( parent ).getItemCount() );
   }
 
   public CTabItem( final CTabFolder parent, final int style, final int index ) {
@@ -235,7 +235,7 @@ public class CTabItem extends Item {
   //////////////////
   // Helping methods
   
-  private static CTabFolder checkParent( final CTabFolder parent ) {
+  private static CTabFolder checkNull( final CTabFolder parent ) {
     if( parent == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
