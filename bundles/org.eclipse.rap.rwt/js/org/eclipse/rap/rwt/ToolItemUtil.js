@@ -14,38 +14,44 @@
  */
 qx.OO.defineClass( "org.eclipse.rap.rwt.ToolItemUtil" );
 
-
-org.eclipse.rap.rwt.ToolItemUtil.createSeparator
-  = function( id , parent )
-{
-  var push = new qx.ui.toolbar.Separator ();
-  parent.add( push );
-  org.eclipse.rap.rwt.WidgetManager.getInstance().add ( push, id, false );
-  push.setParent( parent );
+qx.Class.createSeparator = function( id , parent, isFlat ) {
+  var sep = new qx.ui.toolbar.Separator();
+  var line = sep.getFirstChild();
+  sep.setUserData( "line", line );
+  if( isFlat ) {
+    sep.addState( "rwt_FLAT" );
+    line.addState( "rwt_FLAT" );
+  }
+  org.eclipse.rap.rwt.WidgetManager.getInstance().add( sep, id, false );
+  sep.setParent( parent );
+  parent.add( sep );
 };
 
-org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator
-  = function( id , parent , width, control)
-{
+qx.Class.setControlForSeparator = function( id, parent, width, control ) {
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  var push = widgetManager.findWidgetById( id );
+  var sep = widgetManager.findWidgetById( id );
   if( width > 0 ) {
-    push.setWidth( width );
+    sep.setWidth( width );
   }
+  var oldControl = sep.getUserData( "control" );
+  if( oldControl ) {
+    sep.remove( oldControl );
+    // TODO [rst] destroy old control?
+  }
+  sep.setUserData( "control", control );
+  var line = sep.getUserData( "line" );
   if( control ) {
-    if( width > 0 ) {
-      control.setWidth( width );
-    }
     var index = parent.indexOf( control );
     parent.removeAt( index );
-    push.add( control );
+    sep.add( control );
+    line.setVisibility( false );
+  } else {
+    line.setVisibility( true );
   }
-  parent.add( push );
+  parent.add( sep );
 };
 
-org.eclipse.rap.rwt.ToolItemUtil.createRadio
-  = function( id, parent, selected, neighbour )
-{
+qx.Class.createRadio = function( id, parent, selected, neighbour ) {
   var radio = new qx.ui.toolbar.RadioButton();
   radio.setDisableUncheck( true );
   parent.add( radio );
@@ -54,15 +60,15 @@ org.eclipse.rap.rwt.ToolItemUtil.createRadio
   } else {
     radio.radioManager = new qx.manager.selection.RadioManager();
   }
-  radio.radioManager.add ( radio );
+  radio.radioManager.add( radio );
   if ( selected ) {
-    radio.radioManager.setSelected ( radio ) ;
+    radio.radioManager.setSelected( radio ) ;
   }
   org.eclipse.rap.rwt.WidgetManager.getInstance().add ( radio, id, false );
   radio.setParent( parent );
 };
 
-org.eclipse.rap.rwt.ToolItemUtil.createPush = function( id, parent, isFlat ) {
+qx.Class.createPush = function( id, parent, isFlat ) {
   var push = new qx.ui.toolbar.Button();
   if( isFlat ) {
     push.addState( "rwt_FLAT" );
@@ -71,8 +77,7 @@ org.eclipse.rap.rwt.ToolItemUtil.createPush = function( id, parent, isFlat ) {
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id, false );
 };
 
-org.eclipse.rap.rwt.ToolItemUtil.createDropDown = function( id, parent, isFlat ) 
-{
+qx.Class.createDropDown = function( id, parent, isFlat ) {
   org.eclipse.rap.rwt.ToolItemUtil.createPush( id, parent, isFlat );
   var dropDown = new qx.ui.toolbar.Button( "", "widget/arrows/down.gif" );
   dropDown.setUserData( "buttonId", id );
@@ -86,8 +91,7 @@ org.eclipse.rap.rwt.ToolItemUtil.createDropDown = function( id, parent, isFlat )
                                                        false );
 };
 
-org.eclipse.rap.rwt.ToolItemUtil.updateDropDownListener = function( id, remove ) 
-{
+qx.Class.updateDropDownListener = function( id, remove ) {
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var dropDown = widgetManager.findWidgetById( id );
   var listener = org.eclipse.rap.rwt.ToolItemUtil._dropDownSelected;
@@ -98,14 +102,13 @@ org.eclipse.rap.rwt.ToolItemUtil.updateDropDownListener = function( id, remove )
   }
 };
 
-org.eclipse.rap.rwt.ToolItemUtil.createCheck = function( id, parent ) {
+qx.Class.createCheck = function( id, parent ) {
   var push = new qx.ui.toolbar.CheckBox();
   parent.add( push );
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( push, id, false );
 };
 
-org.eclipse.rap.rwt.ToolItemUtil._dropDownSelected = function( evt ) { 
-evt.getTarget().debug( "CALLED!")  ;
+qx.Class._dropDownSelected = function( evt ) { 
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
   var dropDown = evt.getTarget();
   var dropDownId = widgetManager.findIdByWidget( dropDown );
@@ -121,6 +124,3 @@ evt.getTarget().debug( "CALLED!")  ;
                                                   0,
                                                   0 );
 };
-
-
-

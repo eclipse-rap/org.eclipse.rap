@@ -87,6 +87,7 @@ public class ToolItem extends Item {
     if( ( style & RWT.SEPARATOR ) != 0 ) {
       this.control = control;
     }
+    resizeControl();
   }
 
   public Control getControl() {
@@ -134,6 +135,7 @@ public class ToolItem extends Item {
     checkWidget();
     if( ( style & RWT.SEPARATOR ) != 0 && width >= 0 ) {
       this.width = width;
+      resizeControl();
     }
   }
   
@@ -187,8 +189,20 @@ public class ToolItem extends Item {
   //////////////////
   // Helping methods
 
+  private void resizeControl() {
+    if( control != null && !control.isDisposed() ) {
+      Rectangle itemRect = getBounds();
+      control.setSize( itemRect.width, itemRect.height );
+      // In contrast to SWT, placement is relative to the toolitem. 
+      Rectangle rect = control.getBounds();
+      int xoff = ( itemRect.width - rect.width ) / 2;
+      int yoff = ( itemRect.height - rect.height ) / 2;
+      control.setLocation( xoff, yoff );
+    }
+  }
+
   private void computeInitialWidth() {
-    if( ( style & RWT.SEPARATOR ) == 0 ) {
+    if( ( style & RWT.SEPARATOR ) != 0 ) {
       width = 8;
     } else {
       width = DEFAULT_WIDTH;

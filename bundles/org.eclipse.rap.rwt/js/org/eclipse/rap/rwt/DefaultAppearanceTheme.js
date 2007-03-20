@@ -209,18 +209,18 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.border_pressed = qx.renderer.border.BorderPresets.getInstance().thinInset;
       this.border_BORDER = qx.renderer.border.BorderPresets.getInstance().outset;
       this.border_BORDER_pressed = qx.renderer.border.BorderPresets.getInstance().inset;
-      this.border_FLAT = new qx.renderer.border.BorderObject(1, "solid", "black");
+      this.border_FLAT = new qx.renderer.border.BorderObject( 1, "solid", "black" );
     },
 
-    initial : function(vTheme) {
+    initial : function( vTheme ) {
       return vTheme.initialFrom("atom");
     },
 
-    state : function(vTheme, vStates) {
+    state : function( vTheme, vStates ) {
       var vReturn = {};
       vReturn.backgroundColor = vStates.over ? this.bgcolor_over : this.bgcolor_default;
       
-      if (vStates.rwt_FLAT) {
+      if( vStates.rwt_FLAT ) {
         vReturn.border = this.border_FLAT;
       } else if (vStates.rwt_BORDER) {
         vReturn.border = vStates.pressed || vStates.checked ? this.border_BORDER_pressed : this.border_BORDER;
@@ -228,13 +228,12 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         vReturn.border = vStates.pressed || vStates.checked ? this.border_pressed : this.border;
       }
 
-      if (vStates.pressed) {
+      if( vStates.pressed ) {
         vReturn.paddingTop = 4;
         vReturn.paddingRight = 3;
         vReturn.paddingBottom = 2;
         vReturn.paddingLeft = 5;
-      }
-      else {
+      } else {
         vReturn.paddingTop = vReturn.paddingBottom = 3;
         vReturn.paddingRight = vReturn.paddingLeft = 4;
       }
@@ -292,7 +291,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   },
 
   "toolbar-part-handle-line" : {
-    initial : function(vTheme) {
+    initial : function( vTheme ) {
       return {
         top : 2,
         left : 3,
@@ -304,18 +303,9 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   },
 
   "toolbar-separator" : {
-    initial : function(vTheme) {
+    initial : function( vTheme ) {
       return {
         width : 8
-      }
-    },
-    
-    states : function(vTheme, vStates) {
-      return {
-        // TODO change separator visiblity
-        //      does this work?
-        visibility : vStates.rwt_FLAT ? true : false,
-        width: vStates.rwt_FLAT ? 8 : 16
       }
     }
   },
@@ -325,25 +315,30 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.border_none = qx.renderer.border.BorderPresets.getInstance().none;
       var b = this.border = new qx.renderer.border.BorderObject;
 
-      b.setLeftColor("threedshadow");
-      b.setRightColor("threedhighlight");
+      b.setLeftColor( "threedshadow" );
+      b.setRightColor( "threedhighlight" );
 
-      b.setLeftStyle(qx.constant.Style.BORDER_SOLID);
-      b.setRightStyle(qx.constant.Style.BORDER_SOLID);
+      b.setLeftStyle( qx.constant.Style.BORDER_SOLID );
+      b.setRightStyle( qx.constant.Style.BORDER_SOLID );
 
-      b.setLeftWidth(1);
-      b.setRightWidth(1);
-      b.setTopWidth(0);
-      b.setBottomWidth(0);
+      b.setLeftWidth( 1 );
+      b.setRightWidth( 1 );
+      b.setTopWidth( 0 );
+      b.setBottomWidth( 0 );
     },
 
-    initial : function(vTheme) {
+    initial : function( vTheme ) {
       return {
         top : 2,
-        left: 2,
+        left: 3,
         width : 2,
-        bottom : 2,
-        border : this.border
+        bottom : 2
+      }
+    },
+    
+    state : function( vTheme, vStates ) {
+      return {
+        border : vStates.rwt_FLAT ? this.border : this.border_none
       }
     }
   },

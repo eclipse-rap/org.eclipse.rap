@@ -19,11 +19,10 @@ import org.eclipse.rap.rwt.widgets.ToolItem;
 final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
-  private static final String CREATE_SEPERATOR = 
+  private static final String CREATE_SEPARATOR = 
     "org.eclipse.rap.rwt.ToolItemUtil.createSeparator";
-  private static final String SET_CONTROL_FOR_SEPERATOR = 
+  private static final String SET_CONTROL_FOR_SEPARATOR = 
     "org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator";
-  
 
   void readData( final ToolItem toolItem ) {
     // do nothing
@@ -33,29 +32,35 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     Object[] args = new Object[]{
       WidgetUtil.getId( toolItem ),
-      toolItem.getParent()
+      toolItem.getParent(),
+      Boolean.valueOf( ( toolItem.getParent().getStyle() & RWT.FLAT  ) != 0 )
     };
-    writer.callStatic( CREATE_SEPERATOR, args );
-    if ((toolItem.getParent().getStyle() & RWT.FLAT) == 0) {
-      writer.set( "visibility", false );
-    }
+    writer.callStatic( CREATE_SEPARATOR, args );
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
     final JSWriter writer = JSWriter.getWriterFor( toolItem );
-    final Object[] args = new Object[]{
-      WidgetUtil.getId( toolItem ),
-      toolItem.getParent(),
-      new Integer( toolItem.getWidth() ),
-      toolItem.getControl()
-    };
+    // TODO [rst] If control is set to null, this change must also be rendered!
     if( toolItem.getControl() != null ) {
       IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem.getControl() );
-      adapter.setRenderRunnable( new IRenderRunnable() {
-        public void afterRender() throws IOException {
-          writer.callStatic( SET_CONTROL_FOR_SEPERATOR, args );
-        }
-      } );
+      // TODO [rst] Control is now preserved in ToolItemLCA - change this?
+      if( WidgetLCAUtil.hasChanged( toolItem,
+                                    ToolItemLCA.PROP_CONTROL,
+                                    toolItem.getControl(),
+                                    null ) )
+      {
+        final Object[] args = new Object[]{
+          WidgetUtil.getId( toolItem ),
+          toolItem.getParent(),
+          new Integer( toolItem.getWidth() ),
+          toolItem.getControl()
+        };
+        adapter.setRenderRunnable( new IRenderRunnable() {
+          public void afterRender() throws IOException {
+            writer.callStatic( SET_CONTROL_FOR_SEPARATOR, args );
+          }
+        } );
+      }
     }
   }
 }

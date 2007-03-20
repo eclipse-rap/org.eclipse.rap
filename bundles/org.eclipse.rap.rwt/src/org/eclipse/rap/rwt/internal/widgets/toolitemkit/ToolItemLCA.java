@@ -24,6 +24,7 @@ import org.eclipse.rap.rwt.widgets.Widget;
 public class ToolItemLCA extends AbstractWidgetLCA {
   
   private static final String PROP_FONT = "font";
+  static final String PROP_CONTROL = "control";
 
   private final static ToolItemDelegateLCA PUSH 
     = new PushToolItemDelegateLCA();
@@ -62,6 +63,7 @@ public class ToolItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_FONT, toolItem.getParent().getFont() );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( toolItem ) ) );
+    adapter.preserve( PROP_CONTROL, toolItem.getControl() );
   }
 
   public void readData( final Widget widget ) {

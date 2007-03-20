@@ -55,6 +55,14 @@ public class ToolBarTab extends ExampleTab {
     dropDownItem.setText( "select" );
     dropDownItem.setImage( imageNewProj );
     new ToolItem( toolBar, RWT.SEPARATOR );
+
+    // Text item
+    ToolItem itemText = new ToolItem( toolBar, RWT.SEPARATOR );
+    Text text = new Text( toolBar, RWT.BORDER );
+    text.setText( "A Text Field" );
+    itemText.setControl( text );
+    itemText.setWidth( 100 );
+
     ToolItem item4 = new ToolItem( toolBar, RWT.CHECK );
     item4.setImage( imageSearch );
     ToolItem item5 = new ToolItem( toolBar, RWT.RADIO );
