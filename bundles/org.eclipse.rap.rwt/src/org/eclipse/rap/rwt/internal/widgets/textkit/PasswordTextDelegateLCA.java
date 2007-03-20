@@ -30,7 +30,6 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
     // order is crucial: first read text then read what part of it is selected
     TextLCAUtil.readText( text );
     TextLCAUtil.readSelection( text );
-    TextLCAUtil.readModifyEvent( text );
   }
 
   void renderInitialization( final Text text ) throws IOException {

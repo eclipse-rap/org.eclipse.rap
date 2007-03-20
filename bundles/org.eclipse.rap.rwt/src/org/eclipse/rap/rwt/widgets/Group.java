@@ -55,7 +55,8 @@ public class Group extends Composite {
   public Rectangle computeTrim( final int x,
                                 final int y,
                                 final int width,
-                                final int height ) {
+                                final int height ) 
+  {
     return super.computeTrim( x - TRIM_LEFT,
                               y - TRIM_TOP,
                               width + TRIM_LEFT + TRIM_RIGHT,

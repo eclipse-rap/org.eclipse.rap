@@ -77,16 +77,9 @@ final class TextLCAUtil {
     text.setSelection( selection );
   }
   
-  static void readModifyEvent( final Text text ) {
-//    if( WidgetLCAUtil.wasEventSent( text, JSConst.EVENT_MODIFY_TEXT ) ) {
-//      ModifyEvent event = new ModifyEvent( text );
-//      event.processEvent();
-//    }
-  }
-
   static void writeReadOnly( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    Boolean newValue = Boolean.valueOf( ! text.getEditable() );
+    Boolean newValue = Boolean.valueOf( !text.getEditable() );
     writer.set( PROP_READONLY, "readOnly", newValue, Boolean.FALSE );
   }
 

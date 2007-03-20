@@ -127,18 +127,19 @@ public class Text extends Control {
     selection.y = text.length();
   }
   
-  /////////////////
+  ///////////
   // Editable
 
-  public void setEditable( boolean editable ) {
-    checkWidget ();
+  public void setEditable( final boolean editable ) {
+    checkWidget();
     style &= ~RWT.READ_ONLY;
-    if( !editable )
-      style |= RWT.READ_ONLY; 
+    if( !editable ) {
+      style |= RWT.READ_ONLY;
+    }
   }
-  
+
   public boolean getEditable() {
-    checkWidget ();
+    checkWidget();
     return ( style & RWT.READ_ONLY ) == 0;
   }
   
