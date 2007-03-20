@@ -38,7 +38,6 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
     writer.newWidget( "qx.ui.form.PasswordField" );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeNoSpellCheck( text );
-    TextLCAUtil.writeReadOnly( text );
   }
 
   void renderChanges( final Text text ) throws IOException {
@@ -48,6 +47,7 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
     if( WidgetLCAUtil.hasChanged( text, TextLCAUtil.PROP_TEXT, newValue, "" ) ) {
       writer.set( "value", TextLCAUtil.stripNewlines( newValue ) );
     }
+    TextLCAUtil.writeReadOnly( text );
     TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );

@@ -27,6 +27,7 @@ final class TextLCAUtil {
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_SELECTION = "selection";
   static final String PROP_MODIFY_LISTENER = "modifyListener";
+  static final String PROP_READONLY = "readonly";
 
   private static final Integer DEFAULT_TEXT_LIMIT 
     = new Integer( Text.MAX_TEXT_LIMIT );
@@ -53,6 +54,7 @@ final class TextLCAUtil {
     adapter.preserve( PROP_SELECTION, text.getSelection() );
     boolean hasListener = ModifyEvent.hasListener( text );
     adapter.preserve( PROP_MODIFY_LISTENER, Boolean.valueOf( hasListener ) );
+    adapter.preserve( PROP_READONLY, Boolean.valueOf( ! text.getEditable() ) );
   }
   
   static void readText( final Text text ) {
@@ -84,9 +86,8 @@ final class TextLCAUtil {
 
   static void writeReadOnly( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    if( ( text.getStyle() & RWT.READ_ONLY ) != 0 ) {
-      writer.set( "readOnly", true );
-    }
+    Boolean newValue = Boolean.valueOf( ! text.getEditable() );
+    writer.set( PROP_READONLY, "readOnly", newValue, Boolean.FALSE );
   }
 
   static void writeNoSpellCheck( final Text text ) throws IOException {

@@ -15,7 +15,6 @@ import java.io.IOException;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Text;
 
-
 final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
   
   void preserveValues( final Text text ) {
@@ -39,7 +38,6 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     writer.newWidget( "qx.ui.form.TextField" );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeNoSpellCheck( text );
-    TextLCAUtil.writeReadOnly( text );
   }
 
   void renderChanges( final Text text ) throws IOException {
@@ -50,6 +48,7 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     {
       writer.set( "value", TextLCAUtil.stripNewlines( newValue ) );
     }
+    TextLCAUtil.writeReadOnly( text );
     TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );

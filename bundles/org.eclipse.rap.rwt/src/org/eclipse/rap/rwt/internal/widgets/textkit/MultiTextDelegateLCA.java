@@ -42,7 +42,6 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     writer.newWidget( "qx.ui.form.TextArea" );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeNoSpellCheck( text );
-    TextLCAUtil.writeReadOnly( text );
     writer.set( "wrap", ( text.getStyle() & RWT.WRAP ) != 0 );
   }
 
@@ -50,6 +49,7 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( text );
     ControlLCAUtil.writeChanges( text );
     writer.set( TextLCAUtil.PROP_TEXT, "value", text.getText(), "" );
+    TextLCAUtil.writeReadOnly( text );
 //    TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );

@@ -126,7 +126,22 @@ public class Text extends Control {
     selection.x = 0;
     selection.y = text.length();
   }
+  
+  /////////////////
+  // Editable
 
+  public void setEditable( boolean editable ) {
+    checkWidget ();
+    style &= ~RWT.READ_ONLY;
+    if( !editable )
+      style |= RWT.READ_ONLY; 
+  }
+  
+  public boolean getEditable() {
+    checkWidget ();
+    return ( style & RWT.READ_ONLY ) == 0;
+  }
+  
   ////////////////////
   // Widget dimensions
   
@@ -181,7 +196,7 @@ public class Text extends Control {
     checkWidget();
     ModifyEvent.removeListener( this, listener );
   }
-
+  
   ///////////////////////////////////////
   // Helping method to adjust style flags 
   

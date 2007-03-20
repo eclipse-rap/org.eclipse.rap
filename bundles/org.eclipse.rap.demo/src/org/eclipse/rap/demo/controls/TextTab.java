@@ -37,6 +37,15 @@ public class TextTab extends ExampleTab {
     createEnablementButton();
     createFontChooser();
     createLimitText( styleComp );
+    final Button editableButton = createPropertyButton( "Editable" );
+    editableButton.setSelection( true );
+    editableButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        boolean editable = editableButton.getSelection();
+        simpleText.setEditable( editable );
+        modifyText.setEditable( editable );
+      }
+    } );
   }
 
   protected void createExampleControls( final Composite parent ) {
