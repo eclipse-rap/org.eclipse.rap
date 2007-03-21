@@ -240,7 +240,9 @@ public class ShellTab extends ExampleTab {
     // file menu
     Menu fileMenu = new Menu( shell, RWT.DROP_DOWN );
     fileItem.setMenu( fileMenu );
-    new MenuItem( fileMenu, RWT.PUSH ).setText( "New" );
+    MenuItem newItem = new MenuItem( fileMenu, RWT.PUSH );
+    newItem.setText( "New" );
+    newItem.setImage( Image.find( "resources/newfile_wiz.gif" ) );
     new MenuItem( fileMenu, RWT.PUSH ).setText( "Open" );
     new MenuItem( fileMenu, RWT.PUSH ).setText( "Close" );
     // edit menu
