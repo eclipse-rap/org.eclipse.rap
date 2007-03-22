@@ -102,7 +102,46 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
   }
   
+  public void readData( final Display display ) {
+    Rectangle oldBounds = display.getBounds();
+    readBounds( display );
+    readFocusControl( display );
+    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+      public boolean doVisit( final Widget widget ) {
+        IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
+        adapter.readData( widget );
+        return true;
+      }
+    };
+    Shell[] shells = display.getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      Composite shell = shells[ i ];
+      WidgetTreeVisitor.accept( shell, visitor );
+    }
+    
+    // TODO: [fappel] since there is no possibility yet to determine whether
+    //                a shell is maximized, we use this hack to adjust 
+    //                the bounds of a maximized shell in case of a document
+    //                resize event
+    for( int i = 0; i < shells.length; i++ ) {
+      if( shells[ i ].getBounds().equals( oldBounds ) ) {
+        shells[ i ].setBounds( display.getBounds() );
+      }
+    }
+  }
+  
+  public void processAction( final Display display ) {
+    ProcessActionRunner.execute();
+    RWTEvent.processScheduledEvents();
+  }
+
   public void render( final Display display ) throws IOException {
+    // TODO [rh] HACK: This is to ensure that the first Display has id 'w1'. The 
+    //      current IIndexTemplate implementation relies on this fact.
+    //      see org.eclipse.rap.ui.internal.servlet.IndexTemplate and remove
+    //      this when a proper solution is in place.
+    DisplayUtil.getId( display );
+
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter out = stateInfo.getResponseWriter();
     HttpServletResponse response = ContextProvider.getResponse();
@@ -193,39 +232,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
   
-  public void readData( final Display display ) {
-    Rectangle oldBounds = display.getBounds();
-    readBounds( display );
-    readFocusControl( display );
-    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
-        IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
-        adapter.readData( widget );
-        return true;
-      }
-    };
-    Shell[] shells = display.getShells();
-    for( int i = 0; i < shells.length; i++ ) {
-      Composite shell = shells[ i ];
-      WidgetTreeVisitor.accept( shell, visitor );
-    }
-    
-    // TODO: [fappel] since there is no possibility yet to determine whether
-    //                a shell is maximized, we use this hack to adjust 
-    //                the bounds of a maximized shell in case of a document
-    //                resize event
-    for( int i = 0; i < shells.length; i++ ) {
-      if( shells[ i ].getBounds().equals( oldBounds ) ) {
-        shells[ i ].setBounds( display.getBounds() );
-      }
-    }
-  }
-  
-  public void processAction( final Display display ) {
-    ProcessActionRunner.execute();
-    RWTEvent.processScheduledEvents();
-  }
-
   /////////////////////////////
   // Helping methods for render
 
