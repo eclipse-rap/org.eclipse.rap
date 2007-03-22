@@ -32,7 +32,6 @@ qx.Proto.dispose = function() {
 }
 
 qx.Proto.setHBarSelection = function( value ) {
-//  this._materialize();
   if( !this.isMaterialized() || !this.isCreated() ) {
     this._initialScrollLeft = value;
     this.addEventListener( "create", this._onAppear )
@@ -59,14 +58,11 @@ qx.Proto.setHBarMaximum = function( value ) {
 qx.Proto._materialize = function() {
   if( !this.isMaterialized() || !this.isCreated() ) {
     qx.ui.core.Widget.flushGlobalQueues();    
-this.debug( "materialized: " + this.isMaterialized() );    
-this.debug( "created: " + !this.isCreated() );    
   }
 }
 
 qx.Proto._onAppear = function( evt ) {
   if( this._initialScrollLeft != null ) {
-this.debug( "set initial scroll left: " + this._initialScrollLeft );
     this.setScrollLeft( this._initialScrollLeft );
     this._lastScrollLeft = this._initialScrollLeft;
   }
@@ -79,16 +75,18 @@ this.debug( "set initial scroll left: " + this._initialScrollLeft );
  * This is a workaround, it seems that there is no 'scroll event'.
  */
 qx.Proto._onRequestSend = function( evt ) {
-  var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  var id = wm.findIdByWidget( this );
-  var scrollX = this.getScrollLeft();
-  if( scrollX != this._lastScrollLeft ) {
-    evt.getTarget().addParameter( id + ".horizontalBar.selection", scrollX );
-    this._lastScrollLeft = scrollX;
-  }
-  var scrollY = this.getScrollTop();
-  if( scrollY != this._lastScrollTop ) {
-    evt.getTarget().addParameter( id + ".verticalBar.selection", scrollY );
-    this._lastScrollTop = scrollY;
+  if( this.isCreated() ) {
+    var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = wm.findIdByWidget( this );
+    var scrollX = this.getScrollLeft();
+    if( scrollX != this._lastScrollLeft ) {
+      evt.getTarget().addParameter( id + ".horizontalBar.selection", scrollX );
+      this._lastScrollLeft = scrollX;
+    }
+    var scrollY = this.getScrollTop();
+    if( scrollY != this._lastScrollTop ) {
+      evt.getTarget().addParameter( id + ".verticalBar.selection", scrollY );
+      this._lastScrollTop = scrollY;
+    }
   }
 }
