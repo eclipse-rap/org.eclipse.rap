@@ -22,22 +22,26 @@ import org.eclipse.rap.rwt.widgets.Widget;
 
 public class ComboLCA extends AbstractWidgetLCA {
   
-  private static final Pattern NEWLINE_PATTERN 
-    = Pattern.compile( "\n" );
+  private static final Pattern NEWLINE_PATTERN = Pattern.compile( "\n" );
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
+  private static final Integer DEFAULT_SELECTION = new Integer( -1 );
   
   // Constants for ComboUtil.js
   private static final String WIDGET_SELECTED = 
     "org.eclipse.rap.rwt.ComboUtil.widgetSelected";
   private static final String CREATE_COMBOBOX_ITEMS = 
     "org.eclipse.rap.rwt.ComboUtil.createComboBoxItems";
+  private static final String SELECT_COMBOBOX_ITEM = 
+    "org.eclipse.rap.rwt.ComboUtil.selectComboBoxItem";
   private static final String PROP_ITEMS = "items";
+  private static final String PROP_SELECTION = "selection";
   
   private static final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
                           WIDGET_SELECTED, 
                           JSListenerType.ACTION );
+
 
   public void preserveValues( final Widget widget ) {
     Combo combo = ( Combo )widget;
@@ -45,6 +49,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     String[] items = combo.getItems();
     adapter.preserve( PROP_ITEMS, items );
+    Integer selection = new Integer( combo.getSelectionIndex() );
+    adapter.preserve( PROP_SELECTION, selection );
   }
   
   public void readData( final Widget widget ) {
@@ -70,6 +76,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     Combo combo = ( Combo )widget;
     ControlLCAUtil.writeChanges( combo );
     writeItems( combo );
+    writeSelected( combo );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -92,5 +99,18 @@ public class ComboLCA extends AbstractWidgetLCA {
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( combo ) );
+  }
+  
+  private static void writeSelected( final Combo combo ) throws IOException {
+    Integer newValue = new Integer( combo.getSelectionIndex() );
+    if( WidgetLCAUtil.hasChanged( combo,
+                                  PROP_SELECTION,
+                                  newValue,
+                                  DEFAULT_SELECTION ) )
+    {
+      JSWriter writer = JSWriter.getWriterFor( combo );
+      Object[] args = new Object[]{ WidgetUtil.getId( combo ), newValue };
+      writer.callStatic( SELECT_COMBOBOX_ITEM, args );
+    }
   }
 }

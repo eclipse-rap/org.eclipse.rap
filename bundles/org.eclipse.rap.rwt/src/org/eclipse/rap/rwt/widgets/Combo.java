@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.events.SelectionListener;
+import org.eclipse.rap.rwt.graphics.Point;
 
 // TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
 //      are aded/removed
@@ -108,7 +109,40 @@ public class Combo extends Scrollable {
     checkWidget();
     return model.getItemCount();
   }
+  
+  ////////////////////
+  // Widget dimensions
 
+  public Point computeSize( final int wHint,
+                            final int hHint,
+                            final boolean changed )
+  {
+    checkWidget();
+    int width = 0;
+    int height = 0;
+    if( wHint == RWT.DEFAULT ) {
+      // TODO [rst] resonable implementation
+      width = 85;
+    }
+    if( wHint == RWT.DEFAULT ) {
+      // TODO [rst] resonable implementation
+      height = 22;
+    }
+    if( width == 0 ) {
+      width = DEFAULT_WIDTH;
+    }
+    if( height == 0 ) {
+      height = DEFAULT_HEIGHT;
+    }
+    if( wHint != RWT.DEFAULT ) {
+      width = wHint;
+    }
+    if( hHint != RWT.DEFAULT ) {
+      height = hHint;
+    }
+    return new Point( width, height );
+  }
+  
   /////////////////////////////////////////
   // Listener registration/de-registration
 

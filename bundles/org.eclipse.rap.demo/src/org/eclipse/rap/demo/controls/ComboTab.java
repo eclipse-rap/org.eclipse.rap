@@ -9,8 +9,8 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class ComboTab extends ExampleTab {
@@ -26,13 +26,24 @@ public class ComboTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite top ) {
-    top.setLayout( new RowLayout() );
+    top.setLayout( new GridLayout( 2, false ) );
     int style = getStyle();
-    RowData data = new RowData( 100, 25 );
-    Combo combo = new Combo( top, style );
-    combo.setLayoutData( data );
-    combo.setItems( new String[] { "Eins", "Zwei", "Drei" } );
-    combo.select( 0 );
-    registerControl( combo );
+    String[] items
+      = new String[] { "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" };
+    // empty combo
+    Combo combo1 = new Combo( top, style );
+    registerControl( combo1 );
+    new Label( top, RWT.NONE ).setText( "empty combo box" );
+    // filled combo
+    Combo combo2 = new Combo( top, style );
+    combo2.setItems( items );
+    new Label( top, RWT.NONE ).setText( "filled combo box" );
+    registerControl( combo2 );
+    // filled combo with preselection
+    Combo combo3 = new Combo( top, style );
+    combo3.setItems( items );
+    combo3.select( 1 );
+    new Label( top, RWT.NONE ).setText( "filled combo box with preselection" );
+    registerControl( combo3 );
   }
 }
