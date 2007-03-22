@@ -19,6 +19,7 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.FocusEvent;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
+import org.eclipse.rap.rwt.lifecycle.DisplayUtil;
 import com.w4t.Adaptable;
 import com.w4t.W4TContext;
 import com.w4t.engine.requests.RequestParams;
@@ -73,6 +74,11 @@ public class Display implements Adaptable {
     shells = new ArrayList();
     systemFont = Font.getFont( SYSTEM_FONT_NAME, 11, RWT.NORMAL );    
     readInitialBounds();
+    // TODO [rh] HACK: This is to ensure that the first Display has id 'w1'. The 
+    //      current IIndexTemplate implementation relies on this fact.
+    //      see org.eclipse.rap.ui.internal.servlet.IndexTemplate and remove
+    //      this when a proper solution is in place.
+    DisplayUtil.getId( this );
   }
 
   public Shell[] getShells() {
