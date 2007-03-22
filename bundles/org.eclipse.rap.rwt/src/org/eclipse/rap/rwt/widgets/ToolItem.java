@@ -122,8 +122,11 @@ public class ToolItem extends Item {
       if( getImage() != null ) {
         result += 16; // TODO [rh] replace with actual image width
       }
-      Font font = parent.getFont();
-      result += FontSizeEstimation.stringExtent( getText(), font ).x;
+      String text = getText();
+      if( !"".equals( text ) ) {
+        Font font = parent.getFont();
+        result += 2 + FontSizeEstimation.stringExtent( getText(), font ).x;
+      }
       if( ( style & RWT.DROP_DOWN ) != 0 ) {
         result += DROP_DOWN_ARROW_WIDTH;
       }
