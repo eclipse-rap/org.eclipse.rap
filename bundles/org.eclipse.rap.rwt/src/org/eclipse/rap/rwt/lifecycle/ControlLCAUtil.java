@@ -58,7 +58,7 @@ public class ControlLCAUtil {
     adapter.preserve( Props.ENABLED, Boolean.valueOf( control.isEnabled() ) );
     adapter.preserve( PROP_FOREGROUND, control.getForeground() );
     adapter.preserve( PROP_BACKGROUND, control.getBackground() );
-    adapter.preserve( Props.FONT, control.getFont() );
+    WidgetLCAUtil.preserveFont( control, control.getFont() );
     adapter.preserve( Props.CONTROL_LISTENERS, 
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     adapter.preserve( PROP_ACTIVATE_LISTENER, 

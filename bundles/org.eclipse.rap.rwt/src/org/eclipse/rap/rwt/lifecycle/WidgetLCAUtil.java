@@ -29,6 +29,7 @@ public final class WidgetLCAUtil {
   private static final String PARAM_HEIGHT = "bounds.height";
   
   private static final String PROP_TOOL_TIP_TEXT = "toolTip";
+  private static final String PROP_FONT = "font";
 
   private WidgetLCAUtil() {
     // prevent instantiation
@@ -42,7 +43,12 @@ public final class WidgetLCAUtil {
   {
     String text = toolTip == null ? "" : toolTip;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text );
+    adapter.preserve( PROP_TOOL_TIP_TEXT, text );
+  }
+  
+  public static void preserveFont( final Widget widget, final Font font ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_FONT, font );
   }
   
   ////////////////////////////////////////////////////
@@ -241,7 +247,7 @@ public final class WidgetLCAUtil {
     throws IOException
   {
     Font systemFont = widget.getDisplay().getSystemFont();
-    if( WidgetLCAUtil.hasChanged( widget, Props.FONT, font, systemFont ) ) {
+    if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, systemFont ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       Object[] args = new Object[]{
         widget,

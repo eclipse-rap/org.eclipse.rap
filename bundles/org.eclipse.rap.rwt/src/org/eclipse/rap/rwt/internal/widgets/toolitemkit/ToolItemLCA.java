@@ -13,19 +13,14 @@ package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.internal.widgets.ItemLCAUtil;
-import org.eclipse.rap.rwt.internal.widgets.Props;
-import org.eclipse.rap.rwt.lifecycle.*;
+import org.eclipse.rap.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rap.rwt.lifecycle.JSWriter;
 import org.eclipse.rap.rwt.widgets.ToolItem;
 import org.eclipse.rap.rwt.widgets.Widget;
 
 
-public class ToolItemLCA extends AbstractWidgetLCA {
+public final class ToolItemLCA extends AbstractWidgetLCA {
   
-  private static final String PROP_FONT = "font";
-  static final String PROP_CONTROL = "control";
-
   private final static ToolItemDelegateLCA PUSH 
     = new PushToolItemDelegateLCA();
   private final static ToolItemDelegateLCA CHECK
@@ -37,33 +32,8 @@ public class ToolItemLCA extends AbstractWidgetLCA {
   private final static ToolItemDelegateLCA DROP_DOWN
     = new DropDownToolItemDelegateLCA();
   
-  private static ToolItemDelegateLCA getLCADelegate( final Widget widget ) {
-    ToolItemDelegateLCA result;
-    int style = ( ( ToolItem )widget ).getStyle();
-    if( ( style & RWT.CHECK ) != 0 ) {
-      result = CHECK;
-    } else if( ( style & RWT.PUSH ) != 0 ) {
-      result = PUSH;
-    } else if( ( style & RWT.SEPARATOR ) != 0 ) {
-      result = SEPERATOR;
-    } else if( ( style & RWT.DROP_DOWN ) != 0 ) {
-      result = DROP_DOWN;
-    } else if( ( style & RWT.RADIO ) != 0 ) {
-      result = RADIO;
-    } else {
-      result = PUSH;
-    }
-    return result;
-  }
-
   public void preserveValues( final Widget widget ) {
-    ToolItem toolItem = ( ToolItem )widget;
-    ItemLCAUtil.preserve( toolItem );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_FONT, toolItem.getParent().getFont() );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( SelectionEvent.hasListener( toolItem ) ) );
-    adapter.preserve( PROP_CONTROL, toolItem.getControl() );
+    getLCADelegate( widget ).preserveValues( ( ToolItem )widget );
   }
 
   public void readData( final Widget widget ) {
@@ -81,5 +51,24 @@ public class ToolItemLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  }
+
+  private static ToolItemDelegateLCA getLCADelegate( final Widget widget ) {
+    ToolItemDelegateLCA result;
+    int style = ( ( ToolItem )widget ).getStyle();
+    if( ( style & RWT.CHECK ) != 0 ) {
+      result = CHECK;
+    } else if( ( style & RWT.PUSH ) != 0 ) {
+      result = PUSH;
+    } else if( ( style & RWT.SEPARATOR ) != 0 ) {
+      result = SEPERATOR;
+    } else if( ( style & RWT.DROP_DOWN ) != 0 ) {
+      result = DROP_DOWN;
+    } else if( ( style & RWT.RADIO ) != 0 ) {
+      result = RADIO;
+    } else {
+      result = PUSH;
+    }
+    return result;
   }
 }

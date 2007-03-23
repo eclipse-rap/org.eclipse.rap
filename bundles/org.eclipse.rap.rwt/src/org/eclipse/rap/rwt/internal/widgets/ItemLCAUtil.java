@@ -12,7 +12,6 @@
 package org.eclipse.rap.rwt.internal.widgets;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.graphics.Font;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Item;
 
@@ -38,12 +37,6 @@ public class ItemLCAUtil {
     WidgetLCAUtil.writeImage( item, item.getImage() );
   }
   
-  public static void writeFont( final Item item, final Font font ) 
-    throws IOException 
-  {
-    WidgetLCAUtil.writeFont( item, font );
-  }
-
   public static void writeChanges( final Item item ) throws IOException {
     writeText( item );
     writeImage( item );

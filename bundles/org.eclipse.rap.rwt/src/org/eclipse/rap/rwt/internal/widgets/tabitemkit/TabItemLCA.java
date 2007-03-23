@@ -82,7 +82,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
     TabItem tabItem = ( TabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
-    ItemLCAUtil.writeFont( tabItem, tabItem.getParent().getFont() );
+    WidgetLCAUtil.writeFont( tabItem, tabItem.getParent().getFont() );
     writeCheckedState( tabItem );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 

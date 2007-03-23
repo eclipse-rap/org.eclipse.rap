@@ -12,16 +12,12 @@
 package org.eclipse.rap.rwt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Rectangle;
-import org.eclipse.rap.rwt.lifecycle.JSConst;
-import org.eclipse.rap.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.rap.rwt.widgets.ToolItem;
-import org.eclipse.rap.rwt.widgets.Widget;
 
 
 abstract class ToolItemDelegateLCA {
+  
+  abstract void preserveValues( ToolItem toolItem );
   
   abstract void readData( ToolItem toolItem );
   
@@ -30,29 +26,4 @@ abstract class ToolItemDelegateLCA {
   
   abstract void renderChanges( ToolItem toolItem ) 
     throws IOException;
-  
-  
-  /////////////////
-  // helper methods
-  
-  static void processSelection( final ToolItem toolItem ) {
-    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) 
-    {
-      Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-      SelectionEvent event = newSelectionEvent( toolItem, bounds, RWT.NONE );
-      event.processEvent();
-    }
-  }
-
-  static SelectionEvent newSelectionEvent( final Widget widget,
-                                           final Rectangle bounds,
-                                           final int detail )
-  {
-    return new SelectionEvent( widget,
-                               null,
-                               SelectionEvent.WIDGET_SELECTED,
-                               bounds,
-                               true,
-                               detail );
-  }
 }

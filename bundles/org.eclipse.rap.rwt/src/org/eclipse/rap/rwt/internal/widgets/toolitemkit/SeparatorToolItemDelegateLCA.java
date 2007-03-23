@@ -18,12 +18,20 @@ import org.eclipse.rap.rwt.widgets.ToolItem;
 
 final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
 
+  private static final String PROP_CONTROL = "control";
+  
   // tool item functions as defined in org.eclipse.rap.rwt.ToolItemUtil
   private static final String CREATE_SEPARATOR = 
     "org.eclipse.rap.rwt.ToolItemUtil.createSeparator";
   private static final String SET_CONTROL_FOR_SEPARATOR = 
     "org.eclipse.rap.rwt.ToolItemUtil.setControlForSeparator";
 
+  void preserveValues( final ToolItem toolItem ) {
+    ToolItemLCAUtil.preserveValues( toolItem );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
+    adapter.preserve( PROP_CONTROL, toolItem.getControl() );
+  }
+  
   void readData( final ToolItem toolItem ) {
     // do nothing
   }
@@ -45,7 +53,7 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
       IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem.getControl() );
       // TODO [rst] Control is now preserved in ToolItemLCA - change this?
       if( WidgetLCAUtil.hasChanged( toolItem,
-                                    ToolItemLCA.PROP_CONTROL,
+                                    PROP_CONTROL,
                                     toolItem.getControl(),
                                     null ) )
       {

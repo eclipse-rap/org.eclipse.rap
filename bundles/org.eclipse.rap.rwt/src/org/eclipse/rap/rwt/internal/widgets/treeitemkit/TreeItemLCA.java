@@ -78,7 +78,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     TreeItem treeItem = ( TreeItem )widget;
     ItemLCAUtil.writeText( treeItem );
     writeImage( treeItem );
-    ItemLCAUtil.writeFont( treeItem, treeItem.getFont() );
+    WidgetLCAUtil.writeFont( treeItem, treeItem.getFont() );
     writeExpanded( treeItem );
     writeChecked( treeItem );
   }

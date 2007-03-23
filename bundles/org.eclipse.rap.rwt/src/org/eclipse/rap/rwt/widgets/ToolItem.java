@@ -28,6 +28,7 @@ public class ToolItem extends Item {
   private boolean selected;
   private Control control;
   private int width;
+  private String toolTipText;
  
 
   public ToolItem( final ToolBar parent, final int style ) {
@@ -93,6 +94,16 @@ public class ToolItem extends Item {
   public Control getControl() {
     checkWidget();
     return control;
+  }
+  
+  public void setToolTipText( final String string ) {
+    checkWidget();
+    toolTipText = string;
+  }
+
+  public String getToolTipText() {
+    checkWidget();
+    return toolTipText;
   }
   
   /////////////

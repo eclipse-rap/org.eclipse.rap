@@ -38,17 +38,22 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
                           JSConst.JS_WIDGET_SELECTED,
                           JSListenerType.ACTION );
 
+  void preserveValues( final ToolItem toolItem ) {
+    ToolItemLCAUtil.preserveValues( toolItem );
+  }
+  
   void readData( final ToolItem toolItem ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String widgetId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
     if( WidgetUtil.getId( toolItem ).equals( widgetId ) ) {
-      processSelection( toolItem );
+      ToolItemLCAUtil.processSelection( toolItem );
     } else {
       String toolItemId = getDropDownId( toolItem );
       if( toolItemId.equals( widgetId ) ) {
         Rectangle defaultValue = new Rectangle( 0, 0, 0, 0 );
         Rectangle bounds = WidgetLCAUtil.readBounds( toolItemId, defaultValue );
-        SelectionEvent event = newSelectionEvent( toolItem, bounds, RWT.ARROW );
+        SelectionEvent event 
+          = ToolItemLCAUtil.newSelectionEvent( toolItem, bounds, RWT.ARROW );
         event.processEvent();
       }
     }
@@ -78,7 +83,8 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
     writeDropDownListener( toolItem );
-    ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
+    WidgetLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
+    WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
   }
   
   //////////////////

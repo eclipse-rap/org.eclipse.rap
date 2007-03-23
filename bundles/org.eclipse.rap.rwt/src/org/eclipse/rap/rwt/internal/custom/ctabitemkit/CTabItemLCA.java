@@ -84,7 +84,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     Rectangle bounds = item.getBounds();
     WidgetLCAUtil.writeBounds( item, item.getParent(), bounds, true );
     ItemLCAUtil.writeChanges( item );
-    ItemLCAUtil.writeFont( item, item.getFont() );
+    WidgetLCAUtil.writeFont( item, item.getFont() );
     WidgetLCAUtil.writeToolTip( item, item.getToolTipText() );
     writeShowing( item );
     writeUnselectedCloseVisible( item );

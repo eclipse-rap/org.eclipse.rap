@@ -33,11 +33,15 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
                           WIDGET_SELECTED,
                           JSListenerType.ACTION );
 
+  void preserveValues( final ToolItem toolItem ) {
+    ToolItemLCAUtil.preserveValues( toolItem );
+  }
+  
   void readData( final ToolItem toolItem ) {
     if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
       String value = WidgetLCAUtil.readPropertyValue( toolItem, SELECTED_ITEM );
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
-      processSelection( toolItem );
+      ToolItemLCAUtil.processSelection( toolItem );
     }
   }
 
@@ -52,7 +56,6 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     if( ( toolItem.getParent().getStyle() & RWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }
-    ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
@@ -68,6 +71,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
-    ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
+    WidgetLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
+    WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
   }
 }

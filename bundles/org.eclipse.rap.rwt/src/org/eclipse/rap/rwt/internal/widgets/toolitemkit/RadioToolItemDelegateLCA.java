@@ -34,6 +34,10 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
                           WIDGET_SELECTED, 
                           JSListenerType.ACTION );
   
+  void preserveValues( final ToolItem toolItem ) {
+    ToolItemLCAUtil.preserveValues( toolItem );
+  }
+  
   void readData( final ToolItem toolItem ) {
     if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
       Control[] children = toolItem.getParent().getChildren();
@@ -46,7 +50,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
         }
       }
       toolItem.setSelection( true );
-      processSelection( toolItem );
+      ToolItemLCAUtil.processSelection( toolItem );
     }
   }
 
@@ -76,7 +80,8 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeChanges( toolItem );
-    ItemLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
+    WidgetLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
+    WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned
