@@ -9,6 +9,8 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rap.jface.dialogs.MessageDialog;
+import org.eclipse.rap.jface.viewers.*;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -25,25 +27,45 @@ public class ComboTab extends ExampleTab {
     createEnablementButton();
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new GridLayout( 2, false ) );
+  protected void createExampleControls( final Composite parent ) {
+    parent.setLayout( new GridLayout( 2, false ) );
     int style = getStyle();
     String[] items
       = new String[] { "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" };
     // empty combo
-    Combo combo1 = new Combo( top, style );
+    Combo combo1 = new Combo( parent, style );
     registerControl( combo1 );
-    new Label( top, RWT.NONE ).setText( "empty combo box" );
+    new Label( parent, RWT.NONE ).setText( "Empty Combo box" );
     // filled combo
-    Combo combo2 = new Combo( top, style );
+    Combo combo2 = new Combo( parent, style );
     combo2.setItems( items );
-    new Label( top, RWT.NONE ).setText( "filled combo box" );
+    new Label( parent, RWT.NONE ).setText( "Filled Combo box" );
     registerControl( combo2 );
     // filled combo with preselection
-    Combo combo3 = new Combo( top, style );
+    Combo combo3 = new Combo( parent, style );
     combo3.setItems( items );
     combo3.select( 1 );
-    new Label( top, RWT.NONE ).setText( "filled combo box with preselection" );
+    new Label( parent, RWT.NONE ).setText( "Filled Combo box with preselection" );
     registerControl( combo3 );
+    // combo with comboviewer
+    Combo combo4 = new Combo( parent, style );
+    ComboViewer viewer = new ComboViewer( combo4 );
+    viewer.setContentProvider( new IStructuredContentProvider() {
+      public void dispose() {
+      }
+      public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
+      }
+      public Object[] getElements( Object inputElement ) {
+        return ( Object[] )inputElement;
+      }
+    } );
+    viewer.setLabelProvider( new LabelProvider() );
+    viewer.setInput( items );
+    viewer.addSelectionChangedListener( new ISelectionChangedListener() {
+      public void selectionChanged( SelectionChangedEvent event ) {
+        String message = "Selected item: " + event.getSelection().toString();
+        MessageDialog.openInformation( parent.getShell(), "Info", message, null );
+      }} );
+    new Label( parent, RWT.NONE ).setText( "Combo box with JFace ComboViewer" );
   }
 }
