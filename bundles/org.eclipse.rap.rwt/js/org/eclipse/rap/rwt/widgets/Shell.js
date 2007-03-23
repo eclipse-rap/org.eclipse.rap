@@ -113,6 +113,12 @@ qx.Proto._onChangeActiveChild = function( evt ) {
 }
 
 qx.Proto._onChangeActive = function( evt ) {
+  // TODO [rst] This hack is a workaround for bug 345 in qooxdoo, remove this
+  //      block as soon as the bug is fixed.
+  //      See http://bugzilla.qooxdoo.org/show_bug.cgi?id=345
+  if ( !this.getActive() && !isFinite( this.getZIndex() ) ) {
+    this.forceZIndex( 1e8 );
+  }
   if( !org_eclipse_rap_rwt_EventUtil_suspend && this.getActive() ) {
     var widgetMgr = org.eclipse.rap.rwt.WidgetManager.getInstance();
     var id = widgetMgr.findIdByWidget( this );
