@@ -508,7 +508,7 @@ public class CTabFolder extends Composite {
   }
 
   
-  // ///////////////////////////////
+  //////////////////////////////////
   // Manipulation of topRight control 
 
   public void setTopRight( final Control control ) {
@@ -532,6 +532,7 @@ public class CTabFolder extends Composite {
   }
 
   public Control getTopRight() {
+    checkWidget();
     return topRight;
   }
   
@@ -566,6 +567,7 @@ public class CTabFolder extends Composite {
   // Composite overrides
   
   public Rectangle getClientArea() {
+    checkWidget();
     Rectangle result;
     if( minimized ) {
       result = new Rectangle( xClient, yClient, 0, 0 );
@@ -826,7 +828,7 @@ public class CTabFolder extends Composite {
 //    }
     
     // Fake some variables to leave the code below unchanged
-    // those variables are field in original SWT code
+    // those variables are fields in original SWT code
 //    Rectangle maxRect = new Rectangle( 0, 0, 0, 0 );
 //    if( getMaximizeVisible() ) {
 //      maxRect.width = BUTTON_SIZE;
