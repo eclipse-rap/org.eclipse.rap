@@ -32,7 +32,7 @@ public class ToolItem extends Item {
  
 
   public ToolItem( final ToolBar parent, final int style ) {
-    this( checkParent( parent ), checkStyle( style ), parent.getItemCount() );
+    this( checkNull( parent ), checkStyle( style ), parent.getItemCount() );
   }
 
   public ToolItem( final ToolBar parent, final int style, final int index ) {
@@ -106,6 +106,28 @@ public class ToolItem extends Item {
     return toolTipText;
   }
   
+  ///////////
+  // Enabled
+  
+  public void setEnabled( final boolean enabled ) {
+    checkWidget();
+    if( enabled ) {
+      state &= ~DISABLED;
+    } else {
+      state |= DISABLED;
+    }
+  }
+
+  public boolean getEnabled() {
+    checkWidget();
+    return ( state & DISABLED ) == 0;
+  }
+  
+  public boolean isEnabled() {
+    checkWidget();
+    return getEnabled() && parent.isEnabled();
+  }
+
   /////////////
   // Dimensions
   
@@ -226,7 +248,7 @@ public class ToolItem extends Item {
     }
   }
   
-  private static ToolBar checkParent( final ToolBar parent ) {
+  private static ToolBar checkNull( final ToolBar parent ) {
     if( parent == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }

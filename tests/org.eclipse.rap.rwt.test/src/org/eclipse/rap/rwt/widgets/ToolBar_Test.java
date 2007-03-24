@@ -108,4 +108,79 @@ public class ToolBar_Test extends TestCase {
     separator.setText( text1 );
     assertEquals( "", separator.getText() );
   }
+  
+  public void testToolItemEnabled() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    ToolBar toolbar = new ToolBar( shell, RWT.NONE );
+    ToolItem item = new ToolItem( toolbar, RWT.NONE );
+    ToolItem separator = new ToolItem( toolbar, RWT.SEPARATOR );
+    separator.setControl( new Text( toolbar, RWT.NONE ) );
+    
+    // ToolItem must be enabled initially 
+    assertEquals( true, item.getEnabled() );
+
+    // Test enabled ToolItem on disabled ToolBar
+    toolbar.setEnabled( false );
+    item.setEnabled( true );
+    assertEquals( true, item.getEnabled() );
+    assertEquals( false, item.isEnabled() );
+    
+    // Test disabled ToolItem on disabled ToolBar
+    toolbar.setEnabled( false );
+    item.setEnabled( false );
+    assertEquals( false, item.getEnabled() );
+    assertEquals( false, item.isEnabled() );
+    
+    // Test SEPARATOR ToolItem
+    separator.setEnabled( false );
+    assertEquals( true, separator.getControl().getEnabled() );
+  }
+
+  public void testToolItemControl() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    ToolBar toolbar = new ToolBar( shell, RWT.NONE );
+    ToolItem item = new ToolItem( toolbar, RWT.NONE );
+    ToolItem separator = new ToolItem( toolbar, RWT.SEPARATOR );
+    separator.setControl( new Text( toolbar, RWT.NONE ) );
+    
+    // Using control property on ToolItem without SEPARATOR style has no effect
+    item.setControl( new Text( toolbar, RWT.NONE ) );
+    assertEquals( null, item.getControl() );
+    
+    // Setting a valid control on a SEPARATOR ToolItem
+    Text control = new Text( toolbar, RWT.NONE );
+    separator.setControl( control );
+    assertSame( control, separator.getControl() );
+    separator.setControl( null );
+    assertEquals( null, separator.getControl() );
+    
+    // Illegal values for setControl
+    Control currentControl = new Text( toolbar, RWT.NONE );
+    try {
+      separator.setControl( currentControl );
+      Control diposedControl = new Text( toolbar, RWT.NONE );
+      diposedControl.dispose();
+      separator.setControl( diposedControl );
+      fail( "Must not allow to set diposed control in setControl" );
+    } catch( IllegalArgumentException e ) {
+      assertSame( currentControl, separator.getControl() );
+    }
+    try {
+      separator.setControl( currentControl );
+      Control shellControl = new Text( shell, RWT.NONE );
+      shellControl.dispose();
+      separator.setControl( shellControl );
+      fail( "Must not allow to set control with other parent than ToolItem" );
+    } catch( IllegalArgumentException e ) {
+      assertSame( currentControl, separator.getControl() );
+    }
+    
+    // Dispose of control that is currently set on the SEPARATOR
+    Control tempControl = new Text( toolbar, RWT.NONE );
+    separator.setControl( tempControl );
+    tempControl.dispose();
+    assertEquals( null, separator.getControl() );  
+  }
 }

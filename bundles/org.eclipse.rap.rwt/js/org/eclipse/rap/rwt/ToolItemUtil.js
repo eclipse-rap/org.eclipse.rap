@@ -79,6 +79,7 @@ qx.Class.createPush = function( id, parent, isFlat ) {
 
 qx.Class.createDropDown = function( id, parent, isFlat ) {
   org.eclipse.rap.rwt.ToolItemUtil.createPush( id, parent, isFlat );
+  var button = org.eclipse.rap.rwt.WidgetManager.getInstance().findWidgetById( id );
   var dropDown = new qx.ui.toolbar.Button( "", "widget/arrows/down.gif" );
   dropDown.setUserData( "buttonId", id );
   if( isFlat ) {
@@ -89,7 +90,20 @@ qx.Class.createDropDown = function( id, parent, isFlat ) {
   org.eclipse.rap.rwt.WidgetManager.getInstance().add( dropDown, 
                                                        dropDownId, 
                                                        false );
+  // Register enable listener that keeps enabled state of dropDown in sync
+  // with the enabeled state of the actual button
+  button.addEventListener( "changeEnabled", 
+                           org.eclipse.rap.rwt.ToolItemUtil._onDropDownChangeEnabled );
 };
+
+org.eclipse.rap.rwt.ToolItemUtil._onDropDownChangeEnabled = function( evt ) {
+  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+  var button = evt.getTarget();
+  var buttonId = widgetManager.findIdByWidget( button );
+  var dropDownId = buttonId + "_dropDown";
+  var dropDown = widgetManager.findWidgetById( dropDownId );
+  dropDown.setEnabled( button.getEnabled() );
+}
 
 qx.Class.updateDropDownListener = function( id, remove ) {
   var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();

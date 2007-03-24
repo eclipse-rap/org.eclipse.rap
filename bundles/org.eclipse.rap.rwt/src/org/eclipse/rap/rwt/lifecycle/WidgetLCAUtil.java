@@ -30,6 +30,7 @@ public final class WidgetLCAUtil {
   
   private static final String PROP_TOOL_TIP_TEXT = "toolTip";
   private static final String PROP_FONT = "font";
+  private static final String PROP_ENABLED = "enabled";
 
   private WidgetLCAUtil() {
     // prevent instantiation
@@ -49,6 +50,13 @@ public final class WidgetLCAUtil {
   public static void preserveFont( final Widget widget, final Font font ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_FONT, font );
+  }
+  
+  public static void preserveEnabled( final Widget widget, 
+                                      final boolean enabled ) 
+  {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_ENABLED, Boolean.valueOf( enabled ) );
   }
   
   ////////////////////////////////////////////////////
@@ -258,6 +266,15 @@ public final class WidgetLCAUtil {
       };
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setFont", args );
     }
+  }
+
+  public static void writeEnabled( final Widget widget, final boolean enabled )
+    throws IOException
+  {
+    Boolean newValue = Boolean.valueOf( enabled );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    Boolean defValue = Boolean.TRUE;
+    writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
   }
 
   private static String readPropertyValue( final String widgetId, 

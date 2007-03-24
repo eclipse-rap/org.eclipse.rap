@@ -126,6 +126,20 @@ public class ToolBar extends Composite {
     checkWidget();
     return itemHolder.size();
   }
+  
+  ////////////////////////
+  // Child control removal
+
+  void removeControl( final Control control ) {
+    super.removeControl( control );
+    ToolItem[] items = getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      ToolItem item = items[ i ];
+      if( item != null && item.getControl() == control ) {
+        item.setControl( null );
+      }
+    }
+  }
 
   //////////////////
   // Helping methods

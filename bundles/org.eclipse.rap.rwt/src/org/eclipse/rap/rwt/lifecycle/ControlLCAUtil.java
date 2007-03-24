@@ -55,7 +55,7 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.getVisible() ) );
-    adapter.preserve( Props.ENABLED, Boolean.valueOf( control.isEnabled() ) );
+    WidgetLCAUtil.preserveEnabled( control, control.isEnabled() );
     adapter.preserve( PROP_FOREGROUND, control.getForeground() );
     adapter.preserve( PROP_BACKGROUND, control.getBackground() );
     WidgetLCAUtil.preserveFont( control, control.getFont() );
@@ -107,9 +107,7 @@ public class ControlLCAUtil {
   public static void writeEnabled( final Control control )
     throws IOException
   {
-    Boolean newValue = Boolean.valueOf( control.isEnabled() );
-    JSWriter writer = JSWriter.getWriterFor( control );
-    writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, Boolean.TRUE );
+    WidgetLCAUtil.writeEnabled( control, control.isEnabled() );
   }
 
   public static void writeChanges( final Control control ) throws IOException {

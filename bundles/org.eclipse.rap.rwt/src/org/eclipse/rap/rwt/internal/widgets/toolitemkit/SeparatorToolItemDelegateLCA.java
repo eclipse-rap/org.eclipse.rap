@@ -70,5 +70,6 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
         } );
       }
     }
+    WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
   }
 }

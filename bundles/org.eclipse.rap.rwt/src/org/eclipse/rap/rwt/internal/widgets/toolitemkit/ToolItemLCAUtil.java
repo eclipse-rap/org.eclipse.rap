@@ -29,6 +29,7 @@ final class ToolItemLCAUtil {
 
   static void preserveValues( final ToolItem toolItem ) {
     ItemLCAUtil.preserve( toolItem );
+    WidgetLCAUtil.preserveEnabled( toolItem, toolItem.isEnabled() );
     WidgetLCAUtil.preserveToolTipText( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.preserveFont( toolItem, toolItem.getParent().getFont() );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
@@ -36,7 +37,7 @@ final class ToolItemLCAUtil {
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
   }
-
+  
   static void processSelection( final ToolItem toolItem ) {
     if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) 
     {

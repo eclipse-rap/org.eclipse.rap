@@ -33,16 +33,6 @@ public class ToolBarLCA extends AbstractWidgetLCA {
   public void readData( final  Widget widget ) {
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
-    ToolBar toolBar = ( ToolBar )widget;
-    ControlLCAUtil.writeChanges( toolBar );
-  }
-
-  public void renderDispose( final  Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
-  }
-
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.toolbar.ToolBar" );
@@ -51,8 +41,15 @@ public class ToolBarLCA extends AbstractWidgetLCA {
                   JSConst.QX_CONST_VERTICAL_ORIENTATION );
     }
     ControlLCAUtil.writeStyleFlags( widget );
-    writer.addListener( null,
-                        "changeEnabled",
-                        "org.eclipse.rap.rwt.ToolBarUtil.enablementChanged" );
+  }
+  
+  public void renderChanges( final Widget widget ) throws IOException {
+    ToolBar toolBar = ( ToolBar )widget;
+    ControlLCAUtil.writeChanges( toolBar );
+  }
+
+  public void renderDispose( final  Widget widget ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
   }
 }

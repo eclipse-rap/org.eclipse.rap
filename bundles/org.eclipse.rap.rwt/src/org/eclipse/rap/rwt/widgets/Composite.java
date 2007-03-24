@@ -56,7 +56,7 @@ public class Composite extends Scrollable {
     return result;
   }
 
-  // ///////////////
+  //////////////////
   // Layout methods
   
   public void setLayout( final Layout layout ) {
@@ -157,6 +157,10 @@ public class Composite extends Scrollable {
     for( int i = 0; i < children.length; i++ ) {
       children[ i ].dispose();
     }
+  }
+  
+  void removeControl( final Control control ) {
+    controlHolder.remove( control );
   }
 
   ////////////////

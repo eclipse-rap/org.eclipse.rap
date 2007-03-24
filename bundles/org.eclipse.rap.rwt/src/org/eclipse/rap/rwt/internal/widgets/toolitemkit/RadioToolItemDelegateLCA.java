@@ -82,6 +82,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
     ItemLCAUtil.writeChanges( toolItem );
     WidgetLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
+    WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned

@@ -454,7 +454,7 @@ public abstract class Control extends Widget {
   
   protected void releaseParent() {
     if( getParent() != null ) {
-      ControlHolder.removeControl( getParent(), this );
+      getParent().removeControl( this );
     }
   }
 

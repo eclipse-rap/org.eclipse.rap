@@ -52,8 +52,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/Sash.js";
   private static final String TAB_UTIL_JS 
     = "org/eclipse/rap/rwt/TabUtil.js";
-  private static final String TOOLBAR_UTIL_JS 
-  = "org/eclipse/rap/rwt/ToolBarUtil.js";
   private static final String BUTTON_UTIL_JS 
     = "org/eclipse/rap/rwt/ButtonUtil.js";
   private static final String COMBO_UTIL_JS 
@@ -93,7 +91,7 @@ final class QooxdooResourcesUtil {
   private static final String TEXT_UTIL_JS
     = "org/eclipse/rap/rwt/TextUtil.js";
   private static final String SPINNER_JS
-  = "org/eclipse/rap/rwt/widgets/Spinner.js";
+    = "org/eclipse/rap/rwt/widgets/Spinner.js";
   
   private static final String QX_CONSTANT_CORE_JS
     = "qx/constant/Core.js";
@@ -152,7 +150,6 @@ final class QooxdooResourcesUtil {
       register( EVENT_UTIL_JS );
       register( SASH_JS );
       register( TAB_UTIL_JS );
-      register( TOOLBAR_UTIL_JS );
       register( COMBO_UTIL_JS );
       register( BUTTON_UTIL_JS );
       register( TOOL_ITEM_JS );

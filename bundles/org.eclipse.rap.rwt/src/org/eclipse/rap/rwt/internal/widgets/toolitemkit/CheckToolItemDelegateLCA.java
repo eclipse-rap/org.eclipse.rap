@@ -73,5 +73,6 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
                            SelectionEvent.hasListener( toolItem ) );
     WidgetLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
+    WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
   }
 }

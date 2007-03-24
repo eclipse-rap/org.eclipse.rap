@@ -118,7 +118,7 @@ final class TextLCAUtil {
     Point defValue = DEFAULT_SELECTION;
     // TODO [rh] could be optimized: when text was changed and selection is 0,0
     //      there is no need to write JavaScript since the client resets the
-    //      selection as well whn the new text is set.
+    //      selection as well when the new text is set.
     if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, defValue ) ) { 
       Integer start = new Integer( newValue.x );
       Integer count = new Integer( text.getSelectionCount() );
