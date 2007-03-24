@@ -65,7 +65,7 @@ qx.Proto._commonMouseDown = function()
   // enable capturing
   this._splitter.setCapture( true );
   // show the slider also outside of the sash's bounds
-  this.setOverflow( qx.constant.OVERFLOW_VISIBLE );
+  this.setOverflow( qx.constant.Style.OVERFLOW_VISIBLE );
   
   // initialize the slider
   if( !this.isLiveResize() ) {
