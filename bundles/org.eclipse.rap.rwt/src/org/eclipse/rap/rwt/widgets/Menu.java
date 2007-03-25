@@ -100,6 +100,9 @@ public class Menu extends Widget {
     return new Rectangle( x, y, 0, 0 );
   }
   
+  ///////////
+  // Visible
+  
   public void setVisible( final boolean visible ) {
     checkWidget();
     if( ( style & ( RWT.BAR | RWT.DROP_DOWN ) ) == 0 ) {
@@ -107,7 +110,7 @@ public class Menu extends Widget {
     }
   }
   
-  public boolean isVisible (){
+  public boolean isVisible(){
     checkWidget();
     return visible;
   }
@@ -115,7 +118,7 @@ public class Menu extends Widget {
   ///////////
   // Enabled
   
-  public void setEnabled( boolean enabled ) {
+  public void setEnabled( final boolean enabled ) {
     checkWidget();
     state &= ~DISABLED;
     if( !enabled ) {
@@ -137,7 +140,7 @@ public class Menu extends Widget {
     return getEnabled() && parentMenu.isEnabled();
   }
   
-  // /////////////////////////
+  ////////////////////////////
   // Management of menu items
   
   public int getItemCount() {
@@ -166,10 +169,10 @@ public class Menu extends Widget {
     return itemHolder.indexOf( menuItem );
   }
   
-  // /////////////////
+  ////////////////////
   // Widget overrides
-  // TODO [rh] disposal of Menu and its items not yet completely implemented
   
+  // TODO [rh] disposal of Menu and its items not yet completely implemented
   protected final void releaseChildren() {
     MenuItem[] menuItems = ( MenuItem[] )ItemHolder.getItems( this );
     for( int i = 0; i < menuItems.length; i++ ) {

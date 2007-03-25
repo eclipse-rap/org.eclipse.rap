@@ -179,7 +179,7 @@ public class MenuItem extends Item {
     }
   }
 
-  // ////////////////////////////////////
+  ///////////////////////////////////////
   // Helping methods to verify arguments
   
   private static int checkStyle( final int style ) {
