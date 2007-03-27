@@ -55,6 +55,7 @@ qx.Proto.dispose = function() {
   this.removeEventListener( "mouseover", this._onMouseOver, this );
   this.removeEventListener( "mouseout", this._onMouseOut, this );
   this.removeEventListener( "click", this._onClick, this );
+  this.removeEventListener( "dblclick", this._onDblClick, this );
   if( this._closeButton != null ){
     this._closeButton.removeEventListener( "click", this._onClose, this );
     var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
