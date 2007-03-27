@@ -197,8 +197,28 @@ org.eclipse.rap.rwt.TextUtil._setPropertyParam = function( widget, name, value )
 }
 
 org.eclipse.rap.rwt.TextUtil.setSelection = function( text, start, length ) {
+  if( text.isCreated() ) {
+    org.eclipse.rap.rwt.TextUtil._doSetSelection( text, start, length );
+  } else {
+    text.setUserData( "onAppear.selectionStart", start );
+    text.setUserData( "onAppear.selectionLength", length );
+    text.addEventListener( "appear", 
+                           org.eclipse.rap.rwt.TextUtil._onAppearSetSelection );
+  }
+}
+
+org.eclipse.rap.rwt.TextUtil._onAppearSetSelection = function( evt ) {
+  var text = evt.getTarget();  
+  var start = text.getUserData( "onAppear.selectionStart" );
+  var length = text.getUserData( "onAppear.selectionLength" );
+  org.eclipse.rap.rwt.TextUtil._doSetSelection( text, start, length );
+  text.removeEventListener( "appear", 
+                            org.eclipse.rap.rwt.TextUtil._onAppearSetSelection );
+}
+
+org.eclipse.rap.rwt.TextUtil._doSetSelection = function( text, start, length ) {
   text.setUserData( "selectionStart", start );
-  text.getSelectionStart( start );
+  text.setSelectionStart( start );
   text.setUserData( "selectionLength", length );
-  text.getSelectionLength( length );
+  text.setSelectionLength( length );
 }
