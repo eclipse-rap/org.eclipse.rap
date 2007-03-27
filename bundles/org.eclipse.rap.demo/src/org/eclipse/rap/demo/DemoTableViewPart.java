@@ -67,6 +67,7 @@ public class DemoTableViewPart extends ViewPart {
     final Table table = viewer.getTable();
     viewer.setColumnProperties( initColumnProperties( table ) );
     viewer.setInput( this );
+    viewer.getTable().setHeaderVisible( true );
     getSite().setSelectionProvider( viewer );
   }
   

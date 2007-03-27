@@ -60,10 +60,6 @@ final class QooxdooResourcesUtil {
     "org/eclipse/rap/rwt/ToolItemUtil.js";
   private static final String MENU_UTIL_JS 
     = "org/eclipse/rap/rwt/MenuUtil.js";
-  private static final String TABLE_UTIL_JS
-    = "org/eclipse/rap/rwt/TableUtil.js";
-  private static final String TABLE_MODEL_JS
-    = "org/eclipse/rap/rwt/UnsortableTableModel.js";
   private static final String CTAB_FOLDER_JS 
     = "org/eclipse/rap/rwt/custom/CTabFolder.js";
   private static final String CTAB_ITEM_JS 
@@ -92,6 +88,12 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rap/rwt/TextUtil.js";
   private static final String SPINNER_JS
     = "org/eclipse/rap/rwt/widgets/Spinner.js";
+  private static final String TABLE_JS
+    = "org/eclipse/rap/rwt/widgets/Table.js";
+  private static final String TABLE_COLUMN_JS
+    = "org/eclipse/rap/rwt/widgets/TableColumn.js";
+  private static final String TABLE_ITEM_JS
+    = "org/eclipse/rap/rwt/widgets/TableItem.js";
   
   private static final String QX_CONSTANT_CORE_JS
     = "qx/constant/Core.js";
@@ -154,8 +156,6 @@ final class QooxdooResourcesUtil {
       register( BUTTON_UTIL_JS );
       register( TOOL_ITEM_JS );
       register( MENU_UTIL_JS );
-      register( TABLE_UTIL_JS );
-      register( TABLE_MODEL_JS );
       register( CTAB_ITEM_JS );
       register( CTAB_FOLDER_JS );
       register( COOL_ITEM_JS );
@@ -170,6 +170,9 @@ final class QooxdooResourcesUtil {
       register( WIDGET_THEME_JS );
       register( TEXT_UTIL_JS );
       register( SPINNER_JS );
+      register( TABLE_JS );
+      register( TABLE_COLUMN_JS );
+      register( TABLE_ITEM_JS );
       
       // register contributions
       registerContributions();

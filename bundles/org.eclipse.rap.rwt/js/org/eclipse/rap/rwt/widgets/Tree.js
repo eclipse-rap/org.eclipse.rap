@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 /**
- * This class encapulates the qx.ui.treefullcontrol.Tree o make it more
+ * This class encapulates the qx.ui.treefullcontrol.Tree to make it more
  * suitable for usage in RWT.
  * The style parameter mimics the RWT style flag. Possible values (strings)
  * are: multi, check

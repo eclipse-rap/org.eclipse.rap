@@ -19,7 +19,7 @@ import org.eclipse.rap.rwt.widgets.Spinner;
 import org.eclipse.rap.rwt.widgets.Widget;
 
 
-public class SpinnerLCA extends AbstractWidgetLCA {
+public final class SpinnerLCA extends AbstractWidgetLCA {
 
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_PAGE_INCREMENT = "pageIncrement";

@@ -246,6 +246,16 @@ public class ControlLCAUtil {
     }
   }
 
+  public static int getZIndex( final Control control ) {
+    Object adapter = control.getAdapter( IControlAdapter.class );
+    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+    int max = MAX_STATIC_ZORDER;
+    if( control.getParent() != null ) {
+      max = Math.max( control.getParent().getChildrenCount(), max );
+    }
+    return max - controlAdapter.getIndex();
+  }
+
   public static void processSelection( final Widget widget, 
                                        final Item item, 
                                        final boolean readBounds )
@@ -270,6 +280,9 @@ public class ControlLCAUtil {
     }
   }
 
+  //////////////////
+  // helping methods
+  
   private static SelectionEvent createSelectionEvent( final Widget widget,
                                                       final Item item,
                                                       final boolean readBounds,
@@ -283,18 +296,5 @@ public class ControlLCAUtil {
       bounds = new Rectangle( 0, 0, 0, 0 );
     }
     return new SelectionEvent( widget, item, type, bounds, true, RWT.NONE );
-  }
-  
-  //////////////////
-  // helping methods
-
-  private static int getZIndex( final Control control ) {
-    Object adapter = control.getAdapter( IControlAdapter.class );
-    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
-    int max = MAX_STATIC_ZORDER;
-    if( control.getParent() != null ) {
-      max = Math.max( control.getParent().getChildrenCount(), max );
-    }
-    return max - controlAdapter.getIndex();
   }
 }

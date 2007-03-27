@@ -12,42 +12,88 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
+import org.eclipse.rap.rwt.events.*;
+import org.eclipse.rap.rwt.graphics.Font;
+import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 
+/**
+ * <p>Currently the controlResized event of the ControlListener is fired to
+ * indicate that a TableColumn was resized. Moving columns and notifications
+ * thereof are not yet implemented.</p> 
+ */
 public class TableColumn extends Item {
 
+  public static final int HEIGHT = 20;
+  
   private final Table parent;
-  private int width = 0;
+  private int width;
 
   public TableColumn( final Table parent, final int style ) {
+    this( parent, checkStyle( style ), checkNull( parent ).getColumnCount() );
+  }
+
+  public TableColumn( final Table parent, final int style, final int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
-    ItemHolder.addItem( parent, this );
+    this.parent.createColumn( this, index );
   }
-
-  static int checkStyle( final int style ) {
-    int result = RWT.NONE;
-    if( style > 0 ) {
-      result = style;
-    }
-    return result;
-  }
-
+  
   public Display getDisplay() {
+    checkWidget();
     return parent.getDisplay();
+  }
+  
+  public Table getParent() {
+    checkWidget();
+    return parent;
   }
 
   public int getWidth() {
+    checkWidget();
     return width;
   }
 
   public void setWidth( final int width ) {
+    checkWidget();
     if( width >= 0 ) {
       this.width = width;
+    } else if( width == -2 ) {
+      // Compute width from current column text
+      Font font = parent.getFont();
+      this.width = FontSizeEstimation.stringExtent( getText(), font ).x;
+      // Mimic Windows behaviour that has a minimal width 
+      if( this.width < 12 ) {
+        this.width = 12;
+      }
+    } else {
+      // TODO [rh] revise this: seems to be some minimal column width, maybe
+      //      depends on whether column is resizeable or movable or style flags 
+      this.width = 6; 
     }
+    ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
+    event.processEvent();
   }
   
+  ///////////////////////////////////////
+  // Listener registration/deregistration
   
+  
+  public void addControlListener( final ControlListener listener ) {
+    ControlEvent.addListener( this, listener );
+  }
+
+  public void removeControlListener( final ControlListener listener ) {
+    ControlEvent.removeListener( this, listener );
+  }
+  
+  public void addSelectionListener( final SelectionListener listener ) {
+    SelectionEvent.addListener( this, listener );
+  }
+
+  public void removeSelectionListener( final SelectionListener listener ) {
+    SelectionEvent.removeListener( this, listener );
+  }
+
   ///////////////////////////////////
   // Methods to dispose of the widget
 
@@ -60,9 +106,23 @@ public class TableColumn extends Item {
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].removeText( index );
     }
-    ItemHolder.removeItem( parent, this );
+    parent.destroyColumn( this );
   }
 
   protected void releaseWidget() {
+  }
+  
+  //////////////////
+  // Helping methods
+
+  private static int checkStyle( final int style ) {
+    return checkBits( style, RWT.LEFT, RWT.CENTER, RWT.RIGHT, 0, 0, 0 );
+  }
+
+  private static Table checkNull( final Table table ) {
+    if( table == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    return table;
   }
 }

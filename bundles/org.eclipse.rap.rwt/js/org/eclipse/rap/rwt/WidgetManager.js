@@ -32,12 +32,21 @@ qx.Proto.add = function( widget, id, isControl ) {
     widget.setUserData( "isControl", true );
   }
   widget.setUserData( "id", id );
-};
+}
+
+/**
+ * Unregisteres the given widget at the WidgetManager. Note that the widget is
+ * not disposed of.
+ */
+qx.Proto.remove = function( widget ) {
+  var id = this.findIdByWidget( widget );  
+  delete this._map[ id ];
+}
 
 /**
  * Disposes of the widget that is registered with the given id. The widget is
  * disconnected from its parent, its 'dispose' method is called and it is 
- * removed from this WidgetManager.
+ * removed from this WidgetManager (see remove).
  * No action is taken if there is no widget registered for the given id or the
  * widget was already disposed of.
  */
@@ -48,7 +57,7 @@ qx.Proto.dispose = function( id ) {
     this._removeToolTipPopup( widget );
     widget.dispose();
   }
-  delete this._map[ id ];
+  this.remove( widget );
 };
 
 /**

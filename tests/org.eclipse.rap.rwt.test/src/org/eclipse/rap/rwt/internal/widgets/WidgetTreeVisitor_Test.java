@@ -93,15 +93,48 @@ public class WidgetTreeVisitor_Test extends TestCase {
     Display display = new Display();
     final Shell shell = new Shell( display , RWT.NONE );
     Table table = new Table( shell, RWT.NONE );
-    TableItem tableItem = new TableItem( table, RWT.NONE );
-    TableColumn tableColumn = new TableColumn( table, RWT.NONE );
+    TableItem item1 = new TableItem( table, RWT.NONE );
+    TableColumn column1 = new TableColumn( table, RWT.NONE );
+    TableItem item2 = new TableItem( table, RWT.NONE );
+    TableColumn column2 = new TableColumn( table, RWT.NONE );
+    Control tableControl = new Button( table, RWT.PUSH );
     final int[] count = {
       0
     };
-    // Ensure that regards in which order columns and or items are created
-    // the order is first column then items
     final Object[] elements = new Object[]{
-      shell, table, tableColumn, tableItem
+      shell, table, column1, column2, item1, item2, tableControl 
+    };
+    WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      public boolean doVisit( final Widget widget ) {
+        assertSame( widget, elements[ count[ 0 ] ] );
+        count[ 0 ]++;
+        return widget != shell;
+      }
+    } );
+    assertEquals( 1, count[ 0 ] );
+    count[ 0 ] = 0;
+    // Ensure that table item are visited in this order: first TableColumn,
+    // then TableItem; regardless in which order they were constructed
+    WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
+      public boolean doVisit( final Widget widget ) {
+        assertSame( elements[ count[ 0 ] ], widget );
+        count[ 0 ]++;
+        return true;
+      }
+    } );
+    assertEquals( elements.length, count[ 0 ] );
+  }
+
+  public void testTreeVisitorWithToolBar() {
+    Display display = new Display();
+    final Shell shell = new Shell( display , RWT.NONE );
+    ToolBar toolBar = new ToolBar( shell, RWT.NONE );
+    ToolItem toolItem = new ToolItem( toolBar, RWT.NONE );
+    final int[] count = {
+      0
+    };
+    final Object[] elements = new Object[]{
+      shell, toolBar, toolItem
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
@@ -119,7 +152,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
         return true;
       }
     } );
-    assertEquals( 4, count[ 0 ] );
+    assertEquals( elements.length, count[ 0 ] );
   }
 
   public void testTreeVisitorWithMenus() {

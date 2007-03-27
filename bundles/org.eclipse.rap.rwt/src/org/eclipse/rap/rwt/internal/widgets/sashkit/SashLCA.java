@@ -20,7 +20,7 @@ import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
 
 
-public class SashLCA extends AbstractWidgetLCA {
+public final class SashLCA extends AbstractWidgetLCA {
   
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );

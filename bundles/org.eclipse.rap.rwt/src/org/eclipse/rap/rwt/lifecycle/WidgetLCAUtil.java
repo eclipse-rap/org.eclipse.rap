@@ -254,8 +254,18 @@ public final class WidgetLCAUtil {
   public static void writeFont( final Widget widget, final Font font )
     throws IOException
   {
+    writeFont( widget, font, false );
+  }
+  
+  public static void writeFont( final Widget widget, 
+                                final Font font, 
+                                final boolean force ) 
+    throws IOException 
+  {
     Font systemFont = widget.getDisplay().getSystemFont();
-    if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, systemFont ) ) {
+    if(    force 
+        || WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, systemFont ) ) 
+    {
       JSWriter writer = JSWriter.getWriterFor( widget );
       Object[] args = new Object[]{
         widget,
@@ -267,7 +277,7 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setFont", args );
     }
   }
-
+  
   public static void writeEnabled( final Widget widget, final boolean enabled )
     throws IOException
   {

@@ -2028,64 +2028,29 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   ---------------------------------------------------------------------------
    */
 
-  "table-focus-statusbar" : {
-    setup : function() {
-      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-      this.border = new qx.renderer.border.Border;
-      this.border.set({ topColor:"threedshadow", topStyle :qx.constant.Style.BORDER_SOLID, topWidth:1 });
-    },
-
-    initial : function(vTheme) {
-      return {
-        font: this.font,
-        border: this.border,
-        paddingLeft: 2,
-        paddingRight: 2
-      }
-    }
-  },
-
-
-  "table-focus-indicator" : {
-    setup : function() {
-      this.border = new qx.renderer.border.Border(3, qx.constant.Style.BORDER_SOLID, "#b3d9ff");
-      this.editingBorder = new qx.renderer.border.Border(2, qx.constant.Style.BORDER_SOLID, "#b3d9ff");
-    },
-
-    state : function(vTheme, vStates) {
-      return {
-        border : vStates.editing ? this.editingBorder : this.border
-      }
-    }
-  },
-
-
-  "table-editor-textfield" : {
-    setup : function() {
-      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-    },
-
-    initial : function(vTheme) {
-      return {
-        font: this.font,
-        border: qx.renderer.border.BorderPresets.getInstance().none,
-        paddingLeft: 2,
-        paddingRight: 2,
-        paddingTop: 0,
-        paddingBottom: 0
-      }
+  "table" : {
+    setup: function() {
+      this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
     },
     
-    state: function(vTheme, vStates) {
+    initial: function( vTheme ) {
       return {
-        border : vStates.rwt_BORDER ? qx.renderer.border.BorderPresets.getInstance().inset :
-          qx.renderer.border.BorderPresets.getInstance().none
+        backgroundColor: new qx.renderer.color.ColorObject("white"),
+        font: this.font        
+      }
+    },
+
+    state: function( vTheme, vStates ) {
+      return {
+        border : vStates.rwt_BORDER 
+          ? qx.renderer.border.BorderPresets.getInstance().inset 
+          : qx.renderer.border.BorderPresets.getInstance().none
       }
     }
   },
-
-  "table-header-cell" : {
-    setup : function() {
+  
+  "table-column" : {
+    setup: function() {
       this.border = new qx.renderer.border.Border;
       this.border.set({ rightColor:"#d6d2c2", rightStyle :qx.constant.Style.BORDER_SOLID, rightWidth:1,
       bottomColor:"#d6d2c2", bottomStyle :qx.constant.Style.BORDER_SOLID, bottomWidth:2 });
@@ -2094,49 +2059,38 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.mouseOverBorder.set({ rightColor:"#d6d2c2", rightStyle :qx.constant.Style.BORDER_SOLID, rightWidth:1,
       bottomColor:"#F9B119", bottomStyle :qx.constant.Style.BORDER_SOLID, bottomWidth:2 });
 
-      this.background = new qx.renderer.color.ColorObject("#f8f8ff");
-      this.mouseOverBackground = new qx.renderer.color.ColorObject("white");
+      this.background = new qx.renderer.color.ColorObject( "#f8f8ff" );
+      this.mouseOverBackground = new qx.renderer.color.ColorObject( "white" );
     },
 
-    initial : function(vTheme) {
+    initial: function( vTheme ) {
       return {
-        cursor : qx.constant.Core.DEFAULT,
-        border : this.border,
-        paddingLeft : 2,
-        paddingRight : 2,
-        spacing:2,
-        overflow:"hidden",
+        cursor: qx.constant.Core.DEFAULT,
+        border: this.border,
+        paddingLeft: 2,
+        paddingRight: 2,
+        spacing: 2,
         selectable: false,
-        backgroundColor:this.background,
-        iconPosition:"right",
-        verticalChildrenAlign:"middle"
+        backgroundColor: this.background
       }
     },
 
-    state : function(vTheme, vStates) {
-      return {
-        backgroundColor : vStates.mouseover ? this.mouseOverBackground : this.background,
-        border : vStates.mouseover ? this.mouseOverBorder : this.border
+    state: function( vTheme, vStates ) {
+      var vResult;
+      if( vStates.disabled ) {
+        vResult = {
+          backgroundColor : this.background,
+          border : this.border
+        }
+      } else {
+        vResult = {
+          backgroundColor : vStates.mouseover ? this.mouseOverBackground : this.background,
+          border : vStates.mouseover ? this.mouseOverBorder : this.border
+        }
       }
+      return vResult;
     }
   },
-
-  "table" : {
-    initial : function(vTheme) {
-      return {
-        backgroundColor: new qx.renderer.color.ColorObject("white")
-      }
-    },
-
-    state : function(vTheme, vStates) {
-      return {
-        border : vStates.rwt_BORDER ?
-          qx.renderer.border.BorderPresets.getInstance().inset : 
-          qx.renderer.border.BorderPresets.getInstance().none
-      }
-    }
-  },
-
 
   /*
   ---------------------------------------------------------------------------

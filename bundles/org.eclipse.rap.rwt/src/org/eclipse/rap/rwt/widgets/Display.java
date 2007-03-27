@@ -19,7 +19,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.FocusEvent;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.widgets.IDisplayAdapter;
-import org.eclipse.rap.rwt.lifecycle.DisplayUtil;
 import com.w4t.Adaptable;
 import com.w4t.W4TContext;
 import com.w4t.engine.requests.RequestParams;

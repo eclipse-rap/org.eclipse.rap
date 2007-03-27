@@ -248,8 +248,8 @@ public abstract class Control extends Widget {
     }
     Rectangle newBounds = new Rectangle( location.x,
                                          location.y,
-                                         this.bounds.width,
-                                         this.bounds.height );
+                                         bounds.width,
+                                         bounds.height );
     setBounds( newBounds );
   }
 
@@ -258,14 +258,14 @@ public abstract class Control extends Widget {
   }
 
   public Point getLocation() {
-    return new Point( this.bounds.x, this.bounds.y );
+    return new Point( bounds.x, bounds.y );
   }
 
   public void setSize( final Point size ) {
     if( size == null ) {
       RWT.error( RWT.ERROR_NULL_ARGUMENT );
     }
-    setBounds( new Rectangle( this.bounds.x, this.bounds.y, size.x, size.y ) );
+    setBounds( new Rectangle( bounds.x, bounds.y, size.x, size.y ) );
   }
 
   public void setSize( final int width, final int height ) {
@@ -274,7 +274,7 @@ public abstract class Control extends Widget {
 
   public Point getSize() {
     checkWidget();
-    return new Point( this.bounds.width, this.bounds.height );
+    return new Point( bounds.width, bounds.height );
   }
 
   public Point computeSize( final int wHint, final int hHint ) {
@@ -505,7 +505,6 @@ public abstract class Control extends Widget {
     Object adapter = getDisplay().getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setFocusControl( control );
-    
   }
 
   ///////////////////////////////////////////////////////

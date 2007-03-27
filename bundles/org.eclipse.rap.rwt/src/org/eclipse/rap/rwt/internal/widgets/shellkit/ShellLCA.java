@@ -23,7 +23,7 @@ import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.engine.service.ContextProvider;
 
 
-public class ShellLCA extends AbstractWidgetLCA {
+public final class ShellLCA extends AbstractWidgetLCA {
   
   private static final String PROP_ACTIVE_CONTROL = "activeControl";
   private static final String PROP_ACTIVE_SHELL = "activeShell";

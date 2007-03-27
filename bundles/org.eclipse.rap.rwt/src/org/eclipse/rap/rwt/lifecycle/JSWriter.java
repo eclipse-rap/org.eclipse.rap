@@ -195,8 +195,7 @@ public final class JSWriter {
                    final Object defValue ) 
     throws IOException 
   {
-    if( WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defValue ) ) 
-    {
+    if( WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defValue ) ) {
       set( jsProperty, new Object[] { newValue } );
     }
   }
@@ -208,8 +207,16 @@ public final class JSWriter {
   {
     ensureWidgetRef();
     if( property == null ) {
-      String code = "w.addEventListener( \"{0}\", {1} );";
-      write( code, eventType, listener );
+      // TODO [rh] HACK to allow 'instance' listener instead of statis listener
+      //      functions
+      if( listener.startsWith( "this." ) ) {
+        String thisListener = listener.substring( 5 );
+        String code = "w.addEventListener( \"{0}\", w.{1}, this );";
+        write( code, eventType, thisListener );
+      } else {
+        String code = "w.addEventListener( \"{0}\", {1} );";
+        write( code, eventType, listener );
+      }
     } else {
       String code = "w.{0}().addEventListener( \"{1}\", {2} );";
       write( code, getGetterName( property ), eventType, listener );
@@ -483,9 +490,9 @@ public final class JSWriter {
           }
         } else if( args[ i ] instanceof JSVar ) { 
           params.append( args[ i ] );
-        } else if( args[i] instanceof Color ) {
+        } else if( args[ i ] instanceof Color ) {
           params.append( '"' );
-          params.append( ( ( IColor )args[i] ).toColorValue() );
+          params.append( ( ( IColor )args[ i ] ).toColorValue() );
           params.append( '"' );
         } else if( args[ i ] instanceof Object[] ) { 
           params.append( createArray( ( Object[] )args[ i ] ) );
@@ -507,12 +514,14 @@ public final class JSWriter {
     buffer.append( '[' );
     for( int i = 0; i < array.length; i++ ) {
       if( i > 0 ) {
-        buffer.append( ',' );
+        buffer.append( "," );
       }
       if( array[ i ] instanceof String ) {
         buffer.append( " \"" );
         buffer.append( escapeString( array[ i ].toString() ) );
         buffer.append( '"' );
+      } else if( array[ i ] instanceof Widget ) {
+        buffer.append( createFindWidgetById( ( Widget )array[ i ] ) );
       } else {
         buffer.append( array[ i ] );
       }

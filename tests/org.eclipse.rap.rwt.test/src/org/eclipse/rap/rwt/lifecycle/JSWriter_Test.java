@@ -19,6 +19,7 @@ import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.widgets.*;
 import com.w4t.Fixture;
+import com.w4t.util.browser.Default;
 import com.w4t.util.browser.Ie6;
 
 public class JSWriter_Test extends TestCase {
@@ -258,6 +259,42 @@ public class JSWriter_Test extends TestCase {
       + "w.setBoolValues( true, false );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
+  }
+  
+  public void testSetWidgetArray() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Widget widget1 = new Button( shell, RWT.PUSH );
+    Widget widget2 = new Button( shell, RWT.PUSH );
+    
+    // call JSWriter once to get rid of prologue 
+    JSWriter writer = JSWriter.getWriterFor( shell );
+    Fixture.fakeBrowser( new Default( true, true ) );
+    Fixture.fakeResponseWriter();
+    writer.set( "foo", "bar" );
+
+    // set property value to an empty array 
+    Fixture.fakeBrowser( new Default( true, true ) );
+    Fixture.fakeResponseWriter();
+    writer.set( "buttons", "buttons", new Widget[ 0 ], null );
+    assertEquals( "w.setButtons( [] );", 
+                  Fixture.getAllMarkup() );
+    
+    // set property value to an array that contains one item
+    Fixture.fakeBrowser( new Default( true, true ) );
+    Fixture.fakeResponseWriter();
+    writer.set( "buttons", "buttons", new Object[] { widget1 }, null );
+    assertEquals( "w.setButtons( [wm.findWidgetById( \"w2\" ) ] );", 
+                  Fixture.getAllMarkup() );
+    
+    // set property value to an array that contains two items
+    Fixture.fakeBrowser( new Default( true, true ) );
+    Fixture.fakeResponseWriter();
+    writer.set( "buttons", "buttons", new Object[] { widget1, widget2 }, null );
+    String expected 
+      = "w.setButtons( [wm.findWidgetById( \"w2\" )," 
+      + "wm.findWidgetById( \"w3\" ) ] );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
   
   public void testSetWithPropertyChainAndObjectArray() throws Exception {

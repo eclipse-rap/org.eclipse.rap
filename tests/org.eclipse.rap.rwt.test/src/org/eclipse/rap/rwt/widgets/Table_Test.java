@@ -14,6 +14,7 @@ package org.eclipse.rap.rwt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.RWTFixture;
+import org.eclipse.rap.rwt.graphics.Image;
 
 public class Table_Test extends TestCase {
 
@@ -24,10 +25,41 @@ public class Table_Test extends TestCase {
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }
+  
+  public void testInitialValues() {
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    Table table = new Table( shell, RWT.NONE );
+    
+    assertEquals( false, table.getHeaderVisible() );
+    assertEquals( false, table.getLinesVisible() );
+    assertEquals( 0, table.getSelectionCount() );
+    assertEquals( 0, table.getSelectionIndices().length );
+    assertEquals( 0, table.getSelection().length );
+    assertEquals( 0, table.getTopIndex() );
+  }
+  
+  public void testStyle() {
+    Display display = new Display();
+    Shell shell = new Shell( display, RWT.NONE );
+    Table table = new Table( shell, RWT.NONE );
+    assertTrue( ( table.getStyle() & RWT.H_SCROLL ) != 0 );
+    assertTrue( ( table.getStyle() & RWT.V_SCROLL ) != 0 );
+    assertTrue( ( table.getStyle() & RWT.SINGLE ) != 0 );
+
+    table = new Table( shell, RWT.SINGLE | RWT.MULTI );
+    assertTrue( ( table.getStyle() & RWT.SINGLE ) != 0 );
+
+    table = new Table( shell, RWT.SINGLE | RWT.SINGLE );
+    assertTrue( ( table.getStyle() & RWT.SINGLE ) != 0 );
+
+    table = new Table( shell, RWT.SINGLE | RWT.MULTI );
+    assertTrue( ( table.getStyle() & RWT.SINGLE ) != 0 );
+  }
 
   public void testTableCreation() {
     Display display = new Display();
-    Shell shell = new Shell( display , RWT.NONE );
+    Shell shell = new Shell( display, RWT.NONE );
     Table table = new Table( shell, RWT.NONE );
     assertEquals( 0, table.getItemCount() );
     assertEquals( 0, table.getItems().length );
@@ -78,7 +110,17 @@ public class Table_Test extends TestCase {
     column0.setWidth( 100 );
     assertEquals( 100, column0.getWidth() );
   }
-
+  
+  public void testHeaderHeight() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Table table = new Table( shell, RWT.NONE );
+    new TableColumn( table, RWT.NONE );
+    assertEquals( 0, table.getHeaderHeight() );
+    table.setHeaderVisible( true );
+    assertTrue( table.getHeaderHeight() > 0 );
+  }
+  
   public void testTableItemTexts() {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
@@ -91,7 +133,7 @@ public class Table_Test extends TestCase {
     String text4 = "text4";
     String text5 = "text5";
     
-    // test text for first column, the same as setTest(String)
+    // test text for first column, the same as setText(String)
     item.setText( text0 );
     assertSame( text0, item.getText() );
     assertSame( text0, item.getText( 0 ) );
@@ -154,5 +196,95 @@ public class Table_Test extends TestCase {
     assertSame( text3, item.getText( 1 ) );
     assertSame( text4, item.getText( 2 ) );
     assertSame( "", item.getText( 3 ) );
+  }
+  
+  public void testTopIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Table table = new Table( shell, RWT.NONE );
+    new TableItem( table, RWT.NONE );
+    TableItem lastItem = new TableItem( table, RWT.NONE );
+
+    // Set a value which is out of bounds
+    int previousTopIndex = table.getTopIndex();
+    table.setTopIndex( 10000 );
+    assertEquals( previousTopIndex, table.getTopIndex() );
+    
+    // Set topIndex to the second item
+    table.setTopIndex( 1 );
+    assertEquals( 1, table.getTopIndex() );
+    
+    // Remove last item (whos index equals topIndex) -> must adjust topIndex
+    table.setTopIndex( table.indexOf( lastItem ) );
+    lastItem.dispose();
+    assertEquals( 0, table.getTopIndex() );
+  }
+  
+  public void testDisposeSelectedItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, RWT.NONE );
+    new TableColumn( table, RWT.NONE );
+    TableItem item = new TableItem( table, RWT.NONE );
+    
+    table.setSelection( new TableItem[] { item } );
+    item.dispose();
+    assertEquals( 0, table.getSelectionCount() );
+    assertEquals( 0, table.getSelection().length );
+  }
+  
+  public void testRemoveAll() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, RWT.NONE );
+    new TableColumn( table, RWT.NONE );
+    TableItem preDisposedItem = new TableItem( table, RWT.NONE );
+    TableItem item0 = new TableItem( table, RWT.NONE );
+    TableItem item1 = new TableItem( table, RWT.NONE );
+
+    preDisposedItem.dispose();
+    table.setSelection( 1 );
+    table.setTopIndex( 1 );
+    table.removeAll();
+    assertEquals( -1, table.getSelectionIndex() );
+    assertEquals( 0, table.getItemCount() );
+    assertEquals( 0, table.getTopIndex() );
+    assertTrue( item0.isDisposed() );
+    assertTrue( item1.isDisposed() );
+  }
+  
+  public void deselectAll() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, RWT.NONE );
+    new TableColumn( table, RWT.NONE );
+    new TableItem( table, RWT.NONE );
+    new TableItem( table, RWT.NONE );
+
+    table.setSelection( 1 );
+    table.deselectAll();
+    assertEquals( -1, table.getSelectionIndex() );
+  }
+  
+  public void testClear() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, RWT.NONE );
+    new TableColumn( table, RWT.NONE );
+    TableItem item = new TableItem( table, RWT.NONE );
+
+    item.setText( "abc" );
+    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    table.clear( table.indexOf( item ) );
+    assertEquals( "", item.getText() );
+    assertEquals( null, item.getImage() );
+    
+    // Test clear with illegal arguments
+    try {
+      table.clear( 2 );
+      fail( "Must throw exception when attempting to clear non-existing item" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 }

@@ -63,6 +63,8 @@ public class ControlsDemo implements IEntryPoint {
     tab.createContents();
     tab = new TableTab( topFolder );
     tab.createContents();
+//    tab = new TableViewerTab( topFolder );
+//    tab.createContents();
     tab = new TextTab( topFolder );
     tab.createContents();
 //    tab = new SpinnerTab( topFolder );

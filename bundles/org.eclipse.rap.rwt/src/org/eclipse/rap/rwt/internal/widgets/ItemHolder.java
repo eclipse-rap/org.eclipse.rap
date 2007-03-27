@@ -108,7 +108,7 @@ public final class ItemHolder implements IItemHolderAdapter {
     return items.indexOf( item );
   }
 
-  // ////////////////
+  ///////////////////
   // helping methods
   
   private static IItemHolderAdapter getItemHolder( final Widget widget ) {

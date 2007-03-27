@@ -33,7 +33,8 @@ import org.eclipse.rap.rwt.internal.widgets.menukit.MenuLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.sashkit.SashLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.shellkit.ShellLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.spinnerkit.SpinnerLCA_Test;
-import org.eclipse.rap.rwt.internal.widgets.tablekit.TableLCA_Test;
+import org.eclipse.rap.rwt.internal.widgets.tablecolumnkit.TableColumnLCA_Test;
+import org.eclipse.rap.rwt.internal.widgets.tableitemkit.TableItemLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.textkit.TextLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.treeitemkit.TreeItemLCA_Test;
 import org.eclipse.rap.rwt.internal.widgets.treekit.TreeLCA_Test;
@@ -90,6 +91,8 @@ public class RWTTestSuite {
     suite.addTestSuite( MenuItem_Test.class );
     suite.addTestSuite( MenuHolder_Test.class );
     suite.addTestSuite( Table_Test.class );
+    suite.addTestSuite( TableColumn_Test.class );
+    suite.addTestSuite( TableItem_Test.class );
     suite.addTestSuite( Combo_Test.class );
     suite.addTestSuite( List_Test.class );
     suite.addTestSuite( ToolBar_Test.class );
@@ -119,7 +122,8 @@ public class RWTTestSuite {
     suite.addTestSuite( TreeItemLCA_Test.class );
     suite.addTestSuite( ShellLCA_Test.class );
     suite.addTestSuite( MenuLCA_Test.class );
-    suite.addTestSuite( TableLCA_Test.class );
+    suite.addTestSuite( TableColumnLCA_Test.class );
+    suite.addTestSuite( TableItemLCA_Test.class );
     suite.addTestSuite( CTabFolderLCA_Test.class );
     suite.addTestSuite( CoolBarLCA_Test.class );
     suite.addTestSuite( ListLCA_Test.class );
