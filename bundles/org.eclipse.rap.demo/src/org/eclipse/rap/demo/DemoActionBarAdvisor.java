@@ -9,6 +9,7 @@
 package org.eclipse.rap.demo;
 
 import org.eclipse.rap.jface.action.*;
+import org.eclipse.rap.jface.dialogs.MessageDialog;
 import org.eclipse.rap.jface.resource.ImageDescriptor;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.ui.IWorkbenchActionConstants;
@@ -41,7 +42,9 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     
     aboutAction = new Action() {
       public void run() {
-        System.out.println( "run about action..." );
+        MessageDialog.openInformation( window.getShell(), 
+                                       "RAP Demo", "About action clicked", 
+                                       null );
       }
     };
     aboutAction.setText( "About" );
