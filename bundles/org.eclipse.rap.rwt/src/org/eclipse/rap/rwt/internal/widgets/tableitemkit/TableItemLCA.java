@@ -18,6 +18,8 @@ import org.eclipse.rap.rwt.internal.widgets.ItemLCAUtil;
 import org.eclipse.rap.rwt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.HTML;
+import com.w4t.RenderUtil;
 
 public final class TableItemLCA extends AbstractWidgetLCA {
 
@@ -59,13 +61,13 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       for( int i = 0; i < columnCount; i++ ) {
         Object[] args = new Object[] {
           new Integer( i ),
-          item.getText( i )
+          encodeHTML( item.getText( i ) )
         };
         writer.set( "text", args );
       }
     }
   }
-
+  
   /* (intentionally not JavaDoc'ed)
    * The client-side representation of a TableItem is not a qooxdoo widget.
    * Therefore the standard mechanism for dispoing of a widget is not used.
@@ -137,6 +139,13 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     } else {
       result = true;
     }
+    return result;
+  }
+  
+  private static String encodeHTML( final String text ) {
+    String result = text.replaceAll( "\"", "&#034;" );
+    result = result.replaceAll( ">", "&#062;" );
+    result = result.replaceAll( "<", "&#060;" );
     return result;
   }
 }

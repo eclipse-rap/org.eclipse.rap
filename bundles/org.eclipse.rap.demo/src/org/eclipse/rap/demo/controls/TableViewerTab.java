@@ -85,7 +85,6 @@ public class TableViewerTab extends ExampleTab {
   protected static final int ADD_ITEMS = 300;
   
   private TableViewer viewer;
-  private boolean headerVisible = true;
   private final java.util.List persons = new ArrayList();
 
   public TableViewerTab( final TabFolder folder ) {
@@ -94,6 +93,7 @@ public class TableViewerTab extends ExampleTab {
   }
 
   private void initPersons() {
+    persons.add( new Person( "Rögn\"íy&", "Hövl&lt;, the char tester", 1 ) );
     persons.add( new Person( "Paul", "Panther", 1 ) );
     persons.add( new Person( "Carl", "Marx", 2 ) );
     persons.add( new Person( "Sofia", "Loren", 3 ) );

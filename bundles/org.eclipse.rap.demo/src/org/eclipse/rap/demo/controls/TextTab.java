@@ -35,8 +35,6 @@ public class TextTab extends ExampleTab {
     createStyleButton( "READ_ONLY" );
     createVisibilityButton();
     createEnablementButton();
-    createFontChooser();
-    createLimitText( styleComp );
     final Button editableButton = createPropertyButton( "Editable" );
     editableButton.setSelection( true );
     editableButton.addSelectionListener( new SelectionAdapter() {
@@ -46,6 +44,8 @@ public class TextTab extends ExampleTab {
         modifyText.setEditable( editable );
       }
     } );
+    createFontChooser();
+    createLimitText( styleComp );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -81,6 +81,7 @@ public class TextTab extends ExampleTab {
                     + "consequat.\n"
                     + "Duis aute irure dolor in reprehenderit in voluptate "
                     + "velit esse cillum dolore eu fugiat nulla pariatur." );
+    result.setSelection( 0, 12 );
     final Button btnChange = new Button( grpContainer, RWT.PUSH );
     final Label lblTextContent = new Label( grpContainer, RWT.WRAP );
     gridData = new GridData( RWT.FILL, RWT.FILL, true, true );

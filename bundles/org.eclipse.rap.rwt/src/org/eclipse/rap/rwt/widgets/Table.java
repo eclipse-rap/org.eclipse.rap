@@ -38,6 +38,7 @@ import org.eclipse.rap.rwt.internal.widgets.ItemHolder;
  *  <li>Scroll bars stay enabled even though the table itself is disabled. This
  *  is due to a qooxdoo limitation, see http://bugzilla.qooxdoo.org/post_bug.cgi
  *  </li>
+ *  <li>No images yet</li>
  * </ul> 
  */
 public class Table extends Composite {
