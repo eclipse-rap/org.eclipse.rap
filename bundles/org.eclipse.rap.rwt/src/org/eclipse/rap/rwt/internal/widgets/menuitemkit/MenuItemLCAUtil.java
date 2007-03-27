@@ -19,6 +19,14 @@ import org.eclipse.rap.rwt.widgets.MenuItem;
 
 final class MenuItemLCAUtil {
   
+  public static void newItem( final MenuItem menuItem, final String jsClass )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( menuItem );
+    writer.newWidget( jsClass );
+    writer.call( menuItem.getParent(), "add", new Object[]{ menuItem } );
+  }
+  
   public static void writeEnabled( final MenuItem menuItem ) throws IOException {
     Boolean newValue = Boolean.valueOf( menuItem.isEnabled() );
     JSWriter writer = JSWriter.getWriterFor( menuItem );

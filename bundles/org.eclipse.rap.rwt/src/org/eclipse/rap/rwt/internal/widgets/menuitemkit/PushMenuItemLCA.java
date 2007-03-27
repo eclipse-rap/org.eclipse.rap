@@ -41,7 +41,7 @@ final class PushMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    newItem( menuItem, "qx.ui.menu.Button" );
+    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Button" );
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {

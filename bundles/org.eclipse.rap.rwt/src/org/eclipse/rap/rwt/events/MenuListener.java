@@ -9,21 +9,14 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.rwt.internal.widgets.menuitemkit;
+package org.eclipse.rap.rwt.events;
 
-import java.io.IOException;
-import org.eclipse.rap.rwt.widgets.MenuItem;
+import java.util.EventListener;
 
-
-abstract class MenuItemDelegateLCA {
-
-  abstract void preserveValues( MenuItem menuItem );
-
-  abstract void readData( MenuItem menuItem );
+public interface MenuListener extends EventListener {
   
-  abstract void renderInitialization( MenuItem menuItem ) throws IOException; 
-  
-  abstract void renderChanges( MenuItem menuItem ) throws IOException;
-  
-  abstract void renderDispose( MenuItem menuItem ) throws IOException;
+  public void menuHidden( MenuEvent e );
+
+  public void menuShown( MenuEvent e );
+
 }

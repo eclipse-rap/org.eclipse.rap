@@ -26,15 +26,18 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
   void preserveValues( final Menu menu ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
+    MenuLCAUtil.preserveMenuListener( menu );
   }
   
-  void readData( Menu menu ) {
+  void readData( final Menu menu ) {
+    MenuLCAUtil.readMenuEvent( menu );
   }
   
   void renderInitialization( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
     // TODO [rh] check whether it is allowed (in SWT and/or Qooxdoo) to 
     //      assign a Menu to more than one MenuItem
+    //      [rst] It's allowed in SWT but not in qooxdoo - we have a problem here
     writer.newWidget( "qx.ui.menu.Menu" );
     writer.call( "addToDocument", null );
     MenuItem[] menuItems = DropDownMenuLCA.findReferringMenuItems( menu );
@@ -45,6 +48,8 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
 
   void renderChanges( final Menu menu ) throws IOException {
     MenuLCAUtil.writeEnabled( menu );
+    MenuLCAUtil.writeMenuListener( menu );
+    MenuLCAUtil.writeUnhideMenu( menu );
   }
 
   /**

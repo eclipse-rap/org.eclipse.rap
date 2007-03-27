@@ -33,9 +33,11 @@ final class MenuBarLCA extends MenuDelegateLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_SHELL, shell );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
+    MenuLCAUtil.preserveMenuListener( menu );
   }
   
-  void readData( Menu menu ) {
+  void readData( final Menu menu ) {
+    MenuLCAUtil.readMenuEvent( menu );
   }
 
   void renderInitialization( final Menu menu ) throws IOException {
@@ -47,6 +49,11 @@ final class MenuBarLCA extends MenuDelegateLCA {
     writeParent( menu );
     writeBounds( menu );
     MenuLCAUtil.writeEnabled( menu );
+    // TODO [rst] Disable menu listener on Menubars? In SWT/Win, only the
+    //      SWT.HIDE is sent but this behavior seems to be undocumented.
+    //      Check out other platforms.
+    MenuLCAUtil.writeMenuListener( menu );
+    MenuLCAUtil.writeUnhideMenu( menu );
   }
   
   //////////////////////////////////////////////////

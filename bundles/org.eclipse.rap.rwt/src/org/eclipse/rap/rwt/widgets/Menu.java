@@ -12,6 +12,8 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.events.MenuEvent;
+import org.eclipse.rap.rwt.events.MenuListener;
 import org.eclipse.rap.rwt.graphics.Point;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.internal.widgets.IItemHolderAdapter;
@@ -100,6 +102,11 @@ public class Menu extends Widget {
     return new Rectangle( x, y, 0, 0 );
   }
   
+  public Shell getShell() {
+    checkWidget();
+    return parent;
+  }
+
   ///////////
   // Visible
   
@@ -110,11 +117,25 @@ public class Menu extends Widget {
     }
   }
   
-  public boolean isVisible(){
+  public boolean getVisible() {
     checkWidget();
-    return visible;
+    boolean result;
+    if( ( style & RWT.BAR ) != 0 ) {
+      result = ( this == parent.getMenuBar() );
+    } else if( ( style & RWT.POP_UP ) != 0 ) {
+      result = visible;
+    } else {
+      // we don't know which menus are currently visible on the client
+      result = false;
+    }
+    return result;
   }
-
+  
+  public boolean isVisible (){
+    checkWidget();
+    return getVisible();
+  }
+  
   ///////////
   // Enabled
   
@@ -186,6 +207,19 @@ public class Menu extends Widget {
 
   protected final void releaseWidget() {
     MenuHolder.removeMenu( parent, this );
+  }
+
+  ///////////////////////////////////////
+  // Listener registration/deregistration
+  
+  public void addMenuListener( final MenuListener listener ) {
+    checkWidget();
+    MenuEvent.addListener( this, listener );
+  }
+
+  public void removeMenuListener( final MenuListener listener ) {
+    checkWidget();
+    MenuEvent.removeListener( this, listener );
   }
 
   //////////////////

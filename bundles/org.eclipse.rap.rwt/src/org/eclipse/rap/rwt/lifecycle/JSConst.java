@@ -43,6 +43,10 @@ public final class JSConst {
     = "org.eclipse.rap.rwt.events.focusGained";
   public static final String EVENT_FOCUS_LOST
     = "org.eclipse.rap.rwt.events.focusLost";
+  public static final String EVENT_MENU_SHOWN
+    = "org.eclipse.rap.rwt.events.menuShown";
+  public static final String EVENT_MENU_HIDDEN
+    = "org.eclipse.rap.rwt.events.menuHidden";
   
   /** 
    * <p>Indicates that a shell was closed on the client side. The parameter 

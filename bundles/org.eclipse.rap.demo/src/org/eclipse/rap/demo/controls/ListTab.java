@@ -14,8 +14,7 @@ import org.eclipse.rap.jface.dialogs.MessageDialog;
 import org.eclipse.rap.jface.viewers.*;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.browser.Browser;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
 import org.eclipse.rap.rwt.widgets.*;
@@ -84,24 +83,21 @@ public class ListTab extends ExampleTab {
     viewer.setLabelProvider( new LabelProvider() );
     viewer.setInput( ELEMENTS );
     list.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-//        System.out.println( "___ selected" );
-      }
       public void widgetDefaultSelected( SelectionEvent event ) {
-//        System.out.println( "___ default selected" );
         int index = list.getSelectionIndex();
         String message = "Item " + index + " selected";
         MessageDialog.openInformation( getShell(), "Selection", message, null );
       }
     } );
     registerControl( list );
-    // ---
+    // List 2
     List list2 = new List( parent, style );
     list2.add( "Item 1" );
     list2.add( "Item 2" );
     list2.add( "Item 3" );
     list2.setLayoutData( new RowData( 200, 200 ) );
-    // ---
+    createPopupMenu( parent.getShell(), list2 );
+    // Code
     int separatorStyle = RWT.SEPARATOR | RWT.HORIZONTAL | RWT.SHADOW_OUT;
     Label separator = new Label( parent, separatorStyle );
     separator.setLayoutData( new RowData( 440, 5 ) );
@@ -112,6 +108,25 @@ public class ListTab extends ExampleTab {
       + "ListViewer with JFace API. The source code looks like this:";
     codeLabel.setText( codeLabelText );
     createDescription( parent );
+  }
+  
+  private void createPopupMenu( final Shell parent, final List list ) {
+    final Menu menu = new Menu( parent, RWT.POP_UP );
+    String[] listItems = list.getItems();
+    for( int i = 0; i < listItems.length; i++ ) {
+      MenuItem item = new MenuItem( menu, RWT.PUSH );
+      item.setText( listItems[ i ] );
+    }
+    menu.addMenuListener( new MenuAdapter() {
+      public void menuShown( MenuEvent e ) {
+        MenuItem[] items = menu.getItems();
+        for( int i = 0; i < items.length; i++ ) {
+          MenuItem item = items[ i ];
+          item.setEnabled( list.isSelected( i ) );
+        }
+      }
+    } );
+    list.setMenu( menu );
   }
   
   private void createDescription( final Composite parent ) {

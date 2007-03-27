@@ -47,6 +47,7 @@ public abstract class RWTEvent extends Event {
     SelectionEvent.class,
     LocationEvent.class,
     ShellEvent.class,
+    MenuEvent.class
   };
   
   public static void processScheduledEvents() {

@@ -56,7 +56,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    newItem( menuItem, "qx.ui.menu.RadioButton" );
+    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.RadioButton" );
     MenuItem firstSiblingItem = getFirstSiblingRadioItem( menuItem );
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     if( firstSiblingItem == menuItem ) {

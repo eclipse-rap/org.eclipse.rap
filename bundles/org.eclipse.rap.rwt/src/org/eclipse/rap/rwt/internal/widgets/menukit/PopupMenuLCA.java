@@ -18,7 +18,6 @@ import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.Control;
 import org.eclipse.rap.rwt.widgets.Menu;
 
-
 final class PopupMenuLCA extends MenuDelegateLCA {
 
   private static final String SHOW_MENU 
@@ -27,9 +26,11 @@ final class PopupMenuLCA extends MenuDelegateLCA {
   void preserveValues( final Menu menu ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
+    MenuLCAUtil.preserveMenuListener( menu );
   }
   
-  void readData( Menu menu ) {
+  void readData( final Menu menu ) {
+    MenuLCAUtil.readMenuEvent( menu );
   }
   
   void renderInitialization( final Menu menu ) throws IOException {
@@ -51,6 +52,8 @@ final class PopupMenuLCA extends MenuDelegateLCA {
       menu.setVisible( false );  
     }
     MenuLCAUtil.writeEnabled( menu );
+    MenuLCAUtil.writeMenuListener( menu );
+    MenuLCAUtil.writeUnhideMenu( menu );
   }
   
   public static void writeEnabled( final Control control )

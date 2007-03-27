@@ -61,12 +61,35 @@ public class Menu_Test extends TestCase {
     assertSame( menuBar.getDisplay(), subMenu2.getDisplay() );
   }
 
-  // TODO [rh] extend this test when all styles are supported
   public void testStyle() {
     Display display = new Display();
     Shell shell = new Shell( display , RWT.NONE );
     Menu menuBar = new Menu( shell, RWT.BAR );
-    assertTrue( ( menuBar.getStyle() & RWT.BAR ) != 0 );
+    assertEquals( RWT.BAR, menuBar.getStyle() );
+    Menu menuDropDown = new Menu( shell, RWT.DROP_DOWN );
+    assertEquals( RWT.DROP_DOWN, menuDropDown.getStyle() );
+    Menu menuPopup = new Menu( shell, RWT.POP_UP );
+    assertEquals( RWT.POP_UP, menuPopup.getStyle() );
+  }
+  
+  public void testVisibility() {
+    Display display = new Display();
+    Shell shell = new Shell( display , RWT.NONE );
+    Menu menuBar = new Menu( shell, RWT.BAR );
+    assertFalse( menuBar.getVisible() );
+    assertFalse( menuBar.isVisible() );
+    shell.setMenuBar( menuBar );
+    assertTrue( menuBar.getVisible() );
+    assertTrue( menuBar.isVisible() );
+    Menu popupMenu = new Menu( shell, RWT.POP_UP );
+    assertFalse( popupMenu.getVisible() );
+    assertFalse( popupMenu.isVisible() );
+    popupMenu.setVisible( true );
+    assertTrue( popupMenu.getVisible() );
+    assertTrue( popupMenu.isVisible() );
+    Menu dropdownMenu = new Menu( shell, RWT.DROP_DOWN );
+    assertFalse( dropdownMenu.getVisible() );
+    assertFalse( dropdownMenu.isVisible() );
   }
 
   public void testItems() {
