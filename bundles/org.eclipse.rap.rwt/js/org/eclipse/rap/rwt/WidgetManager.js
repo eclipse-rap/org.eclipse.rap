@@ -52,13 +52,15 @@ qx.Proto.remove = function( widget ) {
  */
 qx.Proto.dispose = function( id ) {
   var widget = this.findWidgetById( id );
-  if( widget != null && !widget.isDisposed() ) {
-    widget.setParent( null );
-    this._removeToolTipPopup( widget );
-    widget.dispose();
+  if( widget != null ) {
+    if ( !widget.isDisposed() ) {
+      widget.setParent( null );
+      this._removeToolTipPopup( widget );
+      widget.dispose();
+    }
+    this.remove( widget );
   }
-  this.remove( widget );
-};
+}
 
 /**
  * Returns the widget for the given id or null if there is no widget registered
@@ -70,15 +72,19 @@ qx.Proto.findWidgetById = function( id ) {
     this.warn( "no widget registered for id " + id );
   }
   return result;
-};
+}
 
 /**
  * Returns the id (string) for the given widget or null if the widget is not
  * registered.
  */
 qx.Proto.findIdByWidget = function( widget ) {
-  return widget.getUserData( "id" );
-};
+  var result;
+  if( widget != null ) {
+    result = widget.getUserData( "id" );
+  }
+  return result;
+}
 
 /**
  * Determines whether the given widget represents a server-side instance of
