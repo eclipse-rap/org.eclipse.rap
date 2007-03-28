@@ -87,6 +87,8 @@ public class TableViewerTab extends ExampleTab {
   private TableViewer viewer;
   private final java.util.List persons = new ArrayList();
 
+  private Label lblSelection;
+
   public TableViewerTab( final TabFolder folder ) {
     super( folder, "TableViewer" );
     initPersons();
@@ -109,19 +111,19 @@ public class TableViewerTab extends ExampleTab {
   protected void createStyleControls() {
     createAddItemsButton();
     createSelectYoungestPersonButton();
+    lblSelection = new Label( styleComp, RWT.NONE );
   }
 
   protected void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout() );
-    int style = getStyle();
-    viewer = new TableViewer( top, style );
+    viewer = new TableViewer( top, getStyle() );
     viewer.setContentProvider( new PersonContentProvider() );
     viewer.setLabelProvider( new PersonLabelProvider() );
     viewer.setColumnProperties( initColumnProperties( viewer.getTable() ) );
     viewer.setInput( persons );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
       public void selectionChanged( SelectionChangedEvent event ) {
-System.out.println( "selectionChanged: " + event.getSelection() );
+        lblSelection.setText( "Selection: " + event.getSelection() );
       }
     } );
     viewer.getTable().setHeaderVisible( true );
@@ -137,7 +139,7 @@ System.out.println( "selectionChanged: " + event.getSelection() );
     lastNameColumn.setWidth( 100 );    
     TableColumn ageColumn = new TableColumn( table, RWT.NONE );
     ageColumn.setText( "Age" );
-    ageColumn.setWidth( 290 );
+    ageColumn.setWidth( 80 );
     return new String[] {
       firstNameColumn.getText(), lastNameColumn.getText(), ageColumn.getText()
     };

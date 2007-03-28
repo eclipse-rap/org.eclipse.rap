@@ -309,7 +309,11 @@ public class Table extends Composite {
     // Show item as top item
     setTopIndex( itemIndex );
     // try to show it 2 rows above the bottom/last item
-    int visibleRows = getClientArea().height / getItemHeight();
+// TODO [rh] replace this once getClientArea is working    
+    int height = getBounds().height 
+               - getHeaderHeight() 
+               - ScrollBar.SCROLL_BAR_HEIGHT;
+    int visibleRows = height / getItemHeight();
     int idealTopIndex = itemIndex - visibleRows + 2;
     if( idealTopIndex >= getItemCount() ) {
       idealTopIndex = getItemCount() - 1;
