@@ -85,6 +85,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
+    // safely remove tree item from tree
+    writer.call( "destroy", null );
     writer.dispose();
   }
 

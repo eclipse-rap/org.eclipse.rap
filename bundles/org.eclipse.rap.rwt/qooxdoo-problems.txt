@@ -158,3 +158,10 @@ that's right?
 
 43.) Adding items to an existing menu breaks the menu's layout once the menu has
      been shown.
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=353
+
+44.) Bug in treefullcontrol: JavaScript errors when a selected item is removed
+     from a tree and another item is selected thereafter.
+     Workaround: a copy of the destroy() method from qx.ui.tree.AbstractTreeElement
+     (qx 0.6.5)
+     --> http://www.mail-archive.com/qooxdoo-devel@lists.sourceforge.net/msg08995.html
