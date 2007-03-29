@@ -134,6 +134,24 @@ public class ScrolledComposite extends Composite {
     return expandVertical;
   }
   
+  public void setExpandHorizontal( final boolean expand ) {
+    checkWidget();
+    if( expand != expandHorizontal ) {
+      expandHorizontal = expand;
+      // layout( false );
+      layout();
+    }
+  }
+  
+  public void setExpandVertical( final boolean expand ) {
+    checkWidget();
+    if( expand != expandVertical ) {
+      expandVertical = expand;
+      // layout( false );
+      layout();
+    }
+  }
+  
   // TODO [rh] move to Scrollable
   public ScrollBar getHorizontalBar() {
     checkWidget ();
