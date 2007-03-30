@@ -15,6 +15,9 @@ import java.util.List;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.internal.widgets.SlimList;
 
+/*
+ * Holds the child controls of Composites
+ */
 final class ControlHolder {
 
   private final List controls;

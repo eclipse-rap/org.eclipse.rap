@@ -81,12 +81,13 @@ public class ControlLCAUtil {
   }
   
   public static void writeZIndex( final Control control ) throws IOException {
-    // TODO [rst] find out what moveAbove/Below does on SWT shells
-    if( !( control instanceof Shell ) ) {
+    // TODO [rst] remove if statement as soon as z-order on shells is
+    //      implemented completely
+//    if( !( control instanceof Shell ) ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       Integer newValue = new Integer( getZIndex( control ) );
       writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
-    }
+//    }
   }
   
   // TODO [rh] there seems to be a qooxdoo problem when trying to change the

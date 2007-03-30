@@ -323,6 +323,9 @@ public class Display implements Adaptable {
     if( this.activeShell != null ) {
       this.activeShell.saveFocus();
     }
+    // Move active shell to end of list to maintain correct z-order
+    shells.remove( activeShell );
+    shells.add( activeShell );
     this.activeShell = activeShell;
     if( this.activeShell != null ) {
       this.activeShell.restoreFocus();
@@ -337,7 +340,8 @@ public class Display implements Adaptable {
     shells.remove( shell );
     if( shell == activeShell ) {
       if( shells.size() > 0 ) {
-        setActiveShell( ( Shell )shells.get( 0 ) );
+        // activate the least recently added / activated element
+        setActiveShell( ( Shell )shells.get( shells.size() - 1 ) );
       } else {
         setActiveShell( null );
       }
