@@ -101,6 +101,7 @@ public class RWTTestSuite {
     suite.addTestSuite( CoolBar_Test.class );
     suite.addTestSuite( CoolItem_Test.class );
     suite.addTestSuite( Label_Test.class );
+    suite.addTestSuite( Link_Test.class );
     suite.addTestSuite( Browser_Test.class );
     suite.addTestSuite( Group_Test.class );
     suite.addTestSuite( Text_Test.class );

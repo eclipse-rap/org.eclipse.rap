@@ -33,22 +33,23 @@ public class SelectionEvent extends RWTEvent {
   public int y;
   public int width;
   public int height;
+  public String text;
   public boolean doit;
   public Item item;
   public int detail;
-  
   
   public SelectionEvent( final Widget widget,
                          final Item item,
                          final int id )
   {
-    this( widget, item, id, new Rectangle( 0, 0, 0, 0 ), true, RWT.NONE );
+    this( widget, item, id, new Rectangle( 0, 0, 0, 0 ), null, true, RWT.NONE );
   }
 
   public SelectionEvent( final Widget widget,
                          final Item item,
                          final int id,
-                         final Rectangle bounds, 
+                         final Rectangle bounds,
+                         final String text,
                          final boolean doit,
                          final int detail )
   {
@@ -57,6 +58,7 @@ public class SelectionEvent extends RWTEvent {
     this.y = bounds.y;
     this.width = bounds.width;
     this.height = bounds.height;
+    this.text = text;
     this.doit = doit;
     this.item = item;
     this.detail = detail;
@@ -115,7 +117,7 @@ public class SelectionEvent extends RWTEvent {
            + " height="
            + height
            // + " stateMask=" + stateMask
-           //        + " text=" + text
+           + " text=" + text
            + " doit="
            + doit
            + "}";

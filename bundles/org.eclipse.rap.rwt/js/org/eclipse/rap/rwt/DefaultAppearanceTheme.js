@@ -2382,6 +2382,58 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         border : vStates.rwt_BORDER ? this.border : this.border_default
       }
     }
+  },
+  
+  // -----------------------------------------------------------------
+  // LINK
+  
+  "link" : {
+    setup : function() {
+      this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
+      this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
+    },
+    state : function( vTheme, vStates ) {
+      return {
+        border : vStates.rwt_BORDER ? this.border : this.border_default
+      }
+    }
+  },
+  
+  "link-text" : {
+    setup : function() {
+      this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
+      this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );
+    },
+    initial : function( vTheme ) {
+      return {
+        font : this.font
+      }
+    },
+    state : function( vTheme, vStates ) {
+      return {
+        color : vStates.disabled ? this.color_disabled : null
+      }
+    }
+  },
+    
+  "link-ref" : {
+    setup : function() {
+      this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
+      this.font.setUnderline( true );
+      this.color_default = new qx.renderer.color.ColorObject( "#00007f" );
+      this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );
+    },
+    initial : function( vTheme ) {
+      return {
+        font : this.font,
+        cursor : "pointer"
+      }
+    },
+    state : function( vTheme, vStates ) {
+      return {
+        color : vStates.disabled ? this.color_disabled : this.color_default
+      }
+    }
   }
 
   /*

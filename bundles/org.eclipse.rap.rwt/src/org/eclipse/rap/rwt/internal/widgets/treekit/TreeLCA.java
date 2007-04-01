@@ -84,6 +84,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
                                                  treeItem,
                                                  eventType,
                                                  bounds,
+                                                 null,
                                                  true,
                                                  detail );
       event.processEvent();
@@ -103,6 +104,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
                                                  treeItem,
                                                  eventType ,
                                                  bounds,
+                                                 null,
                                                  true,
                                                  detail );
       event.processEvent();

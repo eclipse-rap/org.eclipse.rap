@@ -52,6 +52,7 @@ public class SelectionEvent_Test extends TestCase {
                                                null,
                                                SelectionEvent.WIDGET_SELECTED,
                                                new Rectangle( 10, 20, 30, 40 ),
+                                               null,
                                                true,
                                                RWT.NONE );
     event.processEvent();
@@ -81,10 +82,7 @@ public class SelectionEvent_Test extends TestCase {
     } );
     SelectionEvent event = new SelectionEvent( folder,
                                                item,
-                                               SelectionEvent.WIDGET_SELECTED,
-                                               new Rectangle( 0, 0, 0, 0 ),
-                                               true,
-                                               RWT.NONE );
+                                               SelectionEvent.WIDGET_SELECTED );
     event.processEvent();
     assertEquals( WIDGET_SELECTED, log );
   }

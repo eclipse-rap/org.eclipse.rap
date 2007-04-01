@@ -56,6 +56,7 @@ final class ToolItemLCAUtil {
                                null,
                                SelectionEvent.WIDGET_SELECTED,
                                bounds,
+                               null,
                                true,
                                detail );
   }

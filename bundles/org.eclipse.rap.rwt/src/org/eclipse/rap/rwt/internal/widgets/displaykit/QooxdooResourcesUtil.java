@@ -60,6 +60,8 @@ final class QooxdooResourcesUtil {
     "org/eclipse/rap/rwt/ToolItemUtil.js";
   private static final String MENU_UTIL_JS 
     = "org/eclipse/rap/rwt/MenuUtil.js";
+  private static final String LINK_UTIL_JS
+    = "org/eclipse/rap/rwt/LinkUtil.js";
   private static final String CTAB_FOLDER_JS 
     = "org/eclipse/rap/rwt/custom/CTabFolder.js";
   private static final String CTAB_ITEM_JS 
@@ -93,15 +95,14 @@ final class QooxdooResourcesUtil {
   private static final String TABLE_COLUMN_JS
     = "org/eclipse/rap/rwt/widgets/TableColumn.js";
   private static final String TABLE_ITEM_JS
-    = "org/eclipse/rap/rwt/widgets/TableItem.js";
-  
+    = "org/eclipse/rap/rwt/widgets/TableItem.js";  
   private static final String QX_CONSTANT_CORE_JS
     = "qx/constant/Core.js";
   private static final String QX_CONSTANT_LAYOUT_JS
     = "qx/constant/Layout.js";
   private static final String QX_CONSTANT_STYLE_JS
     = "qx/constant/Style.js";
-  
+
   private QooxdooResourcesUtil() {
     // prevent intance creation
   }
@@ -173,6 +174,7 @@ final class QooxdooResourcesUtil {
       register( TABLE_JS );
       register( TABLE_COLUMN_JS );
       register( TABLE_ITEM_JS );
+      register( LINK_UTIL_JS );
       
       // register contributions
       registerContributions();
