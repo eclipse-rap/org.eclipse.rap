@@ -60,13 +60,14 @@ qx.Proto._onSplitterMouseDownY = function( e ) {
   }
 }
 
-qx.Proto._commonMouseDown = function()
-{
+qx.Proto._commonMouseDown = function() {
   // enable capturing
   this._splitter.setCapture( true );
   // show the slider also outside of the sash's bounds
   this.setOverflow( qx.constant.Style.OVERFLOW_VISIBLE );
-  
+  // update z-index to be on top
+  // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=180334
+  this.setZIndex( 1e7 );
   // initialize the slider
   if( !this.isLiveResize() ) {
     this._slider._applyRuntimeLeft( this._splitter.getOffsetLeft() );
