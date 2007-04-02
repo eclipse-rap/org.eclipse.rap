@@ -102,12 +102,24 @@ public class ListTab extends ExampleTab {
     Label separator = new Label( parent, separatorStyle );
     separator.setLayoutData( new RowData( 440, 5 ) );
     Label codeLabel = new Label( parent, RWT.WRAP );
-    codeLabel.setLayoutData( new RowData( 450, 35 ) );
     String codeLabelText 
-      = "Please note that the content of the left above List is provided by a " 
-      + "ListViewer with JFace API. The source code looks like this:";
+      = "Please note that the content of the left List is provided by a " 
+      + "ListViewer with JFace API.";
     codeLabel.setText( codeLabelText );
-    createDescription( parent );
+    Link link = new Link( parent, RWT.NONE );
+    link.setText( "See <a>example code</a>" );
+    link.addSelectionListener( new SelectionAdapter() {
+      private String code = getExampleCode();
+      private HtmlDialog dialog;
+      public void widgetSelected( final SelectionEvent event ) {
+        if( dialog == null ) {
+          String title = "ListViewer Example Code";
+          dialog = new HtmlDialog( parent.getShell(), title, code );
+          dialog.setSize( 550, 400 );
+        }
+        dialog.open();
+      }
+    } );
   }
   
   private void createPopupMenu( final Shell parent, final List list ) {
@@ -129,10 +141,8 @@ public class ListTab extends ExampleTab {
     list.setMenu( menu );
   }
   
-  private void createDescription( final Composite parent ) {
-    Browser browser = new Browser( parent, RWT.MULTI );
-    browser.setLayoutData( new RowData( 450, 210 ) );
-    String note
+  private String getExampleCode() {
+    String result
       = "<html><head></head></body>"
       + "<pre>"
       + "class ListContentProvider implements IStructuredContentProvider {\n"
@@ -151,6 +161,6 @@ public class ListTab extends ExampleTab {
       + "viewer.setInput( input );\n"
       + "</pre>"
       + "</body>";
-    browser.setText( note );
+    return result;
   }
 }

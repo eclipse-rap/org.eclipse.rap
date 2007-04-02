@@ -65,7 +65,7 @@ public class Link extends Control {
     int border = getBorderWidth();
     if( ( displayText.length() > 0 ) ) {
       // TODO [rst] change to textExtent when wrap supported
-      Point extent = FontSizeEstimation.stringExtent( text, getFont() );
+      Point extent = FontSizeEstimation.stringExtent( displayText, getFont() );
       width = extent.x + 8;
       height = extent.y + 2;
     }
