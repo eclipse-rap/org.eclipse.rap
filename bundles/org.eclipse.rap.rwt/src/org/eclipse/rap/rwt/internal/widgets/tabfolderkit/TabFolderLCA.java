@@ -45,8 +45,6 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeStyleFlags( widget );
     writer.addListener( "changeEnabled",
                         "org.eclipse.rap.rwt.TabUtil.onChangeEnabled" );
-    // TODO [rh] preliminary workaround to make TabFolder accessible by tab 
-    writer.set( JSConst.QX_FIELD_TAB_INDEX, 1 );
     writer.addListener( "keypress", 
                         "org.eclipse.rap.rwt.TabUtil.onTabFolderKeyPress" );
     writer.addListener( "changeFocused", 

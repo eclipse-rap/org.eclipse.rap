@@ -178,7 +178,7 @@ public final class JSWriter {
 
   public void set( final String javaProperty, 
                    final String jsProperty, 
-                   final String newValue ) 
+                   final Object newValue ) 
     throws IOException 
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );

@@ -134,6 +134,7 @@ public class Button extends Control {
   {
     checkWidget();
     int width = 0, height = 0, border = getBorderWidth();
+    // TODO [rst] Cleanup this part
 //    if ((style & RWT.ARROW) != 0) {
 //      if ((style & (RWT.UP | RWT.DOWN)) != 0) {
 //        width += OS.GetSystemMetrics (OS.SM_CXVSCROLL);
@@ -151,7 +152,7 @@ public class Button extends Control {
     boolean hasImage = image != null;
     boolean hasText = text.length() > 0;
     if( hasImage ) {
-      // TODO: implement something to get rect bounds
+      // TODO [rst] Change this as soon as Image.getBounds is implemented.
       // Rectangle rect = image.getBounds ();
       width = 16;
       height = 16;
@@ -205,6 +206,10 @@ public class Button extends Control {
   
   boolean getDefault() {
     return isDefault;
+  }
+  
+  boolean isTabGroup() {
+    return true;
   }
   
   //////////////////

@@ -13,12 +13,14 @@ package org.eclipse.rap.rwt.lifecycle;
 
 import java.io.IOException;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.custom.SashForm;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.widgets.*;
 
 /**
+ * Utility class that provides methods needed by LCAs for various Controls.
  * TODO [rh] JavaDoc
  * <p></p>
  */
@@ -40,7 +42,8 @@ public class ControlLCAUtil {
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_ACTIVATE_LISTENER = "activateListener";
   private static final String PROP_FOCUS_LISTENER = "focusListener";
-  
+  private static final String PROP_TAB_INDEX = "tabIndex";
+
   private ControlLCAUtil() {
     // prevent instance creation
   }
@@ -52,6 +55,7 @@ public class ControlLCAUtil {
     if( !( control instanceof Shell ) ) {
       adapter.preserve( Props.Z_INDEX, new Integer( getZIndex( control ) ) );
     }
+    adapter.preserve( PROP_TAB_INDEX, new Integer( getTabIndex( control ) ) );
     WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.getVisible() ) );
@@ -114,6 +118,7 @@ public class ControlLCAUtil {
   public static void writeChanges( final Control control ) throws IOException {
     writeBounds( control );
     writeZIndex( control );
+    writeTabIndex( control );
     writeVisible( control );
     writeEnabled( control );
     writeForeground( control );
@@ -247,6 +252,12 @@ public class ControlLCAUtil {
     }
   }
 
+  //////////
+  // Z-INDEX
+  
+  /**
+   * Determines the z-index to render for a given control.
+   */
   public static int getZIndex( final Control control ) {
     Object adapter = control.getAdapter( IControlAdapter.class );
     IControlAdapter controlAdapter = ( IControlAdapter )adapter;
@@ -254,8 +265,87 @@ public class ControlLCAUtil {
     if( control.getParent() != null ) {
       max = Math.max( control.getParent().getChildrenCount(), max );
     }
-    return max - controlAdapter.getIndex();
+    return max - controlAdapter.getZIndex();
   }
+  
+  ////////////
+  // TAB INDEX
+
+  public static void writeTabIndex( final Control control ) throws IOException {
+    if( control instanceof Shell ) {
+      computeTabIndices( ( Shell )control );
+    }
+    JSWriter writer = JSWriter.getWriterFor( control );
+    Object newValue = new Integer( getTabIndex( control ) );
+    // there is no reliable default value for all controls
+    writer.set( PROP_TAB_INDEX, "tabIndex", newValue );
+  }
+  
+  /**
+   * Invokes computation of tab indices for all controls within a shell.
+   */
+  private static void computeTabIndices( final Shell comp ) {
+    computeTabIndices( comp, 0 );
+  }
+
+  /**
+   * Recursively computes the tab indices for all child controls of a given
+   * composite and stores the resulting values in the control adapters.
+   */
+  private static int computeTabIndices( final Composite comp, final int index )
+  {
+    Control[] children = comp.getChildren();
+    for( int i = 0; i < children.length; i++ ) {
+      Control control = children[ i ];
+      Object adapter = control.getAdapter( IControlAdapter.class );
+      IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+      controlAdapter.setTabIndex( -1 );
+    }
+    Control[] tabList = comp.getTabList();
+    int nextIndex = index;
+    for( int i = 0; i < tabList.length; i++ ) {
+      Control control = tabList[ i ];
+      Object adapter = control.getAdapter( IControlAdapter.class );
+      IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+      controlAdapter.setTabIndex( nextIndex );
+      // for Links, leave a range out to be assigned to hrefs on the client
+      if( control instanceof Link ) {
+        nextIndex += 300;
+      } else {
+        nextIndex += 1;
+      }
+      if( control instanceof Composite ) {
+        nextIndex = computeTabIndices( ( Composite )control, nextIndex );
+      }
+    }
+    return nextIndex;
+  }
+
+  /**
+   * Determines the tab index to write for a given control.
+   */
+  private static int getTabIndex( final Control control ) {
+    int result = -1;
+    if( takesFocus( control ) ) {
+      Object adapter = control.getAdapter( IControlAdapter.class );
+      IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+      result = controlAdapter.getTabIndex();
+    }
+    return result;
+  }
+
+  // TODO [rst] Refactor: should this method be part of Control?
+  private static boolean takesFocus( final Control control ) {
+    boolean result = true;
+    result &= ( control.getStyle() & RWT.NO_FOCUS ) == 0;
+    result &= control.getClass() != Composite.class;
+    result &= control.getClass() != ToolBar.class;
+    result &= control.getClass() != SashForm.class;
+    return result;
+  }
+  
+  /////////////////////
+  // SELECTION LISTENER
 
   public static void processSelection( final Widget widget, 
                                        final Item item, 
@@ -280,9 +370,6 @@ public class ControlLCAUtil {
       event.processEvent();
     }
   }
-
-  //////////////////
-  // helping methods
   
   private static SelectionEvent createSelectionEvent( final Widget widget,
                                                       final Item item,

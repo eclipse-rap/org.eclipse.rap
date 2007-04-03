@@ -155,7 +155,11 @@ public class Combo extends Scrollable {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-
+  
+  boolean isTabGroup() {
+    return true;
+  }
+  
   //////////////////
   // Helping methods 
   

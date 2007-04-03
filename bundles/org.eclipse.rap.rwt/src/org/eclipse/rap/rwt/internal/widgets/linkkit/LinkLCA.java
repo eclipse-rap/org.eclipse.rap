@@ -54,6 +54,8 @@ public class LinkLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.layout.HorizontalBoxLayout" );
     writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );
+    Object[] args = new Object[] { widget };
+    writer.callStatic( "org.eclipse.rap.rwt.LinkUtil.init", args  );
     ControlLCAUtil.writeStyleFlags( widget );
   }
 

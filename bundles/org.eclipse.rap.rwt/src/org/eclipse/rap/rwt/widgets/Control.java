@@ -25,7 +25,10 @@ import org.eclipse.rap.rwt.lifecycle.IControlAdapter;
 public abstract class Control extends Widget {
 
   private final class ControlAdapter implements IControlAdapter {
-    public int getIndex() {
+
+    private int tabIndex = -1;
+
+    public int getZIndex() {
       Composite parent = getParent();
       int result = 0;
       if( parent != null ) {
@@ -33,7 +36,15 @@ public abstract class Control extends Widget {
       }
       return result;
     }
-  }
+    
+    public int getTabIndex() {
+      return tabIndex;
+    }
+    
+    public void setTabIndex( final int index ) {
+      tabIndex = index;
+    }
+  }    
 
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
   
@@ -311,7 +322,7 @@ public abstract class Control extends Widget {
     checkWidget();
     setSize( computeSize( RWT.DEFAULT, RWT.DEFAULT, changed ) );
   }
-
+  
   public int getBorderWidth() {
     // TODO: [rst] This must be kept in sync with appearances, controls using
     //             different borders must overwrite this mehtod
@@ -477,11 +488,22 @@ public abstract class Control extends Widget {
       setFocusControl( focusControl );
     }
   }
-
+  
   protected void releaseChildren() {
     // do nothing
   }
 
+  boolean isTabGroup() {
+    boolean result = false;
+    Control[] tabList = parent._getTabList();
+    if( tabList != null ) {
+      for( int i = 0; i < tabList.length; i++ ) {
+        if( tabList[ i ] == this )
+          result  = true;
+      }
+    }
+    return result;
+  }
   
   /////////////////////////////////////////////////////
   // Helping methods that throw move- and resize-events

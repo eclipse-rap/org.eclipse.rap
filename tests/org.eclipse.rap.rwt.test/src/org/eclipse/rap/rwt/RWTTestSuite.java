@@ -77,6 +77,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Shell_Test.class );
     suite.addTestSuite( Widget_Test.class );
     suite.addTestSuite( Control_Test.class );
+    suite.addTestSuite( Composite_Test.class );
     suite.addTestSuite( Item_Test.class );
     suite.addTestSuite( ItemHolder_Test.class );
     suite.addTestSuite( ControlHolder_Test.class );

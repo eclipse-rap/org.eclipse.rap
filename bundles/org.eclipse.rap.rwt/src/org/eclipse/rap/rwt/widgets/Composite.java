@@ -26,7 +26,8 @@ public class Composite extends Scrollable {
 
   private Layout layout;
   private final ControlHolder controlHolder = new ControlHolder();
-
+  private Control[] tabList;
+  
   Composite( final Composite parent ) {
     // prevent instantiation from outside this package
     super( parent );
@@ -135,6 +136,81 @@ public class Composite extends Scrollable {
     return result;
   }
 
+  ////////////
+  // Tab Order
+  
+  public void setTabList( final Control[] tabList ) {
+    checkWidget();
+    Control[] newList = tabList;
+    if( tabList != null ) {
+      for( int i = 0; i < tabList.length; i++ ) {
+        Control control = tabList[ i ];
+        if( control == null ) {
+          error( RWT.ERROR_INVALID_ARGUMENT );
+        }
+        if( control.isDisposed() ) {
+          error( RWT.ERROR_INVALID_ARGUMENT );
+        }
+        if( control.parent != this ) {
+          error( RWT.ERROR_INVALID_PARENT );
+        }
+      }
+      newList = new Control[ tabList.length ];
+      System.arraycopy( tabList, 0, newList, 0, tabList.length );
+    }
+    this.tabList = newList;
+  }
+  
+  // returns only tabGroups
+  public Control[] getTabList() {
+    checkWidget();
+    Control[] result = _getTabList();
+    if( result == null ) {
+      int count = 0;
+      Control[] list = controlHolder.getControls();
+      for( int i = 0; i < list.length; i++ ) {
+        if( list[ i ].isTabGroup() ) {
+          count++;
+        }
+      }
+      result = new Control[ count ];
+      int index = 0;
+      for( int i = 0; i < list.length; i++ ) {
+        if( list[ i ].isTabGroup() ) {
+          result[ index++ ] = list[ i ];
+        }
+      }
+    }
+    return result;
+  }
+
+  // filters disposed controls out
+  Control[] _getTabList() {
+    if( tabList != null ) {
+      int count = 0;
+      for( int i = 0; i < tabList.length; i++ ) {
+        if( !tabList[ i ].isDisposed() ) {
+          count++;
+        }
+      }
+      if( count != tabList.length ) {
+        Control[] newList = new Control[ count ];
+        int index = 0;
+        for( int i = 0; i < tabList.length; i++ ) {
+          if( !tabList[ i ].isDisposed() ) {
+            newList[ index++ ] = tabList[ i ];
+          }
+        }
+        tabList = newList;
+      }
+    }
+    return tabList;
+  }
+  
+  boolean isTabGroup() {
+    return true;
+  }
+  
   /////////////////////////////////////
   // Helping method used by computeSize
   

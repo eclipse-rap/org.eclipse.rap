@@ -12,6 +12,10 @@ package org.eclipse.rap.rwt.lifecycle;
 
 public interface IControlAdapter {
 
-  public abstract int getIndex();
+  public abstract int getZIndex();
   
+  public abstract int getTabIndex();
+  
+  public abstract void setTabIndex( int index );
+
 }

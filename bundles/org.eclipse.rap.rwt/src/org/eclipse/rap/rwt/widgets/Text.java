@@ -198,6 +198,10 @@ public class Text extends Control {
     ModifyEvent.removeListener( this, listener );
   }
   
+  boolean isTabGroup() {
+    return true;
+  }
+  
   ///////////////////////////////////////
   // Helping method to adjust style flags 
   

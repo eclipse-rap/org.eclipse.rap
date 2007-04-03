@@ -19,6 +19,8 @@ import org.eclipse.rap.rwt.widgets.*;
 
 public class ZOrderTab extends ExampleTab {
 
+  private Label label;
+
   public ZOrderTab( final TabFolder folder ) {
     super( folder, "Z-Order" );
   }
@@ -29,22 +31,27 @@ public class ZOrderTab extends ExampleTab {
   protected void createExampleControls( final Composite top ) {
     top.setLayout( new FillLayout( RWT.VERTICAL ) );
     final Composite comp = new Composite( top, RWT.NONE );
-    final Button b1 = new Button( comp, RWT.PUSH );
+    final Composite bcomp = new Composite( comp, RWT.NONE );
+    bcomp.setBounds( 0, 0, 300, 200 );
+    final Button b1 = new Button( bcomp, RWT.PUSH );
     b1.setText( "B1" );
     b1.setBounds( 20, 20, 100, 100 );
-    final Button b2 = new Button( comp, RWT.PUSH );
+    final Button b2 = new Button( bcomp, RWT.PUSH );
     b2.setText( "B2" );
     b2.setBounds( 100, 50, 100, 100 );
-    final Button b3 = new Button( comp, RWT.PUSH );
+    final Button b3 = new Button( bcomp, RWT.PUSH );
     b3.setText( "B3" );
     b3.setBounds( 180, 80, 100, 100 );
+    label = new Label( comp, RWT.NONE );
+    label.setBounds( 25, 200, 140, 20 );
+    printChildren( bcomp );
     Button above2 = new Button( comp, RWT.PUSH );
     above2.setText( "B2 above all" );
     above2.setBounds( 110, 220, 80, 25 );
     above2.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         b2.moveAbove( null );
-        printChildren( comp );
+        printChildren( bcomp );
       }
     } );
     Button below2 = new Button( comp, RWT.PUSH );
@@ -53,7 +60,7 @@ public class ZOrderTab extends ExampleTab {
     below2.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         b2.moveBelow( null );
-        printChildren( comp );
+        printChildren( bcomp );
       }
     } );
     Button above21 = new Button( comp, RWT.PUSH );
@@ -62,17 +69,17 @@ public class ZOrderTab extends ExampleTab {
     above21.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         b2.moveAbove( b1 );
-        printChildren( comp );
+        printChildren( bcomp );
       }
       
     } );
-    Button below32 = new Button( comp, RWT.PUSH );
-    below32.setText( "B2 below B1" );
-    below32.setBounds( 25, 250, 80, 25 );
-    below32.addSelectionListener( new SelectionAdapter() {
+    Button below21 = new Button( comp, RWT.PUSH );
+    below21.setText( "B2 below B1" );
+    below21.setBounds( 25, 250, 80, 25 );
+    below21.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         b2.moveBelow( b1 );
-        printChildren( comp );
+        printChildren( bcomp );
       }
     } );
     Button above23 = new Button( comp, RWT.PUSH );
@@ -81,7 +88,7 @@ public class ZOrderTab extends ExampleTab {
     above23.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         b2.moveAbove( b3 );
-        printChildren( comp );
+        printChildren( bcomp );
       }
       
     } );
@@ -91,16 +98,20 @@ public class ZOrderTab extends ExampleTab {
     below23.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         b2.moveBelow( b3 );
-        printChildren( comp );
+        printChildren( bcomp );
       }
+    } );
+    comp.setTabList( new Control[]{
+      above21, above2, above23, below21, below2, below23
     } );
   }
 
   private void printChildren( final Composite comp ) {
     Control[] children = comp.getChildren();
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = new StringBuffer( "Order: " );
     for( int i = 0; i < children.length; i++ ) {
       sb.append( ((Button) children[ i ]).getText() + " " );
     }
+    label.setText( sb.toString() );
   }
 }

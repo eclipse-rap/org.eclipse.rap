@@ -14,6 +14,14 @@
  */
 qx.OO.defineClass( "org.eclipse.rap.rwt.LinkUtil" );
 
+qx.Class.init = function( widget ) {
+  widget.setTabIndex( -1 );
+  widget.setUserData( "nextTabIndex", 0 );
+  // TODO [rst] remove event listener before dispose
+  widget.addEventListener( "changeTabIndex",
+                           org.eclipse.rap.rwt.LinkUtil._onTabIndexChange );
+}
+
 qx.Class.clear = function( widget ) {
   if( widget ) {
     var children = widget.getChildren();
@@ -52,8 +60,9 @@ qx.Class.addLink = function( widget, text, index ) {
     // TODO [rst] setAppearance() resets property wrap !
     newChild.setWrap( false );
     widget.add( newChild );
-    // TODO [rst] Make focusable
-    newChild.setTabIndex( 1 );
+    var tabIndex = widget.getUserData( "nextTabIndex" );
+    newChild.setTabIndex( tabIndex++ );
+    widget.setUserData( "nextTabIndex", tabIndex );
     newChild.addEventListener( "mousedown",
                                org.eclipse.rap.rwt.LinkUtil._onMouseDown,
                                newChild );
@@ -82,5 +91,19 @@ qx.Class._onMouseDown = function( evt ) {
     req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
     req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected.index", index );
     req.send();
+  }
+}
+
+qx.Class._onTabIndexChange = function( evt ) {
+  var tabIndex = evt.getData();
+  if( tabIndex >= 0 ) {
+    var target = evt.getCurrentTarget();
+    var children = target.getChildren();
+    for( var i = 0; i < children.length; i++ ) {
+      child = children[ i ];
+      child.setTabIndex( tabIndex++ );
+    }
+    target.setUserData( "nextTabIndex", tabIndex );
+    target.setTabIndex( -1 );
   }
 }

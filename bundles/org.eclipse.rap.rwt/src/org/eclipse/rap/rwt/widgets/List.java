@@ -245,6 +245,10 @@ public class List extends Scrollable {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
+  
+  boolean isTabGroup() {
+    return true;
+  }
 
   /////////////////////////////////
   // Helping methods for focusIndex 

@@ -107,6 +107,10 @@ public class Link extends Control {
     return result;
   }
   
+  boolean isTabGroup() {
+    return true;
+  }
+
   /* verbatim copy from SWT */
   String parse( String string ) {
     int length = string.length();
