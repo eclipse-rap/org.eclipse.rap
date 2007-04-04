@@ -127,6 +127,12 @@ public final class JSWriter {
     set( jsProperty, new int[] { value } );
   }
   
+  public void set( final String jsProperty, final float value ) 
+    throws IOException 
+  {
+    set( jsProperty, new float[] { value } );
+  }
+  
   public void set( final String jsProperty, final boolean value ) 
     throws IOException 
   {
@@ -142,6 +148,17 @@ public final class JSWriter {
       integers[ i ] = new Integer( values[ i ] );
     }
     call( widget, functionName, integers );
+  }
+  
+  public void set( final String jsProperty, final float[] values )
+  throws IOException
+  {
+    String functionName = getSetterName( jsProperty );
+    Float[] floats = new Float[ values.length ];
+    for( int i = 0; i < values.length; i++ ) {
+      floats[ i ] = new Float( values[ i ] );
+    }
+    call( widget, functionName, floats );
   }
   
   public void set( final String jsProperty, final boolean[] values )
