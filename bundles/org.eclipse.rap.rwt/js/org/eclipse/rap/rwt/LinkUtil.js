@@ -84,13 +84,9 @@ qx.Class.addLink = function( widget, text, index ) {
 }
 
 qx.Class._createLabel = function( parent, text ) {
-  var label = new qx.ui.basic.Label( text );
-  if( text.match(/^\s+/) ) {
-    label.setPaddingLeft( 3 );
-  }
-  if( text.match(/\S\s+$/) ) {
-    label.setPaddingRight( 3 );
-  }
+  // replace spaces with nbsp
+  var replaced = text.replace( /\s/, "\xA0" );
+  var label = new qx.ui.basic.Label( replaced );
   label.setWrap( false );
   return label;
 }

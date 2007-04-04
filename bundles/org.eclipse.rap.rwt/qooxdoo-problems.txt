@@ -165,3 +165,6 @@ that's right?
      Workaround: a copy of the destroy() method from qx.ui.tree.AbstractTreeElement
      (qx 0.6.5)
      --> http://www.mail-archive.com/qooxdoo-devel@lists.sourceforge.net/msg08995.html
+
+45.) Tree prevents window activation on mousedown (qx.ui.treefullcontrol)
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=363
