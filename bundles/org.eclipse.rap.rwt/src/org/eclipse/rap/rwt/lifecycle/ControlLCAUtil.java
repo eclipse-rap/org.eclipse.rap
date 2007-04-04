@@ -285,7 +285,8 @@ public class ControlLCAUtil {
    * Invokes computation of tab indices for all controls within a shell.
    */
   private static void computeTabIndices( final Shell comp ) {
-    computeTabIndices( comp, 0 );
+    // tabIndex must be a positive value
+    computeTabIndices( comp, 1 );
   }
 
   /**

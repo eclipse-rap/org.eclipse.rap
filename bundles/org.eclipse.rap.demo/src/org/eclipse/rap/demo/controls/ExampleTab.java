@@ -120,7 +120,7 @@ abstract class ExampleTab {
   private void createFoot( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     text = new Text( parent, RWT.BORDER | RWT.READ_ONLY | RWT.MULTI );
-    text.setText( "" );
+    text.setText( "---" );
   }
   
   private void initColors() {

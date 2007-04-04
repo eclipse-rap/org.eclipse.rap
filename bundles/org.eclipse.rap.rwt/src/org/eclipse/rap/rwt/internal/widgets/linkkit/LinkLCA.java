@@ -68,6 +68,8 @@ public class LinkLCA extends AbstractWidgetLCA {
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
+    Object[] args = new Object[]{ widget };
+    writer.callStatic( "org.eclipse.rap.rwt.LinkUtil.destroy", args );
     writer.dispose();
   }
 

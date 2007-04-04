@@ -55,7 +55,7 @@ public class HtmlDialog {
     shell.setDefaultButton( closeButton );
     closeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        shell.setVisible( false );
+        close();
       }
     } );
     GridData buttonData = new GridData( GridData.HORIZONTAL_ALIGN_END );

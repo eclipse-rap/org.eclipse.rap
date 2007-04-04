@@ -17,20 +17,31 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.LinkUtil" );
 qx.Class.init = function( widget ) {
   widget.setTabIndex( -1 );
   widget.setUserData( "nextTabIndex", 0 );
-  // TODO [rst] remove event listener before dispose
   widget.addEventListener( "changeTabIndex",
                            org.eclipse.rap.rwt.LinkUtil._onTabIndexChange );
 }
 
+qx.Class.destroy = function( widget ) {
+  org.eclipse.rap.rwt.LinkUtil.clear( widget );
+  if( widget.hasEventListeners( "changeTabIndex" ) ) {
+    widget.removeEventListener( "changeTabIndex",
+                                org.eclipse.rap.rwt.LinkUtil._onTabIndexChange );
+  }
+}
+
 qx.Class.clear = function( widget ) {
-  if( widget ) {
-    var children = widget.getChildren();
+  if( widget && ! widget.isDisposed() ) {
+    var children = widget.getChildren();    
     var child = children[ 0 ];
     while( child ) {
       widget.remove( child );
       if( child.hasEventListeners( "mousedown" ) ) {
         child.removeEventListener( "mousedown",
                                    org.eclipse.rap.rwt.LinkUtil._onMouseDown );
+      }
+      if( child.hasEventListeners( "keydown" ) ) {
+        child.removeEventListener( "keydown",
+                                   org.eclipse.rap.rwt.LinkUtil._onKeyDown );
       }
       child.dispose();
       child = children[ 0 ];
@@ -66,6 +77,9 @@ qx.Class.addLink = function( widget, text, index ) {
     newChild.addEventListener( "mousedown",
                                org.eclipse.rap.rwt.LinkUtil._onMouseDown,
                                newChild );
+    newChild.addEventListener( "keydown",
+                               org.eclipse.rap.rwt.LinkUtil._onKeyDown,
+                               newChild );
   }
 }
 
@@ -91,6 +105,22 @@ qx.Class._onMouseDown = function( evt ) {
     req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
     req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected.index", index );
     req.send();
+  }
+}
+
+qx.Class._onKeyDown = function( evt ) {
+  var keyId = evt.getKeyIdentifier();
+  if( keyId == "Enter" ) {
+    var parent = this.getParent();  
+    if( parent.getUserData( "widgetSelectedListener" ) ) {
+      var req = org.eclipse.rap.rwt.Request.getInstance();
+      var wm = org.eclipse.rap.rwt.WidgetManager.getInstance();
+      var id = wm.findIdByWidget( parent );
+      var index = this.getUserData( "index" );
+      req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected", id );
+      req.addEvent( "org.eclipse.rap.rwt.events.widgetSelected.index", index );
+      req.send();
+    }
   }
 }
 

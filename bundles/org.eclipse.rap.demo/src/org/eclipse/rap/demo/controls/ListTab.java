@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import org.eclipse.rap.jface.dialogs.MessageDialog;
 import org.eclipse.rap.jface.viewers.*;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.browser.Browser;
 import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.layout.RowLayout;
@@ -110,13 +109,10 @@ public class ListTab extends ExampleTab {
     link.setText( "See <a>example code</a>" );
     link.addSelectionListener( new SelectionAdapter() {
       private String code = getExampleCode();
-      private HtmlDialog dialog;
       public void widgetSelected( final SelectionEvent event ) {
-        if( dialog == null ) {
-          String title = "ListViewer Example Code";
-          dialog = new HtmlDialog( parent.getShell(), title, code );
-          dialog.setSize( 550, 400 );
-        }
+        String title = "ListViewer Example Code";
+        HtmlDialog dialog = new HtmlDialog( parent.getShell(), title, code );
+        dialog.setSize( 550, 400 );
         dialog.open();
       }
     } );
