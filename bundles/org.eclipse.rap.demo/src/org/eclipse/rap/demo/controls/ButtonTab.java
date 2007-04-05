@@ -60,26 +60,26 @@ public class ButtonTab extends ExampleTab {
     createFontChooser();
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new RowLayout( RWT.VERTICAL ) );
+  protected void createExampleControls( final Composite parent ) {
+    parent.setLayout( new RowLayout( RWT.VERTICAL ) );
     int style = getStyle();
-    button = new Button( top, style | RWT.PUSH );
+    button = new Button( parent, style | RWT.PUSH );
     button.setText( "Button" );
     updateButtonImage( button );
-    check = new Button( top, style | RWT.CHECK );
+    check = new Button( parent, style | RWT.CHECK );
     check.setText( "Check" );
-    radio1 = new Button( top, style | RWT.RADIO );
+    radio1 = new Button( parent, style | RWT.RADIO );
     radio1.setText( "Radio 1" );
-    radio2 = new Button( top, style | RWT.RADIO );
+    radio2 = new Button( parent, style | RWT.RADIO );
     radio2.setText( "Radio 2" );
-    radio3 = new Button( top, style | RWT.RADIO );
+    radio3 = new Button( parent, style | RWT.RADIO );
     radio3.setText( "Radio 3" );
     registerControl( button );
     registerControl( check );
     registerControl( radio1 );
     registerControl( radio2 );
     registerControl( radio3 );
-    final Group group = new Group( top, RWT.NONE );
+    final Group group = new Group( parent, RWT.NONE );
     group.setLayoutData( new RowData( 370, 60 ) );
     group.setText( "Default Button" );
     group.setLayout( new GridLayout( 3, false ) );
@@ -103,6 +103,14 @@ public class ButtonTab extends ExampleTab {
                                        windowCallback );
       }
     } );
+    
+    // Set a context menu
+    Menu menu = new Menu( parent );
+    for( int i = 0; i < 5; i++ ) {
+      MenuItem item = new MenuItem( menu, RWT.PUSH );
+      item.setText( "Item " + ( i + 1 ) );
+    }
+    parent.setMenu( menu );
   }
 
   private void updateButtonImage( final Button button ) {

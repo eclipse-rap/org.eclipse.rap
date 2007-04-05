@@ -51,6 +51,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ITEMS, items );
     Integer selection = new Integer( combo.getSelectionIndex() );
     adapter.preserve( PROP_SELECTION, selection );
+    adapter.preserve( Props.SELECTION_LISTENERS,
+                      Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
   }
   
   public void readData( final Widget widget ) {

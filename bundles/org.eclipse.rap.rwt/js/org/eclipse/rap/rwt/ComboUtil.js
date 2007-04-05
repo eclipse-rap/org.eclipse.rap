@@ -16,25 +16,30 @@ qx.OO.defineClass( "org.eclipse.rap.rwt.ComboUtil" );
 
 /**
  * Fires a widgetSelected event if the list item wasn't laready selected.
+ * TODO [rst] Update documentation: there is no logic that checks if the item
+ *      was already selected.
  */
 org.eclipse.rap.rwt.ComboUtil.widgetSelected = function( evt ) {
   var combo = evt.getTarget();
-  var list = combo.getList();
-  var listItem = list.getSelectedItem();
-  var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
-  var cboId = widgetManager.findIdByWidget( combo );
-  var req = org.eclipse.rap.rwt.Request.getInstance();
-  req.addParameter( cboId + ".selectedItem", list.indexOf( listItem ) );
-  
-  var left = combo.getLeft();
-  var top = combo.getTop();
-  var width = combo.getWidth();
-  var height = combo.getHeight();
-  org.eclipse.rap.rwt.EventUtil.doWidgetSelected( cboId, 
-                                                  left, 
-                                                  top, 
-                                                  width,
-                                                  height );
+  // TODO [rst] This listener was also called on focus out, if no item was
+  //      selected. This fix should work since combos cannot be deselected.
+  if( evt.getData() != null ) {
+    var list = combo.getList();
+    var listItem = list.getSelectedItem();
+    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var cboId = widgetManager.findIdByWidget( combo );
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    req.addParameter( cboId + ".selectedItem", list.indexOf( listItem ) );
+    var left = combo.getLeft();
+    var top = combo.getTop();
+    var width = combo.getWidth();
+    var height = combo.getHeight();
+    org.eclipse.rap.rwt.EventUtil.doWidgetSelected( cboId, 
+                                                    left, 
+                                                    top, 
+                                                    width,
+                                                    height );
+  }
 };
 
 /**

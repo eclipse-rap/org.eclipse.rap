@@ -12,6 +12,8 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.rap.jface.dialogs.MessageDialog;
 import org.eclipse.rap.jface.viewers.*;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -30,7 +32,7 @@ public class ComboTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 2, false ) );
     int style = getStyle();
-    String[] items
+    final String[] items
       = new String[] { "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" };
     // empty combo
     Combo combo1 = new Combo( parent, style );
@@ -42,9 +44,16 @@ public class ComboTab extends ExampleTab {
     new Label( parent, RWT.NONE ).setText( "Filled Combo box" );
     registerControl( combo2 );
     // filled combo with preselection
-    Combo combo3 = new Combo( parent, style );
+    final Combo combo3 = new Combo( parent, style );
     combo3.setItems( items );
     combo3.select( 1 );
+    combo3.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        int index = combo3.getSelectionIndex();
+        String message = "Selected Item: " + items[ index ];
+        MessageDialog.openInformation( parent.getShell(), "Info", message, null );
+      }
+    } );
     new Label( parent, RWT.NONE ).setText( "Filled Combo box with preselection" );
     registerControl( combo3 );
     // combo with comboviewer
