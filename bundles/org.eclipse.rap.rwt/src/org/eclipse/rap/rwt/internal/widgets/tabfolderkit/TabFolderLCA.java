@@ -12,10 +12,12 @@
 package org.eclipse.rap.rwt.internal.widgets.tabfolderkit;
 
 import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.graphics.Rectangle;
 import org.eclipse.rap.rwt.lifecycle.*;
 import org.eclipse.rap.rwt.widgets.*;
+import com.w4t.engine.service.ContextProvider;
 
 
 public class TabFolderLCA extends AbstractWidgetLCA {
@@ -29,10 +31,16 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     //                of user action. May it also be thrown in case of changing
     //                the selectionIndex programatically?
     TabFolder folder = ( TabFolder )widget;
-    TabItem item = null;
-    if( folder.getSelectionIndex() != -1 ) {
-      item = folder.getItem( folder.getSelectionIndex() );
-    }
+    Item item = null;
+    // TODO [rst] This code does not work correctly, as TabItemLCA is visited
+    //      *after* TabFolderLCA -> SelectionEvent holds the selected old item.
+//    if( folder.getSelectionIndex() != -1 ) {
+//      item = folder.getItem( folder.getSelectionIndex() );
+//    }
+    HttpServletRequest request = ContextProvider.getRequest();
+    String itemId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED
+                                          + ".item" );
+    item = ( Item )WidgetUtil.find( folder, itemId );
     ControlLCAUtil.processSelection( folder, item, true );
   }
 

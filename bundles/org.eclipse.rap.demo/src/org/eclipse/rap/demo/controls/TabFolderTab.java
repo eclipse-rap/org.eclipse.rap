@@ -10,15 +10,18 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.layout.FillLayout;
 import org.eclipse.rap.rwt.layout.RowData;
 import org.eclipse.rap.rwt.widgets.*;
 
 public class TabFolderTab extends ExampleTab {
 
+  protected static final int MAX_ITEMS = 3;
+  
   private TabFolder folder;
+  private TabItem[] tabItems;
+  private Button[] tabRadios;
 
   public TabFolderTab( final TabFolder parent ) {
     super( parent, "TabFolder" );
@@ -31,25 +34,18 @@ public class TabFolderTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
-    Button rbSelectTab0 = createPropertyButton( "Select Tab 1", RWT.RADIO );
-    rbSelectTab0.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        folder.setSelection( 0 );
-      }
-    } );
-    rbSelectTab0.setSelection( true );
-    Button rbSelectTab1 = createPropertyButton( "Select Tab 2", RWT.RADIO );
-    rbSelectTab1.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        folder.setSelection( 1 );
-      }
-    } );
-    Button rbSelectTab2 = createPropertyButton( "Select Tab 3", RWT.RADIO );
-    rbSelectTab2.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        folder.setSelection( 2 );
-      }
-    } );
+    tabRadios = new Button[ MAX_ITEMS ];
+    for( int i = 0; i < MAX_ITEMS; i++ ) {
+      String title = "Select Tab " + ( i + 1 );
+      tabRadios[ i ] = createPropertyButton( title, RWT.RADIO );
+      final int j = i;
+      tabRadios[ i ].addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( final SelectionEvent event ) {
+          folder.setSelection( j );
+        }
+      } );
+    }
+    tabRadios[ 0 ].setSelection( true );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -57,16 +53,24 @@ public class TabFolderTab extends ExampleTab {
     int style = getStyle();
     folder = new TabFolder( parent, style );
     folder.setLayoutData( new RowData( 250, 200 ) );
+    tabItems = new TabItem[ 3 ];
     for( int i = 0; i < 3; i++ ) {
-      TabItem item = new TabItem( folder, style );
-      item.setText( "Tab " + ( i + 1 ) );
+      tabItems[ i ] = new TabItem( folder, style );
+      tabItems[ i ].setText( "Tab " + ( i + 1 ) );
       Text content = new Text( folder, RWT.WRAP | RWT.MULTI );
-      content.setText(   "Lorem ipsum dolor sit amet, consectetur adipisicing "
-                       + "elit, sed do eiusmod tempor incididunt ut labore et "
-                       + "dolore magna aliqua." );
-      item.setControl( content );
+      content.setText( "Lorem ipsum dolor sit amet, consectetur adipisicing "
+        + "elit, sed do eiusmod tempor incididunt ut labore et "
+        + "dolore magna aliqua." );
+      tabItems[ i ].setControl( content );
     }
     folder.setSelection( 0 );
+    folder.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        for( int i = 0; i < MAX_ITEMS; i++ ) {
+          tabRadios[ i ].setSelection( event.item == tabItems[ i ] );
+        }
+      }
+    } );
     registerControl( folder );
   }
 

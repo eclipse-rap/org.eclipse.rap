@@ -112,6 +112,9 @@ org.eclipse.rap.rwt.TabUtil.tabSelectedAction = function( evt ) {
   org.eclipse.rap.rwt.TabUtil.tabSelected( evt );
   if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getTarget().getChecked() ) {
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    // TODO [rst] Add item parameter in doWidgetSelected
+    var itemId = widgetManager.findIdByWidget( evt.getTarget() );
+    req.addParameter( "org.eclipse.rap.rwt.events.widgetSelected.item", itemId );
     var id = widgetManager.findIdByWidget( evt.getTarget().tabView );
     org.eclipse.rap.rwt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
   }
