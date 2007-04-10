@@ -67,6 +67,7 @@ public class SWT {
   public static final int CLOSE = 1 << 6;
   public static final int MIN = 1 << 7;
   public static final int MAX = 1 << 10;
+  public static final int ON_TOP = 1 << 14;
   public static final int SHELL_TRIM = CLOSE | TITLE | MIN | MAX | RESIZE;
   public static final int DIALOG_TRIM = TITLE | CLOSE | BORDER;
   public static final int APPLICATION_MODAL = 1 << 16;

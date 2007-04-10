@@ -28,6 +28,9 @@ public class Shell extends Composite {
 
   private static final int TITLE_BAR_HEIGHT = 18;
   private static final int MENU_BAR_HEIGHT = 20;
+  private static final int MODE_NONE = 0;
+  private static final int MODE_MAXIMIZED = 1;
+  private static final int MODE_MINIMIZED = 2;
   
   private final Display display;
   private Menu menuBar;
@@ -40,6 +43,7 @@ public class Shell extends Composite {
   private Button defaultButton;
   private Button saveDefault;
   private Control savedFocus;  // TODO [rh] move to Decorations when exist
+  private int mode = MODE_NONE;
   
   private Shell( final Display display, 
                  final Shell parent, 
@@ -523,7 +527,44 @@ public class Shell extends Composite {
     }
     return result;
   }
+  
+  //////////////////////
+  // minimize / maximize
+  //
+  // TODO [rst] Move these methods to class Decorations when implemented
 
+  public void setMinimized( final boolean minimized ) {
+    if( minimized ) {
+      mode |= MODE_MINIMIZED;
+    } else {
+      if( ( mode & MODE_MINIMIZED ) != 0 ) {
+        setActive();
+      }
+      mode &= ~MODE_MINIMIZED;
+    }
+  }
+  
+  public void setMaximized( final boolean maximized ) {
+    if( maximized ) {
+      if( mode != MODE_MAXIMIZED ) {
+        setActive();
+        setBounds( display.getBounds() );
+      }
+      mode |= MODE_MAXIMIZED;
+      mode &= ~MODE_MINIMIZED;
+    } else {
+      mode &= ~MODE_MAXIMIZED;
+    }
+  }
+  
+  public boolean getMinimized() {
+    return ( this.mode & MODE_MINIMIZED ) != 0;
+  }
+  
+  public boolean getMaximized() {
+    return this.mode == MODE_MAXIMIZED;
+  }
+  
   ///////////////////
   // check... methods
   

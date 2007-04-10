@@ -36,13 +36,11 @@ public class ComboTab extends ExampleTab {
       = new String[] { "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" };
     // empty combo
     Combo combo1 = new Combo( parent, style );
-    registerControl( combo1 );
     new Label( parent, RWT.NONE ).setText( "Empty Combo box" );
     // filled combo
     Combo combo2 = new Combo( parent, style );
     combo2.setItems( items );
     new Label( parent, RWT.NONE ).setText( "Filled Combo box" );
-    registerControl( combo2 );
     // filled combo with preselection
     final Combo combo3 = new Combo( parent, style );
     combo3.setItems( items );
@@ -55,7 +53,6 @@ public class ComboTab extends ExampleTab {
       }
     } );
     new Label( parent, RWT.NONE ).setText( "Filled Combo box with preselection" );
-    registerControl( combo3 );
     // combo with comboviewer
     Combo combo4 = new Combo( parent, style );
     ComboViewer viewer = new ComboViewer( combo4 );
@@ -76,5 +73,9 @@ public class ComboTab extends ExampleTab {
         MessageDialog.openInformation( parent.getShell(), "Info", message, null );
       }} );
     new Label( parent, RWT.NONE ).setText( "Combo box with JFace ComboViewer" );
+    registerControl( combo1 );
+    registerControl( combo2 );
+    registerControl( combo3 );
+    registerControl( combo4 );
   }
 }

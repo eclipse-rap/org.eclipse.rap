@@ -138,10 +138,9 @@ public class TabFolder extends Composite {
                           height - ( hTabBar + border * 2 ) );
   }
 
-  // TODO [rh] computeSize throws NPE when one of its tabItems has null-control
-  public Point computeSize( final int wHint, 
-                            final int hHint, 
-                            final boolean changed ) 
+  public Point computeSize( final int wHint,
+                            final int hHint,
+                            final boolean changed )
   {
     checkWidget();
     Point itemsSize = new Point( 0, 0 );
@@ -153,13 +152,14 @@ public class TabFolder extends Composite {
       itemsSize.x += thisItemSize.x;
       itemsSize.y = Math.max( itemsSize.y, thisItemSize.y );
       Control control = items[ i ].getControl();
-      Point thisSize = control.getSize();
-      contentsSize.x = Math.max( contentsSize.x, thisSize.x );
-      contentsSize.y = Math.max( contentsSize.y, thisSize.y );
+      if( control != null ) {
+        Point thisSize = control.computeSize( RWT.DEFAULT, RWT.DEFAULT );
+        contentsSize.x = Math.max( contentsSize.x, thisSize.x );
+        contentsSize.y = Math.max( contentsSize.y, thisSize.y );
+      }
     }
     int width = Math.max( itemsSize.x, contentsSize.x );
     int height = itemsSize.y + contentsSize.y;
-    int border = getBorderWidth();
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
     }
@@ -172,6 +172,7 @@ public class TabFolder extends Composite {
     if( hHint != RWT.DEFAULT ) {
       height = hHint;
     }
+    int border = getBorderWidth();
     width += 2 * border;
     height += 2 * border;
     return new Point( width, height );
@@ -220,11 +221,13 @@ public class TabFolder extends Composite {
     String text = item.getText();
     if( text != null ) {
       Point extent = FontSizeEstimation.stringExtent( text, getFont() );
-      result.x += extent.x + 10;
-      result.y = extent.y + 4;
+      // TODO [rst] these are only rough estimations
+      result.x += extent.x + 10 + 6;
+      result.y = extent.y + 4 + 6;
     }
     Image image = item.getImage();
     if( image != null ) {
+      // TODO [rst] use image.getBounds()
       Point size = new Point( 16, 16 );
       result.x += size.x + 4;
       result.y = Math.max( size.x, result.x );

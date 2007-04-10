@@ -25,15 +25,16 @@
 qx.OO.defineClass(
   "org.eclipse.rap.rwt.DefaultAppearanceTheme", 
   qx.renderer.theme.AppearanceTheme,
-function(vTitle) {
+  function(vTitle) {
     qx.renderer.theme.AppearanceTheme.call( this, 
                                             vTitle || "rap default appearance");
   }
 );
 
-
 org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName
   = '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif';
+
+qx.Class.colorGrayText = new qx.renderer.color.ColorObject( "graytext" );
 
 qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   /*
@@ -99,7 +100,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   // this applies to qooxdoo labels (as embedded in Atom, Button, etc.)
   "label" : {
     setup : function() {
-      this.color_disabled = new qx.renderer.color.ColorObject("graytext");
+      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
       this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
       this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
@@ -186,10 +187,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   },
 
 
-
-
-
-
   /*
   ---------------------------------------------------------------------------
     BUTTON
@@ -241,12 +238,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       return vReturn;
     }
   },
-
-
-
-
-
-
 
 
   /*
@@ -386,11 +377,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       return vReturn;
     }
   },
-
-
-
-
-
 
 
   /*
@@ -1667,7 +1653,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "field-set-legend" : {
     setup : function() {
       this.bgcolor = new qx.renderer.color.ColorObject( "#f8f8ff" );
-      this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );
+      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
     },
     initial : function(vTheme) {
       return qx.lang.Object.mergeWith(vTheme.initialFrom( "atom" ), {
@@ -1834,193 +1820,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     }
   },
-
-
-
-
-
-  /*
-  ---------------------------------------------------------------------------
-    DATECHOOSER
-  ---------------------------------------------------------------------------
-   */
-
-  "datechooser-toolbar-button" : {
-    setup : function() {
-      this.bgcolor_default = new qx.renderer.color.ColorObject("#ece9d8");
-      this.bgcolor_left = new qx.renderer.color.ColorObject("#e1e0d8");
-
-      this.border_pressed = qx.renderer.border.BorderPresets.getInstance().thinInset;
-      this.border_over = qx.renderer.border.BorderPresets.getInstance().thinOutset;
-      this.border_default = null;
-
-      this.checked_background = "static/image/dotted_white.gif";
-    },
-
-    initial : function(vTheme) {
-      return {
-        cursor : qx.constant.Core.DEFAULT,
-        spacing : 4,
-        width : qx.constant.Core.AUTO,
-        verticalChildrenAlign : qx.constant.Layout.ALIGN_MIDDLE
-      }
-    },
-
-    state : function(vTheme, vStates) {
-      var vReturn = {
-        backgroundColor : vStates.abandoned ? this.bgcolor_left : this.bgcolor_default,
-        backgroundImage : (vStates.checked && !vStates.over) ? this.checked_background : null
-      }
-
-      if (vStates.pressed || vStates.checked || vStates.abandoned) {
-        vReturn.border = this.border_pressed;
-      } else if (vStates.over) {
-        vReturn.border = this.border_over;
-      } else {
-        vReturn.border = this.border_default;
-      }
-
-      if (vStates.pressed || vStates.checked || vStates.abandoned) {
-        vReturn.paddingTop = 2;
-        vReturn.paddingRight = 0;
-        vReturn.paddingBottom = 0;
-        vReturn.paddingLeft = 2;
-      } else if (vStates.over) {
-        vReturn.paddingTop = vReturn.paddingBottom = 1;
-        vReturn.paddingLeft = vReturn.paddingRight = 1;
-      } else {
-        vReturn.paddingTop = vReturn.paddingBottom = 2;
-        vReturn.paddingLeft = vReturn.paddingRight = 2;
-      }
-
-      return vReturn;
-    }
-  },
-
-
-  "datechooser-monthyear" : {
-    setup : function() {
-      this.font = new qx.renderer.font.Font(13, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-    },
-
-    initial : function(vTheme) {
-      return {
-        font : this.font,
-        textAlign: "center",
-        verticalAlign: "middle"
-      }
-    }
-  },
-
-
-  "datechooser-datepane" : {
-    setup : function() {
-      this.border = new qx.renderer.border.Border(1, qx.constant.Style.BORDER_SOLID, "gray");
-      this.bgcolor = new qx.renderer.color.ColorObject("window");
-    },
-
-    initial : function(vTheme) {
-      return {
-        border : this.border,
-        backgroundColor : this.bgcolor
-      }
-    }
-  },
-
-
-  "datechooser-weekday" : {
-    setup : function() {
-      this.border = new qx.renderer.border.Border;
-      this.border.set({ bottomColor:"gray", bottomStyle :qx.constant.Style.BORDER_SOLID, bottomWidth:1 });
-      this.color = new qx.renderer.color.ColorObject("window");
-      this.bgcolor = new qx.renderer.color.ColorObject("#6285BA");
-      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-      this.font.setBold(true);
-    },
-
-    initial : function(vTheme) {
-      return {
-        border : this.border,
-        font : this.font,
-        textAlign : "center"
-      }
-    },
-
-    state : function(vTheme, vStates) {
-      return {
-        color : vStates.weekend ? this.bgcolor : this.color,
-        backgroundColor : vStates.weekend ? this.color : this.bgcolor
-      }
-    }
-
-  },
-
-
-  "datechooser-day" : {
-    setup : function() {
-      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-
-      this.selectedColor = new qx.renderer.color.ColorObject("highlightText");
-      this.selectedBgColor = new qx.renderer.color.ColorObject("#316ac5");
-      this.color = new qx.renderer.color.ColorObject("windowText");
-      this.otherMonthColor = new qx.renderer.color.ColorObject("grayText");
-
-      this.transparentBorder = new qx.renderer.border.Border(1, qx.renderer.border.Border.STYLE_NONE);
-    },
-
-    initial : function(vTheme) {
-      return {
-        cursor : qx.constant.Core.DEFAULT,
-        border : this.border,
-        color : this.color,
-        font : this.font,
-        textAlign : "center",
-        verticalAlign: "middle",
-        selectable: false
-      }
-    },
-
-    state : function(vTheme, vStates) {
-      return {
-        border : vStates.today ? qx.renderer.border.BorderPresets.getInstance().black : this.transparentBorder,
-        color : vStates.selected ? this.selectedColor :
-          (vStates.otherMonth ? this.otherMonthColor : this.color),
-          backgroundColor : vStates.selected ? this.selectedBgColor : null
-      }
-    }
-  },
-
-  "datechooser-week" : {
-    setup : function() {
-      this.border = new qx.renderer.border.Border;
-      this.border.set({ rightColor:"gray", rightStyle :qx.constant.Style.BORDER_SOLID, rightWidth:1 });
-      this.headerBorder = new qx.renderer.border.Border;
-      this.headerBorder.set({ rightColor:"gray", rightStyle :qx.constant.Style.BORDER_SOLID, rightWidth:1,
-      bottomColor:"gray", bottomStyle :qx.constant.Style.BORDER_SOLID, bottomWidth:1 });
-      this.color = new qx.renderer.color.ColorObject("#6285BA");
-      this.font = new qx.renderer.font.Font(11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-    },
-
-    initial : function(vTheme) {
-      return {
-        border : this.border,
-        font : this.font,
-        color: this.color,
-        paddingLeft : 2
-      }
-    },
-
-    state : function(vTheme, vStates) {
-      return {
-        border : vStates.header ? this.headerBorder : this.border
-      }
-    }
-  },
-
-
-
-
-
 
   /*
   ---------------------------------------------------------------------------
@@ -2367,7 +2166,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   // appearance for org.eclipse.rap.rwt.widgets.Label with style RWT.SEPARATOR
   "separator" : {
     setup: function() {
-      this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );
+      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
       this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
     },
@@ -2402,7 +2201,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "link-text" : {
     setup : function() {
       this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-      this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );
+      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
     },
     initial : function( vTheme ) {
       return {
@@ -2421,7 +2220,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.font.setUnderline( true );
       this.color_default = new qx.renderer.color.ColorObject( "#00007f" );
-      this.color_disabled = new qx.renderer.color.ColorObject( "graytext" );
+      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
     },
     initial : function( vTheme ) {
       return {

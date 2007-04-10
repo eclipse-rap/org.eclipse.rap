@@ -27,6 +27,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   
   private static final String PROP_ACTIVE_CONTROL = "activeControl";
   private static final String PROP_ACTIVE_SHELL = "activeShell";
+  private static final String PROP_MODE = "mode";
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -36,6 +37,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
     adapter.preserve( Props.TEXT, shell.getText() );
     adapter.preserve( Props.IMAGE, shell.getImage() );
+    adapter.preserve( PROP_MODE, getMode( shell ) );
   }
 
   public void readData( final Widget widget ) { 
@@ -71,6 +73,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.set( "showMinimize", ( style & RWT.MIN ) != 0 );
     writer.set( "showMaximize", ( style & RWT.MAX ) != 0 );
     writer.set( "showClose", ( style & RWT.CLOSE ) != 0 );
+    writer.set( "alwaysOnTop", ( style & RWT.ON_TOP ) != 0 );
     writer.set( "overflow", "hidden" );
     if( shell.getParent() instanceof Shell ) {
       writer.call( "setDialogWindow", new Object[ 0 ] );
@@ -97,6 +100,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     //            strange behavior!
     writeActiveShell( shell );
     writeActiveControl( shell );
+    writeMode( shell );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -223,5 +227,24 @@ public final class ShellLCA extends AbstractWidgetLCA {
   
   private static String getImagePath( Image image ) {
     return image != null ? Image.getPath( image ) : "";
+  }
+  
+  private static void writeMode( final Shell shell ) throws IOException {
+    Object defValue = null;
+    Object newValue = getMode( shell );
+    if( WidgetLCAUtil.hasChanged( shell, PROP_MODE, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      writer.set( "mode", newValue );
+    }
+  }
+  
+  private static String getMode( final Shell shell ) {
+    String result = null;
+    if( shell.getMinimized() ) {
+      result = "minimized";
+    } else if( shell.getMaximized() ) {
+      result = "maximized";
+    }
+    return result;
   }
 }

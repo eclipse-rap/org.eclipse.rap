@@ -29,6 +29,8 @@ qx.OO.defineClass(
 
 qx.OO.addProperty( { name : "defaultButton", type : "object" } );
 
+qx.OO.addProperty( { name : "alwaysOnTop", type : "boolean" } );
+
 qx.Proto.setActiveControl = function( control ) {
   this._activeControl = control;  
 }
@@ -178,4 +180,22 @@ qx.Proto._getParentControl = function( widget ) {
     }
   }
   return result;
+}
+
+/* TODO [rst] Revise when upgrading: overrides the _sendto() function in
+ *      superclass Window to allow for always-on-top.
+ *      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=367
+ */
+qx.Proto._sendTo = function() {
+  var vAll = qx.lang.Object.getValues( this.getWindowManager().getAll() );
+  vAll = vAll.sort( qx.util.Compare.byZIndex );
+  var vLength = vAll.length;
+  var vIndex = this._minZIndex;
+  for( var i = 0; i < vLength; i++ ) {
+    var newZIndex = vIndex++;
+    if( vAll[ i ].getAlwaysOnTop() ) {
+      newZIndex +=  vLength;
+    }
+    vAll[ i ].setZIndex( newZIndex );
+  }
 }

@@ -313,14 +313,17 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IWidgetAdapter displayAdapter = DisplayUtil.getAdapter( display );
     Object oldValue = displayAdapter.getPreserved( PROP_FOCUS_CONTROL );
     if( isInitialRequest( display ) || oldValue != display.getFocusControl() ) {
-      // TODO [rh] use JSWriter to output focus JavaScript 
-      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      HtmlResponseWriter out = stateInfo.getResponseWriter();
-      String id = WidgetUtil.getId( display.getFocusControl() );
-      out.write( "org.eclipse.rap.rwt.WidgetManager.getInstance()." ); 
-      out.write( "focus( \"" ); 
-      out.write( id ); 
-      out.write( "\" );" );
+      // TODO [rst] Added null check as a NPE occurred in some rare cases
+      if( display.getFocusControl() != null ) {
+        // TODO [rh] use JSWriter to output focus JavaScript 
+        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+        HtmlResponseWriter out = stateInfo.getResponseWriter();
+        String id = WidgetUtil.getId( display.getFocusControl() );
+        out.write( "org.eclipse.rap.rwt.WidgetManager.getInstance()." ); 
+        out.write( "focus( \"" ); 
+        out.write( id ); 
+        out.write( "\" );" );
+      }
     }
   }
 

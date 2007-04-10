@@ -168,3 +168,9 @@ that's right?
 
 45.) Tree prevents window activation on mousedown (qx.ui.treefullcontrol)
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=363
+
+46.) Window missing a property for always-on-top behavior.
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=367
+
+47.) Focussing a clipped item breaks Window layout.
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=368
