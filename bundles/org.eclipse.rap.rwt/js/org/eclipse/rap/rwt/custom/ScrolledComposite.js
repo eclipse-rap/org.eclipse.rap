@@ -34,7 +34,7 @@ qx.Proto.dispose = function() {
 qx.Proto.setHBarSelection = function( value ) {
   if( !this.isMaterialized() || !this.isCreated() ) {
     this._initialScrollLeft = value;
-    this.addEventListener( "create", this._onAppear )
+    this.addEventListener( "create", this._onAppear );
   } else {
     this.setScrollLeft( value );
     this._lastScrollLeft = value;
@@ -42,9 +42,17 @@ qx.Proto.setHBarSelection = function( value ) {
 }
 
 qx.Proto.setVBarSelection = function( value ) {
-  this._materialize();
-  this.setScrollTop( value );
-  this._lastScrollTop = value;
+// this._materialize();
+// TODO [rst] the above line didn't seem to work:
+// An error when a SC on an invisible tab was created
+// --> copied code from setHBarSelection
+  if( !this.isMaterialized() || !this.isCreated() ) {
+    this._initialScrollTop = value;
+    this.addEventListener( "create", this._onAppear );
+  } else {
+    this.setScrollTop( value );
+    this._lastScrollTop = value;
+  }
 }
 
 qx.Proto.setVBarMaximum = function( value ) {
@@ -55,6 +63,7 @@ qx.Proto.setHBarMaximum = function( value ) {
   this.setScrollWidth( value );
 }
 
+// TODO [rst] remove (see comment above)
 qx.Proto._materialize = function() {
   if( !this.isMaterialized() || !this.isCreated() ) {
     qx.ui.core.Widget.flushGlobalQueues();    
@@ -65,6 +74,10 @@ qx.Proto._onAppear = function( evt ) {
   if( this._initialScrollLeft != null ) {
     this.setScrollLeft( this._initialScrollLeft );
     this._lastScrollLeft = this._initialScrollLeft;
+  }
+  if( this._initialScrollTop != null ) {
+    this.setScrollLeft( this._initialScrollTop );
+    this._lastScrollLeft = this._initialScrollTop;
   }
   this.removeEventListener( "create", this._onAppear );
 }
