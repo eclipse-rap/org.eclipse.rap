@@ -12,8 +12,7 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.rap.jface.dialogs.MessageDialog;
 import org.eclipse.rap.jface.window.IWindowCallback;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.events.*;
 import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
@@ -27,12 +26,13 @@ public class ButtonTab extends ExampleTab {
   
   private boolean showImage;
 
-  private Button button;
+  private Button pushButton;
+  private Button toggleButton;
+  private Button checkButton;
+  private Button radioButton1;
+  private Button radioButton2;
+  private Button radioButton3;
   private Button defaultButton;
-  private Button check;
-  private Button radio1;
-  private Button radio2;
-  private Button radio3;
 
   public ButtonTab( final TabFolder folder ) {
     super( folder, "Button" );
@@ -52,33 +52,44 @@ public class ButtonTab extends ExampleTab {
     imageButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showImage = imageButton.getSelection();
-        updateButtonImage( button );
+        updateButtonImage( pushButton );
       }
     } );
     createFgColorButton();
 //    createBgColorButton();
     createFontChooser();
+    Button button = createPropertyButton( "Toggle Button", RWT.PUSH );
+    button.setToolTipText( "Remote control the toggle button" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        toggleButton.setSelection( !toggleButton.getSelection() );
+      }
+    } );
   }
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout( RWT.VERTICAL ) );
     int style = getStyle();
-    button = new Button( parent, style | RWT.PUSH );
-    button.setText( "Button" );
-    updateButtonImage( button );
-    check = new Button( parent, style | RWT.CHECK );
-    check.setText( "Check" );
-    radio1 = new Button( parent, style | RWT.RADIO );
-    radio1.setText( "Radio 1" );
-    radio2 = new Button( parent, style | RWT.RADIO );
-    radio2.setText( "Radio 2" );
-    radio3 = new Button( parent, style | RWT.RADIO );
-    radio3.setText( "Radio 3" );
-    registerControl( button );
-    registerControl( check );
-    registerControl( radio1 );
-    registerControl( radio2 );
-    registerControl( radio3 );
+    pushButton = new Button( parent, style | RWT.PUSH );
+    pushButton.setText( "Push" );
+    updateButtonImage( pushButton );
+    toggleButton = new Button( parent, style | RWT.TOGGLE );
+    toggleButton.setText( "Toggle" );
+    checkButton = new Button( parent, style | RWT.CHECK );
+    checkButton.setText( "Check" );
+    radioButton1 = new Button( parent, style | RWT.RADIO );
+    radioButton1.setText( "Radio 1" );
+    radioButton2 = new Button( parent, style | RWT.RADIO );
+    radioButton2.setText( "Radio 2" );
+    radioButton3 = new Button( parent, style | RWT.RADIO );
+    radioButton3.setText( "Radio 3" );
+    registerControl( pushButton );
+    registerControl( toggleButton );
+    registerControl( checkButton );
+    registerControl( radioButton1 );
+    registerControl( radioButton2 );
+    registerControl( radioButton3 );
+    // default button
     final Group group = new Group( parent, RWT.NONE );
     group.setLayoutData( new RowData( 370, 60 ) );
     group.setText( "Default Button" );

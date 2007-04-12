@@ -77,8 +77,7 @@ public class Button extends Control {
     return image;
   }
 
-  // TODO [rh] implement handling of images for CHECK and RADIO as SWT does,
-  //      or don't implement if SWT omits it (still, there is hope...)
+  // TODO [rh] implement handling of images for CHECK and RADIO as SWT does
   public void setImage( final Image image ) {
     checkWidget();
     if( ( style & RWT.ARROW ) == 0 ) {

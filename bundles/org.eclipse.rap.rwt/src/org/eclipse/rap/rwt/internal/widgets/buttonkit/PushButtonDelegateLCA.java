@@ -12,6 +12,7 @@
 package org.eclipse.rap.rwt.internal.widgets.buttonkit;
 
 import java.io.IOException;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.events.SelectionEvent;
 import org.eclipse.rap.rwt.internal.widgets.Props;
 import org.eclipse.rap.rwt.lifecycle.*;
@@ -30,12 +31,18 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
 
   void readData( final Button button ) {
     ControlLCAUtil.processSelection( button, null, false );
+    ButtonLCAUtil.readSelection( button );
   }
   
   void renderInitialization( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( "qx.ui.form.Button" );
     ControlLCAUtil.writeStyleFlags( button );
+    if( ( button.getStyle() & RWT.TOGGLE ) != 0 ) {
+      writer.call( "addState", new Object[] { "rwt_TOGGLE" } );
+      writer.addListener( JSConst.QX_EVENT_EXECUTE,
+                          "org.eclipse.rap.rwt.ButtonUtil.onToggleExecute" );
+    }
   }
 
   // TODO [rh] highligh default button (e.g. with thick border as in Windows)
@@ -48,6 +55,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     ControlLCAUtil.writeChanges( button );
+    writeSelection( button );
     ButtonLCAUtil.writeText( button );
     ButtonLCAUtil.writeAlignment( button );
     ButtonLCAUtil.writeImage( button );
@@ -56,6 +64,21 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
 
   void renderDispose( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
+    // TODO [rst] Is it legible to access any methods after dispose?
+    if( ( button.getStyle() & RWT.TOGGLE ) != 0 ) {
+      writer.removeListener( JSConst.QX_EVENT_EXECUTE,
+                             "org.eclipse.rap.rwt.ButtonUtil.onToggleExecute" );
+    }
     writer.dispose();
+  }
+  
+  private void writeSelection( final Button button ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( button );
+    String property = ButtonLCAUtil.PROP_SELECTION;
+    Boolean newValue = Boolean.valueOf( button.getSelection() ); 
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( button, property, newValue, defValue ) ) {
+      writer.call( "setState", new Object[] { "checked", newValue } );
+    }
   }
 }

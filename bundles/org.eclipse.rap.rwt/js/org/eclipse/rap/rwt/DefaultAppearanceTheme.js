@@ -225,7 +225,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
         vReturn.border = vStates.pressed || vStates.checked ? this.border_pressed : this.border;
       }
 
-      if( vStates.pressed ) {
+      if( vStates.pressed || vStates.checked ) {
         vReturn.paddingTop = 4;
         vReturn.paddingRight = 3;
         vReturn.paddingBottom = 2;

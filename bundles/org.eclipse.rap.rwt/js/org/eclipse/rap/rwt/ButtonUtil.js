@@ -42,12 +42,12 @@ org.eclipse.rap.rwt.ButtonUtil.registerRadioButton = function( button ) {
  */
 org.eclipse.rap.rwt.ButtonUtil.unregisterRadioButton = function( button ) {
   var radioManager = button.getManager();
-	if( radioManager != null ) {
-  	radioManager.remove( button );
+  if( radioManager != null ) {
+    radioManager.remove( button );
     if( radioManager.getItems().length == 0 ) {
       radioManager.dispose();
     }
-	}
+  }
 }
 
 org.eclipse.rap.rwt.ButtonUtil.radioSelected = function( evt ) {
@@ -91,5 +91,18 @@ org.eclipse.rap.rwt.ButtonUtil.checkSelectedAction = function( evt ) {
     var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
     var id = widgetManager.findIdByWidget( evt.getTarget() );
     org.eclipse.rap.rwt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+  }
+}
+
+/* Called when a TOGGLE button is executed */
+org.eclipse.rap.rwt.ButtonUtil.onToggleExecute = function( evt ) {
+  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    var button = evt.getTarget();
+    var checked = !button.hasState( "checked" );
+    button.setState( "checked", checked );
+    var widgetManager = org.eclipse.rap.rwt.WidgetManager.getInstance();
+    var id = widgetManager.findIdByWidget( button );
+    var req = org.eclipse.rap.rwt.Request.getInstance();
+    req.addParameter( id + ".selection", checked );
   }
 }
