@@ -76,6 +76,20 @@ public class Image_Test extends TestCase {
     
   }
 
+  public void testImageBounds() {
+    IResourceManager manager = ResourceManager.getInstance();
+    // 100 x 50
+    assertFalse( manager.isRegistered( RWTFixture.IMAGE_100x50 ) );
+    Image image_100x50 = Image.find( RWTFixture.IMAGE_100x50 );
+    assertTrue( manager.isRegistered( RWTFixture.IMAGE_100x50 ) );
+    assertEquals( new Rectangle( 0, 0, 100, 50 ), image_100x50.getBounds() );
+    // 50 x 100
+    assertFalse( manager.isRegistered( RWTFixture.IMAGE_50x100 ) );
+    Image image_50x100 = Image.find( RWTFixture.IMAGE_50x100 );
+    assertTrue( manager.isRegistered( RWTFixture.IMAGE_50x100 ) );
+    assertEquals( new Rectangle( 0, 0, 50, 100 ), image_50x100.getBounds() );
+  }
+  
   protected void setUp() throws Exception {
     // we do need the ressource manager for this test
     Fixture.setUp();

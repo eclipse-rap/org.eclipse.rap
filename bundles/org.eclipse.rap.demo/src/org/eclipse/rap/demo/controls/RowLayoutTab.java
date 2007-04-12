@@ -9,8 +9,9 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Color;
+import org.eclipse.rap.rwt.events.SelectionAdapter;
+import org.eclipse.rap.rwt.events.SelectionEvent;
+import org.eclipse.rap.rwt.graphics.Image;
 import org.eclipse.rap.rwt.layout.*;
 import org.eclipse.rap.rwt.widgets.*;
 
@@ -64,7 +65,8 @@ class RowLayoutTab extends ExampleTab {
     l1.setText( "Label" );
     Text t1 = new Text( comp, RWT.BORDER | RWT.SINGLE );
     t1.setText( "Lorem ipsum dolor sit amet" );
-//    createTabFolder( comp );
+    createSomeImages( comp );
+    createTabFolder( comp );
     new Text( comp, RWT.BORDER | RWT.SINGLE );
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );
@@ -73,6 +75,22 @@ class RowLayoutTab extends ExampleTab {
     }
     comp.layout();
     registerControl( comp );
+  }
+
+  private void createSomeImages( final Composite parent ) {
+    ClassLoader imageLoader = getClass().getClassLoader();
+    Image image1 = Image.find( "icons/info.gif", imageLoader );
+    Image image2 = Image.find( "icons/lockkey.gif", imageLoader );
+    Image image3 = Image.find( "icons/test-100x50.png", imageLoader );
+    Image image4 = Image.find( "icons/test-50x100.png", imageLoader );
+    Label l1 = new Label( parent, RWT.BORDER );
+    l1.setImage( image1 );
+    Label l2 = new Label( parent, RWT.BORDER );
+    l2.setImage( image2 );
+    Label l3 = new Label( parent, RWT.BORDER );
+    l3.setImage( image3 );
+    Label l4 = new Label( parent, RWT.BORDER );
+    l4.setImage( image4 );
   }
 
   private TabFolder createTabFolder( final Composite parent ) {

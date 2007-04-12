@@ -12,8 +12,7 @@
 package org.eclipse.rap.rwt.widgets;
 
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Point;
+import org.eclipse.rap.rwt.graphics.*;
 import org.eclipse.rap.rwt.internal.graphics.FontSizeEstimation;
 
 /**
@@ -109,10 +108,9 @@ public class Label extends Control {
         height = DEFAULT_HEIGHT;
       }
     } else if( ( image != null ) ) {
-      // TODO [rst] obtain image bounds
-      // Rectangle rect = image.getBounds();
-      width = 32;
-      height = 32;
+      Rectangle rect = image.getBounds();
+      width = rect.width;
+      height = rect.height;
     } else if( ( text.length() > 0 ) ) {
       int wrapWidth = 0;
       if( ( style & RWT.WRAP ) != 0 && wHint != RWT.DEFAULT ) {

@@ -104,6 +104,11 @@ public final class RWTFixture {
     = "resources/images/generated/a2fb9a01c602ae.gif";
   public static final String IMAGE3 
     = "resources/images/generated/dff8c3a4e2b4c79080.gif";
+  
+  public static final String IMAGE_100x50 
+    = "resources/images/test-100x50.png";
+  public static final String IMAGE_50x100 
+    = "resources/images/test-50x100.png";
 
   private static LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private static WidgetAdapterFactory widgetAdapterFactory;

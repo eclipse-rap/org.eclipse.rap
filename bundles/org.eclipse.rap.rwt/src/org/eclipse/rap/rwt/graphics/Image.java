@@ -10,7 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.graphics;
 
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.*;
+import javax.imageio.ImageIO;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import com.w4t.IResourceManager;
@@ -20,8 +23,14 @@ public final class Image {
   
   private static final Map images = new HashMap();
   
+  private int width;
+  
+  private int height;
+
   private Image () {
     // prevent instantiation from outside
+    width = -1;
+    height = -1;
   }
   
   public static synchronized Image find( final String path ) {
@@ -70,6 +79,24 @@ public final class Image {
     images.clear();
   }
   
+  ///////////////////////
+  // Public Image methods
+  
+  public Rectangle getBounds() {
+    Rectangle result = null;
+//    TODO [rst] Uncomment if constructor provided
+//    if( isDisposed() ) {
+//      RWT.error( RWT.ERROR_GRAPHIC_DISPOSED );
+//    }
+    if( width != -1 && height != -1 ) {
+      result = new Rectangle(0, 0, width, height);
+    } else {
+      // TODO [rst] check types
+      RWT.error( RWT.ERROR_INVALID_IMAGE );
+    }
+    return result;
+  }
+  
   //////////////////
   // Helping methods
   
@@ -82,10 +109,37 @@ public final class Image {
     manager.setContextLoader( imageLoader );
     try {
       manager.register( path );
+      InputStream inputStream = manager.getResourceAsStream( path );
+      Point size = readImageSize( inputStream );
+      if( size != null ) {
+        image.width = size.x;
+        image.height = size.y;
+      }
     } finally {
       manager.setContextLoader( loaderBuffer );
     }
     images.put( path, image );
     return image;
+  }
+  
+  /**
+   * @return an array whose first element is the image <em>width</em> and
+   *         second is the <em>height</em>, <code>null</code> if the bounds
+   *         could not be read.
+   */
+  private static Point readImageSize( final InputStream input ) {
+    Point result = null;
+    try {
+      BufferedImage image = ImageIO.read( input );
+      if( image != null ) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        result = new Point( width, height );
+      }
+    } catch( Exception e ) {
+      // ImageReader throws IllegalArgumentExceptions for some files
+      // TODO [rst] log exception
+    }
+    return result;
   }
 }
