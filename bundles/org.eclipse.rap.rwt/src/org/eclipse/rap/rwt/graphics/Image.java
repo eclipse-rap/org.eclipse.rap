@@ -11,7 +11,8 @@
 package org.eclipse.rap.rwt.graphics;
 
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
+import java.io.*;
+import java.text.MessageFormat;
 import java.util.*;
 import javax.imageio.ImageIO;
 import org.eclipse.rap.rwt.RWT;
@@ -24,7 +25,6 @@ public final class Image {
   private static final Map images = new HashMap();
   
   private int width;
-  
   private int height;
 
   private Image () {
@@ -34,7 +34,8 @@ public final class Image {
   }
   
   public static synchronized Image find( final String path ) {
-    return find( path, null );
+    IResourceManager manager = ResourceManager.getInstance();
+    return find( path, manager.getContextLoader() );
   }
   
   public static synchronized Image find( final String path, 
@@ -48,6 +49,21 @@ public final class Image {
       result = ( Image )images.get( path );
     } else {
       result = createImage( path, imageLoader );
+    }
+    return result;
+  }
+  
+  public static synchronized Image find( final String path,
+                                         final InputStream inputStream )
+  {
+    if( path == null ) {
+      RWT.error( RWT.ERROR_NULL_ARGUMENT );
+    }
+    Image result;
+    if( images.containsKey( path ) ) {
+      result = ( Image )images.get( path );
+    } else {
+      result = createImage( path, inputStream );
     }
     return result;
   }
@@ -89,7 +105,7 @@ public final class Image {
 //      RWT.error( RWT.ERROR_GRAPHIC_DISPOSED );
 //    }
     if( width != -1 && height != -1 ) {
-      result = new Rectangle(0, 0, width, height);
+      result = new Rectangle( 0, 0, width, height );
     } else {
       // TODO [rst] check types
       RWT.error( RWT.ERROR_INVALID_IMAGE );
@@ -103,23 +119,64 @@ public final class Image {
   private static Image createImage( final String path, 
                                     final ClassLoader imageLoader )
   {
-    Image image = new Image();
+    Image result;
     IResourceManager manager = ResourceManager.getInstance();
     ClassLoader loaderBuffer = manager.getContextLoader();
-    manager.setContextLoader( imageLoader );
+    if( imageLoader != null ) {
+      manager.setContextLoader( imageLoader );
+    }
     try {
-      manager.register( path );
       InputStream inputStream = manager.getResourceAsStream( path );
-      Point size = readImageSize( inputStream );
-      if( size != null ) {
-        image.width = size.x;
-        image.height = size.y;
-      }
+      result = createImage( path, inputStream );
     } finally {
       manager.setContextLoader( loaderBuffer );
     }
-    images.put( path, image );
-    return image;
+    return result;
+  }
+
+  private static Image createImage( final String path, 
+                                    final InputStream inputStream )
+  {
+    if( inputStream == null ) {
+      String txt = "Image ''{0}'' cannot be found.";
+      String msg = MessageFormat.format( txt, new Object[] { path } );
+      RWT.error( RWT.ERROR_INVALID_ARGUMENT, 
+                 new IllegalArgumentException( msg ), 
+                 msg );
+    }
+    Image result = new Image();
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // TODO: [fappel] Image size calculation and resource registration both
+    //                read the input stream. Because of this I use a workaround
+    //                with a BufferedInputStream. Resetting it after reading the
+    //                image size enables the ResourceManager to reuse it for
+    //                registration. Note that the order is crucial here, since
+    //                the ResourceManager seems to close the stream (shrug).
+    //                It would be nice to find a solution without reading the
+    //                stream twice.
+    
+    IResourceManager manager = ResourceManager.getInstance();
+    BufferedInputStream bis = new BufferedInputStream( inputStream );
+    bis.mark( Integer.MAX_VALUE );
+    Point size = readImageSize( bis );
+    if( size != null ) {
+      result.width = size.x;
+      result.height = size.y;
+    }
+    try {
+      bis.reset();
+    } catch( final IOException shouldNotHappen ) {
+      String txt = "Could not reset input stream while reading image ''{0}''.";
+      String msg = MessageFormat.format( txt, new Object[] { path } );
+      throw new RuntimeException( msg, shouldNotHappen );
+    }
+    manager.register( path, bis );
+    
+    ////////////////////////////////////////////////////////////////////////////
+    
+    images.put( path, result );
+    return result;
   }
   
   /**
@@ -139,6 +196,7 @@ public final class Image {
     } catch( Exception e ) {
       // ImageReader throws IllegalArgumentExceptions for some files
       // TODO [rst] log exception
+      e.printStackTrace();
     }
     return result;
   }

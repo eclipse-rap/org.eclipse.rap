@@ -43,12 +43,14 @@ public final class RWTFixture {
 
   public final static class TestResourceManager implements IResourceManager {
 
+    private ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    
     public String getCharset( final String name ) {
       return null;
     }
 
     public ClassLoader getContextLoader() {
-      return null;
+      return loader;
     }
 
     public String getLocation( final String name ) {
@@ -56,15 +58,27 @@ public final class RWTFixture {
     }
 
     public URL getResource( final String name ) {
-      return null;
+      URL result = null;
+      if( loader != null ) {
+        result = loader.getResource( name );
+      }
+      return result;
     }
 
     public InputStream getResourceAsStream( final String name ) {
-      return null;
+      InputStream result = null;
+      if( loader != null ) {
+        result = loader.getResourceAsStream( name );
+      }
+      return result;
     }
 
     public Enumeration getResources( final String name ) throws IOException {
-      return null;
+      Enumeration result = null;
+      if( loader != null ) {
+        result = loader.getResources( name );
+      }
+      return result;
     }
 
     public boolean isRegistered( final String name ) {
@@ -86,7 +100,8 @@ public final class RWTFixture {
     {
     }
 
-    public void setContextLoader( final ClassLoader classLoader ) {
+    public void setContextLoader( final ClassLoader contextLoader ) {
+      loader = contextLoader;
     }
 
   }

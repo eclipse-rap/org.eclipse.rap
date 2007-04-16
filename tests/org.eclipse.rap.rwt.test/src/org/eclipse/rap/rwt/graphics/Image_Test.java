@@ -8,8 +8,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.graphics;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
 import junit.framework.TestCase;
@@ -18,7 +17,6 @@ import org.eclipse.rap.rwt.resources.DefaultResourceManagerFactory;
 import org.eclipse.rap.rwt.resources.ResourceManager;
 import com.w4t.Fixture;
 import com.w4t.IResourceManager;
-import com.w4t.engine.util.ResourceRegistrationException;
 
 
 public class Image_Test extends TestCase {
@@ -53,7 +51,6 @@ public class Image_Test extends TestCase {
     image1 = Image.find( RWTFixture.IMAGE1 );
     assertTrue( manager.isRegistered( RWTFixture.IMAGE1 ) );
     assertEquals( 1, Image.size() );
-    Image.clear();
   }
   
   public void testImageFinderWithClassLoader() throws IOException {
@@ -68,12 +65,32 @@ public class Image_Test extends TestCase {
     try {
       Image.find( "test.gif" );
       fail( "Image not available on the classpath." );
-    } catch( final ResourceRegistrationException rre ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
     Image image = Image.find( "test.gif", classLoader );
     assertNotNull( image );
+  }
+  
+  public void testImageFinderWithInputStream() throws IOException {
+    String imgName = "testIS.gif";
+    File testGif = new File( Fixture.CONTEXT_DIR, imgName );
+    Fixture.copyTestResource( RWTFixture.IMAGE3, testGif );
+    URL[] urls = new URL[] { Fixture.CONTEXT_DIR.toURL() };
+    URLClassLoader classLoader = new URLClassLoader( urls, null );
     
+    IResourceManager manager = ResourceManager.getInstance();
+    assertFalse( manager.isRegistered( RWTFixture.IMAGE3 ) );
+    assertEquals( 0, Image.size() );
+    try {
+      Image.find( imgName );
+      fail( "Image not available on the classpath." );
+    } catch( final IllegalArgumentException iae ) {
+      // expected
+    }
+    InputStream is = classLoader.getResourceAsStream( imgName );
+    Image image = Image.find( "test.gif", is );
+    assertNotNull( image );
   }
 
   public void testImageBounds() {
@@ -101,5 +118,6 @@ public class Image_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
+    Image.clear();
   }
 }
