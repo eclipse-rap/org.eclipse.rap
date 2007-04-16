@@ -24,7 +24,7 @@ qx.OO.defineClass(
     this._locked = false;
     // Create handle to drag this CoolItem around
     this._handle = new qx.ui.basic.Terminator();
-    this._handle.setBorder( qx.renderer.border.BorderPresets.getInstance().thinOutset );
+    this._handle.setAppearance( "coolitem-handle" );
     this._handle.addEventListener( "mousedown", this._onHandleMouseDown, this );
     this._handle.addEventListener( "mousemove", this._onHandleMouseMove, this );
     this._handle.addEventListener( "mouseup", this._onHandleMouseUp, this );

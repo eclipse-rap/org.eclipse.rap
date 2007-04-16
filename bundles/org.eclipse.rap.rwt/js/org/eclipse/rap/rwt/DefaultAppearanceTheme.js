@@ -25,18 +25,19 @@
 qx.OO.defineClass(
   "org.eclipse.rap.rwt.DefaultAppearanceTheme", 
   qx.renderer.theme.AppearanceTheme,
-  function(vTitle) {
-    qx.renderer.theme.AppearanceTheme.call( this, 
-                                            vTitle || "rap default appearance");
+  function( vTitle ) {
+    qx.renderer.theme.AppearanceTheme.call( this,
+                                            vTitle || "rap default appearance" );
   }
 );
 
-org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName
+qx.Class.systemFontName
   = '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif';
 
 qx.Class.colorGrayText = new qx.renderer.color.ColorObject( "graytext" );
 
 qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
+
   /*
   ---------------------------------------------------------------------------
     CORE
@@ -100,7 +101,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   // this applies to qooxdoo labels (as embedded in Atom, Button, etc.)
   "label" : {
     setup : function() {
-      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
       this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
       this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
@@ -116,7 +116,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     state : function(vTheme, vStates) {
       return {
-        color : vStates.disabled ? this.color_disabled : null,
+        color : vStates.disabled ? vtheme.colorGrayText : null,
         border : vStates.rwt_BORDER ? this.border : this.border_default
       }
     }
@@ -2096,7 +2096,16 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       }
     }
   },
-
+  
+  "coolitem-handle" :
+  {
+    initial : function( vTheme ) {
+      return {
+        border : qx.renderer.border.BorderPresets.getInstance().thinOutset
+      }
+    }
+  },
+  
   "checkbox" :
   {
     initial : function(vTheme) {
@@ -2240,11 +2249,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     END
   ---------------------------------------------------------------------------
    */
-}, qx.Super.prototype._appearances);
-
-
-
-
+}, qx.Super.prototype._appearances );
 
 /*
 ---------------------------------------------------------------------------
@@ -2256,8 +2261,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
  * Singleton Instance Getter
  */
 qx.Class.getInstance = qx.lang.Function.returnInstance;
-
-
 
 /*
 ---------------------------------------------------------------------------

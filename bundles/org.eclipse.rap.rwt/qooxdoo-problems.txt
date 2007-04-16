@@ -174,3 +174,6 @@ that's right?
 
 47.) Focussing a clipped item breaks Window layout.
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=368
+
+48.) Scrollbar redraw problem in FireFox (there should be a workaround).
+     --> http://www.mail-archive.com/qooxdoo-devel@lists.sourceforge.net/msg09195.html
