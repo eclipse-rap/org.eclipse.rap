@@ -93,9 +93,15 @@ public class FontSizeEstimation {
       result = string.length();
     } else {
       String subStr = nextSubLine( string, 0 );
-      while( getLineWidth( subStr, font ) <= wrapWidth ) {
+      boolean done = false;
+      while( !done && getLineWidth( subStr, font ) <= wrapWidth ) {
         result = subStr.length();
-        subStr = nextSubLine( string, subStr.length() + 1 );
+        // loop prevention (see bug 182754)
+        if( subStr.length() == string.length() ) {
+          done = true;
+        } else {
+          subStr = nextSubLine( string, subStr.length() + 1 );
+        }
       }
     }
     return result;

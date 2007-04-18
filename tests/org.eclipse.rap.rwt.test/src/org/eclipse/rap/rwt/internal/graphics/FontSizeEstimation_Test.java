@@ -46,4 +46,13 @@ public class FontSizeEstimation_Test extends TestCase {
     assertTrue( extent.y >= charHeight * 2 );
     assertTrue( extent.y < charHeight * 1.5 * 5 );
   }
+  
+  // Test for a case where text width == wrapWidth
+  public void testEndlessLoopProblem() {
+    Font font = Font.getFont( "Helvetica", 11, RWT.NORMAL );
+    Point extent = FontSizeEstimation.textExtent( "Zusatzinfo (Besuch)",
+                                                  100,
+                                                  font );
+    assertEquals( 100, extent.x );
+  }
 }
