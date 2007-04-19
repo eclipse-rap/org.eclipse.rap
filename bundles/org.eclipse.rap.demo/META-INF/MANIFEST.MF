@@ -7,6 +7,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.rap.ui.workbench,
  org.eclipse.rap.rwt,
  org.eclipse.rap.w4t,
- org.eclipse.rap.jface,
- javax.servlet
+ org.eclipse.rap.jface
+Import-Package: javax.servlet;version="[2.3.0,2.5.0)",
+ javax.servlet.http;version="[2.3.0,2.5.0)"
 Bundle-Vendor: %Bundle-Vendor
