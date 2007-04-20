@@ -113,6 +113,8 @@ public class Combo extends Scrollable {
   ////////////////////
   // Widget dimensions
 
+  // TODO [rst] Revise: In SWT, a width or height hint of 0 does not result in
+  //      the DEFAULT_WIDTH/HEIGHT.
   public Point computeSize( final int wHint,
                             final int hHint,
                             final boolean changed )
@@ -124,7 +126,7 @@ public class Combo extends Scrollable {
       // TODO [rst] resonable implementation
       width = 85;
     }
-    if( wHint == RWT.DEFAULT ) {
+    if( hHint == RWT.DEFAULT ) {
       // TODO [rst] resonable implementation
       height = 22;
     }
