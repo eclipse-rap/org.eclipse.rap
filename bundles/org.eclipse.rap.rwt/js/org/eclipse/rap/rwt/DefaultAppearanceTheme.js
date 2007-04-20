@@ -34,7 +34,7 @@ qx.OO.defineClass(
 qx.Class.systemFontName
   = '"Segoe UI", Corbel, Calibri, Tahoma, "Lucida Sans Unicode", sans-serif';
 
-qx.Class.colorGrayText = new qx.renderer.color.ColorObject( "graytext" );
+qx.Proto.colorGrayText = new qx.renderer.color.ColorObject( "graytext" );
 
 qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
@@ -116,7 +116,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
 
     state : function(vTheme, vStates) {
       return {
-        color : vStates.disabled ? vtheme.colorGrayText : null,
+        color : vStates.disabled ? vTheme.colorGrayText : null,
         border : vStates.rwt_BORDER ? this.border : this.border_default
       }
     }
@@ -1653,7 +1653,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "field-set-legend" : {
     setup : function() {
       this.bgcolor = new qx.renderer.color.ColorObject( "#f8f8ff" );
-      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
     },
     initial : function(vTheme) {
       return qx.lang.Object.mergeWith(vTheme.initialFrom( "atom" ), {
@@ -1665,7 +1664,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       } );
     },
     state : function(vTheme, vStates) {
-      color : vStates.disabled ? this.color_disabled : null;
+      color : vStates.disabled ? vTheme.colorGrayText : null;
     }
   },
 
@@ -2175,7 +2174,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   // appearance for org.eclipse.rap.rwt.widgets.Label with style RWT.SEPARATOR
   "separator" : {
     setup: function() {
-      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
       this.border_default = qx.renderer.border.BorderPresets.getInstance().none;
       this.border = qx.renderer.border.BorderPresets.getInstance().thinInset;
     },
@@ -2186,7 +2184,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     },
     state: function( vTheme, vStates ) {
       return {
-        color : vStates.disabled ? this.color_disabled : null,
+        color : vStates.disabled ? vTheme.colorGrayText : null,
         border : vStates.rwt_BORDER ? this.border : this.border_default
       }
     }
@@ -2210,7 +2208,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
   "link-text" : {
     setup : function() {
       this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
-      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
     },
     initial : function( vTheme ) {
       return {
@@ -2219,7 +2216,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     },
     state : function( vTheme, vStates ) {
       return {
-        color : vStates.disabled ? this.color_disabled : null
+        color : vStates.disabled ? vTheme.colorGrayText : null
       }
     }
   },
@@ -2229,7 +2226,6 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
       this.font = new qx.renderer.font.Font( 11, org.eclipse.rap.rwt.DefaultAppearanceTheme.systemFontName );
       this.font.setUnderline( true );
       this.color_default = new qx.renderer.color.ColorObject( "#00007f" );
-      this.color_disabled = org.eclipse.rap.rwt.DefaultAppearanceTheme.colorGrayText;
     },
     initial : function( vTheme ) {
       return {
@@ -2239,7 +2235,7 @@ qx.Proto._appearances = qx.lang.Object.carefullyMergeWith( {
     },
     state : function( vTheme, vStates ) {
       return {
-        color : vStates.disabled ? this.color_disabled : this.color_default
+        color : vStates.disabled ? vTheme.colorGrayText : this.color_default
       }
     }
   }
