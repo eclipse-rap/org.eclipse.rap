@@ -10,15 +10,15 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.rap.jface.dialogs.*;
-import org.eclipse.rap.jface.window.IWindowCallback;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.layout.GridData;
-import org.eclipse.rap.rwt.layout.GridLayout;
-import org.eclipse.rap.rwt.widgets.*;
-import org.eclipse.rap.ui.Activator;
+import org.eclipse.jface.dialogs.*;
+import org.eclipse.jface.window.IWindowCallback;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.Activator;
 
 class DialogsTab extends ExampleTab {
 
@@ -36,14 +36,14 @@ class DialogsTab extends ExampleTab {
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout() );
-    Group group1 = new Group( parent, RWT.NONE );
+    Group group1 = new Group( parent, SWT.NONE );
     group1.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     group1.setText( "JFace Dialogs" );
-    Group group2 = new Group( parent, RWT.NONE );
+    Group group2 = new Group( parent, SWT.NONE );
     group2.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     group2.setText( "Custom Dialogs" );
     // JFace input dialog
-    Button showInputDlgButton = new Button( group1, RWT.PUSH );
+    Button showInputDlgButton = new Button( group1, SWT.PUSH );
     showInputDlgButton.setText( "Input Dialog" );
     showInputDlgButton.setBounds( 20, 30, 90, 25 );
     showInputDlgButton.addSelectionListener( new SelectionAdapter() {
@@ -51,10 +51,10 @@ class DialogsTab extends ExampleTab {
         showInputDialog();
       }
     } );
-    inputDlgResLabel = new Label( group1, RWT.WRAP );
+    inputDlgResLabel = new Label( group1, SWT.WRAP );
     inputDlgResLabel.setText( "Result:" );
     inputDlgResLabel.setBounds( 50, 60, 300, 20 );
-    Button showMessageInfoDlgButton = new Button( group1, RWT.PUSH );
+    Button showMessageInfoDlgButton = new Button( group1, SWT.PUSH );
     showMessageInfoDlgButton.setText( "Info Message" );
     showMessageInfoDlgButton.setBounds( 20, 90, 90, 25 );
     showMessageInfoDlgButton.addSelectionListener( new SelectionAdapter() {
@@ -62,7 +62,7 @@ class DialogsTab extends ExampleTab {
         showMessageDialogInfo();
       }
     } );
-    Button showMessageWarningDlgButton = new Button( group1, RWT.PUSH );
+    Button showMessageWarningDlgButton = new Button( group1, SWT.PUSH );
     showMessageWarningDlgButton.setText( "Warning Dialog" );
     showMessageWarningDlgButton.setBounds( 120, 90, 90, 25 );
     showMessageWarningDlgButton.addSelectionListener( new SelectionAdapter() {
@@ -70,7 +70,7 @@ class DialogsTab extends ExampleTab {
         showMessageDialogWarning();
       }
     } );
-    Button showMessageErrorDlgButton = new Button( group1, RWT.PUSH );
+    Button showMessageErrorDlgButton = new Button( group1, SWT.PUSH );
     showMessageErrorDlgButton.setText( "Error Message" );
     showMessageErrorDlgButton.setBounds( 220, 90, 90, 25 );
     showMessageErrorDlgButton.addSelectionListener( new SelectionAdapter() {
@@ -78,7 +78,7 @@ class DialogsTab extends ExampleTab {
         showMessageDialogError();
       }
     } );
-    Button showMessageQuestionDlgButton = new Button( group1, RWT.PUSH );
+    Button showMessageQuestionDlgButton = new Button( group1, SWT.PUSH );
     showMessageQuestionDlgButton.setText( "Question Dialog" );
     showMessageQuestionDlgButton.setBounds( 20, 120, 90, 25 );
     showMessageQuestionDlgButton.addSelectionListener( new SelectionAdapter() {
@@ -86,7 +86,7 @@ class DialogsTab extends ExampleTab {
         showMessageDialogQuestion();
       }
     } );
-    Button showMessageConfirmDlgButton = new Button( group1, RWT.PUSH );
+    Button showMessageConfirmDlgButton = new Button( group1, SWT.PUSH );
     showMessageConfirmDlgButton.setText( "Confirm Message" );
     showMessageConfirmDlgButton.setBounds( 120, 120, 90, 25 );
     showMessageConfirmDlgButton.addSelectionListener( new SelectionAdapter() {
@@ -94,10 +94,10 @@ class DialogsTab extends ExampleTab {
         showMessageDialogConfirm();
       }
     } );
-    messageDlgResLabel = new Label( group1, RWT.WRAP );
+    messageDlgResLabel = new Label( group1, SWT.WRAP );
     messageDlgResLabel.setText( "Result:" );
     messageDlgResLabel.setBounds( 50, 150, 300, 20 );
-    Button showErrorDlgButton = new Button( group1, RWT.PUSH );
+    Button showErrorDlgButton = new Button( group1, SWT.PUSH );
     showErrorDlgButton.setText( "Error Dialog" );
     showErrorDlgButton.setBounds( 20, 180, 90, 25 );
     showErrorDlgButton.addSelectionListener( new SelectionAdapter() {
@@ -105,10 +105,10 @@ class DialogsTab extends ExampleTab {
         showErrorDialog();
       }
     } );
-    errorDlgResLabel = new Label( group1, RWT.WRAP );
+    errorDlgResLabel = new Label( group1, SWT.WRAP );
     errorDlgResLabel.setText( "Result:" );
     errorDlgResLabel.setBounds( 50, 210, 300, 40 );
-    Button showLoginDlgButton = new Button( group2, RWT.PUSH );
+    Button showLoginDlgButton = new Button( group2, SWT.PUSH );
     showLoginDlgButton.setText( "Login Dialog" );
     showLoginDlgButton.setBounds( 20, 30, 90, 25 );
     showLoginDlgButton.addSelectionListener( new SelectionAdapter() {
@@ -116,7 +116,7 @@ class DialogsTab extends ExampleTab {
         showLoginDialog();
       }
     } );
-    loginDlgResLabel = new Label( group2, RWT.WRAP );
+    loginDlgResLabel = new Label( group2, SWT.WRAP );
     loginDlgResLabel.setText( "Result:" );
     loginDlgResLabel.setBounds( 50, 60, 300, 40 );
   }

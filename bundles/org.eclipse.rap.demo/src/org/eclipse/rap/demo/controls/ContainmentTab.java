@@ -9,11 +9,11 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.layout.FillLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.*;
 
 public class ContainmentTab extends ExampleTab {
 
@@ -57,7 +57,7 @@ public class ContainmentTab extends ExampleTab {
     comp3 = new Composite( comp2, style );
     comp3.setBackground( BG_COLOR_BROWN );
     comp3.setLayout( layout );
-    Button button = new Button( comp3, RWT.PUSH );
+    Button button = new Button( comp3, SWT.PUSH );
     button.setText( "Button" );
     registerControl( comp2 );
   }

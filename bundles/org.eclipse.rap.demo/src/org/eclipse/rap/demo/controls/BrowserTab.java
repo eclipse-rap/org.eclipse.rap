@@ -11,12 +11,12 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.browser.Browser;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 class BrowserTab extends ExampleTab {
 
@@ -50,15 +50,15 @@ class BrowserTab extends ExampleTab {
   }
 
   private void createUrlSelector( final Composite parent ) {
-    Composite composite = new Composite( parent, RWT.NONE );
-    composite.setLayout( new RowLayout( RWT.HORIZONTAL ) );
-    Label label = new Label( composite, RWT.NONE );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    Label label = new Label( composite, SWT.NONE );
     label.setLayoutData( new RowData( 35, 20 ) );
     label.setText( "URL" );
-    final Text text = new Text( composite, RWT.BORDER );
+    final Text text = new Text( composite, SWT.BORDER );
     text.setLayoutData( new RowData( 170, 20 ) );
     text.setText( "http://eclipse.org/rap" );
-    Button button = new Button( composite, RWT.PUSH );
+    Button button = new Button( composite, SWT.PUSH );
     button.setLayoutData( new RowData( 45, 20 ) );
     button.setText( "Go" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -69,15 +69,15 @@ class BrowserTab extends ExampleTab {
   }
 
   private void createHtmlSelector( final Composite parent ) {
-    Composite composite = new Composite( parent, RWT.NONE );
-    composite.setLayout( new RowLayout( RWT.VERTICAL ) );
-    Label label = new Label( composite, RWT.NONE );
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new RowLayout( SWT.VERTICAL ) );
+    Label label = new Label( composite, SWT.NONE );
     label.setLayoutData( new RowData( 50, 18 ) );
     label.setText( "HTML" );
-    final Text text = new Text( composite, RWT.BORDER | RWT.MULTI );
+    final Text text = new Text( composite, SWT.BORDER | SWT.MULTI );
     text.setText( DEFAULT_HTML );
     text.setLayoutData( new RowData( 200, 250 ) );
-    Button button = new Button( composite, RWT.PUSH );
+    Button button = new Button( composite, SWT.PUSH );
     button.setLayoutData( new RowData( 50, 20 ) );
     button.setText( "Go" );
     button.addSelectionListener( new SelectionAdapter() {

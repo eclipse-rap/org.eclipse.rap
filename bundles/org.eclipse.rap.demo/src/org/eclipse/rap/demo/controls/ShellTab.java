@@ -11,11 +11,12 @@ package org.eclipse.rap.demo.controls;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.*;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.*;
 
 public class ShellTab extends ExampleTab {
 
@@ -31,7 +32,7 @@ public class ShellTab extends ExampleTab {
   public ShellTab( final TabFolder folder ) {
     super( folder, "Shell" );
     shells = new ArrayList();
-    setDefaultStyle( RWT.SHELL_TRIM );
+    setDefaultStyle( SWT.SHELL_TRIM );
   }
 
   protected void createStyleControls( ) {
@@ -73,14 +74,14 @@ public class ShellTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite top ) {
-    top.setLayout( new RowLayout( RWT.VERTICAL ) );
+    top.setLayout( new RowLayout( SWT.VERTICAL ) );
     
     if( shellIconImage == null ) {
       ClassLoader classLoader = getClass().getClassLoader();
       shellIconImage = Image.find( ICON_IMAGE_PATH, classLoader );
     }
     
-    Button openShellButton = new Button( top, RWT.PUSH );
+    Button openShellButton = new Button( top, SWT.PUSH );
     openShellButton.setText( "Open Shell" );
     openShellButton.setLayoutData( new RowData( 150, 25 ) );
     openShellButton.addSelectionListener( new SelectionAdapter() {
@@ -88,7 +89,7 @@ public class ShellTab extends ExampleTab {
         createShell();
       }} );
 
-    Button showAllButton = new Button( top, RWT.PUSH );
+    Button showAllButton = new Button( top, SWT.PUSH );
     showAllButton.setText( "Show All Shells" );
     showAllButton.setLayoutData( new RowData( 150, 25 ) );
     showAllButton.addSelectionListener( new SelectionAdapter() {
@@ -97,7 +98,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
 
-    Button hideAllButton = new Button( top, RWT.PUSH );
+    Button hideAllButton = new Button( top, SWT.PUSH );
     hideAllButton.setText( "Hide All Shells" );
     hideAllButton.setLayoutData( new RowData( 150, 25 ) );
     hideAllButton.addSelectionListener( new SelectionAdapter() {
@@ -106,7 +107,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
     
-    Button enableAllButton = new Button( top, RWT.PUSH );
+    Button enableAllButton = new Button( top, SWT.PUSH );
     enableAllButton.setText( "Enable All Shells" );
     enableAllButton.setLayoutData( new RowData( 150, 25 ) );
     enableAllButton.addSelectionListener( new SelectionAdapter() {
@@ -115,7 +116,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
 
-    Button disableAllButton = new Button( top, RWT.PUSH );
+    Button disableAllButton = new Button( top, SWT.PUSH );
     disableAllButton.setText( "Disable All Shells" );
     disableAllButton.setLayoutData( new RowData( 150, 25 ) );
     disableAllButton.addSelectionListener( new SelectionAdapter() {
@@ -124,7 +125,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
     
-    Button closeAllButton = new Button( top, RWT.PUSH );
+    Button closeAllButton = new Button( top, SWT.PUSH );
     closeAllButton.setText( "Close All Shells" );
     closeAllButton.setLayoutData( new RowData( 150, 25 ) );
     closeAllButton.addSelectionListener( new SelectionAdapter() {
@@ -165,8 +166,8 @@ public class ShellTab extends ExampleTab {
     if( createMenu ) {
       createMenuBar( shell );
     }
-    final Composite comp1 = new Composite( shell, RWT.NONE );
-    final Composite comp2 = new Composite( shell, RWT.NONE );
+    final Composite comp1 = new Composite( shell, SWT.NONE );
+    final Composite comp2 = new Composite( shell, SWT.NONE );
     comp2.moveAbove( comp1 );
     if( showClientArea ) {
       comp1.setBackground( Color.getColor( 200, 0, 0 ) );
@@ -175,7 +176,7 @@ public class ShellTab extends ExampleTab {
     Rectangle ca = shell.getClientArea();
     comp1.setBounds( ca.x, ca.y, ca.width, ca.height );
     comp2.setBounds( ca.x + 1, ca.y + 1, ca.width - 2, ca.height - 2 );
-    Button closeButton = new Button( shell, RWT.PUSH );
+    Button closeButton = new Button( shell, SWT.PUSH );
     closeButton.setText( "Close This Window" );
     closeButton.moveAbove( comp2 );
     int centerX = (ca.width - ca.x) / 2;
@@ -209,7 +210,7 @@ public class ShellTab extends ExampleTab {
     layout.marginRight = 0;
     layout.marginBottom = 0;
     shell.setLayout( layout );
-    Button closeButton = new Button( shell, RWT.PUSH );
+    Button closeButton = new Button( shell, SWT.PUSH );
     closeButton.setText( "Close This Window" );
     closeButton.setBackground( Color.getColor( 25, 55, 55 ) );
     closeButton.setLayoutData( new RowData( 140, 40 ) );
@@ -222,67 +223,67 @@ public class ShellTab extends ExampleTab {
   
   private void createMenuBar( final Shell shell ) {
     // menu bar
-    Menu menuBar = new Menu( shell, RWT.BAR );
+    Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
-    MenuItem fileItem = new MenuItem( menuBar, RWT.CASCADE );
+    MenuItem fileItem = new MenuItem( menuBar, SWT.CASCADE );
     fileItem.setText( "File" );
-    MenuItem editItem = new MenuItem( menuBar, RWT.CASCADE );
+    MenuItem editItem = new MenuItem( menuBar, SWT.CASCADE );
     editItem.setText( "Edit" );
-    MenuItem searchItem = new MenuItem( menuBar, RWT.CASCADE );
+    MenuItem searchItem = new MenuItem( menuBar, SWT.CASCADE );
     searchItem.setText( "Search" );
-    MenuItem disabledItem = new MenuItem( menuBar, RWT.CASCADE );
+    MenuItem disabledItem = new MenuItem( menuBar, SWT.CASCADE );
     disabledItem.setText( "Disabled" );
     disabledItem.setEnabled( false );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 6" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 7" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 8" );
-    new MenuItem( menuBar, RWT.CASCADE ).setText( "Item 9" );
+    new MenuItem( menuBar, SWT.CASCADE ).setText( "Item 6" );
+    new MenuItem( menuBar, SWT.CASCADE ).setText( "Item 7" );
+    new MenuItem( menuBar, SWT.CASCADE ).setText( "Item 8" );
+    new MenuItem( menuBar, SWT.CASCADE ).setText( "Item 9" );
     // file menu
-    Menu fileMenu = new Menu( shell, RWT.DROP_DOWN );
+    Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
     fileItem.setMenu( fileMenu );
-    MenuItem newItem = new MenuItem( fileMenu, RWT.PUSH );
+    MenuItem newItem = new MenuItem( fileMenu, SWT.PUSH );
     newItem.setText( "New" );
     newItem.setImage( Image.find( "resources/newfile_wiz.gif" ) );
-    new MenuItem( fileMenu, RWT.PUSH ).setText( "Open" );
-    new MenuItem( fileMenu, RWT.PUSH ).setText( "Close" );
+    new MenuItem( fileMenu, SWT.PUSH ).setText( "Open" );
+    new MenuItem( fileMenu, SWT.PUSH ).setText( "Close" );
     // edit menu
-    Menu editMenu = new Menu( shell, RWT.DROP_DOWN );
+    Menu editMenu = new Menu( shell, SWT.DROP_DOWN );
     editItem.setMenu( editMenu );
     MenuItem item;
-    new MenuItem( editMenu, RWT.PUSH ).setText( "Copy" );
-    new MenuItem( editMenu, RWT.PUSH ).setText( "Paste" );
-    new MenuItem( editMenu, RWT.SEPARATOR );
+    new MenuItem( editMenu, SWT.PUSH ).setText( "Copy" );
+    new MenuItem( editMenu, SWT.PUSH ).setText( "Paste" );
+    new MenuItem( editMenu, SWT.SEPARATOR );
     // cascade menu
-    item = new MenuItem( editMenu, RWT.CASCADE );
+    item = new MenuItem( editMenu, SWT.CASCADE );
     item.setText( "Insert" );
-    Menu cascadeMenu = new Menu( shell, RWT.DROP_DOWN );
+    Menu cascadeMenu = new Menu( shell, SWT.DROP_DOWN );
     item.setMenu( cascadeMenu );
-    new MenuItem( cascadeMenu, RWT.PUSH ).setText( "Date" );
-    new MenuItem( cascadeMenu, RWT.PUSH ).setText( "Line Break" );
+    new MenuItem( cascadeMenu, SWT.PUSH ).setText( "Date" );
+    new MenuItem( cascadeMenu, SWT.PUSH ).setText( "Line Break" );
     // search 
-    Menu searchMenu = new Menu( shell, RWT.DROP_DOWN );
+    Menu searchMenu = new Menu( shell, SWT.DROP_DOWN );
     searchItem.setMenu( searchMenu );
-    new MenuItem( searchMenu, RWT.PUSH ).setText( "Enabled" );
-    item = new MenuItem( searchMenu, RWT.PUSH );
+    new MenuItem( searchMenu, SWT.PUSH ).setText( "Enabled" );
+    item = new MenuItem( searchMenu, SWT.PUSH );
     item.setText( "Disabled" );
     item.setEnabled( false );
-    new MenuItem( searchMenu, RWT.PUSH ).setText( "Push" );
-    new MenuItem( searchMenu, RWT.SEPARATOR );
-    item = new MenuItem( searchMenu, RWT.CHECK );
+    new MenuItem( searchMenu, SWT.PUSH ).setText( "Push" );
+    new MenuItem( searchMenu, SWT.SEPARATOR );
+    item = new MenuItem( searchMenu, SWT.CHECK );
     item.setText( "Check" );
-    item = new MenuItem( searchMenu, RWT.RADIO );
+    item = new MenuItem( searchMenu, SWT.RADIO );
     item.setText( "Radio 1" );
-    item = new MenuItem( searchMenu, RWT.RADIO );
+    item = new MenuItem( searchMenu, SWT.RADIO );
     item.setText( "Radio 2" );
-    item = new MenuItem( searchMenu, RWT.RADIO );
+    item = new MenuItem( searchMenu, SWT.RADIO );
     item.setText( "Radio 3" );
     item.setEnabled( false );
     // disabled
-    Menu disabledMenu = new Menu( shell, RWT.DROP_DOWN );
+    Menu disabledMenu = new Menu( shell, SWT.DROP_DOWN );
     disabledMenu.setEnabled( false );
     disabledItem.setMenu( disabledMenu );
-    new MenuItem( disabledMenu, RWT.PUSH ).setText( "Import" );
-    new MenuItem( disabledMenu, RWT.PUSH ).setText( "Export" );
+    new MenuItem( disabledMenu, SWT.PUSH ).setText( "Import" );
+    new MenuItem( disabledMenu, SWT.PUSH ).setText( "Export" );
   }
   
   private Point getNextShellLocation() {

@@ -11,11 +11,12 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.*;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 final class SimpleFontDialog extends Dialog {
 
@@ -30,7 +31,7 @@ final class SimpleFontDialog extends Dialog {
   private Runnable callback;
   
   public SimpleFontDialog( final Shell parent ) {
-    this( parent, RWT.DIALOG_TRIM | RWT.APPLICATION_MODAL );
+    this( parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL );
   }
   
   // TODO [rst] When shell close can be prevented, this dialog chould be
@@ -70,23 +71,23 @@ final class SimpleFontDialog extends Dialog {
   private void createControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     SelectionAdapter dummySelectionListener = new SelectionAdapter() {};
-    Composite composite = new Composite( parent, RWT.NONE );
+    Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
-    Label lblName = new Label( composite, RWT.NONE );
+    Label lblName = new Label( composite, SWT.NONE );
     lblName.setText( "Name" );
-    txtName = new Text( composite, RWT.BORDER );
-    txtName.setLayoutData( new GridData( 130, RWT.DEFAULT ) );
-    Label lblSize = new Label( composite, RWT.NONE );
+    txtName = new Text( composite, SWT.BORDER );
+    txtName.setLayoutData( new GridData( 130, SWT.DEFAULT ) );
+    Label lblSize = new Label( composite, SWT.NONE );
     lblSize.setText( "Size" );
-    txtSize = new Text( composite, RWT.BORDER );
-    txtSize.setLayoutData( new GridData( 50, RWT.DEFAULT ) );
-    btnBold = new Button( composite, RWT.CHECK );
+    txtSize = new Text( composite, SWT.BORDER );
+    txtSize.setLayoutData( new GridData( 50, SWT.DEFAULT ) );
+    btnBold = new Button( composite, SWT.CHECK );
     btnBold.addSelectionListener( dummySelectionListener );
     btnBold.setText( "Bold" );
-    btnItalic = new Button( composite, RWT.CHECK );
+    btnItalic = new Button( composite, SWT.CHECK );
     btnItalic.addSelectionListener( dummySelectionListener );
     btnItalic.setText( "Italic" );
-    Button btnApply = new Button( composite, RWT.PUSH );
+    Button btnApply = new Button( composite, SWT.PUSH );
     GridData gridData = new GridData( 80, 23 );
     gridData.horizontalSpan = 2;
     gridData.horizontalAlignment = GridData.END;
@@ -102,8 +103,8 @@ final class SimpleFontDialog extends Dialog {
   private void updateFontControls() {
     txtName.setText( font.getName() );
     txtSize.setText( String.valueOf( font.getSize() ) );
-    btnBold.setSelection( ( font.getStyle() & RWT.BOLD ) != 0 );
-    btnItalic.setSelection( ( font.getStyle() & RWT.ITALIC ) != 0 );
+    btnBold.setSelection( ( font.getStyle() & SWT.BOLD ) != 0 );
+    btnItalic.setSelection( ( font.getStyle() & SWT.ITALIC ) != 0 );
   }
 
   private void applyPressed() {
@@ -117,12 +118,12 @@ final class SimpleFontDialog extends Dialog {
     } catch( NumberFormatException e ) {
       size = font.getSize();
     }
-    int style = RWT.NORMAL;
+    int style = SWT.NORMAL;
     if( btnBold.getSelection() ) {
-      style |= RWT.BOLD;
+      style |= SWT.BOLD;
     }
     if( btnItalic.getSelection() ) {
-      style |= RWT.ITALIC;
+      style |= SWT.ITALIC;
     }
     setFont( Font.getFont( name, size, style ) );
     if( callback != null ) {

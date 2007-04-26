@@ -11,9 +11,9 @@
 
 package org.eclipse.rap.demo;
 
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.widgets.Display;
-import org.eclipse.rap.ui.PlatformUI;
+import org.eclipse.swt.lifecycle.IEntryPoint;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 
 public class DemoWorkbench implements IEntryPoint {

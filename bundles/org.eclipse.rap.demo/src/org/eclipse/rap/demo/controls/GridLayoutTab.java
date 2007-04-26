@@ -8,11 +8,13 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
 
 class GridLayoutTab extends ExampleTab {
 
@@ -45,7 +47,7 @@ class GridLayoutTab extends ExampleTab {
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
 
-    Composite comp = new Composite( parent, RWT.NONE );
+    Composite comp = new Composite( parent, SWT.NONE );
     comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
     GridLayout gridLayout = new GridLayout();
     gridLayout.numColumns = 3;
@@ -54,15 +56,15 @@ class GridLayoutTab extends ExampleTab {
     gridLayout.makeColumnsEqualWidth = propEqualWidth;
     comp.setLayout( gridLayout );
 
-    Button button1 = new Button(comp, RWT.PUSH);
+    Button button1 = new Button(comp, SWT.PUSH);
     button1.setText("B1");
     GridData gridData = new GridData();
     gridData.verticalAlignment = GridData.FILL;
     button1.setLayoutData(gridData);
 
-    new Button(comp, RWT.PUSH).setText( "Wide Button 2" );
+    new Button(comp, SWT.PUSH).setText( "Wide Button 2" );
 
-    Button button3 = new Button( comp, RWT.PUSH );
+    Button button3 = new Button( comp, SWT.PUSH );
     button3.setText("Button 3");
     gridData = new GridData();
     gridData.verticalAlignment = GridData.FILL;
@@ -72,13 +74,13 @@ class GridLayoutTab extends ExampleTab {
     gridData.grabExcessHorizontalSpace = true;
     button3.setLayoutData(gridData);
 
-    Button button4 = new Button( comp, RWT.PUSH);
+    Button button4 = new Button( comp, SWT.PUSH);
     button4.setText("B4");
     gridData = new GridData();
     gridData.verticalAlignment = GridData.FILL;
     button4.setLayoutData(gridData);
 
-    new Button( comp, RWT.PUSH).setText("Button 5");    
+    new Button( comp, SWT.PUSH).setText("Button 5");    
 
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );

@@ -9,11 +9,12 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.layout.FillLayout;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.widgets.*;
 
 public class TabFolderTab extends ExampleTab {
 
@@ -37,7 +38,7 @@ public class TabFolderTab extends ExampleTab {
     tabRadios = new Button[ MAX_ITEMS ];
     for( int i = 0; i < MAX_ITEMS; i++ ) {
       String title = "Select Tab " + ( i + 1 );
-      tabRadios[ i ] = createPropertyButton( title, RWT.RADIO );
+      tabRadios[ i ] = createPropertyButton( title, SWT.RADIO );
       final int j = i;
       tabRadios[ i ].addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent event ) {
@@ -57,7 +58,7 @@ public class TabFolderTab extends ExampleTab {
     for( int i = 0; i < 3; i++ ) {
       tabItems[ i ] = new TabItem( folder, style );
       tabItems[ i ].setText( "Tab " + ( i + 1 ) );
-      Text content = new Text( folder, RWT.WRAP | RWT.MULTI );
+      Text content = new Text( folder, SWT.WRAP | SWT.MULTI );
       content.setText( "Lorem ipsum dolor sit amet, consectetur adipisicing "
         + "elit, sed do eiusmod tempor incididunt ut labore et "
         + "dolore magna aliqua." );

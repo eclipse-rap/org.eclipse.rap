@@ -11,9 +11,9 @@
 
 package org.eclipse.rap.demo;
 
-import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.ui.*;
-import org.eclipse.rap.ui.entrypoint.*;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.*;
+import org.eclipse.ui.entrypoint.*;
 
 
 public class DemoWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {

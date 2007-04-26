@@ -8,14 +8,15 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.custom.StackLayout;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.graphics.Font;
-import org.eclipse.rap.rwt.layout.GridData;
-import org.eclipse.rap.rwt.layout.GridLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
 
 class StackLayoutTab extends ExampleTab {
 
@@ -39,7 +40,7 @@ class StackLayoutTab extends ExampleTab {
         createNew();
       }
     } );
-    Button switchButton = createPropertyButton( "Next", RWT.PUSH );
+    Button switchButton = createPropertyButton( "Next", SWT.PUSH );
     switchButton.setLocation( 5, 220 );
     switchButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -53,7 +54,7 @@ class StackLayoutTab extends ExampleTab {
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
     
-    comp = new Composite( parent, RWT.NONE );
+    comp = new Composite( parent, SWT.NONE );
     comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
     stackLayout = new StackLayout();
     stackLayout.marginWidth = 3;
@@ -61,9 +62,9 @@ class StackLayoutTab extends ExampleTab {
     comp.setLayout( stackLayout );
     bArray = new Button[ COUNT ];
     for( int i = 0; i < COUNT; i++ ) {
-      Button button = new Button( comp, RWT.PUSH );
+      Button button = new Button( comp, SWT.PUSH );
       button.setText( "Control " + ( i+1 ) );
-      button.setFont( Font.getFont( "Serif", 24, RWT.BOLD ) );
+      button.setFont( Font.getFont( "Serif", 24, SWT.BOLD ) );
       bArray[ i ] = button;
     }
     stackLayout.topControl = bArray[ 0 ];

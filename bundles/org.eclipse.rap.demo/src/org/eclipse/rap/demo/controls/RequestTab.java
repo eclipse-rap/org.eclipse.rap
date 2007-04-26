@@ -9,13 +9,13 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.jface.dialogs.MessageDialog;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.layout.GridData;
-import org.eclipse.rap.rwt.layout.GridLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
 
 public class RequestTab extends ExampleTab {
 
@@ -28,7 +28,7 @@ public class RequestTab extends ExampleTab {
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 4, false ) );
-    Label lblInfo = new Label( parent, RWT.WRAP );
+    Label lblInfo = new Label( parent, SWT.WRAP );
     String msg 
       = "Simulate a long running server-side task. You should see the mouse " 
       + "cursor change after a short delay.";
@@ -36,13 +36,13 @@ public class RequestTab extends ExampleTab {
     GridData gridData = new GridData();
     gridData.horizontalSpan = 4;
     lblInfo.setLayoutData( gridData );
-    Label lblProcessingTime = new Label( parent, RWT.NONE );
+    Label lblProcessingTime = new Label( parent, SWT.NONE );
     lblProcessingTime.setText( "Processing time" );
-    final Text txtProcessingTime = new Text( parent, RWT.BORDER );
+    final Text txtProcessingTime = new Text( parent, SWT.BORDER );
     txtProcessingTime.setText( "5000" );
-    Label lblMS = new Label( parent, RWT.NONE );
+    Label lblMS = new Label( parent, SWT.NONE );
     lblMS.setText( "ms" );
-    Button btnRun = new Button( parent, RWT.PUSH );
+    Button btnRun = new Button( parent, SWT.PUSH );
     btnRun.setText( "Run" );
     btnRun.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {

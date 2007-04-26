@@ -11,12 +11,13 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.jface.dialogs.Dialog;
-import org.eclipse.rap.jface.dialogs.IDialogConstants;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.layout.GridData;
-import org.eclipse.rap.rwt.layout.GridLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
+
 
 public class LoginDialog extends Dialog {
 
@@ -53,7 +54,7 @@ public class LoginDialog extends Dialog {
     composite.setLayout( gridLayout );
     
     // message label
-    mesgLabel = new Label( composite, RWT.NONE );
+    mesgLabel = new Label( composite, SWT.NONE );
     GridData data = new GridData();
     data.horizontalAlignment = GridData.CENTER;
     data.verticalAlignment = GridData.CENTER;
@@ -66,14 +67,14 @@ public class LoginDialog extends Dialog {
     }
 
     // user label and input field
-    Label userLabel = new Label( composite, RWT.NONE );
+    Label userLabel = new Label( composite, SWT.NONE );
     userLabel.setText( "Username:" );
     data = new GridData();
     data.widthHint = 60;
     data.heightHint = 20;
     data.verticalAlignment = GridData.CENTER;
     userLabel.setLayoutData( data );
-    userText = new Text( composite, RWT.BORDER );
+    userText = new Text( composite, SWT.BORDER );
     data = new GridData( GridData.FILL_HORIZONTAL );
     data.heightHint = 20;
     userText.setLayoutData( data );
@@ -83,13 +84,13 @@ public class LoginDialog extends Dialog {
     userText.setFocus();
     
     // password label and input field
-    Label passLabel = new Label( composite, RWT.NONE );
+    Label passLabel = new Label( composite, SWT.NONE );
     passLabel.setText( "Password:" );
     data = new GridData();
     data.widthHint = 60;
     data.heightHint = 20;
     data.verticalAlignment = GridData.CENTER;
-    passText = new Text( composite, RWT.BORDER | RWT.PASSWORD );
+    passText = new Text( composite, SWT.BORDER | SWT.PASSWORD );
     passLabel.setLayoutData( data );
     data = new GridData( GridData.FILL_HORIZONTAL );
     data.heightHint = 20;

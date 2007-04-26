@@ -13,11 +13,11 @@ package org.eclipse.rap.demo;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.rap.jface.viewers.*;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.widgets.*;
-import org.eclipse.rap.ui.part.ViewPart;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.part.ViewPart;
 
 
 public class DemoTableViewPart extends ViewPart {
@@ -61,7 +61,7 @@ public class DemoTableViewPart extends ViewPart {
   }
   
   public void createPartControl( final Composite parent ) {
-    viewer = new TableViewer( parent, RWT.NONE );
+    viewer = new TableViewer( parent, SWT.NONE );
     viewer.setContentProvider( new ViewContentProvider() );
     viewer.setLabelProvider( new ViewLabelProvider() );
     final Table table = viewer.getTable();
@@ -78,7 +78,7 @@ public class DemoTableViewPart extends ViewPart {
   private String[] initColumnProperties( final Table table ) {
     String[] result = new String[ COLUMNS ];
     for( int i = 0; i < COLUMNS; i++ ) {
-      TableColumn tableColumn = new TableColumn( table, RWT.NONE );
+      TableColumn tableColumn = new TableColumn( table, SWT.NONE );
       result[ i ] = "Column" + i ;
       tableColumn.setText( result[ i ] );
       if( i == 2 ) {

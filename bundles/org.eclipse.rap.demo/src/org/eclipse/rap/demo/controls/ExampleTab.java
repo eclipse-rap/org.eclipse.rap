@@ -12,12 +12,14 @@ package org.eclipse.rap.demo.controls;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.custom.SashForm;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.*;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 abstract class ExampleTab {
   
@@ -40,7 +42,7 @@ abstract class ExampleTab {
   private SimpleFontDialog fontChooser;
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
-  private int defaultStyle = RWT.NONE;
+  private int defaultStyle = SWT.NONE;
   
   public static final Color BG_COLOR_GREEN = Color.getColor( 154, 205, 50 );
   public static final Color BG_COLOR_BLUE = Color.getColor( 105, 89, 205 );
@@ -52,7 +54,7 @@ abstract class ExampleTab {
   public ExampleTab( final TabFolder parent, final String title ) {
     folder = parent;
     controls = new ArrayList();
-    TabItem item = new TabItem( parent, RWT.NONE );
+    TabItem item = new TabItem( parent, SWT.NONE );
     item.setText( title );
     Control sashForm = createSashForm();
     item.setControl( sashForm );
@@ -88,11 +90,11 @@ abstract class ExampleTab {
   }
 
   private Control createSashForm() {
-    SashForm vertSashForm = new SashForm( folder, RWT.VERTICAL );
-    SashForm horSashForm = new SashForm( vertSashForm, RWT.HORIZONTAL );
-    Composite leftComp = new Composite( horSashForm, RWT.NONE );
-    Composite rightComp = new Composite( horSashForm, RWT.NONE );
-    Composite footComp = new Composite( vertSashForm, RWT.NONE );
+    SashForm vertSashForm = new SashForm( folder, SWT.VERTICAL );
+    SashForm horSashForm = new SashForm( vertSashForm, SWT.HORIZONTAL );
+    Composite leftComp = new Composite( horSashForm, SWT.NONE );
+    Composite rightComp = new Composite( horSashForm, SWT.NONE );
+    Composite footComp = new Composite( vertSashForm, SWT.NONE );
     createLeft( leftComp );
     createRight( rightComp );
     createFoot( footComp );
@@ -103,23 +105,23 @@ abstract class ExampleTab {
   
   private void createLeft( final Composite parent ) {
     parent.setLayout( new FillLayout() );
-    Group exmplGroup = new Group( parent, RWT.NONE );
+    Group exmplGroup = new Group( parent, SWT.NONE );
     exmplGroup.setLayout( new FillLayout() );
-    exmplComp = new Composite( exmplGroup, RWT.NONE );
+    exmplComp = new Composite( exmplGroup, SWT.NONE );
   }
   
   private void createRight( final Composite parent ) {
     parent.setLayout( new FillLayout() );
-    Group styleGroup = new Group( parent, RWT.NONE );
+    Group styleGroup = new Group( parent, SWT.NONE );
     styleGroup.setText( "Styles and Parameters" );
     styleGroup.setLayout( new FillLayout() );
-    styleComp = new Composite( styleGroup, RWT.NONE );
-    styleComp.setLayout( new RowLayout( RWT.VERTICAL ) );
+    styleComp = new Composite( styleGroup, SWT.NONE );
+    styleComp.setLayout( new RowLayout( SWT.VERTICAL ) );
   }
   
   private void createFoot( final Composite parent ) {
     parent.setLayout( new FillLayout() );
-    text = new Text( parent, RWT.BORDER | RWT.READ_ONLY | RWT.MULTI );
+    text = new Text( parent, SWT.BORDER | SWT.READ_ONLY | SWT.MULTI );
     text.setText( "---" );
   }
   
@@ -154,23 +156,23 @@ abstract class ExampleTab {
   
   protected Button createStyleButton( final String fieldName,
                                       final boolean checked ) {
-    int style = RWT.NONE;
+    int style = SWT.NONE;
     try {
-      Field field = RWT.class.getField( fieldName );
+      Field field = SWT.class.getField( fieldName );
       style = field.getInt( null );
     } catch( NoSuchFieldException e ) {
     } catch( IllegalAccessException e ) {
-      System.err.println( "Cannot access style flag: RWT." + fieldName );
+      System.err.println( "Cannot access style flag: SWT." + fieldName );
     }
-    Button button = createStyleButton( "RWT." + fieldName, style, checked );
-    button.setEnabled( style != RWT.NONE );
+    Button button = createStyleButton( "SWT." + fieldName, style, checked );
+    button.setEnabled( style != SWT.NONE );
     return button;
   }
   
   private Button createStyleButton( final String name,
                                     final int style,
                                     final boolean checked ) {
-    Button button = new Button( styleComp, RWT.CHECK );
+    Button button = new Button( styleComp, SWT.CHECK );
     button.setText( name );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -185,7 +187,7 @@ abstract class ExampleTab {
   }
 
   protected Button createPropertyButton( final String text ) {
-    return createPropertyButton( text, RWT.CHECK );
+    return createPropertyButton( text, SWT.CHECK );
   }
   
   protected Button createPropertyButton( final String text, final int style ) {
@@ -202,7 +204,7 @@ abstract class ExampleTab {
    * @return the created checkbutton
    */
   protected Button createVisibilityButton( ) {
-    final Button button = new Button( styleComp, RWT.CHECK );
+    final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Visble" );
     button.setSelection( visible ); 
     button.setLayoutData( new RowData( 100, 20 ) );
@@ -221,7 +223,7 @@ abstract class ExampleTab {
    * @return the created checkbutton.
    */
   protected Button createEnablementButton( ) {
-    final Button button = new Button( styleComp, RWT.CHECK );
+    final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Enabled" );
     button.setSelection( enabled );
     button.setLayoutData( new RowData( 100, 20 ) );
@@ -242,7 +244,7 @@ abstract class ExampleTab {
    */
   protected Button createFgColorButton( ) {
     fgColorChooser = new ColorChooser();
-    final Button button = new Button( styleComp, RWT.PUSH );
+    final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Fg Color" );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
@@ -263,7 +265,7 @@ abstract class ExampleTab {
    */
   protected Button createBgColorButton( ) {
     bgColorChooser = new ColorChooser();
-    final Button button = new Button( styleComp, RWT.PUSH );
+    final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Bg Color" );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
@@ -276,7 +278,7 @@ abstract class ExampleTab {
   }
   
   protected Button createFontChooser() {
-    final Button button = new Button( styleComp, RWT.PUSH );
+    final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Font" );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
@@ -326,7 +328,7 @@ abstract class ExampleTab {
   }
 
   protected int getStyle() {
-    int result = RWT.NONE;
+    int result = SWT.NONE;
     Control[] ctrls = styleComp.getChildren();
     if( ctrls.length == 0 ) {
       result = defaultStyle;

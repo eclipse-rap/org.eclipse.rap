@@ -9,11 +9,11 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.*;
 
 public class LabelTab extends ExampleTab {
 
@@ -67,7 +67,7 @@ public class LabelTab extends ExampleTab {
     registerControl( label1 );
     registerControl( label2 );
     
-    Button text1Button = new Button( parent, RWT.PUSH );
+    Button text1Button = new Button( parent, SWT.PUSH );
     text1Button.setText( "Text 1" );
     text1Button.setBounds( 10, 50, 80, 20 );
     text1Button.addSelectionListener( new SelectionAdapter() {
@@ -77,7 +77,7 @@ public class LabelTab extends ExampleTab {
         updateLabel( label1 );
       }
     } );
-    Button text2Button = new Button( parent, RWT.PUSH );
+    Button text2Button = new Button( parent, SWT.PUSH );
     text2Button.setText( "Text 2" );
     text2Button.setBounds( 10, 75, 80, 20 );
     text2Button.addSelectionListener( new SelectionAdapter() {
@@ -87,7 +87,7 @@ public class LabelTab extends ExampleTab {
         updateLabel( label1 );
       }
     } );
-    Button image1Button = new Button( parent, RWT.PUSH );
+    Button image1Button = new Button( parent, SWT.PUSH );
     image1Button.setText( "Image 1" );
     image1Button.setBounds( 10, 100, 80, 20 );
     image1Button.addSelectionListener( new SelectionAdapter() {
@@ -96,7 +96,7 @@ public class LabelTab extends ExampleTab {
         updateLabel( label1 );
       }
     } );
-    Button image2Button = new Button( parent, RWT.PUSH );
+    Button image2Button = new Button( parent, SWT.PUSH );
     image2Button.setText( "Image 2" );
     image2Button.setBounds( 10, 125, 80, 20 );
     image2Button.addSelectionListener( new SelectionAdapter() {

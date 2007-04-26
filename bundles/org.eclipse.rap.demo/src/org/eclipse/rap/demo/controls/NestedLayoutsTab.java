@@ -8,12 +8,12 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 class NestedLayoutsTab extends ExampleTab {
 
@@ -35,7 +35,7 @@ class NestedLayoutsTab extends ExampleTab {
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout() );
-    Composite comp = new Composite( parent, RWT.NONE );
+    Composite comp = new Composite( parent, SWT.NONE );
     comp.setBackground( BG_COLOR_BROWN );    
     comp.setLayout( new GridLayout() );
     if( propPrefSize ) {
@@ -45,32 +45,32 @@ class NestedLayoutsTab extends ExampleTab {
     }
 
     // Image label
-    Label imageLabel = new Label( comp, RWT.NONE );
+    Label imageLabel = new Label( comp, SWT.NONE );
     imageLabel.setImage( Image.find( "icons/lockkey.gif",
                                 this.getClass().getClassLoader() ) );
     imageLabel.setLayoutData( new GridData( 32, 32 ) );
     
     // Login data
-    Group loginGroup = new Group( comp, RWT.NONE );
+    Group loginGroup = new Group( comp, SWT.NONE );
     loginGroup.setText( "Login Data" );
     loginGroup.setLayout( new GridLayout( 2, false ) );
-    new Label( loginGroup, RWT.NONE ).setText( "Username:" );
-    Text userText = new Text( loginGroup, RWT.SINGLE | RWT.BORDER );
+    new Label( loginGroup, SWT.NONE ).setText( "Username:" );
+    Text userText = new Text( loginGroup, SWT.SINGLE | SWT.BORDER );
     userText.setText( "john" );
     userText.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-    new Label( loginGroup, RWT.NONE ).setText( "Password:" );
-    Text passText = new Text( loginGroup, RWT.PASSWORD | RWT.BORDER );
+    new Label( loginGroup, SWT.NONE ).setText( "Password:" );
+    Text passText = new Text( loginGroup, SWT.PASSWORD | SWT.BORDER );
     passText.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     
     // Button bar
-    Composite buttons = new Composite( comp, RWT.NONE );
-    RowLayout buttonLayout = new RowLayout( RWT.HORIZONTAL);
+    Composite buttons = new Composite( comp, SWT.NONE );
+    RowLayout buttonLayout = new RowLayout( SWT.HORIZONTAL);
     buttonLayout.marginRight = 0;
     buttons.setLayout( buttonLayout );
     buttons.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_END ) );
-    Button loginButton = new Button( buttons, RWT.PUSH );
+    Button loginButton = new Button( buttons, SWT.PUSH );
     loginButton.setText( "Login" );
-    Button cancelButton = new Button( buttons, RWT.PUSH );
+    Button cancelButton = new Button( buttons, SWT.PUSH );
     cancelButton.setText( "Cancel" );
 
     comp.layout();

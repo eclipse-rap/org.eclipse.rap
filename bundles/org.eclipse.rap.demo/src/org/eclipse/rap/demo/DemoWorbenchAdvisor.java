@@ -11,7 +11,7 @@
 
 package org.eclipse.rap.demo;
 
-import org.eclipse.rap.ui.entrypoint.*;
+import org.eclipse.ui.entrypoint.*;
 
 
 public class DemoWorbenchAdvisor extends WorkbenchAdvisor {

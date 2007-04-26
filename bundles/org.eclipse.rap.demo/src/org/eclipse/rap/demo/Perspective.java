@@ -1,6 +1,6 @@
 package org.eclipse.rap.demo;
 
-import org.eclipse.rap.ui.*;
+import org.eclipse.ui.*;
 
 public class Perspective implements IPerspectiveFactory {
 

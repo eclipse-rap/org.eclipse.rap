@@ -9,13 +9,14 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.jface.dialogs.MessageDialog;
-import org.eclipse.rap.jface.window.IWindowCallback;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.IWindowCallback;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 public class ButtonTab extends ExampleTab {
 
@@ -46,7 +47,7 @@ public class ButtonTab extends ExampleTab {
     createStyleButton( "RIGHT" );
     createVisibilityButton();
     createEnablementButton();
-    final Button imageButton = new Button( styleComp, RWT.CHECK );
+    final Button imageButton = new Button( styleComp, SWT.CHECK );
     imageButton.setText( "Push Button with Image" );
     imageButton.setLayoutData( new RowData( 160, 20 ) );
     imageButton.addSelectionListener( new SelectionAdapter() {
@@ -58,7 +59,7 @@ public class ButtonTab extends ExampleTab {
     createFgColorButton();
 //    createBgColorButton();
     createFontChooser();
-    Button button = createPropertyButton( "Toggle Button", RWT.PUSH );
+    Button button = createPropertyButton( "Toggle Button", SWT.PUSH );
     button.setToolTipText( "Remote control the toggle button" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
@@ -68,20 +69,20 @@ public class ButtonTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout( RWT.VERTICAL ) );
+    parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle();
-    pushButton = new Button( parent, style | RWT.PUSH );
+    pushButton = new Button( parent, style | SWT.PUSH );
     pushButton.setText( "Push" );
     updateButtonImage( pushButton );
-    toggleButton = new Button( parent, style | RWT.TOGGLE );
+    toggleButton = new Button( parent, style | SWT.TOGGLE );
     toggleButton.setText( "Toggle" );
-    checkButton = new Button( parent, style | RWT.CHECK );
+    checkButton = new Button( parent, style | SWT.CHECK );
     checkButton.setText( "Check" );
-    radioButton1 = new Button( parent, style | RWT.RADIO );
+    radioButton1 = new Button( parent, style | SWT.RADIO );
     radioButton1.setText( "Radio 1" );
-    radioButton2 = new Button( parent, style | RWT.RADIO );
+    radioButton2 = new Button( parent, style | SWT.RADIO );
     radioButton2.setText( "Radio 2" );
-    radioButton3 = new Button( parent, style | RWT.RADIO );
+    radioButton3 = new Button( parent, style | SWT.RADIO );
     radioButton3.setText( "Radio 3" );
     registerControl( pushButton );
     registerControl( toggleButton );
@@ -90,14 +91,14 @@ public class ButtonTab extends ExampleTab {
     registerControl( radioButton2 );
     registerControl( radioButton3 );
     // default button
-    final Group group = new Group( parent, RWT.NONE );
+    final Group group = new Group( parent, SWT.NONE );
     group.setLayoutData( new RowData( 370, 60 ) );
     group.setText( "Default Button" );
     group.setLayout( new GridLayout( 3, false ) );
-    Label label = new Label( group, RWT.NONE );
+    Label label = new Label( group, SWT.NONE );
     label.setText( "Enter some text and press Return" );
-    final Text text = new Text( group, RWT.BORDER | RWT.SINGLE );
-    defaultButton = new Button( group, style | RWT.PUSH );
+    final Text text = new Text( group, SWT.BORDER | SWT.SINGLE );
+    defaultButton = new Button( group, style | SWT.PUSH );
     defaultButton.setText( "Default Button" );
     defaultButton.getShell().setDefaultButton( defaultButton );
     defaultButton.addSelectionListener( new SelectionAdapter() {
@@ -118,7 +119,7 @@ public class ButtonTab extends ExampleTab {
     // Set a context menu
     Menu menu = new Menu( parent );
     for( int i = 0; i < 5; i++ ) {
-      MenuItem item = new MenuItem( menu, RWT.PUSH );
+      MenuItem item = new MenuItem( menu, SWT.PUSH );
       item.setText( "Item " + ( i + 1 ) );
     }
     parent.setMenu( menu );

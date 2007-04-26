@@ -9,10 +9,10 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.custom.SashForm;
-import org.eclipse.rap.rwt.layout.FillLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.*;
 
 public class SashFormTab extends ExampleTab {
 
@@ -33,11 +33,11 @@ public class SashFormTab extends ExampleTab {
     top.setLayout( new FillLayout() );
     int style = getStyle();
     SashForm sashForm = new SashForm( top, style );
-    Text text = new Text( sashForm, RWT.MULTI | RWT.WRAP );
+    Text text = new Text( sashForm, SWT.MULTI | SWT.WRAP );
     text.setText(    "Lorem ipsum dolor sit amet, consectetur adipisicing "
                    + "elit, sed do eiusmod tempor incididunt ut labore et "
                    + "dolore magna aliqua." );
-    List list = new List( sashForm, RWT.MULTI );
+    List list = new List( sashForm, SWT.MULTI );
     String[] items = new String[ 8 ];
     for( int i = 0; i < items.length; i++ ) {
       items[ i ] = "Item " + ( i + 1 );      

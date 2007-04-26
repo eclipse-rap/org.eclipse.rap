@@ -9,14 +9,14 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.custom.CTabFolder;
-import org.eclipse.rap.rwt.custom.CTabItem;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.layout.FillLayout;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.widgets.*;
 
 public class CTabFolderTab extends ExampleTab {
 
@@ -34,32 +34,32 @@ public class CTabFolderTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
-    Button rbSelectTab0 = createPropertyButton( "Select Tab 1", RWT.RADIO );
+    Button rbSelectTab0 = createPropertyButton( "Select Tab 1", SWT.RADIO );
     rbSelectTab0.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         folder.setSelection( 0 );
       }
     } );
     rbSelectTab0.setSelection( true );
-    Button rbSelectTab1 = createPropertyButton( "Select Tab 2", RWT.RADIO );
+    Button rbSelectTab1 = createPropertyButton( "Select Tab 2", SWT.RADIO );
     rbSelectTab1.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         folder.setSelection( 1 );
       }
     } );
-    Button rbSelectTab2 = createPropertyButton( "Select Tab 3", RWT.RADIO );
+    Button rbSelectTab2 = createPropertyButton( "Select Tab 3", SWT.RADIO );
     rbSelectTab2.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         folder.setSelection( 2 );
       }
     } );
-    final Button cbMax = createPropertyButton( "Maximize visible", RWT.CHECK );
+    final Button cbMax = createPropertyButton( "Maximize visible", SWT.CHECK );
     rbSelectTab2.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         folder.setMaximizeVisible( cbMax.getSelection() );
       }
     } );
-    final Button cbMin = createPropertyButton( "Minimize visible", RWT.CHECK );
+    final Button cbMin = createPropertyButton( "Minimize visible", SWT.CHECK );
     rbSelectTab2.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         folder.setMinimizeVisible( cbMin.getSelection() );
@@ -75,7 +75,7 @@ public class CTabFolderTab extends ExampleTab {
     for( int i = 0; i < 3; i++ ) {
       CTabItem item = new CTabItem( folder, style );
       item.setText( "Tab " + ( i + 1 ) );
-      Text content = new Text( folder, RWT.WRAP | RWT.MULTI );
+      Text content = new Text( folder, SWT.WRAP | SWT.MULTI );
       content.setText(   "Lorem ipsum dolor sit amet, consectetur adipisicing "
                        + "elit, sed do eiusmod tempor incididunt ut labore et "
                        + "dolore magna aliqua." );

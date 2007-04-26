@@ -9,11 +9,11 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.*;
 
 public class CoolBarTab extends ExampleTab {
 
@@ -34,7 +34,7 @@ public class CoolBarTab extends ExampleTab {
   protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout() );
     int style = getStyle();
-    int toolBarStyle = (style & (RWT.HORIZONTAL | RWT.VERTICAL));
+    int toolBarStyle = (style & (SWT.HORIZONTAL | SWT.VERTICAL));
  
     ClassLoader loader = getClass().getClassLoader();
     image1 = Image.find( "resources/newfile_wiz.gif", loader );
@@ -66,17 +66,17 @@ public class CoolBarTab extends ExampleTab {
   private ToolBar createToolBar( final Composite parent, final int style ) {
     ToolBar toolBar = new ToolBar( parent, style );
     //toolBar.setLayoutData( new RowData( 500, 50) );
-    ToolItem item1 = new ToolItem (toolBar, RWT.PUSH);
+    ToolItem item1 = new ToolItem (toolBar, SWT.PUSH);
     item1.setText( "new" );
     item1.setImage( image1 );
-    ToolItem item2 = new ToolItem( toolBar, RWT.PUSH );
+    ToolItem item2 = new ToolItem( toolBar, SWT.PUSH );
     item2.setText( "open" );
     item2.setImage( image2 );
-    ToolItem item3 = new ToolItem( toolBar, RWT.PUSH );
+    ToolItem item3 = new ToolItem( toolBar, SWT.PUSH );
     item3.setText( "save as" );
     item3.setImage( image3 );
-    new ToolItem (toolBar, RWT.SEPARATOR);
-    ToolItem item4 = new ToolItem( toolBar, RWT.PUSH );
+    new ToolItem (toolBar, SWT.SEPARATOR);
+    ToolItem item4 = new ToolItem( toolBar, SWT.PUSH );
     item4.setText( "print" );
     item4.setImage( image4 );
     //toolBar.pack();
@@ -84,10 +84,10 @@ public class CoolBarTab extends ExampleTab {
   }
 
 //  private CoolItem createItem( CoolBar coolBar, int style ) {
-//    int toolBarStyle = (style & (RWT.HORIZONTAL | RWT.VERTICAL));
+//    int toolBarStyle = (style & (SWT.HORIZONTAL | SWT.VERTICAL));
 //    ToolBar toolBar = createToolBar( coolBar, toolBarStyle );
 //    Point tbSize = toolBar.getSize();
-//    CoolItem coolItem = new CoolItem( coolBar, RWT.NONE );
+//    CoolItem coolItem = new CoolItem( coolBar, SWT.NONE );
 //    coolItem.setControl( toolBar );
 //    Point tbPrefSize = toolBar.computeSize( tbSize.x, tbSize.y, false );
 //    coolItem.setPreferredSize( tbPrefSize );

@@ -9,20 +9,20 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.layout.FillLayout;
-import org.eclipse.rap.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.lifecycle.IEntryPoint;
+import org.eclipse.swt.widgets.*;
 
 public class ControlsDemo implements IEntryPoint {
 
   public Display createUI() {
     Display display = new Display();
-    Shell shell = new Shell( display, RWT.SHELL_TRIM );
+    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     shell.setBounds( 10, 10, 850, 600 );
     createContent( shell );
-    shell.setText( "RWT Controls Demo" );
+    shell.setText( "SWT Controls Demo" );
     ClassLoader classLoader = getClass().getClassLoader();
     Image image = Image.find( "resources/shell.gif", classLoader );
     shell.setImage( image  );
@@ -34,7 +34,7 @@ public class ControlsDemo implements IEntryPoint {
   private void createContent( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     // TODO [rh] replace with CTabFolder
-    final TabFolder topFolder = new TabFolder( parent, RWT.NONE );
+    final TabFolder topFolder = new TabFolder( parent, SWT.NONE );
     ExampleTab tab = new ButtonTab( topFolder );
     tab.createContents();
 //    tab = new RequestTab( topFolder );

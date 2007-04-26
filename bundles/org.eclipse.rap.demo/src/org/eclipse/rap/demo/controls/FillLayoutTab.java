@@ -8,11 +8,12 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 class FillLayoutTab extends ExampleTab {
 
@@ -40,7 +41,7 @@ class FillLayoutTab extends ExampleTab {
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
     
-    Composite comp = new Composite( parent, RWT.NONE );
+    Composite comp = new Composite( parent, SWT.NONE );
     comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
     
     FillLayout fillLayout = new FillLayout( style );
@@ -48,11 +49,11 @@ class FillLayoutTab extends ExampleTab {
     fillLayout.marginHeight = 3;
     fillLayout.spacing = 3;
     comp.setLayout( fillLayout );
-    Button b1 = new Button( comp, RWT.PUSH );
+    Button b1 = new Button( comp, SWT.PUSH );
     b1.setText( "Button 1" );
-    Button b2 = new Button( comp, RWT.PUSH );
+    Button b2 = new Button( comp, SWT.PUSH );
     b2.setText( "Button 2" );
-    Button b3 = new Button( comp, RWT.PUSH );
+    Button b3 = new Button( comp, SWT.PUSH );
     b3.setText( "Button 3" );
 
     if( propPrefSize ) {

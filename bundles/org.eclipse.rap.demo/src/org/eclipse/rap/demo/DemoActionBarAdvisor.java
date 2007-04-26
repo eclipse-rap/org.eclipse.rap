@@ -8,17 +8,17 @@
  ******************************************************************************/
 package org.eclipse.rap.demo;
 
-import org.eclipse.rap.jface.action.*;
-import org.eclipse.rap.jface.dialogs.MessageDialog;
-import org.eclipse.rap.jface.resource.ImageDescriptor;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.ui.IWorkbenchActionConstants;
-import org.eclipse.rap.ui.IWorkbenchWindow;
-import org.eclipse.rap.ui.actions.ActionFactory;
-import org.eclipse.rap.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.rap.ui.entrypoint.ActionBarAdvisor;
-import org.eclipse.rap.ui.entrypoint.IActionBarConfigurer;
-import org.eclipse.rap.ui.plugin.AbstractUIPlugin;
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.eclipse.ui.entrypoint.ActionBarAdvisor;
+import org.eclipse.ui.entrypoint.IActionBarConfigurer;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class DemoActionBarAdvisor extends ActionBarAdvisor {
 
@@ -72,7 +72,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
   }
 
   private void createToolBar( ICoolBarManager coolBar, final String name ) {
-    IToolBarManager toolbar = new ToolBarManager( RWT.FLAT | RWT.RIGHT );
+    IToolBarManager toolbar = new ToolBarManager( SWT.FLAT | SWT.RIGHT );
     coolBar.add( new ToolBarContributionItem( toolbar, name ) );
     toolbar.add( exitAction );
     toolbar.add( aboutAction );

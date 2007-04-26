@@ -11,13 +11,13 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Font;
-import org.eclipse.rap.rwt.layout.GridData;
-import org.eclipse.rap.rwt.layout.GridLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
 
 
 final class FontChooser {
@@ -57,35 +57,35 @@ final class FontChooser {
     SelectionAdapter dummySelectionListener = new SelectionAdapter() {
     };
     // Due to missing Group, use a labeled composite to 'group' the controls
-    Composite composite = new Composite( parent, RWT.BORDER );
-    Label lblFont = new Label( composite, RWT.NONE );
+    Composite composite = new Composite( parent, SWT.BORDER );
+    Label lblFont = new Label( composite, SWT.NONE );
     gridData = new GridData( 80, 18 );
     gridData.horizontalSpan = 2;
     lblFont.setLayoutData( gridData );
     lblFont.setFont( boldSystemFont() );
     lblFont.setText( "Font" );
     composite.setLayout( new GridLayout( 2, false ) );
-    Label lblName = new Label( composite, RWT.NONE );
+    Label lblName = new Label( composite, SWT.NONE );
     lblName.setLayoutData( new GridData( 80, 18 ) );
     lblName.setText( "Name" );
-    txtName = new Text( composite, RWT.BORDER );
+    txtName = new Text( composite, SWT.BORDER );
     txtName.setLayoutData( new GridData( 130, 18 ) );
-    Label lblSize = new Label( composite, RWT.NONE );
+    Label lblSize = new Label( composite, SWT.NONE );
     lblSize.setLayoutData( new GridData( 80, 18 ) );
     lblSize.setText( "Size" );
-    txtSize = new Text( composite, RWT.BORDER );
+    txtSize = new Text( composite, SWT.BORDER );
     txtSize.setLayoutData( new GridData( 90, 18 ) );
-    btnBold = new Button( composite, RWT.CHECK );
+    btnBold = new Button( composite, SWT.CHECK );
     btnBold.addSelectionListener( dummySelectionListener );
     gridData = new GridData( 80, 18 );
     btnBold.setLayoutData( gridData );
     btnBold.setText( "Bold" );
-    btnItalic = new Button( composite, RWT.CHECK );
+    btnItalic = new Button( composite, SWT.CHECK );
     btnItalic.addSelectionListener( dummySelectionListener );
     gridData = new GridData( 80, 18 );
     btnItalic.setLayoutData( gridData );
     btnItalic.setText( "Italic" );
-    Button btnApply = new Button( composite, RWT.PUSH );
+    Button btnApply = new Button( composite, SWT.PUSH );
     gridData = new GridData( 80, 23 );
     gridData.horizontalSpan = 2;
     btnApply.setLayoutData( gridData );
@@ -102,12 +102,12 @@ final class FontChooser {
         } catch( NumberFormatException e ) {
           size = font.getSize();
         }
-        int style = RWT.NORMAL;
+        int style = SWT.NORMAL;
         if( btnBold.getSelection() ) {
-          style |= RWT.BOLD;
+          style |= SWT.BOLD;
         }
         if( btnItalic.getSelection() ) {
-          style |= RWT.ITALIC;
+          style |= SWT.ITALIC;
         }
         setFont( Font.getFont( name, size, style ) );
         if( changeRunnable != null ) {
@@ -120,14 +120,14 @@ final class FontChooser {
   
   private static Font boldSystemFont() {
     Font font = Display.getCurrent().getSystemFont();
-    Font result = Font.getFont( font.getName(), font.getSize(), RWT.BOLD );
+    Font result = Font.getFont( font.getName(), font.getSize(), SWT.BOLD );
     return result;
   }
 
   private void updateFontControls() {
     txtName.setText( font.getName() );
     txtSize.setText( String.valueOf( font.getSize() ) );
-    btnBold.setSelection( ( font.getStyle() & RWT.BOLD ) != 0 );
-    btnItalic.setSelection( ( font.getStyle() & RWT.ITALIC ) != 0 );
+    btnBold.setSelection( ( font.getStyle() & SWT.BOLD ) != 0 );
+    btnItalic.setSelection( ( font.getStyle() & SWT.ITALIC ) != 0 );
   }
 }

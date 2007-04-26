@@ -1,0 +1,231 @@
+/*******************************************************************************
+ * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
+ ******************************************************************************/
+
+package org.eclipse.swt.widgets;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
+
+public class Menu extends Widget {
+
+  private final Shell parent;
+  private final ItemHolder itemHolder;
+  private int x;
+  private int y;
+  private boolean visible = false;
+  MenuItem cascade;
+
+  public Menu( final Menu menu ) {
+    this( menu.getParent(), SWT.DROP_DOWN );
+  }
+
+  public Menu( final MenuItem parent ) {
+    this( parent.getParent().getParent(), SWT.DROP_DOWN );
+  }
+
+  public Menu( final Control parent ) {
+    this( parent.getShell(), SWT.POP_UP );
+  }
+
+  public Menu( final Shell parent, final int style ) {
+    super( parent, checkStyle( style ) );
+    this.parent = parent;
+    itemHolder = new ItemHolder( MenuItem.class );
+    MenuHolder.addMenu( parent, this );
+  }
+
+  public final Display getDisplay() {
+    checkWidget();
+    return parent.getDisplay();
+  }
+
+  public final Shell getParent() {
+    checkWidget();
+    return parent;
+  }
+
+  public MenuItem getParentItem() {
+    checkWidget ();
+    return cascade;
+  }
+  
+  public Menu getParentMenu() {
+    checkWidget();
+    if( cascade != null ) {
+      return cascade.getParent();
+    }
+    return null;
+  }
+  
+  public Object getAdapter( final Class adapter ) {
+    Object result;
+    if( adapter == IItemHolderAdapter.class ) {
+      result = itemHolder;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
+  
+  public void setLocation( final int x, final int y ) {
+    checkWidget();
+    if( ( style & ( SWT.BAR | SWT.DROP_DOWN ) ) == 0 ) {
+      this.x = x;
+      this.y = y;
+    }
+  }
+  
+  public void setLocation( final Point location ) {
+    checkWidget();
+    if( location == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    setLocation( location.x, location.y );
+  }
+  
+  public Rectangle getBounds() {
+    checkWidget();
+    // TODO: [fappel] how to calculate width and height?
+    return new Rectangle( x, y, 0, 0 );
+  }
+  
+  public Shell getShell() {
+    checkWidget();
+    return parent;
+  }
+
+  ///////////
+  // Visible
+  
+  public void setVisible( final boolean visible ) {
+    checkWidget();
+    if( ( style & ( SWT.BAR | SWT.DROP_DOWN ) ) == 0 ) {
+      this.visible = visible;
+    }
+  }
+  
+  public boolean getVisible() {
+    checkWidget();
+    boolean result;
+    if( ( style & SWT.BAR ) != 0 ) {
+      result = ( this == parent.getMenuBar() );
+    } else if( ( style & SWT.POP_UP ) != 0 ) {
+      result = visible;
+    } else {
+      // we don't know which menus are currently visible on the client
+      result = false;
+    }
+    return result;
+  }
+  
+  public boolean isVisible (){
+    checkWidget();
+    return getVisible();
+  }
+  
+  ///////////
+  // Enabled
+  
+  public void setEnabled( final boolean enabled ) {
+    checkWidget();
+    state &= ~DISABLED;
+    if( !enabled ) {
+      state |= DISABLED;
+    }
+  }
+
+  public boolean getEnabled() {
+    checkWidget();
+    return ( state & DISABLED ) == 0;
+  }
+
+  public boolean isEnabled() {
+    checkWidget();
+    Menu parentMenu = getParentMenu();
+    if( parentMenu == null ) {
+      return getEnabled();
+    }
+    return getEnabled() && parentMenu.isEnabled();
+  }
+  
+  ////////////////////////////
+  // Management of menu items
+  
+  public int getItemCount() {
+    checkWidget();
+    return itemHolder.size();
+  }
+
+  public MenuItem[] getItems() {
+    checkWidget();
+    return (org.eclipse.swt.widgets.MenuItem[] )itemHolder.getItems();
+  }
+
+  public MenuItem getItem( final int index ) {
+    checkWidget();
+    return ( MenuItem )itemHolder.getItem( index );
+  }
+  
+  public int indexOf( final MenuItem menuItem ) {
+    checkWidget();
+    if( menuItem == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( menuItem.isDisposed() ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    return itemHolder.indexOf( menuItem );
+  }
+  
+  ////////////////////
+  // Widget overrides
+  
+  // TODO [rh] disposal of Menu and its items not yet completely implemented
+  protected final void releaseChildren() {
+    MenuItem[] menuItems = (org.eclipse.swt.widgets.MenuItem[] )ItemHolder.getItems( this );
+    for( int i = 0; i < menuItems.length; i++ ) {
+      menuItems[ i ].dispose();
+    }
+  }
+
+  protected final void releaseParent() {
+    // do nothing
+  }
+
+  protected final void releaseWidget() {
+    MenuHolder.removeMenu( parent, this );
+  }
+
+  ///////////////////////////////////////
+  // Listener registration/deregistration
+  
+  public void addMenuListener( final MenuListener listener ) {
+    checkWidget();
+    MenuEvent.addListener( this, listener );
+  }
+
+  public void removeMenuListener( final MenuListener listener ) {
+    checkWidget();
+    MenuEvent.removeListener( this, listener );
+  }
+
+  //////////////////
+  // Helping methods
+  
+  private static int checkStyle( final int style ) {
+    return checkBits( style, SWT.POP_UP, SWT.BAR, SWT.DROP_DOWN, 0, 0, 0 );
+  }
+}

@@ -11,14 +11,14 @@
 
 package org.eclipse.rap.demo;
 
-import org.eclipse.rap.jface.viewers.ISelection;
-import org.eclipse.rap.jface.viewers.IStructuredSelection;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.layout.GridData;
-import org.eclipse.rap.rwt.layout.GridLayout;
-import org.eclipse.rap.rwt.widgets.*;
-import org.eclipse.rap.ui.*;
-import org.eclipse.rap.ui.part.ViewPart;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
+import org.eclipse.ui.part.ViewPart;
 
 
 public class DemoSelectionViewPart extends ViewPart {
@@ -30,8 +30,8 @@ public class DemoSelectionViewPart extends ViewPart {
     Label label = new Label( parent, 0 );
     label.setText( "Selection Log" );
     label.setLayoutData( new GridData( 80, 15 ) );
-    list = new List( parent, RWT.FLAT | RWT.H_SCROLL | RWT.V_SCROLL );
-    list.setLayoutData( new GridData( RWT.FILL, RWT.FILL, true, true ) );
+    list = new List( parent, SWT.FLAT | SWT.H_SCROLL | SWT.V_SCROLL );
+    list.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     createSelectionListener();
   }
   

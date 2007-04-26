@@ -9,13 +9,13 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.rwt.layout.RowLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.*;
 
 public class ToolBarTab extends ExampleTab {
 
@@ -44,39 +44,39 @@ public class ToolBarTab extends ExampleTab {
     Image imageSearch = Image.find( "resources/search_src.gif", loader );
     toolBar = new ToolBar( parent, getStyle() );
     registerControl( toolBar );
-    ToolItem item1 = new ToolItem( toolBar, RWT.PUSH );
+    ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );
     item1.setText( "new" );
     item1.setImage( imageNewFile );
-    ToolItem item2 = new ToolItem( toolBar, RWT.PUSH );
+    ToolItem item2 = new ToolItem( toolBar, SWT.PUSH );
     item2.setText( "open" );
     item2.setImage( imagenewFolder );
-    new ToolItem( toolBar, RWT.SEPARATOR );
-    dropDownItem = new ToolItem( toolBar, RWT.DROP_DOWN );
+    new ToolItem( toolBar, SWT.SEPARATOR );
+    dropDownItem = new ToolItem( toolBar, SWT.DROP_DOWN );
     dropDownItem.setText( "select" );
     dropDownItem.setImage( imageNewProj );
-    new ToolItem( toolBar, RWT.SEPARATOR );
+    new ToolItem( toolBar, SWT.SEPARATOR );
 
     // Text item
-    ToolItem itemText = new ToolItem( toolBar, RWT.SEPARATOR );
-    Text text = new Text( toolBar, RWT.BORDER );
+    ToolItem itemText = new ToolItem( toolBar, SWT.SEPARATOR );
+    Text text = new Text( toolBar, SWT.BORDER );
     text.setText( "A Text Field" );
     itemText.setControl( text );
     itemText.setWidth( 100 );
 
-    ToolItem item4 = new ToolItem( toolBar, RWT.CHECK );
+    ToolItem item4 = new ToolItem( toolBar, SWT.CHECK );
     item4.setImage( imageSearch );
-    ToolItem item5 = new ToolItem( toolBar, RWT.RADIO );
+    ToolItem item5 = new ToolItem( toolBar, SWT.RADIO );
     item5.setImage( imageSearch );
-    ToolItem item6 = new ToolItem( toolBar, RWT.RADIO );
+    ToolItem item6 = new ToolItem( toolBar, SWT.RADIO );
     item6.setImage( imageSearch );
-    final Menu dropDownMenu = new Menu( toolBar.getShell(), RWT.POP_UP );
+    final Menu dropDownMenu = new Menu( toolBar.getShell(), SWT.POP_UP );
     for( int i = 0; i < 5; i++ ) {
-      MenuItem item = new MenuItem( dropDownMenu, RWT.PUSH );
+      MenuItem item = new MenuItem( dropDownMenu, SWT.PUSH );
       item.setText( "Item " + count++ );
     }
     dropDownItem.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        if( event.detail == RWT.ARROW ) {
+        if( event.detail == SWT.ARROW ) {
           Point point = new Point( event.x, event.y );
           dropDownMenu.setLocation( point );
           dropDownMenu.setVisible( true );

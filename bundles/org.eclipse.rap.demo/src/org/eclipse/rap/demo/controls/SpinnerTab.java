@@ -9,10 +9,11 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
 
 public class SpinnerTab extends ExampleTab {
 
@@ -34,17 +35,17 @@ public class SpinnerTab extends ExampleTab {
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 2, false ) );
-    Label label = new Label( parent, RWT.NONE );
+    Label label = new Label( parent, SWT.NONE );
     label.setText( "Simple Spinner" );
     spinner = new Spinner( parent, getStyle() );
     spinner.setLayoutData( new GridData( 60, 22 ) );
-    label = new Label( parent, RWT.NONE );
+    label = new Label( parent, SWT.NONE );
     label.setText( "Spinner with ModifyListener" );
     modifySpinner = new Spinner( parent, getStyle() );
     modifySpinner.setLayoutData( new GridData( 60, 22 ) );
-    label = new Label( parent, RWT.NONE );
+    label = new Label( parent, SWT.NONE );
     label.setText( "Current value" );
-    final Label lblSpinnerValue = new Label( parent, RWT.NONE );
+    final Label lblSpinnerValue = new Label( parent, SWT.NONE );
     modifySpinner.addModifyListener( new ModifyListener() {
       public void modifyText( final ModifyEvent event ) {
         String value = String.valueOf( modifySpinner.getSelection() );
@@ -68,7 +69,7 @@ public class SpinnerTab extends ExampleTab {
                                                pageInc );
     String sel = String.valueOf( spinner.getSelection() );
     final Text txtSelection = createLabeledText( parent, "Selection", sel );
-    Button btnApply = new Button( parent, RWT.PUSH );
+    Button btnApply = new Button( parent, SWT.PUSH );
     btnApply.setText( "Apply" );
     btnApply.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -85,12 +86,12 @@ public class SpinnerTab extends ExampleTab {
                                   final String text, 
                                   final String value ) 
   {
-    Composite container = new Composite( parent, RWT.NONE );
+    Composite container = new Composite( parent, SWT.NONE );
     container.setLayout( new GridLayout( 2, false ) );
-    Label label = new Label( container, RWT.NONE );
+    Label label = new Label( container, SWT.NONE );
     label.setLayoutData( new GridData( 100, 20 ) );
     label.setText( text );
-    Text result = new Text( container, RWT.BORDER );
+    Text result = new Text( container, SWT.BORDER );
     result.setLayoutData( new GridData( 50, 20 ) );
     result.setText( value );
     return result;

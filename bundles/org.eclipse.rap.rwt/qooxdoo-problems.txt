@@ -153,7 +153,7 @@ that's right?
      
 42.) Opening a window on top of another, maximized window, raises an error in
      IE: Setting property "active" to "true" failed with exception: TypeError
-     ... ( workaround in org.eclipse.rap.rwt.widgets.Shell._onChangeActive() )
+     ... ( workaround in org.eclipse.swt.widgets.Shell._onChangeActive() )
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=345
 
 43.) Adding items to an existing menu breaks the menu's layout once the menu has

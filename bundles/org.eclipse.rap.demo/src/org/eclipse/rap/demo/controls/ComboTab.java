@@ -9,13 +9,13 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.jface.dialogs.MessageDialog;
-import org.eclipse.rap.jface.viewers.*;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
 
 public class ComboTab extends ExampleTab {
   
@@ -36,11 +36,11 @@ public class ComboTab extends ExampleTab {
       = new String[] { "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" };
     // empty combo
     Combo combo1 = new Combo( parent, style );
-    new Label( parent, RWT.NONE ).setText( "Empty Combo box" );
+    new Label( parent, SWT.NONE ).setText( "Empty Combo box" );
     // filled combo
     Combo combo2 = new Combo( parent, style );
     combo2.setItems( items );
-    new Label( parent, RWT.NONE ).setText( "Filled Combo box" );
+    new Label( parent, SWT.NONE ).setText( "Filled Combo box" );
     // filled combo with preselection
     final Combo combo3 = new Combo( parent, style );
     combo3.setItems( items );
@@ -52,7 +52,7 @@ public class ComboTab extends ExampleTab {
         MessageDialog.openInformation( parent.getShell(), "Info", message, null );
       }
     } );
-    new Label( parent, RWT.NONE ).setText( "Filled Combo box with preselection" );
+    new Label( parent, SWT.NONE ).setText( "Filled Combo box with preselection" );
     // combo with comboviewer
     Combo combo4 = new Combo( parent, style );
     ComboViewer viewer = new ComboViewer( combo4 );
@@ -72,7 +72,7 @@ public class ComboTab extends ExampleTab {
         String message = "Selected item: " + event.getSelection().toString();
         MessageDialog.openInformation( parent.getShell(), "Info", message, null );
       }} );
-    new Label( parent, RWT.NONE ).setText( "Combo box with JFace ComboViewer" );
+    new Label( parent, SWT.NONE ).setText( "Combo box with JFace ComboViewer" );
     registerControl( combo1 );
     registerControl( combo2 );
     registerControl( combo3 );

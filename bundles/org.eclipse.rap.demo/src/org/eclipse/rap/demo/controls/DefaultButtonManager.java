@@ -12,8 +12,8 @@
 package org.eclipse.rap.demo.controls;
 
 import java.util.*;
-import org.eclipse.rap.rwt.widgets.Button;
-import org.eclipse.rap.rwt.widgets.Shell;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Shell;
 import com.w4t.SessionSingletonBase;
 
 

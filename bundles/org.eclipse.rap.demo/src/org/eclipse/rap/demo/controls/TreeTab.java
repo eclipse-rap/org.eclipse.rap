@@ -10,14 +10,14 @@
 package org.eclipse.rap.demo.controls;
 
 import java.text.MessageFormat;
-import org.eclipse.rap.jface.dialogs.MessageDialog;
-import org.eclipse.rap.jface.window.IWindowCallback;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.IWindowCallback;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.*;
 
 public class TreeTab extends ExampleTab {
 
@@ -38,22 +38,22 @@ public class TreeTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout( RWT.VERTICAL ) );
+    parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     int style = getStyle();
     tree = new Tree( parent, style );
     tree.setLayoutData( new RowData( 200, 200 ) );
     for( int i = 0; i < 4; i++ ) {
-      TreeItem item = new TreeItem( tree, RWT.NONE );
+      TreeItem item = new TreeItem( tree, SWT.NONE );
       item.setText( "Node_" + ( i + 1 ) );
       if( i < 3 ) {
-        TreeItem subitem = new TreeItem( item, RWT.NONE );
+        TreeItem subitem = new TreeItem( item, SWT.NONE );
         subitem.setText( "Subnode_" + ( i + 1 ) );
       }
     }
-    final Label lblTreeEvent = new Label( parent, RWT.NONE );
+    final Label lblTreeEvent = new Label( parent, SWT.NONE );
     lblTreeEvent.setLayoutData( new RowData( 200, 22 ) );
     Menu treeMenu = new Menu( tree );
-    MenuItem treeMenuItem = new MenuItem( treeMenu, RWT.PUSH );
+    MenuItem treeMenuItem = new MenuItem( treeMenu, SWT.PUSH );
     treeMenuItem.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         IWindowCallback windowCallback = new IWindowCallback() {
@@ -86,17 +86,17 @@ public class TreeTab extends ExampleTab {
     tree.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         String msg = "Selected: ";
-        if( ( getStyle() & RWT.CHECK ) != 0 ) {
+        if( ( getStyle() & SWT.CHECK ) != 0 ) {
           TreeItem item = ( TreeItem )event.item;
           msg += ( item.getChecked() ? "[x] " : "[ ] " );
         }
         msg += event.item.getText();
         switch( event.detail ) {
-          case RWT.NONE:
-            msg += ", detail: RWT.NONE";
+          case SWT.NONE:
+            msg += ", detail: SWT.NONE";
             break;
-          case RWT.CHECK:
-            msg += ", detail: RWT.CHECK";
+          case SWT.CHECK:
+            msg += ", detail: SWT.CHECK";
             break;
         }
         lblTreeEvent.setText( msg );
@@ -111,14 +111,14 @@ public class TreeTab extends ExampleTab {
   }
 
   private void createAddNodeButton() {
-    Button button = new Button( styleComp, RWT.PUSH );
+    Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Add child item" );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         if( tree.getSelectionCount() > 0 ) {
           TreeItem selection = tree.getSelection()[ 0 ];
-          TreeItem treeItem = new TreeItem( selection, RWT.NONE );
+          TreeItem treeItem = new TreeItem( selection, SWT.NONE );
           Object[] args = new Object[] { 
             new Integer( selection.getItemCount() ), 
             selection.getText()

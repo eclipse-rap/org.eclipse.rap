@@ -9,11 +9,11 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.layout.FillLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.*;
 
 public class TableTab extends ExampleTab {
 
@@ -53,7 +53,7 @@ public class TableTab extends ExampleTab {
       }
     } );
     for( int i = 0; i < COLUMNS; i++ ) {
-      final TableColumn column = new TableColumn( table, RWT.NONE );
+      final TableColumn column = new TableColumn( table, SWT.NONE );
       column.setText( "Col " + i );
       column.setWidth( i == 0 ? 50 : 100 );
       column.addSelectionListener( new SelectionAdapter() {
@@ -65,7 +65,7 @@ public class TableTab extends ExampleTab {
     for( int i = 0; i < INITIAL_ITEMS; i++ ) {
       addItem();
 //      TableItem item = addItem();
-//      Text text = new Text( table, RWT.NONE );
+//      Text text = new Text( table, SWT.NONE );
 //      text.setBounds( item.getBounds() );
 //      text.setText( "on top of a table" );
 //      text.moveAbove( table );
@@ -78,7 +78,7 @@ public class TableTab extends ExampleTab {
   }
 
   private void createHeaderVisibleButton() {
-    final Button button = new Button( styleComp, RWT.CHECK );
+    final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "headerVisible" );
     button.setSelection( headerVisible );
     button.addSelectionListener( new SelectionAdapter() {
@@ -90,7 +90,7 @@ public class TableTab extends ExampleTab {
   }
 
   private void createLinesVisibleButton() {
-    final Button button = new Button( styleComp, RWT.CHECK );
+    final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "linesVisible" );
     button.setSelection( linesVisible );
     button.addSelectionListener( new SelectionAdapter() {
@@ -102,7 +102,7 @@ public class TableTab extends ExampleTab {
   }
 
   private TableItem addItem() {
-    TableItem result = new TableItem( table, RWT.NONE );
+    TableItem result = new TableItem( table, SWT.NONE );
     for( int i = 0; i < COLUMNS; i++ ) {
       int itemCount = result.getParent().getItemCount() - 1;
       result.setText( i, "Item" + itemCount + "-" + i );
@@ -111,7 +111,7 @@ public class TableTab extends ExampleTab {
   }
 
   private void createAddItemsButton() {
-    Button button = new Button( styleComp, RWT.PUSH );
+    Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Add " + ADD_ITEMS + " Items" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -123,7 +123,7 @@ public class TableTab extends ExampleTab {
   }
   
   private void createSelectItemButton() {
-    Button button = new Button( styleComp, RWT.PUSH );
+    Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Select first Item" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -135,7 +135,7 @@ public class TableTab extends ExampleTab {
   }
 
   private void crateDisposeFirstColumnButton() {
-    Button button = new Button( styleComp, RWT.PUSH );
+    Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Dispose first Column" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -147,7 +147,7 @@ public class TableTab extends ExampleTab {
   }
 
   private void createDisposeSelectionButton() {
-    Button button = new Button( styleComp, RWT.PUSH );
+    Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Dispose Selected Item" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -160,7 +160,7 @@ public class TableTab extends ExampleTab {
   }
   
   private void createTopIndexButton() {
-    Button button = new Button( styleComp, RWT.PUSH );
+    Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Set topIndex = 100" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -169,7 +169,7 @@ public class TableTab extends ExampleTab {
     } );
   }
   private void createShowSelectionButton() {
-    Button button = new Button( styleComp, RWT.PUSH );
+    Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "showSelection" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

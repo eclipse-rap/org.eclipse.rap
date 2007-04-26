@@ -12,10 +12,10 @@
 package org.eclipse.rap.demo;
 
 import java.util.ArrayList;
-import org.eclipse.rap.jface.viewers.*;
-import org.eclipse.rap.rwt.widgets.Composite;
-import org.eclipse.rap.ui.IViewPart;
-import org.eclipse.rap.ui.part.ViewPart;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.part.ViewPart;
 
 
 public class DemoTreeViewPart extends ViewPart {

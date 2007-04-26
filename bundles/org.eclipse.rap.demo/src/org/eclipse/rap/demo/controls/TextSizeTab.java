@@ -9,11 +9,11 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Color;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.*;
 
 public class TextSizeTab extends ExampleTab {
 
@@ -41,7 +41,7 @@ public class TextSizeTab extends ExampleTab {
         createNew();
       }
     } );
-    Button nextButton = createPropertyButton( "Next Text", RWT.PUSH );
+    Button nextButton = createPropertyButton( "Next Text", SWT.PUSH );
     nextButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         switchText();
@@ -58,7 +58,7 @@ public class TextSizeTab extends ExampleTab {
     label1.setText( labelText );
     label1.setLocation( 10, 10 );
     if( propFixedSize ) {
-      label1.setSize( label1.computeSize( 200, RWT.DEFAULT ) );
+      label1.setSize( label1.computeSize( 200, SWT.DEFAULT ) );
     } else {
       label1.pack();
     }

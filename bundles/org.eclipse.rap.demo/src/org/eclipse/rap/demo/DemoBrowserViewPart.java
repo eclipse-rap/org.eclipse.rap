@@ -8,14 +8,14 @@
  ******************************************************************************/
 package org.eclipse.rap.demo;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.rap.demo.DemoTreeViewPart.TreeObject;
-import org.eclipse.rap.jface.viewers.ISelection;
-import org.eclipse.rap.jface.viewers.IStructuredSelection;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.browser.Browser;
-import org.eclipse.rap.rwt.widgets.Composite;
-import org.eclipse.rap.ui.*;
-import org.eclipse.rap.ui.part.ViewPart;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.*;
+import org.eclipse.ui.part.ViewPart;
 
 public class DemoBrowserViewPart extends ViewPart {
 
@@ -25,7 +25,7 @@ public class DemoBrowserViewPart extends ViewPart {
 
 
   public void createPartControl( final Composite parent ) {
-    browser = new Browser( parent, RWT.NONE );
+    browser = new Browser( parent, SWT.NONE );
     IWorkbench workbench = PlatformUI.getWorkbench();
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     ISelection selection = window.getSelectionService().getSelection();

@@ -10,13 +10,13 @@
 package org.eclipse.rap.demo.controls;
 
 import java.util.ArrayList;
-import org.eclipse.rap.jface.dialogs.MessageDialog;
-import org.eclipse.rap.jface.viewers.*;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.layout.RowData;
-import org.eclipse.rap.rwt.layout.RowLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.*;
 
 public class ListTab extends ExampleTab {
 
@@ -74,7 +74,7 @@ public class ListTab extends ExampleTab {
     list = new List( parent, style );
     list.setLayoutData( new RowData( 200, 200 ) );
     Menu menu = new Menu( list );
-    MenuItem menuItem = new MenuItem( menu, RWT.PUSH );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     menuItem.setText( "Context menu item" );
     list.setMenu( menu );
     ListViewer viewer = new ListViewer( list );
@@ -97,15 +97,15 @@ public class ListTab extends ExampleTab {
     list2.setLayoutData( new RowData( 200, 200 ) );
     createPopupMenu( parent.getShell(), list2 );
     // Code
-    int separatorStyle = RWT.SEPARATOR | RWT.HORIZONTAL | RWT.SHADOW_OUT;
+    int separatorStyle = SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT;
     Label separator = new Label( parent, separatorStyle );
     separator.setLayoutData( new RowData( 440, 5 ) );
-    Label codeLabel = new Label( parent, RWT.WRAP );
+    Label codeLabel = new Label( parent, SWT.WRAP );
     String codeLabelText 
       = "Please note that the content of the left List is provided by a " 
       + "ListViewer with JFace API.";
     codeLabel.setText( codeLabelText );
-    Link link = new Link( parent, RWT.NONE );
+    Link link = new Link( parent, SWT.NONE );
     link.setText( "See <a>example code</a>" );
     link.addSelectionListener( new SelectionAdapter() {
       private String code = getExampleCode();
@@ -119,10 +119,10 @@ public class ListTab extends ExampleTab {
   }
   
   private void createPopupMenu( final Shell parent, final List list ) {
-    final Menu menu = new Menu( parent, RWT.POP_UP );
+    final Menu menu = new Menu( parent, SWT.POP_UP );
     String[] listItems = list.getItems();
     for( int i = 0; i < listItems.length; i++ ) {
-      MenuItem item = new MenuItem( menu, RWT.PUSH );
+      MenuItem item = new MenuItem( menu, SWT.PUSH );
       item.setText( listItems[ i ] );
     }
     menu.addMenuListener( new MenuAdapter() {

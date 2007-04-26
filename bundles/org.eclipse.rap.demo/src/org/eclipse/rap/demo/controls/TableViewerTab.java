@@ -10,13 +10,13 @@
 package org.eclipse.rap.demo.controls;
 
 import java.util.ArrayList;
-import org.eclipse.rap.jface.viewers.*;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.layout.FillLayout;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.*;
 
 public class TableViewerTab extends ExampleTab {
 
@@ -111,7 +111,7 @@ public class TableViewerTab extends ExampleTab {
   protected void createStyleControls() {
     createAddItemsButton();
     createSelectYoungestPersonButton();
-    lblSelection = new Label( styleComp, RWT.NONE );
+    lblSelection = new Label( styleComp, SWT.NONE );
   }
 
   protected void createExampleControls( final Composite top ) {
@@ -131,13 +131,13 @@ public class TableViewerTab extends ExampleTab {
   }
 
   private String[] initColumnProperties( final Table table ) {
-    TableColumn firstNameColumn = new TableColumn( table, RWT.NONE );
+    TableColumn firstNameColumn = new TableColumn( table, SWT.NONE );
     firstNameColumn.setText( "First Name" );
     firstNameColumn.setWidth( 170 );
-    TableColumn lastNameColumn = new TableColumn( table, RWT.NONE );
+    TableColumn lastNameColumn = new TableColumn( table, SWT.NONE );
     lastNameColumn.setText( "Last Name" );
     lastNameColumn.setWidth( 100 );    
-    TableColumn ageColumn = new TableColumn( table, RWT.NONE );
+    TableColumn ageColumn = new TableColumn( table, SWT.NONE );
     ageColumn.setText( "Age" );
     ageColumn.setWidth( 80 );
     return new String[] {
@@ -158,7 +158,7 @@ public class TableViewerTab extends ExampleTab {
   }
 
   private void createAddItemsButton() {
-    Button button = new Button( styleComp, RWT.PUSH );
+    Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Add " + ADD_ITEMS + " Items" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -170,7 +170,7 @@ public class TableViewerTab extends ExampleTab {
   }
   
   private void createSelectYoungestPersonButton() {
-    Button button = new Button( styleComp, RWT.PUSH );
+    Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Select youngest Person" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

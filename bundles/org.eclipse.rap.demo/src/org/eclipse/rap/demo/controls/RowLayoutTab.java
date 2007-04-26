@@ -8,12 +8,12 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.graphics.Image;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 class RowLayoutTab extends ExampleTab {
 
@@ -50,24 +50,24 @@ class RowLayoutTab extends ExampleTab {
     GridLayout parentLayout = new GridLayout();
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
-    Composite comp = new Composite( parent, RWT.NONE );
+    Composite comp = new Composite( parent, SWT.NONE );
     comp.setBackground( BG_COLOR_BROWN );
     RowLayout layout = new RowLayout( style );
     layout.wrap = propWrap;
     comp.setLayout( layout );
-    Button b1 = new Button( comp, RWT.PUSH );
+    Button b1 = new Button( comp, SWT.PUSH );
     b1.setText( "Button 1" );
-    Button b2 = new Button( comp, RWT.PUSH );
+    Button b2 = new Button( comp, SWT.PUSH );
     b2.setText( "Button 2" );
-    Button b3 = new Button( comp, RWT.PUSH );
+    Button b3 = new Button( comp, SWT.PUSH );
     b3.setText( "Button 3" );
-    Label l1 = new Label( comp, RWT.BORDER );
+    Label l1 = new Label( comp, SWT.BORDER );
     l1.setText( "Label" );
-    Text t1 = new Text( comp, RWT.BORDER | RWT.SINGLE );
+    Text t1 = new Text( comp, SWT.BORDER | SWT.SINGLE );
     t1.setText( "Lorem ipsum dolor sit amet" );
     createSomeImages( comp );
     createTabFolder( comp );
-    new Text( comp, RWT.BORDER | RWT.SINGLE );
+    new Text( comp, SWT.BORDER | SWT.SINGLE );
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );
     } else {
@@ -83,31 +83,31 @@ class RowLayoutTab extends ExampleTab {
     Image image2 = Image.find( "icons/lockkey.gif", imageLoader );
     Image image3 = Image.find( "icons/test-100x50.png", imageLoader );
     Image image4 = Image.find( "icons/test-50x100.png", imageLoader );
-    Label l1 = new Label( parent, RWT.BORDER );
+    Label l1 = new Label( parent, SWT.BORDER );
     l1.setImage( image1 );
-    Label l2 = new Label( parent, RWT.BORDER );
+    Label l2 = new Label( parent, SWT.BORDER );
     l2.setImage( image2 );
-    Label l3 = new Label( parent, RWT.BORDER );
+    Label l3 = new Label( parent, SWT.BORDER );
     l3.setImage( image3 );
-    Label l4 = new Label( parent, RWT.BORDER );
+    Label l4 = new Label( parent, SWT.BORDER );
     l4.setImage( image4 );
   }
 
   private TabFolder createTabFolder( final Composite parent ) {
-    TabFolder tf = new TabFolder( parent, RWT.BORDER );
-    TabItem tab1 = new TabItem( tf, RWT.NONE );
+    TabFolder tf = new TabFolder( parent, SWT.BORDER );
+    TabItem tab1 = new TabItem( tf, SWT.NONE );
     tab1.setText( "Tab1" );
-    Label tla1 = new Label( tf, RWT.NONE );
+    Label tla1 = new Label( tf, SWT.NONE );
     tla1.setText( "Content 1" );
     tab1.setControl( tla1 );
-    TabItem tab2 = new TabItem( tf, RWT.NONE );
+    TabItem tab2 = new TabItem( tf, SWT.NONE );
     tab2.setText( "Tab2" );
-    Label tla2 = new Label( tf, RWT.NONE );
+    Label tla2 = new Label( tf, SWT.NONE );
     tla2.setText( "Content 2\nwith two lines" );
     tab2.setControl( tla2 );
-    TabItem tab3 = new TabItem( tf, RWT.NONE );
+    TabItem tab3 = new TabItem( tf, SWT.NONE );
     tab3.setText( "Tab3" );
-    Label tla3 = new Label( tf, RWT.NONE );
+    Label tla3 = new Label( tf, SWT.NONE );
     tla3.setText( "Content 3 is somewhat longer" );
     tab3.setControl( tla3 );
     tf.setSelection( 0 );

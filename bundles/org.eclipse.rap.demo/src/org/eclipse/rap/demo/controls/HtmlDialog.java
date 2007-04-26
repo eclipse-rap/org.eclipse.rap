@@ -1,11 +1,11 @@
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.browser.Browser;
-import org.eclipse.rap.rwt.events.SelectionAdapter;
-import org.eclipse.rap.rwt.events.SelectionEvent;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 public class HtmlDialog {
 
@@ -14,13 +14,13 @@ public class HtmlDialog {
 
   public HtmlDialog( final Shell parent, final String title, final String text )
   {
-    int style = RWT.APPLICATION_MODAL | RWT.DIALOG_TRIM | RWT.RESIZE;
+    int style = SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM | SWT.RESIZE;
     shell = new Shell( parent, style );
     this.text = text;
     shell.setText( title  );
     shell.setBounds( 200, 50, 400, 600 );
     shell.setLayout( new FillLayout() );
-    Composite composite = new Composite( shell, RWT.NONE );
+    Composite composite = new Composite( shell, SWT.NONE );
     createContents( composite );
   }
 
@@ -45,12 +45,12 @@ public class HtmlDialog {
     Layout layout = new GridLayout();
     parent.setLayout( layout );
     // browser
-    Browser browser = new Browser( parent, RWT.BORDER );
+    Browser browser = new Browser( parent, SWT.BORDER );
     browser.setText( text );
     GridData browserData = new GridData( GridData.FILL_BOTH );
     browser.setLayoutData( browserData );
     // button bar
-    Button closeButton = new Button( parent, RWT.PUSH );
+    Button closeButton = new Button( parent, SWT.PUSH );
     closeButton.setText( "Close" );
     shell.setDefaultButton( closeButton );
     closeButton.addSelectionListener( new SelectionAdapter() {

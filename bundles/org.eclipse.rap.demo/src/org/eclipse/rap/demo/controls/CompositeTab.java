@@ -9,9 +9,9 @@
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rap.rwt.layout.FillLayout;
-import org.eclipse.rap.rwt.widgets.Composite;
-import org.eclipse.rap.rwt.widgets.TabFolder;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TabFolder;
 
 public class CompositeTab extends ExampleTab {
 

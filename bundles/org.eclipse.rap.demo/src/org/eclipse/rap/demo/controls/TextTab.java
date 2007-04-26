@@ -11,11 +11,11 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeEvent;
 import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeListener;
-import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.events.*;
-import org.eclipse.rap.rwt.graphics.Point;
-import org.eclipse.rap.rwt.layout.*;
-import org.eclipse.rap.rwt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 public class TextTab extends ExampleTab {
 
@@ -49,7 +49,7 @@ public class TextTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout( RWT.VERTICAL ) );
+    parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     simpleText = createText( parent, getStyle() );
     registerControl( simpleText );
     modifyText = createModifyText( parent, getStyle() );
@@ -57,17 +57,17 @@ public class TextTab extends ExampleTab {
   }
 
   private static Text createText( final Composite parent, final int style ) {
-    Group grpContainer = new Group( parent, RWT.NONE );
+    Group grpContainer = new Group( parent, SWT.NONE );
     grpContainer.setText( "Simple Text" );
     grpContainer.setLayout( new GridLayout( 3, false ) );
     GridData gridData;
-    final Button btnChangeIsDefault = new Button( grpContainer, RWT.CHECK );
+    final Button btnChangeIsDefault = new Button( grpContainer, SWT.CHECK );
     String buttonText = "Make the 'Change' button the default button";
     btnChangeIsDefault.setText( buttonText );
-    gridData = new GridData( RWT.FILL, RWT.NONE, true, false );
+    gridData = new GridData( SWT.FILL, SWT.NONE, true, false );
     gridData.horizontalSpan = 3;
     btnChangeIsDefault.setLayoutData( gridData );
-    Label lblEnterText = new Label( grpContainer, RWT.NONE );
+    Label lblEnterText = new Label( grpContainer, SWT.NONE );
     lblEnterText.setText( "Enter some text, please" );
     final Text result = new Text( grpContainer, style );
     Point preferred = getPreferredSize( result );
@@ -82,9 +82,9 @@ public class TextTab extends ExampleTab {
                     + "Duis aute irure dolor in reprehenderit in voluptate "
                     + "velit esse cillum dolore eu fugiat nulla pariatur." );
     result.setSelection( 0, 12 );
-    final Button btnChange = new Button( grpContainer, RWT.PUSH );
-    final Label lblTextContent = new Label( grpContainer, RWT.WRAP );
-    gridData = new GridData( RWT.FILL, RWT.FILL, true, true );
+    final Button btnChange = new Button( grpContainer, SWT.PUSH );
+    final Label lblTextContent = new Label( grpContainer, SWT.WRAP );
+    gridData = new GridData( SWT.FILL, SWT.FILL, true, true );
     gridData.horizontalSpan = 3;
     lblTextContent.setLayoutData( gridData );
     lblTextContent.setText( "You entered: " + result.getText() );
@@ -115,25 +115,25 @@ public class TextTab extends ExampleTab {
   }
 
   private Text createModifyText( final Composite parent, final int style ) {
-    Group grpContainer = new Group( parent, RWT.NONE );
+    Group grpContainer = new Group( parent, SWT.NONE );
     grpContainer.setText( "Text width ModifyListener" );
     grpContainer.setLayout( new GridLayout( 3, false ) );
     GridData gridData;
-    final Button btnChangeIsDefault = new Button( grpContainer, RWT.CHECK );
+    final Button btnChangeIsDefault = new Button( grpContainer, SWT.CHECK );
     String buttonText = "Make the 'Change' button the default button";
     btnChangeIsDefault.setText( buttonText );
-    gridData = new GridData( RWT.FILL, RWT.NONE, true, false );
+    gridData = new GridData( SWT.FILL, SWT.NONE, true, false );
     gridData.horizontalSpan = 3;
     btnChangeIsDefault.setLayoutData( gridData );
-    Label lblEnterText = new Label( grpContainer, RWT.NONE );
+    Label lblEnterText = new Label( grpContainer, SWT.NONE );
     lblEnterText.setText( "Enter some text, please" );
     final Text result = new Text( grpContainer, style );
     Point preferred = getPreferredSize( result );
     grpContainer.setLayoutData( new RowData( 400, 140 + preferred.y ) );
     result.setLayoutData( new GridData( preferred.x, preferred.y ) );
-    final Button btnChange = new Button( grpContainer, RWT.PUSH );
-    final Label lblTextContent = new Label( grpContainer, RWT.WRAP );
-    gridData = new GridData( RWT.FILL, RWT.FILL, true, true );
+    final Button btnChange = new Button( grpContainer, SWT.PUSH );
+    final Label lblTextContent = new Label( grpContainer, SWT.WRAP );
+    gridData = new GridData( SWT.FILL, SWT.FILL, true, true );
     gridData.horizontalSpan = 3;
     lblTextContent.setLayoutData( gridData );
     lblTextContent.setText( "You entered: " );
@@ -171,12 +171,12 @@ public class TextTab extends ExampleTab {
   }
 
   private void createLimitText( final Composite parent ) {
-    Composite composite = new Composite( parent, RWT.NONE );
+    Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
-    Label label = new Label( composite, RWT.NONE );
+    Label label = new Label( composite, SWT.NONE );
     label.setText( "TextLimit" );
-    final Text text = new Text( composite, RWT.BORDER );
-    Button button = new Button( composite, RWT.PUSH );
+    final Text text = new Text( composite, SWT.BORDER );
+    Button button = new Button( composite, SWT.PUSH );
     button.setText( "Change" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -199,7 +199,7 @@ public class TextTab extends ExampleTab {
 
   private static Point getPreferredSize( final Text text ) {
     Point result;
-    if( ( text.getStyle() & RWT.SINGLE ) != 0 ) {
+    if( ( text.getStyle() & SWT.SINGLE ) != 0 ) {
       result = new Point( 200, 20 );
     } else {
       result = new Point( 200, 100 );
