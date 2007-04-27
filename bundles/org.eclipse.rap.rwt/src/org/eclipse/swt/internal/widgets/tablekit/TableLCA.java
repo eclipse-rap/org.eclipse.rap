@@ -25,10 +25,12 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_TOP_INDEX = "topIndex";
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
+  private static final String PROP_DEFAULT_COLUMN_WIDTH = "defaultColumnWidth";
 
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
   private static final Object DEFAULT_SELECTION = new int[ 0 ];
   private static final Integer DEFAUT_ITEM_HEIGHT = new Integer( 0 );
+  private static final Integer DEFAULT_DEFAULT_COLUMN_WIDTH = new Integer( 0 );
 
   private static final JSListenerInfo SELECTION_LISTENER
     = new JSListenerInfo( "itemselected", 
@@ -47,9 +49,11 @@ public final class TableLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( table.getLinesVisible() ) );
     adapter.preserve( PROP_ITEM_HEIGHT, new Integer( table.getItemHeight() ) );
     adapter.preserve( PROP_TOP_INDEX, new Integer( table.getTopIndex() ) );
-    adapter.preserve( PROP_SELECTION, table.getSelection() );
+    adapter.preserve( PROP_SELECTION, table.getSelectionIndices() );
     adapter.preserve( PROP_SELECTION_LISTENERS, 
                       Boolean.valueOf( SelectionEvent.hasListener( table ) ) );
+    adapter.preserve( PROP_DEFAULT_COLUMN_WIDTH, 
+                      new Integer( getDefaultColumnWidth( table ) ) );
     TableLCAUtil.preserveColumnCount( table );
   }
 
@@ -77,6 +81,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeLinesVisible( table );
     writeSelection( table );
     writeSelectionListener( table );
+    writeDefaultColumnWidth( table );
     // Make the JavaScript client area the parent of all children of table 
     Control[] children = table.getChildren();
     for( int i = 0; i < children.length; i++ ) {
@@ -112,17 +117,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
   
-  private static TableItem findItem( final Table table, final String itemId ) {
-    TableItem result = null;
-    TableItem[] items = table.getItems();
-    for( int i = 0; result == null && i < items.length; i++ ) {
-      if( WidgetUtil.getId( items[ i ] ).equals( itemId ) ) {
-        result = items[ i ];
-      }
-    }
-    return result;
-  }
-
   ///////////////////////////////////////////
   // Helping methods to write JavaScript code
   
@@ -181,5 +175,43 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.updateListener( SELECTION_LISTENER, 
                            PROP_SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( table ) );
+  }
+
+  private static void writeDefaultColumnWidth( final Table table ) 
+    throws IOException 
+  {
+    JSWriter writer = JSWriter.getWriterFor( table );
+    String prop = PROP_DEFAULT_COLUMN_WIDTH;
+    Integer newValue = new Integer( getDefaultColumnWidth( table ) );
+    Integer defValue = DEFAULT_DEFAULT_COLUMN_WIDTH;
+    writer.set( prop, "defaultColumnWidth", newValue, defValue );
+  }
+
+  //////////////////
+  // Helping methods 
+  
+  private static TableItem findItem( final Table table, final String itemId ) {
+    TableItem result = null;
+    TableItem[] items = table.getItems();
+    for( int i = 0; result == null && i < items.length; i++ ) {
+      if( WidgetUtil.getId( items[ i ] ).equals( itemId ) ) {
+        result = items[ i ];
+      }
+    }
+    return result;
+  }
+
+  private static int getDefaultColumnWidth( final Table table ) {
+    int result = 0;
+    if( table.getColumnCount() == 0 ) {
+      TableItem[] items = table.getItems();
+      for( int i = 0; i < items.length; i++ ) {
+        int width = items[ i ].getBounds().width;
+        if( width > result ) {
+          result = width;
+        }
+      }
+    }
+    return result;
   }
 }

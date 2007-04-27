@@ -37,36 +37,17 @@ public class CoolItemLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     // TODO [rh] clean up this mess
-    CoolItem coolItem = ( CoolItem )widget;
+    final CoolItem coolItem = ( CoolItem )widget;
     HttpServletRequest request = ContextProvider.getRequest();
     String movedWidgetId = request.getParameter( JSConst.EVENT_WIDGET_MOVED );
     if( WidgetUtil.getId( coolItem ).equals( movedWidgetId ) ) {
       String value = WidgetLCAUtil.readPropertyValue( coolItem, "bounds.x" );
-      int x = Integer.parseInt( value );
-      CoolItem[] items = coolItem.getParent().getItems();
-      int newOrder = -1;
-      int maxX = 0;
-      int minX = 0;
-      for( int i = 0; newOrder == -1 && i < items.length; i++ ) {
-        CoolItem item = items[ i ];
-        Rectangle itemBounds = item.getBounds();
-        if( item != coolItem && itemBounds.contains( x, itemBounds.y ) ) {
-          int[] itemOrder = coolItem.getParent().getItemOrder();
-          newOrder = itemOrder[ i ] + 1;
-          changeOrder( coolItem, newOrder );
+      final int x = Integer.parseInt( value );
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          moveItem( coolItem, x );
         }
-        if( itemBounds.x + itemBounds.width > maxX ) {
-          maxX = itemBounds.x + itemBounds.width;
-        }
-        if( itemBounds.x < minX ) {
-          minX = itemBounds.x;
-        }
-      }
-      if( newOrder == -1 && x > maxX ) {
-        changeOrder( coolItem, coolItem.getParent().getItemCount() - 1 );
-      } else if( newOrder == -1 && x < minX ) {
-        changeOrder( coolItem, 0 );
-      }
+      } );
     }
   }
   
@@ -78,6 +59,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     writer.setParent( WidgetUtil.getId( coolItem.getParent() ) );
     writer.set( "minWidth", 0 );
     writer.set( "minHeight", 0 );
+    writer.set( "backgroundColor", coolItem.getParent().getBackground() );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -118,7 +100,8 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( coolItem );
     CoolBar parent = coolItem.getParent();
     Boolean oldValue = Boolean.valueOf( parent.getLocked() );
-    if( WidgetLCAUtil.hasChanged( parent, Props.LOCKED, oldValue ) ) 
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( parent, Props.LOCKED, oldValue, defValue ) ) 
     {
       writer.set( "locked", parent.getLocked() );
     }
@@ -142,8 +125,49 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     return orientation;
   }
 
-  private static void changeOrder( final CoolItem coolItem, final int newOrder ) 
+  ///////////////////////////////
+  // Methods for item re-ordering 
+  
+  private static void moveItem( final CoolItem coolItem, final int newX ) {
+    CoolItem[] items = coolItem.getParent().getItems();
+    boolean changed = false;
+    int newOrder = -1;
+    int maxX = 0;
+    int minX = 0;
+    for( int i = 0; newOrder == -1 && i < items.length; i++ ) {
+      CoolItem item = items[ i ];
+      Rectangle itemBounds = item.getBounds();
+      if( item != coolItem && itemBounds.contains( newX, itemBounds.y ) ) {
+        int[] itemOrder = coolItem.getParent().getItemOrder();
+        newOrder = Math.min( itemOrder[ i ] + 1, itemOrder.length - 1 );
+        changed = changeOrder( coolItem, newOrder );
+      }
+      maxX = Math.max( maxX, itemBounds.x + itemBounds.width );
+      minX = Math.min( minX, itemBounds.x );
+    }
+    if( newOrder == -1 && newX > maxX ) {
+      // item was moved after the last item
+      changed = changeOrder( coolItem, coolItem.getParent().getItemCount() - 1 );
+    } else if( newOrder == -1 && newX < minX ) {
+      // item was moved before the first item
+      changed = changeOrder( coolItem, 0 );
+    }
+    // In case an item was moved but that didn't cause it to change its order,
+    // we need to let it 'snap back' to its previous position
+    if( !changed ) {
+      // TODO [rh] HACK: a decent solution would mark the item as 'bounds
+      //      changed' and that mark could be evaluated by writeBounds.
+      //      A more flexible writeBounds implementeation on WidgetLCAUtil is
+      //      necessary therefore.
+      IWidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
+      adapter.preserve( Props.BOUNDS, null );
+    }
+  }
+
+  private static boolean changeOrder( final CoolItem coolItem, 
+                                      final int newOrder ) 
   {
+    boolean result;
     CoolBar coolBar = coolItem.getParent();
     int itemIndex = coolBar.indexOf( coolItem );
     int[] itemOrder = coolBar.getItemOrder();
@@ -170,8 +194,14 @@ public class CoolItemLCA extends AbstractWidgetLCA {
           }
         }
       }
-      itemOrder[ itemIndex ] = newOrder;
-      coolBar.setItemOrder( itemOrder );
+      result = itemOrder[ itemIndex ] != newOrder;
+      if( result ) {
+        itemOrder[ itemIndex ] = newOrder;
+        coolBar.setItemOrder( itemOrder );
+      }
+    } else {
+      result = false;
     }
+    return result;
   }
 }

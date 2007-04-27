@@ -11,7 +11,7 @@
 
 /**
  * This class provides the client-side counterpart for 
- * org.eclipse.swt.Table.
+ * org.eclipse.swt.widgets.Table.
  * @event itemselected
  */
 qx.OO.defineClass(
@@ -26,11 +26,16 @@ qx.OO.defineClass(
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     // Draw grid lines?
     this._linesVisible = false;
+    // Default column width is used when there are no columns specified
+    this._defaultColumnWidth = 0;
     // Internally used fields for resizing
     this._resizeStartX = 0;
     this._resizeColumn = null;
-    // Internally used fields to manage visible rows and scrolling
+    // The item index that is currently displayed in the first visible row
     this._topIndex = 0;
+    // indicates that topIndex was changed client-side (e.g. by scrolling)    
+    this._topIndexChanged = false; 
+    // Internally used fields to manage visible rows and scrolling
     this._itemHeight = 0;
     this._rows = new Array();
     this._items = new Array();
@@ -79,6 +84,8 @@ qx.OO.defineClass(
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
     // Listen to send event of request to report current state
     var req = org.eclipse.swt.Request.getInstance();
+    req.addEventListener( "send", this._onSendRequest, this );
+    //
     widgetManager.add( this._clientArea, id + "_clientArea",  false );
     this.add( this._clientArea );
   }
@@ -100,7 +107,7 @@ qx.Proto._modifyFont = function( propValue, propOldValue, propData )
   return true;
 }
 
-qx.Class.RESIZE_LINE_COLOR = "#D6D5D9";
+qx.Class.RESIZE_LINE_COLOR = "#d6d5d9";
 
 qx.Class.CURSOR_RESIZE_HORIZONTAL 
   = (    qx.core.Client.getInstance().isGecko() 
@@ -109,10 +116,19 @@ qx.Class.CURSOR_RESIZE_HORIZONTAL
   ? "ew-resize" 
   : "e-resize";
 
+qx.Class.BG_COLOR_SELECTED = new qx.renderer.color.ColorObject( "#316ac5" );
+qx.Class.BG_COLOR_DISABLED = new qx.renderer.color.ColorObject( "gray" ); 
+
+qx.Class.ROW_BORDER = new qx.renderer.border.BorderObject();
+qx.Class.ROW_BORDER.setTop( 1, "solid", "#eeeeee" );
+qx.Class.ROW_BORDER.setBottom( 1, "solid", "#eeeeee" );
+
 qx.Proto.dispose = function() {
   if( this.isDisposed() ) {
     return;
   }
+  var req = org.eclipse.swt.Request.getInstance();
+  req.removeEventListener( "send", this._onSendRequest, this );
   this.removeEventListener( "changeWidth", this._onChangeSize, this );
   this.removeEventListener( "changeHeight", this._onChangeSize, this );
   this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
@@ -186,6 +202,7 @@ qx.Proto.setTopIndex = function( value ) {
   var scrollPos = value * this._itemHeight;
   this._vertScrollBar.setValue( scrollPos );
   this._internalSetTopIndex( value );
+  this._topIndexChanged = false;
 }
 
 qx.Proto._internalSetTopIndex = function( value ) {
@@ -212,8 +229,20 @@ qx.Proto.getColumnsWidth = function() {
   return result;
 }
 
+qx.Proto.setDefaultColumnWidth = function( value ) {
+  this._defaultColumnWidth = value;
+  this._updateScrollWidth();
+}
+
+qx.Proto.getDefaultColumnWidth = function() {
+  return this._defaultColumnWidth;
+}
+
 qx.Proto.setLinesVisible = function( value ) {
   this._linesVisible = value;
+  for( var i = 0; i < this._rows.length; i++ ) {
+    this._rows[ i ].setBorder( org.eclipse.swt.widgets.Table.ROW_BORDER );
+  }
   this._updateRows();
 }
 
@@ -246,7 +275,9 @@ qx.Proto._onChangeEnabled = function( evt ) {
   for( var i = 0; i < columns.length; i++ ) {
     columns[ i ].setEnabled( enabled );
   }
-  this._updateRows();
+  for( var i = 0; i < this._rows.length; i++ ) {
+    this._updateRowState( this._rows[ i ], this._getItemFromRowIndex( i ) );
+  }
 }
 
 //////////////////////////////////////////////////////////
@@ -294,8 +325,8 @@ qx.Proto._onColumnAreaMouseUp = function( evt ) {
     this._hideResizeLine();
     this.getTopLevelWidget().setGlobalCursor( null );
     this._columnArea.setCapture( false );
-    this._updateRows();
-    this._doResizeColumn( this._resizeColumn, this._getResizeColumnWidth( evt.getPageX() ) );
+    var newWidth = this._getResizeColumnWidth( evt.getPageX() );
+    this._doResizeColumn( this._resizeColumn, newWidth );
     this._resizeColumn = null; 
   }
 }
@@ -305,7 +336,7 @@ qx.Proto._onColumnAreaMouseUp = function( evt ) {
 
 qx.Proto._onClientAreaClick = function( evt ) {
   var target = evt.getTarget();
-  if( target instanceof qx.ui.embed.HtmlEmbed ) {
+  if( this.getEnabled() && target instanceof qx.ui.embed.HtmlEmbed ) {
     var rowIndex = this._clientArea.indexOf( target );
     var itemIndex = this._topIndex + rowIndex;
     if( itemIndex >= 0 && itemIndex < this._items.length ) {
@@ -338,8 +369,6 @@ qx.Proto._onClientAreaMouseWheel = function( evt ) {
 
 qx.Proto._onChangeSize = function( evt ) {
   this._updateClientAreaSize();
-  this._updateRowCount();
-  this._updateRows();
 }
 
 qx.Proto._onClientAppear = function( evt ) {
@@ -360,21 +389,16 @@ qx.Proto._onVertScrollBarChangeValue = function() {
   }
   // update topIndex request parameter
   if( newTopIndex != this._topIndex ) {
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( this );
-    var req = org.eclipse.swt.Request.getInstance();
-    req.addParameter( id + ".topIndex", this._topIndex );
+    this._topIndexChanged = true;
   }
   // set new topIndex -> rows are updateded if necessary
-  this._internalSetTopIndex( newTopIndex );  
+  this._internalSetTopIndex( newTopIndex ); 
 }
 
 qx.Proto._onHorzScrollBarChangeValue = function() {
   var value = this._horzScrollBar.getValue();
   this._columnArea.setLeft( 0 - value );
-  for( var i = 0; i < this._rows.length; i++ ) {
-    this._rows[ i ].setLeft( 0 - value );
-  }
+  this._updateRowBounds();
 }
 
 ///////////////////////
@@ -406,12 +430,17 @@ qx.Proto._selectItem = function( item ) {
   }
   // end of hack
   this._selected.push( item );
-  this._updateItem( item );
+  this.updateItem( item, false );
+  // Make item fully visible
+  var row = this._getRowFromItem( item );
+  if( row != null && row.getTop() + row.getHeight() > this._clientArea.getHeight() ) {
+    this.setTopIndex( this._topIndex + 1 );
+  }
 }
 
 qx.Proto._unselectItem = function( item ) {
   qx.lang.Array.remove( this._selected, item );
-  this._updateItem( item );
+  this.updateItem( item, false );
 }
 
 qx.Proto._isItemSelected = function( item ) {
@@ -423,10 +452,14 @@ qx.Proto._isItemVisible = function( item ) {
   return itemIndex >= this._topIndex && itemIndex <= this._topIndex + this._rows.length;
 }
 
-qx.Proto._updateItem = function( item ) {
+qx.Proto.updateItem = function( item, contentChanged ) {
   var row = this._getRowFromItem( item );
   if( row != null ) {
-    this._updateRow( row, item );
+    if( contentChanged ) {
+      this._updateRow( row, item );  // implicitly calls _updateRowState
+    } else {
+      this._updateRowState( row, item );
+    }
   }
 }
 
@@ -439,6 +472,15 @@ qx.Proto._getRowFromItem = function( item ) {
     result = this._rows[ itemIndex - this._topIndex ];
   }
   return result;
+}
+
+qx.Proto._getItemFromRowIndex = function( rowIndex ) {
+  var result = null;
+  var itemIndex = this._topIndex + rowIndex;
+  if( itemIndex < this._items.length ) {    
+    result = this._items[ itemIndex ];
+  }
+  return result;  
 }
 
 /////////////////////////
@@ -465,15 +507,6 @@ qx.Proto._onColumnChangeSize = function( evt ) {
   this._updateRows();
 }
 
-///////////////////////////////////////////////////////////
-// Event handling methods - added and remove by server-side
-
-qx.Proto.onItemSelected = function( evt ) {
-  var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-  var id = widgetManager.findIdByWidget( evt.getData() );
-  org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
-}
-
 ///////////////////////////////////////////
 // UI Update upon scroll, size changes, etc
 
@@ -482,7 +515,12 @@ qx.Proto._updateScrollHeight = function() {
 }
 
 qx.Proto._updateScrollWidth = function() {
-  var width = this.getColumnsWidth();
+  var width;
+  if( this.getColumnCount() == 0 ) {
+    width = this.getDefaultColumnWidth();
+  } else {
+    width = this.getColumnsWidth();
+  }
   this._horzScrollBar.setMaximum( width );
 }
 
@@ -510,6 +548,8 @@ qx.Proto._updateClientAreaSize = function() {
   // Adjust number of rows and update rows if necessary
   if( this._updateRowCount() ) {
     this._updateRows();
+  } else {
+    this._updateRowBounds();
   }
 }
 
@@ -528,52 +568,74 @@ qx.Proto._updateRowCount = function() {
         row.dispose();
       }
       // Append rows if rowCount was increased
-      while( this._rows.length < newRowCount ) {
-        var newRow = new qx.ui.embed.HtmlEmbed();
-        newRow.setWrap( false );
-        newRow.setHeight( this._itemHeight );
-        newRow.setWidth( 1000 );
-        this._clientArea.add( newRow );
-        this._rows.push( newRow );
+      if( this._rows.length < newRowCount ) {
+        while( this._rows.length < newRowCount ) {
+          var newRow = new qx.ui.embed.HtmlEmbed();
+          newRow.setWrap( false );
+          this._clientArea.add( newRow );
+          this._rows.push( newRow );
+        }
       }
+      // Re-calculate the position and size for each row
+      this._updateRowBounds()
       result = true;
     }
   }
   return result;
 }
 
-qx.Proto._updateRows = function() {
+qx.Proto._updateRowBounds = function() {
   var top = 0;
+  var left = 0 - this._horzScrollBar.getValue();
+  var width = this.getColumnsWidth();
+  if( this._clientArea.getWidth() > width ) {
+    width = this._clientArea.getWidth();
+  }
   for( var i = 0; i < this._rows.length; i++ ) {
     var row = this._rows[ i ];
-    var item = null;
-    var itemIndex = this._topIndex + i;
-    if( itemIndex < this._items.length ) {    
-      item = this._items[ itemIndex ];
-    }
     row.setTop( top );
-    this._updateRow( row, item );
-    top += this._itemHeight;    
+    row.setLeft( left );
+    row.setWidth( width );
+    row.setHeight( this._itemHeight );
+    top += this._itemHeight;
+  }
+}
+
+qx.Proto._updateRows = function() {
+  for( var i = 0; i < this._rows.length; i++ ) {
+    this._updateRow( this._rows[ i ], this._getItemFromRowIndex( i ) );
   }
 }
 
 qx.Proto._updateRow = function( row, item ) {
-  var isItemSelected = false;
   if( item != null ) {    
-    isItemSelected = this._isItemSelected( item );
     row.setHtml( item._getMarkup() );
   } else {
     row.setHtml( this._emptyItem._getMarkup() );
   }
+  this._updateRowState( row, item );
+}
+
+qx.Proto._updateRowState = function( row, item ) {
   if( this.getEnabled() ) {
-    if( isItemSelected ) {
-      row.setStyleProperty( "backgroundColor", "#316ac5" );
+    if( item != null && this._isItemSelected( item ) ) {
+      row.setBackgroundColor( org.eclipse.swt.widgets.Table.BG_COLOR_SELECTED );
     } else {
-      row.removeStyleProperty( "backgroundColor" );
+      row.setBackgroundColor( null );
     }
   } else {
-    row.setStyleProperty( "backgroundColor", "gray" );
+    row.setBackgroundColor( org.eclipse.swt.widgets.Table.BG_COLOR_DISABLED );
   }
+}
+
+////////////////////////////////////////////////////////////
+// Event handling methods - added and removed by server-side
+
+qx.Proto.onItemSelected = function( evt ) {
+  // evt.getData() holds the TableItem that was selected
+  var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+  var id = widgetManager.findIdByWidget( evt.getData() ); 
+  org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
 }
 
 ////////////////////////////////////
@@ -628,4 +690,13 @@ qx.Proto._showResizeLine = function( x ) {
 
 qx.Proto._hideResizeLine = function() {
   this._resizeLine.setStyleProperty( "visibility", "hidden" );
+}
+
+qx.Proto._onSendRequest = function( evt ) {
+  if( this._topIndexChanged ) {
+    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+    var id = widgetManager.findIdByWidget( this );
+    var req = org.eclipse.swt.Request.getInstance();
+    req.addParameter( id + ".topIndex", this._topIndex );
+  }
 }

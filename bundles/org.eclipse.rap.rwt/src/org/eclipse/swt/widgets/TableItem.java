@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 
@@ -121,19 +122,25 @@ public class TableItem extends Item {
 //  if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
     Rectangle result;
     int itemIndex = parent.indexOf( this );
-    if( itemIndex != -1 && index < parent.getColumnCount() ) {
-      int left = 0;
-      for( int i = 0; i < index; i++ ) {
-        left += parent.getColumn( i ).getWidth();
-      }
-      int top = 0; 
-      for( int i = 0; i < itemIndex; i++ ) {
-        top += parent.getItem( i ).getHeight();
-      }
-      int width = parent.getColumn( index ).getWidth();
-      result = new Rectangle( left, top, width, getHeight() );
+    if( index == 0 && parent.getColumnCount() == 0 ) {
+      Font font = parent.getFont();
+      int width = FontSizeEstimation.stringExtent( getText(), font ).x;
+      result = new Rectangle( 0, 0, width, getHeight() );
     } else {
-      result = new Rectangle( 0, 0, 0, 0 );
+      if( itemIndex != -1 && index < parent.getColumnCount() ) {
+        int left = 0;
+        for( int i = 0; i < index; i++ ) {
+          left += parent.getColumn( i ).getWidth();
+        }
+        int top = 0; 
+        for( int i = 0; i < itemIndex; i++ ) {
+          top += parent.getItem( i ).getHeight();
+        }
+        int width = parent.getColumn( index ).getWidth();
+        result = new Rectangle( left, top, width, getHeight() );
+      } else {
+        result = new Rectangle( 0, 0, 0, 0 );
+      }
     }
     return result;
   }

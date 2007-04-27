@@ -132,6 +132,74 @@ public class CoolBar_Test extends TestCase {
     assertEquals( "" + item1 + bar + item2, log.toString() );
   }
   
+  public void testLocked() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    CoolBar bar = new CoolBar( shell, SWT.NONE );
+    
+    assertEquals( false, bar.getLocked() );
+    bar.setLocked( true );
+    assertEquals( true, bar.getLocked() );
+  }
+  
+  public void testItemOrder() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    CoolBar bar = new CoolBar( shell, SWT.NONE );
+    new CoolItem( bar, SWT.NONE );
+    new CoolItem( bar, SWT.NONE );
+    
+    // Test initial itemOrder -> matches the order in which the items are added
+    assertEquals( 0, bar.getItemOrder()[ 0 ] );
+    assertEquals( 1, bar.getItemOrder()[ 1 ] );
+    
+    // Test setItemOrder with legal arguments
+    bar.setItemOrder( new int[] { 1, 0 } );
+    assertEquals( 0, bar.getItemOrder()[ 1 ] );
+    assertEquals( 1, bar.getItemOrder()[ 0 ] );
+    
+    // Test setItemOrder with illegal arguments
+    int[] expectedItemOrder = bar.getItemOrder();
+    try {
+      bar.setItemOrder( null );
+      fail( "setItemOrder must not allow null-argument" );
+    } catch( NullPointerException e ) {
+      // Ensure that nothing that itemOrder hasn't changed
+      assertEquals( expectedItemOrder, bar.getItemOrder() );
+    }
+    try {
+      bar.setItemOrder( new int[] { 0, 5 } );
+      fail( "setItemOrder must not allow argument with indics out of range" );
+    } catch( IllegalArgumentException e ) {
+      // Ensure that nothing that itemOrder hasn't changed
+      assertEquals( expectedItemOrder, bar.getItemOrder() );
+    }
+    try {
+      bar.setItemOrder( new int[] { 0, 0 } );
+      fail( "setItemOrder must not allow argument with duplicate indices" );
+    } catch( IllegalArgumentException e ) {
+      // Ensure that nothing that itemOrder hasn't changed
+      assertEquals( expectedItemOrder, bar.getItemOrder() );
+    }
+    try {
+      bar.setItemOrder( new int[] { 1 } );
+      String msg 
+        = "setItemOrder must not allow argument whose length doesn't match " 
+        + "the number of items";
+      fail( msg );
+    } catch( IllegalArgumentException e ) {
+      // Ensure that nothing that itemOrder hasn't changed
+      assertEquals( expectedItemOrder, bar.getItemOrder() );
+    }
+  }
+  
+  private static void assertEquals( int[] expected, int[] actual ) {
+    assertEquals( expected.length, actual.length );
+    for( int i = 0; i < expected.length; i++ ) {
+      assertEquals( expected[ i ], actual[ i ] );
+    }
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );

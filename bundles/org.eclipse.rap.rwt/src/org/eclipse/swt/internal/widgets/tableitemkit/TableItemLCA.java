@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import java.io.IOException;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.lifecycle.*;
@@ -22,8 +21,7 @@ import org.eclipse.swt.widgets.*;
 public final class TableItemLCA extends AbstractWidgetLCA {
 
   private static final String PROP_TOP = "top";
-  private static final String PROP_TEXTS = "tests";
-  private static final String PROP_BOUNDS = "bounds";
+  private static final String PROP_TEXTS = "texts";
   
   public void preserveValues( final Widget widget ) {
     TableItem item = ( TableItem )widget;
@@ -31,13 +29,14 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     adapter.preserve( PROP_TOP, new Integer( item.getBounds().y ) );
     preserveTexts( item );
-    preserveBounds( item );
   }
 
   public void readData( final Widget widget ) {
     TableItem item = ( TableItem )widget;
     if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      SelectionEvent event = new SelectionEvent( item.getParent(), item, SelectionEvent.WIDGET_SELECTED );
+      Table parent = item.getParent();
+      int id = SelectionEvent.WIDGET_SELECTED;
+      SelectionEvent event = new SelectionEvent( parent, item, id );
       event.processEvent();
     }
   }
@@ -56,13 +55,14 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( item );
     if( itemContentChanged( item ) ) {
       int columnCount = item.getParent().getColumnCount();
-      for( int i = 0; i < columnCount; i++ ) {
-        Object[] args = new Object[] {
-          new Integer( i ),
-          encodeHTML( item.getText( i ) )
-        };
-        writer.set( "text", args );
+      if( columnCount == 0 ) {
+        columnCount = 1;
       }
+      String[] texts = new String[ columnCount ];
+      for( int i = 0; i < columnCount; i++ ) {
+        texts[i] = encodeHTML( item.getText( i ) );
+      }
+      writer.set( "texts", new Object[] { texts } );
     }
   }
   
@@ -88,15 +88,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TEXTS, texts );
   }
   
-  private void preserveBounds( final TableItem item ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    Rectangle[] texts = new Rectangle[ item.getParent().getColumnCount() ];
-    for( int i = 0; i < item.getParent().getColumnCount(); i++ ) {
-      texts[i] = item.getBounds( i );
-    }
-    adapter.preserve( PROP_BOUNDS, texts );
-  }
-
   ////////////////////////////////////
   // Change detection for item content
   
@@ -107,6 +98,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       result = false;
       Table table = item.getParent();
       int columnCount = table.getColumnCount();
+      if( columnCount == 0 ) {
+        columnCount = 1;
+      }
       // Has column count changed?
       if( !result ) {
         int preservedColCount = TableLCAUtil.getPreservedColumnCount( table );
@@ -120,16 +114,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
           = ( String[] )adapter.getPreserved( PROP_TEXTS );
         for( int i = 0; !result && i < columnCount; i++ ) {
           if( !item.getText( i ).equals( preservedTexts[ i ] ) ) {
-            result = true;
-          }
-        }
-      }
-      // Has one of the bounds changed?
-      if( !result ) {
-        Rectangle[] preservedBounds 
-        = (org.eclipse.swt.graphics.Rectangle[] )adapter.getPreserved( PROP_BOUNDS );
-        for( int i = 0; !result && i < columnCount; i++ ) {
-          if( !item.getBounds( i ).equals( preservedBounds[ i ] ) ) {
             result = true;
           }
         }

@@ -287,4 +287,32 @@ public class Table_Test extends TestCase {
       // expected
     }
   }
+  
+  public void testShowItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    table.setLinesVisible( false );
+    table.setHeaderVisible( false );
+    new TableColumn( table, SWT.NONE );
+    int itemCount = 300;
+    for( int i = 0; i < itemCount; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    int itemHeight = table.getItem( 0 ).getBounds().height;
+    int visibleLines = 100;
+    table.setSize( 100, visibleLines * itemHeight );
+    
+    table.showItem( table.getItem( 100 ) );
+    assertEquals( 4, table.getTopIndex() );
+    
+    table.showItem( table.getItem( 0 ) );
+    assertEquals( 0, table.getTopIndex() );
+    
+    table.showItem( table.getItem( itemCount - 1 ) );
+    assertEquals( 203, table.getTopIndex() );
+    
+    table.showItem( table.getItem( 0 ) );
+    assertEquals( 0, table.getTopIndex() );
+  }
 }

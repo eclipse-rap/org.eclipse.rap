@@ -12,18 +12,18 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 public class TableTab extends ExampleTab {
 
-  private static final int COLUMNS = 5;
   private static final int INITIAL_ITEMS = 1;
   protected static final int ADD_ITEMS = 300;
   
   private Table table;
   private boolean headerVisible = true;
   private boolean linesVisible;
+  private int columns = 5;
 
   public TableTab( final TabFolder folder ) {
     super( folder, "Table" );
@@ -41,18 +41,23 @@ public class TableTab extends ExampleTab {
     createDisposeSelectionButton();
     createTopIndexButton();
     createShowSelectionButton();
+    createChangeColumnsControl();
+    createChangeItemControl();
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new FillLayout() );
+  protected void createExampleControls( final Composite parent ) {
+    FillLayout layout = new FillLayout();
+    layout.marginHeight = 5;
+    layout.marginWidth = 5;
+    parent.setLayout( layout );
     int style = getStyle();
-    table = new Table( top, style );
+    table = new Table( parent, style );
     table.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         System.out.println( "table-widgetSelected: " + event.item.getText() );
       }
     } );
-    for( int i = 0; i < COLUMNS; i++ ) {
+    for( int i = 0; i < columns; i++ ) {
       final TableColumn column = new TableColumn( table, SWT.NONE );
       column.setText( "Col " + i );
       column.setWidth( i == 0 ? 50 : 100 );
@@ -64,11 +69,6 @@ public class TableTab extends ExampleTab {
     }
     for( int i = 0; i < INITIAL_ITEMS; i++ ) {
       addItem();
-//      TableItem item = addItem();
-//      Text text = new Text( table, SWT.NONE );
-//      text.setBounds( item.getBounds() );
-//      text.setText( "on top of a table" );
-//      text.moveAbove( table );
     }
     table.setSelection( 0 );
     table.setHeaderVisible( headerVisible );
@@ -103,17 +103,28 @@ public class TableTab extends ExampleTab {
 
   private TableItem addItem() {
     TableItem result = new TableItem( table, SWT.NONE );
-    for( int i = 0; i < COLUMNS; i++ ) {
-      int itemCount = result.getParent().getItemCount() - 1;
-      result.setText( i, "Item" + itemCount + "-" + i );
+    int itemCount = result.getParent().getItemCount() - 1;
+    if( columns == 0 ) {
+      result.setText(  "Item " + itemCount );
+    } else {
+      for( int i = 0; i < columns; i++ ) {
+        result.setText( i, "Item" + itemCount + "-" + i );
+      }
     }
     return result;
   }
 
   private void createAddItemsButton() {
-    Button button = new Button( styleComp, SWT.PUSH );
-    button.setText( "Add " + ADD_ITEMS + " Items" );
-    button.addSelectionListener( new SelectionAdapter() {
+    Button btnAddOne = new Button( styleComp, SWT.PUSH );
+    btnAddOne.setText( "Add 1 Item" );
+    btnAddOne.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        addItem();
+      }
+    } );
+    Button btnAddMany = new Button( styleComp, SWT.PUSH );
+    btnAddMany.setText( "Add " + ADD_ITEMS + " Items" );
+    btnAddMany.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         for( int i = 0; i < ADD_ITEMS; i++ ) {
           addItem();
@@ -176,5 +187,72 @@ public class TableTab extends ExampleTab {
         table.showSelection();
       }
     } );
+  }
+  
+  private void createChangeColumnsControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Columns" );
+    final Text text = new Text( composite, SWT.BORDER );
+    text.setLayoutData( new RowData( 40, 20 ) );
+    text.setText( String.valueOf( columns ) );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Change" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        try {
+          columns = Integer.parseInt( text.getText() );
+        } catch( NumberFormatException e ) {
+          // ignore invalid column count
+        }
+        text.setText( String.valueOf( columns ) );
+        createNew();
+      }
+    } );
+  }
+  
+  private void createChangeItemControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
+    Label lblIndex = new Label( composite, SWT.NONE );
+    lblIndex.setText( "Index" );
+    final Text txtIndex = new Text( composite, SWT.BORDER );
+    txtIndex.setText( "0" );
+    Label lblText = new Label( composite, SWT.NONE );
+    lblText.setText( "Text" );
+    final Text txtText = new Text( composite, SWT.BORDER );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Change" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        try {
+          int index = Integer.parseInt( txtIndex.getText() );
+          TableItem[] selection = getTable().getSelection();
+          if( selection.length > 0 ) {
+            selection[ 0 ].setText( index, txtText.getText() );
+          }
+        } catch( NumberFormatException e ) {
+          // ignore invalid index number
+        }
+      }
+    } );
+    getTable().addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        try {
+          int index = Integer.parseInt( txtIndex.getText() );
+          TableItem[] selection = getTable().getSelection();
+          if( selection.length > 0 ) {
+            txtText.setText( selection[ 0 ].getText( index ) );
+          }
+        } catch( NumberFormatException e ) {
+          // ignore invalid index number
+        }
+      }
+    } );
+  }
+  
+  private Table getTable() {
+    return table;
   }
 }

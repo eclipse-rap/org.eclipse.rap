@@ -324,8 +324,10 @@ public class Display implements Adaptable {
       this.activeShell.saveFocus();
     }
     // Move active shell to end of list to maintain correct z-order
-    shells.remove( activeShell );
-    shells.add( activeShell );
+    if( activeShell != null ) {
+      shells.remove( activeShell );
+      shells.add( activeShell );
+    }
     this.activeShell = activeShell;
     if( this.activeShell != null ) {
       this.activeShell.restoreFocus();

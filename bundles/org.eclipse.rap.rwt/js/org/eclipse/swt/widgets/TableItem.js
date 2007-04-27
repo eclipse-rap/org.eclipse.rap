@@ -11,7 +11,7 @@
 
 /**
  * This class provides the client-side counterpart for 
- * org.eclipse.swt.TableItem.
+ * org.eclipse.swt.widgets.TableItem.
  */
 qx.OO.defineClass(
   "org.eclipse.swt.widgets.TableItem",
@@ -43,9 +43,7 @@ qx.Class.CONST_STYLE
   + ( qx.core.Client.getInstance().isGecko() ? "-moz-user-select:none;" : "" );
 
 qx.Class.LINE_BORDER
-  = "border-right:1px solid #eeeeee;" 
-  + "border-bottom:1px solid #eeeeee;" 
-  + "border-top:1px solid #eeeeee;";
+  = "border-right:1px solid #eeeeee;"; 
 
 qx.Proto.dispose = function() {
   if( this.isDisposed() ) {
@@ -62,8 +60,9 @@ qx.Proto.getTable = function() {
   return this._parent;
 }
 
-qx.Proto.setText = function( index, text ) {
-  this._texts[ index ] = text;  
+qx.Proto.setTexts = function( texts ) {
+  this._texts = texts;  
+  this.getTable().updateItem( this, true );
 }
 
 /**
@@ -72,33 +71,40 @@ qx.Proto.setText = function( index, text ) {
  */
 qx.Proto._getMarkup = function() {
   var markup = new Array();
-  for( var i = 0; i < this.getTable().getColumnCount(); i++ ) {
-    var column = this.getTable().getColumn( i )
-    var left = column.getLeft();
-    var width = column.getWidth();
-    var text;
-    if( this._texts ) {
-      text = this._texts[ i ];
-      if( text == "" ) {
-        text = "&nbsp;";  // fix wrong div-dimensions when no text
-      } 
-    } else {
-      text = "&nbsp;";
+  var text = "";
+  var table = this.getTable();
+  var columnCount = table.getColumnCount();
+  if( columnCount == 0 ) {
+    if( this._texts && this._texts.length > 0 ) {
+      text = this._texts[ 0 ];
     }
-    var cellMarkup
-      = org.eclipse.swt.widgets.TableItem.DIV_START_OPEN
-      + "style=\""
-      + org.eclipse.swt.widgets.TableItem.CONST_STYLE
-      + this._borderMarkup()
-      + "left:" + left + org.eclipse.swt.widgets.TableItem.PX
-      + "width:" + width + org.eclipse.swt.widgets.TableItem.PX
-      + "\""
-      + org.eclipse.swt.widgets.TableItem.DIV_START_CLOSE
-      + text
-      + org.eclipse.swt.widgets.TableItem.DIV_END;
-    markup.push( cellMarkup );
+    var defaultWidth = table.getDefaultColumnWidth();
+    markup.push( this._getCellMarkup( 0, defaultWidth, text ) );
+  } else {
+    for( var i = 0; i < columnCount; i++ ) {
+      var column = table.getColumn( i )
+      var left = column.getLeft();
+      var width = column.getWidth();
+      if( this._texts ) {
+        text = this._texts[ i ];
+      }
+      markup.push( this._getCellMarkup( left, width, text ) );
+    }
   }
   return markup.join( "" );
+}
+
+qx.Proto._getCellMarkup = function( left, width, text ) {
+  return   org.eclipse.swt.widgets.TableItem.DIV_START_OPEN
+         + "style=\""
+         + org.eclipse.swt.widgets.TableItem.CONST_STYLE
+         + this._borderMarkup()
+         + "left:" + left + org.eclipse.swt.widgets.TableItem.PX
+         + "width:" + width + org.eclipse.swt.widgets.TableItem.PX
+         + "\""
+         + org.eclipse.swt.widgets.TableItem.DIV_START_CLOSE
+         + ( text == "" ? "&nbsp;" : text )
+         + org.eclipse.swt.widgets.TableItem.DIV_END;
 }
 
 qx.Proto._borderMarkup = function() {

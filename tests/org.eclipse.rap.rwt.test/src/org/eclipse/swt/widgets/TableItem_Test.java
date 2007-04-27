@@ -92,6 +92,19 @@ public class TableItem_Test extends TestCase {
     assertEquals( 0, bounds.y );
     assertTrue( bounds.height > 0 );
     assertEquals( column2.getWidth(), bounds.width );
+
+    // bounds for out-of-range item 
+    bounds = item.getBounds( table.getColumnCount() + 100 );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+  }
+  
+  public void testBoundsWithoutColumn() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "some text" );
+    assertTrue( item.getBounds().width > 0 );
   }
   
   public void testInvalidBounds() {
@@ -104,5 +117,27 @@ public class TableItem_Test extends TestCase {
     item.setText( 1, "col2" );
     
     assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getBounds( 1 ) );
+  }
+  
+  public void testText() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    
+    // Test with no columns at all
+    assertEquals( "", item.getText() ); 
+    assertEquals( "", item.getText( 123 ) );
+    item.setText( 5, "abc" );
+    assertEquals( "", item.getText( 5 ) );
+    
+    // Test with columns
+    new TableColumn( table, SWT.NONE );
+    assertEquals( "", item.getText() ); 
+    assertEquals( "", item.getText( 123 ) );
+    item.setText( 1, "abc" );
+    assertEquals( "", item.getText( 1 ) );
+    item.setText( 5, "abc" );
+    assertEquals( "", item.getText( 5 ) );
   }
 }

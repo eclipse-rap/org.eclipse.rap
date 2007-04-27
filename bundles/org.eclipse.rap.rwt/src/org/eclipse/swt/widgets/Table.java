@@ -29,16 +29,18 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * <li>Though it is possible to create a table with MULTI style, only SINGLE
  *  selections are implemented. This also applies when using setSelection with 
  *  more than one TableItem</li>
- *  <li>linesVisible defaults to <code>false</code> as in SWT and can be queried
- *  with getLinesVisible. The setLinesVisible methd is not yet implemented.</li>
  *  <li>VIRTUAL not yet implemented</li>
  *  <li>showSelection and showItem currently do a very rough proximation since
  *  getClientArea is not yet implemented properly</li>
  *  <li>Tables created with style BORDER are not yet drawn correctly</li>
  *  <li>Scroll bars stay enabled even though the table itself is disabled. This
- *  is due to a qooxdoo limitation, see http://bugzilla.qooxdoo.org/post_bug.cgi
+ *  is due to a qooxdoo limitation, see 
+ *  http://bugzilla.qooxdoo.org/show_bug.cgi?id=352
  *  </li>
  *  <li>No images yet</li>
+ *  <li>No keyboard navigation</li>
+ *  <li>ColumnOrder and re-ordering columns on the client-side not yet
+ *  implemented</li>
  * </ul> 
  */
 public class Table extends Composite {
@@ -114,7 +116,7 @@ public class Table extends Composite {
 
   public TableColumn[] getColumns() {
     checkWidget();
-    return (org.eclipse.swt.widgets.TableColumn[] )columnHolder.getItems();
+    return ( TableColumn[] )columnHolder.getItems();
   }
 
   public TableColumn getColumn( final int index ) {
@@ -140,7 +142,7 @@ public class Table extends Composite {
 
   public TableItem[] getItems() {
     checkWidget();
-    return (org.eclipse.swt.widgets.TableItem[] )itemHolder.getItems();
+    return ( TableItem[] )itemHolder.getItems();
   }
 
   public TableItem getItem( final int index ) {
@@ -227,7 +229,7 @@ public class Table extends Composite {
     }
     selection = new TableItem[ buffer.size() ];
     buffer.toArray( selection );
-    return (org.eclipse.swt.widgets.TableItem[] )selection.clone();
+    return ( TableItem[] )selection.clone();
   }
 
   public void setSelection( final int[] indices ) {
@@ -306,19 +308,19 @@ public class Table extends Composite {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
     int itemIndex = indexOf( item );
-    // Show item as top item
-    setTopIndex( itemIndex );
-    // try to show it 2 rows above the bottom/last item
-// TODO [rh] replace this once getClientArea is working    
-    int height = getBounds().height 
-               - getHeaderHeight() 
-               - ScrollBar.SCROLL_BAR_HEIGHT;
-    int visibleRows = height / getItemHeight();
-    int idealTopIndex = itemIndex - visibleRows + 2;
-    if( idealTopIndex >= getItemCount() ) {
-      idealTopIndex = getItemCount() - 1;
-    }
-    setTopIndex( idealTopIndex );
+    int visibleItemCount = getVisibleItemCount();
+    if( itemIndex < topIndex || itemIndex > topIndex + visibleItemCount ) {
+      // Show item as top item
+      setTopIndex( itemIndex );
+      // try to show it 2 rows above the bottom/last item
+      int idealTopIndex = itemIndex - visibleItemCount + 2;
+      if( idealTopIndex >= getItemCount() ) {
+        idealTopIndex = getItemCount() - 1;
+      }
+      if( idealTopIndex >= 0 ) {
+        setTopIndex( idealTopIndex );
+      }
+    } 
   }
   
   public void showSelection() {
@@ -431,6 +433,14 @@ public class Table extends Composite {
     buffer.toArray( result );
     Arrays.sort( result );
     return result;
+  }
+  
+  private int getVisibleItemCount() {
+    //  TODO [rh] replace this once getClientArea is working    
+    int clientHeight = getBounds().height 
+                     - getHeaderHeight() 
+                     - ScrollBar.SCROLL_BAR_HEIGHT;
+    return clientHeight / getItemHeight();
   }
 
   private static int checkStyle( final int style ) {

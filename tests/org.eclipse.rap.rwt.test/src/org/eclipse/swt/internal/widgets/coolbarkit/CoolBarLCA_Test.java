@@ -11,17 +11,31 @@
 
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
+import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.lifecycle.PreserveWidgetsPhaseListener;
+import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 import com.w4t.Fixture;
+import com.w4t.engine.lifecycle.PhaseId;
+import com.w4t.engine.requests.RequestParams;
 
 
 public final class CoolBarLCA_Test extends TestCase {
+
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
+  }
 
   public void testItemPreserveValues() {
     Display display = new Display();
@@ -39,7 +53,8 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
   }
   
-  public void testItemReordering() {
+  public void testItemReordering1() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell  = new Shell( display, SWT.NONE );
     CoolBar bar = new CoolBar( shell, SWT.FLAT );
@@ -78,7 +93,7 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item2 ) ] );
     assertEquals( 2, bar.getItemOrder()[ bar.indexOf( item0 ) ] );
 
-    // Simulate that item0 is dragged onto itself -> nothing shoudl change
+    // Simulate that item0 is dragged onto itself -> nothing should change
     bar.setItemOrder( new int[] { 0, 1, 2, } );
     newX = item0.getBounds().x + 2;
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
@@ -99,11 +114,102 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( 2, bar.getItemOrder()[ bar.indexOf( item2 ) ] );
   }
   
-  protected void setUp() throws Exception {
-    RWTFixture.setUp();
+  public void testItemReordering2() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.setLayout( new RowLayout() );
+    CoolBar bar = new CoolBar( shell, SWT.FLAT );
+    CoolItem item0 = new CoolItem( bar, SWT.NONE );
+    item0.setControl( new ToolBar( bar, SWT.NONE ) );
+    item0.setSize( 250, 25 );
+    CoolItem item1 = new CoolItem( bar, SWT.NONE );
+    item1.setSize( 250, 25 );
+    item1.setControl( new ToolBar( bar, SWT.NONE ) );
+    shell.layout();
+    shell.open();
+    // Set up environment; get displayId first as it currently is in 'real life'
+    String displayId = DisplayUtil.getId( display );
+    String item0Id = WidgetUtil.getId( item0 );
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( bar );
+    RWTFixture.markInitialized( item0 );
+    RWTFixture.markInitialized( item0.getControl() );
+    RWTFixture.markInitialized( item1 );
+    RWTFixture.markInitialized( item1.getControl() );
+    RWTLifeCycle lifeCycle = createLifeCycle();
+    
+    // Drag item0 and drop it inside the bounds of item1
+    bar.setItemOrder( new int[] { 0, 1 } );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
+    Fixture.fakeRequestParam( item0Id + ".bounds.x", "483" );
+    Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
+    lifeCycle.execute();
+    assertEquals( 0, bar.getItemOrder()[ bar.indexOf( item1 )] );
+    assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item0 )] );
+    
+    // Drag item0 and drop it beyound the bounds of item1
+    bar.setItemOrder( new int[] { 0, 1 } );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
+    Fixture.fakeRequestParam( item0Id + ".bounds.x", "2000" );
+    Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
+    lifeCycle.execute();
+    assertEquals( 0, bar.getItemOrder()[ bar.indexOf( item1 )] );
+    assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item0 )] );
+  }
+  
+  public void testSnapBackItemMoved() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.setLayout( new RowLayout() );
+    CoolBar bar = new CoolBar( shell, SWT.FLAT );
+    CoolItem item0 = new CoolItem( bar, SWT.NONE );
+    item0.setControl( new ToolBar( bar, SWT.NONE ) );
+    item0.setSize( 250, 25 );
+    CoolItem item1 = new CoolItem( bar, SWT.NONE );
+    item1.setSize( 250, 25 );
+    item1.setControl( new ToolBar( bar, SWT.NONE ) );
+    shell.layout();
+    shell.open();
+    // Set up environment; get displayId first as it currently is in 'real life'
+    String displayId = DisplayUtil.getId( display );
+    String item0Id = WidgetUtil.getId( item0 );
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( bar );
+    RWTFixture.markInitialized( item0 );
+    RWTFixture.markInitialized( item0.getControl() );
+    RWTFixture.markInitialized( item1 );
+    RWTFixture.markInitialized( item1.getControl() );
+    RWTLifeCycle lifeCycle = createLifeCycle();
+    
+    // Simulate that fist item is dragged around but dropped at its original
+    // position
+    bar.setItemOrder( new int[] { 0, 1 } );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
+    Fixture.fakeRequestParam( item0Id + ".bounds.x", "250" );
+    Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
+    lifeCycle.execute();
+    assertEquals( 0, bar.getItemOrder()[ bar.indexOf( item0 )] );
+    assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item1 )] );
+    String expected 
+      = "var w = wm.findWidgetById( \"" + item0Id + "\" );" 
+      + "w.setSpace(";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
-  protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
+  //////////////////
+  // Helping methods
+  
+  private static RWTLifeCycle createLifeCycle() {
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
+    return lifeCycle;
   }
 }

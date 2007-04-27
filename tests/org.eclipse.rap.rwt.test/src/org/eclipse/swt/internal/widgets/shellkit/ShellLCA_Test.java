@@ -139,6 +139,22 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setActive" ) );
   }
   
+  public void testDisposeSingleShell() throws IOException { 
+    Display display = new Display(); 
+    Shell shell = new Shell( display ); 
+    shell.open(); 
+    String displayId = DisplayUtil.getId( display ); 
+    String shellId = WidgetUtil.getId( shell ); 
+    RWTFixture.fakeNewRequest(); 
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId ); 
+    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId ); 
+    RWTLifeCycle lifeCycle = new RWTLifeCycle(); 
+    lifeCycle.execute(); 
+    assertEquals( 0, display.getShells().length ); 
+    assertEquals( null, display.getActiveShell() ); 
+    assertEquals( true, shell.isDisposed() );
+  } 
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

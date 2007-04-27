@@ -11,10 +11,12 @@
 
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
+import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
+import com.w4t.Fixture;
 
 
 public class TableItemLCA_Test extends TestCase {
@@ -54,5 +56,22 @@ public class TableItemLCA_Test extends TestCase {
     // Changing nothing -> itemContentChanged == false 
     tableItemLCA.preserveValues( item );
     assertTrue( TableItemLCA.itemContentChanged( item ) );
+  }
+  
+  public void testItemTextWithoutColumn() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    // Ensure that even though there are no columns, the first text of an item
+    // will be rendered
+    Fixture.fakeResponseWriter();
+    TableItemLCA tableItemLCA = new TableItemLCA();
+    RWTFixture.markInitialized( item );
+    tableItemLCA.preserveValues( item );
+    item.setText( "newText" );
+    tableItemLCA.renderChanges( item );
+    String expected = "w.setTexts( [ \"newText\" ] )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 }
