@@ -511,7 +511,8 @@ qx.Proto._onColumnChangeSize = function( evt ) {
 // UI Update upon scroll, size changes, etc
 
 qx.Proto._updateScrollHeight = function() {
-  this._vertScrollBar.setMaximum( this._items.length * this._itemHeight );
+  var height = this._itemHeight + this._items.length * this._itemHeight;
+  this._vertScrollBar.setMaximum( height );
 }
 
 qx.Proto._updateScrollWidth = function() {
@@ -684,7 +685,7 @@ qx.Proto._showResizeLine = function( x ) {
     this._resizeLine = resizeLine;
   }
   resizeLine._applyRuntimeLeft( x - 2 ); // -1 for the width
-  resizeLine._applyRuntimeHeight( this.getHeight() );
+  resizeLine._applyRuntimeHeight( this.getHeight() - this._horzScrollBar.getHeight() );
   resizeLine.removeStyleProperty( "visibility" );
 }
 

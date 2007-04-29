@@ -135,11 +135,11 @@ public class Table_Test extends TestCase {
     
     // test text for first column, the same as setText(String)
     item.setText( text0 );
-    assertSame( text0, item.getText() );
-    assertSame( text0, item.getText( 0 ) );
+    assertEquals( text0, item.getText() );
+    assertEquals( text0, item.getText( 0 ) );
     item.setText( 0, text1 );
-    assertSame( text1, item.getText() );
-    assertSame( text1, item.getText( 0 ) );
+    assertEquals( text1, item.getText() );
+    assertEquals( text1, item.getText( 0 ) );
     try {
       item.setText( 0, null );
       fail( "Parameter index must not be null." );
@@ -149,15 +149,15 @@ public class Table_Test extends TestCase {
     
     // test text setting if no table column exists
     item.setText( 1, text1 );
-    assertSame( "", item.getText( 1 ) );
+    assertEquals( "", item.getText( 1 ) );
     item.setText( 2, text1 );
-    assertSame( "", item.getText( 2 ) );
+    assertEquals( "", item.getText( 2 ) );
     // test text setting if table column exists
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     item.setText( 2, text2 );
-    assertSame( text2, item.getText( 2 ) );
+    assertEquals( text2, item.getText( 2 ) );
     
     // test text retrievment after last column was disposed
     column2.dispose();
@@ -177,25 +177,25 @@ public class Table_Test extends TestCase {
     for( int i = 0; i < texts.length; i++ ) {
       item.setText( i, texts[ i ] );
     }
-    assertSame( text0, item.getText( 0 ) );
-    assertSame( text1, item.getText( 1 ) );
-    assertSame( text2, item.getText( 2 ) );
-    assertSame( text3, item.getText( 3 ) );
-    assertSame( text4, item.getText( 4 ) );
-    assertSame( "", item.getText( 5 ) );
+    assertEquals( text0, item.getText( 0 ) );
+    assertEquals( text1, item.getText( 1 ) );
+    assertEquals( text2, item.getText( 2 ) );
+    assertEquals( text3, item.getText( 3 ) );
+    assertEquals( text4, item.getText( 4 ) );
+    assertEquals( "", item.getText( 5 ) );
     
     // test disposal of column that is not the last one
     column2.dispose();
-    assertSame( text0, item.getText( 0 ) );
-    assertSame( text1, item.getText( 1 ) );
-    assertSame( text3, item.getText( 2 ) );
-    assertSame( text4, item.getText( 3 ) );
-    assertSame( "", item.getText( 4 ) );
+    assertEquals( text0, item.getText( 0 ) );
+    assertEquals( text1, item.getText( 1 ) );
+    assertEquals( text3, item.getText( 2 ) );
+    assertEquals( text4, item.getText( 3 ) );
+    assertEquals( "", item.getText( 4 ) );
     column0.dispose();
-    assertSame( text1, item.getText( 0 ) );
-    assertSame( text3, item.getText( 1 ) );
-    assertSame( text4, item.getText( 2 ) );
-    assertSame( "", item.getText( 3 ) );
+    assertEquals( text1, item.getText( 0 ) );
+    assertEquals( text3, item.getText( 1 ) );
+    assertEquals( text4, item.getText( 2 ) );
+    assertEquals( "", item.getText( 3 ) );
   }
   
   public void testTopIndex() {

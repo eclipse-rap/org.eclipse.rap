@@ -101,11 +101,6 @@ public class TableColumn extends Item {
   }
 
   protected void releaseParent() {
-    TableItem[] items = parent.getItems();
-    int index = parent.indexOf( this );
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].removeText( index );
-    }
     parent.destroyColumn( this );
   }
 

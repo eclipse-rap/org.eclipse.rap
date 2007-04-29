@@ -162,4 +162,24 @@ public class TableColumn_Test extends TestCase {
     event = ( ControlEvent )log.get( 0 );
     assertEquals( column, event.getSource() );
   }
+  
+  public void testDisposeLast() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "itemText for column 0" );
+    item.setText( 1, "itemText for column 1" );
+    
+    column1.dispose();
+    assertEquals( "", item.getText( 1 ) ); 
+    assertEquals( "itemText for column 0", item.getText() );
+
+    column0.dispose();
+    assertEquals( 0, table.getColumnCount() );
+    assertEquals( 1, table.getItemCount() );
+    assertEquals( "itemText for column 0", item.getText() );
+  }
 }

@@ -179,7 +179,7 @@ public class Table extends Composite {
   // Selection handling methods
   
   public int getSelectionIndex() {
-    // TODO: [fappel] currently we do not have an focus indicator, so
+    // TODO: [fappel] currently we do not have a focus indicator, so
     //                we return simply return the first index in range
     int selectionIndex = -1;
     TableItem[] currentSelection = getSelection();
@@ -402,6 +402,11 @@ public class Table extends Composite {
   }
   
   final void destroyColumn( final TableColumn column ) {
+    TableItem[] items = getItems();
+    int index = indexOf( column );
+    for( int i = 0; i < items.length; i++ ) {
+      items[ i ].removeText( index );
+    }
     columnHolder.remove( column );
   }
   

@@ -18,8 +18,12 @@ import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 
 public class TableItem extends Item {
 
+  private static final class Data {
+    String text;
+  }
+  
   private final Table parent;
-  private String[] texts;
+  private Data[] data;
 
   public TableItem( final Table parent, final int style ) {
     this( parent, style, checkNull( parent).getItemCount() );
@@ -44,68 +48,61 @@ public class TableItem extends Item {
   //////////////////////////////////////////////////////////
   // Methods to get/set text for second column and following  
   
+  public void setText( final String text ) {
+    checkWidget();
+    setText( 0, text );
+  }
+  
   public void setText( final int index, final String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( index == 0 ) {
-      super.setText( text );
-    } else {
-      int count = Math.max( 1, parent.getColumnCount() );
-      if( index > 0 && index < count ) {
-        if( texts == null ) {
-          texts = new String[ count ];
-          texts[ 0 ] = getText();
-        } else if( texts.length < count ) {
-          enlargeTexts( count );
-        }
-        texts[ index ] = text;
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      if( data == null ) {
+        data = new Data[ count ];
+      } else if( data.length < count ) {
+        enlargeData( count );
       }
+      if( data[ index ] == null ) {
+        data[ index ] = new Data();
+      }
+      data[ index ].text = text;
     }
   }
 
+  public String getText() {
+    checkWidget();
+    return getText( 0 );
+  }
+  
   public String getText( final int index ) {
     checkWidget();
     String result = "";
-    if( index == 0 ) {
-      result = super.getText();
-    } else {
-      int count = Math.max( 1, parent.getColumnCount() );
-      if( texts != null && index > 0 && index < count ) {
-        if( texts.length < count ) {
-          enlargeTexts( count );
-        }
-        result = texts[ index ];
-        if( result == null ) {
-          result = "";
-        }
-      }
+    if(    data != null 
+        && index >= 0 
+        && index < data.length 
+        && data[ index ] != null ) 
+    {
+      result = data[ index ].text;
     }
     return result;
   }
 
   final void removeText( final int index ) {
-    if( texts != null ) {
-      String[] newTexts = new String[ texts.length - 1 ];
-      System.arraycopy( texts, 0, newTexts, 0, index );
-      int offSet = texts.length - index - 1;
-      System.arraycopy( texts, index + 1, newTexts, index, offSet );
-      texts = newTexts;
-      if( index == 0 ) {
-        if( texts.length == 0 ) {
-          super.setText( "" );
-        } else {
-          super.setText( texts[ 0 ] );
-        }
-      }
+    if( data != null && parent.getColumnCount() > 1 ) {
+      Data[] newData = new Data[ data.length - 1 ];
+      System.arraycopy( data, 0, newData, 0, index );
+      int offSet = data.length - index - 1;
+      System.arraycopy( data, index + 1, newData, index, offSet );
+      data = newData;
     }
   }
   
   public void clear() {
     checkWidget();
-    super.setText( "" );
-    texts = null;
+    data = null;
     super.setImage( null );
   }
 
@@ -167,10 +164,10 @@ public class TableItem extends Item {
   //////////////////
   // helping methods
   
-  private void enlargeTexts( final int count ) {
-    String[] newTexts = new String[ count ];
-    System.arraycopy( texts, 0, newTexts, 0, texts.length );
-    texts = newTexts;
+  private void enlargeData( final int count ) {
+    Data[] newData = new Data[ count ];
+    System.arraycopy( data, 0, newData, 0, data.length );
+    data = newData;
   }
 
   private static Table checkNull( final Table table ) {
