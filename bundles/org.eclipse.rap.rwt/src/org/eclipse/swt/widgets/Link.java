@@ -21,7 +21,7 @@ import org.eclipse.swt.internal.widgets.ILinkAdapter;
 public class Link extends Control {
 
   private String text = "";
-  private String displayText;
+  private String displayText = "";
   private Point[] offsets;
   private String[] ids;
   private int[] mnemonics;
