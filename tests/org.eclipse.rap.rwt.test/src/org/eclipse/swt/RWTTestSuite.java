@@ -29,6 +29,7 @@ import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA_Test;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA_Test;
 import org.eclipse.swt.internal.widgets.listkit.ListLCA_Test;
+import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA_Test;
 import org.eclipse.swt.internal.widgets.menukit.MenuLCA_Test;
 import org.eclipse.swt.internal.widgets.sashkit.SashLCA_Test;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA_Test;
@@ -85,6 +86,7 @@ public class RWTTestSuite {
     suite.addTestSuite( WidgetTreeVisitor_Test.class );
     suite.addTestSuite( Layout_Test.class );
     suite.addTestSuite( SlimList_Test.class );
+    suite.addTestSuite( Button_Test.class );
     suite.addTestSuite( Tree_Test.class );
     suite.addTestSuite( TreeItem_Test.class );
     suite.addTestSuite( TabFolderAndItem_Test.class );
@@ -124,6 +126,7 @@ public class RWTTestSuite {
     suite.addTestSuite( TreeItemLCA_Test.class );
     suite.addTestSuite( ShellLCA_Test.class );
     suite.addTestSuite( MenuLCA_Test.class );
+    suite.addTestSuite( MenuItemLCA_Test.class );
     suite.addTestSuite( TableColumnLCA_Test.class );
     suite.addTestSuite( TableItemLCA_Test.class );
     suite.addTestSuite( CTabFolderLCA_Test.class );
