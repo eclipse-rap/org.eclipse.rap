@@ -24,6 +24,7 @@ import org.eclipse.swt.internal.graphics.FontSizeEstimation_Test;
 import org.eclipse.swt.internal.lifecycle.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
+import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCA_Test;
 import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA_Test;
@@ -133,6 +134,7 @@ public class RWTTestSuite {
     suite.addTestSuite( CoolBarLCA_Test.class );
     suite.addTestSuite( ListLCA_Test.class );
     suite.addTestSuite( SpinnerLCA_Test.class );
+    suite.addTestSuite( ComboLCA_Test.class );
     return suite;
   }
 }

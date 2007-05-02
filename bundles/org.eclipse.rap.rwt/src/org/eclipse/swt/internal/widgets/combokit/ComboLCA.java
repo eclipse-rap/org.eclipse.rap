@@ -34,6 +34,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     "org.eclipse.swt.ComboUtil.createComboBoxItems";
   private static final String SELECT_COMBOBOX_ITEM = 
     "org.eclipse.swt.ComboUtil.selectComboBoxItem";
+
+  // Property names for preserveValues
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
   
