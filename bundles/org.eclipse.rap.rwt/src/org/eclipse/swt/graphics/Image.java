@@ -187,6 +187,12 @@ public final class Image {
   private static Point readImageSize( final InputStream input ) {
     Point result = null;
     try {
+      // [fappel]: We don't use caching since it sometimes causes problems
+      //           if the application is deployed at a servlet container. This
+      //           does not have any memories or performance impacts, since
+      //           a image is a value object that is loaded only once in
+      //           an application.
+      ImageIO.setUseCache( false );
       BufferedImage image = ImageIO.read( input );
       if( image != null ) {
         int width = image.getWidth();
