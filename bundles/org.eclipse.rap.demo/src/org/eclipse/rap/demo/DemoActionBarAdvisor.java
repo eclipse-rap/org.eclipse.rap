@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.entrypoint.ActionBarAdvisor;
 import org.eclipse.ui.entrypoint.IActionBarConfigurer;
@@ -24,6 +25,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
 
   private IWorkbenchAction exitAction;
   private Action aboutAction;
+  private MenuManager showViewMenuMgr;
 
   public DemoActionBarAdvisor( final IActionBarConfigurer configurer ) {
     super( configurer );
@@ -51,16 +53,27 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     aboutAction.setId( "org.eclipse.rap.demo.about" );
     aboutAction.setImageDescriptor( image2 );
     register( aboutAction );
+    
+    showViewMenuMgr = new MenuManager("Show View", "showView"); //$NON-NLS-1$
+    IContributionItem showViewMenu
+      = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
+    showViewMenuMgr.add(showViewMenu);
+    
   }
 
   protected void fillMenuBar( final IMenuManager menuBar ) {
     MenuManager fileMenu = new MenuManager( "File",
                                             IWorkbenchActionConstants.M_FILE );
+    MenuManager windowMenu = new MenuManager( "Window",
+            								IWorkbenchActionConstants.M_WINDOW );    
     MenuManager helpMenu = new MenuManager( "Help",
                                             IWorkbenchActionConstants.M_HELP );
     
     menuBar.add( fileMenu );
     fileMenu.add( exitAction );
+    
+    windowMenu.add(showViewMenuMgr);
+    menuBar.add( windowMenu );
     
     menuBar.add( helpMenu );
     helpMenu.add( aboutAction );

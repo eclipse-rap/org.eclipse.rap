@@ -30,5 +30,9 @@ public class Perspective implements IPerspectiveFactory {
                                                   editorArea );
     topRight.addView( "org.eclipse.rap.demo.DemoSelectionViewPart" );
     topRight.addView( "org.eclipse.rap.demo.DemoBrowserViewPart" );
+    
+    // add shortcuts to show view menu
+    layout.addShowViewShortcut("org.eclipse.rap.demo.DemoTreeViewPartI");
+    layout.addShowViewShortcut("org.eclipse.rap.demo.DemoTreeViewPartII");
   }
 }

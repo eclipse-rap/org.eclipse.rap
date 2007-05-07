@@ -28,56 +28,54 @@
   </extension>
   
   <extension point="org.eclipse.rap.ui.workbench.views"> 
-      <!-- category 
-         id="com.xyz.views.XYZviews" 
-         name="XYZ"/--> 
       <view
+            category="one"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
             icon="icons/contact.gif"
             id="org.eclipse.rap.demo.DemoTreeViewPartI"
             name="View I"/> 
-         <!-- category="com.xyz.views.XYZviews" --> 
-         <!-- icon="icons/XYZ.gif"/ -->
       <view
+            category="one"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
             icon="icons/info.gif"
             id="org.eclipse.rap.demo.DemoTreeViewPartII"
             name="View II"/> 
-         <!-- category="com.xyz.views.XYZviews" --> 
-         <!-- icon="icons/XYZ.gif"/ -->
       <view
+            category="one"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
             icon="icons/login.gif"
             id="org.eclipse.rap.demo.DemoTreeViewPartIII"
             name="View III"/> 
-         <!-- category="com.xyz.views.XYZviews" --> 
-         <!-- icon="icons/XYZ.gif"/ -->
       <view
+            category="two"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
             icon="icons/register.gif"
             id="org.eclipse.rap.demo.DemoTreeViewPartIV"
             name="View V"/> 
-         <!-- category="com.xyz.views.XYZviews" --> 
-         <!-- icon="icons/XYZ.gif"/ -->
       <view
+            category="two"
             class="org.eclipse.rap.demo.DemoTableViewPart"
             icon="icons/search.gif"
             id="org.eclipse.rap.demo.DemoTableViewPart"
             name="View IV"/> 
-         <!-- category="com.xyz.views.XYZviews" --> 
-         <!-- icon="icons/XYZ.gif"/ -->
       <view
+            category="two"
             class="org.eclipse.rap.demo.DemoSelectionViewPart"
             icon="icons/status.gif"
             id="org.eclipse.rap.demo.DemoSelectionViewPart"
             name="Selection View"/> 
-         <!-- category="com.xyz.views.XYZviews" --> 
-         <!-- icon="icons/XYZ.gif"/ -->
       <view
+            category="two"
             class="org.eclipse.rap.demo.DemoBrowserViewPart"
             icon="icons/internal_browser.gif"
             id="org.eclipse.rap.demo.DemoBrowserViewPart"
-            name="Browser"/> 
+            name="Browser"/>
+      <category
+            id="one"
+            name="Category 1"/>
+      <category
+            id="two"
+            name="Category 2"/>
    </extension> 
   
 </plugin>
