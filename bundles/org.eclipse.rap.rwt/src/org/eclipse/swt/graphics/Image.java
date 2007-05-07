@@ -186,6 +186,7 @@ public final class Image {
    */
   private static Point readImageSize( final InputStream input ) {
     Point result = null;
+    boolean cacheBuffer = ImageIO.getUseCache();
     try {
       // [fappel]: We don't use caching since it sometimes causes problems
       //           if the application is deployed at a servlet container. This
@@ -203,6 +204,8 @@ public final class Image {
       // ImageReader throws IllegalArgumentExceptions for some files
       // TODO [rst] log exception
       e.printStackTrace();
+    } finally {
+      ImageIO.setUseCache( cacheBuffer );
     }
     return result;
   }
