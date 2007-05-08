@@ -196,7 +196,7 @@ public final class Image {
       ImageIO.setUseCache( false );
       // TODO [fappel]: To use BufferedImage on Mac Os the following 
       //                system property has to be set: java.awt.headless=true.
-      //                Put this Info in a general documentation
+      //                Put this info in a general documentation
       BufferedImage image = ImageIO.read( input );
       if( image != null ) {
         int width = image.getWidth();
