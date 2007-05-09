@@ -56,7 +56,7 @@ public final class RowData {
    * <code>false</code>, the size and position of the control will be
    * computed and assigned. The default value is <code>false</code>.
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public boolean exclude = false;
 

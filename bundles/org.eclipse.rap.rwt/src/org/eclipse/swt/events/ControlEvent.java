@@ -14,7 +14,10 @@ package org.eclipse.swt.events;
 import com.w4t.Adaptable;
 
 /**
- * TODO: [fappel] comment
+ * Instances of this class are sent as a result of
+ * controls being moved or resized.
+ *
+ * @see ControlListener
  */
 public final class ControlEvent extends RWTEvent {
 

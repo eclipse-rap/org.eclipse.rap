@@ -19,8 +19,13 @@ import com.w4t.Adaptable;
 
 
 /**
- * TODO[rh] JavaDoc
- * <p></p>
+ * Instances of this class are sent as a result of
+ * widgets being selected.
+ * <p>
+ * Note: The fields that are filled in depend on the widget.
+ * </p>
+ *
+ * @see SelectionListener
  */
 public class SelectionEvent extends RWTEvent {
 
@@ -29,12 +34,43 @@ public class SelectionEvent extends RWTEvent {
   
   private static final Class LISTENER = SelectionListener.class;
   
+  /**
+   * The x location of the selected area.
+   */
   public int x;
+
+  /**
+   * The y location of selected area.
+   */
   public int y;
+
+  /**
+   * The width of selected area.
+   */
   public int width;
+
+  /**
+   * The height of selected area.
+   */
   public int height;
+
+  /**
+   * The text of the hyperlink that was selected.
+   * This will be either the text of the hyperlink or the value of its HREF,
+   * if one was specified.
+   * 
+   * @see org.eclipse.swt.widgets.Link#setText(String)
+   * @since 1.0
+   */
   public String text;
+  
+	/**
+	 * A flag indicating whether the operation should be allowed.
+	 * Setting this field to <code>false</code> will cancel the
+	 * operation, depending on the widget.
+	 */
   public boolean doit;
+  
   public Item item;
   public int detail;
   

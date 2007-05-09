@@ -22,7 +22,7 @@ import com.w4t.Adaptable;
  * {@link Browser#setUrl(String)} or when the user activates a
  * hyperlink.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public class LocationEvent extends RWTEvent {
   

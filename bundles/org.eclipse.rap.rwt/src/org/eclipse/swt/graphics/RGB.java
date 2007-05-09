@@ -83,7 +83,7 @@ public final class RGB {
    *              <li>ERROR_INVALID_ARGUMENT - if the hue is not between 0 and
    *              360 or the saturation or brightness is not between 0 and 1</li>
    *              </ul>
-   * @since 3.2
+   * @since 1.0
    */
   public RGB( float hue, float saturation, float brightness ) {
     if( hue < 0
@@ -150,7 +150,7 @@ public final class RGB {
    * Returns the hue, saturation, and brightness of the color.
    * 
    * @return color space values in float format (hue, saturation, brightness)
-   * @since 3.2
+   * @since 1.0
    */
   public float[] getHSB() {
     float r = red / 255f;

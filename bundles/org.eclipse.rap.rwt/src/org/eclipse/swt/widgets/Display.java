@@ -25,8 +25,81 @@ import com.w4t.engine.requests.RequestParams;
 import com.w4t.engine.service.ContextProvider;
 
 /**
- * TODO [rh] JavaDoc
+ * Instances of this class are responsible for managing the
+ * connection between SWT and the underlying operating
+ * system. Their most important function is to implement
+ * the SWT event loop in terms of the platform event model.
+ * They also provide various methods for accessing information
+ * about the operating system, and have overall control over
+ * the operating system resources which SWT allocates.
+ * <p>
+ * Applications which are built with SWT will <em>almost always</em>
+ * require only a single display. In particular, some platforms
+ * which SWT supports will not allow more than one <em>active</em>
+ * display. In other words, some platforms do not support
+ * creating a new display if one already exists that has not been
+ * sent the <code>dispose()</code> message.
+ * <p>
+ * In SWT, the thread which creates a <code>Display</code>
+ * instance is distinguished as the <em>user-interface thread</em>
+ * for that display.
+ * </p>
+ * The user-interface thread for a particular display has the
+ * following special attributes:
+ * <ul>
+ * <li>
+ * The event loop for that display must be run from the thread.
+ * </li>
+ * <li>
+ * Some SWT API methods (notably, most of the public methods in
+ * <code>Widget</code> and its subclasses), may only be called
+ * from the thread. (To support multi-threaded user-interface
+ * applications, class <code>Display</code> provides inter-thread
+ * communication methods which allow threads other than the 
+ * user-interface thread to request that it perform operations
+ * on their behalf.)
+ * </li>
+ * <li>
+ * The thread is not allowed to construct other 
+ * <code>Display</code>s until that display has been disposed.
+ * (Note that, this is in addition to the restriction mentioned
+ * above concerning platform support for multiple displays. Thus,
+ * the only way to have multiple simultaneously active displays,
+ * even on platforms which support it, is to have multiple threads.)
+ * </li>
+ * </ul>
+ * Enforcing these attributes allows SWT to be implemented directly
+ * on the underlying operating system's event model. This has 
+ * numerous benefits including smaller footprint, better use of 
+ * resources, safer memory management, clearer program logic,
+ * better performance, and fewer overall operating system threads
+ * required. The down side however, is that care must be taken
+ * (only) when constructing multi-threaded applications to use the
+ * inter-thread communication mechanisms which this class provides
+ * when required.
+ * </p><p>
+ * All SWT API methods which may only be called from the user-interface
+ * thread are distinguished in their documentation by indicating that
+ * they throw the "<code>ERROR_THREAD_INVALID_ACCESS</code>"
+ * SWT exception.
+ * </p>
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>(none)</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>Close, Dispose</dd>
+ * </dl>
+ * <p>
+ * IMPORTANT: This class is <em>not</em> intended to be subclassed.
+ * </p>
+ * @see #syncExec
+ * @see #asyncExec
+ * @see #wake
+ * @see #readAndDispatch
+ * @see #sleep
+ * @see Device#dispose
  */
+// TODO: [doc] Update display javadoc
 public class Display implements Adaptable {
 
   private static final String DISPLAY_ID = "org.eclipse.swt.display";
@@ -46,6 +119,13 @@ public class Display implements Adaptable {
 
   private static final String WARNING_IMAGE_PATH = ICON_PATH + "/warning.png";
 
+  /**
+   * Returns the display which the currently running thread is
+   * the user-interface thread for, or null if the currently
+   * running thread is not a user-interface thread for any display.
+   *
+   * @return the current display
+   */
   public static Display getCurrent() {
     return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
   }
@@ -63,6 +143,25 @@ public class Display implements Adaptable {
   private Image warningImage;
 
 
+  /**
+   * Constructs a new instance of this class.
+   * <p>
+   * Note: The resulting display is marked as the <em>current</em>
+   * display. If this is the first display which has been 
+   * constructed since the application started, it is also
+   * marked as the <em>default</em> display.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if called from a thread that already created an existing display</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see #getCurrent
+   * @see #getDefault
+   * @see Widget#checkSubclass
+   * @see Shell
+   */
   public Display() {
     HttpSession session = ContextProvider.getSession();
     if( getCurrent() != null ) {
@@ -75,6 +174,17 @@ public class Display implements Adaptable {
     readInitialBounds();
   }
 
+  /**
+   * Returns a (possibly empty) array containing all shells which have
+   * not been disposed and have the receiver as their display.
+   *
+   * @return the receiver's shells
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
   public Shell[] getShells() {
     checkDevice();
     Shell[] result = new Shell[ shells.size() ];
@@ -82,11 +192,34 @@ public class Display implements Adaptable {
     return result;
   }
 
+  /**
+   * Returns a rectangle describing the receiver's size and location.
+   *
+   * @return the bounding rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
   public Rectangle getBounds() {
     checkDevice();
     return new Rectangle( bounds );
   }
   
+  /**
+   * Returns the control which currently has keyboard focus,
+   * or null if keyboard events are not currently going to
+   * any of the controls built by the currently running
+   * application.
+   *
+   * @return the control under the cursor
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
   public Control getFocusControl() {
     checkDevice();
     return focusControl;
@@ -109,6 +242,27 @@ public class Display implements Adaptable {
   ///////////////////////////
   // Systen colors and images
   
+  /**
+   * Returns the matching standard color for the given
+   * constant, which should be one of the color constants
+   * specified in class <code>SWT</code>. Any value other
+   * than one of the SWT color constants which is passed
+   * in will result in the color black. This color should
+   * not be free'd because it was allocated by the system,
+   * not the application.
+   * 
+   * The COLOR_WIDGET_* constants are not supported yet.
+   *
+   * @param id the color constant
+   * @return the matching color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see SWT
+   */
   // TODO [rh] preliminary: COLOR_WIDGET_XXX not yet supported
   public Color getSystemColor( final int id ) {
     checkDevice();
@@ -166,11 +320,58 @@ public class Display implements Adaptable {
     return Color.getColor( pixel );
   }
   
+  /**
+   * Returns a reasonable font for applications to use.
+   * On some platforms, this will match the "default font"
+   * or "system font" if such can be found.  This font
+   * should not be free'd because it was allocated by the
+   * system, not the application.
+   * <p>
+   * Typically, applications which want the default look
+   * should simply not set the font on the widgets they
+   * create. Widgets are always created with the correct
+   * default font for the class of user-interface component
+   * they represent.
+   * </p>
+   *
+   * @return a font
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
   public Font getSystemFont() {
     checkDevice();
     return systemFont;
   }
   
+  /**
+   * Returns the matching standard platform image for the given
+   * constant, which should be one of the icon constants
+   * specified in class <code>SWT</code>. This image should
+   * not be free'd because it was allocated by the system,
+   * not the application.  A value of <code>null</code> will
+   * be returned either if the supplied constant is not an
+   * SWT icon constant or if the platform does not define an
+   * image that corresponds to the constant. 
+   *
+   * @param id the SWT icon constant
+   * @return the corresponding image or <code>null</code>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see SWT#ICON_ERROR
+   * @see SWT#ICON_INFORMATION
+   * @see SWT#ICON_QUESTION
+   * @see SWT#ICON_WARNING
+   * @see SWT#ICON_WORKING
+   * 
+   * @since 1.0
+   */
   // TODO [rh] revise this: why are Image.find() results store in fields?  
   public Image getSystemImage( final int id ) {
     checkDevice();
@@ -213,6 +414,42 @@ public class Display implements Adaptable {
   /////////////////////
   // Coordinate mapping 
   
+  /**
+   * Maps a point from one coordinate system to another.
+   * When the control is null, coordinates are mapped to
+   * the display.
+   * <p>
+   * NOTE: On right-to-left platforms where the coordinate
+   * systems are mirrored, special care needs to be taken
+   * when mapping coordinates from one control to another
+   * to ensure the result is correctly mirrored.
+   * 
+   * Mapping a point that is the origin of a rectangle and
+   * then adding the width and height is not equivalent to
+   * mapping the rectangle.  When one control is mirrored
+   * and the other is not, adding the width and height to a
+   * point that was mapped causes the rectangle to extend
+   * in the wrong direction.  Mapping the entire rectangle
+   * instead of just one point causes both the origin and
+   * the corner of the rectangle to be mapped.
+   * </p>
+   * 
+   * @param from the source <code>Control</code> or <code>null</code>
+   * @param to the destination <code>Control</code> or <code>null</code>
+   * @param point to be mapped 
+   * @return point with mapped coordinates 
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
   public Point map( final Control from, final Control to, final Point point ) {
     checkDevice();
     if( point == null ) {
@@ -221,6 +458,42 @@ public class Display implements Adaptable {
     return map( from, to, point.x, point.y );
   }
 
+  /**
+   * Maps a point from one coordinate system to another.
+   * When the control is null, coordinates are mapped to
+   * the display.
+   * <p>
+   * NOTE: On right-to-left platforms where the coordinate
+   * systems are mirrored, special care needs to be taken
+   * when mapping coordinates from one control to another
+   * to ensure the result is correctly mirrored.
+   * 
+   * Mapping a point that is the origin of a rectangle and
+   * then adding the width and height is not equivalent to
+   * mapping the rectangle.  When one control is mirrored
+   * and the other is not, adding the width and height to a
+   * point that was mapped causes the rectangle to extend
+   * in the wrong direction.  Mapping the entire rectangle
+   * instead of just one point causes both the origin and
+   * the corner of the rectangle to be mapped.
+   * </p>
+   * 
+   * @param from the source <code>Control</code> or <code>null</code>
+   * @param to the destination <code>Control</code> or <code>null</code>
+   * @param x coordinates to be mapped
+   * @param y coordinates to be mapped
+   * @return point with mapped coordinates
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
   public Point map( final Control from,
                     final Control to,
                     final int x,
@@ -231,6 +504,42 @@ public class Display implements Adaptable {
     return new Point( rectangle.x, rectangle.y );
   }
   
+  /**
+   * Maps a point from one coordinate system to another.
+   * When the control is null, coordinates are mapped to
+   * the display.
+   * <p>
+   * NOTE: On right-to-left platforms where the coordinate
+   * systems are mirrored, special care needs to be taken
+   * when mapping coordinates from one control to another
+   * to ensure the result is correctly mirrored.
+   * 
+   * Mapping a point that is the origin of a rectangle and
+   * then adding the width and height is not equivalent to
+   * mapping the rectangle.  When one control is mirrored
+   * and the other is not, adding the width and height to a
+   * point that was mapped causes the rectangle to extend
+   * in the wrong direction.  Mapping the entire rectangle
+   * instead of just one point causes both the origin and
+   * the corner of the rectangle to be mapped.
+   * </p>
+   * 
+   * @param from the source <code>Control</code> or <code>null</code>
+   * @param to the destination <code>Control</code> or <code>null</code>
+   * @param rectangle to be mapped
+   * @return rectangle with mapped coordinates
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the rectangle is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
   public Rectangle map( final Control from,
                         final Control to,
                         final Rectangle rectangle )
@@ -247,6 +556,44 @@ public class Display implements Adaptable {
                 rectangle.height );
   }
   
+  /**
+   * Maps a point from one coordinate system to another.
+   * When the control is null, coordinates are mapped to
+   * the display.
+   * <p>
+   * NOTE: On right-to-left platforms where the coordinate
+   * systems are mirrored, special care needs to be taken
+   * when mapping coordinates from one control to another
+   * to ensure the result is correctly mirrored.
+   * 
+   * Mapping a point that is the origin of a rectangle and
+   * then adding the width and height is not equivalent to
+   * mapping the rectangle.  When one control is mirrored
+   * and the other is not, adding the width and height to a
+   * point that was mapped causes the rectangle to extend
+   * in the wrong direction.  Mapping the entire rectangle
+   * instead of just one point causes both the origin and
+   * the corner of the rectangle to be mapped.
+   * </p>
+   * 
+   * @param from the source <code>Control</code> or <code>null</code>
+   * @param to the destination <code>Control</code> or <code>null</code>
+   * @param x coordinates to be mapped
+   * @param y coordinates to be mapped
+   * @param width coordinates to be mapped
+   * @param height coordinates to be mapped
+   * @return rectangle with mapped coordinates
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @since 1.0.2
+   */
   public Rectangle map( final Control from, 
                         final Control to, 
                         final int x, 
@@ -313,6 +660,18 @@ public class Display implements Adaptable {
   ///////////////////
   // Shell management
   
+  /**
+   * Returns the currently active <code>Shell</code>, or null
+   * if no shell belonging to the currently running application
+   * is active.
+   *
+   * @return the active shell or null
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
   public Shell getActiveShell() {
     checkDevice();
     return activeShell;

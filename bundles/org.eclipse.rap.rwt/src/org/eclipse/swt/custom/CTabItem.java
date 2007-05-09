@@ -16,7 +16,20 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 import org.eclipse.swt.widgets.*;
 
-
+/**
+ * Instances of this class represent a selectable user interface object
+ * that represent a page in a notebook widget.
+ * 
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>SWT.CLOSE</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>(none)</dd>
+ * </dl>
+ * <p>
+ * IMPORTANT: This class is <em>not</em> intended to be subclassed.
+ * </p>
+ */
 public class CTabItem extends Item {
 
   static final int TOP_MARGIN = 2;
@@ -42,10 +55,68 @@ public class CTabItem extends Item {
   int width;
   int height;
   
+  /**
+   * Constructs a new instance of this class given its parent
+   * (which must be a <code>CTabFolder</code>) and a style value
+   * describing its behavior and appearance. The item is added
+   * to the end of the items maintained by its parent.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a CTabFolder which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   * </ul>
+   *
+   * @see SWT
+   * @see Widget#getStyle()
+   */
   public CTabItem( final CTabFolder parent, final int style ) {
     this( parent, style, checkNull( parent ).getItemCount() );
   }
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * (which must be a <code>CTabFolder</code>), a style value
+   * describing its behavior and appearance, and the index
+   * at which to place it in the items maintained by its parent.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a CTabFolder which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   * @param index the zero-relative index to store the receiver in its parent
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the parent (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   * </ul>
+   *
+   * @see SWT
+   * @see Widget#getStyle()
+   */
   public CTabItem( final CTabFolder parent, final int style, final int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
@@ -56,6 +127,16 @@ public class CTabItem extends Item {
     return parent.getDisplay();
   }
   
+  /**
+   * Returns the receiver's parent, which must be a <code>CTabFolder</code>.
+   *
+   * @return the receiver's parent
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public CTabFolder getParent() {
     checkWidget();
     return parent;
@@ -85,7 +166,25 @@ public class CTabItem extends Item {
     }
   }
 
-  /** <p>Changing font works, but tab size is not adjusted accordingly.</p> */
+  /**
+   * Sets the font that the receiver will use to paint textual information
+   * for this item to the font specified by the argument, or to the default font
+   * for that kind of control if the argument is null.
+   * 
+   * <p>Changing font works, but tab size is not adjusted accordingly.</p>
+   *
+   * @param font the new font (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
   public void setFont( final Font font ) {
     checkWidget();
     if( font != this.font ) {
@@ -96,6 +195,18 @@ public class CTabItem extends Item {
     }
   }
 
+  /**
+   * Returns the font that the receiver will use to paint textual information.
+   *
+   * @return the receiver's font
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   *  @since 1.0
+   */
   public Font getFont() {
     checkWidget();
     if( font != null )
@@ -103,11 +214,36 @@ public class CTabItem extends Item {
     return parent.getFont();
   }
 
+  /**
+  * Gets the control that is displayed in the content area of the tab item.
+  *
+  * @return the control
+  *
+  * @exception SWTException <ul>
+  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+  * </ul>
+  */
   public Control getControl() {
     checkWidget();
     return control;
   }
 
+  /**
+   * Sets the control that is used to fill the client area of
+   * the tab folder when the user selects the tab item.
+   *
+   * @param control the new control (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li> 
+   *    <li>ERROR_INVALID_PARENT - if the control is not in the same widget tree</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setControl( final Control control ) {
     checkWidget();
     if( control != null ) {
@@ -133,11 +269,33 @@ public class CTabItem extends Item {
     }
   }
   
+  /**
+   * Sets the receiver's tool tip text to the argument, which
+   * may be null indicating that no tool tip text should be shown.
+   *
+   * @param string the new tool tip text (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setToolTipText( final String toolTipText ) {
     checkWidget();
     this.toolTipText = toolTipText;
   }
   
+  /**
+   * Returns the receiver's tool tip text, or null if it has
+   * not been set.
+   *
+   * @return the receiver's tool tip text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public String getToolTipText () {
     checkWidget();
     String result = toolTipText;
@@ -153,11 +311,34 @@ public class CTabItem extends Item {
   ////////////////////////
   // Bounds and visibility
   
+  /**
+  * Returns <code>true</code> if the item will be rendered in the visible area of the CTabFolder. Returns false otherwise.
+  * 
+  *  @return <code>true</code> if the item will be rendered in the visible area of the CTabFolder. Returns false otherwise.
+  * 
+  *  @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+  * @since 1.0
+  */
   public boolean isShowing() {
     checkWidget();
     return showing;
   }
   
+  /**
+   * Returns a rectangle describing the receiver's size and location
+   * relative to its parent.
+   *
+   * @return the receiver's bounding column rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public Rectangle getBounds() {
     checkWidget();
     return new Rectangle( x, y, width, height );

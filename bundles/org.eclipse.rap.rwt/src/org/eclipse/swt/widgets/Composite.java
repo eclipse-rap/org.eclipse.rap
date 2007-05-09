@@ -18,9 +18,21 @@ import org.eclipse.swt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
 
 /**
- * TODO: [fappel] comment
+ * Instances of this class are controls which are capable
+ * of containing other controls.
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>NO_FOCUS</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>(none)</dd>
+ * </dl>
  * <p>
+ * This class may be subclassed by custom control implementors
+ * who are building controls that are constructed from aggregates
+ * of other controls.
  * </p>
+ *
+ * @see Canvas
  */
 public class Composite extends Scrollable {
 
@@ -33,10 +45,57 @@ public class Composite extends Scrollable {
     super( parent );
   }
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * and a style value describing its behavior and appearance.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a widget which will be the parent of the new instance (cannot be null)
+   * @param style the style of widget to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   * </ul>
+   *
+   * @see SWT#NO_FOCUS
+   * @see Widget#getStyle
+   */
   public Composite( final Composite parent, final int style ) {
     super( parent, style );
   }
 
+  /**
+   * Returns a (possibly empty) array containing the receiver's children.
+   * Children are returned in the order that they are drawn.  The topmost
+   * control appears at the beginning of the array.  Subsequent controls
+   * draw beneath this control and appear later in the array.
+   * <p>
+   * Note: This is not the actual structure used by the receiver
+   * to maintain its list of children, so modifying the array will
+   * not affect the receiver. 
+   * </p>
+   *
+   * @return an array of children
+   * 
+   * @see Control#moveAbove
+   * @see Control#moveBelow
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public Control[] getChildren() {
     checkWidget();
     return controlHolder.getControls();
@@ -60,16 +119,51 @@ public class Composite extends Scrollable {
   //////////////////
   // Layout methods
   
+  /**
+   * Sets the layout which is associated with the receiver to be
+   * the argument which may be null.
+   *
+   * @param layout the receiver's new layout or null
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setLayout( final Layout layout ) {
     checkWidget();
     this.layout = layout;
   }
 
+  /**
+   * Returns layout which is associated with the receiver, or
+   * null if one has not been set.
+   *
+   * @return the receiver's layout or null
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public Layout getLayout() {
     checkWidget();
     return layout;
   }
 
+  /**
+   * If the receiver has a layout, asks the layout to <em>lay out</em>
+   * (that is, set the size and location of) the receiver's children. 
+   * If the receiver does not have a layout, do nothing.
+   * <p>
+   * This is equivalent to calling <code>layout(true)</code>.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void layout() {
     checkWidget();
     if( layout != null ) {
@@ -139,6 +233,21 @@ public class Composite extends Scrollable {
   ////////////
   // Tab Order
   
+  /**
+   * Sets the tabbing order for the specified controls to
+   * match the order that they occur in the argument list.
+   *
+   * @param tabList the ordered list of controls representing the tab order or null
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if a widget in the tabList is null or has been disposed</li> 
+   *    <li>ERROR_INVALID_PARENT - if widget in the tabList is not in the same widget tree</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setTabList( final Control[] tabList ) {
     checkWidget();
     Control[] newList = tabList;
@@ -161,6 +270,18 @@ public class Composite extends Scrollable {
     this.tabList = newList;
   }
   
+  /**
+   * Gets the (possibly empty) tabbing order for the control.
+   *
+   * @return tabList the ordered list of controls representing the tab order
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #setTabList
+   */
   // returns only tabGroups
   public Control[] getTabList() {
     checkWidget();

@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.*;
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  */
 public class CBanner extends Composite {
 
@@ -189,7 +189,7 @@ public class CBanner extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 3.0
+   * @since 1.0
    */
   public Control getBottom() {
     // checkWidget();
@@ -210,7 +210,7 @@ public class CBanner extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 3.0
+   * @since 1.0
    */
   public Control getLeft() {
     // checkWidget();
@@ -227,7 +227,7 @@ public class CBanner extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 3.0
+   * @since 1.0
    */
   public Control getRight() {
     // checkWidget();
@@ -240,7 +240,7 @@ public class CBanner extends Composite {
    * 
    * @return the minimum size of the control that appears on the right of the
    *         banner
-   * @since 3.1
+   * @since 1.0
    */
   public Point getRightMinimumSize() {
     // checkWidget();
@@ -251,7 +251,7 @@ public class CBanner extends Composite {
    * Returns the width of the control that appears on the right of the banner.
    * 
    * @return the width of the control that appears on the right of the banner
-   * @since 3.0
+   * @since 1.0
    */
   public int getRightWidth() {
     // checkWidget();
@@ -269,7 +269,7 @@ public class CBanner extends Composite {
    * traditional shape.
    * 
    * @return <code>true</code> if the Cbanner is rendered with a simple shape
-   * @since 3.0
+   * @since 1.0
    */
   public boolean getSimple() {
     // checkWidget();
@@ -362,7 +362,7 @@ public class CBanner extends Composite {
    *              <li>ERROR_INVALID_ARGUMENT - if the bottom control was not
    *              created as a child of the receiver</li>
    *              </ul>
-   * @since 3.0
+   * @since 1.0
    */
   public void setBottom( Control control ) {
     // checkWidget();
@@ -413,7 +413,7 @@ public class CBanner extends Composite {
    *              <li>ERROR_INVALID_ARGUMENT - if the left control was not
    *              created as a child of the receiver</li>
    *              </ul>
-   * @since 3.0
+   * @since 1.0
    */
   public void setLeft( Control control ) {
     // checkWidget();
@@ -443,7 +443,7 @@ public class CBanner extends Composite {
    *              <li>ERROR_INVALID_ARGUMENT - if the right control was not
    *              created as a child of the receiver</li>
    *              </ul>
-   * @since 3.0
+   * @since 1.0
    */
   public void setRight( Control control ) {
     // checkWidget();
@@ -471,7 +471,7 @@ public class CBanner extends Composite {
    *              <li>ERROR_INVALID_ARGUMENT - if the size is null or the
    *              values of size are less than SWT.DEFAULT</li>
    *              </ul>
-   * @since 3.1
+   * @since 1.0
    */
   public void setRightMinimumSize( Point size ) {
     // checkWidget();
@@ -494,7 +494,7 @@ public class CBanner extends Composite {
    *              <li>ERROR_INVALID_ARGUMENT - if width is less than
    *              SWT.DEFAULT</li>
    *              </ul>
-   * @since 3.0
+   * @since 1.0
    */
   public void setRightWidth( int width ) {
     // checkWidget();
@@ -515,7 +515,7 @@ public class CBanner extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 3.0
+   * @since 1.0
    */
   public void setSimple( boolean simple ) {
     // checkWidget();

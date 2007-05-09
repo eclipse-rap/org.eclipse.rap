@@ -16,6 +16,19 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 
+/**
+ * Instances of this class represent a selectable user interface object
+ * that represents an item in a table.
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>(none)</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>(none)</dd>
+ * </dl>
+ * <p>
+ * IMPORTANT: This class is <em>not</em> intended to be subclassed.
+ * </p>
+ */
 public class TableItem extends Item {
 
   private static final class Data {
@@ -25,10 +38,72 @@ public class TableItem extends Item {
   private final Table parent;
   private Data[] data;
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * (which must be a <code>Table</code>) and a style value
+   * describing its behavior and appearance. The item is added
+   * to the end of the items maintained by its parent.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a composite control which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see SWT
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
   public TableItem( final Table parent, final int style ) {
     this( parent, style, checkNull( parent).getItemCount() );
   }
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * (which must be a <code>Table</code>), a style value
+   * describing its behavior and appearance, and the index
+   * at which to place it in the items maintained by its parent.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a composite control which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   * @param index the zero-relative index to store the receiver in its parent
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the parent (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see SWT
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
   public TableItem( final Table parent, final int style, final int index ) {
     super( parent, style );
     this.parent = parent;
@@ -40,6 +115,16 @@ public class TableItem extends Item {
     return parent.getDisplay();
   }
 
+  /**
+   * Returns the receiver's parent, which must be a <code>Table</code>.
+   *
+   * @return the receiver's parent
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public Table getParent() {
     checkWidget();
     return parent;
@@ -53,6 +138,20 @@ public class TableItem extends Item {
     setText( 0, text );
   }
   
+  /**
+   * Sets the receiver's text at a column
+   *
+   * @param index the column index
+   * @param string the new text
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setText( final int index, final String text ) {
     checkWidget();
     if( text == null ) {
@@ -109,10 +208,35 @@ public class TableItem extends Item {
   /////////////////////
   // Dimension methods
   
+  /**
+   * Returns a rectangle describing the receiver's size and location
+   * relative to its parent.
+   *
+   * @return the receiver's bounding rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
   public Rectangle getBounds() {
     return getBounds( 0 );
   }
   
+  /**
+   * Returns a rectangle describing the receiver's size and location
+   * relative to its parent at a column in the table.
+   *
+   * @param index the index that specifies the column
+   * @return the receiver's bounding column rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   // TODO [rh] could be optimized by storing values for left and top position
   public Rectangle getBounds( final int index ) {
     checkWidget();

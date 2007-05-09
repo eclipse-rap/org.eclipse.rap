@@ -21,7 +21,18 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
 
 
 /**
- * TODO [rh] JavaDoc
+ * Instances of this class are selectable user interface
+ * objects that represent the dynamically positionable
+ * areas of a <code>CoolBar</code>.
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>DROP_DOWN</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>Selection</dd>
+ * </dl>
+ * <p>
+ * IMPORTANT: This class is <em>not</em> intended to be subclassed.
+ * </p>
  */
 public class CoolItem extends Item {
 
@@ -52,6 +63,36 @@ public class CoolItem extends Item {
   private Point size = new Point( 0, 0 );
   private Control control;
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * (which must be a <code>CoolBar</code>) and a style value
+   * describing its behavior and appearance. The item is added
+   * to the end of the items maintained by its parent.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a composite control which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see SWT#DROP_DOWN
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
   // TODO [rh] constructor missing: CoolItem(CoolBar,int,int)
   public CoolItem( final CoolBar parent, final int style ) {
     super( parent, style );
@@ -71,11 +112,36 @@ public class CoolItem extends Item {
   ////////////////
   // Getter/setter
   
+  /**
+   * Returns the receiver's parent, which must be a <code>CoolBar</code>.
+   *
+   * @return the receiver's parent
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public CoolBar getParent () {
     checkWidget();
     return parent;
   }
 
+  /**
+   * Sets the control that is associated with the receiver
+   * to the argument.
+   *
+   * @param control the new control that will be contained by the receiver
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li> 
+   *    <li>ERROR_INVALID_PARENT - if the control is not in the same widget tree</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setControl( final Control control ) {
     checkWidget();
     if( control != null ) {
@@ -89,6 +155,16 @@ public class CoolItem extends Item {
     this.control = control;
   }
 
+  /**
+   * Returns the control that is associated with the receiver.
+   *
+   * @return the control that is contained by the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public Control getControl() {
     checkWidget();
     return control;
@@ -97,6 +173,33 @@ public class CoolItem extends Item {
   ///////////////////////
   // Size-related methods
   
+  /**
+   * Returns the preferred size of the receiver.
+   * <p>
+   * The <em>preferred size</em> of a <code>CoolItem</code> is the size that
+   * it would best be displayed at. The width hint and height hint arguments
+   * allow the caller to ask the instance questions such as "Given a particular
+   * width, how high does it need to be to show all of the contents?"
+   * To indicate that the caller does not wish to constrain a particular 
+   * dimension, the constant <code>SWT.DEFAULT</code> is passed for the hint. 
+   * </p>
+   *
+   * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
+   * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
+   * @return the preferred size
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Layout
+   * @see #getBounds
+   * @see #getSize
+   * @see Control#getBorderWidth
+   * @see Scrollable#computeTrim
+   * @see Scrollable#getClientArea
+   */
   public Point computeSize( final int wHint, final int hHint ) {
     checkWidget();
     Point result;
@@ -122,6 +225,19 @@ public class CoolItem extends Item {
     return result;
   }
 
+  /**
+   * Sets the receiver's ideal size to the point specified by the argument.
+   *
+   * @param size the new ideal size for the receiver
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setPreferredSize( final Point preferredSize ) {
     checkWidget();
     if( preferredSize == null ) {
@@ -130,6 +246,17 @@ public class CoolItem extends Item {
     setPreferredSize( preferredSize.x, preferredSize.y );
   }
 
+  /**
+   * Sets the receiver's ideal size to the point specified by the arguments.
+   *
+   * @param width the new ideal width for the receiver
+   * @param height the new ideal height for the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setPreferredSize( final int wHint, final int hHint ) {
     checkWidget();
     if( parent.indexOf( this ) != -1 ) {
@@ -147,6 +274,22 @@ public class CoolItem extends Item {
     }
   }
   
+  /**
+   * Sets the receiver's size to the point specified by the arguments.
+   * <p>
+   * Note: Attempting to set the width or height of the
+   * receiver to a negative number will cause that
+   * value to be set to zero instead.
+   * </p>
+   *
+   * @param width the new width for the receiver
+   * @param height the new height for the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setSize( final int wHint, final int hHint ) {
     checkWidget();
     if( parent.indexOf( this ) != -1 ) {
@@ -165,6 +308,24 @@ public class CoolItem extends Item {
     }
   }
   
+  /**
+   * Sets the receiver's size to the point specified by the argument.
+   * <p>
+   * Note: Attempting to set the width or height of the
+   * receiver to a negative number will cause them to be
+   * set to zero instead.
+   * </p>
+   *
+   * @param size the new size for the receiver
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setSize( final Point size ) {
     checkWidget();
     if( size == null ) {
@@ -173,11 +334,35 @@ public class CoolItem extends Item {
     setSize( size.x, size.y );
   }
   
+  /**
+   * Returns a point describing the receiver's size. The
+   * x coordinate of the result is the width of the receiver.
+   * The y coordinate of the result is the height of the
+   * receiver.
+   *
+   * @return the receiver's size
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public Point getSize() {
     checkWidget();
     return new Point( size.x, size.y );
   }
   
+  /**
+   * Returns a rectangle describing the receiver's size and location
+   * relative to its parent.
+   *
+   * @return the receiver's bounding rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public Rectangle getBounds() {
     checkWidget();
     int left = 0;

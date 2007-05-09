@@ -16,12 +16,82 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 
+/**
+ * Instances of this class are controls that allow the user
+ * to choose an item from a list of items, or optionally 
+ * enter a new value by typing it into an editable text
+ * field. Often, <code>Combo</code>s are used in the same place
+ * where a single selection <code>List</code> widget could
+ * be used but space is limited. A <code>Combo</code> takes
+ * less space than a <code>List</code> widget and shows
+ * similar information.
+ * <p>
+ * Note: Since <code>Combo</code>s can contain both a list
+ * and an editable text field, it is possible to confuse methods
+ * which access one versus the other (compare for example,
+ * <code>clearSelection()</code> and <code>deselectAll()</code>).
+ * The API documentation is careful to indicate either "the
+ * receiver's list" or the "the receiver's text field" to 
+ * distinguish between the two cases.
+ * </p><p>
+ * Note that although this class is a subclass of <code>Composite</code>,
+ * it does not make sense to add children to it, or set a layout on it.
+ * </p>
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>DROP_DOWN, READ_ONLY, SIMPLE</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>DefaultSelection, Modify, Selection</dd>
+ * </dl>
+ * <p>
+ * Note: Only one of the styles DROP_DOWN and SIMPLE may be specified.
+ * </p><p>
+ * IMPORTANT: This class is <em>not</em> intended to be subclassed.
+ * </p>
+ *
+ * @see List
+ * <hr/>
+ * <p>Implementation status:</p>
+ * Currently only the DROP_DOWN style is supported.
+ * The Combo is READ_ONLY.
+ */
+// TODO [rst] Update Javadoc
 // TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
 //      are aded/removed
 public class Combo extends Scrollable {
 
   private final ListModel model;
   
+  /**
+   * Constructs a new instance of this class given its parent
+   * and a style value describing its behavior and appearance.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a composite control which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see SWT#DROP_DOWN
+   * @see SWT#READ_ONLY
+   * @see SWT#SIMPLE
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
   public Combo( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
     model = new ListModel( true );
@@ -30,16 +100,51 @@ public class Combo extends Scrollable {
   //////////////////////////////////////
   // Methods to manipulate the selection
   
+  /**
+   * Returns the zero-relative index of the item which is currently
+   * selected in the receiver's list, or -1 if no item is selected.
+   *
+   * @return the index of the selected item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public int getSelectionIndex() {
     checkWidget();
     return model.getSelectionIndex();
   }
 
+  /**
+   * Selects the item at the given zero-relative index in the receiver's 
+   * list.  If the item at the index was already selected, it remains
+   * selected. Indices that are out of range are ignored.
+   *
+   * @param index the index of the item to select
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void select( final int selectionIndex ) {
     checkWidget();
     model.setSelection( selectionIndex );
   }
 
+  /**
+   * Deselects the item at the given zero-relative index in the receiver's 
+   * list.  If the item at the index was already deselected, it remains
+   * deselected. Indices that are out of range are ignored.
+   *
+   * @param index the index of the item to deselect
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void deselect( final int index ) {
     checkWidget();
     if( index == model.getSelectionIndex() ) {
@@ -47,6 +152,20 @@ public class Combo extends Scrollable {
     }
   }
   
+  /**
+   * Deselects all selected items in the receiver's list.
+   * <p>
+   * Note: To clear the selection in the receiver's text field,
+   * use <code>clearSelection()</code>.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #clearSelection
+   */
   public void deselectAll() {
     checkWidget();
     model.deselectAll();
@@ -55,56 +174,223 @@ public class Combo extends Scrollable {
   ///////////////////////////////////////
   // Methods to manipulate and get items
   
+  /**
+   * Adds the argument to the end of the receiver's list.
+   *
+   * @param string the new item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #add(String,int)
+   */
   public void add( final String string ) {
     checkWidget();
     model.add( string );
   }
   
+  /**
+   * Adds the argument to the receiver's list at the given
+   * zero-relative index.
+   * <p>
+   * Note: To add an item at the end of the list, use the
+   * result of calling <code>getItemCount()</code> as the
+   * index or use <code>add(String)</code>.
+   * </p>
+   *
+   * @param string the new item
+   * @param index the index for the item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #add(String)
+   */
   public void add( final String string, final int index ) {
     checkWidget();
     model.add( string, index );
   }
   
+  /**
+   * Removes the item from the receiver's list at the given
+   * zero-relative index.
+   *
+   * @param index the index for the item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void remove( final int index ) {
     checkWidget();
     model.remove( index );
   }
   
+  /**
+   * Removes the items from the receiver's list which are
+   * between the given zero-relative start and end 
+   * indices (inclusive).
+   *
+   * @param start the start of the range
+   * @param end the end of the range
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if either the start or end are not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void remove( final int start, final int end ) {
     checkWidget();
     model.remove( start, end );
   }
   
+  /**
+   * Searches the receiver's list starting at the first item
+   * until an item is found that is equal to the argument, 
+   * and removes that item from the list.
+   *
+   * @param string the item to remove
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the string is not found in the list</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void remove( final String string ) {
     checkWidget();
     model.remove( string );
   }
   
+  /**
+   * Removes all of the items from the receiver's list and clear the
+   * contents of receiver's text field.
+   * <p>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void removeAll() {
     checkWidget();
     model.removeAll();
   }
   
+  /**
+   * Sets the text of the item in the receiver's list at the given
+   * zero-relative index to the string argument. This is equivalent
+   * to removing the old item at the index, and then adding the new
+   * item at that index.
+   *
+   * @param index the index for the item
+   * @param string the new text for the item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setItem( final int index, final String string ) {
     checkWidget();
     model.setItem( index, string );
   }
 
+  /**
+   * Sets the receiver's list to be the given array of items.
+   *
+   * @param items the array of items
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the items array is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if an item in the items array is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setItems( final String[] items ) {
     checkWidget();
     model.setItems( items );
   }
   
+  /**
+   * Returns the item at the given, zero-relative index in the
+   * receiver's list. Throws an exception if the index is out
+   * of range.
+   *
+   * @param index the index of the item to return
+   * @return the item at the given index
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public String getItem( final int index ) {
     checkWidget();
     return model.getItem( index );
   }
   
+  /**
+   * Returns a (possibly empty) array of <code>String</code>s which are
+   * the items in the receiver's list. 
+   * <p>
+   * Note: This is not the actual structure used by the receiver
+   * to maintain its list of items, so modifying the array will
+   * not affect the receiver. 
+   * </p>
+   *
+   * @return the items in the receiver's list
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public String[] getItems() {
     checkWidget();
     return model.getItems();
   }
   
+  /**
+   * Returns the number of items contained in the receiver's list.
+   *
+   * @return the number of items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public int getItemCount() {
     checkWidget();
     return model.getItemCount();
@@ -148,11 +434,52 @@ public class Combo extends Scrollable {
   /////////////////////////////////////////
   // Listener registration/de-registration
 
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the receiver's selection changes, by sending
+   * it one of the messages defined in the <code>SelectionListener</code>
+   * interface.
+   * <p>
+   * <code>widgetSelected</code> is called when the combo's list selection changes.
+   * <code>widgetDefaultSelected</code> is typically called when ENTER is pressed the combo's text area.
+   * </p>
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #removeSelectionListener
+   * @see SelectionEvent
+   */
   public void addSelectionListener( final SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the receiver's selection changes.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #addSelectionListener
+   */
   public void removeSelectionListener( final SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );

@@ -77,7 +77,7 @@ import org.eclipse.swt.widgets.Control;
  * 
  * @see FormLayout
  * @see FormData
- * @since 2.0
+ * @since 1.0
  */
 public final class FormAttachment {
 
@@ -132,7 +132,7 @@ public final class FormAttachment {
    * offset is specified, the attachment is treated as a percentage of the form.
    * The numerator is zero, the denominator is 100 and the offset is zero.
    * 
-   * @since 3.2
+   * @since 1.0
    */
   public FormAttachment() {
   }
@@ -143,7 +143,7 @@ public final class FormAttachment {
    * as a percentage of the form, with a denominator of 100. The offset is zero.
    * 
    * @param numerator the percentage of the position
-   * @since 3.0
+   * @since 1.0
    */
   public FormAttachment( int numerator ) {
     this( numerator, 100, 0 );

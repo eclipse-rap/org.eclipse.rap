@@ -14,7 +14,10 @@ package org.eclipse.swt.events;
 import com.w4t.Adaptable;
 
 /**
- * TODO: [fappel] comment
+ * Instances of this class are sent as a result of
+ * widgets being disposed.
+ *
+ * @see DisposeListener
  */
 public final class DisposeEvent extends RWTEvent {
 

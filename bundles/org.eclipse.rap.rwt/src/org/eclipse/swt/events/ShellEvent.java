@@ -15,8 +15,10 @@ import com.w4t.Adaptable;
 
 
 /**
- * TODO [rh] JavaDoc
- * <p></p>
+ * Instances of this class are sent as a result of
+ * operations being performed on shells.
+ *
+ * @see ShellListener
  */
 // TODO [rh] should we support the 'doit' flag, at least for shellClosed?
 public class ShellEvent extends RWTEvent {

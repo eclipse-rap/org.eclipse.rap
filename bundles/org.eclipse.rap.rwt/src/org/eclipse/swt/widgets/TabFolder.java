@@ -19,6 +19,31 @@ import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
+/**
+ * Instances of this class implement the notebook user interface
+ * metaphor.  It allows the user to select a notebook page from
+ * set of pages.
+ * <p>
+ * The item children that may be added to instances of this class
+ * must be of type <code>TabItem</code>.
+ * <code>Control</code> children are created and then set into a
+ * tab item using <code>TabItem#setControl</code>.
+ * </p><p>
+ * Note that although this class is a subclass of <code>Composite</code>,
+ * it does not make sense to set a layout on it.
+ * </p><p>
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>TOP, BOTTOM</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>Selection</dd>
+ * </dl>
+ * <p>
+ * Note: Only one of the styles TOP and BOTTOM may be specified.
+ * </p><p>
+ * IMPORTANT: This class is <em>not</em> intended to be subclassed.
+ * </p>
+ */
 public class TabFolder extends Composite {
 
   private static final TabItem[] EMPTY_TAB_ITEMS = new TabItem[ 0 ];
@@ -26,6 +51,34 @@ public class TabFolder extends Composite {
   private final ItemHolder itemHolder = new ItemHolder( TabItem.class );
   private int selectionIndex = -1;
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * and a style value describing its behavior and appearance.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a composite control which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see SWT
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
   public TabFolder( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
   }
@@ -43,21 +96,79 @@ public class TabFolder extends Composite {
   //////////////////
   // Item management
   
+  /**
+   * Returns an array of <code>TabItem</code>s which are the items
+   * in the receiver. 
+   * <p>
+   * Note: This is not the actual structure used by the receiver
+   * to maintain its list of items, so modifying the array will
+   * not affect the receiver. 
+   * </p>
+   *
+   * @return the items in the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public TabItem[] getItems() {
     checkWidget();
     return (org.eclipse.swt.widgets.TabItem[] )itemHolder.getItems();
   }
 
+  /**
+   * Returns the item at the given, zero-relative index in the
+   * receiver. Throws an exception if the index is out of range.
+   *
+   * @param index the index of the item to return
+   * @return the item at the given index
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public TabItem getItem( final int index ) {
     checkWidget();
     return ( TabItem )itemHolder.getItem( index );
   }
 
+  /**
+   * Returns the number of items contained in the receiver.
+   *
+   * @return the number of items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public int getItemCount() {
     checkWidget();
     return itemHolder.size();
   }
 
+  /**
+   * Searches the receiver's list starting at the first item
+   * (index 0) until an item is found that is equal to the 
+   * argument, and returns the index of that item. If no item
+   * is found, returns -1.
+   *
+   * @param item the search item
+   * @return the index of the item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public int indexOf( final TabItem item ) {
     checkWidget();
     if( item == null ) {
@@ -72,6 +183,22 @@ public class TabFolder extends Composite {
   /////////////////////
   // Seletion handling
   
+  /**
+   * Returns an array of <code>TabItem</code>s that are currently
+   * selected in the receiver. An empty array indicates that no
+   * items are selected.
+   * <p>
+   * Note: This is not the actual structure used by the receiver
+   * to maintain its selection, so modifying the array will
+   * not affect the receiver. 
+   * </p>
+   * @return an array representing the selection
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public TabItem[] getSelection() {
     checkWidget();
     TabItem[] result = EMPTY_TAB_ITEMS;
@@ -84,6 +211,21 @@ public class TabFolder extends Composite {
     return result;
   }
 
+  /**
+   * Sets the receiver's selection to be the given array of items.
+   * The current selected is first cleared, then the new items are
+   * selected.
+   *
+   * @param items the array of items
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the items array is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setSelection( final TabItem[] items ) {
     checkWidget();
     if( items == null ) {
@@ -99,6 +241,19 @@ public class TabFolder extends Composite {
     setSelection( newIndex );
   }
 
+  /**
+   * Selects the item at the given zero-relative index in the receiver. 
+   * If the item at the index was already selected, it remains selected.
+   * The current selection is first cleared, then the new items are
+   * selected. Indices that are out of range are ignored.
+   *
+   * @param index the index of the item to select
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setSelection( final int selectionIndex ) {
     checkWidget();
     if( selectionIndex >= -1 && selectionIndex < itemHolder.size() ) {
@@ -106,6 +261,17 @@ public class TabFolder extends Composite {
     }
   }
 
+  /**
+   * Returns the zero-relative index of the item which is currently
+   * selected in the receiver, or -1 if no item is selected.
+   *
+   * @return the index of the selected item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public int getSelectionIndex() {
     checkWidget();
     if( selectionIndex >= itemHolder.size() ) {
@@ -181,11 +347,52 @@ public class TabFolder extends Composite {
   ///////////////////////////////////////
   // Listener registration/deregistration
   
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the receiver's selection changes, by sending
+   * it one of the messages defined in the <code>SelectionListener</code>
+   * interface.
+   * <p>
+   * When <code>widgetSelected</code> is called, the item field of the event object is valid.
+   * <code>widgetDefaultSelected</code> is not called.
+   * </p>
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #removeSelectionListener
+   * @see SelectionEvent
+   */
   public void addSelectionListener( final SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the receiver's selection changes.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #addSelectionListener
+   */
   public void removeSelectionListener( final SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );

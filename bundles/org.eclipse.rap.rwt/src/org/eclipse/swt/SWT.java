@@ -13,8 +13,25 @@ package org.eclipse.swt;
 
 
 /**
- * TODO: [fappel] comment
+ * This class provides access to a small number of SWT system-wide
+ * methods, and in addition defines the public constants provided
+ * by SWT.
+ * <p>
+ * By defining constants like UP and DOWN in a single class, SWT
+ * can share common names and concepts at the same time minimizing
+ * the number of classes, names and constants for the application
+ * programmer.
+ * </p><p>
+ * Note that some of the constants provided by this class represent
+ * optional, appearance related aspects of widgets which are available
+ * either only on some window systems, or for a differing set of
+ * widgets on each window system. These constants are marked
+ * as <em>HINT</em>s. The set of widgets which support a particular
+ * <em>HINT</em> may change from release to release, although we typically
+ * will not withdraw support for a <em>HINT</em> once it is made available.
+ * </p>
  */
+// TODO [doc] Add javadoc for fields
 public class SWT {
   
   public static final int NULL = 0;

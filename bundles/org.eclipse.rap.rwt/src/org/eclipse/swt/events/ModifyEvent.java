@@ -14,7 +14,12 @@ package org.eclipse.swt.events;
 import org.eclipse.swt.widgets.Control;
 import com.w4t.Adaptable;
 
-
+/**
+ * Instances of this class are sent as a result of
+ * text being modified.
+ *
+ * @see ModifyListener
+ */
 public class ModifyEvent extends RWTEvent {
 
   public static final int MODIFY_TEXT = 0;

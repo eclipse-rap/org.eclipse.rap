@@ -18,7 +18,18 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
 
 
 /**
- * TODO: [fappel] comment
+ * Instances of this class represent a selectable user interface object
+ * that represents a hierarchy of tree items in a tree widget.
+ * 
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>(none)</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>(none)</dd>
+ * </dl>
+ * <p>
+ * IMPORTANT: This class is <em>not</em> intended to be subclassed.
+ * </p>
  */
 public class TreeItem extends Item {
 
@@ -29,10 +40,70 @@ public class TreeItem extends Item {
   private boolean expanded;
   private boolean checked;
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * (which must be a <code>Tree</code> or a <code>TreeItem</code>)
+   * and a style value describing its behavior and appearance.
+   * The item is added to the end of the items maintained by its parent.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a tree control which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see SWT
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
   public TreeItem( final Tree parent, final int style ) {
     this( parent, null, style, -1 );
   }
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * (which must be a <code>Tree</code> or a <code>TreeItem</code>)
+   * and a style value describing its behavior and appearance.
+   * The item is added to the end of the items maintained by its parent.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parentItem a tree control which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see SWT
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
   public TreeItem( final TreeItem parentItem, final int style ) {
     this( parentItem == null ? null : parentItem.parent, 
           parentItem,
@@ -40,6 +111,38 @@ public class TreeItem extends Item {
           -1 );
   }
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * (which must be a <code>Tree</code> or a <code>TreeItem</code>),
+   * a style value describing its behavior and appearance, and the index
+   * at which to place it in the items maintained by its parent.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parentItem a tree control which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   * @param index the zero-relative index to store the receiver in its parent
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the parent (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see SWT
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
   public TreeItem( final TreeItem parentItem, final int style, final int index ) 
   {
     this( parentItem == null ? null : parentItem.parent, 
@@ -87,11 +190,33 @@ public class TreeItem extends Item {
   /////////////////////////
   // Parent/child relations
   
+  /**
+   * Returns the receiver's parent, which must be a <code>Tree</code>.
+   *
+   * @return the receiver's parent
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public final Tree getParent() {
     checkWidget();
     return parent;
   }
 
+  /**
+   * Returns the receiver's parent item, which must be a
+   * <code>TreeItem</code> or null when the receiver is a
+   * root.
+   *
+   * @return the receiver's parent item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public TreeItem getParentItem() {
     checkWidget();
     return parentItem;
@@ -100,6 +225,17 @@ public class TreeItem extends Item {
   ////////////////
   // Getter/Setter
 
+  /**
+   * Sets the expanded state of the receiver.
+   * <p>
+   *
+   * @param expanded the new expanded state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setExpanded( final boolean expanded ) {
     checkWidget();
     if( !expanded || getItemCount() > 0 ) {
@@ -107,16 +243,57 @@ public class TreeItem extends Item {
     }
   }
   
+  /**
+   * Returns <code>true</code> if the receiver is expanded,
+   * and false otherwise.
+   * <p>
+   *
+   * @return the expanded state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public boolean getExpanded() {
     checkWidget();
     return expanded;
   }
 
+  /**
+   * Sets the font that the receiver will use to paint textual information
+   * for this item to the font specified by the argument, or to the default font
+   * for that kind of control if the argument is null.
+   *
+   * @param font the new font (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
   public void setFont( final Font font ) {
     checkWidget();
     this.font = font;
   }
   
+  /**
+   * Returns the font that the receiver will use to paint textual information for this item.
+   *
+   * @return the receiver's font
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.0
+   */
   public Font getFont() {
     checkWidget();
     Font result;
@@ -128,6 +305,17 @@ public class TreeItem extends Item {
     return result;
   }
   
+  /**
+   * Sets the checked state of the receiver.
+   * <p>
+   *
+   * @param checked the new checked state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setChecked( final boolean checked ) {
     checkWidget();
     if( ( parent.getStyle() & SWT.CHECK ) != 0 ) {
@@ -135,6 +323,19 @@ public class TreeItem extends Item {
     }
   }
   
+  /**
+   * Returns <code>true</code> if the receiver is checked,
+   * and false otherwise.  When the parent does not have
+   * the <code>CHECK style, return false.
+   * <p>
+   *
+   * @return the checked state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public boolean getChecked() {
     checkWidget();
     return checked;
@@ -143,21 +344,85 @@ public class TreeItem extends Item {
   ///////////////////////////////////////
   // Methods to maintain (sub-) TreeItems
   
+  /**
+   * Returns a (possibly empty) array of <code>TreeItem</code>s which
+   * are the direct item children of the receiver.
+   * <p>
+   * Note: This is not the actual structure used by the receiver
+   * to maintain its list of items, so modifying the array will
+   * not affect the receiver. 
+   * </p>
+   *
+   * @return the receiver's items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public TreeItem[] getItems() {
     checkWidget();
     return (org.eclipse.swt.widgets.TreeItem[] )itemHolder.getItems();
   }
   
+  /**
+   * Returns the item at the given, zero-relative index in the
+   * receiver. Throws an exception if the index is out of range.
+   *
+   * @param index the index of the item to return
+   * @return the item at the given index
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
   public TreeItem getItem( final int index ) {
     checkWidget();
     return ( TreeItem )itemHolder.getItem( index );
   }
   
+  /**
+   * Returns the number of items contained in the receiver
+   * that are direct item children of the receiver.
+   *
+   * @return the number of items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public int getItemCount() {
     checkWidget();
     return itemHolder.size();
   }
   
+  /**
+   * Searches the receiver's list starting at the first item
+   * (index 0) until an item is found that is equal to the 
+   * argument, and returns the index of that item. If no item
+   * is found, returns -1.
+   *
+   * @param item the search item
+   * @return the index of the item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the tool item is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the tool item has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
   public int indexOf( final TreeItem item ) {
     checkWidget();
     if( item == null ) {
@@ -169,6 +434,16 @@ public class TreeItem extends Item {
     return itemHolder.indexOf( item );
   }
 
+  /**
+   * Removes all of the items from the receiver.
+   * <p>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.0
+   */
   public void removeAll() {
     checkWidget();
     TreeItem[] items = getItems();

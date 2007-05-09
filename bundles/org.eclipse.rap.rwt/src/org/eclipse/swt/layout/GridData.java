@@ -98,7 +98,7 @@ public final class GridData {
    * verticalIndent specifies the number of pixels of indentation that will be
    * placed along the top side of the cell. The default value is 0.
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public int verticalIndent = 0;
   /**
@@ -183,7 +183,7 @@ public final class GridData {
    * minimum width will be the result of Control.computeSize(int, int, boolean)
    * where wHint is determined by GridData.widthHint. The default value is 0.
    * 
-   * @since 3.1
+   * @since 1.0
    * @see Control#computeSize(int, int, boolean)
    * @see GridData#widthHint
    */
@@ -195,7 +195,7 @@ public final class GridData {
    * boolean) where hHint is determined by GridData.heightHint. The default
    * value is 0.
    * 
-   * @since 3.1
+   * @since 1.0
    * @see Control#computeSize(int, int, boolean)
    * @see GridData#heightHint
    */
@@ -207,7 +207,7 @@ public final class GridData {
    * <code>false</code>, the size and position of the control will be
    * computed and assigned. The default value is <code>false</code>.
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public boolean exclude = false;
   /**
@@ -367,7 +367,7 @@ public final class GridData {
    *          fit the remaining horizontal space
    * @param grabExcessVerticalSpace whether cell will be made high enough to fit
    *          the remaining vertical space
-   * @since 3.0
+   * @since 1.0
    */
   public GridData( int horizontalAlignment,
                    int verticalAlignment,
@@ -396,7 +396,7 @@ public final class GridData {
    * @param horizontalSpan the number of column cells that the control will take
    *          up
    * @param verticalSpan the number of row cells that the control will take up
-   * @since 3.0
+   * @since 1.0
    */
   public GridData( int horizontalAlignment,
                    int verticalAlignment,
@@ -421,7 +421,7 @@ public final class GridData {
    * 
    * @param width a minimum width for the column
    * @param height a minimum height for the row
-   * @since 3.0
+   * @since 1.0
    */
   public GridData( int width, int height ) {
     super();

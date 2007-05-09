@@ -97,7 +97,7 @@ public SWTException (int code, String message) {
  * </p>
  * @return the underlying throwable
  * 
- * @since 3.1
+ * @since 1.0
  */
 public Throwable getCause() {
 	return throwable;

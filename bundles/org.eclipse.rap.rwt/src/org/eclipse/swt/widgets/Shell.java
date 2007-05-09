@@ -20,9 +20,99 @@ import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.widgets.MenuHolder.IMenuHolderAdapter;
 
 /**
- * TODO: [fappel] comment
+ * Instances of this class represent the "windows"
+ * which the desktop or "window manager" is managing.
+ * Instances that do not have a parent (that is, they
+ * are built using the constructor, which takes a 
+ * <code>Display</code> as the argument) are described
+ * as <em>top level</em> shells. Instances that do have
+ * a parent are described as <em>secondary</em> or
+ * <em>dialog</em> shells.
  * <p>
+ * Instances are always displayed in one of the maximized, 
+ * minimized or normal states:
+ * <ul>
+ * <li>
+ * When an instance is marked as <em>maximized</em>, the
+ * window manager will typically resize it to fill the
+ * entire visible area of the display, and the instance
+ * is usually put in a state where it can not be resized 
+ * (even if it has style <code>RESIZE</code>) until it is
+ * no longer maximized.
+ * </li><li>
+ * When an instance is in the <em>normal</em> state (neither
+ * maximized or minimized), its appearance is controlled by
+ * the style constants which were specified when it was created
+ * and the restrictions of the window manager (see below).
+ * </li><li>
+ * When an instance has been marked as <em>minimized</em>,
+ * its contents (client area) will usually not be visible,
+ * and depending on the window manager, it may be
+ * "iconified" (that is, replaced on the desktop by a small
+ * simplified representation of itself), relocated to a
+ * distinguished area of the screen, or hidden. Combinations
+ * of these changes are also possible.
+ * </li>
+ * </ul>
+ * </p><p>
+ * The <em>modality</em> of an instance may be specified using
+ * style bits. The modality style bits are used to determine
+ * whether input is blocked for other shells on the display.
+ * The <code>PRIMARY_MODAL</code> style allows an instance to block
+ * input to its parent. The <code>APPLICATION_MODAL</code> style
+ * allows an instance to block input to every other shell in the
+ * display. The <code>SYSTEM_MODAL</code> style allows an instance
+ * to block input to all shells, including shells belonging to
+ * different applications.
+ * </p><p>
+ * Note: The styles supported by this class are treated
+ * as <em>HINT</em>s, since the window manager for the
+ * desktop on which the instance is visible has ultimate
+ * control over the appearance and behavior of decorations
+ * and modality. For example, some window managers only
+ * support resizable windows and will always assume the
+ * RESIZE style, even if it is not set. In addition, if a
+ * modality style is not supported, it is "upgraded" to a
+ * more restrictive modality style that is supported. For
+ * example, if <code>PRIMARY_MODAL</code> is not supported,
+ * it would be upgraded to <code>APPLICATION_MODAL</code>.
+ * A modality style may also be "downgraded" to a less
+ * restrictive style. For example, most operating systems
+ * no longer support <code>SYSTEM_MODAL</code> because
+ * it can freeze up the desktop, so this is typically
+ * downgraded to <code>APPLICATION_MODAL</code>.
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>BORDER, CLOSE, MIN, MAX, NO_TRIM, RESIZE, TITLE, ON_TOP, TOOL</dd>
+ * <dd>APPLICATION_MODAL, MODELESS, PRIMARY_MODAL, SYSTEM_MODAL</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>Activate, Close, Deactivate, Deiconify, Iconify</dd>
+ * </dl>
+ * Class <code>SWT</code> provides two "convenience constants"
+ * for the most commonly required style combinations:
+ * <dl>
+ * <dt><code>SHELL_TRIM</code></dt>
+ * <dd>
+ * the result of combining the constants which are required
+ * to produce a typical application top level shell: (that 
+ * is, <code>CLOSE | TITLE | MIN | MAX | RESIZE</code>)
+ * </dd>
+ * <dt><code>DIALOG_TRIM</code></dt>
+ * <dd>
+ * the result of combining the constants which are required
+ * to produce a typical application dialog shell: (that 
+ * is, <code>TITLE | CLOSE | BORDER</code>)
+ * </dd>
+ * </dl>
  * </p>
+ * <p>
+ * Note: Only one of the styles APPLICATION_MODAL, MODELESS, 
+ * PRIMARY_MODAL and SYSTEM_MODAL may be specified.
+ * </p><p>
+ * IMPORTANT: This class is not intended to be subclassed.
+ * </p>
+ *
+ * @see SWT
  */
 public class Shell extends Composite {
 
@@ -61,18 +151,150 @@ public class Shell extends Composite {
     this.display.addShell( this );    
   }
 
+  /**
+   * Constructs a new instance of this class given only the display
+   * to create it on. It is created with style <code>SWT.SHELL_TRIM</code>.
+   * <p>
+   * Note: Currently, null can be passed in for the display argument.
+   * This has the effect of creating the shell on the currently active
+   * display if there is one. If there is no current display, the 
+   * shell is created on a "default" display. <b>Passing in null as
+   * the display argument is not considered to be good coding style,
+   * and may not be supported in a future release of SWT.</b>
+   * </p>
+   *
+   * @param display the display to create the shell on
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   */
   public Shell( final Display display ) {
     this( display, SWT.SHELL_TRIM );
   }
   
+  /**
+   * Constructs a new instance of this class given the display
+   * to create it on and a style value describing its behavior
+   * and appearance.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p><p>
+   * Note: Currently, null can be passed in for the display argument.
+   * This has the effect of creating the shell on the currently active
+   * display if there is one. If there is no current display, the 
+   * shell is created on a "default" display. <b>Passing in null as
+   * the display argument is not considered to be good coding style,
+   * and may not be supported in a future release of SWT.</b>
+   * </p>
+   *
+   * @param display the display to create the shell on
+   * @param style the style of control to construct
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   * 
+   * @see SWT#BORDER
+   * @see SWT#CLOSE
+   * @see SWT#MIN
+   * @see SWT#MAX
+   * @see SWT#RESIZE
+   * @see SWT#TITLE
+   * @see SWT#NO_TRIM
+   * @see SWT#SHELL_TRIM
+   * @see SWT#DIALOG_TRIM
+   * @see SWT#MODELESS
+   * @see SWT#PRIMARY_MODAL
+   * @see SWT#APPLICATION_MODAL
+   * @see SWT#SYSTEM_MODAL
+   */
   public Shell( final Display display, final int style ) {
     this ( display, null, style, 0 );
   }
   
+  /**
+   * Constructs a new instance of this class given only its
+   * parent. It is created with style <code>SWT.DIALOG_TRIM</code>.
+   * <p>
+   * Note: Currently, null can be passed in for the parent.
+   * This has the effect of creating the shell on the currently active
+   * display if there is one. If there is no current display, the 
+   * shell is created on a "default" display. <b>Passing in null as
+   * the parent is not considered to be good coding style,
+   * and may not be supported in a future release of SWT.</b>
+   * </p>
+   *
+   * @param parent a shell which will be the parent of the new instance
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the parent is disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   */
   public Shell( final Shell parent ) {
     this( parent, SWT.DIALOG_TRIM );
   }
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * and a style value describing its behavior and appearance.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p><p>
+   * Note: Currently, null can be passed in for the parent.
+   * This has the effect of creating the shell on the currently active
+   * display if there is one. If there is no current display, the 
+   * shell is created on a "default" display. <b>Passing in null as
+   * the parent is not considered to be good coding style,
+   * and may not be supported in a future release of SWT.</b>
+   * </p>
+   *
+   * @param parent a shell which will be the parent of the new instance
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the parent is disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   * 
+   * @see SWT#BORDER
+   * @see SWT#CLOSE
+   * @see SWT#MIN
+   * @see SWT#MAX
+   * @see SWT#RESIZE
+   * @see SWT#TITLE
+   * @see SWT#NO_TRIM
+   * @see SWT#SHELL_TRIM
+   * @see SWT#DIALOG_TRIM
+   * @see SWT#ON_TOP
+   * @see SWT#TOOL
+   * @see SWT#MODELESS
+   * @see SWT#PRIMARY_MODAL
+   * @see SWT#APPLICATION_MODAL
+   * @see SWT#SYSTEM_MODAL
+   */
+  // TODO: [doc] what about these shell styles: TOOL, MODELESS, PRIMARY_MODAL and SYSTEM_MODAL
   public Shell( final Shell parent, final int style ) {
     this( parent != null ? parent.display : null, parent, style, 0 );
   }
@@ -85,6 +307,17 @@ public class Shell extends Composite {
     return this;
   }
 
+  /**
+   * Returns an array containing all shells which are 
+   * descendents of the receiver.
+   * <p>
+   * @return the dialog shells
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public Shell [] getShells() {
     checkWidget();
     int count = 0;
@@ -112,6 +345,27 @@ public class Shell extends Composite {
     return result;
   }
 
+  /**
+   * If the receiver is visible, moves it to the top of the 
+   * drawing order for the display on which it was created 
+   * (so that all other shells on that display, which are not 
+   * the receiver's children will be drawn behind it) and asks 
+   * the window manager to make the shell active 
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.0
+   * @see Control#moveAbove
+   * @see Control#setFocus
+   * @see Control#setVisible
+   * @see Display#getActiveShell
+   * @see Decorations#setDefaultButton
+   * @see Shell#open
+   * @see Shell#setActive
+   */
   public void setActive () {
     checkWidget();
     if( isVisible() ) {
@@ -186,6 +440,22 @@ public class Shell extends Composite {
   //////////
   // MenuBar
   
+  /**
+   * Sets the receiver's menu bar to the argument, which
+   * may be null.
+   *
+   * @param menu the new menu bar
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the menu has been disposed</li> 
+   *    <li>ERROR_INVALID_PARENT - if the menu is not in the same widget tree</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  // [doc] move to Decorations
   public void setMenuBar( final Menu menuBar ) {
     checkWidget();
     if( this.menuBar != menuBar ) {
@@ -206,6 +476,18 @@ public class Shell extends Composite {
     }
   }
 
+  /**
+   * Returns the receiver's menu bar if one had previously
+   * been set, otherwise returns null.
+   *
+   * @return the menu bar or null
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  // [doc] move to Decorations
   public Menu getMenuBar() {
     checkWidget();
     return menuBar;
@@ -270,6 +552,28 @@ public class Shell extends Composite {
     return getVisible();
   }
   
+  /**
+   * Moves the receiver to the top of the drawing order for
+   * the display on which it was created (so that all other
+   * shells on that display, which are not the receiver's
+   * children will be drawn behind it), marks it visible,
+   * sets the focus and asks the window manager to make the
+   * shell active.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Control#moveAbove
+   * @see Control#setFocus
+   * @see Control#setVisible
+   * @see Display#getActiveShell
+   * @see Decorations#setDefaultButton (not yet)
+   * @see Shell#setDefaultButton
+   * @see Shell#setActive
+   * @see Shell#forceActive
+   */
   public void open() {
     checkWidget();
     bringToTop();
@@ -280,6 +584,21 @@ public class Shell extends Composite {
     }
   }
 
+  /**
+   * Requests that the window manager close the receiver in
+   * the same way it would be closed when the user clicks on
+   * the "close box" or performs some other platform specific
+   * key or mouse combination that indicates the window
+   * should be removed.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SWT#Close
+   * @see #dispose
+   */
   public void close() {
     checkWidget();
     ShellEvent shellEvent = new ShellEvent( this, ShellEvent.SHELL_CLOSED );
@@ -290,6 +609,22 @@ public class Shell extends Composite {
   ///////////////////////////
   // Title bar text and image
   
+  /**
+   * Sets the receiver's text, which is the string that the
+   * window manager will typically display as the receiver's
+   * <em>title</em>, to the argument, which must not be null. 
+   *
+   * @param string the new text
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  // TODO [doc] move to Decorations
   public void setText( final String text ) {
     checkWidget();
     if( text == null ) {
@@ -298,17 +633,69 @@ public class Shell extends Composite {
     this.text = text;
   }
   
+  /**
+   * Returns the receiver's text, which is the string that the
+   * window manager will typically display as the receiver's
+   * <em>title</em>. If the text has not previously been set, 
+   * returns an empty string.
+   *
+   * @return the text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  // TODO [doc] move to Decorations
   public String getText() {
     checkWidget();
     return text;
   }
 
+  /**
+   * Sets the receiver's image to the argument, which may
+   * be null. The image is typically displayed by the window
+   * manager when the instance is marked as iconified, and
+   * may also be displayed somewhere in the trim when the
+   * instance is in normal or maximized states.
+   * 
+   * @param image the new image (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   /* TODO [rst] move to Decorations as soon as it exists */
   public void setImage( final Image image ) {
     checkWidget();
     this.image = image;
   }
   
+  /**
+   * Returns the receiver's image if it had previously been 
+   * set using <code>setImage()</code>. The image is typically
+   * displayed by the window manager when the instance is
+   * marked as iconified, and may also be displayed somewhere
+   * in the trim when the instance is in normal or maximized
+   * states.
+   * <p>
+   * Note: This method will return null if called before
+   * <code>setImage()</code> is called. It does not provide
+   * access to a window manager provided, "default" image
+   * even if one exists.
+   * </p>
+   * 
+   * @return the image
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   /* TODO [rst] move to Decorations as soon as it exists */
   public Image getImage() {
     checkWidget();
@@ -318,6 +705,31 @@ public class Shell extends Composite {
   //////////////////////////////
   // Methods for default button
   
+  /**
+   * If the argument is not null, sets the receiver's default
+   * button to the argument, and if the argument is null, sets
+   * the receiver's default button to the first button which
+   * was set as the receiver's default button (called the 
+   * <em>saved default button</em>). If no default button had
+   * previously been set, or the saved default button was
+   * disposed, the receiver's default button will be set to
+   * null.
+   * <p>
+   * The default button is the button that is selected when
+   * the receiver is active and the user presses ENTER.
+   * </p>
+   *
+   * @param button the new default button
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the button has been disposed</li> 
+   *    <li>ERROR_INVALID_PARENT - if the control is not in the same widget tree</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   // TODO [rst] move to class Decorations as soon as it exists
   public void setDefaultButton( final Button button ) {
     checkWidget();
@@ -367,6 +779,19 @@ public class Shell extends Composite {
     }
   }
 
+  /**
+   * Returns the receiver's default button if one had
+   * previously been set, otherwise returns null.
+   *
+   * @return the default button or null
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #setDefaultButton
+   */
   // TODO [rst] move to class Decorations as soon as it exists
   public Button getDefaultButton() {
     checkWidget();
@@ -376,10 +801,46 @@ public class Shell extends Composite {
   /////////////////////////////////////////////////
   // Event listener registration and deregistration
   
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when operations are performed on the receiver,
+   * by sending the listener one of the messages defined in the
+   * <code>ShellListener</code> interface.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see ShellListener
+   * @see #removeShellListener
+   */
   public void addShellListener( final ShellListener listener ) {
     ShellEvent.addListener( this, listener );
   }
 
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when operations are performed on the receiver.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see ShellListener
+   * @see #addShellListener
+   */
   public void removeShellListener( final ShellListener listener ) {
     ShellEvent.removeListener( this, listener );
   }

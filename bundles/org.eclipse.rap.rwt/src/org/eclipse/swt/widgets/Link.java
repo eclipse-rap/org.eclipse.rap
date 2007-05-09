@@ -18,6 +18,23 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 
+/**
+ * Instances of this class represent a selectable
+ * user interface object that displays a text with 
+ * links.
+ * <p>
+ * <dl>
+ * <dt><b>Styles:</b></dt>
+ * <dd>(none)</dd>
+ * <dt><b>Events:</b></dt>
+ * <dd>Selection</dd>
+ * </dl>
+ * <p>
+ * IMPORTANT: This class is <em>not</em> intended to be subclassed.
+ * </p>
+ * 
+ * @since 1.0
+ */
 public class Link extends Control {
 
   private String text = "";
@@ -27,10 +44,60 @@ public class Link extends Control {
   private int[] mnemonics;
   private ILinkAdapter linkAdapter;
 
+  /**
+   * Constructs a new instance of this class given its parent
+   * and a style value describing its behavior and appearance.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a composite control which will be the parent of the new instance (cannot be null)
+   * @param style the style of control to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
+   * </ul>
+   *
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
   public Link( final Composite parent, final int style ) {
     super( parent, style );
   }
 
+  /**
+   * Sets the receiver's text.
+   * <p>
+   * The string can contain both regular text and hyperlinks.  A hyperlink
+   * is delimited by an anchor tag, &lt;A&gt; and &lt;/A&gt;.  Within an
+   * anchor, a single HREF attribute is supported.  When a hyperlink is
+   * selected, the text field of the selection event contains either the
+   * text of the hyperlink or the value of its HREF, if one was specified.
+   * In the rare case of identical hyperlinks within the same string, the
+   * HREF tag can be used to distinguish between them.  The string may
+   * include the mnemonic character and line delimiters.
+   * </p>
+   * 
+   * @param string the new text
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setText( final String string ) {
     checkWidget();
     if( string == null ) {
@@ -42,6 +109,17 @@ public class Link extends Control {
     }
   }
 
+  /**
+   * Returns the receiver's text, which will be an empty
+   * string if it has never been set.
+   *
+   * @return the receiver's text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public String getText() {
     checkWidget();
     return text;
@@ -50,10 +128,51 @@ public class Link extends Control {
   ///////////////////////////////////////
   // Listener registration/deregistration
   
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the control is selected, by sending
+   * it one of the messages defined in the <code>SelectionListener</code>
+   * interface.
+   * <p>
+   * <code>widgetSelected</code> is called when the control is selected.
+   * <code>widgetDefaultSelected</code> is not called.
+   * </p>
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #removeSelectionListener
+   * @see SelectionEvent
+   */
   public void addSelectionListener( final SelectionListener listener ) {
     SelectionEvent.addListener( this, listener );
   }
 
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the control is selected.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #addSelectionListener
+   */
   public void removeSelectionListener( final SelectionListener listener ) {
     SelectionEvent.removeListener( this, listener );
   }

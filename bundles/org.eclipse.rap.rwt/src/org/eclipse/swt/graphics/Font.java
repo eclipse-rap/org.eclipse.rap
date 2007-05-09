@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.swt.SWT;
 
+// TODO [bm] Javadoc
 // TODO [rh] font property (according and LCA functinality) for the following
 //      widget missing: TableItem, TreeColumn
 public final class Font {

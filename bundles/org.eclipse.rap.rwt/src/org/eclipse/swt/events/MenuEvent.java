@@ -14,6 +14,12 @@ package org.eclipse.swt.events;
 import org.eclipse.swt.widgets.Widget;
 import com.w4t.Adaptable;
 
+/**
+ * Instances of this class are sent as a result of
+ * menus being shown and hidden.
+ *
+ * @see MenuListener
+ */
 public class MenuEvent extends RWTEvent {
 
   public static final int MENU_SHOWN = 0;

@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Control;
  * 
  * @see FormLayout
  * @see FormAttachment
- * @since 2.0
+ * @since 1.0
  */
 public final class FormData {
 
