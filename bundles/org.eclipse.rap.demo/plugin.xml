@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
+
   <extension
       id="org.eclipse.rap.demo.demoentrypoint"
       point="org.eclipse.rap.ui.workbench.entrypoint">
@@ -18,16 +19,15 @@
         parameter="controls"/>
   </extension>
   
-  <extension
-      point="org.eclipse.rap.ui.workbench.perspectives">
-    <perspective
-        name="Demo Perspective"
-        class="org.eclipse.rap.demo.Perspective"
-        id="org.eclipse.rap.demo.perspective">
-    </perspective>
-  </extension>
+    <extension
+        point="org.eclipse.ui.perspectives">
+     <perspective
+           class="org.eclipse.rap.demo.Perspective"
+           id="org.eclipse.rap.demo.perspective"
+           name="Demo Perspective"/>
+  </extension> 
   
-  <extension point="org.eclipse.rap.ui.workbench.views"> 
+  <extension point="org.eclipse.ui.views"> 
       <view
             category="one"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
@@ -76,6 +76,6 @@
       <category
             id="two"
             name="Category 2"/>
-   </extension> 
+   </extension>
   
 </plugin>
