@@ -18,7 +18,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.Activator;
 
 class DialogsTab extends ExampleTab {
 
@@ -209,7 +208,7 @@ class DialogsTab extends ExampleTab {
     Exception exception = new IndexOutOfBoundsException( "negative index: -1" );
     exception = new RuntimeException( exception );
     IStatus status = new Status( IStatus.ERROR,
-                                 Activator.PLUGIN_ID,
+                                 "org.eclipse.rap.demo",
                                  code,
                                  reason,
                                  exception );
