@@ -19,7 +19,7 @@
         parameter="controls"/>
   </extension>
   
-    <extension
+  <extension
         point="org.eclipse.ui.perspectives">
      <perspective
            class="org.eclipse.rap.demo.Perspective"
