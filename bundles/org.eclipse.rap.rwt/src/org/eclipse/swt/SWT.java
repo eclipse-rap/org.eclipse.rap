@@ -37,6 +37,203 @@ public class SWT {
   public static final int NULL = 0;
   public static final int NONE = 0;
 
+  /**
+   * The move event type (value is 10).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Control#addControlListener
+   * @see org.eclipse.swt.widgets.TableColumn#addControlListener
+   * @see org.eclipse.swt.widgets.Tracker#addControlListener
+   * @see org.eclipse.swt.widgets.TreeColumn#addControlListener
+   * @see org.eclipse.swt.events.ControlListener#controlMoved
+   * @see org.eclipse.swt.events.ControlEvent
+   */
+  public static final int Move = 10;
+
+  /**
+   * The resize event type (value is 11).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Control#addControlListener
+   * @see org.eclipse.swt.widgets.TableColumn#addControlListener
+   * @see org.eclipse.swt.widgets.Tracker#addControlListener
+   * @see org.eclipse.swt.widgets.TreeColumn#addControlListener
+   * @see org.eclipse.swt.events.ControlListener#controlResized
+   * @see org.eclipse.swt.events.ControlEvent
+   */
+  public static final int Resize = 11;
+
+  /**
+   * The dispose event type (value is 12).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Widget#addDisposeListener
+   * @see org.eclipse.swt.events.DisposeListener#widgetDisposed
+   * @see org.eclipse.swt.events.DisposeEvent
+   */
+  public static final int Dispose = 12;
+  
+  /**
+   * The selection event type (value is 13).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Button#addSelectionListener
+   * @see org.eclipse.swt.widgets.Combo#addSelectionListener
+   * @see org.eclipse.swt.widgets.CoolItem#addSelectionListener
+   * @see org.eclipse.swt.widgets.Link#addSelectionListener
+   * @see org.eclipse.swt.widgets.List#addSelectionListener
+   * @see org.eclipse.swt.widgets.MenuItem#addSelectionListener
+   * @see org.eclipse.swt.widgets.Sash#addSelectionListener
+   * @see org.eclipse.swt.widgets.Scale#addSelectionListener
+   * @see org.eclipse.swt.widgets.ScrollBar#addSelectionListener
+   * @see org.eclipse.swt.widgets.Slider#addSelectionListener
+   * @see org.eclipse.swt.widgets.TabFolder#addSelectionListener
+   * @see org.eclipse.swt.widgets.Table#addSelectionListener
+   * @see org.eclipse.swt.widgets.TableColumn#addSelectionListener
+   * @see org.eclipse.swt.widgets.ToolItem#addSelectionListener
+   * @see org.eclipse.swt.widgets.TrayItem#addSelectionListener
+   * @see org.eclipse.swt.widgets.Tree#addSelectionListener
+   * @see org.eclipse.swt.widgets.TreeColumn#addSelectionListener
+   * @see org.eclipse.swt.events.SelectionListener#widgetSelected
+   * @see org.eclipse.swt.events.SelectionEvent
+   */
+  public static final int Selection = 13;
+
+  /**
+   * The default selection event type (value is 14).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Combo#addSelectionListener
+   * @see org.eclipse.swt.widgets.List#addSelectionListener
+   * @see org.eclipse.swt.widgets.Spinner#addSelectionListener
+   * @see org.eclipse.swt.widgets.Table#addSelectionListener
+   * @see org.eclipse.swt.widgets.Text#addSelectionListener
+   * @see org.eclipse.swt.widgets.TrayItem#addSelectionListener
+   * @see org.eclipse.swt.widgets.Tree#addSelectionListener
+   * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected
+   * @see org.eclipse.swt.events.SelectionEvent
+   */
+  public static final int DefaultSelection = 14;
+  
+  /**
+   * The focus in event type (value is 15).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Control#addFocusListener
+   * @see org.eclipse.swt.events.FocusListener#focusGained
+   * @see org.eclipse.swt.events.FocusEvent
+   */
+  public static final int FocusIn = 15;
+  
+  /**
+   * The focus out event type (value is 16).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Control#addFocusListener
+   * @see org.eclipse.swt.events.FocusListener#focusLost
+   * @see org.eclipse.swt.events.FocusEvent
+   */
+  public static final int FocusOut = 16;
+  
+  /**
+   * The expand event type (value is 17).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Tree#addTreeListener
+   * @see org.eclipse.swt.events.TreeListener#treeExpanded
+   * @see org.eclipse.swt.events.TreeEvent
+   */
+  public static final int Expand = 17;
+  
+  /**
+   * The collapse event type (value is 18).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Tree#addTreeListener
+   * @see org.eclipse.swt.events.TreeListener#treeCollapsed
+   * @see org.eclipse.swt.events.TreeEvent
+   */
+  public static final int Collapse = 18;
+
+  /**
+   * The close event type (value is 21).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Shell#addShellListener
+   * @see org.eclipse.swt.events.ShellListener#shellClosed
+   * @see org.eclipse.swt.events.ShellEvent
+   */
+  public static final int Close = 21;
+  
+  /**
+   * The show event type (value is 22).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Menu#addMenuListener
+   * @see org.eclipse.swt.events.MenuListener#menuShown
+   * @see org.eclipse.swt.events.MenuEvent
+   */
+  public static final int Show = 22;
+  
+  /**
+   * The hide event type (value is 23).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Menu#addMenuListener
+   * @see org.eclipse.swt.events.MenuListener#menuHidden
+   * @see org.eclipse.swt.events.MenuEvent
+   */
+  public static final int Hide = 23;
+
+  /**
+   * The modify event type (value is 24).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Combo#addModifyListener
+   * @see org.eclipse.swt.widgets.Spinner#addModifyListener
+   * @see org.eclipse.swt.widgets.Text#addModifyListener
+   * @see org.eclipse.swt.events.ModifyListener#modifyText
+   * @see org.eclipse.swt.events.ModifyEvent
+   */
+  public static final int Modify = 24;
+
+  /**
+   * The activate event type (value is 26).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Shell#addShellListener
+   * @see org.eclipse.swt.events.ShellListener#shellActivated
+   * @see org.eclipse.swt.events.ShellEvent
+   */
+  public static final int Activate = 26;
+ 
+  /**
+   * The deactivate event type (value is 27).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * @see org.eclipse.swt.widgets.Shell#addShellListener
+   * @see org.eclipse.swt.events.ShellListener#shellDeactivated
+   * @see org.eclipse.swt.events.ShellEvent
+   */
+  public static final int Deactivate = 27;
+  
   public static final int DEFAULT = -1;
   public static final int HORIZONTAL = 1 << 8;
   public static final int VERTICAL = 1 << 9;

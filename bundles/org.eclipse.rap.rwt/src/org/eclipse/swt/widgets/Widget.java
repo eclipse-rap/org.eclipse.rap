@@ -11,11 +11,11 @@
 
 package org.eclipse.swt.widgets;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.lifecycle.IWidgetAdapter;
 import com.w4t.*;
@@ -70,7 +70,9 @@ public abstract class Widget implements Adaptable {
   private Map keyedData;
   private AdapterManager adapterManager;
   private WidgetAdapter widgetAdapter;
-
+  private UntypedEventAdapter untypedAdapter; 
+  
+  
   Widget() {
     // prevent instantiation from outside this package
   }
@@ -349,7 +351,79 @@ public abstract class Widget implements Adaptable {
     DisposeEvent.removeListener( this, listener );
   }
   
-
+  ////////////////////////////////////////
+  // Methods for untyped listener handling
+  
+  /**
+   * Adds the listener to the collection of listeners who will be notified when
+   * an event of the given type occurs. When the event does occur in the widget,
+   * the listener is notified by sending it the <code>handleEvent()</code>
+   * message. The event type is one of the event constants defined in class
+   * <code>SWT</code>.
+   * 
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should be notified when the event occurs
+   * @exception IllegalArgumentException
+   *              <ul>
+   *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *              </ul>
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   * @see Listener
+   * @see SWT
+   * @see #removeListener
+   * @see #notifyListeners
+   */
+  public void addListener( final int eventType, final Listener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( untypedAdapter == null ) {
+      untypedAdapter = new UntypedEventAdapter();
+    }
+    untypedAdapter.addListener( this, eventType, listener );
+  }
+  
+  /**
+   * Removes the listener from the collection of listeners who will be notified
+   * when an event of the given type occurs. The event type is one of the event
+   * constants defined in class <code>SWT</code>.
+   * 
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should no longer be notified when the
+   *          event occurs
+   * @exception IllegalArgumentException
+   *              <ul>
+   *              <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *              </ul>
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   * @see Listener
+   * @see SWT
+   * @see #addListener
+   * @see #notifyListeners
+   */
+  public void removeListener( final int eventType, final Listener listener ) {
+    checkWidget();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    untypedAdapter.removeListener( this, eventType, listener );
+    if( untypedAdapter.isEmpty() ) {
+      untypedAdapter = null;
+    }
+  }
+  
+  
   ///////////////////////////////////
   // Methods to dispose of the widget
   
