@@ -33,84 +33,86 @@ public class ZOrderTab extends ExampleTab {
     final Composite comp = new Composite( top, SWT.NONE );
     final Composite bcomp = new Composite( comp, SWT.NONE );
     bcomp.setBounds( 0, 0, 300, 200 );
-    final Button b1 = new Button( bcomp, SWT.PUSH );
-    b1.setText( "B1" );
-    b1.setBounds( 20, 20, 100, 100 );
-    final Button b2 = new Button( bcomp, SWT.PUSH );
-    b2.setText( "B2" );
-    b2.setBounds( 100, 50, 100, 100 );
-    final Button b3 = new Button( bcomp, SWT.PUSH );
-    b3.setText( "B3" );
-    b3.setBounds( 180, 80, 100, 100 );
-    label = new Label( comp, SWT.NONE );
-    label.setBounds( 25, 200, 140, 20 );
+    final Label labelA = new Label( bcomp, SWT.BORDER | SWT.CENTER );
+    labelA.setText( "A" );
+    labelA.setBounds( 20, 20, 100, 100 );
+    labelA.setBackground( BG_COLOR_BLUE );
+    final Label labelB = new Label( bcomp, SWT.BORDER | SWT.CENTER );
+    labelB.setText( "B" );
+    labelB.setBounds( 100, 50, 100, 100 );
+    labelB.setBackground( BG_COLOR_GREEN );
+    final Label labelC = new Label( bcomp, SWT.BORDER | SWT.CENTER );
+    labelC.setText( "C" );
+    labelC.setBounds( 180, 80, 100, 100 );
+    labelC.setBackground( BG_COLOR_BROWN );
+    label = new Label( comp, SWT.CENTER );
+    label.setBounds( 25, 190, 250, 20 );
     printChildren( bcomp );
-    Button above2 = new Button( comp, SWT.PUSH );
-    above2.setText( "B2 above all" );
-    above2.setBounds( 110, 220, 80, 25 );
-    above2.addSelectionListener( new SelectionAdapter() {
+    Button aboveA = new Button( comp, SWT.PUSH );
+    aboveA.setText( "B above A" );
+    aboveA.setBounds( 25, 220, 80, 25 );
+    aboveA.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        b2.moveAbove( null );
+        labelB.moveAbove( labelA );
         printChildren( bcomp );
       }
     } );
-    Button below2 = new Button( comp, SWT.PUSH );
-    below2.setText( "B2 below all" );
-    below2.setBounds( 110, 250, 80, 25 );
-    below2.addSelectionListener( new SelectionAdapter() {
+    Button belowA = new Button( comp, SWT.PUSH );
+    belowA.setText( "B below A" );
+    belowA.setBounds( 25, 250, 80, 25 );
+    belowA.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        b2.moveBelow( null );
+        labelB.moveBelow( labelA );
         printChildren( bcomp );
       }
     } );
-    Button above21 = new Button( comp, SWT.PUSH );
-    above21.setText( "B2 above B1" );
-    above21.setBounds( 25, 220, 80, 25 );
-    above21.addSelectionListener( new SelectionAdapter() {
+    Button aboveAll = new Button( comp, SWT.PUSH );
+    aboveAll.setText( "B above all" );
+    aboveAll.setBounds( 110, 220, 80, 25 );
+    aboveAll.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        b2.moveAbove( b1 );
+        labelB.moveAbove( null );
+        printChildren( bcomp );
+      }
+    } );
+    Button belowAll = new Button( comp, SWT.PUSH );
+    belowAll.setText( "B below all" );
+    belowAll.setBounds( 110, 250, 80, 25 );
+    belowAll.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        labelB.moveBelow( null );
+        printChildren( bcomp );
+      }
+    } );
+    Button aboveC = new Button( comp, SWT.PUSH );
+    aboveC.setText( "B above C" );
+    aboveC.setBounds( 195, 220, 80, 25 );
+    aboveC.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        labelB.moveAbove( labelC );
         printChildren( bcomp );
       }
       
     } );
-    Button below21 = new Button( comp, SWT.PUSH );
-    below21.setText( "B2 below B1" );
-    below21.setBounds( 25, 250, 80, 25 );
-    below21.addSelectionListener( new SelectionAdapter() {
+    Button belowC = new Button( comp, SWT.PUSH );
+    belowC.setText( "B below C" );
+    belowC.setBounds( 195, 250, 80, 25 );
+    belowC.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
-        b2.moveBelow( b1 );
-        printChildren( bcomp );
-      }
-    } );
-    Button above23 = new Button( comp, SWT.PUSH );
-    above23.setText( "B2 above B3" );
-    above23.setBounds( 195, 220, 80, 25 );
-    above23.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
-        b2.moveAbove( b3 );
-        printChildren( bcomp );
-      }
-      
-    } );
-    Button below23 = new Button( comp, SWT.PUSH );
-    below23.setText( "B2 below B3" );
-    below23.setBounds( 195, 250, 80, 25 );
-    below23.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
-        b2.moveBelow( b3 );
+        labelB.moveBelow( labelC );
         printChildren( bcomp );
       }
     } );
     comp.setTabList( new Control[]{
-      above21, above2, above23, below21, below2, below23
+      aboveA, aboveAll, aboveC, belowA, belowAll, belowC
     } );
   }
 
   private void printChildren( final Composite comp ) {
     Control[] children = comp.getChildren();
-    StringBuffer sb = new StringBuffer( "Order: " );
+    StringBuffer sb = new StringBuffer( "Z-Order: " );
     for( int i = 0; i < children.length; i++ ) {
-      sb.append( ((Button) children[ i ]).getText() + " " );
+      sb.append( ((Label) children[ i ]).getText() + " " );
     }
     label.setText( sb.toString() );
   }
