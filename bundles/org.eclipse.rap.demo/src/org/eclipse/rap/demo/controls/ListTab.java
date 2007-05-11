@@ -61,6 +61,8 @@ public class ListTab extends ExampleTab {
 
   protected void createStyleControls() {
     createStyleButton( "BORDER" );
+    createStyleButton( "SINGLE" );
+    createStyleButton( "MULTI" );
     createStyleButton( "H_SCROLL" );
     createStyleButton( "V_SCROLL" );
     createVisibilityButton();
@@ -95,6 +97,7 @@ public class ListTab extends ExampleTab {
     list2.add( "Item 2" );
     list2.add( "Item 3" );
     list2.setLayoutData( new RowData( 200, 200 ) );
+    registerControl( list2 );
     createPopupMenu( parent.getShell(), list2 );
     // Code
     int separatorStyle = SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT;
