@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 
 
 public class Label_Test extends TestCase {
@@ -84,6 +85,22 @@ public class Label_Test extends TestCase {
     label.setText( "xyz" );
     assertEquals( "xyz", label.getText() );
     assertNull( label.getImage() );
+  }
+  
+  public void testSize() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Label labelWrap = new Label( shell, SWT.WRAP );
+    Label labelNoWrap = new Label( shell, SWT.NONE );
+    String wrapText = "Text that wraps. Text that wraps. Text that wraps. ";
+	labelWrap.setText( wrapText );
+    labelNoWrap.setText( wrapText );
+    Point extentPlain = labelNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+    assertTrue( extentPlain.x > 100 );
+    Point extentNoWrap = labelNoWrap.computeSize( 100, SWT.DEFAULT );
+    assertEquals( extentPlain.y, extentNoWrap.y );
+    Point extentWrap = labelWrap.computeSize( 100, SWT.DEFAULT );
+    assertTrue( extentWrap.y > extentNoWrap.y );
   }
   
   protected void setUp() throws Exception {
