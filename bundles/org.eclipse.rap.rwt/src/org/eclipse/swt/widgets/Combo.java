@@ -396,6 +396,28 @@ public class Combo extends Scrollable {
     return model.getItemCount();
   }
   
+  /**
+   * Returns a string containing a copy of the contents of the
+   * receiver's text field, or an empty string if there are no
+   * contents.
+   *
+   * @return the receiver's text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public String getText() {
+    // TODO [bm] improve this when we introduce !READ_ONLY combos
+    int idx = model.getSelectionIndex();
+    String result = "";
+    if( idx != -1 ) {
+      result = model.getItem( idx );
+    }
+    return result;
+  }
+
   ////////////////////
   // Widget dimensions
 

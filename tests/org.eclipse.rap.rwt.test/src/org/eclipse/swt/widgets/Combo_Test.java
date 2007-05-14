@@ -43,6 +43,26 @@ public class Combo_Test extends TestCase {
     assertEquals( 1, combo.getSelectionIndex() );
   }
   
+  public void testGetText() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "item1" );
+    combo.add( "item2" );
+    combo.add( "item3" );
+    
+    // test get text without setting an explicit selection
+    assertEquals( combo.getText(), "" );
+    
+    // test after selection
+    combo.select( 2 );
+    assertEquals( combo.getText(), "item3" );
+    
+    // test after deselection
+    combo.deselectAll();
+    assertEquals( combo.getText(), "" );
+  }
+  
   public void testDispose() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
