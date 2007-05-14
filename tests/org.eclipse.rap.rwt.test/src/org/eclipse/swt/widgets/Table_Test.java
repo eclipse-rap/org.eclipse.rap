@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -283,6 +284,70 @@ public class Table_Test extends TestCase {
     try {
       table.clear( 2 );
       fail( "Must throw exception when attempting to clear non-existing item" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+  
+  public void testClearRange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem[] items = new TableItem[ 10 ];
+    for( int i = 0; i < 10; i++ ) {
+      items[ i ] = new TableItem( table, SWT.NONE );
+      items[ i ].setText( "abc" );
+      items[ i ].setImage( Image.find( RWTFixture.IMAGE1 ) );
+    }
+    table.clear( 2, 5 );
+    Image img = Image.find( RWTFixture.IMAGE1 );
+    for( int i = 0; i < 10; i++ ) {
+      if( i >= 2 && i <= 5 ) {
+        assertEquals( "", items[ i ].getText() );
+        assertEquals( null, items[ i ].getImage() );
+      } else {
+        assertEquals( "abc", items[ i ].getText() );
+        assertEquals( img, items[ i ].getImage() );
+      }
+    }
+    // Test clear with illegal arguments (end > items)
+    try {
+      table.clear( 1, 11 );
+      fail( "Must throw exception when attempting to clear non-existing items" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
+  
+  public void testClearIndices() {
+	  Display display = new Display();
+	  Shell shell = new Shell( display );
+	  Table table = new Table( shell, SWT.NONE );
+	  new TableColumn( table, SWT.NONE );
+
+	  TableItem[] items = new TableItem[10];
+	  for (int i = 0; i < 10; i++) {
+		  items[i] = new TableItem( table, SWT.NONE );
+		  items[i].setText( "abc" );
+		  items[i].setImage( Image.find( RWTFixture.IMAGE1 ) );
+	  }
+	  
+	  table.clear( new int[]{ 1, 3, 5 } );
+    Image img = Image.find( RWTFixture.IMAGE1 );
+    for( int i = 0; i < 10; i++ ) {
+      if( i == 1 || i == 3 || i == 5 ) {
+        assertEquals( "", items[ i ].getText() );
+        assertEquals( null, items[ i ].getImage() );
+      } else {
+        assertEquals( "abc", items[ i ].getText() );
+        assertEquals( img, items[ i ].getImage() );
+      }
+    }
+    // Test clear with illegal arguments
+    try {
+      table.clear( new int[]{ 2, 4, 15 } );
+      fail( "Must throw exception when attempting to clear non-existing items" );
     } catch( IllegalArgumentException e ) {
       // expected
     }

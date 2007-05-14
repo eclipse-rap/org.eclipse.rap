@@ -422,6 +422,121 @@ public class Table extends Composite {
     item.clear();
   }
   
+  /**
+   * Removes the items from the receiver which are between the given
+   * zero-relative start and end indices (inclusive).  The text, icon
+   * and other attributes of the items are set to their default values.
+   * If the table was created with the <code>SWT.VIRTUAL</code> style,
+   * these attributes are requested again as needed.
+   *
+   * @param start the start index of the item to clear
+   * @param end the end index of the item to clear
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if either the start or end are not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see SWT#VIRTUAL
+   * @see SWT#SetData
+   * 
+   * @since 1.0
+   */
+  public void clear( final int start, final int end ) {
+    checkWidget();
+    int itemCount = getItemCount();
+    if( start > end ) {
+      return;
+    }
+    if( !( 0 <= start && start <= end && end < itemCount ) ) {
+      error( SWT.ERROR_INVALID_RANGE );
+    }
+    if( start == 0 && end == itemCount - 1 ) {
+      clearAll();
+    } else {
+      for( int i = start; i <= end; i++ ) {
+        TableItem item = getItem( i );
+        if( item != null ) {
+          item.clear();
+        }
+      }
+    }
+  }
+  
+  /**
+   * Clears all the items in the receiver. The text, icon and other
+   * attributes of the items are set to their default values. If the
+   * table was created with the <code>SWT.VIRTUAL</code> style, these
+   * attributes are requested again as needed.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see SWT#VIRTUAL
+   * @see SWT#SetData
+   * 
+   * @since 1.0
+   */
+  public void clearAll() {
+    checkWidget();
+    int itemCount = getItemCount();
+    for( int i = 0; i < itemCount; i++ ) {
+      TableItem item = getItem( i );
+      if( item != null ) {
+        item.clear();
+      }
+    }
+  }
+  
+  /**
+   * Clears the items at the given zero-relative indices in the receiver.
+   * The text, icon and other attributes of the items are set to their default
+   * values.  If the table was created with the <code>SWT.VIRTUAL</code> style,
+   * these attributes are requested again as needed.
+   *
+   * @param indices the array of indices of the items
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   *    <li>ERROR_NULL_ARGUMENT - if the indices array is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see SWT#VIRTUAL
+   * @see SWT#SetData
+   * 
+   * @since 1.0
+   */
+  public void clear( final int[] indices ) {
+    checkWidget();
+    int itemCount = getItemCount();
+    if( indices == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( indices.length == 0 ) {
+      return;
+    }
+    for( int i = 0; i < indices.length; i++ ) {
+      if( !( 0 <= indices[ i ] && indices[ i ] < itemCount ) ) {
+        error( SWT.ERROR_INVALID_RANGE );
+      }
+    }
+    for( int i = 0; i < indices.length; i++ ) {
+      TableItem item = getItem( indices[ i ] );
+      if( item != null ) {
+        item.clear();
+      }
+    }
+  }
+  
   /////////////////////////////
   // Selection handling methods
   
