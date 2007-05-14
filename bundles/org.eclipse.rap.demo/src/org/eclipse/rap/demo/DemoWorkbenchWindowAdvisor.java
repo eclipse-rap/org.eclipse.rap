@@ -13,6 +13,7 @@ package org.eclipse.rap.demo;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.*;
+import org.eclipse.ui.application.*;
 import org.eclipse.ui.entrypoint.*;
 
 

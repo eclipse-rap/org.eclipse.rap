@@ -17,8 +17,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.ui.entrypoint.ActionBarAdvisor;
-import org.eclipse.ui.entrypoint.IActionBarConfigurer;
+import org.eclipse.ui.application.ActionBarAdvisor;
+import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class DemoActionBarAdvisor extends ActionBarAdvisor {
