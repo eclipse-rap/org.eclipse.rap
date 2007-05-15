@@ -63,10 +63,14 @@ public class RWTLifeCycle extends LifeCycle {
         }
         current = next;
       }
-    } catch( final RuntimeException re ) {
+    } catch( final Throwable t ) {
       // TODO: [fappel] introduce proper exception handling
-      re.printStackTrace();
-      throw re;
+      t.printStackTrace();
+      if( t instanceof RuntimeException ) {
+        throw ( RuntimeException )t;
+      }
+      String msg = "An error occured while executing RWTLifeCycle.";
+      throw new RuntimeException( msg, t );
     }
   }
 
