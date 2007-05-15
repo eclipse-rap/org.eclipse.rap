@@ -11,6 +11,8 @@ package org.eclipse.rap.demo;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.rap.demo.wizard.SurveyWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -26,6 +28,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
   private IWorkbenchAction exitAction;
   private Action aboutAction;
   private MenuManager showViewMenuMgr;
+  private Action wizardAction;
 
   public DemoActionBarAdvisor( final IActionBarConfigurer configurer ) {
     super( configurer );
@@ -38,6 +41,10 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     ImageDescriptor image2 
       = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
                                                     "icons/help.gif" );
+    ImageDescriptor image3 
+    = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
+                                                  "icons/login.gif" );
+    
     exitAction = ActionFactory.QUIT.create( window );
     exitAction.setImageDescriptor( image1 );
     register( exitAction );
@@ -59,13 +66,25 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
       = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
     showViewMenuMgr.add(showViewMenu);
     
+    wizardAction = new Action() {
+      public void run() {
+        SurveyWizard wizard = new SurveyWizard();
+        WizardDialog dlg = new WizardDialog(window.getShell(), wizard);
+        dlg.open(null);
+      }
+    };
+    wizardAction.setText("Open wizard");
+    wizardAction.setId("org.eclipse.rap.demo.wizard");
+    wizardAction.setImageDescriptor(image3);
+    register(wizardAction);
   }
+  
 
   protected void fillMenuBar( final IMenuManager menuBar ) {
     MenuManager fileMenu = new MenuManager( "File",
                                             IWorkbenchActionConstants.M_FILE );
     MenuManager windowMenu = new MenuManager( "Window",
-            								IWorkbenchActionConstants.M_WINDOW );    
+                                            IWorkbenchActionConstants.M_WINDOW );    
     MenuManager helpMenu = new MenuManager( "Help",
                                             IWorkbenchActionConstants.M_HELP );
     
@@ -88,6 +107,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     IToolBarManager toolbar = new ToolBarManager( SWT.FLAT | SWT.RIGHT );
     coolBar.add( new ToolBarContributionItem( toolbar, name ) );
     toolbar.add( exitAction );
+    toolbar.add( wizardAction );
     toolbar.add( aboutAction );
   }
 }

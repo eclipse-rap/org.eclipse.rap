@@ -12,17 +12,41 @@
 package org.eclipse.rap.demo;
 
 import java.util.ArrayList;
+
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.part.ViewPart;
 
 
-public class DemoTreeViewPart extends ViewPart {
+public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
 
   private TreeViewer viewer;
 
-  class TreeObject {
+  private final class LeafStarLabelDecorator implements ILabelDecorator {
+    public String decorateText(String text, Object element) {
+        if(text.startsWith("Leaf")) {
+            return text + "*";
+        }
+        return text;
+    }
+
+    public void addListener(ILabelProviderListener listener) {
+    }
+
+    public void dispose() {
+    }
+
+    public boolean isLabelProperty(Object element, String property) {
+        return false;
+    }
+
+    public void removeListener(ILabelProviderListener listener) {
+    }
+}
+
+class TreeObject {
 
     private String name;
     private String location;
@@ -143,8 +167,10 @@ public class DemoTreeViewPart extends ViewPart {
       TreeParent p2 = new TreeParent( "Parent 2" );
       p2.addChild( to4 );
       TreeParent root = new TreeParent( "Root" );
+      TreeParent p3 = new TreeParent( "Child X - filter me!" );
       root.addChild( p1 );
       root.addChild( p2 );
+      root.addChild( p3 );
       invisibleRoot = new TreeParent( "" );
       invisibleRoot.addChild( root );
     }
@@ -153,11 +179,30 @@ public class DemoTreeViewPart extends ViewPart {
   public void createPartControl( final Composite parent ) {
     viewer = new TreeViewer( parent );
     viewer.setContentProvider( new TreeViewerContentProvider() );
+    viewer.setLabelProvider(new DecoratingLabelProvider(new LabelProvider(),
+                                                new LeafStarLabelDecorator()));
     viewer.setInput( this );
+    viewer.addDoubleClickListener(this);
     getSite().setSelectionProvider( viewer );
+    viewer.addFilter(new ViewerFilter() {
+
+        public boolean select(Viewer viewer, Object parentElement,
+                Object element) {
+            if(element.toString().startsWith("Child X")) {
+                return false;
+            }
+            return true;
+        }
+        
+    });
   }
   
   public void setFocus() {
     viewer.getTree().setFocus();
+  }
+
+  public void doubleClick(DoubleClickEvent event) {
+      MessageDialog.openInformation(viewer.getTree().getShell(), "Treeviewer",
+              "You doubleclicked on " + event.getSelection().toString(), null);
   }
 }
