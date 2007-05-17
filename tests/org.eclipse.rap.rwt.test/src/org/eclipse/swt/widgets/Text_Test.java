@@ -11,12 +11,16 @@
 
 package org.eclipse.swt.widgets;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
+
 import com.w4t.engine.lifecycle.PhaseId;
 
 
@@ -124,5 +128,82 @@ public class Text_Test extends TestCase {
     log.setLength( 0 );
     text.setText( "abc" );
     assertEquals( "modifyEvent|", log.toString() );
+  }
+  
+  // TODO [bm] extend testcase with newline chars and getLineCount
+  public void testInsert() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    
+    // Test insert on multi-line Text
+    Text text = new Text( shell, SWT.MULTI );
+    text.setBounds( 0, 0, 500, 500 );
+    // Ensure initial state
+    assertEquals( "", text.getText() );
+    // Test with allowed arguments
+    text.insert( "" );
+    assertEquals( "", text.getText() );
+    text.insert( "fred" );
+    assertEquals( "fred", text.getText() );
+    text.setSelection( 2 );
+    text.insert( "helmut" );
+    assertEquals( "frhelmuted", text.getText() );
+    // Test with illegal argument
+    try {
+      text.setText( "oldText" );
+      text.insert( null );
+      fail( "No exception thrown on string == null" );
+    } catch( IllegalArgumentException e ) {
+      assertEquals( "oldText", text.getText() );
+    }
+    
+    // Test insert on single-line Text
+    text = new Text( shell, SWT.SINGLE );
+    assertEquals( "", text.getText() );
+    text.insert( "" );
+    assertEquals( "", text.getText() );
+    text.insert( "fred" );
+    assertEquals( "fred", text.getText() );
+    text.setSelection( 2 );
+    text.insert( "helmut" );
+    assertEquals( "frhelmuted", text.getText() );
+    // Test with illegal arguments
+    text = new Text( shell, SWT.SINGLE );
+    try {
+      text.setText( "oldText" );
+      text.insert( null );
+      fail( "No exception thrown on string == null" );
+    } catch( IllegalArgumentException e ) {
+      assertEquals( "oldText", text.getText() );
+    }
+	}
+  
+  public void testInsertWithModifyListener() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.SINGLE );
+    text.setBounds( 0, 0, 100, 20 );
+    text.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        log.add( event );
+      }
+    } );
+    
+    // Test that event is fired when correctly using insert
+    log.clear();
+    text.insert( "abc" );
+    assertEquals( 1, log.size() );
+    
+    // Test that event is *not* fired when passing illegal argument to insert
+    log.clear();
+    text = new Text( shell, SWT.SINGLE );
+    try {
+      text.insert( null );
+      fail( "No exception thrown on string == null" );
+    } catch( IllegalArgumentException e ) {
+    }
+    assertEquals( 0, log.size() );
   }
 }

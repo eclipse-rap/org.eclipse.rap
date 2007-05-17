@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
@@ -420,6 +421,35 @@ public class Text extends Control {
     return ( style & SWT.READ_ONLY ) == 0;
   }
   
+  /**
+   * Inserts a string.
+   * <p>
+   * The old selection is replaced with the new text.
+   * </p>
+   *
+   * @param string the string
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is <code>null</code></li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void insert( final String string ) {
+    checkWidget();
+    if( string == null ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    String oldText = getText();
+    Point sel = getSelection();
+    String replace = oldText.substring( 0, sel.x );
+    replace += string;
+    replace += oldText.substring( sel.y );
+    setText( replace );
+  }
+
   ////////////////////
   // Widget dimensions
   
