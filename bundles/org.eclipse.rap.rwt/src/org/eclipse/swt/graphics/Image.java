@@ -20,7 +20,7 @@ import org.eclipse.swt.resources.ResourceManager;
 import com.w4t.IResourceManager;
 
 
-public final class Image {
+public final class Image extends Resource {
   
   private static final Map images = new HashMap();
   

@@ -22,7 +22,7 @@ import org.eclipse.swt.internal.graphics.IColor;
  * 
  * @see RGB
  */
-public class Color {
+public class Color extends Resource {
 
   /**
    * Holds the color values within one integer.

@@ -11,12 +11,12 @@
 
 package org.eclipse.swt.events;
 
+import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 import com.w4t.engine.lifecycle.PhaseId;
-import junit.framework.TestCase;
 
 
 public class UntypedEvents_Test extends TestCase {

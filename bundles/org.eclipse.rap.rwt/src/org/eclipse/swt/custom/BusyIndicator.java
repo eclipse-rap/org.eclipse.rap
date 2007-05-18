@@ -12,6 +12,7 @@ package org.eclipse.swt.custom;
 
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -39,7 +40,7 @@ public class BusyIndicator {
  * </ul>
  */
 
-public static void showWhile(Display display, Runnable runnable) {
+public static void showWhile(Device display, Runnable runnable) {
     if (runnable == null)
         SWT.error(SWT.ERROR_NULL_ARGUMENT);
     if (display == null) {

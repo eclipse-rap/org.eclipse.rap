@@ -19,17 +19,21 @@ public class Font_Test extends TestCase {
   
   public void testGetFont() {
     Font font = Font.getFont( "roman", 1, SWT.NORMAL );
-    assertEquals( "roman", font.getName() );
-    assertEquals( 1, font.getSize() );
-    assertEquals( SWT.NORMAL, font.getStyle() );
+    assertEquals( "roman", font.getFontData()[ 0 ].getName() );
+    assertEquals( 1, font.getFontData()[ 0 ].getHeight() );
+    assertEquals( SWT.NORMAL, font.getFontData()[ 0 ].getStyle() );
     Font sameFont = Font.getFont( "roman", 1, SWT.NORMAL );
     assertSame( font, sameFont );
     Font otherFont = Font.getFont( "arial", 2, SWT.NORMAL );
     assertTrue( otherFont != font );
     Font boldFont  = Font.getFont( "arial", 11, SWT.BOLD );
-    assertTrue( ( boldFont.getStyle() & SWT.BOLD ) != 0 ) ;
+    assertTrue( ( boldFont.getFontData()[ 0 ].getStyle() & SWT.BOLD ) != 0 ) ;
     Font italicFont  = Font.getFont( "arial", 11, SWT.ITALIC );
-    assertTrue( ( italicFont.getStyle() & SWT.ITALIC ) != 0 ) ;
+    assertTrue( ( italicFont.getFontData()[ 0 ].getStyle() & SWT.ITALIC ) != 0 );
+    
+    sameFont = Font.getFont( new FontData( "roman", 1, SWT.NORMAL ) );
+    assertSame( font, sameFont );
+    assertSame( font.getFontData()[ 0 ], font.getFontData()[ 0 ] );
   }
   
   public void testGetFontWithIllegalArguments() {

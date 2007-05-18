@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -101,22 +102,24 @@ final class SimpleFontDialog extends Dialog {
   }
   
   private void updateFontControls() {
-    txtName.setText( font.getName() );
-    txtSize.setText( String.valueOf( font.getSize() ) );
-    btnBold.setSelection( ( font.getStyle() & SWT.BOLD ) != 0 );
-    btnItalic.setSelection( ( font.getStyle() & SWT.ITALIC ) != 0 );
+    FontData data = font.getFontData()[ 0 ];
+    txtName.setText( data.getName() );
+    txtSize.setText( String.valueOf( data.getHeight() ) );
+    btnBold.setSelection( ( data.getStyle() & SWT.BOLD ) != 0 );
+    btnItalic.setSelection( ( data.getStyle() & SWT.ITALIC ) != 0 );
   }
 
   private void applyPressed() {
     String name = txtName.getText();
-    int size;
+    int height;
+    FontData data = font.getFontData()[ 0 ];
     try {
-      size = Integer.parseInt( txtSize.getText() );
-      if( size < 0 ) {
-        size = font.getSize();
+      height = Integer.parseInt( txtSize.getText() );
+      if( height < 0 ) {
+        height = data.getHeight();
       }
     } catch( NumberFormatException e ) {
-      size = font.getSize();
+      height = data.getHeight();
     }
     int style = SWT.NORMAL;
     if( btnBold.getSelection() ) {
@@ -125,7 +128,7 @@ final class SimpleFontDialog extends Dialog {
     if( btnItalic.getSelection() ) {
       style |= SWT.ITALIC;
     }
-    setFont( Font.getFont( name, size, style ) );
+    setFont( Font.getFont( name, height, style ) );
     if( callback != null ) {
       callback.run();
     }

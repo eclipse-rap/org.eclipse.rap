@@ -267,12 +267,13 @@ public final class WidgetLCAUtil {
         || WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, systemFont ) ) 
     {
       JSWriter writer = JSWriter.getWriterFor( widget );
+      FontData fontData = font.getFontData()[ 0 ];
       Object[] args = new Object[]{
         widget,
-        font.getName(),
-        new Integer( font.getSize() ),
-        Boolean.valueOf( ( font.getStyle() & SWT.BOLD ) != 0 ),
-        Boolean.valueOf( ( font.getStyle() & SWT.ITALIC ) != 0 )
+        fontData.getName(),
+        new Integer( fontData.getHeight() ),
+        Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
+        Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
       };
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setFont", args );
     }

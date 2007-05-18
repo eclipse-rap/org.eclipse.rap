@@ -117,6 +117,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Color_Test.class );
     suite.addTestSuite( RGB_Test.class );
     suite.addTestSuite( Font_Test.class );
+    suite.addTestSuite( FontData_Test.class );
     suite.addTestSuite( FontSizeEstimation_Test.class );
 
     suite.addTestSuite( DisplayLCA_Test.class );

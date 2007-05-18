@@ -87,7 +87,7 @@ public class FontSizeEstimation {
    */
   public static int getCharHeight( final Font font ) {
     // at 72 dpi, 1 pt == 1 px
-    return font.getSize();
+    return font.getFontData()[ 0 ].getHeight();
   }
   
   /**
@@ -98,8 +98,8 @@ public class FontSizeEstimation {
    * @return the estimated average character width in pixels
    */
   public static float getAvgCharWidth( final Font font ) {
-    float width = font.getSize() * 0.48f;
-    if( ( font.getStyle() & SWT.BOLD ) != 0 ) {
+    float width = font.getFontData()[ 0 ].getHeight() * 0.48f;
+    if( ( font.getFontData()[ 0 ].getStyle() & SWT.BOLD ) != 0 ) {
       width *= 1.45;
     }
     return width;

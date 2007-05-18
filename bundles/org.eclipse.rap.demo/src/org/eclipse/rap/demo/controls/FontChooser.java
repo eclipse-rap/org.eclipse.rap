@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -93,14 +94,15 @@ final class FontChooser {
     btnApply.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         String name = txtName.getText();
-        int size;
+        int height;
+        FontData data = font.getFontData()[ 0 ];
         try {
-          size = Integer.parseInt( txtSize.getText() );
-          if( size < 0 ) {
-            size = font.getSize();
+          height = Integer.parseInt( txtSize.getText() );
+          if( height < 0 ) {
+            height = data.getHeight();
           }
         } catch( NumberFormatException e ) {
-          size = font.getSize();
+          height = data.getHeight();
         }
         int style = SWT.NORMAL;
         if( btnBold.getSelection() ) {
@@ -109,7 +111,7 @@ final class FontChooser {
         if( btnItalic.getSelection() ) {
           style |= SWT.ITALIC;
         }
-        setFont( Font.getFont( name, size, style ) );
+        setFont( Font.getFont( name, height, style ) );
         if( changeRunnable != null ) {
           changeRunnable.run();
         }
@@ -120,14 +122,15 @@ final class FontChooser {
   
   private static Font boldSystemFont() {
     Font font = Display.getCurrent().getSystemFont();
-    Font result = Font.getFont( font.getName(), font.getSize(), SWT.BOLD );
-    return result;
+    FontData data = font.getFontData()[ 0 ];
+    return Font.getFont( data.getName(), data.getHeight(), SWT.BOLD );
   }
 
   private void updateFontControls() {
-    txtName.setText( font.getName() );
-    txtSize.setText( String.valueOf( font.getSize() ) );
-    btnBold.setSelection( ( font.getStyle() & SWT.BOLD ) != 0 );
-    btnItalic.setSelection( ( font.getStyle() & SWT.ITALIC ) != 0 );
+    FontData data = font.getFontData()[ 0 ];
+    txtName.setText( data.getName() );
+    txtSize.setText( String.valueOf( data.getHeight() ) );
+    btnBold.setSelection( ( data.getStyle() & SWT.BOLD ) != 0 );
+    btnItalic.setSelection( ( data.getStyle() & SWT.ITALIC ) != 0 );
   }
 }

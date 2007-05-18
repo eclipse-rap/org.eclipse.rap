@@ -472,8 +472,9 @@ public class CTabFolder_Test extends TestCase {
     item.setToolTipText( item.getText() );
     item.setImage( searchImage() );
     Font systemFont = folder.getDisplay().getSystemFont();
-    item.setFont( Font.getFont( systemFont.getName(), 
-                                systemFont.getSize(), 
+    FontData data = systemFont.getFontData()[ 0 ];
+    item.setFont( Font.getFont( data.getName(), 
+                                data.getHeight(), 
                                 SWT.BOLD ) );
     Label label = new Label( folder, SWT.NONE );
     label.setText( "Content for: " + item.getText() );

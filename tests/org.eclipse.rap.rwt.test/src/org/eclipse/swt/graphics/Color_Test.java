@@ -31,7 +31,7 @@ public class Color_Test extends TestCase {
   }
   
   public void testColorFromConstant() {
-    Display display = new Display();
+    Device display = new Display();
     Color color = display.getSystemColor( SWT.COLOR_RED );
     assertEquals( 255, color.getRed() );
     assertEquals( 0, color.getGreen() );

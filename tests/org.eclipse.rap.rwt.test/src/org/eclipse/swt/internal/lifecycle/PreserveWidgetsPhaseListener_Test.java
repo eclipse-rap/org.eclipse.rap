@@ -16,6 +16,7 @@ import javax.servlet.ServletContextEvent;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.internal.engine.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
@@ -121,7 +122,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
               log.append( display.getClass().getName() );
             }
 
-            public void processAction( Display display ) {
+            public void processAction( Device display ) {
             }
 
             public void readData( Display display ) {

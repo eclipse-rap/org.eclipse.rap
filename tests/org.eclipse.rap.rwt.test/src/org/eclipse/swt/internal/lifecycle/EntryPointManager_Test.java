@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.lifecycle;
 
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 
@@ -113,7 +114,7 @@ public class EntryPointManager_Test extends TestCase {
     }
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestEntryPointWithLog.class );
-    Display display = EntryPointManager.createUI( EntryPointManager.DEFAULT );
+    Device display = EntryPointManager.createUI( EntryPointManager.DEFAULT );
     assertEquals( "isRunning", log );
     assertNotNull( display );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );

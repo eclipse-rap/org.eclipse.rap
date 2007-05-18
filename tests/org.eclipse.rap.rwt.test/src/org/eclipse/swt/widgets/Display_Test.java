@@ -14,14 +14,13 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.FillLayout;
 
 public class Display_Test extends TestCase {
 
   public void testSingleDisplayPerSession() {
-    Display display = new Display();
+    Device display = new Display();
     assertEquals( Display.getCurrent(), display );
     try {
       new Display();
@@ -121,7 +120,7 @@ public class Display_Test extends TestCase {
   }
   
   public void testSystemFont() {
-    Display display = new Display();
+    Device display = new Display();
     Font systemFont = display.getSystemFont();
     assertNotNull( systemFont );
   }

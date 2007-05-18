@@ -18,58 +18,61 @@ import org.eclipse.swt.SWT;
 // TODO [bm] Javadoc
 // TODO [rh] font property (according and LCA functinality) for the following
 //      widget missing: TableItem, TreeColumn
-public final class Font {
+public final class Font extends Resource {
   
   private static final Map fonts = new HashMap();
   
-  private final String name;
-  private final int size;
-  private final int style;
+  private final FontData[] fontData;
   
-  private Font( final String name, final int size, final int style ) {
-    this.name = name;
-    this.size = size;
-    this.style = style;
+  private Font( final FontData data ) {
+    this.fontData = new FontData[] { data };
   }
   
+  
+  /**
+   * TODO [fappel]: comment
+   */
   public static Font getFont( final String name, 
-                              final int size, 
+                              final int height, 
                               final int style ) 
   {
-    validate( name, size );
+    validate( name, height );
     int checkedStyle = checkStyle( style );
-    Integer hashCode = new Integer( getHashCode( name, size, checkedStyle ) );
     Font result;
+    FontData fontData = new FontData( name, height, checkedStyle );
     synchronized( Font.class ) {
-      result = ( Font )fonts.get( hashCode );
+      result = ( Font )fonts.get( fontData );
       if( result == null ) {
-        result = new Font( name, size, checkedStyle );
-        fonts.put( hashCode, result );
+        result = new Font( fontData );
+        fonts.put( fontData, result );
       }
     }
     return result;
   }
-
-  public String getName() {
-    return name;
+  
+  /**
+   * TODO [fappel]: comment
+   */
+  public static Font getFont( final FontData data ) {
+    return getFont( data.getName(), data.getHeight(), data.getStyle() );
   }
 
-  public int getSize() {
-    return size;
+  /**
+   * TODO [fappel]: comment
+   */
+  public FontData[] getFontData() {
+    return fontData;
   }
 
-  public int getStyle() {
-    return style;
-  }
-
+  
   //////////////////
   // Helping methods
   
-  private static void validate( final String name, final int size ) {
+  private static void validate( final String name, final int height ) {
     if( name == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( size < 0 ) {
+    if( height < 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
   }
@@ -82,17 +85,6 @@ public final class Font {
     if( ( style & SWT.ITALIC ) != 0 ) {
       result |= SWT.ITALIC;
     }
-    return result;
-  }
-  
-  private static int getHashCode( final String name, 
-                                  final int size, 
-                                  final int style ) 
-  {
-    int result = 1;
-    result = 31 * result + name.hashCode();
-    result = 31 * result + size;
-    result = 31 * result + style;
     return result;
   }
 }

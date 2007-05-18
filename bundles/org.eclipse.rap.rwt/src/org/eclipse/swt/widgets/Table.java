@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import java.util.*;
 import java.util.List;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;

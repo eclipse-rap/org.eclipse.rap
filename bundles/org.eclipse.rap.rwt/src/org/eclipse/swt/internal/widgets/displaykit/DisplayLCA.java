@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.swt.events.RWTEvent;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.engine.ResourceRegistry;
 import org.eclipse.swt.internal.lifecycle.IDisplayLifeCycleAdapter;
@@ -227,7 +228,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
   
-  public void processAction( final Display display ) {
+  public void processAction( final Device display ) {
     ProcessActionRunner.execute();
     RWTEvent.processScheduledEvents();
   }

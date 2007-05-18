@@ -12,7 +12,6 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
-
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;

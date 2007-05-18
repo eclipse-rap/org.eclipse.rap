@@ -16,6 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -100,24 +101,9 @@ import com.w4t.engine.service.ContextProvider;
  * @see Device#dispose
  */
 // TODO: [doc] Update display javadoc
-public class Display implements Adaptable {
+public class Display extends Device implements Adaptable {
 
   private static final String DISPLAY_ID = "org.eclipse.swt.display";
-  
-  // TODO [rh] this must be in sync with font in DefaultAppearanceTheme.js
-  private static final String SYSTEM_FONT_NAME 
-    = "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", " 
-    + "sans-serif";
-
-  private static final String ICON_PATH = "resource/widget/rap/dialog";
-  
-  private static final String ERROR_IMAGE_PATH = ICON_PATH + "/error.png";
-
-  private static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";
-
-  private static final String QUESTION_IMAGE_PATH = ICON_PATH + "/question.png";
-
-  private static final String WARNING_IMAGE_PATH = ICON_PATH + "/warning.png";
 
   /**
    * Returns the display which the currently running thread is
@@ -131,16 +117,12 @@ public class Display implements Adaptable {
   }
   
   private final List shells;
-  private final Font systemFont; 
+ 
   private Rectangle bounds;
   private Shell activeShell;
   private IDisplayAdapter displayAdapter;
   public Control focusControl;
 
-  private Image errorImage;
-  private Image infoImage;
-  private Image questionImage;
-  private Image warningImage;
 
 
   /**
@@ -169,8 +151,7 @@ public class Display implements Adaptable {
       throw new IllegalStateException( msg );
     }
     session.setAttribute( DISPLAY_ID, this );
-    shells = new ArrayList();
-    systemFont = Font.getFont( SYSTEM_FONT_NAME, 11, SWT.NORMAL );    
+    shells = new ArrayList(); 
     readInitialBounds();
   }
 
@@ -241,178 +222,6 @@ public class Display implements Adaptable {
 
   ///////////////////////////
   // Systen colors and images
-  
-  /**
-   * Returns the matching standard color for the given
-   * constant, which should be one of the color constants
-   * specified in class <code>SWT</code>. Any value other
-   * than one of the SWT color constants which is passed
-   * in will result in the color black. This color should
-   * not be free'd because it was allocated by the system,
-   * not the application.
-   * 
-   * The COLOR_WIDGET_* constants are not supported yet.
-   *
-   * @param id the color constant
-   * @return the matching color
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
-   * </ul>
-   *
-   * @see SWT
-   */
-  // TODO [rh] preliminary: COLOR_WIDGET_XXX not yet supported
-  public Color getSystemColor( final int id ) {
-    checkDevice();
-    int pixel = 0x02000000;
-    switch( id ) {
-      case SWT.COLOR_WHITE:
-        pixel = 0x02FFFFFF;
-      break;
-      case SWT.COLOR_BLACK:
-        pixel = 0x02000000;
-      break;
-      case SWT.COLOR_RED:
-        pixel = 0x020000FF;
-      break;
-      case SWT.COLOR_DARK_RED:
-        pixel = 0x02000080;
-      break;
-      case SWT.COLOR_GREEN:
-        pixel = 0x0200FF00;
-      break;
-      case SWT.COLOR_DARK_GREEN:
-        pixel = 0x02008000;
-      break;
-      case SWT.COLOR_YELLOW:
-        pixel = 0x0200FFFF;
-      break;
-      case SWT.COLOR_DARK_YELLOW:
-        pixel = 0x02008080;
-      break;
-      case SWT.COLOR_BLUE:
-        pixel = 0x02FF0000;
-      break;
-      case SWT.COLOR_DARK_BLUE:
-        pixel = 0x02800000;
-      break;
-      case SWT.COLOR_MAGENTA:
-        pixel = 0x02FF00FF;
-      break;
-      case SWT.COLOR_DARK_MAGENTA:
-        pixel = 0x02800080;
-      break;
-      case SWT.COLOR_CYAN:
-        pixel = 0x02FFFF00;
-      break;
-      case SWT.COLOR_DARK_CYAN:
-        pixel = 0x02808000;
-      break;
-      case SWT.COLOR_GRAY:
-        pixel = 0x02C0C0C0;
-      break;
-      case SWT.COLOR_DARK_GRAY:
-        pixel = 0x02808080;
-      break;
-    }
-    return Color.getColor( pixel );
-  }
-  
-  /**
-   * Returns a reasonable font for applications to use.
-   * On some platforms, this will match the "default font"
-   * or "system font" if such can be found.  This font
-   * should not be free'd because it was allocated by the
-   * system, not the application.
-   * <p>
-   * Typically, applications which want the default look
-   * should simply not set the font on the widgets they
-   * create. Widgets are always created with the correct
-   * default font for the class of user-interface component
-   * they represent.
-   * </p>
-   *
-   * @return a font
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
-   * </ul>
-   */
-  public Font getSystemFont() {
-    checkDevice();
-    return systemFont;
-  }
-  
-  /**
-   * Returns the matching standard platform image for the given
-   * constant, which should be one of the icon constants
-   * specified in class <code>SWT</code>. This image should
-   * not be free'd because it was allocated by the system,
-   * not the application.  A value of <code>null</code> will
-   * be returned either if the supplied constant is not an
-   * SWT icon constant or if the platform does not define an
-   * image that corresponds to the constant. 
-   *
-   * @param id the SWT icon constant
-   * @return the corresponding image or <code>null</code>
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
-   * </ul>
-   *
-   * @see SWT#ICON_ERROR
-   * @see SWT#ICON_INFORMATION
-   * @see SWT#ICON_QUESTION
-   * @see SWT#ICON_WARNING
-   * @see SWT#ICON_WORKING
-   * 
-   * @since 1.0
-   */
-  // TODO [rh] revise this: why are Image.find() results store in fields?  
-  public Image getSystemImage( final int id ) {
-    checkDevice();
-    ClassLoader classLoader = getClass().getClassLoader();
-    Image result = null;
-    switch( id ) {
-      case SWT.ICON_ERROR: {
-        if( errorImage == null ) {
-          errorImage = Image.find( ERROR_IMAGE_PATH, classLoader );
-        }
-        result = errorImage;
-        break;
-      }
-      case SWT.ICON_WORKING:
-      case SWT.ICON_INFORMATION: {
-        if( infoImage == null ) {
-          infoImage = Image.find( INFO_IMAGE_PATH, classLoader );
-        }
-        result = infoImage;
-        break;
-      }
-      case SWT.ICON_QUESTION: {
-        if( questionImage == null ) {
-          questionImage = Image.find( QUESTION_IMAGE_PATH, classLoader );
-        }
-        result = questionImage;
-        break;
-      }
-      case SWT.ICON_WARNING: {
-        if( warningImage == null ) {
-          warningImage = Image.find( WARNING_IMAGE_PATH, classLoader );
-        }
-        result = warningImage;
-        break;
-      }
-    }
-    return result;
-  }
-  
-  /////////////////////
-  // Coordinate mapping 
   
   /**
    * Maps a point from one coordinate system to another.
@@ -632,13 +441,6 @@ public class Display implements Adaptable {
   // TODO [rh] This is preliminary!
   public void dispose() {
     ContextProvider.getSession().removeAttribute( DISPLAY_ID );
-  }
-
-  /////////////////////
-  // Consistency check
-  
-  protected void checkDevice() {
-    // TODO [rh] implementation missing
   }
   
   /////////////////////
