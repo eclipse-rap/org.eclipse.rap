@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.ToolItem;
 
 final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
 
-  private static final String SELECTED_ITEM = "selectedItem"; 
   // check functions as defined in org.eclipse.swt.ButtonUtil
   private static final String WIDGET_SELECTED 
     = "org.eclipse.swt.ButtonUtil.checkSelected";
@@ -39,7 +38,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
   
   void readData( final ToolItem toolItem ) {
     if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      String value = WidgetLCAUtil.readPropertyValue( toolItem, SELECTED_ITEM );
+      String value = WidgetLCAUtil.readPropertyValue( toolItem, "selection" );
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
       ToolItemLCAUtil.processSelection( toolItem );
     }
