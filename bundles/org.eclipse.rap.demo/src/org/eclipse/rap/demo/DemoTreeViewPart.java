@@ -184,17 +184,6 @@ class TreeObject {
     viewer.setInput( this );
     viewer.addDoubleClickListener(this);
     getSite().setSelectionProvider( viewer );
-    viewer.addFilter(new ViewerFilter() {
-
-        public boolean select(Viewer viewer, Object parentElement,
-                Object element) {
-            if(element.toString().startsWith("Child X")) {
-                return false;
-            }
-            return true;
-        }
-        
-    });
   }
   
   public void setFocus() {
@@ -204,5 +193,9 @@ class TreeObject {
   public void doubleClick(DoubleClickEvent event) {
       MessageDialog.openInformation(viewer.getTree().getShell(), "Treeviewer",
               "You doubleclicked on " + event.getSelection().toString(), null);
+  }
+
+  public TreeViewer getViewer() {
+      return viewer;
   }
 }

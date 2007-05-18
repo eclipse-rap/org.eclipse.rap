@@ -17,6 +17,14 @@
     <entrypoint
         class="org.eclipse.rap.demo.controls.ControlsDemo"
         parameter="controls"/>
+    <entrypoint
+          class="org.eclipse.rap.demo.ToggleTest"
+          parameter="toggle">
+    </entrypoint>
+    <entrypoint
+          class="org.eclipse.rap.demo.ToolbarTest"
+          parameter="toolbar">
+    </entrypoint>
   </extension>
   
   <extension
@@ -77,5 +85,23 @@
             id="two"
             name="Category 2"/>
    </extension>
+  <extension
+        point="org.eclipse.ui.viewActions">
+     <viewContribution
+           id="org.eclipse.rap.demo.viewContribution2"
+           targetID="org.eclipse.rap.demo.DemoTreeViewPartIII">
+        <action
+              class="org.eclipse.rap.demo.DemoTreeViewActionDelegate"
+              enablesFor="*"
+              icon="icons/ttt.gif"
+              id="org.eclipse.rap.demo.filterAction"
+              label="Filter all leafs"
+              state="false"
+              style="toggle"
+              toolbarPath="filter"
+              tooltip="Filter all leafs">
+        </action>
+     </viewContribution>
+  </extension>
   
 </plugin>
