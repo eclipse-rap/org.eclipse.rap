@@ -17,7 +17,13 @@ import org.eclipse.swt.graphics.Point;
 
 public class FontSizeEstimation {
 
-  public static Point stringExtent( String string, Font font ) {    
+  /**
+   * Estimates the size of a given text. Linebreaks are not respected.
+   * @param string the text whose size to estimate
+   * @param font the font to perform the estimation for
+   * @return the estimated size
+   */
+  public static Point stringExtent( final String string, final Font font ) {    
     if ( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -27,7 +33,13 @@ public class FontSizeEstimation {
   }
   
   /**
-   * respects line breaks and wrap
+   * Estimates the size of a given text, respecting line breaks and wrapping at
+   * a given width.
+   * 
+   * @param string the text whose size to estimate
+   * @param wrapWidth the width to wrap at in pixels, 0 stands for no wrapping
+   * @param font the font to perform the estimation for
+   * @return the estimated size
    */
   public static Point textExtent( final String string,
                                   final int wrapWidth,
@@ -66,11 +78,25 @@ public class FontSizeEstimation {
     return new Point( maxWidth, height );
   }
   
+  /**
+   * Returns the character height in pixels. The returned value is only a rough
+   * estimation.
+   * 
+   * @param font the font to perform the estimation for
+   * @return the estimated character height in pixels
+   */
   public static int getCharHeight( final Font font ) {
     // at 72 dpi, 1 pt == 1 px
     return font.getSize();
   }
   
+  /**
+   * Returns the average character weight in pixels. The returned value is only
+   * a rough estimation that does not take the font family into account.
+   * 
+   * @param font the font to perform the estimation for
+   * @return the estimated average character width in pixels
+   */
   public static float getAvgCharWidth( final Font font ) {
     float width = font.getSize() * 0.48f;
     if( ( font.getStyle() & SWT.BOLD ) != 0 ) {
@@ -80,9 +106,9 @@ public class FontSizeEstimation {
   }
   
   /**
-   * @return The length of the longest substring, whose width is smaller or
-   *         equal to wrapWidth. If there is no such substring, zero is
-   *         returned. The result is never negative.
+   * Returns the length of the longest substring, whose width is smaller or
+   * equal to wrapWidth. If there is no such substring, zero is returned. The
+   * result is never negative.
    */
   private static int getLongestMatch( final String string,
                                       final int wrapWidth,
