@@ -14,8 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.rap.demo.wizard.SurveyWizard;
 import org.eclipse.swt.SWT;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.*;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
@@ -29,6 +28,9 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
   private Action aboutAction;
   private MenuManager showViewMenuMgr;
   private Action wizardAction;
+  private Action browserAction;
+  
+  private static int browserIndex;
 
   public DemoActionBarAdvisor( final IActionBarConfigurer configurer ) {
     super( configurer );
@@ -44,6 +46,9 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     ImageDescriptor image3 
     = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
                                                   "icons/login.gif" );
+    ImageDescriptor image4 
+    = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
+                                                  "icons/internal_browser.gif" );
     
     exitAction = ActionFactory.QUIT.create( window );
     exitAction.setImageDescriptor( image1 );
@@ -77,6 +82,24 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     wizardAction.setId("org.eclipse.rap.demo.wizard");
     wizardAction.setImageDescriptor(image3);
     register(wizardAction);
+    
+    browserAction = new Action() {
+        public void run() {
+        	browserIndex++;
+        	try {
+				window.getActivePage().showView(
+						"org.eclipse.rap.demo.DemoBrowserViewPart",
+						String.valueOf( browserIndex ) ,
+						IWorkbenchPage.VIEW_ACTIVATE );
+			} catch (PartInitException e) {
+				e.printStackTrace();
+			}
+        }
+      };
+      browserAction.setText( "Open new Browser View" );
+      browserAction.setId( "org.eclipse.rap.demo.browser" );
+      browserAction.setImageDescriptor( image4 );
+      register( browserAction );
   }
   
 
@@ -108,6 +131,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     coolBar.add( new ToolBarContributionItem( toolbar, name ) );
     toolbar.add( exitAction );
     toolbar.add( wizardAction );
+    toolbar.add( browserAction );
     toolbar.add( aboutAction );
   }
 }

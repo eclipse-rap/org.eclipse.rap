@@ -73,6 +73,7 @@
             id="org.eclipse.rap.demo.DemoSelectionViewPart"
             name="Selection View"/> 
       <view
+            allowMultiple="true"
             category="two"
             class="org.eclipse.rap.demo.DemoBrowserViewPart"
             icon="icons/internal_browser.gif"
