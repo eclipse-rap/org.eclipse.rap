@@ -17,6 +17,7 @@ import org.eclipse.swt.browser.Browser_Test;
 import org.eclipse.swt.custom.CTabFolder_Test;
 import org.eclipse.swt.custom.CTabItem_Test;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.externalbrowser.ExternalBrowser_Test;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.swt.internal.engine.*;
@@ -112,6 +113,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Group_Test.class );
     suite.addTestSuite( Text_Test.class );
     suite.addTestSuite( Spinner_Test.class );
+    suite.addTestSuite( ExternalBrowser_Test.class );
     
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );
