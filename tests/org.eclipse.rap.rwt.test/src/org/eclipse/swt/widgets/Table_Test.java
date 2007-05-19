@@ -253,6 +253,95 @@ public class Table_Test extends TestCase {
     assertTrue( item1.isDisposed() );
   }
   
+  public void testRemoveRange() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    int number = 5;
+    TableItem[] items = new TableItem[ number ];
+    for( int i = 0; i < number; i++ )
+      items[ i ] = new TableItem( table, 0 );
+    try {
+      table.remove( -number, number + 100 );
+      fail( "No exception thrown for illegal index range" );
+    } catch( IllegalArgumentException e ) {
+    }
+    table = new Table( shell, SWT.NONE );
+    items = new TableItem[ number ];
+    for( int i = 0; i < number; i++ )
+      items[ i ] = new TableItem( table, 0 );
+    table.remove( 2, 3 );
+    assertTrue( items[ 2 ].isDisposed() );
+    assertTrue( items[ 3 ].isDisposed() );
+    assertEquals( table.getItemCount(), 3 );
+  }
+
+  public void testRemove() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    int number = 5;
+    TableItem[] items = new TableItem[ number ];
+    for( int i = 0; i < number; i++ )
+      items[ i ] = new TableItem( table, 0 );
+    table.remove( 1 );
+    assertTrue( items[ 1 ].isDisposed() );
+    assertEquals( table.getItemCount(), 4 );
+  }
+
+  public void testRemoveArray() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    int number = 15;
+    TableItem[] items = new TableItem[ number ];
+    for( int i = 0; i < number; i++ )
+      items[ i ] = new TableItem( table, 0 );
+    try {
+      table.remove( null );
+      fail( "No exception thrown for tableItems == null" );
+    } catch( NullPointerException e ) {
+      // Illegal Argument exception in SWT
+      // NPE in RWT - see SWT error code to exception switch
+    }
+    try {
+      table.remove( new int[]{
+        2, 1, 0, -100, 5, 5, 2, 1, 0, 0, 0
+      } );
+      fail( "No exception thrown for illegal index arguments" );
+    } catch( IllegalArgumentException e ) {
+    }
+    try {
+      table.remove( new int[]{
+        2, 1, 0, number, 5, 5, 2, 1, 0, 0, 0
+      } );
+      fail( "No exception thrown for illegal index arguments" );
+    } catch( IllegalArgumentException e ) {
+    }
+    table.remove( new int[]{} );
+    table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < number; i++ )
+      items[ i ] = new TableItem( table, 0 );
+    assertTrue( ":a:", !items[ 2 ].isDisposed() );
+    table.remove( new int[]{
+      2
+    } );
+    assertTrue( ":b:", items[ 2 ].isDisposed() );
+    assertEquals( number - 1, table.getItemCount() );
+    assertTrue( ":c:", !items[ number - 1 ].isDisposed() );
+    table.remove( new int[]{ number - 2 } );
+    assertTrue( ":d:", items[ number - 1 ].isDisposed() );
+    assertEquals( number - 2, table.getItemCount() );
+    assertTrue( ":e:", !items[ 3 ].isDisposed() );
+    table.remove( new int[]{ 2 } );
+    assertTrue( ":f:", items[ 3 ].isDisposed() );
+    assertEquals( number - 3, table.getItemCount() );
+    assertTrue( ":g:", !items[ 0 ].isDisposed() );
+    table.remove( new int[]{ 0 } );
+    assertTrue( ":h:", items[ 0 ].isDisposed() );
+    assertEquals( number - 4, table.getItemCount() );
+  }
+
   public void deselectAll() {
     Display display = new Display();
     Shell shell = new Shell( display );

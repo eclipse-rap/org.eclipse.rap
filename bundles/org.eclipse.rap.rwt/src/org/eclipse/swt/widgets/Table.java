@@ -397,6 +397,103 @@ public class Table extends Composite {
   }
   
   /**
+   * Removes the items from the receiver which are between the given
+   * zero-relative start and end indices (inclusive).
+   * 
+   * @param start the start of the range
+   * @param end the end of the range
+   * @exception IllegalArgumentException
+   *              <ul>
+   *              <li>ERROR_INVALID_RANGE - if either the start or end are not
+   *              between 0 and the number of elements in the list minus 1
+   *              (inclusive)</li>
+   *              </ul>
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   */
+  public void remove( final int start, final int end ) {
+    checkWidget();
+    if( start > end ) {
+      return;
+    }
+    if( !( 0 <= start && start <= end && end < getItemCount() ) ) {
+      error( SWT.ERROR_INVALID_RANGE );
+    }
+    TableItem[] items = getItems();
+    for( int i = start; i <= end; i++ ) {
+      if( !items[ i ].isDisposed() ) {
+        items[ i ].dispose();
+      }
+    }
+  }
+
+  /**
+   * Removes the item from the receiver at the given zero-relative index.
+   * 
+   * @param index the index for the item
+   * @exception IllegalArgumentException
+   *              <ul>
+   *              <li>ERROR_INVALID_RANGE - if the index is not between 0 and
+   *              the number of elements in the list minus 1 (inclusive)</li>
+   *              </ul>
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   */
+  public void remove( final int index ) {
+    checkWidget();
+    if( !( 0 <= index && index < getItemCount() ) ) {
+      error( SWT.ERROR_ITEM_NOT_REMOVED );
+    }
+    TableItem item = getItem( index );
+    if( !item.isDisposed() ) {
+      item.dispose();
+    }
+  }
+
+  /**
+   * Removes the items from the receiver's list at the given zero-relative
+   * indices.
+   * 
+   * @param indices the array of indices of the items
+   * @exception IllegalArgumentException
+   *              <ul>
+   *              <li>ERROR_INVALID_RANGE - if the index is not between 0 and
+   *              the number of elements in the list minus 1 (inclusive)</li>
+   *              <li>ERROR_NULL_ARGUMENT - if the indices array is null</li>
+   *              </ul>
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   */
+  public void remove( final int[] indices ) {
+    checkWidget();
+    if( indices == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( indices.length == 0 ) {
+      return;
+    }
+    TableItem item;
+    for( int i = 0; i < indices.length; i++ ) {
+      item = getItem( indices[ i ] );
+      if( item != null && !item.isDisposed() ) {
+        item.dispose();
+      }
+    }
+  }
+  
+  /**
    * Clears the item at the given zero-relative index in the receiver.
    * The text, icon and other attributes of the item are set to the default
    * value.  If the table was created with the <code>SWT.VIRTUAL</code> style,
