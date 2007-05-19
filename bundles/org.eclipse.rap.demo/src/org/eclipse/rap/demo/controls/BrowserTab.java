@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.externalbrowser.ExternalBrowser;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -41,6 +42,7 @@ class BrowserTab extends ExampleTab {
 //    createEnablementButton();
     createUrlSelector( styleComp );
     createHtmlSelector( styleComp );
+    createExternalBrowserSelector( styleComp );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -76,7 +78,7 @@ class BrowserTab extends ExampleTab {
     label.setText( "HTML" );
     final Text text = new Text( composite, SWT.BORDER | SWT.MULTI );
     text.setText( DEFAULT_HTML );
-    text.setLayoutData( new RowData( 200, 250 ) );
+    text.setLayoutData( new RowData( 200, 150 ) );
     Button button = new Button( composite, SWT.PUSH );
     button.setLayoutData( new RowData( 50, 20 ) );
     button.setText( "Go" );
@@ -85,5 +87,70 @@ class BrowserTab extends ExampleTab {
         browser.setText( text.getText() );
       }
     } );
+  }
+
+  private void createExternalBrowserSelector( final Composite parent ) {
+    Composite group = new Composite( parent, SWT.NONE );
+    group.setLayout( new GridLayout( 2, false ) );
+    Label lblExternalBrowser = new Label( group, SWT.NONE );
+    lblExternalBrowser.setText( "External Browser" );
+    lblExternalBrowser.setLayoutData( horizontalSpan2() );
+    Label lblId = new Label( group, SWT.NONE );
+    lblId.setText( "Id" );
+    final Text txtId = new Text( group, SWT.BORDER );
+    txtId.setLayoutData( grapExcessHorizontalSpace() );
+    txtId.setText( "1" );
+    Label lblUrl = new Label( group, SWT.NONE );
+    lblUrl.setText( "URL" );
+    final Text txtUrl = new Text( group, SWT.BORDER );
+    txtUrl.setLayoutData( grapExcessHorizontalSpace() );
+    txtUrl.setText( "http://eclipse.org/rap" );
+    final Button cbLocationBar = new Button( group, SWT.CHECK );
+    cbLocationBar.setLayoutData( horizontalSpan2() );
+    cbLocationBar.setText( "LOCATION_BAR" );
+    final Button cbNavigationBar = new Button( group, SWT.CHECK );
+    cbNavigationBar.setLayoutData( horizontalSpan2() );
+    cbNavigationBar.setText( "NAVIGATION_BAR" );
+    final Button cbStatusBar = new Button( group, SWT.CHECK );
+    cbStatusBar.setLayoutData( horizontalSpan2() );
+    cbStatusBar.setText( "STATUS" );
+    Button btnOpen = new Button( group, SWT.PUSH );
+    btnOpen.setLayoutData( horizontalSpan2() );
+    btnOpen.setText( "open( id, url, style )" );
+    btnOpen.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int style = 0;
+        if( cbLocationBar.getSelection() ) {
+          style |= ExternalBrowser.LOCATION_BAR;
+        }
+        if( cbNavigationBar.getSelection() ) {
+          style |= ExternalBrowser.NAVIGATION_BAR;
+        }
+        if( cbStatusBar.getSelection() ) {
+          style |= ExternalBrowser.STATUS;
+        }
+        ExternalBrowser.open( txtId.getText(), txtUrl.getText(), style );
+      }
+    } );
+    Button btnClose = new Button( group, SWT.PUSH );
+    btnClose.setLayoutData( horizontalSpan2() );
+    btnClose.setText( "close( id )" );
+    btnClose.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        ExternalBrowser.close( txtId.getText() );
+      }
+    } );
+  }
+  
+  private static GridData horizontalSpan2() {
+    GridData result = new GridData();
+    result.horizontalSpan = 2;
+    return result;
+  }
+  
+  private static GridData grapExcessHorizontalSpace() {
+    GridData result = new GridData( SWT.FILL, SWT.CENTER, true, false );
+//    result.grabExcessHorizontalSpace = true;
+    return result;
   }
 }

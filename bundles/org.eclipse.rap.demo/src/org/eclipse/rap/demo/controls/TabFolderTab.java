@@ -13,7 +13,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.*;
 
 public class TabFolderTab extends ExampleTab {
@@ -53,7 +52,6 @@ public class TabFolderTab extends ExampleTab {
     parent.setLayout( new FillLayout() );
     int style = getStyle();
     folder = new TabFolder( parent, style );
-    folder.setLayoutData( new RowData( 250, 200 ) );
     tabItems = new TabItem[ 3 ];
     for( int i = 0; i < 3; i++ ) {
       tabItems[ i ] = new TabItem( folder, style );

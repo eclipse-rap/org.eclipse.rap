@@ -8,6 +8,8 @@
  ******************************************************************************/
 package org.eclipse.rap.demo;
 
+import java.net.URL;
+
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -20,12 +22,17 @@ import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.browser.IWebBrowser;
+import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class DemoActionBarAdvisor extends ActionBarAdvisor {
 
+  private IWebBrowser browser;
+
   private IWorkbenchAction exitAction;
   private Action aboutAction;
+  private Action rapWebSiteAction;
   private MenuManager showViewMenuMgr;
   private Action wizardAction;
   private Action browserAction;
@@ -37,21 +44,23 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
   }
 
   protected void makeActions( final IWorkbenchWindow window ) {
-    ImageDescriptor image1 
+    ImageDescriptor quitActionImage 
       = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
                                                     "icons/ttt.gif" );
-    ImageDescriptor image2 
+    ImageDescriptor helpActionImage 
       = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
                                                     "icons/help.gif" );
-    ImageDescriptor image3 
-    = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
-                                                  "icons/login.gif" );
-    ImageDescriptor image4 
-    = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
-                                                  "icons/internal_browser.gif" );
-    
+    ImageDescriptor wizardActionImage 
+      = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
+                                                    "icons/login.gif" );
+    ImageDescriptor browserActionImage 
+      = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
+                                                    "icons/internal_browser.gif" );
+    ImageDescriptor rapWebSiteActionImage 
+      = AbstractUIPlugin.imageDescriptorFromPlugin( "org.eclipse.rap.demo", 
+                                                    "icons/browser.gif" );
     exitAction = ActionFactory.QUIT.create( window );
-    exitAction.setImageDescriptor( image1 );
+    exitAction.setImageDescriptor( quitActionImage );
     register( exitAction );
     
     aboutAction = new Action() {
@@ -63,70 +72,93 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     };
     aboutAction.setText( "About" );
     aboutAction.setId( "org.eclipse.rap.demo.about" );
-    aboutAction.setImageDescriptor( image2 );
+    aboutAction.setImageDescriptor( helpActionImage );
     register( aboutAction );
     
-    showViewMenuMgr = new MenuManager("Show View", "showView"); //$NON-NLS-1$
+    rapWebSiteAction = new Action() {
+      public void run() {
+        IWorkbenchBrowserSupport browserSupport;
+        browserSupport = PlatformUI.getWorkbench().getBrowserSupport(); 
+        try {
+          int style = IWorkbenchBrowserSupport.AS_EXTERNAL;
+          browser = browserSupport.createBrowser( style, 
+                                                  rapWebSiteAction.getId(), 
+                                                  "", 
+                                                  "" );
+          browser.openURL( new URL( "http://eclipse.org/rap" ) );
+        } catch( Exception e ) {
+          e.printStackTrace();
+        } 
+      }
+    };
+    rapWebSiteAction.setText( "RAP Home Page" );
+    rapWebSiteAction.setId( "org.eclipse.rap.demo.rapWebSite" );
+    rapWebSiteAction.setImageDescriptor( rapWebSiteActionImage );
+    register( rapWebSiteAction );
+    
+    showViewMenuMgr = new MenuManager( "Show View", "showView" );
     IContributionItem showViewMenu
-      = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
-    showViewMenuMgr.add(showViewMenu);
+      = ContributionItemFactory.VIEWS_SHORTLIST.create( window );
+    showViewMenuMgr.add( showViewMenu );
     
     wizardAction = new Action() {
       public void run() {
         SurveyWizard wizard = new SurveyWizard();
-        WizardDialog dlg = new WizardDialog(window.getShell(), wizard);
-        dlg.open(null);
+        WizardDialog dlg = new WizardDialog( window.getShell(), wizard );
+        dlg.open( null );
       }
     };
-    wizardAction.setText("Open wizard");
-    wizardAction.setId("org.eclipse.rap.demo.wizard");
-    wizardAction.setImageDescriptor(image3);
-    register(wizardAction);
+    wizardAction.setText( "Open wizard" );
+    wizardAction.setId( "org.eclipse.rap.demo.wizard" );
+    wizardAction.setImageDescriptor( wizardActionImage );
+    register( wizardAction );
     
     browserAction = new Action() {
-        public void run() {
-        	browserIndex++;
-        	try {
-				window.getActivePage().showView(
-						"org.eclipse.rap.demo.DemoBrowserViewPart",
-						String.valueOf( browserIndex ) ,
-						IWorkbenchPage.VIEW_ACTIVATE );
-			} catch (PartInitException e) {
-				e.printStackTrace();
-			}
+      public void run() {
+        browserIndex++;
+        try {
+          window.getActivePage()
+            .showView( "org.eclipse.rap.demo.DemoBrowserViewPart",
+                       String.valueOf( browserIndex ),
+                       IWorkbenchPage.VIEW_ACTIVATE );
+        } catch( PartInitException e ) {
+          e.printStackTrace();
         }
-      };
-      browserAction.setText( "Open new Browser View" );
-      browserAction.setId( "org.eclipse.rap.demo.browser" );
-      browserAction.setImageDescriptor( image4 );
-      register( browserAction );
+      }
+    };
+    browserAction.setText( "Open new Browser View" );
+    browserAction.setId( "org.eclipse.rap.demo.browser" );
+    browserAction.setImageDescriptor( browserActionImage );
+    register( browserAction );
   }
-  
 
   protected void fillMenuBar( final IMenuManager menuBar ) {
-    MenuManager fileMenu = new MenuManager( "File",
-                                            IWorkbenchActionConstants.M_FILE );
-    MenuManager windowMenu = new MenuManager( "Window",
-                                            IWorkbenchActionConstants.M_WINDOW );    
-    MenuManager helpMenu = new MenuManager( "Help",
-                                            IWorkbenchActionConstants.M_HELP );
+    MenuManager fileMenu 
+      = new MenuManager( "File", IWorkbenchActionConstants.M_FILE );
+    MenuManager windowMenu 
+      = new MenuManager( "Window", IWorkbenchActionConstants.M_WINDOW );    
+    MenuManager helpMenu 
+      = new MenuManager( "Help", IWorkbenchActionConstants.M_HELP );
     
     menuBar.add( fileMenu );
     fileMenu.add( exitAction );
     
-    windowMenu.add(showViewMenuMgr);
+    windowMenu.add( showViewMenuMgr );
     menuBar.add( windowMenu );
     
     menuBar.add( helpMenu );
+    helpMenu.add( rapWebSiteAction );
+    helpMenu.add( new Separator( "about" ) );
     helpMenu.add( aboutAction );
   }
   
-  protected void fillCoolBar( ICoolBarManager coolBar ) {
+  protected void fillCoolBar( final ICoolBarManager coolBar ) {
     createToolBar( coolBar, "main" );
     createToolBar( coolBar, "test" );
   }
 
-  private void createToolBar( ICoolBarManager coolBar, final String name ) {
+  private void createToolBar( final ICoolBarManager coolBar, final String name ) 
+  {
     IToolBarManager toolbar = new ToolBarManager( SWT.FLAT | SWT.RIGHT );
     coolBar.add( new ToolBarContributionItem( toolbar, name ) );
     toolbar.add( exitAction );
