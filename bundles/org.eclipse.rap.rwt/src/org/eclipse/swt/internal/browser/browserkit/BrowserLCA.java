@@ -56,8 +56,8 @@ public class BrowserLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( browser );
     String text = getText( browser );
     String url = browser.getUrl();
-    if(    WidgetLCAUtil.hasChanged( widget, PROP_TEXT, text, null ) 
-        || WidgetLCAUtil.hasChanged( widget, PROP_URL, url, null ) ) 
+    if(    WidgetLCAUtil.hasChanged( browser, PROP_TEXT, text, null ) 
+        || WidgetLCAUtil.hasChanged( browser, PROP_URL, url, null ) ) 
     {
       if( text != null ) {
         String textUrl = registerHtml( text );
