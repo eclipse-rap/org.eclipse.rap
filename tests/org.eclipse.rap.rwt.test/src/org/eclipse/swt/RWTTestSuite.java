@@ -74,7 +74,7 @@ public class RWTTestSuite {
     suite.addTestSuite( TreeEvent_Test.class );
     suite.addTestSuite( ActivateEvent_Test.class );
     suite.addTestSuite( FocusEvent_Test.class );
-    suite.addTestSuite( RWTEvent_Test.class );
+    suite.addTestSuite( TypedEvent_Test.class );
     suite.addTestSuite( UntypedEvents_Test.class );
     suite.addTestSuite( UntypedEventAdapter_Test.class );
 

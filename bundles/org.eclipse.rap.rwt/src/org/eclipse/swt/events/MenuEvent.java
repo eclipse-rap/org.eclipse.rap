@@ -20,7 +20,7 @@ import com.w4t.Adaptable;
  *
  * @see MenuListener
  */
-public class MenuEvent extends RWTEvent {
+public class MenuEvent extends TypedEvent {
 
   public static final int MENU_SHOWN = 0;
   public static final int MENU_HIDDEN = 1;

@@ -27,7 +27,7 @@ import com.w4t.Adaptable;
  *
  * @see SelectionListener
  */
-public class SelectionEvent extends RWTEvent {
+public class SelectionEvent extends TypedEvent {
 
   public static final int WIDGET_SELECTED = 0;
   public static final int WIDGET_DEFAULT_SELECTED = 1;

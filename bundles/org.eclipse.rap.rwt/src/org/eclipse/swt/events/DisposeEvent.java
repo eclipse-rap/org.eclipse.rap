@@ -19,7 +19,7 @@ import com.w4t.Adaptable;
  *
  * @see DisposeListener
  */
-public final class DisposeEvent extends RWTEvent {
+public final class DisposeEvent extends TypedEvent {
 
   public static final int WIDGET_DISPOSED = 0;
   private static final Class LISTENER = DisposeListener.class;

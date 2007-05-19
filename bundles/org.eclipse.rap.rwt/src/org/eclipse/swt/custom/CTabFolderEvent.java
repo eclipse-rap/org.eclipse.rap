@@ -11,13 +11,13 @@
 
 package org.eclipse.swt.custom;
 
-import org.eclipse.swt.events.RWTEvent;
+import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.widgets.Widget;
 import com.w4t.Adaptable;
 
-public class CTabFolderEvent extends RWTEvent {
+public class CTabFolderEvent extends TypedEvent {
   
   private static final int CLOSE = 0;
   private static final int MINIMIZE = 1;

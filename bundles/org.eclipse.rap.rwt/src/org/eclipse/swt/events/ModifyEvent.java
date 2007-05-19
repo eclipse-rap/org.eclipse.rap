@@ -20,7 +20,7 @@ import com.w4t.Adaptable;
  *
  * @see ModifyListener
  */
-public class ModifyEvent extends RWTEvent {
+public class ModifyEvent extends TypedEvent {
 
   public static final int MODIFY_TEXT = 0;
   

@@ -20,7 +20,7 @@ import com.w4t.Adaptable;
  * 
  * @see FocusListener
  */
-public final class FocusEvent extends RWTEvent {
+public final class FocusEvent extends TypedEvent {
 
   private static final int FOCUS_GAINED = 0;
   private static final int FOCUS_LOST = 1;

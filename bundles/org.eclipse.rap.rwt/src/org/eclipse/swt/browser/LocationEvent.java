@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.browser;
 
-import org.eclipse.swt.events.RWTEvent;
+import org.eclipse.swt.events.TypedEvent;
 import com.w4t.Adaptable;
 
 
@@ -24,7 +24,7 @@ import com.w4t.Adaptable;
  * 
  * @since 1.0
  */
-public class LocationEvent extends RWTEvent {
+public class LocationEvent extends TypedEvent {
   
   public static final int CHANGING = 0;
   public static final int CHANGED = 1;

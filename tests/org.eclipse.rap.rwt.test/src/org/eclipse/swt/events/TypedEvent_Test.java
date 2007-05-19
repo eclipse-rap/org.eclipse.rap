@@ -24,7 +24,7 @@ import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.requests.RequestParams;
 
 
-public class RWTEvent_Test extends TestCase {
+public class TypedEvent_Test extends TestCase {
   
   private static final String EVENT_FIRED 
     = "eventFired|";

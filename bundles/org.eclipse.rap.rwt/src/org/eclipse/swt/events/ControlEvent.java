@@ -19,7 +19,7 @@ import com.w4t.Adaptable;
  *
  * @see ControlListener
  */
-public final class ControlEvent extends RWTEvent {
+public final class ControlEvent extends TypedEvent {
 
   public static final int CONTROL_MOVED = 0;
   public static final int CONTROL_RESIZED = 1;

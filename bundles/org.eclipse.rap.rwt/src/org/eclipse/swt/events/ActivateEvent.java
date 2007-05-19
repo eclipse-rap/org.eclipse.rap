@@ -17,7 +17,7 @@ import com.w4t.Adaptable;
 /**
  * TODO: [rh] JavaDoc
  */
-public final class ActivateEvent extends RWTEvent {
+public final class ActivateEvent extends TypedEvent {
 
   public static final int ACTIVATED = 0;
   public static final int DEACTIVATED = 1;

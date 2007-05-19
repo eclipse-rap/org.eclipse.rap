@@ -26,14 +26,11 @@ import com.w4t.event.Event;
 /**
  * TODO [rh] JavaDoc
  */
-// TODO [rh] event class hierarchy out of sync with SWT. If RWTEvent should be
-//      the counterpart for TypedEvent in SWT, it lacks the public fields for
-//      widget, display, etc.
 // TODO [rh] SWT TypedEvent has fields display, widget and time, revise this 
-public abstract class RWTEvent extends Event {
+public abstract class TypedEvent extends Event {
 
   private static final String ATTR_SCHEDULED_EVENT_LIST 
-    = RWTEvent.class.getName() + "_scheduledEventList";
+    = TypedEvent.class.getName() + "_scheduledEventList";
 
   // TODO [rh] event order is preliminary
   private static final Class[] EVENT_ORDER = {
@@ -57,7 +54,12 @@ public abstract class RWTEvent extends Event {
     clearScheduledEventList();
   }
   
-  public RWTEvent( final Object source, final int id ) {
+  /**
+   * a field for application use
+   */
+  public Object data;
+  
+  public TypedEvent( final Object source, final int id ) {
     super( source, id );
   }
   
@@ -74,13 +76,13 @@ public abstract class RWTEvent extends Event {
   ///////////////////////////////////////////////
   // Methods to maintain list of scheduled events
   
-  private static void addToScheduledEvents( final RWTEvent event ) {
+  private static void addToScheduledEvents( final TypedEvent event ) {
     getScheduledEventList().add( event );
   }
   
-  private static RWTEvent[] getScheduledEvents() {
+  private static TypedEvent[] getScheduledEvents() {
     List list = getScheduledEventList();
-    RWTEvent[] result = new RWTEvent[ list.size() ];
+    TypedEvent[] result = new TypedEvent[ list.size() ];
     list.toArray( result );
     return result;
   }
@@ -101,7 +103,7 @@ public abstract class RWTEvent extends Event {
   }
 
   private static void processEventClass( final Class eventClass ) {
-    RWTEvent[] scheduledEvents = getScheduledEvents();
+    TypedEvent[] scheduledEvents = getScheduledEvents();
     for( int i = 0; i < scheduledEvents.length; i++ ) {
       if(    eventClass.equals( scheduledEvents[ i ].getClass() ) 
           && isSourceEnabled( scheduledEvents[ i ] ) ) 
@@ -116,7 +118,7 @@ public abstract class RWTEvent extends Event {
   
   // TODO [rh] preliminary: maybe it would be better to handle this in the
   //      respective LCAs
-  private static boolean isSourceEnabled( final RWTEvent event ) {
+  private static boolean isSourceEnabled( final TypedEvent event ) {
     boolean result = true;
     if( event.getSource() instanceof Control ) {
       Control control = ( Control ) event.getSource();
@@ -133,7 +135,9 @@ public abstract class RWTEvent extends Event {
     return getName()
         + "{"
 //        TODO [rst] uncomment when these public fields are implemented
-//        + widget + " time=" + time + " data=" + data
+//        + widget + " time=" + time + 
+        + " data=" 
+        + data
         + "}";
   }
   
