@@ -109,6 +109,15 @@ public class ToolBar_Test extends TestCase {
     assertEquals( "", separator.getText() );
   }
   
+  public void testToolItemImage() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
+    ToolItem item = new ToolItem( toolbar, SWT.NONE );
+    item.setImage( null );
+    assertEquals( null, item.getImage() );
+  }
+  
   public void testToolItemEnabled() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );

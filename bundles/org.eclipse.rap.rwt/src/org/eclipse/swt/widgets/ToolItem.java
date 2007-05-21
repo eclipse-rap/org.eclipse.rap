@@ -188,12 +188,14 @@ public class ToolItem extends Item {
   
   public void setImage( final Image image ) {
     checkWidget();
-    if( image == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    }
     if( ( style & SWT.SEPARATOR ) == 0 ) {
+      // TODO [rh] uncomment or remove when decided whether isDisposed will
+      //      be 'implemented'
+//      if( image != null && image.isDisposed() ) {
+//        error( SWT.ERROR_INVALID_ARGUMENT );
+//      }
       super.setImage( image );
-    }
+    } 
   }
   
   /**
