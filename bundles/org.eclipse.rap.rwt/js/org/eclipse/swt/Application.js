@@ -21,6 +21,10 @@ qx.OO.defineClass(
 );
 
 qx.Proto.initialize = function( evt ) {
+  // Overwrite the default mapping for internal images. This is necessary if
+  // the application is deployed under a root different from "/".
+  qx.manager.object.AliasManager.getInstance().add( "static",
+                                                    "./resource/static" );
   qx.manager.object.AliasManager.getInstance().add( "org.eclipse.swt", 
                                                     "./resource" );
   var theme = org.eclipse.swt.WidgetTheme.getInstance();                                                    
