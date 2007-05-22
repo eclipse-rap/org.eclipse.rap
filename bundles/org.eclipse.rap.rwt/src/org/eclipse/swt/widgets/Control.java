@@ -512,7 +512,7 @@ public abstract class Control extends Widget {
    */
   public Rectangle getBounds() {
     checkWidget();
-    return new Rectangle( bounds );
+    return new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
   }
 
   /**
@@ -540,7 +540,7 @@ public abstract class Control extends Widget {
     }
     Point oldLocation = getLocation();
     Point oldSize = getSize();
-    this.bounds = new Rectangle( bounds );
+    this.bounds = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
     this.bounds.width = Math.max( 0, this.bounds.width );
     this.bounds.height = Math.max( 0, this.bounds.height );
     notifyMove( oldLocation );

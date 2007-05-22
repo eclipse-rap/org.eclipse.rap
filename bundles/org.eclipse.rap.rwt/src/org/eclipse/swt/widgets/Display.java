@@ -185,7 +185,7 @@ public class Display extends Device implements Adaptable {
    */
   public Rectangle getBounds() {
     checkDevice();
-    return new Rectangle( bounds );
+    return new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
   }
   
   /**
@@ -520,7 +520,7 @@ public class Display extends Device implements Adaptable {
       if( bounds == null ) {
         SWT.error( SWT.ERROR_NULL_ARGUMENT );
       }
-      Display.this.bounds = new Rectangle( bounds );
+      Display.this.bounds = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
     }
     
     public void setActiveShell( final Shell activeShell ) {

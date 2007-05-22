@@ -2083,7 +2083,8 @@ public class CTabFolder extends Composite {
   private final class CTabFolderAdapter implements ICTabFolderAdapter {
 
     public Rectangle getChevronRect() {
-      return new Rectangle( CTabFolder.this.chevronRect );
+      Rectangle rect = CTabFolder.this.chevronRect;
+      return new Rectangle( rect.x, rect.y, rect.width, rect.height );
     }
 
     public boolean getChevronVisible() {
@@ -2091,11 +2092,13 @@ public class CTabFolder extends Composite {
     }
     
     public Rectangle getMinimizeRect() {
-      return new Rectangle( CTabFolder.this.minRect );
+      Rectangle rect = CTabFolder.this.minRect;
+      return new Rectangle( rect.x, rect.y, rect.width, rect.height );
     }
 
     public Rectangle getMaximizeRect() {
-      return new Rectangle( CTabFolder.this.maxRect );
+      Rectangle rect = CTabFolder.this.maxRect;
+      return new Rectangle( rect.x, rect.y, rect.width, rect.height );
     }
     
     public void showListMenu() {
