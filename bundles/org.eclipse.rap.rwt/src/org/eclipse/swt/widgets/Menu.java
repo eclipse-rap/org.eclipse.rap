@@ -330,7 +330,13 @@ public class Menu extends Widget {
   public void setVisible( final boolean visible ) {
     checkWidget();
     if( ( style & ( SWT.BAR | SWT.DROP_DOWN ) ) == 0 ) {
-      this.visible = visible;
+      if( this.visible != visible ) {
+        this.visible = visible;
+        if( visible ) {
+          MenuEvent event = new MenuEvent( this, MenuEvent.MENU_SHOWN );
+          event.processEvent();
+        }
+      }
     }
   }
   
