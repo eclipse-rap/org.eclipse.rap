@@ -126,8 +126,9 @@ public final class ExternalBrowser {
           } catch( IOException e ) {
             // [rh] exception handling
             e.printStackTrace();
+          } finally {
+            W4TContext.getLifeCycle().removePhaseListener( this );
           }
-          W4TContext.getLifeCycle().removePhaseListener( this );
         }
       }
       

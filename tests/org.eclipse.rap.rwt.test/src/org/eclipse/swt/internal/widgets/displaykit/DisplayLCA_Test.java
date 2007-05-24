@@ -159,6 +159,7 @@ public class DisplayLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    RWTFixture.fakeUIThread();
     AdapterManager manager = W4TContext.getAdapterManager();
     lifeCycleAdapterFactory = new AdapterFactory() {
 
@@ -274,6 +275,7 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
+    RWTFixture.removeUIThread();
     AdapterManager manager = W4TContext.getAdapterManager();
     manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );
     manager.deregisterAdapters( lifeCycleAdapterFactory, Widget.class );

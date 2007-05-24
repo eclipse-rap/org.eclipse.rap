@@ -28,8 +28,11 @@ qx.OO.defineClass( "org.eclipse.swt.Request", qx.core.Target,
     // Initialize the request queue to allow only one request at a time
     // and set the timout to 5 min (eases debuging)
     var requestQueue = qx.io.remote.RequestQueue.getInstance();
-    requestQueue.setDefaultTimeout( 60000 * 5 ); // 5 min
-    requestQueue.setMaxConcurrentRequests( 1 );
+    // As the CallBackRequests get blocked at the server to wait for
+    // background activity I choose a large timeout...
+    requestQueue.setDefaultTimeout( 60000 * 60 * 24 ); // 24h
+    // Standard UI-Requests and CallBackRequests
+    requestQueue.setMaxConcurrentRequests( 2 );
     // References the currently running request or null if no request is active
     this._currentRequest = null;
   }
@@ -39,6 +42,20 @@ qx.OO.defineClass( "org.eclipse.swt.Request", qx.core.Target,
  * Returns the sole instance of Request.
  */
 qx.Class.getInstance = qx.lang.Function.returnInstance;
+
+/**
+ * To enable server callbacks to the UI this method sends a request
+ * that will be blocked by the server till background activities 
+ * require UI updates.
+ */
+org.eclipse.swt.Request.enableUICallBack
+  = function( url, service_param, service_id )
+{
+  var request = new qx.io.remote.Request( url, "GET", "text/javascript" );
+  request.setParameter( service_param, service_id );
+  request.setAsynchronous( true );
+  request.send();
+}
 
 qx.Proto.dispose = function() {
   if( this.getDisposed() ) {

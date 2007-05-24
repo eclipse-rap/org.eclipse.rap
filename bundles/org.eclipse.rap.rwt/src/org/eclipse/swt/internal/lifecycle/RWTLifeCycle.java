@@ -16,11 +16,13 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
 import org.eclipse.swt.internal.engine.AdapterFactoryRegistry;
 import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
 import com.w4t.ParamCheck;
 import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.service.ContextProvider;
+import com.w4t.engine.service.IServiceStateInfo;
 
 /**
  * TODO: [fappel] comment
@@ -28,6 +30,9 @@ import com.w4t.engine.service.ContextProvider;
  */
 public class RWTLifeCycle extends LifeCycle {
   
+  private static final String CURRENT_THREAD
+    = RWTLifeCycle.class.getName() + "CurrentThread";
+
   private static final String INITIALIZED
     = RWTLifeCycle.class.getName() + "Initialized";
 
@@ -43,6 +48,19 @@ public class RWTLifeCycle extends LifeCycle {
   
   private final Set listeners;
   
+  public static Thread getThread() {
+    Thread result = null;
+    if( ContextProvider.hasContext() ) {
+      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+      result = ( Thread )stateInfo.getAttribute( CURRENT_THREAD );
+    }
+    return result;
+  }
+  
+  public static void setThread( final Thread thread ) {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.setAttribute( CURRENT_THREAD, thread );
+  }
   
   public RWTLifeCycle() {
     listeners = new HashSet();
@@ -71,6 +89,8 @@ public class RWTLifeCycle extends LifeCycle {
       }
       String msg = "An error occured while executing RWTLifeCycle.";
       throw new RuntimeException( msg, t );
+    } finally {
+      cleanUp();
     }
   }
 
@@ -97,10 +117,19 @@ public class RWTLifeCycle extends LifeCycle {
   
   
   private void initialize() {
-    if( ContextProvider.getSession().getAttribute( INITIALIZED ) == null ) {
+    HttpSession session = ContextProvider.getSession();
+    if( session.getAttribute( INITIALIZED ) == null ) {
       AdapterFactoryRegistry.register();
-      ContextProvider.getSession().setAttribute( INITIALIZED, Boolean.TRUE );
+      session.setAttribute( INITIALIZED, Boolean.TRUE );
     }    
+    Thread current = Thread.currentThread();
+    ContextProvider.getStateInfo().setAttribute( CURRENT_THREAD, current );
+    UICallBackManager.getInstance().notifyUIThreadStart();
+  }
+  
+  private void cleanUp() {
+    UICallBackManager.getInstance().notifyUIThreadEnd();
+    ContextProvider.getStateInfo().setAttribute( CURRENT_THREAD, null );
   }
 
   private void afterPhaseExecution( final PhaseId current ) {
@@ -117,6 +146,9 @@ public class RWTLifeCycle extends LifeCycle {
           LOGGER.log( Level.SEVERE, msg, thr );
         }
       }
+    }
+    if( current == PhaseId.PROCESS_ACTION ) {
+      UICallBackManager.getInstance().processRunnablesInUIThread();
     }
   }
 

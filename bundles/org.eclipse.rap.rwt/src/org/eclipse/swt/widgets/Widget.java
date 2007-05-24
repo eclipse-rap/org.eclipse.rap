@@ -17,10 +17,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.lifecycle.IWidgetAdapter;
 import com.w4t.*;
+import com.w4t.engine.service.ContextProvider;
 import com.w4t.event.EventAdapter;
 import com.w4t.event.IEventAdapter;
 
@@ -488,7 +490,14 @@ public abstract class Widget implements Adaptable {
   protected abstract void releaseWidget();
 
   protected void checkWidget() {
-    // TODO [rh] implementation missing
+    if( RWTLifeCycle.getThread() != Thread.currentThread() ) {
+      error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    }
+//    TODO [fappel]: implementation
+//    if( isDisposed() ) {
+//      error( SWT.ERROR_WIDGET_DISPOSED );
+//    }
+//    if ((state & DISPOSED) != 0) error (SWT.ERROR_WIDGET_DISPOSED);
   }
   
   // copied from SWT, made protected to allow access from ...custom package

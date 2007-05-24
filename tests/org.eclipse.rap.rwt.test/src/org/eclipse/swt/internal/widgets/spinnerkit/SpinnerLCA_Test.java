@@ -37,15 +37,19 @@ public class SpinnerLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "77" );
     new RWTLifeCycle().execute();
+    RWTFixture.fakeUIThread();
     assertEquals( 77, spinner.getSelection() );
 
     // simulate invalid client-side selection 
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "777" );
+    RWTFixture.fakeUIThread();
     spinner.setSelection( 1 );
     new RWTLifeCycle().execute();
+    RWTFixture.fakeUIThread();
     assertEquals( spinner.getMaximum(), spinner.getSelection() );
+    RWTFixture.removeUIThread();
   }
   
   public void testModifyEvent() throws IOException {

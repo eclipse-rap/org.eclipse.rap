@@ -117,8 +117,10 @@ public class ShellLCA_Test extends TestCase {
     // Set precondition and assert it
     RWTFixture.markInitialized( activeShell );
     RWTFixture.markInitialized( shellToActivate );
+    RWTFixture.fakeUIThread();
     activeShell.setActive();
     assertSame( activeShell, display.getActiveShell() );
+    RWTFixture.removeUIThread();
     
     // Simulate shell activation with event listeners
     ActivateEvent.addListener( shellToActivate, activateListener );

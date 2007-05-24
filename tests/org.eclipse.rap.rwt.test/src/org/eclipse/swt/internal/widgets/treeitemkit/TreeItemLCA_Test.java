@@ -126,7 +126,9 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( treeItemId + ".checked", "true" );
     new RWTLifeCycle().execute();
+    RWTFixture.fakeUIThread();
     assertEquals( true, treeItem.getChecked() );
+    RWTFixture.removeUIThread();
   }
 
   protected void setUp() throws Exception {

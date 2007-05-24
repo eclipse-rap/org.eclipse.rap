@@ -44,12 +44,14 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    RWTFixture.fakeUIThread();
     savedLifeCycle = System.getProperty( IInitialization.PARAM_LIFE_CYCLE );
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
   }
 
   protected void tearDown() throws Exception {
+    RWTFixture.removeUIThread();
     Fixture.tearDown();
     AdapterFactoryRegistry.clear();
     PhaseListenerRegistry.clear();

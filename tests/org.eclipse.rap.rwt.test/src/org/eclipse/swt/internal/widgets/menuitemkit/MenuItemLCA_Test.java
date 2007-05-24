@@ -105,8 +105,10 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( radioItem1Group1Id + ".selection", "true" );
     new RWTLifeCycle().execute();
+    RWTFixture.fakeUIThread();
     assertEquals( true, radioItem1Group1.getSelection() );
     assertEquals( false, radioItem2Group1.getSelection() );
+    RWTFixture.removeUIThread();
   }
   
   protected void setUp() throws Exception {

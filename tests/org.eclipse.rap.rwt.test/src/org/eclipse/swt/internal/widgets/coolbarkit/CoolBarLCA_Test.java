@@ -147,19 +147,23 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "483" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
     lifeCycle.execute();
+    RWTFixture.fakeUIThread();
     assertEquals( 0, bar.getItemOrder()[ bar.indexOf( item1 )] );
     assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item0 )] );
     
     // Drag item0 and drop it beyound the bounds of item1
     bar.setItemOrder( new int[] { 0, 1 } );
+    RWTFixture.removeUIThread();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item0Id );
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "2000" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
     lifeCycle.execute();
+    RWTFixture.fakeUIThread();
     assertEquals( 0, bar.getItemOrder()[ bar.indexOf( item1 )] );
     assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item0 )] );
+    RWTFixture.removeUIThread();
   }
   
   public void testSnapBackItemMoved() throws IOException {
@@ -196,12 +200,14 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.fakeRequestParam( item0Id + ".bounds.x", "250" );
     Fixture.fakeRequestParam( item0Id + ".bounds.y", "0" );
     lifeCycle.execute();
+    RWTFixture.fakeUIThread();
     assertEquals( 0, bar.getItemOrder()[ bar.indexOf( item0 )] );
     assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item1 )] );
     String expected 
       = "var w = wm.findWidgetById( \"" + item0Id + "\" );" 
       + "w.setSpace(";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    RWTFixture.removeUIThread();
   }
 
   //////////////////

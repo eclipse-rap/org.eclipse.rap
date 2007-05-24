@@ -11,11 +11,19 @@
 
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.lifecycle.DisplayUtil;
+import com.w4t.Fixture;
+import com.w4t.engine.lifecycle.*;
+import com.w4t.engine.requests.RequestParams;
+import com.w4t.engine.service.ContextProvider;
+import com.w4t.engine.service.ServiceContext;
 
 public class Display_Test extends TestCase {
 
@@ -30,6 +38,55 @@ public class Display_Test extends TestCase {
     }
   }
 
+  public void testGetThread() throws InterruptedException {
+    final Display[] display = { new Display() };
+    final Thread[] thread = new Thread[ 1 ];
+    final ServiceContext context[] = { ContextProvider.getContext() };
+    final RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.addPhaseListener( new PhaseListener() {
+      private static final long serialVersionUID = 1L;
+      public void afterPhase( PhaseEvent event ) {
+      }
+      public void beforePhase( PhaseEvent event ) {
+        thread[ 0 ] = display[ 0 ].getThread();
+      }
+      public PhaseId getPhaseId() {
+        return PhaseId.PREPARE_UI_ROOT;
+      }
+    } );
+    
+    Runnable runnable = new Runnable() {
+      public void run() {
+        ContextProvider.setContext( context[ 0 ] );
+        Fixture.fakeResponseWriter();
+        String id = "org.eclipse.swt.display";
+        ContextProvider.getSession().setAttribute( id, display[ 0 ] );
+        String displayId = DisplayUtil.getAdapter( display[ 0 ] ).getId();
+        Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+        try {
+          lifeCycle.execute();
+        } catch( IOException e ) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+          fail();
+        }
+      }
+    };
+    Thread thread1 = new Thread( runnable );
+    thread1.start();
+    thread1.join();
+    assertSame( thread1, thread[ 0 ] );
+    
+    Thread thread2 = new Thread( runnable );
+    thread2.start();
+    thread2.join();
+    assertSame( thread2, thread[ 0 ] );
+    RWTFixture.tearDown();
+    assertNull( display[ 0 ].getThread() );
+    RWTFixture.setUp();
+    
+  }
+  
   public void testGetShells() {
     Display display = new Display();
     assertEquals( 0, display.getShells().length );

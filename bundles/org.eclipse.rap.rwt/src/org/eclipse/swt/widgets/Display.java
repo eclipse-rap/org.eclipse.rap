@@ -19,7 +19,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.swt.internal.lifecycle.UICallBackManager;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.lifecycle.UICallBackUtil;
 import com.w4t.Adaptable;
 import com.w4t.W4TContext;
 import com.w4t.engine.requests.RequestParams;
@@ -118,11 +121,11 @@ public class Display extends Device implements Adaptable {
   
   private final List shells;
  
+  private HttpSession session;
   private Rectangle bounds;
   private Shell activeShell;
   private IDisplayAdapter displayAdapter;
   public Control focusControl;
-
 
 
   /**
@@ -145,7 +148,7 @@ public class Display extends Device implements Adaptable {
    * @see Shell
    */
   public Display() {
-    HttpSession session = ContextProvider.getSession();
+    session = ContextProvider.getSession();
     if( getCurrent() != null ) {
       String msg = "Currently only one display per session is supported.";
       throw new IllegalStateException( msg );
@@ -510,6 +513,119 @@ public class Display extends Device implements Adaptable {
       }
     }
   }
+  
+  
+  ////////////////////
+  // Thread management
+  
+  /**
+   * Returns the user-interface thread for the receiver. Note that the 
+   * user-interface thread may change per user-request.
+   *
+   * @return the receiver's user-interface thread or null if there's no 
+   *         current user-request executed that belongs to the display.
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public Thread getThread () {
+    return RWTLifeCycle.getThread();
+  }
+  
+  /**
+   * Causes the <code>run()</code> method of the runnable to
+   * be invoked by the user-interface thread at the next 
+   * reasonable opportunity. Note that the user-interface thread may change 
+   * per user-request. The caller of this method continues 
+   * to run in parallel, and is not notified when the
+   * runnable has completed.  Specifying <code>null</code> as the
+   * runnable simply wakes the user-interface thread when run.
+   * <p>
+   * Note that at the time the runnable is invoked, widgets 
+   * that have the receiver as their display may have been
+   * disposed. Therefore, it is necessary to check for this
+   * case inside the runnable before accessing the widget.
+   * </p>
+   *
+   * @param runnable code to run on the user-interface thread or <code>null</code>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @see #syncExec
+   */
+  public void asyncExec( final Runnable runnable ) {
+// TODO: [fappel] disposal check
+//    if( isDisposed() ) {
+//      error( SWT.ERROR_DEVICE_DISPOSED );
+//    }
+    UICallBackUtil.runNonUIThreadWithFakeContext( session, new Runnable() {
+      public void run() {
+        UICallBackManager.getInstance().addAsync( runnable );
+      }
+    } );
+  }
+  
+  /**
+   * Causes the <code>run()</code> method of the runnable to
+   * be invoked by the user-interface thread at the next 
+   * reasonable opportunity. Note that the user-interface thread may change 
+   * per user-request. The thread which calls this method
+   * is suspended until the runnable completes.  Specifying <code>null</code>
+   * as the runnable simply wakes the user-interface thread.
+   * <p>
+   * Note that at the time the runnable is invoked, widgets 
+   * that have the receiver as their display may have been
+   * disposed. Therefore, it is necessary to check for this
+   * case inside the runnable before accessing the widget.
+   * </p>
+   * 
+   * @param runnable code to run on the user-interface thread or <code>null</code>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_FAILED_EXEC - if an exception occured when executing the runnable</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #asyncExec
+   */
+  public void syncExec( final Runnable runnable ) {
+//  TODO: [fappel] disposal check
+//  if( isDisposed() ) {
+//    error( SWT.ERROR_DEVICE_DISPOSED );
+//  }
+    UICallBackUtil.runNonUIThreadWithFakeContext( session, new Runnable() {
+      public void run() {
+        UICallBackManager.getInstance().addSync( runnable );
+      }
+    } );
+  }
+  
+  /**
+   * Notifies the client side to send an life cycle request as UI thread to
+   * perform UI-updates. Note that this method may be called from any thread.
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   */
+  public void wake() {
+//  TODO: [fappel] disposal check
+//  if( isDisposed() ) {
+//    error( SWT.ERROR_DEVICE_DISPOSED );
+//  }
+    if( getThread() != Thread.currentThread() ) {
+      UICallBackUtil.runNonUIThreadWithFakeContext( session, new Runnable() {
+        public void run() {
+          UICallBackManager.getInstance().sendUICallBack();
+        }
+      } );
+    }
+  }
+  
   
   ////////////////
   // Inner classes

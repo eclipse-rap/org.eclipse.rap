@@ -26,8 +26,7 @@ import org.eclipse.swt.resources.ResourceManager;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import com.w4t.*;
-import com.w4t.Fixture.TestRequest;
-import com.w4t.Fixture.TestResponse;
+import com.w4t.Fixture.*;
 import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.service.*;
 import com.w4t.util.browser.Ie6;
@@ -145,6 +144,12 @@ public final class RWTFixture {
     
     // registration of mockup resource manager
     registerResourceManager();
+
+    fakeUIThread();
+  }
+
+  public static void fakeUIThread() {
+    RWTLifeCycle.setThread( Thread.currentThread() );
   }
   
   public static void setUpWithoutResourceManager() {
@@ -156,6 +161,8 @@ public final class RWTFixture {
   }
 
   public static void tearDown() {
+    removeUIThread();
+    
     // deregistration of mockup resource manager
     deregisterResourceManager();
     
@@ -164,6 +171,10 @@ public final class RWTFixture {
     
     // standard teardown
     Fixture.tearDown();
+  }
+
+  public static void removeUIThread() {
+    RWTLifeCycle.setThread( null );
   }
 
   public static void registerAdapterFactories() {
@@ -275,6 +286,15 @@ public final class RWTFixture {
       }
       line = reader.readLine();
     }
+  }
+
+  public static void fakeContext() {
+    TestRequest request = new TestRequest();
+    TestResponse response = new TestResponse();
+    TestSession session = new TestSession();
+    request.setSession( session );
+    ServiceContext context = new ServiceContext( request, response );
+    ContextProvider.setContext( context );
   }
 
 }

@@ -77,6 +77,8 @@ public class RWTTestSuite {
     suite.addTestSuite( TypedEvent_Test.class );
     suite.addTestSuite( UntypedEvents_Test.class );
     suite.addTestSuite( UntypedEventAdapter_Test.class );
+    suite.addTestSuite( UICallBackManager_Test.class );
+    suite.addTestSuite( UICallBackServiceHandler_Test.class );
 
     suite.addTestSuite( Display_Test.class );
     suite.addTestSuite( Shell_Test.class );

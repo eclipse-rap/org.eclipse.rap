@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import com.w4t.W4TContext;
 import com.w4t.engine.lifecycle.PhaseListener;
+import com.w4t.engine.service.ServiceManager;
 
 /**
  * TODO [rh] JavaDoc 
@@ -54,12 +55,14 @@ public class RWTServletContextListener implements ServletContextListener {
     registerAdapterFactories( evt.getServletContext() );
     registerPhaseListener( evt.getServletContext() );
     registerResources( evt.getServletContext() );
+    registerUICallBackServiceHandler();
   }
 
   public void contextDestroyed( final ServletContextEvent evt ) {
     deregisterEntryPoints( evt.getServletContext() );
     deregisterPhaseListeners( evt.getServletContext() );
     deregisterResources( evt.getServletContext() );
+    deregisterUICallBackServiceHandler();
   }
   
   
@@ -257,5 +260,15 @@ public class RWTServletContextListener implements ServletContextListener {
   
   private void deregisterResources( final ServletContext context ) {
     ResourceRegistry.clear();
-  }  
+  }
+  
+  private static void registerUICallBackServiceHandler() {
+    ServiceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID, 
+                                           new UICallBackServiceHandler() );
+  }
+  
+  private static void deregisterUICallBackServiceHandler() {
+    String id = UICallBackServiceHandler.HANDLER_ID;
+    ServiceManager.unregisterServiceHandler( id );
+  }
 }

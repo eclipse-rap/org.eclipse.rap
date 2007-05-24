@@ -12,7 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 import com.w4t.Fixture;
 
 
@@ -20,10 +20,37 @@ public class Widget_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
+    RWTFixture.fakeUIThread();
   }
 
   protected void tearDown() throws Exception {
+    RWTFixture.removeUIThread();
     Fixture.tearDown();
+  }
+  
+  public void testCheckWidget() throws InterruptedException {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Widget widget = new Text( shell, SWT.NONE );
+
+    final Throwable[] throwable = new Throwable[ 1 ];
+    final String[] message = new String[ 1 ];
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        try {
+          widget.checkWidget();
+          fail( "Illegal thread access expected." );
+        } catch( final SWTException swte ) {
+          message[ 0 ] = swte.getMessage();
+        } catch( final Throwable thr ) {
+          throwable[ 0 ] = thr;
+        }
+      }
+    });
+    thread.start();
+    thread.join();
+    assertEquals( message[ 0 ], "Invalid thread access" );
+    assertNull( throwable[ 0 ] );
   }
 
   public void testData() {

@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.engine.ResourceRegistry;
 import org.eclipse.swt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.swt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.lifecycle.*;
@@ -31,8 +32,7 @@ import org.eclipse.swt.resources.ResourceManager;
 import org.eclipse.swt.widgets.*;
 import com.w4t.*;
 import com.w4t.engine.requests.RequestParams;
-import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.IServiceStateInfo;
+import com.w4t.engine.service.*;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
@@ -248,7 +248,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       + "var app = org.eclipse.swt.Application;" 
       + "qx.core.Init.getInstance().setApplication( app );";
     Object[] param = new Object[] { 
-      ContextProvider.getRequest().getServletPath().substring( 1 )
+      ContextProvider.getRequest().getServletPath().substring( 1 ),
     };
     return MessageFormat.format( code, param );
   }

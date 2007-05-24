@@ -27,9 +27,11 @@ public class ControlLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     RWTFixture.setUpWithoutResourceManager();
+    RWTFixture.fakeUIThread();
   }
   
   protected void tearDown() throws Exception {
+    RWTFixture.removeUIThread();
     RWTFixture.tearDown();
   }
   
