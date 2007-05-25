@@ -56,7 +56,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.RadioButton" );
+    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.RadioButton", true );
     MenuItem firstSiblingItem = getFirstSiblingRadioItem( menuItem );
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     if( firstSiblingItem == menuItem ) {
@@ -72,7 +72,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     // TODO [rh] qooxdoo does not handle radio menu items with images, should
     //      we already ignore them when calling MenuItem#setImage()?
-    ItemLCAUtil.writeChanges( menuItem );
+    MenuItemLCAUtil.writeImageAndText( menuItem );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( menuItem ) );

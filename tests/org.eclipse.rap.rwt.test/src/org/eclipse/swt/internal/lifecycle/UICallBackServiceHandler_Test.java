@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.lifecycle;
 
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
-import com.w4t.Fixture.*;
 
 
 public class UICallBackServiceHandler_Test extends TestCase {

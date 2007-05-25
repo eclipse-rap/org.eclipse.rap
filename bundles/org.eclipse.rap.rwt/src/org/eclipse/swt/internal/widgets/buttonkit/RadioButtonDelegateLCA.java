@@ -44,9 +44,9 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
   void renderInitialization( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( "qx.ui.form.RadioButton" );
+    ButtonLCAUtil.writeLabelMode( button );
     Object[] args = new Object[] { button };
     writer.callStatic( REGISTER_RADIO_BUTTON, args );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "radiobutton" );
     ControlLCAUtil.writeStyleFlags( button );
   }
 

@@ -48,17 +48,17 @@ public class CoolBarTab extends ExampleTab {
     coolBar = new CoolBar( parent, style );
     coolBar.setLayoutData( new RowData( 500, 65 ) );
     // Create toolBar1 to be displayed in the first CoolItem
-    ToolBar toolBar1 = createToolBar( coolBar, 1 );
+    ToolBar toolBar1 = createToolBar( coolBar, SWT.NONE );
     toolBar1.setSize( 250, 25 );
-    CoolItem pushItem = new CoolItem( coolBar, style );
-    pushItem.setSize( 250, 25 );
-    pushItem.setControl( toolBar1 );
+    CoolItem coolItem1 = new CoolItem( coolBar, style );
+    coolItem1.setSize( 250, 25 );
+    coolItem1.setControl( toolBar1 );
     // Create toolBar2 to be displayed in the second CoolItem
-    ToolBar toolBar2 = createToolBar( coolBar, 2 );
+    ToolBar toolBar2 = createToolBar( coolBar, SWT.NONE );
     toolBar2.setSize( 250, 25 );
-    CoolItem pushItem2 = new CoolItem( coolBar, style );
-    pushItem2.setSize( 250, 25 );
-    pushItem2.setControl( toolBar2 );
+    CoolItem coolItem2 = new CoolItem( coolBar, style );
+    coolItem2.setSize( 250, 25 );
+    coolItem2.setControl( toolBar2 );
     // Register CoolBar
     registerControl( coolBar );
   }

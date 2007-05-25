@@ -37,6 +37,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
   void renderInitialization( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( "qx.ui.form.Button" );
+    ButtonLCAUtil.writeLabelMode( button );
     ControlLCAUtil.writeStyleFlags( button );
     if( ( button.getStyle() & SWT.TOGGLE ) != 0 ) {
       writer.call( "addState", new Object[] { "rwt_TOGGLE" } );
@@ -78,7 +79,11 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     Boolean newValue = Boolean.valueOf( button.getSelection() ); 
     Boolean defValue = Boolean.FALSE;
     if( WidgetLCAUtil.hasChanged( button, property, newValue, defValue ) ) {
-      writer.call( "setState", new Object[] { "checked", newValue } );
+      if( newValue.booleanValue() ) {
+        writer.call( "addState", new Object[] { "checked" } );
+      } else {
+        writer.call( "removeState", new Object[] { "checked" } );
+      }
     }
   }
 }

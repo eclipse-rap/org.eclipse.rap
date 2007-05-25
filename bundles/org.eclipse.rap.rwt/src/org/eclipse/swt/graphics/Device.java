@@ -40,6 +40,7 @@ public abstract class Device {
   public Device() {
     systemFont = Font.getFont( SYSTEM_FONT_NAME, 11, SWT.NORMAL );
   }
+  
   /**
    * Returns the matching standard color for the given
    * constant, which should be one of the color constants
@@ -49,8 +50,6 @@ public abstract class Device {
    * not be free'd because it was allocated by the system,
    * not the application.
    * 
-   * The COLOR_WIDGET_* constants are not supported yet.
-   *
    * @param id the color constant
    * @return the matching color
    *

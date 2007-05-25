@@ -29,16 +29,28 @@ public class ItemLCAUtil {
   }
   
   public static void writeText( final Item item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, item.getText(), "" );
+    writeText( item, false );
+  }
+  
+  public static void writeText( final Item item, final boolean escapeMnemonics ) 
+    throws IOException 
+  {
+    String text = item.getText();
+    if( WidgetLCAUtil.hasChanged( item, Props.TEXT, text ) ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      text = WidgetLCAUtil.escapeText( text, escapeMnemonics );
+      writer.set( JSConst.QX_FIELD_LABEL, text ); 
+    }
   }
   
   public static void writeImage( final Item item ) throws IOException {
+    // TODO [rh] inline method below and remove from WidgetLCAUtil, we are the
+    //      only consumer
     WidgetLCAUtil.writeImage( item, item.getImage() );
   }
   
   public static void writeChanges( final Item item ) throws IOException {
-    writeText( item );
+    writeText( item, false );
     writeImage( item );
   }
 }

@@ -23,9 +23,11 @@ import com.w4t.engine.service.ContextProvider;
 
 public final class TreeLCA extends AbstractWidgetLCA {
 
+  private static final TreeItem[] DEFAULT_SELECTION = new TreeItem[] { null };
   // Property names used by preserve mechanism
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
   private static final String PROP_TREE_LISTENERS = "treeListeners";
+  private static final String PROP_SELECTION = "selection";
   
   public void preserveValues( final Widget widget ) {
     Tree tree  = ( Tree )widget;
@@ -35,6 +37,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( SelectionEvent.hasListener( tree ) ) );
     adapter.preserve( PROP_TREE_LISTENERS, 
                       Boolean.valueOf( TreeEvent.hasListener( tree ) ) );
+    adapter.preserve( PROP_SELECTION, tree.getSelection() );
   }
   
   public void readData( final Widget widget ) {
@@ -61,6 +64,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
     ControlLCAUtil.writeChanges( tree );
+    JSWriter writer = JSWriter.getWriterFor( tree );
+    TreeItem[] selection = tree.getSelection();
+    writer.set( PROP_SELECTION, "selection", selection, DEFAULT_SELECTION );
     updateSelectionListener( tree );
     updateTreeListener( tree );
   }

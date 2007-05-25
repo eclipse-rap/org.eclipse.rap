@@ -94,7 +94,7 @@ public class ComboLCA_Test extends TestCase {
     combo.select( 1 );
     comboLCA.renderChanges( combo );
     expected 
-      = "ComboUtil.selectComboBoxItem( \""
+      = "ComboUtil.select( \""
       + WidgetUtil.getId( combo )
       + "\", 1 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );

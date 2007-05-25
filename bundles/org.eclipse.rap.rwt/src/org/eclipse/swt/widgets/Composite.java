@@ -11,7 +11,6 @@
 
 package org.eclipse.swt.widgets;
 
-import java.awt.Canvas;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
@@ -33,8 +32,6 @@ import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
  * who are building controls that are constructed from aggregates
  * of other controls.
  * </p>
- *
- * @see Canvas
  */
 public class Composite extends Scrollable {
 

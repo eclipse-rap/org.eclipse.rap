@@ -43,7 +43,7 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menubar.Button" );
+    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menubar.Button", true );
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     writer.call( "addState", RWT_FLAT );
   }
@@ -52,7 +52,7 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   //      we already ignore them when calling MenuItem#setImage()?
   void renderChanges( final MenuItem menuItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.set( Props.TEXT, JSConst.QX_FIELD_LABEL, menuItem.getText(), "" );
+    ItemLCAUtil.writeText( menuItem, true );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( menuItem ) );

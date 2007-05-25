@@ -33,7 +33,10 @@ public class TreeTab extends ExampleTab {
     createStyleButton( "MULTI" );
     createVisibilityButton();
     createEnablementButton();
+    createImagesButton();
     createAddNodeButton();
+    createDisposeNodeButton();
+    createSelectNodeButton();
     createFontChooser();
   }
 
@@ -101,13 +104,32 @@ public class TreeTab extends ExampleTab {
         }
         lblTreeEvent.setText( msg );
       }
-      public void widgetDefaultSelected( SelectionEvent event ) {
+      
+      public void widgetDefaultSelected( final SelectionEvent event ) {
         String title = "Double Click";
         String message = "Double click on " + event.item.getText() + " received";
         MessageDialog.openInformation( getShell(), title, message, null );
       }
     } );
     registerControl( tree );
+  }
+
+  private void createImagesButton() {
+    final Button button = new Button( styleComp, SWT.TOGGLE );
+    button.setText( "Show Images" );
+    button.setSelection( true );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Image image;
+        if( button.getSelection() ) {
+          image = Image.find( "resources/tree_item.gif", 
+                              getClass().getClassLoader() );
+        } else {
+          image = null;
+        }
+        changeImage( tree, image );
+      }
+    } );
   }
 
   private void createAddNodeButton() {
@@ -132,5 +154,46 @@ public class TreeTab extends ExampleTab {
         }
       }
     } );
+  }
+  
+  private void createDisposeNodeButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Dispose Selected Item" );
+    button.setLayoutData( new RowData( 100, 20 ) );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( tree.getSelectionCount() > 0 ) {
+          TreeItem selection = tree.getSelection()[ 0 ];
+          selection.dispose();
+        }
+      }
+    } );
+  }
+
+  private void createSelectNodeButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Select First Item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( tree.getItemCount() > 0 ) {
+          tree.setSelection( tree.getItem( 0 ) );
+        } 
+      }
+    } );
+  }
+
+  private static void changeImage( final Tree tree, final Image image ) {
+    TreeItem[] items = tree.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      changeImage( items[ i ], image );
+    }
+  }
+  
+  private static void changeImage( final TreeItem item, final Image image ) {
+    item.setImage( image );
+    TreeItem[] items = item.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      changeImage( items[ i ], image );
+    }
   }
 }

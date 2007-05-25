@@ -42,7 +42,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.newWidget( "qx.ui.form.CheckBox" );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "checkbox" );
+    ButtonLCAUtil.writeLabelMode( button );
     ControlLCAUtil.writeStyleFlags( button );
   }
 

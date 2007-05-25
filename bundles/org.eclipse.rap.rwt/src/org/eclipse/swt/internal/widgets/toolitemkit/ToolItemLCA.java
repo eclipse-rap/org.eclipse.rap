@@ -18,7 +18,6 @@ import org.eclipse.swt.lifecycle.JSWriter;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
 
-
 public final class ToolItemLCA extends AbstractWidgetLCA {
   
   private final static ToolItemDelegateLCA PUSH 

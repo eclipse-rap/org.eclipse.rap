@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.engine.ResourceRegistry;
 import org.eclipse.swt.internal.lifecycle.IDisplayLifeCycleAdapter;
-import org.eclipse.swt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.lifecycle.*;
@@ -32,7 +31,8 @@ import org.eclipse.swt.resources.ResourceManager;
 import org.eclipse.swt.widgets.*;
 import com.w4t.*;
 import com.w4t.engine.requests.RequestParams;
-import com.w4t.engine.service.*;
+import com.w4t.engine.service.ContextProvider;
+import com.w4t.engine.service.IServiceStateInfo;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
@@ -170,9 +170,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   public static void writeAppScript( final String id ) throws IOException {
     StringBuffer initScript = new StringBuffer();
     initScript.append( jsConfigureLogger( getClientLogLevel() ) );
-    initScript.append( jsAppInitialization() );
-    initScript.append( jsThemeInitialization() );
-    initScript.append( jsSetUIRoot( id ) );
+    initScript.append( jsAppInitialization( id ) );
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
     out.writeText( initScript.toString(), null );
   }
@@ -242,31 +240,19 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     return MessageFormat.format( code, new Object[] { jsLevel } );
   }
 
-  private static String jsAppInitialization() {
+  private static String jsAppInitialization( final String displayId ) {
+    // TODO [rh] use StringBuffer
     String code 
-      = "org.eclipse.swt.Request.getInstance().setUrl( \"{0}\" );"
-      + "var app = org.eclipse.swt.Application;" 
+      = "var req = org.eclipse.swt.Request.getInstance();" 
+      + "req.setUrl( \"{0}\" );"
+      + "req.setUIRootId( \"{1}\" );"
+      + "var app = new org.eclipse.swt.Application();" 
       + "qx.core.Init.getInstance().setApplication( app );";
     Object[] param = new Object[] { 
       ContextProvider.getRequest().getServletPath().substring( 1 ),
+      displayId
     };
     return MessageFormat.format( code, param );
-  }
-  
-  private static String jsThemeInitialization() {
-    String code 
-      = "var am = qx.manager.object.AppearanceManager.getInstance();"
-      + "var theme = new org.eclipse.swt.DefaultAppearanceTheme();"  
-      + "am.setAppearanceTheme( theme );";
-    return code;
-  }
-  
-  private static String jsSetUIRoot( final String id ) {
-    Object[] args = new Object[] { id };
-    String code 
-      = "var req = org.eclipse.swt.Request.getInstance();" 
-      + "req.setUIRootId( \"{0}\" );";
-    return MessageFormat.format( code, args );
   }
   
   private static void disposeWidgets() throws IOException {

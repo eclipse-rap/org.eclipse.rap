@@ -4,6 +4,6 @@
 	<classpathentry path="js" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.4" kind="con"/>
 	<classpathentry path="org.eclipse.pde.core.requiredPlugins" kind="con"/>
-	<classpathentry path="lib/qooxdoo-0.6.5.jar" kind="lib"/>
+	<classpathentry path="lib/qooxdoo-0.7.jar" kind="lib"/>
 	<classpathentry path="bin" kind="output"/>
 </classpath>

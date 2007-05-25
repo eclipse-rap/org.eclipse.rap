@@ -39,7 +39,11 @@ public class GroupLCA extends AbstractWidgetLCA {
     Group group = ( Group )widget;
     ControlLCAUtil.writeChanges( group );
     JSWriter writer = JSWriter.getWriterFor( group );
-    writer.set( PROP_TEXT, "legend", group.getText(), "" );
+    String text = group.getText();
+    if( WidgetLCAUtil.hasChanged( widget, PROP_TEXT, text, "" ) ) {
+      text = WidgetLCAUtil.escapeText( text, true );
+      writer.set( "legend", text );
+    }
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

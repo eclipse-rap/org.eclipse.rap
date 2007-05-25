@@ -48,6 +48,10 @@ public final class JSConst {
   public static final String EVENT_MENU_HIDDEN
     = "org.eclipse.swt.events.menuHidden";
   
+  // Parameter names that specify further event details 
+  public static final String EVENT_WIDGET_SELECTED_DETAIL 
+    = "org.eclipse.swt.events.widgetSelected.detail";
+  
   /** 
    * <p>Indicates that a shell was closed on the client side. The parameter 
    * value holds the id of the shell that was closed.</p> */

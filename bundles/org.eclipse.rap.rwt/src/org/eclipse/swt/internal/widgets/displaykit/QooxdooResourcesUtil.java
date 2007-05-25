@@ -27,10 +27,6 @@ import com.w4t.engine.service.IServiceStateInfo;
 //      e.g. org/eclipse/swt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
   
-  private static final String SHELL_CAPTION_INACTIVE_GIF 
-    = "org/eclipse/swt/widgets/shell/caption_inactive.gif";
-  private static final String SHELL_CAPTION_ACTIVE_GIF 
-    = "org/eclipse/swt/widgets/shell/caption_active.gif";
   private static final String DISPLAY_BG_GIF 
     = "org/eclipse/swt/widgets/display/bg.gif";
   private static final String TREE_FOLDER_CLOSED_GIF 
@@ -38,8 +34,21 @@ final class QooxdooResourcesUtil {
   private static final String TREE_FOLDER_OPEN_GIF 
     = "org/eclipse/swt/widgets/tree/folder_open.gif";
   
-  private static final String APPEARANCE_JS
-    = "org/eclipse/swt/DefaultAppearanceTheme.js";
+  private static final String DEFAULT_JS 
+    = "org/eclipse/swt/theme/Default.js";
+  private static final String DEFAULT_APPEARANCES_JS 
+    = "org/eclipse/swt/theme/DefaultAppearances.js";
+  private static final String DEFAULT_BORDERS_JS 
+    = "org/eclipse/swt/theme/DefaultBorders.js";
+  private static final String DEFAULT_COLORS_JS 
+    = "org/eclipse/swt/theme/DefaultColors.js";
+  private static final String DEFAULT_FONTS_JS 
+    = "org/eclipse/swt/theme/DefaultFonts.js";
+  private static final String DEFAULT_ICONS_JS 
+    = "org/eclipse/swt/theme/DefaultIcons.js";
+  private static final String DEFAULT_WIDGET_ICONS_JS 
+    = "org/eclipse/swt/theme/DefaultWidgetIcons.js";
+       
   private static final String APPLICATION_JS 
     = "org/eclipse/swt/Application.js";
   private static final String REQUEST_JS 
@@ -84,8 +93,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/LabelUtil.js";
   private static final String GROUP_JS
     = "org/eclipse/swt/widgets/Group.js";
-  private static final String WIDGET_THEME_JS
-    = "org/eclipse/swt/WidgetTheme.js";
   private static final String TEXT_UTIL_JS
     = "org/eclipse/swt/TextUtil.js";
   private static final String SPINNER_JS
@@ -139,8 +146,6 @@ final class QooxdooResourcesUtil {
       manager.register( TREE_FOLDER_OPEN_GIF );
       manager.register( TREE_FOLDER_CLOSED_GIF );
       manager.register( DISPLAY_BG_GIF );
-      manager.register( SHELL_CAPTION_ACTIVE_GIF );
-      manager.register( SHELL_CAPTION_INACTIVE_GIF );
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
       //      these three files are here o keep DefaultAppearanceTheme.js
       //      happy that makes heavy use of constants 
@@ -148,7 +153,18 @@ final class QooxdooResourcesUtil {
       register( QX_CONSTANT_LAYOUT_JS );
       register( QX_CONSTANT_STYLE_JS );
 
-      register( APPEARANCE_JS );
+// TODO [qx70] appearance
+//      register( APPEARANCE_JS );
+      // NOTE: Order of register-calls is important here
+      register( DEFAULT_APPEARANCES_JS );
+      register( DEFAULT_BORDERS_JS );
+      register( DEFAULT_COLORS_JS );
+      register( DEFAULT_FONTS_JS );
+      register( DEFAULT_ICONS_JS );
+      register( DEFAULT_WIDGET_ICONS_JS );
+      register( DEFAULT_JS );
+      // end of 'order is important'
+      
       register( APPLICATION_JS );
       register( REQUEST_JS );
       register( WIDGET_MANAGER_JS );
@@ -170,7 +186,6 @@ final class QooxdooResourcesUtil {
       register( SEPARATOR_JS );
       register( LABEL_UTIL_JS );
       register( GROUP_JS );
-      register( WIDGET_THEME_JS );
       register( TEXT_UTIL_JS );
       register( SPINNER_JS );
       register( TABLE_JS );
@@ -271,6 +286,10 @@ final class QooxdooResourcesUtil {
     manager.register( "resource/widget/rap/window/maximize.gif" );
     manager.register( "resource/widget/rap/window/minimize.gif" );
     manager.register( "resource/widget/rap/window/restore.gif" );
+    // -- RAP specific resources --
+    // TODO [rst] Should these resources reside a separate place? 
+    manager.register( "resource/widget/rap/window/caption_active.gif" );
+    manager.register( "resource/widget/rap/window/caption_inactive.gif" );
   }
   
   private static void register( final String libraryName ) {

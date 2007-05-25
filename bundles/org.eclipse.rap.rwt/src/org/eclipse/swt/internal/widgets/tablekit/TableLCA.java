@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import java.io.IOException;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
@@ -35,6 +36,11 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final JSListenerInfo SELECTION_LISTENER
     = new JSListenerInfo( "itemselected", 
                           "this.onItemSelected", 
+                          JSListenerType.ACTION );
+  
+  private static final JSListenerInfo CHECK_SELECTION_LISTENER
+    = new JSListenerInfo( "itemchecked", 
+                          "this.onItemChecked", 
                           JSListenerType.ACTION );
   
   public void preserveValues( final Widget widget ) {
@@ -66,7 +72,11 @@ public final class TableLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     final Table table = ( Table )widget;
     JSWriter writer = JSWriter.getWriterFor( table );
-    Object[] args = new Object[] { WidgetUtil.getId( table ) };
+    String style = "";
+    if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
+      style = "check";
+    }
+    Object[] args = new Object[] { WidgetUtil.getId( table ), style };
     writer.newWidget( "org.eclipse.swt.widgets.Table", args );
     ControlLCAUtil.writeStyleFlags( table );
   }
@@ -175,6 +185,11 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.updateListener( SELECTION_LISTENER, 
                            PROP_SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( table ) );
+    if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
+      writer.updateListener( CHECK_SELECTION_LISTENER, 
+                             PROP_SELECTION_LISTENERS, 
+                             SelectionEvent.hasListener( table ) );
+    }
   }
 
   private static void writeDefaultColumnWidth( final Table table ) 

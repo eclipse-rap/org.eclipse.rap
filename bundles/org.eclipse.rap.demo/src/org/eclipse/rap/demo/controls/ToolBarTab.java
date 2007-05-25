@@ -65,6 +65,11 @@ public class ToolBarTab extends ExampleTab {
 
     ToolItem item4 = new ToolItem( toolBar, SWT.CHECK );
     item4.setImage( imageSearch );
+    item4.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+System.out.println( "check");        
+      }
+    } );
     ToolItem item5 = new ToolItem( toolBar, SWT.RADIO );
     item5.setImage( imageSearch );
     ToolItem item6 = new ToolItem( toolBar, SWT.RADIO );
@@ -83,5 +88,7 @@ public class ToolBarTab extends ExampleTab {
         }
       }
     } );
+    ToolItem withoutImageIcon = new ToolItem( toolBar, SWT.PUSH );
+    withoutImageIcon.setText( "w/o <image>" );
   }
 }

@@ -35,13 +35,15 @@ public final class SashLCA extends AbstractWidgetLCA {
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "org.eclipse.swt.Sash" );
     Sash sash = ( Sash )widget;
-    if( ( sash.getStyle() & SWT.HORIZONTAL ) != 0 ) {
-      writer.set( JSConst.QX_FIELD_ORIENTATION, 
-                  JSConst.QX_CONST_VERTICAL_ORIENTATION );
-    }
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    // Due to a current qooxdoo bug, the orientation must be set in the 
+    // constructor. Doesn't hurt us anyway.
+    JSVar orientation
+      = ( sash.getStyle() & SWT.HORIZONTAL ) != 0
+      ? JSConst.QX_CONST_VERTICAL_ORIENTATION
+      : JSConst.QX_CONST_HORIZONTAL_ORIENTATION;
+    writer.newWidget( "org.eclipse.swt.Sash", new Object[] { orientation } );
     ControlLCAUtil.writeStyleFlags( widget );
   }
 

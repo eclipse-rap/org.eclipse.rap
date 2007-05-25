@@ -13,10 +13,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class LabelTab extends ExampleTab {
 
+  private Label varSizeLabel;
+  private Label fixedSizeLabel;
   private final Image image1;
   private final Image image2;
   private final String text1;
@@ -52,20 +55,21 @@ public class LabelTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
+    createChangeLabelControl();
   }
 
   protected void createExampleControls( final Composite parent ) {
     int style = getStyle();
-    final Label label1 = new Label( parent, style );
-    label1.setLocation( 10, 10 );
-    updateLabel( label1 );
-    final Label label2 = new Label( parent, style );
-    label2.setText( "Fixed size Label with some very long text\n"
+    varSizeLabel = new Label( parent, style );
+    varSizeLabel.setLocation( 10, 10 );
+    updateLabel( varSizeLabel );
+    fixedSizeLabel = new Label( parent, style );
+    fixedSizeLabel.setText(   "Fixed size Label with some very long text\n"
                     + "and another line" );
-    label2.setLocation( 150, 10 );
-    label2.setSize( 100, 100 );
-    registerControl( label1 );
-    registerControl( label2 );
+    fixedSizeLabel.setLocation( 150, 10 );
+    fixedSizeLabel.setSize( 100, 100 );
+    registerControl( varSizeLabel );
+    registerControl( fixedSizeLabel );
     
     Button text1Button = new Button( parent, SWT.PUSH );
     text1Button.setText( "Text 1" );
@@ -74,7 +78,7 @@ public class LabelTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent e ) {
         labelText = text1;
         labelImage = null;
-        updateLabel( label1 );
+        updateLabel( varSizeLabel );
       }
     } );
     Button text2Button = new Button( parent, SWT.PUSH );
@@ -84,7 +88,7 @@ public class LabelTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent e ) {
         labelText = text2;
         labelImage = null;
-        updateLabel( label1 );
+        updateLabel( varSizeLabel );
       }
     } );
     Button image1Button = new Button( parent, SWT.PUSH );
@@ -93,7 +97,7 @@ public class LabelTab extends ExampleTab {
     image1Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         labelImage = image1;
-        updateLabel( label1 );
+        updateLabel( varSizeLabel );
       }
     } );
     Button image2Button = new Button( parent, SWT.PUSH );
@@ -102,11 +106,26 @@ public class LabelTab extends ExampleTab {
     image2Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         labelImage = image2;
-        updateLabel( label1 );
+        updateLabel( varSizeLabel );
       }
     } );
   }
   
+  private void createChangeLabelControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Change text" );
+    final Text text = new Text( composite, SWT.BORDER );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Change" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        varSizeLabel.setText( text.getText() );
+      }
+    } );
+  }
+
   private void updateLabel( final Label label ) {
     if( labelImage != null ) {
       label.setImage( labelImage );

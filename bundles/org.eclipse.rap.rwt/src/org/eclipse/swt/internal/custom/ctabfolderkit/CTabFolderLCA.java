@@ -66,7 +66,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   private static final Rectangle ZERO_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
 
   // TODO [rh] establish a scheme for the location of images
-  private static final String PREFIX = "org/eclipse/swt/custom/ctabfolder/";
+  private static final String PREFIX = "resource/widget/rap/ctabfolder/";
   private static final String MAXIMIZE_GIF = PREFIX + "maximize.gif";
   private static final String MINIMIZE_GIF = PREFIX + "minimize.gif";
   private static final String RESTORE_GIF = PREFIX + "restore.gif";

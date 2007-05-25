@@ -198,7 +198,7 @@ public class ToolBar extends Composite {
   // TODO [rh] decent size computation for VERTICAL alignment missing
   public Point computeSize( final int wHint, 
                             final int hHint, 
-                            final boolean changed ) 
+                            final boolean changed )
   {
     checkWidget();
     int width = 0;
@@ -222,9 +222,14 @@ public class ToolBar extends Composite {
       height = hHint;
     }
     Rectangle trim = computeTrim( 0, 0, width, height );
-    width = trim.width;
-    height = trim.height;
+    int border = getBorderWidth();
+    width = trim.width + border  * 2;
+    height = trim.height + border * 2;
     return new Point( width, height );
+  }
+  
+  public int getBorderWidth() {
+    return ( style & SWT.BORDER ) != 0 ? 1 : 0;
   }
   
 //  public Rectangle computeTrim( final int x,

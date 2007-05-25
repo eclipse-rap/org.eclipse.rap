@@ -10,8 +10,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -31,10 +30,12 @@ public class TableTab extends ExampleTab {
 
   protected void createStyleControls() {
     createStyleButton( "BORDER" );
+    createStyleButton( "CHECK" );
     createVisibilityButton();
     createEnablementButton();
     createHeaderVisibleButton();
     createLinesVisibleButton();
+    createFontChooser();
     createAddItemsButton();
     createSelectItemButton();
     crateDisposeFirstColumnButton();
@@ -73,7 +74,18 @@ public class TableTab extends ExampleTab {
     table.setSelection( 0 );
     table.setHeaderVisible( headerVisible );
     table.setLinesVisible( linesVisible );
-    
+    Menu menu = new Menu( table );
+    menu.addMenuListener( new MenuListener() {
+      public void menuShown( MenuEvent e ) {
+System.out.println( e );        
+      }
+      public void menuHidden( MenuEvent e ) {
+System.out.println( e );        
+      }
+    } );
+    MenuItem menuItem = new MenuItem( menu, SWT.NONE );
+    menuItem.setText( "Menu for Table" );
+    table.setMenu( menu );
     registerControl( table );
   }
 

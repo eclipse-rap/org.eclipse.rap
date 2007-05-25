@@ -3,11 +3,13 @@ although the user clicked the component. The event triggered by the user-action
 seemed to be fired though. See Window1 online example.
 
 2.) Is there a possibility to fire resize events directly? We currently use
-changeHeight and changeWidth for emulation.
+    changeHeight and changeWidth for emulation.
+    --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=297
 
 3.) The label of a button does not automatically clip in case the size of the
 label is bigger than the size of the button's box. The same seems to be the
 case for a label widget.
+    --> can be solved by setting the setOverflow() property
 
 4.) How to properly dispose of widgets? widget.dispose() seems not sufficient.
 In case of a shell, it stays visible but unusable, when trying to dispose of
@@ -22,6 +24,7 @@ that's right?
     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=300
 
 7.) Color settings for table component are static contstants
+    --> Obsolete
 
 8.) TreeFullControl sends selection event when expanding/collapsing node.
     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=289
@@ -45,9 +48,11 @@ that's right?
      message: 
      Modification of property "maximum" failed with exception: TypeError -
      vCurrentChild has no properties
+     --> OBSOLETE since own Table implementation is in place
 
 13.) Some parts of a table are drawn not until the first mouse move.
-
+     --> Stays valid and must be fixed in our own Table implementation
+     
 14.) How to make a qx.ui.form.TextField read-only?
      --> SOLVED
 
@@ -66,14 +71,15 @@ that's right?
 18.) A qx.ui.basic.Atom displaying a wrapped and centered text in its label
      does not align the label properly. It seems that the Boxlayout assumes the
      width of the non-wrapped child.
+     --> (?) http://bugzilla.qooxdoo.org/show_bug.cgi?id=197
 
 19.) treefullcontrol causes debug message "Could not load: 
      icon/16/places/folder.png" even though icon and selectedIcon were set
      in TreeRowStructure
 
 20.) What happens with a RadioManager when a Composite with some radio buttons
-     gets disposed of? After that radioButton.getMaanger() return null, but
-     the RadioManagers' dispose methods seems not to be called.     
+     gets disposed of? After that radioButton.getManager() return null, but
+     the RadioManagers' dispose methods seems not to be called.
 
 21.) Setting the property "icon" on qx.ui.window.Window has no effect. The
      window icon can only be set using the constructor.
@@ -99,6 +105,7 @@ that's right?
      
 26.) Gap in border of GroupBox with no legend
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=286
+     --> SOLVED
      
 27.) TabView should scroll TabButtons
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=287
@@ -109,6 +116,7 @@ that's right?
      
 29.) List with scrollY overflows in IE7
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=299
+     (still exists in qx 0.7)
      
 30.) TextArea: wrap property broken
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=300
@@ -177,3 +185,14 @@ that's right?
 
 48.) Scrollbar redraw problem in FireFox (there should be a workaround).
      --> http://www.mail-archive.com/qooxdoo-devel@lists.sourceforge.net/msg09195.html
+
+49.) Spinner up- and down-buttons stay enabled when the Spinner is disabled.
+     This allows to change the value
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=424
+     --> WORKAROUND in org.eclipse.swt.widgets.Spinner
+     --> FIXED
+
+50.) Spinner swallows keystrokes for browser control (Ctrl-T, F5, etc.) when
+     focused.
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=425
+     --> FIXED

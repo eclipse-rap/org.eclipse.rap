@@ -255,11 +255,9 @@ public class ScrollBar extends Widget {
    * 
    * @see #getEnabled
    */
-  public boolean isEnabled () {
+  public boolean isEnabled() {
     checkWidget();
-    // TODO [rh] complete implementation when isEnabled is available
-//    return getEnabled(); 
-    return getEnabled () && parent.isEnabled ();
+    return getEnabled() && parent.isEnabled();
   }
 
   /**

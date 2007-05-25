@@ -27,6 +27,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
   // tool item functions as defined in org.eclipse.swt.ToolItemUtil
   private static final String CREATE_CHECK 
     = "org.eclipse.swt.ToolItemUtil.createCheck";
+  
   private final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
                           WIDGET_SELECTED,

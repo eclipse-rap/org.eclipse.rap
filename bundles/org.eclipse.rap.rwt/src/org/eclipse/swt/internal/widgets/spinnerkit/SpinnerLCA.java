@@ -22,10 +22,10 @@ import org.eclipse.swt.widgets.Widget;
 public final class SpinnerLCA extends AbstractWidgetLCA {
 
   private static final String PROP_SELECTION = "selection";
-  private static final String PROP_PAGE_INCREMENT = "pageIncrement";
   private static final String PROP_MAXIMUM = "maximum";
   private static final String PROP_MINIMUM = "minimum";
   private static final String PROP_INCREMENT = "increment";
+  private static final String PROP_PAGE_INCREMENT = "pageIncrement";
   private static final String PROP_MODIFY_LISTENER = "modifyListener";
 
   public void preserveValues( final Widget widget ) {

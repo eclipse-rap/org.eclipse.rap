@@ -19,6 +19,18 @@ import org.eclipse.swt.widgets.*;
 
 public class ComboTab extends ExampleTab {
   
+  private static final String[] ITEMS = new String[] { 
+    "Eiffel", 
+    "Java", 
+    "Python", 
+    "Ruby", 
+    "Simula", 
+    "Smalltalk" };
+  private Combo emptyCombo;
+  private Combo filledCombo;
+  private Combo preselectedCombo;
+  private Combo viewerCombo;
+
   public ComboTab( final TabFolder parent ) {
     super( parent, "Combo" );
   }
@@ -27,55 +39,73 @@ public class ComboTab extends ExampleTab {
     createStyleButton( "BORDER" );
     createVisibilityButton();
     createEnablementButton();
+    createRemoveAllButton();
+  }
+
+  private void createRemoveAllButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Remove All" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+System.out.println( "selection before removeAll: " + filledCombo.getSelectionIndex() );        
+        filledCombo.removeAll();
+      }
+    } );
   }
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 2, false ) );
     int style = getStyle();
-    final String[] items
-      = new String[] { "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" };
-    // empty combo
-    Combo combo1 = new Combo( parent, style );
-    new Label( parent, SWT.NONE ).setText( "Empty Combo box" );
-    // filled combo
-    Combo combo2 = new Combo( parent, style );
-    combo2.setItems( items );
-    new Label( parent, SWT.NONE ).setText( "Filled Combo box" );
-    // filled combo with preselection
-    final Combo combo3 = new Combo( parent, style );
-    combo3.setItems( items );
-    combo3.select( 1 );
-    combo3.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        int index = combo3.getSelectionIndex();
-        String message = "Selected Item: " + items[ index ];
-        MessageDialog.openInformation( parent.getShell(), "Info", message, null );
+    emptyCombo = new Combo( parent, style );
+    Label lblEmptyCombo = new Label( parent, SWT.NONE );
+    lblEmptyCombo.setText( "Empty Combo box" );
+    filledCombo = new Combo( parent, style );
+    filledCombo.setItems( ITEMS );
+    Label lblFilledCombo = new Label( parent, SWT.NONE );
+    lblFilledCombo.setText( "Filled Combo box" );
+    preselectedCombo = new Combo( parent, style );
+    preselectedCombo.setItems( ITEMS );
+    preselectedCombo.select( 1 );
+    preselectedCombo.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int index = preselectedCombo.getSelectionIndex();
+        String message = "Selected Item: " + ITEMS[ index ];
+        Shell shell = parent.getShell();
+        MessageDialog.openInformation( shell, "Info", message, null );
       }
     } );
-    new Label( parent, SWT.NONE ).setText( "Filled Combo box with preselection" );
-    // combo with comboviewer
-    Combo combo4 = new Combo( parent, style );
-    ComboViewer viewer = new ComboViewer( combo4 );
+    Label lblPreselectionCombo = new Label( parent, SWT.NONE );
+    lblPreselectionCombo.setText( "Filled Combo box with preselection" );
+    viewerCombo = new Combo( parent, style );
+    ComboViewer viewer = new ComboViewer( viewerCombo );
     viewer.setContentProvider( new IStructuredContentProvider() {
       public void dispose() {
       }
-      public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
+      public void inputChanged( final Viewer viewer, final Object oldIn, final Object newIn ) {
       }
-      public Object[] getElements( Object inputElement ) {
+      public Object[] getElements( final Object inputElement ) {
         return ( Object[] )inputElement;
       }
     } );
     viewer.setLabelProvider( new LabelProvider() );
-    viewer.setInput( items );
+    viewer.setInput( ITEMS );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
-      public void selectionChanged( SelectionChangedEvent event ) {
+      public void selectionChanged( final SelectionChangedEvent event ) {
         String message = "Selected item: " + event.getSelection().toString();
-        MessageDialog.openInformation( parent.getShell(), "Info", message, null );
-      }} );
-    new Label( parent, SWT.NONE ).setText( "Combo box with JFace ComboViewer" );
-    registerControl( combo1 );
-    registerControl( combo2 );
-    registerControl( combo3 );
-    registerControl( combo4 );
+        Shell shell = parent.getShell();
+        MessageDialog.openInformation( shell, "Info", message, null );
+      } 
+    } );
+    Menu menu = new Menu( viewerCombo );
+    MenuItem menuItem = new MenuItem( menu, SWT.NONE );
+    menuItem.setText( "MenuItem on ComboViewer" );
+    viewerCombo.setMenu( menu );
+    Label lblViewerCombo = new Label( parent, SWT.NONE );
+    String msg = "Combo box with JFace ComboViewer and context menu";
+    lblViewerCombo.setText( msg );
+    registerControl( emptyCombo );
+    registerControl( filledCombo );
+    registerControl( preselectedCombo );
+    registerControl( viewerCombo );
   }
 }

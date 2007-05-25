@@ -41,12 +41,12 @@ final class PushMenuItemLCA extends MenuItemDelegateLCA {
   }
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Button" );
+    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Button", true );
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
-    ItemLCAUtil.writeChanges( menuItem );
+    MenuItemLCAUtil.writeImageAndText( menuItem );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( menuItem ) );

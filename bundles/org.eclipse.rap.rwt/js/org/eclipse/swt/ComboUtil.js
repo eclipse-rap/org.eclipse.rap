@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -10,74 +11,62 @@
  ******************************************************************************/
 
 /**
- * This class contains static functions for combo.
+ * This class contains static functions for the Combo widget.
  */
-qx.OO.defineClass( "org.eclipse.swt.ComboUtil" );
+qx.Class.define( "org.eclipse.swt.ComboUtil", {
 
-/**
- * Fires a widgetSelected event if the list item wasn't laready selected.
- * TODO [rst] Update documentation: there is no logic that checks if the item
- *      was already selected.
- */
-org.eclipse.swt.ComboUtil.widgetSelected = function( evt ) {
-  var combo = evt.getTarget();
-  // TODO [rst] This listener was also called on focus out, if no item was
-  //      selected. This fix should work since combos cannot be deselected.
-  if( evt.getData() != null ) {
-    var list = combo.getList();
-    var listItem = list.getSelectedItem();
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    var cboId = widgetManager.findIdByWidget( combo );
-    var req = org.eclipse.swt.Request.getInstance();
-    req.addParameter( cboId + ".selectedItem", list.indexOf( listItem ) );
-    var left = combo.getLeft();
-    var top = combo.getTop();
-    var width = combo.getWidth();
-    var height = combo.getHeight();
-    org.eclipse.swt.EventUtil.doWidgetSelected( cboId, 
-                                                    left, 
-                                                    top, 
-                                                    width,
-                                                    height );
-  }
-};
+  statics : {
+    
+    onSelectionChanged : function( evt ) {
+      // TODO [rst] This listener was also called on focus out, if no item was
+      //      selected. This fix should work since combos cannot be deselected.
+      if( evt.getData() != null ) {
+        var combo = evt.getTarget();
+        var list = combo.getList();
+        var listItem = list.getSelectedItem();
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var cboId = widgetManager.findIdByWidget( combo );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( cboId + ".selectedItem", list.indexOf( listItem ) );
+      }
+    },
 
-/**
- * Creates a comboBox incl.  all listItems.
- */
-org.eclipse.swt.ComboUtil.createComboBoxItems = function( id, items ) {
-  var combo
-    = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );
-  combo.removeAll();
-  for( var i = 0; i < items.length; i++ ) {
-    var listItem = new qx.ui.form.ListItem( items[ i ] );
-    combo.add( listItem );
-  }
-  org.eclipse.swt.WidgetManager.getInstance().add( combo, id, false );
-};
+    onSelectionChangedAction : function( evt ) {
+      // TODO [rst] This listener was also called on focus out, if no item was
+      //      selected. This fix should work since combos cannot be deselected.
+      if( evt.getData() != null ) {
+        org.eclipse.swt.ComboUtil.onSelectionChanged( evt );      
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+      }
+    },
+    
+    /** Populates the Combo denoted by the given id with the items. */
+    createComboBoxItems : function(id, items) {
+      var combo 
+        = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );
+      combo.removeAll();
+      for( var i = 0; i < items.length; i++ ) {
+        var item = new qx.ui.form.ListItem();
+        item.setLabel( "(empty)" );
+        item.getLabelObject().setMode( "html" );
+        item.setLabel( items[ i ] );
+        combo.add( item );
+      }
+      org.eclipse.swt.WidgetManager.getInstance().add( combo, id, false );
+    },
 
-/**
- * Selects a comboBox item.
- */
-org.eclipse.swt.ComboUtil.selectComboBoxItem = function( id, i ) {
-  var combo
-    = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );
-  var items = combo.getList().getChildren();
-  if( i >= 0 && i <= items.length ) {
-    combo.setSelected( items[ i ] );
+    /** Selects a comboBox item. */
+    select : function( id, index ) {
+      var combo 
+        = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );
+      var items = combo.getList().getChildren();
+      var item = null;
+      if( index >= 0 && index <= items.length - 1 ) {
+        item = items[ index ];
+      }
+      combo.setSelected( item );
+    }
   }
-};
-
-/**
- * Listener for change of property enabled, passes enablement to children.
- * TODO [rst] Once qx can disable a Combo completely (including gray-out),
- *  this listener can be removed
- */
-org.eclipse.swt.ComboUtil.enablementChanged = function( evt ) {
-  var enabled = evt.getData();
-  var items = this.getChildren();
-  for( var i = 0; i < items.length; i++ ) {
-    var item = items[ i ];
-    item.setEnabled( enabled );
-  }
-};
+});

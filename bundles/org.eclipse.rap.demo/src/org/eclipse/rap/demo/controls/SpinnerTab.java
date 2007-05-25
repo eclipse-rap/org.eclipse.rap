@@ -46,6 +46,7 @@ public class SpinnerTab extends ExampleTab {
     label = new Label( parent, SWT.NONE );
     label.setText( "Current value" );
     final Label lblSpinnerValue = new Label( parent, SWT.NONE );
+    lblSpinnerValue.setLayoutData( new GridData( 60, 22 ) );
     modifySpinner.addModifyListener( new ModifyListener() {
       public void modifyText( final ModifyEvent event ) {
         String value = String.valueOf( modifySpinner.getSelection() );

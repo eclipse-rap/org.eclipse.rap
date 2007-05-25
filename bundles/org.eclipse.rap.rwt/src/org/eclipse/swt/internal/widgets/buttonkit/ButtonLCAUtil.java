@@ -24,8 +24,9 @@ final class ButtonLCAUtil {
 
   private static final String PARAM_SELECTION = "selection";
 
-  private static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_SELECTION = "selection";
+
+  private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_DEFAULT = "defaultButton";
 
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.CENTER );
@@ -57,9 +58,10 @@ final class ButtonLCAUtil {
   
   static void writeText( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
-    
-    if( WidgetLCAUtil.hasChanged( button, Props.TEXT, button.getText(), "" ) ) {
-      writer.set( JSConst.QX_FIELD_LABEL, processMnemonics( button.getText() ) );      
+    String text = button.getText();
+    if( WidgetLCAUtil.hasChanged( button, Props.TEXT, text, "" ) ) {
+      text = WidgetLCAUtil.escapeText( text, true );
+      writer.set( JSConst.QX_FIELD_LABEL, text);      
     }
   }
 
@@ -123,16 +125,13 @@ final class ButtonLCAUtil {
     }
   }
   
-  private static boolean isDefaultButton( final Button button ) {
-    return button.getShell().getDefaultButton() == button;
+  static void writeLabelMode( final Button button ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( button );
+    writer.callStatic( "org.eclipse.swt.ButtonUtil.setLabelMode", 
+                       new Object[] { button } );
   }
   
-  private static String processMnemonics( final String input ) {
-    String result = input;
-    // TODO [rst] Change replacement to "$1<u>$2</u>" when we support
-    // client-side mnemonics
-    result = result.replaceAll( "(^|[^&])&(\\p{Alnum})", "$1$2" );
-    result = result.replaceAll( "&&", "&" );
-    return result;
+  private static boolean isDefaultButton( final Button button ) {
+    return button.getShell().getDefaultButton() == button;
   }
 }

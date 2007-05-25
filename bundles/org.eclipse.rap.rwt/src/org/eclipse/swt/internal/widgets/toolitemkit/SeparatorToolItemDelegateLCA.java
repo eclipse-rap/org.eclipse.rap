@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 import java.io.IOException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.lifecycle.*;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolItem;
 
 final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
@@ -23,8 +24,8 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
   // tool item functions as defined in org.eclipse.swt.ToolItemUtil
   private static final String CREATE_SEPARATOR = 
     "org.eclipse.swt.ToolItemUtil.createSeparator";
-  private static final String SET_CONTROL_FOR_SEPARATOR = 
-    "org.eclipse.swt.ToolItemUtil.setControlForSeparator";
+  private static final String SET_CONTROL = 
+    "org.eclipse.swt.ToolItemUtil.setControl";
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
@@ -47,29 +48,26 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
+    WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
+    writeControl( toolItem );
+  }
+
+  private void writeControl( final ToolItem toolItem ) throws IOException {
     final JSWriter writer = JSWriter.getWriterFor( toolItem );
-    // TODO [rst] If control is set to null, this change must also be rendered!
-    if( toolItem.getControl() != null ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem.getControl() );
-      // TODO [rst] Control is now preserved in ToolItemLCA - change this?
-      if( WidgetLCAUtil.hasChanged( toolItem,
-                                    PROP_CONTROL,
-                                    toolItem.getControl(),
-                                    null ) )
-      {
-        final Object[] args = new Object[]{
-          WidgetUtil.getId( toolItem ),
-          toolItem.getParent(),
-          new Integer( toolItem.getWidth() ),
-          toolItem.getControl()
-        };
+    Control control = toolItem.getControl();
+    if( WidgetLCAUtil.hasChanged( toolItem, PROP_CONTROL, control, null ) ) {
+      final Object[] args = new Object[] { toolItem, control };
+      if( control != null ) {
+        // defer call since controls are rendered after items
+        IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
         adapter.setRenderRunnable( new IRenderRunnable() {
           public void afterRender() throws IOException {
-            writer.callStatic( SET_CONTROL_FOR_SEPARATOR, args );
+            writer.callStatic( SET_CONTROL, args );
           }
         } );
+      } else {
+        writer.callStatic( SET_CONTROL, args );        
       }
     }
-    WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
   }
 }

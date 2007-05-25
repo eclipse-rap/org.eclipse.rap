@@ -9,12 +9,13 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.swt.internal.widgets;
+package org.eclipse.swt.lifecycle;
 
 import java.util.Date;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.widgets.*;
 
@@ -121,6 +122,47 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertFalse( WidgetLCAUtil.equals( new Date[] { new Date( 3 ) }, null ) );
   }
 
+  public void testEscape() throws Exception {
+    // Empty Parameter
+    try {
+      WidgetLCAUtil.escapeText( null, true );
+      fail( "NullPointerException expected" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    assertEquals( "", WidgetLCAUtil.escapeText( "", false ) );
+    assertEquals( "", WidgetLCAUtil.escapeText( "", true ) );
+    // Brackets
+    assertEquals( "&lt;", WidgetLCAUtil.escapeText( "<", false ) );
+    assertEquals( "&gt;", WidgetLCAUtil.escapeText( ">", false ) );
+    assertEquals( "&lt;&lt;&lt;", WidgetLCAUtil.escapeText( "<<<", false ) );
+    String expected = "&lt;File &gt;";
+    assertEquals( expected, WidgetLCAUtil.escapeText( "<File >", false ) );
+    // Amp
+    assertEquals( "Open &amp; Close",
+                  WidgetLCAUtil.escapeText( "Open && Close", true ) );
+    // Quotes
+    expected = "&quot;File&quot;";
+    assertEquals( expected, WidgetLCAUtil.escapeText( "\"File\"", false ) );
+    expected = "&quot;&quot;File";
+    assertEquals( expected, WidgetLCAUtil.escapeText( "\"\"File", false ) );
+    // Mnemonics with underline
+//    assertEquals( "<u>F</u>ile", WidgetLCAUtil.escapeText( "&File", true ) );
+//    assertEquals( "Fil<u>e</u>", WidgetLCAUtil.escapeText( "Fil&e", true ) );
+//    assertEquals( "Open &amp; <u>C</u>lose",
+//                  WidgetLCAUtil.escapeText( "&Open && &Close", true ) );
+    // Mnemonics without underline
+    assertEquals( "&amp;File", WidgetLCAUtil.escapeText( "&&&File", true ) );
+    // No Mnemonics
+    assertEquals( "&amp;&amp;&amp;File&quot;&gt;",
+                  WidgetLCAUtil.escapeText( "&&&File\">", false ) );
+    // Wild combinations
+//    assertEquals( "&amp;<u>F</u>ile",
+//                  WidgetLCAUtil.escapeText( "&&&File", true ) );
+//    assertEquals( "&quot;File' &amp; &lt;b&gt; <u>N</u>ew",
+//                  WidgetLCAUtil.escapeText( "\"&File' && <b> &New", true ) );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

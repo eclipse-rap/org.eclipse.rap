@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -8,55 +9,70 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
+ 
 /**
  * This class contains static functions needed for labels.
+ * To represent an RWT Label object, the qx.ui.basic.Atom widget is used.
  */
-qx.OO.defineClass( "org.eclipse.swt.LabelUtil" );
+qx.Class.define( "org.eclipse.swt.LabelUtil", {
 
-org.eclipse.swt.LabelUtil.setText = function( widget, text ) {
-  // Weird feature of qx.ui.basic.Atom:
-  // getLabelObject() returns null until the label property was set to a non-
-  // empty string.
-  if( widget.getLabelObject() != null ) {
-    widget.getLabelObject().setHtml( text );
-  } else {
-    widget.setLabel( "(empty)" );
-    widget.getLabelObject().setHtml( text );
-  }
-  widget.setShow( qx.ui.basic.Atom.SHOW_LABEL );
-}
+  statics : {
+    SHOW_LABEL : "label",
+    SHOW_ICON : "icon",
+    
+    MODE_TEXT : "html",
+    
+    APPEARANCE : "label-wrapper",
+    
+    initialize : function( widget, wrap ) {
+      widget.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_TOP );
+      widget.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
+      widget.setAppearance( org.eclipse.swt.LabelUtil.APPEARANCE );
+      widget.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+      // TODO [rh] workaround for weird getLabelObject behaviour
+      widget.setLabel( "(empty)" );
+      // end workaround
+      var labelObject = widget.getLabelObject();
+      labelObject.setMode( org.eclipse.swt.LabelUtil.MODE_TEXT );
+      labelObject.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+      labelObject.setTextOverflow( false );
+      widget.getLabelObject().setWrap( wrap );
+      // TODO [rh] workaround for weird getLabelObject behaviour
+      widget.setLabel( "" );
+      // end workaround
+      widget.setHideFocus( true );
+    },
+    
+    setText : function( widget, text ) {
+      widget.setLabel( text );
+      widget.setShow( org.eclipse.swt.LabelUtil.SHOW_LABEL );
+    },
 
-org.eclipse.swt.LabelUtil.setImage = function( widget, imagePath ) {
-  widget.setIcon( imagePath );
-  // could speed up rendering if available on the server side
-  // widget.setIconWidth();
-  // widget.setIconHeight();
-  if( imagePath != null ) {
-    widget.setShow( qx.ui.basic.Atom.SHOW_ICON );
-  } else {
-    widget.setShow( qx.ui.basic.Atom.SHOW_LABEL );
-  }
-}
+    setImage : function( widget, imagePath ) {
+      widget.setIcon( imagePath );
+      // TODO [rst] could speed up rendering if available on the server side
+      // widget.setIconWidth();
+      // widget.setIconHeight();
+      if( imagePath != null ) {
+        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_ICON );
+      } else {
+        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_LABEL );
+      }
+    },
 
-org.eclipse.swt.LabelUtil.setWrap = function( widget, wrap ) {
-  if( widget.getLabelObject() != null ) {
-    widget.getLabelObject().setWrap( wrap );
-  } else {
-    widget.setLabel( "(empty)" );
-    widget.getLabelObject().setWrap( wrap );
-    widget.getLabelObject().setHtml( "" );
+    // TODO [rh] workaround for weird getLabelObject behaviour
+    setAlignment : function( widget, align ) {
+      if( widget.getLabelObject() != null ) {
+        widget.getLabelObject().setTextAlign( align );
+      } else {
+        var oldLabel = widget.getLabel();
+        widget.setLabel( "(empty)" );
+        widget.getLabelObject().setTextAlign( align );
+        widget.setLabel( oldLabel );
+      }
+      if( !widget.getLabelObject().getWrap() ) {
+        widget.setHorizontalChildrenAlign( align );
+      }
+    }
   }
-}
-
-org.eclipse.swt.LabelUtil.setAlignment = function( widget, align ) {
-  if( widget.getLabelObject() != null ) {
-    widget.getLabelObject().setTextAlign( align );
-  } else {
-    var oldLabel = widget.getLabel();
-    widget.setLabel( "(empty)" );
-    widget.getLabelObject().setTextAlign( align );
-    widget.setLabel( oldLabel );
-  }
-  widget.setHorizontalChildrenAlign( align );
-}
+});

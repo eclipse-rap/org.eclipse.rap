@@ -13,6 +13,8 @@ package org.eclipse.swt.lifecycle;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -31,6 +33,9 @@ public final class WidgetLCAUtil {
   private static final String PROP_TOOL_TIP_TEXT = "toolTip";
   private static final String PROP_FONT = "font";
   private static final String PROP_ENABLED = "enabled";
+  
+  private static final Pattern HTML_ESCAPE_PATTERN
+    = Pattern.compile( "&|<|>|\\\"" );
 
   private WidgetLCAUtil() {
     // prevent instantiation
@@ -224,7 +229,7 @@ public final class WidgetLCAUtil {
     String text = toolTip == null ? "" : toolTip;
     if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
-      Object[] args = new Object[] { widget, text };
+      Object[] args = new Object[] { widget, escapeText( text, false ) };
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setToolTip", args );
     }
   }
@@ -268,9 +273,10 @@ public final class WidgetLCAUtil {
     {
       JSWriter writer = JSWriter.getWriterFor( widget );
       FontData fontData = font.getFontData()[ 0 ];
+      String[] names = parseFontName( fontData.getName() );
       Object[] args = new Object[]{
         widget,
-        fontData.getName(),
+        names,
         new Integer( fontData.getHeight() ),
         Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
         Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
@@ -336,10 +342,10 @@ public final class WidgetLCAUtil {
     return result;
   }
 
-  ////////////////////////////////////////
-  // Helping methods to test for equality
+  ///////////////////////////////////////
+  // Helping method to test for equality
   
-  public static boolean equals( final Object object1, final Object object2 ) {
+  static boolean equals( final Object object1, final Object object2 ) {
     boolean result;
     if( object1 == object2 ) {
       result = true;
@@ -361,5 +367,61 @@ public final class WidgetLCAUtil {
       result = object1.equals( object2 );
     }
     return result;
+  }
+  
+  ////////////////////////////////////
+  // Helping method to split font name  
+  
+  static String[] parseFontName( final String name ) {
+    String[] parts = name.split( "," );
+    return parts;
+  }
+  
+  //////////////////////////////////////
+  // Escaping of reserved XML characters
+  
+  // Note: The entity &apos; is not defined in HTML. It could be added if the
+  //       added to this method once we produce XHTML.
+  public static String escapeText( final String text, final boolean mnemonics )
+  {
+//    int mnemonicPos = -1;
+    int offset = 0;
+    boolean insertAmp = false;
+    StringBuffer sb = new StringBuffer();
+    Matcher matcher = HTML_ESCAPE_PATTERN.matcher( text );
+    while( matcher.find() ) {
+      int index = matcher.start();
+      char ch = text.charAt( index );
+      if( ch == '&' ) {
+        if( !mnemonics || insertAmp ) {
+          insertAmp = false;
+          matcher.appendReplacement( sb, "&amp;" );
+          offset += 4;
+        } else {
+          if( index + 1 < text.length() && text.charAt( index + 1 ) == '&' ) {
+            insertAmp = true;
+          } else {
+//            mnemonicPos = index + offset;
+          }
+          matcher.appendReplacement( sb, "" );
+          offset -= 1;
+        }
+      } else if( ch == '<' ) {
+        matcher.appendReplacement( sb, "&lt;" );
+        offset += 3;
+      } else if( ch == '>' ) {
+        matcher.appendReplacement( sb, "&gt;" );
+        offset += 3;
+      } else if( ch == '"' ) {
+        matcher.appendReplacement( sb, "&quot;" );
+        offset += 5;
+      }
+    }
+    matcher.appendTail( sb );
+//    if( mnemonics && underline && mnemonicPos != -1 ) {
+//      sb.insert( mnemonicPos + 1, "</u>" );
+//      sb.insert( mnemonicPos, "<u>" );
+//    }
+    return sb.toString();
   }
 }

@@ -29,20 +29,18 @@ public class ComboLCA extends AbstractWidgetLCA {
   
   // Constants for ComboUtil.js
   private static final String WIDGET_SELECTED = 
-    "org.eclipse.swt.ComboUtil.widgetSelected";
+    "org.eclipse.swt.ComboUtil.onSelectionChanged";
   private static final String CREATE_COMBOBOX_ITEMS = 
     "org.eclipse.swt.ComboUtil.createComboBoxItems";
   private static final String SELECT_COMBOBOX_ITEM = 
-    "org.eclipse.swt.ComboUtil.selectComboBoxItem";
-
-  // Property names for preserveValues
+    "org.eclipse.swt.ComboUtil.select";
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
   
   private static final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
                           WIDGET_SELECTED, 
-                          JSListenerType.ACTION );
+                          JSListenerType.STATE_AND_ACTION );
 
 
   public void preserveValues( final Widget widget ) {
@@ -71,9 +69,6 @@ public class ComboLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.form.ComboBox" );
-    writer.addListener( null,
-                        "changeEnabled",
-                        "org.eclipse.swt.ComboUtil.enablementChanged" );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -96,6 +91,7 @@ public class ComboLCA extends AbstractWidgetLCA {
       for( int i = 0; i < items.length; i++ ) {
         Matcher matcher = NEWLINE_PATTERN.matcher( items[ i ] );
         items[ i ] = matcher.replaceAll( " " );
+        items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
       }
       Object[] args = new Object[]{ WidgetUtil.getId( combo ), items };
       writer.callStatic( CREATE_COMBOBOX_ITEMS, args );

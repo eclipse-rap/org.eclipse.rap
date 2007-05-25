@@ -15,8 +15,13 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 import com.w4t.Fixture;
+import com.w4t.engine.requests.RequestParams;
 
 
 public class TableItemLCA_Test extends TestCase {
@@ -73,5 +78,43 @@ public class TableItemLCA_Test extends TestCase {
     tableItemLCA.renderChanges( item );
     String expected = "w.setTexts( [ \"newText\" ] )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+  
+  public void testWidgetSelectedWithCheck() throws IOException {
+    final SelectionEvent[] events = new SelectionEvent[ 1 ];
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Table table = new Table( shell, SWT.CHECK );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    final TableItem item2 = new TableItem( table, SWT.NONE );
+    table.setSelection( 0 );
+    table.addSelectionListener( new SelectionListener() {
+      public void widgetSelected( final SelectionEvent event ) {
+        events[ 0 ] = event;
+      }
+      public void widgetDefaultSelected( final SelectionEvent event ) {
+        fail( "unexpected event: widgetDefaultSelected" );
+      }
+    } );
+    // Simulate request that comes in after item2 was checked (but not selected)
+    RWTFixture.fakeNewRequest();
+    String displayId = DisplayUtil.getId( display );
+    String item2Id = WidgetUtil.getId( item2 );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( item2Id + ".checked", "true" );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, item2Id );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "check" );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.execute();
+    assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
+    assertEquals( table, events[ 0 ].getSource() );
+    assertEquals( item2, events[ 0 ].item );
+    assertEquals( true, events[ 0 ].doit );
+    assertEquals( 0, events[ 0 ].x );
+    assertEquals( 0, events[ 0 ].y );
+    assertEquals( 0, events[ 0 ].width );
+    assertEquals( 0, events[ 0 ].height );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( item1, table.getSelection()[ 0 ] );
   }
 }

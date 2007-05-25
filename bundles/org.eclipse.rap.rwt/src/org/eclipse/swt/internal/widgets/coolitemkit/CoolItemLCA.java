@@ -70,7 +70,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     Control control = coolItem.getControl();
     if( control != null ) {
       Point location = control.getLocation();
-      location.x = CoolItem.HANDLE_SIZE;
+      location.x = 6; // TODO [rst] Use CoolItem.HANDLE_SIZE + margin;
       location.y = 0;
       control.setLocation( location );
     }

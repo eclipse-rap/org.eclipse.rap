@@ -104,7 +104,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.set( PROP_WIDTH, "width", newValue, null );
   }
 
-  private static void writeZIndex( final TableColumn column ) throws IOException {
+  private static void writeZIndex( final TableColumn column ) throws IOException 
+  {
     JSWriter writer = JSWriter.getWriterFor( column );
     Integer newValue = new Integer( getZIndex( column ) );
     writer.set( PROP_Z_INDEX, "zIndex", newValue, null );

@@ -25,7 +25,7 @@ public class ControlsDemo implements IEntryPoint {
     shell.setText( "SWT Controls Demo" );
     ClassLoader classLoader = getClass().getClassLoader();
     Image image = Image.find( "resources/shell.gif", classLoader );
-    shell.setImage( image  );
+    shell.setImage( image );
     shell.layout();
     shell.open();
     return display;
@@ -39,8 +39,8 @@ public class ControlsDemo implements IEntryPoint {
     tab.createContents();
 //    tab = new RequestTab( topFolder );
 //    tab.createContents();
-//    tab = new CBannerTab( topFolder );
-//    tab.createContents();
+    tab = new CBannerTab( topFolder );
+    tab.createContents();
     tab = new ComboTab( topFolder );
     tab.createContents();
     tab = new CompositeTab( topFolder );
@@ -53,8 +53,8 @@ public class ControlsDemo implements IEntryPoint {
     tab.createContents();
     tab = new ListTab( topFolder );
     tab.createContents();
-//    tab = new SashTab( topFolder );
-//    tab.createContents();
+    tab = new SashTab( topFolder );
+    tab.createContents();
     tab = new SashFormTab( topFolder );
     tab.createContents();
     tab = new ShellTab( topFolder );
@@ -63,12 +63,12 @@ public class ControlsDemo implements IEntryPoint {
     tab.createContents();
     tab = new TableTab( topFolder );
     tab.createContents();
-//    tab = new TableViewerTab( topFolder );
-//    tab.createContents();
+    tab = new TableViewerTab( topFolder );
+    tab.createContents();
     tab = new TextTab( topFolder );
     tab.createContents();
-//    tab = new SpinnerTab( topFolder );
-//    tab.createContents();
+    tab = new SpinnerTab( topFolder );
+    tab.createContents();
     tab = new ToolBarTab( topFolder );
     tab.createContents();
     tab = new TreeTab( topFolder );
@@ -79,8 +79,8 @@ public class ControlsDemo implements IEntryPoint {
     tab.createContents();
     tab = new ZOrderTab( topFolder );
     tab.createContents();
-//    tab = new FocusTab( topFolder );
-//    tab.createContents();
+    tab = new FocusTab( topFolder );
+    tab.createContents();
     topFolder.setSelection( 0 );
   }
 }

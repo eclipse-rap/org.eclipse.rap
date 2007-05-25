@@ -9,27 +9,27 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.OO.defineClass( 
-  "org.eclipse.swt.externalbrowser.Util",
-  qx.core.Target,
-  function() {
-    qx.core.Target.call( this );
+qx.Class.define( "org.eclipse.swt.externalbrowser.Util",
+{
+  extend : qx.core.Object,
+  
+  statics : {
+    // maps id's (aka window names) to window instances
+    // key = id, value = window object
+    _map : {},
+    
+    open : function( id, url, features ) {
+      var win = window.open( url, id, features, true );
+      org.eclipse.swt.externalbrowser.Util._map[ id ] = win; 
+    },
+    
+    close : function( id ) {
+      var win = org.eclipse.swt.externalbrowser.Util._map[ id ];
+      if( win != null ) {
+        win.close();
+      } 
+      delete org.eclipse.swt.externalbrowser.Util._map[ id ];
+    }
   }
-);
+} );
 
-// maps id's (aka window names) to window instances
-// key = id, value = window object
-org.eclipse.swt.externalbrowser.Util._map = {};
-
-org.eclipse.swt.externalbrowser.Util.open = function( id, url, features ) {
-  var win = window.open( url, id, features, true );
-  org.eclipse.swt.externalbrowser.Util._map[ id ] = win; 
-}
-
-org.eclipse.swt.externalbrowser.Util.close = function( id ) {
-  var win = org.eclipse.swt.externalbrowser.Util._map[ id ];
-  if( win != null ) {
-    win.close();
-  } 
-  delete org.eclipse.swt.externalbrowser.Util._map[ id ];
-}

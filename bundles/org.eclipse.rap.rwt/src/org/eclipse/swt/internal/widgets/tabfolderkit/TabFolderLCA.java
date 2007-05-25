@@ -47,12 +47,11 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "qx.ui.pageview.tabview.TabView" );
+    writer.set( "hideFocus", true );
     if( ( widget.getStyle() & SWT.BOTTOM ) != 0 ) {
       writer.set( "placeBarOnTop", false );
     }
     ControlLCAUtil.writeStyleFlags( widget );
-    writer.addListener( "changeEnabled",
-                        "org.eclipse.swt.TabUtil.onChangeEnabled" );
     writer.addListener( "keypress", 
                         "org.eclipse.swt.TabUtil.onTabFolderKeyPress" );
     writer.addListener( "changeFocused", 

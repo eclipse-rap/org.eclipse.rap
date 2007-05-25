@@ -25,6 +25,8 @@ import com.w4t.engine.service.ContextProvider;
 
 public final class ShellLCA extends AbstractWidgetLCA {
   
+  private static final String PROP_TEXT = "text";
+  private static final String PROP_IMAGE = "image";
   private static final String PROP_ACTIVE_CONTROL = "activeControl";
   private static final String PROP_ACTIVE_SHELL = "activeShell";
   private static final String PROP_MODE = "mode";
@@ -35,8 +37,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
     adapter.preserve( PROP_ACTIVE_CONTROL, getActiveControl( shell ) );
     adapter.preserve( PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
-    adapter.preserve( Props.TEXT, shell.getText() );
-    adapter.preserve( Props.IMAGE, shell.getImage() );
+    adapter.preserve( PROP_TEXT, shell.getText() );
+    adapter.preserve( PROP_IMAGE, shell.getImage() );
     adapter.preserve( PROP_MODE, getMode( shell ) );
   }
 
@@ -56,10 +58,10 @@ public final class ShellLCA extends AbstractWidgetLCA {
     // work with the current qx version. Remove this workaround as soon as this
     // bug is fixed: http://bugzilla.qooxdoo.org/show_bug.cgi?id=87
     Shell shell = ( Shell )widget;
-    Object[] args = new Object[]{
+    Object[] args = new Object[] {
       showImage( shell ) ? getImagePath( shell.getImage() ) : ""
     };
-    writer.newWidget( "org.eclipse.swt.widgets.Shell", args  );
+    writer.newWidget( "org.eclipse.swt.widgets.Shell", args );
     ControlLCAUtil.writeStyleFlags( widget );
     int style = widget.getStyle();
     if( ( style & SWT.APPLICATION_MODAL ) != 0 ) {
@@ -74,8 +76,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.set( "showMaximize", ( style & SWT.MAX ) != 0 );
     writer.set( "showClose", ( style & SWT.CLOSE ) != 0 );
     writer.set( "alwaysOnTop", ( style & SWT.ON_TOP ) != 0 );
-    writer.set( "overflow", "hidden" );
     if( shell.getParent() instanceof Shell ) {
+      // TODO [rh] a setter that doesn't work like a setter, could be passed to
+      //      constructor or renamed to markAsDialogWindow or similar
       writer.call( "setDialogWindow", new Object[ 0 ] );
     }
     ControlLCAUtil.writeResizeNotificator( widget );
@@ -87,14 +90,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     ControlLCAUtil.writeChanges( shell );
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    if( shell.getBounds().equals( shell.getDisplay().getBounds() ) ) {
-      writer.call( "maximize", new Object[ 0 ] );
-    }
-    if( showImage( shell ) ) {
-      writeImage( shell );
-    }
-    writer.set( Props.TEXT, JSConst.QX_FIELD_CAPTION, shell.getText(), "" );
+    writeMaximize( shell );
+    writeImage( shell );
+    writeText( shell );
     writeOpen( shell );
     // Important: Order matters, writing setActive() before open() leads to
     //            strange behavior!
@@ -112,14 +110,30 @@ public final class ShellLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
   
+  private static void writeMaximize( final Shell shell ) throws IOException {
+    if( shell.getBounds().equals( shell.getDisplay().getBounds() ) ) {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      writer.call( "maximize", new Object[ 0 ] );
+    }
+  }
+
+  private static void writeText( final Shell shell ) throws IOException {
+    String text = shell.getText();
+    if( WidgetLCAUtil.hasChanged( shell, PROP_TEXT, text, "" ) ) {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      text = WidgetLCAUtil.escapeText( text, false );
+      writer.set( JSConst.QX_FIELD_CAPTION, text );
+    }
+  }
+
   private static void writeOpen( final Shell shell ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( shell );
     // TODO [rst] workaround: qx window should be opened only once.
     Boolean defValue = Boolean.FALSE;
     Boolean actValue = Boolean.valueOf( shell.getVisible() );
-    if( WidgetLCAUtil.hasChanged( shell, Props.VISIBLE, actValue, defValue )
+    if(    WidgetLCAUtil.hasChanged( shell, Props.VISIBLE, actValue, defValue )
         && shell.getVisible() )
     {
+      JSWriter writer = JSWriter.getWriterFor( shell );
       writer.call( "open", null );
     }
   }
@@ -171,7 +185,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
   /////////////////////////////////////////////////////
   // Methods to handle activeControl and ActivateEvents
   
-  private static void writeActiveControl( Shell shell ) throws IOException {
+  private static void writeActiveControl( final Shell shell ) throws IOException 
+  {
     Control activeControl = getActiveControl( shell );
     String prop = PROP_ACTIVE_CONTROL;
     if( WidgetLCAUtil.hasChanged( shell, prop, activeControl, null ) ) {
@@ -214,18 +229,20 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
   
   private static void writeImage( final Shell shell ) throws IOException {
-    Image image = shell.getImage();
-    if( WidgetLCAUtil.hasChanged( shell, Props.IMAGE, image, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.set( JSConst.QX_FIELD_ICON, getImagePath( image ) );
+    if( showImage( shell ) ) {
+      Image image = shell.getImage();
+      if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
+        JSWriter writer = JSWriter.getWriterFor( shell );
+        writer.set( JSConst.QX_FIELD_ICON, getImagePath( image ) );
+      }
     }
   }
   
-  private static boolean showImage( Shell shell) {
-    return (shell.getStyle() & ( SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0;
+  private static boolean showImage( final Shell shell ) {
+    return ( shell.getStyle() & ( SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0;
   }
   
-  private static String getImagePath( Image image ) {
+  private static String getImagePath( final Image image ) {
     return image != null ? Image.getPath( image ) : "";
   }
   

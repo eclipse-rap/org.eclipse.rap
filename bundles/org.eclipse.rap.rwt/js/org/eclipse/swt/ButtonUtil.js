@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -8,101 +9,118 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 /**
  * This class contains static functions for radio buttons and check boxes.
  */
-qx.OO.defineClass( "org.eclipse.swt.ButtonUtil" );
+qx.Class.define( "org.eclipse.swt.ButtonUtil", {
 
-/**
- * Registers the given button at the RadioManager of the first sibling 
- * radio button. If there is not sibing radio button, a new RadioManager
- * is created.
- */
-org.eclipse.swt.ButtonUtil.registerRadioButton = function( button ) {
-  var radioManager = null;
-  var parent = button.getParent();
-  var siblings = parent.getChildren();
-  for( var i = 0; radioManager == null && i < siblings.length; i++ ) {
-    if( siblings[ i ] != button && siblings[ i ].classname == button.classname )
-    {
-      radioManager = siblings[ i ].getManager();
-    }
-  }
-  if( radioManager == null ) {
-    radioManager = new qx.manager.selection.RadioManager();
-  }
-  radioManager.add( button );
-}
+  statics : {
+    
+    setLabelMode : function( button ) {
+      // Note: called directly after creating the menuItem instance, therefore
+      // it is not necessary to check getLabelObject and/or preserve its label
+      button.setLabel( "(empty)" );
+      button.getLabelObject().setMode( "html" );
+      button.setLabel( "" );
+    },
+    
+    /**
+     * Registers the given button at the RadioManager of the first sibling 
+     * radio button. If there is not sibing radio button, a new RadioManager
+     * is created.
+     */
+    registerRadioButton : function( button ) {
+      var radioManager = null;
+      var parent = button.getParent();
+      var siblings = parent.getChildren();
+      for( var i = 0; radioManager == null && i < siblings.length; i++ ) {
+        if( siblings[i] != button && siblings[ i ].classname == button.classname )
+        {
+          radioManager = siblings[ i ].getManager();
+        }
+      }
+      if( radioManager == null ) {
+        radioManager = new qx.manager.selection.RadioManager();
+      }
+      radioManager.add( button );
+    },
 
-/**
- * Removes the given button from its RadioManager and disposes of the
- * RadioManager if there are no more radio buttons that use this 
- * RadioManager.
- */
-org.eclipse.swt.ButtonUtil.unregisterRadioButton = function( button ) {
-  var radioManager = button.getManager();
-  if( radioManager != null ) {
-    radioManager.remove( button );
-    if( radioManager.getItems().length == 0 ) {
-      radioManager.dispose();
-    }
-  }
-}
+    /**
+     * Removes the given button from its RadioManager and disposes of the
+     * RadioManager if there are no more radio buttons that use this 
+     * RadioManager.
+     */
+    unregisterRadioButton : function(button) {
+      var radioManager = button.getManager();
 
-org.eclipse.swt.ButtonUtil.radioSelected = function( evt ) {
-    var radioManager = evt.getTarget();
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    var req = org.eclipse.swt.Request.getInstance();
-    var radioButtons = radioManager.getItems();
-    for( var i = 0; i < radioButtons.length; i++ ) {
-      var selected = radioButtons[ i ] == radioManager.getSelected();
-      var id = widgetManager.findIdByWidget( radioButtons[ i ] );
-      req.addParameter( id + ".selection", selected );
-    }
-}
+      if( radioManager != null ) {
+        radioManager.remove( button );
 
-org.eclipse.swt.ButtonUtil.radioSelectedAction = function( evt ) {
-  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-    org.eclipse.swt.ButtonUtil.radioSelected( evt );
-    var radioManager = evt.getTarget();
-    var radio = radioManager.getSelected();
-    if( radio != null ) {
+        if( radioManager.getItems().length == 0 ) {
+          radioManager.dispose();
+        }
+      }
+    },
+
+    radioSelected : function( evt ) {
+      var radioManager = evt.getTarget();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( radio );
-      org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+      var req = org.eclipse.swt.Request.getInstance();
+      var radioButtons = radioManager.getItems();
+      for( var i=0; i<radioButtons.length; i++ ) {
+        var selected = radioButtons[ i ] == radioManager.getSelected();
+        var id = widgetManager.findIdByWidget( radioButtons[ i ] );
+        req.addParameter( id + ".selection", selected );
+      }
+    },
+
+    radioSelectedAction : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        org.eclipse.swt.ButtonUtil.radioSelected( evt );
+        var radioManager = evt.getTarget();
+        var radio = radioManager.getSelected();
+        if( radio != null ) {
+          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var id = widgetManager.findIdByWidget( radio );
+          org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+        }
+      }
+    },
+
+    checkSelected : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var check = evt.getTarget();
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( check );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( id + ".selection", check.getChecked() );
+      }
+    },
+
+    checkSelectedAction : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        org.eclipse.swt.ButtonUtil.checkSelected( evt );
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+      }
+    },
+
+    /* Called when a TOGGLE button is executed */
+    onToggleExecute : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var button = evt.getTarget();
+        var checked = !button.hasState( "checked" );
+        if( checked ) {
+          button.addState( "checked" );
+        } else {
+          button.removeState( "checked" );
+        }
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( button );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( id + ".selection", checked );
+      }
     }
   }
-}
-
-org.eclipse.swt.ButtonUtil.checkSelected = function( evt ) {
-  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-    var check = evt.getTarget();
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( check );
-    var req = org.eclipse.swt.Request.getInstance();
-    req.addParameter( id + ".selection", check.getChecked() );
-  }
-}
-
-org.eclipse.swt.ButtonUtil.checkSelectedAction = function( evt ) {
-  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-    org.eclipse.swt.ButtonUtil.checkSelected( evt );
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( evt.getTarget() );
-    org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
-  }
-}
-
-/* Called when a TOGGLE button is executed */
-org.eclipse.swt.ButtonUtil.onToggleExecute = function( evt ) {
-  if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-    var button = evt.getTarget();
-    var checked = !button.hasState( "checked" );
-    button.setState( "checked", checked );
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( button );
-    var req = org.eclipse.swt.Request.getInstance();
-    req.addParameter( id + ".selection", checked );
-  }
-}
+});

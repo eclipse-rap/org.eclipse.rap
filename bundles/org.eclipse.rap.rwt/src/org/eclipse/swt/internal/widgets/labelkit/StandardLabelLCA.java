@@ -44,10 +44,10 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
     writer.newWidget( "qx.ui.basic.Atom" );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "label-wrapper" );
     ControlLCAUtil.writeStyleFlags( label );
-    Object[] args = { label, Boolean.valueOf( ( label.getStyle() & SWT.WRAP ) != 0 ) };
-    writer.callStatic( "org.eclipse.swt.LabelUtil.setWrap", args  );
+    Boolean wrap = Boolean.valueOf( ( label.getStyle() & SWT.WRAP ) != 0 );
+    Object[] args = { label, wrap };
+    writer.callStatic( "org.eclipse.swt.LabelUtil.initialize", args  );
   }
   
   void renderChanges( final Label label ) throws IOException {
@@ -67,11 +67,10 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static void writeText( final Label label ) throws IOException {
     if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, label.getText(), "" ) ) {
-      // TODO [rh] rendering text that contains html special chars (<, >, etc)
-      //      leads to strange results
-      //      e.g. setText( "> <" ), setText( "<tralala>" );
-      Matcher matcher = LINE_BREAK_PATTERN.matcher( label.getText() );
-      String text = matcher.replaceAll( "<br/>" );
+      // Order is important here: escapeText, replace line breaks
+      String text = WidgetLCAUtil.escapeText( label.getText(), true );
+      Matcher matcher = LINE_BREAK_PATTERN.matcher( text );
+      text = matcher.replaceAll( "<br/>" );
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{ label, text };
       writer.callStatic( "org.eclipse.swt.LabelUtil.setText", args );
@@ -83,12 +82,12 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     if( WidgetLCAUtil.hasChanged( label, Props.IMAGE, image, null ) )
     {
       String imagePath;
-//      if( image == null ) {
-//        imagePath = null;
-//      } else {
-        imagePath = Image.getPath( image );
+      if( image == null ) {
+        imagePath = null;
+      } else {
         // TODO passing image bounds to qooxdoo can speed up rendering
-//      }
+        imagePath = Image.getPath( image );
+      }
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{ label, imagePath };
       writer.callStatic( "org.eclipse.swt.LabelUtil.setImage", args );

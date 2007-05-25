@@ -12,11 +12,15 @@
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+import com.w4t.engine.service.ContextProvider;
 
 public final class TableItemLCA extends AbstractWidgetLCA {
 
@@ -33,10 +37,21 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
     TableItem item = ( TableItem )widget;
+    String value = WidgetLCAUtil.readPropertyValue( widget, "checked" );
+    if( value != null ) {
+      item.setChecked( Boolean.valueOf( value ).booleanValue() );
+    }
     if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_WIDGET_SELECTED ) ) {
       Table parent = item.getParent();
+      int detail = getWidgetSelectedDetail();
       int id = SelectionEvent.WIDGET_SELECTED;
-      SelectionEvent event = new SelectionEvent( parent, item, id );
+      SelectionEvent event = new SelectionEvent( parent, 
+                                                 item, 
+                                                 id, 
+                                                 new Rectangle( 0, 0, 0, 0 ), 
+                                                 "", 
+                                                 true, 
+                                                 detail );
       event.processEvent();
     }
   }
@@ -60,11 +75,21 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       }
       String[] texts = new String[ columnCount ];
       for( int i = 0; i < columnCount; i++ ) {
-        texts[i] = encodeHTML( item.getText( i ) );
+        // TODO [rh] sor some reason doesn't work with escapeText
+//        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
+        texts[ i ] = encodeHTML( item.getText( i ) );
       }
       writer.set( "texts", new Object[] { texts } );
     }
   }
+  
+  private static String encodeHTML( final String text ) {
+    String result = text.replaceAll( "\"", "&#034;" );
+    result = result.replaceAll( ">", "&#062;" );
+    result = result.replaceAll( "<", "&#060;" );
+    return result;
+  }
+  
   
   /* (intentionally not JavaDoc'ed)
    * The client-side representation of a TableItem is not a qooxdoo widget.
@@ -124,10 +149,16 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
   
-  private static String encodeHTML( final String text ) {
-    String result = text.replaceAll( "\"", "&#034;" );
-    result = result.replaceAll( ">", "&#062;" );
-    result = result.replaceAll( "<", "&#060;" );
+  //////////////////
+  // ReadData helper
+  
+  private static int getWidgetSelectedDetail() {
+    int result = SWT.NONE;
+    HttpServletRequest request = ContextProvider.getRequest();
+    String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_DETAIL );
+    if( "check".equals( value ) ) {
+      result = SWT.CHECK;
+    }
     return result;
   }
 }

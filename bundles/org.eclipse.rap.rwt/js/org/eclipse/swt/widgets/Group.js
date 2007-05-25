@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -12,27 +13,25 @@
 /**
  * This class extends qx.ui.groupbox.GroupBox to ease its usage in RWT.
  */
-qx.OO.defineClass( 
-  "org.eclipse.swt.widgets.Group", 
-  qx.ui.groupbox.GroupBox,
-  function() {
-    qx.ui.groupbox.GroupBox.call( this );
-    this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+qx.Class.define( "org.eclipse.swt.widgets.Group", {
+  extend : qx.ui.groupbox.GroupBox,
+
+  construct : function() {
+    this.base( arguments );
+    this._getLabelObject().setMode( "html" ); 
+  },
+  
+  members : {
+    setFont : function( value ) {
+      this._getLabelObject().setFont( value );
+    },
+
+    _getLabelObject : function() {
+      if ( this.getLegendObject().getLabelObject() == null ) {
+        this.setLegend( "(empty)" );
+        this.setLegend( "" );
+      }
+      return this.getLegendObject().getLabelObject();
+    }
   }
-);
-
-qx.Proto.setFont = function( value ) {
-  this._getLabelObject().setFont( value );
-}
-
-qx.Proto._onChangeEnabled = function( evt ) {
-  this._getLabelObject().setEnabled( this.getEnabled() );
-}
-
-qx.Proto._getLabelObject = function() {
-  if( this.getLegendObject().getLabelObject() == null ) {
-    this.setLegend( "(empty)" );
-    this.setLegend( "" );
-  }
-  return this.getLegendObject().getLabelObject();
-}
+});

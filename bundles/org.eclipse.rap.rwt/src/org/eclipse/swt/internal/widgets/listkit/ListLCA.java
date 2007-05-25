@@ -108,6 +108,7 @@ public class ListLCA extends AbstractWidgetLCA {
       for( int i = 0; i < items.length; i++ ) {
         Matcher matcher = NEWLINE_PATTERN.matcher( items[ i ] );
         items[ i ] = matcher.replaceAll( " " );
+        items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
       }
       writer.set( "items", new Object[]{ items } );
     }

@@ -31,7 +31,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
   
   private final JSListenerInfo JS_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
-                          WIDGET_SELECTED, 
+                          WIDGET_SELECTED,
                           JSListenerType.STATE_AND_ACTION );
   
   void preserveValues( final ToolItem toolItem ) {

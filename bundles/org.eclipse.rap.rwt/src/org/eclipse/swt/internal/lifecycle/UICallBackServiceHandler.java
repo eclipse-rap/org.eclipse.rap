@@ -20,7 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import com.w4t.HtmlResponseWriter;
 import com.w4t.W4TContext;
 import com.w4t.engine.lifecycle.*;
@@ -65,7 +64,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
         IServiceHandler.REQUEST_PARAM,
         HANDLER_ID
       };
-      String callBackPattern =   "org.eclipse.swt.Request." 
+      String callBackPattern =   "org.eclipse.swt.Request.getInstance()." 
                                + "enableUICallBack( \"{0}\",\"{1}\",\"{2}\" );";
       result = MessageFormat.format( callBackPattern, param );
     }

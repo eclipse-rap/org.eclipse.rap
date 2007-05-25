@@ -32,12 +32,15 @@ import org.eclipse.swt.internal.graphics.FontSizeEstimation;
  */
 public class TableItem extends Item {
 
+  private static final int CHECK_WIDTH = 21;
+
   private static final class Data {
     String text;
   }
   
   private final Table parent;
   private Data[] data;
+  private boolean checked;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -177,6 +180,18 @@ public class TableItem extends Item {
     return getText( 0 );
   }
   
+  /**
+   * Returns the text stored at the given column index in the receiver,
+   * or empty string if the text has not been set.
+   *
+   * @param index the column index
+   * @return the text stored at the given column index in the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public String getText( final int index ) {
     checkWidget();
     String result = "";
@@ -200,16 +215,57 @@ public class TableItem extends Item {
     }
   }
   
-  public void clear() {
-    checkWidget();
+  final void clear() {
     data = null;
     super.setImage( null );
+  }
+  
+  //////////
+  // Checked
+  
+  /**
+   * Sets the checked state of the checkbox for this item.  This state change 
+   * only applies if the Table was created with the SWT.CHECK style.
+   *
+   * @param checked the new checked state of the checkbox
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setChecked( final boolean checked ) {
+    checkWidget();
+    if( ( parent.style & SWT.CHECK ) != 0 ) {
+      this.checked = checked;
+    } 
+  }
+
+  /**
+   * Returns <code>true</code> if the receiver is checked,
+   * and false otherwise.  When the parent does not have
+   * the <code>CHECK</code> style, return false.
+   *
+   * @return the checked state of the checkbox
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public boolean getChecked() {
+    checkWidget();
+    boolean result = false;
+    if( ( parent.style & SWT.CHECK ) != 0 ) {
+      result = checked;
+    } 
+    return result;
   }
 
   /////////////////////
   // Dimension methods
   
-  /**
+/**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent.
    *
@@ -222,7 +278,7 @@ public class TableItem extends Item {
    * 
    * @since 1.0
    */
-  public Rectangle getBounds() {
+   public Rectangle getBounds() {
     return getBounds( 0 );
   }
   
@@ -242,35 +298,50 @@ public class TableItem extends Item {
   public Rectangle getBounds( final int index ) {
     checkWidget();
 //  if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
-    Rectangle result;
     int itemIndex = parent.indexOf( this );
+    int left = 0;
+    int top = 0; 
+    int width = 0;
+    int height = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
       Font font = parent.getFont();
-      int width = FontSizeEstimation.stringExtent( getText(), font ).x;
-      result = new Rectangle( 0, 0, width, getHeight() );
+      left = getCheckWidth();
+      for( int i = 0; i < itemIndex; i++ ) {
+        top += parent.getItem( i ).getHeight();
+      }
+      width = FontSizeEstimation.stringExtent( getText(), font ).x - left;
+      height = getHeight();
     } else {
       if( itemIndex != -1 && index < parent.getColumnCount() ) {
-        int left = 0;
+        left += getCheckWidth();
         for( int i = 0; i < index; i++ ) {
           left += parent.getColumn( i ).getWidth();
         }
-        int top = 0; 
         for( int i = 0; i < itemIndex; i++ ) {
           top += parent.getItem( i ).getHeight();
         }
-        int width = parent.getColumn( index ).getWidth();
-        result = new Rectangle( left, top, width, getHeight() );
-      } else {
-        result = new Rectangle( 0, 0, 0, 0 );
-      }
+        width = parent.getColumn( index ).getWidth();
+        height = getHeight();
+        if( index == 0 ) {
+          width -= getCheckWidth();
+        }
+      } 
     }
-    return result;
+    return new Rectangle( left, top, width, height );
   }
   
   final int getHeight() {
     // TODO [rh] replace with this.getFont() once TableItem supports fonts
     // TODO [rh] preliminary: this is only an approximation for item height
     return FontSizeEstimation.getCharHeight( parent.getFont() ) + 4;
+  }
+  
+  final int getCheckWidth() {
+    int result = 0;
+    if( ( getParent().getStyle() & SWT.CHECK ) != 0 ) {
+      result = CHECK_WIDTH;
+    }
+    return result;
   }
 
   ///////////////////////////////
