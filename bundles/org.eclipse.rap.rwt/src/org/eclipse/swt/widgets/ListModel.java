@@ -24,7 +24,7 @@ final class ListModel {
   private final java.util.List items;
   private int[] selection = EMPTY_SELECTION;
 
-  ListModel( boolean single ) {
+  ListModel( final boolean single ) {
     this.single = single;
     items = new ArrayList();
   }
@@ -127,6 +127,24 @@ final class ListModel {
           this.selection[ pos ] = indexOf( selection[ i ] );
           pos++;
         }
+      }
+    }
+  }
+
+  void addSelection( final int index ) {
+    if( index >= 0 && index < getItemCount() ) {
+      boolean exists = false;
+      for( int i = 0; i < selection.length; i++ ) {
+        if( selection[ i ] == index ) {
+          exists = true;
+        }
+      }
+      if( !exists ) {
+        int newLength = selection.length + 1;
+        int[] newSelection = new int[ newLength ];
+        System.arraycopy( selection, 0, newSelection, 0, selection.length );
+        newSelection[ newLength - 1 ] = index;
+        this.selection = newSelection;
       }
     }
   }

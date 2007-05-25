@@ -411,6 +411,67 @@ public class List_Test extends TestCase {
     list.selectAll();
     assertEquals( 1, list.getSelectionIndex() );
     assertEquals( 1, list.getSelectionCount() );
+    
+    // select must replace a current selection if called with valid argument
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.select( 1 );
+    assertEquals( 1, list.getSelectionIndex() );
+    list.select( -3 );
+    assertEquals( 1, list.getSelectionIndex() );
+    list.select( list.getItemCount() + 10 );
+    assertEquals( 1, list.getSelectionIndex() );
+    
+    // test select( int[] )
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    // proper usage
+    list.select( new int[] { 0 } );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // calling again must not change anything
+    list.select( new int[] { 0 } ); 
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // duplicate entries in argumenet are ignored
+    list.select( new int[] { 0, 0, 0 } );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // calls with more than one entries are ignored
+    list.select( new int[] { 1, 2 } );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // calls with empty array are ignored
+    list.select( new int[] { } );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // invalid argument
+    try {
+      list.select( null );
+      fail( "Null argument not allowed" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+
+    // test select( int, int )
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    // proper usage
+    list.select( 0, 0 );
+    assertEquals( 1, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // invalid usage
+    list.select( 1, 2 );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    list.select( 11, 11 );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    list.select( -3, -1 );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // proper usage
+    list.select( 1, 1 );
+    assertEquals( 1, list.getSelectionCount() );
+    assertEquals( 1, list.getSelectionIndices()[ 0 ] );
   }
   
   public void testSelectionForMulti() {
@@ -590,6 +651,85 @@ public class List_Test extends TestCase {
     list.add( "item1" );
     list.add( "item2" );
     list.selectAll();
+    assertEquals( 3, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    assertEquals( 2, list.getSelectionIndices()[ 2 ] );
+
+    // select must add to the current selection if called with valid argument
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    list.select( 0 );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    list.select( 1 );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    list.select( -1 );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    list.select( list.getItemCount() + 10 );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    
+    // test select( int[] )
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    // proper usage
+    list.select( new int[] { 0 } );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // calling again must not change anything
+    list.select( new int[] { 0 } ); 
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // duplicate entries in argumenet are ignored
+    list.select( new int[] { 0, 0, 0 } );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // propert usage with more than one entries
+    list.select( new int[] { 1, 2 } );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    assertEquals( 2, list.getSelectionIndices()[ 2 ] );
+    // calls with empty array are ignored
+    list.select( new int[] { } );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    // invalid argument
+    try {
+      list.select( null );
+      fail( "Null argument not allowed" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+
+    // test select( int, int )
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    // proper usage
+    list.select( 0, 0 );
+    assertEquals( 1, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    list.select( 1, 2 );
+    assertEquals( 3, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    assertEquals( 2, list.getSelectionIndices()[ 2 ] );
+    // invalid usage
+    list.select( 11, 11 );
+    assertEquals( 3, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    assertEquals( 2, list.getSelectionIndices()[ 2 ] );
+    list.select( -3, -1 );
+    assertEquals( 3, list.getSelectionCount() );
+    assertEquals( 0, list.getSelectionIndices()[ 0 ] );
+    assertEquals( 1, list.getSelectionIndices()[ 1 ] );
+    assertEquals( 2, list.getSelectionIndices()[ 2 ] );
+    // select an already selected index
+    list.select( 1, 1 );
     assertEquals( 3, list.getSelectionCount() );
     assertEquals( 0, list.getSelectionIndices()[ 0 ] );
     assertEquals( 1, list.getSelectionIndices()[ 1 ] );

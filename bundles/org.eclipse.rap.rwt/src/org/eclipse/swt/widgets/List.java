@@ -287,6 +287,110 @@ public class List extends Scrollable {
   }
   
   /**
+   * Selects the item at the given zero-relative index in the receiver's 
+   * list.  If the item at the index was already selected, it remains
+   * selected. Indices that are out of range are ignored.
+   *
+   * @param index the index of the item to select
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void select( final int index ) {
+    checkWidget();
+    if( ( style & SWT.SINGLE ) != 0 ) {
+      if( index >= 0 && index < model.getItemCount() ) {
+        model.setSelection( index );
+      }
+    } else {
+      model.addSelection( index );
+    }
+  }
+  
+  /**
+   * Selects the items at the given zero-relative indices in the receiver.
+   * The current selection is not cleared before the new items are selected.
+   * <p>
+   * If the item at a given index is not selected, it is selected.
+   * If the item at a given index was already selected, it remains selected.
+   * Indices that are out of range and duplicate indices are ignored.
+   * If the receiver is single-select and multiple indices are specified,
+   * then all indices are ignored.
+   *
+   * @param indices the array of indices for the items to select
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the array of indices is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see List#setSelection(int[])
+   */
+  public void select( final int[] indices ) {
+    checkWidget();
+    if( indices == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    int length = indices.length;
+    if( length != 0 && ( ( style & SWT.SINGLE ) == 0 || length <= 1 ) ) {
+      int i = 0;
+      while( i < length ) {
+        int index = indices[ i ];
+        model.addSelection( index );
+        i++;
+      }
+    } 
+  }
+
+  /**
+   * Selects the items in the range specified by the given zero-relative
+   * indices in the receiver. The range of indices is inclusive.
+   * The current selection is not cleared before the new items are selected.
+   * <p>
+   * If an item in the given range is not selected, it is selected.
+   * If an item in the given range was already selected, it remains selected.
+   * Indices that are out of range are ignored and no items will be selected
+   * if start is greater than end.
+   * If the receiver is single-select and there is more than one item in the
+   * given range, then all indices are ignored.
+   *
+   * @param start the start of the range
+   * @param end the end of the range
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see List#setSelection(int,int)
+   */
+  public void select( final int start, final int end ) {
+    checkWidget();
+    if(    end >= 0
+        && start <= end
+        && ( ( style & SWT.SINGLE ) == 0 || start == end ) ) 
+    {
+      int count = model.getItemCount();
+      if( count != 0 && start < count ) {
+        int startIndex = Math.max( 0, start );
+        int endIndex = Math.min( end, count - 1 );
+        if( ( style & SWT.SINGLE ) != 0 ) {
+          model.setSelection( startIndex );
+        } else {
+          for( int i = startIndex; i <= endIndex; i++ ) {
+            model.addSelection( i );
+          }
+        }
+      }
+    } 
+  }
+
+  /**
    * Selects all of the items in the receiver.
    * <p>
    * If the receiver is single-select, do nothing.
