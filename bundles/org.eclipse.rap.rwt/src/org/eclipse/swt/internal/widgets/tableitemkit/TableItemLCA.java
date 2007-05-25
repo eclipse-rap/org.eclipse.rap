@@ -26,12 +26,14 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   private static final String PROP_TOP = "top";
   private static final String PROP_TEXTS = "texts";
+  private static final String PROP_CHECKED = "checked";
   
   public void preserveValues( final Widget widget ) {
     TableItem item = ( TableItem )widget;
     ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     adapter.preserve( PROP_TOP, new Integer( item.getBounds().y ) );
+    adapter.preserve( PROP_CHECKED, Boolean.valueOf( item.getChecked() ) );
     preserveTexts( item );
   }
 
@@ -75,12 +77,21 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       }
       String[] texts = new String[ columnCount ];
       for( int i = 0; i < columnCount; i++ ) {
-        // TODO [rh] sor some reason doesn't work with escapeText
+        // TODO [rh] for some reason doesn't work with escapeText
 //        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
         texts[ i ] = encodeHTML( item.getText( i ) );
       }
       writer.set( "texts", new Object[] { texts } );
     }
+    writeChecked( item );
+  }
+
+  private void writeChecked( final TableItem item )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    Boolean newValue = Boolean.valueOf( item.getChecked() );
+    writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
   }
   
   private static String encodeHTML( final String text ) {

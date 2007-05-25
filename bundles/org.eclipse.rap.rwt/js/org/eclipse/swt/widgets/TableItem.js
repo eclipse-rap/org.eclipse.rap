@@ -56,9 +56,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   
   properties : {
 
-    checked :
-    {
+    checked : {
       check : "Boolean",
+      apply : "_modifyChecked",
       init : false
     }
   },
@@ -71,6 +71,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
 
     setTexts : function( texts ) {
       this._texts = texts;
+      this.getTable().updateItem( this, true );
+    },
+    
+    _modifyChecked : function() {
       this.getTable().updateItem( this, true );
     },
 

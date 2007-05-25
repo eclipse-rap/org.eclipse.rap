@@ -22,7 +22,6 @@ import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.lifecycle.IWidgetAdapter;
 import com.w4t.*;
-import com.w4t.engine.service.ContextProvider;
 import com.w4t.event.EventAdapter;
 import com.w4t.event.IEventAdapter;
 
