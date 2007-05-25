@@ -13,10 +13,13 @@ package org.eclipse.swt.events;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.internal.lifecycle.CurrentPhase;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Widget;
+
 import com.w4t.engine.lifecycle.PhaseId;
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
@@ -29,6 +32,8 @@ import com.w4t.event.Event;
 // TODO [rh] SWT TypedEvent has fields display, widget and time, revise this 
 public abstract class TypedEvent extends Event {
 
+  public Widget widget;
+  
   private static final String ATTR_SCHEDULED_EVENT_LIST 
     = TypedEvent.class.getName() + "_scheduledEventList";
 
@@ -61,6 +66,7 @@ public abstract class TypedEvent extends Event {
   
   public TypedEvent( final Object source, final int id ) {
     super( source, id );
+    this.widget = (Widget) source;
   }
   
   public final void processEvent() {

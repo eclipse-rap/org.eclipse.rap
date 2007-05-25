@@ -13,8 +13,7 @@ package org.eclipse.swt.events;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 import com.w4t.Adaptable;
 
 
@@ -73,6 +72,17 @@ public class SelectionEvent extends TypedEvent {
   
   public Item item;
   public int detail;
+  
+  /**
+   * Constructs a new instance of this class based on the
+   * information in the given untyped event.
+   *
+   * @param e the untyped event containing the information
+   */
+  public SelectionEvent(Event e) {
+		this(e.widget, e.item, e.index, new Rectangle(e.x, e.y, e.width,
+				e.height), e.text, e.doit, e.detail);
+	}
   
   public SelectionEvent( final Widget widget,
                          final Item item,

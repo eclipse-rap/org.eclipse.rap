@@ -51,7 +51,7 @@ public class Event {
   /**
    * the item that the event occurred in (can be null)
    */
-  public Widget item;
+  public Item item;
   /**
    * the index of the item where the event occurred
    */
