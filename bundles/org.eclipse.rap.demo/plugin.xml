@@ -17,14 +17,6 @@
     <entrypoint
         class="org.eclipse.rap.demo.controls.ControlsDemo"
         parameter="controls"/>
-    <entrypoint
-          class="org.eclipse.rap.demo.ToggleTest"
-          parameter="toggle">
-    </entrypoint>
-    <entrypoint
-          class="org.eclipse.rap.demo.ToolbarTest"
-          parameter="toolbar">
-    </entrypoint>
   </extension>
   
   <extension
