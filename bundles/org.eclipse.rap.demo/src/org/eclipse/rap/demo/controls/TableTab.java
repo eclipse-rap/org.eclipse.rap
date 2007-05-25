@@ -42,6 +42,7 @@ public class TableTab extends ExampleTab {
     createDisposeSelectionButton();
     createTopIndexButton();
     createShowSelectionButton();
+    createChangeCheckButton();
     createChangeColumnsControl();
     createChangeItemControl();
   }
@@ -55,7 +56,7 @@ public class TableTab extends ExampleTab {
     table = new Table( parent, style );
     table.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        System.out.println( "table-widgetSelected: " + event.item.getText() );
+        // 
       }
     } );
     for( int i = 0; i < columns; i++ ) {
@@ -64,7 +65,7 @@ public class TableTab extends ExampleTab {
       column.setWidth( i == 0 ? 50 : 100 );
       column.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent event ) {
-          System.out.println( "column selected: " + column.getText() );
+          // 
         }
       } );
     }
@@ -201,6 +202,19 @@ System.out.println( e );
     } );
   }
   
+  private void createChangeCheckButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Change checked for selection" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        TableItem[] selection = table.getSelection();
+        for( int i = 0; i < selection.length; i++ ) {
+          selection[ i ].setChecked( !selection[ i ].getChecked() );
+        }
+      }
+    } );
+  }
+
   private void createChangeColumnsControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
     composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
