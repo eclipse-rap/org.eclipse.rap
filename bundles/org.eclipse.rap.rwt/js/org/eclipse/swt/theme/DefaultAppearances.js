@@ -1282,7 +1282,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           }
         } else {
           if( states.barTop ) {
-            restul.border = border_top;
+            result.border = border_top;
           } else {
             result.border = border_bottom;
           }
