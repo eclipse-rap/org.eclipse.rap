@@ -27,7 +27,7 @@ import com.w4t.engine.service.ServiceContext;
 
 public class UICallBackManager_Test extends TestCase {
   
-  private static final int SLEEP_TIME = 60;
+  private static final int SLEEP_TIME = 100;
   private static final String RUN_ASYNC_EXEC = "run async exec|";
   private static final String RUN_SYNC_EXEC = "run sync exec|";
   private static String log = "";
@@ -63,6 +63,7 @@ public class UICallBackManager_Test extends TestCase {
     assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     
     UICallBackManager.getInstance().sendUICallBack();
+    Thread.sleep( SLEEP_TIME );
     assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     Thread.sleep( SLEEP_TIME );
     assertFalse( thread.isAlive() );
