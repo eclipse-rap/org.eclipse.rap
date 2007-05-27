@@ -220,6 +220,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       var toolTip = widget.getToolTip();
       widget.setToolTip( null );
       if( toolTip != null ) {
+        // hide tooltip as disposing a visible one might cause app to hang
         toolTip.hide();
         toolTip.dispose();
       }

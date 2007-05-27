@@ -13,7 +13,7 @@
 // TODO [rst] Setting the "icon" property on a qx.ui.window.Window does not
 //      work with the current qx version. Changed constructor to be able to set
 //      a window icon at all.
-qx.Class.define("org.eclipse.swt.widgets.Shell", {
+qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   extend : qx.ui.window.Window,
 
   construct : function( icon ) {
@@ -24,6 +24,7 @@ qx.Class.define("org.eclipse.swt.widgets.Shell", {
     this._captionTitle.setMode( "html" );
     this._activeControl = null;
     this._activateListenerWidgets = new Array();
+    // TODO [rh] check whether these listeners must be removed upon disposal
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeActive", this._onChangeActive );
     this.addEventListener( "keydown", this._onKeydown );
@@ -33,11 +34,13 @@ qx.Class.define("org.eclipse.swt.widgets.Shell", {
 
   properties : {
     defaultButton : {
+      // TODO [rh] remove _legacy
       _legacy : true,
       type    : "object"
     },
 
     alwaysOnTop : {
+      // TODO [rh] remove _legacy
       _legacy : true,
       type    : "boolean"
     }
@@ -47,7 +50,6 @@ qx.Class.define("org.eclipse.swt.widgets.Shell", {
     setActiveControl : function(control) {
       this._activeControl = control;
     },
-
 
     /** To be called after rwt_TITLE is set */
     fixTitlebar : function() {
@@ -109,22 +111,19 @@ qx.Class.define("org.eclipse.swt.widgets.Shell", {
     _onChangeActiveChild : function( evt ) {
       // Work around qooxdoo bug #254: the changeActiveChild is fired twice when
       // a widget was activated by keyboard (getData() is null in this case)
-      var widget = this._getParentControl(evt.getData());
-
-      if (!org_eclipse_rap_rwt_EventUtil_suspend && widget != null) {
+      var widget = this._getParentControl( evt.getData() );
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && widget != null ) {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetMgr.findIdByWidget(widget);
-        var shellId = widgetMgr.findIdByWidget(this);
+        var id = widgetMgr.findIdByWidget( widget );
+        var shellId = widgetMgr.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
-
-        if (this._isRelevantActivateEvent(widget)) {
+        if( this._isRelevantActivateEvent( widget ) ) {
           this._activeControl = widget;
-          req.removeParameter(shellId + ".activeControl");
-          req.addEvent("org.eclipse.swt.events.controlActivated", id);
+          req.removeParameter( shellId + ".activeControl" );
+          req.addEvent( "org.eclipse.swt.events.controlActivated", id );
           req.send();
-        }
-        else {
-          req.addParameter(shellId + ".activeControl", id);
+        } else {
+          req.addParameter( shellId + ".activeControl", id );
         }
       }
     },
@@ -133,15 +132,13 @@ qx.Class.define("org.eclipse.swt.widgets.Shell", {
       // TODO [rst] This hack is a workaround for bug 345 in qooxdoo, remove this
       //      block as soon as the bug is fixed.
       //      See http://bugzilla.qooxdoo.org/show_bug.cgi?id=345
-      if (!this.getActive() && !isFinite(this.getZIndex())) {
-        this.forceZIndex(1e8);
+      if( !this.getActive() && !isFinite( this.getZIndex() ) ) {
+        this.forceZIndex( 1e8 );
       }
-
       if( !org_eclipse_rap_rwt_EventUtil_suspend && this.getActive() ) {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetMgr.findIdByWidget(this);
+        var id = widgetMgr.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
-
         if( qx.lang.Array.contains( this._activateListenerWidgets, this ) ) {
           req.removeParameter( req.getUIRootId() + ".activeShell" );
           req.addEvent( "org.eclipse.swt.events.shellActivated", id );
