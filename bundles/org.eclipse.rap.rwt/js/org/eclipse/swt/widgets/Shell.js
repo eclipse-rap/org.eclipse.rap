@@ -133,8 +133,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       //      block as soon as the bug is fixed.
       //      See http://bugzilla.qooxdoo.org/show_bug.cgi?id=345
       if( !this.getActive() && !isFinite( this.getZIndex() ) ) {
-        this.forceZIndex( 1e8 );
+        this.setZIndex( 1e8 );
       }
+      // end of workaround
       if( !org_eclipse_rap_rwt_EventUtil_suspend && this.getActive() ) {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetMgr.findIdByWidget( this );
