@@ -35,6 +35,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION, new Integer( spinner.getSelection() ) );
     adapter.preserve( PROP_MINIMUM, new Integer( spinner.getMinimum() ) );
     adapter.preserve( PROP_MAXIMUM, new Integer( spinner.getMaximum() ) );
+    adapter.preserve( PROP_INCREMENT, new Integer( spinner.getIncrement() ) );
     adapter.preserve( PROP_PAGE_INCREMENT, 
                       new Integer( spinner.getPageIncrement() ) );
     adapter.preserve( PROP_MODIFY_LISTENER, 
