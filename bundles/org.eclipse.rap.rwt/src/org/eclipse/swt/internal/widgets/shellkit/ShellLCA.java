@@ -59,7 +59,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     // bug is fixed: http://bugzilla.qooxdoo.org/show_bug.cgi?id=87
     Shell shell = ( Shell )widget;
     Object[] args = new Object[] {
-      showImage( shell ) ? getImagePath( shell.getImage() ) : ""
+      showImage( shell ) ? Image.getPath( shell.getImage() ) : null
     };
     writer.newWidget( "org.eclipse.swt.widgets.Shell", args );
     ControlLCAUtil.writeStyleFlags( widget );
@@ -233,17 +233,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
       Image image = shell.getImage();
       if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
         JSWriter writer = JSWriter.getWriterFor( shell );
-        writer.set( JSConst.QX_FIELD_ICON, getImagePath( image ) );
+        writer.set( JSConst.QX_FIELD_ICON, Image.getPath( image ) );
       }
     }
   }
   
   private static boolean showImage( final Shell shell ) {
     return ( shell.getStyle() & ( SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0;
-  }
-  
-  private static String getImagePath( final Image image ) {
-    return image != null ? Image.getPath( image ) : "";
   }
   
   private static void writeMode( final Shell shell ) throws IOException {
