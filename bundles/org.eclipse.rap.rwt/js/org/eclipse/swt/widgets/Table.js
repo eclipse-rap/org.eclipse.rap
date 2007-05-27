@@ -607,6 +607,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
                 this._checkBoxes.push( checkBox );
               }
               var newRow = new qx.ui.embed.HtmlEmbed();
+              newRow.setAppearance( "table-row" );
               newRow.addEventListener( "click", this._onRowClick, this );
               newRow.addEventListener( "contextmenu", this._onRowContextMenu, this );
               this._clientArea.add( newRow );
@@ -676,14 +677,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _updateRowState : function( row, item ) {
-      if( this.getEnabled() ) {
-        if( item != null && this._isItemSelected( item ) ) {
-          row.setBackgroundColor( org.eclipse.swt.widgets.Table.BG_COLOR_SELECTED );
-        } else {
-          row.setBackgroundColor( null );
-        }
+      if( item != null && this._isItemSelected( item ) ) {
+        row.addState( "selected" );
       } else {
-        row.setBackgroundColor( org.eclipse.swt.widgets.Table.BG_COLOR_DISABLED );
+        row.removeState( "selected" );
       }
     },
     
@@ -699,7 +696,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     onItemChecked : function( evt ) {
       // evt.getData() holds the TableItem that was checked
-this.debug( "onItemChekced");      
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( "org.eclipse.swt.events.widgetSelected.detail", 
                         "check" );

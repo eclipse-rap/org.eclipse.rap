@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   construct : function( icon ) {
     this.base( arguments, "", icon );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-    // TODO [rh] HACK to set mode on Label that show the caption, _captionTitle
+    // TODO [rh] HACK to set mode on Label that shows the caption, _captionTitle
     //      is a 'protected' field on class Window
     this._captionTitle.setMode( "html" );
     this._activeControl = null;

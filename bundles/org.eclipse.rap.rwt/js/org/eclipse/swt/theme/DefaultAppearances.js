@@ -1167,6 +1167,29 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       }
     },
     
+    "table-row" : {
+      style : function( states ) {
+        var result = {};
+        if( states.disabled ) {
+          if( states.selected ) {
+            result.backgroundColor = "list.selection.unfocused.background";
+            result.textColor = "list.selection.foreground";
+          } else {
+            result.textColor = "graytext";            
+          }
+        } else {
+          if( states.selected ) {
+            result.backgroundColor = "list.selection.background";
+            result.textColor = "list.selection.foreground";
+          } else {
+            result.backgroundColor = null;
+            result.textColor = null;
+          }
+        }
+        return result;
+      }
+    },
+    
     /*
     ---------------------------------------------------------------------------
       SPLITPANE
