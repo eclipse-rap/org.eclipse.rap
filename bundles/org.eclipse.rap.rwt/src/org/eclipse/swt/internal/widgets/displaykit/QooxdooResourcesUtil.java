@@ -27,13 +27,6 @@ import com.w4t.engine.service.IServiceStateInfo;
 //      e.g. org/eclipse/swt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
   
-  private static final String DISPLAY_BG_GIF 
-    = "org/eclipse/swt/widgets/display/bg.gif";
-  private static final String TREE_FOLDER_CLOSED_GIF 
-    = "org/eclipse/swt/widgets/tree/folder_closed.gif";
-  private static final String TREE_FOLDER_OPEN_GIF 
-    = "org/eclipse/swt/widgets/tree/folder_open.gif";
-  
   private static final String DEFAULT_JS 
     = "org/eclipse/swt/theme/Default.js";
   private static final String DEFAULT_APPEARANCES_JS 
@@ -143,9 +136,6 @@ final class QooxdooResourcesUtil {
 
       registerWidgetTheme( manager );
       
-      manager.register( TREE_FOLDER_OPEN_GIF );
-      manager.register( TREE_FOLDER_CLOSED_GIF );
-      manager.register( DISPLAY_BG_GIF );
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
       //      these three files are here o keep DefaultAppearanceTheme.js
       //      happy that makes heavy use of constants 
@@ -153,8 +143,6 @@ final class QooxdooResourcesUtil {
       register( QX_CONSTANT_LAYOUT_JS );
       register( QX_CONSTANT_STYLE_JS );
 
-// TODO [qx70] appearance
-//      register( APPEARANCE_JS );
       // NOTE: Order of register-calls is important here
       register( DEFAULT_APPEARANCES_JS );
       register( DEFAULT_BORDERS_JS );
@@ -290,6 +278,9 @@ final class QooxdooResourcesUtil {
     // TODO [rst] Should these resources reside a separate place? 
     manager.register( "resource/widget/rap/window/caption_active.gif" );
     manager.register( "resource/widget/rap/window/caption_inactive.gif" );
+    manager.register( "resource/widget/rap/tree/folder_open.gif" );
+    manager.register( "resource/widget/rap/tree/folder_closed.gif" );
+    manager.register( "resource/widget/rap/display/bg.gif" );
   }
   
   private static void register( final String libraryName ) {

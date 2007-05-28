@@ -17,27 +17,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     this.base( arguments );
     this.setEditable( !readOnly );
     this._isModified = false;
+    this._hasModifyListener = false;
     if( border ) {
       this.addState( "rwt_BORDER" );
     }
     this.getManager().addEventListener( "change", this._onChangeValue, this );
     this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
-    this._textfield.addEventListener( "blur", this._sendModifyText, this );
+    this._textfield.addEventListener( "blur", this._onChangeValue, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
   },
 
   destruct : function() {
     this.getManager().removeEventListener( "change", this._onChangeValue, this );
     this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
-    this._textfield.removeEventListener( "blur", this._sendModifyText, this );
+    this._textfield.removeEventListener( "blur", this._onChangeValue, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
-  },
-
-  properties : {
-    hasModifyListener : {
-      check : "Boolean",
-      init : false
-    }
   },
 
   members : {
@@ -50,21 +44,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       this._textfield.setTabIndex( value );
     },
     
+    setHasModifyListener : function( value ) {
+      this._hasModifyListener = value;      
+    },
+    
     _onChangeValue : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend && !this._isModified ) {
         this._isModified = true;
         var req = org.eclipse.swt.Request.getInstance();
         req.addEventListener( "send", this._onSend, this );
-        if( this.getHasModifyListener() ) {
+        if( this._hasModifyListener ) {
           this._addModifyTextEvent();
           qx.client.Timer.once( this._sendModifyText, this, 500 );
         }
       }
-    },
-
-    _onBlur : function( evt ) {
-      this._addModifyTextEvent();
-      this._sendModifyText();
     },
 
     // TODO [rst] workaround: setting enabled to false still leaves the buttons
