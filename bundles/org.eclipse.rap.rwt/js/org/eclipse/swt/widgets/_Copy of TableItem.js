@@ -21,7 +21,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     this.base( arguments );
     this._parent = parent;
     this._checked = false;
-    this._grayed = false;
     
     // HACK: Table needs one 'emptyItem' to draw the remaining space that is
     //       not occupied by actual items. This item has an index of -1
@@ -74,13 +73,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     getChecked : function() {
       return this._checked;
     },
-    
-    setGrayed : function( value ) {
-      if( this._grayed != value ) {
-        this._grayed = value;
-        this.getTable().updateItem( this, true );
-      }
-    },
 
     setTexts : function( texts ) {
       this._texts = texts;
@@ -91,25 +83,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       this._images = images;
       this._imageWidths = imageWidths;
       this.getTable().updateItem( this, true );
-    },
-    
-    getCheckImage : function() {
-      var result;
-      if( this._grayed ) {
-        if( this._checked ) {
-          result = "widget/table/check_gray_on.gif";
-        } else {
-          result = "widget/table/check_gray_off.gif";
-        }
-      } else {
-        if( this._checked ) {
-          result = "widget/table/check_white_on.gif";
-        } else {
-          result = "widget/table/check_white_off.gif";
-        }
-      }
-this.debug( "image: " + result );      
-      return result;
     },
     
     /**

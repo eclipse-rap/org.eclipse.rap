@@ -321,7 +321,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _onCheckBoxClick : function( evt ) {
       var rowIndex = this._checkBoxes.indexOf( evt.getTarget() );
-      _checkBoxToggle( rowIndex );
+      var itemIndex = this._topIndex + rowIndex;
+      if( itemIndex >= 0 && itemIndex < this._items.length ) {
+        var item = this._items[ itemIndex ];
+        item.setChecked( evt.getTarget().getChecked() );
+        this._updateCheckParam( item );
+        this.createDispatchDataEvent( "itemchecked", item );
+      }
     },
     
     _onRowClick : function( evt ) {
@@ -337,7 +343,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onRowContextMenu : function( evt ) {
       // TODO [rh] avoid this call if item already selected
       this._onRowClick( evt );
-      var target = evt.getTarget();
+      var target = evt.getOriginalTarget();
       var contextMenu = this.getContextMenu();
       if( target instanceof qx.ui.embed.HtmlEmbed && contextMenu != null ) {
         contextMenu.setLocation( evt.getPageX(), evt.getPageY() );
@@ -345,30 +351,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         contextMenu.show();
       }
     },
-    
-    _onRowKeyDown : function( evt ) {
-      var keyId = evt.getKeyIdentifier();
-      switch( keyId ) {
-        case "Space":
-          this._toggleCheckBox( this._rows.indexOf( evt.getTarget() ) );
-          break;
-      }
-    },
 
-    _toggleCheckBox : function( rowIndex ) {
-      if( this._checkBoxes != null ) {
-        var itemIndex = this._topIndex + rowIndex;
-        if( itemIndex >= 0 && itemIndex < this._items.length ) {
-          var item = this._items[ itemIndex ];
-          item.setChecked( !item.getChecked() );
-          // Reflect changed check-state in case there is no server-side listener
-          this._updateRow( rowIndex, item );
-          this._updateCheckParam( item );
-          this.createDispatchDataEvent( "itemchecked", item );
-        }
-      }
-    },
-    
     _updateSelectionParam : function() {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var tableId = widgetManager.findIdByWidget( this );
@@ -444,7 +427,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _removeItem : function( item ) {
       var wasItemVisible = this._isItemVisible( item );
       qx.lang.Array.remove( this._items, item );
-this.debug( "items.length: " + this._items.length );      
       this._unselectItem( item );
       this._updateScrollHeight();
       if( wasItemVisible ) {
@@ -513,7 +495,7 @@ this.debug( "items.length: " + this._items.length );
     _getItemFromRowIndex : function( rowIndex ) {
       var result = null;
       var itemIndex = this._topIndex + rowIndex;
-      if( itemIndex >= 0 && itemIndex < this._items.length ) {
+      if( itemIndex < this._items.length ) {
         result = this._items[ itemIndex ];
       }
       return result;
@@ -601,10 +583,12 @@ this.debug( "items.length: " + this._items.length );
           // Remove trailing rows if rowCount was decreased
           while( this._rows.length > newRowCount ) {
             if( this._checkBoxes != null ) {
+              /*
               var checkBox = this._checkBoxes.shift();
               checkBox.removeEventListener( "changeChecked", this._onCheckBoxClick, this );
               checkBox.setParent( null );
               checkBox.dispose();
+              */
             }
             var row = this._rows.shift();
             row.removeEventListener( "click", this._onRowClick, this );
@@ -616,15 +600,14 @@ this.debug( "items.length: " + this._items.length );
           if( this._rows.length < newRowCount ) {
             while( this._rows.length < newRowCount ) {
               if( this._checkBoxes != null ) {
-                var checkBox = new qx.ui.basic.Image();
-                checkBox.addEventListener( "click", this._onCheckBoxClick, this );
+                var checkBox = new qx.ui.form.CheckBox();
+                checkBox.addEventListener( "changeChecked", this._onCheckBoxClick, this );
                 this._clientArea.add( checkBox );
                 this._checkBoxes.push( checkBox );
               }
               var newRow = new qx.ui.embed.HtmlEmbed();
               newRow.setAppearance( "table-row" );
               newRow.addEventListener( "click", this._onRowClick, this );
-              newRow.addEventListener( "keydown", this._onRowKeyDown, this );
               newRow.addEventListener( "contextmenu", this._onRowContextMenu, this );
               this._clientArea.add( newRow );
               this._rows.push( newRow );
@@ -654,7 +637,7 @@ this.debug( "items.length: " + this._items.length );
         if( this._checkBoxes != null ) {
           var checkBox = this._checkBoxes[ i ];
           checkBox.setLeft( left );
-          checkBox.setTop( top + 1 );
+          checkBox.setTop( top );
           checkBox.setWidth( checkBoxWidth );
           checkBox.setHeight( this._itemHeight );
         }
@@ -679,13 +662,13 @@ this.debug( "items.length: " + this._items.length );
         row.setHtml( item._getMarkup() );
         if( this._checkBoxes != null ) {
           var checkBox = this._checkBoxes[ rowIndex ];
-          checkBox.setSource( item.getCheckImage() )
-          checkBox.setVisibility( true );
+          checkBox.setChecked( item.getChecked() );
+          this._changeVisibility( checkBox, true );
         }
       } else {
         row.setHtml( this._emptyItem._getMarkup() );
         if( this._checkBoxes != null ) {
-          this._checkBoxes[ rowIndex ].setVisibility( false );
+          this._changeVisibility( this._checkBoxes[ rowIndex ], false );  
         }
       }
       this._updateRowState( row, item );
@@ -697,6 +680,22 @@ this.debug( "items.length: " + this._items.length );
       } else {
         row.removeState( "selected" );
       }
+    },
+    
+    _changeVisibility : function( widget, visible ) {
+      if( widget.isCreated() ) {
+        widget.setVisibility( visible );
+      } else {
+        if( !visible ) {
+          widget.addEventListener( "create", this._hideOnCreate, this );
+        }
+      }
+    },
+    
+    _hideOnCreate : function( evt ) {
+      var widget = evt.getTarget();
+      widget.setVisibility( false );
+      widget.removeEventListener( "create", this._hideOnCreate, this );
     },
     
     ////////////////////////////////////////////////////////////

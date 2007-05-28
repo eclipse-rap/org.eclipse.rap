@@ -15,18 +15,22 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.engine.service.ContextProvider;
 
 public final class TableItemLCA extends AbstractWidgetLCA {
 
   private static final String PROP_TOP = "top";
   private static final String PROP_TEXTS = "texts";
+  private static final String PROP_IMAGES = "images";
   private static final String PROP_CHECKED = "checked";
+  private static final String PROP_GRAYED = "grayed";
   
   public void preserveValues( final Widget widget ) {
     TableItem item = ( TableItem )widget;
@@ -34,7 +38,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     adapter.preserve( PROP_TOP, new Integer( item.getBounds().y ) );
     adapter.preserve( PROP_CHECKED, Boolean.valueOf( item.getChecked() ) );
-    preserveTexts( item );
+    adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
+    adapter.preserve( PROP_TEXTS, getTexts( item ) );
+    adapter.preserve( PROP_IMAGES, getImages( item ) );
   }
 
   public void readData( final Widget widget ) {
@@ -69,21 +75,38 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
+    writeTexts( item );
+    writeImages( item );
+    writeChecked( item );
+    writeGrayed( item );
+  }
+
+  private static void writeTexts( final TableItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
-    if( itemContentChanged( item ) ) {
-      int columnCount = item.getParent().getColumnCount();
-      if( columnCount == 0 ) {
-        columnCount = 1;
-      }
-      String[] texts = new String[ columnCount ];
-      for( int i = 0; i < columnCount; i++ ) {
+    String[] texts = getTexts( item );
+    if( WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts ) ) {
+      for( int i = 0; i < texts.length; i++ ) {
         // TODO [rh] for some reason doesn't work with escapeText
 //        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
         texts[ i ] = encodeHTML( item.getText( i ) );
       }
       writer.set( "texts", new Object[] { texts } );
     }
-    writeChecked( item );
+  }
+
+  private static void writeImages( final TableItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    // TODO [rh] optimize when !isInitialized: for all images != null: setImg
+    Image[] images = getImages( item );
+    Integer[] imageWidths = new Integer[ images.length ];
+    if( WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images ) ) {
+      String[] imagePaths = new String[ images.length ];
+      for( int i = 0; i < imagePaths.length; i++ ) {
+        imagePaths[ i ] = Image.getPath( images[ i ] );
+        imageWidths[ i ] = new Integer( item.getImageBounds( i ).width );
+      }
+      writer.set( "images", new Object[] { imagePaths, imageWidths } );
+    }
   }
 
   private void writeChecked( final TableItem item )
@@ -94,6 +117,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
   }
   
+  private static void writeGrayed( final TableItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    Boolean newValue = Boolean.valueOf( item.getGrayed() );
+    writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
+  }
+
   private static String encodeHTML( final String text ) {
     String result = text.replaceAll( "\"", "&#034;" );
     result = result.replaceAll( ">", "&#062;" );
@@ -112,18 +141,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     writer.call( "dispose", null );
   }
 
-  //////////////////////////
-  // Preserve helper methods
-  
-  private static void preserveTexts( final TableItem item ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    String[] texts = new String[ item.getParent().getColumnCount() ];
-    for( int i = 0; i < item.getParent().getColumnCount(); i++ ) {
-      texts[i] = item.getText( i );
-    }
-    adapter.preserve( PROP_TEXTS, texts );
-  }
-  
   ////////////////////////////////////
   // Change detection for item content
   
@@ -133,10 +150,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     if( adapter.isInitialized() ) {
       result = false;
       Table table = item.getParent();
-      int columnCount = table.getColumnCount();
-      if( columnCount == 0 ) {
-        columnCount = 1;
-      }
+      int columnCount = getColumnCount( item );
       // Has column count changed?
       if( !result ) {
         int preservedColCount = TableLCAUtil.getPreservedColumnCount( table );
@@ -169,6 +183,35 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_DETAIL );
     if( "check".equals( value ) ) {
       result = SWT.CHECK;
+    }
+    return result;
+  }
+
+  //////////////////////
+  // Item data accessors
+  
+  private static String[] getTexts( final TableItem item ) {
+    int columnCount = getColumnCount( item );
+    String[] texts = new String[ columnCount ];
+    for( int i = 0; i < columnCount; i++ ) {
+      texts[ i ] = item.getText( i );
+    }
+    return texts;
+  }
+
+  private static Image[] getImages( final TableItem item ) {
+    int columnCount = getColumnCount( item );
+    Image[] images = new Image[ columnCount ];
+    for( int i = 0; i < columnCount; i++ ) {
+      images[ i ] = item.getImage( i );
+    }
+    return images;
+  }
+
+  private static int getColumnCount( final TableItem item ) {
+    int result = item.getParent().getColumnCount();
+    if( result == 0 ) {
+      result = 1;
     }
     return result;
   }

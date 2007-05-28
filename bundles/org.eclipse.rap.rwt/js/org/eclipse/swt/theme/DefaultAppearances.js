@@ -38,7 +38,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           textColor       : "black",
           backgroundColor : "white",
           // TODO [rst] Eliminate absolute references
-          backgroundImage    : "./org/eclipse/swt/widgets/display/bg.gif"
+          backgroundImage    : "./resource/widget/rap/display/bg.gif"
         };
       }
     },

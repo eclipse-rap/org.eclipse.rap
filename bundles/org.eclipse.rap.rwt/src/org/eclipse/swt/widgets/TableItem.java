@@ -13,8 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 
 /**
@@ -36,11 +35,13 @@ public class TableItem extends Item {
 
   private static final class Data {
     String text;
+    Image image;
   }
   
   private final Table parent;
   private Data[] data;
   private boolean checked;
+  private boolean grayed;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -134,8 +135,8 @@ public class TableItem extends Item {
     return parent;
   }
   
-  //////////////////////////////////////////////////////////
-  // Methods to get/set text for second column and following  
+  ///////////////////////////
+  // Methods to get/set texts  
   
   public void setText( final String text ) {
     checkWidget();
@@ -205,23 +206,144 @@ public class TableItem extends Item {
     return result;
   }
 
-  final void removeText( final int index ) {
-    if( data != null && parent.getColumnCount() > 1 ) {
-      Data[] newData = new Data[ data.length - 1 ];
-      System.arraycopy( data, 0, newData, 0, index );
-      int offSet = data.length - index - 1;
-      System.arraycopy( data, index + 1, newData, index, offSet );
-      data = newData;
+  ////////////////////////////
+  // Methods to get/set images  
+  
+  public void setImage( final Image image ) {
+    checkWidget();
+    setImage( 0, image );
+  }
+  
+  /**
+   * Sets the receiver's image at a column.
+   *
+   * @param index the column index
+   * @param image the new image
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setImage( final int index, final Image image ) {
+    checkWidget();
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      if( data == null ) {
+        data = new Data[ count ];
+      } else if( data.length < count ) {
+        enlargeData( count );
+      }
+      if( data[ index ] == null ) {
+        data[ index ] = new Data();
+      }
+      data[ index ].image = image;
     }
   }
   
-  final void clear() {
-    data = null;
-    super.setImage( null );
+  /**
+   * Sets the image for multiple columns in the table. 
+   * 
+   * @param images the array of new images
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the array of images is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if one of the images has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setImage( final Image[] images ) {
+    checkWidget();
+    if( images == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    for( int i = 0; i < images.length; i++ ) {
+      setImage( i, images[ i ] );
+    }
+  }
+
+  public Image getImage() {
+    checkWidget();
+    return getImage( 0 );
   }
   
-  //////////
-  // Checked
+  /**
+   * Returns the image stored at the given column index in the receiver,
+   * or null if the image has not been set or if the column does not exist.
+   *
+   * @param index the column index
+   * @return the image stored at the given column index in the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Image getImage( final int index ) {
+    checkWidget();
+    Image result = null;
+    if(    data != null 
+        && index >= 0 
+        && index < data.length 
+        && data[ index ] != null ) 
+    {
+      result = data[ index ].image;
+    }
+    return result;
+  }
+
+  /**
+   * Returns a rectangle describing the size and location
+   * relative to its parent of an image at a column in the
+   * table.  An empty rectangle is returned if index exceeds
+   * the index of the table's last column.
+   *
+   * @param index the index that specifies the column
+   * @return the receiver's bounding image rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Rectangle getImageBounds( final int index ) {
+    checkWidget();
+    Rectangle result;
+    Image image = getImage( index );
+    if( image != null ) {
+      result = image.getBounds();
+    } else {
+      result = new Rectangle( 0, 0, 0, 0 );
+    }
+    return result;
+  }
+
+  /**
+   * Gets the image indent.
+   *
+   * @return the indent
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public int getImageIndent () {
+    checkWidget();
+    // The only method to manipulate the image indent (setImageIndent) is 
+    // deprecated and this not implemented, therefore we can safely return 0
+    return 0;
+  }
+
+
+  ///////////////////
+  // Checked & Grayed
   
   /**
    * Sets the checked state of the checkbox for this item.  This state change 
@@ -262,10 +384,49 @@ public class TableItem extends Item {
     return result;
   }
 
+  /**
+   * Sets the grayed state of the checkbox for this item.  This state change 
+   * only applies if the Table was created with the SWT.CHECK style.
+   *
+   * @param grayed the new grayed state of the checkbox; 
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setGrayed( final boolean grayed ) {
+    checkWidget();
+    if( ( parent.style & SWT.CHECK ) != 0 ) {
+      this.grayed = grayed;
+    } 
+  }
+
+  /**
+   * Returns <code>true</code> if the receiver is grayed,
+   * and false otherwise. When the parent does not have
+   * the <code>CHECK</code> style, return false.
+   *
+   * @return the grayed state of the checkbox
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public boolean getGrayed() {
+    checkWidget();
+    boolean result = false;
+    if( ( parent.style & SWT.CHECK ) != 0 ) {
+      result = grayed;
+    }
+    return result;
+  }
+
   /////////////////////
   // Dimension methods
   
-/**
+  /**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent.
    *
@@ -304,11 +465,11 @@ public class TableItem extends Item {
     int width = 0;
     int height = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
-      Font font = parent.getFont();
       left = getCheckWidth();
       for( int i = 0; i < itemIndex; i++ ) {
         top += parent.getItem( i ).getHeight();
       }
+      Font font = parent.getFont();
       width = FontSizeEstimation.stringExtent( getText(), font ).x - left;
       height = getHeight();
     } else {
@@ -333,7 +494,15 @@ public class TableItem extends Item {
   final int getHeight() {
     // TODO [rh] replace with this.getFont() once TableItem supports fonts
     // TODO [rh] preliminary: this is only an approximation for item height
-    return FontSizeEstimation.getCharHeight( parent.getFont() ) + 4;
+    int result = FontSizeEstimation.getCharHeight( parent.getFont() ) + 4;
+    int columnCount = Math.max( parent.getColumnCount(), 1 );
+    for( int i = 0; i < columnCount; i++ ) {
+      Rectangle imageBounds = getImageBounds( i );
+      if( imageBounds.height > result ) {
+        result = imageBounds.height;
+      }
+    }
+    return result;
   }
   
   final int getCheckWidth() {
@@ -342,6 +511,23 @@ public class TableItem extends Item {
       result = CHECK_WIDTH;
     }
     return result;
+  }
+  
+  ///////////////////////////////////////
+  // Clear item data (texts, images, etc)
+
+  final void removeData( final int index ) {
+    if( data != null && parent.getColumnCount() > 1 ) {
+      Data[] newData = new Data[ data.length - 1 ];
+      System.arraycopy( data, 0, newData, 0, index );
+      int offSet = data.length - index - 1;
+      System.arraycopy( data, index + 1, newData, index, offSet );
+      data = newData;
+    }
+  }
+  
+  final void clear() {
+    data = null;
   }
 
   ///////////////////////////////

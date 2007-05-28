@@ -281,6 +281,10 @@ final class QooxdooResourcesUtil {
     manager.register( "resource/widget/rap/tree/folder_open.gif" );
     manager.register( "resource/widget/rap/tree/folder_closed.gif" );
     manager.register( "resource/widget/rap/display/bg.gif" );
+    manager.register( "resource/widget/rap/table/check_white_on.gif" );
+    manager.register( "resource/widget/rap/table/check_white_off.gif" );
+    manager.register( "resource/widget/rap/table/check_gray_on.gif" );
+    manager.register( "resource/widget/rap/table/check_gray_off.gif" );
   }
   
   private static void register( final String libraryName ) {

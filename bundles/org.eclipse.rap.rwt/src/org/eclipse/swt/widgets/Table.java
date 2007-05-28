@@ -1218,7 +1218,7 @@ public class Table extends Composite {
     TableItem[] items = getItems();
     int index = indexOf( column );
     for( int i = 0; i < items.length; i++ ) {
-      items[ i ].removeText( index );
+      items[ i ].removeData( index );
     }
     columnHolder.remove( column );
   }

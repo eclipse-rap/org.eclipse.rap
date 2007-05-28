@@ -229,6 +229,7 @@ public class Table_Test extends TestCase {
     
     table.setSelection( new TableItem[] { item } );
     item.dispose();
+    assertEquals( 0, table.getItemCount() );
     assertEquals( 0, table.getSelectionCount() );
     assertEquals( 0, table.getSelection().length );
   }
