@@ -1167,6 +1167,16 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       }
     },
     
+    "table-column-resizer" : {
+      style : function( sates ) {
+        return {
+          // TODO [rh] use same bg-color as splitpane-spltter (see there)
+          backgroundColor : "#d6d5d9",
+          width : 3
+        }
+      }
+    },
+    
     "table-row" : {
       style : function( states ) {
         var result = {};

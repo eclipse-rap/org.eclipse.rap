@@ -147,8 +147,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
   statics : {
     CHECK_WIDTH : 21,
     
-    RESIZE_LINE_COLOR : "#d6d5d9",
-
     CURSOR_RESIZE_HORIZONTAL : 
       (    qx.core.Client.getInstance().isGecko() 
         && ( qx.core.Client.getInstance().getMajor() > 1 
@@ -757,8 +755,7 @@ this.debug( "internalSetTopIndex: " + value );
       var resizeLine = this._resizeLine;
       if( resizeLine == null ) {
         resizeLine = new qx.ui.basic.Terminator();
-        resizeLine.setBackgroundColor( org.eclipse.swt.widgets.Table.RESIZE_LINE_COLOR );
-        resizeLine.setWidth( 3 );
+        resizeLine.setAppearance( "table-column-resizer" );
         this.add( resizeLine );
         qx.ui.core.Widget.flushGlobalQueues();
         this._resizeLine = resizeLine;
