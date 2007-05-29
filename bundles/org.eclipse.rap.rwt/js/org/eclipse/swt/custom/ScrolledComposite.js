@@ -15,6 +15,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
 
   construct : function( style ) {
     this.base( arguments );
+    this._initialScrollTop = null;
     this._initialScrollLeft = null;
     this._lastScrollLeft = 0;
     this._lastScrollTop = 0;
@@ -40,10 +41,6 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     },
 
     setVBarSelection : function( value ) {
-      // this._materialize();
-      // TODO [rst] the above line didn't seem to work:
-      // An error when a SC on an invisible tab was created
-      // --> copied code from setHBarSelection
       if( !this.isMaterialized() || !this.isCreated() ) {
         this._initialScrollTop = value;
         this.addEventListener( "create", this._onAppear );
@@ -59,13 +56,6 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
 
     setHBarMaximum : function(value) {
       this.setScrollWidth(value);
-    },
-
-    // TODO [rst] remove (see comment above)
-    _materialize : function() {
-      if( !this.isMaterialized() || !this.isCreated() ) {
-        qx.ui.core.Widget.flushGlobalQueues();
-      }
     },
 
     _onAppear : function( evt ) {

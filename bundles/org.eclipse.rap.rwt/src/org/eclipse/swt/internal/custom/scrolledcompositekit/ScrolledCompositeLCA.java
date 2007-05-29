@@ -97,7 +97,9 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( composite );
     Integer selection = getBarSelection( composite.getHorizontalBar() );
-    writer.set( PROP_H_BAR_SELECTION, "hBarSelection", selection, ZERO );
+    if( selection != null ) {
+      writer.set( PROP_H_BAR_SELECTION, "hBarSelection", selection, ZERO );
+    }
   }
 
   private static void writeVBarSelection( final ScrolledComposite composite )
@@ -105,7 +107,9 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( composite );
     Integer selection = getBarSelection( composite.getVerticalBar() );
-    writer.set( PROP_V_BAR_SELECTION, "vBarSelection", selection, ZERO );
+    if( selection != null ) {
+      writer.set( PROP_V_BAR_SELECTION, "vBarSelection", selection, ZERO );
+    }
   }
 
   private static void writeClipBounds( final ScrolledComposite composite ) 
@@ -139,15 +143,13 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   
   ///////////////////////////////////////////////////////////////////////////
   // Helping methods to obtain scroll bar properties
-  // These methods return a constant placeholder value in case the scroll bar
-  // is null or invisible
-  
+
   private static Integer getBarSelection( final ScrollBar scrollBar ) {
     Integer result;
     if( scrollBar != null && scrollBar.getVisible() ) {
       result = new Integer( scrollBar.getSelection() );
     } else {
-      result = new Integer( -1 );
+      result = null;
     }
     return result;
   }
