@@ -196,3 +196,12 @@ that's right?
      focused.
      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=425
      --> FIXED
+
+51.) Pressing the up key on the first top-level tree item causes the selection 
+     to vanish
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=438
+     
+52.) Disposing of a currently shown ToolTip broken (e.g. start Workbench,
+     hover over close button on a view, wait until 'Close' tooltip appears,
+     hit the close button)
+     --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=439

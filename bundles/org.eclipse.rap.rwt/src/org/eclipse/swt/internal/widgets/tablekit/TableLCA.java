@@ -124,6 +124,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     String value = WidgetLCAUtil.readPropertyValue( table, "topIndex" );
     if( value != null ) {
       table.setTopIndex( Integer.parseInt( value ) );
+System.out.println( "read topIndex: " + value );      
     }
   }
   

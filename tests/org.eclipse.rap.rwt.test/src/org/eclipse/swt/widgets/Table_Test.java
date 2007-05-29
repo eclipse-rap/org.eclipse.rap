@@ -214,9 +214,15 @@ public class Table_Test extends TestCase {
     table.setTopIndex( 1 );
     assertEquals( 1, table.getTopIndex() );
     
-    // Remove last item (whos index equals topIndex) -> must adjust topIndex
+    // Remove last item (whose index equals topIndex) -> must adjust topIndex
     table.setTopIndex( table.indexOf( lastItem ) );
     lastItem.dispose();
+    assertEquals( 0, table.getTopIndex() );
+    
+    // Ensure that topIndex stays at least 0 even if all items are removed
+    table.removeAll();
+    TableItem soleItem = new TableItem( table, SWT.NONE );
+    soleItem.dispose();
     assertEquals( 0, table.getTopIndex() );
   }
   

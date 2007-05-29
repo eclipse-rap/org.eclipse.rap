@@ -393,7 +393,6 @@ public class Table extends Composite {
         items[ i ].dispose();
       }
     }
-    topIndex = 0;
   }
   
   /**
@@ -1233,7 +1232,7 @@ public class Table extends Composite {
   final void destroyItem( final TableItem item ) {
     itemHolder.remove( item );
     if( topIndex > getItemCount() - 1 ) {
-      topIndex = getItemCount() - 1;
+      topIndex = Math.max( 0, getItemCount() - 1 );
     }
   }
   

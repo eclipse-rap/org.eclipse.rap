@@ -49,7 +49,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
 
     CONST_STYLE : 
         "position:absolute;" 
-      + "overflow:hidden;" 
+      + "overflow:hidden;"
       + "white-space:nowrap;" 
       + "cursor:default;" 
       + "top:0px;"
@@ -108,7 +108,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           result = "widget/table/check_white_off.gif";
         }
       }
-this.debug( "image: " + result );      
       return result;
     },
     
@@ -119,7 +118,7 @@ this.debug( "image: " + result );
     _getMarkup : function() {
       var markup = new Array();
       var table = this.getTable();
-      var imageWidth = 0;
+      var height = this.getTable()._itemHeight;
       var image = null;
       var text = "";
       var columnCount = table.getColumnCount();
@@ -128,17 +127,16 @@ this.debug( "image: " + result );
         leftOffset = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
       }
       if( columnCount == 0 ) {
+        var defaultWidth = table.getDefaultColumnWidth() - leftOffset;
+        markup.push( this._getStartCellMarkup( left, defaultWidth, height ) );
         if( this._images && this._images.length > 0 ) {
-          image = this._images[ 0 ];
-          imageWidth = this._imageWidths[ 0 ];
-          markup.push( this._getImageMarkup( 0, imageWidth, image ) );
-          width -= imageWidth;
+          markup.push( this._getImageMarkup( this._images[ 0 ] ) );
         }
         if( this._texts && this._texts.length > 0 ) {
           text = this._texts[ 0 ];
         }
-        var defaultWidth = table.getDefaultColumnWidth() - leftOffset - imageWidth;
-        markup.push( this._getTextMarkup( imageWidth + leftOffset, defaultWidth, text ) );
+        markup.push( this._getTextMarkup( text ) );
+        markup.push( this._getEndCellMarkup() );
       } else {
         for( var i = 0; i < columnCount; i++ ) {
           var column = table.getColumn( i );
@@ -149,47 +147,61 @@ this.debug( "image: " + result );
           } else {
             left -= leftOffset;
           }
+          markup.push( this._getStartCellMarkup( left, width, height ) );
           if( this._images && this._images[ i ] ) {
             image = this._images[ i ];
-            imageWidth = this._imageWidths[ 0 ];
-            markup.push( this._getImageMarkup( left, imageWidth, image ) );
-            left += imageWidth;
-            width -= imageWidth;
+            markup.push( this._getImageMarkup( image ) );
           }
           if( this._texts ) {
             text = this._texts[ i ];
           }
-          markup.push( this._getTextMarkup( left, width, text ) );
+          markup.push( this._getTextMarkup( text ) );
+          markup.push( this._getEndCellMarkup() );
         }
       }
       return markup.join( "" );
     },
     
-    _getImageMarkup : function( left, width, image ) {
-      var result 
-        = "<img style=\"position:absolute;top:0px;left:" 
-        + left + org.eclipse.swt.widgets.TableItem.PX
-        + "width:" 
-        + width + org.eclipse.swt.widgets.TableItem.PX
-        + "\" src=\"" 
-        + image 
-        + "\" />";
-      return result;
-    },
-
-    _getTextMarkup : function( left, width, text ) {
-      // Note: 'result = ...' is purposeful, the shorthand 'return x + z;' 
-      // doesn't work
+    _getStartCellMarkup : function( left, width, height ) {
       var result 
         = org.eclipse.swt.widgets.TableItem.DIV_START_OPEN 
         + "style=\"" 
         + org.eclipse.swt.widgets.TableItem.CONST_STYLE 
         + this._borderMarkup() 
         + "left:"  + left + org.eclipse.swt.widgets.TableItem.PX 
-        + "width:" + width + org.eclipse.swt.widgets.TableItem.PX + "\"" 
-        + org.eclipse.swt.widgets.TableItem.DIV_START_CLOSE;
-      result += ( text == "" ? "&nbsp;" : text ); 
-      result += org.eclipse.swt.widgets.TableItem.DIV_END;
+        + "width:" + width + org.eclipse.swt.widgets.TableItem.PX 
+        + "height:" + height + org.eclipse.swt.widgets.TableItem.PX
+        + "\"" 
+        + org.eclipse.swt.widgets.TableItem.DIV_START_CLOSE
+      return result;
+    },
+    
+    _getEndCellMarkup : function() {
+      return org.eclipse.swt.widgets.TableItem.DIV_END;      
+    },
+    
+    _getImageMarkup : function( image ) {
+      var result = "";
+      if( image != null ) {
+        result 
+          = "<img style=\"vertical-align:middle\" "
+          + "src=\"" 
+          + image 
+          + "\" />";
+      }
+      return result;
+    },
+
+    _getTextMarkup : function( text ) {
+      var result;
+      if( text == "" ) {
+        result = "&nbsp;";
+      } else {
+        result
+          = "<span style=\"vertical-align:middle\">"
+          + text 
+          + "</span>";
+      }
       return result;
     },
     

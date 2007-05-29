@@ -190,6 +190,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     setTopIndex : function( value ) {
+this.debug( "setTopIndex" );      
       var scrollPos = value * this._itemHeight;
       this._vertScrollBar.setValue( scrollPos );
       this._internalSetTopIndex( value );
@@ -198,6 +199,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _internalSetTopIndex : function( value ) {
       if( this._topIndex != value ) {
+this.debug( "internalSetTopIndex: " + value );      
         this._topIndex = value;
         this._updateRows();
       }
@@ -321,7 +323,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _onCheckBoxClick : function( evt ) {
       var rowIndex = this._checkBoxes.indexOf( evt.getTarget() );
-      _checkBoxToggle( rowIndex );
+      this._toggleCheckBox( rowIndex );
     },
     
     _onRowClick : function( evt ) {
@@ -435,7 +437,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       // TODO [rh] see if this can be optimized
       this._items = qx.lang.Array.insertAt( this._items, item, index );
       this._updateScrollHeight();
-
       if( this._isItemVisible( item ) ) {
         this._updateRows();
       }
@@ -444,7 +445,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _removeItem : function( item ) {
       var wasItemVisible = this._isItemVisible( item );
       qx.lang.Array.remove( this._items, item );
-this.debug( "items.length: " + this._items.length );      
       this._unselectItem( item );
       this._updateScrollHeight();
       if( wasItemVisible ) {
@@ -513,7 +513,7 @@ this.debug( "items.length: " + this._items.length );
     _getItemFromRowIndex : function( rowIndex ) {
       var result = null;
       var itemIndex = this._topIndex + rowIndex;
-      if( itemIndex >= 0 && itemIndex < this._items.length ) {
+      if( itemIndex < this._items.length ) {
         result = this._items[ itemIndex ];
       }
       return result;

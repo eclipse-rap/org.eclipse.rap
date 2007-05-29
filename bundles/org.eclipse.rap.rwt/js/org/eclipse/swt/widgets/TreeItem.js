@@ -47,9 +47,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   },
   
   destruct : function() {
-    if( this.getDisposed() ) {
-      return true;
-    }
     if( this._checkBox != null ) {
       this._checkBox.removeEventListener( "changeChecked", this._onChangeChecked, this );
       this._checkBox.removeEventListener( "dblclick", this._onCheckBoxDblClick, this );

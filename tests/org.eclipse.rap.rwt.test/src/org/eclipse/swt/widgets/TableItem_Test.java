@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 
 
@@ -123,21 +124,80 @@ public class TableItem_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
     
     // Test with no columns at all
+    TableItem item = new TableItem( table, SWT.NONE );
     assertEquals( "", item.getText() ); 
     assertEquals( "", item.getText( 123 ) );
     item.setText( 5, "abc" );
     assertEquals( "", item.getText( 5 ) );
+    item.setText( "yes" );
+    assertEquals( "yes", item.getText() );
     
     // Test with columns
+    table.removeAll();
     new TableColumn( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
     assertEquals( "", item.getText() ); 
     assertEquals( "", item.getText( 123 ) );
     item.setText( 1, "abc" );
     assertEquals( "", item.getText( 1 ) );
     item.setText( 5, "abc" );
     assertEquals( "", item.getText( 5 ) );
+  }
+  
+  public void testImage() {
+    Image image = Image.find( RWTFixture.IMAGE1 );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+
+    // Test with no columns at all
+    TableItem item = new TableItem( table, SWT.NONE );
+    assertEquals( null, item.getImage() ); 
+    assertEquals( null, item.getImage( 123 ) );
+    item.setImage( 5, image );
+    assertEquals( null, item.getImage( 5 ) );
+    item.setImage( image );
+    assertSame( image, item.getImage() );
+    
+    // Test with columns
+    table.removeAll();
+    new TableColumn( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
+    assertEquals( null, item.getImage() ); 
+    assertEquals( null, item.getImage( 123 ) );
+    item.setImage( 1, image );
+    assertEquals( null, item.getImage( 1 ) );
+    item.setImage( 5, image );
+    assertEquals( null, item.getImage( 5 ) );
+    item.setImage( image );
+    assertSame( image, item.getImage() );
+  }
+  
+  public void testCheckedAndGrayed() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    
+    // Ensure that checked and grayed only work with SWT.CHECK
+    Table simpleTable = new Table( shell, SWT.NONE );
+    TableItem simpleItem = new TableItem( simpleTable, SWT.NONE );
+    assertTrue( ( simpleTable.getStyle() & SWT.CHECK ) == 0 );
+    assertEquals( false, simpleItem.getChecked() );
+    assertEquals( false, simpleItem.getGrayed() );
+    simpleItem.setChecked( true );
+    assertEquals( false, simpleItem.getChecked() );
+    simpleItem.setGrayed( true );
+    assertEquals( false, simpleItem.getGrayed() );
+    
+    // Test checked and grayed with a SWT.CHECK table
+    Table checkedTable = new Table( shell, SWT.CHECK );
+    TableItem checkedItem = new TableItem( checkedTable, SWT.NONE );
+    assertEquals( false, checkedItem.getChecked() );
+    assertEquals( false, checkedItem.getGrayed() );
+    checkedItem.setChecked( true );
+    assertEquals( true, checkedItem.getChecked() );
+    checkedItem.setGrayed( true );
+    assertEquals( true, checkedItem.getGrayed() );
   }
 }

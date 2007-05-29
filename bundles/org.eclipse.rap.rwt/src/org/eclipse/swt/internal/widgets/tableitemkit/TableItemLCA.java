@@ -209,10 +209,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static int getColumnCount( final TableItem item ) {
-    int result = item.getParent().getColumnCount();
-    if( result == 0 ) {
-      result = 1;
-    }
-    return result;
+    return Math.max( 1, item.getParent().getColumnCount() );
   }
 }

@@ -32,6 +32,7 @@ import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 public class TableItem extends Item {
 
   private static final int CHECK_WIDTH = 21;
+  private static final int CHECK_HEIGHT = 13;
 
   private static final class Data {
     String text;
@@ -501,6 +502,9 @@ public class TableItem extends Item {
       if( imageBounds.height > result ) {
         result = imageBounds.height;
       }
+    }
+    if( ( parent.style & SWT.CHECK ) != 0 ) {
+      result = Math.max( CHECK_HEIGHT, result );
     }
     return result;
   }

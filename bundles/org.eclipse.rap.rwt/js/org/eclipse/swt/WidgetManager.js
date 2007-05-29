@@ -165,8 +165,12 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     //      work (is ignored) for an Atom that was created within the same
     //      JavaScript response (see note below)
     setFont : function( widget, name, size, bold, italic ) {
-      // TODO [rh] revise this: is there a better way to change font
-      if( widget.getLabelObject && widget.getLabel ) {
+      if( widget.setFont ) { // test if font property is supported
+        var font = new qx.renderer.font.Font( size, name );
+        font.setBold( bold );
+        font.setItalic( italic );
+        widget.setFont( font );
+      } else if( widget.getLabelObject && widget.getLabel ) {
         var font = new qx.renderer.font.Font( size, name );
         font.setBold( bold );
         font.setItalic( italic );
@@ -183,11 +187,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
           // values, there are situations where oldValue might be null
           widget.setLabel( oldLabel == null ? "" : oldLabel );
         }
-      } else if( widget.setFont ) {  // test if font property is supported
-        var font = new qx.renderer.font.Font( size, name );
-        font.setBold( bold );
-        font.setItalic( italic );
-        widget.setFont( font );
       } else {
         this.debug( widget.classname + " does not support fonts" );
       }
