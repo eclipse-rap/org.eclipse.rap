@@ -307,6 +307,9 @@ public class CoolItem extends Item {
       }
       size = new Point( x, y );
     }
+    if( control != null ) {
+    	control.setSize( size );
+    }
   }
   
   /**
