@@ -235,8 +235,12 @@ qx.Class.define("org.eclipse.swt.TextUtil", {
      */
     widgetDefaultSelected : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        // TODO [rh] ignore if Enter was pressed together with a modifier key
-        if( evt.getKeyIdentifier() == "Enter" ) {
+        if(    evt.getKeyIdentifier() == "Enter" 
+            && !evt.isShiftPressed()
+            && !evt.isAltPressed() 
+            && !evt.isCtrlPressed() 
+            && !evt.isMetaPressed() ) 
+        {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( evt.getTarget() );
           var req = org.eclipse.swt.Request.getInstance();
