@@ -166,4 +166,8 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     toolbar.add( browserAction );
     toolbar.add( aboutAction );
   }
+  
+  protected void fillStatusLine( final IStatusLineManager statusLine ) {
+    statusLine.add( aboutAction );
+  }
 }
