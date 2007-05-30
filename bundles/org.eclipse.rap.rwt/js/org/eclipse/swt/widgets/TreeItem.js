@@ -34,8 +34,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     // Image
     // TODO [rh] these dummy images are necessary since it is currently not
     //      possible to change images when they were not set here initially
-    row.addIcon( "org/eclipse/swt/widgets/tree/folder_closed.gif", 
-                 "org/eclipse/swt/widgets/tree/folder_open.gif" );
+    row.addIcon( "widget/tree/folder_closed.gif", 
+                 "widget/tree/folder_open.gif" );
     // Text
     row.addLabel( "" );
     // Construct TreeItem
