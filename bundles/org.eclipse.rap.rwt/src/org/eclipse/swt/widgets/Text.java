@@ -13,8 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 
@@ -494,6 +493,57 @@ public class Text extends Control {
   
   ///////////////////////////////////////
   // Listener registration/deregistration
+  
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the control is selected, by sending
+   * it one of the messages defined in the <code>SelectionListener</code>
+   * interface.
+   * <p>
+   * <code>widgetSelected</code> is not called for texts.
+   * <code>widgetDefaultSelected</code> is typically called when ENTER is pressed in a single-line text.
+   * </p>
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #removeSelectionListener
+   * @see SelectionEvent
+   */
+  public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
+    SelectionEvent.addListener( this, listener );
+  }
+  
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the control is selected.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SelectionListener
+   * @see #addSelectionListener
+   */
+  public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
+    SelectionEvent.removeListener( this, listener );
+  }
   
   /**
    * Adds the listener to the collection of listeners who will

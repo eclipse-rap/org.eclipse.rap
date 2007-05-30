@@ -22,12 +22,12 @@ public class ShellTab extends ExampleTab {
 
   private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
   
-  private ArrayList shells;
+  private java.util.List shells;
   private boolean createInvisible = false;
   private boolean createAsDialog = false;
   private boolean createMenu = false;
   private boolean showClientArea = false;
-  private Image shellIconImage;
+  private Image shellImage;
 
   public ShellTab( final TabFolder folder ) {
     super( folder, "Shell" );
@@ -71,16 +71,32 @@ public class ShellTab extends ExampleTab {
         showClientArea = clientAreaButton.getSelection();
       }
     } );
+    // TODO [rh] uncomment once changing images on Shell works 
+//    String text = "Show/hide image";
+//    final Button showHideImage = createPropertyButton( text, SWT.PUSH );
+//    String toolTip 
+//      = "Shows or hides the image of the most recently opened shell";
+//    showHideImage.setToolTipText( toolTip );
+//    showHideImage.addSelectionListener( new SelectionAdapter() {
+//      public void widgetSelected( final SelectionEvent e ) {
+//        if( shells.size() > 0 ) {
+//          Shell shell = ( Shell )shells.get( shells.size() - 1 );
+//          if( shell.getImage() == null ) {
+//            shell.setImage( shellImage );
+//          } else {
+//            shell.setImage( null );
+//          }
+//        }
+//      }
+//    } );
   }
 
   protected void createExampleControls( final Composite top ) {
     top.setLayout( new RowLayout( SWT.VERTICAL ) );
-    
-    if( shellIconImage == null ) {
+    if( shellImage == null ) {
       ClassLoader classLoader = getClass().getClassLoader();
-      shellIconImage = Image.find( ICON_IMAGE_PATH, classLoader );
+      shellImage = Image.find( ICON_IMAGE_PATH, classLoader );
     }
-    
     Button openShellButton = new Button( top, SWT.PUSH );
     openShellButton.setText( "Open Shell" );
     openShellButton.setLayoutData( new RowData( 150, 25 ) );
@@ -150,7 +166,7 @@ public class ShellTab extends ExampleTab {
     }
     int num = shells.size() + 1;
     shell.setText( "Test Shell " + num );
-    shell.setImage( shellIconImage );
+    shell.setImage( shellImage );
     if( !createInvisible ) {
       shell.open();
     }
@@ -179,7 +195,7 @@ public class ShellTab extends ExampleTab {
     Button closeButton = new Button( shell, SWT.PUSH );
     closeButton.setText( "Close This Window" );
     closeButton.moveAbove( comp2 );
-    int centerX = (ca.width - ca.x) / 2;
+    int centerX = ( ca.width - ca.x ) / 2;
     closeButton.setBounds( centerX - 55, ca.height - 45, 110, 25 );
     closeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

@@ -169,8 +169,8 @@ qx.Class.define("org.eclipse.swt.TextUtil", {
     // Functions to maintain the selection-start and -length properties
     
     onMouseUp : function( evt ) {
-      if (!org_eclipse_rap_rwt_EventUtil_suspend) {
-        org.eclipse.swt.TextUtil.updateSelection(evt.getTarget());
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        org.eclipse.swt.TextUtil.updateSelection( evt.getTarget() );
       }
     },
 
@@ -209,7 +209,7 @@ qx.Class.define("org.eclipse.swt.TextUtil", {
       }
     },
 
-    _onAppearSetSelection : function(evt) {
+    _onAppearSetSelection : function( evt ) {
       var text = evt.getTarget();
       var start = text.getUserData( "onAppear.selectionStart" );
       var length = text.getUserData( "onAppear.selectionLength" );
@@ -223,6 +223,28 @@ qx.Class.define("org.eclipse.swt.TextUtil", {
       text.setSelectionStart( start );
       text.setUserData( "selectionLength", length );
       text.setSelectionLength( length );
+    },
+    
+    ////////////////////////////
+    // SelectionListener support
+    
+    /**
+     * This funciton is registered server-side if a SelectionListener should
+     * be notified about hte widgetDefaultSelection event that ovvurs when
+     * Enter was pressed.
+     */
+    widgetDefaultSelected : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        // TODO [rh] ignore if Enter was pressed together with a modifier key
+        if( evt.getKeyIdentifier() == "Enter" ) {
+          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+          var id = widgetManager.findIdByWidget( evt.getTarget() );
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+          req.send();
+        }
+      }
     }
+
   }
 });

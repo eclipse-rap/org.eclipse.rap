@@ -75,10 +75,8 @@ public final class JSConst {
   // keys of the Qooxdoo listeners, used to register the client side 
   // eventhandlers 
   public static final String QX_EVENT_EXECUTE = "execute";
-  public static final String QX_EVENT_INPUT = "input";
   public static final String QX_EVENT_BLUR = "blur";
-  public static final String QX_EVENT_CLICK = "click";
-  public static final String QX_EVENT_KEYINPUT = "keyinput";
+  public static final String QX_EVENT_KEYDOWN = "keydown";
   public static final String QX_EVENT_CHANGE_LOCATION_X = "changeLeft";
   public static final String QX_EVENT_CHANGE_LOCATION_Y = "changeTop";
   public static final String QX_EVENT_CHANGE_WIDTH = "changeWidth";

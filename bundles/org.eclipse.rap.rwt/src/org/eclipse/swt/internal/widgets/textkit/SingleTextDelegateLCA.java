@@ -12,14 +12,27 @@
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
 final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
   
+  private static final String PROP_SELECTION_LISTENER = "selectionListener";
+
+  private final static JSListenerInfo JS_SELECTION_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_KEYDOWN,
+                          "org.eclipse.swt.TextUtil.widgetDefaultSelected",
+                          JSListenerType.ACTION );
+
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+    adapter.preserve( PROP_SELECTION_LISTENER,
+                      Boolean.valueOf( SelectionEvent.hasListener( text ) ) );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -30,6 +43,7 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     // order is crucial: first read text then read what part of it is selected
     TextLCAUtil.readText( text );
     TextLCAUtil.readSelection( text );
+    ControlLCAUtil.processSelection( text, null, false );
   }
 
   void renderInitialization( final Text text ) throws IOException {
@@ -51,10 +65,22 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );
+    writeSelectionListener( text );
   }
   
   void renderDispose( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.dispose();
+  }
+  
+  private static void writeSelectionListener( final Text text )
+    throws IOException
+  {
+    if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( text );
+      writer.updateListener( JS_SELECTION_LISTENER_INFO,
+                             PROP_SELECTION_LISTENER,
+                             SelectionEvent.hasListener( text ) );
+    }
   }
 }

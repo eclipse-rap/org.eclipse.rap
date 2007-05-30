@@ -9,6 +9,7 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeEvent;
 import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeListener;
 import org.eclipse.swt.SWT;
@@ -21,9 +22,16 @@ public class TextTab extends ExampleTab {
 
   private Text simpleText;
   private Text modifyText;
+  private final SelectionListener selectionListener;
 
   public TextTab( final TabFolder folder ) {
     super( folder, "Text" );
+    selectionListener = new SelectionAdapter() {
+      public void widgetDefaultSelected( final SelectionEvent event ) {
+        String msg = "You pressed the Enter key.";
+        MessageDialog.openInformation( getShell(), "Information", msg, null );
+      }
+    };
   }
 
   protected void createStyleControls() {
@@ -42,6 +50,17 @@ public class TextTab extends ExampleTab {
         boolean editable = editableButton.getSelection();
         simpleText.setEditable( editable );
         modifyText.setEditable( editable );
+      }
+    } );
+    final Button selectionListenerButton 
+      = createPropertyButton( "SelectionListener", SWT.CHECK );
+    selectionListenerButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( SelectionEvent.hasListener( simpleText ) ) {
+          simpleText.removeSelectionListener( selectionListener );
+        } else {
+          simpleText.addSelectionListener( selectionListener );
+        }
       }
     } );
     createFontChooser();

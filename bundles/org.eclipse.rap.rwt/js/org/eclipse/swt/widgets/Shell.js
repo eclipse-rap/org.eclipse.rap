@@ -164,6 +164,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     _onKeydown : function( evt ) {
       var keyId = evt.getKeyIdentifier();
+      // TODO [rh] ignore if Enter was pressed together with a modifier key
       if( keyId == "Enter" ) {
         var defButton = this.getDefaultButton();
         if( defButton != null && defButton.isSeeable() ) {
