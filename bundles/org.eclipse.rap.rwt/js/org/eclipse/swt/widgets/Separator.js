@@ -18,7 +18,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
 
   construct : function( style ) {
     qx.ui.layout.CanvasLayout.call( this );
-    this._style = style;
+    this._swtStyle = style;
     this.setAppearance( "separator" );
 
     // Fix IE Styling issues
@@ -83,7 +83,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     },
 
     _isHorizontal : function() {
-      return qx.lang.String.contains( this._style, "HORIZONTAL" );
+      return qx.lang.String.contains( this._swtStyle, "HORIZONTAL" );
     }
   }
 });
