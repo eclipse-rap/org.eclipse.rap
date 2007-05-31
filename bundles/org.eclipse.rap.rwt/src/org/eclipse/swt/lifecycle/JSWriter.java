@@ -39,10 +39,12 @@ public final class JSWriter {
   
   private static final Pattern DOUBLE_QUOTE_PATTERN 
     = Pattern.compile( "(\"|\\\\)" );
-  private static final Pattern CR_PATTERN 
-    = Pattern.compile( "\n" );
   private static final Pattern CR_LF_PATTERN 
     = Pattern.compile( "\n\r" );
+  private static final Pattern CR_PATTERN 
+    = Pattern.compile( "\n" );
+  private static final Pattern LF_PATTERN 
+    = Pattern.compile( "\r" );
   private static final String NEW_LINE_ESCAPE = "\\\\n";
   
   private static final JSVar TARGET_REF = new JSVar( "t" );
@@ -591,6 +593,8 @@ public final class JSWriter {
     matcher = CR_LF_PATTERN.matcher( result );
     result = matcher.replaceAll( NEW_LINE_ESCAPE );
     matcher = CR_PATTERN.matcher( result );
+    result = matcher.replaceAll( NEW_LINE_ESCAPE );
+    matcher = LF_PATTERN.matcher( result );
     result = matcher.replaceAll( NEW_LINE_ESCAPE );
     return result;
   }

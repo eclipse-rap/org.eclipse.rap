@@ -955,6 +955,23 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer.set( "html", "\n" );
     assertEquals( "w.setHtml( \"\\n\" );", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "\n\r" );
+    assertEquals( "w.setHtml( \"\\n\" );", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "\n\r\n" );
+    assertEquals( "w.setHtml( \"\\n\\n\" );", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "\r" );
+    assertEquals( "w.setHtml( \"\\n\" );", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    writer.set( "html", "\n\r\r" );
+    assertEquals( "w.setHtml( \"\\n\\n\" );", Fixture.getAllMarkup() );
+
   }
   
   protected void setUp() throws Exception {
