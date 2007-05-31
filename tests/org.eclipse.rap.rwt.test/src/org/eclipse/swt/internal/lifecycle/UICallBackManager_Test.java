@@ -36,12 +36,10 @@ public class UICallBackManager_Test extends TestCase {
   
   protected void setUp() throws Exception {
     RWTFixture.setUp();
-    UICallBackServiceHandler.activateUICallBacksFor( this.getClass().getName() );
     log = "";
   }
   
   protected void tearDown() throws Exception {
-    UICallBackServiceHandler.deactivateUICallBacksFor( this.getClass().getName() );
     RWTFixture.tearDown();
   }
   
