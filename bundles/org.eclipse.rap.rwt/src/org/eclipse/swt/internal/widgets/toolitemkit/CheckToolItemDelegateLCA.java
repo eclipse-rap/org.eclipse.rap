@@ -35,6 +35,9 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
+    adapter.preserve( "selection",
+                      Boolean.valueOf( toolItem.getSelection() ) );
   }
   
   void readData( final ToolItem toolItem ) {
@@ -74,5 +77,13 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     WidgetLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
+    writeSelection( toolItem, toolItem.getSelection() );
+  }
+  
+  void writeSelection( ToolItem toolItem, boolean selection ) throws IOException {
+	  JSWriter writer = JSWriter.getWriterFor( toolItem );
+	  Boolean newValue = Boolean.valueOf( selection );
+	  Boolean defValue = Boolean.FALSE;
+	  writer.set( "selection", "checked", newValue, defValue );
   }
 }
