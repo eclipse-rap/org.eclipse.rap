@@ -37,10 +37,14 @@ public final class JSWriter {
   public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
   public static JSVar WIDGET_REF = new JSVar( "w" );
   
-  private static final Pattern ESCAPE_STRING_PATTERN_1 
+  private static final Pattern DOUBLE_QUOTE_PATTERN 
     = Pattern.compile( "(\"|\\\\)" );
-  private static final Pattern ESCAPE_STRING_PATTERN_2 
+  private static final Pattern CR_PATTERN 
     = Pattern.compile( "\n" );
+  private static final Pattern CR_LF_PATTERN 
+    = Pattern.compile( "\n\r" );
+  private static final String NEW_LINE_ESCAPE = "\\\\n";
+  
   private static final JSVar TARGET_REF = new JSVar( "t" );
   
   private static final String WRITER_MAP 
@@ -579,13 +583,15 @@ public final class JSWriter {
     return result;
   }
   
-  // TODO [rh] try to unite the two regex patterns
+  // TODO [rh] try to unite the various regex patterns
   // TODO [rh] revise how to handle newline characters (\n)
   private static String escapeString( final String input ) {
-    Matcher matcher = ESCAPE_STRING_PATTERN_1.matcher( input );
+    Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( input );
     String result = matcher.replaceAll( "\\\\$1" );
-    matcher = ESCAPE_STRING_PATTERN_2.matcher( result );
-    result = matcher.replaceAll( "\\\\n" );
+    matcher = CR_LF_PATTERN.matcher( result );
+    result = matcher.replaceAll( NEW_LINE_ESCAPE );
+    matcher = CR_PATTERN.matcher( result );
+    result = matcher.replaceAll( NEW_LINE_ESCAPE );
     return result;
   }
 
