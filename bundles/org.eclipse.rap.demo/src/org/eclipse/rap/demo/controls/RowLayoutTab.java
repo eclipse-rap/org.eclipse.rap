@@ -9,6 +9,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -20,7 +21,7 @@ class RowLayoutTab extends ExampleTab {
   private boolean propPrefSize;
   private boolean propWrap;
 
-  public RowLayoutTab( final TabFolder folder ) {
+  public RowLayoutTab( final CTabFolder folder ) {
     super( folder, "RowLayout" );
   }
 

@@ -12,6 +12,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -21,8 +22,8 @@ public class ZOrderTab extends ExampleTab {
 
   private Label label;
 
-  public ZOrderTab( final TabFolder folder ) {
-    super( folder, "Z-Order" );
+  public ZOrderTab( final CTabFolder topFolder ) {
+    super( topFolder, "Z-Order" );
   }
 
   protected void createStyleControls() {

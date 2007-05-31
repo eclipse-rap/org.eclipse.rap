@@ -12,6 +12,7 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
@@ -31,8 +32,8 @@ public class ComboTab extends ExampleTab {
   private Combo preselectedCombo;
   private Combo viewerCombo;
 
-  public ComboTab( final TabFolder parent ) {
-    super( parent, "Combo" );
+  public ComboTab( final CTabFolder topFolder ) {
+    super( topFolder, "Combo" );
   }
 
   protected void createStyleControls() {

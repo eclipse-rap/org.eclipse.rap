@@ -10,10 +10,12 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 
 public class ContainmentTab extends ExampleTab {
 
@@ -21,8 +23,8 @@ public class ContainmentTab extends ExampleTab {
   private Composite comp3;
   private Composite comp1;
 
-  public ContainmentTab( final TabFolder parent ) {
-    super( parent, "Containment" );
+  public ContainmentTab( final CTabFolder topFolder ) {
+    super( topFolder, "Containment" );
   }
 
   protected void createStyleControls() {

@@ -10,6 +10,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -23,8 +24,8 @@ public class ToolBarTab extends ExampleTab {
   private ToolItem dropDownItem;
   private int count = 0;
 
-  public ToolBarTab( final TabFolder folder ) {
-    super( folder, "ToolBar" );
+  public ToolBarTab( final CTabFolder topFolder ) {
+    super( topFolder, "ToolBar" );
   }
 
   protected void createStyleControls() {

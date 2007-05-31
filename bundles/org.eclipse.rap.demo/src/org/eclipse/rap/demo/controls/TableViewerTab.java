@@ -10,8 +10,10 @@
 package org.eclipse.rap.demo.controls;
 
 import java.util.ArrayList;
+
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -89,8 +91,8 @@ public class TableViewerTab extends ExampleTab {
 
   private Label lblSelection;
 
-  public TableViewerTab( final TabFolder folder ) {
-    super( folder, "TableViewer" );
+  public TableViewerTab( final CTabFolder topFolder ) {
+    super( topFolder, "TableViewer" );
     initPersons();
   }
 

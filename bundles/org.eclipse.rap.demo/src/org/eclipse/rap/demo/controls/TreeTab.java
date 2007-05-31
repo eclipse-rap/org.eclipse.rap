@@ -10,9 +10,11 @@
 package org.eclipse.rap.demo.controls;
 
 import java.text.MessageFormat;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.IWindowCallback;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.RowData;
@@ -23,8 +25,8 @@ public class TreeTab extends ExampleTab {
 
   private Tree tree;
 
-  public TreeTab( final TabFolder folder ) {
-    super( folder, "Tree" );
+  public TreeTab( final CTabFolder topFolder ) {
+    super( topFolder, "Tree" );
   }
 
   protected void createStyleControls() {

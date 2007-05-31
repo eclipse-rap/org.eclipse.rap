@@ -12,8 +12,9 @@ package org.eclipse.rap.demo.controls;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -24,7 +25,7 @@ import org.eclipse.swt.widgets.*;
 abstract class ExampleTab {
   
   private static final int MAX_COLORS = 4;
-  private final TabFolder folder;
+  private final CTabFolder folder;
   private final List controls;
 
   private Composite exmplComp;
@@ -51,11 +52,11 @@ abstract class ExampleTab {
   public static final Color FG_COLOR_BLUE = Color.getColor( 28, 96, 141 );
   public static final Color FG_COLOR_ORANGE = Color.getColor( 249, 158, 0 );
 
-  public ExampleTab( final TabFolder parent, final String title ) {
+  public ExampleTab( final CTabFolder parent, final String title ) {
     folder = parent;
     controls = new ArrayList();
-    TabItem item = new TabItem( parent, SWT.NONE );
-    item.setText( title );
+    CTabItem item = new CTabItem( parent, SWT.NONE );
+    item.setText( title + " " );
     Control sashForm = createSashForm();
     item.setControl( sashForm );
     initColors();

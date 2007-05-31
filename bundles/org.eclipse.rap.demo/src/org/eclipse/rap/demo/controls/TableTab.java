@@ -10,6 +10,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
@@ -24,8 +25,8 @@ public class TableTab extends ExampleTab {
   private boolean linesVisible;
   private int columns = 5;
 
-  public TableTab( final TabFolder folder ) {
-    super( folder, "Table" );
+  public TableTab( final CTabFolder topFolder ) {
+    super( topFolder, "Table" );
   }
 
   protected void createStyleControls() {

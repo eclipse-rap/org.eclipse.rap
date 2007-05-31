@@ -13,6 +13,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeEvent;
 import org.eclipse.rap.demo.controls.DefaultButtonManager.ChangeListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.*;
@@ -24,8 +25,8 @@ public class TextTab extends ExampleTab {
   private Text modifyText;
   private final SelectionListener selectionListener;
 
-  public TextTab( final TabFolder folder ) {
-    super( folder, "Text" );
+  public TextTab( final CTabFolder topFolder ) {
+    super( topFolder, "Text" );
     selectionListener = new SelectionAdapter() {
       public void widgetDefaultSelected( final SelectionEvent event ) {
         String msg = "You pressed the Enter key.";

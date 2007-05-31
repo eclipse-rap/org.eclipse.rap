@@ -10,6 +10,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -23,8 +24,8 @@ public class TabFolderTab extends ExampleTab {
   private TabItem[] tabItems;
   private Button[] tabRadios;
 
-  public TabFolderTab( final TabFolder parent ) {
-    super( parent, "TabFolder" );
+  public TabFolderTab( final CTabFolder topFolder ) {
+    super( topFolder, "TabFolder" );
   }
 
   protected void createStyleControls() {

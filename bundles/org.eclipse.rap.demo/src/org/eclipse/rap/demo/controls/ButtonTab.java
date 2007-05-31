@@ -12,6 +12,7 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.IWindowCallback;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -35,7 +36,7 @@ public class ButtonTab extends ExampleTab {
   private Button radioButton3;
   private Button defaultButton;
 
-  public ButtonTab( final TabFolder folder ) {
+  public ButtonTab( final CTabFolder folder ) {
     super( folder, "Button" );
   }
 

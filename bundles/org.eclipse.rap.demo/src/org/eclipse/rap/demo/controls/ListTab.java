@@ -10,9 +10,11 @@
 package org.eclipse.rap.demo.controls;
 
 import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
@@ -55,8 +57,8 @@ public class ListTab extends ExampleTab {
 
   private List list;
 
-  public ListTab( final TabFolder folder ) {
-    super( folder, "List" );
+  public ListTab( final CTabFolder topFolder ) {
+    super( topFolder, "List" );
   }
 
   protected void createStyleControls() {

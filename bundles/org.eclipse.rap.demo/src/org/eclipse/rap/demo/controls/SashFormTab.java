@@ -10,14 +10,15 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
 public class SashFormTab extends ExampleTab {
 
-  public SashFormTab( final TabFolder parent ) {
-    super( parent, "SashForm" );
+  public SashFormTab( final CTabFolder topFolder ) {
+    super( topFolder, "SashForm" );
   }
 
   protected void createStyleControls() {

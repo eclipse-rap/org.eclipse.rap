@@ -10,6 +10,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,8 +21,8 @@ public class SpinnerTab extends ExampleTab {
   private Spinner spinner;
   private Spinner modifySpinner;
 
-  public SpinnerTab( final TabFolder folder ) {
-    super( folder, "Spinner" );
+  public SpinnerTab( final CTabFolder topFolder ) {
+    super( topFolder, "Spinner" );
   }
 
   protected void createStyleControls( ) {

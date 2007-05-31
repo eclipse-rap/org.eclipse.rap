@@ -11,6 +11,7 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -19,7 +20,7 @@ import org.eclipse.swt.widgets.*;
 
 public class RequestTab extends ExampleTab {
 
-  public RequestTab( final TabFolder parent ) {
+  public RequestTab( final CTabFolder parent ) {
     super( parent, "Longrunning Request" );
   }
 

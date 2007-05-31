@@ -46,8 +46,8 @@ public class FocusTab extends ExampleTab {
 
   private Label label;
 
-  public FocusTab( final TabFolder parent ) {
-    super( parent, "Focus" );
+  public FocusTab( final CTabFolder topFolder ) {
+    super( topFolder, "Focus" );
   }
 
   protected void createStyleControls() {

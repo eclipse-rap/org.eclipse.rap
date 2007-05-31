@@ -22,7 +22,7 @@ public class CTabFolderTab extends ExampleTab {
 
   private CTabFolder folder;
 
-  public CTabFolderTab( final TabFolder parent ) {
+  public CTabFolderTab( final CTabFolder parent ) {
     super( parent, "CTabFolder" );
   }
 

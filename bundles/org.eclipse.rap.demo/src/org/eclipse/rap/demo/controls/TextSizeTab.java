@@ -10,6 +10,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -25,7 +26,7 @@ public class TextSizeTab extends ExampleTab {
   
   private String labelText = "";
 
-  public TextSizeTab( final TabFolder parent ) {
+  public TextSizeTab( final CTabFolder parent ) {
     super( parent, "TextSize" );
     testStrings = createTestStrings();
     switchText();

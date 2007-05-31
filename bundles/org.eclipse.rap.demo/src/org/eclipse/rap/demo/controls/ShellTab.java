@@ -11,7 +11,9 @@ package org.eclipse.rap.demo.controls;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.RowData;
@@ -29,8 +31,8 @@ public class ShellTab extends ExampleTab {
   private boolean showClientArea = false;
   private Image shellImage;
 
-  public ShellTab( final TabFolder folder ) {
-    super( folder, "Shell" );
+  public ShellTab( final CTabFolder topFolder ) {
+    super( topFolder, "Shell" );
     shells = new ArrayList();
     setDefaultStyle( SWT.SHELL_TRIM );
   }

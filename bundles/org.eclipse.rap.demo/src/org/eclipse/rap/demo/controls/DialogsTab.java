@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.window.IWindowCallback;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -26,8 +27,8 @@ class DialogsTab extends ExampleTab {
   private Label messageDlgResLabel;
   private Label errorDlgResLabel;
 
-  public DialogsTab( final TabFolder folder ) {
-    super( folder, "Dialogs" );
+  public DialogsTab( final CTabFolder topFolder ) {
+    super( topFolder, "Dialogs" );
   }
 
   protected void createStyleControls() {

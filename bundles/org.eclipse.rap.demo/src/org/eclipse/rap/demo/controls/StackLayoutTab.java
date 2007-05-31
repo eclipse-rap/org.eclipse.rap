@@ -9,6 +9,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -27,7 +28,7 @@ class StackLayoutTab extends ExampleTab {
   private int index;
   private boolean propPrefSize;
 
-  public StackLayoutTab( final TabFolder folder ) {
+  public StackLayoutTab( final CTabFolder folder ) {
     super( folder, "StackLayout" );
     index = 0;
   }

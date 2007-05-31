@@ -13,6 +13,7 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.externalbrowser.ExternalBrowser;
@@ -29,7 +30,7 @@ class BrowserTab extends ExampleTab {
   
   private Browser browser;
 
-  public BrowserTab( final TabFolder folder ) {
+  public BrowserTab( final CTabFolder folder ) {
     super( folder, "Browser" );
   }
 

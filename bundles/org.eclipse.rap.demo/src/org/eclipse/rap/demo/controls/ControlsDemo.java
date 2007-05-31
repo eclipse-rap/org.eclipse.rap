@@ -10,6 +10,8 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.lifecycle.IEntryPoint;
@@ -34,7 +36,10 @@ public class ControlsDemo implements IEntryPoint {
   private void createContent( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     // TODO [rh] replace with CTabFolder
-    final TabFolder topFolder = new TabFolder( parent, SWT.NONE );
+    final CTabFolder topFolder = new CTabFolder( parent, SWT.TOP );
+    topFolder.marginWidth = 5;
+    topFolder.marginHeight = 5;
+    topFolder.setSelectionBackground( Color.getColor( 0, 128, 192 ) );
     ExampleTab tab = new ButtonTab( topFolder );
     tab.createContents();
 //    tab = new RequestTab( topFolder );

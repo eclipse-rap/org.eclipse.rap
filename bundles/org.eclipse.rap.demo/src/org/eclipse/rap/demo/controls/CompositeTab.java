@@ -9,14 +9,14 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TabFolder;
 
 public class CompositeTab extends ExampleTab {
 
-  public CompositeTab( final TabFolder parent ) {
-    super( parent, "Composite" );
+  public CompositeTab( final CTabFolder topFolder ) {
+    super( topFolder, "Composite" );
   }
 
   protected void createStyleControls() {
