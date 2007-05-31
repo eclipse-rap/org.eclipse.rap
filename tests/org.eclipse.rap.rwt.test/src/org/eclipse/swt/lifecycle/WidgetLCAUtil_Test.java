@@ -139,6 +139,10 @@ public class WidgetLCAUtil_Test extends TestCase {
     String expected = "&lt;File &gt;";
     assertEquals( expected, WidgetLCAUtil.escapeText( "<File >", false ) );
     // Amp
+    assertEquals( "&amp;&amp;&amp;File&quot;&gt;",
+                  WidgetLCAUtil.escapeText( "&&&File\">", false ) );
+//    assertEquals( "&amp;<u>F</u>ile&quot;&gt;",
+//                  WidgetLCAUtil.escapeText( "&&&File\">", true ) );
     assertEquals( "Open &amp; Close",
                   WidgetLCAUtil.escapeText( "Open && Close", true ) );
     // Quotes
@@ -151,11 +155,6 @@ public class WidgetLCAUtil_Test extends TestCase {
 //    assertEquals( "Fil<u>e</u>", WidgetLCAUtil.escapeText( "Fil&e", true ) );
 //    assertEquals( "Open &amp; <u>C</u>lose",
 //                  WidgetLCAUtil.escapeText( "&Open && &Close", true ) );
-    // Mnemonics without underline
-    assertEquals( "&amp;File", WidgetLCAUtil.escapeText( "&&&File", true ) );
-    // No Mnemonics
-    assertEquals( "&amp;&amp;&amp;File&quot;&gt;",
-                  WidgetLCAUtil.escapeText( "&&&File\">", false ) );
     // Wild combinations
 //    assertEquals( "&amp;<u>F</u>ile",
 //                  WidgetLCAUtil.escapeText( "&&&File", true ) );
