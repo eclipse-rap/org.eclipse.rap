@@ -12,10 +12,12 @@
 package org.eclipse.swt.internal.lifecycle;
 
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.internal.lifecycle.UICallBackManager.SyncRunnable;
 import org.eclipse.swt.lifecycle.DisplayUtil;
 import org.eclipse.swt.widgets.Display;
+
 import com.w4t.Fixture;
 import com.w4t.Fixture.TestResponse;
 import com.w4t.Fixture.TestServletOutputStream;
@@ -34,10 +36,12 @@ public class UICallBackManager_Test extends TestCase {
   
   protected void setUp() throws Exception {
     RWTFixture.setUp();
+    UICallBackServiceHandler.activateUICallBacksFor( this.getClass().getName() );
     log = "";
   }
   
   protected void tearDown() throws Exception {
+    UICallBackServiceHandler.deactivateUICallBacksFor( this.getClass().getName() );
     RWTFixture.tearDown();
   }
   
@@ -51,6 +55,7 @@ public class UICallBackManager_Test extends TestCase {
         UICallBackServiceHandler uiCallBackServiceHandler 
           = new UICallBackServiceHandler();
         try {
+          UICallBackManager.getInstance().setActive( true );
           uiCallBackServiceHandler.service();
         } catch( Throwable thr ) {
           uiCallBackServiceHandlerThrowable[ 0 ] = thr;
@@ -179,6 +184,7 @@ public class UICallBackManager_Test extends TestCase {
         UICallBackServiceHandler uiCallBackServiceHandler
           = new UICallBackServiceHandler();
         try {
+          UICallBackManager.getInstance().setActive( true );
           uiCallBackServiceHandler.service();
         } catch( Throwable thr ) {
           uiCallBackServiceHandlerThrowable[ 0 ] = thr;
