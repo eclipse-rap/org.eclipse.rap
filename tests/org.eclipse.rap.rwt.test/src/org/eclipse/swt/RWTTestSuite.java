@@ -117,6 +117,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Text_Test.class );
     suite.addTestSuite( Spinner_Test.class );
     suite.addTestSuite( ExternalBrowser_Test.class );
+    suite.addTestSuite( ProgressBar_Test.class );
     
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );

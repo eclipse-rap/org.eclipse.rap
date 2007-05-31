@@ -170,9 +170,9 @@ abstract class ExampleTab {
     return button;
   }
   
-  private Button createStyleButton( final String name,
-                                    final int style,
-                                    final boolean checked ) {
+  protected Button createStyleButton( final String name,
+                                      final int style,
+                                      final boolean checked ) {
     Button button = new Button( styleComp, SWT.CHECK );
     button.setText( name );
     button.addSelectionListener( new SelectionAdapter() {

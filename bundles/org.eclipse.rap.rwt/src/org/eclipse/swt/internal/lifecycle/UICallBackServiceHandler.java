@@ -47,18 +47,28 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   private static String jsUICallBack() {
-    if( jsUICallBack == null ) {
-      StringBuffer code = new StringBuffer();
-      code.append( "org.eclipse.swt.Request.getInstance().send();" );
-      code.append( jsEnableUICallBack() );
-      jsUICallBack = code.toString();      
+    String result = "";
+    StringBuffer code = new StringBuffer();
+    code.append( "org.eclipse.swt.Request.getInstance().send();" );
+    if(    isUICallBackActive()
+        && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
+    {
+      if( jsUICallBack == null ) {
+        code.append( jsEnableUICallBack() );
+        jsUICallBack = code.toString();      
+      }
+      result = jsUICallBack;
+    } else {
+      result = code.toString();
     }
-    return jsUICallBack;
+    return result;
   }
 
   public static String jsEnableUICallBack() {
     String result = "";
-    if( isUICallBackActive() ) {
+    if(    isUICallBackActive()
+        && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
+    {
       Object[] param = new Object[] { 
         ContextProvider.getRequest().getServletPath().substring( 1 ),
         IServiceHandler.REQUEST_PARAM,
@@ -95,6 +105,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
       public void afterPhase( final PhaseEvent event ) {
         if( id == ContextProvider.getSession().getId() ) {
+          UICallBackManager.getInstance().setActive( true );
           IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
           HtmlResponseWriter writer = stateInfo.getResponseWriter();
           try {
@@ -121,7 +132,9 @@ public class UICallBackServiceHandler implements IServiceHandler {
     getActivationIds().remove( id );
     // release blocked callback handler request
     if( getActivationIds().isEmpty() ) {
-      UICallBackManager.getInstance().sendUICallBack();
+      final UICallBackManager instance = UICallBackManager.getInstance();
+      instance.setActive( false );
+      instance.sendUICallBack();
     }
   }
   

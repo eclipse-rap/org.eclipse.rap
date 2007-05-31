@@ -40,7 +40,9 @@ public class ControlsDemo implements IEntryPoint {
     topFolder.marginWidth = 5;
     topFolder.marginHeight = 5;
     topFolder.setSelectionBackground( Color.getColor( 0, 128, 192 ) );
-    ExampleTab tab = new ButtonTab( topFolder );
+    ExampleTab tab = new ProgressBarTab( topFolder );
+    tab.createContents();
+    tab = new ButtonTab( topFolder );
     tab.createContents();
 //    tab = new RequestTab( topFolder );
 //    tab.createContents();

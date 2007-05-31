@@ -23,10 +23,19 @@ public class UICallBackManager
   implements HttpSessionBindingListener
 {
   
+  // Flag that indicates whether a callback thread is blocked.
   private boolean callBackRequestBlocked;
   private List runnables;
+  // Flag that indicates whether a request is processed. In that case no
+  // notifications are sent to the client.
   private boolean uiThreadRunning;
+  // Flag that indicates that a notification was sent to the client. If the new
+  // callback thread returns earlier than the UI Thread the callback thread
+  // must be blocked although the runnbles are not empty 
   private boolean waitForUIThread;
+  // Flag that indicates whether the UICallBack mechanism is active. If not
+  // no callback thread must be blocked.
+  private boolean active;
   
   final static class SyncRunnable implements Runnable {
     private final Runnable runnable;
@@ -66,9 +75,16 @@ public class UICallBackManager
     }
   }
   
+
+  public void setActive( final boolean active ) {
+    synchronized( runnables ) {
+      this.active = active;
+    }
+  }
+  
   public void sendUICallBack() {
     synchronized( runnables ) {
-      if( !uiThreadRunning ) {
+      if( !uiThreadRunning || !active ) {
         runnables.notifyAll();
       }
     }
@@ -135,7 +151,7 @@ public class UICallBackManager
       }
     }
   }
-  
+
   void blockCallBackRequest() {
     synchronized( runnables ) {
       callBackRequestBlocked = true;
@@ -147,14 +163,15 @@ public class UICallBackManager
         // TODO Auto-generated catch block
         e.printStackTrace();
       } finally {
-        callBackRequestBlocked = false;        
+        callBackRequestBlocked = false;
       }
       waitForUIThread = true;
     }
   }
 
   private boolean mustBlockCallBackRequest() {
-    return waitForUIThread ||uiThreadRunning || runnables.isEmpty();
+    return    active 
+           && ( waitForUIThread ||uiThreadRunning || runnables.isEmpty() );
   }
   
   

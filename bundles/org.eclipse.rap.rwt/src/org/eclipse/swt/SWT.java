@@ -294,6 +294,14 @@ public class SWT {
   public static final int SHADOW_IN = 1 << 2;
   public static final int SHADOW_OUT = 1 << 3;
   public static final int SHADOW_NONE = 1 << 5;
+  
+  /**
+   * Style constant for progress bar behavior (value is 1&lt;&lt;1).
+   * <p><b>Used By:</b><ul>
+   * <li><code>ProgressBar</code></li>
+   * </ul></p>
+   */
+  public static final int INDETERMINATE = 1 << 1;
 
   // Dialog Icons
 
