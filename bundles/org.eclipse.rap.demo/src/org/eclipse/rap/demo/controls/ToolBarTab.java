@@ -29,6 +29,9 @@ public class ToolBarTab extends ExampleTab {
   }
 
   protected void createStyleControls() {
+    // TODO [rst] Allow for vertical toolbars
+//    createStyleButton( "HORIZONTAL" );
+//    createStyleButton( "VERTICAL" );
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
     createVisibilityButton();

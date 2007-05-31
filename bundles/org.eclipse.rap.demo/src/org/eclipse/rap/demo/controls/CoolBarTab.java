@@ -36,6 +36,9 @@ public class CoolBarTab extends ExampleTab {
   }
 
   protected void createStyleControls() {
+    // TODO [rst] Allow for vertical CoolBars
+//  createStyleButton( "HORIZONTAL" );
+//  createStyleButton( "VERTICAL" );
     createStyleButton( "BORDER" );
     createStyleButton( "FLAT" );
     createVisibilityButton();

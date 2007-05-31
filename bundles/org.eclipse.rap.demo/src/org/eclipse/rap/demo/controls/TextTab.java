@@ -64,6 +64,8 @@ public class TextTab extends ExampleTab {
         }
       }
     } );
+    createFgColorButton();
+    createBgColorButton();
     createFontChooser();
     createLimitText( styleComp );
   }

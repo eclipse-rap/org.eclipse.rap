@@ -42,15 +42,17 @@ public class ContainmentTab extends ExampleTab {
         changeEnabled();
       }
     } );
+    createFgColorButton();
+    createFontChooser();
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new FillLayout() );
+  protected void createExampleControls( final Composite parent ) {
+    parent.setLayout( new FillLayout() );
     int style = getStyle();
     FillLayout layout = new FillLayout();
     layout.marginWidth = 20;
     layout.marginHeight = 20;
-    comp1 = new Composite( top, style );
+    comp1 = new Composite( parent, style );
     comp1.setBackground( BG_COLOR_GREEN );
     comp1.setLayout( layout );
     comp2 = new Composite( comp1, style );
