@@ -31,9 +31,9 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
   members : {
 
     setHBarSelection : function( value ) {
-      if( !this.isMaterialized() || !this.isCreated() ) {
+      if( !this.isCreated() ) {
         this._initialScrollLeft = value;
-        this.addEventListener( "create", this._onAppear );
+        this.addEventListener( "create", this._setHBarSelectionOnCreate, this );
       } else {
         this.setScrollLeft( value );
         this._lastScrollLeft = value;
@@ -41,35 +41,38 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
     },
 
     setVBarSelection : function( value ) {
-      if( !this.isMaterialized() || !this.isCreated() ) {
+      if( !this.isCreated() ) {
         this._initialScrollTop = value;
-        this.addEventListener( "create", this._onAppear );
+        this.addEventListener( "create", this._setVBarSelectionOnCreate, this );
       } else {
         this.setScrollTop( value );
         this._lastScrollTop = value;
       }
     },
 
-    setVBarMaximum : function( value ) {
-      this.setScrollHeight( value );
-    },
-
-    setHBarMaximum : function(value) {
-      this.setScrollWidth(value);
-    },
-
-    _onAppear : function( evt ) {
+    _setHBarSelectionOnCreate : function( evt ) {
       if( this._initialScrollLeft != null ) {
-        this.setScrollLeft( this._initialScrollLeft );
+        // Workaround: IE throws error when setting scrollLeft to a higher value
+        // than scrollWidth. 
+        if( this._initialScrollLeft <= this.getScrollWidth() ) {
+          this.setScrollLeft( this._initialScrollLeft );
+        }
         this._lastScrollLeft = this._initialScrollLeft;
       }
-      if( this._initialScrollTop != null ) {
-        this.setScrollLeft( this._initialScrollTop );
-        this._lastScrollLeft = this._initialScrollTop;
-      }
-      this.removeEventListener( "create", this._onAppear );
+      this.removeEventListener( "create", this._setHBarSelectionOnCreate, this );
     },
 
+    _setVBarSelectionOnCreate : function( evt ) {
+      if( this._initialScrollTop != null ) {
+        // Workaround: IE throws error when setting scrollTop to a higher value
+        // than scrollHeight
+        if( this._initialScrollTop <= this.getScrollHeight() ) {
+          this.setScrollTop( this._initialScrollTop );
+        }
+        this._lastScrollTop = this._initialScrollTop;
+      }
+      this.removeEventListener( "create", this._setVBarSelectionOnCreate, this );
+    },
 
     /**
      * Creates request parameters that denote the current scroll position just 
