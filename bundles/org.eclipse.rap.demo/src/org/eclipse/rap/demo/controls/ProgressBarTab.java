@@ -34,9 +34,7 @@ public class ProgressBarTab extends ExampleTab {
     progressBar.setLocation( 10, 10 );
     progressBar.setSize( 200, 22 );
     progressBar.setMaximum( 20 );
-    final int maximum = progressBar.getMaximum();
     
-    final Display display = progressBar.getDisplay();
     button.setText( "Start Background Process" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent evt ) {
@@ -44,8 +42,8 @@ public class ProgressBarTab extends ExampleTab {
         UICallBackUtil.activateUICallBack( ProgressBarTab.class.getName() );
         Runnable runnable = createRunnable( progressBar,
                                             button,
-                                            maximum,
-                                            display );
+                                            progressBar.getMaximum(),
+                                            progressBar.getDisplay() );
         Thread thread = new Thread( runnable );
         thread.setDaemon( true );
         thread.start();
@@ -76,7 +74,6 @@ public class ProgressBarTab extends ExampleTab {
                 progressBar.setSelection( selection );
                 if( selection == maximum ) {
                   button.setEnabled( true );
-//                  progressBar.setSelection( 0 );
                   String id = ProgressBarTab.class.getName();
                   UICallBackUtil.deactivateUICallBack( id );
                 }
