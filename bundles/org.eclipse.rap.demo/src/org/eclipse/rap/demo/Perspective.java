@@ -34,5 +34,8 @@ public class Perspective implements IPerspectiveFactory {
     // add shortcuts to show view menu
     layout.addShowViewShortcut("org.eclipse.rap.demo.DemoTreeViewPartI");
     layout.addShowViewShortcut("org.eclipse.rap.demo.DemoTreeViewPartII");
+    
+    // add shortcut for other perspective
+    layout.addPerspectiveShortcut( "org.eclipse.rap.demo.perspective.planning" );
   }
 }

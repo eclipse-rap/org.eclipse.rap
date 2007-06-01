@@ -23,8 +23,15 @@
         point="org.eclipse.ui.perspectives">
      <perspective
            class="org.eclipse.rap.demo.Perspective"
+           icon="icons/search.gif"
            id="org.eclipse.rap.demo.perspective"
-           name="Demo Perspective"/>
+           name="Demo"/>
+     <perspective
+           class="org.eclipse.rap.demo.PlanningPerspective"
+           icon="icons/contact.gif"
+           id="org.eclipse.rap.demo.perspective.planning"
+           name="Planning">
+     </perspective>
   </extension> 
   
   <extension point="org.eclipse.ui.views"> 
