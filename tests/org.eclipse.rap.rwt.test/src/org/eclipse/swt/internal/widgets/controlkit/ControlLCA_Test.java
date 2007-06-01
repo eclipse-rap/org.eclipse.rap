@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
@@ -28,9 +29,11 @@ public class ControlLCA_Test extends TestCase {
   protected void setUp() throws Exception {
     RWTFixture.setUpWithoutResourceManager();
     RWTFixture.fakeUIThread();
+    ThemeManager.getInstance().initialize();
   }
   
   protected void tearDown() throws Exception {
+    ThemeManager.getInstance().deregisterAll();
     RWTFixture.removeUIThread();
     RWTFixture.tearDown();
   }

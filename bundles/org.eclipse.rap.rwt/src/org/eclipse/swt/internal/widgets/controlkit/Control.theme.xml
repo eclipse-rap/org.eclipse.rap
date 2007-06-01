@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Controls -->
+
+<theme>
+
+<!--
+  TODO does it make sense to have foregound and background for controls?
+-->
+
+  <border name = "control.border"
+      description = ""
+      default = "0 solid gray"/>
+
+  <border name = "control.BORDER.border"
+      description = ""
+      default = "2 outset gray"/>
+
+</theme>

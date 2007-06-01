@@ -143,6 +143,7 @@ public class Label extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
+  // TODO [rst] Clarify or remove this comment:
   // TODO: The LCA does not yet handle images. So, setting an image currently 
   public void setImage( final Image image ) {
     checkWidget();

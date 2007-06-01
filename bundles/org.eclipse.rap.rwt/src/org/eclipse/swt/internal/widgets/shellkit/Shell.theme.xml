@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Shells -->
+
+<theme>
+
+  <color name="shell.background"
+      description=""
+      default="248, 248, 255"/>
+  
+  <color name="shell.foreground"
+      description=""
+      default="0, 0, 0"/>
+
+  <color name="shell.title.background"
+      description=""
+      default="0, 128, 192"/>
+  
+  <color name="shell.title.foreground"
+      description=""
+      default="255, 255, 255"/>
+
+  <color name="shell.title.inactive.background"
+      description=""
+      default="121, 150, 165"/>
+  
+  <color name="shell.title.inactive.foreground"
+      description=""
+      default="221, 221, 221"/>
+  
+  <color name="shell.minbutton.background"
+      description="background color for the active minimize button (deprecated)"
+      default="59, 169, 41"/>
+  
+  <color name="shell.minbutton.over.background"
+      description="background color for the hovered minimize button (deprecated)"
+      default="117, 208, 102"/>
+  
+  <color name="shell.minbutton.inactive.background"
+      description="background color for the inactive minimize button (deprecated)"
+      default="135, 184, 127"/>
+  
+  <color name="shell.maxbutton.background"
+      description="background color for the active maximize button (deprecated)"
+      default="59, 169, 41"/>
+  
+  <color name="shell.maxbutton.over.background"
+      description="background color for the hovered maximize button (deprecated)"
+      default="117, 208, 102"/>
+  
+  <color name="shell.maxbutton.inactive.background"
+      description="background color for the inactive maximize button (deprecated)"
+      default="135, 184, 127"/>
+  
+  <color name="shell.closebutton.background"
+      description="background color for the active close button (deprecated)"
+      default="239, 29, 47"/>
+  
+  <color name="shell.closebutton.over.background"
+      description="background color for the hovered close button (deprecated)"
+      default="255, 120, 132"/>
+  
+  <color name="shell.closebutton.inactive.background"
+      description="background color for the inactive close button (deprecated)"
+      default="198, 127, 133"/>
+  
+  <border name = "shell.border"
+      description = ""
+      default = "2 outset gray"/>
+
+  <boxdim name="shell.padding"
+      description = ""
+      default = "0 1 1"/>
+
+  <boxdim name="shell.titlebar.margin"
+      description = ""
+      default = "0"/>
+
+</theme>

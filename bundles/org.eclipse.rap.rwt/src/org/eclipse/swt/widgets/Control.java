@@ -15,7 +15,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.IControlThemeAdapter;
 import org.eclipse.swt.lifecycle.IControlAdapter;
 
 /**
@@ -47,6 +49,14 @@ public abstract class Control extends Widget {
         result = ControlHolder.indexOf( parent, Control.this );
       }
       return result;
+    }
+    
+    public Color getUserForeground() {
+      return foreground;
+    }
+    
+    public Color getUserBackground() {
+      return background;
     }
     
     public int getTabIndex() {
@@ -333,7 +343,13 @@ public abstract class Control extends Widget {
     checkWidget();
     // Control control = findBackgroundControl ();
     // if (control == null) control = this;
-    return background;
+    Color result = background;
+    if( background == null ) {
+      IControlThemeAdapter adapter = getControlThemeAdapter( getClass() );
+      QxColor qxColor = adapter.getBackground( this );
+      result = Color.getColor( qxColor.red, qxColor.green, qxColor.blue );
+    }
+    return result;
   }
 
   /**
@@ -368,7 +384,13 @@ public abstract class Control extends Widget {
    */
   public Color getForeground () {
     checkWidget();
-    return foreground;
+    Color result = foreground;
+    if( foreground == null ) {
+      IControlThemeAdapter adapter = getControlThemeAdapter( getClass() );
+      QxColor qxColor = adapter.getForeground( this );
+      result = Color.getColor( qxColor.red, qxColor.green, qxColor.blue );
+    }
+    return result;
   }
   
   ////////
@@ -784,7 +806,8 @@ public abstract class Control extends Widget {
     // TODO: [rst] This must be kept in sync with appearances, controls using
     //             different borders must overwrite this mehtod
     checkWidget();
-    return ( style & SWT.BORDER ) != 0 ? 2 : 0;
+    IControlThemeAdapter adapter = getControlThemeAdapter( getClass() );
+    return adapter.getBorderWidth( this );
   }
 
   /**
@@ -1214,7 +1237,7 @@ public abstract class Control extends Widget {
 
   ///////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menu
-  
+
   private void addMenuDisposeListener() {
     if( menu != null ) {
       if( menuDisposeListener == null ) {
@@ -1233,5 +1256,10 @@ public abstract class Control extends Widget {
     if( menu != null ) {
       menu.removeDisposeListener( menuDisposeListener );
     }
+  }
+  
+  private IControlThemeAdapter getControlThemeAdapter( final Class clazz ) {
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    return ( IControlThemeAdapter )themeMgr.getThemeAdapter( clazz );
   }
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Buttons -->
+
+<theme>
+
+  <color name="button.foreground"
+      description="Text color for buttons"
+      default="0, 0, 0" />
+
+  <color name="button.background"
+      description="Background color for buttons"
+      default="247, 247, 251" />
+
+  <color name="button.CHECK.background"
+      description="Background color for buttons with style CHECK and RADIO"
+      default="247, 247, 251" />
+
+  <color name="button.hover.background"
+      description="Hover color for buttons"
+      default="251, 251, 254" />
+
+  <color name="button.FLAT.pressed.background"
+      description="Background color for selected toggle buttons"
+      default="225, 225, 230" />
+
+  <border name="button.border"
+      description=""
+      default="2 outset gray" />
+
+  <border name="button.FLAT.border"
+      description=""
+      default="1 solid black" />
+
+  <border name="button.BORDER.border"
+      description=""
+      default="2 outset gray" />
+
+  <boxdim name="button.padding"
+      description="Padding for buttons"
+      default="2" />
+
+  <dim name="button.spacing"
+      description="Space between image and text"
+      default="2" />
+
+  <!-- TODO pressed offset
+       button.pressed.offset
+         or
+       button.pressed.xoffset
+       button.pressed.yoffset
+    -->
+
+</theme>

@@ -36,6 +36,8 @@ import org.eclipse.swt.graphics.Rectangle;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
+ * <hr/>
+ * Note: The styles SHADOW_XXX are not yet implemented in RWT.
  */
 public class Group extends Composite {
   

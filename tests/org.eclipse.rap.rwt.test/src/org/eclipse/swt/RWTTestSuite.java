@@ -23,6 +23,7 @@ import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.swt.internal.engine.*;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation_Test;
 import org.eclipse.swt.internal.lifecycle.*;
+import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
@@ -145,6 +146,14 @@ public class RWTTestSuite {
     suite.addTestSuite( SpinnerLCA_Test.class );
     suite.addTestSuite( ComboLCA_Test.class );
     suite.addTestSuite( ToolItemLCA_Test.class );
+    
+    suite.addTestSuite( Theme_Test.class );
+    suite.addTestSuite( ThemeManager_Test.class );
+    suite.addTestSuite( ThemeUtil_Test.class );
+    suite.addTestSuite( ThemeWriter_Test.class );
+    suite.addTestSuite( ThemeDefinitionReader_Test.class );
+    suite.addTestSuite( QxColor_Test.class );
+    
     return suite;
   }
 }

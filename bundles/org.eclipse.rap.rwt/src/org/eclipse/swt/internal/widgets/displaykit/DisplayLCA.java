@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.engine.ResourceRegistry;
 import org.eclipse.swt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.lifecycle.*;
@@ -81,6 +82,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static final String PROP_FOCUS_CONTROL = "focusControl";
 
+  private static final String PROP_CURR_THEME = "currTheme";
+
   static {
     // Available qooxdoo log level: 
     //   LEVEL_OFF, LEVEL_ALL, 
@@ -101,6 +104,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   public void preserveValues( final Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
+    adapter.preserve( PROP_CURR_THEME, ThemeUtil.getCurrentThemeId() );
   }
   
   public void render( final Display display ) throws IOException {
@@ -121,6 +125,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
       out.write( "org.eclipse.swt.EventUtil.suspendEventHandling();" );
       disposeWidgets();
+      writeTheme( display, out );
       RenderVisitor visitor = new RenderVisitor();
       Composite[] shells = display.getShells();
       for( int i = 0; i < shells.length; i++ ) {
@@ -132,6 +137,20 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       out.write( "qx.ui.core.Widget.flushGlobalQueues();" );
       out.write( "org.eclipse.swt.EventUtil.resumeEventHandling();" );
       markInitialized( display );
+    }
+  }
+
+  private void writeTheme( final Display display, HtmlResponseWriter out )
+    throws IOException
+  {
+    String currThemeId = ThemeUtil.getCurrentThemeId();
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    Object oldThemeId = adapter.getPreserved( PROP_CURR_THEME );
+    if( !currThemeId.equals( oldThemeId ) ) {
+      String code = "qx.manager.object.ThemeManager.getInstance().setTheme( "
+                    + currThemeId
+                    + " );";
+      out.write( code );
     }
   }
 
@@ -160,7 +179,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.startElement( HTML.SCRIPT, null );
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
 
-    writeAppScript( id );    
+    writeAppScript( id );
     
     out.endElement( HTML.SCRIPT );
     out.endElement( HTML.BODY );
@@ -177,6 +196,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   public static void writeLibraries() throws IOException {
     QooxdooResourcesUtil.registerResources();
+    ThemeManager.getInstance().registerResources();
     writeScrollBarStyle();
     writeJSLibraries();
   }

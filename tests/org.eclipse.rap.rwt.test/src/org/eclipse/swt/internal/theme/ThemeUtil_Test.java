@@ -1,6 +1,5 @@
-
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,16 +9,14 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.Theme.define( "org.eclipse.swt.theme.Default",
-{
-  title : "RAP default theme",
+package org.eclipse.swt.internal.theme;
 
-  meta : {
-    color : org.eclipse.swt.theme.DefaultColors,
-    border : org.eclipse.swt.theme.DefaultBorders,
-    font : org.eclipse.swt.theme.DefaultFonts,
-    widget : org.eclipse.swt.theme.DefaultWidgetIcons,
-    appearance : org.eclipse.swt.theme.DefaultAppearances,
-    icon : org.eclipse.swt.theme.DefaultIcons
+import junit.framework.TestCase;
+
+
+public class ThemeUtil_Test extends TestCase {
+
+  public void testFoo() throws Exception {
+    // TODO [rst] implement tests
   }
-});
+}

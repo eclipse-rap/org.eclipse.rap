@@ -84,7 +84,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       style : function( states ) {
         return {
-          textColor : states.disabled ? "graytext" : "widget.foreground",
+          textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           backgroundColor : "widget.background",
           font : "default.font",
           border : states.rwt_BORDER ? "label.BORDER.border" : "label.border"
@@ -129,7 +129,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       style : function( states ) {
         return {
-          textColor : states.disabled ? "graytext" : "widget.foreground",
+          textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           cursor : "default",
           width : "auto",
           height : "auto",
@@ -160,7 +160,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
         var result = { };
         
         result.font = "button.font";
-        result.textColor = states.disabled ? "graytext" : "button.foreground";
+        result.textColor = states.disabled ? "widget.graytext" : "button.foreground";
         
         // background color
         if( states.rwt_FLAT && ( states.pressed || states.checked ) ) {
@@ -217,7 +217,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
         return {
           font            : "default.font",
           border          : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
-          textColor       : states.disabled ? "graytext" : "widget.foreground",
+          textColor       : states.disabled ? "widget.graytext" : "widget.foreground",
           backgroundColor : "toolbar.background",
           height          : "auto"
         };
@@ -298,7 +298,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           textColor : "toolbar.foreground"
         };
         if( states.disabled ) {
-          result.textColor = "graytext";
+          result.textColor = "widget.graytext";
         } else if( states.over ) {
           result.backgroundColor = "toolbar.hover.background";
           result.textColor = "toolbar.hover.foreground";
@@ -564,7 +564,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           backgroundColor       : states.over ? "#316ac5" : "undefined"
         };
         if( states.disabled ) {
-          result.textColor = "graytext";
+          result.textColor = "widget.graytext";
         } else if( states.over ) {
           result.textColor = "list.selection.foreground";
         } else {
@@ -628,7 +628,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       style : function( states ) {
         return {
-          textColor : states.disabled ? "graytext" : "widget.foreground",
+          textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           overflow : "hidden",
           backgroundColor : "list.background",
           border : states.rwt_BORDER ? "thinInset" : "undefined"
@@ -681,8 +681,8 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
 //                     Do we ever create a widget without setting its size?
 //          width           : "auto",
 //          height          : "auto",
-          textColor       : states.disabled ? "graytext" : "undefined",
-          backgroundColor : "white"
+          textColor       : states.disabled ? "widget.graytext" : "undefined",
+          backgroundColor : "list.background"
         };
       }
     },
@@ -705,7 +705,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           width           : 120,
           height          : "auto", // TODO [rst] removed by qx
           border          : "inset",
-          backgroundColor : "white"
+          backgroundColor : "list.background"
         };
       }
     },
@@ -841,7 +841,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       include : "tree-folder",
       style : function( states ) {
         return {
-          textColor : states.disabled ? "graytext" : "widget.foreground",
+          textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           verticalChildrenAlign : "top",
           backgroundColor       : "list.background",
           border : states.rwt_BORDER
@@ -872,7 +872,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       style : function( states ) {
         return {
           font : "default.font",
-          textColor : states.disabled ? "graytext" : "widget.foreground",
+          textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           spacing : -1,
           border : states.rwt_BORDER 
             ? "control.BORDER.border" 
@@ -925,14 +925,14 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
 
         var border_top_checked = new qx.renderer.border.Border(1, "solid", "#aca899");
         border_top_checked.setWidthBottom(0);
-        border_top_checked.setTop(3, "solid", "selection-indicator");
+        border_top_checked.setTop(3, "solid", "widget.selection-indicator");
 
         var border_bottom_normal = new qx.renderer.border.Border(1, "solid", "#aca899");
         border_bottom_normal.setWidthTop(0);
 
         var border_bottom_checked = new qx.renderer.border.Border(1, "solid", "#aca899");
         border_bottom_checked.setWidthTop(0);
-        border_bottom_checked.setBottom(3, "solid", "selection-indicator");
+        border_bottom_checked.setBottom(3, "solid", "widget.selection-indicator");
 
         var result;
 
@@ -1001,7 +1001,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       style : function( states ) {
         return {
-          backgroundColor : "#f8f8ff"
+          backgroundColor : "widget.background"
         };
       }
     },
@@ -1014,11 +1014,11 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
         return {
           top             : 1,
           left            : 10,
-          backgroundColor : "#f8f8ff",
+          backgroundColor : "widget.background",
           paddingRight    : 3,
           paddingLeft     : 4,
 //          marginRight     : 10, TODO [rst] added by qx 0.7
-          textColor       : states.disabled ? "graytext" : "undefined"
+          textColor       : states.disabled ? "widget.graytext" : "undefined"
         };
       }
     },
@@ -1409,7 +1409,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     "separator" : {
       style : function( states ) {
         return {
-          textColor : states.disabled ? "graytext" : "undefined",
+          textColor : states.disabled ? "widget.graytext" : "undefined",
           border : states.rwt_BORDER ? "thinInset" : "undefined"
         }
       }
@@ -1430,7 +1430,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       style : function( states ) {
         return {
           font : "default.font",
-          textColor : states.disabled ? "graytext" : "undefined"
+          textColor : states.disabled ? "widget.graytext" : "undefined"
         }
       }
     },
@@ -1440,8 +1440,8 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
         return {
           cursor : "pointer",
           font : "link.ref.font",
-          textColor : states.disabled ? "graytext" : "link.foreground"
-//          textColor : states.disabled ? "graytext" : "#00007f"
+          textColor : states.disabled ? "widget.graytext" : "link.foreground"
+//          textColor : states.disabled ? "widget.graytext" : "#00007f"
         }
       }
     }

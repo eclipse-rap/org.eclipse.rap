@@ -380,8 +380,15 @@ public final class WidgetLCAUtil {
   //////////////////////////////////////
   // Escaping of reserved XML characters
   
-  // Note: The entity &apos; is not defined in HTML. It could be added if the
-  //       added to this method once we produce XHTML.
+  // Note: The entity &apos; is not defined in HTML. It should be handled by
+  //       this method once we produce XHTML output.
+  /**
+   * Replaces all of the characters <code>&lt;, &gt;, &amp;, &quot;</code> with
+   * the respective HTML entities.
+   * @param text the input text
+   * @param mnemonics if <code>true</code>, the function is mnemonic aware,
+   *  otherwise all ampersand characters are directly rendered.
+   */
   public static String escapeText( final String text, final boolean mnemonics )
   {
 //    int mnemonicPos = -1;

@@ -22,6 +22,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.swt.internal.lifecycle.*;
+import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
@@ -160,6 +161,7 @@ public class DisplayLCA_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     RWTFixture.fakeUIThread();
+    ThemeManager.getInstance().initialize();
     AdapterManager manager = W4TContext.getAdapterManager();
     lifeCycleAdapterFactory = new AdapterFactory() {
 
@@ -275,6 +277,7 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
+    ThemeManager.getInstance().deregisterAll();
     RWTFixture.removeUIThread();
     AdapterManager manager = W4TContext.getAdapterManager();
     manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.swt.internal.lifecycle.*;
+import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.lifecycle.*;
@@ -139,12 +140,13 @@ public final class RWTFixture {
     // standard setup
     Fixture.setUp();
     
+    ThemeManager.getInstance().initialize();
     registerAdapterFactories();
     PhaseListenerRegistry.add( currentPhaseListener );
     
     // registration of mockup resource manager
     registerResourceManager();
-
+    
     fakeUIThread();
   }
 
@@ -168,6 +170,7 @@ public final class RWTFixture {
     
     // deregistration of adapter factories
     deregisterAdapterFactories();
+    ThemeManager.getInstance().deregisterAll();
     
     // standard teardown
     Fixture.tearDown();

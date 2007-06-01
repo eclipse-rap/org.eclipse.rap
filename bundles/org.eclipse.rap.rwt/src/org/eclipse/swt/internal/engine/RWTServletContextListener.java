@@ -11,10 +11,13 @@
 
 package org.eclipse.swt.internal.engine;
 
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.*;
 import javax.servlet.*;
+
 import org.eclipse.swt.internal.lifecycle.*;
+import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.resources.*;
 import org.eclipse.swt.widgets.Display;
@@ -28,13 +31,15 @@ import com.w4t.engine.service.ServiceManager;
  */
 public class RWTServletContextListener implements ServletContextListener {
 
-  public static final String ENTRYPOINT_PARAM 
+  public static final String ENTRYPOINT_PARAM
     = "org.eclipse.swt.entrypoint";
+  public static final String SWT_THEMES_PARAM
+    = "org.eclipse.swt.themes";
   public static final String RESOURCE_MANAGER_FACTORY_PARAM
     = "org.eclipse.swt.resourcemanagerfactory";
   public static final String ADAPTER_FACTORY_PARAM
     = "org.eclipse.swt.adapterFactories";
-  public static final String PHASE_LISTENER_PARAM 
+  public static final String PHASE_LISTENER_PARAM
     = "com.w4t.engine.lifecycle.phaselistener";
   public static final String RESOURCE_PARAM
     = "org.eclipse.swt.resources";
@@ -50,6 +55,7 @@ public class RWTServletContextListener implements ServletContextListener {
   // implementation of ServletContextListener
 
   public void contextInitialized( final ServletContextEvent evt ) {
+    registerSWTThemes( evt.getServletContext() );
     registerEntryPoints( evt.getServletContext() );
     registerResourceManagerFactory( evt.getServletContext() );
     registerAdapterFactories( evt.getServletContext() );
@@ -59,15 +65,53 @@ public class RWTServletContextListener implements ServletContextListener {
   }
 
   public void contextDestroyed( final ServletContextEvent evt ) {
+    deregisterSWTTheme( evt.getServletContext() );
     deregisterEntryPoints( evt.getServletContext() );
     deregisterPhaseListeners( evt.getServletContext() );
     deregisterResources( evt.getServletContext() );
     deregisterUICallBackServiceHandler();
   }
   
-  
   ////////////////////////////////////////////////////////////
   // helping methods - entry point registration/deregistration
+  
+  private static void registerSWTThemes( final ServletContext context ) {
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
+    String value = context.getInitParameter( SWT_THEMES_PARAM );
+    if( value != null ) {
+      String[] themes = value.split( "," );
+      for( int i = 0; i < themes.length; i++ ) {
+        String theme = themes[ i ];
+        String[] parts = theme.trim().split( "#" );
+        if( parts.length >= 2 ) {
+          String themeId = parts[ 0 ];
+          String fileName = parts[ 1 ];
+          boolean asDefault = false;
+          if( parts.length > 2 ) {
+            asDefault = Boolean.valueOf( parts[ 2 ] ).booleanValue();
+          }
+          try {
+            InputStream inStream = context.getResourceAsStream( fileName );
+            if( inStream != null ) {
+              try {
+                String themeName = "Unnamed Theme";
+                manager.registerTheme( themeId, themeName , inStream, asDefault );
+              } finally {
+                inStream.close();
+              }
+            }
+          } catch( Exception ex ) {
+            String text = "Failed to register SWT theme ''{0}'' "
+              + "from file ''{1}''.";
+            Object[] args = new Object[] { themeId, fileName };
+            String msg = MessageFormat.format( text, args );
+            context.log( msg, ex );
+          }
+        }
+      }
+    }
+  }
 
   private static void registerEntryPoints( final ServletContext context ) {
     Set registeredEntryPoints = new HashSet();
@@ -97,6 +141,11 @@ public class RWTServletContextListener implements ServletContextListener {
     setRegisteredEntryPoints( context, registeredEntryPoints );
   }
   
+  private void deregisterSWTTheme( final ServletContext servletContext ) {
+//    TODO [rst] This causes a lot of red RWT tests
+//    ThemeManager.getInstance().deregisterAll();
+  }
+
   private void deregisterEntryPoints( final ServletContext context ) {
     String[] entryPoints = getRegisteredEntryPoints( context );
     if( entryPoints != null ) {

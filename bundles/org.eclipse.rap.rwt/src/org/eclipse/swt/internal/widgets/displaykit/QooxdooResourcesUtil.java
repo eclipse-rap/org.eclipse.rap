@@ -27,21 +27,17 @@ import com.w4t.engine.service.IServiceStateInfo;
 //      e.g. org/eclipse/swt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
   
-  private static final String DEFAULT_JS 
-    = "org/eclipse/swt/theme/Default.js";
   private static final String DEFAULT_APPEARANCES_JS 
     = "org/eclipse/swt/theme/DefaultAppearances.js";
   private static final String DEFAULT_BORDERS_JS 
     = "org/eclipse/swt/theme/DefaultBorders.js";
-  private static final String DEFAULT_COLORS_JS 
-    = "org/eclipse/swt/theme/DefaultColors.js";
   private static final String DEFAULT_FONTS_JS 
     = "org/eclipse/swt/theme/DefaultFonts.js";
   private static final String DEFAULT_ICONS_JS 
     = "org/eclipse/swt/theme/DefaultIcons.js";
   private static final String DEFAULT_WIDGET_ICONS_JS 
     = "org/eclipse/swt/theme/DefaultWidgetIcons.js";
-       
+
   private static final String APPLICATION_JS 
     = "org/eclipse/swt/Application.js";
   private static final String REQUEST_JS 
@@ -132,10 +128,10 @@ final class QooxdooResourcesUtil {
       manager.register( "script/custom.js", HTML.CHARSET_NAME_ISO_8859_1, RegisterOptions.VERSION );
       responseWriter.useJSLibrary( "script/custom.js" );
 
-
       // end generated code
       ///////////////////////////////////////////////
 
+      
       registerWidgetTheme( manager );
       
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
@@ -148,11 +144,9 @@ final class QooxdooResourcesUtil {
       // NOTE: Order of register-calls is important here
       register( DEFAULT_APPEARANCES_JS );
       register( DEFAULT_BORDERS_JS );
-      register( DEFAULT_COLORS_JS );
       register( DEFAULT_FONTS_JS );
       register( DEFAULT_ICONS_JS );
       register( DEFAULT_WIDGET_ICONS_JS );
-      register( DEFAULT_JS );
       // end of 'order is important'
       
       register( APPLICATION_JS );
@@ -305,7 +299,7 @@ final class QooxdooResourcesUtil {
    */
   public static void main( final String[] arx ) throws Exception {
     String projectDir = System.getProperty( "user.dir" );
-    File file = new File( projectDir + "/lib/qooxdoo-0.6.5.jar");
+    File file = new File( projectDir + "/lib/qooxdoo-0.7.jar");
     ZipFile archive = new ZipFile( file );
     Enumeration entries = archive.entries();
     System.out.println( file );

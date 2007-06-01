@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Lists
+    (should also apply to Tree, Table, Text, etc.) -->
+
+<theme>
+    
+  <color name = "list.background"
+      description = ""
+      default = "255, 255, 255" />
+  
+  <color name = "list.foreground"
+      description = ""
+      default = "0, 0, 0" />
+  
+  <color name = "list.selection.foreground"
+      description = ""
+      default = "255, 255, 255" />
+  
+  <color name = "list.selection.background"
+      description = ""
+      default = "49, 106, 197" />
+  
+  <color name = "list.selection.unfocused.foreground"
+      description = ""
+      default = "255, 255, 255" />
+  
+  <color name = "list.selection.unfocused.background"
+      description = ""
+      default = "192, 192, 192" />
+
+</theme>

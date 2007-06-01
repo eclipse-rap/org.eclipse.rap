@@ -220,7 +220,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultBorders",
     "table.column.mouseover.border" : {
       style : "solid",
       width : [ 0, 1, 2, 0 ],
-      color : [ "selection-indicator", "widget.thinborder" ]
+      color : [ "widget.selection-indicator", "widget.thinborder" ]
     },
     
     // -- shell --
