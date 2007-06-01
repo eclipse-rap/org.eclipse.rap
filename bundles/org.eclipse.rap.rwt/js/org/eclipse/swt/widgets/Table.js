@@ -181,14 +181,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     setItemHeight : function( value ) {
       this._itemHeight = value;
+this.debug( "setItemHeight: " + this._itemHeight );      
       this._updateScrollHeight();
       if( this._updateRowCount() ) {
         this._updateRows();
       }
     },
+    
+    getItemHeight : function() {
+      return this._itemHeight;  
+    },
 
     setTopIndex : function( value ) {
-this.debug( "setTopIndex" );      
       var scrollPos = value * this._itemHeight;
       this._vertScrollBar.setValue( scrollPos );
       this._internalSetTopIndex( value );
@@ -197,7 +201,6 @@ this.debug( "setTopIndex" );
 
     _internalSetTopIndex : function( value ) {
       if( this._topIndex != value ) {
-this.debug( "internalSetTopIndex: " + value );      
         this._topIndex = value;
         this._updateRows();
       }
@@ -592,7 +595,11 @@ this.debug( "internalSetTopIndex: " + value );
       var result = false;
       if( this._clientArea.isCreated() ) {
         var newRowCount = 0;
-        if( this._itemHeight != 0 ) {
+        // TODO [rh] this._clientArea.getHeight() might be negavive
+        //      This happens when a Table is placed on a unselected CTabItem 
+        //      and then the tab item gets selected and thus the table becomes 
+        //      visible
+        if( this._itemHeight != 0 && this._clientArea.getHeight() > 0 ) {
           newRowCount = Math.ceil( this._clientArea.getHeight() / this._itemHeight );
         }
         if( newRowCount != this._rows.length ) {
@@ -616,6 +623,7 @@ this.debug( "internalSetTopIndex: " + value );
               if( this._checkBoxes != null ) {
                 var checkBox = new qx.ui.basic.Image();
                 checkBox.addEventListener( "click", this._onCheckBoxClick, this );
+                checkBox.setAppearance( "table-check-box" );
                 this._clientArea.add( checkBox );
                 this._checkBoxes.push( checkBox );
               }
@@ -675,18 +683,13 @@ this.debug( "internalSetTopIndex: " + value );
       var row = this._rows[ rowIndex ]
       if( item != null ) {
         row.setHtml( item._getMarkup() );
-        if( this._checkBoxes != null ) {
-          var checkBox = this._checkBoxes[ rowIndex ];
-          checkBox.setSource( item.getCheckImage() )
-          checkBox.setVisibility( true );
-        }
       } else {
         row.setHtml( this._emptyItem._getMarkup() );
-        if( this._checkBoxes != null ) {
-          this._checkBoxes[ rowIndex ].setVisibility( false );
-        }
       }
       this._updateRowState( row, item );
+      if( this._checkBoxes != null ) {
+        this._updateRowCheck( rowIndex, item );
+      }
     },
 
     _updateRowState : function( row, item ) {
@@ -694,6 +697,26 @@ this.debug( "internalSetTopIndex: " + value );
         row.addState( "selected" );
       } else {
         row.removeState( "selected" );
+      }
+    },
+    
+    _updateRowCheck : function( rowIndex, item ) {
+      var checkBox = this._checkBoxes[ rowIndex ];
+      if( item != null ) {
+        if( item.getChecked() ) {
+          checkBox.addState( "checked" );
+        } else {
+          checkBox.removeState( "checked" );
+        }
+        if( item.getGrayed() ) {
+          checkBox.addState( "grayed" );
+        } else {
+          checkBox.removeState( "grayed" );
+        }
+        checkBox.setVisibility( true );
+this.debug( "row check" );        
+      } else {
+        checkBox.setVisibility( false );
       }
     },
     

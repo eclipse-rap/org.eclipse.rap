@@ -41,13 +41,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   },
 
   statics : {
+    // Constants used to render outermost div element
     DIV_START_OPEN : "<div ",
     DIV_START_CLOSE : ">",
     DIV_END : "</div>",
-
-    PX : "px;",
-
-    CONST_STYLE : 
+    DIV_STYLE : 
         "position:absolute;" 
       + "overflow:hidden;"
       + "white-space:nowrap;" 
@@ -55,6 +53,20 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       + "top:0px;"
       + ( qx.core.Client.getInstance().isGecko() ? "-moz-user-select:none;" : "" ),
 
+    // Constants usd to render img element that holds the item image
+    IMG_START : "<img style=\"vertical-align:middle\" ",
+    IMG_SRC_OPEN : "src=\"",
+    IMG_SRC_CLOSE : "\"",
+    IMG_END : " />",
+    
+    // Constants used to render span element that holds the item text
+    SPAN_START : "<span style=\"vertical-align:middle\">",
+    SPAN_END : "</span>",
+
+    PX : "px;",
+    
+    NBSP : "&nbsp;",
+     
     LINE_BORDER : "border-right:1px solid #eeeeee;"
   },
   
@@ -81,6 +93,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         this.getTable().updateItem( this, true );
       }
     },
+    
+    getGrayed : function() {
+      return this._grayed;
+    },
 
     setTexts : function( texts ) {
       this._texts = texts;
@@ -93,24 +109,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       this.getTable().updateItem( this, true );
     },
     
-    getCheckImage : function() {
-      var result;
-      if( this._grayed ) {
-        if( this._checked ) {
-          result = "widget/table/check_gray_on.gif";
-        } else {
-          result = "widget/table/check_gray_off.gif";
-        }
-      } else {
-        if( this._checked ) {
-          result = "widget/table/check_white_on.gif";
-        } else {
-          result = "widget/table/check_white_off.gif";
-        }
-      }
-      return result;
-    },
-    
     /**
      * Called by Table when updating visible rows to obtain HTML markup that 
      * represents the item.
@@ -118,7 +116,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     _getMarkup : function() {
       var markup = new Array();
       var table = this.getTable();
-      var height = this.getTable()._itemHeight;
+      var height = table.getItemHeight();
       var image = null;
       var text = "";
       var columnCount = table.getColumnCount();
@@ -166,7 +164,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       var result 
         = org.eclipse.swt.widgets.TableItem.DIV_START_OPEN 
         + "style=\"" 
-        + org.eclipse.swt.widgets.TableItem.CONST_STYLE 
+        + org.eclipse.swt.widgets.TableItem.DIV_STYLE 
         + this._borderMarkup() 
         + "left:"  + left + org.eclipse.swt.widgets.TableItem.PX 
         + "width:" + width + org.eclipse.swt.widgets.TableItem.PX 
@@ -184,10 +182,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       var result = "";
       if( image != null ) {
         result 
-          = "<img style=\"vertical-align:middle\" "
-          + "src=\"" 
+          = org.eclipse.swt.widgets.TableItem.IMG_START
+          + org.eclipse.swt.widgets.TableItem.IMG_SRC_OPEN
           + image 
-          + "\" />";
+          + org.eclipse.swt.widgets.TableItem.IMG_SRC_CLOSE
+          + org.eclipse.swt.widgets.TableItem.IMG_END;
       }
       return result;
     },
@@ -195,12 +194,12 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     _getTextMarkup : function( text ) {
       var result;
       if( text == "" ) {
-        result = "&nbsp;";
+        result = org.eclipse.swt.widgets.TableItem.NBSP;
       } else {
         result
-          = "<span style=\"vertical-align:middle\">"
+          = org.eclipse.swt.widgets.TableItem.SPAN_START
           + text 
-          + "</span>";
+          + org.eclipse.swt.widgets.TableItem.SPAN_END;
       }
       return result;
     },

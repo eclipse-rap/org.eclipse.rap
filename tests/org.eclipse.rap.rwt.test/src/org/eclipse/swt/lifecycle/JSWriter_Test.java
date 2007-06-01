@@ -957,11 +957,11 @@ public class JSWriter_Test extends TestCase {
     assertEquals( "w.setHtml( \"\\n\" );", Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    writer.set( "html", "\n\r" );
+    writer.set( "html", "\r\n" );
     assertEquals( "w.setHtml( \"\\n\" );", Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    writer.set( "html", "\n\r\n" );
+    writer.set( "html", "\r\n\n" );
     assertEquals( "w.setHtml( \"\\n\\n\" );", Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
@@ -969,7 +969,7 @@ public class JSWriter_Test extends TestCase {
     assertEquals( "w.setHtml( \"\\n\" );", Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    writer.set( "html", "\n\r\r" );
+    writer.set( "html", "\r\n\r" );
     assertEquals( "w.setHtml( \"\\n\\n\" );", Fixture.getAllMarkup() );
 
   }

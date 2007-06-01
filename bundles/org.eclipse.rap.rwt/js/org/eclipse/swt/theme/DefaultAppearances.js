@@ -1200,6 +1200,27 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       }
     },
     
+    "table-check-box" : {
+      include : "image",
+      style : function( states ) {
+        var result = {};
+        if( states.grayed ) {
+          if( states.checked ) {
+            result.source = "widget/table/check_gray_on.gif";
+          } else {
+            result.source = "widget/table/check_gray_off.gif";
+          }
+        } else {
+          if( states.checked ) {
+            result.source = "widget/table/check_white_on.gif";
+          } else {
+            result.source = "widget/table/check_white_off.gif";
+          }
+        }
+        return result;
+      }
+    },
+    
     /*
     ---------------------------------------------------------------------------
       SPLITPANE
