@@ -37,14 +37,10 @@ public class FocusTab extends ExampleTab {
   private Table table;
   private Tree tree;
   private Composite composite;
-
   private Text text;
-
   private Text multiText;
-
-  private List log;
-
   private Label label;
+  private List log;
 
   public FocusTab( final CTabFolder topFolder ) {
     super( topFolder, "Focus" );
@@ -55,6 +51,8 @@ public class FocusTab extends ExampleTab {
     createFocusButton( "Focus Push Button", button );
     createFocusButton( "Focus Radio Button", radio );
     createFocusButton( "Focus Check Box", check );
+    createFocusButton( "Focus Multi Text", multiText );
+    createFocusButton( "Focus Single Text", text );
     createFocusButton( "Focus Combo", combo );
     createFocusButton( "Focus List", list );
     createFocusButton( "Focus TabFolder", tabFolder );
@@ -65,7 +63,7 @@ public class FocusTab extends ExampleTab {
     Label label = new Label( styleComp, SWT.NONE );
     label.setText( "Log" );
     log = new List( styleComp, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
-    log.setLayoutData( new RowData( 300, 160 ) );
+    log.setLayoutData( new RowData( 300, 120 ) );
   }
 
   protected void createExampleControls( final Composite parent ) {
