@@ -181,7 +181,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     setItemHeight : function( value ) {
       this._itemHeight = value;
-this.debug( "setItemHeight: " + this._itemHeight );      
       this._updateScrollHeight();
       if( this._updateRowCount() ) {
         this._updateRows();
@@ -714,7 +713,6 @@ this.debug( "setItemHeight: " + this._itemHeight );
           checkBox.removeState( "grayed" );
         }
         checkBox.setVisibility( true );
-this.debug( "row check" );        
       } else {
         checkBox.setVisibility( false );
       }
