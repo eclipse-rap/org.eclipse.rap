@@ -34,7 +34,8 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
       var parent = button.getParent();
       var siblings = parent.getChildren();
       for( var i = 0; radioManager == null && i < siblings.length; i++ ) {
-        if( siblings[i] != button && siblings[ i ].classname == button.classname )
+        if(    siblings[ i ] != button 
+            && siblings[ i ].classname == button.classname )
         {
           radioManager = siblings[ i ].getManager();
         }
@@ -50,12 +51,10 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
      * RadioManager if there are no more radio buttons that use this 
      * RadioManager.
      */
-    unregisterRadioButton : function(button) {
+    unregisterRadioButton : function( button ) {
       var radioManager = button.getManager();
-
       if( radioManager != null ) {
         radioManager.remove( button );
-
         if( radioManager.getItems().length == 0 ) {
           radioManager.dispose();
         }

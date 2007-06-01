@@ -77,6 +77,7 @@ public final class JSConst {
   public static final String QX_EVENT_EXECUTE = "execute";
   public static final String QX_EVENT_BLUR = "blur";
   public static final String QX_EVENT_KEYDOWN = "keydown";
+  public static final String QX_EVENT_KEY_UP = "keyup";
   public static final String QX_EVENT_CHANGE_LOCATION_X = "changeLeft";
   public static final String QX_EVENT_CHANGE_LOCATION_Y = "changeTop";
   public static final String QX_EVENT_CHANGE_WIDTH = "changeWidth";

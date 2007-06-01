@@ -140,7 +140,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     focus : function( widgetId ) {
-      var widget = this.findWidgetById(widgetId);
+      var widget = this.findWidgetById( widgetId );
       if( widget.isMaterialized() ) {
         widget.focus();
       } else {

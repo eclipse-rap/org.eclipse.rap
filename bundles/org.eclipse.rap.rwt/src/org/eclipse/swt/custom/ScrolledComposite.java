@@ -113,7 +113,7 @@ public class ScrolledComposite extends Composite {
   
   // TODO [rh] move client area calculation to Scrollable
   public Rectangle getClientArea () {
-    checkWidget ();
+    checkWidget();
     Rectangle result = getBounds();
     ScrollBar hBar = getHorizontalBar();
     if( hBar != null && hBar.getVisible() ) {

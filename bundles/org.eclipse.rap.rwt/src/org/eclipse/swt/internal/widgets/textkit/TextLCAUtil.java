@@ -35,7 +35,7 @@ final class TextLCAUtil {
     = new Point( 0, 0 );
 
   private static final JSListenerInfo JS_MODIFY_LISTENER_INFO 
-    = new JSListenerInfo( "keyup", 
+    = new JSListenerInfo( JSConst.QX_EVENT_KEY_UP, 
                           "org.eclipse.swt.TextUtil.modifyText", 
                           JSListenerType.STATE_AND_ACTION );
   private static final JSListenerInfo JS_BLUR_LISTENER_INFO 
