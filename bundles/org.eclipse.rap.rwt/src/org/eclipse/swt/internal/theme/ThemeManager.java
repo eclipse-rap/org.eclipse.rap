@@ -56,6 +56,8 @@ public class ThemeManager {
     Link.class,
     Table.class,
     TabFolder.class,
+    Text.class,
+    Tree.class,
     ToolBar.class,
     Menu.class
   };
@@ -218,7 +220,7 @@ public class ThemeManager {
       ThemeDef def = ( ThemeDef )manager.themeDefs.get( key );
       String value = def.value.toDefaultString();
       String description = def.description.replaceAll( "\\n\\s*", "\n# " );
-      if( !description.contains( "[hidden]" ) ) {
+      if( description.indexOf( "[hidden]" ) != -1 ) {
         sb.append( "\n" );
         sb.append( "# " + description + "\n" );
         sb.append( "# default: " + value + "\n" );
