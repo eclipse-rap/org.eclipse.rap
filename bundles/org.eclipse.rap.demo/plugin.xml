@@ -108,7 +108,7 @@
      <actionSet
            id="org.eclipse.rap.demo.actionSet"
            label="Sample Action Set"
-           visible="true">
+           visible="false">
         <menu
               id="sampleMenu"
               label="Sample &amp;Menu">
@@ -126,6 +126,15 @@
               tooltip="Hello, Eclipse world">
         </action>
      </actionSet>
+  </extension>
+  <extension
+        point="org.eclipse.ui.perspectiveExtensions">
+     <perspectiveExtension
+           targetID="org.eclipse.rap.demo.perspective.planning">
+        <actionSet
+              id="org.eclipse.rap.demo.actionSet">
+        </actionSet>
+     </perspectiveExtension>
   </extension>
   
 </plugin>
