@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -26,7 +27,9 @@ public class ComboTab extends ExampleTab {
     "Python", 
     "Ruby", 
     "Simula", 
-    "Smalltalk" };
+    "Smalltalk" 
+  };
+  
   private Combo emptyCombo;
   private Combo filledCombo;
   private Combo preselectedCombo;
@@ -48,36 +51,55 @@ public class ComboTab extends ExampleTab {
     button.setText( "Remove All" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-System.out.println( "selection before removeAll: " + filledCombo.getSelectionIndex() );        
         filledCombo.removeAll();
       }
     } );
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new GridLayout( 2, false ) );
+    parent.setLayout( new GridLayout( 3, false ) );
     int style = getStyle();
-    emptyCombo = new Combo( parent, style );
     Label lblEmptyCombo = new Label( parent, SWT.NONE );
-    lblEmptyCombo.setText( "Empty Combo box" );
+    lblEmptyCombo.setText( "Empty Combo" );
+    emptyCombo = new Combo( parent, style );
+    emptyCombo.setLayoutData( colSpan2() );
+    Label lblFilledCombo = new Label( parent, SWT.NONE );
+    lblFilledCombo.setText( "Filled Combo" );
     filledCombo = new Combo( parent, style );
     filledCombo.setItems( ITEMS );
-    Label lblFilledCombo = new Label( parent, SWT.NONE );
-    lblFilledCombo.setText( "Filled Combo box" );
+    Button btnShowSelection = new Button( parent, SWT.PUSH );
+    btnShowSelection.setText( "Show Selection" );
+    btnShowSelection.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        String selection = "(nothing)";
+        int index = filledCombo.getSelectionIndex();
+        if( index != -1 ) {
+          selection = filledCombo.getItem( index );
+        }
+        String msg = "Your Selection: " + selection;
+        Shell shell = filledCombo.getShell();
+        MessageDialog.openInformation( shell, "Information", msg, null );
+      }
+    } );
+    Label lblPreselectionCombo = new Label( parent, SWT.NONE );
+    lblPreselectionCombo.setText( "Filled Combo with preselection" );
     preselectedCombo = new Combo( parent, style );
+    preselectedCombo.setLayoutData( colSpan2() );
     preselectedCombo.setItems( ITEMS );
     preselectedCombo.select( 1 );
     preselectedCombo.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         int index = preselectedCombo.getSelectionIndex();
-        String message = "Selected Item: " + ITEMS[ index ];
+        String message = "Selected Item: " + preselectedCombo.getItem( index );
         Shell shell = parent.getShell();
         MessageDialog.openInformation( shell, "Info", message, null );
       }
     } );
-    Label lblPreselectionCombo = new Label( parent, SWT.NONE );
-    lblPreselectionCombo.setText( "Filled Combo box with preselection" );
+    Label lblViewerCombo = new Label( parent, SWT.NONE );
+    String msg = "ComboViewer with context menu";
+    lblViewerCombo.setText( msg );
     viewerCombo = new Combo( parent, style );
+    viewerCombo.setLayoutData( colSpan2() );
     ComboViewer viewer = new ComboViewer( viewerCombo );
     viewer.setContentProvider( new IStructuredContentProvider() {
       public void dispose() {
@@ -101,12 +123,15 @@ System.out.println( "selection before removeAll: " + filledCombo.getSelectionInd
     MenuItem menuItem = new MenuItem( menu, SWT.NONE );
     menuItem.setText( "MenuItem on ComboViewer" );
     viewerCombo.setMenu( menu );
-    Label lblViewerCombo = new Label( parent, SWT.NONE );
-    String msg = "Combo box with JFace ComboViewer and context menu";
-    lblViewerCombo.setText( msg );
     registerControl( emptyCombo );
     registerControl( filledCombo );
     registerControl( preselectedCombo );
     registerControl( viewerCombo );
+  }
+  
+  private static GridData colSpan2() {
+    GridData result = new GridData( SWT.BEGINNING, SWT.CENTER, false, false );
+    result.horizontalSpan = 2;
+    return result;
   }
 }

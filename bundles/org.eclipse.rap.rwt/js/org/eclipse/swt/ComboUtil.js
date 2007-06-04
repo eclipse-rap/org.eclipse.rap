@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     onSelectionChanged : function( evt ) {
       // TODO [rst] This listener was also called on focus out, if no item was
       //      selected. This fix should work since combos cannot be deselected.
-      if( evt.getData() != null ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getData() != null ) {
         var combo = evt.getTarget();
         var list = combo.getList();
         var listItem = list.getSelectedItem();
@@ -34,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     onSelectionChangedAction : function( evt ) {
       // TODO [rst] This listener was also called on focus out, if no item was
       //      selected. This fix should work since combos cannot be deselected.
-      if( evt.getData() != null ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getData() != null ) {
         org.eclipse.swt.ComboUtil.onSelectionChanged( evt );      
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( evt.getTarget() );
@@ -57,7 +57,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       org.eclipse.swt.WidgetManager.getInstance().add( combo, id, false );
     },
 
-    /** Selects a comboBox item. */
+    /** Selects a combo box item. */
     select : function( id, index ) {
       var combo 
         = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );
