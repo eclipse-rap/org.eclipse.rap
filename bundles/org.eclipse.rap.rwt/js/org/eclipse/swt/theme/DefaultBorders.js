@@ -217,10 +217,10 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultBorders",
       color : [ "widget.thinborder", "widget.thinborder" ]
     },
     
-    "table.column.mouseover.border" : {
+    "table.column.hover.border" : {
       style : "solid",
       width : [ 0, 1, 2, 0 ],
-      color : [ "widget.selection-indicator", "widget.thinborder" ]
+      color : [ "widget.selection-marker", "widget.thinborder" ]
     },
     
     // -- shell --

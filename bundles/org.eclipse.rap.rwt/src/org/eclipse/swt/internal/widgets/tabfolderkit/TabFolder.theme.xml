@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT TabFolder -->
+
+<theme>
+
+  <color name = "tabfolder.background"
+      description = "Background color for TabFolder headers"
+      default = "248, 248, 255" />
+  
+  <color name = "tabfolder.checked.background"
+      description = "Background color for checked TabFolder headers"
+      default = "248, 248, 255" />
+  
+  <color name = "tabfolder.hover.background"
+      description = "Background color for TabFolder headers on mouse over"
+      default = "248, 248, 255" />
+
+</theme>

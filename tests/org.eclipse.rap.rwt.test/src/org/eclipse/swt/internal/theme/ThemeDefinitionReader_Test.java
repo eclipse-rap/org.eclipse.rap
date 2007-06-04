@@ -12,11 +12,12 @@
 package org.eclipse.swt.internal.theme;
 
 import java.io.InputStream;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import junit.framework.TestCase;
 
+import org.eclipse.swt.internal.theme.ThemeDefinitionReader.ThemeDef;
+import org.eclipse.swt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
 import org.eclipse.swt.widgets.Widget;
 
 public class ThemeDefinitionReader_Test extends TestCase {
@@ -28,9 +29,13 @@ public class ThemeDefinitionReader_Test extends TestCase {
     ClassLoader loader = Widget.class.getClassLoader();
     InputStream is = loader.getResourceAsStream( WIDGET_THEME_FILE );
     ThemeDefinitionReader reader = new ThemeDefinitionReader( is );
-    Map result;
+    final Map result = new HashMap();
     try {
-      result = reader.read();
+      reader.read( new ThemeDefHandler() {
+        public void readThemeDef( final ThemeDef def ) {
+          result.put( def.name, def.value );
+        }
+      } );
     } finally {
       is.close();
     }

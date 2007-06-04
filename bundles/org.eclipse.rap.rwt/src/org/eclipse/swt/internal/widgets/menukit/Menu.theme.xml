@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Menu -->
+
+<theme>
+
+  <color name = "menu.foreground"
+      description = "Text color for menu items"
+      default = "0, 0, 0" />
+  
+  <color name = "menu.hover.foreground"
+      description = "Text for menu items on mouse over"
+      default = "255, 255, 255" />
+  
+  <!-- == control.background -->
+  <color name = "menu.background"
+      description = "Background color for menus"
+      default = "248, 248, 255" />
+  
+  <!-- == list.focused.background -->
+  <color name = "menu.hover.background"
+      description = "Background color for menus on mouse over"
+      default = "49, 106, 197" />
+
+</theme>

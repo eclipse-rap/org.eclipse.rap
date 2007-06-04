@@ -71,7 +71,11 @@ public class QxBoxDimensions implements QxType {
   public int getHeight() {
     return top + bottom;
   }
-  
+
+  public String toDefaultString() {
+    return top + " " + right + " " + bottom + " " + left;
+  }
+
   public boolean equals( final Object object ) {
     boolean result = false;
     if( object == this ) {

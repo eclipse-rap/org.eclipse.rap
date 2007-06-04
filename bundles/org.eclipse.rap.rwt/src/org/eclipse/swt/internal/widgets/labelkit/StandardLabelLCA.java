@@ -22,7 +22,8 @@ import org.eclipse.swt.widgets.Label;
 
 public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
-  private static final Pattern LINE_BREAK_PATTERN = Pattern.compile( "\n" );
+  private static final Pattern NEWLINE_PATTERN
+    = Pattern.compile( "\\r\\n|\\r|\\n" );
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_ALIGNMENT = "alignment";
@@ -69,7 +70,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, label.getText(), "" ) ) {
       // Order is important here: escapeText, replace line breaks
       String text = WidgetLCAUtil.escapeText( label.getText(), true );
-      Matcher matcher = LINE_BREAK_PATTERN.matcher( text );
+      Matcher matcher = NEWLINE_PATTERN.matcher( text );
       text = matcher.replaceAll( "<br/>" );
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{ label, text };

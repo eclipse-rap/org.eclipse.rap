@@ -22,103 +22,31 @@
       default = "0, 0, 0" />
 
   <color name = "widget.shadow"
-      description = "used to draw outer shadow for borders"
+      description = "Color used to draw (outer) shadow line in 3d borders"
       default = "167, 166, 170" />
 
   <color name = "widget.highlight"
-      description = "used to draw outer highlight for borders"
+      description = "Color used to draw (outer) highlight line in 3d borders"
       default = "255, 255, 255" />
 
   <color name = "widget.darkshadow"
-      description = "used to draw inner shadow for borders"
+      description = "Color used to draw (inner) shadow line in 3d borders"
       default = "133, 135, 140" />
 
   <color name = "widget.lightshadow"
-      description = "used to draw inner highlight for borders"
+      description = "Color used to draw (inner) highlight line in 3d borders"
       default = "220, 223, 228" />
 
   <color name = "widget.thinborder"
-      description = "used for draw thin lines of groups, tabfolder headers, table headers, etc."
+      description = "Color for thin lines as shown by Group, TabFolder headers, Table headers, etc."
       default = "214, 210, 194" />
 
   <color name = "widget.graytext"
-      description = "used for text on disabled widgets"
+      description = "Color for text on disabled widgets"
       default = "167, 166, 170" />
 
-  <color name = "widget.selection-indicator"
-      description = "used for borders of TreeColumns and TabViews"
+  <color name = "widget.selection-marker"
+      description = "Color used to mark selected items like TreeColumns and TabViews"
       default = "254, 200, 60" />
-
-  <!-- TODO [rst] Move the following sections into separate files -->
-  
-  <!-- table -->
-  
-  <color name = "table.column.background"
-      description = ""
-      default = "232, 232, 215" />
-  
-  <color name = "table.column.mouseover.background"
-      description = ""
-      default = "248, 485, 255" />
-  
-  <!-- link -->
-  
-  <color name = "link.foreground"
-      description = ""
-      default = "0, 0, 127" />
-  
-  <!-- tab folder -->
-    
-  <color name = "tabfolder.background"
-      description = ""
-      default = "248, 248, 255" />
-  
-  <color name = "tabfolder.checked.background"
-      description = ""
-      default = "248, 248, 255" />
-  
-  <color name = "tabfolder.hover.background"
-      description = ""
-      default = "248, 248, 255" />
-
-  <!-- toolbar -->
-    
-  <color name = "toolbar.foreground"
-      description = ""
-      default = "0, 0, 0" />
-
-  <color name = "toolbar.hover.foreground"
-      description = ""
-      default = "0, 0, 0" />
-
-  <!--  == control.background -->
-  <color name = "toolbar.background"
-      description = ""
-      default = "248, 248, 255" />
-
-  <!-- 49, 106, 197 // == list.focused.background -->
-  <color name = "toolbar.hover.background"
-      description = ""
-      default = "255, 255, 255" />
-
-  <!-- menu -->
-  
-  <color name = "menu.foreground"
-      description = ""
-      default = "0, 0, 0" />
-  
-  <color name = "menu.hover.foreground"
-      description = ""
-      default = "255, 255, 255" />
-  
-  <!-- == control.background -->
-  <color name = "menu.background"
-      description = ""
-      default = "248, 248, 255" />
-  
-  <!-- == list.focused.background -->
-  <color name = "menu.hover.background"
-      description = ""
-      default = "49, 106, 197" />
 
 </theme>

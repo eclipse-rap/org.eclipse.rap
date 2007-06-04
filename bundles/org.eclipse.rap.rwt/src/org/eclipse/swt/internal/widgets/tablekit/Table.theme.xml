@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Table -->
+
+<theme>
+  
+  <color name = "table.column.background"
+      description = "Background color for table column headers"
+      default = "232, 232, 215" />
+  
+  <color name = "table.column.hover.background"
+      description = "Background color for table column headers on mouse over"
+      default = "248, 485, 255" />
+
+</theme>

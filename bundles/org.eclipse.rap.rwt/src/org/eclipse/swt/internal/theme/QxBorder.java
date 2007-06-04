@@ -64,14 +64,13 @@ public class QxBorder implements QxType {
     this.color = color;
   }
   
-  private void checkStyle( final String style ) {
-    boolean valid = false;
-    for( int i = 0; i < VALID_STYLES.length; i++ ) {
-      valid |= VALID_STYLES[ i ].equals( style );
-    }
-    if( !valid ) {
-      throw new IllegalArgumentException( "Illegal style" );
-    }
+  public String toDefaultString() {
+    // TODO [rst] Should color refer to a named color from the color theme? 
+    return width
+           + " "
+           + style
+           + " "
+           + QxColor.toHtmlString( color.red, color.green, color.blue );
   }
 
   public static boolean isValidStyle( final String string ) {
@@ -118,5 +117,15 @@ public class QxBorder implements QxType {
     + ", "
     + color.name
     + "}";
+  }
+  
+  private void checkStyle( final String style ) {
+    boolean valid = false;
+    for( int i = 0; i < VALID_STYLES.length; i++ ) {
+      valid |= VALID_STYLES[ i ].equals( style );
+    }
+    if( !valid ) {
+      throw new IllegalArgumentException( "Illegal style" );
+    }
   }
 }

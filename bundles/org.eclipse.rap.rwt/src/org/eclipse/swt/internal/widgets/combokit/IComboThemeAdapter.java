@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,14 +9,11 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.swt.internal.theme;
+package org.eclipse.swt.internal.widgets.combokit;
 
-public interface QxType {
+import org.eclipse.swt.internal.widgets.controlkit.IControlThemeAdapter;
 
-  /**
-   * Returns a default representation, that can also be applied to the
-   * constructor.
-   */
-  public String toDefaultString();
+
+public interface IComboThemeAdapter extends IControlThemeAdapter {
   
 }

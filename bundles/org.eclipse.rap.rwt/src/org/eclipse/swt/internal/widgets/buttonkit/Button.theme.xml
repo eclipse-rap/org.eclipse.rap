@@ -25,25 +25,25 @@
       default="225, 225, 230" />
 
   <border name="button.border"
-      description=""
+      description="[hidden]"
       default="2 outset gray" />
 
   <border name="button.FLAT.border"
-      description=""
+      description="[hidden]"
       default="1 solid black" />
 
   <border name="button.BORDER.border"
-      description=""
+      description="[hidden]"
       default="2 outset gray" />
 
   <boxdim name="button.padding"
-      description="Padding for buttons"
+      description="Padding for buttons [hidden]"
       default="2" />
 
   <dim name="button.spacing"
-      description="Space between image and text"
+      description="Space between image and text [hidden]"
       default="2" />
-
+  
   <!-- TODO pressed offset
        button.pressed.offset
          or

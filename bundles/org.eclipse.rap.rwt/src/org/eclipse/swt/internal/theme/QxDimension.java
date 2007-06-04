@@ -28,6 +28,10 @@ public class QxDimension implements QxType {
     return value;
   }
   
+  public String toDefaultString() {
+    return String.valueOf( value );
+  }
+  
   public boolean equals( final Object object ) {
     boolean result = false;
     if( object == this ) {

@@ -70,7 +70,7 @@ public class QxColor implements QxType {
           red = Integer.parseInt( parts[ 0 ] );
           green = Integer.parseInt( parts[ 1 ] );
           blue = Integer.parseInt( parts[ 2 ] );
-          name = toHtmlStr( red, green, blue );
+          name = toHtmlString( red, green, blue );
         } catch( NumberFormatException e ) {
           throw new IllegalArgumentException( "Illegal number format in color definition: "
                                               + color );
@@ -80,8 +80,12 @@ public class QxColor implements QxType {
       }
     }
   }
-
-  private static String toHtmlStr( final int red, final int green, final int blue )
+  
+  public String toDefaultString() {
+    return red + ", " + green + ", " + blue;
+  }
+  
+  public static String toHtmlString( final int red, final int green, final int blue )
   {
     StringBuffer sb = new StringBuffer();
     sb.append( "#" );
@@ -91,11 +95,6 @@ public class QxColor implements QxType {
     return sb.toString();
   }
   
-  private static String getHexStr( final int value ) {
-    String hex = Integer.toHexString( value );
-    return hex.length() == 1 ? "0" + hex : hex;
-  }
-
   public boolean equals( final Object obj ) {
     boolean result = false;
     if( obj == this ) {
@@ -108,11 +107,11 @@ public class QxColor implements QxType {
     }
     return result;
   }
-  
+
   public int hashCode() {
     return red ^ green ^ blue ;
   }
-  
+
   public String toString() {
     return "QxColor {"
            + red
@@ -121,6 +120,11 @@ public class QxColor implements QxType {
            + ", "
            + blue
            + "}";
+  }
+  
+  private static String getHexStr( final int value ) {
+    String hex = Integer.toHexString( value );
+    return hex.length() == 1 ? "0" + hex : hex;
   }
 
 }

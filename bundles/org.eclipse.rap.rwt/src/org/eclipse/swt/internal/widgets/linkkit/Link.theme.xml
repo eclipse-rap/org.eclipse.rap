@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Link -->
+
+<theme>
+  
+  <color name = "link.foreground"
+      description = "Text color for hyperlinks in Link widget"
+      default = "0, 0, 127" />
+
+</theme>

@@ -9,11 +9,11 @@
 -->
 
   <border name = "control.border"
-      description = ""
+      description = "Default border for controls [hidden]"
       default = "0 solid gray"/>
 
   <border name = "control.BORDER.border"
-      description = ""
+      description = "Default border for controls with BORDER style [hidden]"
       default = "2 outset gray"/>
 
 </theme>

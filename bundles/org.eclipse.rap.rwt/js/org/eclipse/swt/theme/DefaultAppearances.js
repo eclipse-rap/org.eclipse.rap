@@ -328,7 +328,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       style : function( states ) {
         return {
-          textColor       : "shell.foreground",
+          textColor       : "widget.foreground",
           backgroundColor : "shell.background",
 //          padding         : 1,
           border          : ( states.rwt_TITLE || states.rwt_BORDER )
@@ -925,14 +925,14 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
 
         var border_top_checked = new qx.renderer.border.Border(1, "solid", "#aca899");
         border_top_checked.setWidthBottom(0);
-        border_top_checked.setTop(3, "solid", "widget.selection-indicator");
+        border_top_checked.setTop(3, "solid", "widget.selection-marker");
 
         var border_bottom_normal = new qx.renderer.border.Border(1, "solid", "#aca899");
         border_bottom_normal.setWidthTop(0);
 
         var border_bottom_checked = new qx.renderer.border.Border(1, "solid", "#aca899");
         border_bottom_checked.setWidthTop(0);
-        border_bottom_checked.setBottom(3, "solid", "widget.selection-indicator");
+        border_bottom_checked.setBottom(3, "solid", "widget.selection-marker");
 
         var result;
 
@@ -1157,8 +1157,8 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           spacing         : 2
         };
         if( states.mouseover && !states.disabled ) {
-          result.backgroundColor = "table.column.mouseover.background";
-          result.border          = "table.column.mouseover.border";
+          result.backgroundColor = "table.column.hover.background";
+          result.border          = "table.column.hover.border";
         } else {
           result.backgroundColor = "table.column.background";
           result.border          = "table.column.border";

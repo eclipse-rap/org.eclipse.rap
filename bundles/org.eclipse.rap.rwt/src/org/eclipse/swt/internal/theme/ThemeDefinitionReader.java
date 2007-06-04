@@ -12,8 +12,6 @@ package org.eclipse.swt.internal.theme;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.parsers.*;
 
@@ -22,6 +20,24 @@ import org.xml.sax.*;
 
 public class ThemeDefinitionReader {
 
+  public class ThemeDef {
+    public final String name;
+    public final QxType value;
+    public final String description;
+    public ThemeDef( final String name,
+                     final QxType value,
+                     final String description )
+    {
+      this.name = name;
+      this.value = value;
+      this.description = description;
+    }
+  }
+  
+  public interface ThemeDefHandler {
+    public abstract void readThemeDef( ThemeDef def );
+  }
+  
   private static final String NODE_ROOT = "theme";
   private static final String TYPE_COLOR = "color";
   private static final String TYPE_BORDER = "border";
@@ -37,8 +53,7 @@ public class ThemeDefinitionReader {
   private InputStream inputStream;
   
   /**
-   * An instance of this class reads theme definitions from a theme definition
-   * XML resource.
+   * An instance of this class reads theme definitions from an XML resource.
    * @param inputStream input stream from a theme definition XML
    */
   public ThemeDefinitionReader( final InputStream inputStream )
@@ -53,49 +68,43 @@ public class ThemeDefinitionReader {
    * Reads a theme definition from the stream. The stream is kept open after
    * reading.
    */
-  public Map read()
+  public void read( final ThemeDefHandler callback )
     throws IOException, FactoryConfigurationError,
     ParserConfigurationException, SAXException
   {
-    Map result;
     Document document = parseThemeDefinition( inputStream );
-    result = readDocument( document );
-    return result;
-  }
-  
-  private Map readDocument( final Document document ) {
     Node root = document.getElementsByTagName( NODE_ROOT ).item( 0 );
     NodeList childNodes = root.getChildNodes();
-    // TODO [rst] Revise this
-    Map result = new HashMap();
     for( int i = 0; i < childNodes.getLength(); i++ ) {
       Node node = childNodes.item( i );
-      String type = node.getLocalName();
-      String name = getAttributeValue( node, "name" );
-      String value = getAttributeValue( node, "default" );
-      if( result.containsKey( name ) ) {
-        throw new IllegalArgumentException( "Key defined twice: " + name );
-      }
       if( node.getNodeType() == Node.ELEMENT_NODE ) {
-        QxType qxValue = null;
-        if( TYPE_COLOR.equals( type ) ) {
-          qxValue = new QxColor( value );
-        } else if( TYPE_BORDER.equals( type ) ) {
-          qxValue = new QxBorder( value );
-        } else if( TYPE_BOXDIM.equals( type ) ) {
-          qxValue = new QxBoxDimensions( value );
-        } else if( TYPE_DIM.equals( type ) ) {
-          qxValue = new QxDimension( value );
-        } else {
-          // TODO [rst] Remove when validation is active
-          throw new IllegalArgumentException( "Illegal type: " + type );
-        }
-        result.put( name, qxValue );
+        ThemeDef def = readElement( node );
+        callback.readThemeDef( def );
       }
     }
-    return result;
   }
-  
+
+  private ThemeDef readElement( final Node node ) {
+    String type = node.getLocalName();
+    String name = getAttributeValue( node, "name" );
+    String description = getAttributeValue( node, "description" );
+    String defaultStr = getAttributeValue( node, "default" );
+    QxType value;
+    if( TYPE_COLOR.equals( type ) ) {
+      value = new QxColor( defaultStr );
+    } else if( TYPE_BORDER.equals( type ) ) {
+      value = new QxBorder( defaultStr );
+    } else if( TYPE_BOXDIM.equals( type ) ) {
+      value = new QxBoxDimensions( defaultStr );
+    } else if( TYPE_DIM.equals( type ) ) {
+      value = new QxDimension( defaultStr );
+    } else {
+      // TODO [rst] Remove when XML validation is active
+      throw new IllegalArgumentException( "Illegal type: " + type );
+    }
+    return new ThemeDef( name, value, description );
+  }
+
   private static String getAttributeValue( final Node node, final String name ) {
     String result = null;
     NamedNodeMap attributes = node.getAttributes();
