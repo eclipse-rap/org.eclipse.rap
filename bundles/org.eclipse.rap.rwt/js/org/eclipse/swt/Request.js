@@ -36,7 +36,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     // background activity I choose a large timeout...
     requestQueue.setDefaultTimeout( 60000 * 60 * 24 ); // 24h
     // Standard UI-Requests and CallBackRequests
-    requestQueue.setMaxConcurrentRequests( 2 );
+    requestQueue.setMaxConcurrentRequests( 1 );
     // References the currently running request or null if no request is active
     this._currentRequest = null;
   },
@@ -109,16 +109,37 @@ qx.Class.define( "org.eclipse.swt.Request", {
      * require UI updates.
      */
     enableUICallBack : function( url, service_param, service_id ) {
-      var request = new qx.io.remote.Request( url, "GET", "text/javascript" );
+      var request = new qx.io.remote.Request( url, 
+                                              "GET", 
+                                              qx.util.Mime.JAVASCRIPT );
       request.setParameter( service_param, service_id );
       request.setAsynchronous( true );
-      request.send();
+//      request.send();
+      // TODO [rh] WORKAROUND
+      //       we would need two requestQueues (one for 'normal' requests that 
+      //       is limited to 1 concurrent request and one for the UI callback
+      //       requests (probably without limit)
+      //       Until qooxdoo supports multiple ditince requestQueues we send
+      //       the UI callback request without letting the requestQueue know
+      var vRequest = request;
+      var vTransport = new qx.io.remote.Exchange(vRequest);
+      // Establish event connection between qx.io.remote.Exchange instance and
+      // qx.io.remote.Request
+      vTransport.addEventListener("sending", vRequest._onsending, vRequest);
+      vTransport.addEventListener("receiving", vRequest._onreceiving, vRequest);
+      vTransport.addEventListener("completed", vRequest._oncompleted, vRequest);
+      vTransport.addEventListener("aborted", vRequest._onaborted, vRequest);
+      vTransport.addEventListener("timeout", vRequest._ontimeout, vRequest);
+      vTransport.addEventListener("failed", vRequest._onfailed, vRequest);
+      vTransport._start = (new Date).valueOf();
+      vTransport.send();
+      // END WORKAROUND
     },
 
     _sendImmediate : function() {
       this._dispatchSendEvent();
       // create and configure request object
-      // To solve bugzilla bug entry 165666 we use GET- instead of POST-method
+      // To solve bug #165666 we use GET- instead of POST-method
       var request = new qx.io.remote.Request( this._url, 
                                               "GET", 
                                               qx.util.Mime.JAVASCRIPT );
@@ -165,7 +186,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
     },
 
-    _hideWaitHint : function() {
+    _hideWaitHint : function( evt ) {
       this._currentRequest = null;
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.setGlobalCursor( null );
