@@ -39,9 +39,9 @@ public final class JSWriter {
   
   private static final Pattern DOUBLE_QUOTE_PATTERN 
     = Pattern.compile( "(\"|\\\\)" );
-  private static final Pattern CR_LF_PATTERN 
+  private static final Pattern NEWLINE_PATTERN 
     = Pattern.compile( "\\r\\n|\\r|\\n" );
-  private static final String NEW_LINE_ESCAPE = "\\\\n";
+  private static final String NEWLINE_ESCAPE = "\\\\n";
   
   private static final JSVar TARGET_REF = new JSVar( "t" );
   
@@ -586,8 +586,8 @@ public final class JSWriter {
   private static String escapeString( final String input ) {
     Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( input );
     String result = matcher.replaceAll( "\\\\$1" );
-    matcher = CR_LF_PATTERN.matcher( result );
-    result = matcher.replaceAll( NEW_LINE_ESCAPE );
+    matcher = NEWLINE_PATTERN.matcher( result );
+    result = matcher.replaceAll( NEWLINE_ESCAPE );
     return result;
   }
 

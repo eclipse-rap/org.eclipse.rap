@@ -22,7 +22,8 @@ import org.eclipse.swt.widgets.Widget;
 
 public class ComboLCA extends AbstractWidgetLCA {
   
-  private static final Pattern NEWLINE_PATTERN = Pattern.compile( "\n" );
+  private static final Pattern NEWLINE_PATTERN
+    = Pattern.compile( "\\r\\n|\\r|\\n" );
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );

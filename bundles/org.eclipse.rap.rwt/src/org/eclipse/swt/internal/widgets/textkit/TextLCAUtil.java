@@ -12,17 +12,22 @@
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
+
 import com.w4t.W4TContext;
 import com.w4t.util.browser.Mozilla;
 
 
 final class TextLCAUtil {
   
+  private static final Pattern NEWLINE_PATTERN
+    = Pattern.compile( "\\r\\n|\\r|\\n" );
   static final String PROP_TEXT = "text";
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_SELECTION = "selection";
@@ -144,6 +149,6 @@ final class TextLCAUtil {
    * Returns the given string with all newlines replaced with spaces.
    */
   static String stripNewlines( final String text ) {
-    return text.replaceAll( "\n", " " );
+    return NEWLINE_PATTERN.matcher( text ).replaceAll( " " );
   }
 }

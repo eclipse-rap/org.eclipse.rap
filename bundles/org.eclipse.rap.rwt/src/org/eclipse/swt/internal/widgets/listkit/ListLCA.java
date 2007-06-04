@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Widget;
 public class ListLCA extends AbstractWidgetLCA {
 
   private static final Pattern NEWLINE_PATTERN 
-    = Pattern.compile( "\n" );
+    = Pattern.compile( "\\r\\n|\\r|\\n" );
 
   // Property names, used when preserving values
   private static final String PROP_SELECTION = "selection";
