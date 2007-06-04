@@ -293,8 +293,7 @@ public class ThemeManager {
           }
         } );
       } catch( final SAXException e ) {
-        throw new IllegalArgumentException( "Failed to parse file " + fileName,
-                                            e );
+        throw new IllegalArgumentException( "Failed to parse file " + fileName );
       } finally {
         inStream.close();
       }

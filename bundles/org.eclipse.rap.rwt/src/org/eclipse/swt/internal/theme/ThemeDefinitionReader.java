@@ -85,7 +85,7 @@ public class ThemeDefinitionReader {
   }
 
   private ThemeDef readElement( final Node node ) {
-    String type = node.getLocalName();
+    String type = node.getNodeName();
     String name = getAttributeValue( node, "name" );
     String description = getAttributeValue( node, "description" );
     String defaultStr = getAttributeValue( node, "default" );
