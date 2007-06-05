@@ -12,13 +12,15 @@
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
@@ -31,6 +33,8 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static final String PROP_IMAGES = "images";
   private static final String PROP_CHECKED = "checked";
   private static final String PROP_GRAYED = "grayed";
+  private static final String PROP_SELECTED = "selected";
+  private static final String PROP_FOCUSED = "focused";
   
   public void preserveValues( final Widget widget ) {
     TableItem item = ( TableItem )widget;
@@ -41,6 +45,8 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
     adapter.preserve( PROP_TEXTS, getTexts( item ) );
     adapter.preserve( PROP_IMAGES, getImages( item ) );
+    adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( item ) ) );
+    adapter.preserve( PROP_FOCUSED, Boolean.valueOf( isFocused( item ) ) );
   }
 
   public void readData( final Widget widget ) {
@@ -79,8 +85,36 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     writeImages( item );
     writeChecked( item );
     writeGrayed( item );
+    writeSelection( item );
+    writeFocused( item );
   }
 
+  /* (intentionally not JavaDoc'ed)
+   * The client-side representation of a TableItem is not a qooxdoo widget.
+   * Therefore the standard mechanism for dispoing of a widget is not used.
+   */
+  public void renderDispose( final Widget widget ) throws IOException {
+    TableItem item = ( TableItem )widget;
+    JSWriter writer = JSWriter.getWriterFor( item );
+    writer.call( "dispose", null );
+  }
+
+  //////////////////
+  // ReadData helper
+  
+  private static int getWidgetSelectedDetail() {
+    int result = SWT.NONE;
+    HttpServletRequest request = ContextProvider.getRequest();
+    String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_DETAIL );
+    if( "check".equals( value ) ) {
+      result = SWT.CHECK;
+    }
+    return result;
+  }
+
+  ///////////////////////
+  // RenderChanges helper
+  
   private static void writeTexts( final TableItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     String[] texts = getTexts( item );
@@ -122,6 +156,23 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     Boolean newValue = Boolean.valueOf( item.getGrayed() );
     writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
   }
+  
+  private static void writeSelection( final TableItem item ) throws IOException 
+  {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    Boolean newValue = Boolean.valueOf( isSelected( item ) );
+    writer.set( PROP_SELECTED, "selection", newValue, Boolean.FALSE );
+  }
+
+  private static void writeFocused( final TableItem item ) throws IOException 
+  {
+    Boolean newValue = Boolean.valueOf( isFocused( item ) );
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( item, PROP_FOCUSED, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.call( "focus", null );
+    }
+  }
 
   private static String encodeHTML( final String text ) {
     String result = text.replaceAll( "\"", "&#034;" );
@@ -130,63 +181,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
   
-  
-  /* (intentionally not JavaDoc'ed)
-   * The client-side representation of a TableItem is not a qooxdoo widget.
-   * Therefore the standard mechanism for dispoing of a widget is not used.
-   */
-  public void renderDispose( final Widget widget ) throws IOException {
-    TableItem item = ( TableItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( item );
-    writer.call( "dispose", null );
-  }
-
-  ////////////////////////////////////
-  // Change detection for item content
-  
-  static boolean itemContentChanged( final TableItem item ) {
-    boolean result;
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    if( adapter.isInitialized() ) {
-      result = false;
-      Table table = item.getParent();
-      int columnCount = getColumnCount( item );
-      // Has column count changed?
-      if( !result ) {
-        int preservedColCount = TableLCAUtil.getPreservedColumnCount( table );
-        if( preservedColCount != columnCount ) {
-          result = true;
-        }
-      }
-      // Has one of the texts changed?
-      if( !result ) {
-        String[] preservedTexts 
-          = ( String[] )adapter.getPreserved( PROP_TEXTS );
-        for( int i = 0; !result && i < columnCount; i++ ) {
-          if( !item.getText( i ).equals( preservedTexts[ i ] ) ) {
-            result = true;
-          }
-        }
-      }
-    } else {
-      result = true;
-    }
-    return result;
-  }
-  
-  //////////////////
-  // ReadData helper
-  
-  private static int getWidgetSelectedDetail() {
-    int result = SWT.NONE;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_DETAIL );
-    if( "check".equals( value ) ) {
-      result = SWT.CHECK;
-    }
-    return result;
-  }
-
   //////////////////////
   // Item data accessors
   
@@ -210,5 +204,19 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   private static int getColumnCount( final TableItem item ) {
     return Math.max( 1, item.getParent().getColumnCount() );
+  }
+  
+  private static boolean isSelected( final TableItem item ) {
+    Table table = item.getParent();
+    int index = table.indexOf( item );
+    return index != -1 && table.isSelected( index );
+  }
+
+  private static boolean isFocused( final TableItem item ) {
+    Table table = item.getParent();
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    int focusIndex = tableAdapter.getFocusIndex();
+    return focusIndex != -1 && item == table.getItem( focusIndex ); 
   }
 }

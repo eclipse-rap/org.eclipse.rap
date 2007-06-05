@@ -11,15 +11,15 @@
 
 package org.eclipse.swt.widgets;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
-import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.*;
 
 
 /** 
@@ -70,8 +70,8 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * <li>Though Table inherits the font property from Control, it is currently
  * not evaluated client-side.</li>
  * <li>Though it is possible to create a table with MULTI style, only SINGLE
- *  selections are implemented. This also applies when using setSelection with 
- *  more than one TableItem</li>
+ *  selections are implemented. This also applies when using selection methods 
+ *  with more than one TableItem</li>
  *  <li>VIRTUAL not yet implemented</li>
  *  <li>showSelection and showItem currently do a very rough proximation since
  *  getClientArea is not yet implemented properly</li>
@@ -121,16 +121,28 @@ public class Table extends Composite {
     }
   }
   
+  private final class TableAdapter implements ITableAdapter {
+    public int getFocusIndex() {
+      return Table.this.focusIndex; 
+    }
+    
+    public void setFocusIndex( final int focusIndex ) {
+      Table.this.setFocusIndex( focusIndex );
+    }
+  }
+  
   private static final int GRID_WIDTH = 1;
   private static final int DEFAULT_ITEM_HEIGHT = 15;
   private static final TableItem[] EMPTY_SELECTION = new TableItem[ 0 ];
   
+  private final ITableAdapter tableAdapter;
   private final ItemHolder itemHolder;
   private final ItemHolder columnHolder;
   private TableItem[] selection;
   private boolean linesVisible;
   private boolean headerVisible;
   private int topIndex;
+  private int focusIndex;
   
   /**
    * Constructs a new instance of this class given its parent
@@ -164,9 +176,13 @@ public class Table extends Composite {
    * @see SWT#VIRTUAL
    * @see Widget#checkSubclass
    * @see Widget#getStyle
+   * 
+   * @since 1.0 
    */
   public Table( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
+    focusIndex = -1;
+    tableAdapter = new TableAdapter();
     itemHolder = new ItemHolder( TableItem.class );
     columnHolder = new ItemHolder( TableColumn.class );
     selection = EMPTY_SELECTION;
@@ -176,6 +192,8 @@ public class Table extends Composite {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = new CompositeItemHolder();
+    } else if( adapter == ITableAdapter.class ) {
+      result = tableAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -198,6 +216,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public int getColumnCount() {
     checkWidget();
@@ -230,6 +250,8 @@ public class Table extends Composite {
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
+   * 
+   * @since 1.0 
    */
   public TableColumn[] getColumns() {
     checkWidget();
@@ -262,6 +284,8 @@ public class Table extends Composite {
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
+   * 
+   * @since 1.0 
    */
   public TableColumn getColumn( final int index ) {
     checkWidget();
@@ -284,6 +308,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public int indexOf( final TableColumn tableColumn ) {
     checkWidget();
@@ -305,6 +331,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public int getItemCount() {
     checkWidget();
@@ -326,6 +354,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public TableItem[] getItems() {
     checkWidget();
@@ -346,6 +376,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public TableItem getItem( final int index ) {
     checkWidget();
@@ -368,6 +400,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public int indexOf( final TableItem tableItem ) {
     checkWidget();
@@ -384,6 +418,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public void removeAll() {
     checkWidget();
@@ -413,6 +449,8 @@ public class Table extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
+   * 
+   * @since 1.0 
    */
   public void remove( final int start, final int end ) {
     checkWidget();
@@ -445,6 +483,8 @@ public class Table extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
+   * 
+   * @since 1.0 
    */
   public void remove( final int index ) {
     checkWidget();
@@ -474,6 +514,8 @@ public class Table extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
+   * 
+   * @since 1.0 
    */
   public void remove( final int[] indices ) {
     checkWidget();
@@ -647,8 +689,11 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public int getSelectionIndex() {
+    checkWidget();
     // TODO: [fappel] currently we do not have a focus indicator, so
     //                we return simply return the first index in range
     int selectionIndex = -1;
@@ -676,13 +721,15 @@ public class Table extends Composite {
    *
    * @see Table#deselectAll()
    * @see Table#select(int)
+   * 
+   * @since 1.0 
    */
   public void setSelection( final int index ) {
-    if( index >= 0 && index < itemHolder.size() ) {
-      TableItem item = ( TableItem )itemHolder.getItem( index );
-      selection = new TableItem[] { item };
-    } else {
-      selection = EMPTY_SELECTION;
+    checkWidget();
+    deselectAll ();
+    select( index );
+    if( index < itemHolder.size() ) {
+      setFocusIndex( index );
     }
   }
 
@@ -695,8 +742,11 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public int getSelectionCount() {
+    checkWidget();
     return getSelection().length;
   }
 
@@ -721,18 +771,21 @@ public class Table extends Composite {
    *
    * @see Table#deselectAll()
    * @see Table#select(int,int)
+   * 
+   * @since 1.0 
    */
   public void setSelection( final int start, final int end ) {
-    // TODO: [fappel] style bits for single/multi selection
-    if( end >= 0 && start <= end ) {
-      int actualStart = Math.max( 0, start );
-      int actualEnd = Math.min( end, itemHolder.size() - 1 );
-      selection = new TableItem[ actualEnd - actualStart + 1 ];
-      int count = 0;
-      for( int i = actualStart; i < actualEnd + 1; i++ ) {
-        selection[ count ] = ( TableItem )itemHolder.getItem( i );
-        count++;
-      }
+    checkWidget();
+    deselectAll();
+    select( start, end );
+    int count = itemHolder.size();
+    if(    end >= 0
+        && start <= end
+        && ( ( style & SWT.SINGLE ) == 0 || start == end ) 
+        && count != 0 
+        && start < count ) 
+    {
+      setFocusIndex( Math.max( 0, start ) );
     }
   }
 
@@ -751,8 +804,13 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public TableItem[] getSelection() {
+    checkWidget();
+    // TODO [rh] handle this (remove disposed item from selection) in destroyItem 
+    // clean up internal structure: remove disposed items from selection
     List buffer = new ArrayList();
     for( int i = 0; i < selection.length; i++ ) {
       if( !selection[ i ].isDisposed() ) {
@@ -761,6 +819,7 @@ public class Table extends Composite {
     }
     selection = new TableItem[ buffer.size() ];
     buffer.toArray( selection );
+    // return a copy of the now clean internal structure
     return ( TableItem[] )selection.clone();
   }
 
@@ -785,22 +844,50 @@ public class Table extends Composite {
    *
    * @see Table#deselectAll()
    * @see Table#select(int[])
+   * 
+   * @since 1.0 
    */
   public void setSelection( final int[] indices ) {
+    checkWidget();
     if( indices == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    // TODO: [fappel] style bits for single/multi selection
-    
-    Integer[] filteredIndices = filterIndices( indices );    
-    TableItem[] newSelection = new TableItem[ filteredIndices.length ];
-    for( int i = 0; i < filteredIndices.length; i++ ) {
-      int index = filteredIndices[ i ].intValue();
-      newSelection[ i ] = ( TableItem )itemHolder.getItem( index );
-    }
-    selection = newSelection;
+    deselectAll();
+    select( indices );
+    int length = indices.length;
+    if( length != 0 && ( ( style & SWT.SINGLE ) == 0 || length <= 1 ) ) {
+      setFocusIndex( indices[ 0 ] );
+    } 
   }
   
+  /**
+   * Sets the receiver's selection to the given item.
+   * The current selection is cleared before the new item is selected.
+   * <p>
+   * If the item is not in the receiver, then it is ignored.
+   * </p>
+   *
+   * @param item the item to select
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the item is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the item has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
+  public void setSelection( final TableItem item ) {
+    checkWidget();
+    if( item == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    setSelection( new TableItem[]{ item } );
+  }
+
   /**
    * Sets the receiver's selection to be the given array of items.
    * The current selection is cleared before the new items are selected.
@@ -824,8 +911,11 @@ public class Table extends Composite {
    * @see Table#deselectAll()
    * @see Table#select(int[])
    * @see Table#setSelection(int[])
+   * 
+   * @since 1.0 
    */
   public void setSelection( final TableItem[] items ) {
+    checkWidget();
     if( items == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -851,8 +941,11 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public int[] getSelectionIndices() {
+    checkWidget();
     TableItem[] currentSelection = getSelection();
     int[] result = new int[ currentSelection.length ];
     for( int i = 0; i < currentSelection.length; i++ ) {
@@ -873,8 +966,11 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public boolean isSelected( final int index ) {
+    checkWidget();
     boolean result = false;
     if( index >= 0 && index < itemHolder.size() ) {
       Item item = itemHolder.getItem( index );
@@ -887,12 +983,223 @@ public class Table extends Composite {
   }
   
   /**
+   * Selects the item at the given zero-relative index in the receiver. 
+   * If the item at the index was already selected, it remains
+   * selected. Indices that are out of range are ignored.
+   *
+   * @param index the index of the item to select
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0 
+   */
+  public void select( final int index ) {
+    checkWidget();
+    if( index >= 0 && index < itemHolder.size() ) {
+      TableItem item = ( TableItem )itemHolder.getItem( index );
+      if( ( style & SWT.SINGLE ) != 0 ) {
+        selection = new TableItem[] { item };
+      } else {
+        int length = selection.length;
+        if( !isSelected( index ) ) {
+          TableItem[] newSelection = new TableItem[ length + 1 ];
+          System.arraycopy( selection, 0, newSelection, 0, length );
+          newSelection[ length ] = item;
+          selection = newSelection;
+        }
+      }
+    }
+  }
+  
+  /**
+   * Selects the items in the range specified by the given zero-relative
+   * indices in the receiver. The range of indices is inclusive.
+   * The current selection is not cleared before the new items are selected.
+   * <p>
+   * If an item in the given range is not selected, it is selected.
+   * If an item in the given range was already selected, it remains selected.
+   * Indices that are out of range are ignored and no items will be selected
+   * if start is greater than end.
+   * If the receiver is single-select and there is more than one item in the
+   * given range, then all indices are ignored.
+   * </p>
+   *
+   * @param start the start of the range
+   * @param end the end of the range
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see Table#setSelection(int,int)
+   * 
+   * @since 1.0 
+   */
+  public void select( final int start, final int end ) {
+    checkWidget();
+    if(    end >= 0
+        && start <= end
+        && ( ( style & SWT.SINGLE ) == 0 || start == end ) ) 
+    {
+      int count = itemHolder.size();
+      if( count != 0 && start < count ) {
+        int adjustedStart = Math.max( 0, start );
+        int adjustedEnd = Math.min( end, count - 1 );
+        if( adjustedStart == 0 && adjustedEnd == count - 1 ) {
+          selectAll();
+        } else {
+          for( int i = adjustedStart; i <= adjustedEnd; i++ ) {
+            select( i );
+          }
+        }
+      }
+    }
+  }
+  
+  /**
+   * Selects the items at the given zero-relative indices in the receiver.
+   * The current selection is not cleared before the new items are selected.
+   * <p>
+   * If the item at a given index is not selected, it is selected.
+   * If the item at a given index was already selected, it remains selected.
+   * Indices that are out of range and duplicate indices are ignored.
+   * If the receiver is single-select and multiple indices are specified,
+   * then all indices are ignored.
+   * </p>
+   *
+   * @param indices the array of indices for the items to select
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the array of indices is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see Table#setSelection(int[])
+   * 
+   * @since 1.0 
+   */
+  public void select( final int[] indices ) {
+    checkWidget();
+    if( indices == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    int length = indices.length;
+    if( length != 0 && ( ( style & SWT.SINGLE ) == 0 || length <= 1 ) ) {
+      for( int i = length - 1; i >= 0; --i ) {
+        select( indices[ i ] );
+      }
+    } 
+  }
+
+  /**
+   * Selects all of the items in the receiver.
+   * <p>
+   * If the receiver is single-select, do nothing.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0 
+   */
+  public void selectAll() {
+    checkWidget();
+    if( ( style & SWT.SINGLE ) == 0 ) {
+      setSelection( getItems() );
+    }
+  }
+  
+  /**
+   * Deselects the item at the given zero-relative index in the receiver.
+   * If the item at the index was already deselected, it remains
+   * deselected. Indices that are out of range are ignored.
+   *
+   * @param index the index of the item to deselect
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
+  public void deselect( final int index ) {
+    checkWidget();
+    removeFromSelection( index );
+  }
+
+  /**
+   * Deselects the items at the given zero-relative indices in the receiver.
+   * If the item at the given zero-relative index in the receiver 
+   * is selected, it is deselected.  If the item at the index
+   * was not selected, it remains deselected.  The range of the
+   * indices is inclusive. Indices that are out of range are ignored.
+   *
+   * @param start the start index of the items to deselect
+   * @param end the end index of the items to deselect
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void deselect( final int start, final int end ) {
+    checkWidget ();
+    if( start == 0 && end == itemHolder.size() - 1 ) {
+      deselectAll();
+    } else {
+      int actualStart = Math.max( 0, start );
+      for( int i = actualStart; i <= end; i++ ) {
+        removeFromSelection( i );
+      }
+    }
+  }
+
+  /**
+   * Deselects the items at the given zero-relative indices in the receiver.
+   * If the item at the given zero-relative index in the receiver 
+   * is selected, it is deselected.  If the item at the index
+   * was not selected, it remains deselected. Indices that are out
+   * of range and duplicate indices are ignored.
+   *
+   * @param indices the array of indices for the items to deselect
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the set of indices is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void deselect( final int[] indices ) {
+    checkWidget();
+    if( indices == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    for( int i = 0; i < indices.length; i++ ) {
+      removeFromSelection( i );
+    }
+  }
+
+  /**
    * Deselects all selected items in the receiver.
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public void deselectAll() {
     checkWidget();
@@ -913,6 +1220,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public void setTopIndex( final int topIndex ) {
     checkWidget();
@@ -932,6 +1241,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public int getTopIndex() {
     checkWidget();
@@ -955,6 +1266,8 @@ public class Table extends Composite {
    * </ul>
    *
    * @see Table#showSelection()
+   * 
+   * @since 1.0 
    */
   public void showItem( final TableItem item ) {
     checkWidget();
@@ -991,6 +1304,8 @@ public class Table extends Composite {
    * </ul>
    *
    * @see Table#showItem(TableItem)
+   * 
+   * @since 1.0 
    */
   public void showSelection() {
     checkWidget();
@@ -1019,6 +1334,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public void setHeaderVisible( final boolean headerVisible ) {
     checkWidget();
@@ -1041,6 +1358,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public boolean getHeaderVisible() {
     checkWidget();
@@ -1063,6 +1382,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public boolean getLinesVisible() {
     checkWidget();
@@ -1084,6 +1405,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public void setLinesVisible( final boolean linesVisible ) {
     checkWidget();
@@ -1103,8 +1426,10 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
-  public int getItemHeight () {
+  public int getItemHeight() {
     checkWidget();
     int result = DEFAULT_ITEM_HEIGHT;
     if( itemHolder.size() > 0 ) {
@@ -1145,6 +1470,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @since 1.0 
    */
   public int getGridLineWidth () {
     checkWidget();
@@ -1180,8 +1507,11 @@ public class Table extends Composite {
    * @see SelectionListener
    * @see #removeSelectionListener
    * @see SelectionEvent
+   * 
+   * @since 1.0 
    */
   public void addSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.addListener( this, listener );
   }
   
@@ -1201,8 +1531,11 @@ public class Table extends Composite {
    *
    * @see SelectionListener
    * @see #addSelectionListener(SelectionListener)
+   * 
+   * @since 1.0 
    */
   public void removeSelectionListener( final SelectionListener listener ) {
+    checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
@@ -1230,28 +1563,44 @@ public class Table extends Composite {
   }
   
   final void destroyItem( final TableItem item ) {
+    int index = itemHolder.indexOf( item );
     itemHolder.remove( item );
     if( topIndex > getItemCount() - 1 ) {
       topIndex = Math.max( 0, getItemCount() - 1 );
+    }
+    if( index == focusIndex ) {
+      focusIndex = -1;
     }
   }
   
   //////////////////
   // helping methods
   
-  private Integer[] filterIndices( final int[] indices ) {
-    Set buffer = new HashSet();
-    for( int i = 0; i < indices.length; i++ ) {
-      if( indices[ i ] >= 0 && indices[ i ] < itemHolder.size() ) {
-        buffer.add( new Integer( indices[ i ] ) );
+  final void setFocusIndex( final int focusIndex ) {
+    if( focusIndex >= 0 ) {
+      this.focusIndex = focusIndex;
+    }
+  }
+
+  private void removeFromSelection( final int index ) {
+    if( index >= 0 && index < itemHolder.size() ) {
+      TableItem item = getItem( index );
+      boolean found = false;
+      for( int i = 0; !found && i < selection.length; i++ ) {
+        if( item == selection[ i ] ) {
+          int length = selection.length;
+          TableItem[] newSel = new TableItem[ length - 1 ];
+          System.arraycopy( selection, 0, newSel, 0, i );
+          if( i < length - 1 ) {
+            System.arraycopy( selection, i + 1, newSel, i, length - i - 1 );
+          }
+          selection = newSel;
+          found = true;
+        }
       }
     }
-    Integer[] result = new Integer[ buffer.size() ];
-    buffer.toArray( result );
-    Arrays.sort( result );
-    return result;
   }
-  
+
   private int getVisibleItemCount() {
     //  TODO [rh] replace this once getClientArea is working    
     int clientHeight = getBounds().height 

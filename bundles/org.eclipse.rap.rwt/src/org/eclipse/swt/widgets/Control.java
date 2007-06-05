@@ -1258,6 +1258,8 @@ public abstract class Control extends Widget {
     }
   }
   
+  // TODO [rh] @rst: I think the clazz argument is unnecessary as clazz is
+  //      always this.getClass()
   private IControlThemeAdapter getControlThemeAdapter( final Class clazz ) {
     ThemeManager themeMgr = ThemeManager.getInstance();
     return ( IControlThemeAdapter )themeMgr.getThemeAdapter( clazz );

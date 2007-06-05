@@ -9,33 +9,45 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 public class TableTab extends ExampleTab {
 
   private static final int INITIAL_ITEMS = 1;
-  protected static final int ADD_ITEMS = 300;
   
   private Table table;
   private boolean headerVisible = true;
   private boolean linesVisible;
+  private int columnsWidthImages = 0;
   private int columns = 5;
+  private final Image smallImage; 
+//  private final Image bigImage; 
 
-  public TableTab( final CTabFolder topFolder ) {
-    super( topFolder, "Table" );
+  public TableTab( final CTabFolder folder ) {
+    super( folder, "Table" );
+    smallImage = Image.find( "resources/newfile_wiz.gif", 
+                             getClass().getClassLoader() );
+//    bigImage = Image.find( "resources/big_image.png", 
+//                           getClass().getClassLoader() );
   }
 
   protected void createStyleControls() {
-    createStyleButton( "BORDER" );
+    createStyleButton( "MULTI" );
     createStyleButton( "CHECK" );
+    createStyleButton( "BORDER" );
     createVisibilityButton();
     createEnablementButton();
     createHeaderVisibleButton();
     createLinesVisibleButton();
+    createFgColorButton();
+    createBgColorButton();
     createFontChooser();
     createAddItemsButton();
     createSelectItemButton();
@@ -44,8 +56,11 @@ public class TableTab extends ExampleTab {
     createTopIndexButton();
     createShowSelectionButton();
     createChangeCheckButton();
+    createChangeGrayButton();
     createChangeColumnsControl();
     createChangeItemControl();
+    // TODO [rh] enabled as soone as images are working properly
+//    createImagesControl();
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -77,14 +92,6 @@ public class TableTab extends ExampleTab {
     table.setHeaderVisible( headerVisible );
     table.setLinesVisible( linesVisible );
     Menu menu = new Menu( table );
-    menu.addMenuListener( new MenuListener() {
-      public void menuShown( MenuEvent e ) {
-System.out.println( e );        
-      }
-      public void menuHidden( MenuEvent e ) {
-System.out.println( e );        
-      }
-    } );
     MenuItem menuItem = new MenuItem( menu, SWT.NONE );
     menuItem.setText( "Menu for Table" );
     table.setMenu( menu );
@@ -119,29 +126,45 @@ System.out.println( e );
     TableItem result = new TableItem( table, SWT.NONE );
     int itemCount = result.getParent().getItemCount() - 1;
     if( columns == 0 ) {
-      result.setText(  "Item " + itemCount );
+      result.setText( "Item " + itemCount );
+      if( columnsWidthImages == 1 ) {
+        result.setImage( smallImage );
+      }
     } else {
       for( int i = 0; i < columns; i++ ) {
         result.setText( i, "Item" + itemCount + "-" + i );
+        if( i < columnsWidthImages ) {
+          result.setImage( i, smallImage );
+        }
       }
     }
     return result;
   }
 
   private void createAddItemsButton() {
-    Button btnAddOne = new Button( styleComp, SWT.PUSH );
-    btnAddOne.setText( "Add 1 Item" );
-    btnAddOne.addSelectionListener( new SelectionAdapter() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Add" );
+    final Text text = new Text( composite, SWT.BORDER );
+    text.setText( "1" );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Item(s)" );
+    button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        addItem();
-      }
-    } );
-    Button btnAddMany = new Button( styleComp, SWT.PUSH );
-    btnAddMany.setText( "Add " + ADD_ITEMS + " Items" );
-    btnAddMany.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        for( int i = 0; i < ADD_ITEMS; i++ ) {
-          addItem();
+        int count = -1;
+        try {
+          count = Integer.parseInt( text.getText() );
+        } catch( NumberFormatException e ) {
+          // 
+        }
+        if( count < 0 ) {
+          String msg = "Invalid number of TableItems: " + text.getText();
+          MessageDialog.openInformation( getShell(), "Information", msg, null );
+        } else {
+          for( int i = 0; i < count; i++ ) {
+            addItem();
+          }
         }
       }
     } );
@@ -216,6 +239,19 @@ System.out.println( e );
     } );
   }
 
+  private void createChangeGrayButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Change grayed for selection" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        TableItem[] selection = table.getSelection();
+        for( int i = 0; i < selection.length; i++ ) {
+          selection[ i ].setGrayed( !selection[ i ].getGrayed() );
+        }
+      }
+    } );
+  }
+
   private void createChangeColumnsControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
     composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
@@ -241,7 +277,7 @@ System.out.println( e );
   
   private void createChangeItemControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
-    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
+    composite.setLayout( new GridLayout( 4, false ) );
     Label lblIndex = new Label( composite, SWT.NONE );
     lblIndex.setText( "Index" );
     final Text txtIndex = new Text( composite, SWT.BORDER );
@@ -250,6 +286,7 @@ System.out.println( e );
     lblText.setText( "Text" );
     final Text txtText = new Text( composite, SWT.BORDER );
     Button button = new Button( composite, SWT.PUSH );
+    button.setLayoutData( new GridData( SWT.BEGINNING, SWT.CENTER, false, false, 4, SWT.DEFAULT ) );
     button.setText( "Change" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -279,6 +316,32 @@ System.out.println( e );
     } );
   }
   
+//  private void createImagesControl() {
+//    Composite composite = new Composite( styleComp, SWT.NONE );
+//    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+//    Label label = new Label( composite , SWT.NONE );
+//    label.setText( "Columns width images" );
+//    final Spinner spinner = new Spinner( composite , SWT.BORDER );
+//    spinner.setLayoutData( new RowData( 50, 20 ) );
+//    Button button = new Button( composite , SWT.PUSH );
+//    button.setText( "Change" );
+//    button.addSelectionListener( new SelectionAdapter() {
+//      public void widgetSelected( final SelectionEvent event ) {
+//        int count = spinner.getSelection();
+//        for( int i = 0; i < table.getItemCount(); i++ ) {
+//          for( int c = 0; c < table.getColumnCount(); c++ ) {
+//            TableItem item = table.getItem( i );
+//            if( c < count ) {
+//              item.setImage( c, bigImage );
+//            } else {
+//              item.setImage( c, null );
+//            }
+//          }
+//        }
+//      }
+//    } );
+//  }
+
   private Table getTable() {
     return table;
   }

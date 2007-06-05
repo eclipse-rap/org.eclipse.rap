@@ -1441,6 +1441,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           cursor : "pointer",
           font : "link.ref.font",
           textColor : states.disabled ? "widget.graytext" : "link.foreground"
+//          textColor : states.disabled ? "widget.graytext" : "#00007f"
         }
       }
     }

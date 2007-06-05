@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
 
 public class Table_Test extends TestCase {
 
@@ -240,6 +241,33 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getSelection().length );
   }
   
+  public void testFocusedIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+
+    // Test initial value
+    assertEquals( -1, tableAdapter.getFocusIndex() );
+    
+    // setSelection changes the focusIndex to the selected item
+    table.setSelection( item );
+    assertEquals( 0, tableAdapter.getFocusIndex() );
+    
+    // Resetting the selection does not affect the focusIndex
+    table.setSelection( item );
+    table.deselectAll();
+    assertEquals( 0, table.getSelectionCount() );
+    assertEquals( 0, tableAdapter.getFocusIndex() );
+    
+    // Disposing of the focused item also resets the focusIndex
+    item.dispose();
+    assertEquals( -1, tableAdapter.getFocusIndex() );
+  }
+  
   public void testRemoveAll() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -348,8 +376,306 @@ public class Table_Test extends TestCase {
     assertTrue( ":h:", items[ 0 ].isDisposed() );
     assertEquals( number - 4, table.getItemCount() );
   }
+  
+  public void testSingleSelection() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.SINGLE );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    
+    // Test setSelection(int)
+    table.deselectAll();
+    table.setSelection( 0 );
+    assertEquals( true, table.isSelected( 0 ) );
 
-  public void deselectAll() {
+    table.setSelection( table.getItemCount() + 20 );
+    assertEquals( 0, table.getSelectionCount() );
+    
+    // Test setSelection(int,int)
+    table.deselectAll();
+    table.setSelection( 0, 0 );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+
+    table.deselectAll();
+    table.setSelection( 0 );
+    table.setSelection( 0, 2 );
+    assertEquals( 0, table.getSelectionCount() );
+    
+    // Test setSelection(int[])
+    table.deselectAll();
+    table.setSelection( new int[]{ 0 } );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.setSelection( new int[]{ 0, 1 } );
+    assertEquals( 0, table.getSelectionCount() );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.setSelection( new int[]{ 777 } );
+    assertEquals( 0, table.getSelectionCount() );
+    
+    // Test setSelection(TableItem)
+    table.deselectAll();
+    table.setSelection( item1 );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( item1, table.getSelection()[ 0 ] );
+
+    try {
+      table.deselectAll();
+      table.setSelection( item1 );
+      table.setSelection( ( TableItem )null );
+    } catch( NullPointerException e ) {
+      assertEquals( 1, table.getSelectionCount() );
+      assertEquals( item1, table.getSelection()[ 0 ] );
+    }
+    
+    table.deselectAll();
+    table.setSelection( item1 );
+    Table anotherTable = new Table( shell, SWT.NONE );
+    TableItem anotherItem = new TableItem( anotherTable, SWT.NONE );
+    table.setSelection( anotherItem );
+    assertEquals( 0, table.getSelectionCount() );
+    
+    // Test select(int)
+    table.deselectAll();
+    table.select( 0 );
+    assertEquals( true, table.isSelected( 0 ) );
+    table.select( 1 );
+    assertEquals( false, table.isSelected( 0 ) );
+    assertEquals( true, table.isSelected( 1 ) );
+
+    table.deselectAll();
+    table.select( 0 );
+    table.select( table.getItemCount() + 20 );
+    assertEquals( true, table.isSelected( 0 ) );
+    
+    // Test select(int,int)
+    table.deselectAll();
+    table.select( 0, 0 );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.select( 0, 1 );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 2 ) );
+    
+    // Test select(int[])
+    table.deselectAll();
+    table.select( new int[]{ 0 } );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.select( new int[]{ 0, 1 } );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 2 ) );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.select( new int[]{ 777 } );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 2 ) );
+  }
+  
+  public void testMultiSelection() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.MULTI );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    
+    // Test setSelection(int)
+    table.deselectAll();
+    table.setSelection( 0 );
+    assertEquals( true, table.isSelected( 0 ) );
+
+    table.setSelection( table.getItemCount() + 20 );
+    assertEquals( 0, table.getSelectionCount() );
+    
+    // Test setSelection(int,int)
+    table.deselectAll();
+    table.setSelection( 0, 0 );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+
+    table.deselectAll();
+    table.setSelection( 1 );
+    table.setSelection( 0, 2 );
+    assertEquals( 3, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+    assertEquals( true, table.isSelected( 1 ) );
+    assertEquals( true, table.isSelected( 2 ) );
+    assertEquals( false, table.isSelected( 3 ) );
+    
+    table.deselectAll();
+    table.setSelection( 0 );
+    table.setSelection( 1, 777 );
+    assertEquals( false, table.isSelected( 0 ) );
+    assertEquals( true, table.isSelected( 1 ) );
+    assertEquals( true, table.isSelected( 2 ) );
+    assertEquals( true, table.isSelected( 3 ) );
+    
+    // Test setSelection(int[])
+    table.deselectAll();
+    table.setSelection( new int[]{ 0 } );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.setSelection( new int[]{ 0, 1 } );
+    assertEquals( 2, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+    assertEquals( true, table.isSelected( 1 ) );
+    assertEquals( false, table.isSelected( 2 ) );
+    assertEquals( false, table.isSelected( 3 ) );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.setSelection( new int[]{ 777 } );
+    assertEquals( 0, table.getSelectionCount() );
+    
+    // Test setSelection(TableItem)
+    table.deselectAll();
+    table.setSelection( item1 );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( item1, table.getSelection()[ 0 ] );
+
+    try {
+      table.deselectAll();
+      table.setSelection( item1 );
+      table.setSelection( ( TableItem )null );
+    } catch( NullPointerException e ) {
+      assertEquals( 1, table.getSelectionCount() );
+      assertEquals( item1, table.getSelection()[ 0 ] );
+    }
+    
+    table.deselectAll();
+    table.setSelection( item1 );
+    Table anotherTable = new Table( shell, SWT.NONE );
+    TableItem anotherItem = new TableItem( anotherTable, SWT.NONE );
+    table.setSelection( anotherItem );
+    assertEquals( 0, table.getSelectionCount() );
+    
+    // Test select(int)
+    table.deselectAll();
+    table.select( 0 );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+    table.select( 1 );
+    assertEquals( 2, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+    assertEquals( true, table.isSelected( 1 ) );
+
+    table.deselectAll();
+    table.select( 0 );
+    table.select( table.getItemCount() + 20 );
+    assertEquals( true, table.isSelected( 0 ) );
+    
+    // Test select(int,int)
+    table.deselectAll();
+    table.select( 0, 0 );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.select( 0, 1 );
+    assertEquals( 3, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+    assertEquals( true, table.isSelected( 1 ) );
+    assertEquals( true, table.isSelected( 2 ) );
+    
+    // Test select(int[])
+    table.deselectAll();
+    table.select( new int[]{ 0 } );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.select( new int[]{ 0, 1, 777 } );
+    assertEquals( 3, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 0 ) );
+    assertEquals( true, table.isSelected( 1 ) );
+    assertEquals( true, table.isSelected( 2 ) );
+
+    table.deselectAll();
+    table.setSelection( 2 );
+    table.select( new int[]{ 777 } );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 2 ) );
+  }
+  
+  public void testSelectAll() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    
+    // SWT.SINGLE
+    Table singleTable = new Table( shell, SWT.SINGLE );
+    new TableColumn( singleTable, SWT.NONE );
+    new TableItem( singleTable, SWT.NONE );
+    new TableItem( singleTable, SWT.NONE );
+    singleTable.deselectAll();
+    singleTable.selectAll();
+    assertEquals( 0, singleTable.getSelectionCount() );
+    singleTable.setSelection( 1 );
+    assertEquals( 1, singleTable.getSelectionCount() );
+    
+    // SWT.MULTI
+    Table multiTable = new Table( shell, SWT.MULTI );
+    new TableColumn( multiTable, SWT.NONE );
+    new TableItem( multiTable, SWT.NONE );
+    new TableItem( multiTable, SWT.NONE );
+    multiTable.selectAll();
+    assertEquals( multiTable.getItemCount(), multiTable.getSelectionCount() );
+  }
+  
+  public void testDeselect() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.SINGLE );
+    new TableColumn( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    
+    // deselect(int)
+    table.setSelection( 0 );
+    table.deselect( 0 );
+    assertEquals( 0, table.getSelectionCount() );
+    
+    // deselect(int,int)
+    table.setSelection( 1 );
+    table.deselect( 0, 777 );
+    assertEquals( 0, table.getSelectionCount() );
+    table.setSelection( 1 );
+    table.deselect( 4, 777 );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 1 ) );
+    
+    // deselect(int[])
+    table.setSelection( 1 );
+    table.deselect( new int[ 0 ] );
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 1 ) );
+
+    table.setSelection( 1 );
+    table.deselect( new int[] { 1, 777 } );
+    assertEquals( 0, table.getSelectionCount() );
+}
+
+  public void testDeselectAll() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );

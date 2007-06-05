@@ -97,6 +97,18 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     getGrayed : function() {
       return this._grayed;
     },
+    
+    setSelection : function( value ) {
+      if( value ) {
+        this.getTable()._selectItem( this );
+      } else {
+        this.getTable()._unselectItem( this );
+      }
+    },
+    
+    focus : function() {
+      this.getTable().setFocusedItem( this );
+    },
 
     setTexts : function( texts ) {
       this._texts = texts;

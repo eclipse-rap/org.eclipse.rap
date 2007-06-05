@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.lifecycle.*;
@@ -24,12 +25,10 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_LINES_VISIBLE = "linesVisible";
   private static final String PROP_ITEM_HEIGHT = "itemHeight";
   private static final String PROP_TOP_INDEX = "topIndex";
-  private static final String PROP_SELECTION = "selection";
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
   private static final String PROP_DEFAULT_COLUMN_WIDTH = "defaultColumnWidth";
 
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
-  private static final Object DEFAULT_SELECTION = new int[ 0 ];
   private static final Integer DEFAUT_ITEM_HEIGHT = new Integer( 0 );
   private static final Integer DEFAULT_DEFAULT_COLUMN_WIDTH = new Integer( 0 );
 
@@ -55,12 +54,10 @@ public final class TableLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( table.getLinesVisible() ) );
     adapter.preserve( PROP_ITEM_HEIGHT, new Integer( table.getItemHeight() ) );
     adapter.preserve( PROP_TOP_INDEX, new Integer( table.getTopIndex() ) );
-    adapter.preserve( PROP_SELECTION, table.getSelectionIndices() );
     adapter.preserve( PROP_SELECTION_LISTENERS, 
                       Boolean.valueOf( SelectionEvent.hasListener( table ) ) );
     adapter.preserve( PROP_DEFAULT_COLUMN_WIDTH, 
                       new Integer( getDefaultColumnWidth( table ) ) );
-    TableLCAUtil.preserveColumnCount( table );
   }
 
   public void readData( final Widget widget ) {
@@ -76,6 +73,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
       style = "check";
     }
+    if( ( table.getStyle() & SWT.MULTI ) != 0 ) {
+      style += "|multi";
+    }
     Object[] args = new Object[] { WidgetUtil.getId( table ), style };
     writer.newWidget( "org.eclipse.swt.widgets.Table", args );
     ControlLCAUtil.writeStyleFlags( table );
@@ -89,14 +89,13 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeItemHeight( table );
     writeTopIndex( table );
     writeLinesVisible( table );
-    writeSelection( table );
     writeSelectionListener( table );
     writeDefaultColumnWidth( table );
     // Make the JavaScript client area the parent of all children of table 
     Control[] children = table.getChildren();
     for( int i = 0; i < children.length; i++ ) {
       IWidgetAdapter adapter = WidgetUtil.getAdapter( children[ i ] );
-      adapter.setJSParent( TableLCAUtil.getItemJSParent( table ) );
+      adapter.setJSParent( TableLCA.getItemJSParent( table ) );
     }
   }
 
@@ -111,10 +110,15 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static void readSelection( final Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "selection" );
     if( value != null ) {
-      String[] selectedIds = value.split( "," );
-      TableItem[] newSelection = new TableItem[ selectedIds.length ];
-      for( int i = 0; i < selectedIds.length; i++ ) {
-        newSelection[ i ] = findItem( table, selectedIds[ i ] );
+      TableItem[] newSelection;
+      if( "".equals( value ) ) {
+        newSelection = new TableItem[ 0 ];
+      } else {
+        String[] selectedIds = value.split( "," );
+        newSelection = new TableItem[ selectedIds.length ];
+        for( int i = 0; i < selectedIds.length; i++ ) {
+          newSelection[ i ] = findItem( table, selectedIds[ i ] );
+        }
       }
       table.setSelection( newSelection );
     }
@@ -124,7 +128,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     String value = WidgetLCAUtil.readPropertyValue( table, "topIndex" );
     if( value != null ) {
       table.setTopIndex( Integer.parseInt( value ) );
-System.out.println( "read topIndex: " + value );      
     }
   }
   
@@ -165,20 +168,6 @@ System.out.println( "read topIndex: " + value );
     writer.set( PROP_LINES_VISIBLE, "linesVisible", newValue, Boolean.FALSE );
   }
 
-  private static void writeSelection( final Table table ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( table );
-    int[] newValue = table.getSelectionIndices();
-    Object defValue = DEFAULT_SELECTION;
-    if( WidgetLCAUtil.hasChanged( table, PROP_SELECTION, newValue, defValue ) ) 
-    {
-      Integer[] indices = new Integer[ newValue.length ];
-      for( int i = 0; i < indices.length; i++ ) {
-        indices[ i ] = new Integer( newValue[ i ] );
-      }
-      writer.set( "selection", new Object[] { indices } );
-    }
-  }
-
   private static void writeSelectionListener( final Table table ) 
     throws IOException 
   {
@@ -206,6 +195,13 @@ System.out.println( "read topIndex: " + value );
   //////////////////
   // Helping methods 
   
+  private static String getItemJSParent( final Table table ) {
+    StringBuffer parentId = new StringBuffer();
+    parentId.append( WidgetUtil.getId( table ) );
+    parentId.append( "_clientArea"  );
+    return parentId.toString();
+  }
+
   private static TableItem findItem( final Table table, final String itemId ) {
     TableItem result = null;
     TableItem[] items = table.getItems();

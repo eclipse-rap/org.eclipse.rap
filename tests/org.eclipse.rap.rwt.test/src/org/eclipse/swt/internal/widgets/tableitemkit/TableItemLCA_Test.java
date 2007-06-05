@@ -34,35 +34,6 @@ public class TableItemLCA_Test extends TestCase {
     RWTFixture.tearDown();
   }
   
-  public void testContentChanged() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column0 = new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
-    
-    // A non-initialized item returns true for itemContentChanged
-    assertTrue( TableItemLCA.itemContentChanged( item ) );
-    
-    RWTFixture.markInitialized( item );
-    TableItemLCA tableItemLCA = new TableItemLCA();
-    // Adding a column -> itemContentChanged == true 
-    tableItemLCA.preserveValues( item );
-    new TableColumn( table, SWT.NONE );
-    assertTrue( TableItemLCA.itemContentChanged( item ) );
-    // Changing a text -> itemContentChanged == true 
-    tableItemLCA.preserveValues( item );
-    item.setText( 1, "def" );
-    assertTrue( TableItemLCA.itemContentChanged( item ) );
-    // Changing a text -> itemContentChanged == true 
-    tableItemLCA.preserveValues( item );
-    column0.setWidth( column0.getWidth() + 2 );
-    assertTrue( TableItemLCA.itemContentChanged( item ) );
-    // Changing nothing -> itemContentChanged == false 
-    tableItemLCA.preserveValues( item );
-    assertTrue( TableItemLCA.itemContentChanged( item ) );
-  }
-  
   public void testItemTextWithoutColumn() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -106,6 +77,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "check" );
     RWTLifeCycle lifeCycle = new RWTLifeCycle();
     lifeCycle.execute();
+    RWTFixture.fakeUIThread();
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );

@@ -92,6 +92,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/widgets/TableColumn.js";
   private static final String TABLE_ITEM_JS
     = "org/eclipse/swt/widgets/TableItem.js";  
+  private static final String TABLE_ROW_JS
+    = "org/eclipse/swt/widgets/TableRow.js";  
   private static final String EXTERNALBROWSER_UTIL_JS 
     = "org/eclipse/swt/externalbrowser/Util.js";
   private static final String PROGRESS_BAR_JS 
@@ -175,6 +177,7 @@ final class QooxdooResourcesUtil {
       register( TABLE_JS );
       register( TABLE_COLUMN_JS );
       register( TABLE_ITEM_JS );
+      register( TABLE_ROW_JS );
       register( LINK_UTIL_JS );
       register( EXTERNALBROWSER_UTIL_JS );
       register( PROGRESS_BAR_JS );

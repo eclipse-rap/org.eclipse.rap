@@ -45,8 +45,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     if( qx.lang.String.contains( style, "check" ) ) {
       this._checkBoxes = new Array();
     }
+    // Determin multi-selection
+    this._multiSelect = qx.lang.String.contains( style, "multi" );
     // Conains all item which are currently selected
     this._selected = new Array();
+    // Denotes the focused TableItem 
+    this._focusedItem = null;
     // An item only used to draw the area where no actual items are but that
     // needs to be drawn since the table bounds are grater than the number of
     // items
@@ -259,6 +263,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._selectItem( this._items[ value[ i ] ] );
       }
     },
+    
+    setFocusedItem : function( value ) {
+      if( value != this._focusedItem ) {
+        var oldFocusedItem = this._focusedItem;
+        this._focusedItem = value;
+        // update previously focused item
+        if( oldFocusedItem != null ) {
+          this.updateItem( oldFocusedItem, false );
+        }
+        // update actual focused item
+        if( this._focusedItem != null ) {
+          this.updateItem( this._focusedItem, false );
+        }
+      }
+    },
 
     /////////////////////////////////
     // React when enabled was changed
@@ -330,9 +349,37 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var rowIndex = this._rows.indexOf( evt.getTarget() );
       var itemIndex = this._topIndex + rowIndex;
       if( itemIndex >= 0 && itemIndex < this._items.length ) {
-        this._selectItem( this._items[ itemIndex ] );
+        var item = this._items[ itemIndex ];
+        if( this._multiSelect ) {
+          if( evt.isCtrlOrCommandPressed() && !evt.isShiftPressed() && !evt.isAltPressed() ) {
+            if( this._isItemSelected( item ) ) {
+              this._unselectItem( item );
+            } else {
+              this._selectItem( item );
+            }
+          }
+          if( evt.isShiftPressed() && !evt.isCtrlPressed() && !evt.isAltPressed() && !evt.isMetaPressed() ) {
+            var focusedItemIndex = this._items.indexOf( this._focusedItem );
+            if( focusedItemIndex != -1 ) {
+              var start = Math.min( focusedItemIndex, itemIndex );
+              var end = Math.max( focusedItemIndex, itemIndex );
+              for( var i = start; i <= end; i++ ) {
+                this._selectItem( this._items[ i ] );
+              }
+            }
+          } 
+          if( !evt.isCtrlPressed() && !evt.isShiftPressed() && !evt.isAltPressed() && !evt.isMetaPressed() ) {
+            this.setSelection( [ itemIndex ] );
+          }
+        } else {
+          if( this._selected.length > 0 ) {
+            this._unselectItem( this._selected[ 0 ] );
+          }
+          this._selectItem( item );
+        }
+        this.setFocusedItem( item );
         this._updateSelectionParam();
-        this.createDispatchDataEvent( "itemselected", this._items[ itemIndex ] );
+        this.createDispatchDataEvent( "itemselected", item );
       }
     },
     
@@ -341,7 +388,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._onRowClick( evt );
       var target = evt.getTarget();
       var contextMenu = this.getContextMenu();
-      if( target instanceof qx.ui.embed.HtmlEmbed && contextMenu != null ) {
+      if( contextMenu != null ) {
         contextMenu.setLocation( evt.getPageX(), evt.getPageY() );
         contextMenu.setOpener( this );
         contextMenu.show();
@@ -445,6 +492,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _removeItem : function( item ) {
       var wasItemVisible = this._isItemVisible( item );
       qx.lang.Array.remove( this._items, item );
+      if( item == this._focusedItem ) {
+        this._focusedItem = null;
+      }
       this._unselectItem( item );
       this._updateScrollHeight();
       if( wasItemVisible ) {
@@ -453,10 +503,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _selectItem : function( item ) {
-      // TODO [rh] fix this once multi-selection is implemented
-      if( this._selected.length > 0 ) {
-        this._unselectItem( this._selected[ 0 ] );
-      }
       // end of hack
       this._selected.push( item );
       this.updateItem( item, false );
@@ -626,8 +672,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
                 this._clientArea.add( checkBox );
                 this._checkBoxes.push( checkBox );
               }
-              var newRow = new qx.ui.embed.HtmlEmbed();
-              newRow.setAppearance( "table-row" );
+              var newRow = new org.eclipse.swt.widgets.TableRow();
               newRow.addEventListener( "click", this._onRowClick, this );
               newRow.addEventListener( "keydown", this._onRowKeyDown, this );
               newRow.addEventListener( "contextmenu", this._onRowContextMenu, this );
@@ -692,10 +737,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _updateRowState : function( row, item ) {
-      if( item != null && this._isItemSelected( item ) ) {
-        row.addState( "selected" );
+      if( item != null ) {
+        if( this._isItemSelected( item ) ) { 
+          row.addState( "selected" );
+        } else {
+          row.removeState( "selected" );
+        }
+        if( this._focusedItem == item ) {
+          row.addState( "itemFocused" );
+        } else {
+          row.removeState( "itemFocused" );
+        }
       } else {
         row.removeState( "selected" );
+        row.removeState( "itemFocused" );
       }
     },
     
