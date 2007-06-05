@@ -49,7 +49,7 @@ public class ShellThemeAdapter implements IShellThemeAdapter {
   
   public QxColor getForeground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
-    return theme.getColor( "shell.foreground" );
+    return theme.getColor( "widget.foreground" );
   }
   
   public QxColor getBackground( final Control control ) {

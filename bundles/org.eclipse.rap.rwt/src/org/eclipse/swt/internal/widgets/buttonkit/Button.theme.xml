@@ -5,11 +5,11 @@
 <theme>
 
   <color name="button.foreground"
-      description="Text color for buttons"
+      description="Text color for PUSH and TOGGLE buttons"
       default="0, 0, 0" />
 
   <color name="button.background"
-      description="Background color for buttons"
+      description="Background color for PUSH and TOGGLE buttons"
       default="247, 247, 251" />
 
   <color name="button.CHECK.background"
@@ -21,7 +21,7 @@
       default="251, 251, 254" />
 
   <color name="button.FLAT.pressed.background"
-      description="Background color for selected toggle buttons"
+      description="Background color for selected toggle buttons with FLAT style"
       default="225, 225, 230" />
 
   <border name="button.border"
