@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
 
   statics : {
     // Constants used to render outermost div element
-    DIV_START_OPEN : "<div ",
+    DIV_START_OPEN : "<div unselectable=\"on\" ",
     DIV_START_CLOSE : ">",
     DIV_END : "</div>",
     DIV_STYLE : 
@@ -60,7 +60,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     IMG_END : " />",
     
     // Constants used to render span element that holds the item text
-    SPAN_START : "<span style=\"vertical-align:middle\">",
+    SPAN_START : "<span unselectable=\"on\" style=\"vertical-align:middle\">",
     SPAN_END : "</span>",
 
     PX : "px;",
