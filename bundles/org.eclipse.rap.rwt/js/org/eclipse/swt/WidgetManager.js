@@ -37,10 +37,14 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     _onAppearSetForeground : function( evt ) {
-      // 'this' references the color string but for some reason must be 
-      // explicitly converted to a string
-      var color = String( this );
-      evt.getTarget().setTextColor( color );
+      if( color == null ) {
+        evt.getTarget().resetTextColor();
+      } else {
+        // 'this' references the color string but for some reason must be 
+        // explicitly converted to a string
+        var color = String( this );
+        evt.getTarget().setTextColor( color );
+      }
       evt.getTarget().removeEventListener( 
         "appear", 
         org.eclipse.swt.WidgetManager._onAppearSetForeground, 
@@ -152,7 +156,11 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
 
     setForeground : function( widget, color ) {
       if ( widget.isMaterialized() ) {  // TODO [rh] isMaterialized or isCreated?
-        widget.setTextColor( color );
+        if( color == null ) {
+          widget.resetTextColor();
+        } else {
+          widget.setTextColor( color );
+        }
       } else {
         widget.addEventListener( 
           "appear", 

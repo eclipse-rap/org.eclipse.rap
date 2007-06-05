@@ -219,6 +219,11 @@ public final class JSWriter {
     }
   }
   
+  public void reset( final String jsProperty ) throws IOException {
+    String resetterName = getResetterName( jsProperty );
+    call( widget, resetterName, new Object[ 0 ] );
+  }
+  
   public void addListener( final String property, 
                            final String eventType,
                            final String listener )
@@ -594,6 +599,13 @@ public final class JSWriter {
   private static String getSetterName( final String jsProperty ) {
     StringBuffer functionName = new StringBuffer();
     functionName.append( "set" );
+    functionName.append( capitalize( jsProperty ) );
+    return functionName.toString();
+  }
+  
+  private static String getResetterName( final String jsProperty ) {
+    StringBuffer functionName = new StringBuffer();
+    functionName.append( "reset" );
     functionName.append( capitalize( jsProperty ) );
     return functionName.toString();
   }

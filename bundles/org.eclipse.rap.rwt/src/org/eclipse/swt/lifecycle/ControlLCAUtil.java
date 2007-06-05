@@ -193,7 +193,13 @@ public class ControlLCAUtil {
     Object adapter = control.getAdapter( IControlAdapter.class );
     IControlAdapter controlAdapter = ( IControlAdapter )adapter;
     Color newValue = controlAdapter.getUserBackground();
-    writer.set( PROP_BACKGROUND, JSConst.QX_FIELD_BG_COLOR, newValue, null );
+    if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND, newValue, null ) ) {
+      if( newValue == null ) {
+        writer.reset( JSConst.QX_FIELD_BG_COLOR );
+      } else {
+        writer.set( PROP_BACKGROUND, JSConst.QX_FIELD_BG_COLOR, newValue, null );
+      }
+    }
   }
   
   /**
