@@ -1185,7 +1185,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
             result.backgroundColor = "list.selection.unfocused.background";
             result.textColor = "list.selection.foreground";
           } else {
-            result.textColor = "graytext";            
+            result.textColor = "widget.graytext"
           }
         } else {
           if( states.selected ) {
@@ -1441,7 +1441,6 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           cursor : "pointer",
           font : "link.ref.font",
           textColor : states.disabled ? "widget.graytext" : "link.foreground"
-//          textColor : states.disabled ? "widget.graytext" : "#00007f"
         }
       }
     }
