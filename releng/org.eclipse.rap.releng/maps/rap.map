@@ -1,0 +1,42 @@
+###############################################################################
+# Copyright (c) 2003-2007 by Innoopract Informationssysteme GmbH and others
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Innoopract Informationssysteme GmbH - initial API and implementation
+###############################################################################
+
+# rap core
+feature@org.eclipse.rap=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.feature,org.eclipse.rap
+
+plugin@org.eclipse.rap.rwt=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt
+plugin@org.eclipse.rap.jface=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.jface
+plugin@org.eclipse.rap.ui.workbench=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.workbench
+plugin@org.eclipse.rap.w4t=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.w4t
+
+# demo
+plugin@org.eclipse.rap.demo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo
+
+# sdk
+feature@org.eclipse.rap.sdk=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.sdk-feature,org.eclipse.rap.sdk
+plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.help
+
+# servlet stuff
+plugin@javax.servlet=v2_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/javax.servlet,javax.servlet
+plugin@org.apache.commons.logging=v1_0_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.apache.commons.logging
+
+# equinox http stuff
+plugin@org.eclipse.equinox.http.registry=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.registry
+plugin@org.eclipse.equinox.http.servlet=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.servlet
+
+# jetty
+plugin@org.eclipse.equinox.http.jetty=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.jetty
+plugin@org.mortbay.jetty=v5_1_11,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty
+
+# tests
+feature@org.eclipse.rap.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.test-feature,org.eclipse.rap.test
+plugin@org.eclipse.rap.w4t.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.w4t.test
+plugin@org.eclipse.rap.rwt.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt.test
