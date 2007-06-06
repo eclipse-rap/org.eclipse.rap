@@ -11,6 +11,10 @@
   <color name="shell.title.background"
       description="Background color for the title bar of active Shells"
       default="0, 128, 192"/>
+
+  <color name="shell.title.background.gradient"
+      description="Second background color for the title bar of active Shells (used for gradient)"
+      default="0, 128, 192"/>
   
   <color name="shell.title.foreground"
       description="Text color for the title bar of active Shells"
@@ -18,6 +22,10 @@
 
   <color name="shell.title.inactive.background"
       description="Background color for the title bar of inactive Shells"
+      default="121, 150, 165"/>
+
+  <color name="shell.title.inactive.background.gradient"
+      description="Second background color for the title bar of inactive Shells (used for gradient)"
       default="121, 150, 165"/>
   
   <color name="shell.title.inactive.foreground"

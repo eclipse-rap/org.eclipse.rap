@@ -355,6 +355,7 @@ public class SWT {
   public static final int ITALIC = 1 << 1;
 
   // Color constants
+  
   /**
    * Default color white (value is 1).
    */
@@ -435,6 +436,102 @@ public class SWT {
    */
   public static final int COLOR_DARK_GRAY = 16;
   
+  // OS color constants
+  
+  /**
+   * System color used to paint dark shadow areas (value is 17).
+   */
+  public static final int COLOR_WIDGET_DARK_SHADOW = 17;
+
+  /**
+   * System color used to paint normal shadow areas (value is 18).
+   */
+  public static final int COLOR_WIDGET_NORMAL_SHADOW = 18;
+
+  /**
+   * System color used to paint light shadow areas (value is 19).
+   */
+  public static final int COLOR_WIDGET_LIGHT_SHADOW = 19;
+
+  /**
+   * System color used to paint highlight shadow areas (value is 20).
+   */
+  public static final int COLOR_WIDGET_HIGHLIGHT_SHADOW = 20;
+
+  /**
+   * System color used to paint foreground areas (value is 21).
+   */
+  public static final int COLOR_WIDGET_FOREGROUND = 21;
+
+  /**
+   * System color used to paint background areas (value is 22).
+   */
+  public static final int COLOR_WIDGET_BACKGROUND = 22;
+
+  /**
+   * System color used to paint border areas (value is 23).
+   */
+  public static final int COLOR_WIDGET_BORDER = 23;
+
+  /**
+   * System color used to paint list foreground areas (value is 24).
+   */
+  public static final int COLOR_LIST_FOREGROUND = 24;
+
+  /**
+   * System color used to paint list background areas (value is 25).
+   */
+  public static final int COLOR_LIST_BACKGROUND = 25;
+
+  /**
+   * System color used to paint list selection background areas (value is 26).
+   */
+  public static final int COLOR_LIST_SELECTION = 26;
+
+  /**
+   * System color used to paint list selected text (value is 27).
+   */
+  public static final int COLOR_LIST_SELECTION_TEXT = 27;
+
+  /**
+   * System color used to paint tooltip text (value is 28).
+   */
+  public static final int COLOR_INFO_FOREGROUND = 28;
+
+  /**
+   * System color used to paint tooltip background areas (value is 29).
+   */
+  public static final int COLOR_INFO_BACKGROUND = 29;
+  
+  /**
+   * System color used to paint title text (value is 30).
+   */
+  public static final int COLOR_TITLE_FOREGROUND = 30;
+
+  /**
+   * System color used to paint title background areas (value is 31).
+   */
+  public static final int COLOR_TITLE_BACKGROUND = 31;
+
+  /**
+   * System color used to paint title background gradient (value is 32).
+   */
+  public static final int COLOR_TITLE_BACKGROUND_GRADIENT = 32;
+  
+  /**
+   * System color used to paint inactive title text (value is 33).
+   */
+  public static final int COLOR_TITLE_INACTIVE_FOREGROUND = 33;
+
+  /**
+   * System color used to paint inactive title background areas (value is 34).
+   */
+  public static final int COLOR_TITLE_INACTIVE_BACKGROUND = 34;
+
+  /**
+   * System color used to paint inactive title background gradient (value is 35).
+   */
+  public static final int COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT = 35;
   
   // Error codes
   public static final int ERROR_UNSPECIFIED = 1;

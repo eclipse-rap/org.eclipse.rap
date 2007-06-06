@@ -13,16 +13,20 @@ package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.lifecycle.UICallBackManager;
+import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.lifecycle.UICallBackUtil;
+
 import com.w4t.Adaptable;
 import com.w4t.W4TContext;
 import com.w4t.engine.requests.RequestParams;
@@ -627,7 +631,96 @@ public class Display extends Device implements Adaptable {
   
   //////////////////////
   // Information methods
-    
+  
+  /**
+   * Returns the matching standard color for the given
+   * constant, which should be one of the color constants
+   * specified in class <code>SWT</code>. Any value other
+   * than one of the SWT color constants which is passed
+   * in will result in the color black. This color should
+   * not be free'd because it was allocated by the system,
+   * not the application.
+   *
+   * @param id the color constant
+   * @return the matching color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see SWT
+   */
+  public Color getSystemColor( int id ) {
+    checkDevice();
+    String key;
+    switch( id ) {
+      case SWT.COLOR_WIDGET_DARK_SHADOW:
+        key = "widget.darkshadow";
+      break;
+      case SWT.COLOR_WIDGET_NORMAL_SHADOW:
+        key = "widget.shadow";
+      break;
+      case SWT.COLOR_WIDGET_LIGHT_SHADOW:
+        key = "widget.lightshadow";
+      break;
+      case SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW:
+        key = "widget.highlight";
+      break;
+      case SWT.COLOR_WIDGET_BACKGROUND:
+        key = "widget.background";
+      break;
+      case SWT.COLOR_WIDGET_BORDER:
+        // TODO [rst] Clarify the meaning of this constant
+        key = "widget.thinborder";
+      break;
+      case SWT.COLOR_WIDGET_FOREGROUND:
+        key = "widget.foreground";
+      break;
+      case SWT.COLOR_LIST_FOREGROUND:
+        key = "list.foreground";
+      break;
+      case SWT.COLOR_LIST_BACKGROUND:
+        key = "list.background";
+      break;
+      case SWT.COLOR_LIST_SELECTION:
+        key = "list.selection.background";
+      break;
+      case SWT.COLOR_LIST_SELECTION_TEXT:
+        key = "list.selection.foreground";
+      break;
+      case SWT.COLOR_INFO_FOREGROUND:
+        key = "widget.info.foreground";
+      break;
+      case SWT.COLOR_INFO_BACKGROUND:
+        key = "widget.info.background";
+      break;
+      case SWT.COLOR_TITLE_FOREGROUND:
+        key = "shell.title.foreground";
+      break;
+      case SWT.COLOR_TITLE_BACKGROUND:
+        key = "shell.title.background";
+      break;
+      case SWT.COLOR_TITLE_BACKGROUND_GRADIENT:
+        key = "shell.title.background.gradient";
+      break;
+      case SWT.COLOR_TITLE_INACTIVE_FOREGROUND:
+        key = "shell.title.inactive.foreground";
+      break;
+      case SWT.COLOR_TITLE_INACTIVE_BACKGROUND:
+        key = "shell.title.inactive.background";
+      break;
+      case SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT:
+        key = "shell.title.inactive.background.gradient";
+      break;
+      default:
+        return super.getSystemColor( id );
+    }
+    Theme theme = ThemeUtil.getTheme();
+    QxColor themeColor = theme.getColor( key );
+    return Color.getColor( themeColor.red, themeColor.green, themeColor.blue ); 
+  }
+  
   /**
    * Returns the matching standard platform image for the given
    * constant, which should be one of the icon constants

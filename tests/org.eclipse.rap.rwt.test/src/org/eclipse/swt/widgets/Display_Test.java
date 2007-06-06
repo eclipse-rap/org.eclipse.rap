@@ -182,6 +182,12 @@ public class Display_Test extends TestCase {
     assertNotNull( systemFont );
   }
   
+  public void testSystemColor() {
+    Display display = new Display();
+    Color systemColor = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
+    assertNotNull( systemColor );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
