@@ -22,6 +22,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
   construct : function( id, style ) {
     this.base( arguments );
     this.setAppearance( "table" );
+    this.setHideFocus( true );
     // TODO [rh] this is preliminary and can be removed once a tabOrder is
     //      available
     this.setTabIndex( 1 );
@@ -30,9 +31,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._linesVisible = false;
     // Default column width is used when there are no columns specified
     this._defaultColumnWidth = 0;
-    // Internally used fields for resizing
-    this._resizeStartX = 0;
-    this._resizeColumn = null;
     // The item index that is currently displayed in the first visible row
     this._topIndex = 0;
     // indicates that topIndex was changed client-side (e.g. by scrolling)
@@ -55,19 +53,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // needs to be drawn since the table bounds are grater than the number of
     // items
     this._emptyItem = new org.eclipse.swt.widgets.TableItem( this, -1 );
+    // One resize line shown while resizing a column, provided for all columns  
+    this._resizeLine = null;
     //
     var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
     // Construct a column area where columns go can be scrolled in
     this._columnArea = new qx.ui.layout.CanvasLayout();
     this._columnArea.setTop( 0 );
     this._columnArea.setLeft( 0 );
-    this._columnArea.addEventListener( "mousemove", this._onColumnAreaMouseMove, this );
-    this._columnArea.addEventListener( "mouseout", this._onColumnAreaMouseOut, this );
-    this._columnArea.addEventListener( "mousedown", this._onColumnAreaMouseDown, this );
-    this._columnArea.addEventListener( "mouseup", this._onColumnAreaMouseUp, this );
     this.add( this._columnArea );
-    // Vertical line that is shown while columns are resized
-    this._resizeLine = null;
     // Construct client area in which the table items will live
     this._clientArea = new qx.ui.layout.CanvasLayout();
     this._clientArea.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
@@ -124,9 +118,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._clientArea = null;
     }
     if( this._columnArea ) {
-      this._columnArea.removeEventListener( "mousemove", this._onColumnAreaMouseMove, this );
-      this._columnArea.removeEventListener( "mousedown", this._onColumnAreaMouseDown, this );
-      this._columnArea.removeEventListener( "mouseup", this._onColumnAreaMouseUp, this );
       this._columnArea.dispose();
       this._columnArea = null;
     }
@@ -151,15 +142,44 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
   statics : {
     CHECK_WIDTH : 21,
     
-    CURSOR_RESIZE_HORIZONTAL : 
-      (    qx.core.Client.getInstance().isGecko() 
-        && ( qx.core.Client.getInstance().getMajor() > 1 
-             || qx.core.Client.getInstance().getMinor() >= 8 ) ) 
-        ? "ew-resize" 
-        : "e-resize",
-
     // Initialized at the end of the file
-    ROW_BORDER : new qx.renderer.border.Border() 
+    ROW_BORDER : new qx.renderer.border.Border(),
+    
+    ////////////////////////////////////
+    // Helper to determine modifier keys
+    
+    _isShiftOnlyPressed : function( evt ) {
+      return    evt.isShiftPressed() 
+             && !evt.isCtrlPressed() 
+             && !evt.isAltPressed() 
+             && !evt.isMetaPressed();      
+    },
+    
+    _isCtrlOnlyPressed : function( evt ) {
+      return    evt.isCtrlOrCommandPressed() 
+             && !evt.isShiftPressed() 
+             && !evt.isAltPressed();
+    },
+    
+    _isCtrlShiftOnlyPressed : function( evt ) {
+      return    evt.isCtrlOrCommandPressed() 
+             && evt.isShiftPressed() 
+             && !evt.isAltPressed();
+    },
+    
+    _isMetaOnlyPressed : function( evt ) {
+      return    evt.isAltPressed() 
+             && !evt.isShiftPressed() 
+             && !evt.isCtrlPressed();
+    },
+    
+    _isNoModifierPressed : function( evt ) {
+      return    !evt.isCtrlPressed() 
+             && !evt.isShiftPressed() 
+             && !evt.isAltPressed() 
+             && !evt.isMetaPressed();      
+    }
+     
   },
   
   members : {
@@ -216,7 +236,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     getColumnCount : function() {
       return this._columnArea.getChildrenLength();
     },
-
+    
+    getColumns : function() {
+      return this._columnArea.getChildren();  
+    },
+    
     getColumnsWidth : function() {
       var result = 0;
       var columns = this._columnArea.getChildren();
@@ -288,55 +312,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
 
-    //////////////////////////////////////////////////////////
-    // Mouse listeners for column area - control column resize
-
-    _onColumnAreaMouseMove : function( evt ) {
-      if( this._resizeColumn == null ) {
-        var resizeColumn = this._getResizeColumn( evt.getPageX() );
-        if( resizeColumn == null ) {
-          this.getTopLevelWidget().setGlobalCursor( null );
-        } else {
-          this.getTopLevelWidget().setGlobalCursor( org.eclipse.swt.widgets.Table.CURSOR_RESIZE_HORIZONTAL );
-        }
-      } else {
-        var absColumnLeft = this._resizeColumn.getLeft() + this._resizeColumn.getParent().getLeft();
-        var position = absColumnLeft + this._getResizeColumnWidth( evt.getPageX() );
-        // min column width is 5 px
-        if( position < absColumnLeft + 5 ) {
-          position = absColumnLeft + 5;
-        }
-        this._showResizeLine( position );
-      }
-    },
-
-    _onColumnAreaMouseOut : function( evt ) {
-      if( this._resizeColumn == null ) {
-        this.getTopLevelWidget().setGlobalCursor( null );
-      }
-    },
-
-    _onColumnAreaMouseDown : function( evt ) {
-      this._resizeColumn = this._getResizeColumn( evt.getPageX() );
-      if( this._resizeColumn != null ) {
-        var position = this._resizeColumn.getLeft() + this._resizeColumn.getWidth();
-        this._showResizeLine( position );
-        this._resizeStartX = evt.getPageX();
-        this._columnArea.setCapture( true );
-      }
-    },
-
-    _onColumnAreaMouseUp : function( evt ) {
-      if( this._resizeColumn != null ) {
-        this._hideResizeLine();
-        this.getTopLevelWidget().setGlobalCursor( null );
-        this._columnArea.setCapture(false);
-        var newWidth = this._getResizeColumnWidth( evt.getPageX() );
-        this._doResizeColumn( this._resizeColumn, newWidth );
-        this._resizeColumn = null;
-      }
-    },
-
     ////////////////////////////
     // Listeners for client area
 
@@ -351,14 +326,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( itemIndex >= 0 && itemIndex < this._items.length ) {
         var item = this._items[ itemIndex ];
         if( this._multiSelect ) {
-          if( evt.isCtrlOrCommandPressed() && !evt.isShiftPressed() && !evt.isAltPressed() ) {
+          if( org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt ) ) {
             if( this._isItemSelected( item ) ) {
               this._unselectItem( item );
             } else {
               this._selectItem( item );
             }
           }
-          if( evt.isShiftPressed() && !evt.isCtrlPressed() && !evt.isAltPressed() && !evt.isMetaPressed() ) {
+          if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) 
+              || org.eclipse.swt.widgets.Table._isCtrlShiftOnlyPressed( evt ) ) 
+          {
+            if( org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) ) {
+              while( this._selected.length > 0 ) {
+                this._unselectItem( this._selected[ 0 ] );
+              }
+            }
             var focusedItemIndex = this._items.indexOf( this._focusedItem );
             if( focusedItemIndex != -1 ) {
               var start = Math.min( focusedItemIndex, itemIndex );
@@ -368,14 +350,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               }
             }
           } 
-          if( !evt.isCtrlPressed() && !evt.isShiftPressed() && !evt.isAltPressed() && !evt.isMetaPressed() ) {
+          if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
+              || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) )
+          {
             this.setSelection( [ itemIndex ] );
           }
         } else {
-          if( this._selected.length > 0 ) {
-            this._unselectItem( this._selected[ 0 ] );
-          }
-          this._selectItem( item );
+          this.setSelection( [ itemIndex ] );
         }
         this.setFocusedItem( item );
         this._updateSelectionParam();
@@ -384,14 +365,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
     
     _onRowContextMenu : function( evt ) {
-      // TODO [rh] avoid this call if item already selected
-      this._onRowClick( evt );
-      var target = evt.getTarget();
-      var contextMenu = this.getContextMenu();
-      if( contextMenu != null ) {
-        contextMenu.setLocation( evt.getPageX(), evt.getPageY() );
-        contextMenu.setOpener( this );
-        contextMenu.show();
+      if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
+          || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) ) 
+      {
+        // TODO [rh] avoid this call if item already selected
+        this._onRowClick( evt );
+        var target = evt.getTarget();
+        var contextMenu = this.getContextMenu();
+        if( contextMenu != null ) {
+          contextMenu.setLocation( evt.getPageX(), evt.getPageY() );
+          contextMenu.setOpener( this );
+          contextMenu.show();
+        }
       }
     },
     
@@ -772,6 +757,27 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         checkBox.setVisibility( false );
       }
     },
+
+    //////////////////////////////////////////////////////////////
+    // Show and hide the resize line used by column while resizing
+
+    _showResizeLine : function( x ) {
+      if( this._resizeLine == null ) {
+        this._resizeLine = new qx.ui.basic.Terminator();
+        this._resizeLine.setAppearance( "table-column-resizer" );
+        this.add( this._resizeLine );
+        qx.ui.core.Widget.flushGlobalQueues();
+      }
+      var left = x - 2 - this._horzScrollBar.getValue();
+      this._resizeLine._applyRuntimeLeft( left );
+      var height = this.getHeight() - this._horzScrollBar.getHeight();
+      this._resizeLine._applyRuntimeHeight( height );
+      this._resizeLine.removeStyleProperty( "visibility" );
+    },
+
+    _hideResizeLine : function() {
+      this._resizeLine.setStyleProperty( "visibility", "hidden" );
+    },
     
     ////////////////////////////////////////////////////////////
     // Event handling methods - added and removed by server-side
@@ -791,58 +797,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( evt.getData() );
       org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
-    },
-
-    ////////////////////////////////////
-    // Helping methods for column resize
-
-    _getResizeColumn : function( pageX ) {
-      var result = null;
-      var columnAreaX = qx.html.Location.getClientBoxLeft( this._columnArea.getElement() );
-      var columns = this._columnArea.getChildren();
-      for( var i = 0; result == null && i < columns.length; i++ ) {
-        var columnRight = qx.html.Location.getClientBoxLeft( columns[ i ].getElement() ) + columns[ i ].getWidth();
-        if( pageX >= columnRight - 5 && pageX <= columnRight ) {
-          result = columns[ i ];
-        }
-      }
-      return result;
-    },
-
-    /** Returns the width of the column that is currently being resized */
-    _getResizeColumnWidth : function( pageX ) {
-      var delta = this._resizeStartX - pageX;
-      return this._resizeColumn.getWidth() - delta;
-    },
-
-
-    _doResizeColumn : function( column, width ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( column );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.controlResized", id );
-        req.addParameter( id + ".width", width );
-        req.send();
-      }
-    },
-
-    _showResizeLine : function( x ) {
-      var resizeLine = this._resizeLine;
-      if( resizeLine == null ) {
-        resizeLine = new qx.ui.basic.Terminator();
-        resizeLine.setAppearance( "table-column-resizer" );
-        this.add( resizeLine );
-        qx.ui.core.Widget.flushGlobalQueues();
-        this._resizeLine = resizeLine;
-      }
-      resizeLine._applyRuntimeLeft( x - 2 );  // -1 for the width
-      resizeLine._applyRuntimeHeight( this.getHeight() - this._horzScrollBar.getHeight() );
-      resizeLine.removeStyleProperty( "visibility" );
-    },
-
-    _hideResizeLine : function() {
-      this._resizeLine.setStyleProperty( "visibility", "hidden" );
     },
 
     _onSendRequest : function( evt ) {

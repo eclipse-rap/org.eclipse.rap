@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Control;
 public class ControlThemeAdapter implements IControlThemeAdapter {
 
   public int getBorderWidth( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
+//    Theme theme = ThemeUtil.getTheme();
 //    QxBorder result;
 //    if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
 //      result = theme.getBorder( "control.border" );

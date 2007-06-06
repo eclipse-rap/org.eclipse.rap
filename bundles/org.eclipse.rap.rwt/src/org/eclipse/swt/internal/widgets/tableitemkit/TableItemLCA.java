@@ -164,11 +164,15 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     writer.set( PROP_SELECTED, "selection", newValue, Boolean.FALSE );
   }
 
+  // TODO [rh] check if necessary to honor focusIndex == -1, would mean to
+  //      call jsTable.setFocusedItem( null ) in TableLCA
   private static void writeFocused( final TableItem item ) throws IOException 
   {
     Boolean newValue = Boolean.valueOf( isFocused( item ) );
     Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( item, PROP_FOCUSED, newValue, defValue ) ) {
+    if(    newValue.booleanValue() 
+        && WidgetLCAUtil.hasChanged( item, PROP_FOCUSED, newValue, defValue ) ) 
+    {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.call( "focus", null );
     }

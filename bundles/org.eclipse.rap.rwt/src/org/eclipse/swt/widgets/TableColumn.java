@@ -40,6 +40,8 @@ public class TableColumn extends Item {
   
   private final Table parent;
   private int width;
+  private String toolTipText;
+  private boolean resizable;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -113,6 +115,7 @@ public class TableColumn extends Item {
    */
   public TableColumn( final Table parent, final int style, final int index ) {
     super( parent, checkStyle( style ) );
+    resizable = true;
     this.parent = parent;
     this.parent.createColumn( this, index );
   }
@@ -151,6 +154,88 @@ public class TableColumn extends Item {
     checkWidget();
     return width;
   }
+  
+  /**
+   * Sets the receiver's tool tip text to the argument, which
+   * may be null indicating that no tool tip text should be shown.
+   *
+   * @param string the new tool tip text (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
+  public void setToolTipText( final String string ) {
+    checkWidget();
+    toolTipText = string;
+  }
+
+  /**
+   * Returns the receiver's tool tip text, or null if it has
+   * not been set.
+   *
+   * @return the receiver's tool tip text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
+  public String getToolTipText() {
+    checkWidget();
+    return toolTipText;
+  }
+
+  /**
+   * Controls how text and images will be displayed in the receiver.
+   * The argument should be one of <code>LEFT</code>, <code>RIGHT</code>
+   * or <code>CENTER</code>.
+   *
+   * @param alignment the new alignment 
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setAlignment( final int alignment ) {
+    checkWidget();
+    if( ( alignment & ( SWT.LEFT | SWT.RIGHT | SWT.CENTER ) ) != 0 ) {
+      style &= ~( SWT.LEFT | SWT.RIGHT | SWT.CENTER );
+      style |= alignment & ( SWT.LEFT | SWT.RIGHT | SWT.CENTER );
+    }
+  }
+  
+  /**
+   * Returns a value which describes the position of the
+   * text or image in the receiver. The value will be one of
+   * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code>.
+   *
+   * @return the alignment 
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public int getAlignment() {
+    checkWidget();
+    if( ( style & SWT.LEFT ) != 0 ) {
+      return SWT.LEFT;
+    }
+    if( ( style & SWT.CENTER ) != 0 ) {
+      return SWT.CENTER;
+    }
+    if( ( style & SWT.RIGHT ) != 0 ) {
+      return SWT.RIGHT;
+    }
+    return SWT.LEFT;
+  }
 
   /**
    * Sets the width of the receiver.
@@ -170,6 +255,14 @@ public class TableColumn extends Item {
       // Compute width from current column text
       Font font = parent.getFont();
       this.width = FontSizeEstimation.stringExtent( getText(), font ).x;
+      if( getImage() != null ) {
+        this.width += getImage().getBounds().width;
+      }
+      if(    getParent().getSortColumn() == this 
+          && getParent().getSortDirection() != SWT.NONE ) 
+      {
+        this.width += 10;
+      }
       // Mimic Windows behaviour that has a minimal width 
       if( this.width < 12 ) {
         this.width = 12;
@@ -181,6 +274,42 @@ public class TableColumn extends Item {
     }
     ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
     event.processEvent();
+  }
+  
+  /**
+   * Gets the resizable attribute. A column that is
+   * not resizable cannot be dragged by the user but
+   * may be resized by the programmer.
+   *
+   * @return the resizable attribute
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public boolean getResizable() {
+    checkWidget();
+    return resizable;
+  }
+
+  /**
+   * Sets the resizable attribute.  A column that is
+   * resizable can be resized by the user dragging the
+   * edge of the header.  A column that is not resizable 
+   * cannot be dragged by the user but may be resized 
+   * by the programmer.
+   *
+   * @param resizable the resize attribute
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setResizable( final boolean resizable ) {
+    checkWidget();
+    this.resizable = resizable;
   }
   
   ///////////////////////////////////////

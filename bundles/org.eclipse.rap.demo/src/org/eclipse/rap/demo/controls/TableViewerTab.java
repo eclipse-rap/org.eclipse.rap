@@ -186,6 +186,7 @@ public class TableViewerTab extends ExampleTab {
           }
         }
         viewer.setSelection( new StructuredSelection( youngestPerson ) );
+        viewer.reveal( youngestPerson );
       }
     } );
   }

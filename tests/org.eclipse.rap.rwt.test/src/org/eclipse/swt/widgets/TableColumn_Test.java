@@ -101,7 +101,31 @@ public class TableColumn_Test extends TestCase {
     
     assertEquals( 0, column.getWidth() );
     assertEquals( "", column.getText() );
+    assertEquals( null, column.getToolTipText() );
     assertNull( column.getImage() );
+    assertEquals( true, column.getResizable() );
+    assertEquals( SWT.LEFT, column.getAlignment() );
+  }
+  
+  public void testAlignment() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    
+    TableColumn column;
+    column = new TableColumn( table, SWT.NONE );
+    assertEquals( SWT.LEFT, column.getAlignment() );
+    column = new TableColumn( table, SWT.LEFT );
+    assertEquals( SWT.LEFT, column.getAlignment() );
+    column = new TableColumn( table, SWT.CENTER );
+    assertEquals( SWT.CENTER, column.getAlignment() );
+    column = new TableColumn( table, SWT.RIGHT );
+    assertEquals( SWT.RIGHT, column.getAlignment() );
+    
+    column.setAlignment( SWT.LEFT );
+    assertEquals( SWT.LEFT, column.getAlignment() );
+    column.setAlignment( 4712 );
+    assertEquals( SWT.LEFT, column.getAlignment() );
   }
   
   public void testWidth() {

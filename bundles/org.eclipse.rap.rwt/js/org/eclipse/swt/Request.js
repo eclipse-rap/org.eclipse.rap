@@ -119,8 +119,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
       //       we would need two requestQueues (one for 'normal' requests that 
       //       is limited to 1 concurrent request and one for the UI callback
       //       requests (probably without limit)
-      //       Until qooxdoo supports multiple ditince requestQueues we send
-      //       the UI callback request without letting the requestQueue know
+      //       Until qooxdoo supports multiple requestQueues we send the UI 
+      //       callback request without letting the requestQueue know
       var vRequest = request;
       var vTransport = new qx.io.remote.Exchange(vRequest);
       // Establish event connection between qx.io.remote.Exchange instance and

@@ -53,9 +53,6 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     },
 
     updateHandleBounds : function() {
-      // parameter order for setSpace: x, width, y, height
-//      this.debug( "_____ updateHandleBounds from " + this.getWidth() + "x" + this.getHeight() );
-//      this.setBackgroundColor( "#ffff00" );
       if( this._orientation == "vertical" ) {
         this._handle.setSpace( 0, this.getWidth(), 0, 4 );
       } else {

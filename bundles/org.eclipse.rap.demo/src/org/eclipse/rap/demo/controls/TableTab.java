@@ -25,13 +25,17 @@ public class TableTab extends ExampleTab {
   private Table table;
   private boolean headerVisible = true;
   private boolean linesVisible;
+  private boolean columnImages;
   private int columnsWidthImages = 0;
   private int columns = 5;
+  private final Image columnImage;
   private final Image smallImage; 
 //  private final Image bigImage; 
 
   public TableTab( final CTabFolder folder ) {
     super( folder, "Table" );
+    columnImage = Image.find( "resources/shell.gif",
+                              getClass().getClassLoader() );
     smallImage = Image.find( "resources/newfile_wiz.gif", 
                              getClass().getClassLoader() );
 //    bigImage = Image.find( "resources/big_image.png", 
@@ -46,6 +50,7 @@ public class TableTab extends ExampleTab {
     createEnablementButton();
     createHeaderVisibleButton();
     createLinesVisibleButton();
+    createColumnImagesButton();
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
@@ -59,7 +64,7 @@ public class TableTab extends ExampleTab {
     createChangeGrayButton();
     createChangeColumnsControl();
     createChangeItemControl();
-    // TODO [rh] enabled as soone as images are working properly
+    // TODO [rh] enable as soone as images are working properly
 //    createImagesControl();
   }
 
@@ -78,10 +83,23 @@ public class TableTab extends ExampleTab {
     for( int i = 0; i < columns; i++ ) {
       final TableColumn column = new TableColumn( table, SWT.NONE );
       column.setText( "Col " + i );
+      if( columnImages ) {
+        column.setImage( columnImage );
+      }
       column.setWidth( i == 0 ? 50 : 100 );
       column.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent event ) {
-          // 
+          Table table = column.getParent();
+          if( table.getSortColumn() == column ) {
+            if( table.getSortDirection() == SWT.UP ) {
+              table.setSortDirection( SWT.DOWN );
+            } else {
+              table.setSortDirection( SWT.UP );
+            }
+          } else {
+            table.setSortDirection( SWT.UP );
+            table.setSortColumn( column );
+          }
         }
       } );
     }
@@ -122,6 +140,25 @@ public class TableTab extends ExampleTab {
     } );
   }
 
+  private void createColumnImagesButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Column images" );
+    button.setSelection( columnImages );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        columnImages = button.getSelection();
+        TableColumn[] columns = getTable().getColumns();
+        for( int i = 0; i < columns.length; i++ ) {
+          if( columnImages ) {
+            columns[ i ].setImage( columnImage );
+          } else {
+            columns[ i ].setImage( null );
+          }
+        }
+      }
+    } );
+  }
+
   private TableItem addItem() {
     TableItem result = new TableItem( table, SWT.NONE );
     int itemCount = result.getParent().getItemCount() - 1;
@@ -147,6 +184,7 @@ public class TableTab extends ExampleTab {
     Label label = new Label( composite, SWT.NONE );
     label.setText( "Add" );
     final Text text = new Text( composite, SWT.BORDER );
+    text.setLayoutData( new GridData( 30, SWT.DEFAULT ) );
     text.setText( "1" );
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Item(s)" );
@@ -286,7 +324,9 @@ public class TableTab extends ExampleTab {
     lblText.setText( "Text" );
     final Text txtText = new Text( composite, SWT.BORDER );
     Button button = new Button( composite, SWT.PUSH );
-    button.setLayoutData( new GridData( SWT.BEGINNING, SWT.CENTER, false, false, 4, SWT.DEFAULT ) );
+    GridData gridData 
+      = new GridData( SWT.BEGINNING, SWT.CENTER, false, false, 4, SWT.DEFAULT );
+    button.setLayoutData( gridData );
     button.setText( "Change" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

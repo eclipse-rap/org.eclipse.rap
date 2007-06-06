@@ -143,6 +143,8 @@ public class Table extends Composite {
   private boolean headerVisible;
   private int topIndex;
   private int focusIndex;
+  private TableColumn sortColumn;
+  private int sortDirection;
   
   /**
    * Constructs a new instance of this class given its parent
@@ -182,6 +184,7 @@ public class Table extends Composite {
   public Table( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
     focusIndex = -1;
+    sortDirection = SWT.NONE;
     tableAdapter = new TableAdapter();
     itemHolder = new ItemHolder( TableItem.class );
     columnHolder = new ItemHolder( TableColumn.class );
@@ -694,18 +697,20 @@ public class Table extends Composite {
    */
   public int getSelectionIndex() {
     checkWidget();
-    // TODO: [fappel] currently we do not have a focus indicator, so
-    //                we return simply return the first index in range
-    int selectionIndex = -1;
-    TableItem[] currentSelection = getSelection();
-    if( currentSelection.length > 0 ) {
-      for( int i = 0; selectionIndex == -1 && i < itemHolder.size(); i++ ) {
-        if( itemHolder.getItem( i ) == currentSelection[ 0 ] ) {
-          selectionIndex = i;
+    int result = -1;
+    if( selection.length > 0 ) {
+      result = itemHolder.indexOf( selection[ selection.length - 1 ] );
+    }
+    if( focusIndex != result ) {
+      boolean found = false;
+      for( int i = 0; !found && i < selection.length; i++ ) {
+        if( focusIndex == itemHolder.indexOf( selection[ 0 ] ) ) {
+          result = focusIndex;
+          found = true;
         }
       }
-    }
-    return selectionIndex;
+    } 
+    return result;
   }
 
   /**
@@ -726,7 +731,7 @@ public class Table extends Composite {
    */
   public void setSelection( final int index ) {
     checkWidget();
-    deselectAll ();
+    deselectAll();
     select( index );
     if( index < itemHolder.size() ) {
       setFocusIndex( index );
@@ -1413,6 +1418,93 @@ public class Table extends Composite {
     this.linesVisible = linesVisible;
   }
   
+  /**
+   * Sets the column used by the sort indicator for the receiver. A null
+   * value will clear the sort indicator.  The current sort column is cleared 
+   * before the new column is set.
+   *
+   * @param column the column used by the sort indicator or <code>null</code>
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the column is disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
+  public void setSortColumn( final TableColumn column ) {
+    checkWidget();
+    if( column != null && column.isDisposed() ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    sortColumn = column;
+  }
+
+  /**
+   * Returns the column which shows the sort indicator for
+   * the receiver. The value may be null if no column shows
+   * the sort indicator.
+   *
+   * @return the sort indicator 
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #setSortColumn(TableColumn)
+   * 
+   * @since 1.0
+   */
+  public TableColumn getSortColumn() {
+    checkWidget();
+    return sortColumn;
+  }
+
+  /**
+   * Sets the direction of the sort indicator for the receiver. The value 
+   * can be one of <code>UP</code>, <code>DOWN</code> or <code>NONE</code>.
+   *
+   * @param direction the direction of the sort indicator 
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 1.0
+   */
+  public void setSortDirection( final int direction ) {
+    checkWidget();
+    if( ( direction & ( SWT.UP | SWT.DOWN ) ) != 0 || direction == SWT.NONE ) {
+      sortDirection = direction;
+    } 
+  }
+
+  /**
+   * Returns the direction of the sort indicator for the receiver. 
+   * The value will be one of <code>UP</code>, <code>DOWN</code> 
+   * or <code>NONE</code>.
+   *
+   * @return the sort direction
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #setSortDirection(int)
+   * 
+   * @since 1.0
+   */
+  public int getSortDirection() {
+    checkWidget();
+    return sortDirection;
+  }
+
   ///////////////////////////////////
   // Dimensions and size calculations
   
@@ -1552,6 +1644,9 @@ public class Table extends Composite {
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].removeData( index );
     }
+    if( column == sortColumn ) {
+      sortColumn = null;
+    }
     columnHolder.remove( column );
   }
   
@@ -1564,12 +1659,15 @@ public class Table extends Composite {
   
   final void destroyItem( final TableItem item ) {
     int index = itemHolder.indexOf( item );
+    removeFromSelection( index );
     itemHolder.remove( item );
     if( topIndex > getItemCount() - 1 ) {
       topIndex = Math.max( 0, getItemCount() - 1 );
     }
     if( index == focusIndex ) {
+      // Must reset focusIndex before calling getSelectionIndex 
       focusIndex = -1;
+      focusIndex = getSelectionIndex();
     }
   }
   

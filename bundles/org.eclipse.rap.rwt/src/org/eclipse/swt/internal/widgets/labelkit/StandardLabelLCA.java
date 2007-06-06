@@ -104,6 +104,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       Object[] args = new Object[]{
         label, getAlignment( label.getAlignment() )
       };
+      // TODO [rh] re-use JSVar constants defined in JSConst
       writer.callStatic( "org.eclipse.swt.LabelUtil.setAlignment", args );
     }
   }

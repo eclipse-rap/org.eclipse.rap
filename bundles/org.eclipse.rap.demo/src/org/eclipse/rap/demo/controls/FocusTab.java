@@ -109,13 +109,12 @@ public class FocusTab extends ExampleTab {
     browser.setText( DEFAULT_HTML );
     addFocusListener( browser );
     table = new Table( parent, SWT.NONE );
+    table.setLayoutData( new RowData( 90, 140 ) );
+    table.setHeaderVisible( true );
     TableColumn tableColumn;
     tableColumn = new TableColumn( table, SWT.NONE );
     tableColumn.setText( "Column 1" );
-    tableColumn = new TableColumn( table, SWT.NONE );
-    tableColumn.setText( "Column 2" );
-    tableColumn = new TableColumn( table, SWT.NONE );
-    tableColumn.setText( "Column 3" );
+    tableColumn.setWidth( 80 );
     for( int i = 0; i < 3; i++ ) {
       TableItem tableItem = new TableItem( table, SWT.NONE );
       tableItem.setText( "Item " + i );

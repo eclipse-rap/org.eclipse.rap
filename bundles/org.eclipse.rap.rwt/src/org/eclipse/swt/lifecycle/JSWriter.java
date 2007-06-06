@@ -231,11 +231,11 @@ public final class JSWriter {
   {
     ensureWidgetRef();
     if( property == null ) {
-      // TODO [rh] HACK to allow 'instance' listener instead of statis listener
+      // TODO [rh] HACK to allow 'instance' listener instead of static listener
       //      functions
       if( listener.startsWith( "this." ) ) {
         String thisListener = listener.substring( 5 );
-        String code = "w.addEventListener( \"{0}\", w.{1}, this );";
+        String code = "w.addEventListener( \"{0}\", w.{1}, w );";
         write( code, eventType, thisListener );
       } else {
         String code = "w.addEventListener( \"{0}\", {1} );";
@@ -291,8 +291,16 @@ public final class JSWriter {
   {
     ensureWidgetRef();
     if( property == null ) {
-      String code = "w.removeEventListener( \"{0}\", {1} );";
-      write( code, eventType, listener );
+      // TODO [rh] HACK to allow 'instance' listener instead of static listener
+      //      functions
+      if( listener.startsWith( "this." ) ) {
+        String thisListener = listener.substring( 5 );
+        String code = "w.removeEventListener( \"{0}\", w.{1}, w );";
+        write( code, eventType, thisListener );
+      } else {
+        String code = "w.removeEventListener( \"{0}\", {1} );";
+        write( code, eventType, listener );
+      }
     } else {
       String code = "w.{0}().removeEventListener( \"{1}\", {2} );";
       write( code, getGetterName( property ), eventType, listener );

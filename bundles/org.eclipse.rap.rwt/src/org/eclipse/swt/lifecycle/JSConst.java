@@ -108,6 +108,13 @@ public final class JSConst {
   public static final JSVar QX_CONST_HORIZONTAL_ORIENTATION 
     = new JSVar( "qx.constant.Layout.ORIENTATION_HORIZONTAL" );
   
+  public static final JSVar QX_CONST_ALIGN_RIGHT 
+    = new JSVar( "qx.constant.Layout.ALIGN_RIGHT" );
+  public static final JSVar QX_CONST_ALIGN_CENTER 
+    = new JSVar( "qx.constant.Layout.ALIGN_CENTER" );
+  public static final JSVar QX_CONST_ALIGN_LEFT 
+    = new JSVar( "qx.constant.Layout.ALIGN_LEFT" );
+  
   private JSConst() {
     // prevent instantiation
   }

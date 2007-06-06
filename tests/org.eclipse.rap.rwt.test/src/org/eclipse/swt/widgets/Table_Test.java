@@ -38,6 +38,8 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getSelectionIndices().length );
     assertEquals( 0, table.getSelection().length );
     assertEquals( 0, table.getTopIndex() );
+    assertNull( table.getSortColumn() );
+    assertEquals( SWT.NONE, table.getSortDirection() );
   }
   
   public void testStyle() {
@@ -227,26 +229,45 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getTopIndex() );
   }
   
-  public void testDisposeSelectedItem() {
+  public void testDisposeSingleSelectedItem() {
     Display display = new Display();
     Shell shell = new Shell( display );
-    Table table = new Table( shell, SWT.NONE );
+    Table table = new Table( shell, SWT.SINGLE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     
     table.setSelection( new TableItem[] { item } );
     item.dispose();
+    assertEquals( -1, table.getSelectionIndex() );
     assertEquals( 0, table.getItemCount() );
     assertEquals( 0, table.getSelectionCount() );
     assertEquals( 0, table.getSelection().length );
   }
   
-  public void testFocusedIndex() {
+  public void testDisposeMultiSelectedItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.MULTI );
+    new TableColumn( table, SWT.NONE );
+    TableItem item0 = new TableItem( table, SWT.NONE );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    
+    table.setSelection( new TableItem[] { item0, item1 } );
+    item0.dispose();
+    assertEquals( table.indexOf( item1 ), table.getSelectionIndex() );
+    assertEquals( 2, table.getItemCount() );
+    assertEquals( 1, table.getSelectionCount() );
+  }
+  
+  public void testFocusIndex() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
+    TableItem item0 = new TableItem( table, SWT.NONE );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    TableItem item2 = new TableItem( table, SWT.NONE );
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
 
@@ -254,18 +275,35 @@ public class Table_Test extends TestCase {
     assertEquals( -1, tableAdapter.getFocusIndex() );
     
     // setSelection changes the focusIndex to the selected item
-    table.setSelection( item );
+    table.setSelection( item0 );
+    assertEquals( 0, tableAdapter.getFocusIndex() );
+    
+    table.setSelection( item1 );
+    table.setSelection( new TableItem[] { item0 } );
     assertEquals( 0, tableAdapter.getFocusIndex() );
     
     // Resetting the selection does not affect the focusIndex
-    table.setSelection( item );
+    table.setSelection( item0 );
     table.deselectAll();
     assertEquals( 0, table.getSelectionCount() );
     assertEquals( 0, tableAdapter.getFocusIndex() );
     
+    // Ensure that select does not change the focusIndex
+    table.setSelection( item0 );
+    table.select( table.indexOf( item1 ) );
+    assertEquals( 0, tableAdapter.getFocusIndex() );
+    
     // Disposing of the focused item also resets the focusIndex
-    item.dispose();
+    table.setSelection( item0 );
+    item0.dispose();
     assertEquals( -1, tableAdapter.getFocusIndex() );
+
+    // Disposing of the focused but un-selected item moves focus to the 
+    // selected item
+    table.setSelection( item1 );
+    table.select( table.indexOf( item2 ) );
+    item1.dispose();
+    assertEquals( table.indexOf( item2 ), tableAdapter.getFocusIndex() );
   }
   
   public void testRemoveAll() {
@@ -618,6 +656,30 @@ public class Table_Test extends TestCase {
     assertEquals( true, table.isSelected( 2 ) );
   }
   
+  public void testGetSelectionIndex() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    
+    // SWT.SINGLE
+    Table singleTable = new Table( shell, SWT.SINGLE );
+    new TableItem( singleTable, SWT.NONE );
+    new TableItem( singleTable, SWT.NONE );
+    
+    singleTable.setSelection( 1 );
+    assertEquals( 1, singleTable.getSelectionIndex() );
+
+    // SWT.MULTI
+    Table multiTable = new Table( shell, SWT.MULTI );
+    new TableItem( multiTable, SWT.NONE );
+    new TableItem( multiTable, SWT.NONE );
+    new TableItem( multiTable, SWT.NONE );
+    
+    multiTable.setSelection( 1 );
+    assertEquals( 1, multiTable.getSelectionIndex() );
+    multiTable.select( 2 );
+    assertEquals( 1, multiTable.getSelectionIndex() );
+  }
+  
   public void testSelectAll() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -800,5 +862,46 @@ public class Table_Test extends TestCase {
     
     table.showItem( table.getItem( 0 ) );
     assertEquals( 0, table.getTopIndex() );
+  }
+  
+  public void testSortColumnAndDirection() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    
+    // Simple case set == get
+    table.setSortColumn( column );
+    assertSame( column, table.getSortColumn() );
+    table.setSortColumn( null );
+    assertNull( table.getSortColumn() );
+    
+    // Dispose sortColumn
+    table.setSortColumn( column );
+    table.setSortDirection( SWT.UP );
+    column.dispose();
+    assertNull( table.getSortColumn() );
+    assertEquals( SWT.UP, table.getSortDirection() );
+    
+    // Try to set a disposed of column
+    TableColumn disposedColumn = new TableColumn( table, SWT.NONE );
+    disposedColumn.dispose();
+    try {
+      table.setSortColumn( disposedColumn );
+      fail( "Must not allow to set disposed of sort column" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    
+    // Test sortDirection
+    table.setSortDirection( SWT.NONE );
+    assertEquals( SWT.NONE, table.getSortDirection() );
+    table.setSortDirection( SWT.UP );
+    assertEquals( SWT.UP, table.getSortDirection() );
+    table.setSortDirection( SWT.DOWN );
+    assertEquals( SWT.DOWN, table.getSortDirection() );
+    table.setSortDirection( SWT.NONE );
+    table.setSortDirection( 4711 );
+    assertEquals( SWT.NONE, table.getSortDirection() );
   }
 }
