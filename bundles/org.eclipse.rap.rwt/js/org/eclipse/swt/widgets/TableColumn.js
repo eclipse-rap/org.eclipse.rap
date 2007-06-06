@@ -170,11 +170,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
      * column */
     _isResizeLocation : function( pageX ) {
       var result = false;
-      var columnRight 
-        = qx.html.Location.getClientBoxLeft( this.getElement() ) 
-        + this.getWidth();
-      if( pageX >= columnRight - 5 && pageX <= columnRight ) {
-        result = true;
+      if( this._resizable ) {
+        var columnRight 
+          = qx.html.Location.getClientBoxLeft( this.getElement() ) 
+          + this.getWidth();
+        if( pageX >= columnRight - 5 && pageX <= columnRight ) {
+          result = true;
+        }
       }
       return result;
     },
