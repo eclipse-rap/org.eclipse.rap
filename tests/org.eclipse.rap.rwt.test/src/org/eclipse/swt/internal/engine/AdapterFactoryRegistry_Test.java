@@ -88,12 +88,12 @@ public class AdapterFactoryRegistry_Test extends TestCase {
                                 TestEntryPoint.class );
     RWTFixture.registerAdapterFactories();
     RWTFixture.registerResourceManager();
-    ThemeManager.getInstance().initialize();
-    
+
     TestAdapterFactory.log = "";
     AdapterFactoryRegistry.add( TestAdapterFactory.class, TestAdaptable.class );
     RWTLifeCycle lifeCycle = new RWTLifeCycle();
     assertEquals( "", TestAdapterFactory.log );
+    ThemeManager.getInstance().initialize();
     lifeCycle.execute();
     assertEquals( TestAdapterFactory.CREATED, TestAdapterFactory.log );
 
@@ -106,11 +106,12 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6up( true, true ) );
     RWTFixture.registerAdapterFactories();
-  
+    
     TestAdapterFactory.log = "";
     lifeCycle.execute();
     assertEquals( TestAdapterFactory.CREATED, TestAdapterFactory.log );
     
+    ThemeManager.getInstance().deregisterAll();
     RWTFixture.deregisterAdapterFactories();
     RWTFixture.deregisterResourceManager();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );

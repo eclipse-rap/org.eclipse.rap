@@ -18,6 +18,7 @@ import org.eclipse.swt.RWTFixture.TestResourceManager;
 import org.eclipse.swt.RWTFixture.TestResourceManagerFactory;
 import org.eclipse.swt.internal.lifecycle.EntryPointManager;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.lifecycle.IEntryPoint;
 import org.eclipse.swt.resources.IResource;
 import org.eclipse.swt.resources.ResourceManager;
@@ -245,7 +246,9 @@ public class RWTServletContextListener_Test extends TestCase {
     listener = new RWTServletContextListener();
     listener.contextDestroyed( new ServletContextEvent( servletContext ) );
     phaseListenerLog = "";
+    ThemeManager.getInstance().initialize();
     lifeCycle.execute();
+    ThemeManager.getInstance().deregisterAll();
     assertEquals( "", phaseListenerLog );
     deregisterResourceManager();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
