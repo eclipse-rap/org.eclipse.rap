@@ -155,8 +155,7 @@ public class RWTServletContextListener implements ServletContextListener {
   }
   
   private void deregisterSWTTheme( final ServletContext servletContext ) {
-//    TODO [rst] This causes a lot of red RWT tests
-//    ThemeManager.getInstance().deregisterAll();
+    ThemeManager.getInstance().deregisterAll();
   }
 
   private void deregisterEntryPoints( final ServletContext context ) {

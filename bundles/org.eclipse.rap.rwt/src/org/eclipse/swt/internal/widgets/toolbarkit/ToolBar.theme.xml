@@ -5,7 +5,7 @@
 <theme>
 
   <color name = "toolbar.foreground"
-      description = "Text color for toolbar items"
+      description = "Text color for toolbar"
       default = "0, 0, 0" />
 
   <color name = "toolbar.hover.foreground"
@@ -14,7 +14,7 @@
 
   <!--  == control.background -->
   <color name = "toolbar.background"
-      description = "Background color for toolbar items"
+      description = "Background color for toolbar"
       default = "248, 248, 255" />
 
   <!-- 49, 106, 197 // == list.focused.background -->

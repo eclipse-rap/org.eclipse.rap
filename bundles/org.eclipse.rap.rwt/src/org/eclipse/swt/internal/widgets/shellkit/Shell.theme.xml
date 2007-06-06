@@ -88,4 +88,20 @@
       description="Background image for title bar of inactive Shells"
       default=""/>
 
+  <image name="shell.closebutton.image"
+      description="Image for close button of Shells"
+      default=""/>
+
+  <image name="shell.maxbutton.image"
+      description="Image for maximize button of Shells"
+      default=""/>
+
+  <image name="shell.restorebutton.image"
+      description="Image for restore from maximized button of Shells"
+      default=""/>
+
+  <image name="shell.minbutton.image"
+      description="Image for minimize button of Shells"
+      default=""/>
+
 </theme>

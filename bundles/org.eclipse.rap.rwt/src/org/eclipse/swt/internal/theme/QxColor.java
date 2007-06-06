@@ -19,13 +19,23 @@ public class QxColor implements QxType {
   private static final Map NAMED_COLORS = new HashMap();
   
   static {
+    // register 16 standard HTML colors
     NAMED_COLORS.put( "black", new int[] { 0, 0, 0 } );
-    NAMED_COLORS.put( "white", new int[] { 255, 255, 255 } );
     NAMED_COLORS.put( "gray", new int[] { 128, 128, 128 } );
+    NAMED_COLORS.put( "silver", new int[] { 192, 192, 192 } );
+    NAMED_COLORS.put( "white", new int[] { 255, 255, 255 } );
+    NAMED_COLORS.put( "maroon", new int[] { 128, 0, 0 } );
     NAMED_COLORS.put( "red", new int[] { 255, 0, 0 } );
-    NAMED_COLORS.put( "green", new int[] { 0, 255, 0 } );
+    NAMED_COLORS.put( "purple", new int[] { 128, 0, 128 } );
+    NAMED_COLORS.put( "fuchsia", new int[] { 255, 0, 255 } );
+    NAMED_COLORS.put( "green", new int[] { 0, 128, 0 } );
+    NAMED_COLORS.put( "lime", new int[] { 0, 255, 0 } );
+    NAMED_COLORS.put( "navy", new int[] { 0, 0, 128 } );
     NAMED_COLORS.put( "blue", new int[] { 0, 0, 255 } );
-    // TODO Add most frequently used colors from qx ColorUtil
+    NAMED_COLORS.put( "olive", new int[] { 128, 128, 0 } );
+    NAMED_COLORS.put( "yellow", new int[] { 255, 255, 0 } );
+    NAMED_COLORS.put( "teal", new int[] { 0, 128, 128 } );
+    NAMED_COLORS.put( "aqua", new int[] { 0, 255, 255 } );
   }
   
   public final String name;
