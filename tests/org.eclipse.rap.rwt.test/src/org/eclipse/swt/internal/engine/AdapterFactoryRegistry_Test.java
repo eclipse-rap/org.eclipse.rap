@@ -18,6 +18,8 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.RWTFixture.TestEntryPoint;
 import org.eclipse.swt.internal.lifecycle.EntryPointManager;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.swt.internal.theme.ThemeManager;
+
 import com.w4t.Fixture;
 import com.w4t.Fixture.*;
 import com.w4t.engine.service.ContextProvider;
@@ -86,7 +88,8 @@ public class AdapterFactoryRegistry_Test extends TestCase {
                                 TestEntryPoint.class );
     RWTFixture.registerAdapterFactories();
     RWTFixture.registerResourceManager();
-
+    ThemeManager.getInstance().initialize();
+    
     TestAdapterFactory.log = "";
     AdapterFactoryRegistry.add( TestAdapterFactory.class, TestAdaptable.class );
     RWTLifeCycle lifeCycle = new RWTLifeCycle();
