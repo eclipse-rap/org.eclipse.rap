@@ -46,6 +46,12 @@
   
   <extension point="org.eclipse.ui.views"> 
       <view
+            class="org.eclipse.ui.ExtensionFactory:progressView"
+            icon= "icons/pview.gif"
+            id="org.eclipse.ui.views.ProgressView"
+            name="Progress">
+      </view>
+      <view
             category="one"
             class="org.eclipse.rap.demo.DemoTreeViewPart"
             icon="icons/contact.gif"
@@ -136,6 +142,24 @@
               toolbarPath="sampleGroup"
               tooltip="Hello, Eclipse world">
         </action>
+        <action
+              class="org.eclipse.rap.demo.actions.JobAction"
+              icon="icons/pview.gif"
+              id="org.eclipse.rap.demo.actions.JobAction"
+              label="&amp;Start Job"
+              menubarPath="sampleMenu/sampleGroup"
+              toolbarPath="sampleGroup"
+              tooltip="Start Job">
+        </action>
+        <action
+              class="org.eclipse.rap.demo.actions.JobActionWithDialog"
+              icon="icons/progress_ok.gif"
+              id="org.eclipse.rap.demo.actions.JobActionWithDialog"
+              label="&amp;Start Job with Dialog"
+              menubarPath="sampleMenu/sampleGroup"
+              toolbarPath="sampleGroup"
+              tooltip="Start Job with Dialog">
+        </action>
      </actionSet>
   </extension>
   <extension
@@ -146,6 +170,5 @@
               id="org.eclipse.rap.demo.actionSet">
         </actionSet>
      </perspectiveExtension>
-  </extension>
-  
+  </extension>  
 </plugin>

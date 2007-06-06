@@ -22,16 +22,17 @@ public class UICallBackManager
   extends SessionSingletonBase
   implements HttpSessionBindingListener
 {
-  
-  // Flag that indicates whether a callback thread is blocked.
-  private boolean callBackRequestBlocked;
-  private List runnables;
+
+  private List runnables = new ArrayList();
+  // locked contains a reference to the callback thread that is currently 
+  // blocked. 
+  private Set locked = new HashSet();
   // Flag that indicates whether a request is processed. In that case no
   // notifications are sent to the client.
   private boolean uiThreadRunning;
   // Flag that indicates that a notification was sent to the client. If the new
   // callback thread returns earlier than the UI Thread the callback thread
-  // must be blocked although the runnbles are not empty 
+  // must be blocked although the runnbles are not empty
   private boolean waitForUIThread;
   // Flag that indicates whether the UICallBack mechanism is active. If not
   // no callback thread must be blocked.
@@ -51,7 +52,9 @@ public class UICallBackManager
     public void block() {
       synchronized( runnable ) {
         try {
-          runnable.wait();
+          if( Thread.currentThread() != RWTLifeCycle.getThread() ) {
+            runnable.wait();
+          }
         } catch( final InterruptedException e ) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -66,12 +69,11 @@ public class UICallBackManager
   
   
   private UICallBackManager() {
-    runnables = new ArrayList();
   }
 
   boolean isCallBackRequestBlocked() {
     synchronized( runnables ) {
-      return callBackRequestBlocked;
+      return !locked.isEmpty();
     }
   }
   
@@ -154,16 +156,16 @@ public class UICallBackManager
 
   void blockCallBackRequest() {
     synchronized( runnables ) {
-      callBackRequestBlocked = true;
       try {
         if( mustBlockCallBackRequest() ) {
+          locked.add( Thread.currentThread() );
           runnables.wait();
         }
       } catch( final InterruptedException e ) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       } finally {
-        callBackRequestBlocked = false;
+        locked.remove( Thread.currentThread() );
       }
       waitForUIThread = true;
     }
@@ -171,7 +173,10 @@ public class UICallBackManager
 
   private boolean mustBlockCallBackRequest() {
     return    active 
-           && ( waitForUIThread ||uiThreadRunning || runnables.isEmpty() );
+           && locked.isEmpty()
+           && (    waitForUIThread 
+                || uiThreadRunning 
+                || runnables.isEmpty() );
   }
   
   
@@ -183,8 +188,8 @@ public class UICallBackManager
   }
 
   public void valueUnbound( final HttpSessionBindingEvent event ) {
-    if( runnables != null ) {
-      synchronized( runnables ) {
+    synchronized( runnables ) {
+      if( runnables != null ) {
         runnables.notifyAll();
       }
       runnables.clear();

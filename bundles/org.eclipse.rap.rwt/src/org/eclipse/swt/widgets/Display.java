@@ -450,6 +450,10 @@ public class Display extends Device implements Adaptable {
     ContextProvider.getSession().removeAttribute( DISPLAY_ID );
   }
   
+  public boolean isDisposed() {
+    return false;
+  }
+  
   /////////////////////
   // Adaptable override
 
@@ -457,7 +461,7 @@ public class Display extends Device implements Adaptable {
     Object result = null;
     if( adapter == IDisplayAdapter.class ) {
       if( displayAdapter == null ) {
-        displayAdapter = new DisplayAdapter();
+        displayAdapter = new DisplayAdapter( session );
       }
       result = displayAdapter;
     } else {
@@ -564,7 +568,7 @@ public class Display extends Device implements Adaptable {
 //    if( isDisposed() ) {
 //      error( SWT.ERROR_DEVICE_DISPOSED );
 //    }
-    UICallBackUtil.runNonUIThreadWithFakeContext( session, new Runnable() {
+    UICallBackUtil.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
         UICallBackManager.getInstance().addAsync( runnable );
       }
@@ -599,7 +603,7 @@ public class Display extends Device implements Adaptable {
 //  if( isDisposed() ) {
 //    error( SWT.ERROR_DEVICE_DISPOSED );
 //  }
-    UICallBackUtil.runNonUIThreadWithFakeContext( session, new Runnable() {
+    UICallBackUtil.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
         UICallBackManager.getInstance().addSync( runnable );
       }
@@ -621,7 +625,7 @@ public class Display extends Device implements Adaptable {
 //    error( SWT.ERROR_DEVICE_DISPOSED );
 //  }
     if( getThread() != Thread.currentThread() ) {
-      UICallBackUtil.runNonUIThreadWithFakeContext( session, new Runnable() {
+      UICallBackUtil.runNonUIThreadWithFakeContext( this, new Runnable() {
         public void run() {
           UICallBackManager.getInstance().sendUICallBack();
         }
@@ -789,6 +793,12 @@ public class Display extends Device implements Adaptable {
   // Inner classes
 
   private final class DisplayAdapter implements IDisplayAdapter {
+    
+    private final HttpSession session;
+    
+    private DisplayAdapter( final HttpSession session ) {
+      this.session = session;      
+    }
 
     public void setBounds( final Rectangle bounds ) {
       if( bounds == null ) {
@@ -804,6 +814,10 @@ public class Display extends Device implements Adaptable {
 
     public void setFocusControl( final Control focusControl ) {
       Display.this.setFocusControl( focusControl );
+    }
+
+    public HttpSession getSession() {
+      return session;
     }
   }
   

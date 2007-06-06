@@ -8,8 +8,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.graphics.Point;
 
 /**
  * Instances of the receiver represent is an unselectable user interface object
@@ -30,6 +31,9 @@ import org.eclipse.swt.graphics.*;
  */
 public class ProgressBar extends Control {
 
+  // TODO [fappel]: base for progressbar size calculation, should this be
+  //                themable?
+  private static final int SIZE_BASE = 16;
   private int minimum;
   private int selection;
   private int maximum = 100;
@@ -82,17 +86,19 @@ public class ProgressBar extends Control {
     checkWidget();
     int border = getBorderWidth();
     int width = border * 2, height = border * 2;
-    // if( ( style & SWT.HORIZONTAL ) != 0 ) {
-    // width += OS.GetSystemMetrics( OS.SM_CXHSCROLL ) * 10;
-    // height += OS.GetSystemMetrics( OS.SM_CYHSCROLL );
-    // } else {
-    // width += OS.GetSystemMetrics( OS.SM_CXVSCROLL );
-    // height += OS.GetSystemMetrics( OS.SM_CYVSCROLL ) * 10;
-    // }
-    // if( wHint != SWT.DEFAULT )
-    // width = wHint + ( border * 2 );
-    // if( hHint != SWT.DEFAULT )
-    // height = hHint + ( border * 2 );
+    if( ( style & SWT.HORIZONTAL ) != 0 ) {
+      width += SIZE_BASE * 10;
+      height += SIZE_BASE;
+    } else {
+      width += SIZE_BASE;
+      height += SIZE_BASE * 10;
+    }
+     if( wHint != SWT.DEFAULT ) {
+       width = wHint + ( border * 2 );
+     }
+     if( hHint != SWT.DEFAULT ) {
+       height = hHint + ( border * 2 );
+     }
     return new Point( width, height );
   }
 

@@ -62,6 +62,9 @@ public class UICallBackManager_Test extends TestCase {
     } );
     thread.start();
     Thread.sleep( SLEEP_TIME );
+    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
+      uiCallBackServiceHandlerThrowable[ 0 ].printStackTrace();
+    }
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     
@@ -102,6 +105,9 @@ public class UICallBackManager_Test extends TestCase {
     // test initial blocking of uiCallBack thread
     Thread uiCallBackThread
       = simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
+    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
+      uiCallBackServiceHandlerThrowable[ 0 ].printStackTrace();
+    }
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     
@@ -128,6 +134,9 @@ public class UICallBackManager_Test extends TestCase {
     } );
     uiThread.start();
     uiThread.join();
+    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
+      lifeCycleProblem[ 0 ].printStackTrace();
+    }
     assertNull( lifeCycleProblem[ 0 ] );
     assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
@@ -137,6 +146,9 @@ public class UICallBackManager_Test extends TestCase {
     simulateBackgroundAddition( context );
     uiCallBackThread 
       = simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
+    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
+      uiCallBackServiceHandlerThrowable[ 0 ].printStackTrace();
+    }
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     // since no UI thread is running and
@@ -162,7 +174,13 @@ public class UICallBackManager_Test extends TestCase {
     } );
     uiThread.start();
     uiThread.join();
+    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
+      uiCallBackServiceHandlerThrowable[ 0 ].printStackTrace();
+    }
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
+      lifeCycleProblem[ 0 ].printStackTrace();
+    }
     assertNull( lifeCycleProblem[ 0 ] );
     assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );

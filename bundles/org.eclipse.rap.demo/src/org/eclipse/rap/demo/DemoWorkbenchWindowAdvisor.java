@@ -36,6 +36,7 @@ public class DemoWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     configurer.setShowCoolBar( true );
     configurer.setShowPerspectiveBar( true );
     configurer.setTitle( "Workbench Demo" );
+    configurer.setShowProgressIndicator( true );
   }
   
   public void postWindowOpen() {

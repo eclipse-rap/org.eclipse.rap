@@ -11,9 +11,15 @@
 
 package org.eclipse.rap.demo;
 
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.swt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+
+import com.w4t.engine.service.ContextProvider;
 
 
 public class DemoWorkbench implements IEntryPoint {

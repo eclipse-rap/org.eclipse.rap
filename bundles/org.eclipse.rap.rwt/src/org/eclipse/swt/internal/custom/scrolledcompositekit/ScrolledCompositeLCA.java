@@ -63,6 +63,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "org.eclipse.swt.custom.ScrolledComposite" );
+    ControlLCAUtil.writeStyleFlags( widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

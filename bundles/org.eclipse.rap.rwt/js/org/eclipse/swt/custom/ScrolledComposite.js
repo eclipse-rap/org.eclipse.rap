@@ -15,6 +15,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
 
   construct : function( style ) {
     this.base( arguments );
+    this.setAppearance( "scrolledcomposite" );
     this._initialScrollTop = null;
     this._initialScrollLeft = null;
     this._lastScrollLeft = 0;

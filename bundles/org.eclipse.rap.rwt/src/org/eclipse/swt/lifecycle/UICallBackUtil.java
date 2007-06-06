@@ -17,6 +17,9 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import org.eclipse.swt.internal.lifecycle.UICallBackServiceHandler;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.widgets.Display;
+
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.ServiceContext;
 
@@ -367,20 +370,21 @@ public class UICallBackUtil {
    * missing request context and allows the runnable code to access those 
    * singletons.
    * 
-   * @param session The session that contains the data to which the current
-   *                thread should get access.
+   * @param display The display that is bound to the session that contains the
+   *                data to which the current thread should get access.
    * @param runnable The runnable that contains the critical code that 
    *                 needs to have access to a request context.
    *        
    * @see <code>SessionSingletonBase</code>
    * @see <code>ContextProvider</code>
    */
-  public static void runNonUIThreadWithFakeContext( final HttpSession session,
+  public static void runNonUIThreadWithFakeContext( final Display display,
                                                     final Runnable runnable )
   {
     boolean useFakeContext = !ContextProvider.hasContext();
     if( useFakeContext ) {
-      DummyRequest request = new DummyRequest( session );
+      IDisplayAdapter adapter = getAdapter( display );
+      DummyRequest request = new DummyRequest( adapter.getSession() );
       DummyResponse response = new DummyResponse();
       ServiceContext context = new ServiceContext( request, response );
       ContextProvider.setContext( context );
@@ -392,6 +396,10 @@ public class UICallBackUtil {
         ContextProvider.disposeContext();
       }
     }
+  }
+
+  private static IDisplayAdapter getAdapter( final Display display ) {
+    return ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
   }
   
   /**

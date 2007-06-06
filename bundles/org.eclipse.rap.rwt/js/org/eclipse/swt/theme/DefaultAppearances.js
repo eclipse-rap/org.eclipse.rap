@@ -1371,6 +1371,19 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     },
       
     // ------------------------------------------------------------------------
+    // ScrolledComposite
+    
+    "scrolledcomposite" : {
+      include : "",
+      
+      style : function( states ) {
+        return {
+          border : states.rwt_BORDER ? "shadow" : "control.border"
+        }
+      }
+    },
+      
+    // ------------------------------------------------------------------------
     // CoolBar
     
     "coolbar" : {
