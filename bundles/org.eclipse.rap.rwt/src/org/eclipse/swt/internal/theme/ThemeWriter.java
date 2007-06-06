@@ -25,6 +25,7 @@ public class ThemeWriter {
   public static final int META = 1;
   public static final int COLOR = 2;
   public static final int BORDER = 3;
+  public static final int WIDGET = 4;
   
   // TODO [rst] Clarify what the use of the theme title is, remove the name
   //      parameter if unnecessary
@@ -86,6 +87,25 @@ public class ThemeWriter {
     valueWritten = true;
   }
   
+  public void writeUri( final String pathPrefix ) {
+    if( type != WIDGET ) {
+      throw new IllegalStateException( "Url can only be set in widget themes" );
+    }
+    if( !headWritten ) {
+      writeHead();
+    }
+    if( tailWritten ) {
+      throw new IllegalStateException( "Tail already written" );
+    }
+    if( valueWritten ) {
+      code.append( ",\n" );
+    }
+    code.append( "    \"uri\" : \"" );
+    code.append( pathPrefix );
+    code.append( "\"" );
+    valueWritten = true;
+  }
+  
   public void writeTheme( final String key, final String value ) {
     if( type != META ) {
       throw new IllegalStateException( "Border can only be set in border themes" );
@@ -125,6 +145,8 @@ public class ThemeWriter {
       code.append( "  colors : {\n" );
     } else if( type == BORDER ) {
       code.append( "  borders : {\n" );
+    } else if( type == WIDGET ) {
+      code.append( "  widgets : {\n" );
     }
     headWritten = true;
   }
@@ -137,7 +159,7 @@ public class ThemeWriter {
   }
   
   private int checkType( final int type ) {
-    if( type != META && type != COLOR && type != BORDER ) {
+    if( type != META && type != COLOR && type != BORDER && type != WIDGET ) {
       throw new IllegalArgumentException( "empty argument" );
     }
     return type;
@@ -149,6 +171,8 @@ public class ThemeWriter {
       result = "Colors";
     } else if( type == BORDER ) {
       result = "Borders";
+    } else if( type == WIDGET ) {
+      result = "Widgets";
     }
     return result;
   }

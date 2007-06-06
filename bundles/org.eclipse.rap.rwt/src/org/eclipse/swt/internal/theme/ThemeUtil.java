@@ -19,21 +19,34 @@ import com.w4t.engine.service.ContextProvider;
  */
 public class ThemeUtil {
 
-  private static final String ATTR_CURR_THEME
+  private static final String THEME_URL_PARM = "theme";
+  private static final String CURR_THEME_ATTR
     = "org.eclipse.rap.swt.theme.current";
 
+  public static String[] getAvailableThemeIds() {
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    return themeMgr.getAvailableThemeIds();
+  }
+
   public static String getCurrentThemeId() {
-    HttpSession session = ContextProvider.getSession();
-    String result = ( String )session.getAttribute( ATTR_CURR_THEME );
+    // 1) try URL parameter
+    String result = ContextProvider.getRequest().getParameter( THEME_URL_PARM );
+    ThemeManager manager = ThemeManager.getInstance();
+    // 2) try session attribute
+    if( result == null || !manager.hasTheme( result ) ) {
+      HttpSession session = ContextProvider.getSession();
+      result = ( String )session.getAttribute( CURR_THEME_ATTR );
+    }
+    // 3) use default
     if( result == null ) {
-      result = ThemeManager.getInstance().getDefaultThemeId();
+      result = manager.getDefaultThemeId();
     }
     return result;
   }
 
   public static void setCurrentTheme( final String themeId ) {
     HttpSession session = ContextProvider.getSession();
-    session.setAttribute( ATTR_CURR_THEME, themeId );
+    session.setAttribute( CURR_THEME_ATTR, themeId );
   }
 
   public static Theme getTheme() {

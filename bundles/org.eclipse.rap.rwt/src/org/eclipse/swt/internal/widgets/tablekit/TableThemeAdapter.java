@@ -7,13 +7,13 @@
  * implementation
  ******************************************************************************/
 
-package org.eclipse.swt.internal.widgets.textkit;
+package org.eclipse.swt.internal.widgets.tablekit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.widgets.Control;
 
-public class TextThemeAdapter implements ITextThemeAdapter {
+public class TableThemeAdapter implements ITableThemeAdapter {
   
   public int getBorderWidth( final Control control ) {
     return ( control.getStyle() & SWT.BORDER ) != 0 ? 2 : 0;

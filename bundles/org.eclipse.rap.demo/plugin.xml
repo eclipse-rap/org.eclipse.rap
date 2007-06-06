@@ -3,6 +3,16 @@
 <plugin>
 
   <extension
+      id="org.eclipse.rap.demo.themes"
+      point="org.eclipse.rap.swt.themes">
+    <theme
+        id="org.eclipse.rap.demo.alttheme"
+        name="Alternative Demo Theme"
+        file="theme1/theme.properties"
+        default="false"/>
+  </extension>
+  
+  <extension
       id="org.eclipse.rap.demo.demoentrypoint"
       point="org.eclipse.rap.ui.workbench.entrypoint">
     <entrypoint
@@ -84,7 +94,8 @@
       <category
             id="two"
             name="Category 2"/>
-   </extension>
+  </extension>
+  
   <extension
         point="org.eclipse.ui.viewActions">
      <viewContribution

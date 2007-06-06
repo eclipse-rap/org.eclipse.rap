@@ -40,10 +40,10 @@
       description="Padding for buttons [hidden]"
       default="2" />
 
-  <dim name="button.spacing"
+  <dimension name="button.spacing"
       description="Space between image and text [hidden]"
       default="2" />
-  
+
   <!-- TODO pressed offset
        button.pressed.offset
          or

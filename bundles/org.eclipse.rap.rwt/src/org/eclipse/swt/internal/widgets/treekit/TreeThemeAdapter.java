@@ -9,13 +9,14 @@
 
 package org.eclipse.swt.internal.widgets.treekit;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.widgets.Control;
 
 public class TreeThemeAdapter implements ITreeThemeAdapter {
   
   public int getBorderWidth( final Control control ) {
-    return 0;
+    return ( control.getStyle() & SWT.BORDER ) != 0 ? 2 : 0;
   }
   
   public QxColor getForeground( final Control control ) {

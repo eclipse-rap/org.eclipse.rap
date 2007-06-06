@@ -34,7 +34,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultFonts",
     
     // -- link --
     
-    "link.ref.font" : {
+    "link.href.font" : {
       size: 11,
       family: [ "Segoe UI", "Corbel", "Calibri", "Tahoma", "Lucida Sans Unicode", "sans-serif" ],
       decoration: "underline"

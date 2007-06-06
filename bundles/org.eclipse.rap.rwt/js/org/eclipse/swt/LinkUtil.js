@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -33,7 +32,6 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
       widget.addEventListener("changeTabIndex", org.eclipse.swt.LinkUtil._onTabIndexChange);
     },
 
-
     /**
      * TODOC
      *
@@ -48,7 +46,6 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
         widget.removeEventListener("changeTabIndex", org.eclipse.swt.LinkUtil._onTabIndexChange);
       }
     },
-
 
     /**
      * TODOC
@@ -79,7 +76,6 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
       }
     },
 
-
     /**
      * TODOC
      *
@@ -91,7 +87,6 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
     setSelectionListener : function(widget, value) {
       widget.setUserData("widgetSelectedListener", value);
     },
-
 
     /**
      * TODOC
@@ -111,7 +106,6 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
       }
     },
 
-
     /**
      * TODOC
      *
@@ -124,7 +118,7 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
     addLink : function(widget, text, index) {
       if (widget) {
         var newChild = org.eclipse.swt.LinkUtil._createLabel(widget, text);
-        newChild.setAppearance("link-ref");
+        newChild.setAppearance("link-href");
         newChild.setUserData("index", index);
 
         // TODO [rst] setAppearance() resets property wrap !
@@ -137,7 +131,6 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
         newChild.addEventListener("keydown", org.eclipse.swt.LinkUtil._onKeyDown, newChild);
       }
     },
-
 
     /**
      * TODOC
@@ -154,7 +147,6 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
       label.setWrap(false);
       return label;
     },
-
 
     /**
      * TODOC
@@ -176,7 +168,6 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
         req.send();
       }
     },
-
 
     /**
      * TODOC
@@ -202,7 +193,6 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
         }
       }
     },
-
 
     /**
      * TODOC

@@ -345,7 +345,7 @@ public abstract class Control extends Widget {
     // if (control == null) control = this;
     Color result = background;
     if( background == null ) {
-      IControlThemeAdapter adapter = getControlThemeAdapter( getClass() );
+      IControlThemeAdapter adapter = getControlThemeAdapter();
       QxColor qxColor = adapter.getBackground( this );
       result = Color.getColor( qxColor.red, qxColor.green, qxColor.blue );
     }
@@ -386,7 +386,7 @@ public abstract class Control extends Widget {
     checkWidget();
     Color result = foreground;
     if( foreground == null ) {
-      IControlThemeAdapter adapter = getControlThemeAdapter( getClass() );
+      IControlThemeAdapter adapter = getControlThemeAdapter();
       QxColor qxColor = adapter.getForeground( this );
       result = Color.getColor( qxColor.red, qxColor.green, qxColor.blue );
     }
@@ -806,7 +806,7 @@ public abstract class Control extends Widget {
     // TODO: [rst] This must be kept in sync with appearances, controls using
     //             different borders must overwrite this mehtod
     checkWidget();
-    IControlThemeAdapter adapter = getControlThemeAdapter( getClass() );
+    IControlThemeAdapter adapter = getControlThemeAdapter();
     return adapter.getBorderWidth( this );
   }
 
@@ -1258,10 +1258,8 @@ public abstract class Control extends Widget {
     }
   }
   
-  // TODO [rh] @rst: I think the clazz argument is unnecessary as clazz is
-  //      always this.getClass()
-  private IControlThemeAdapter getControlThemeAdapter( final Class clazz ) {
+  private IControlThemeAdapter getControlThemeAdapter() {
     ThemeManager themeMgr = ThemeManager.getInstance();
-    return ( IControlThemeAdapter )themeMgr.getThemeAdapter( clazz );
+    return ( IControlThemeAdapter )themeMgr.getThemeAdapter( getClass() );
   }
 }

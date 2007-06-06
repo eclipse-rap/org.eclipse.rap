@@ -1138,10 +1138,11 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     "table" : {
       style : function( states ) {
         return {
-          backgroundColor : "white",
+          backgroundColor : "list.background",
+          textColor : "list.foreground",
           font : "default.font",
-          border : states.rwt_BORDER 
-            ? "control.BORDER.border" 
+          border : states.rwt_BORDER
+            ? "control.BORDER.border"
             : "control.border"
         };
       }
@@ -1435,11 +1436,11 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       }
     },
     
-    "link-ref" : {
+    "link-href" : {
       style : function( states ) {
         return {
           cursor : "pointer",
-          font : "link.ref.font",
+          font : "link.href.font",
           textColor : states.disabled ? "widget.graytext" : "link.foreground"
 //          textColor : states.disabled ? "widget.graytext" : "#00007f"
         }

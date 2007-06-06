@@ -35,8 +35,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/theme/DefaultFonts.js";
   private static final String DEFAULT_ICONS_JS 
     = "org/eclipse/swt/theme/DefaultIcons.js";
-  private static final String DEFAULT_WIDGET_ICONS_JS 
-    = "org/eclipse/swt/theme/DefaultWidgetIcons.js";
 
   private static final String APPLICATION_JS 
     = "org/eclipse/swt/Application.js";
@@ -134,8 +132,6 @@ final class QooxdooResourcesUtil {
       ///////////////////////////////////////////////
 
       
-      registerWidgetTheme( manager );
-      
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
       //      these three files are here o keep DefaultAppearanceTheme.js
       //      happy that makes heavy use of constants 
@@ -148,7 +144,6 @@ final class QooxdooResourcesUtil {
       register( DEFAULT_BORDERS_JS );
       register( DEFAULT_FONTS_JS );
       register( DEFAULT_ICONS_JS );
-      register( DEFAULT_WIDGET_ICONS_JS );
       // end of 'order is important'
       
       register( APPLICATION_JS );
@@ -217,74 +212,6 @@ final class QooxdooResourcesUtil {
     } finally {
       manager.setContextLoader( contextLoader );
     }
-  }
-
-  private static void registerWidgetTheme( final IResourceManager manager ) {
-    manager.register( "resource/widget/rap/arrows/down.gif" );
-    manager.register( "resource/widget/rap/arrows/down_small.gif" );
-    manager.register( "resource/widget/rap/arrows/down_tiny.gif" );
-    manager.register( "resource/widget/rap/arrows/first.png" );
-    manager.register( "resource/widget/rap/arrows/forward.gif" );
-    manager.register( "resource/widget/rap/arrows/last.png" );
-    manager.register( "resource/widget/rap/arrows/left.png" );
-    manager.register( "resource/widget/rap/arrows/minimize.gif" );
-    manager.register( "resource/widget/rap/arrows/next.gif" );
-    manager.register( "resource/widget/rap/arrows/previous.gif" );
-    manager.register( "resource/widget/rap/arrows/rewind.gif" );
-    manager.register( "resource/widget/rap/arrows/right.png" );
-    manager.register( "resource/widget/rap/arrows/up.gif" );
-    manager.register( "resource/widget/rap/arrows/up_small.gif" );
-    manager.register( "resource/widget/rap/arrows/up_tiny.gif" );
-    manager.register( "resource/widget/rap/colorselector/brightness-field.jpg" );
-    manager.register( "resource/widget/rap/colorselector/brightness-handle.gif" );
-    manager.register( "resource/widget/rap/colorselector/huesaturation-field.jpg" );
-    manager.register( "resource/widget/rap/colorselector/huesaturation-handle.gif" );
-    manager.register( "resource/widget/rap/cursors/alias.gif" );
-    manager.register( "resource/widget/rap/cursors/copy.gif" );
-    manager.register( "resource/widget/rap/cursors/move.gif" );
-    manager.register( "resource/widget/rap/cursors/nodrop.gif" );
-    manager.register( "resource/widget/rap/datechooser/lastMonth.png" );
-    manager.register( "resource/widget/rap/datechooser/lastYear.png" );
-    manager.register( "resource/widget/rap/datechooser/nextMonth.png" );
-    manager.register( "resource/widget/rap/datechooser/nextYear.png" );
-    manager.register( "resource/widget/rap/menu/checkbox.gif" );
-    manager.register( "resource/widget/rap/menu/menu-blank.gif" );
-    manager.register( "resource/widget/rap/menu/radiobutton.gif" );
-    manager.register( "resource/widget/rap/splitpane/knob-horizontal.png" );
-    manager.register( "resource/widget/rap/splitpane/knob-vertical.png" );
-    manager.register( "resource/widget/rap/table/ascending.png" );
-    manager.register( "resource/widget/rap/table/boolean-false.png" );
-    manager.register( "resource/widget/rap/table/boolean-true.png" );
-    manager.register( "resource/widget/rap/table/descending.png" );
-    manager.register( "resource/widget/rap/table/selectColumnOrder.png" );
-    manager.register( "resource/widget/rap/tree/cross.gif" );
-    manager.register( "resource/widget/rap/tree/cross_minus.gif" );
-    manager.register( "resource/widget/rap/tree/cross_plus.gif" );
-    manager.register( "resource/widget/rap/tree/end.gif" );
-    manager.register( "resource/widget/rap/tree/end_minus.gif" );
-    manager.register( "resource/widget/rap/tree/end_plus.gif" );
-    manager.register( "resource/widget/rap/tree/line.gif" );
-    manager.register( "resource/widget/rap/tree/minus.gif" );
-    manager.register( "resource/widget/rap/tree/only_minus.gif" );
-    manager.register( "resource/widget/rap/tree/only_plus.gif" );
-    manager.register( "resource/widget/rap/tree/plus.gif" );
-    manager.register( "resource/widget/rap/tree/start_minus.gif" );
-    manager.register( "resource/widget/rap/tree/start_plus.gif" );
-    manager.register( "resource/widget/rap/window/close.gif" );
-    manager.register( "resource/widget/rap/window/maximize.gif" );
-    manager.register( "resource/widget/rap/window/minimize.gif" );
-    manager.register( "resource/widget/rap/window/restore.gif" );
-    // -- RAP specific resources --
-    // TODO [rst] Should these resources reside a separate place? 
-    manager.register( "resource/widget/rap/window/caption_active.gif" );
-    manager.register( "resource/widget/rap/window/caption_inactive.gif" );
-    manager.register( "resource/widget/rap/tree/folder_open.gif" );
-    manager.register( "resource/widget/rap/tree/folder_closed.gif" );
-    manager.register( "resource/widget/rap/display/bg.gif" );
-    manager.register( "resource/widget/rap/table/check_white_on.gif" );
-    manager.register( "resource/widget/rap/table/check_white_off.gif" );
-    manager.register( "resource/widget/rap/table/check_gray_on.gif" );
-    manager.register( "resource/widget/rap/table/check_gray_off.gif" );
   }
   
   private static void register( final String libraryName ) {

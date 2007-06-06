@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.theme;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.internal.theme.ThemeManager;
+import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.internal.widgets.buttonkit.IButtonThemeAdapter;
 import org.eclipse.swt.internal.widgets.controlkit.IControlThemeAdapter;
 import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
@@ -48,13 +48,13 @@ public class ThemeManager_Test extends TestCase {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
     try {
-      themeManager.registerTheme( null, "foo", null, false );
+      themeManager.registerTheme( null, "foo", null, null, false );
       fail( "Null id must throw NullPointerException" );
     } catch( NullPointerException e ) {
       // expected
     }
     try {
-      themeManager.registerTheme( "", "foo", null, false );
+      themeManager.registerTheme( "", "foo", null, null, false );
       fail( "Empty id must throw IlleaglArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -79,5 +79,20 @@ public class ThemeManager_Test extends TestCase {
     Theme theme = manager.getTheme( id );
     assertNotNull( theme );
     assertEquals( "RAP Default Theme", theme.getName() );
+  }
+  
+  public void testRegisterResources() throws Exception {
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
+    manager.registerResources();
+  }
+  
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+    RWTFixture.fakeNewRequest();
+  }
+  
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
   }
 }

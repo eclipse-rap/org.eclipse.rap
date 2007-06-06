@@ -60,16 +60,24 @@
       description="Background color for the inactive close button [deprecated]"
       default="198, 127, 133"/>
   
-  <border name = "shell.border"
-      description = "[hidden]"
-      default = "2 outset gray"/>
+  <border name="shell.border"
+      description="[hidden]"
+      default="2 outset gray"/>
 
   <boxdim name="shell.padding"
-      description = "[hidden]"
-      default = "0 1 1"/>
+      description="[hidden]"
+      default="0 1 1"/>
 
   <boxdim name="shell.titlebar.margin"
-      description = "[hidden]"
-      default = "0"/>
-  
+      description="[hidden]"
+      default="0"/>
+
+  <image name="shell.title.active.bgimage"
+      description="Background image for title bar of active Shells"
+      default=""/>
+
+  <image name="shell.title.inactive.bgimage"
+      description="Background image for title bar of inactive Shells"
+      default=""/>
+
 </theme>

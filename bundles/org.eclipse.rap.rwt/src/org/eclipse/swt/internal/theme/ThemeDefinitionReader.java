@@ -41,8 +41,9 @@ public class ThemeDefinitionReader {
   private static final String NODE_ROOT = "theme";
   private static final String TYPE_COLOR = "color";
   private static final String TYPE_BORDER = "border";
-  private static final String TYPE_BOXDIM = "boxdim";
-  private static final String TYPE_DIM = "dim";
+  private static final String TYPE_BOXDIMENSION = "boxdim";
+  private static final String TYPE_DIMENDSION = "dimension";
+  private static final String TYPE_IMAGE = "image";
   
   private static final String THEME_DEF_SCHEMA = "themedef.xsd";
   private static final String JAXP_SCHEMA_LANGUAGE
@@ -94,10 +95,12 @@ public class ThemeDefinitionReader {
       value = new QxColor( defaultStr );
     } else if( TYPE_BORDER.equals( type ) ) {
       value = new QxBorder( defaultStr );
-    } else if( TYPE_BOXDIM.equals( type ) ) {
+    } else if( TYPE_BOXDIMENSION.equals( type ) ) {
       value = new QxBoxDimensions( defaultStr );
-    } else if( TYPE_DIM.equals( type ) ) {
+    } else if( TYPE_DIMENDSION.equals( type ) ) {
       value = new QxDimension( defaultStr );
+    } else if( TYPE_IMAGE.equals( type ) ) {
+      value = new QxImage( defaultStr );
     } else {
       // TODO [rst] Remove when XML validation is active
       throw new IllegalArgumentException( "Illegal type: " + type );

@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.internal.engine;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.*;
@@ -18,6 +19,7 @@ import javax.servlet.*;
 
 import org.eclipse.swt.internal.lifecycle.*;
 import org.eclipse.swt.internal.theme.ThemeManager;
+import org.eclipse.swt.internal.theme.ThemeManager.ResourceLoader;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.resources.*;
 import org.eclipse.swt.widgets.Display;
@@ -79,6 +81,13 @@ public class RWTServletContextListener implements ServletContextListener {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     String value = context.getInitParameter( SWT_THEMES_PARAM );
+    ResourceLoader loader = new ResourceLoader() {
+      public InputStream getResourceAsStream( final String resourceName )
+        throws IOException
+      {
+        return context.getResourceAsStream( resourceName );
+      }
+    };
     if( value != null ) {
       String[] themes = value.split( "," );
       for( int i = 0; i < themes.length; i++ ) {
@@ -96,7 +105,11 @@ public class RWTServletContextListener implements ServletContextListener {
             if( inStream != null ) {
               try {
                 String themeName = "Unnamed Theme";
-                manager.registerTheme( themeId, themeName , inStream, asDefault );
+                manager.registerTheme( themeId,
+                                       themeName,
+                                       inStream,
+                                       loader ,
+                                       asDefault );
               } finally {
                 inStream.close();
               }
