@@ -390,12 +390,15 @@ public class ToolItem extends Item {
       // TODO [rh] must be kept in sync with DefaultAppearanceTheme.js
       result = 7; // approx left + right padding as defined in appearance theme 
       if( getImage() != null ) {
-        result += 16; // TODO [rh] replace with actual image width
+        result += getImage().getBounds().width;
       }
       String text = getText();
       if( !"".equals( text ) ) {
         Font font = parent.getFont();
-        result += 2 + FontSizeEstimation.stringExtent( getText(), font ).x;
+        // TODO [fappel]: need some more space for the Workbench perspective
+        //                switcher. Check this after a proper font size
+        //                calculation is in place
+        result += 11 + FontSizeEstimation.stringExtent( getText(), font ).x;
       }
       if( ( style & SWT.DROP_DOWN ) != 0 ) {
         result += DROP_DOWN_ARROW_WIDTH;
