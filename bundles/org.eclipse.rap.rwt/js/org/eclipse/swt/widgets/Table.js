@@ -768,9 +768,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this.add( this._resizeLine );
         qx.ui.core.Widget.flushGlobalQueues();
       }
+      var top = this._clientArea.getTop();
+      this._resizeLine._applyRuntimeTop( top ); 
       var left = x - 2 - this._horzScrollBar.getValue();
       this._resizeLine._applyRuntimeLeft( left );
-      var height = this.getHeight() - this._horzScrollBar.getHeight();
+      var height = this._clientArea.getHeight();
       this._resizeLine._applyRuntimeHeight( height );
       this._resizeLine.removeStyleProperty( "visibility" );
     },
