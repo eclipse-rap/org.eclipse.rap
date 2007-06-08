@@ -250,10 +250,10 @@ qx.Class.define("org.eclipse.swt.widgets.List", {
       // list is reused by other widgets e.g. ComboBox, whose items would then
       // appear as unfocused by default.
       for( var i = 0; i < selectedItems.length; i++ ) {
-        if( !this.getFocused() ) {
-          selectedItems[ i ].addState( "parent_unfocused" );
-        } else {
+        if( this.getFocused() ) {
           selectedItems[ i ].removeState( "parent_unfocused" );
+        } else {
+          selectedItems[ i ].addState( "parent_unfocused" );
         }
       }
     }

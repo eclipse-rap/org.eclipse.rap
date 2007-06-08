@@ -171,9 +171,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         var label_ = selectedItems[ i ].getLabelObject()
         if( label_ != null ) {
           if( this._hasFocus ) {
-            label_.removeState( "tree_focused" );
+            label_.removeState( "parent_unfocused" );
           } else {
-            label_.addState( "tree_focused" );
+            label_.addState( "parent_unfocused" );
           }
         }
       }

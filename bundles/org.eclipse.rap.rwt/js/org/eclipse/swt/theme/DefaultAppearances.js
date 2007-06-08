@@ -561,14 +561,14 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           padding               : [ 2, 4 ],
           cursor                : "default",
           verticalChildrenAlign : "middle",
-          backgroundColor       : states.over ? "#316ac5" : "undefined"
+          backgroundColor       : states.over ? "menu.hover.background" : "menu.background"
         };
         if( states.disabled ) {
           result.textColor = "widget.graytext";
         } else if( states.over ) {
-          result.textColor = "list.selection.foreground";
+          result.textColor = "menu.hover.foreground";
         } else {
-          result.textColor = "undefined";
+          result.textColor = "menu.foreground";
         }
         return result;
       }
@@ -802,15 +802,18 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           padding : 2
         };
         if( states.selected ) {
+          // TODO [rst] Replace the following lines with commented block below
+          //            when tree focus works correctly (currently clicking on
+          //            a tree item removes focus from the tree)
           result.textColor = "list.selection.foreground";
           result.backgroundColor = "list.selection.background";
           /*
-          if( states.tree_focused ) {
-            result.textColor = "list.selection.foreground";
-            result.backgroundColor = "list.selection.background";
-          } else {
+          if( states.parent_unfocused ) {
             result.textColor = "list.selection.unfocused.foreground";
             result.backgroundColor = "list.selection.unfocused.background";
+          } else {
+            result.textColor = "list.selection.foreground";
+            result.backgroundColor = "list.selection.background";
           }
           */
         } else {

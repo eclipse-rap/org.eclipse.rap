@@ -334,7 +334,7 @@ public class ThemeManager {
       String description = def.description.replaceAll( "\\n\\s*", "\n# " );
       // TODO [rst] Hack to hide themeing properties that do not yet support
       //      user-defined values - Remove when themeing is stable.
-      if( description.indexOf( "[hidden]" ) != -1 ) {
+      if( description.indexOf( "[hidden]" ) == -1 ) {
         sb.append( "\n" );
         sb.append( "# " + description + "\n" );
         sb.append( "# default: " + value + "\n" );

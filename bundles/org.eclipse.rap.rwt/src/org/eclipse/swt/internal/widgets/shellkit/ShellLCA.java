@@ -71,10 +71,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
       writer.call( "addState", new Object[]{ "rwt_TITLE" } );
     }
     writer.call( "fixTitlebar", new Object[ 0 ] );
-    writer.set( "resizeable", ( style & SWT.RESIZE ) != 0 );
     writer.set( "showMinimize", ( style & SWT.MIN ) != 0 );
+    writer.set( "allowMinimize", ( style & SWT.MIN ) != 0 );
     writer.set( "showMaximize", ( style & SWT.MAX ) != 0 );
+    writer.set( "allowMaximize", ( style & SWT.MAX ) != 0 );
     writer.set( "showClose", ( style & SWT.CLOSE ) != 0 );
+    writer.set( "allowClose", ( style & SWT.CLOSE ) != 0 );
+    writer.set( "resizeable", ( style & SWT.RESIZE ) != 0 );
     writer.set( "alwaysOnTop", ( style & SWT.ON_TOP ) != 0 );
     if( shell.getParent() instanceof Shell ) {
       // TODO [rh] a setter that doesn't work like a setter, could be passed to
