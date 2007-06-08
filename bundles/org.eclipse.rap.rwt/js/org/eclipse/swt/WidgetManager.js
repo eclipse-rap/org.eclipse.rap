@@ -37,12 +37,12 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     _onAppearSetForeground : function( evt ) {
+      var color = String( this );
       if( color == null ) {
         evt.getTarget().resetTextColor();
       } else {
         // 'this' references the color string but for some reason must be 
         // explicitly converted to a string
-        var color = String( this );
         evt.getTarget().setTextColor( color );
       }
       evt.getTarget().removeEventListener( 
@@ -163,8 +163,8 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         }
       } else {
         widget.addEventListener( 
-          "appear", 
-          org.eclipse.swt.WidgetManager._onAppearSetForeground, 
+          "appear",
+          org.eclipse.swt.WidgetManager._onAppearSetForeground,
           color );
       }
     },
