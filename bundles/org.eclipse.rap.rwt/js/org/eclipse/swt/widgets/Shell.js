@@ -65,22 +65,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     },
 
     /**
-     * Could be used to imitate Windows behavior: When SWT.MAX is set, the 
-     * minimize button is still shown but disabled.
-     */
-    disableMinimize : function() {
-      this._minimizeButton.setEnabled( false );
-    },
-
-    /**
-     * Could be used to imitate Windows behavior: When SWT.MIN is set, the 
-     * maximize button is still shown but disabled.
-     */
-    disableMaximize : function() {
-      this._maximizeButton.setEnabled( false );
-    },
-
-    /**
      * Adds a widget that has a server-side ActivateListener. If this widget or
      * any of its children are activated, an org.eclipse.swt.events.controlActivated 
      * is fired.
