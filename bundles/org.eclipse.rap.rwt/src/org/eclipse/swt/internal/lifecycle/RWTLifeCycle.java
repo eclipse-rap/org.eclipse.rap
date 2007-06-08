@@ -52,7 +52,10 @@ public class RWTLifeCycle extends LifeCycle {
     Thread result = null;
     if( ContextProvider.hasContext() ) {
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      result = ( Thread )stateInfo.getAttribute( CURRENT_THREAD );
+      // in case of a faked context...
+      if( stateInfo != null ) {
+        result = ( Thread )stateInfo.getAttribute( CURRENT_THREAD );
+      }
     }
     return result;
   }
