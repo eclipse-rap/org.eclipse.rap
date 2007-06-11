@@ -115,20 +115,24 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
      * @param index {var} TODOC
      * @return {void} 
      */
-    addLink : function(widget, text, index) {
-      if (widget) {
-        var newChild = org.eclipse.swt.LinkUtil._createLabel(widget, text);
-        newChild.setAppearance("link-href");
-        newChild.setUserData("index", index);
-
+    addLink : function( widget, text, index ) {
+      if( widget ) {
+        uText = "<u>" + text + "</u>";
+        var newChild = org.eclipse.swt.LinkUtil._createLabel( widget, uText );
+        newChild.setAppearance( "link-href" );
+        newChild.setUserData( "index", index );
         // TODO [rst] setAppearance() resets property wrap !
         newChild.setWrap( false );
-        widget.add(newChild);
-        var tabIndex = widget.getUserData("nextTabIndex");
-        newChild.setTabIndex(tabIndex++);
-        widget.setUserData("nextTabIndex", tabIndex);
-        newChild.addEventListener("mousedown", org.eclipse.swt.LinkUtil._onMouseDown, newChild);
-        newChild.addEventListener("keydown", org.eclipse.swt.LinkUtil._onKeyDown, newChild);
+        widget.add( newChild );
+        var tabIndex = widget.getUserData( "nextTabIndex" );
+        newChild.setTabIndex( tabIndex++ );
+        widget.setUserData( "nextTabIndex", tabIndex );
+        newChild.addEventListener( "mousedown",
+                                   org.eclipse.swt.LinkUtil._onMouseDown,
+                                   newChild );
+        newChild.addEventListener( "keydown",
+                                   org.eclipse.swt.LinkUtil._onKeyDown,
+                                   newChild );
       }
     },
 
@@ -140,11 +144,12 @@ qx.Class.define("org.eclipse.swt.LinkUtil", {
      * @param text {var} TODOC
      * @return {var} TODOC
      */
-    _createLabel : function(parent, text) {
+    _createLabel : function( parent, text ) {
       // replace spaces with nbsp
-      var replaced = text.replace(/\s/, "\xA0");
-      var label = new qx.ui.basic.Label(replaced);
-      label.setWrap(false);
+      var replaced = text.replace( /\s/, "\xA0" );
+      var label = new qx.ui.basic.Label( replaced );
+      label.setMode( "html" );
+      label.setWrap( false );
       return label;
     },
 
