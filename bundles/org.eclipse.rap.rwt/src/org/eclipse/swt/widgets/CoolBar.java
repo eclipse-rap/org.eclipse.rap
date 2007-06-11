@@ -145,7 +145,13 @@ public class CoolBar extends Composite {
     checkWidget();
     // TODO [rh] replace with decent implementation
     Point result = super.computeSize( wHint, hHint, changed );
-    return new Point( result.x, 30 );
+    Item[] items = itemHolder.getItems();
+    int height = 30;
+    for( int i = 0; i < items.length; i++ ) {
+      int itemHeight = ( ( CoolItem )items[ i ] ).getSize().y;
+      height = Math.max( height, itemHeight );
+    }
+    return new Point( result.x, height );
   }
   
   //////////////////////////
