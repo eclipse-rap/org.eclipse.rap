@@ -66,7 +66,7 @@ public class Widget_Test extends TestCase {
     widget.setData( singleData );
     assertSame( singleData, widget.getData() );
     
-    // Set/get some keyed data, ensure that single datat remains unchanged
+    // Set/get some keyed data, ensure that single data remains unchanged
     Object keyedData = new Object();
     widget.setData( "key", keyedData );
     widget.setData( "null-key", null );
