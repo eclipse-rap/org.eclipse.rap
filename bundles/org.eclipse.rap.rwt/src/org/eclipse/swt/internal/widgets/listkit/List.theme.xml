@@ -21,11 +21,11 @@
       default = "255, 255, 255" />
   
   <color name = "list.selection.unfocused.foreground"
-      description = "Background color selected List items on an unfocused List, also applies to Tree"
+      description = "Text color for selected List items on an unfocused List, also applies to Tree"
       default = "255, 255, 255" />
   
   <color name = "list.selection.unfocused.background"
-      description = "Text color selected List items on an unfocused List, also applies to Tree"
+      description = "Background color for selected List items on an unfocused List, also applies to Tree"
       default = "192, 192, 192" />
 
 </theme>
