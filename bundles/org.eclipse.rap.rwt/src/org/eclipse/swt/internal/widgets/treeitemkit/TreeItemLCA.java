@@ -18,8 +18,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
+
 import com.w4t.engine.service.ContextProvider;
 
 
@@ -28,6 +28,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public static final String PROP_FONT = "font";
   public static final String PROP_CHECKED = "checked";
   public static final String PROP_EXPANDED = "expanded";
+  public static final String PROP_SELECTION = "selection";
 
   // Expanded/collapsed state constants, used by readData 
   private static final String STATE_COLLAPSED = "collapsed";
@@ -41,6 +42,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
     adapter.preserve( TreeItemLCA.PROP_EXPANDED, 
                       Boolean.valueOf( treeItem.getExpanded() ) );
+    boolean selection = isSelected( treeItem );
+    adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
   }
 
   public void readData( final Widget widget ) {
@@ -79,6 +82,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     ItemLCAUtil.writeText( treeItem );
     writeImage( treeItem );
     WidgetLCAUtil.writeFont( treeItem, treeItem.getFont() );
+    writeSelection( treeItem );
     writeExpanded( treeItem );
     writeChecked( treeItem );
   }
@@ -95,26 +99,58 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   
   // TODO [rh] workaround for qx bug #260 (TreeFullControl doesn't update icon 
   //      when it is changed) 
-  private static void writeImage( final TreeItem treeItem ) throws IOException {
-    Image image = treeItem.getImage();
-    WidgetLCAUtil.writeImage( treeItem, Props.IMAGE, "image", image );
+  private static void writeImage( final TreeItem item ) throws IOException {
+    Image image = item.getImage();
+    WidgetLCAUtil.writeImage( item, Props.IMAGE, "image", image );
   }
 
-  private static void writeExpanded( final TreeItem treeItem ) 
+  private static void writeExpanded( final TreeItem item ) 
     throws IOException 
   {
-    JSWriter writer = JSWriter.getWriterFor( treeItem );
-    Boolean newValue = Boolean.valueOf( treeItem.getExpanded() );
+    JSWriter writer = JSWriter.getWriterFor( item );
+    Boolean newValue = Boolean.valueOf( item.getExpanded() );
     writer.set( PROP_EXPANDED, "open", newValue, Boolean.FALSE );
   }
 
-  private static void writeChecked( final TreeItem treeItem ) throws IOException 
+  private static void writeChecked( final TreeItem item ) throws IOException 
   {
-    JSWriter writer = JSWriter.getWriterFor( treeItem );
-    Boolean newValue = Boolean.valueOf( treeItem.getChecked() );
+    JSWriter writer = JSWriter.getWriterFor( item );
+    Boolean newValue = Boolean.valueOf( item.getChecked() );
     writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
   }
 
+  private static void writeSelection( final TreeItem item ) 
+    throws IOException 
+  {
+    Boolean newValue = Boolean.valueOf( isSelected( item ) );
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( item, PROP_SELECTION, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      Boolean focused = Boolean.valueOf( isFocused( item ) );
+      writer.set( "selection", new Object[] { newValue, focused } );
+    }
+  }
+
+  private static boolean isFocused( final TreeItem item ) {
+    Tree tree = item.getParent();
+    return tree.getSelectionCount() > 0 && tree.getSelection()[ 0 ] == item;
+  }
+  
+  private static boolean isSelected( final TreeItem item ) {
+    boolean result = false;
+    Tree tree = item.getParent();
+    TreeItem[] selectedItems = tree.getSelection();
+    for( int i = 0; !result && i < selectedItems.length; i++ ) {
+      if( item == selectedItems[ i ] ) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
+  /////////////////////////////////
+  // Process expand/collapse events
+  
   private static void processTreeExpandedEvent( final Widget widget ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String id = request.getParameter( JSConst.EVENT_TREE_EXPANDED );

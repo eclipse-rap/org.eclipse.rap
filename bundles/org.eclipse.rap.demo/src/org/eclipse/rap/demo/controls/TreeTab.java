@@ -113,6 +113,7 @@ public class TreeTab extends ExampleTab {
         MessageDialog.openInformation( getShell(), title, message, null );
       }
     } );
+    tree.setSelection( tree.getItem( 0 ) );
     registerControl( tree );
   }
 

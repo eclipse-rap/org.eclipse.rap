@@ -37,6 +37,11 @@ public final class TableLCA extends AbstractWidgetLCA {
                           "this.onItemSelected", 
                           JSListenerType.ACTION );
   
+  private static final JSListenerInfo DEFAULT_SELECTION_LISTENER
+    = new JSListenerInfo( "itemdefaultselected", 
+                          "this.onItemDefaultSelected", 
+                          JSListenerType.ACTION );
+  
   private static final JSListenerInfo CHECK_SELECTION_LISTENER
     = new JSListenerInfo( "itemchecked", 
                           "this.onItemChecked", 
@@ -173,6 +178,9 @@ public final class TableLCA extends AbstractWidgetLCA {
   {
     JSWriter writer = JSWriter.getWriterFor( table );
     writer.updateListener( SELECTION_LISTENER, 
+                           PROP_SELECTION_LISTENERS, 
+                           SelectionEvent.hasListener( table ) );
+    writer.updateListener( DEFAULT_SELECTION_LISTENER, 
                            PROP_SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( table ) );
     if( ( table.getStyle() & SWT.CHECK ) != 0 ) {

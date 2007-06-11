@@ -64,16 +64,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     },
 
     /**
-     *  Sets the current selection to the given array of TreeItems.
-     */
-    setSelection : function( selection ) {
-      this.getManager().setSelectedItems( selection );
-      if( selection.length > 0 ) {
-        this.getManager().setLeadItem( selection[ 0 ] );
-      }
-    },
-
-    /**
      * Are there any server-side TreeListeners attached? If so, expanding/collapsing
      * an item causes a request to be sent that informs the server-side listeners.
      */
@@ -107,7 +97,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
           } else {
             if ( this._selectionListeners ) {
               this._suspendClicks();
-              var itemId = wm.findIdByWidget(item);
+              var itemId = wm.findIdByWidget( item );
               var eventName = "org.eclipse.swt.events.widgetSelected";
               req.addEvent( eventName, id );
               req.addParameter( eventName + ".item", itemId );
@@ -169,6 +159,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       // Set a flag that signals unfocused state on every item.
       for( var i = 0; i < selectedItems.length; i++ ) {
         var label_ = selectedItems[ i ].getLabelObject()
+this.debug( "selectedItem: " + label_ );        
         if( label_ != null ) {
           if( this._hasFocus ) {
             label_.removeState( "parent_unfocused" );

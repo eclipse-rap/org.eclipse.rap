@@ -14,6 +14,7 @@
  * This class provides the client-side counterpart for 
  * org.eclipse.swt.widgets.Table.
  * @event itemselected
+ * @event itemdefaultselected
  * @event itemchecked
  */
 qx.Class.define( "org.eclipse.swt.widgets.Table", {
@@ -27,6 +28,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     //      available
     this.setTabIndex( 1 );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    // Helper flag to swallow unwanted click-events while double-clicking
+    this._suspendClicks = false;
     // Draw grid lines?
     this._linesVisible = false;
     // Default column width is used when there are no columns specified
@@ -323,7 +326,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onRowClick : function( evt ) {
       var rowIndex = this._rows.indexOf( evt.getTarget() );
       var itemIndex = this._topIndex + rowIndex;
-      if( itemIndex >= 0 && itemIndex < this._items.length ) {
+      if(    itemIndex >= 0 
+          && itemIndex < this._items.length 
+          && !this._suspendClicks ) 
+      {
+        this._suspendClicks = true;
+        qx.client.Timer.once( this._resumeClicks, this, 500 );
         var item = this._items[ itemIndex ];
         if( this._multiSelect ) {
           if( org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt ) ) {
@@ -361,6 +369,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this.setFocusedItem( item );
         this._updateSelectionParam();
         this.createDispatchDataEvent( "itemselected", item );
+      }
+    },
+    
+    _resumeClicks : function() {
+      this._suspendClicks = false;
+    },
+    
+    _onRowDblClick : function( evt ) {
+      var rowIndex = this._rows.indexOf( evt.getTarget() );
+      var item = this._getItemFromRowIndex( rowIndex );
+      if( item != null ) {
+        this.createDispatchDataEvent( "itemdefaultselected", item );
       }
     },
     
@@ -643,6 +663,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
             }
             var row = this._rows.shift();
             row.removeEventListener( "click", this._onRowClick, this );
+            row.removeEventListener( "dblclick", this._onRowDblClick, this );
+            row.removeEventListener( "keydown", this._onRowKeyDown, this );
             row.removeEventListener( "contextmenu", this._onRowContextMenu, this );
             row.setParent( null );
             row.dispose();
@@ -659,6 +681,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               }
               var newRow = new org.eclipse.swt.widgets.TableRow();
               newRow.addEventListener( "click", this._onRowClick, this );
+              newRow.addEventListener( "dblclick", this._onRowDblClick, this );
               newRow.addEventListener( "keydown", this._onRowKeyDown, this );
               newRow.addEventListener( "contextmenu", this._onRowContextMenu, this );
               this._clientArea.add( newRow );
@@ -789,6 +812,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( evt.getData() );
       org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+    },
+
+    onItemDefaultSelected : function( evt ) {
+      // evt.getData() holds the TableItem that was double-clicked
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( evt.getData() );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+      req.send();
     },
 
     onItemChecked : function( evt ) {

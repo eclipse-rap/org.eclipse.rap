@@ -68,6 +68,13 @@ public final class TableItemLCA extends AbstractWidgetLCA {
                                                  detail );
       event.processEvent();
     }
+    String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( item, defaultSelectedParam ) ) {
+      Table parent = item.getParent();
+      int id = SelectionEvent.WIDGET_DEFAULT_SELECTED;
+      SelectionEvent event = new SelectionEvent( parent, item, id );
+      event.processEvent();
+    }
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
