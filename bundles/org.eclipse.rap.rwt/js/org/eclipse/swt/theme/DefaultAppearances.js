@@ -1438,6 +1438,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     "link" : {
       style : function( states ) {
         return {
+          font : "default.font",
           border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
         }
       }
@@ -1446,7 +1447,6 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     "link-text" : {
       style : function( states ) {
         return {
-          font : "default.font",
           textColor : states.disabled ? "widget.graytext" : "undefined"
         }
       }
@@ -1456,9 +1456,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       style : function( states ) {
         return {
           cursor : "pointer",
-          font : "link.href.font",
           textColor : states.disabled ? "widget.graytext" : "link.foreground"
-//          textColor : states.disabled ? "widget.graytext" : "#00007f"
         }
       }
     }
