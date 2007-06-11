@@ -34,7 +34,6 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
       // end workaround
       var labelObject = widget.getLabelObject();
       labelObject.setMode( org.eclipse.swt.LabelUtil.MODE_TEXT );
-      labelObject.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
       labelObject.setTextOverflow( false );
       widget.getLabelObject().setWrap( wrap );
       // TODO [rh] workaround for weird getLabelObject behaviour
@@ -70,9 +69,7 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
         widget.getLabelObject().setTextAlign( align );
         widget.setLabel( oldLabel );
       }
-      if( !widget.getLabelObject().getWrap() ) {
-        widget.setHorizontalChildrenAlign( align );
-      }
+      widget.setHorizontalChildrenAlign( align );
     }
   }
 });
