@@ -22,8 +22,8 @@ public abstract class Device {
 
   // TODO [rh] this must be in sync with font in DefaultAppearanceTheme.js
   private static final String SYSTEM_FONT_NAME 
-    =   "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", " 
-      + "sans-serif";
+    = "Segoe UI, Corbel, Calibri, Tahoma, Lucida Sans Unicode, sans-serif";
+  
   private static final String ICON_PATH = "resource/widget/rap/dialog";
   public static final String ERROR_IMAGE_PATH = ICON_PATH + "/error.png";
   public static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";

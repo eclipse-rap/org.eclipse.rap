@@ -162,6 +162,29 @@ public class WidgetLCAUtil_Test extends TestCase {
 //                  WidgetLCAUtil.escapeText( "\"&File' && <b> &New", true ) );
   }
   
+  public void testParseFontName() {
+    // IE doesn't like quoted font names (or whatever qooxdoo makes out of them) 
+    String systemFontName 
+      = "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", " 
+      + "sans-serif";
+    String[] fontNames = WidgetLCAUtil.parseFontName( systemFontName );
+    assertEquals( 6, fontNames.length );
+    assertEquals( "Segoe UI", fontNames[ 0 ] );
+    assertEquals( "Corbel", fontNames[ 1 ] );
+    assertEquals( "Calibri", fontNames[ 2 ] );
+    assertEquals( "Tahoma", fontNames[ 3 ] );
+    assertEquals( "Lucida Sans Unicode", fontNames[ 4 ] );
+    assertEquals( "sans-serif", fontNames[ 5 ] );
+
+    // Empty font names don't cause trouble (at least for the browsers 
+    // currently tested - therefore don't make extra effort to eliminate them
+    fontNames = WidgetLCAUtil.parseFontName( "a, , b" );
+    assertEquals( 3, fontNames.length );
+    assertEquals( "a", fontNames[ 0 ] );
+    assertEquals( "", fontNames[ 1 ] );
+    assertEquals( "b", fontNames[ 2 ] );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

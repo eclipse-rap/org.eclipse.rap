@@ -36,6 +36,8 @@ public final class WidgetLCAUtil {
   
   private static final Pattern HTML_ESCAPE_PATTERN
     = Pattern.compile( "&|<|>|\\\"" );
+  private static final Pattern DOUBLE_QUOTE_PATTERN 
+    = Pattern.compile( "\"" );
 
   private WidgetLCAUtil() {
     // prevent instantiation
@@ -262,7 +264,7 @@ public final class WidgetLCAUtil {
     writeFont( widget, font, false );
   }
   
-  public static void writeFont( final Widget widget, 
+  private static void writeFont( final Widget widget, 
                                 final Font font, 
                                 final boolean force ) 
     throws IOException 
@@ -373,8 +375,13 @@ public final class WidgetLCAUtil {
   // Helping method to split font name  
   
   static String[] parseFontName( final String name ) {
-    String[] parts = name.split( "," );
-    return parts;
+    String[] result = name.split( "," );
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = result[ i ].trim();
+      Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( result[ i ] );
+      result[ i ] = matcher.replaceAll( "" );
+    }
+    return result;
   }
   
   //////////////////////////////////////

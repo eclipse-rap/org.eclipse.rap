@@ -64,15 +64,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     },
     
     setSelection : function( value, focus ) {
-this.debug( "setSelection: " + value + " focus: " + focus );      
       var manager = this.getTree().getManager();
       manager.setItemSelected( this, value );
       if( focus ) {
-this.debug( "setLeadItem" );      
         manager.setLeadItem( this );
-this.debug( "end of setLeadItem" );      
       }
-this.debug( "end of setSelection: " + value + " focus: " + focus );      
     },
 
     // TODO [rh] workaround for qx bug #260 (TreeFullControl doesn't update icon
