@@ -90,7 +90,7 @@ public class ProgressBarTab extends ExampleTab {
 
   protected void createStyleControls() {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL, true );
-    createStyleButton( "VERTICAL" );
+    createStyleButton( "VERTICAL", SWT.VERTICAL, false );
     createStyleButton( "INDETERMINATE", SWT.INDETERMINATE, false );
   }
 }

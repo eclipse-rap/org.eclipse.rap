@@ -39,6 +39,13 @@
     this._timer = null;
   },
 
+  statics : {
+    UNDETERMINED_SIZE : 40,
+    FLAG_UNDETERMINED : 2,
+    FLAG_HORIZONTAL : 256,
+    FLAG_VERTICAL : 512
+  },
+
   members : {
     setMinimum : function( minimum ) {
       this._minimum = minimum;
@@ -50,9 +57,9 @@
     
     setSelection : function( selection ) {
       this._selection = selection;
-      if( ( this._flag & 2 ) != 0 ) {
+      if( this._isUndetermined() ) {
         this._move();
-      } else if( ( this._flag & 512 ) != 0 ) {
+      } else if( this._isVertical() ) {
         this._bar.setWidth( this.getWidth() - 2 );
         var newHeight
           =  ( this._selection / this._maximum ) * ( this.getHeight() - 2 );
@@ -69,24 +76,88 @@
     
     setFlag : function( flag ) {
       this._flag = flag;
-      if( ( this._flag & 2 ) != 0 ) {
-        this._bar.setTop( 0 );
-        this._bar.setLeft( -40 );
-        this._bar.setWidth( 40 );
-        this._bar.setHeight( this.getHeight() - 2 );
-        this._timer = new qx.client.Timer( 120 );
-        this._timer.addEventListener( "interval", this._move, this );
-        this._timer.start();
+      if( this._isUndetermined() ) {
+        if( this._isHorizontal() ) {
+          this._initIndeterminedHorizontal();
+        } else if( this._isVertical() ) {
+          this._initIndeterminedVertical();
+        } else {
+          this._initIndeterminedHorizontal();
+        }        
       }
     },
     
+    _initIndeterminedHorizontal : function() {
+      this._bar.setTop( 0 );
+      this._bar.setLeft( 
+       -org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
+      this._bar.setWidth( 
+        org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
+      this._bar.setHeight( this.getHeight() - 2 );
+      this._timer = new qx.client.Timer( 120 );
+      this._timer.addEventListener( "interval", this._moveHorizontal, this );
+      this._timer.start();
+    },
+    
+    _initIndeterminedVertical : function() {
+      this._bar.setTop(
+        -org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
+      this._bar.setLeft( 0 ); 
+      this._bar.setWidth( this.getWidth() - 2 ); 
+      this._bar.setHeight(
+        org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
+      this._timer = new qx.client.Timer( 120 );
+      this._timer.addEventListener( "interval", this._moveVertical, this );
+      this._timer.start();
+    },
+    
     _move : function() {
+      if( this._isHorizontal() ) {
+        this._moveHorizontal();
+      } else if( this._isVertical() ) {
+        this._moveVertical();
+      } else {
+        this._moveHorizontal();
+      }
+    },
+    
+    _moveHorizontal : function() {
       this._bar.setHeight( this.getHeight() - 2 );
       if( this._bar.getLeft() >= this.getWidth() ) {
-        this._bar.setLeft( -40 );
+        this._bar.setLeft( 
+          -org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE );
       } else { 
         this._bar.setLeft( this._bar.getLeft() + 2 );
       }
+    },
+    
+    _moveVertical : function() {
+      this._bar.setWidth( this.getWidth() - 2 );
+      if(    this._bar.getTop() 
+          <= -org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE ) 
+      {
+        this._bar.setTop( this.getHeight() );
+      } else { 
+        this._bar.setTop( this._bar.getTop() - 2 );
+      }
+    },
+    
+    _isUndetermined : function() {
+      var masked = 
+        this._flag & org.eclipse.swt.widgets.ProgressBar.FLAG_UNDETERMINED;
+      return masked != 0;
+    },
+    
+    _isHorizontal : function() {
+      var masked
+        = this._flag & org.eclipse.swt.widgets.ProgressBar.FLAG_HORIZONTAL;
+      return masked != 0;
+    },
+    
+    _isVertical : function() {
+      var masked
+        = this._flag & org.eclipse.swt.widgets.ProgressBar.FLAG_VERTICAL;
+      return masked != 0;
     }
   }
 });
