@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -236,6 +237,39 @@ public class Tree extends Composite {
     selection = EMPTY_SELECTION;
   }
   
+  /**
+   * Shows the item.  If the item is already showing in the receiver,
+   * this method simply returns.  Otherwise, the items are scrolled
+   * and expanded until the item is visible.
+   *
+   * @param item the item to be shown
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the item is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the item has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Tree#showSelection()
+   */
+  public void showItem (TreeItem item) {
+  	checkWidget ();
+  	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
+  	if (item.isDisposed ()) error(SWT.ERROR_INVALID_ARGUMENT);
+  	if (item.getParent() != this) return;
+  	
+  	TreeItem parent = item.getParentItem();
+  	while( parent != null ) {
+  		parent.setExpanded( true );
+  		parent = parent.getParentItem();
+  	}
+  	
+  	// TODO: scroll to the item - see also SWT bug 6203
+  	// use Qooxdoo Widget#scrollIntoView ?
+  }
   /////////////////////////////////////
   // Methods to get/set/clear selection
   
