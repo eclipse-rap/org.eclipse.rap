@@ -463,6 +463,8 @@ public class ThemeManager {
         newValue = new QxBorder( value );
       } else if( defValue instanceof QxBoxDimensions ) {
         newValue = new QxBoxDimensions( value );
+      } else if( defValue instanceof QxFont ) {
+        newValue = new QxFont( value );
       } else if( defValue instanceof QxColor ) {
         newValue = new QxColor( value );
       } else if( defValue instanceof QxDimension ) {
@@ -480,16 +482,19 @@ public class ThemeManager {
   {
     registerWidgetImages( theme, id );
     String colorThemeCode = createColorTheme( theme, id );
+    String fontThemeCode = createFontTheme( theme, id );
     String widgetThemeCode = createWidgetTheme( theme, id );
     String metaThemeCode = createMetaTheme( theme, id );
     if( DEBUG ) {
       System.out.println( "-- REGISTERED THEME --" );
       System.out.println( colorThemeCode );
+      System.out.println( fontThemeCode );
       System.out.println( widgetThemeCode );
       System.out.println( metaThemeCode );
       System.out.println( "-- END REGISTERED THEME --" );
     }
     registerJsLibrary( colorThemeCode, id + "Colors.js" );
+    registerJsLibrary( fontThemeCode, id + "Fonts.js" );
     registerJsLibrary( widgetThemeCode, id + "WidgetIcons.js" );
     registerJsLibrary( metaThemeCode, id + ".js" );
   }
@@ -551,6 +556,22 @@ public class ThemeManager {
     return writer.getGeneratedCode();
   }
   
+  private static String createFontTheme( final Theme theme, final String id ) {
+    ThemeWriter writer = new ThemeWriter( id,
+                                          theme.getName(),
+                                          ThemeWriter.FONT );
+    String[] keys = theme.getKeys();
+    Arrays.sort( keys );
+    for( int i = 0; i < keys.length; i++ ) {
+      Object value = theme.getValue( keys[ i ] );
+      if( value instanceof QxFont ) {
+        QxFont font = ( QxFont )value;
+        writer.writeFont( keys[ i ], font );
+      }
+    }
+    return writer.getGeneratedCode();
+  }
+  
   private static String createWidgetTheme( final Theme theme, final String id ) {
     ThemeWriter writer = new ThemeWriter( id,
                                           theme.getName(),
@@ -567,7 +588,7 @@ public class ThemeManager {
     ThemeWriter writer = new ThemeWriter( id, theme.getName(), ThemeWriter.META );
     writer.writeTheme( "color", id + "Colors" );
     writer.writeTheme( "border", PREDEFINED_THEME_ID + "Borders" );
-    writer.writeTheme( "font", PREDEFINED_THEME_ID + "Fonts" );
+    writer.writeTheme( "font", id + "Fonts" );
     writer.writeTheme( "widget", id + "Widgets" );
     writer.writeTheme( "appearance", PREDEFINED_THEME_ID + "Appearances" );
     writer.writeTheme( "icon", PREDEFINED_THEME_ID + "Icons" );

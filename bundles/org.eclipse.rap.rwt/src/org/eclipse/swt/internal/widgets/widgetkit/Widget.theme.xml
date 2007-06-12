@@ -49,4 +49,8 @@
       description = "Color used to mark selected items like TreeColumns and TabViews"
       default = "254, 200, 60" />
 
+  <font name="widget.font"
+      description="Default font for most widgets"
+      default="11 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"/>
+
 </theme>

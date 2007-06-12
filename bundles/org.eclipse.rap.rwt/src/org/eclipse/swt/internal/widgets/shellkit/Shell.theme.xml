@@ -104,4 +104,8 @@
       description="Image for minimize button of Shells"
       default=""/>
 
+  <font name="shell.title.font"
+      description="Font for title bar of Shells"
+      default="11 bold 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"/>
+      
 </theme>

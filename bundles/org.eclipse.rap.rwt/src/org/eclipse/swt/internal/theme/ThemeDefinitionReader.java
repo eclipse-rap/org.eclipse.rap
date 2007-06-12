@@ -39,6 +39,7 @@ public class ThemeDefinitionReader {
   }
   
   private static final String NODE_ROOT = "theme";
+  private static final String TYPE_FONT = "font";
   private static final String TYPE_COLOR = "color";
   private static final String TYPE_BORDER = "border";
   private static final String TYPE_BOXDIMENSION = "boxdim";
@@ -91,8 +92,10 @@ public class ThemeDefinitionReader {
     String description = getAttributeValue( node, "description" );
     String defaultStr = getAttributeValue( node, "default" );
     QxType value;
-    if( TYPE_COLOR.equals( type ) ) {
-      value = new QxColor( defaultStr );
+    if( TYPE_FONT.equals( type ) ) {
+      value = new QxFont( defaultStr );
+    } else if( TYPE_COLOR.equals( type ) ) {
+        value = new QxColor( defaultStr );
     } else if( TYPE_BORDER.equals( type ) ) {
       value = new QxBorder( defaultStr );
     } else if( TYPE_BOXDIMENSION.equals( type ) ) {

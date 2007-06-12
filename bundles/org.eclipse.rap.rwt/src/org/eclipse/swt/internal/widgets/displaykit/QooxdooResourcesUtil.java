@@ -31,8 +31,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/theme/DefaultAppearances.js";
   private static final String DEFAULT_BORDERS_JS 
     = "org/eclipse/swt/theme/DefaultBorders.js";
-  private static final String DEFAULT_FONTS_JS 
-    = "org/eclipse/swt/theme/DefaultFonts.js";
   private static final String DEFAULT_ICONS_JS 
     = "org/eclipse/swt/theme/DefaultIcons.js";
 
@@ -142,7 +140,6 @@ final class QooxdooResourcesUtil {
       // NOTE: Order of register-calls is important here
       register( DEFAULT_APPEARANCES_JS );
       register( DEFAULT_BORDERS_JS );
-      register( DEFAULT_FONTS_JS );
       register( DEFAULT_ICONS_JS );
       // end of 'order is important'
       

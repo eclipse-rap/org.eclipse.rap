@@ -23,9 +23,10 @@ public class ThemeWriter {
   private int type;
   
   public static final int META = 1;
-  public static final int COLOR = 2;
-  public static final int BORDER = 3;
-  public static final int WIDGET = 4;
+  public static final int FONT = 2;
+  public static final int COLOR = 3;
+  public static final int BORDER = 4;
+  public static final int WIDGET = 5;
   
   // TODO [rst] Clarify what the use of the theme title is, remove the name
   //      parameter if unnecessary
@@ -37,6 +38,42 @@ public class ThemeWriter {
     headWritten = false;
     tailWritten = false;
     valueWritten = false;
+  }
+  
+  public void writeFont( final String key, final QxFont font ) {
+    if( type != FONT ) {
+      throw new IllegalStateException( "Font can only be set in font themes" );
+    }
+    if( !headWritten ) {
+      writeHead();
+    }
+    if( tailWritten ) {
+      throw new IllegalStateException( "Tail already written" );
+    }
+    if( valueWritten ) {
+      code.append( ",\n" );
+    }
+    code.append( "    \"" + key + "\" : { " );
+    code.append( " family: [" );
+    for( int i = 0; i < font.family.length; i++ ) {
+      if( i > 0 ) {
+        code.append( " ," );
+      }
+      code.append( "\"" );
+      code.append( font.family[ i ] );
+      code.append( "\"" );
+    }
+    code.append( "]" );
+    code.append( ", size: " );
+    code.append( font.size );
+    if( font.bold ) {
+      code.append( ", bold: true" );
+    }
+    if( font.italic ) {
+      code.append( ", italic: true" );
+    }
+    code.append( " }" );
+    valueWritten = true;
   }
   
   public void writeColor( final String key, final QxColor color ) {
@@ -141,6 +178,8 @@ public class ThemeWriter {
     code.append( "  title : \"" + title + "\",\n" );
     if( type == META ) {
       code.append( "  meta : {\n" );
+    } else if( type == FONT ) {
+      code.append( "  fonts : {\n" );
     } else if( type == COLOR ) {
       code.append( "  colors : {\n" );
     } else if( type == BORDER ) {
@@ -159,15 +198,22 @@ public class ThemeWriter {
   }
   
   private int checkType( final int type ) {
-    if( type != META && type != COLOR && type != BORDER && type != WIDGET ) {
-      throw new IllegalArgumentException( "empty argument" );
+    if( type != META
+        && type != FONT
+        && type != COLOR
+        && type != BORDER
+        && type != WIDGET )
+    {
+      throw new IllegalArgumentException( "illegal type" );
     }
     return type;
   }
   
   private String getNameSuffix() {
     String result = "";
-    if( type == COLOR ) {
+    if( type == FONT ) {
+      result = "Fonts";
+    } else if( type == COLOR ) {
       result = "Colors";
     } else if( type == BORDER ) {
       result = "Borders";

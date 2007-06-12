@@ -34,7 +34,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       style : function( states ) {
         return {
-          font : "default.font",
+          font : "widget.font",
           textColor       : "black",
           backgroundColor : "white",
           // TODO [rst] Eliminate absolute references
@@ -86,7 +86,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
         return {
           textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           backgroundColor : "widget.background",
-          font : "default.font",
+          font : "widget.font",
           border : states.rwt_BORDER ? "label.BORDER.border" : "label.border"
         };
       }
@@ -215,7 +215,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       style : function( states ) {
         return {
-          font            : "default.font",
+          font            : "widget.font",
           border          : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
           textColor       : states.disabled ? "widget.graytext" : "widget.foreground",
           backgroundColor : "toolbar.background",
@@ -381,7 +381,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       style : function( states ) {
         return {
           cursor : "default",
-          font : "bold.font",
+          font : "shell.title.font",
           marginRight : 2
         };
       }
@@ -675,7 +675,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       style : function( states ) {
         return {
           border : states.rwt_BORDER ? "text.BORDER.border" : "text.border",
-          font : "default.font",
+          font : "widget.font",
           padding : states.rwt_BORDER ? [ 1, 4 ] : [ 0, 3 ],
 //          TODO [rst] Do we still need this? Seems to work without as well
 //                     Do we ever create a widget without setting its size?
@@ -874,7 +874,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       style : function( states ) {
         return {
-          font : "default.font",
+          font : "widget.font",
           textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           spacing : -1,
           border : states.rwt_BORDER 
@@ -1143,7 +1143,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
         return {
           backgroundColor : "list.background",
           textColor : "list.foreground",
-          font : "default.font",
+          font : "widget.font",
           border : states.rwt_BORDER
             ? "control.BORDER.border"
             : "control.border"
@@ -1438,7 +1438,7 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     "link" : {
       style : function( states ) {
         return {
-          font : "default.font",
+          font : "widget.font",
           border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
         }
       }

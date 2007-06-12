@@ -44,6 +44,10 @@
       description="Space between image and text [hidden]"
       default="2" />
 
+  <font name="button.font"
+      description="Font for buttons with style PUSH or TOGGLE"
+      default="11 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"/>
+
   <!-- TODO pressed offset
        button.pressed.offset
          or
