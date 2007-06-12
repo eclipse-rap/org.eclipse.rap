@@ -157,7 +157,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     if( !changed ) {
       // TODO [rh] HACK: a decent solution would mark the item as 'bounds
       //      changed' and that mark could be evaluated by writeBounds.
-      //      A more flexible writeBounds implementeation on WidgetLCAUtil is
+      //      A more flexible writeBounds implementation on WidgetLCAUtil is
       //      necessary therefore.
       IWidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
       adapter.preserve( Props.BOUNDS, null );
@@ -188,7 +188,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
           CoolItem item = coolBar.getItem( i );
           if(     item != coolItem 
               && itemOrder[ i ] <= newOrder 
-              && itemOrder[i] > itemOrder[ itemIndex ] ) 
+              && itemOrder[ i ] > itemOrder[ itemIndex ] ) 
           {
             itemOrder[ i ] -= 1;
           }
