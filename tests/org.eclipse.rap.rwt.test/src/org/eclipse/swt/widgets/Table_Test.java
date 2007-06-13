@@ -14,8 +14,12 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
+
+import com.w4t.engine.lifecycle.PhaseId;
 
 public class Table_Test extends TestCase {
 
@@ -903,5 +907,123 @@ public class Table_Test extends TestCase {
     table.setSortDirection( SWT.NONE );
     table.setSortDirection( 4711 );
     assertEquals( SWT.NONE, table.getSortDirection() );
+  }
+  
+  public void testGetColumnOrder() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    
+    // Test column order for table without columns
+    assertEquals( 0, table.getColumnOrder().length );
+
+    // Test column order for the first, newly created column
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    assertEquals( 1, table.getColumnOrder().length );
+    assertEquals( 0, table.getColumnOrder()[ 0 ] );
+    table.getColumnOrder()[ 0 ] = 12345;
+    assertEquals( 0, table.getColumnOrder()[ 0 ] );
+    
+    // Test column order when disposing of the one and only column
+    column.dispose();
+    assertEquals( 0, table.getColumnOrder().length );
+    
+    // Test creating a column for the now column-less table
+    column = new TableColumn( table, SWT.NONE );
+    assertEquals( 1, table.getColumnOrder().length );
+    assertEquals( 0, table.getColumnOrder()[ 0 ] );
+    
+    TableColumn anotherColumn = new TableColumn( table, SWT.NONE );
+    assertEquals( 2, table.getColumnOrder().length );
+    assertEquals( 0, table.getColumnOrder()[ table.indexOf( column ) ] );
+    assertEquals( 1, table.getColumnOrder()[ table.indexOf( anotherColumn ) ] );
+    
+    // Insert column1 between the already existing column0 and column2
+    table = new Table( shell, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    TableColumn column2 = new TableColumn( table, SWT.NONE );
+    TableColumn column1 = new TableColumn( table, SWT.NONE, 1 );
+    assertEquals( column0, table.getColumn( 0 ) );
+    assertEquals( column1, table.getColumn( 1 ) );
+    assertEquals( column2, table.getColumn( 2 ) );
+    assertEquals( 3, table.getColumnOrder().length );
+    assertEquals( 0, table.getColumnOrder()[ table.indexOf( column0 ) ] );
+    assertEquals( 1, table.getColumnOrder()[ table.indexOf( column1 ) ] );
+    assertEquals( 2, table.getColumnOrder()[ table.indexOf( column2 ) ] );
+  }
+  
+  public void testSetColumnOrder() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final StringBuffer log = new StringBuffer();
+    ControlAdapter controlAdapter = new ControlAdapter() {
+      public void controlMoved( final ControlEvent event ) {
+        TableColumn column = ( TableColumn )event.widget;
+        log.append( column.getText() + " moved|" );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setText( "Col0" );
+    column0.addControlListener( controlAdapter );
+    int column0Index = table.indexOf( column0 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setText( "Col1" );
+    column1.addControlListener( controlAdapter );
+    int column1Index = table.indexOf( column1 );
+
+    // Precondition: changing the column order programmatically is allowed
+    // even if the moveable property is false
+    assertEquals( false, column0.getMoveable() );
+    assertEquals( false, column1.getMoveable() );
+    
+    // Ensure that changing the column order fire controlMoved events
+    table.setColumnOrder( new int[] { column1Index, column0Index } );
+    assertEquals( 2, table.getColumnOrder().length );
+    assertEquals( 1, table.getColumnOrder()[ column0Index ] );
+    assertEquals( 0, table.getColumnOrder()[ column1Index ] );
+    assertEquals( "Col1 moved|Col0 moved|", log.toString() );
+    
+    // Ensure that calling setColumnOrder with the same order as already is
+    // does not fire controlModevd events
+    log.setLength( 0 );
+    table.setColumnOrder( table.getColumnOrder() );
+    assertEquals( "", log.toString() );
+  }
+  
+  public void testSetColumnOrderWithInvalidArguments() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    // Passing null is not allowed
+    try {
+      table.setColumnOrder( null );
+      fail( "setColumnOrder must not accept null argument" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    // Passing in an array with more elements than columns is not allowed
+    new TableColumn( table, SWT.NONE );
+    try {
+      table.setColumnOrder( new int[] { 0, 0 } );
+      fail( "setColumnOrder must not accept more elements than columns" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    // Passing in an array with more elements than columns is not allowed
+    new TableColumn( table, SWT.NONE );
+    try {
+      table.setColumnOrder( new int[] { 0, 0 } );
+      fail( "setColumnOrder must not accept duplicate elements" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      table.setColumnOrder( new int[] { 0, 77 } );
+      fail( "setColumnOrder must not accept elements out of range" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
   }
 }

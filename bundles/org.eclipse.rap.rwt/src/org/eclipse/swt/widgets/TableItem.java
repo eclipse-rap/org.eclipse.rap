@@ -475,14 +475,17 @@ public class TableItem extends Item {
       height = getHeight();
     } else {
       if( itemIndex != -1 && index < parent.getColumnCount() ) {
+        TableColumn[] columns = parent.getColumns();
         left += getCheckWidth();
-        for( int i = 0; i < index; i++ ) {
-          left += parent.getColumn( i ).getWidth();
+        int[] columnOrder = parent.getColumnOrder();
+        int orderedIndex = columnOrder[ index ]; 
+        for( int i = 0; i < orderedIndex; i++ ) {
+          left += columns[ columnOrder[ i ] ].getWidth();
         }
         for( int i = 0; i < itemIndex; i++ ) {
           top += parent.getItem( i ).getHeight();
         }
-        width = parent.getColumn( index ).getWidth();
+        width = columns[ index ].getWidth();
         height = getHeight();
         if( index == 0 ) {
           width -= getCheckWidth();

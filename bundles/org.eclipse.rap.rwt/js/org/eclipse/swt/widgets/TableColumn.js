@@ -25,10 +25,16 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     // Getter/setter variables
     this._sortImage = null;
     this._resizable = true;
+    this._moveable = false;
     // Internally used fields for resizing
     this._resizeStartX = 0;
     this._inResize = false;
-    this._wasResizeEvent = false;
+    this._wasResizeOrMoveEvent = false;
+    // Internally used fields for moving
+    this._inMove = false;
+    this._offsetX = 0;
+    this._initialLeft = 0;
+    this._bufferedZIndex = 0;
     // Init width property, without this Table._updateScrollWidth would 
     // accidentially calculate a width of "0auto"
     this.setWidth( 0 );
@@ -79,6 +85,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       } else {
         if( this._sortImage == null ) {
           this._sortImage = new qx.ui.basic.Image();
+          this._sortImage.setAnonymous( true );
           this.add( this._sortImage );
         }
         this._sortImage.setSource( value );
@@ -89,8 +96,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       this._resizable = value;
     },
     
-    getResizable : function() {
-      return this._resizable;
+    setMoveable : function( value ) {
+      this._moveable = value;
     },
     
     _disposeSortImage : function() {
@@ -104,10 +111,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     /** This listener function is added and removed server-side */
     onClick : function( evt ) {
       // Don't send selection event when the onClick was caused while resizing
-      if( !this._wasResizeEvent ) {
+      if( !this._wasResizeOrMoveEvent ) {
         org.eclipse.swt.EventUtil.widgetSelected( evt );
       }
-      this._wasResizeEvent = false;
+      this._wasResizeOrMoveEvent = false;
     },
 
     _onMouseOver : function( evt ) {
@@ -117,6 +124,48 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     /////////////////////////////
     // Mouse listeners for resize
     
+    _onMouseDown : function( evt ) {
+      this._inResize = this._isResizeLocation( evt.getPageX() );
+      if( this._inResize ) {
+        var position = this.getLeft() + this.getWidth();
+        this._table._showResizeLine( position );
+        this._resizeStartX = evt.getPageX();
+        this.setCapture( true );
+      } else if( this._moveable ){
+        this._inMove = true;
+        this.setCapture( true );
+        this._bufferedZIndex = this.getZIndex();
+        this.setZIndex( 1e8 );
+        this._offsetX = evt.getPageX() - this.getLeft();
+        this._initialLeft = this.getLeft();
+      }
+    },
+
+    _onMouseUp : function( evt ) {
+      if( this._inResize ) {
+        this._table._hideResizeLine();
+        this.getTopLevelWidget().setGlobalCursor( null );
+        this.setCapture( false );
+        var newWidth = this._getResizeWidth( evt.getPageX() );
+        this._sendResized( newWidth );
+        this._inResize = false;
+        this._wasResizeOrMoveEvent = true;
+      } else if( this._inMove ) {
+        this._inMove = false;
+        this.setCapture( false );
+        this.setZIndex( this._bufferedZIndex );
+        if(    this.getLeft() < this._initialLeft - 1 
+            || this.getLeft() > this._initialLeft + 1 ) 
+        {
+          this._wasResizeOrMoveEvent = true;
+          var pageLeft = qx.html.Location.getPageBoxLeft( this.getElement() )
+          this._sendMoved( this.getLeft() + evt.getPageX() - pageLeft );
+        } else {
+          this.setLeft( this._initialLeft );
+        }
+      }
+    },
+
     _onMouseMove : function( evt ) {
       if( this._inResize ) {
         var position = this.getLeft() + this._getResizeWidth( evt.getPageX() );
@@ -125,6 +174,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
           position = this.getLeft() + 5;
         }
         this._table._showResizeLine( position );
+      } else if( this._inMove ) {
+        this.setLeft( evt.getPageX() - this._offsetX );
       } else {
         if( this._isResizeLocation( evt.getPageX() ) ) {
           this.getTopLevelWidget().setGlobalCursor( org.eclipse.swt.widgets.TableColumn.RESIZE_CURSOR );
@@ -138,28 +189,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       this.removeState( "mouseover" );
       if( !this._inResize ) {
         this.getTopLevelWidget().setGlobalCursor( null );
-      }
-    },
-
-    _onMouseDown : function( evt ) {
-      this._inResize = this._isResizeLocation( evt.getPageX() );
-      if( this._inResize ) {
-        var position = this.getLeft() + this.getWidth();
-        this._table._showResizeLine( position );
-        this._resizeStartX = evt.getPageX();
-        this.setCapture( true );
-      }
-    },
-
-    _onMouseUp : function( evt ) {
-      if( this._inResize ) {
-        this._table._hideResizeLine();
-        this.getTopLevelWidget().setGlobalCursor( null );
-        this.setCapture( false );
-        var newWidth = this._getResizeWidth( evt.getPageX() );
-        this._sendResize( newWidth );
-        this._inResize = false;
-        this._wasResizeEvent = true;
       }
     },
 
@@ -188,13 +217,24 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     },
 
 
-    _sendResize : function( width ) {
+    _sendResized : function( width ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetManager.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
         req.addEvent( "org.eclipse.swt.events.controlResized", id );
         req.addParameter( id + ".width", width );
+        req.send();
+      }
+    },
+    
+    _sendMoved : function( left ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addEvent( "org.eclipse.swt.events.controlMoved", id );
+        req.addParameter( id + ".left", left );
         req.send();
       }
     }

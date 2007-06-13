@@ -78,4 +78,47 @@ public class TableColumnLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "setWidth( " + newWidth + " )" ) != -1 );
     RWTFixture.removeUIThread();
   }
+  
+  public void testGetLeft() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    assertEquals( 0, TableColumnLCA.getLeft( column0 ) );
+    assertEquals( column1.getWidth(), TableColumnLCA.getLeft( column1 ) );
+  }
+  
+  public void testMoveColumn() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setText( "Col 0" );
+    column0.setWidth( 10 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setText( "Col 1" );
+    column1.setWidth( 20 );
+    TableColumn column2 = new TableColumn( table, SWT.NONE );
+    column2.setText( "Col 2" );
+    column2.setWidth( 30 );
+    
+    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60 (as created)
+    // Move Col 1 over Col 0, thereafter order should be: Col 0, Col 1, Col 2
+    table.setColumnOrder( new int[] { 0, 1, 2 } );
+    TableColumnLCA.moveColumn( column0, 27 );
+    int[] columnOrder = table.getColumnOrder();
+    assertEquals( 1, columnOrder[ 0 ] );
+    assertEquals( 0, columnOrder[ 1 ] );
+    assertEquals( 2, columnOrder[ 2 ] );
+    
+    // Current order: Col 1: 0..20, Col 0: 21..30, Col 2: 31..60
+    // Move Col 1 over Col 0, thereafter order should be: Col 0, Col 1, Col 2
+    table.setColumnOrder( new int[] { 1, 0, 2 } );
+    TableColumnLCA.moveColumn( column1, 27 );
+    columnOrder = table.getColumnOrder();
+    assertEquals( 0, columnOrder[ 0 ] );
+    assertEquals( 1, columnOrder[ 1 ] );
+    assertEquals( 2, columnOrder[ 2 ] );
+  }
 }

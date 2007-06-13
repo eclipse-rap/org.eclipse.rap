@@ -23,8 +23,8 @@ public final class ControlEvent extends TypedEvent {
 
   public static final int CONTROL_MOVED = 0;
   public static final int CONTROL_RESIZED = 1;
+  
   private static final Class LISTENER = ControlListener.class;
-
 
   public ControlEvent( final Object source, final int id ) {
     super( source, id );

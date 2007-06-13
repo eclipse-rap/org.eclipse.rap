@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -106,6 +107,39 @@ public class TableItem_Test extends TestCase {
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "some text" );
     assertTrue( item.getBounds().width > 0 );
+  }
+  
+  public void testBoundsWithCheckedTable() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    // without columns
+    Table table = new Table( shell, SWT.CHECK );
+    TableItem item = new TableItem( table, SWT.NONE );
+    assertTrue( item.getBounds().x > 0 );
+    // with columns
+    table = new Table( shell, SWT.CHECK );
+    new TableColumn( table, SWT.NONE );
+    item = new TableItem( table, SWT.NONE );
+    assertTrue( item.getBounds().x > 0 );
+  }
+  
+  public void testBoundsWidthReorderedColumns() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 1 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 2 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    
+    table.setColumnOrder( new int[] { 1, 0 } );
+    assertEquals( 0, item.getBounds( 1 ).x );
+    assertEquals( item.getBounds( 1 ).width, item.getBounds( 0 ).x );
+    assertEquals( column0.getWidth(), 
+                  item.getBounds( table.indexOf( column0 ) ).width );
+    assertEquals( column1.getWidth(), 
+                  item.getBounds( table.indexOf( column1 ) ).width );
   }
   
   public void testInvalidBounds() {

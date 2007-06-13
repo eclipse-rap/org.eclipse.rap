@@ -33,6 +33,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   private static final String PROP_FONT = "font";
   private static final String PROP_SORT_IMAGE = "sortImage";
   private static final String PROP_RESIZABLE = "resizable";
+  private static final String PROP_MOVEABLE = "moveable";
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
   
@@ -54,6 +55,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SORT_IMAGE, getSortImage( column ) );
     adapter.preserve( PROP_RESIZABLE, 
                       Boolean.valueOf( column.getResizable() ) );
+    adapter.preserve( PROP_MOVEABLE, 
+                      Boolean.valueOf( column.getMoveable() ) );
     adapter.preserve( PROP_ALIGNMENT, new Integer( column.getAlignment() ) );
     adapter.preserve( PROP_SELECTION_LISTENERS, 
                       Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
@@ -74,6 +77,18 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           column.setWidth( newWidth );
+        }
+      } );
+    }
+    // Though there is an org.eclipse.swt.events.controlMoved event sent,
+    // we will ignore it since changing the column order fires the desired
+    // controlMoved event
+    value = WidgetLCAUtil.readPropertyValue( column, "left" );
+    if( value != null ) {
+      final int newLeft = Integer.parseInt( value );
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          moveColumn( column, newLeft );
         }
       } );
     }
@@ -98,6 +113,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeToolTip( column, column.getToolTipText() );
     writeSortImage( column );
     writeResizable( column );
+    writeMoveable( column );
     writeAlignment( column );
     writeSelectionListener( column );
   }
@@ -146,6 +162,14 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.set( PROP_RESIZABLE, "resizable", newValue, Boolean.TRUE );
   }
 
+  private static void writeMoveable( final TableColumn column ) 
+    throws IOException 
+  {
+    JSWriter writer = JSWriter.getWriterFor( column );
+    Boolean newValue = Boolean.valueOf( column.getMoveable() );
+    writer.set( PROP_MOVEABLE, "moveable", newValue, Boolean.FALSE );
+  }
+  
   private static void writeAlignment( final TableColumn column ) 
     throws IOException 
   {
@@ -179,12 +203,14 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   //////////////////////////////////////////////////
   // Helping methods to obtain calculated properties
   
-  private static int getLeft( final TableColumn column ) {
+  static int getLeft( final TableColumn column ) {
     int result = 0;
     Table table = column.getParent();
-    int index = table.indexOf( column );
-    for( int i = 0; i < index; i++ ) {
-      result += table.getColumn( i ).getWidth();
+    TableColumn[] columns = table.getColumns();
+    int[] columnOrder = table.getColumnOrder();
+    int orderedIndex = columnOrder[ table.indexOf( column ) ]; 
+    for( int i = 0; i < orderedIndex; i++ ) {
+      result += columns[ columnOrder[ i ] ].getWidth();
     }
     return result;
   }
@@ -202,6 +228,83 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       } else if( table.getSortDirection() == SWT.DOWN ) {
         result = SORT_IMAGE_DOWN;
       }
+    }
+    return result;
+  }
+  
+  /////////////////////////////////
+  // Helping methods to move column
+  
+  static void moveColumn( final TableColumn column, final int newLeft ) {
+    int targetColumn = findMoveTarget( column, newLeft );
+    boolean changed = false;
+    if( targetColumn != -1 ) {
+      changed = changeOrder( column, targetColumn );
+    } 
+    if( !changed ) {
+      // TODO [rh] HACK mark left as changed
+      TableColumn[] columns = column.getParent().getColumns();
+      for( int i = 0; i < columns.length; i++ ) {
+        IWidgetAdapter adapter = WidgetUtil.getAdapter( columns[i] );
+        adapter.preserve( PROP_LEFT, null );
+        adapter.preserve( PROP_WIDTH, null );
+      }
+    }
+  }
+
+  private static int findMoveTarget( final TableColumn column, 
+                                     final int newLeft ) 
+  {
+    int result = -1;
+    Table table = column.getParent();
+    TableColumn[] columns = table.getColumns();
+    for( int i = 0; result == -1 && i < columns.length; i++ ) {
+      int left = getLeft( columns[ i ] );
+      int width = columns[ i ].getWidth();
+      if( newLeft >= left + width / 2 && newLeft <= left + width ) {
+        result = table.getColumnOrder()[ i ];
+      }
+    }
+    return result;
+  }
+
+  private static boolean changeOrder( final TableColumn movedColumn, 
+                                      final int newOrder ) 
+  {
+    boolean result;
+    Table table = movedColumn.getParent();
+    int index = table.indexOf( movedColumn );
+    int[] columnOrder = table.getColumnOrder();
+    int oldOrder = columnOrder[ index ];
+    if( oldOrder != newOrder ) {
+      if( newOrder < oldOrder ) {
+        for( int i = 0; i < columnOrder.length; i++ ) {
+          TableColumn column = table.getColumn( i );
+          if(    column != movedColumn 
+              && columnOrder[ i ] >= newOrder 
+              && columnOrder[ i ] < columnOrder[ index ] ) 
+          {
+            columnOrder[ i ] += 1;
+          }
+        }
+      } else {
+        for( int i = 0; i < columnOrder.length; i++ ) {
+          TableColumn column = table.getColumn( i );
+          if(     column != movedColumn 
+              && columnOrder[ i ] <= newOrder 
+              && columnOrder[ i ] > columnOrder[ index ] ) 
+          {
+            columnOrder[ i ] -= 1;
+          }
+        }
+      }
+      result = columnOrder[ index ] != newOrder;
+      if( result ) {
+        columnOrder[ index ] = newOrder;
+        table.setColumnOrder( columnOrder );
+      }
+    } else {
+      result = false;
     }
     return result;
   }

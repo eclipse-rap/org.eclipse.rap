@@ -42,6 +42,7 @@ public class TableColumn extends Item {
   private int width;
   private String toolTipText;
   private boolean resizable;
+  private boolean moveable;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -277,20 +278,28 @@ public class TableColumn extends Item {
   }
   
   /**
-   * Gets the resizable attribute. A column that is
-   * not resizable cannot be dragged by the user but
-   * may be resized by the programmer.
+   * Gets the moveable attribute. A column that is
+   * not moveable cannot be reordered by the user 
+   * by dragging the header but may be reordered 
+   * by the programmer.
    *
-   * @return the resizable attribute
+   * @return the moveable attribute
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   * 
+   * @see Table#getColumnOrder()
+   * @see Table#setColumnOrder(int[])
+   * @see TableColumn#setMoveable(boolean)
+   * @see SWT#Move
+   * 
+   * @since 3.1
    */
-  public boolean getResizable() {
+  public boolean getMoveable() {
     checkWidget();
-    return resizable;
+    return moveable;
   }
 
   /**
@@ -312,6 +321,23 @@ public class TableColumn extends Item {
     this.resizable = resizable;
   }
   
+  /**
+   * Gets the resizable attribute. A column that is
+   * not resizable cannot be dragged by the user but
+   * may be resized by the programmer.
+   *
+   * @return the resizable attribute
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public boolean getResizable() {
+    checkWidget();
+    return resizable;
+  }
+
   ///////////////////////////////////////
   // Listener registration/deregistration
   

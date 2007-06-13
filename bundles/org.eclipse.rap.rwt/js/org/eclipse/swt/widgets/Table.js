@@ -32,6 +32,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._suspendClicks = false;
     // Draw grid lines?
     this._linesVisible = false;
+    this._borderWidth = 0;
     // Default column width is used when there are no columns specified
     this._defaultColumnWidth = 0;
     // The item index that is currently displayed in the first visible row
@@ -230,6 +231,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._topIndex = value;
         this._updateRows();
       }
+    },
+    
+    setBorderWidth : function( value ) {
+      this._borderWidth = value;
     },
 
     getColumn : function( index ) {
@@ -617,17 +622,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( this._columnArea.getVisibility() ) {
         top = this._columnArea.getHeight();
       }
-      var clientHeight = this.getHeight() - top - this._horzScrollBar.getHeight();
-      var clientWidth = this.getWidth() - this._vertScrollBar.getWidth();
+      var clientHeight = this.getHeight() - top - this._horzScrollBar.getHeight() - ( 2 * this._borderWidth );
+      var clientWidth = this.getWidth() - this._vertScrollBar.getWidth() - ( 2 * this._borderWidth );
       //
       this._columnArea.setWidth( clientWidth );
       // vertical scrollBar
-      this._vertScrollBar.setLeft( this.getWidth() - this._vertScrollBar.getWidth() );
+      this._vertScrollBar.setLeft( this.getWidth() - this._vertScrollBar.getWidth() - ( 2 * this._borderWidth ) );
       this._vertScrollBar.setTop( top );
       this._vertScrollBar.setHeight( clientHeight );
       // horizontal scrollBar
       this._horzScrollBar.setLeft( 0 );
-      this._horzScrollBar.setTop( this.getHeight() - this._horzScrollBar.getHeight() );
+      this._horzScrollBar.setTop( this.getHeight() - this._horzScrollBar.getHeight() - ( 2 * this._borderWidth ) );
       this._horzScrollBar.setWidth( clientWidth );
       // client area
       this._clientArea.setTop( top );
@@ -640,7 +645,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._updateRowBounds();
       }
     },
-
+    
     _updateRowCount : function() {
       var result = false;
       if( this._clientArea.isCreated() ) {

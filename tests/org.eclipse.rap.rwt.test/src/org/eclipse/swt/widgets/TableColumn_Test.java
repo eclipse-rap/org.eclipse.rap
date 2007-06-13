@@ -104,6 +104,7 @@ public class TableColumn_Test extends TestCase {
     assertEquals( null, column.getToolTipText() );
     assertNull( column.getImage() );
     assertEquals( true, column.getResizable() );
+    assertEquals( false, column.getMoveable() );
     assertEquals( SWT.LEFT, column.getAlignment() );
   }
   

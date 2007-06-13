@@ -16,8 +16,7 @@ import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 import org.eclipse.swt.internal.widgets.*;
 
@@ -138,6 +137,7 @@ public class Table extends Composite {
   private final ITableAdapter tableAdapter;
   private final ItemHolder itemHolder;
   private final ItemHolder columnHolder;
+  private int[] columnOrder;
   private TableItem[] selection;
   private boolean linesVisible;
   private boolean headerVisible;
@@ -321,7 +321,112 @@ public class Table extends Composite {
     }
     return columnHolder.indexOf( tableColumn );
   }
+  
+  /**
+   * Sets the order that the items in the receiver should 
+   * be displayed in to the given argument which is described
+   * in terms of the zero-relative ordering of when the items
+   * were added.
+   *
+   * @param order the new order to display the items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the item order is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the item order is not the same length as the number of items</li>
+   * </ul>
+   * 
+   * @see Table#getColumnOrder()
+   * @see TableColumn#getMoveable()
+   * @see TableColumn#setMoveable(boolean)
+   * @see SWT#Move
+   * 
+   * @since 1.0
+   */
+  public void setColumnOrder( final int[] order ) {
+    checkWidget();
+    if( order == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    int columnCount = getColumnCount();
+    if( order.length != columnCount ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( columnCount > 0 ) {
+      int[] oldOrder = new int[ columnCount ];
+      System.arraycopy( columnOrder, 0, oldOrder, 0, columnOrder.length );
+      boolean reorder = false;
+      boolean[] seen = new boolean[ columnCount ];
+      for( int i = 0; i < order.length; i++ ) {
+        int index = order[ i ];
+        if( index < 0 || index >= columnCount ) {
+          error( SWT.ERROR_INVALID_RANGE );
+        }
+        if( seen[ index ] ) {
+          error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+        seen[ index ] = true;
+        if( index != oldOrder[ i ] ) {
+          reorder = true;
+        }
+      }
+      if( reorder ) {
+        System.arraycopy( order, 0, columnOrder, 0, columnOrder.length );
+        for( int i = 0; i < seen.length; i++ ) {
+          if( oldOrder[ i ] != columnOrder[ i ] ) {
+            TableColumn column = getColumn( columnOrder[ i ] );
+            int controlMoved = ControlEvent.CONTROL_MOVED;
+            ControlEvent controlEvent = new ControlEvent( column, controlMoved );
+            controlEvent.processEvent();
+          }
+        }
+      }
+    } 
+  }
 
+  /**
+   * Returns an array of zero-relative integers that map
+   * the creation order of the receiver's items to the
+   * order in which they are currently being displayed.
+   * <p>
+   * Specifically, the indices of the returned array represent
+   * the current visual order of the items, and the contents
+   * of the array represent the creation order of the items.
+   * </p><p>
+   * Note: This is not the actual structure used by the receiver
+   * to maintain its list of items, so modifying the array will
+   * not affect the receiver. 
+   * </p>
+   *
+   * @return the current visual order of the receiver's items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see Table#setColumnOrder(int[])
+   * @see TableColumn#getMoveable()
+   * @see TableColumn#setMoveable(boolean)
+   * @see SWT#Move
+   * 
+   * @since 1.0
+   */
+  public int[] getColumnOrder() {
+    checkWidget();
+    int[] result;
+    if( columnHolder.size() == 0 ) {
+      result = new int[ 0 ]; 
+    } else {
+      result = new int[ columnOrder.length ];
+      System.arraycopy( columnOrder, 0, result, 0, columnOrder.length );
+    }
+    return result;
+  }
+  
   ////////////////////////
   // Item handling methods
 
@@ -1636,18 +1741,50 @@ public class Table extends Composite {
   
   final void createColumn( final TableColumn column, final int index ) {
     columnHolder.insert( column, index );
+    if( columnOrder == null ) {
+      columnOrder = new int[] { index };
+    } else {
+      int length = columnOrder.length;
+      for( int i = index; i < length; i++ ) {
+        columnOrder[ i ]++;
+      }
+      int[] newColumnOrder = new int[ length + 1 ];
+      System.arraycopy( columnOrder, 0, newColumnOrder, 0, index );
+      System.arraycopy( columnOrder, 
+                        index, 
+                        newColumnOrder, 
+                        index + 1, 
+                        length - index );
+      columnOrder = newColumnOrder;
+      columnOrder[ index ] = index;
+    }
   }
   
   final void destroyColumn( final TableColumn column ) {
-    TableItem[] items = getItems();
     int index = indexOf( column );
+    // Remove data from TableItems
+    TableItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].removeData( index );
     }
+    // Reset sort column if necessary
     if( column == sortColumn ) {
       sortColumn = null;
     }
+    // Remove from column holder
     columnHolder.remove( column );
+    // Remove from column order
+    int length = columnOrder.length;
+    int[] newColumnOrder = new int[ length - 1 ];
+    System.arraycopy( columnOrder, 0, newColumnOrder, 0, index );
+    if( index < length - 1 ) {
+      System.arraycopy( columnOrder, 
+                        index + 1, 
+                        newColumnOrder, 
+                        index, 
+                        length - index - 1 );
+    }
+    columnOrder = newColumnOrder;
   }
   
   ////////////////////////////

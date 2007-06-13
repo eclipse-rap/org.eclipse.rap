@@ -152,7 +152,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           var column = table.getColumn( i );
           var left = column.getLeft();
           var width = column.getWidth();
-          if( i == 0 ) {
+          // Is first column (current visual order)?
+          if( column.getLeft() == 0 ) { 
             width -= leftOffset;
           } else {
             left -= leftOffset;
