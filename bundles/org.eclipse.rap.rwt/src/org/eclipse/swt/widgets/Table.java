@@ -562,18 +562,17 @@ public class Table extends Composite {
    */
   public void remove( final int start, final int end ) {
     checkWidget();
-    if( start > end ) {
-      return;
-    }
-    if( !( 0 <= start && start <= end && end < getItemCount() ) ) {
-      error( SWT.ERROR_INVALID_RANGE );
-    }
-    TableItem[] items = getItems();
-    for( int i = start; i <= end; i++ ) {
-      if( !items[ i ].isDisposed() ) {
-        items[ i ].dispose();
+    if( start <= end ) {
+      if( !( 0 <= start && start <= end && end < getItemCount() ) ) {
+        error( SWT.ERROR_INVALID_RANGE );
       }
-    }
+      TableItem[] items = getItems();
+      for( int i = start; i <= end; i++ ) {
+        if( !items[ i ].isDisposed() ) {
+          items[ i ].dispose();
+        }
+      }
+    } 
   }
 
   /**
@@ -1801,7 +1800,7 @@ public class Table extends Composite {
     if( topIndex > getItemCount() - 1 ) {
       topIndex = Math.max( 0, getItemCount() - 1 );
     }
-    if( index == focusIndex ) {
+    if( index == focusIndex || focusIndex > getItemCount() - 1 ) {
       // Must reset focusIndex before calling getSelectionIndex 
       focusIndex = -1;
       focusIndex = getSelectionIndex();

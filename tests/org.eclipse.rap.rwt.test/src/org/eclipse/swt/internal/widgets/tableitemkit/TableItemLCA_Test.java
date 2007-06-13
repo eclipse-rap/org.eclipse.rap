@@ -15,8 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
@@ -88,5 +87,32 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( 0, events[ 0 ].height );
     assertEquals( 1, table.getSelectionCount() );
     assertEquals( item1, table.getSelection()[ 0 ] );
+  }
+  
+  public void testDisposeSelected() throws IOException {
+    final boolean[] executed = { false };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Table table = new Table( shell, SWT.CHECK );
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    table.setSelection( 2 );
+    Button button = new Button( shell, SWT.PUSH );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        table.remove( 1, 2 );
+        executed[ 0 ] = true;
+      }
+    } );
+    
+    RWTFixture.fakeNewRequest();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    String buttonId = WidgetUtil.getId( button );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.execute();
+    assertTrue( executed[ 0 ] );
   }
 }
