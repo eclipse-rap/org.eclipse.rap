@@ -83,7 +83,6 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
     writeDropDownListener( toolItem );
-    WidgetLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
   }

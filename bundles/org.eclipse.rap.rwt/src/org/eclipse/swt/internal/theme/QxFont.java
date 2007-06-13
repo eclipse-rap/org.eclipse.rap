@@ -15,6 +15,10 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+
 
 public class QxFont implements QxType {
 
@@ -65,6 +69,24 @@ public class QxFont implements QxType {
     this.bold = bold;
     this.italic = italic;
     this.size = size;
+  }
+
+  public String getFamilyAsString() {
+    StringBuffer result = new StringBuffer();
+    for( int i = 0; i < family.length; i++ ) {
+      if( i > 0 ) {
+        result.append( ", " );
+      }
+      boolean hasSpace = family[ i ].indexOf( ' ' ) != -1;
+      if( hasSpace ) {
+        result.append( "\"" );
+      }
+      result.append( family[ i ] );
+      if( hasSpace ) {
+        result.append( "\"" );
+      }
+    }
+    return result.toString();
   }
 
   public String toDefaultString() {
@@ -123,6 +145,19 @@ public class QxFont implements QxType {
     return result.toString();
   }
   
+  public Font asSWTFont() {
+    String name = getFamilyAsString();
+    int style = SWT.NORMAL;
+    if( bold ) {
+      style |= SWT.BOLD;
+    }
+    if( italic ) {
+      style |= SWT.ITALIC;
+    }
+    FontData data = new FontData( name, size, style );
+    return Font.getFont( data );
+  }
+  
   private int parseSize( final String string ) {
     int size = -1;
     try {
@@ -130,23 +165,5 @@ public class QxFont implements QxType {
     } catch( NumberFormatException e ) {
     }
     return size;
-  }
-  
-  private String getFamilyAsString() {
-    StringBuffer result = new StringBuffer();
-    for( int i = 0; i < family.length; i++ ) {
-      if( i > 0 ) {
-        result.append( ", " );
-      }
-      boolean hasSpace = family[ i ].indexOf( ' ' ) != -1;
-      if( hasSpace ) {
-        result.append( "\"" );
-      }
-      result.append( family[ i ] );
-      if( hasSpace ) {
-        result.append( "\"" );
-      }
-    }
-    return result.toString();
   }
 }

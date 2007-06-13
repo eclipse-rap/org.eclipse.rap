@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -42,6 +43,7 @@ public class CTabItem extends Item {
   static final String ELLIPSIS = "..."; 
   
   private final CTabFolder parent;
+  private final IWidgetFontAdapter widgetFontAdapter;
   private Control control;
   private String toolTipText;
   private Font font;
@@ -122,8 +124,23 @@ public class CTabItem extends Item {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     parent.createItem( this, index );
+    widgetFontAdapter = new IWidgetFontAdapter() {
+      public Font getUserFont() {
+        return font;
+      }
+    };
   }
-  
+
+  public Object getAdapter( final Class adapter ) {
+    Object result;
+    if( adapter == IWidgetFontAdapter.class ) {
+      result = widgetFontAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
+
   public Display getDisplay() {
     return parent.getDisplay();
   }
@@ -210,9 +227,11 @@ public class CTabItem extends Item {
    */
   public Font getFont() {
     checkWidget();
-    if( font != null )
-      return font;
-    return parent.getFont();
+    Font result = font;
+    if( font == null ) {
+      result = parent.getFont();
+    }
+    return result;
   }
 
   /**

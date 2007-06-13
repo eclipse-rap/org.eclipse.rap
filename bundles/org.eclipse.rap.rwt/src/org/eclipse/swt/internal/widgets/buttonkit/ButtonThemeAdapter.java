@@ -87,4 +87,15 @@ public class ButtonThemeAdapter implements IButtonThemeAdapter {
     }
     return result;
   }
+
+  public QxFont getFont( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    QxFont result;
+    if( ( control.getStyle() & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
+      result = theme.getFont( "button.font" );
+    } else {
+      result = theme.getFont( "widget.font" );
+    }
+    return result;
+  }
 }

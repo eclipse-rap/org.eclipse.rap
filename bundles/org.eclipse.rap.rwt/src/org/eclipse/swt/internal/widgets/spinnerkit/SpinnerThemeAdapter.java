@@ -28,4 +28,9 @@ public class SpinnerThemeAdapter implements ISpinnerThemeAdapter {
     Theme theme = ThemeUtil.getTheme();
     return theme.getColor( "list.background" );
   }
+
+  public QxFont getFont( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    return theme.getFont( "widget.font" );
+  }
 }

@@ -14,8 +14,7 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -23,19 +22,19 @@ final class SimpleFontDialog extends Dialog {
 
   // Widgets to set font properties
   private Text txtName;
-  private Text txtSize;
-  private Button btnBold;
-  private Button btnItalic;
+  private Spinner spinSize;
+  private Button chkBold;
+  private Button chkItalic;
 
   private Font font;
   private Shell shell;
   private Runnable callback;
   
   public SimpleFontDialog( final Shell parent ) {
-    this( parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL );
+    this( parent, SWT.DIALOG_TRIM | SWT.RESIZE | SWT.APPLICATION_MODAL );
   }
   
-  // TODO [rst] When shell close can be prevented, this dialog chould be
+  // TODO [rst] When shell close can be prevented, this dialog should be
   //            implemented as SessionSingleton
   public SimpleFontDialog( final Shell parent, final int style ) {
     super( parent, style );
@@ -56,7 +55,9 @@ final class SimpleFontDialog extends Dialog {
       shell.setText( title );
     }
     shell.layout();
-    shell.pack();
+    shell.setSize( shell.computeSize( 350, SWT.DEFAULT ) );
+    Point parentLocation = getParent().getLocation();
+    shell.setLocation( parentLocation.x + 20, parentLocation.y + 20 );
     shell.open();
   }
   
@@ -70,29 +71,53 @@ final class SimpleFontDialog extends Dialog {
   }
   
   private void createControls( final Composite parent ) {
-    parent.setLayout( new FillLayout() );
+    parent.setLayout( new GridLayout( 2, false ) );
     SelectionAdapter dummySelectionListener = new SelectionAdapter() {};
-    Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( new GridLayout( 2, false ) );
-    Label lblName = new Label( composite, SWT.NONE );
+    Label lblName = new Label( parent, SWT.NONE );
     lblName.setText( "Name" );
-    txtName = new Text( composite, SWT.BORDER );
-    txtName.setLayoutData( new GridData( 130, SWT.DEFAULT ) );
-    Label lblSize = new Label( composite, SWT.NONE );
+    txtName = new Text( parent, SWT.BORDER );
+    txtName.setLayoutData( new GridData( SWT.FILL, SWT.DEFAULT, true, false ) );
+    Label lblSize = new Label( parent, SWT.NONE );
     lblSize.setText( "Size" );
-    txtSize = new Text( composite, SWT.BORDER );
-    txtSize.setLayoutData( new GridData( 50, SWT.DEFAULT ) );
-    btnBold = new Button( composite, SWT.CHECK );
-    btnBold.addSelectionListener( dummySelectionListener );
-    btnBold.setText( "Bold" );
-    btnItalic = new Button( composite, SWT.CHECK );
-    btnItalic.addSelectionListener( dummySelectionListener );
-    btnItalic.setText( "Italic" );
-    Button btnApply = new Button( composite, SWT.PUSH );
-    GridData gridData = new GridData( 80, 23 );
-    gridData.horizontalSpan = 2;
-    gridData.horizontalAlignment = GridData.END;
-    btnApply.setLayoutData( gridData );
+    spinSize = new Spinner( parent, SWT.BORDER );
+    spinSize.setMinimum( 1 );
+    spinSize.setMaximum( 100 );
+    spinSize.setLayoutData( new GridData( 50, SWT.DEFAULT ) );
+    // check boxes for style
+    Composite styleComp = new Composite( parent, SWT.NONE );
+    styleComp.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    GridData styleData = new GridData();
+    styleData.horizontalSpan = 2;
+    styleComp.setLayoutData( styleData );
+    chkBold = new Button( styleComp, SWT.CHECK );
+    chkBold.addSelectionListener( dummySelectionListener );
+    chkBold.setText( "Bold" );
+    chkItalic = new Button( styleComp, SWT.CHECK );
+    chkItalic.addSelectionListener( dummySelectionListener );
+    chkItalic.setText( "Italic" );
+    // buttons
+    Composite buttonComp = new Composite( parent, SWT.NONE );
+    buttonComp.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    GridData buttonData = new GridData();
+    buttonData.horizontalSpan = 2;
+    buttonData.horizontalAlignment = GridData.END;
+    buttonComp.setLayoutData( buttonData );
+    Button btnRevert = new Button( buttonComp, SWT.PUSH );
+    btnRevert.setText( "Revert" );
+    btnRevert.setToolTipText( "Revert to default font" );
+    btnRevert.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        revertPressed();
+      }
+    } );
+    Button btnCancel = new Button( buttonComp, SWT.PUSH );
+    btnCancel.setText( "Cancel" );
+    btnCancel.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        cancelPressed();
+      }
+    } );
+    Button btnApply = new Button( buttonComp, SWT.PUSH );
     btnApply.setText( "Apply" );
     btnApply.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -102,30 +127,46 @@ final class SimpleFontDialog extends Dialog {
   }
   
   private void updateFontControls() {
-    FontData data = font.getFontData()[ 0 ];
-    txtName.setText( data.getName() );
-    txtSize.setText( String.valueOf( data.getHeight() ) );
-    btnBold.setSelection( ( data.getStyle() & SWT.BOLD ) != 0 );
-    btnItalic.setSelection( ( data.getStyle() & SWT.ITALIC ) != 0 );
+    if( font != null ) {
+      FontData data = font.getFontData()[ 0 ];
+      txtName.setText( data.getName() );
+      spinSize.setSelection( data.getHeight() );
+      chkBold.setSelection( ( data.getStyle() & SWT.BOLD ) != 0 );
+      chkItalic.setSelection( ( data.getStyle() & SWT.ITALIC ) != 0 );      
+    } else {
+      txtName.setText( "" );
+      spinSize.setSelection( 0 );
+      chkBold.setSelection( false );
+      chkItalic.setSelection( false );      
+    }
+  }
+  
+  private void revertPressed() {
+    setFont( null );
+    if( callback != null ) {
+      callback.run();
+    }
+//    shell.setVisible( false );
+    shell.close();
   }
 
+  private void cancelPressed() {
+    if( callback != null ) {
+      callback.run();
+    }
+//    shell.setVisible( false );
+    shell.close();
+  }
+  
   private void applyPressed() {
     String name = txtName.getText();
     int height;
-    FontData data = font.getFontData()[ 0 ];
-    try {
-      height = Integer.parseInt( txtSize.getText() );
-      if( height < 0 ) {
-        height = data.getHeight();
-      }
-    } catch( NumberFormatException e ) {
-      height = data.getHeight();
-    }
+    height = spinSize.getSelection();
     int style = SWT.NORMAL;
-    if( btnBold.getSelection() ) {
+    if( chkBold.getSelection() ) {
       style |= SWT.BOLD;
     }
-    if( btnItalic.getSelection() ) {
+    if( chkItalic.getSelection() ) {
       style |= SWT.ITALIC;
     }
     setFont( Font.getFont( name, height, style ) );

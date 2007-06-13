@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class ToolItemLCA extends AbstractWidgetLCA {
   
-  private final static ToolItemDelegateLCA PUSH 
+  private final static ToolItemDelegateLCA PUSH
     = new PushToolItemDelegateLCA();
   private final static ToolItemDelegateLCA CHECK
     = new CheckToolItemDelegateLCA();

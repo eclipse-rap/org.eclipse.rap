@@ -38,4 +38,9 @@ public class ControlThemeAdapter implements IControlThemeAdapter {
     Theme theme = ThemeUtil.getTheme();
     return theme.getColor( "widget.background" ); 
   }
+  
+  public QxFont getFont( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    return theme.getFont( "widget.font" );
+  }
 }

@@ -11,8 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.controlkit;
 
-import org.eclipse.swt.internal.theme.IThemeAdapter;
-import org.eclipse.swt.internal.theme.QxColor;
+import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.widgets.Control;
 
 public interface IControlThemeAdapter extends IThemeAdapter {
@@ -22,5 +21,7 @@ public interface IControlThemeAdapter extends IThemeAdapter {
   abstract public QxColor getForeground( Control control );
   
   abstract public QxColor getBackground( Control control );
+
+  public abstract QxFont getFont( Control control );
 
 }

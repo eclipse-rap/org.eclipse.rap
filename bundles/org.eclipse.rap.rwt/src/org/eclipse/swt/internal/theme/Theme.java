@@ -59,12 +59,12 @@ public class Theme {
     return ( QxBoxDimensions )value;
   }
   
-  public QxColor getFont( final String key ) {
+  public QxFont getFont( final String key ) {
     QxType value = getValue( key );
     if( !( value instanceof QxFont ) ) {
       throw new IllegalArgumentException( "Key has a different type: " + key );
     }
-    return ( QxColor )value;
+    return ( QxFont )value;
   }
   
   public QxColor getColor( final String key ) {

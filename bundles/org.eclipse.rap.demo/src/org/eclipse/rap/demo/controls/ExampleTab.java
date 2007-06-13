@@ -19,6 +19,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.internal.theme.ThemeUtil;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -141,7 +142,7 @@ abstract class ExampleTab {
 
   protected abstract void createStyleControls( );
   
-  protected abstract void createExampleControls( final Composite top );
+  protected abstract void createExampleControls( final Composite parent );
   
   /**
    * TODO [rst] Refactor ExampleTab to evaluate style controls before example
@@ -290,12 +291,45 @@ abstract class ExampleTab {
         fontChooser.open( new Runnable() {
           public void run() {
             font = fontChooser.getFont();
-            updateFont();            
+            updateFont();
           }
         } );
       }
     } );
     return button;
+  }
+  
+  /**
+   * Experimental. Switching themes at runtime does not yet work properly.
+   */
+  protected void createThemeSwitcher( final Composite parent ) {
+    final Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Theme Switcher" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        Shell shell = new Shell( parent.getShell(), SWT.DIALOG_TRIM );
+        shell.setText( "Theme Switcher" );
+        shell.setLayout( new GridLayout() );
+        Button themeButton = new Button( shell, SWT.PUSH );
+        themeButton.setText( "Switch Theme" );
+        themeButton.addSelectionListener( new SelectionAdapter() {
+          String[] availableThemeIds = ThemeUtil.getAvailableThemeIds();
+          public void widgetSelected( SelectionEvent e ) {
+            int index = 0;
+            String currThemeId = ThemeUtil.getCurrentThemeId();
+            for( int i = 0; i < availableThemeIds.length; i++ ) {
+              if( currThemeId.equals( availableThemeIds[ i ] ) ) {
+                index = ( i + 1 ) % availableThemeIds.length;
+              }
+            }
+            String newThemeId = availableThemeIds[ index ];
+            ThemeUtil.setCurrentTheme( newThemeId );
+          }
+        } );
+        shell.pack();
+        shell.open();
+      }
+    } );
   }
 
   /**

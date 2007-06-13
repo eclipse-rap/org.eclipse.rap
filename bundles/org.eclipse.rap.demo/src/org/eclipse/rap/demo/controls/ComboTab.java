@@ -44,6 +44,7 @@ public class ComboTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createRemoveAllButton();
+    createFontChooser();
   }
 
   private void createRemoveAllButton() {

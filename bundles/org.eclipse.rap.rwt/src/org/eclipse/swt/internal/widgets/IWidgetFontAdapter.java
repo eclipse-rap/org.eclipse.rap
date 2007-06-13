@@ -8,23 +8,14 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.lifecycle;
 
-import org.eclipse.swt.graphics.Color;
+package org.eclipse.swt.internal.widgets;
+
 import org.eclipse.swt.graphics.Font;
 
-public interface IControlAdapter {
 
-  public abstract int getZIndex();
-  
-  public abstract int getTabIndex();
+public interface IWidgetFontAdapter {
   
   public abstract Font getUserFont();
   
-  public abstract Color getUserForeground();
-  
-  public abstract Color getUserBackground();
-  
-  public abstract void setTabIndex( int index );
-
 }

@@ -64,7 +64,7 @@ public class ControlLCAUtil {
       = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
     adapter.preserve( PROP_FOREGROUND, controlAdapter.getUserForeground() );
     adapter.preserve( PROP_BACKGROUND, controlAdapter.getUserBackground() );
-    WidgetLCAUtil.preserveFont( control, control.getFont() );
+    WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
     adapter.preserve( Props.CONTROL_LISTENERS, 
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     adapter.preserve( PROP_ACTIVATE_LISTENER, 
@@ -221,7 +221,10 @@ public class ControlLCAUtil {
   }
 
   public static void writeFont( final Control control ) throws IOException {
-    WidgetLCAUtil.writeFont( control, control.getFont() );
+    Object adapter = control.getAdapter( IControlAdapter.class );
+    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
+    Font newValue = controlAdapter.getUserFont();
+    WidgetLCAUtil.writeFont( control, newValue );
   }
   
   public static void writeActivateListener( final Control control ) 

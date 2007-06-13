@@ -64,4 +64,9 @@ public class ShellThemeAdapter implements IShellThemeAdapter {
   public int getMenuBarHeight( Shell shell ) {
     return shell.getMenuBar() != null ? MENU_BAR_HEIGHT : 0;
   }
+
+  public QxFont getFont( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    return theme.getFont( "widget.font" );
+  }
 }

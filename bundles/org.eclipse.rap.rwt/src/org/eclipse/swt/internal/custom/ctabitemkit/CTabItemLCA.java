@@ -14,9 +14,9 @@ package org.eclipse.swt.internal.custom.ctabitemkit;
 import java.io.IOException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA;
+import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Widget;
@@ -28,7 +28,6 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     = "org.eclipse.swt.events.ctabItemClosed";
   
   public static final String PROP_BOUNDS = "bounds";
-  private static final String PROP_FONT = "font";
   public static final String PROP_SELECTED = "selected";
   public static final String PROP_SHOWING = "showing";
   public static final String PROP_UNSELECTED_CLOSE_VISIBLE 
@@ -48,10 +47,9 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( closeVisible ) );
     adapter.preserve( PROP_SHOWING, 
                       Boolean.valueOf( item.isShowing() ) );
-    adapter.preserve( PROP_FONT, 
-                      item.getFont() );
+    preserveFont( item );
   }
-  
+
   public void readData( final Widget widget ) {
     final CTabItem item = ( CTabItem )widget;
     if( WidgetLCAUtil.wasEventSent( item, EVENT_ITEM_CLOSED ) ) {
@@ -84,7 +82,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     Rectangle bounds = item.getBounds();
     WidgetLCAUtil.writeBounds( item, item.getParent(), bounds, true );
     ItemLCAUtil.writeChanges( item );
-    WidgetLCAUtil.writeFont( item, item.getFont() );
+    writeFont( item );
     WidgetLCAUtil.writeToolTip( item, item.getToolTipText() );
     writeShowing( item );
     writeUnselectedCloseVisible( item );
@@ -100,6 +98,20 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
 
   ////////////////////////////////////////////
   // Helping methods to render JavaScript code
+  
+  private static void preserveFont( final CTabItem item ) {
+    Object adapter = item.getAdapter( IWidgetFontAdapter.class );
+    IWidgetFontAdapter fontAdapter = ( IWidgetFontAdapter )adapter;
+    Font font = fontAdapter.getUserFont();
+    WidgetLCAUtil.preserveFont( item, font );
+  }
+  
+  private static void writeFont( final CTabItem item ) throws IOException {
+    Object adapter = item.getAdapter( IWidgetFontAdapter.class );
+    IWidgetFontAdapter fontAdapter = ( IWidgetFontAdapter )adapter;
+    Font font = fontAdapter.getUserFont();
+    WidgetLCAUtil.writeFont( item, font );
+  }
   
   private static void writeSelection( final CTabItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );

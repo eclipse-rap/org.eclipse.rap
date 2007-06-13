@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.*;
 
 public class TabItemLCA extends AbstractWidgetLCA {
 
-  private static final String PROP_FONT = "font";
   private static final String PROP_CHECKED = "checked";
 
   private final static JSListenerInfo JS_LISTENER_INFO
@@ -35,7 +34,6 @@ public class TabItemLCA extends AbstractWidgetLCA {
     ItemLCAUtil.preserve( tabItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_CHECKED, Boolean.valueOf( isChecked( tabItem ) ) );
-    adapter.preserve( PROP_FONT, tabItem.getParent().getFont() );
     // preserve the listener state of the parent tabfolder here, since the
     // javascript handling is added to the clientside tab buttons and therefore
     // the jswriter will check the preserved state of the tabitem...
@@ -82,7 +80,6 @@ public class TabItemLCA extends AbstractWidgetLCA {
     TabItem tabItem = ( TabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
-    WidgetLCAUtil.writeFont( tabItem, tabItem.getParent().getFont() );
     writeCheckedState( tabItem );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 

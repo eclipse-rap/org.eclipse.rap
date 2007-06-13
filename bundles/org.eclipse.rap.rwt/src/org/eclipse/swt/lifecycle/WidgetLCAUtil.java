@@ -269,21 +269,24 @@ public final class WidgetLCAUtil {
                                 final boolean force ) 
     throws IOException 
   {
-    Font systemFont = widget.getDisplay().getSystemFont();
     if(    force 
-        || WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, systemFont ) ) 
+        || WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) 
     {
       JSWriter writer = JSWriter.getWriterFor( widget );
-      FontData fontData = font.getFontData()[ 0 ];
-      String[] names = parseFontName( fontData.getName() );
-      Object[] args = new Object[]{
-        widget,
-        names,
-        new Integer( fontData.getHeight() ),
-        Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
-        Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
-      };
-      writer.call( JSWriter.WIDGET_MANAGER_REF, "setFont", args );
+      if( font != null ) {
+        FontData fontData = font.getFontData()[ 0 ];
+        String[] names = parseFontName( fontData.getName() );
+        Object[] args = new Object[]{
+          widget,
+          names,
+          new Integer( fontData.getHeight() ),
+          Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
+          Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
+        };
+        writer.call( JSWriter.WIDGET_MANAGER_REF, "setFont", args );
+      } else {
+        writer.reset( JSConst.QX_FIELD_FONT );
+      }
     }
   }
   

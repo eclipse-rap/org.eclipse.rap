@@ -51,6 +51,10 @@ public abstract class Control extends Widget {
       return result;
     }
     
+    public Font getUserFont() {
+      return font;
+    }
+    
     public Color getUserForeground() {
       return foreground;
     }
@@ -428,11 +432,11 @@ public abstract class Control extends Widget {
    */
   public Font getFont() {
     checkWidget();
-    Font result;
+    Font result = font;
     if( font == null ) {
-      result = getDisplay().getSystemFont();
-    } else {
-      result = font;
+      IControlThemeAdapter adapter = getControlThemeAdapter();
+      QxFont qxFont = adapter.getFont( this );
+      result = qxFont.asSWTFont();
     }
     return result;
   }

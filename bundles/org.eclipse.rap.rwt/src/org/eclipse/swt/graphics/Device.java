@@ -13,33 +13,24 @@ package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.internal.theme.QxFont;
+import org.eclipse.swt.internal.theme.ThemeUtil;
 
 /**
  * TODO [fappel] comment
  */
 public abstract class Device {
-  
-
-  // TODO [rh] this must be in sync with font in DefaultAppearanceTheme.js
-  private static final String SYSTEM_FONT_NAME 
-    = "Segoe UI, Corbel, Calibri, Tahoma, Lucida Sans Unicode, sans-serif";
-  
+    
   private static final String ICON_PATH = "resource/widget/rap/dialog";
   public static final String ERROR_IMAGE_PATH = ICON_PATH + "/error.png";
   public static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";
   public static final String QUESTION_IMAGE_PATH = ICON_PATH + "/question.png";
   public static final String WARNING_IMAGE_PATH = ICON_PATH + "/warning.png";
 
-  public final Font systemFont;
   public Image errorImage;
   public Image infoImage;
   public Image questionImage;
   public Image warningImage;
-
-  
-  public Device() {
-    systemFont = Font.getFont( SYSTEM_FONT_NAME, 11, SWT.NORMAL );
-  }
   
   /**
    * Returns the matching standard color for the given
@@ -139,7 +130,8 @@ public abstract class Device {
    */
   public Font getSystemFont() {
     checkDevice();
-    return systemFont;
+    QxFont qxFont = ThemeUtil.getTheme().getFont( "widget.font" );
+    return qxFont.asSWTFont();
   }
 
   public void checkDevice() {

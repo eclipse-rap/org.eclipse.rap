@@ -52,7 +52,6 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeText( toolItem, true );
     ItemLCAUtil.writeImage( toolItem );
-    WidgetLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar
     //      item does not have a context menu assigned

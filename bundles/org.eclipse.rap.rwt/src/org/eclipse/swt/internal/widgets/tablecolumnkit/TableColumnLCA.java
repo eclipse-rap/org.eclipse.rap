@@ -30,7 +30,6 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   private static final String PROP_LEFT = "left";
   private static final String PROP_WIDTH = "width";
   private static final String PROP_Z_INDEX = "zIndex";
-  private static final String PROP_FONT = "font";
   private static final String PROP_SORT_IMAGE = "sortImage";
   private static final String PROP_RESIZABLE = "resizable";
   private static final String PROP_MOVEABLE = "moveable";
@@ -51,7 +50,6 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_Z_INDEX, new Integer( getZIndex( column ) ) );
     adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
     adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
-    adapter.preserve( PROP_FONT, column.getParent().getFont() );
     adapter.preserve( PROP_SORT_IMAGE, getSortImage( column ) );
     adapter.preserve( PROP_RESIZABLE, 
                       Boolean.valueOf( column.getResizable() ) );
@@ -109,7 +107,6 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writeLeft( column );
     writeWidth( column );
     writeZIndex( column );
-    WidgetLCAUtil.writeFont( column, column.getParent().getFont() );
     WidgetLCAUtil.writeToolTip( column, column.getToolTipText() );
     writeSortImage( column );
     writeResizable( column );

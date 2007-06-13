@@ -14,9 +14,9 @@ package org.eclipse.swt.internal.widgets.treeitemkit;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.swt.events.TreeEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
@@ -25,7 +25,6 @@ import com.w4t.engine.service.ContextProvider;
 
 public final class TreeItemLCA extends AbstractWidgetLCA {
 
-  public static final String PROP_FONT = "font";
   public static final String PROP_CHECKED = "checked";
   public static final String PROP_EXPANDED = "expanded";
   public static final String PROP_SELECTION = "selection";
@@ -38,7 +37,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     TreeItem treeItem = ( TreeItem )widget;
     ItemLCAUtil.preserve( treeItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
-    adapter.preserve( PROP_FONT, treeItem.getFont() );
+    preserveFont( treeItem );
     adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
     adapter.preserve( TreeItemLCA.PROP_EXPANDED, 
                       Boolean.valueOf( treeItem.getExpanded() ) );
@@ -81,7 +80,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     TreeItem treeItem = ( TreeItem )widget;
     ItemLCAUtil.writeText( treeItem );
     writeImage( treeItem );
-    WidgetLCAUtil.writeFont( treeItem, treeItem.getFont() );
+    writeFont( treeItem );
     writeSelection( treeItem );
     writeExpanded( treeItem );
     writeChecked( treeItem );
@@ -102,6 +101,20 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   private static void writeImage( final TreeItem item ) throws IOException {
     Image image = item.getImage();
     WidgetLCAUtil.writeImage( item, Props.IMAGE, "image", image );
+  }
+  
+  private static void preserveFont( final TreeItem treeItem ) {
+    IWidgetFontAdapter fontAdapter
+      = ( IWidgetFontAdapter )treeItem.getAdapter( IWidgetFontAdapter.class );
+    Font font = fontAdapter.getUserFont();
+    WidgetLCAUtil.preserveFont( treeItem, font );
+  }
+
+  private static void writeFont( final TreeItem treeItem ) throws IOException {
+    Object adapter = treeItem.getAdapter( IWidgetFontAdapter.class );
+    IWidgetFontAdapter fontAdapter = ( IWidgetFontAdapter )adapter;
+    Font font = fontAdapter.getUserFont();
+    WidgetLCAUtil.writeFont( treeItem, font );
   }
 
   private static void writeExpanded( final TreeItem item ) 

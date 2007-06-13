@@ -74,7 +74,6 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
-    WidgetLCAUtil.writeFont( toolItem, toolItem.getParent().getFont() );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
     writeSelection( toolItem, toolItem.getSelection() );

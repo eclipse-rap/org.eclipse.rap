@@ -14,8 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.*;
 
 
 /**
@@ -37,6 +36,7 @@ public class TreeItem extends Item {
   private final TreeItem parentItem;
   private final Tree parent;
   private final ItemHolder itemHolder;
+  private final IWidgetFontAdapter widgetFontAdapter;
   private Font font;
   private boolean expanded;
   private boolean checked;
@@ -168,12 +168,19 @@ public class TreeItem extends Item {
       ItemHolder.insertItem( parent, this, newIndex );
     }
     itemHolder = new ItemHolder( TreeItem.class );
+    widgetFontAdapter = new IWidgetFontAdapter() {
+      public Font getUserFont() {
+        return font;
+      }
+    };
   }
 
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = itemHolder;
+    } else if( adapter == IWidgetFontAdapter.class ) {
+      result = widgetFontAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

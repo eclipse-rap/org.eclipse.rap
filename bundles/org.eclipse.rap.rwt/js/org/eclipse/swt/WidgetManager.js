@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -178,28 +177,11 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         font.setBold( bold );
         font.setItalic( italic );
         widget.setFont( font );
-      } else if( widget.getLabelObject && widget.getLabel ) {
-        var font = new qx.renderer.font.Font( size, name );
-        font.setBold( bold );
-        font.setItalic( italic );
-        // Weird feature of qx.ui.basic.Atom:
-        // getLabelObject() returns null until the label property was set to a 
-        // non-empty string.
-        if( widget.getLabelObject() != null ) {
-          widget.getLabelObject().setFont( font );
-        } else {
-          var oldLabel = widget.getLabel();
-          widget.setLabel( "(empty)" );
-          widget.getLabelObject().setFont( font );
-          // Even though label (Label.text precisely) does not allow null
-          // values, there are situations where oldValue might be null
-          widget.setLabel( oldLabel == null ? "" : oldLabel );
-        }
       } else {
         this.debug( widget.classname + " does not support fonts" );
       }
     },
-
+    
     /**
      * Sets the toolTipText for the given widget. An empty or null toolTipText
      * removes the tool tip of the widget.
