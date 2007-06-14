@@ -102,6 +102,13 @@ public final class RWTFixture {
     {
     }
 
+    public void register( String name,
+                          InputStream is,
+                          String charset,
+                          RegisterOptions options )
+    {
+    }
+
     public void setContextLoader( final ClassLoader contextLoader ) {
       loader = contextLoader;
     }

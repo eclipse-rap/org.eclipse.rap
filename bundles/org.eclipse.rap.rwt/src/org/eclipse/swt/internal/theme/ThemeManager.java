@@ -25,10 +25,13 @@ import org.eclipse.swt.widgets.List;
 import org.xml.sax.SAXException;
 
 import com.w4t.HtmlResponseWriter;
+import com.w4t.IResourceManager.RegisterOptions;
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
 
 public class ThemeManager {
+
+  private static final String CHARSET = "UTF-8";
 
   public interface ResourceLoader {
     public abstract InputStream getResourceAsStream( String resourceName )
@@ -629,11 +632,14 @@ public class ThemeManager {
     throws IOException
   {
     ByteArrayInputStream resourceInputStream;
-    byte[] buffer = code.getBytes( "UTF-8" );
+    byte[] buffer = code.getBytes( CHARSET );
     resourceInputStream = new ByteArrayInputStream( buffer );
     try {
       // TODO [rst] Enable versioning of registered resources
-      ResourceManager.getInstance().register( name, resourceInputStream );
+      ResourceManager.getInstance().register( name,
+                                              resourceInputStream,
+                                              CHARSET,
+                                              RegisterOptions.VERSION );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
       HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
       responseWriter.useJSLibrary( name );
