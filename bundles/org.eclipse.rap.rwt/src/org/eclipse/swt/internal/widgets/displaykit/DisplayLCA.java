@@ -148,7 +148,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     Object oldThemeId = adapter.getPreserved( PROP_CURR_THEME );
     if( !currThemeId.equals( oldThemeId ) ) {
       String code = "qx.manager.object.ThemeManager.getInstance().setTheme( "
-                    + currThemeId
+                    + ThemeManager.getInstance().getJsThemeId( currThemeId )
                     + " );";
       out.write( code );
     }

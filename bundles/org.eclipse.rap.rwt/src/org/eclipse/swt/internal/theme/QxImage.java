@@ -45,7 +45,7 @@ public class QxImage implements QxType {
   }
 
   public String toString () {
-    return "QxDimension {"
+    return "QxImage {"
            + path
            + "}";
   }

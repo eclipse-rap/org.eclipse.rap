@@ -75,6 +75,14 @@ public class Theme {
     return ( QxColor )value;
   }
   
+  public QxImage getImage( final String key ) {
+    QxType value = getValue( key );
+    if( !( value instanceof QxImage ) ) {
+      throw new IllegalArgumentException( "Key has a different type: " + key );
+    }
+    return ( QxImage )value;
+  }
+  
   public QxDimension getDimension( final String key ) {
     QxType value = getValue( key );
     if( !( value instanceof QxDimension ) ) {
@@ -99,6 +107,25 @@ public class Theme {
       }
     }
     values.put( key, value );
+  }
+  
+  // TODO [rst] implement equals and hashcode completely
+  
+  public boolean equals( final Object obj ) {
+    boolean result;
+    if( obj == this ) {
+      result = true;
+    } else if( obj instanceof Theme ) {
+      Theme other = ( Theme )obj;
+      result = name.equals( other.name );
+    } else {
+      result = false;
+    }
+    return result;
+  }
+  
+  public int hashCode() {
+    return name.hashCode();
   }
   
   private String checkName( final String name ) {
