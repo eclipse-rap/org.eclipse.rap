@@ -120,5 +120,14 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( 0, columnOrder[ 0 ] );
     assertEquals( 1, columnOrder[ 1 ] );
     assertEquals( 2, columnOrder[ 2 ] );
+    
+    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
+    // Move Col 2 over Col 1, thereafter order should be Col 2, Col 0, Col 1
+    table.setColumnOrder( new int[] { 0, 1, 2 } );
+    TableColumnLCA.moveColumn( column2, 7 );
+    columnOrder = table.getColumnOrder();
+    assertEquals( 1, columnOrder[ 0 ] );
+    assertEquals( 2, columnOrder[ 1 ] );
+    assertEquals( 0, columnOrder[ 2 ] );
   }
 }
