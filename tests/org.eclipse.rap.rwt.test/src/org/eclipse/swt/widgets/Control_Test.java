@@ -31,7 +31,7 @@ public class Control_Test extends TestCase {
 
   public void testBounds() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Rectangle controlBounds = control.getBounds();
     Rectangle expected = new Rectangle( 0, 0, 0, 0 );
@@ -68,7 +68,7 @@ public class Control_Test extends TestCase {
 
   public void testLocation() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Point expectedLocation = new Point( 10, 20 );
     control.setLocation( expectedLocation );
@@ -91,7 +91,7 @@ public class Control_Test extends TestCase {
 
   public void testSize() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Point expectedSize = new Point( 10, 20 );
     control.setSize( expectedSize );
@@ -116,9 +116,9 @@ public class Control_Test extends TestCase {
 
   public void testGetShell() {
     Display display = new Display();
-    Composite shell1 = new Shell( display , SWT.NONE );
+    Composite shell1 = new Shell( display, SWT.NONE );
     Button button1 = new Button( shell1, SWT.PUSH );
-    Composite shell2 = new Shell( display , SWT.NONE );
+    Composite shell2 = new Shell( display, SWT.NONE );
     Button button2 = new Button( shell2, SWT.PUSH );
     assertSame( shell1, shell1.getShell() );
     assertSame( shell1, button1.getShell() );
@@ -130,7 +130,7 @@ public class Control_Test extends TestCase {
 
   public void testToolTipText() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     control1.setToolTipText( null );
     assertEquals( null, control1.getToolTipText() );
@@ -144,7 +144,7 @@ public class Control_Test extends TestCase {
 
   public void testMenu() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Menu menu = new Menu( control );
     control.setMenu( menu );
@@ -179,7 +179,7 @@ public class Control_Test extends TestCase {
 
   public void testDisposeWithMenu() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     Menu menu = new Menu( control );
     control.setMenu( menu );
@@ -196,7 +196,7 @@ public class Control_Test extends TestCase {
   
   public void testFont() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
 
@@ -219,7 +219,7 @@ public class Control_Test extends TestCase {
   
   public void testEnabled() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
 
@@ -243,7 +243,7 @@ public class Control_Test extends TestCase {
 
   public void testVisible() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     shell.open();
@@ -268,7 +268,7 @@ public class Control_Test extends TestCase {
   
   public void testZOrder() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     Control control2 = new Button( shell, SWT.PUSH );
     Control control3 = new Button( shell, SWT.PUSH );
@@ -306,7 +306,7 @@ public class Control_Test extends TestCase {
   
   public void testFocus() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     // When shell is closed, creating a control does not affect its focus
     assertSame( null, display.getFocusControl() );
@@ -318,7 +318,7 @@ public class Control_Test extends TestCase {
   
   public void testFocusOnClosedShell() {
     Display display = new Display();
-    final Shell shell = new Shell( display , SWT.NONE );
+    final Shell shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     final Control control2 = new Button( shell, SWT.PUSH );
     final StringBuffer log = new StringBuffer();
@@ -359,7 +359,7 @@ public class Control_Test extends TestCase {
   
   public void testNoFocusControls() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.NONE );
     control.forceFocus();
     Control noFocusControl = new Label( shell, SWT.NONE );
@@ -376,7 +376,7 @@ public class Control_Test extends TestCase {
   
   public void testDisposeOfFocused() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Control control1 = new Button( shell, SWT.PUSH );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control2 = new Button( composite, SWT.PUSH );
@@ -399,7 +399,7 @@ public class Control_Test extends TestCase {
   public void testFocusEventsForForceFocus() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     final Control control1 = new Button( shell, SWT.PUSH );
     control1.addFocusListener( new FocusAdapter() {
       public void focusGained( final FocusEvent event ) {
