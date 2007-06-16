@@ -209,7 +209,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       }
     } else {
       String activeControlId 
-      = WidgetLCAUtil.readPropertyValue( shell, "activeControl" );
+        = WidgetLCAUtil.readPropertyValue( shell, "activeControl" );
       Widget widget = WidgetUtil.find( shell, activeControlId );
       if( widget != null ) {
         setActiveControl( shell, widget );
