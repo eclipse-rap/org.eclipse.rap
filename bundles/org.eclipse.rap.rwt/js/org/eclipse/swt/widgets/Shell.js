@@ -22,6 +22,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     // TODO [rh] HACK to set mode on Label that shows the caption, _captionTitle
     //      is a 'protected' field on class Window
     this._captionTitle.setMode( "html" );
+    this._isDialogWindow = false;
     this._activeControl = null;
     this._activateListenerWidgets = new Array();
     // TODO [rh] check whether these listeners must be removed upon disposal
@@ -30,6 +31,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.addEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSend, this );
+  },
+  
+  destruct : function() {
+    this.removeEventListener( "changeActiveChild", this._onChangeActiveChild );
+    this.removeEventListener( "changeActive", this._onChangeActive );
+    this.removeEventListener( "keydown", this._onKeydown );
+    var req = org.eclipse.swt.Request.getInstance();
+    req.removeEventListener( "send", this._onSend, this );
   },
 
   properties : {
@@ -47,7 +56,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   },
 
   members : {
-    setActiveControl : function(control) {
+    setActiveControl : function( control ) {
       this._activeControl = control;
     },
 
@@ -81,7 +90,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 
     _isRelevantActivateEvent : function( widget ) {
       var result = false;
-      for( var i = 0; !result && i < this._activateListenerWidgets.length; i++ ) {
+      for( var i = 0; !result && i < this._activateListenerWidgets.length; i++ ) 
+      {
         var listeningWidget = this._activateListenerWidgets[ i ];
         if(    !listeningWidget.contains( this._activeControl ) 
             && listeningWidget.contains( widget ) ) 
@@ -193,7 +203,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       return result;
     },
 
-    /* TODO [rst] Revise when upgrading: overrides the _sendto() function in
+    /* TODO [rst] Revise when upgrading: overrides the _sendTo() function in
      *      superclass Window to allow for always-on-top.
      *      --> http://bugzilla.qooxdoo.org/show_bug.cgi?id=367
      */
