@@ -96,9 +96,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writeMaximize( shell );
     writeImage( shell );
     writeText( shell );
-    writeOpen( shell );
     // Important: Order matters, writing setActive() before open() leads to
     //            strange behavior!
+    writeOpen( shell );
     writeActiveShell( shell );
     writeActiveControl( shell );
     writeMode( shell );
