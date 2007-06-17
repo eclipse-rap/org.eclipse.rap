@@ -284,11 +284,12 @@ public class ControlLCAUtil {
   }
   
   ////////////
-  // TAB INDEX
+  // Tab index
 
   public static void writeTabIndex( final Control control ) throws IOException {
     if( control instanceof Shell ) {
-      computeTabIndices( ( Shell )control );
+      // tabIndex must be a positive value
+      computeTabIndices( ( Shell )control, 1 );
     }
     JSWriter writer = JSWriter.getWriterFor( control );
     Object newValue = new Integer( getTabIndex( control ) );
@@ -296,14 +297,6 @@ public class ControlLCAUtil {
     writer.set( PROP_TAB_INDEX, "tabIndex", newValue );
   }
   
-  /**
-   * Invokes computation of tab indices for all controls within a shell.
-   */
-  private static void computeTabIndices( final Shell comp ) {
-    // tabIndex must be a positive value
-    computeTabIndices( comp, 1 );
-  }
-
   /**
    * Recursively computes the tab indices for all child controls of a given
    * composite and stores the resulting values in the control adapters.

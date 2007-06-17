@@ -9,10 +9,12 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.swt.internal.widgets;
+package org.eclipse.swt.lifecycle;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -20,8 +22,9 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.lifecycle.*;
+import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.Fixture;
 import com.w4t.engine.lifecycle.PhaseId;
 import com.w4t.engine.requests.RequestParams;
@@ -236,7 +239,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.preserveValues( control );
     assertEquals( new Integer( 1 ), adapter.getPreserved( Props.Z_INDEX ) );
   }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();
