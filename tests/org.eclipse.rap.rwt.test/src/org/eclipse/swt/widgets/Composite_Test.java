@@ -48,6 +48,15 @@ public class Composite_Test extends TestCase {
     assertEquals( composite, controls[ 3 ] );
     assertEquals( list, controls[ 4 ] );
     assertEquals( text, controls[ 5 ] );
+    // A once manually set tabList doesn't change when new controls are created
+    Composite group = new Composite( shell, SWT.NONE );
+    Text text1 = new Text( group, SWT.NONE );
+    Text text2 = new Text( group, SWT.NONE );
+    Control[] tabList = new Control[] { text2, text1 };
+    group.setTabList( tabList );
+    new Text( group, SWT.NONE );
+    assertEquals( 2, group.getTabList().length );
+    assertSame( text2, group.getTabList()[ 0 ] );
+    assertSame( text1, group.getTabList()[ 1 ] );
   }
-
 }
