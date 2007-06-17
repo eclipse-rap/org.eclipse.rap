@@ -566,7 +566,8 @@ public abstract class Control extends Widget {
     }
     Point oldLocation = getLocation();
     Point oldSize = getSize();
-    this.bounds = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
+    this.bounds 
+      = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
     this.bounds.width = Math.max( 0, this.bounds.width );
     this.bounds.height = Math.max( 0, this.bounds.height );
     notifyMove( oldLocation );
@@ -662,6 +663,7 @@ public abstract class Control extends Widget {
    * </ul>
    */
   public Point getLocation() {
+    checkWidget();
     return new Point( bounds.x, bounds.y );
   }
 
@@ -728,16 +730,76 @@ public abstract class Control extends Widget {
     return new Point( bounds.width, bounds.height );
   }
 
+  /**
+   * Returns the preferred size of the receiver.
+   * <p>
+   * The <em>preferred size</em> of a control is the size that it would
+   * best be displayed at. The width hint and height hint arguments
+   * allow the caller to ask a control questions such as "Given a particular
+   * width, how high does the control need to be to show all of the contents?"
+   * To indicate that the caller does not wish to constrain a particular 
+   * dimension, the constant <code>SWT.DEFAULT</code> is passed for the hint. 
+   * </p>
+   *
+   * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
+   * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
+   * @return the preferred size of the control
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Layout
+   * @see #getBorderWidth
+   * @see #getBounds
+   * @see #getSize
+   * @see #pack(boolean)
+   * @see "computeTrim, getClientArea for controls that implement them"
+   */
   public Point computeSize( final int wHint, final int hHint ) {
     return computeSize( wHint, hHint, true );
   }
 
+  /**
+   * Returns the preferred size of the receiver.
+   * <p>
+   * The <em>preferred size</em> of a control is the size that it would
+   * best be displayed at. The width hint and height hint arguments
+   * allow the caller to ask a control questions such as "Given a particular
+   * width, how high does the control need to be to show all of the contents?"
+   * To indicate that the caller does not wish to constrain a particular 
+   * dimension, the constant <code>SWT.DEFAULT</code> is passed for the hint. 
+   * </p><p>
+   * If the changed flag is <code>true</code>, it indicates that the receiver's
+   * <em>contents</em> have changed, therefore any caches that a layout manager
+   * containing the control may have been keeping need to be flushed. When the
+   * control is resized, the changed flag will be <code>false</code>, so layout
+   * manager caches can be retained. 
+   * </p>
+   *
+   * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
+   * @param hHint the height hint (can be <code>SWT.DEFAULT</code>)
+   * @param changed <code>true</code> if the control's contents have changed, and <code>false</code> otherwise
+   * @return the preferred size of the control.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Layout
+   * @see #getBorderWidth
+   * @see #getBounds
+   * @see #getSize
+   * @see #pack(boolean)
+   * @see "computeTrim, getClientArea for controls that implement them"
+   */
   public Point computeSize( final int wHint,
                             final int hHint,
                             final boolean changed )
   {
     // TODO: [fappel] reasonable implementation
-    // TODO: [gröver]: copied from swt:
     checkWidget();
     int width = DEFAULT_WIDTH;
     int height = DEFAULT_HEIGHT;
@@ -911,6 +973,7 @@ public abstract class Control extends Widget {
    * </ul>
    */
   public void setToolTipText( final String toolTipText ) {
+    checkWidget();
     this.toolTipText = toolTipText;
   }
 
@@ -926,6 +989,7 @@ public abstract class Control extends Widget {
    * </ul>
    */
   public String getToolTipText() {
+    checkWidget();
     return toolTipText;
   }
   
@@ -959,6 +1023,7 @@ public abstract class Control extends Widget {
    * </ul>
    */
   public void setMenu( final Menu menu ) {
+    checkWidget();
     if( this.menu != menu ) {
       if( menu != null ) {
         if( menu.isDisposed() ) {
@@ -993,6 +1058,7 @@ public abstract class Control extends Widget {
    * </ul>
    */
   public Menu getMenu() {
+    checkWidget();
     return menu;
   }
   
@@ -1202,6 +1268,9 @@ public abstract class Control extends Widget {
   protected void releaseChildren() {
     // do nothing
   }
+  
+  ////////////
+  // Tab order
 
   boolean isTabGroup() {
     boolean result = false;
