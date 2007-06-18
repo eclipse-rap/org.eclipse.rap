@@ -59,7 +59,7 @@ public abstract class Widget implements Adaptable {
   static final int LAYOUT_CHANGED = 1 << 6;
   
   /* Global state flags */
-//  static final int DISPOSED = 1 << 0;
+  static final int DISPOSED = 1 << 0;
 //  static final int CANVAS = 1 << 1;
 //  static final int KEYED_DATA = 1 << 2;
   static final int DISABLED = 1 << 3;
@@ -68,7 +68,6 @@ public abstract class Widget implements Adaptable {
   int style;
   int state;
   private IEventAdapter eventAdapter;
-  private boolean disposed;
   private Object data;
   private Map keyedData;
   private AdapterManager adapterManager;
@@ -457,13 +456,16 @@ public abstract class Widget implements Adaptable {
   //      disposing (see The Standard Widget Toolkit, p 13)
   public void dispose() {
     if( !isDisposed() ) {
+      if( !isValidThread() ) {
+        error( SWT.ERROR_THREAD_INVALID_ACCESS );
+      }
       DisposeEvent disposeEvent = new DisposeEvent( this );
       disposeEvent.processEvent();
       releaseChildren();
       releaseParent();
       releaseWidget();
       adapterManager = null;
-      disposed = true;
+      state |= DISPOSED;
     }
   }
 
@@ -479,7 +481,7 @@ public abstract class Widget implements Adaptable {
    * @return <code>true</code> when the widget is disposed and <code>false</code> otherwise
    */
   public boolean isDisposed() {
-    return disposed;
+    return ( state & DISPOSED ) != 0;
   }
   
   protected abstract void releaseChildren();
@@ -488,8 +490,30 @@ public abstract class Widget implements Adaptable {
 
   protected abstract void releaseWidget();
 
+  /**
+   * Throws an <code>SWTException</code> if the receiver can not
+   * be accessed by the caller. This may include both checks on
+   * the state of the receiver and more generally on the entire
+   * execution context. This method <em>should</em> be called by
+   * widget implementors to enforce the standard SWT invariants.
+   * <p>
+   * Currently, it is an error to invoke any method (other than
+   * <code>isDisposed()</code>) on a widget that has had its 
+   * <code>dispose()</code> method called. It is also an error
+   * to call widget methods from any thread that is different
+   * from the thread that created the widget.
+   * </p><p>
+   * In future releases of SWT, there may be more or fewer error
+   * checks and exceptions may be thrown for different reasons.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   protected void checkWidget() {
-    if( RWTLifeCycle.getThread() != Thread.currentThread() ) {
+    if( !isValidThread() ) {
       error( SWT.ERROR_THREAD_INVALID_ACCESS );
     }
 //    TODO [fappel]: implementation
@@ -499,14 +523,25 @@ public abstract class Widget implements Adaptable {
 //    if ((state & DISPOSED) != 0) error (SWT.ERROR_WIDGET_DISPOSED);
   }
   
-  // copied from SWT, made protected to allow access from ...custom package
-  protected static int checkBits( final int style,
-                                  final int int0,
-                                  final int int1,
-                                  final int int2,
-                                  final int int3,
-                                  final int int4,
-                                  final int int5 )
+  /*
+   * Returns <code>true</code> when the current thread is
+   * the thread that created the widget and <code>false</code>
+   * otherwise.
+   *
+   * @return <code>true</code> when the current thread is the thread that 
+   * created the widget and <code>false</code> otherwise
+   */
+  boolean isValidThread() {
+    return RWTLifeCycle.getThread() == Thread.currentThread();
+  }
+
+  static int checkBits( final int style,
+                        final int int0,
+                        final int int1,
+                        final int int2,
+                        final int int3,
+                        final int int4,
+                        final int int5 )
   {
     int mask = int0 | int1 | int2 | int3 | int4 | int5;
     int result = style;

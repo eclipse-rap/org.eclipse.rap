@@ -13,6 +13,8 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 import org.eclipse.swt.*;
+import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
+
 import com.w4t.Fixture;
 
 
@@ -101,4 +103,38 @@ public class Widget_Test extends TestCase {
     assertTrue( ( result & SWT.VERTICAL ) != 0 );
     assertFalse( ( result & SWT.HORIZONTAL ) != 0 );
   }
+
+  public void testDispose() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Widget widget = new Button( shell, SWT.NONE );
+
+    // Ensure initial state
+    assertEquals( false, widget.isDisposed() );
+    
+    // Test dispose the first time
+    widget.dispose();
+    assertEquals( true, widget.isDisposed() );
+
+    // Disposing of an already disposed of widget does nothing
+    widget.dispose();
+    assertEquals( true, widget.isDisposed() );
+  }
+  
+  public void testDisposeFromIllegalThread() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Widget widget = new Button( shell, SWT.NONE );
+    
+    Thread bufferedThread = RWTLifeCycle.getThread();
+    RWTLifeCycle.setThread( null );
+    try {
+      widget.dispose();
+      fail( "Must not allow to dispose of a widget from a non-UI-thread" );
+    } catch( SWTException e ) {
+      // expected
+    }
+    RWTLifeCycle.setThread( bufferedThread );
+  }
+  
 }
