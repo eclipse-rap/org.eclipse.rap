@@ -424,7 +424,55 @@ public abstract class Widget implements Adaptable {
       untypedAdapter = null;
     }
   }
+
+  ///////////////////////
+  // toString and helpers
   
+  /**
+   * Returns a string containing a concise, human-readable
+   * description of the receiver.
+   *
+   * @return a string representation of the receiver
+   */
+  public String toString() {
+    String string = "*Disposed*";
+    if( !isDisposed() ) {
+      string = "*Wrong Thread*";
+      if( isValidThread() ) {
+        string = getNameText();
+      }
+    }
+    return getName() + " {" + string + "}";
+  }
+
+  /**
+   * Returns the name of the widget. This is the name of
+   * the class without the package name.
+   *
+   * @return the name of the widget
+   */
+  String getName() {
+    String string = getClass().getName();
+    int index = string.lastIndexOf( '.' );
+    if( index != -1 ) {
+      string = string.substring( index + 1, string.length() );
+    } 
+    return string;
+  }
+
+  /*
+   * Returns a short printable representation for the contents
+   * of a widget. For example, a button may answer the label
+   * text. This is used by <code>toString</code> to provide a
+   * more meaningful description of the widget.
+   *
+   * @return the contents string for the widget
+   *
+   * @see #toString
+   */
+  String getNameText() {
+    return "";
+  }
   
   ///////////////////////////////////
   // Methods to dispose of the widget

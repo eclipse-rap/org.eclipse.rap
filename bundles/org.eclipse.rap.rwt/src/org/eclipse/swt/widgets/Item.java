@@ -134,4 +134,8 @@ public abstract class Item extends Widget {
     checkWidget();
     return image;
   }
+
+  String getNameText() {
+    return getText();
+  }
 }

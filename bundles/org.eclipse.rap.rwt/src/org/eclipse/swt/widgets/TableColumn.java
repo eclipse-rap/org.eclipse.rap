@@ -452,8 +452,8 @@ public class TableColumn extends Item {
     SelectionEvent.removeListener( this, listener );
   }
 
-  ///////////////////////////////////
-  // Methods to dispose of the widget
+  ////////////////////////////
+  // Widget and Item overrides
 
   protected void releaseChildren() {
   }
@@ -463,6 +463,10 @@ public class TableColumn extends Item {
   }
 
   protected void releaseWidget() {
+  }
+  
+  String getNameText() {
+    return getText();
   }
   
   //////////////////

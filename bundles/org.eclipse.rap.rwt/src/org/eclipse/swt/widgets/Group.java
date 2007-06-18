@@ -154,6 +154,10 @@ public class Group extends Composite {
                               height + TRIM_TOP + TRIM_BOTTOM );
   }
   
+  String getNameText() {
+    return getText();
+  }
+
   private static int checkStyle( final int style ) {
     int result = style | SWT.NO_FOCUS;
     /*

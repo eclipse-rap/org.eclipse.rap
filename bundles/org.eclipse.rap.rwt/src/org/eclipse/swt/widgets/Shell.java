@@ -992,7 +992,7 @@ public class Shell extends Composite {
   
   //////////////////////
   // minimize / maximize
-  //
+
   // TODO [rst] Move these methods to class Decorations when implemented
 
   public void setMinimized( final boolean minimized ) {
@@ -1026,7 +1026,15 @@ public class Shell extends Composite {
   public boolean getMaximized() {
     return this.mode == MODE_MAXIMIZED;
   }
+
+  ///////////////////
+  // Widget overrides
   
+  // TODO [rh] move to class Decorations as soon as it exists
+  String getNameText() {
+    return getText();
+  }
+
   ///////////////////
   // check... methods
   

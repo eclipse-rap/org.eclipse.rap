@@ -512,6 +512,10 @@ public class Combo extends Scrollable {
     return true;
   }
   
+  String getNameText() {
+    return getText();
+  }
+  
   //////////////////
   // Helping methods 
   

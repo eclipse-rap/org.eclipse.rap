@@ -550,7 +550,7 @@ public class Menu extends Widget {
   
   // TODO [rh] disposal of Menu and its items not yet completely implemented
   protected final void releaseChildren() {
-    MenuItem[] menuItems = (org.eclipse.swt.widgets.MenuItem[] )ItemHolder.getItems( this );
+    MenuItem[] menuItems = ( MenuItem[] )ItemHolder.getItems( this );
     for( int i = 0; i < menuItems.length; i++ ) {
       menuItems[ i ].dispose();
     }
@@ -562,6 +562,19 @@ public class Menu extends Widget {
 
   protected final void releaseWidget() {
     MenuHolder.removeMenu( parent, this );
+  }
+
+  String getNameText() {
+    String result = "";
+    MenuItem[] items = getItems();
+    int length = items.length;
+    if( length > 0 ) {
+      for( int i = 0; i < length - 1; i++ ) {
+        result = result + items[ i ].getNameText() + ", ";
+      }
+      result = result + items[ length - 1 ].getNameText();
+    }
+    return result;
   }
 
   ///////////////////////////////////////

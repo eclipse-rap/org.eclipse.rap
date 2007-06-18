@@ -231,6 +231,10 @@ public class Link extends Control {
     return true;
   }
 
+  String getNameText() {
+    return getText();
+  }
+
   /* verbatim copy from SWT */
   String parse( String string ) {
     int length = string.length();

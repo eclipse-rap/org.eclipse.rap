@@ -99,6 +99,7 @@ public class Button extends Control {
 
   ////////////////
   // Getter/setter
+  
   /**
    * Sets the receiver's text.
    * <p>
@@ -440,9 +441,16 @@ public class Button extends Control {
   boolean getDefault() {
     return isDefault;
   }
+
+  ///////////////////
+  // Widget overrides
   
   boolean isTabGroup() {
     return true;
+  }
+  
+  String getNameText() {
+    return getText();
   }
   
   //////////////////

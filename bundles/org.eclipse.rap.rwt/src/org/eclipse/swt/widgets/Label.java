@@ -263,6 +263,10 @@ public class Label extends Control {
     return ( ( style & SWT.BORDER ) != 0 ) ? 1 : 0;
   }
 
+  String getNameText() {
+    return getText();
+  }
+
   //////////////////
   // Helping methods
   

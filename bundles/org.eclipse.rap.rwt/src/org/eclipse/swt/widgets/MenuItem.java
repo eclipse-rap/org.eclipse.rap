@@ -416,8 +416,17 @@ public class MenuItem extends Item {
     // do nothing
   }
 
+  String getNameText() {
+    String result;
+    if( ( style & SWT.SEPARATOR ) != 0 ) {
+      result = "|";
+    } else {
+      result = super.getNameText();
+    }
+    return result;
+  }
   
-  // ////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menu
   
   private void addMenuDisposeListener() {

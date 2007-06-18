@@ -537,8 +537,8 @@ public class TableItem extends Item {
     data = null;
   }
 
-  ///////////////////////////////
-  // helping methods for disposal
+  /////////////////////////////
+  // Widget and Item overrides
 
   protected void releaseChildren() {
   }
@@ -549,7 +549,17 @@ public class TableItem extends Item {
 
   protected void releaseWidget() {
   }
-  
+
+  // TODO [rh] uncomment, once SWT.VIRTUAL is implemented
+  String getNameText() {
+//    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
+//      if( !cached ) {
+//        return "*virtual*"; //$NON-NLS-1$
+//      }
+//    }
+    return super.getNameText();
+  }
+
   //////////////////
   // helping methods
   
