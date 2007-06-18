@@ -1137,7 +1137,6 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     ---------------------------------------------------------------------------
     */
     
-    // TODO [rst] Appearance table has gone in qx 0.7
     "table" : {
       style : function( states ) {
         return {
@@ -1151,14 +1150,13 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       }
     },
     
-    // TODO [rst] Appearance table has gone in qx 0.7
     "table-column" : {
       style : function( states ) {
         var result = {
-          cursor          : "default",
-          paddingLeft     : 2,
-          paddingRight    : 2,
-          spacing         : 2
+          cursor : "default",
+          paddingLeft : 2,
+          paddingRight : 2,
+          spacing : 2
         };
         if( states.mouseover && !states.disabled ) {
           result.backgroundColor = "table.column.hover.background";
@@ -1166,6 +1164,11 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
         } else {
           result.backgroundColor = "table.column.background";
           result.border          = "table.column.border";
+        }
+        if( states.moving ) {
+          result.opacity = 0.6;
+        } else {
+          result.opacity = 1.0;
         }
         return result;
       }

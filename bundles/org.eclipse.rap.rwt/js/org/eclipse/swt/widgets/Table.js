@@ -580,15 +580,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     _addColumn : function( column ) {
       column.setHeight( this._columnArea.getHeight() );
-      column.addEventListener( "changeLeft", this._onColumnChangeSize, this );
+      this._hookColumnMove( column );
       column.addEventListener( "changeWidth", this._onColumnChangeSize, this );
       this._columnArea.add( column );
       this._updateScrollWidth();
     },
+    
+    _hookColumnMove : function( column ) {
+      column.addEventListener( "changeLeft", this._onColumnChangeSize, this );
+    },
+    
+    _unhookColumnMove : function( column ) {
+      column.removeEventListener( "changeLeft", this._onColumnChangeSize, this );
+    },
 
     _removeColumn : function( column ) {
       this._columnArea.remove( column );
-      column.removeEventListener( "changeLeft", this._onColumnChangeSize, this );
+      this._unhookColumnMove( column );
       column.removeEventListener( "changeWidth", this._onColumnChangeSize, this );
       this._updateScrollWidth();
       this._updateRows();

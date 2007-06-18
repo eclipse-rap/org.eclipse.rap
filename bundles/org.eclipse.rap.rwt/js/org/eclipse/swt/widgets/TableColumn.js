@@ -136,6 +136,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this.setCapture( true );
         this._bufferedZIndex = this.getZIndex();
         this.setZIndex( 1e8 );
+        this._table._unhookColumnMove( this );
+        this.addState( "moving" );
         this._offsetX = evt.getPageX() - this.getLeft();
         this._initialLeft = this.getLeft();
       }
@@ -154,6 +156,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._inMove = false;
         this.setCapture( false );
         this.setZIndex( this._bufferedZIndex );
+        this._table._hookColumnMove( this );
+        this.removeState( "moving" );
         if(    this.getLeft() < this._initialLeft - 1 
             || this.getLeft() > this._initialLeft + 1 ) 
         {
