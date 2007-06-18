@@ -26,6 +26,7 @@ public class TableTab extends ExampleTab {
   private boolean headerVisible = true;
   private boolean linesVisible;
   private boolean columnImages;
+  private boolean columnsMoveable;
   private int columnsWidthImages = 0;
   private int columns = 5;
   private final Image columnImage;
@@ -50,6 +51,7 @@ public class TableTab extends ExampleTab {
     createEnablementButton();
     createHeaderVisibleButton();
     createLinesVisibleButton();
+    createColumnsMoveableButton();
     createColumnImagesButton();
     createFgColorButton();
     createBgColorButton();
@@ -91,6 +93,7 @@ public class TableTab extends ExampleTab {
         column.setImage( columnImage );
       }
       column.setWidth( i == 0 ? 50 : 100 );
+      column.setMoveable( columnsMoveable );
       column.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent event ) {
           Table table = column.getParent();
@@ -140,6 +143,21 @@ public class TableTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         linesVisible = button.getSelection();
         table.setLinesVisible( linesVisible );
+      }
+    } );
+  }
+
+  private void createColumnsMoveableButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Moveable Columns" );
+    button.setSelection( columnsMoveable );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        columnsMoveable = button.getSelection();
+        TableColumn[] columns = table.getColumns();
+        for( int i = 0; i < columns.length; i++ ) {
+          columns[ i ].setMoveable( columnsMoveable );
+        }
       }
     } );
   }
