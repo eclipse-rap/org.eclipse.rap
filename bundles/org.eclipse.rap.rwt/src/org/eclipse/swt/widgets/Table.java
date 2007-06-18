@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 import org.eclipse.swt.internal.widgets.*;
 
@@ -1647,12 +1648,21 @@ public class Table extends Composite {
    * 
    * @since 1.0 
    */
+  // TODO [rh] preliminary implementation
   public int getHeaderHeight() {
     checkWidget();
     int result = 0;
     if( headerVisible ) {
-      // TODO [rh] preliminary implementation
-      result = FontSizeEstimation.getCharHeight( getFont() ) + 4;
+      int textHeight = FontSizeEstimation.getCharHeight( getFont() );
+      int imageHeight = 0;
+      for( int i = 0; i < getColumnCount(); i++ ) {
+        Image image = getColumn( i ).getImage();
+        int height = image ==null ? 0 : image.getBounds().height;
+        if( height > imageHeight ) {
+          imageHeight = height;
+        }
+      }
+      result = Math.max( textHeight, imageHeight ) + 4;
     }
     return result;
   }

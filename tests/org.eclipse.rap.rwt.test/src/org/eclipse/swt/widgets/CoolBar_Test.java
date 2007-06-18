@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.widgets;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
@@ -106,10 +107,10 @@ public class CoolBar_Test extends TestCase {
   }
   
   public void testDispose() {
-    final StringBuffer log = new StringBuffer();
+    final java.util.List log = new ArrayList();
     DisposeListener disposeListener = new DisposeListener() {
       public void widgetDisposed( DisposeEvent event ) {
-        log.append( event.getSource() );
+        log.add( event.getSource() );
       }
     };
     Display display = new Display();
@@ -129,7 +130,9 @@ public class CoolBar_Test extends TestCase {
     assertEquals( true, bar.isDisposed() );
     assertEquals( true, item2.isDisposed() );
     
-    assertEquals( "" + item1 + bar + item2, log.toString() );
+    assertSame( item1, log.get( 0 ) );
+    assertSame( bar, log.get( 1 ) );
+    assertSame( item2, log.get( 2 ) );
   }
   
   public void testLocked() {
