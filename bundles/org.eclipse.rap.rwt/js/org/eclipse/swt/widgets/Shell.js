@@ -79,8 +79,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
      * is fired.
      */
     addActivateListenerWidget : function( widget ) {
-      // TODO [rh] the line below leads to an error - investigate this
-      //  qx.lang.Array.append( this._activateListenerWidgets, widget );
       this._activateListenerWidgets.push( widget );
     },
 
