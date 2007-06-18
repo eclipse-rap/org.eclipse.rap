@@ -84,9 +84,22 @@ public class TableColumnLCA_Test extends TestCase {
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 10 );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 10 );
+    TableColumn column2 = new TableColumn( table, SWT.NONE );
+    column2.setWidth( 10 );
+    
+    // Test with natural column order
     assertEquals( 0, TableColumnLCA.getLeft( column0 ) );
-    assertEquals( column1.getWidth(), TableColumnLCA.getLeft( column1 ) );
+    assertEquals( 10, TableColumnLCA.getLeft( column1 ) );
+    assertEquals( 20, TableColumnLCA.getLeft( column2 ) );
+    
+    // Test with reverted column order
+    table.setColumnOrder( new int[] { 2, 1, 0 } );
+    assertEquals( 0, TableColumnLCA.getLeft( column2 ) );
+    assertEquals( 10, TableColumnLCA.getLeft( column1 ) );
+    assertEquals( 20, TableColumnLCA.getLeft( column0 ) );
   }
   
   public void testMoveColumn() {
@@ -104,16 +117,18 @@ public class TableColumnLCA_Test extends TestCase {
     column2.setWidth( 30 );
     
     // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60 (as created)
-    // Move Col 1 over Col 0, thereafter order should be: Col 0, Col 1, Col 2
+    // Move Col 1 over Col 0 (left half), thereafter order should be: 
+    // Col 1, Col 0, Col 2
     table.setColumnOrder( new int[] { 0, 1, 2 } );
-    TableColumnLCA.moveColumn( column0, 27 );
+    TableColumnLCA.moveColumn( column1, 3 );
     int[] columnOrder = table.getColumnOrder();
     assertEquals( 1, columnOrder[ 0 ] );
     assertEquals( 0, columnOrder[ 1 ] );
     assertEquals( 2, columnOrder[ 2 ] );
     
     // Current order: Col 1: 0..20, Col 0: 21..30, Col 2: 31..60
-    // Move Col 1 over Col 0, thereafter order should be: Col 0, Col 1, Col 2
+    // Move Col 1 over Col 0 (right half), thereafter order should be: 
+    // Col 0, Col 1, Col 2
     table.setColumnOrder( new int[] { 1, 0, 2 } );
     TableColumnLCA.moveColumn( column1, 27 );
     columnOrder = table.getColumnOrder();
@@ -122,12 +137,63 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( 2, columnOrder[ 2 ] );
     
     // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
-    // Move Col 2 over Col 1, thereafter order should be Col 2, Col 0, Col 1
+    // Move Col 2 over Col 1 (left half), thereafter order should be:
+    // Col 0, Col 2, Col 1
     table.setColumnOrder( new int[] { 0, 1, 2 } );
-    TableColumnLCA.moveColumn( column2, 7 );
+    TableColumnLCA.moveColumn( column2, 13 );
+    columnOrder = table.getColumnOrder();
+    assertEquals( 0, columnOrder[ 0 ] );
+    assertEquals( 2, columnOrder[ 1 ] );
+    assertEquals( 1, columnOrder[ 2 ] );
+
+    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
+    // Move Col 2 over Col 1 (right half), thereafter order should be:
+    // Col 2, Col 0, Col 1
+    table.setColumnOrder( new int[] { 0, 1, 2 } );
+    TableColumnLCA.moveColumn( column2, 3 );
+    columnOrder = table.getColumnOrder();
+    assertEquals( 2, columnOrder[ 0 ] );
+    assertEquals( 0, columnOrder[ 1 ] );
+    assertEquals( 1, columnOrder[ 2 ] );
+
+    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
+    // Move Col 2 way left of Col 0, thereafter order should be:
+    // Col 2, Col 0, Col 1
+    table.setColumnOrder( new int[] { 0, 1, 2 } );
+    TableColumnLCA.moveColumn( column2, -30 );
+    columnOrder = table.getColumnOrder();
+    assertEquals( 2, columnOrder[ 0 ] );
+    assertEquals( 0, columnOrder[ 1 ] );
+    assertEquals( 1, columnOrder[ 2 ] );
+
+    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
+    // Move Col 0 way right of Col 2, thereafter order should be:
+    // Col 1, Col 2, Col 0
+    table.setColumnOrder( new int[] { 0, 1, 2 } );
+    TableColumnLCA.moveColumn( column0, 100 );
     columnOrder = table.getColumnOrder();
     assertEquals( 1, columnOrder[ 0 ] );
     assertEquals( 2, columnOrder[ 1 ] );
     assertEquals( 0, columnOrder[ 2 ] );
+
+    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
+    // Move Col 1 onto itself (left half), order should stay unchanged:
+    // Col 1, Col 2, Col 0
+    table.setColumnOrder( new int[] { 0, 1, 2 } );
+    TableColumnLCA.moveColumn( column1, 13 );
+    columnOrder = table.getColumnOrder();
+    assertEquals( 0, columnOrder[ 0 ] );
+    assertEquals( 1, columnOrder[ 1 ] );
+    assertEquals( 2, columnOrder[ 2 ] );
+
+    // Current order: Col 0: 0..10, Col 1: 11..30, Col 2: 31..60
+    // Move Col 0 over Col 2 (left half), order should be:
+    // Col 1, Col 0, Col 2
+    table.setColumnOrder( new int[] { 0, 1, 2 } );
+    TableColumnLCA.moveColumn( column0, 33 );
+    columnOrder = table.getColumnOrder();
+    assertEquals( 1, columnOrder[ 0 ] );
+    assertEquals( 0, columnOrder[ 1 ] );
+    assertEquals( 2, columnOrder[ 2 ] );
   }
 }

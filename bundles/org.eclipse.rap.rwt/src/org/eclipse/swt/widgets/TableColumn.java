@@ -166,8 +166,6 @@ public class TableColumn extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0
    */
   public void setToolTipText( final String string ) {
     checkWidget();
@@ -184,8 +182,6 @@ public class TableColumn extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0
    */
   public String getToolTipText() {
     checkWidget();
@@ -278,6 +274,30 @@ public class TableColumn extends Item {
   }
   
   /**
+   * Sets the moveable attribute.  A column that is
+   * moveable can be reordered by the user by dragging
+   * the header. A column that is not moveable cannot be 
+   * dragged by the user but may be reordered 
+   * by the programmer.
+   *
+   * @param moveable the moveable attribute
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see Table#setColumnOrder(int[])
+   * @see Table#getColumnOrder()
+   * @see TableColumn#getMoveable()
+   * @see SWT#Move
+   */
+  public void setMoveable( final boolean moveable ) {
+    checkWidget();
+    this.moveable = moveable;
+  }
+
+  /**
    * Gets the moveable attribute. A column that is
    * not moveable cannot be reordered by the user 
    * by dragging the header but may be reordered 
@@ -294,8 +314,6 @@ public class TableColumn extends Item {
    * @see Table#setColumnOrder(int[])
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
-   * 
-   * @since 3.1
    */
   public boolean getMoveable() {
     checkWidget();

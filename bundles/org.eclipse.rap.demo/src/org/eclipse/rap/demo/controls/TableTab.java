@@ -63,8 +63,9 @@ public class TableTab extends ExampleTab {
     createChangeCheckButton();
     createChangeGrayButton();
     createChangeColumnsControl();
+    createRevertColumnOrderButton();
     createChangeItemControl();
-    // TODO [rh] enable as soone as images are working properly
+    // TODO [rh] enable as soon as images are working properly
 //    createImagesControl();
   }
 
@@ -77,7 +78,10 @@ public class TableTab extends ExampleTab {
     table = new Table( parent, style );
     table.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        // 
+        System.out.println( "click: " + event.item );
+      }
+      public void widgetDefaultSelected( final SelectionEvent event ) {
+        System.out.println( "double-click: " + event.item );
       }
     } );
     for( int i = 0; i < columns; i++ ) {
@@ -355,7 +359,22 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
-  
+  private void createRevertColumnOrderButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Revert Column Order" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int[] columnOrder = table.getColumnOrder();
+        int columnIndex = table.getColumnCount() - 1;
+        for( int i = 0; i < columnOrder.length; i++ ) {
+          columnOrder[ i ] = columnIndex;
+          columnIndex--;
+        }
+        table.setColumnOrder( columnOrder );
+      }
+    } );
+  }
+
 //  private void createImagesControl() {
 //    Composite composite = new Composite( styleComp, SWT.NONE );
 //    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );

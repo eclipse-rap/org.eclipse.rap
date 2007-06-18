@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -205,7 +206,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     Table table = column.getParent();
     TableColumn[] columns = table.getColumns();
     int[] columnOrder = table.getColumnOrder();
-    int orderedIndex = columnOrder[ table.indexOf( column ) ]; 
+    int orderedIndex = arrayIndexOf( columnOrder, table.indexOf( column ) ); 
     for( int i = 0; i < orderedIndex; i++ ) {
       result += columns[ columnOrder[ i ] ].getWidth();
     }
@@ -233,75 +234,93 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   // Helping methods to move column
   
   static void moveColumn( final TableColumn column, final int newLeft ) {
-    int targetColumn = findMoveTarget( column, newLeft );
-    boolean changed = false;
-    if( targetColumn != -1 ) {
-      changed = changeOrder( column, targetColumn );
-    } 
-    if( !changed ) {
+    Table table = column.getParent();
+    int targetColumn = findMoveTarget( table, newLeft );
+    int[] columnOrder = table.getColumnOrder();
+    int index = table.indexOf( column );
+    int orderIndex = arrayIndexOf( columnOrder, index );
+    columnOrder = arrayRemove( columnOrder, orderIndex );
+    if( orderIndex < targetColumn ) {
+      targetColumn--;
+    }
+    columnOrder = arrayInsert( columnOrder, targetColumn, index );
+    if( Arrays.equals( columnOrder, table.getColumnOrder() ) ) {
       // TODO [rh] HACK mark left as changed
-      TableColumn[] columns = column.getParent().getColumns();
+      TableColumn[] columns = table.getColumns();
       for( int i = 0; i < columns.length; i++ ) {
-        IWidgetAdapter adapter = WidgetUtil.getAdapter( columns[i] );
+        IWidgetAdapter adapter = WidgetUtil.getAdapter( columns[ i ] );
         adapter.preserve( PROP_LEFT, null );
-        adapter.preserve( PROP_WIDTH, null );
       }
+    } else {
+      table.setColumnOrder( columnOrder );
     }
   }
-
-  private static int findMoveTarget( final TableColumn column, 
-                                     final int newLeft ) 
-  {
+  
+  /* (intentionally non-JavaDoc'ed)
+   * Returns the index in the columnOrder array at which the moved column
+   * should be inserted (moving remaining columns to the right). A return
+   * value of columnCount indicates that the moved column should be inserted 
+   * after the right-most column. 
+   */
+  private static int findMoveTarget( final Table table, final int newLeft ) {
     int result = -1;
-    Table table = column.getParent();
     TableColumn[] columns = table.getColumns();
-    for( int i = 0; result == -1 && i < columns.length; i++ ) {
-      int left = getLeft( columns[ i ] );
-      int width = columns[ i ].getWidth();
-      if( newLeft >= left + width / 2 && newLeft <= left + width ) {
-        result = table.getColumnOrder()[ i ];
+    int[] columnOrder = table.getColumnOrder();
+    if( newLeft < 0 ) {
+      result = 0;
+    } else {
+      for( int i = 0; result == -1 && i < columns.length; i++ ) {
+        int left = getLeft( columns[ i ] );
+        int width = columns[ i ].getWidth();
+        if( newLeft >= left && newLeft <= left + width ) {
+          result = columnOrder[ i ];
+          if( newLeft >= left + width / 2 && result < columns.length ) {
+            result++;
+          }
+        }
       }
+    }
+    // Column was moved right of the right-most column
+    if( result == -1 ) {
+      result = columns.length;
     }
     return result;
   }
 
-  private static boolean changeOrder( final TableColumn movedColumn, 
-                                      final int newOrder ) 
+  private static int arrayIndexOf( final int[] array, final int value ) {
+    int result = -1;
+    for( int i = 0; result == -1 && i < array.length; i++ ) {
+      if( array[ i ] == value ) {
+        result = i;
+      }
+    }
+    return result;
+  }
+  
+  private static int[] arrayRemove( final int[] array, final int index ) {
+    int length = array.length;
+    int[] result = new int[ length - 1 ];
+    System.arraycopy( array, 0, result, 0, index );
+    if( index < length - 1 ) {
+      System.arraycopy( array, index + 1, result, index, length - index - 1 );
+    }
+    return result;
+  }
+  
+  private static int[] arrayInsert( final int[] array, 
+                                    final int index, 
+                                    final int value ) 
   {
-    boolean result;
-    Table table = movedColumn.getParent();
-    int index = table.indexOf( movedColumn );
-    int[] columnOrder = table.getColumnOrder();
-    int oldOrder = columnOrder[ index ];
-    if( oldOrder != newOrder ) {
-      if( newOrder < oldOrder ) {
-        for( int i = 0; i < columnOrder.length; i++ ) {
-          TableColumn column = table.getColumn( i );
-          if(    column != movedColumn 
-              && columnOrder[ i ] >= newOrder 
-              && columnOrder[ i ] < columnOrder[ index ] ) 
-          {
-            columnOrder[ i ] += 1;
-          }
-        }
+    int length = array.length;
+    int[] result = new int[ length + 1 ];
+    int sourcePos = 0;
+    for( int i = 0; i < result.length; i++ ) {
+      if( i == index ) {
+        result[ i ] = value;
       } else {
-        for( int i = 0; i < columnOrder.length; i++ ) {
-          TableColumn column = table.getColumn( i );
-          if(     column != movedColumn 
-              && columnOrder[ i ] <= newOrder 
-              && columnOrder[ i ] > columnOrder[ index ] ) 
-          {
-            columnOrder[ i ] -= 1;
-          }
-        }
+        result[ i ] = array[ sourcePos ];
+        sourcePos++;
       }
-      result = columnOrder[ index ] != newOrder;
-      if( result ) {
-        columnOrder[ index ] = newOrder;
-        table.setColumnOrder( columnOrder );
-      }
-    } else {
-      result = false;
     }
     return result;
   }

@@ -61,7 +61,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._resizeLine = null;
     //
     var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    // Construct a column area where columns go can be scrolled in
+    // Construct a column area where columns can be scrolled in
     this._columnArea = new qx.ui.layout.CanvasLayout();
     this._columnArea.setTop( 0 );
     this._columnArea.setLeft( 0 );
