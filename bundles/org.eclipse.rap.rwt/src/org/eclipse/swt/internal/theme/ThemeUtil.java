@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.internal.theme;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import com.w4t.engine.service.ContextProvider;
 
@@ -30,11 +31,15 @@ public class ThemeUtil {
 
   public static String getCurrentThemeId() {
     // 1) try URL parameter
-    String result = ContextProvider.getRequest().getParameter( THEME_URL_PARM );
+    HttpServletRequest request = ContextProvider.getRequest();
+    String result = request.getParameter( THEME_URL_PARM );
     ThemeManager manager = ThemeManager.getInstance();
+    HttpSession session = ContextProvider.getSession();
+    if( result != null && manager.hasTheme( result ) ) {
+      session.setAttribute( CURR_THEME_ATTR, result );
+    }
     // 2) try session attribute
-    if( result == null || !manager.hasTheme( result ) ) {
-      HttpSession session = ContextProvider.getSession();
+    else {
       result = ( String )session.getAttribute( CURR_THEME_ATTR );
     }
     // 3) use default

@@ -315,7 +315,7 @@ public class ThemeManager {
 
   public String getDefaultThemeId() {
     checkInitialized();
-    return getJsThemeId( defaultThemeId );
+    return defaultThemeId;
   }
   
   public boolean hasThemeAdapter( final Class controlClass ) {
