@@ -1462,6 +1462,29 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
           textColor : states.disabled ? "widget.graytext" : "link.foreground"
         }
       }
+    },
+ 
+  // ------------------------------------------------------------------------
+  // Progress Bar
+    
+  "progressbar" : {
+    style : function( states ) {
+      return {
+        border : "thinInset",
+        backgroundImage : "widget/progressbar/barbg.gif",
+        backgroundColor : "progressbar.background"
+      }
     }
-  }
+  },
+
+  "progressbar-bar" : {
+    style : function( states ) {
+      return {
+        backgroundImage : "widget/progressbar/bar.gif",
+        backgroundColor : "progressbar.foreground"
+      }
+    }
+  },
+
+ },
 });

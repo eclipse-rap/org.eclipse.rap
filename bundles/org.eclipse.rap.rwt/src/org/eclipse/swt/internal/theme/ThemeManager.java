@@ -126,6 +126,10 @@ public class ThemeManager {
     WIDGET_RESOURCES_MAP.put( "table/check_white_off.gif", null );
     WIDGET_RESOURCES_MAP.put( "table/check_gray_on.gif", null );
     WIDGET_RESOURCES_MAP.put( "table/check_gray_off.gif", null );
+    WIDGET_RESOURCES_MAP.put( "progressbar/bar.gif",
+    						  "progressbar.fgimage" );
+    WIDGET_RESOURCES_MAP.put( "progressbar/barbg.gif",
+	  "progressbar.bgimage" );
   }
   
   /** Where to load the default images from */
@@ -168,7 +172,7 @@ public class ThemeManager {
     Link.class,
     List.class,
     Menu.class,
-//    ProgressBar.class,
+    ProgressBar.class,
 //    Sash.class,
 //    SashForm.class,
 //    Scrollable.class,

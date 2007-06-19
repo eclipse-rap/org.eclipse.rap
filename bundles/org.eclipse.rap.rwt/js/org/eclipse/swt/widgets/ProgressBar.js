@@ -19,11 +19,12 @@
     var border = new qx.renderer.border.Border( 1, "solid", borderColor );
     this.setBorder( border );
     this.setOverflow( "hidden" );
+    this.setAppearance( "progressbar" );
     
     this._bar = new qx.ui.layout.CanvasLayout();
     this._bar.setParent( this );
-    this._bar.setBackgroundColor( "#0080C0" );
-    this._bar.setLeft( 0 ); 
+    this._bar.setLeft( 0 );
+    this._bar.setAppearance( "progressbar-bar" );
     
     this._minimum = 0;
     this._maximum = 100;
