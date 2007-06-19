@@ -12,9 +12,9 @@
 package org.eclipse.swt.internal.lifecycle;
 
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 

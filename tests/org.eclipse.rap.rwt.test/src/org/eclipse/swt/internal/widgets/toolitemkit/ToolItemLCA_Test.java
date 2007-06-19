@@ -13,9 +13,6 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.swt.RWTFixture;
@@ -26,7 +23,6 @@ import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
-import org.xml.sax.SAXException;
 
 import com.w4t.Fixture;
 import com.w4t.engine.requests.RequestParams;
