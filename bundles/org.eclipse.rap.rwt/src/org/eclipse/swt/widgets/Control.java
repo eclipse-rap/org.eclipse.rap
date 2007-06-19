@@ -956,7 +956,6 @@ public abstract class Control extends Widget {
     checkWidget();
     this.layoutData = layoutData;
   }
-  
 
   //////////////////////
   // ToolTip operations

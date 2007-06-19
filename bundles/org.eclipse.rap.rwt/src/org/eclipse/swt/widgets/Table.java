@@ -112,11 +112,19 @@ public class Table extends Composite {
       }
     }
     public Item[] getItems() {
-      Item[] items = itemHolder.getItems();
+      TableItem[] items = ( TableItem[] )itemHolder.getItems();
+      Item[] realizedItems = new Item[ items.length ];
+      int count = 0;
+      for( int i = 0; i < items.length; i++ ) {
+        if( !items[ i ].cached ) {
+          realizedItems[ count ] = items[ i ];
+          count++;
+        }
+      }
       Item[] columns = columnHolder.getItems();
-      Item[] result = new Item[ items.length + columns.length ];
+      Item[] result = new Item[ count + columns.length ];
       System.arraycopy( columns, 0, result, 0, columns.length );
-      System.arraycopy( items, 0, result, columns.length, items.length );
+      System.arraycopy( realizedItems, 0, result, columns.length, count );
       return result;
     }
   }
@@ -129,15 +137,23 @@ public class Table extends Composite {
     public void setFocusIndex( final int focusIndex ) {
       Table.this.setFocusIndex( focusIndex );
     }
+    
+    public int getColumnLeft( final TableColumn column ) {
+      int index = Table.this.indexOf( column );
+      return Table.this.getColumn( index ).getLeft();
+    }
   }
   
   private static final int GRID_WIDTH = 1;
   private static final int DEFAULT_ITEM_HEIGHT = 15;
-  private static final TableItem[] EMPTY_SELECTION = new TableItem[ 0 ];
-  
-  private final ITableAdapter tableAdapter;
+  private static final TableItem[] EMPTY_ITEMS = new TableItem[ 0 ];
+
+  // Contains *all* items whether 'cached' or not  
+//  private TableItem[] items;
+  // Contains only uncached (already realized) items
   private final ItemHolder itemHolder;
   private final ItemHolder columnHolder;
+  private final ITableAdapter tableAdapter;
   private int[] columnOrder;
   private TableItem[] selection;
   private boolean linesVisible;
@@ -189,7 +205,7 @@ public class Table extends Composite {
     tableAdapter = new TableAdapter();
     itemHolder = new ItemHolder( TableItem.class );
     columnHolder = new ItemHolder( TableColumn.class );
-    selection = EMPTY_SELECTION;
+    selection = EMPTY_ITEMS;
   }
   
   public Object getAdapter( final Class adapter ) {
@@ -432,6 +448,42 @@ public class Table extends Composite {
   // Item handling methods
 
   /**
+   * Sets the number of items contained in the receiver.
+   *
+   * @param count the number of items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.0
+   */
+  public void setItemCount( final int itemCount ) {
+    checkWidget();
+    int oldItemCount = itemHolder.size();
+    int newItemCount = Math.max( 0, itemCount );
+    if( newItemCount != oldItemCount ) {
+      boolean isVirtual = ( style & SWT.VIRTUAL ) != 0;
+      TableItem[] items = getItems();
+      int index = newItemCount;
+      while( index < oldItemCount ) {
+        TableItem item = items[ index ];
+        if( item != null && !item.isDisposed() ) {
+          item.dispose();
+        }
+        index++;
+      }
+      for( int i = oldItemCount; i < newItemCount; i++ ) {
+        new TableItem( this, SWT.NONE, i, isVirtual );
+      }
+  //    if( itemCount == 0 ) {
+  //      setScrollWidth( null, false );
+  //    }
+    } 
+  }
+
+  /**
    * Returns the number of items contained in the receiver.
    *
    * @return the number of items
@@ -490,6 +542,9 @@ public class Table extends Composite {
    */
   public TableItem getItem( final int index ) {
     checkWidget();
+    if( !( 0 <= index && index < itemHolder.size() ) ) {
+      error( SWT.ERROR_INVALID_RANGE );
+    }
     return ( TableItem )itemHolder.getItem( index );
   }
 
@@ -512,12 +567,12 @@ public class Table extends Composite {
    * 
    * @since 1.0 
    */
-  public int indexOf( final TableItem tableItem ) {
+  public int indexOf( final TableItem item ) {
     checkWidget();
-    if( tableItem == null ) {
+    if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return itemHolder.indexOf( tableItem );
+    return itemHolder.indexOf( item );
   }
   
   /**
@@ -804,12 +859,12 @@ public class Table extends Composite {
     checkWidget();
     int result = -1;
     if( selection.length > 0 ) {
-      result = itemHolder.indexOf( selection[ selection.length - 1 ] );
+      result = indexOf( selection[ selection.length - 1 ] );
     }
     if( focusIndex != result ) {
       boolean found = false;
       for( int i = 0; !found && i < selection.length; i++ ) {
-        if( focusIndex == itemHolder.indexOf( selection[ 0 ] ) ) {
+        if( focusIndex == indexOf( selection[ 0 ] ) ) {
           result = focusIndex;
           found = true;
         }
@@ -1313,7 +1368,7 @@ public class Table extends Composite {
    */
   public void deselectAll() {
     checkWidget();
-    selection = EMPTY_SELECTION;
+    selection = EMPTY_ITEMS;
   }
 
   //////////////////////////////////
@@ -1421,8 +1476,7 @@ public class Table extends Composite {
     checkWidget();
     int index = getSelectionIndex();
     if( index != -1 ) {
-      TableItem item = ( TableItem )itemHolder.getItem( index ); 
-      showItem( item );
+      showItem( ( TableItem )itemHolder.getItem( index ) );
     }
   }
 
@@ -1804,7 +1858,7 @@ public class Table extends Composite {
   }
   
   final void destroyItem( final TableItem item ) {
-    int index = itemHolder.indexOf( item );
+    int index = indexOf( item );
     removeFromSelection( index );
     itemHolder.remove( item );
     if( topIndex > getItemCount() - 1 ) {
@@ -1820,7 +1874,29 @@ public class Table extends Composite {
   //////////////////
   // helping methods
   
-  final void setFocusIndex( final int focusIndex ) {
+  final boolean checkData( final TableItem item, final int index ) {
+    boolean result = true;
+    if( ( style & SWT.VIRTUAL ) != 0 ) {
+      if( !item.cached ) {
+        
+        // TODO [rh] VERY preliminary: check how to merge newly realized item
+        itemHolder.add( item );
+        
+        item.cached = true;
+        Event event = new Event();
+        event.item = item;
+        event.index = index;
+  // sendEvent (SWT.SetData, event);
+        // widget could be disposed at this point
+        if( isDisposed() || item.isDisposed() ) {
+          result = false;
+        }
+      }
+    } 
+    return result;
+  }
+  
+  private void setFocusIndex( final int focusIndex ) {
     if( focusIndex >= 0 ) {
       this.focusIndex = focusIndex;
     }

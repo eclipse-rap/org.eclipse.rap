@@ -303,6 +303,16 @@ public class SWT {
    */
   public static final int INDETERMINATE = 1 << 1;
 
+  /**
+   * Style constant to allow virtual data (value is 1&lt;&lt;28).
+   * <p><b>Used By:</b><ul>
+   * <li><code>Table</code></li>
+   * <!-- <li><code>Tree</code></li> -->
+   * </ul></p>
+   */
+  // TODO [rh] uncomment when Tree has support for VIRTUAL
+  public static final int VIRTUAL = 1 << 28;
+
   // Dialog Icons
 
   /**

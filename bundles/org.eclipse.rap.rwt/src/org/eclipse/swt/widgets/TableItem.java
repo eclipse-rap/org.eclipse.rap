@@ -39,6 +39,7 @@ public class TableItem extends Item {
     Image image;
   }
   
+  boolean cached;
   private final Table parent;
   private Data[] data;
   private boolean checked;
@@ -111,8 +112,17 @@ public class TableItem extends Item {
    * @see Widget#getStyle
    */
   public TableItem( final Table parent, final int style, final int index ) {
+    this( parent, style, index, false );
+  }
+  
+  TableItem( final Table parent, 
+             final int style, 
+             final int index, 
+             final boolean cached ) 
+  {
     super( parent, style );
     this.parent = parent;
+    this.cached = cached;
     this.parent.createItem( this, index );
   }
   
@@ -456,7 +466,6 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  // TODO [rh] could be optimized by storing values for left and top position
   public Rectangle getBounds( final int index ) {
     checkWidget();
 //  if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -476,12 +485,7 @@ public class TableItem extends Item {
     } else {
       if( itemIndex != -1 && index < parent.getColumnCount() ) {
         TableColumn[] columns = parent.getColumns();
-        left += getCheckWidth();
-        int[] columnOrder = parent.getColumnOrder();
-        int orderedIndex = columnOrder[ index ]; 
-        for( int i = 0; i < orderedIndex; i++ ) {
-          left += columns[ columnOrder[ i ] ].getWidth();
-        }
+        left = columns[ index ].getLeft() + getCheckWidth();
         for( int i = 0; i < itemIndex; i++ ) {
           top += parent.getItem( i ).getHeight();
         }
@@ -550,13 +554,12 @@ public class TableItem extends Item {
   protected void releaseWidget() {
   }
 
-  // TODO [rh] uncomment, once SWT.VIRTUAL is implemented
   String getNameText() {
-//    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-//      if( !cached ) {
-//        return "*virtual*"; //$NON-NLS-1$
-//      }
-//    }
+    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
+      if( !cached ) {
+        return "*virtual*"; //$NON-NLS-1$
+      }
+    }
     return super.getNameText();
   }
 

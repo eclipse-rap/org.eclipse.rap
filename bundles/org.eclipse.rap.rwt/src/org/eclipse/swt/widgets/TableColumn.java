@@ -468,6 +468,30 @@ public class TableColumn extends Item {
   String getNameText() {
     return getText();
   }
+
+  //////////////
+  // Left offset
+  
+  final int getLeft() {
+    int result = 0;
+    TableColumn[] columns = parent.getColumns();
+    int[] columnOrder = parent.getColumnOrder();
+    int orderedIndex = arrayIndexOf( columnOrder, parent.indexOf( this ) ); 
+    for( int i = 0; i < orderedIndex; i++ ) {
+      result += columns[ columnOrder[ i ] ].getWidth();
+    }
+    return result;
+  }
+
+  private static int arrayIndexOf( final int[] array, final int value ) {
+    int result = -1;
+    for( int i = 0; result == -1 && i < array.length; i++ ) {
+      if( array[ i ] == value ) {
+        result = i;
+      }
+    }
+    return result;
+  }
   
   //////////////////
   // Helping methods

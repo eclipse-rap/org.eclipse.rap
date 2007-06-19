@@ -10,9 +10,12 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.swt.widgets.TableColumn;
+
 public interface ITableAdapter {
 
   int getFocusIndex();
-
   void setFocusIndex( int focusIndex );
+  
+  int getColumnLeft( TableColumn column );  
 }

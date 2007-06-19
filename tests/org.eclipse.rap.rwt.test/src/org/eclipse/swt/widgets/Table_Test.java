@@ -18,6 +18,7 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
 
 import com.w4t.engine.lifecycle.PhaseId;
 
@@ -1025,5 +1026,46 @@ public class Table_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+  }
+  
+  public void testSetItemCountNonVirtual() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    
+    // Setting itemCount to a higher value than getItemCount() creates the 
+    // missing items
+    table.setItemCount( 2 );
+    assertEquals( 2, table.getItemCount() );
+    assertNotNull( table.getItem( 0 ) );
+    assertNotNull( table.getItem( 1 ) );
+    
+    // Passing in the same value as already set is ignored
+    table.setItemCount( 2 );
+    table.setItemCount( table.getItemCount() );
+    assertEquals( 2, table.getItemCount() );
+
+    // Passing in a negative value is the same as passing in zero
+    table.setItemCount( 2 );
+    table.setItemCount( -2 );
+    assertEquals( 0, table.getItemCount() );
+    
+    // Setting itemCount to a lower value than getItemCount() disposes of
+    // the superfluous items
+    table.setItemCount( 2 );
+    table.setItemCount( 1 );
+    assertEquals( 1, table.getItemCount() );
+    assertNotNull( table.getItem( 0 ) );
+  }
+  
+  public void testSetItemCountVirtual() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    
+    table.setItemCount( 1 );
+    assertEquals( 1, table.getItemCount() );
+    Item[] items = ItemHolder.getItems( table );
+    assertEquals( 0, items.length );
   }
 }

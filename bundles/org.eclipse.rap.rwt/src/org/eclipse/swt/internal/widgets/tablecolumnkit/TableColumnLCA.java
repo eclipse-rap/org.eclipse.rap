@@ -16,6 +16,7 @@ import java.util.Arrays;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
@@ -202,15 +203,9 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   // Helping methods to obtain calculated properties
   
   static int getLeft( final TableColumn column ) {
-    int result = 0;
-    Table table = column.getParent();
-    TableColumn[] columns = table.getColumns();
-    int[] columnOrder = table.getColumnOrder();
-    int orderedIndex = arrayIndexOf( columnOrder, table.indexOf( column ) ); 
-    for( int i = 0; i < orderedIndex; i++ ) {
-      result += columns[ columnOrder[ i ] ].getWidth();
-    }
-    return result;
+    Object adapter = column.getParent().getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.getColumnLeft( column );
   }
   
   private static int getZIndex( final TableColumn column ) {
@@ -311,17 +306,12 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
                                     final int index, 
                                     final int value ) 
   {
+    
     int length = array.length;
     int[] result = new int[ length + 1 ];
-    int sourcePos = 0;
-    for( int i = 0; i < result.length; i++ ) {
-      if( i == index ) {
-        result[ i ] = value;
-      } else {
-        result[ i ] = array[ sourcePos ];
-        sourcePos++;
-      }
-    }
+    System.arraycopy( array, 0, result, 0, length );
+    System.arraycopy( result, index, result, index + 1, length - index );
+    result[ index ] = value;
     return result;
   }
 }
