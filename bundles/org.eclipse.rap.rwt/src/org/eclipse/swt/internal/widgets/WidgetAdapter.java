@@ -37,7 +37,7 @@ public final class WidgetAdapter implements IWidgetAdapter {
     return initialized;
   }
 
-  public void setInitialized( boolean initialized ) {
+  public void setInitialized( final boolean initialized ) {
     this.initialized = initialized;
   }
 

@@ -112,7 +112,7 @@ public class TableItem extends Item {
    * @see Widget#getStyle
    */
   public TableItem( final Table parent, final int style, final int index ) {
-    this( parent, style, index, false );
+    this( parent, style, index, true );
   }
   
   TableItem( final Table parent, 
@@ -206,6 +206,7 @@ public class TableItem extends Item {
    */
   public String getText( final int index ) {
     checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
     String result = "";
     if(    data != null 
         && index >= 0 
@@ -298,6 +299,7 @@ public class TableItem extends Item {
    */
   public Image getImage( final int index ) {
     checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
     Image result = null;
     if(    data != null 
         && index >= 0 
@@ -325,6 +327,7 @@ public class TableItem extends Item {
    */
   public Rectangle getImageBounds( final int index ) {
     checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
     Rectangle result;
     Image image = getImage( index );
     if( image != null ) {
@@ -347,6 +350,7 @@ public class TableItem extends Item {
    */
   public int getImageIndent () {
     checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
     // The only method to manipulate the image indent (setImageIndent) is 
     // deprecated and this not implemented, therefore we can safely return 0
     return 0;
@@ -388,6 +392,7 @@ public class TableItem extends Item {
    */
   public boolean getChecked() {
     checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
     boolean result = false;
     if( ( parent.style & SWT.CHECK ) != 0 ) {
       result = checked;
@@ -427,6 +432,7 @@ public class TableItem extends Item {
    */
   public boolean getGrayed() {
     checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
     boolean result = false;
     if( ( parent.style & SWT.CHECK ) != 0 ) {
       result = grayed;
@@ -468,7 +474,7 @@ public class TableItem extends Item {
    */
   public Rectangle getBounds( final int index ) {
     checkWidget();
-//  if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
+    parent.checkData( this, parent.indexOf( this ) );
     int itemIndex = parent.indexOf( this );
     int left = 0;
     int top = 0; 
@@ -566,6 +572,17 @@ public class TableItem extends Item {
   //////////////////
   // helping methods
   
+
+  final boolean isVisible() {
+    boolean result = false;
+    int visibleItemCount = parent.getVisibleItemCount();
+    int index = parent.indexOf( this );
+    if( visibleItemCount > 0 ) {
+      result = index - parent.getTopIndex() <= visibleItemCount;
+    }
+    return result;
+  }
+
   private void enlargeData( final int count ) {
     Data[] newData = new Data[ count ];
     System.arraycopy( data, 0, newData, 0, data.length );

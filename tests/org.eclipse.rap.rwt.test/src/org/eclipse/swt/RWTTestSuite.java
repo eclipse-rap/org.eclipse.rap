@@ -39,6 +39,7 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellLCA_Test;
 import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerLCA_Test;
 import org.eclipse.swt.internal.widgets.tablecolumnkit.TableColumnLCA_Test;
 import org.eclipse.swt.internal.widgets.tableitemkit.TableItemLCA_Test;
+import org.eclipse.swt.internal.widgets.tablekit.TableLCA_Test;
 import org.eclipse.swt.internal.widgets.textkit.TextLCA_Test;
 import org.eclipse.swt.internal.widgets.toolitemkit.ToolItemLCA_Test;
 import org.eclipse.swt.internal.widgets.treeitemkit.TreeItemLCA_Test;
@@ -138,6 +139,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ShellLCA_Test.class );
     suite.addTestSuite( MenuLCA_Test.class );
     suite.addTestSuite( MenuItemLCA_Test.class );
+    suite.addTestSuite( TableLCA_Test.class );
     suite.addTestSuite( TableColumnLCA_Test.class );
     suite.addTestSuite( TableItemLCA_Test.class );
     suite.addTestSuite( CTabFolderLCA_Test.class );

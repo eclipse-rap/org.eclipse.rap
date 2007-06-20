@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.internal.lifecycle.CurrentPhase;
+import org.eclipse.swt.internal.widgets.SetDataEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
@@ -42,6 +43,7 @@ public abstract class TypedEvent extends Event {
     ControlEvent.class,
     ActivateEvent.class,
     DisposeEvent.class,
+    SetDataEvent.class,
     ModifyEvent.class,
     TreeEvent.class,
     CTabFolderEvent.class,

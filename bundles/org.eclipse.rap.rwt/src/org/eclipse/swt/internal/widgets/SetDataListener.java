@@ -8,16 +8,13 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 package org.eclipse.swt.internal.widgets;
 
-import org.eclipse.swt.widgets.TableColumn;
+import java.util.EventListener;
 
-public interface ITableAdapter {
 
-  int getFocusIndex();
-  void setFocusIndex( int focusIndex );
-  
-  void checkData( int index );
-  
-  int getColumnLeft( TableColumn column );  
+public interface SetDataListener extends EventListener {
+
+  void update( SetDataEvent setDataEvent );
 }

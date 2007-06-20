@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
   },
 
   destruct : function() {
-    // Removemouse-listener for 'mouseover' appearance state
+    // Remove mouse-listener for 'mouseover' appearance state
     this.removeEventListener( "mouseover", this._onMouseOver, this );
     // Remove mouse-listeners for resize
     this.removeEventListener( "mousemove", this._onMouseMove, this );
@@ -66,6 +66,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     this.removeEventListener( "mousedown", this._onMouseDown, this );
     this.removeEventListener( "mouseup", this._onMouseUp, this );
     this._disposeSortImage();
+    if( !this._table.isDisposed() ) {
+      this._table._removeColumn( this );
+    }
   },
 
   statics : {

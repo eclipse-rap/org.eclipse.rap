@@ -13,10 +13,15 @@ package org.eclipse.swt.internal.widgets.tablekit;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
+import com.w4t.engine.service.ContextProvider;
 
 public final class TableLCA extends AbstractWidgetLCA {
 
@@ -27,8 +32,10 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final String PROP_TOP_INDEX = "topIndex";
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
   private static final String PROP_DEFAULT_COLUMN_WIDTH = "defaultColumnWidth";
+  private static final String PROP_ITEM_COUNT = "itemCount";
 
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
+  private static final Integer DEFAULT_ITEM_COUNT = new Integer( 0 );
   private static final Integer DEFAUT_ITEM_HEIGHT = new Integer( 0 );
   private static final Integer DEFAULT_DEFAULT_COLUMN_WIDTH = new Integer( 0 );
 
@@ -58,6 +65,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_LINES_VISIBLE, 
                       Boolean.valueOf( table.getLinesVisible() ) );
     adapter.preserve( PROP_ITEM_HEIGHT, new Integer( table.getItemHeight() ) );
+    adapter.preserve( PROP_ITEM_COUNT, new Integer( table.getItemCount() ) );
     adapter.preserve( PROP_TOP_INDEX, new Integer( table.getTopIndex() ) );
     adapter.preserve( PROP_SELECTION_LISTENERS, 
                       Boolean.valueOf( SelectionEvent.hasListener( table ) ) );
@@ -69,6 +77,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     Table table = ( Table )widget;
     readSelection( table );
     readTopIndex( table );
+    processSetData( table );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -93,6 +102,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeHeaderHeight( table );
     writerHeaderVisible( table );
     writeItemHeight( table );
+    writeItemCount( table );
     writeTopIndex( table );
     writeLinesVisible( table );
     writeSelectionListener( table );
@@ -137,6 +147,22 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
   
+  private void processSetData( final Table table ) {
+    boolean setDataEvent 
+      = WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_SET_DATA );
+    if( setDataEvent ) {
+      HttpServletRequest request = ContextProvider.getRequest();
+      String value = request.getParameter( JSConst.EVENT_SET_DATA_INDEX );
+      String[] indices = value.split( "," );
+      Object adapter = table.getAdapter( ITableAdapter.class );
+      ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+      for( int i = 0; i < indices.length; i++ ) {
+        int index = Integer.parseInt( indices[ i ] );
+        tableAdapter.checkData( index );
+      }
+    }
+  }
+
   ///////////////////////////////////////////
   // Helping methods to write JavaScript code
   
@@ -159,6 +185,12 @@ public final class TableLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = new Integer( table.getItemHeight( ) );
     writer.set( PROP_ITEM_HEIGHT, "itemHeight", newValue, DEFAUT_ITEM_HEIGHT );
+  }
+
+  private static void writeItemCount( final Table table ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( table );
+    Integer newValue = new Integer( table.getItemCount() );
+    writer.set( PROP_ITEM_COUNT, "itemCount", newValue, DEFAULT_ITEM_COUNT );
   }
 
   private static void writeTopIndex( final Table table ) throws IOException {

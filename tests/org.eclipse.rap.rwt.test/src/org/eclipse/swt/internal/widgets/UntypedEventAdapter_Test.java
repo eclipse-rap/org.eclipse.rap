@@ -79,6 +79,9 @@ public class UntypedEventAdapter_Test extends TestCase {
     adapter.addListener( SWT.Modify, listener );
     adapter.modifyText( new ModifyEvent( null ) );
     assertEquals( SWT.Modify, eventType );
+    adapter.addListener( SWT.SetData, listener );
+    adapter.update( new SetDataEvent( null, null, 0 ) );
+    assertEquals( SWT.SetData, eventType );
   }
 
   public void testAdditionAndRemovalOfListener() throws Exception {

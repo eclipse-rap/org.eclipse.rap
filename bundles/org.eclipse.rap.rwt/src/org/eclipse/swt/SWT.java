@@ -234,6 +234,18 @@ public class SWT {
    */
   public static final int Deactivate = 27;
   
+  /**
+   * The set data event type (value is 36).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Table
+   * <!-- @see org.eclipse.swt.widgets.Tree -->
+   */
+  public static final int SetData = 36;
+
+  
   public static final int DEFAULT = -1;
   public static final int HORIZONTAL = 1 << 8;
   public static final int VERTICAL = 1 << 9;

@@ -20,6 +20,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.lifecycle.ProcessActionRunner;
 
 
 /** 
@@ -67,23 +68,15 @@ import org.eclipse.swt.internal.widgets.*;
  * </p>
  * <p>Current state of Table implementation:</p> 
  * <ul>
- * <li>Though Table inherits the font property from Control, it is currently
- * not evaluated client-side.</li>
- * <li>Though it is possible to create a table with MULTI style, only SINGLE
- *  selections are implemented. This also applies when using selection methods 
- *  with more than one TableItem</li>
  *  <li>VIRTUAL not yet implemented</li>
  *  <li>showSelection and showItem currently do a very rough proximation since
  *  getClientArea is not yet implemented properly</li>
- *  <li>Tables created with style BORDER are not yet drawn correctly</li>
  *  <li>Scroll bars stay enabled even though the table itself is disabled. This
  *  is due to a qooxdoo limitation, see 
  *  http://bugzilla.qooxdoo.org/show_bug.cgi?id=352
  *  </li>
  *  <li>No images yet</li>
  *  <li>No keyboard navigation</li>
- *  <li>ColumnOrder and re-ordering columns on the client-side not yet
- *  implemented</li>
  * </ul> 
  */
 public class Table extends Composite {
@@ -112,19 +105,29 @@ public class Table extends Composite {
       }
     }
     public Item[] getItems() {
-      TableItem[] items = ( TableItem[] )itemHolder.getItems();
-      Item[] realizedItems = new Item[ items.length ];
+      TableItem[] allItems = ( TableItem[] )itemHolder.getItems();
+      TableItem[] items = filterCachedItems( allItems );
+      Item[] columns = columnHolder.getItems();
+      Item[] result = new Item[ items.length + columns.length ];
+      System.arraycopy( columns, 0, result, 0, columns.length );
+      System.arraycopy( items, 0, result, columns.length, items.length );
+      return result;
+    }
+    private TableItem[] filterCachedItems( final TableItem[] items ) {
       int count = 0;
       for( int i = 0; i < items.length; i++ ) {
-        if( !items[ i ].cached ) {
-          realizedItems[ count ] = items[ i ];
+        if( items[ i ].cached ) {
           count++;
         }
       }
-      Item[] columns = columnHolder.getItems();
-      Item[] result = new Item[ count + columns.length ];
-      System.arraycopy( columns, 0, result, 0, columns.length );
-      System.arraycopy( realizedItems, 0, result, columns.length, count );
+      TableItem[] result = new TableItem[ count ];
+      count = 0;
+      for( int i = 0; i < items.length; i++ ) {
+        if( items[ i ].cached ) {
+          result[ count ] = items[ i ];
+          count++;
+        }
+      }
       return result;
     }
   }
@@ -138,9 +141,30 @@ public class Table extends Composite {
       Table.this.setFocusIndex( focusIndex );
     }
     
+    public void checkData( final int index ) {
+      Table.this.checkData( Table.this.getItem( index ), index );  
+    }
+    
     public int getColumnLeft( final TableColumn column ) {
       int index = Table.this.indexOf( column );
       return Table.this.getColumn( index ).getLeft();
+    }
+  }
+  
+  private static final class ResizeListener extends ControlAdapter {
+    public void controlResized( final ControlEvent event ) {
+      Table table = ( Table )event.widget;
+      boolean visible = true;
+      int index = Math.min( 0, table.getTopIndex() );
+      int count = table.getItemCount();
+      while( visible && index < count ) {
+        TableItem item = table.getItem( index );
+        visible = item.isVisible();
+        if( visible ) {
+          table.checkData( item, index );
+        }
+        index++;
+      }
     }
   }
   
@@ -148,12 +172,10 @@ public class Table extends Composite {
   private static final int DEFAULT_ITEM_HEIGHT = 15;
   private static final TableItem[] EMPTY_ITEMS = new TableItem[ 0 ];
 
-  // Contains *all* items whether 'cached' or not  
-//  private TableItem[] items;
-  // Contains only uncached (already realized) items
   private final ItemHolder itemHolder;
   private final ItemHolder columnHolder;
   private final ITableAdapter tableAdapter;
+  private final ResizeListener resizeListener;
   private int[] columnOrder;
   private TableItem[] selection;
   private boolean linesVisible;
@@ -206,6 +228,12 @@ public class Table extends Composite {
     itemHolder = new ItemHolder( TableItem.class );
     columnHolder = new ItemHolder( TableColumn.class );
     selection = EMPTY_ITEMS;
+    if( ( this.style & SWT.VIRTUAL ) != 0 ) {
+      resizeListener = new ResizeListener();
+      addControlListener( resizeListener );
+    } else {
+      resizeListener = null;
+    }
   }
   
   public Object getAdapter( final Class adapter ) {
@@ -475,7 +503,10 @@ public class Table extends Composite {
         index++;
       }
       for( int i = oldItemCount; i < newItemCount; i++ ) {
-        new TableItem( this, SWT.NONE, i, isVirtual );
+        TableItem item = new TableItem( this, SWT.NONE, i, !isVirtual );
+        if( item.isVisible() ) {
+          checkData( item, itemHolder.indexOf( item ) );
+        }
       }
   //    if( itemCount == 0 ) {
   //      setScrollWidth( null, false );
@@ -1839,13 +1870,16 @@ public class Table extends Composite {
     // Remove from column order
     int length = columnOrder.length;
     int[] newColumnOrder = new int[ length - 1 ];
-    System.arraycopy( columnOrder, 0, newColumnOrder, 0, index );
-    if( index < length - 1 ) {
-      System.arraycopy( columnOrder, 
-                        index + 1, 
-                        newColumnOrder, 
-                        index, 
-                        length - index - 1 );
+    int count = 0;
+    for( int i = 0; i < length; i++ ) {
+      if( columnOrder[ i ] != index ) {
+        int newOrder = columnOrder[ i ];
+        if( index < newOrder ) {
+          newOrder--;
+        }
+        newColumnOrder[ count ] = newOrder;
+        count++;
+      }
     }
     columnOrder = newColumnOrder;
   }
@@ -1871,29 +1905,33 @@ public class Table extends Composite {
     }
   }
   
+  ////////////////
+  // Destroy table
+  
+  protected void releaseWidget() {
+    super.releaseWidget();
+    if( resizeListener != null ) {
+      removeControlListener( resizeListener );
+    }
+  }
+  
   //////////////////
   // helping methods
-  
-  final boolean checkData( final TableItem item, final int index ) {
-    boolean result = true;
-    if( ( style & SWT.VIRTUAL ) != 0 ) {
-      if( !item.cached ) {
-        
-        // TODO [rh] VERY preliminary: check how to merge newly realized item
-        itemHolder.add( item );
-        
-        item.cached = true;
-        Event event = new Event();
-        event.item = item;
-        event.index = index;
-  // sendEvent (SWT.SetData, event);
-        // widget could be disposed at this point
-        if( isDisposed() || item.isDisposed() ) {
-          result = false;
+
+  final void checkData( final TableItem item, final int index ) {
+    if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          item.cached = true;
+          SetDataEvent event = new SetDataEvent( Table.this, item, index );
+          event.processEvent();
+          // widget could be disposed at this point
+          if( isDisposed() || item.isDisposed() ) {
+            SWT.error( SWT.ERROR_WIDGET_DISPOSED );
+          }
         }
-      }
+      } );
     } 
-    return result;
   }
   
   private void setFocusIndex( final int focusIndex ) {
@@ -1921,12 +1959,12 @@ public class Table extends Composite {
     }
   }
 
-  private int getVisibleItemCount() {
+  final int getVisibleItemCount() {
     //  TODO [rh] replace this once getClientArea is working    
     int clientHeight = getBounds().height 
                      - getHeaderHeight() 
                      - ScrollBar.SCROLL_BAR_HEIGHT;
-    return clientHeight / getItemHeight();
+    return clientHeight >= 0 ? clientHeight / getItemHeight() : 0;
   }
 
   private static int checkStyle( final int style ) {

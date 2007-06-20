@@ -22,14 +22,15 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     this._parent = parent;
     this._checked = false;
     this._grayed = false;
-    
-    // HACK: Table needs one 'emptyItem' to draw the remaining space that is
-    //       not occupied by actual items. This item has an index of -1
-    if ( index != -1 ) {
+    this._texts = new Array();
+    this._images = new Array();
+    this._imageWidths = new Array();
+    // HACK: Table needs one 'emptyItem' (draws the remaining space that is not 
+    //       occupied by actual items) and a 'virtualItem' (represents a not
+    //       yet resolved item) 
+    // Those have an index of -1
+    if ( index >= 0 ) {
       parent._addItem( this, index );
-      this._texts = new Array();
-      this._images = new Array();
-      this._imageWidths = new Array();
     }
   },
   
@@ -142,7 +143,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         if( this._images && this._images.length > 0 ) {
           markup.push( this._getImageMarkup( this._images[ 0 ] ) );
         }
-        if( this._texts && this._texts.length > 0 ) {
+        if( this._texts[ 0 ] !== undefined ) {
           text = this._texts[ 0 ];
         }
         markup.push( this._getTextMarkup( text ) );
@@ -163,7 +164,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
             image = this._images[ i ];
             markup.push( this._getImageMarkup( image ) );
           }
-          if( this._texts ) {
+          if( this._texts[ i ] !== undefined ) {
             text = this._texts[ i ];
           }
           markup.push( this._getTextMarkup( text ) );

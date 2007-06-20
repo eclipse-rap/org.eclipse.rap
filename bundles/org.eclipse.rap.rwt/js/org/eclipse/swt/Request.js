@@ -79,6 +79,18 @@ qx.Class.define( "org.eclipse.swt.Request", {
     removeParameter : function( name ) {
       delete this._parameters[ name ];
     },
+    
+    /**
+     * Returns the parameter value for the given name or null if no parameter
+     * of such name exists. 
+     */
+    getParameter : function( name ) {
+      var result = this._parameters[ name ];
+      if( result === undefined ) {
+        result = null;
+      }
+      return result;
+    },
 
     /**
      * Adds the given eventType to this request. The sourceId denotes the id of

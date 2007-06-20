@@ -43,6 +43,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._itemHeight = 0;
     this._rows = new Array();
     this._items = new Array();
+    this._itemCount = 0;
+    this._unresolvedItems = null;
     this._checkBoxes = null;
     if( qx.lang.String.contains( style, "check" ) ) {
       this._checkBoxes = new Array();
@@ -57,10 +59,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // needs to be drawn since the table bounds are grater than the number of
     // items
     this._emptyItem = new org.eclipse.swt.widgets.TableItem( this, -1 );
+    // An item osed to represent a virtual item while it is being resolved, 
+    // that is a request is sent to the server to obtain the actual values
+    this._virtualItem = new org.eclipse.swt.widgets.TableItem( this, -1 );
+    this._virtualItem.setTexts ( [ "..." ] );
     // One resize line shown while resizing a column, provided for all columns  
     this._resizeLine = null;
     //
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
     // Construct a column area where columns can be scrolled in
     this._columnArea = new qx.ui.layout.CanvasLayout();
     this._columnArea.setTop( 0 );
@@ -93,6 +98,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSendRequest, this );
     //
+    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
     widgetManager.add( this._clientArea, id + "_clientArea", false );
     this.add( this._clientArea );
   },
@@ -310,6 +316,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
     },
+    
+    setItemCount : function( value ) {
+      this._itemCount = value;
+    },
 
     /////////////////////////////////
     // React when enabled was changed
@@ -332,7 +342,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var rowIndex = this._rows.indexOf( evt.getTarget() );
       var itemIndex = this._topIndex + rowIndex;
       if(    itemIndex >= 0 
-          && itemIndex < this._items.length 
+          && itemIndex < this._itemCount
+          && this._items[ itemIndex ]
           && !this._suspendClicks ) 
       {
         this._suspendClicks = true;
@@ -417,7 +428,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _toggleCheckBox : function( rowIndex ) {
       if( this._checkBoxes != null ) {
         var itemIndex = this._topIndex + rowIndex;
-        if( itemIndex >= 0 && itemIndex < this._items.length ) {
+        if( itemIndex >= 0 && itemIndex < this._itemCount && this._items[ itemIndex ] ) {
           var item = this._items[ itemIndex ];
           item.setChecked( !item.getChecked() );
           // Reflect changed check-state in case there is no server-side listener
@@ -491,8 +502,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // TableItem management
 
     _addItem : function( item, index ) {
-      // TODO [rh] see if this can be optimized
-      this._items = qx.lang.Array.insertAt( this._items, item, index );
+      this._items[ index ] = item;
       this._updateScrollHeight();
       if( this._isItemVisible( item ) ) {
         this._updateRows();
@@ -502,6 +512,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _removeItem : function( item ) {
       var wasItemVisible = this._isItemVisible( item );
       qx.lang.Array.remove( this._items, item );
+      this._itemCount--;
       if( item == this._focusedItem ) {
         this._focusedItem = null;
       }
@@ -569,7 +580,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _getItemFromRowIndex : function( rowIndex ) {
       var result = null;
       var itemIndex = this._topIndex + rowIndex;
-      if( itemIndex < this._items.length ) {
+      if( itemIndex < this._itemCount ) {
         result = this._items[ itemIndex ];
       }
       return result;
@@ -595,7 +606,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _removeColumn : function( column ) {
-      this._columnArea.remove( column );
       this._unhookColumnMove( column );
       column.removeEventListener( "changeWidth", this._onColumnChangeSize, this );
       this._updateScrollWidth();
@@ -611,7 +621,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // UI Update upon scroll, size changes, etc
     
     _updateScrollHeight : function() {
-      var height = this._itemHeight + this._items.length * this._itemHeight;
+      var height = this._itemHeight + this._itemCount * this._itemHeight;
       this._vertScrollBar.setMaximum( height );
     },
 
@@ -745,8 +755,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _updateRow : function( rowIndex, item ) {
-      var row = this._rows[ rowIndex ]
-      if( item != null ) {
+      var row = this._rows[ rowIndex ];
+      if( item === undefined ) {
+        this._resolveItem( this._topIndex + rowIndex );
+        row.setHtml( this._virtualItem._getMarkup() );
+      } else if( item != null ) {
         row.setHtml( item._getMarkup() );
       } else {
         row.setHtml( this._emptyItem._getMarkup() );
@@ -792,6 +805,27 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       } else {
         checkBox.setVisibility( false );
       }
+    },
+    
+    _resolveItem : function( itemIndex ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        if( this._unresolvedItems == null ) {
+          this._unresolvedItems = new Array();
+          qx.client.Timer.once( this._sendResolveItemsRequest, this, 30 );
+        } 
+        this._unresolvedItems.push( itemIndex );
+      }
+    },
+    
+    _sendResolveItemsRequest : function( evt ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var req = org.eclipse.swt.Request.getInstance();
+      var indices = this._unresolvedItems.join( "," );
+      req.addParameter( "org.eclipse.swt.events.setData.index", indices );
+      req.addEvent( "org.eclipse.swt.events.setData", id );
+      req.send();
+      this._unresolvedItems = null;
     },
 
     //////////////////////////////////////////////////////////////

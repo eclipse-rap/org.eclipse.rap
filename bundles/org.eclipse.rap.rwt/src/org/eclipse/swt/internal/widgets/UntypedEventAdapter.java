@@ -26,7 +26,8 @@ public class UntypedEventAdapter
              TreeListener, 
              ShellListener, 
              MenuListener, 
-             ModifyListener
+             ModifyListener,
+             SetDataListener
 {
   private ArrayList listeners = new ArrayList();
 
@@ -125,6 +126,13 @@ public class UntypedEventAdapter
     dispatchEvent( SWT.Modify, event );
   }
   
+  public void update( final SetDataEvent evt ) {
+    Event event = createEvent( SWT.SetData, evt.getSource() );
+    event.item = evt.item;
+    event.index = evt.index;
+    dispatchEvent( SWT.SetData, event );
+  }
+  
   public void addListener( final Widget widget, 
                            final int eventType,
                            final Listener listener )
@@ -161,6 +169,9 @@ public class UntypedEventAdapter
       break;
       case SWT.Modify:
         ModifyEvent.addListener( widget, this );
+      break;
+      case SWT.SetData:
+        SetDataEvent.addListener( widget, this );
       break;
       default:
         String txt = "The untyped event ''{0}'' is not supported.";
@@ -206,6 +217,9 @@ public class UntypedEventAdapter
       break;
       case SWT.Modify:
         ModifyEvent.removeListener( widget, this );
+      break;
+      case SWT.SetData:
+        SetDataEvent.removeListener( widget, this );
       break;
       default:
         String txt = "The untyped event ''{0}'' is not supported.";

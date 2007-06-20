@@ -934,6 +934,7 @@ public class Table_Test extends TestCase {
     assertEquals( 1, table.getColumnOrder().length );
     assertEquals( 0, table.getColumnOrder()[ 0 ] );
     
+    // Test creating another column: must be added at the end
     TableColumn anotherColumn = new TableColumn( table, SWT.NONE );
     assertEquals( 2, table.getColumnOrder().length );
     assertEquals( 0, table.getColumnOrder()[ table.indexOf( column ) ] );
@@ -992,7 +993,40 @@ public class Table_Test extends TestCase {
     table.setColumnOrder( table.getColumnOrder() );
     assertEquals( "", log.toString() );
   }
-  
+
+  public void testDisposeOfOrderedColumn() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    table.setColumnOrder( new int[] { 1, 0, 2 } );
+    table.getColumn( 0 ).dispose();
+    assertEquals( 2, table.getColumnOrder().length );
+    assertEquals( 0, table.getColumnOrder()[ 0 ] );
+    assertEquals( 1, table.getColumnOrder()[ 1 ] );
+    
+    clearColumns( table );
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    table.setColumnOrder( new int[] { 0, 1 } );
+    table.getColumn( 0 ).dispose();
+    assertEquals( 1, table.getColumnOrder().length );
+    assertEquals( 0, table.getColumnOrder()[ 0 ] );
+    
+    clearColumns( table );
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    table.setColumnOrder( new int[] { 0, 1, 2 } );
+    table.getColumn( 2 ).dispose();
+    assertEquals( 2, table.getColumnOrder().length );
+    assertEquals( 0, table.getColumnOrder()[ 0 ] );
+    assertEquals( 1, table.getColumnOrder()[ 1 ] );
+  }
+
   public void testSetColumnOrderWithInvalidArguments() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1067,5 +1101,33 @@ public class Table_Test extends TestCase {
     assertEquals( 1, table.getItemCount() );
     Item[] items = ItemHolder.getItems( table );
     assertEquals( 0, items.length );
+    
+    new TableItem( table, SWT.NONE );
+    assertEquals( 2, table.getItemCount() );
+    items = ItemHolder.getItems( table );
+    assertEquals( 1, items.length );
+  }
+  
+  public void testResizeWithVirtualItems() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setSize( 0, 0 );
+    table.setItemCount( 1 );
+    shell.open();
+    
+    // Ensure that a virtual item is not "realized" as long as it is invisible
+    assertEquals( 0, ItemHolder.getItems( table ).length );
+    
+    // Enlarge the table so that the item will become visible
+    table.setSize( 200, 200 );
+    assertEquals( 1, ItemHolder.getItems( table ).length );
+  }
+
+  private static void clearColumns( final Table table ) {
+    while( table.getColumnCount() > 0 ) {
+      table.getColumn( 0 ).dispose();
+    }
   }
 }
