@@ -16,22 +16,23 @@ import org.eclipse.swt.widgets.Control;
 
 public class ProgressBarThemeAdapter implements IProgressBarThemeAdapter {
 
-	public QxColor getBackground(Control control) {
-		Theme theme = ThemeUtil.getTheme();
-	    return theme.getColor( "progressbar.background" );
-	}
+  public QxColor getBackground( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    return theme.getColor("progressbar.background");
+  }
 
-	public int getBorderWidth(Control control) {
-		return 0;
-	}
+  public int getBorderWidth( final Control control ) {
+    return 0;
+  }
 
-	public QxFont getFont(Control control) {
-		return null;
-	}
+  public QxFont getFont( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    return theme.getFont("widget.font");
+  }
 
-	public QxColor getForeground(Control control) {
-		Theme theme = ThemeUtil.getTheme();
-	    return theme.getColor( "progressbar.foreground" );
-	}
+  public QxColor getForeground( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    return theme.getColor("progressbar.foreground");
+  }
 
 }
