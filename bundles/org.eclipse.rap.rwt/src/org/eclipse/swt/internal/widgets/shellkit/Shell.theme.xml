@@ -31,54 +31,34 @@
   <color name="shell.title.inactive.foreground"
       description="Text color for the title bar of inactive Shells"
       default="221, 221, 221"/>
+
+  <font name="shell.title.font"
+      description="Font for title bar of Shells"
+      default="11 bold 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"/>
   
-  <color name="shell.minbutton.background"
-      description="Background color for the active minimize button [deprecated]"
-      default="59, 169, 41"/>
+  <dimension name="shell.title.height"
+      description="Height of the title bar of Shells"
+      default="18"/>
   
-  <color name="shell.minbutton.over.background"
-      description="Background color for the hovered minimize button [deprecated]"
-      default="117, 208, 102"/>
+  <boxdim name="shell.title.margin"
+      description="Margins of the title bar of Shells"
+      default="0 0 1"/>
   
-  <color name="shell.minbutton.inactive.background"
-      description="Background color for the inactive minimize button [deprecated]"
-      default="135, 184, 127"/>
-  
-  <color name="shell.maxbutton.background"
-      description="Background color for the active maximize button [deprecated]"
-      default="59, 169, 41"/>
-  
-  <color name="shell.maxbutton.over.background"
-      description="Background color for the hovered maximize button [deprecated]"
-      default="117, 208, 102"/>
-  
-  <color name="shell.maxbutton.inactive.background"
-      description="Background color for the inactive maximize button [deprecated]"
-      default="135, 184, 127"/>
-  
-  <color name="shell.closebutton.background"
-      description="Background color for the active close button [deprecated]"
-      default="239, 29, 47"/>
-  
-  <color name="shell.closebutton.over.background"
-      description="Background color for the hovered close button [deprecated]"
-      default="255, 120, 132"/>
-  
-  <color name="shell.closebutton.inactive.background"
-      description="Background color for the inactive close button [deprecated]"
-      default="198, 127, 133"/>
+  <boxdim name="shell.title.padding"
+      description="Padding of the title bar of shells"
+      default="1 2"/>
   
   <border name="shell.border"
-      description="[hidden]"
+      description="Border for shell [hidden]"
       default="2 outset gray"/>
 
   <boxdim name="shell.padding"
-      description="[hidden]"
-      default="0 1 1"/>
+      description="Padding around the shell client area"
+      default="2"/>
 
-  <boxdim name="shell.titlebar.margin"
-      description="[hidden]"
-      default="0"/>
+  <boxdim name="shell.button.margin"
+      description="Margin for the min/max/close buttons on shells"
+      default="2 0 2 1"/>
 
   <image name="shell.title.active.bgimage"
       description="Background image for title bar of active Shells"
@@ -88,24 +68,70 @@
       description="Background image for title bar of inactive Shells"
       default=""/>
 
-  <image name="shell.closebutton.image"
-      description="Image for close button of Shells"
+  <!-- The button parade -->
+  
+  <image name="shell.minbutton.image"
+      description="Image for minimize button on shells"
+      default=""/>
+  <image name="shell.minbutton.over.image"
+      description="Image for minimize button on shells on mouse over"
+      inherit="shell.minbutton.image"
+      default=""/>
+  <image name="shell.minbutton.inactive.image"
+      description="Image for minimize button on inactive shells"
+      inherit="shell.minbutton.image"
+      default=""/>
+  <image name="shell.minbutton.inactive.over.image"
+      description="Image for minimize button on inactive shells on mouse over"
+      inherit="shell.minbutton.image"
       default=""/>
 
   <image name="shell.maxbutton.image"
       description="Image for maximize button of Shells"
       default=""/>
+  <image name="shell.maxbutton.over.image"
+      description="Image for maximize button of Shells"
+      inherit="shell.maxbutton.image"
+      default=""/>
+  <image name="shell.maxbutton.inactive.image"
+      description="Image for maximize button of Shells"
+      inherit="shell.maxbutton.image"
+      default=""/>
+  <image name="shell.maxbutton.inactive.over.image"
+      description="Image for maximize button of Shells"
+      inherit="shell.maxbutton.image"
+      default=""/>
 
   <image name="shell.restorebutton.image"
       description="Image for restore from maximized button of Shells"
       default=""/>
-
-  <image name="shell.minbutton.image"
-      description="Image for minimize button of Shells"
+  <image name="shell.restorebutton.over.image"
+      description="Image for restore from maximized button of Shells"
+      inherit="shell.restorebutton.image"
+      default=""/>
+  <image name="shell.restorebutton.inactive.image"
+      description="Image for restore from maximized button of Shells"
+      inherit="shell.restorebutton.image"
+      default=""/>
+  <image name="shell.restorebutton.inactive.over.image"
+      description="Image for restore from maximized button of Shells"
+      inherit="shell.restorebutton.image"
       default=""/>
 
-  <font name="shell.title.font"
-      description="Font for title bar of Shells"
-      default="11 bold 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"/>
-      
+  <image name="shell.closebutton.image"
+      description="Image for close button of Shells"
+      default=""/>
+  <image name="shell.closebutton.over.image"
+      description="Image for close button of Shells"
+      inherit="shell.closebutton.image"
+      default=""/>
+  <image name="shell.closebutton.inactive.image"
+      description="Image for close button of Shells"
+      inherit="shell.closebutton.image"
+      default=""/>
+  <image name="shell.closebutton.inactive.over.image"
+      description="Image for close button of Shells"
+      inherit="shell.closebutton.image"
+      default=""/>
+
 </theme>

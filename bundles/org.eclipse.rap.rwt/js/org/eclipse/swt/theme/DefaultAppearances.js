@@ -9,12 +9,10 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
-{
-  title : "RAP default appearances",
+// TODO [rst] This file is now read and substituted by the ThemeManager and may
+//            be renamed in the future.
+// BEGIN APPEARANCES
 
-  appearances :
-  {
     "empty" : {
     },
 
@@ -330,7 +328,6 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
         return {
           textColor       : "widget.foreground",
           backgroundColor : "shell.background",
-//          padding         : 1,
           border          : ( states.rwt_TITLE || states.rwt_BORDER )
                               && !states.maximized
                                 ? "shell.border"
@@ -344,17 +341,28 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     "window-captionbar" :
     {
       style : function( states ) {
-        return {
-          padding               : [ 1, 2 ],
-          verticalChildrenAlign : "middle",
-          height                : "auto",
-          overflow              : "hidden",
-          textColor             : states.active ? "shell.title.foreground" : "shell.title.inactive.foreground",
-          backgroundColor       : states.active ? "shell.title.background" : "shell.title.inactive.background",
-          backgroundImage       : states.active ? "widget/window/caption_active.gif" : "widget/window/caption_inactive.gif",
-          minHeight             : states.rwt_TITLE ? 18 : 0,
-          maxHeight             : states.rwt_TITLE ? 18 : 0
+        var result = {
+          margin : THEME_VALUE( "shell.title.margin" ),
+          padding : THEME_VALUE( "shell.title.padding" ),
+          verticalChildrenAlign : "middle"
         };
+        if( states.active ) {
+          result.textColor = "shell.title.foreground";
+          result.backgroundColor = "shell.title.background";
+          result.backgroundImage = "widget/window/caption_active.gif";
+        } else {
+          result.textColor = "shell.title.inactive.foreground";
+          result.backgroundColor = "shell.title.inactive.background";
+          result.backgroundImage = "widget/window/caption_inactive.gif";
+        }
+        if( states.rwt_TITLE ) {
+          result.minHeight = THEME_VALUE( "shell.title.height" );
+          result.maxHeight = THEME_VALUE( "shell.title.height" );
+        } else {
+          result.minHeight = 0;
+          result.maxHeight = 0;
+        }
+        return result;
       }
     },
     
@@ -389,13 +397,9 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     
     "window-captionbar-button" :
     {
-      include : "button",
-
       style : function( states ) {
         var result = {
-          border : "white",
-          padding : 1,
-          marginLeft : 1
+          margin : THEME_VALUE( "shell.button.margin" )
         };
         return result;
       }
@@ -405,15 +409,19 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       include : "window-captionbar-button",
       style : function( states ) {
-        var result = {
-          icon : "widget/window/minimize.gif"
-        };
-        if( states.over && !states.pressed ) {
-          result.backgroundColor = "shell.minbutton.over.background";
-        } else if( !states.active ) {
-          result.backgroundColor = "shell.minbutton.inactive.background";
+        var result = {};
+        if( states.active ) {
+          if( states.over && !states.pressed ) {
+            result.icon = "widget/window/minimize.over.png";
+          } else {
+            result.icon = "widget/window/minimize.png";
+          }
         } else {
-          result.backgroundColor = "shell.minbutton.background";
+          if( states.over && !states.pressed ) {
+            result.icon = "widget/window/minimize.inactive.over.png";
+          } else {
+            result.icon = "widget/window/minimize.inactive.png";
+          }
         }
         return result;
       }
@@ -423,15 +431,19 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       include : "window-captionbar-button",
       style : function( states ) {
-        var result = {
-          icon : "widget/window/maximize.gif"
-        };
-        if( states.over && !states.pressed ) {
-          result.backgroundColor = "shell.maxbutton.over.background";
-        } else if( !states.active ) {
-          result.backgroundColor = "shell.maxbutton.inactive.background";
+        var result = {};
+        if( states.active ) {
+          if( states.over && !states.pressed ) {
+            result.icon = "widget/window/maximize.over.png";
+          } else {
+            result.icon = "widget/window/maximize.png";
+          }
         } else {
-          result.backgroundColor = "shell.maxbutton.background";
+          if( states.over && !states.pressed ) {
+            result.icon = "widget/window/maximize.inactive.over.png";
+          } else {
+            result.icon = "widget/window/maximize.inactive.png";
+          }
         }
         return result;
       }
@@ -441,15 +453,19 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       include : "window-captionbar-button",
       style : function( states ) {
-        var result = {
-          icon : "widget/window/restore.gif"
-        };
-        if( states.over && !states.pressed ) {
-          result.backgroundColor = "shell.maxbutton.over.background";
-        } else if( !states.active ) {
-          result.backgroundColor = "shell.maxbutton.inactive.background";
+        var result = {};
+        if( states.active ) {
+          if( states.over && !states.pressed ) {
+            result.icon = "widget/window/restore.over.png";
+          } else {
+            result.icon = "widget/window/restore.png";
+          }
         } else {
-          result.backgroundColor = "shell.maxbutton.background";
+          if( states.over && !states.pressed ) {
+            result.icon = "widget/window/restore.inactive.over.png";
+          } else {
+            result.icon = "widget/window/restore.inactive.png";
+          }
         }
         return result;
       }
@@ -459,15 +475,19 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
     {
       include : "window-captionbar-button",
       style : function( states ) {
-        var result = {
-          icon : "widget/window/close.gif"
-        };
-        if( states.over && !states.pressed ) {
-          result.backgroundColor = "shell.closebutton.over.background";
-        } else if( !states.active ) {
-          result.backgroundColor = "shell.closebutton.inactive.background";
+        var result = {};
+        if( states.active ) {
+          if( states.over && !states.pressed ) {
+            result.icon = "widget/window/close.over.png";
+          } else {
+            result.icon = "widget/window/close.png";
+          }
         } else {
-          result.backgroundColor = "shell.closebutton.background";
+          if( states.over && !states.pressed ) {
+            result.icon = "widget/window/close.inactive.over.png";
+          } else {
+            result.icon = "widget/window/close.inactive.png";
+          }
         }
         return result;
       }
@@ -1464,27 +1484,24 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultAppearances",
       }
     },
  
-  // ------------------------------------------------------------------------
-  // Progress Bar
+    // ------------------------------------------------------------------------
+    // Progress Bar
     
-  "progressbar" : {
-    style : function( states ) {
-      return {
-        border : "thinInset",
-        backgroundImage : "widget/progressbar/barbg.gif",
-        backgroundColor : "progressbar.background"
+    "progressbar" : {
+      style : function( states ) {
+        return {
+          border : "thinInset",
+          backgroundImage : "widget/progressbar/barbg.gif",
+          backgroundColor : "progressbar.background"
+      }
+      }
+    },
+
+    "progressbar-bar" : {
+      style : function( states ) {
+        return {
+          backgroundImage : "widget/progressbar/bar.gif",
+          backgroundColor : "progressbar.foreground"
+        }
       }
     }
-  },
-
-  "progressbar-bar" : {
-    style : function( states ) {
-      return {
-        backgroundImage : "widget/progressbar/bar.gif",
-        backgroundColor : "progressbar.foreground"
-      }
-    }
-  },
-
- },
-});

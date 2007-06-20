@@ -20,16 +20,24 @@ import org.xml.sax.*;
 
 public class ThemeDefinitionReader {
 
+  private static final String ATTR_DEFAULT = "default";
+  private static final String ATTR_INHERIT = "inherit";
+  private static final String ATTR_DESCRIPTION = "description";
+  private static final String ATTR_NAME = "name";
+
   public class ThemeDef {
     public final String name;
-    public final QxType value;
+    public final String inherit;
+    public final QxType defValue;
     public final String description;
     public ThemeDef( final String name,
-                     final QxType value,
+                     final String inherit,
+                     final QxType defValue,
                      final String description )
     {
       this.name = name;
-      this.value = value;
+      this.inherit = inherit;
+      this.defValue = defValue;
       this.description = description;
     }
   }
@@ -88,9 +96,10 @@ public class ThemeDefinitionReader {
 
   private ThemeDef readElement( final Node node ) {
     String type = node.getNodeName();
-    String name = getAttributeValue( node, "name" );
-    String description = getAttributeValue( node, "description" );
-    String defaultStr = getAttributeValue( node, "default" );
+    String name = getAttributeValue( node, ATTR_NAME );
+    String description = getAttributeValue( node, ATTR_DESCRIPTION );
+    String inherit = getAttributeValue( node, ATTR_INHERIT );
+    String defaultStr = getAttributeValue( node, ATTR_DEFAULT );
     QxType value;
     if( TYPE_FONT.equals( type ) ) {
       value = new QxFont( defaultStr );
@@ -108,7 +117,7 @@ public class ThemeDefinitionReader {
       // TODO [rst] Remove when XML validation is active
       throw new IllegalArgumentException( "Illegal type: " + type );
     }
-    return new ThemeDef( name, value, description );
+    return new ThemeDef( name, inherit, value, description );
   }
 
   private static String getAttributeValue( final Node node, final String name ) {

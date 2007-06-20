@@ -12,6 +12,8 @@ package org.eclipse.swt.internal.theme;
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,13 +32,16 @@ import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
 
 public class ThemeManager {
+  
+  public interface ResourceLoader {
+    public abstract InputStream getResourceAsStream( String resourceName )
+    throws IOException;
+  }
 
   private static final String CHARSET = "UTF-8";
 
-  public interface ResourceLoader {
-    public abstract InputStream getResourceAsStream( String resourceName )
-      throws IOException;
-  }
+  private static final Pattern PATTERN_REPLACE
+    = Pattern.compile( "THEME_VALUE\\(\\s*\"(.*?)\"\\s*\\)" );
   
   private static class ThemeWrapper {
     final Theme theme;
@@ -107,14 +112,44 @@ public class ThemeManager {
     WIDGET_RESOURCES_MAP.put( "tree/plus.gif", null );
     WIDGET_RESOURCES_MAP.put( "tree/start_minus.gif", null );
     WIDGET_RESOURCES_MAP.put( "tree/start_plus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "window/close.gif",
-                              "shell.closebutton.image" );
-    WIDGET_RESOURCES_MAP.put( "window/maximize.gif",
-                              "shell.maxbutton.image" );
-    WIDGET_RESOURCES_MAP.put( "window/minimize.gif",
+
+    // minimize button
+    WIDGET_RESOURCES_MAP.put( "window/minimize.png",
                               "shell.minbutton.image" );
-    WIDGET_RESOURCES_MAP.put( "window/restore.gif",
+    WIDGET_RESOURCES_MAP.put( "window/minimize.over.png",
+                              "shell.minbutton.over.image" );
+    WIDGET_RESOURCES_MAP.put( "window/minimize.inactive.png",
+                              "shell.minbutton.inactive.image" );
+    WIDGET_RESOURCES_MAP.put( "window/minimize.inactive.over.png",
+                              "shell.minbutton.inactive.over.image" );
+    // maximize button
+    WIDGET_RESOURCES_MAP.put( "window/maximize.png",
+                              "shell.maxbutton.image" );
+    WIDGET_RESOURCES_MAP.put( "window/maximize.over.png",
+                              "shell.maxbutton.over.image" );
+    WIDGET_RESOURCES_MAP.put( "window/maximize.inactive.png",
+                              "shell.maxbutton.inactive.image" );
+    WIDGET_RESOURCES_MAP.put( "window/maximize.inactive.over.png",
+                              "shell.maxbutton.inactive.over.image" );
+    // restore button
+    WIDGET_RESOURCES_MAP.put( "window/restore.png",
                               "shell.restorebutton.image" );
+    WIDGET_RESOURCES_MAP.put( "window/restore.over.png",
+                              "shell.restorebutton.over.image" );
+    WIDGET_RESOURCES_MAP.put( "window/restore.inactive.png",
+                              "shell.restorebutton.inactive.image" );
+    WIDGET_RESOURCES_MAP.put( "window/restore.inactive.over.png",
+                              "shell.restorebutton.inactive.over.image" );
+    // close button
+    WIDGET_RESOURCES_MAP.put( "window/close.png",
+                              "shell.closebutton.image" );
+    WIDGET_RESOURCES_MAP.put( "window/close.over.png",
+                              "shell.closebutton.over.image" );
+    WIDGET_RESOURCES_MAP.put( "window/close.inactive.png",
+                              "shell.closebutton.inactive.image" );
+    WIDGET_RESOURCES_MAP.put( "window/close.inactive.over.png",
+                              "shell.closebutton.inactive.over.image" );
+    
     WIDGET_RESOURCES_MAP.put( "window/caption_active.gif",
                               "shell.title.active.bgimage" );
     WIDGET_RESOURCES_MAP.put( "window/caption_inactive.gif",
@@ -127,9 +162,9 @@ public class ThemeManager {
     WIDGET_RESOURCES_MAP.put( "table/check_gray_on.gif", null );
     WIDGET_RESOURCES_MAP.put( "table/check_gray_off.gif", null );
     WIDGET_RESOURCES_MAP.put( "progressbar/bar.gif",
-    						  "progressbar.fgimage" );
+                              "progressbar.fgimage" );
     WIDGET_RESOURCES_MAP.put( "progressbar/barbg.gif",
-	  "progressbar.bgimage" );
+                              "progressbar.bgimage" );
   }
   
   /** Where to load the default images from */
@@ -227,7 +262,7 @@ public class ThemeManager {
       while( iterator.hasNext() ) {
         String key = ( String )iterator.next();
         ThemeDef def = ( ThemeDef )themeDefs.get( key );
-        predefinedTheme.setValue( key, def.value );
+        predefinedTheme.setValue( key, def.defValue );
       }
       themes.put( PREDEFINED_THEME_ID, new ThemeWrapper( predefinedTheme,
                                                          null,
@@ -342,12 +377,13 @@ public class ThemeManager {
     }
     return result;
   }
-  
+
   public String getJsThemeId( final String themeId ) {
     String result;
     if( PREDEFINED_THEME_ID.equals( themeId ) ) {
       result = PREDEFINED_THEME_ID;
     } else {
+      // TODO [rst] check if theme is registered
       ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
       result = JS_THEME_PREFIX + "Custom_" + wrapper.count;
     }
@@ -364,7 +400,7 @@ public class ThemeManager {
     while( iterator.hasNext() ) {
       String key = ( String )iterator.next();
       ThemeDef def = ( ThemeDef )manager.themeDefs.get( key );
-      String value = def.value.toDefaultString();
+      String value = def.defValue.toDefaultString();
       String description = def.description.replaceAll( "\\n\\s*", "\n# " );
       // TODO [rst] Hack to hide themeing properties that do not yet support
       //      user-defined values - Remove when themeing is stable.
@@ -377,7 +413,7 @@ public class ThemeManager {
     }
     System.out.println( sb.toString() );
   }
-  
+
   private void checkInitialized() {
     if( !initialized ) {
       throw new IllegalStateException( "ThemeManager not initialized" );
@@ -482,11 +518,11 @@ public class ThemeManager {
       throw new IllegalArgumentException( "null argument" );
     }
     Theme newTheme = new Theme( name, predefinedTheme );
-    Properties properties = new Properties( );
+    Properties properties = new Properties();
     properties.load( instr );
     Iterator iterator = properties.keySet().iterator();
     while( iterator.hasNext() ) {
-      String key = ( String )iterator.next();
+      String key = ( ( String )iterator.next() ).trim();
       QxType defValue = predefinedTheme.getValue( key );
       QxType newValue = null;
       if( defValue == null ) {
@@ -508,6 +544,16 @@ public class ThemeManager {
       }
       newTheme.setValue( key, newValue );
     }
+    // second loop for inheritance
+    // TODO [rst] handle loops and multi-step inheritance
+    iterator = themeDefs.keySet().iterator();
+    while( iterator.hasNext() ) {
+      String key = ( String )iterator.next();
+      ThemeDef def = ( ThemeDef )themeDefs.get( key );
+      if( def.inherit != null && !properties.containsKey( key ) ) {
+        newTheme.setValue( key, newTheme.getValue( def.inherit ) );
+      }
+    }
     return newTheme;
   }
   
@@ -520,18 +566,21 @@ public class ThemeManager {
     String colorThemeCode = createColorTheme( wrapper.theme, jsId );
     String fontThemeCode = createFontTheme( wrapper.theme, jsId );
     String widgetThemeCode = createWidgetTheme( wrapper.theme, jsId );
+    String appearanceThemeCode = createAppearanceTheme( wrapper.theme, jsId );
     String metaThemeCode = createMetaTheme( wrapper.theme, jsId );
     if( DEBUG ) {
       System.out.println( "-- REGISTERED THEME --" );
       System.out.println( colorThemeCode );
       System.out.println( fontThemeCode );
       System.out.println( widgetThemeCode );
+      System.out.println( appearanceThemeCode );
       System.out.println( metaThemeCode );
       System.out.println( "-- END REGISTERED THEME --" );
     }
     registerJsLibrary( colorThemeCode, jsId + "Colors.js" );
     registerJsLibrary( fontThemeCode, jsId + "Fonts.js" );
     registerJsLibrary( widgetThemeCode, jsId + "WidgetIcons.js" );
+    registerJsLibrary( appearanceThemeCode, jsId + "Appearance.js" );
     registerJsLibrary( metaThemeCode, jsId + ".js" );
   }
   
@@ -617,17 +666,29 @@ public class ThemeManager {
     return writer.getGeneratedCode();
   }
 
-  private static String getWidgetDestPath( final String id ) {
-    return THEME_RESOURCE_DEST + id + "/widgets/";
+  private static String createAppearanceTheme( final Theme theme,
+                                               final String id )
+    throws IOException
+  {
+    ClassLoader classLoader = ThemeManager.class.getClassLoader();
+    String resource = "org/eclipse/swt/theme/DefaultAppearances.js";
+    InputStream inStr = classLoader.getResourceAsStream( resource  );
+    String content = readFromInputStream( inStr, "UTF-8" );
+    String appearances = substituteTemplate( content, theme );
+    ThemeWriter writer = new ThemeWriter( id,
+                                          theme.getName(),
+                                          ThemeWriter.APPEARANCE );
+    writer.writeAppearances( appearances );
+    return writer.getGeneratedCode();
   }
-  
+
   private static String createMetaTheme( final Theme theme, final String id ) {
     ThemeWriter writer = new ThemeWriter( id, theme.getName(), ThemeWriter.META );
     writer.writeTheme( "color", id + "Colors" );
     writer.writeTheme( "border", PREDEFINED_THEME_ID + "Borders" );
     writer.writeTheme( "font", id + "Fonts" );
     writer.writeTheme( "widget", id + "Widgets" );
-    writer.writeTheme( "appearance", PREDEFINED_THEME_ID + "Appearances" );
+    writer.writeTheme( "appearance", id + "Appearances" );
     writer.writeTheme( "icon", PREDEFINED_THEME_ID + "Icons" );
     return writer.getGeneratedCode();
   }
@@ -639,7 +700,6 @@ public class ThemeManager {
     byte[] buffer = code.getBytes( CHARSET );
     resourceInputStream = new ByteArrayInputStream( buffer );
     try {
-      // TODO [rst] Enable versioning of registered resources
       ResourceManager.getInstance().register( name,
                                               resourceInputStream,
                                               CHARSET,
@@ -652,6 +712,64 @@ public class ThemeManager {
     }
   }
   
+  private static String getWidgetDestPath( final String id ) {
+    return THEME_RESOURCE_DEST + id + "/widgets/";
+  }
+  
+
+  private static String substituteTemplate( final String template,
+                                            final Theme theme )
+  {
+    String startLabel = "BEGIN APPEARANCES";
+    int start = template.indexOf( startLabel );
+    start = start == -1 ? 0 : start + startLabel.length();
+    Matcher matcher = PATTERN_REPLACE.matcher( template.substring( start  ) );
+    StringBuffer sb = new StringBuffer();
+    while( matcher.find() ) {
+      String key = matcher.group( 1 );
+      QxType result = theme.getValue( key );
+      String repl;
+      if( result instanceof QxDimension ) {
+        QxDimension dim = ( QxDimension )result;
+        repl = String.valueOf( dim.getInt() );
+      } else if( result instanceof QxBoxDimensions ) {
+        QxBoxDimensions boxdim = ( QxBoxDimensions )result;
+        repl = boxdim.toJsArray();
+      } else {
+        String mesg = "Only dimensions and box dimensions can be substituted in appearance templates";
+        throw new IllegalArgumentException( mesg );
+      }
+      matcher.appendReplacement( sb, repl );
+    }
+    matcher.appendTail( sb );
+    return sb.toString();
+  }
+  
+  private static String readFromInputStream( final InputStream is,
+                                             final String charset )
+    throws IOException
+  {
+    String result = null;
+    if( is != null ) {
+      try {
+        StringBuffer sb = new StringBuffer();
+        InputStreamReader reader = new InputStreamReader( is, charset );
+        BufferedReader br = new BufferedReader( reader );
+        for( int i = 0; i < 100; i++ ) {
+          int character = br.read();
+          while( character != -1 ) {
+            sb.append( ( char )character );
+            character = br.read();
+          }
+        }
+        result = sb.toString();
+      } finally {
+        is.close();
+      }
+    }
+    return result;
+  }
+
   /**
    * Inserts the package path segment <code>internal</code> at every possible
    * position in a given package name.

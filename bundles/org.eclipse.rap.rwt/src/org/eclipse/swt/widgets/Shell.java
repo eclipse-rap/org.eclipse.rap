@@ -12,12 +12,13 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
 import org.eclipse.swt.widgets.MenuHolder.IMenuHolderAdapter;
 
 /**
@@ -117,8 +118,6 @@ import org.eclipse.swt.widgets.MenuHolder.IMenuHolderAdapter;
  */
 public class Shell extends Composite {
 
-  private static final int TITLE_BAR_HEIGHT = 18;
-  private static final int MENU_BAR_HEIGHT = 20;
   private static final int MODE_NONE = 0;
   private static final int MODE_MAXIMIZED = 1;
   private static final int MODE_MINIMIZED = 2;
@@ -381,61 +380,80 @@ public class Shell extends Composite {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    int hTopTrim = ( style & SWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT + 1 : 0;
-    if( getMenuBar() != null ) {
-      hTopTrim += MENU_BAR_HEIGHT;
-    }
-    int margin = getMargin();
+    QxBoxDimensions padding = getPadding();
+    int hTopTrim;
+    hTopTrim = getTitleBarMargin().getHeight();
+    hTopTrim += getTitleBarHeight();
+    hTopTrim += getMenuBarHeight();
     int border = getBorderWidth();
-    return new Rectangle( 0 + margin,
-                          hTopTrim + margin,
-                          bounds.width - margin * 2 - border * 2,
-                          bounds.height - hTopTrim - margin * 2 - border * 2 );
+    return new Rectangle( padding.left,
+                          hTopTrim + padding.top,
+                          bounds.width - padding.left - padding.right - border * 2,
+                          bounds.height - hTopTrim - padding.top - padding.bottom - border * 2 );
   }
   
   // TODO [rst] Move to class Decorations, as soon as it exists
-  public Rectangle computeTrim( final int x, 
-                                final int y, 
-                                final int width, 
-                                final int height ) 
+  public Rectangle computeTrim( final int x,
+                                final int y,
+                                final int width,
+                                final int height )
   {
     checkWidget();
-    int hTopTrim = ( style & SWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT + 1 : 0;
-    if( getMenuBar() != null ) {
-      hTopTrim += MENU_BAR_HEIGHT;
-    }
-    int margin = getMargin();
+    int hTopTrim;
+    hTopTrim = getTitleBarMargin().getHeight();
+    hTopTrim += getTitleBarHeight();
+    hTopTrim += getMenuBarHeight();
+    QxBoxDimensions padding = getPadding();
     int border = getBorderWidth();
-    Rectangle rect = new Rectangle( x - margin - border,
-                                    y - hTopTrim - margin - border,
-                                    width + margin * 2 + border * 2,
-                                    height + hTopTrim + margin * 2 + border * 2 );
+    Rectangle rect = new Rectangle( x - padding.left - border,
+                                    y - hTopTrim - padding.top - border,
+                                    width + padding.left + padding.right + border * 2,
+                                    height + hTopTrim + padding.top + padding.bottom + border * 2 );
     return rect;
   }
   
-  public int getBorderWidth() {
-    checkWidget();
-    return ( style & ( SWT.BORDER | SWT.TITLE ) ) != 0 ? 2 : 1;
-  }
-
   private Rectangle getMenuBounds() {
     Rectangle result = null;
     if( getMenuBar() != null ) {
       Rectangle bounds = getBounds();
-      int hTop = ( style & SWT.TITLE ) != 0 ? TITLE_BAR_HEIGHT : 0;
-      int margin = getMargin();
+      int hTop = ( style & SWT.TITLE ) != 0 ? 1 : 0;
+      hTop += getTitleBarHeight();
+      QxBoxDimensions padding = getPadding();
       int border = getBorderWidth();
-      result = new Rectangle( margin,
-                              hTop + margin,
-                              bounds.width - margin * 2 - border * 2,
-                              MENU_BAR_HEIGHT );
+      result = new Rectangle( padding.left,
+                              hTop + padding.top,
+                              bounds.width - padding.left - padding.right - border * 2,
+                              getMenuBarHeight() );
     }
     return result;
   }
   
+  private int getTitleBarHeight() {
+    IShellThemeAdapter adapter = getShellThemeAdapter();
+    return adapter.getTitleBarHeight( this );
+  }
+  
+  private QxBoxDimensions getTitleBarMargin() {
+    IShellThemeAdapter adapter = getShellThemeAdapter();
+    return adapter.getTitleBarMargin( this );
+  }
+  
+  private int getMenuBarHeight() {
+    IShellThemeAdapter adapter = getShellThemeAdapter();
+    return adapter.getMenuBarHeight( this );
+  }
+  
   // margin of the client area
-  private int getMargin() {
-    return ( style & SWT.TITLE ) != 0 ? 2 : 0;
+  private QxBoxDimensions getPadding() {
+    IShellThemeAdapter adapter = getShellThemeAdapter();
+    return adapter.getPadding( this );
+  }
+  
+  private IShellThemeAdapter getShellThemeAdapter() {
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    IThemeAdapter themeAdapter = themeMgr.getThemeAdapter( getClass() );
+    IShellThemeAdapter adapter = ( IShellThemeAdapter )themeAdapter;
+    return adapter;
   }
   
   //////////

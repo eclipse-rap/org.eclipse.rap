@@ -14,8 +14,10 @@ package org.eclipse.swt.internal.theme;
 public interface QxType {
 
   /**
-   * Returns a default representation, that can also be applied to the
-   * constructor.
+   * Returns a default representation of the value, that can also be applied to
+   * the constructor. The returned value is also a valid notation for RAP theme
+   * files.
    */
   public String toDefaultString();
+  
 }

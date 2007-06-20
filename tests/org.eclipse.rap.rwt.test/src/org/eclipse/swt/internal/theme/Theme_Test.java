@@ -24,7 +24,7 @@ public class Theme_Test extends TestCase {
       // expected
     }
     try {
-      new Theme( "foo", null );
+      new Theme( null, null );
       fail( "Null argument should throw NullPointerException" );
     } catch( NullPointerException e ) {
       // expected

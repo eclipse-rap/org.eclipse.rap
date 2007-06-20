@@ -72,10 +72,14 @@ public class QxBoxDimensions implements QxType {
     return top + bottom;
   }
 
+  public String toJsArray() {
+    return "[ " + top + ", " + right + ", " + bottom + ", " + left + " ]";
+  }
+
   public String toDefaultString() {
     return top + " " + right + " " + bottom + " " + left;
   }
-
+  
   public boolean equals( final Object object ) {
     boolean result = false;
     if( object == this ) {

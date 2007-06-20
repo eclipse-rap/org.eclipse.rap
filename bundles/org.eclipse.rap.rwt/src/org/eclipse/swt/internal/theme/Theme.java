@@ -18,16 +18,16 @@ public class Theme {
   private Map values;
 
   public Theme( final String name ) {
-    this.name = checkName( name );
-    values = new HashMap();
+    this( name, null );
   }
   
   public Theme( final String name, final Theme defaultTheme ) {
     this.name = checkName( name );
-    if( defaultTheme == null ) {
-      throw new NullPointerException( "null argument" );
+    if( defaultTheme != null ) {
+      values = new HashMap( defaultTheme.values );
+    } else {
+      values = new HashMap();
     }
-    values = new HashMap( defaultTheme.values );
   }
   
   public String getName() {

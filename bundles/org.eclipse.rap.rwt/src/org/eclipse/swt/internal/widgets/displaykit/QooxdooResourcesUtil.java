@@ -27,8 +27,6 @@ import com.w4t.engine.service.IServiceStateInfo;
 //      e.g. org/eclipse/swt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
   
-  private static final String DEFAULT_APPEARANCES_JS 
-    = "org/eclipse/swt/theme/DefaultAppearances.js";
   private static final String DEFAULT_BORDERS_JS 
     = "org/eclipse/swt/theme/DefaultBorders.js";
   private static final String DEFAULT_ICONS_JS 
@@ -138,7 +136,6 @@ final class QooxdooResourcesUtil {
       register( QX_CONSTANT_STYLE_JS );
 
       // NOTE: Order of register-calls is important here
-      register( DEFAULT_APPEARANCES_JS );
       register( DEFAULT_BORDERS_JS );
       register( DEFAULT_ICONS_JS );
       // end of 'order is important'

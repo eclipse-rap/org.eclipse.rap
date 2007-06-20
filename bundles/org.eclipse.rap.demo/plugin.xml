@@ -9,7 +9,7 @@
         id="org.eclipse.rap.demo.alttheme"
         name="Alternative Demo Theme"
         file="theme1/theme.properties"
-        default="false"/>
+        default="true"/>
   </extension>
   
   <extension

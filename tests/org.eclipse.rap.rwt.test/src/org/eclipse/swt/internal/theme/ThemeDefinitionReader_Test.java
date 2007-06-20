@@ -33,7 +33,7 @@ public class ThemeDefinitionReader_Test extends TestCase {
     try {
       reader.read( new ThemeDefHandler() {
         public void readThemeDef( final ThemeDef def ) {
-          result.put( def.name, def.value );
+          result.put( def.name, def.defValue );
         }
       } );
     } finally {
