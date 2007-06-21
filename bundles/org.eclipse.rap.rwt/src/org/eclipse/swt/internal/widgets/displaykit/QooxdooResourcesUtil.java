@@ -27,9 +27,6 @@ import com.w4t.engine.service.IServiceStateInfo;
 //      e.g. org/eclipse/swt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
   
-  private static final String DEFAULT_ICONS_JS 
-    = "org/eclipse/swt/theme/DefaultIcons.js";
-
   private static final String APPLICATION_JS 
     = "org/eclipse/swt/Application.js";
   private static final String REQUEST_JS 
@@ -133,10 +130,6 @@ final class QooxdooResourcesUtil {
       register( QX_CONSTANT_LAYOUT_JS );
       register( QX_CONSTANT_STYLE_JS );
 
-      // TODO [rst] This is the last theming relevant file in here.
-      //            Should also registered by the ThemeManager.
-      register( DEFAULT_ICONS_JS );
-      
       register( APPLICATION_JS );
       register( REQUEST_JS );
       register( WIDGET_MANAGER_JS );

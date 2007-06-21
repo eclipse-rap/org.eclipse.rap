@@ -562,6 +562,7 @@ public class ThemeManager {
     String colorThemeCode = createColorTheme( wrapper.theme, jsId );
     String borderThemeCode = createBorderTheme( wrapper.theme, jsId );
     String fontThemeCode = createFontTheme( wrapper.theme, jsId );
+    String iconThemeCode = createIconTheme( wrapper.theme, jsId );
     String widgetThemeCode = createWidgetTheme( wrapper.theme, jsId );
     String appearanceThemeCode = createAppearanceTheme( wrapper.theme, jsId );
     String metaThemeCode = createMetaTheme( wrapper.theme, jsId );
@@ -570,6 +571,7 @@ public class ThemeManager {
       System.out.println( colorThemeCode );
       System.out.println( borderThemeCode );
       System.out.println( fontThemeCode );
+      System.out.println( iconThemeCode );
       System.out.println( widgetThemeCode );
       System.out.println( appearanceThemeCode );
       System.out.println( metaThemeCode );
@@ -579,6 +581,7 @@ public class ThemeManager {
     registerJsLibrary( colorThemeCode, jsId + "Colors.js" );
     registerJsLibrary( borderThemeCode, jsId + "Borders.js" );
     registerJsLibrary( fontThemeCode, jsId + "Fonts.js" );
+    registerJsLibrary( iconThemeCode, jsId + "Icons.js" );
     registerJsLibrary( widgetThemeCode, jsId + "WidgetIcons.js" );
     registerJsLibrary( appearanceThemeCode, jsId + "Appearance.js" );
     registerJsLibrary( metaThemeCode, jsId + ".js" );
@@ -689,6 +692,14 @@ public class ThemeManager {
     writer.writeUri( getWidgetDestPath( id ) );
     return writer.getGeneratedCode();
   }
+  
+  private static String createIconTheme( final Theme theme, final String id ) {
+    ThemeWriter writer = new ThemeWriter( id,
+                                          theme.getName(),
+                                          ThemeWriter.ICON );
+    writer.writeUri( getWidgetDestPath( id ) );
+    return writer.getGeneratedCode();
+  }
 
   private static String createAppearanceTheme( final Theme theme,
                                                final String id )
@@ -712,9 +723,9 @@ public class ThemeManager {
     writer.writeTheme( "color", id + "Colors" );
     writer.writeTheme( "border", id + "Borders" );
     writer.writeTheme( "font", id + "Fonts" );
+    writer.writeTheme( "icon", id + "Icons" );
     writer.writeTheme( "widget", id + "Widgets" );
     writer.writeTheme( "appearance", id + "Appearances" );
-    writer.writeTheme( "icon", PREDEFINED_THEME_ID + "Icons" );
     return writer.getGeneratedCode();
   }
   

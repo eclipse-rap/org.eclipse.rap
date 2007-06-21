@@ -26,8 +26,9 @@ public class ThemeWriter {
   public static final int FONT = 2;
   public static final int COLOR = 3;
   public static final int BORDER = 4;
-  public static final int WIDGET = 5;
-  public static final int APPEARANCE = 6;
+  public static final int ICON = 5;
+  public static final int WIDGET = 6;
+  public static final int APPEARANCE = 7;
   
   // TODO [rst] Clarify what the use of the theme title is, remove the name
   //      parameter if unnecessary
@@ -121,8 +122,8 @@ public class ThemeWriter {
   }
   
   public void writeUri( final String pathPrefix ) {
-    if( type != WIDGET ) {
-      throw new IllegalStateException( "Url can only be set in widget themes" );
+    if( type != WIDGET && type != ICON ) {
+      throw new IllegalStateException( "Url can only be set in widget and icon themes" );
     }
     beforeWriteValue();
     code.append( "    \"uri\" : \"" );
@@ -182,6 +183,8 @@ public class ThemeWriter {
       code.append( "  borders : {\n" );
     } else if( type == APPEARANCE ) {
       code.append( "  appearances : {\n" );
+    } else if( type == ICON ) {
+      code.append( "  icons : {\n" );
     } else if( type == WIDGET ) {
       code.append( "  widgets : {\n" );
     }
@@ -200,6 +203,7 @@ public class ThemeWriter {
         && type != FONT
         && type != COLOR
         && type != BORDER
+        && type != ICON
         && type != WIDGET
         && type != APPEARANCE )
     {
@@ -216,6 +220,8 @@ public class ThemeWriter {
       result = "Colors";
     } else if( type == BORDER ) {
       result = "Borders";
+    } else if( type == ICON ) {
+      result = "Icons";
     } else if( type == WIDGET ) {
       result = "Widgets";
     } else if( type == APPEARANCE ) {
