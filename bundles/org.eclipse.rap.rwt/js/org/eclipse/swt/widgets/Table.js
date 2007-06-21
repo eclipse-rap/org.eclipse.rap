@@ -504,12 +504,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _addItem : function( item, index ) {
       this._items[ index ] = item;
       this._updateScrollHeight();
-      if( this._isItemVisible( item ) ) {
+      if( this._isItemVisible( index ) ) {
         this._updateRows();
       }
     },
 
     _removeItem : function( item ) {
+      var itemIndex = this._items.indexOf( item );
       var wasItemVisible = this._isItemVisible( item );
       qx.lang.Array.remove( this._items, item );
       this._itemCount--;
@@ -549,8 +550,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       return qx.lang.Array.contains( this._selected, item );
     },
 
-    _isItemVisible : function( item ) {
-      var itemIndex = this._items.indexOf( item );
+    _isItemVisible : function( itemIndex ) {
       return    itemIndex >= this._topIndex 
              && itemIndex <= this._topIndex + this._rows.length;
     },

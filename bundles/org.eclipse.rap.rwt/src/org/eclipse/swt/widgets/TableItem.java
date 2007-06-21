@@ -453,8 +453,6 @@ public class TableItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0
    */
    public Rectangle getBounds() {
     return getBounds( 0 );
@@ -563,7 +561,7 @@ public class TableItem extends Item {
   String getNameText() {
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       if( !cached ) {
-        return "*virtual*"; //$NON-NLS-1$
+        return "*virtual*";
       }
     }
     return super.getNameText();
