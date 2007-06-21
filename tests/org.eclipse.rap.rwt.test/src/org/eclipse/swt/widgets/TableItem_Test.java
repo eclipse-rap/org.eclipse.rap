@@ -18,6 +18,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 
+import com.w4t.engine.lifecycle.PhaseId;
+
 
 public class TableItem_Test extends TestCase {
 
@@ -231,5 +233,23 @@ public class TableItem_Test extends TestCase {
     assertEquals( true, checkedItem.getChecked() );
     checkedItem.setGrayed( true );
     assertEquals( true, checkedItem.getGrayed() );
+  }
+  
+  public void testClearVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setSize( 100, 20 );
+    table.setItemCount( 101 );
+
+    TableItem item = table.getItem( 100 );
+    assertEquals( false, item.cached );
+    
+    item.getText();
+    assertEquals( true, item.cached );
+
+    table.clear( 100 );
+    assertEquals( false, item.cached );
   }
 }

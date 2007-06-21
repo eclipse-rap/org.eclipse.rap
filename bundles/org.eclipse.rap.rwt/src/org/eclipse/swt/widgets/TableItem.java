@@ -552,6 +552,9 @@ public class TableItem extends Item {
   
   final void clear() {
     data = null;
+    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
+      cached = false;
+    }
   }
 
   /////////////////////////////
