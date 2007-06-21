@@ -39,7 +39,11 @@ public class ControlsDemo implements IEntryPoint {
     final CTabFolder topFolder = new CTabFolder( parent, SWT.TOP );
     topFolder.marginWidth = 5;
     topFolder.marginHeight = 5;
-    topFolder.setSelectionBackground( Color.getColor( 0, 128, 192 ) );
+    Display display = parent.getDisplay();
+    Color selBg = display.getSystemColor( SWT.COLOR_LIST_SELECTION );
+    Color selFg = display.getSystemColor( SWT.COLOR_LIST_SELECTION_TEXT );
+    topFolder.setSelectionBackground( selBg );
+    topFolder.setSelectionForeground( selFg );
     ExampleTab tab = new ProgressBarTab( topFolder );
     tab.createContents();
     tab = new ButtonTab( topFolder );

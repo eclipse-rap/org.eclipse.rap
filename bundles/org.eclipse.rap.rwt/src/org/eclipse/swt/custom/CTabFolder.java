@@ -63,8 +63,8 @@ public class CTabFolder extends Composite {
   // width and height of minimize/maximize button
   static final int BUTTON_SIZE = 18; 
 
-  private static final int DEFAULT_SELECTION_BG = SWT.COLOR_BLUE;
-  private static final int DEFAULT_SELECTION_FG = SWT.COLOR_WHITE;
+  private static final int DEFAULT_SELECTION_BG = SWT.COLOR_LIST_BACKGROUND;
+  private static final int DEFAULT_SELECTION_FG = SWT.COLOR_LIST_FOREGROUND;
 
   public int marginWidth = 0;
   public int marginHeight = 0;
