@@ -165,7 +165,7 @@ public abstract class Control extends Widget {
   }
 
   public Display getDisplay() {
-    checkWidget();
+    // do not check control for UI Thread, see bug #193389
     return parent.getDisplay();
   }
 
