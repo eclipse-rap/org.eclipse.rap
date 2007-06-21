@@ -100,6 +100,7 @@ public class SelectionEvent extends TypedEvent {
                          final int detail )
   {
     super( widget, id );
+    this.widget = widget;
     this.x = bounds.x;
     this.y = bounds.y;
     this.width = bounds.width;
