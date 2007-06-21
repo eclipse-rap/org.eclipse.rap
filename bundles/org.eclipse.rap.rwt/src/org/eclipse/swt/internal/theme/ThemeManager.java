@@ -402,14 +402,10 @@ public class ThemeManager {
       ThemeDef def = ( ThemeDef )manager.themeDefs.get( key );
       String value = def.defValue.toDefaultString();
       String description = def.description.replaceAll( "\\n\\s*", "\n# " );
-      // TODO [rst] Hack to hide themeing properties that do not yet support
-      //      user-defined values - Remove when themeing is stable.
-      if( description.indexOf( "[hidden]" ) == -1 ) {
-        sb.append( "\n" );
-        sb.append( "# " + description + "\n" );
-        sb.append( "# default: " + value + "\n" );
-        sb.append( "#" + def.name + ": " + value  + "\n" );
-      }
+      sb.append( "\n" );
+      sb.append( "# " + description + "\n" );
+      sb.append( "# default: " + value + "\n" );
+      sb.append( "#" + def.name + ": " + value  + "\n" );
     }
     System.out.println( sb.toString() );
   }
@@ -564,6 +560,7 @@ public class ThemeManager {
     String jsId = getJsThemeId( id );
     registerWidgetImages( id );
     String colorThemeCode = createColorTheme( wrapper.theme, jsId );
+    String borderThemeCode = createBorderTheme( wrapper.theme, jsId );
     String fontThemeCode = createFontTheme( wrapper.theme, jsId );
     String widgetThemeCode = createWidgetTheme( wrapper.theme, jsId );
     String appearanceThemeCode = createAppearanceTheme( wrapper.theme, jsId );
@@ -571,13 +568,16 @@ public class ThemeManager {
     if( DEBUG ) {
       System.out.println( "-- REGISTERED THEME --" );
       System.out.println( colorThemeCode );
+      System.out.println( borderThemeCode );
       System.out.println( fontThemeCode );
       System.out.println( widgetThemeCode );
       System.out.println( appearanceThemeCode );
       System.out.println( metaThemeCode );
       System.out.println( "-- END REGISTERED THEME --" );
     }
+    // TODO [rst] Check whether concatenating theme files improves loading times
     registerJsLibrary( colorThemeCode, jsId + "Colors.js" );
+    registerJsLibrary( borderThemeCode, jsId + "Borders.js" );
     registerJsLibrary( fontThemeCode, jsId + "Fonts.js" );
     registerJsLibrary( widgetThemeCode, jsId + "WidgetIcons.js" );
     registerJsLibrary( appearanceThemeCode, jsId + "Appearance.js" );
@@ -642,6 +642,30 @@ public class ThemeManager {
     return writer.getGeneratedCode();
   }
   
+  private static String createBorderTheme( final Theme theme, final String id )
+    throws IOException
+  {
+    ClassLoader classLoader = ThemeManager.class.getClassLoader();
+    String resource = "org/eclipse/swt/theme/DefaultBorders.js";
+    InputStream inStr = classLoader.getResourceAsStream( resource  );
+    String content = readFromInputStream( inStr, "UTF-8" );
+    String defaultBorders = stripTemplate( content );
+    ThemeWriter writer = new ThemeWriter( id,
+                                          theme.getName(),
+                                          ThemeWriter.BORDER );
+    writer.writeValues( defaultBorders.trim() );
+    String[] keys = theme.getKeys();
+    Arrays.sort( keys );
+    for( int i = 0; i < keys.length; i++ ) {
+      Object value = theme.getValue( keys[ i ] );
+      if( value instanceof QxBorder ) {
+        QxBorder border = ( QxBorder )value;
+        writer.writeBorder( keys[ i ], border );
+      }
+    }
+    return writer.getGeneratedCode();
+  }
+  
   private static String createFontTheme( final Theme theme, final String id ) {
     ThemeWriter writer = new ThemeWriter( id,
                                           theme.getName(),
@@ -672,20 +696,21 @@ public class ThemeManager {
   {
     ClassLoader classLoader = ThemeManager.class.getClassLoader();
     String resource = "org/eclipse/swt/theme/DefaultAppearances.js";
-    InputStream inStr = classLoader.getResourceAsStream( resource  );
+    InputStream inStr = classLoader.getResourceAsStream( resource );
     String content = readFromInputStream( inStr, "UTF-8" );
-    String appearances = substituteTemplate( content, theme );
+    String template = stripTemplate( content );
+    String appearances = substituteTemplate( template, theme );
     ThemeWriter writer = new ThemeWriter( id,
                                           theme.getName(),
                                           ThemeWriter.APPEARANCE );
-    writer.writeAppearances( appearances );
+    writer.writeValues( appearances );
     return writer.getGeneratedCode();
   }
 
   private static String createMetaTheme( final Theme theme, final String id ) {
     ThemeWriter writer = new ThemeWriter( id, theme.getName(), ThemeWriter.META );
     writer.writeTheme( "color", id + "Colors" );
-    writer.writeTheme( "border", PREDEFINED_THEME_ID + "Borders" );
+    writer.writeTheme( "border", id + "Borders" );
     writer.writeTheme( "font", id + "Fonts" );
     writer.writeTheme( "widget", id + "Widgets" );
     writer.writeTheme( "appearance", id + "Appearances" );
@@ -715,15 +740,28 @@ public class ThemeManager {
   private static String getWidgetDestPath( final String id ) {
     return THEME_RESOURCE_DEST + id + "/widgets/";
   }
-  
 
-  private static String substituteTemplate( final String template,
+  static String stripTemplate( final String input ) {
+    Pattern startPattern = Pattern.compile( "BEGIN TEMPLATE.*(\\r|\\n)" );
+    Pattern endPattern = Pattern.compile( "(\\r|\\n).*?END TEMPLATE" );
+    int beginIndex = 0;
+    int endIndex = input.length();
+    Matcher matcher;
+    matcher = startPattern.matcher( input );
+    if( matcher.find() ) {
+      beginIndex = matcher.end();
+    }
+    matcher = endPattern.matcher( input );
+    if( matcher.find() ) {
+      endIndex = matcher.start();
+    }
+    return input.substring( beginIndex, endIndex );
+  }
+
+  static String substituteTemplate( final String template,
                                             final Theme theme )
   {
-    String startLabel = "BEGIN APPEARANCES";
-    int start = template.indexOf( startLabel );
-    start = start == -1 ? 0 : start + startLabel.length();
-    Matcher matcher = PATTERN_REPLACE.matcher( template.substring( start  ) );
+    Matcher matcher = PATTERN_REPLACE.matcher( template );
     StringBuffer sb = new StringBuffer();
     while( matcher.find() ) {
       String key = matcher.group( 1 );
@@ -745,8 +783,8 @@ public class ThemeManager {
     return sb.toString();
   }
   
-  private static String readFromInputStream( final InputStream is,
-                                             final String charset )
+  static String readFromInputStream( final InputStream is,
+                                     final String charset )
     throws IOException
   {
     String result = null;

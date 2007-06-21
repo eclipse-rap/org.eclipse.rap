@@ -158,7 +158,7 @@ public class QxFont implements QxType {
     return Font.getFont( data );
   }
   
-  private int parseSize( final String string ) {
+  private static int parseSize( final String string ) {
     int size = -1;
     try {
       size = Integer.parseInt( string );

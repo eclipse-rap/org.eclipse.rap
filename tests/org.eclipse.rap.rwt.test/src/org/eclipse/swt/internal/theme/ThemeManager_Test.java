@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.internal.theme;
 
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 import org.eclipse.swt.RWTFixture;
@@ -85,6 +87,23 @@ public class ThemeManager_Test extends TestCase {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     manager.registerResources();
+  }
+  
+  public void testTemplate() throws Exception {
+    String content;
+    String template;
+    content = "Line 1\r\n// BEGIN TEMPLATE (bla)\r\nLine3\r\n";
+    template = ThemeManager.stripTemplate( content );
+    assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
+    System.out.println( template );
+    content = "Line 1\r// BEGIN TEMPLATE (bla)\rLine3\r";
+    template = ThemeManager.stripTemplate( content );
+    assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
+    System.out.println( template );
+    content = "Line 1\n// BEGIN TEMPLATE (bla)\nLine3\n";
+    template = ThemeManager.stripTemplate( content );
+    assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
+    System.out.println( template );
   }
   
   protected void setUp() throws Exception {

@@ -15,11 +15,22 @@ public class QxBorder implements QxType {
 
   // TODO [rst] Implement properties for left, right, etc.
   
+  private static final String DARKSHADOW_LIGHTSHADOW
+    = getBorderColors( "widget.darkshadow", "widget.lightshadow" );
+  private static final String LIGHTSHADOW_DARKSHADOW
+    = getBorderColors( "widget.lightshadow", "widget.darkshadow" );
+  private static final String SHADOW_HIGHLIGHT
+    = getBorderColors( "widget.shadow", "widget.highlight" );
+  private static final String HIGHLIGHT_SHADOW
+    = getBorderColors( "widget.highlight", "widget.shadow" );
+  
   public final int width;
   
   public final String style;
-  
-  public final QxColor color;
+
+  // TODO [rst] Color is either a valid color string or a named color from the
+  //            color theme. Check for valid colors. 
+  public final String color;
   
   public static final String[] VALID_STYLES = new String[] {
     "groove",
@@ -33,52 +44,108 @@ public class QxBorder implements QxType {
     "none"
   };
   
-  public QxBorder( final int width, final String style, final QxColor qxColor ) {
-    this.width = width;
-    this.style = style;
-    this.color = qxColor;
-  }
-  
   public QxBorder( final String value ) {
     String[] parts = value.split( "\\s+" );
-    if( parts.length != 3 ) {
+    if( parts.length > 3 ) {
       throw new IllegalArgumentException( "Illegal number of arguments for border" );
     }
-    int width;
-    String style;
-    QxColor color;
-    try {
-      width = Integer.parseInt( parts[ 0 ] );
-      if( width < 0 ) {
-        throw new IllegalArgumentException( "negative width for border" );
+    int width = -1;
+    String style = null;
+    String color = null;
+    for( int i = 0; i < parts.length; i++ ) {
+      String part = parts[ i ];
+      boolean parsed = "".equals( part );
+      if( !parsed && style == null ) {
+        String parsedStyle = parseStyle( part );
+        if( parsedStyle != null ) {
+          style = parsedStyle;
+          parsed = true;
+        }
       }
-      style = parts[ 1 ];
-      checkStyle( style );
-      color = new QxColor( parts[ 2 ] );
-      // TODO [rst] Also handle IAE for color here
-    } catch( NumberFormatException e ) {
-      throw new IllegalArgumentException( "Illegal number format" );
+      if( !parsed && width == -1 ) {
+        int parsedWidth = parseWidth( part );
+        if( parsedWidth != -1 ) {
+          width = parsedWidth;
+          parsed = true;
+        }
+      }
+      if( !parsed && color == null ) {
+        color = part;
+        parsed = true;
+      }
+      if( !parsed ) {
+        throw new IllegalArgumentException( "Illegal parameter for color: "
+                                            + part );
+      }
     }
-    this.width = width;
-    this.style = style;
+    if( "none".equals( style ) ) {
+      style = "solid";
+      width = 0;
+    }
+    this.width = width == -1 ? 1 : width;
+    this.style = style == null ? "solid" : style;
     this.color = color;
   }
   
-  public String toDefaultString() {
-    // TODO [rst] Should color refer to a named color from the color theme? 
-    return width
-           + " "
-           + style
-           + " "
-           + QxColor.toHtmlString( color.red, color.green, color.blue );
-  }
-
-  public static boolean isValidStyle( final String string ) {
-    boolean result = false;
-    for( int i = 0; i < VALID_STYLES.length && !result; i++ ) {
-      result |= VALID_STYLES[ i ].equals( string );
+  public String getQxStyle() {
+    String result = style;
+    if( color == null ) {
+      if( ( "outset".equals( style ) || "inset".equals( style ) )
+          && ( width == 1 || width == 2 ) )
+      {
+        result = "solid";
+      } else if( ( "ridge".equals( style ) || "groove".equals( style ) )
+                 && width == 2 )
+      {
+        result = "solid";
+      }
     }
     return result;
+  }
+  
+  public String getQxColors() {
+    String result = null;
+    if( color == null && width == 2 ) {
+      if( "outset".equals( style ) ) {
+        result = LIGHTSHADOW_DARKSHADOW;
+      } else if( "inset".equals( style ) ) {
+        result = SHADOW_HIGHLIGHT;
+      } else if( "ridge".equals( style ) ) {
+        result = HIGHLIGHT_SHADOW;
+      } else if( "groove".equals( style ) ) {
+        result = SHADOW_HIGHLIGHT;
+      }
+    } else if( color == null && width == 1 ) {
+      if( "outset".equals( style ) ) {
+        result = HIGHLIGHT_SHADOW;
+      } else if( "inset".equals( style ) ) {
+        result = SHADOW_HIGHLIGHT;
+      }
+    }
+    if( result == null ) {
+      result = color == null ? null : "\"" + color + "\"";
+    }
+    return result;
+  }
+  
+  public String getQxInnerColors() {
+    String result = null;
+    if( color == null && width == 2 ) {
+      if( "outset".equals( style ) ) {
+        result = HIGHLIGHT_SHADOW;
+      } else if( "inset".equals( style ) ) {
+        result = DARKSHADOW_LIGHTSHADOW;
+      } else if( "ridge".equals( style ) ) {
+        result = SHADOW_HIGHLIGHT;
+      } else if( "groove".equals( style ) ) {
+        result = HIGHLIGHT_SHADOW;
+      }
+    }
+    return result;
+  }
+  
+  public String toDefaultString() {
+    return width + " " + style + " " + color;
   }
   
   public boolean equals( final Object object ) {
@@ -99,7 +166,8 @@ public class QxBorder implements QxType {
   }
   
   public int hashCode() {
-    // TODO [rst] Adapt this method as soon as properties for left, right, etc. exist
+    // TODO [rst] Adapt this method as soon as properties for left, right, etc.
+    //            exist
     // TODO [rst] Revise this
     int result = 23;
     result += 37 * result + width;
@@ -109,23 +177,52 @@ public class QxBorder implements QxType {
   }
   
   public String toString() {
-    // TODO [rst] Adapt this method as soon as properties for left, right, etc. exist
-    return "QxBorder {"
-    + width
-    + ", "
-    + style
-    + ", "
-    + color.name
-    + "}";
+    // TODO [rst] Adapt this method as soon as properties for left, right, etc.
+    //            exist
+    return "QxBorder {" + width + ", " + style + ", " + color + "}";
   }
   
-  private void checkStyle( final String style ) {
-    boolean valid = false;
-    for( int i = 0; i < VALID_STYLES.length; i++ ) {
-      valid |= VALID_STYLES[ i ].equals( style );
+  public static boolean isValidStyle( final String string ) {
+    boolean result = false;
+    for( int i = 0; i < VALID_STYLES.length && !result; i++ ) {
+      result |= VALID_STYLES[ i ].equals( string );
     }
-    if( !valid ) {
-      throw new IllegalArgumentException( "Illegal style" );
+    return result;
+  }
+  
+  private static String getBorderColors( final String color1, final String color2 ) {
+    StringBuffer result = new StringBuffer();
+    result.append( "[ \"");
+    result.append( color1 );
+    result.append( "\", \"");
+    result.append( color2 );
+    result.append( "\", \"");
+    result.append( color2 );
+    result.append( "\", \"");
+    result.append( color1 );
+    result.append( "\" ]");
+    return result.toString();
+  }
+
+  private static int parseWidth( final String string ) {
+    int width = -1;
+    try {
+      width = Integer.parseInt( string );
+      if( width < 0 ) {
+        throw new IllegalArgumentException( "Negative width" );
+      }
+    } catch( NumberFormatException e ) {
     }
+    return width;
+  }
+
+  private static String parseStyle( final String string ) {
+    String result = null;
+    for( int j = 0; j < VALID_STYLES.length && result == null; j++ ) {
+      if( VALID_STYLES[ j ].equalsIgnoreCase( string ) ) {
+        result = VALID_STYLES[ j ]; 
+      }
+    }
+    return result;
   }
 }

@@ -25,23 +25,35 @@
       default="225, 225, 230" />
 
   <border name="button.border"
-      description="[hidden]"
-      default="2 outset gray" />
+      description="Border for buttons without BORDER and FLAT style"
+      default="1 outset" />
+
+  <border name="button.pressed.border"
+      description="Border for pressed buttons without BORDER and FLAT style"
+      default="1 inset" />
 
   <border name="button.FLAT.border"
-      description="[hidden]"
+      description="Border for buttons with FLAT style"
+      default="1 solid black" />
+  
+  <border name="button.FLAT.pressed.border"
+      description="Border for pressed buttons with FLAT style"
       default="1 solid black" />
 
   <border name="button.BORDER.border"
-      description="[hidden]"
-      default="2 outset gray" />
+      description="Border for buttons with BORDER style"
+      default="2 outset" />
 
+  <border name="button.BORDER.pressed.border"
+      description="Border for pressed buttons with BORDER style"
+      default="2 inset" />
+  
   <boxdim name="button.padding"
-      description="Padding for buttons [hidden]"
+      description="Padding for buttons"
       default="2" />
 
   <dimension name="button.spacing"
-      description="Space between image and text [hidden]"
+      description="Space between image and text"
       default="2" />
 
   <font name="button.font"

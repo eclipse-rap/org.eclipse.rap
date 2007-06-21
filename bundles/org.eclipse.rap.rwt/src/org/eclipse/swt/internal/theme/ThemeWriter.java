@@ -41,6 +41,12 @@ public class ThemeWriter {
     valueWritten = false;
   }
   
+  public void writeValues( final String values ) {
+    beforeWriteValue();
+    code.append( values );
+    afterWriteValue();
+  }
+
   public void writeFont( final String key, final QxFont font ) {
     if( type != FONT ) {
       throw new IllegalStateException( "Font can only be set in font themes" );
@@ -91,13 +97,26 @@ public class ThemeWriter {
     }
     beforeWriteValue();
     code.append( "    \"" + key + "\" : " );
-    code.append( "{ width = " );
+    // none
+    code.append( "{ width : " );
     code.append( border.width );
-    code.append( ", style = \"" );
-    code.append( border.style );
-    code.append( "\", color = \"" );
-    code.append( border.color );
-    code.append( "\" }" );
+    String style = border.getQxStyle();
+    if( !"solid".equals( style ) ) {
+      code.append( ", style : \"" );
+      code.append( style );
+      code.append( "\"" );
+    }
+    String colors = border.getQxColors();
+    if( colors != null ) {
+      code.append( ", color : " );
+      code.append( colors );
+    }
+    String innerColor = border.getQxInnerColors();
+    if( innerColor != null ) {
+      code.append( ", innerColor : " );
+      code.append( innerColor );
+    }
+    code.append( " }" );
     afterWriteValue();
   }
   
@@ -109,15 +128,6 @@ public class ThemeWriter {
     code.append( "    \"uri\" : \"" );
     code.append( pathPrefix );
     code.append( "\"" );
-    afterWriteValue();
-  }
-  
-  public void writeAppearances( final String appearances ) {
-    if( type != APPEARANCE ) {
-      throw new IllegalStateException( "Appearances can only be set in appearance themes" );
-    }
-    beforeWriteValue();
-    code.append( appearances );
     afterWriteValue();
   }
   

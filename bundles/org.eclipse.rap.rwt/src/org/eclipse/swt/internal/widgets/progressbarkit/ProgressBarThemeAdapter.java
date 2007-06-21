@@ -18,7 +18,7 @@ public class ProgressBarThemeAdapter implements IProgressBarThemeAdapter {
 
   public QxColor getBackground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
-    return theme.getColor("progressbar.background");
+    return theme.getColor( "progressbar.background" );
   }
 
   public int getBorderWidth( final Control control ) {
@@ -27,12 +27,12 @@ public class ProgressBarThemeAdapter implements IProgressBarThemeAdapter {
 
   public QxFont getFont( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
-    return theme.getFont("widget.font");
+    return theme.getFont( "widget.font" );
   }
 
   public QxColor getForeground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
-    return theme.getColor("progressbar.foreground");
+    return theme.getColor( "progressbar.foreground" );
   }
 
 }

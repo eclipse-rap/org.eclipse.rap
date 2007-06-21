@@ -11,7 +11,8 @@
 
 // TODO [rst] This file is now read and substituted by the ThemeManager and may
 //            be renamed in the future.
-// BEGIN APPEARANCES
+
+// BEGIN TEMPLATE (do not remove this line)
 
     "empty" : {
     },
@@ -171,18 +172,16 @@
         
         // border
         if( states.rwt_FLAT ) {
-          if( states.over ) {
-            result.border = "button.FLAT.hover.border";
-          } else if( states.pressed || states.checked ) {
+          if( states.pressed || states.checked ) {
             result.border = "button.FLAT.pressed.border";
           } else {
-            result.border = "border.FLAT.border";
+            result.border = "button.FLAT.border";
           }
         } else if( states.rwt_BORDER ) {
           if( states.pressed || states.checked ) {
             result.border = "button.BORDER.pressed.border";
           } else {
-            result.border = "border.BORDER.border";
+            result.border = "button.BORDER.border";
           }
         } else {
           if( states.pressed || states.checked ) {
@@ -198,6 +197,8 @@
         } else {
           result.padding = [ 3, 4, 3, 4 ];
         }
+        
+        result.spacing = THEME_VALUE( "button.spacing" );
 
         return result;
       }
@@ -330,8 +331,8 @@
           backgroundColor : "shell.background",
           border          : ( states.rwt_TITLE || states.rwt_BORDER )
                               && !states.maximized
-                                ? "shell.border"
-                                : "black",
+                                ? "shell.BORDER.border"
+                                : "shell.border",
           minWidth  : states.rwt_TITLE ? 80 : 5,
           minHeight : states.rwt_TITLE ? 25 : 5
         };

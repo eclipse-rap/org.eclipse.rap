@@ -32,9 +32,9 @@ public class ThemeWriter_Test extends TestCase {
   public void testDefaultBorder() throws Exception {
     ThemeWriter writer = new ThemeWriter( "", "Default", ThemeWriter.BORDER );
     writer.writeBorder( "default.border",
-                        new QxBorder( 1, "solid", new QxColor( "#121212" ) ) );
+                        new QxBorder( "1 solid #121212" ) );
     writer.writeBorder( "another.border",
-                        new QxBorder( 2, "outset", new QxColor( "#ffffff" ) ) );
+                        new QxBorder( "2 outset #ffffff" ) );
     String generatedCode = writer.getGeneratedCode();
 //    System.out.println( generatedCode );
 //    System.out.println( "---" );

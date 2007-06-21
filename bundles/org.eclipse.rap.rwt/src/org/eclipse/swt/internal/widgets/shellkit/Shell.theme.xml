@@ -4,6 +4,14 @@
 
 <theme>
 
+  <border name="shell.border"
+      description="Border for shells without BORDER and TITLE style"
+      default="1 black"/>
+
+  <border name="shell.BORDER.border"
+      description="Border for shells with BORDER or TITLE style"
+      default="2 outset"/>
+  
   <color name="shell.background"
       description="Background color for Shells"
       default="248, 248, 255"/>
@@ -47,10 +55,6 @@
   <boxdim name="shell.title.padding"
       description="Padding of the title bar of shells"
       default="1 2"/>
-  
-  <border name="shell.border"
-      description="Border for shell [hidden]"
-      default="2 outset gray"/>
 
   <boxdim name="shell.padding"
       description="Padding around the shell client area"

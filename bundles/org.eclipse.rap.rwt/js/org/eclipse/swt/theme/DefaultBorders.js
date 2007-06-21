@@ -9,25 +9,15 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.Theme.define( "org.eclipse.swt.theme.DefaultBorders",
-{
-  title : "RAP default borders",
+// TODO [rst] This file is now read and substituted by the ThemeManager and may
+//            be renamed in the future.
 
-  // -- qooxdoo defaults --
-  
-  borders :
-  {
-  
+// BEGIN TEMPLATE (do not remove this line)
+
     "black" :
     {
       width : 1,
       color : "black"
-    },
-
-    "white" :
-    {
-      width : 1,
-      color : "white"
     },
 
     "shadow" :
@@ -104,71 +94,16 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultBorders",
       colorLeft : "widget.highlight",
       colorRight : "widget.shadow"
     },
-
-    // -- defaults --
-    
-    "control.border" : {
-      width : 0
-    },
-    
-    "control.BORDER.border" : {
-      width : 2,
-      color : [ "widget.shadow", "widget.highlight", "widget.highlight", "widget.shadow" ],
-      innerColor : [ "widget.darkshadow", "widget.lightshadow", "widget.lightshadow", "widget.darkshadow" ]
-    },
     
     // -- label --
     
     "label.border" : {
+      width : 0
     },
     
     "label.BORDER.border" : {
       width : 1,
-      style : "inset"
-    },
-    
-    // -- button --
-    
-    "button.border" : {
-      width : 1,
-      style : "solid",
-      color : [ "white", "gray", "gray", "white" ]
-    },
-    "button.pressed.border" : {
-      width : 1,
-      style : "solid",
-      color : [ "gray", "white", "white", "gray" ]
-    },
-    "border.FLAT.border" : {
-      width : 1,
-      style : "solid",
-      color : "black"
-    },
-    "button.FLAT.hover.border" : {
-      width : 1,
-      style : "solid",
-      color : "black"
-    },
-    "button.FLAT.pressed.border" : {
-      width : 1,
-      style : "solid",
-      color : "black"
-    },
-    "border.BORDER.border" : {
-// TODO [rst] Find out why this doesn't work:
-//      width : 2,
-//      style : "outset"
-      width : 2,
-      color : [ "widget.lightshadow", "widget.darkshadow", "widget.darkshadow", "widget.lightshadow" ],
-      innerColor : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ]
-    },
-    "button.BORDER.pressed.border" : {
-// TODO [rst] Find out why this doesn't work:
-//      width : 2,
-//      style : "inset"
-      width : 2,
-      color : [ "widget.shadow", "widget.highlight", "widget.highlight", "widget.shadow" ],
-      innerColor : [ "widget.darkshadow", "widget.lightshadow", "widget.lightshadow", "widget.darkshadow" ]
+      color : [ "widget.shadow", "widget.highlight", "widget.highlight", "widget.shadow" ]
     },
     
     // -- toolbar --
@@ -212,24 +147,11 @@ qx.Theme.define( "org.eclipse.swt.theme.DefaultBorders",
     // -- table --
     
     "table.column.border" : {
-      style : "solid",
       width : [ 0, 1, 2, 0 ],
       color : [ "widget.thinborder", "widget.thinborder" ]
     },
     
     "table.column.hover.border" : {
-      style : "solid",
       width : [ 0, 1, 2, 0 ],
       color : [ "widget.selection-marker", "widget.thinborder" ]
-    },
-    
-    // -- shell --
-    
-    "shell.border" : {
-      width : 2,
-      color : [ "widget.lightshadow", "widget.darkshadow", "widget.darkshadow", "widget.lightshadow" ],
-      innerColor : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ]
     }
-    
-  }
-});

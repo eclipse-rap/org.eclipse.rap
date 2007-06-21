@@ -155,6 +155,8 @@ public class RWTTestSuite {
     suite.addTestSuite( ThemeWriter_Test.class );
     suite.addTestSuite( ThemeDefinitionReader_Test.class );
     suite.addTestSuite( QxColor_Test.class );
+    suite.addTestSuite( QxBorder_Test.class );
+    suite.addTestSuite( QxFont_Test.class );
     
     return suite;
   }
