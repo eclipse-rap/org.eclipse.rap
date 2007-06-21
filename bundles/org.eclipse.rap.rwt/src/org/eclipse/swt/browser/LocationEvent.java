@@ -26,8 +26,11 @@ import com.w4t.Adaptable;
  */
 public class LocationEvent extends TypedEvent {
   
-  public static final int CHANGING = 0;
-  public static final int CHANGED = 1;
+  // TODO [fappel]: Think about a better solution!
+  //                Do not use SWT.None (0) as event handler identifier 
+  //                -> causes problems with the filter implementation
+  public static final int CHANGING = 1;
+  public static final int CHANGED = 2;
   
   private static final Class LISTENER = LocationListener.class;
   

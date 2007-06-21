@@ -28,8 +28,8 @@ import com.w4t.Adaptable;
  */
 public class SelectionEvent extends TypedEvent {
 
-  public static final int WIDGET_SELECTED = 0;
-  public static final int WIDGET_DEFAULT_SELECTED = 1;
+  public static final int WIDGET_SELECTED = SWT.Selection;
+  public static final int WIDGET_DEFAULT_SELECTED = SWT.DefaultSelection;
   
   private static final Class LISTENER = SelectionListener.class;
   

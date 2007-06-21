@@ -11,12 +11,19 @@
 
 package org.eclipse.swt.events;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
+import com.w4t.Fixture;
 import com.w4t.engine.lifecycle.PhaseId;
+import com.w4t.engine.requests.RequestParams;
 
 
 public class UntypedEvents_Test extends TestCase {
@@ -87,6 +94,34 @@ public class UntypedEvents_Test extends TestCase {
     event.processEvent();
     assertEquals( WIDGET_DEFAULT_SELECTED, log );
     widget.removeListener( SWT.DefaultSelection, listener );
-
   }
+  
+  public void testFilter() throws IOException {
+    final boolean[] executed = new boolean[ 1 ];
+    Display display = new Display();
+    display.addFilter( SWT.Selection, new Listener() {
+      public void handleEvent( final Event event ) {
+        event.type = SWT.None;
+        executed[ 0 ] = true;
+      }
+    } );
+    Shell shell = new Shell( display, SWT.NONE );
+    Button button = new Button( shell, SWT.PUSH );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        throw new RuntimeException( "This should never be called." );
+      }
+    } );
+    String displayId = DisplayUtil.getId( display );
+    String buttonId = WidgetUtil.getId( button );
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
+    
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.execute();
+    assertTrue( executed[ 0 ] );
+  }
+
 }

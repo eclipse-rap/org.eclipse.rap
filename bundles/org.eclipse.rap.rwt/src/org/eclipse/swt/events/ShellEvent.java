@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.swt.SWT;
+
 import com.w4t.Adaptable;
 
 
@@ -23,9 +25,9 @@ import com.w4t.Adaptable;
 // TODO [rh] should we support the 'doit' flag, at least for shellClosed?
 public class ShellEvent extends TypedEvent {
 
-  public static final int SHELL_CLOSED = 0;
-  public static final int SHELL_ACTIVATED = 1;
-  public static final int SHELL_DEACTIVATED = 2;
+  public static final int SHELL_CLOSED = SWT.Close;
+  public static final int SHELL_ACTIVATED = SWT.Activate;
+  public static final int SHELL_DEACTIVATED = SWT.Deactivate;
   
   private static final Class LISTENER = ShellListener.class;
   

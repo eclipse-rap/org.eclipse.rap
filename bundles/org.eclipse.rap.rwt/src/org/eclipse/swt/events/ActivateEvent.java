@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import com.w4t.Adaptable;
 
@@ -19,8 +20,8 @@ import com.w4t.Adaptable;
  */
 public final class ActivateEvent extends TypedEvent {
 
-  public static final int ACTIVATED = 0;
-  public static final int DEACTIVATED = 1;
+  public static final int ACTIVATED = SWT.Activate;
+  public static final int DEACTIVATED = SWT.Deactivate;
   
   private static final Class LISTENER = ActivateListener.class;
 

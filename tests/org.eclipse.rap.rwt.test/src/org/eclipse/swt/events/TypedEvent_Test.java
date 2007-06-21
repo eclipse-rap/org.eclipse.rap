@@ -13,12 +13,15 @@ package org.eclipse.swt.events;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.Fixture;
 import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.requests.RequestParams;

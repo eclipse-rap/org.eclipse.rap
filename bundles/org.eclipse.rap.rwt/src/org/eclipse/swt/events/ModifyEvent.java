@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import com.w4t.Adaptable;
 
@@ -22,7 +23,7 @@ import com.w4t.Adaptable;
  */
 public class ModifyEvent extends TypedEvent {
 
-  public static final int MODIFY_TEXT = 0;
+  public static final int MODIFY_TEXT = SWT.Modify;
   
   private static final Class LISTENER = ModifyListener.class;
 

@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import com.w4t.Adaptable;
 
@@ -22,8 +23,8 @@ import com.w4t.Adaptable;
  */
 public final class FocusEvent extends TypedEvent {
 
-  private static final int FOCUS_GAINED = 0;
-  private static final int FOCUS_LOST = 1;
+  private static final int FOCUS_GAINED = SWT.FocusIn;
+  private static final int FOCUS_LOST = SWT.FocusOut;
   private static final Class LISTENER = FocusListener.class;
 
   public static FocusEvent focusGained( final Control control ) {

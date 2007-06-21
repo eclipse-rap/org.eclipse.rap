@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.swt.SWT;
+
 import com.w4t.Adaptable;
 
 /**
@@ -21,7 +23,7 @@ import com.w4t.Adaptable;
  */
 public final class DisposeEvent extends TypedEvent {
 
-  public static final int WIDGET_DISPOSED = 0;
+  public static final int WIDGET_DISPOSED = SWT.Dispose;
   private static final Class LISTENER = DisposeListener.class;
 
 

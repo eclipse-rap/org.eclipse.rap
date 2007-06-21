@@ -14,12 +14,14 @@ package org.eclipse.swt.events;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.internal.lifecycle.CurrentPhase;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.SetDataEvent;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
+import org.eclipse.swt.widgets.*;
 
 import com.w4t.engine.lifecycle.PhaseId;
 import com.w4t.engine.service.ContextProvider;
@@ -75,10 +77,42 @@ public abstract class TypedEvent extends Event {
     if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
         || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
     {
-      super.processEvent();
+      // TODO [fappel]: changes of the event fields in the filter handler
+      //                methods should be forwarded to this event...
+      if( !isFiltered( processFilters() ) ) {
+        super.processEvent();
+      }
     } else {
       addToScheduledEvents( this );
     }
+  }
+
+  ////////////////////////////////////h
+  // methods for filter implementation 
+  
+  private org.eclipse.swt.widgets.Event processFilters() {
+    IFilterEntry[] filters = getFilterEntries();
+    org.eclipse.swt.widgets.Event result
+      = new org.eclipse.swt.widgets.Event();
+    result.widget = widget;
+    result.type = getID();
+    for( int i = 0; !isFiltered( result ) && i < filters.length; i++ ) {
+      if( filters[ i ].getType() == result.type ) {
+        filters[ i ].getListener().handleEvent( result );
+      }
+    }
+    return result;
+  }
+
+  private boolean isFiltered( final org.eclipse.swt.widgets.Event event ) {
+    return event.type == SWT.None;
+  }
+
+  private IFilterEntry[] getFilterEntries() {
+    Display display = Display.getCurrent();
+    IDisplayAdapter adapter 
+      = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    return adapter.getFilters();
   }
 
   ///////////////////////////////////////////////

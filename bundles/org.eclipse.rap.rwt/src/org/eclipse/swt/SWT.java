@@ -38,6 +38,11 @@ public class SWT {
   public static final int NONE = 0;
 
   /**
+   * The null event type (value is 0).
+   */
+  public static final int None = 0;
+  
+  /**
    * The move event type (value is 10).
    * 
    * @see org.eclipse.swt.widgets.Widget#addListener

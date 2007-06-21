@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
@@ -20,7 +21,7 @@ import com.w4t.Adaptable;
 
 public class SetDataEvent extends TypedEvent {
 
-  public static final int SET_DATA = 0;
+  public static final int SET_DATA = SWT.SetData;
   
   private static final Class LISTENER = SetDataListener.class;
 

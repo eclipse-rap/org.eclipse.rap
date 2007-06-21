@@ -14,8 +14,7 @@ package org.eclipse.swt.internal.widgets;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 
 
 /**
@@ -23,8 +22,16 @@ import org.eclipse.swt.widgets.Shell;
  */
 public interface IDisplayAdapter {
   
+  final static IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
+  
+  interface IFilterEntry {
+    int getType();
+    Listener getListener();
+  }
+  
   void setBounds( Rectangle bounds );
   void setActiveShell( Shell shell );
   void setFocusControl( Control control );
   HttpSession getSession();
+  IFilterEntry[] getFilters();
 }

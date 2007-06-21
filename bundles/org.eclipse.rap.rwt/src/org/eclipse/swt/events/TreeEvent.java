@@ -12,6 +12,7 @@
 package org.eclipse.swt.events;
 
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Widget;
 import com.w4t.Adaptable;
@@ -25,8 +26,8 @@ import com.w4t.Adaptable;
 
 public final class TreeEvent extends SelectionEvent {
 
-  public static final int TREE_EXPANDED = 0;
-  public static final int TREE_COLLAPSED = 1;
+  public static final int TREE_EXPANDED = SWT.Expand;
+  public static final int TREE_COLLAPSED = SWT.Collapse;
   
   private static final Class LISTENER = TreeListener.class;
 

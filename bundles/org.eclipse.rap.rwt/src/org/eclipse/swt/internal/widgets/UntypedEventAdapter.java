@@ -237,6 +237,7 @@ public class UntypedEventAdapter
     Entry[] entries = getEntries();
     boolean found = false;
     for( int i = 0; !found && i < entries.length; i++ ) {
+      // TODO [fappel]: check whether we have also to compare eventType!
       found = entries[ i ].listener == listener;
       if( found ) {
         listeners.remove( entries[ i ] );

@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.swt.SWT;
+
 import com.w4t.Adaptable;
 
 /**
@@ -21,8 +23,8 @@ import com.w4t.Adaptable;
  */
 public final class ControlEvent extends TypedEvent {
 
-  public static final int CONTROL_MOVED = 0;
-  public static final int CONTROL_RESIZED = 1;
+  public static final int CONTROL_MOVED = SWT.Move;
+  public static final int CONTROL_RESIZED = SWT.Resize;
   
   private static final Class LISTENER = ControlListener.class;
 

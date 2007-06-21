@@ -19,11 +19,14 @@ import com.w4t.Adaptable;
 
 public class CTabFolderEvent extends TypedEvent {
   
-  private static final int CLOSE = 0;
-  private static final int MINIMIZE = 1;
-  private static final int MAXIMIZE = 2;
-  private static final int RESTORE = 3;
-  private static final int SHOW_LIST = 4;
+  // TODO [fappel]: Think about a better solution!
+  //                Do not use SWT.None (0) as event handler identifier 
+  //                -> causes problems with the filter implementation
+  private static final int CLOSE = 1;
+  private static final int MINIMIZE = 2;
+  private static final int MAXIMIZE = 3;
+  private static final int RESTORE = 4;
+  private static final int SHOW_LIST = 5;
   private static final Class LISTENER = CTabFolder2Listener.class;
   
   public static CTabFolderEvent close( final CTabItem item ) {

@@ -25,6 +25,7 @@ import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.lifecycle.UICallBackManager;
 import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.lifecycle.UICallBackUtil;
 
 import com.w4t.Adaptable;
@@ -129,6 +130,7 @@ public class Display extends Device implements Adaptable {
   private Rectangle bounds;
   private Shell activeShell;
   private IDisplayAdapter displayAdapter;
+  private List filters;
   public Control focusControl;
 
 
@@ -788,8 +790,105 @@ public class Display extends Device implements Adaptable {
     }
     return result;
   }
+  
+  //////////
+  // Filters
 
-  ////////////////
+  /**
+   * Adds the listener to the collection of listeners who will be notified when
+   * an event of the given type occurs anywhere in a widget. The event type is
+   * one of the event constants defined in class <code>SWT</code>. When the
+   * event does occur, the listener is notified by sending it the
+   * <code>handleEvent()</code> message.
+   * <p>
+   * Setting the type of an event to <code>SWT.None</code> from within the
+   * <code>handleEvent()</code> method can be used to change the event type
+   * and stop subsequent Java listeners from running. Because event filters run
+   * before other listeners, event filters can both block other listeners and
+   * set arbitrary fields within an event. For this reason, event filters are
+   * both powerful and dangerous. They should generally be avoided for
+   * performance, debugging and code maintenance reasons.
+   * </p>
+   * 
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should be notified when the event occurs
+   * @exception IllegalArgumentException
+   *                <ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *                </ul>
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the receiver</li>
+   *                <li>ERROR_DEVICE_DISPOSED - if the receiver has been
+   *                disposed</li>
+   *                </ul>
+   * @see Listener
+   * @see SWT
+   * @see #removeFilter
+   * @see #removeListener
+   */
+  public void addFilter( final int eventType, final Listener listener ) {
+    checkDevice();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( filters == null ) {
+      filters = new ArrayList();
+    }
+    filters.add( new IFilterEntry() {
+      public Listener getListener() {
+        return listener;
+      }
+      public int getType() {
+        return eventType;
+      }
+    } );
+  }
+  
+  /**
+   * Removes the listener from the collection of listeners who will be notified
+   * when an event of the given type occurs anywhere in a widget. The event type
+   * is one of the event constants defined in class <code>SWT</code>.
+   * 
+   * @param eventType the type of event to listen for
+   * @param listener the listener which should no longer be notified when the
+   *            event occurs
+   * @exception IllegalArgumentException
+   *                <ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *                </ul>
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the receiver</li>
+   *                </ul>
+   * @see Listener
+   * @see SWT
+   * @see #addFilter
+   * @see #addListener
+   */
+  public void removeFilter( final int eventType, final Listener listener ) {
+    checkDevice();
+    if( listener == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    IFilterEntry[] entries = getFilterEntries();
+    boolean found = false;
+    for( int i = 0; !found && i < entries.length; i++ ) {
+      found =    entries[ i ].getListener() == listener
+              && entries[ i ].getType() == eventType;
+      if( found ) {
+        filters.remove( entries[ i ] );
+      }
+    }
+    if( filters.isEmpty() ) {
+      filters = null;
+    }
+  }
+  
+  
+  // //////////////
   // Inner classes
 
   private final class DisplayAdapter implements IDisplayAdapter {
@@ -819,10 +918,25 @@ public class Display extends Device implements Adaptable {
     public HttpSession getSession() {
       return session;
     }
+
+    public IFilterEntry[] getFilters() {
+      return getFilterEntries();
+    }
   }
   
   //////////////////
   // Helping methods
+  
+  /**
+   * Does whatever display specific cleanup is required, and then uses the code
+   * in <code>SWTError.error</code> to handle the error.
+   * 
+   * @param code the descriptive error code
+   * @see SWT#error(int)
+   */
+  void error( int code ) {
+    SWT.error( code );
+  }
   
   private void readInitialBounds() {
     HttpServletRequest request = ContextProvider.getRequest();
@@ -837,5 +951,14 @@ public class Display extends Device implements Adaptable {
       height = Integer.parseInt( height_val );
     }
     bounds = new Rectangle( 0, 0, width, height );
+  }
+
+  private IFilterEntry[] getFilterEntries() {
+    IFilterEntry[] result = IDisplayAdapter.EMPTY_FILTERS;
+    if( filters != null ) {
+      result = new IFilterEntry[ filters.size() ];
+      filters.toArray( result );
+    }
+    return result;
   }
 }

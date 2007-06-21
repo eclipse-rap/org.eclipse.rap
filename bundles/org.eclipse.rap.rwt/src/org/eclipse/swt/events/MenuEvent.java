@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Widget;
 import com.w4t.Adaptable;
 
@@ -22,8 +23,8 @@ import com.w4t.Adaptable;
  */
 public class MenuEvent extends TypedEvent {
 
-  public static final int MENU_SHOWN = 0;
-  public static final int MENU_HIDDEN = 1;
+  public static final int MENU_SHOWN = SWT.Show;
+  public static final int MENU_HIDDEN = SWT.Hide;
   private static final Class LISTENER = MenuListener.class;
 
   public MenuEvent( final Widget widget, final int id ) {
