@@ -31,7 +31,8 @@ import org.eclipse.swt.internal.graphics.FontSizeEstimation;
  */
 public class TableItem extends Item {
 
-  private static final int CHECK_WIDTH = 21;
+  // TODO [rh] make private but accessible from TabelLCA#getDefaultColumnWidth
+  public static final int CHECK_WIDTH = 21;
   private static final int CHECK_HEIGHT = 13;
 
   private static final class Data {
@@ -480,19 +481,15 @@ public class TableItem extends Item {
     int height = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
       left = getCheckWidth();
-      for( int i = 0; i < itemIndex; i++ ) {
-        top += parent.getItem( i ).getHeight();
-      }
+      top = getTop( itemIndex );
       Font font = parent.getFont();
-      width = FontSizeEstimation.stringExtent( getText(), font ).x - left;
+      width = FontSizeEstimation.stringExtent( getText(), font ).x;
       height = getHeight();
     } else {
       if( itemIndex != -1 && index < parent.getColumnCount() ) {
         TableColumn[] columns = parent.getColumns();
         left = columns[ index ].getLeft() + getCheckWidth();
-        for( int i = 0; i < itemIndex; i++ ) {
-          top += parent.getItem( i ).getHeight();
-        }
+        top = getTop( itemIndex );
         width = columns[ index ].getWidth();
         height = getHeight();
         if( index == 0 ) {
@@ -501,6 +498,14 @@ public class TableItem extends Item {
       } 
     }
     return new Rectangle( left, top, width, height );
+  }
+  
+  final int getTop( final int itemIndex ) {
+    int result = 0;
+    for( int i = 0; i < itemIndex; i++ ) {
+      result += parent.getItem( i ).getHeight();
+    }
+    return result;
   }
   
   final int getHeight() {

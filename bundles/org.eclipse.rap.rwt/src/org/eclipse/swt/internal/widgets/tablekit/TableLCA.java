@@ -256,6 +256,9 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static int getDefaultColumnWidth( final Table table ) {
     int result = 0;
+    if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
+      result = TableItem.CHECK_WIDTH;
+    }
     if( table.getColumnCount() == 0 ) {
       TableItem[] items = table.getItems();
       for( int i = 0; i < items.length; i++ ) {

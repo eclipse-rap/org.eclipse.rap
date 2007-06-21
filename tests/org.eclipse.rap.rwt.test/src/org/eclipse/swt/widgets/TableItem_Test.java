@@ -74,13 +74,19 @@ public class TableItem_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    
+    // without columns
+    item.setText( "some text" );
+    assertTrue( item.getBounds().width > 0 );
+    
     TableColumn column1 = new TableColumn( table, SWT.NONE );
     column1.setWidth( 11 );
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     column2.setWidth( 22 );
     
     // simple case: bounds for first and only item
-    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "" );
     Rectangle bounds = item.getBounds();
     assertEquals( 0, bounds.x );
     assertEquals( 0, bounds.y );
@@ -100,15 +106,6 @@ public class TableItem_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
   }
   
-  public void testBoundsWithoutColumn() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Table table = new Table( shell, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
-    item.setText( "some text" );
-    assertTrue( item.getBounds().width > 0 );
-  }
-  
   public void testBoundsWithCheckedTable() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -116,6 +113,7 @@ public class TableItem_Test extends TestCase {
     Table table = new Table( shell, SWT.CHECK );
     TableItem item = new TableItem( table, SWT.NONE );
     assertTrue( item.getBounds().x > 0 );
+    assertTrue( item.getBounds().width >= 0 );
     // with columns
     table = new Table( shell, SWT.CHECK );
     new TableColumn( table, SWT.NONE );
