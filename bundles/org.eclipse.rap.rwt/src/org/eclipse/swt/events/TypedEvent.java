@@ -32,7 +32,7 @@ import com.w4t.event.Event;
 /**
  * TODO [rh] JavaDoc
  */
-// TODO [rh] SWT TypedEvent has fields display, widget and time, revise this 
+// TODO [rh] SWT TypedEvent has fields display and time, revise this 
 public abstract class TypedEvent extends Event {
 
   public Widget widget;
@@ -87,7 +87,7 @@ public abstract class TypedEvent extends Event {
     }
   }
 
-  ////////////////////////////////////h
+  ////////////////////////////////////
   // methods for filter implementation 
   
   private org.eclipse.swt.widgets.Event processFilters() {
