@@ -484,6 +484,10 @@ public class TableItem extends Item {
       top = getTop( itemIndex );
       Font font = parent.getFont();
       width = FontSizeEstimation.stringExtent( getText(), font ).x;
+      Image image = data != null && data.length > 0 ? data[ 0 ].image : null;
+      if( image != null ) {
+        width += image.getBounds().width;
+      }
       height = getHeight();
     } else {
       if( itemIndex != -1 && index < parent.getColumnCount() ) {
