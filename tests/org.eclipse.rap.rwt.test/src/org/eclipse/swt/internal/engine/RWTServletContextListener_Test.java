@@ -248,7 +248,8 @@ public class RWTServletContextListener_Test extends TestCase {
     phaseListenerLog = "";
     ThemeManager.getInstance().initialize();
     lifeCycle.execute();
-    ThemeManager.getInstance().deregisterAll();
+// TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
+//    ThemeManager.getInstance().deregisterAll();
     assertEquals( "", phaseListenerLog );
     deregisterResourceManager();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );

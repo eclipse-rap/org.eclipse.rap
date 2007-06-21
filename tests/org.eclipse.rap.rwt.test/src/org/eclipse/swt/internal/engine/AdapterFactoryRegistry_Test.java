@@ -111,7 +111,8 @@ public class AdapterFactoryRegistry_Test extends TestCase {
     lifeCycle.execute();
     assertEquals( TestAdapterFactory.CREATED, TestAdapterFactory.log );
     
-    ThemeManager.getInstance().deregisterAll();
+// TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
+//    ThemeManager.getInstance().deregisterAll();
     RWTFixture.deregisterAdapterFactories();
     RWTFixture.deregisterResourceManager();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );

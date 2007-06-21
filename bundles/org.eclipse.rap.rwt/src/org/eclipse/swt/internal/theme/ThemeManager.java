@@ -338,6 +338,7 @@ public class ThemeManager {
   }
 
   public String[] getAvailableThemeIds() {
+    checkInitialized();
     String[] result = new String[ themes.size() ];
     return ( String[] )themes.keySet().toArray( result );
   }
@@ -369,6 +370,7 @@ public class ThemeManager {
   }
 
   public String getJsThemeId( final String themeId ) {
+    checkInitialized();
     String result;
     if( PREDEFINED_THEME_ID.equals( themeId ) ) {
       result = PREDEFINED_THEME_ID;

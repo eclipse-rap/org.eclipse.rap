@@ -177,7 +177,8 @@ public final class RWTFixture {
     
     // deregistration of adapter factories
     deregisterAdapterFactories();
-    ThemeManager.getInstance().deregisterAll();
+// TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
+//    ThemeManager.getInstance().deregisterAll();
     
     // standard teardown
     Fixture.tearDown();

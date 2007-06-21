@@ -277,7 +277,8 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    ThemeManager.getInstance().deregisterAll();
+// TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
+//    ThemeManager.getInstance().deregisterAll();
     RWTFixture.removeUIThread();
     AdapterManager manager = W4TContext.getAdapterManager();
     manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );

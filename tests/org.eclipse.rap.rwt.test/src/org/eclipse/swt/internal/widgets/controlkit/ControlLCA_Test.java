@@ -33,7 +33,8 @@ public class ControlLCA_Test extends TestCase {
   }
   
   protected void tearDown() throws Exception {
-    ThemeManager.getInstance().deregisterAll();
+// TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
+//    ThemeManager.getInstance().deregisterAll();
     RWTFixture.removeUIThread();
     RWTFixture.tearDown();
   }
