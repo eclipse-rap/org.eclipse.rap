@@ -13,8 +13,7 @@ package org.eclipse.swt.widgets;
 
 import java.io.IOException;
 import junit.framework.TestCase;
-import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.layout.FillLayout;
@@ -188,6 +187,54 @@ public class Display_Test extends TestCase {
     assertNotNull( systemColor );
   }
   
+  public void testAddAndRemoveFilter() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final int CLOSE_CALLBACK = 0;
+    final int DISPOSE_CALLBACK = 1;
+    final boolean[] callbackReceived = new boolean[]{ false, false };
+    Listener listener = new Listener() {
+      public void handleEvent( Event e ) {
+        if( e.type == SWT.Close ) {
+          callbackReceived[ CLOSE_CALLBACK ] = true;
+        } else if( e.type == SWT.Dispose ) {
+          callbackReceived[ DISPOSE_CALLBACK ] = true;
+        }
+      }
+    };
+    
+    // addFilter
+    Display display = new Display();
+    try {
+      display.addFilter( SWT.Dispose, null );
+      fail( "No exception thrown for addFilter with null argument" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    display.addFilter( SWT.Close, listener );
+    Shell shell = new Shell( display );
+    shell.close();
+    assertTrue( callbackReceived[ CLOSE_CALLBACK ] );
+    assertFalse( callbackReceived[ DISPOSE_CALLBACK ] );
+  
+    // removeFilter
+    callbackReceived[ CLOSE_CALLBACK ] = false;
+    callbackReceived[ DISPOSE_CALLBACK ] = false;
+    try {
+      display.removeFilter( SWT.Dispose, null );
+      fail( "No exception thrown for removeFilter with null argument" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    display.removeFilter( SWT.Close, listener );
+    shell = new Shell( display );
+    shell.close();
+    assertFalse( callbackReceived[ CLOSE_CALLBACK ] );
+    assertFalse( callbackReceived[ DISPOSE_CALLBACK ] );
+    
+    // remove filter for an event that was not added before -> do nothing
+    display.removeFilter( SWT.FocusIn, listener );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

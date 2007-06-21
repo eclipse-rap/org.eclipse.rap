@@ -882,7 +882,7 @@ public class Display extends Device implements Adaptable {
         filters.remove( entries[ i ] );
       }
     }
-    if( filters.isEmpty() ) {
+    if( filters != null && filters.isEmpty() ) {
       filters = null;
     }
   }
