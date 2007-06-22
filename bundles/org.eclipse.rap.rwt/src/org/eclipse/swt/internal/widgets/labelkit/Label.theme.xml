@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Labels -->
+
+<theme>
+
+  <border name="label.border"
+      description="Default border for labels"
+      default="none"/>
+
+  <border name="label.BORDER.border"
+      description="Default border for labels with BORDER style"
+      default="1 inset"/>
+
+</theme>

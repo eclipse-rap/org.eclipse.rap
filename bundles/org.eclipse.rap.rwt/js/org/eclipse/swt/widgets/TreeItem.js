@@ -98,8 +98,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     },
 
     /*
-     * Checks if a given event should be handled or not.
-     * Returns true if the event's original target is eiher the icon or the label.
+     * Checks if a given event should be handled or not. Returns true if the
+     * event's original target is either the icon or the label.
      */
     _checkEventTarget : function( evt ) {
       var result = false;

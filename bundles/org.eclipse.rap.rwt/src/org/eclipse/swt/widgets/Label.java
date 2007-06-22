@@ -259,10 +259,6 @@ public class Label extends Control {
     return new Point( width, height );
   }
   
-  public int getBorderWidth() {
-    return ( ( style & SWT.BORDER ) != 0 ) ? 1 : 0;
-  }
-
   String getNameText() {
     return getText();
   }

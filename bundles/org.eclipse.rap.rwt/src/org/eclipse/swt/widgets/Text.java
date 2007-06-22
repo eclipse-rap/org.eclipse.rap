@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 
 /**
@@ -35,7 +36,7 @@ import org.eclipse.swt.internal.graphics.FontSizeEstimation;
  * <p>Due to limitations of the JavaScript library, the current WRAP behavior 
  * of a MULI line text is always as if WRAP was set.</p> 
  */
-public class Text extends Control {
+public class Text extends Scrollable {
 
   public static final int MAX_TEXT_LIMIT = -1;
   
@@ -459,19 +460,17 @@ public class Text extends Control {
     checkWidget();
     int height = 0, width = 0;
     if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
-      boolean wrap = ( style & SWT.MULTI ) != 0 && ( style & SWT.WRAP ) != 0;
+      boolean wrap = ( style & ( SWT.MULTI | SWT.WRAP ) ) != 0 ;
       int wrapWidth = 0;
       if( wrap && wHint != SWT.DEFAULT ) {
         wrapWidth = wHint;
       }
-      Point extent = FontSizeEstimation.textExtent( getText(),
-                                                    wrapWidth,
-                                                    getFont() );
+      Point extent = FontSizeEstimation.textExtent( text, wrapWidth, getFont() );
       if( extent.x != 0 ) {
-        width = extent.x + 12;
+        width = extent.x + 10;
       }
       if( extent.y != 0 ) {
-        height = extent.y + 6;
+        height = extent.y + 4;
       }
     }
     if( width == 0 ) {
@@ -486,11 +485,27 @@ public class Text extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-//    Rectangle trim = computeTrim( 0, 0, width, height );
-//    return new Point( trim.width, trim.height );
-    return new Point( width, height );
+    Rectangle trim = computeTrim( 0, 0, width, height );
+    return new Point( trim.width, trim.height );
   }
   
+  public Rectangle computeTrim( final int x,
+                                 final int y,
+                                 final int width,
+                                 final int height )
+  {
+    Rectangle result = super.computeTrim( x, y, width, height );
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      result.width++;
+    }
+    int border = getBorderWidth();
+    result.x -= border;
+    result.y -= border;
+    result.width += 2 * border;
+    result.height += 2 * border;
+    return result;
+  }
+
   ///////////////////////////////////////
   // Listener registration/deregistration
   

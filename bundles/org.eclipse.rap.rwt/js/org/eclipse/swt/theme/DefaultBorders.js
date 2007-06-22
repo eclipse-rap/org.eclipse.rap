@@ -95,17 +95,6 @@
       colorRight : "widget.shadow"
     },
     
-    // -- label --
-    
-    "label.border" : {
-      width : 0
-    },
-    
-    "label.BORDER.border" : {
-      width : 1,
-      color : [ "widget.shadow", "widget.highlight", "widget.highlight", "widget.shadow" ]
-    },
-    
     // -- toolbar --
     
     "toolbar.BORDER.border" : {
