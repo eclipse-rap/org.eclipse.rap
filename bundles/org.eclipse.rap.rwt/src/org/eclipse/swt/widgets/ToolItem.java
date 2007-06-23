@@ -16,6 +16,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.widgets.IToolItemAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
 /**
@@ -45,6 +46,15 @@ public class ToolItem extends Item {
   private Control control;
   private int width;
   private String toolTipText;
+  private boolean visible = true;
+  
+  private IToolItemAdapter toolitemAdapter = new IToolItemAdapter() {
+
+    public boolean getVisible() {
+      return ToolItem.this.visible;
+    }
+
+  };
  
 
   /**
@@ -549,6 +559,16 @@ public class ToolItem extends Item {
   //////////////////
   // Helping methods
 
+  public Object getAdapter( final Class adapter ) {
+    Object result;
+    if ( adapter == IToolItemAdapter.class ) {
+      result = toolitemAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
+  
   private void resizeControl() {
     if( control != null && !control.isDisposed() ) {
       Rectangle itemRect = getBounds();
@@ -587,5 +607,9 @@ public class ToolItem extends Item {
                       SWT.SEPARATOR, 
                       SWT.DROP_DOWN,
                       0 );
+  }
+  
+  void setVisible( boolean visible ) {
+    this.visible = visible;
   }
 }

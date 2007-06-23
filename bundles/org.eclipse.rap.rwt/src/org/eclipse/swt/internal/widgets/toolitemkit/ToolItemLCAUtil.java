@@ -11,14 +11,14 @@
 
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
+import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 final class ToolItemLCAUtil {
@@ -32,6 +32,11 @@ final class ToolItemLCAUtil {
     WidgetLCAUtil.preserveEnabled( toolItem, toolItem.isEnabled() );
     WidgetLCAUtil.preserveToolTipText( toolItem, toolItem.getToolTipText() );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
+    
+    Object itemadapter = toolItem.getAdapter( IToolItemAdapter.class );
+    IToolItemAdapter tia = (IToolItemAdapter) itemadapter;
+    preserveVisible( toolItem, tia.getVisible() );
+    
     boolean hasListener = SelectionEvent.hasListener( toolItem );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
@@ -58,5 +63,20 @@ final class ToolItemLCAUtil {
                                null,
                                true,
                                detail );
+  }
+  
+  public static void writeVisible( final ToolItem item ) throws IOException {
+    Object adapter = item.getAdapter( IToolItemAdapter.class );
+    IToolItemAdapter tia = (IToolItemAdapter) adapter;
+
+    Boolean newValue = Boolean.valueOf( tia.getVisible() );
+    Boolean defValue = Boolean.TRUE;
+    JSWriter writer = JSWriter.getWriterFor( item );
+    writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
+  }
+  
+  public static void preserveVisible( final ToolItem item, final boolean visible ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    adapter.preserve( Props.VISIBLE, Boolean.valueOf( visible ) );
   }
 }

@@ -49,6 +49,7 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   void renderChanges( final ToolItem toolItem ) throws IOException {
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
+    ToolItemLCAUtil.writeVisible( toolItem );
     writeControl( toolItem );
   }
 

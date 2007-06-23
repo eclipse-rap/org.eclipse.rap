@@ -44,6 +44,7 @@ public class ToolItemLCA_Test extends TestCase {
 		assertEquals(Boolean.FALSE, hasListeners);
 		assertEquals("", adapter.getPreserved(Props.TEXT));
 		assertEquals(null, adapter.getPreserved(Props.IMAGE));
+		assertEquals(Boolean.TRUE, adapter.getPreserved(Props.VISIBLE));
 
 		RWTFixture.clearPreserved();
 		SelectionListener selectionListener = new SelectionAdapter() {

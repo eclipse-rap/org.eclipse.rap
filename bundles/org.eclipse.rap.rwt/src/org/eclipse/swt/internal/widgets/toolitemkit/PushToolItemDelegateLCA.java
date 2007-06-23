@@ -64,5 +64,6 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
                            SelectionEvent.hasListener( toolItem ) );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
+    ToolItemLCAUtil.writeVisible( toolItem );
   }
 }
