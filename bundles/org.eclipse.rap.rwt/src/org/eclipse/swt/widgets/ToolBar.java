@@ -260,6 +260,20 @@ public class ToolBar extends Composite {
     return itemHolder.size();
   }
   
+  public void setBounds( Rectangle bounds ) {
+    super.setBounds( bounds );
+    // check if there is enough space for all items
+    // otherwise - hide all items which could be cut off
+    // TODO: check again because the item bounds are not very exact
+    // see ToolItem#getWidth()
+    for ( int i = 0; i < itemHolder.size(); i++ ) {
+      ToolItem item = (ToolItem)itemHolder.getItem( i );
+      Rectangle ibounds = item.getBounds();
+      boolean visible = ibounds.x + ibounds.width <= bounds.width;
+      item.setVisible (visible);
+    }
+  }
+  
   ////////////////////////
   // Child control removal
 

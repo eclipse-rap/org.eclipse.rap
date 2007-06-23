@@ -408,7 +408,11 @@ public class ToolItem extends Item {
         // TODO [fappel]: need some more space for the Workbench perspective
         //                switcher. Check this after a proper font size
         //                calculation is in place
-        result += 11 + FontSizeEstimation.stringExtent( getText(), font ).x;
+        //result += 11 + FontSizeEstimation.stringExtent( getText(), font ).x;
+        // TODO [bm] works for me without the additional 11px on linux and windows
+        // removed them to have a better calculation for ToolBar#setBounds and to
+        // show as much as possible items
+        result += FontSizeEstimation.stringExtent( getText(), font ).x;
       }
       if( ( style & SWT.DROP_DOWN ) != 0 ) {
         result += DROP_DOWN_ARROW_WIDTH;
