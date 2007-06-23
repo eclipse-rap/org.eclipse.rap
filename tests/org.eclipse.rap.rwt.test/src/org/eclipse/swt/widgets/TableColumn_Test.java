@@ -12,13 +12,14 @@
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Image;
+
 import com.w4t.engine.lifecycle.PhaseId;
 
 
@@ -130,10 +131,14 @@ public class TableColumn_Test extends TestCase {
   }
   
   public void testWidth() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
+
+    // Initial value 
+    assertEquals( 0, column.getWidth() );
     
     // Setting 'normal' width
     column.setWidth( 70 );
@@ -141,22 +146,103 @@ public class TableColumn_Test extends TestCase {
     column.setWidth( 0 );
     assertEquals( 0, column.getWidth() );
     
-    // Setting a negative width apart from -2 leads to some minimal column width
+    // Setting a negative is ignored
+    column.setWidth( 4711 );
     column.setWidth( -1 );
-    assertEquals( 6, column.getWidth() );
+    assertEquals( 4711, column.getWidth() );
+    column.setWidth( -2 );
+    assertEquals( 4711, column.getWidth() );
     column.setWidth( -3 );
-    assertEquals( 6, column.getWidth() );
-
-    // Settting width to -2 calculates the width from the current text
-    column.setWidth( -2 );
-    assertEquals( 12, column.getWidth() );
-    column.setText( "column 1" );
-    column.setWidth( -2 );
-    Point expected = FontSizeEstimation.stringExtent( column.getText(), 
-                                                      table.getFont() );
-    assertEquals( expected.x, column.getWidth() );
+    assertEquals( 4711, column.getWidth() );
   }
   
+  public void testPack() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    ControlAdapter resizeListener = new ControlAdapter() {
+      public void controlResized( ControlEvent e ) {
+        log.add( e.widget );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.addControlListener( resizeListener );
+
+    // Ensure that controlResized is fired when pack changes the width
+    column.setWidth( 12312 );
+    log.clear();
+    column.pack();
+    assertSame( log.get( 0 ), column );
+
+    // Ensure that controlResized is *not* fired when pack doesn't change the
+    // width
+    log.clear();
+    column.pack();
+    assertEquals( 0, log.size() );
+    
+    column.removeControlListener( resizeListener );
+    
+    // pack calculates a minimal width for an empty column
+    column = new TableColumn( table, SWT.NONE );
+    column.pack();
+    assertTrue( column.getWidth() > 0 );
+    
+    // Test that an image on a column is taken into account
+    column = new TableColumn( table, SWT.NONE );
+    Image image = Image.find( "resources/images/test-50x100.png", 
+                              TableColumn_Test.class.getClassLoader() );
+    column.setImage( image );
+    column.pack();
+    assertTrue( column.getWidth() >= image.getBounds().width );
+    
+    // An item wider than the column itself strechtes the column
+    column = new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setImage( image );
+    column.pack();
+    assertTrue( column.getWidth() >= item.getBounds().width );
+  }
+  
+  public void testPackWithVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Listener setDataListener = new Listener() {
+      public void handleEvent( final Event event ) {
+        log.add( event.item );
+      }
+    };
+    ControlListener resizeListener = new ControlAdapter() {
+      public void controlResized( final ControlEvent event ) {
+        log.add( event.widget );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table;
+    TableColumn column;
+    
+    // Must not try to access items if there aren't any 
+    log.clear();
+    table = new Table( shell, SWT.VIRTUAL );
+    column = new TableColumn( table, SWT.NONE );
+    column.setWidth( 200 );
+    column.addControlListener( resizeListener );
+    column.pack();
+    assertEquals( 1, log.size() ); // ensure that pack() did something
+
+    // Ensure that pack does not resolve virtual items
+    log.clear();
+    table = new Table( shell, SWT.VIRTUAL );
+    column = new TableColumn( table, SWT.NONE );
+    table.setSize( 100, 50 ); 
+    table.setItemCount( 100 );
+    table.addListener( SWT.SetData, setDataListener );
+    column.pack();
+    assertEquals( 0, log.size() ); 
+  }
+
   public void testResizeEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();

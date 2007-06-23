@@ -480,7 +480,7 @@ public class TableItem extends Item {
     int width = 0;
     int height = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
-      left = getCheckWidth();
+      left = getCheckWidth( 0 );
       top = getTop( itemIndex );
       Font font = parent.getFont();
       width = FontSizeEstimation.stringExtent( getText(), font ).x;
@@ -492,13 +492,11 @@ public class TableItem extends Item {
     } else {
       if( itemIndex != -1 && index < parent.getColumnCount() ) {
         TableColumn[] columns = parent.getColumns();
-        left = columns[ index ].getLeft() + getCheckWidth();
+        left = columns[ index ].getLeft() + getCheckWidth( index );
         top = getTop( itemIndex );
         width = columns[ index ].getWidth();
         height = getHeight();
-        if( index == 0 ) {
-          width -= getCheckWidth();
-        }
+        width -= getCheckWidth( index );
       } 
     }
     return new Rectangle( left, top, width, height );
@@ -529,10 +527,21 @@ public class TableItem extends Item {
     return result;
   }
   
-  final int getCheckWidth() {
+  final int getCheckWidth( final int index ) {
     int result = 0;
-    if( ( getParent().getStyle() & SWT.CHECK ) != 0 ) {
+    if( index == 0 && ( getParent().getStyle() & SWT.CHECK ) != 0 ) {
       result = CHECK_WIDTH;
+    }
+    return result;
+  }
+  
+  final int getMaxWidth( final int index ) {
+    int result = getCheckWidth( index );
+    Font font = parent.getFont();
+    result += FontSizeEstimation.stringExtent( getText( index ), font ).x;
+    Image image = getImage( index );
+    if( image != null ) {
+      result += image.getBounds().width;
     }
     return result;
   }

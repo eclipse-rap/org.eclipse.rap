@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 
 /**
@@ -30,13 +31,13 @@ import org.eclipse.swt.internal.graphics.FontSizeEstimation;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * <p>Currently the controlResized event of the ControlListener is fired to
- * indicate that a TableColumn was resized. Moving columns and notifications
- * thereof are not yet implemented.</p> 
  */
 public class TableColumn extends Item {
 
-  public static final int HEIGHT = 20;
+  // TODO [rh] Fow now: keep in sync with settings in appearance theme, should
+  //      be moved to theme adapter or similar
+  private static final int SORT_INDICATOR_WIDTH = 10;
+  private static final int SPACING = 2;
   
   private final Table parent;
   private int width;
@@ -222,16 +223,14 @@ public class TableColumn extends Item {
    */
   public int getAlignment() {
     checkWidget();
-    if( ( style & SWT.LEFT ) != 0 ) {
-      return SWT.LEFT;
-    }
+    int result = SWT.LEFT;
     if( ( style & SWT.CENTER ) != 0 ) {
-      return SWT.CENTER;
+      result = SWT.CENTER;
     }
     if( ( style & SWT.RIGHT ) != 0 ) {
-      return SWT.RIGHT;
+      result = SWT.RIGHT;
     }
-    return SWT.LEFT;
+    return result;
   }
 
   /**
@@ -248,29 +247,56 @@ public class TableColumn extends Item {
     checkWidget();
     if( width >= 0 ) {
       this.width = width;
-    } else if( width == -2 ) {
-      // Compute width from current column text
-      Font font = parent.getFont();
-      this.width = FontSizeEstimation.stringExtent( getText(), font ).x;
-      if( getImage() != null ) {
-        this.width += getImage().getBounds().width;
-      }
-      if(    getParent().getSortColumn() == this 
-          && getParent().getSortDirection() != SWT.NONE ) 
-      {
-        this.width += 10;
-      }
-      // Mimic Windows behaviour that has a minimal width 
-      if( this.width < 12 ) {
-        this.width = 12;
-      }
-    } else {
-      // TODO [rh] revise this: seems to be some minimal column width, maybe
-      //      depends on whether column is resizeable or movable or style flags 
-      this.width = 6; 
+      int eventId = ControlEvent.CONTROL_RESIZED;
+      ControlEvent event = new ControlEvent( this, eventId );
+      event.processEvent();
     }
-    ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
-    event.processEvent();
+  }
+
+  
+  /**
+   * Causes the receiver to be resized to its preferred size.
+   * For a composite, this involves computing the preferred size
+   * from its layout, if there is one.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void pack() {
+    checkWidget();
+    // Compute width from the column
+    Font font = parent.getFont();
+    int width = FontSizeEstimation.stringExtent( getText(), font ).x;
+    Image image = getImage();
+    if( image != null ) {
+      width += image.getBounds().width + SPACING;
+    }
+    if(    parent.getSortColumn() == this 
+        && parent.getSortDirection() != SWT.NONE ) 
+    {
+      width += SORT_INDICATOR_WIDTH + SPACING;
+    }
+    // Extend computed width if there are wider items
+    int columnIndex = parent.indexOf( this );
+    TableItem[] items = parent.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      // dont't access virtual items, they would get resolved unintentionally
+      if( items[ i ].cached ) {   
+        int itemWidth = items[ i ].getMaxWidth( columnIndex );
+        if( itemWidth > width ) {
+          width = itemWidth;
+        }
+      }
+    }
+    // Mimic Windows behaviour that has a minimal width 
+    if( width < 12 ) {
+      width = 12;
+    }
+    if( width != getWidth() ) {
+      setWidth( width );
+    }
   }
   
   /**
@@ -476,23 +502,18 @@ public class TableColumn extends Item {
     int result = 0;
     TableColumn[] columns = parent.getColumns();
     int[] columnOrder = parent.getColumnOrder();
-    int orderedIndex = arrayIndexOf( columnOrder, parent.indexOf( this ) ); 
+    int orderedIndex = -1;
+    for( int i = 0; orderedIndex == -1 && i < columnOrder.length; i++ ) {
+      if( columnOrder[ i ] == parent.indexOf( this ) ) {
+        orderedIndex = i;
+      }
+    }
     for( int i = 0; i < orderedIndex; i++ ) {
       result += columns[ columnOrder[ i ] ].getWidth();
     }
     return result;
   }
 
-  private static int arrayIndexOf( final int[] array, final int value ) {
-    int result = -1;
-    for( int i = 0; result == -1 && i < array.length; i++ ) {
-      if( array[ i ] == value ) {
-        result = i;
-      }
-    }
-    return result;
-  }
-  
   //////////////////
   // Helping methods
 
