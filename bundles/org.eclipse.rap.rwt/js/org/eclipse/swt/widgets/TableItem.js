@@ -61,8 +61,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     IMG_END : " />",
     
     // Constants used to render span element that holds the item text
-    SPAN_START : "<span unselectable=\"on\" style=\"vertical-align:middle\">",
-    SPAN_END : "</span>",
+    SPAN_OPEN : "<div unselectable=\"on\" ",
+    SPAN_STYLE_OPEN : "style=\"vertical-align:middle;",
+    SPAN_STYLE_CLOSE : "\"",
+    SPAN_CLOSE : ">",
+    SPAN_END : "</div>",
 
     PX : "px;",
     
@@ -146,7 +149,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         if( this._texts[ 0 ] !== undefined ) {
           text = this._texts[ 0 ];
         }
-        markup.push( this._getTextMarkup( text ) );
+        markup.push( this._getTextMarkup( text, qx.constant.Layout.ALIGN_LEFT ) );
         markup.push( this._getEndCellMarkup() );
       } else {
         for( var i = 0; i < columnCount; i++ ) {
@@ -167,7 +170,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           if( this._texts[ i ] !== undefined ) {
             text = this._texts[ i ];
           }
-          markup.push( this._getTextMarkup( text ) );
+          var align = column.getHorizontalChildrenAlign();
+          markup.push( this._getTextMarkup( text, align ) );
           markup.push( this._getEndCellMarkup() );
         }
       }
@@ -205,13 +209,17 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       return result;
     },
 
-    _getTextMarkup : function( text ) {
+    _getTextMarkup : function( text, align ) {
       var result;
       if( text == "" ) {
         result = org.eclipse.swt.widgets.TableItem.NBSP;
       } else {
         result
-          = org.eclipse.swt.widgets.TableItem.SPAN_START
+          = org.eclipse.swt.widgets.TableItem.SPAN_OPEN
+          + org.eclipse.swt.widgets.TableItem.SPAN_STYLE_OPEN
+          + "text-align:" + align
+          + org.eclipse.swt.widgets.TableItem.SPAN_STYLE_CLOSE
+          + org.eclipse.swt.widgets.TableItem.SPAN_CLOSE
           + text 
           + org.eclipse.swt.widgets.TableItem.SPAN_END;
       }
