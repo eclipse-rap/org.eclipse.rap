@@ -47,6 +47,7 @@ public class TableTab extends ExampleTab {
     createStyleButton( "MULTI" );
     createStyleButton( "CHECK" );
     createStyleButton( "BORDER" );
+    createStyleButton( "VIRTUAL" );
     createVisibilityButton();
     createEnablementButton();
     createHeaderVisibleButton();
@@ -58,7 +59,7 @@ public class TableTab extends ExampleTab {
     createFontChooser();
     createAddItemsButton();
     createSelectItemButton();
-    crateDisposeFirstColumnButton();
+    createDisposeFirstColumnButton();
     createDisposeSelectionButton();
     createTopIndexButton();
     createShowSelectionButton();
@@ -67,6 +68,7 @@ public class TableTab extends ExampleTab {
     createChangeColumnsControl();
     createRevertColumnOrderButton();
     createChangeItemControl();
+    createChangeItemCountControl();
     // TODO [rh] enable as soon as images are working properly
 //    createImagesControl();
   }
@@ -86,6 +88,15 @@ public class TableTab extends ExampleTab {
         System.out.println( "double-click: " + event.item );
       }
     } );
+    if( ( style & SWT.VIRTUAL ) != 0 ) {
+      table.addListener( SWT.SetData, new Listener() {
+        public void handleEvent( final Event event ) {
+          if( event.type == SWT.SetData ) {
+            updateItem( ( TableItem )event.item );
+          }
+        }
+      } );
+    }
     for( int i = 0; i < columns; i++ ) {
       final TableColumn column = new TableColumn( table, SWT.NONE );
       column.setText( "Col " + i );
@@ -183,21 +194,25 @@ public class TableTab extends ExampleTab {
 
   private TableItem addItem() {
     TableItem result = new TableItem( table, SWT.NONE );
-    int itemCount = result.getParent().getItemCount() - 1;
+    updateItem( result );
+    return result;
+  }
+  
+  private void updateItem( final TableItem item ) {
+    int index = item.getParent().indexOf( item );
     if( columns == 0 ) {
-      result.setText( "Item " + itemCount );
+      item.setText( "Item " + index );
       if( columnsWidthImages == 1 ) {
-        result.setImage( smallImage );
+        item.setImage( smallImage );
       }
     } else {
       for( int i = 0; i < columns; i++ ) {
-        result.setText( i, "Item" + itemCount + "-" + i );
+        item.setText( i, "Item" + index + "-" + i );
         if( i < columnsWidthImages ) {
-          result.setImage( i, smallImage );
+          item.setImage( i, smallImage );
         }
       }
     }
-    return result;
   }
 
   private void createAddItemsButton() {
@@ -242,13 +257,14 @@ public class TableTab extends ExampleTab {
     } );
   }
 
-  private void crateDisposeFirstColumnButton() {
+  private void createDisposeFirstColumnButton() {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Dispose first Column" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        if( table.getColumnCount() > 0 ) {
-          table.getColumn( 0 ).dispose();
+        if( getTable().getColumnCount() > 0 ) {
+          int firstColumn = getTable().getColumnOrder()[ 0 ];
+          getTable().getColumn( firstColumn ).dispose();
         }
       }
     } );
@@ -377,6 +393,30 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
+  
+  private void createChangeItemCountControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "ItemCount" );
+    final Text text = new Text( composite, SWT.BORDER );
+    text.setLayoutData( new RowData( 40, 20 ) );
+    text.setText( String.valueOf( getTable().getItemCount() ) );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Change" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int itemCount = -1;
+        try {
+          itemCount = Integer.parseInt( text.getText() );
+        } catch( NumberFormatException e ) {
+          // ignore invalid column count
+        }
+        getTable().setItemCount( itemCount );
+      }
+    } );
+  }
+
   private void createRevertColumnOrderButton() {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Revert Column Order" );
