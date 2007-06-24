@@ -758,15 +758,19 @@ public class Table_Test extends TestCase {
   public void testClear() {
     Display display = new Display();
     Shell shell = new Shell( display );
-    Table table = new Table( shell, SWT.NONE );
+    Table table = new Table( shell, SWT.CHECK );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
 
     item.setText( "abc" );
     item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    item.setChecked( true );
+    item.setGrayed( true );
     table.clear( table.indexOf( item ) );
     assertEquals( "", item.getText() );
     assertEquals( null, item.getImage() );
+    assertEquals( false, item.getChecked() );
+    assertEquals( false, item.getGrayed() );
     
     // Test clear with illegal arguments
     try {

@@ -561,6 +561,8 @@ public class TableItem extends Item {
   
   final void clear() {
     data = null;
+    checked = false;
+    grayed = false;
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       cached = false;
     }
