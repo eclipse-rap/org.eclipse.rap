@@ -722,9 +722,6 @@
     {
       style : function( states ) {
         return {
-          minWidth        : 40, // TODO [rst] removed by qx
-          width           : 120,
-          height          : "auto", // TODO [rst] removed by qx
           border          : "inset",
           backgroundColor : "list.background"
         };
@@ -760,12 +757,12 @@
     
     "combo-box-text-field" :
     {
-      include : "text-field",
-
       style : function( states ) {
         return {
-          border          : "undefined",
-          backgroundColor : "transparent"
+          font : "widget.font",
+          padding : states.rwt_BORDER ? [ 1, 4 ] : [ 0, 3 ],
+          textColor       : states.disabled ? "widget.graytext" : "widget.foreground",
+          backgroundColor : "list.background"
         };
       }
     },
@@ -773,10 +770,9 @@
     // Used both for ComboBox and ComboBoxEx
     "combo-box-button" :
     {
-      include : "button",
-
       style : function( states ) {
         return {
+          border : "thinOutset",
           padding : [ 0, 3, 0, 2 ],
           icon : "widget/arrows/down.gif",
           // TODO [rst] rather use button.bgcolor?

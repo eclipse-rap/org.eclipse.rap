@@ -16,6 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 
 /**
  * Instances of this class are controls that allow the user
@@ -59,8 +60,9 @@ import org.eclipse.swt.graphics.Point;
 // TODO [rst] Update Javadoc
 // TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
 //      are aded/removed
-public class Combo extends Scrollable {
+public class Combo extends Composite {
 
+  private static final int DROP_DOWN_BUTTON_WIDTH = 14;
   private final ListModel model;
   
   /**
@@ -410,6 +412,7 @@ public class Combo extends Scrollable {
    * </ul>
    */
   public String getText() {
+    checkWidget();
     // TODO [bm] improve this when we introduce !READ_ONLY combos
     int idx = model.getSelectionIndex();
     String result = "";
@@ -430,14 +433,16 @@ public class Combo extends Scrollable {
   {
     checkWidget();
     int width = 0;
-    int height = 0;
-    if( wHint == SWT.DEFAULT ) {
-      // TODO [rst] resonable implementation
-      width = 85;
-    }
-    if( hHint == SWT.DEFAULT ) {
-      // TODO [rst] resonable implementation
-      height = 22;
+    Point lineHeight = FontSizeEstimation.stringExtent( "M", getFont() );
+    int height = lineHeight.y + 4;
+    if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
+      String[] items = model.getItems();
+      for( int i = 0; i < items.length; i++ ) {
+        if( !"".equals( items[ i ] ) ) {
+          Point extent = FontSizeEstimation.stringExtent( items[ i ], getFont() );
+          width = Math.max( width, extent.x + 10 );
+        }
+      }
     }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
@@ -451,6 +456,10 @@ public class Combo extends Scrollable {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
+    width += DROP_DOWN_BUTTON_WIDTH;
+    int border = getBorderWidth();
+    height += 2 * border;
+    width += 2 * border;
     return new Point( width, height );
   }
   

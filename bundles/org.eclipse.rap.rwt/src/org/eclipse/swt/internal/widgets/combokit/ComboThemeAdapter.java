@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Control;
 public class ComboThemeAdapter implements IComboThemeAdapter {
   
   public int getBorderWidth( final Control control ) {
-    return 0;
+    return 2;
   }
   
   public QxColor getForeground( final Control control ) {
