@@ -10,25 +10,35 @@
 package org.eclipse.rap.demo.controls;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class TableViewerTab extends ExampleTab {
 
+  private static final int ADD_ITEMS = 300;
+
+  private static final String FIRST_NAME = "firstName";
+  private static final String LAST_NAME = "lastName";
+  private static final String AGE = "age";
+  
   private static final class Person {
     String firstName;
     String lastName;
     int age;
     
-    public Person( final String firstName, final String lastName, final int age ) {
-      super();
+    public Person( final String firstName, 
+                   final String lastName, 
+                   final int age ) 
+    {
       this.firstName = firstName;
       this.lastName = lastName;
       this.age = age;
@@ -39,18 +49,45 @@ public class TableViewerTab extends ExampleTab {
     }
   }
   
-  private static class PersonContentProvider 
-    implements IStructuredContentProvider 
+  private static final class PersonContentProvider 
+    implements IStructuredContentProvider
   {
+    Object[] elements;
     public Object[] getElements( final Object inputElement ) {
-      java.util.List personList = ( java.util.List )inputElement;
-      return personList.toArray();
+      return elements;
+    }
+    public void inputChanged( final Viewer viewer, 
+                              final Object oldInput, 
+                              final Object newInput ) 
+    {
+      if( newInput == null ) {
+        elements = new Object[ 0 ];
+      } else {
+        java.util.List personList = ( java.util.List )newInput;
+        elements = personList.toArray();
+      }
     }
     public void dispose() {
       // do nothing
     }
-    public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) 
+  }
+  
+  private static final class LazyPersonContentProvider 
+    implements ILazyContentProvider
+  {
+    private TableViewer tableViewer;
+    private List elements;
+    public void inputChanged( final Viewer viewer, 
+                              final Object oldInput, 
+                              final Object newInput ) 
     {
+      tableViewer = ( TableViewer )viewer;
+      elements = ( List )newInput;
+    }
+    public void updateElement( final int index ) {
+      tableViewer.replace( elements.get( index ), index );
+    }
+    public void dispose() {
       // do nothing
     }
   }
@@ -83,20 +120,48 @@ public class TableViewerTab extends ExampleTab {
     }
   }
   
-  
-  protected static final int ADD_ITEMS = 300;
+  private static final class PersonComparator extends ViewerComparator {
+    private final boolean ascending;
+    private final String property;
+    PersonComparator( final String property, final boolean ascending ) {
+      this.property = property;
+      this.ascending = ascending;
+    }
+    public int compare( final Viewer viewer, 
+                        final Object object1, 
+                        final Object object2 ) 
+    {
+      Person person1 = ( Person )object1;
+      Person person2 = ( Person )object2;
+      int result = 0;
+      if( FIRST_NAME.equals( property ) ) {
+        result = person1.firstName.compareTo( person2.firstName );
+      } else if( LAST_NAME.equals( property ) ) {
+        result = person1.lastName.compareTo( person2.lastName );
+      } else if( AGE.equals( property ) ) {
+        result = person1.age - person2.age;
+      }
+      if( !ascending ) {
+        result = result * ( -1 );
+      }
+      return result;
+    }
+    public boolean isSorterProperty( final Object elem, final String property ) 
+    {
+      return true;
+    }
+  }
   
   private TableViewer viewer;
   private final java.util.List persons = new ArrayList();
-
   private Label lblSelection;
 
   public TableViewerTab( final CTabFolder topFolder ) {
     super( topFolder, "TableViewer" );
-    initPersons();
   }
 
   private void initPersons() {
+    persons.clear();
     persons.add( new Person( "Rögn\"íy&", "Hövl&lt;, the char tester", 1 ) );
     persons.add( new Person( "Paul", "Panther", 1 ) );
     persons.add( new Person( "Carl", "Marx", 2 ) );
@@ -111,39 +176,79 @@ public class TableViewerTab extends ExampleTab {
   }
 
   protected void createStyleControls() {
+    createStyleButton( "VIRTUAL" );
     createAddItemsButton();
     createSelectYoungestPersonButton();
     lblSelection = new Label( styleComp, SWT.NONE );
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new FillLayout() );
-    viewer = new TableViewer( top, getStyle() );
-    viewer.setContentProvider( new PersonContentProvider() );
+  protected void createExampleControls( final Composite parent ) {
+    GridLayout layout = new GridLayout( 1, false );
+    parent.setLayout( layout );
+    if( viewer != null && !viewer.getControl().isDisposed() ) {
+      viewer.getControl().dispose();
+    }
+    initPersons();
+    viewer = new TableViewer( parent, getStyle() );
+    if( ( getStyle() & SWT.VIRTUAL ) == 0 ) {
+      viewer.setContentProvider( new PersonContentProvider() );
+    } else {
+      viewer.setContentProvider( new LazyPersonContentProvider() );
+    }
     viewer.setLabelProvider( new PersonLabelProvider() );
-    viewer.setColumnProperties( initColumnProperties( viewer.getTable() ) );
+    viewer.setColumnProperties( initColumnProperties( viewer ) );
     viewer.setInput( persons );
+    viewer.setItemCount( persons.size() );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
-      public void selectionChanged( SelectionChangedEvent event ) {
+      public void selectionChanged( final SelectionChangedEvent event ) {
         lblSelection.setText( "Selection: " + event.getSelection() );
       }
     } );
     viewer.getTable().setHeaderVisible( true );
+    GridDataFactory gridDataFactory = GridDataFactory.swtDefaults();
+    gridDataFactory.grab( true, true );
+    gridDataFactory.align( SWT.FILL, SWT.FILL );
+    gridDataFactory.applyTo( viewer.getTable() );
     registerControl( viewer.getControl() );
   }
 
-  private String[] initColumnProperties( final Table table ) {
+  private String[] initColumnProperties( final TableViewer viewer ) {
+    Table table = viewer.getTable();
     TableColumn firstNameColumn = new TableColumn( table, SWT.NONE );
     firstNameColumn.setText( "First Name" );
     firstNameColumn.setWidth( 170 );
+    firstNameColumn.setMoveable( true );
+    firstNameColumn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int sortDirection = updateSortDirection( ( TableColumn )event.widget );
+        boolean ascending = sortDirection == SWT.DOWN;
+        viewer.setComparator( new PersonComparator( FIRST_NAME, ascending ) );
+      }
+    } );
     TableColumn lastNameColumn = new TableColumn( table, SWT.NONE );
     lastNameColumn.setText( "Last Name" );
-    lastNameColumn.setWidth( 100 );    
+    lastNameColumn.setWidth( 100 );
+    lastNameColumn.setMoveable( true );
+    lastNameColumn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int sortDirection = updateSortDirection( ( TableColumn )event.widget );
+        boolean ascending = sortDirection == SWT.DOWN;
+        viewer.setComparator( new PersonComparator( LAST_NAME, ascending ) );
+      }
+    } );
     TableColumn ageColumn = new TableColumn( table, SWT.NONE );
     ageColumn.setText( "Age" );
     ageColumn.setWidth( 80 );
+    ageColumn.setMoveable( true );
+    ageColumn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int sortDirection = updateSortDirection( ( TableColumn )event.widget );
+        boolean ascending = sortDirection == SWT.DOWN;
+        viewer.setComparator( new PersonComparator( AGE, ascending ) );
+      }
+    } );
     return new String[] {
-      firstNameColumn.getText(), lastNameColumn.getText(), ageColumn.getText()
+      FIRST_NAME, LAST_NAME, AGE
     };
   }
   
@@ -156,7 +261,6 @@ public class TableViewerTab extends ExampleTab {
       }
     }
     persons.add( new Person( "new", "person", maxAge + 1 ) );
-    viewer.refresh();
   }
 
   private void createAddItemsButton() {
@@ -167,6 +271,8 @@ public class TableViewerTab extends ExampleTab {
         for( int i = 0; i < ADD_ITEMS; i++ ) {
           addPerson();
         }
+        getViewer().setInput( persons );
+        getViewer().setItemCount( persons.size() );
       }
     } );
   }
@@ -185,9 +291,28 @@ public class TableViewerTab extends ExampleTab {
             youngestPerson = person;
           }
         }
-        viewer.setSelection( new StructuredSelection( youngestPerson ) );
-        viewer.reveal( youngestPerson );
+        getViewer().setSelection( new StructuredSelection( youngestPerson ) );
+        getViewer().reveal( youngestPerson );
       }
     } );
+  }
+
+  private static int updateSortDirection( final TableColumn column ) {
+    Table table = column.getParent();
+    if( column == table.getSortColumn() ) {
+      if( table.getSortDirection() == SWT.UP ) {
+        table.setSortDirection( SWT.DOWN );
+      } else {
+        table.setSortDirection( SWT.UP );
+      }
+    } else {
+      table.setSortColumn( column );
+      table.setSortDirection( SWT.DOWN );
+    }
+    return table.getSortDirection();
+  }
+  
+  private TableViewer getViewer() {
+    return viewer;
   }
 }
