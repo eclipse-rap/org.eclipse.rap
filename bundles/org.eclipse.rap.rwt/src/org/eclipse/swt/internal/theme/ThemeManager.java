@@ -41,7 +41,7 @@ public class ThemeManager {
   private static final String CHARSET = "UTF-8";
 
   private static final Pattern PATTERN_REPLACE
-  = Pattern.compile( "THEME_VALUE\\(\\s*\"(.*?)\"\\s*\\)" );
+    = Pattern.compile( "THEME_VALUE\\(\\s*\"(.*?)\"\\s*\\)" );
 
   private static class ThemeWrapper {
     final Theme theme;
@@ -545,30 +545,22 @@ public class ThemeManager {
     ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
     String jsId = getJsThemeId( id );
     registerWidgetImages( id );
-    String colorThemeCode = createColorTheme( wrapper.theme, jsId );
-    String borderThemeCode = createBorderTheme( wrapper.theme, jsId );
-    String fontThemeCode = createFontTheme( wrapper.theme, jsId );
-    String iconThemeCode = createIconTheme( wrapper.theme, jsId );
-    String widgetThemeCode = createWidgetTheme( wrapper.theme, jsId );
-    String appearanceThemeCode = createAppearanceTheme( wrapper.theme, jsId );
-    String metaThemeCode = createMetaTheme( wrapper.theme, jsId );
-    log( "-- REGISTERED THEME --" );
-    log( colorThemeCode );
-    log( borderThemeCode );
-    log( fontThemeCode );
-    log( iconThemeCode );
-    log( widgetThemeCode );
-    log( appearanceThemeCode );
-    log( metaThemeCode );
-    log( "-- END REGISTERED THEME --" );
-    // TODO [rst] Check whether concatenating theme files improves loading times
-    registerJsLibrary( colorThemeCode, jsId + "Colors.js" );
-    registerJsLibrary( borderThemeCode, jsId + "Borders.js" );
-    registerJsLibrary( fontThemeCode, jsId + "Fonts.js" );
-    registerJsLibrary( iconThemeCode, jsId + "Icons.js" );
-    registerJsLibrary( widgetThemeCode, jsId + "WidgetIcons.js" );
-    registerJsLibrary( appearanceThemeCode, jsId + "Appearance.js" );
-    registerJsLibrary( metaThemeCode, jsId + ".js" );
+    StringBuffer sb = new StringBuffer();
+    sb.append( createColorTheme( wrapper.theme, jsId ) );
+    sb.append( createBorderTheme( wrapper.theme, jsId ) );
+    sb.append( createFontTheme( wrapper.theme, jsId ) );
+    sb.append( createIconTheme( wrapper.theme, jsId ) );
+    sb.append( createWidgetTheme( wrapper.theme, jsId ) );
+    sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
+    sb.append( createMetaTheme( wrapper.theme, jsId ) );
+    String themeCode = sb.toString();
+    log( "-- REGISTERED THEME CODE --" );
+    log( themeCode );
+    log( "-- END REGISTERED THEME CODE --" );
+// TODO [rst] Load only the default theme at startup
+//    boolean loadOnStartup = defaultThemeId.equals( id );
+    boolean loadOnStartup = true;
+    registerJsLibrary( themeCode, jsId + ".js", loadOnStartup );
   }
 
   private void registerWidgetImages( final String id ) 
@@ -610,6 +602,29 @@ public class ThemeManager {
       } finally {
         inputStream.close();
       }
+    }
+  }
+
+  private static void registerJsLibrary( final String code,
+                                         final String name,
+                                         final boolean loadOnStartup )
+  throws IOException
+  {
+    ByteArrayInputStream resourceInputStream;
+    byte[] buffer = code.getBytes( CHARSET );
+    resourceInputStream = new ByteArrayInputStream( buffer );
+    try {
+      ResourceManager.getInstance().register( name,
+                                              resourceInputStream,
+                                              CHARSET,
+                                              RegisterOptions.VERSION );
+      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+      HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
+      if( loadOnStartup ) {
+        responseWriter.useJSLibrary( name );
+      }
+    } finally {
+      resourceInputStream.close();
     }
   }
 
@@ -711,25 +726,6 @@ public class ThemeManager {
     writer.writeTheme( "widget", id + "Widgets" );
     writer.writeTheme( "appearance", id + "Appearances" );
     return writer.getGeneratedCode();
-  }
-
-  private static void registerJsLibrary( final String code, final String name )
-  throws IOException
-  {
-    ByteArrayInputStream resourceInputStream;
-    byte[] buffer = code.getBytes( CHARSET );
-    resourceInputStream = new ByteArrayInputStream( buffer );
-    try {
-      ResourceManager.getInstance().register( name,
-                                              resourceInputStream,
-                                              CHARSET,
-                                              RegisterOptions.VERSION );
-      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
-      responseWriter.useJSLibrary( name );
-    } finally {
-      resourceInputStream.close();
-    }
   }
 
   private static String getWidgetDestPath( final String id ) {

@@ -55,13 +55,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
       aliasMgr.add( "static", "./resource/static" );
       aliasMgr.add( "org.eclipse.swt", "./resource" );
       
-      // Set the one and only theme
-      var theme = org.eclipse.swt.theme.Default;
-      qx.manager.object.ThemeManager.getInstance().setTheme( theme );
-
-      // Note: currently the theme (org.eclipse.swt.theme.Default) is set in 
-      //       the qooxdoo build,
-      
       // Observe window size
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.addEventListener( "windowresize", 
