@@ -34,7 +34,7 @@ import org.eclipse.swt.internal.widgets.IListAdapter;
  * <ul><li>topIndex</li>
  * <li>itemHeight (may not be implemented at all)</li>
  * <li>showSelection</li>
- * <li>all select and deselect methods</li>
+ * <li>deselect methods</li>
  * </ul>
  * <p><strong>Note:</strong> Setting only one of <code>H_SCROLL</code> or 
  * <code>V_SCROLL</code> leads - at least in IE 7 - to unexpected behavior 
