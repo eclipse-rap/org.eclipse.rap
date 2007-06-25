@@ -80,7 +80,7 @@ public class BrowserLCA extends AbstractWidgetLCA {
     byte[] bytes = html.getBytes( "UTF-8" );
     InputStream inputStream = new ByteArrayInputStream( bytes );
     try {
-      // TODO [rh] ResourceManager should be alble to deregister a resource,
+      // TODO [rh] ResourceManager should be able to deregister a resource,
       //      thus we could cleanup the here registered resource when text
       //      is changed and in renderDispose
       ResourceManager.getInstance().register( name, inputStream );
