@@ -22,8 +22,8 @@ public class CBannerTab extends ExampleTab {
     super( parent, "CBanner" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
   }
 
   protected void createExampleControls( final Composite top ) {

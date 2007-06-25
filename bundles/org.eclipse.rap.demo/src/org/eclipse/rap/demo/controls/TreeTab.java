@@ -29,16 +29,16 @@ public class TreeTab extends ExampleTab {
     super( topFolder, "Tree" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
-    createStyleButton( "CHECK" );
-    createStyleButton( "MULTI" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "CHECK", SWT.CHECK );
+    createStyleButton( "MULTI", SWT.MULTI );
     createVisibilityButton();
     createEnablementButton();
-    createImagesButton();
-    createAddNodeButton();
-    createDisposeNodeButton();
-    createSelectNodeButton();
+    createImagesButton( parent );
+    createAddNodeButton( parent );
+    createDisposeNodeButton( parent );
+    createSelectNodeButton( parent );
     createFontChooser();
   }
 
@@ -117,8 +117,8 @@ public class TreeTab extends ExampleTab {
     registerControl( tree );
   }
 
-  private void createImagesButton() {
-    final Button button = new Button( styleComp, SWT.TOGGLE );
+  private void createImagesButton( final Composite parent ) {
+    final Button button = new Button( parent, SWT.TOGGLE );
     button.setText( "Show Images" );
     button.setSelection( true );
     button.addSelectionListener( new SelectionAdapter() {
@@ -135,8 +135,8 @@ public class TreeTab extends ExampleTab {
     } );
   }
 
-  private void createAddNodeButton() {
-    Button button = new Button( styleComp, SWT.PUSH );
+  private void createAddNodeButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
     button.setText( "Add child item" );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
@@ -159,8 +159,8 @@ public class TreeTab extends ExampleTab {
     } );
   }
   
-  private void createDisposeNodeButton() {
-    Button button = new Button( styleComp, SWT.PUSH );
+  private void createDisposeNodeButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
     button.setText( "Dispose Selected Item" );
     button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
@@ -173,8 +173,8 @@ public class TreeTab extends ExampleTab {
     } );
   }
 
-  private void createSelectNodeButton() {
-    Button button = new Button( styleComp, SWT.PUSH );
+  private void createSelectNodeButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
     button.setText( "Select First Item" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

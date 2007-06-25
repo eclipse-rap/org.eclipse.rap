@@ -34,16 +34,14 @@ class BrowserTab extends ExampleTab {
     super( folder, "Browser" );
   }
 
-  // TODO [rh] change signature to createStyleControls( Composite parent )
-  protected void createStyleControls() {
+  protected void createStyleControls( final Composite parent ) {
     // TODO [rh] reactivate when implemented in Browser widget
-    createStyleButton( "BORDER" );
-//    createStyleButton( "FLAT" );
+    createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
 //    createEnablementButton();
-    createUrlSelector( styleComp );
-    createHtmlSelector( styleComp );
-    createExternalBrowserSelector( styleComp );
+    createUrlSelector( parent );
+    createHtmlSelector( parent );
+    createExternalBrowserSelector( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {

@@ -43,11 +43,11 @@ public class TableTab extends ExampleTab {
 //                           getClass().getClassLoader() );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "MULTI" );
-    createStyleButton( "CHECK" );
-    createStyleButton( "BORDER" );
-    createStyleButton( "VIRTUAL" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "MULTI", SWT.MULTI );
+    createStyleButton( "CHECK", SWT.CHECK );
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "VIRTUAL", SWT.VIRTUAL );
     createVisibilityButton();
     createEnablementButton();
     createHeaderVisibleButton();

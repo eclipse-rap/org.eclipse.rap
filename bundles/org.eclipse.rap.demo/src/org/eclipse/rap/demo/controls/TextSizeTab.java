@@ -32,8 +32,9 @@ public class TextSizeTab extends ExampleTab {
     switchText();
   }
 
-  protected void createStyleControls( ) {
-    createStyleButton( "WRAP" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "WRAP", SWT.WRAP );
     createFontChooser();
     final Button fixedSizeButton = createPropertyButton( "Fixed Size" );
     fixedSizeButton.addSelectionListener( new SelectionAdapter() {
@@ -64,9 +65,19 @@ public class TextSizeTab extends ExampleTab {
       label1.pack();
     }
     
+    Text text1 = new Text( parent, style );
+    text1.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
+    text1.setText( labelText );
+    text1.setLocation( 220, 10 );
+    if( propFixedSize ) {
+      text1.setSize( text1.computeSize( 200, SWT.DEFAULT ) );
+    } else {
+      text1.pack();
+    }
+    
     registerControl( label1 );
   }
-  
+
   private void switchText() {
     labelText = testStrings[ nextIndex ];
     nextIndex = (nextIndex + 1) % testStrings.length;

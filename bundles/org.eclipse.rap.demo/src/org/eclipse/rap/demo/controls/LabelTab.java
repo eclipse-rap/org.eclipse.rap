@@ -39,24 +39,24 @@ public class LabelTab extends ExampleTab {
     labelText = "A Label";
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
-    createStyleButton( "SEPARATOR" );
-    createStyleButton( "HORIZONTAL" );
-    createStyleButton( "VERTICAL" );
-    createStyleButton( "SHADOW_IN" );
-    createStyleButton( "SHADOW_OUT" );
-    createStyleButton( "SHADOW_NONE" );
-    createStyleButton( "LEFT" );
-    createStyleButton( "CENTER" );
-    createStyleButton( "RIGHT" );
-    createStyleButton( "WRAP" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "SEPARATOR", SWT.SEPARATOR );
+    createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
+    createStyleButton( "VERTICAL", SWT.VERTICAL );
+    createStyleButton( "SHADOW_IN", SWT.SHADOW_IN );
+    createStyleButton( "SHADOW_OUT", SWT.SHADOW_OUT );
+    createStyleButton( "SHADOW_NONE", SWT.SHADOW_NONE );
+    createStyleButton( "LEFT", SWT.LEFT );
+    createStyleButton( "CENTER", SWT.CENTER );
+    createStyleButton( "RIGHT", SWT.RIGHT );
+    createStyleButton( "WRAP", SWT.WRAP );
     createVisibilityButton();
     createEnablementButton();
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
-    createChangeLabelControl();
+    createChangeLabelControl( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -112,8 +112,8 @@ public class LabelTab extends ExampleTab {
     } );
   }
   
-  private void createChangeLabelControl() {
-    Composite composite = new Composite( styleComp, SWT.NONE );
+  private void createChangeLabelControl( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );
     label.setText( "Change text" );

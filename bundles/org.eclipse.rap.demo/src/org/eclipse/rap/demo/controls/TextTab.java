@@ -35,13 +35,13 @@ public class TextTab extends ExampleTab {
     };
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
-    createStyleButton( "WRAP" );
-    createStyleButton( "SINGLE" );
-    createStyleButton( "MULTI" );
-    createStyleButton( "PASSWORD" );
-    createStyleButton( "READ_ONLY" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "WRAP", SWT.WRAP );
+    createStyleButton( "SINGLE", SWT.SINGLE );
+    createStyleButton( "MULTI", SWT.MULTI );
+    createStyleButton( "PASSWORD", SWT.PASSWORD );
+    createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createVisibilityButton();
     createEnablementButton();
     final Button editableButton = createPropertyButton( "Editable" );
@@ -67,7 +67,7 @@ public class TextTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
-    createLimitText( styleComp );
+    createLimitText( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {

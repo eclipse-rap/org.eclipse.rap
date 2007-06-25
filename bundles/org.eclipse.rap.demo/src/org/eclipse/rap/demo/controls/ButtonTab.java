@@ -40,23 +40,15 @@ public class ButtonTab extends ExampleTab {
     super( folder, "Button" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
-    createStyleButton( "FLAT" );
-    createStyleButton( "LEFT" );
-    createStyleButton( "CENTER" );
-    createStyleButton( "RIGHT" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "FLAT", SWT.FLAT );
+    createStyleButton( "LEFT", SWT.LEFT );
+    createStyleButton( "CENTER", SWT.CENTER );
+    createStyleButton( "RIGHT", SWT.RIGHT );
     createVisibilityButton();
     createEnablementButton();
-    final Button imageButton = new Button( styleComp, SWT.CHECK );
-    imageButton.setText( "Push Button with Image" );
-    imageButton.setLayoutData( new RowData( 160, 20 ) );
-    imageButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        showImage = imageButton.getSelection();
-        updateButtonImage( pushButton );
-      }
-    } );
+    createImageButton( parent );
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
@@ -70,7 +62,7 @@ public class ButtonTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout( SWT.VERTICAL ) );
+    parent.setLayout( new GridLayout( 1, false ) );
     int style = getStyle();
     pushButton = new Button( parent, style | SWT.PUSH );
     pushButton.setText( "Push" );
@@ -93,9 +85,9 @@ public class ButtonTab extends ExampleTab {
     registerControl( radioButton3 );
     // default button
     final Group group = new Group( parent, SWT.NONE );
-    group.setLayoutData( new RowData( 370, 60 ) );
+    group.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     group.setText( "Default Button" );
-    group.setLayout( new GridLayout( 3, false ) );
+    group.setLayout( new RowLayout( SWT.HORIZONTAL ) );
     Label label = new Label( group, SWT.NONE );
     label.setText( "Enter some text and press Return" );
     final Text text = new Text( group, SWT.BORDER | SWT.SINGLE );
@@ -124,6 +116,19 @@ public class ButtonTab extends ExampleTab {
       item.setText( "Item " + ( i + 1 ) );
     }
     parent.setMenu( menu );
+  }
+
+  private void createImageButton( final Composite parent ) {
+    final Button imageButton = new Button( parent, SWT.CHECK );
+    imageButton.setText( "Push Button with Image" );
+    imageButton.setLayoutData( new RowData( 160, 20 ) );
+    imageButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        showImage = imageButton.getSelection();
+        updateButtonImage( pushButton );
+        pushButton.getParent().layout();
+      }
+    } );
   }
 
   private void updateButtonImage( final Button button ) {

@@ -65,12 +65,12 @@ abstract class ExampleTab {
 
   public void createContents() {
     createExampleControls( exmplComp );
-    createStyleControls();
+    createStyleControls( styleComp);
   }
   
   protected void createNew() {
     controls.clear();
-    destroyExampleControls( );
+    destroyExampleControls();
     createExampleControls( exmplComp );
     updateVisible();
     updateEnabled();
@@ -140,7 +140,7 @@ abstract class ExampleTab {
     fgColors[ 3 ] = FG_COLOR_ORANGE;
   }
 
-  protected abstract void createStyleControls( );
+  protected abstract void createStyleControls( final Composite parent);
   
   protected abstract void createExampleControls( final Composite parent );
   
@@ -152,10 +152,20 @@ abstract class ExampleTab {
     this.defaultStyle = style;
   }
   
+  /**
+   * @deprecated Too much magic. Use
+   *             <code>createStyleButton( String fieldName, int style )</code>
+   *             instead.
+   */
   protected Button createStyleButton( final String fieldName ) {
     return createStyleButton( fieldName, false );
   }
   
+  /**
+   * @deprecated Too much magic. Use
+   *             <code>createStyleButton( String fieldName, int style, boolean checked )</code>
+   *             instead.
+   */
   protected Button createStyleButton( final String fieldName,
                                       final boolean checked ) {
     int style = SWT.NONE;
@@ -169,6 +179,12 @@ abstract class ExampleTab {
     Button button = createStyleButton( "SWT." + fieldName, style, checked );
     button.setEnabled( style != SWT.NONE );
     return button;
+  }
+  
+  protected Button createStyleButton( final String fieldName,
+                                      final int style )
+  {
+    return createStyleButton( fieldName, style, false );
   }
   
   protected Button createStyleButton( final String name,

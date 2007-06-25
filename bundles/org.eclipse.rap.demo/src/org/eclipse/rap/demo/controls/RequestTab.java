@@ -24,7 +24,7 @@ public class RequestTab extends ExampleTab {
     super( parent, "Longrunning Request" );
   }
 
-  protected void createStyleControls() {
+  protected void createStyleControls( final Composite parent ) {
   }
 
   protected void createExampleControls( final Composite parent ) {

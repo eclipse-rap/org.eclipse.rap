@@ -9,6 +9,7 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -19,8 +20,8 @@ public class CompositeTab extends ExampleTab {
     super( topFolder, "Composite" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
     createBgColorButton();
   }

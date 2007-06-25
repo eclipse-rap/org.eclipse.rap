@@ -25,9 +25,9 @@ class RowLayoutTab extends ExampleTab {
     super( folder, "RowLayout" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "HORIZONTAL" );
-    createStyleButton( "VERTICAL" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
+    createStyleButton( "VERTICAL", SWT.VERTICAL );
     final Button prefSizeButton = createPropertyButton( "Preferred Size" );
     prefSizeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

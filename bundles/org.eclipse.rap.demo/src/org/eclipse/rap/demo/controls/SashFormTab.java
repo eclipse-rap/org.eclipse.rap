@@ -21,11 +21,10 @@ public class SashFormTab extends ExampleTab {
     super( topFolder, "SashForm" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
-    createStyleButton( "SMOOTH" );
-    createStyleButton( "VERTICAL" );
-    createStyleButton( "HORIZONTAL" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "VERTICAL", SWT.VERTICAL );
+    createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
     createVisibilityButton();
     createEnablementButton();
   }

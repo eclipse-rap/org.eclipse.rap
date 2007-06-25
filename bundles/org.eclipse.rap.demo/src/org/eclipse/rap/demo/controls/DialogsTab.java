@@ -31,7 +31,7 @@ class DialogsTab extends ExampleTab {
     super( topFolder, "Dialogs" );
   }
 
-  protected void createStyleControls() {
+  protected void createStyleControls( final Composite parent ) {
   }
 
   protected void createExampleControls( final Composite parent ) {

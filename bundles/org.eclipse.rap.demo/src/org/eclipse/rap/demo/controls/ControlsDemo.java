@@ -35,7 +35,6 @@ public class ControlsDemo implements IEntryPoint {
 
   private void createContent( final Composite parent ) {
     parent.setLayout( new FillLayout() );
-    // TODO [rh] replace with CTabFolder
     final CTabFolder topFolder = new CTabFolder( parent, SWT.TOP );
     topFolder.marginWidth = 5;
     topFolder.marginHeight = 5;
@@ -77,6 +76,8 @@ public class ControlsDemo implements IEntryPoint {
     tab = new TableViewerTab( topFolder );
     tab.createContents();
     tab = new TextTab( topFolder );
+    tab.createContents();
+    tab = new TextSizeTab( topFolder );
     tab.createContents();
     tab = new SpinnerTab( topFolder );
     tab.createContents();

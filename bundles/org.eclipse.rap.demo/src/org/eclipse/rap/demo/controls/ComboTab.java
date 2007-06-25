@@ -39,16 +39,16 @@ public class ComboTab extends ExampleTab {
     super( topFolder, "Combo" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
     createEnablementButton();
-    createRemoveAllButton();
+    createRemoveAllButton( parent );
     createFontChooser();
   }
 
-  private void createRemoveAllButton() {
-    Button button = new Button( styleComp, SWT.PUSH );
+  private void createRemoveAllButton( final Composite parent ) {
+    Button button = new Button( parent , SWT.PUSH );
     button.setText( "Remove All" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

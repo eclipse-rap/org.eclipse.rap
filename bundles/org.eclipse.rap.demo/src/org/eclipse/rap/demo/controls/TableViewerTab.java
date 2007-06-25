@@ -175,8 +175,8 @@ public class TableViewerTab extends ExampleTab {
     persons.add( new Person( "Elvis", "Presley", 10 ) );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "VIRTUAL" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "VIRTUAL", SWT.VIRTUAL );
     createAddItemsButton();
     createSelectYoungestPersonButton();
     lblSelection = new Label( styleComp, SWT.NONE );

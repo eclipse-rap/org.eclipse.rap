@@ -26,11 +26,11 @@ public class CTabFolderTab extends ExampleTab {
     super( parent, "CTabFolder" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
-    createStyleButton( "TOP" );
-    createStyleButton( "BOTTOM" );
-    createStyleButton( "CLOSE" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "TOP", SWT.TOP );
+    createStyleButton( "BOTTOM", SWT.BOTTOM );
+    createStyleButton( "CLOSE", SWT.CLOSE );
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();

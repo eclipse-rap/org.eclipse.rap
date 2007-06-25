@@ -46,23 +46,23 @@ public class FocusTab extends ExampleTab {
     super( topFolder, "Focus" );
   }
 
-  protected void createStyleControls() {
-    createFocusButton( "Focus Label", label );
-    createFocusButton( "Focus Push Button", button );
-    createFocusButton( "Focus Radio Button", radio );
-    createFocusButton( "Focus Check Box", check );
-    createFocusButton( "Focus Multi Text", multiText );
-    createFocusButton( "Focus Single Text", text );
-    createFocusButton( "Focus Combo", combo );
-    createFocusButton( "Focus List", list );
-    createFocusButton( "Focus TabFolder", tabFolder );
-    createFocusButton( "Focus Browser", browser );
-    createFocusButton( "Focus Table", table );
-    createFocusButton( "Focus Tree", tree );
-    createFocusButton( "Focus Composite", composite );
-    Label label = new Label( styleComp, SWT.NONE );
+  protected void createStyleControls( final Composite parent ) {
+    createFocusButton( "Focus Label", label, parent );
+    createFocusButton( "Focus Push Button", button, parent );
+    createFocusButton( "Focus Radio Button", radio, parent );
+    createFocusButton( "Focus Check Box", check, parent );
+    createFocusButton( "Focus Multi Text", multiText, parent );
+    createFocusButton( "Focus Single Text", text, parent );
+    createFocusButton( "Focus Combo", combo, parent );
+    createFocusButton( "Focus List", list, parent );
+    createFocusButton( "Focus TabFolder", tabFolder, parent );
+    createFocusButton( "Focus Browser", browser, parent );
+    createFocusButton( "Focus Table", table, parent );
+    createFocusButton( "Focus Tree", tree, parent );
+    createFocusButton( "Focus Composite", composite, parent );
+    Label label = new Label( parent, SWT.NONE );
     label.setText( "Log" );
-    log = new List( styleComp, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
+    log = new List( parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
     log.setLayoutData( new RowData( 300, 120 ) );
   }
 
@@ -147,9 +147,10 @@ public class FocusTab extends ExampleTab {
   }
   
   private void createFocusButton( final String text, 
-                                  final Control targetControl ) 
+                                  final Control targetControl,
+                                  final Composite parent )
   {
-    Button button = new Button( styleComp, SWT.PUSH );
+    Button button = new Button( parent, SWT.PUSH );
     button.setText( text );
     button.setLayoutData( new RowData( 140, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {

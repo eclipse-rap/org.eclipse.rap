@@ -27,7 +27,7 @@ public class ContainmentTab extends ExampleTab {
     super( topFolder, "Containment" );
   }
 
-  protected void createStyleControls() {
+  protected void createStyleControls( final Composite parent ) {
     Button visibleButton = createVisibilityButton();
     visibleButton.setText( "Blue Visible" );
     visibleButton.addSelectionListener( new SelectionAdapter() {

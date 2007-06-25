@@ -26,7 +26,7 @@ public class ZOrderTab extends ExampleTab {
     super( topFolder, "Z-Order" );
   }
 
-  protected void createStyleControls() {
+  protected void createStyleControls( final Composite parent ) {
   }
 
   protected void createExampleControls( final Composite top ) {

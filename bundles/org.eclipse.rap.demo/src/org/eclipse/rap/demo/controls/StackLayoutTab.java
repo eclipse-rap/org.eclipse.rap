@@ -33,7 +33,7 @@ class StackLayoutTab extends ExampleTab {
     index = 0;
   }
 
-  protected void createStyleControls() {
+  protected void createStyleControls( final Composite parent ) {
     final Button prefSizeButton = createPropertyButton( "Preferred Size" );
     prefSizeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

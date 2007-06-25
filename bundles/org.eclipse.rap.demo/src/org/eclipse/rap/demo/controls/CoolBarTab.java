@@ -35,15 +35,15 @@ public class CoolBarTab extends ExampleTab {
     image4 = Image.find( "resources/search_src.gif", loader );
   }
 
-  protected void createStyleControls() {
+  protected void createStyleControls( final Composite parent ) {
     // TODO [rst] Allow for vertical CoolBars
-//  createStyleButton( "HORIZONTAL" );
-//  createStyleButton( "VERTICAL" );
-    createStyleButton( "BORDER" );
-    createStyleButton( "FLAT" );
+//  createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
+//  createStyleButton( "VERTICAL", SWT.VERTICAL );
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "FLAT", SWT.FLAT );
     createVisibilityButton();
     createEnablementButton();
-    createLockedButton( styleComp );
+    createLockedButton( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {

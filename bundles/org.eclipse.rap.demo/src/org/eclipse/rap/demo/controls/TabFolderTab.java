@@ -28,10 +28,10 @@ public class TabFolderTab extends ExampleTab {
     super( topFolder, "TabFolder" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
-    createStyleButton( "TOP" );
-    createStyleButton( "BOTTOM" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "TOP", SWT.TOP );
+    createStyleButton( "BOTTOM", SWT.BOTTOM );
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();

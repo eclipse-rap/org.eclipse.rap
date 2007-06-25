@@ -37,18 +37,18 @@ public class ShellTab extends ExampleTab {
     setDefaultStyle( SWT.SHELL_TRIM );
   }
 
-  protected void createStyleControls( ) {
-    createStyleButton( "BORDER" );
-    createStyleButton( "SHELL_TRIM", true );
-    createStyleButton( "DIALOG_TRIM" );
-    createStyleButton( "APPLICATION_MODAL" );
-    createStyleButton( "TITLE" );
-    createStyleButton( "MIN" );
-    createStyleButton( "MAX" );
-    createStyleButton( "CLOSE" );
-    createStyleButton( "RESIZE" );
-    createStyleButton( "TOOL" );
-    createStyleButton( "ON_TOP" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "SHELL_TRIM", SWT.SHELL_TRIM, true );
+    createStyleButton( "DIALOG_TRIM", SWT.DIALOG_TRIM );
+    createStyleButton( "APPLICATION_MODAL", SWT.APPLICATION_MODAL );
+    createStyleButton( "TITLE", SWT.TITLE );
+    createStyleButton( "MIN", SWT.MIN );
+    createStyleButton( "MAX", SWT.MAX );
+    createStyleButton( "CLOSE", SWT.CLOSE );
+    createStyleButton( "RESIZE", SWT.RESIZE );
+//    createStyleButton( "TOOL", SWT.TOOL );
+    createStyleButton( "ON_TOP", SWT.ON_TOP );
     final Button invisibleButton = createPropertyButton( "Create invisible" );
     invisibleButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

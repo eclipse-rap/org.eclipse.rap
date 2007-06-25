@@ -25,12 +25,12 @@ public class SpinnerTab extends ExampleTab {
     super( topFolder, "Spinner" );
   }
 
-  protected void createStyleControls( ) {
-    createStyleButton( "BORDER" );
-    createStyleButton( "READ_ONLY" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createVisibilityButton();
     createEnablementButton();
-    createRangeControls( styleComp );
+    createRangeControls( parent );
     createFontChooser();
   }
 

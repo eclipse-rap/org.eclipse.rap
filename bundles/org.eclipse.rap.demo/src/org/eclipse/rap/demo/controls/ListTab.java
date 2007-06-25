@@ -61,12 +61,12 @@ public class ListTab extends ExampleTab {
     super( topFolder, "List" );
   }
 
-  protected void createStyleControls() {
-    createStyleButton( "BORDER" );
-    createStyleButton( "SINGLE" );
-    createStyleButton( "MULTI" );
-    createStyleButton( "H_SCROLL" );
-    createStyleButton( "V_SCROLL" );
+  protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "SINGLE", SWT.SINGLE );
+    createStyleButton( "MULTI", SWT.MULTI );
+    createStyleButton( "H_SCROLL", SWT.H_SCROLL );
+    createStyleButton( "V_SCROLL", SWT.V_SCROLL );
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
