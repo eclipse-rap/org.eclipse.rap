@@ -21,17 +21,6 @@ import org.eclipse.swt.internal.theme.ThemeUtil;
  */
 public abstract class Device {
     
-  private static final String ICON_PATH = "resource/widget/rap/dialog";
-  public static final String ERROR_IMAGE_PATH = ICON_PATH + "/error.png";
-  public static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";
-  public static final String QUESTION_IMAGE_PATH = ICON_PATH + "/question.png";
-  public static final String WARNING_IMAGE_PATH = ICON_PATH + "/warning.png";
-
-  public Image errorImage;
-  public Image infoImage;
-  public Image questionImage;
-  public Image warningImage;
-  
   /**
    * Returns the matching standard color for the given
    * constant, which should be one of the color constants

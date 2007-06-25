@@ -113,6 +113,12 @@ public class Display extends Device implements Adaptable {
 
   private static final String DISPLAY_ID = "org.eclipse.swt.display";
 
+  private static final String ICON_PATH = "resource/widget/rap/dialog";
+  private static final String ERROR_IMAGE_PATH = ICON_PATH + "/error.png";
+  private static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";
+  private static final String QUESTION_IMAGE_PATH = ICON_PATH + "/question.png";
+  private static final String WARNING_IMAGE_PATH = ICON_PATH + "/warning.png";
+  
   /**
    * Returns the display which the currently running thread is
    * the user-interface thread for, or null if the currently
@@ -125,14 +131,12 @@ public class Display extends Device implements Adaptable {
   }
   
   private final List shells;
- 
   private HttpSession session;
   private Rectangle bounds;
   private Shell activeShell;
   private IDisplayAdapter displayAdapter;
   private List filters;
-  public Control focusControl;
-
+  private Control focusControl;
 
   /**
    * Constructs a new instance of this class.
@@ -448,10 +452,12 @@ public class Display extends Device implements Adaptable {
   // Dispose
   
   // TODO [rh] This is preliminary!
+  // TODO [rh] move to Device
   public void dispose() {
     ContextProvider.getSession().removeAttribute( DISPLAY_ID );
   }
   
+  // TODO [rh] move to Device
   public boolean isDisposed() {
     return false;
   }
@@ -758,35 +764,19 @@ public class Display extends Device implements Adaptable {
     ClassLoader classLoader = getClass().getClassLoader();
     Image result = null;
     switch( id ) {
-      case SWT.ICON_ERROR: {
-        if( errorImage == null ) {
-          errorImage = Image.find( ERROR_IMAGE_PATH, classLoader );
-        }
-        result = errorImage;
-        break;
-      }
+      case SWT.ICON_ERROR:
+        result = Image.find( Display.ERROR_IMAGE_PATH, classLoader );
+      break;
       case SWT.ICON_WORKING:
-      case SWT.ICON_INFORMATION: {
-        if( infoImage == null ) {
-          infoImage = Image.find( INFO_IMAGE_PATH, classLoader );
-        }
-        result = infoImage;
-        break;
-      }
-      case SWT.ICON_QUESTION: {
-        if( questionImage == null ) {
-          questionImage = Image.find( QUESTION_IMAGE_PATH, classLoader );
-        }
-        result = questionImage;
-        break;
-      }
-      case SWT.ICON_WARNING: {
-        if( warningImage == null ) {
-          warningImage = Image.find( WARNING_IMAGE_PATH, classLoader );
-        }
-        result = warningImage;
-        break;
-      }
+      case SWT.ICON_INFORMATION:
+        result = Image.find( Display.INFO_IMAGE_PATH, classLoader );
+      break;
+      case SWT.ICON_QUESTION:
+        result = Image.find( Display.QUESTION_IMAGE_PATH, classLoader );
+      break;
+      case SWT.ICON_WARNING:
+        result = Image.find( Display.WARNING_IMAGE_PATH, classLoader );
+      break;
     }
     return result;
   }
@@ -888,7 +878,7 @@ public class Display extends Device implements Adaptable {
   }
   
   
-  // //////////////
+  /////////////////
   // Inner classes
 
   private final class DisplayAdapter implements IDisplayAdapter {
