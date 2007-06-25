@@ -11,6 +11,7 @@
 
 package org.eclipse.rap.demo;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.*;
 import org.eclipse.ui.application.*;
@@ -36,6 +37,7 @@ public class DemoWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     configurer.setShowCoolBar( true );
     configurer.setShowPerspectiveBar( true );
     configurer.setTitle( "Workbench Demo" );
+    configurer.setShellStyle( SWT.TITLE | SWT.MAX | SWT.RESIZE );
     configurer.setShowProgressIndicator( true );
   }
   

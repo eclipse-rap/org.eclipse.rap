@@ -21,7 +21,7 @@ public class ControlsDemo implements IEntryPoint {
 
   public Display createUI() {
     Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
+    Shell shell = new Shell( display, SWT.TITLE | SWT.MAX | SWT.RESIZE );
     shell.setBounds( 10, 10, 850, 600 );
     createContent( shell );
     shell.setText( "SWT Controls Demo" );
