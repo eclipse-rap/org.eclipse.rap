@@ -66,7 +66,8 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
       this._offsetX = evt.getPageX() - this.getLeft();
       this._offsetY = evt.getPageY() - this.getTop();
       this._bufferedZIndex = this.getZIndex();
-      this.setZIndex( Infinity );
+      // Infinity as zindex does not work anymore
+      this.setZIndex( 1e7 );
       // In some cases the coolItem appeare transparent when dragged around
       // To fix this, walk along the parent hierarchy and use the first explicitly
       // set background color.
@@ -77,7 +78,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     _onHandleMouseMove : function( evt ) {
       if( this._handle.getCapture() ) {
         this.setLeft( evt.getPageX() - this._offsetX );
-        this.setTop( evt.getPageY() - this._offsetY );
+        //this.setTop( evt.getPageY() - this._offsetY );
       }
     },
 

@@ -131,8 +131,8 @@ public class CoolBar_Test extends TestCase {
     assertEquals( true, item2.isDisposed() );
     
     assertSame( item1, log.get( 0 ) );
-    assertSame( bar, log.get( 1 ) );
-    assertSame( item2, log.get( 2 ) );
+    assertSame( item2, log.get( 1 ) );
+    assertSame( bar, log.get( 2 ) );
   }
   
   public void testLocked() {
