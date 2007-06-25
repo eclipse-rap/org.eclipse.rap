@@ -393,6 +393,48 @@ public class Tree_Test extends TestCase {
     assertEquals( true, subTreeItem.isDisposed() );
   }
 
+  public void testShowItem() {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Tree tree = new Tree(shell, SWT.SINGLE);
+    try {
+      tree.showItem(null);
+      fail("No exception thrown for item == null");
+    }
+//    catch (IllegalArgumentException e) {
+    catch (NullPointerException e) {
+    }
+    
+    int number = 20;
+    TreeItem[] items = new TreeItem[number];
+    for (int i = 0; i < number; i++) {
+      items[i] = new TreeItem(tree, 0);
+    }
+    for(int i=0; i<number; i++)
+      tree.showItem(items[i]);
+
+    tree.removeAll();
+
+    tree = new Tree(shell, SWT.MULTI);
+    //showing somebody else's items
+    
+    items = new TreeItem[number];
+    for (int i = 0; i < number; i++) {
+      items[i] = new TreeItem(tree, 0);
+    }
+
+    Tree tree2 = new Tree(shell, 0);
+    TreeItem[] items2 = new TreeItem[number];
+    for (int i = 0; i < number; i++) {
+      items2[i] = new TreeItem(tree2, 0);
+    }
+
+    for(int i=0; i<number; i++)
+      tree.showItem(items2[i]);
+
+    tree.removeAll();
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
