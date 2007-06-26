@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -50,30 +50,30 @@ public abstract class Control extends Widget {
       }
       return result;
     }
-    
+
     public Font getUserFont() {
       return font;
     }
-    
+
     public Color getUserForeground() {
       return foreground;
     }
-    
+
     public Color getUserBackground() {
       return background;
     }
-    
+
     public int getTabIndex() {
       return tabIndex;
     }
-    
+
     public void setTabIndex( final int index ) {
       tabIndex = index;
     }
-  }    
+  }
 
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
-  
+
   private final IControlAdapter controlAdapter;
   final Composite parent;
   private Rectangle bounds = EMPTY_RECTANGLE;
@@ -98,7 +98,7 @@ public abstract class Control extends Widget {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -169,13 +169,13 @@ public abstract class Control extends Widget {
     return parent.getDisplay();
   }
 
-  
+
   /////////////
   // Visibility
 
   /**
    * Marks the receiver as visible if the argument is <code>true</code>,
-   * and marks it invisible otherwise. 
+   * and marks it invisible otherwise.
    * <p>
    * If one of the receiver's ancestors is not visible or some
    * other condition makes the receiver not visible, marking
@@ -238,7 +238,7 @@ public abstract class Control extends Widget {
 
   /////////////
   // Enablement
-  
+
   /**
    * Enables the receiver if the argument is <code>true</code>,
    * and disables it otherwise. A disabled control is typically
@@ -281,7 +281,7 @@ public abstract class Control extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #isEnabled
    */
   public boolean getEnabled() {
@@ -302,7 +302,7 @@ public abstract class Control extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #getEnabled
    */
   public boolean isEnabled() {
@@ -321,7 +321,7 @@ public abstract class Control extends Widget {
    * @param color the new color (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -332,7 +332,7 @@ public abstract class Control extends Widget {
     checkWidget();
     background = color;
   }
-  
+
   /**
    * Returns the receiver's background color.
    *
@@ -364,7 +364,7 @@ public abstract class Control extends Widget {
    * @param color the new color (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -396,10 +396,10 @@ public abstract class Control extends Widget {
     }
     return result;
   }
-  
+
   ////////
   // Fonts
-  
+
   /**
    * Sets the font that the receiver will use to paint textual information
    * to the font specified by the argument, or to the default font for that
@@ -408,7 +408,7 @@ public abstract class Control extends Widget {
    * @param font the new font (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -419,7 +419,7 @@ public abstract class Control extends Widget {
     checkWidget();
     this.font = font;
   }
-  
+
   /**
    * Returns the font that the receiver will use to paint textual information.
    *
@@ -443,9 +443,9 @@ public abstract class Control extends Widget {
 
   /////////////////
   // Focus handling
-  
+
   /**
-   * Causes the receiver to have the <em>keyboard focus</em>, 
+   * Causes the receiver to have the <em>keyboard focus</em>,
    * such that all keyboard events will be delivered to it.  Focus
    * reassignment will respect applicable platform constraints.
    *
@@ -463,7 +463,7 @@ public abstract class Control extends Widget {
     boolean result = false;
     if( ( style & SWT.NO_FOCUS ) == 0 ) {
       result = forceFocus();
-    } 
+    }
     return result;
   }
 
@@ -499,7 +499,7 @@ public abstract class Control extends Widget {
     shell.setSavedFocus( this );
     return isFocusControl();
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver has the user-interface
    * focus, and <code>false</code> otherwise.
@@ -522,7 +522,7 @@ public abstract class Control extends Widget {
 
   //////////////////////////////////////////////////////////////////////
   // Methods to manipulate, transform and query the controls' dimensions
-  
+
   /**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent (or its display if its parent is null),
@@ -543,7 +543,7 @@ public abstract class Control extends Widget {
 
   /**
    * Sets the receiver's size and location to the rectangular
-   * area specified by the argument. The <code>x</code> and 
+   * area specified by the argument. The <code>x</code> and
    * <code>y</code> fields of the rectangle are relative to
    * the receiver's parent (or its display if its parent is null).
    * <p>
@@ -566,7 +566,7 @@ public abstract class Control extends Widget {
     }
     Point oldLocation = getLocation();
     Point oldSize = getSize();
-    this.bounds 
+    this.bounds
       = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
     this.bounds.width = Math.max( 0, this.bounds.width );
     this.bounds.height = Math.max( 0, this.bounds.height );
@@ -576,9 +576,9 @@ public abstract class Control extends Widget {
 
   /**
    * Sets the receiver's size and location to the rectangular
-   * area specified by the arguments. The <code>x</code> and 
+   * area specified by the arguments. The <code>x</code> and
    * <code>y</code> arguments are relative to the receiver's
-   * parent (or its display if its parent is null), unless 
+   * parent (or its display if its parent is null), unless
    * the receiver is a shell. In this case, the <code>x</code>
    * and <code>y</code> arguments are relative to the display.
    * <p>
@@ -608,9 +608,9 @@ public abstract class Control extends Widget {
   /**
    * Sets the receiver's location to the point specified by
    * the arguments which are relative to the receiver's
-   * parent (or its display if its parent is null), unless 
-   * the receiver is a shell. In this case, the point is 
-   * relative to the display. 
+   * parent (or its display if its parent is null), unless
+   * the receiver is a shell. In this case, the point is
+   * relative to the display.
    *
    * @param location the new location for the receiver
    *
@@ -633,9 +633,9 @@ public abstract class Control extends Widget {
   /**
    * Sets the receiver's location to the point specified by
    * the arguments which are relative to the receiver's
-   * parent (or its display if its parent is null), unless 
-   * the receiver is a shell. In this case, the point is 
-   * relative to the display. 
+   * parent (or its display if its parent is null), unless
+   * the receiver is a shell. In this case, the point is
+   * relative to the display.
    *
    * @param x the new x coordinate for the receiver
    * @param y the new y coordinate for the receiver
@@ -652,8 +652,8 @@ public abstract class Control extends Widget {
   /**
    * Returns a point describing the receiver's location relative
    * to its parent (or its display if its parent is null), unless
-   * the receiver is a shell. In this case, the point is 
-   * relative to the display. 
+   * the receiver is a shell. In this case, the point is
+   * relative to the display.
    *
    * @return the receiver's location
    *
@@ -737,8 +737,8 @@ public abstract class Control extends Widget {
    * best be displayed at. The width hint and height hint arguments
    * allow the caller to ask a control questions such as "Given a particular
    * width, how high does the control need to be to show all of the contents?"
-   * To indicate that the caller does not wish to constrain a particular 
-   * dimension, the constant <code>SWT.DEFAULT</code> is passed for the hint. 
+   * To indicate that the caller does not wish to constrain a particular
+   * dimension, the constant <code>SWT.DEFAULT</code> is passed for the hint.
    * </p>
    *
    * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
@@ -768,14 +768,14 @@ public abstract class Control extends Widget {
    * best be displayed at. The width hint and height hint arguments
    * allow the caller to ask a control questions such as "Given a particular
    * width, how high does the control need to be to show all of the contents?"
-   * To indicate that the caller does not wish to constrain a particular 
-   * dimension, the constant <code>SWT.DEFAULT</code> is passed for the hint. 
+   * To indicate that the caller does not wish to constrain a particular
+   * dimension, the constant <code>SWT.DEFAULT</code> is passed for the hint.
    * </p><p>
    * If the changed flag is <code>true</code>, it indicates that the receiver's
    * <em>contents</em> have changed, therefore any caches that a layout manager
    * containing the control may have been keeping need to be flushed. When the
    * control is resized, the changed flag will be <code>false</code>, so layout
-   * manager caches can be retained. 
+   * manager caches can be retained.
    * </p>
    *
    * @param wHint the width hint (can be <code>SWT.DEFAULT</code>)
@@ -799,7 +799,6 @@ public abstract class Control extends Widget {
                             final int hHint,
                             final boolean changed )
   {
-    // TODO: [fappel] reasonable implementation
     checkWidget();
     int width = DEFAULT_WIDTH;
     int height = DEFAULT_HEIGHT;
@@ -841,11 +840,11 @@ public abstract class Control extends Widget {
    * <em>contents</em> have changed, therefore any caches that a layout manager
    * containing the control may have been keeping need to be flushed. When the
    * control is resized, the changed flag will be <code>false</code>, so layout
-   * manager caches can be retained. 
+   * manager caches can be retained.
    * </p>
    *
    * @param changed whether or not the receiver's contents have changed
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -857,7 +856,7 @@ public abstract class Control extends Widget {
     checkWidget();
     setSize( computeSize( SWT.DEFAULT, SWT.DEFAULT, changed ) );
   }
-  
+
   /**
    * Returns the receiver's border width.
    *
@@ -889,7 +888,7 @@ public abstract class Control extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public Point toDisplay( final int x, final int y ) {
@@ -923,10 +922,10 @@ public abstract class Control extends Widget {
     }
     return toDisplay( point.x, point.y );
   }
-  
+
   //////////////////////////
   // Layout related methods
-  
+
   /**
    * Returns layout data which is associated with the receiver.
    *
@@ -944,9 +943,9 @@ public abstract class Control extends Widget {
 
   /**
    * Sets the layout data associated with the receiver to the argument.
-   * 
+   *
    * @param layoutData the new layout data for the receiver.
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -959,7 +958,7 @@ public abstract class Control extends Widget {
 
   //////////////////////
   // ToolTip operations
-  
+
   /**
    * Sets the receiver's tool tip text to the argument, which
    * may be null indicating that no tool tip text should be shown.
@@ -991,11 +990,11 @@ public abstract class Control extends Widget {
     checkWidget();
     return toolTipText;
   }
-  
+
 
   ///////////////////
   // Menu operations
-  
+
   /**
    * Sets the receiver's pop up menu to the argument.
    * All controls may optionally have a pop up
@@ -1014,7 +1013,7 @@ public abstract class Control extends Widget {
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_MENU_NOT_POP_UP - the menu is not a pop up menu</li>
    *    <li>ERROR_INVALID_PARENT - if the menu is not in the same widget tree</li>
-   *    <li>ERROR_INVALID_ARGUMENT - if the menu has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the menu has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1060,10 +1059,10 @@ public abstract class Control extends Widget {
     checkWidget();
     return menu;
   }
-  
+
   //////////
   // Z-Order
-  
+
   /**
    * Moves the receiver above the specified control in the
    * drawing order. If the argument is null, then the receiver
@@ -1074,13 +1073,13 @@ public abstract class Control extends Widget {
    * @param control the sibling control (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Control#moveBelow
    * @see Composite#getChildren
    */
@@ -1109,13 +1108,13 @@ public abstract class Control extends Widget {
    * @param control the sibling control (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Control#moveAbove
    * @see Composite#getChildren
    */
@@ -1146,7 +1145,7 @@ public abstract class Control extends Widget {
 
   //////////////////////////////////
   // Methods to add/remove listener
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control is moved or resized, by sending
@@ -1190,7 +1189,7 @@ public abstract class Control extends Widget {
   public void removeControlListener( final ControlListener listener ) {
     ControlEvent.removeListener( this, listener );
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control gains or loses focus, by sending
@@ -1213,7 +1212,7 @@ public abstract class Control extends Widget {
   public void addFocusListener( final FocusListener listener ) {
     FocusEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the control gains or loses focus.
@@ -1234,10 +1233,10 @@ public abstract class Control extends Widget {
   public void removeFocusListener( final FocusListener listener ) {
     FocusEvent.removeListener( this, listener );
   }
-  
+
   ////////////
   // Disposal
-  
+
   protected void releaseParent() {
     if( getParent() != null ) {
       getParent().removeControl( this );
@@ -1263,11 +1262,11 @@ public abstract class Control extends Widget {
       setFocusControl( focusControl );
     }
   }
-  
+
   protected void releaseChildren() {
     // do nothing
   }
-  
+
   ////////////
   // Tab order
 
@@ -1282,10 +1281,10 @@ public abstract class Control extends Widget {
     }
     return result;
   }
-  
+
   /////////////////////////////////////////////////////
   // Helping methods that throw move- and resize-events
-  
+
   void notifyResize( final Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {
       new ControlEvent( this, ControlEvent.CONTROL_RESIZED ).processEvent();
@@ -1300,7 +1299,7 @@ public abstract class Control extends Widget {
 
   /////////////////////////////////////////////////////
   // Helping method to set the focus control on display
-  
+
   private void setFocusControl( final Control control ) {
     Object adapter = getDisplay().getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
@@ -1329,7 +1328,7 @@ public abstract class Control extends Widget {
       menu.removeDisposeListener( menuDisposeListener );
     }
   }
-  
+
   private IControlThemeAdapter getControlThemeAdapter() {
     ThemeManager themeMgr = ThemeManager.getInstance();
     return ( IControlThemeAdapter )themeMgr.getThemeAdapter( getClass() );

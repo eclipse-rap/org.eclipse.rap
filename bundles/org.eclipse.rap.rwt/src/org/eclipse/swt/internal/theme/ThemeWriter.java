@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.theme;
 
 
 public class ThemeWriter {
-  
+
   private final String id;
   private final String name;
   private StringBuffer code;
@@ -21,7 +21,7 @@ public class ThemeWriter {
   private boolean tailWritten;
   private boolean valueWritten;
   private int type;
-  
+
   public static final int META = 1;
   public static final int FONT = 2;
   public static final int COLOR = 3;
@@ -29,7 +29,7 @@ public class ThemeWriter {
   public static final int ICON = 5;
   public static final int WIDGET = 6;
   public static final int APPEARANCE = 7;
-  
+
   public ThemeWriter( final String id, final String name, final int type ) {
     this.id = id;
     this.name = name;
@@ -39,7 +39,7 @@ public class ThemeWriter {
     tailWritten = false;
     valueWritten = false;
   }
-  
+
   public void writeValues( final String values ) {
     beforeWriteValue();
     code.append( values );
@@ -52,7 +52,7 @@ public class ThemeWriter {
     }
     beforeWriteValue();
     code.append( "    \"" + key + "\" : { " );
-    code.append( " family: [" );
+    code.append( "family: [" );
     for( int i = 0; i < font.family.length; i++ ) {
       if( i > 0 ) {
         code.append( " ," );
@@ -89,7 +89,7 @@ public class ThemeWriter {
     code.append( " ]" );
     afterWriteValue();
   }
-  
+
   public void writeBorder( final String key, final QxBorder border ) {
     if( type != BORDER ) {
       throw new IllegalStateException( "Border can only be set in border themes" );
@@ -118,7 +118,7 @@ public class ThemeWriter {
     code.append( " }" );
     afterWriteValue();
   }
-  
+
   public void writeUri( final String pathPrefix ) {
     if( type != WIDGET && type != ICON ) {
       throw new IllegalStateException( "Url can only be set in widget and icon themes" );
@@ -129,7 +129,7 @@ public class ThemeWriter {
     code.append( "\"" );
     afterWriteValue();
   }
-  
+
   public void writeTheme( final String key, final String value ) {
     if( type != META ) {
       throw new IllegalStateException( "Theme can only be set in meta themes" );
@@ -175,14 +175,14 @@ public class ThemeWriter {
     code.append( "  " + getThemeKey() + " : {\n" );
     headWritten = true;
   }
-  
+
   private void writeTail() {
     code.append( "\n" );
     code.append( "  }\n" );
     code.append( "} );\n" );
     tailWritten = true;
   }
-  
+
   private int checkType( final int type ) {
     if( type != META
         && type != FONT
@@ -196,7 +196,7 @@ public class ThemeWriter {
     }
     return type;
   }
-  
+
   private String getNameSuffix() {
     String result = "";
     if( type == FONT ) {
@@ -214,7 +214,7 @@ public class ThemeWriter {
     }
     return result;
   }
-  
+
   private String getThemeKey() {
     String result = null;
     if( type == META ) {

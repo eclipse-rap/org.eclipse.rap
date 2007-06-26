@@ -32,7 +32,7 @@ import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
 
 public class ThemeManager {
-  
+
   public interface ResourceLoader {
     public abstract InputStream getResourceAsStream( String resourceName )
     throws IOException;
@@ -202,7 +202,7 @@ public class ThemeManager {
     Control.class,
     CoolBar.class,
     CTabFolder.class,
-//  Group.class,
+    Group.class,
     Label.class,
     Link.class,
     List.class,
@@ -260,7 +260,16 @@ public class ThemeManager {
       while( iterator.hasNext() ) {
         String key = ( String )iterator.next();
         ThemeDef def = ( ThemeDef )themeDefs.get( key );
-        predefinedTheme.setValue( key, def.defValue );
+        // TODO [rst] Revise inheritance system
+        ThemeDef inheritDef = null;
+        if( def.inherit != null ) {
+          inheritDef = ( ThemeDef )themeDefs.get( def.inherit );
+        }
+        if( inheritDef != null ) {
+          predefinedTheme.setValue( key, inheritDef.defValue );
+        } else {
+          predefinedTheme.setValue( key, def.defValue );
+        }
       }
       themes.put( PREDEFINED_THEME_ID, new ThemeWrapper( predefinedTheme,
                                                          null,
@@ -271,7 +280,7 @@ public class ThemeManager {
       while( iter.hasNext() ) {
         Class key = ( Class )iter.next();
         Object adapter = adapters.get( key );
-        log( key.getName() + ": " + adapter );        
+        log( key.getName() + ": " + adapter );
       }
       log( "=== END REGISTERED ADAPTERS ===" );
     }
@@ -382,6 +391,9 @@ public class ThemeManager {
     return result;
   }
 
+  /**
+   * Writes a theme template file to the standard output.
+   */
   public static void main( final String[] args ) {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -399,7 +411,7 @@ public class ThemeManager {
       sb.append( "# default: " + value + "\n" );
       sb.append( "#" + def.name + ": " + value  + "\n" );
     }
-    log( sb.toString() );
+    System.out.println( sb.toString() );
   }
 
   private void checkInitialized() {
@@ -410,13 +422,12 @@ public class ThemeManager {
 
   /**
    * Loads and processes all theme-relevant resources for a given class.
-   * @throws InvalidThemeFormatException 
-   * @throws ParserConfigurationException 
-   * @throws FactoryConfigurationError 
+   * @throws InvalidThemeFormatException
+   * @throws ParserConfigurationException
+   * @throws FactoryConfigurationError
    */
   private void processThemeableWidget( final Class clazz )
-  throws IOException, FactoryConfigurationError,
-  ParserConfigurationException
+    throws IOException, FactoryConfigurationError, ParserConfigurationException
   {
     String[] variants = getPackageVariants( clazz.getPackage().getName() );
     String className = getSimpleClassName( clazz );
@@ -441,8 +452,7 @@ public class ThemeManager {
   private void loadThemeDef( final ClassLoader loader,
                              final String pkgName,
                              final String className )
-  throws IOException, FactoryConfigurationError,
-  ParserConfigurationException
+    throws IOException, FactoryConfigurationError, ParserConfigurationException
   {
     String resPkgName = pkgName.replace( '.', '/' );
     String fileName = resPkgName + "/" + className + ".theme.xml";
@@ -494,7 +504,7 @@ public class ThemeManager {
   }
 
   private Theme loadThemeFile( final String name, final InputStream instr )
-  throws IOException
+    throws IOException
   {
     if( instr == null ) {
       throw new IllegalArgumentException( "null argument" );
@@ -540,7 +550,7 @@ public class ThemeManager {
   }
 
   private void registerThemeFiles( final String id )
-  throws IOException
+    throws IOException
   {
     ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
     String jsId = getJsThemeId( id );
@@ -563,8 +573,8 @@ public class ThemeManager {
     registerJsLibrary( themeCode, jsId + ".js", loadOnStartup );
   }
 
-  private void registerWidgetImages( final String id ) 
-  throws IOException 
+  private void registerWidgetImages( final String id )
+    throws IOException
   {
     Iterator iterator = WIDGET_RESOURCES_MAP.keySet().iterator();
     ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
@@ -608,7 +618,7 @@ public class ThemeManager {
   private static void registerJsLibrary( final String code,
                                          final String name,
                                          final boolean loadOnStartup )
-  throws IOException
+    throws IOException
   {
     ByteArrayInputStream resourceInputStream;
     byte[] buffer = code.getBytes( CHARSET );
@@ -645,7 +655,7 @@ public class ThemeManager {
   }
 
   private static String createBorderTheme( final Theme theme, final String id )
-  throws IOException
+    throws IOException
   {
     ClassLoader classLoader = ThemeManager.class.getClassLoader();
     String resource = "org/eclipse/swt/theme/DefaultBorders.js";

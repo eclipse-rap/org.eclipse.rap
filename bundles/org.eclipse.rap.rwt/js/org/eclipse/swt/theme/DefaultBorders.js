@@ -126,13 +126,6 @@
       innerColor : [ "widget.darkshadow", "widget.lightshadow", "widget.lightshadow", "widget.darkshadow" ]
     },
     
-    // -- group --
-    
-    "group.border" : {
-      width : 1,
-      color : "#aca899"
-    },
-    
     // -- table --
     
     "table.column.border" : {

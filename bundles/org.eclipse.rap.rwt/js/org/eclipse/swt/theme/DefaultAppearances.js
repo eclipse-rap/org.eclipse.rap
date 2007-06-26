@@ -11,7 +11,7 @@
 
 // TODO [rst] This file is now read and substituted by the ThemeManager and may
 //            be renamed in the future.
-
+appearances = {
 // BEGIN TEMPLATE (do not remove this line)
 
     "empty" : {
@@ -1013,7 +1013,7 @@
     
     /*
     ---------------------------------------------------------------------------
-      FIELDSET ( GROUP )
+      GROUP BOX
     ---------------------------------------------------------------------------
     */
 
@@ -1032,13 +1032,12 @@
 
       style : function( states ) {
         return {
-          top             : 1,
-          left            : 10,
+          top : 0,
+          left : 0,
+          padding : THEME_VALUE( "group.label.padding" ),
+          margin : THEME_VALUE( "group.label.margin" ),
           backgroundColor : "widget.background",
-          paddingRight    : 3,
-          paddingLeft     : 4,
-//          marginRight     : 10, TODO [rst] added by qx 0.7
-          textColor       : states.disabled ? "widget.graytext" : "undefined"
+          textColor : states.disabled ? "widget.graytext" : "undefined"
         };
       }
     },
@@ -1047,35 +1046,16 @@
     {
       style : function( states ) {
         return {
-          top           : 8,
-          left          : 2,
-          right         : 2,
-          bottom        : 2,
-//          padding       : [ 12, 9 ], TODO [rst] why did we remove that?
-          border        : "group.border"
+          top : 0,
+          left : 0,
+          right : 0,
+          bottom : 0,
+          margin : THEME_VALUE( "group.margin" ),
+          border : "group.frame.border"
         };
       }
     },
 
-    "check-box-field-set-legend" :
-    {
-      include : "atom",
-
-      style : function( states ) {
-        return {
-          top             : 1,
-          left            : 10,
-          backgroundColor : "#ece9d8",
-          paddingRight    : 3
-        };
-      }
-    },
-
-    "radio-button-field-set-legend" :
-    {
-      include : "check-box-field-set-legend"
-    },
-    
     /*
     ---------------------------------------------------------------------------
       SPINNER
@@ -1502,3 +1482,5 @@
         }
       }
     }
+// END TEMPLATE
+};

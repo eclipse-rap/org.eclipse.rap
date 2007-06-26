@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -14,6 +14,9 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.theme.IThemeAdapter;
+import org.eclipse.swt.internal.theme.ThemeManager;
+import org.eclipse.swt.internal.widgets.groupkit.IGroupThemeAdapter;
 
 
 /**
@@ -40,11 +43,6 @@ import org.eclipse.swt.graphics.Rectangle;
  * Note: The styles SHADOW_XXX are not yet implemented in RWT.
  */
 public class Group extends Composite {
-  
-  private static final int TRIM_LEFT = 5;
-  private static final int TRIM_TOP = 15;
-  private static final int TRIM_RIGHT = 5;
-  private static final int TRIM_BOTTOM = 5;
 
   private String text = "";
 
@@ -54,7 +52,7 @@ public class Group extends Composite {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -134,26 +132,30 @@ public class Group extends Composite {
     checkWidget();
     return text;
   }
-    
+
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    int width = Math.max( 0, bounds.width - TRIM_LEFT - TRIM_RIGHT );
-    int height = Math.max( 0, bounds.height - TRIM_TOP - TRIM_BOTTOM );
-    return new Rectangle( TRIM_LEFT, TRIM_TOP, width, height );
+    IGroupThemeAdapter adapter = getGroupThemeAdapter();
+    Rectangle trimmings = adapter.getTrimmingSize();
+    int width = Math.max( 0, bounds.width - trimmings.width );
+    int height = Math.max( 0, bounds.height - trimmings.height );
+    return new Rectangle( trimmings.x, trimmings.y, width, height );
   }
-  
+
   public Rectangle computeTrim( final int x,
                                 final int y,
                                 final int width,
-                                final int height ) 
+                                final int height )
   {
-    return super.computeTrim( x - TRIM_LEFT,
-                              y - TRIM_TOP,
-                              width + TRIM_LEFT + TRIM_RIGHT,
-                              height + TRIM_TOP + TRIM_BOTTOM );
+    IGroupThemeAdapter adapter = getGroupThemeAdapter();
+    Rectangle trimmings = adapter.getTrimmingSize();
+    return super.computeTrim( x - trimmings.x,
+                              y - trimmings.y,
+                              width + trimmings.width,
+                              height + trimmings.height );
   }
-  
+
   String getNameText() {
     return getText();
   }
@@ -166,5 +168,12 @@ public class Group extends Composite {
      * widget's client area. The fix is to clear the SWT style.
      */
     return result & ~( SWT.H_SCROLL | SWT.V_SCROLL );
+  }
+
+  private IGroupThemeAdapter getGroupThemeAdapter() {
+    ThemeManager themeMgr = ThemeManager.getInstance();
+    IThemeAdapter themeAdapter = themeMgr.getThemeAdapter( getClass() );
+    IGroupThemeAdapter result = ( IGroupThemeAdapter )themeAdapter;
+    return result;
   }
 }
