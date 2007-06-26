@@ -257,7 +257,8 @@ public class ToolBar extends Composite {
    */
   public int getRowCount() {
     checkWidget();
-    return itemHolder.size();
+    // return 1 as long as we don't support the WRAP style bit
+    return 1;
   }
   
   public void setBounds( final Rectangle bounds ) {
