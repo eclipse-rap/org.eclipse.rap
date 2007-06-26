@@ -12,7 +12,9 @@
 package org.eclipse.swt.widgets;
 
 import java.util.Arrays;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
@@ -435,9 +437,9 @@ public class Tree_Test extends TestCase {
     tree.removeAll();
   }
   
-  public void test_getParentItem() {
+  public void testGetParentItem() {
     Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     assertNull( tree.getParentItem() );
   }

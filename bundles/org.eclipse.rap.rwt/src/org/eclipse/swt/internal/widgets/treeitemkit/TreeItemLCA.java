@@ -12,10 +12,11 @@
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.swt.events.TreeEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
@@ -28,6 +29,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public static final String PROP_CHECKED = "checked";
   public static final String PROP_EXPANDED = "expanded";
   public static final String PROP_SELECTION = "selection";
+  public static final String PROP_BACKGROUND = "background";
+  public static final String PROP_FOREGROUND = "foreground";
 
   // Expanded/collapsed state constants, used by readData 
   private static final String STATE_COLLAPSED = "collapsed";
@@ -43,6 +46,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( treeItem.getExpanded() ) );
     boolean selection = isSelected( treeItem );
     adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
+    adapter.preserve( PROP_FOREGROUND, treeItem.getForeground() );
+    adapter.preserve( PROP_BACKGROUND, treeItem.getBackground() );
   }
 
   public void readData( final Widget widget ) {
@@ -81,6 +86,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     ItemLCAUtil.writeText( treeItem );
     writeImage( treeItem );
     writeFont( treeItem );
+    writeBackground( treeItem );
+    writeForeground( treeItem );
     writeSelection( treeItem );
     writeExpanded( treeItem );
     writeChecked( treeItem );
@@ -144,6 +151,25 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void writeBackground( final TreeItem item )
+      throws IOException {
+    
+    Color color = item.getBackground();
+    if ( WidgetLCAUtil.hasChanged( item, PROP_BACKGROUND, color, Color.getColor( 255, 255, 255 ) ) ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( JSConst.QX_FIELD_BG_COLOR, color );
+    }
+  }
+  
+  private static void writeForeground( final TreeItem item )
+      throws IOException {
+    Color color = item.getForeground();
+    if ( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND, color, Color.getColor( 0, 0, 0 ) ) ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( JSConst.QX_FIELD_COLOR, color );
+    }
+  }
+  
   private static boolean isFocused( final TreeItem item ) {
     Tree tree = item.getParent();
     return tree.getSelectionCount() > 0 && tree.getSelection()[ 0 ] == item;

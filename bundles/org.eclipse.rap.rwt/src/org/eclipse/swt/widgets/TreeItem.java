@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.*;
 
@@ -40,6 +41,7 @@ public class TreeItem extends Item {
   private Font font;
   private boolean expanded;
   private boolean checked;
+  private Color background, foreground;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -311,6 +313,110 @@ public class TreeItem extends Item {
       result = font;
     }
     return result;
+  }
+  
+  /**
+   * Sets the receiver's background color to the color specified
+   * by the argument, or to the default system color for the item
+   * if the argument is null.
+   *
+   * @param color the new color (or null)
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 2.0
+   * 
+   */
+  public void setBackground( Color value ) {
+    checkWidget();
+    if ( value == null ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if ( background == value )
+      return;
+    if ( background != null && background.equals( value ) )
+      return;
+    background = value;
+    // if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+  }
+
+  /**
+   * Returns the receiver's background color.
+   *
+   * @return the background color
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 2.0
+   * 
+   */
+  public Color getBackground() {
+    checkWidget();
+    if ( isDisposed() )
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    if ( background != null )
+      return background;
+    return parent.getBackground();
+  }
+  
+  /**
+   * Returns the foreground color that the receiver will use to draw.
+   *
+   * @return the receiver's foreground color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 2.0
+   * 
+   */
+  public Color getForeground () {
+    checkWidget ();
+    if (isDisposed()) error (SWT.ERROR_WIDGET_DISPOSED);
+    if (foreground != null) return foreground;
+    return parent.getForeground ();
+  }
+  
+  /**
+   * Sets the receiver's foreground color to the color specified
+   * by the argument, or to the default system color for the item
+   * if the argument is null.
+   *
+   * @param color the new color (or null)
+   *
+   * @since 2.0
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 2.0
+   * 
+   */
+  public void setForeground (Color value) {
+    checkWidget ();
+    if (value == null) {
+      SWT.error (SWT.ERROR_INVALID_ARGUMENT);
+    }
+    if (foreground == value) return;
+    if (foreground != null && foreground.equals (value)) return;
+    foreground = value;
+//    if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
   
   /**

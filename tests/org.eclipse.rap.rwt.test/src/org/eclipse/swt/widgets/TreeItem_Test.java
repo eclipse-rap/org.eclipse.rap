@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
 public class TreeItem_Test extends TestCase {
@@ -93,6 +94,32 @@ public class TreeItem_Test extends TestCase {
     assertEquals( true, checkedItem.getChecked() );
   }
 
+  public void testBackgroundColor() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    // initial background color should match the parents one
+    assertEquals( tree.getBackground(),  item.getBackground());
+    // change the colors
+    Color green = Color.getColor( 0, 255, 0 );
+    item.setBackground( green );
+    assertEquals( green, item.getBackground() );
+  }
+  
+  public void testForegroundColor() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    // initial foreground color should match the parents one
+    assertEquals( tree.getForeground(),  item.getForeground());
+    // change the colors
+    Color green = Color.getColor( 0, 255, 0 );
+    item.setForeground( green );
+    assertEquals( green, item.getForeground() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

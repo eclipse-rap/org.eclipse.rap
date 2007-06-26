@@ -77,6 +77,8 @@ public class Tree extends Composite {
   private final ItemHolder itemHolder;
   private TreeItem[] selection;
 
+  private boolean linesVisible;
+
 
   /**
    * Constructs a new instance of this class given its parent
@@ -462,7 +464,56 @@ public class Tree extends Composite {
     this.selection = EMPTY_SELECTION;
   }
 
-  //////////////////////////////////////
+  /**
+   * Marks the receiver's lines as visible if the argument is <code>true</code>,
+   * and marks it invisible otherwise. 
+   * <p>
+   * If one of the receiver's ancestors is not visible or some
+   * other condition makes the receiver not visible, marking
+   * it visible may not actually cause it to be displayed.
+   * </p>
+   *
+   * @param show the new visibility state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public void setLinesVisible( boolean value ) {
+    checkWidget();
+    if ( linesVisible == value )
+      return; /* no change */
+    linesVisible = value;
+  }
+  
+  /**
+   * Returns <code>true</code> if the receiver's lines are visible,
+   * and <code>false</code> otherwise.
+   * <p>
+   * If one of the receiver's ancestors is not visible or some
+   * other condition makes the receiver not visible, this method
+   * may still indicate that it is considered visible even though
+   * it may not actually be showing.
+   * </p>
+   *
+   * @return the visibility state of the lines
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public boolean getLinesVisible() {
+    checkWidget();
+    return linesVisible;
+  }
+  
+  // ////////////////////////////////////
   // Listener registration/deregistration
   
   /**

@@ -17,12 +17,14 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.Fixture;
 import com.w4t.engine.requests.RequestParams;
 import com.w4t.util.browser.Ie6;
@@ -131,6 +133,43 @@ public class TreeItemLCA_Test extends TestCase {
     RWTFixture.removeUIThread();
   }
 
+  public void testRenderChanges() throws IOException {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE);
+    shell.open();
+    
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( tree );
+    RWTFixture.markInitialized( treeItem );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+
+    TreeItemLCA tiLCA = new TreeItemLCA();
+    treeItem.setBackground( Color.getColor( 255, 0, 0 ) );
+    tiLCA.renderChanges( treeItem );
+    
+    String expected;
+    expected 
+      = "setBackgroundColor( \"#ff0000\" );";
+    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
+
+    Fixture.fakeResponseWriter();
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    
+    treeItem.setForeground( Color.getColor( 0, 255, 0 ) );
+    tiLCA.renderChanges( treeItem );
+    
+    expected 
+      = "setTextColor( \"#00ff00\" );";
+    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
+    
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeBrowser( new Ie6( true, true ) );
