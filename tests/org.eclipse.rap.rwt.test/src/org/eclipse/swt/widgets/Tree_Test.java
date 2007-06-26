@@ -435,6 +435,13 @@ public class Tree_Test extends TestCase {
     tree.removeAll();
   }
   
+  public void test_getParentItem() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    assertNull( tree.getParentItem() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

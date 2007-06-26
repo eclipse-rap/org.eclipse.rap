@@ -221,6 +221,23 @@ public class Tree extends Composite {
   }
   
   /**
+   * Returns the receiver's parent item, which must be a
+   * <code>TreeItem</code> or null when the receiver is a
+   * root.
+   *
+   * @return the receiver's parent item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public TreeItem getParentItem () {
+  	checkWidget ();
+  	return null;
+  }
+  
+  /**
    * Removes all of the items from the receiver.
    * 
    * @exception SWTException <ul>
