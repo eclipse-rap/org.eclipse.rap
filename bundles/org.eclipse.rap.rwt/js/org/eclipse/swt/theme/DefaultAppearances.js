@@ -658,7 +658,6 @@ appearances = {
     {
       style : function( states ) {
         return {
-          textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           overflow : "hidden",
           backgroundColor : "list.background",
           border : states.rwt_BORDER ? "thinInset" : "undefined"
@@ -680,14 +679,14 @@ appearances = {
         };
         if( states.selected ) {
           if( states.parent_unfocused ) {
-            result.textColor = "list.selection.unfocused.foreground";
+            result.textColor = states.disabled ? "widget.graytext" : "list.selection.unfocused.foreground";
             result.backgroundColor = "list.selection.unfocused.background";
           } else {
-            result.textColor = "list.selection.foreground";
+            result.textColor = states.disabled ? "widget.graytext" : "list.selection.foreground";
             result.backgroundColor = "list.selection.background";
           }
         } else {
-          result.textColor = "undefined";
+          result.textColor = states.disabled ? "widget.graytext" : "undefined";
           result.backgroundColor = null;
         }
         return result;
@@ -831,20 +830,20 @@ appearances = {
           // TODO [rst] Replace the following lines with commented block below
           //            when tree focus works correctly (currently clicking on
           //            a tree item removes focus from the tree)
-          result.textColor = "list.selection.foreground";
+          result.textColor = states.disabled ? "widget.graytext" : "list.selection.foreground";
           result.backgroundColor = "list.selection.background";
           /*
           if( states.parent_unfocused ) {
-            result.textColor = "list.selection.unfocused.foreground";
+            result.textColor = states.disabled ? "widget.graytext" : "list.selection.unfocused.foreground";
             result.backgroundColor = "list.selection.unfocused.background";
           } else {
-            result.textColor = "list.selection.foreground";
+            result.textColor = states.disabled ? "widget.graytext" : "list.selection.foreground";
             result.backgroundColor = "list.selection.background";
           }
           */
         } else {
-          result.textColor = "list.foreground";
-          result.backgroundColor = "list.background";
+          result.textColor = states.disabled ? "widget.graytext" : "undefined";
+          result.backgroundColor = "transparent";
         }
         return result;
       }
@@ -870,9 +869,8 @@ appearances = {
       include : "tree-folder",
       style : function( states ) {
         return {
-          textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           verticalChildrenAlign : "top",
-          backgroundColor       : "list.background",
+          backgroundColor : "list.background",
           border : states.rwt_BORDER
             ? "control.BORDER.border"
             : "control.border"
@@ -1163,7 +1161,8 @@ appearances = {
           cursor : "default",
           paddingLeft : 2,
           paddingRight : 2,
-          spacing : 2
+          spacing : 2,
+          textColor : states.disabled ? "widget.graytext" : "undefined"
         };
         if( states.mouseover && !states.disabled ) {
           result.backgroundColor = "table.column.hover.background";

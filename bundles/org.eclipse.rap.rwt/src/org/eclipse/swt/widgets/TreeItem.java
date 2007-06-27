@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -13,14 +13,15 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.*;
 
 
 /**
  * Instances of this class represent a selectable user interface object
  * that represents a hierarchy of tree items in a tree widget.
- * 
+ *
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>(none)</dd>
@@ -37,6 +38,7 @@ public class TreeItem extends Item {
   private final Tree parent;
   private final ItemHolder itemHolder;
   private final IWidgetFontAdapter widgetFontAdapter;
+  private final IWidgetColorAdapter widgetColorAdapter;
   private Font font;
   private boolean expanded;
   private boolean checked;
@@ -50,7 +52,7 @@ public class TreeItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -84,7 +86,7 @@ public class TreeItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -107,7 +109,7 @@ public class TreeItem extends Item {
    * @see Widget#getStyle
    */
   public TreeItem( final TreeItem parentItem, final int style ) {
-    this( parentItem == null ? null : parentItem.parent, 
+    this( parentItem == null ? null : parentItem.parent,
           parentItem,
           style,
           -1 );
@@ -121,7 +123,7 @@ public class TreeItem extends Item {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -145,14 +147,14 @@ public class TreeItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TreeItem( final TreeItem parentItem, final int style, final int index ) 
+  public TreeItem( final TreeItem parentItem, final int style, final int index )
   {
-    this( parentItem == null ? null : parentItem.parent, 
-          parentItem, 
+    this( parentItem == null ? null : parentItem.parent,
+          parentItem,
           style,
           -1 );
   }
-  
+
   private TreeItem( final Tree parent,
                     final TreeItem parentItem,
                     final int style,
@@ -174,6 +176,14 @@ public class TreeItem extends Item {
         return font;
       }
     };
+    widgetColorAdapter = new IWidgetColorAdapter() {
+      public Color getUserForegound() {
+        return foreground;
+      }
+      public Color getUserBackgound() {
+        return background;
+      }
+    };
   }
 
   public Object getAdapter( final Class adapter ) {
@@ -182,6 +192,8 @@ public class TreeItem extends Item {
       result = itemHolder;
     } else if( adapter == IWidgetFontAdapter.class ) {
       result = widgetFontAdapter;
+    } else if( adapter == IWidgetColorAdapter.class ) {
+      result = widgetColorAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -190,7 +202,7 @@ public class TreeItem extends Item {
 
   /////////////////
   // Item overrides
-  
+
   public final Display getDisplay() {
     checkWidget();
     return parent.getDisplay();
@@ -198,7 +210,7 @@ public class TreeItem extends Item {
 
   /////////////////////////
   // Parent/child relations
-  
+
   /**
    * Returns the receiver's parent, which must be a <code>Tree</code>.
    *
@@ -230,7 +242,7 @@ public class TreeItem extends Item {
     checkWidget();
     return parentItem;
   }
-  
+
   ////////////////
   // Getter/Setter
 
@@ -248,10 +260,10 @@ public class TreeItem extends Item {
   public void setExpanded( final boolean expanded ) {
     checkWidget();
     if( !expanded || getItemCount() > 0 ) {
-      this.expanded = expanded; 
+      this.expanded = expanded;
     }
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is expanded,
    * and false otherwise.
@@ -277,20 +289,20 @@ public class TreeItem extends Item {
    * @param font the new font (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setFont( final Font font ) {
     checkWidget();
     this.font = font;
   }
-  
+
   /**
    * Returns the font that the receiver will use to paint textual information for this item.
    *
@@ -313,34 +325,33 @@ public class TreeItem extends Item {
     }
     return result;
   }
-  
+
   /**
    * Sets the receiver's background color to the color specified
    * by the argument, or to the default system color for the item
    * if the argument is null.
    *
    * @param color the new color (or null)
-   * 
+   *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 2.0
-   * 
+   *
    */
-  public void setBackground( Color value ) {
+  public void setBackground( final Color value ) {
     checkWidget();
-    if ( value == null ) {
-      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    if( background == value ) {
+      return;
     }
-    if ( background == value )
+    if( background != null && background.equals( value ) ) {
       return;
-    if ( background != null && background.equals( value ) )
-      return;
+    }
     background = value;
     // if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
@@ -349,14 +360,14 @@ public class TreeItem extends Item {
    * Returns the receiver's background color.
    *
    * @return the background color
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 2.0
-   * 
+   *
    */
   public Color getBackground() {
     checkWidget();
@@ -366,7 +377,7 @@ public class TreeItem extends Item {
       return background;
     return parent.getBackground();
   }
-  
+
   /**
    * Returns the foreground color that the receiver will use to draw.
    *
@@ -376,9 +387,9 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 2.0
-   * 
+   *
    */
   public Color getForeground () {
     checkWidget ();
@@ -386,7 +397,7 @@ public class TreeItem extends Item {
     if (foreground != null) return foreground;
     return parent.getForeground ();
   }
-  
+
   /**
    * Sets the receiver's foreground color to the color specified
    * by the argument, or to the default system color for the item
@@ -395,29 +406,30 @@ public class TreeItem extends Item {
    * @param color the new color (or null)
    *
    * @since 2.0
-   * 
+   *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 2.0
-   * 
+   *
    */
-  public void setForeground (Color value) {
+  public void setForeground( final Color value ) {
     checkWidget ();
-    if (value == null) {
-      SWT.error (SWT.ERROR_INVALID_ARGUMENT);
+    if( foreground == value ) {
+      return;
     }
-    if (foreground == value) return;
-    if (foreground != null && foreground.equals (value)) return;
+    if( foreground != null && foreground.equals( value ) ) {
+      return;
+    }
     foreground = value;
 //    if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
-  
+
   /**
    * Sets the checked state of the receiver.
    * <p>
@@ -435,7 +447,7 @@ public class TreeItem extends Item {
       this.checked = checked;
     }
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is checked,
    * and false otherwise.  When the parent does not have
@@ -484,7 +496,7 @@ public class TreeItem extends Item {
 //      }
 //    }
   }
-  
+
   /**
    * Clears all the items in the receiver. The text, icon and other
    * attributes of the items are set to their default values. If the
@@ -519,14 +531,14 @@ public class TreeItem extends Item {
   }
   ///////////////////////////////////////
   // Methods to maintain (sub-) TreeItems
-  
+
   /**
    * Returns a (possibly empty) array of <code>TreeItem</code>s which
    * are the direct item children of the receiver.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the receiver's items
@@ -540,7 +552,7 @@ public class TreeItem extends Item {
     checkWidget();
     return (org.eclipse.swt.widgets.TreeItem[] )itemHolder.getItems();
   }
-  
+
   /**
    * Returns the item at the given, zero-relative index in the
    * receiver. Throws an exception if the index is out of range.
@@ -555,14 +567,14 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public TreeItem getItem( final int index ) {
     checkWidget();
     return ( TreeItem )itemHolder.getItem( index );
   }
-  
+
   /**
    * Returns the number of items contained in the receiver
    * that are direct item children of the receiver.
@@ -578,10 +590,10 @@ public class TreeItem extends Item {
     checkWidget();
     return itemHolder.size();
   }
-  
+
   /**
    * Searches the receiver's list starting at the first item
-   * (index 0) until an item is found that is equal to the 
+   * (index 0) until an item is found that is equal to the
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
@@ -596,7 +608,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public int indexOf( final TreeItem item ) {
@@ -630,7 +642,7 @@ public class TreeItem extends Item {
 
   /////////////////////////////////
   // Methods to dispose of the item
-  
+
   protected final void releaseChildren() {
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {

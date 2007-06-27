@@ -44,11 +44,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this.addEventListener( "dblclick", this._onDblClick, this );
     parentItem.add( this );
     this.getLabelObject().setMode( "html" );
-    
-    // TODO [bm] need to set the colors to prevent inheritance of colors
-    // replace with theme colors
-    this.setTextColor( "#000000" );
-    this.setBackgroundColor( "#ffffff" );
   },
   
   destruct : function() {
@@ -62,18 +57,24 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   },
 
   members : {
-  	// TODO: [bm] needed to override the property setters to apply color to label too
+  	// TODO: [bm] needed to override the property setters to apply color to label
   	setBackgroundColor : function ( value ) {
-  		this._applyBackgroundColor( value, null );
   		this.getLabelObject().setBackgroundColor( value );
   	},
   	
-  	// TODO: [bm] needed to override the property setters to apply color to label too
+  	// TODO: [bm] needed to override the property setters to apply color to label
   	setTextColor : function ( value ) {
-  		this._applyTextColor( value, null );
   		this.getLabelObject().setTextColor( value );
   	},
-  	
+
+  	resetBackgroundColor : function ( value ) {
+  	    this.getLabelObject().resetBackgroundColor();
+  	},
+
+  	resetTextColor : function ( value ) {
+  	   this.getLabelObject().resetTextColor();
+  	},
+
     setChecked : function( value ) {
       if( this._checkBox != null ) {
         this._checkBox.setChecked( value );

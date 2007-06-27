@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -32,22 +32,25 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public static final String PROP_BACKGROUND = "background";
   public static final String PROP_FOREGROUND = "foreground";
 
-  // Expanded/collapsed state constants, used by readData 
+  // Expanded/collapsed state constants, used by readData
   private static final String STATE_COLLAPSED = "collapsed";
   private static final String STATE_EXPANDED = "expanded";
-  
+
   public void preserveValues( final Widget widget ) {
     TreeItem treeItem = ( TreeItem )widget;
     ItemLCAUtil.preserve( treeItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     preserveFont( treeItem );
     adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
-    adapter.preserve( TreeItemLCA.PROP_EXPANDED, 
+    adapter.preserve( TreeItemLCA.PROP_EXPANDED,
                       Boolean.valueOf( treeItem.getExpanded() ) );
     boolean selection = isSelected( treeItem );
     adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
-    adapter.preserve( PROP_FOREGROUND, treeItem.getForeground() );
-    adapter.preserve( PROP_BACKGROUND, treeItem.getBackground() );
+    TreeItem item = ( TreeItem )widget;
+    IWidgetColorAdapter colorAdapter
+      = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+    adapter.preserve( PROP_FOREGROUND, colorAdapter.getUserForegound() );
+    adapter.preserve( PROP_BACKGROUND, colorAdapter.getUserBackgound() );
   }
 
   public void readData( final Widget widget ) {
@@ -65,7 +68,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     processTreeExpandedEvent( widget );
     processTreeCollapsedEvent( widget );
   }
-  
+
   public void renderInitialization( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
@@ -75,7 +78,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     } else {
       parent = treeItem.getParentItem();
     }
-    Object[] args = new Object[] { 
+    Object[] args = new Object[] {
       parent
     };
     writer.newWidget( "org.eclipse.swt.widgets.TreeItem", args );
@@ -102,14 +105,14 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   ///////////////////////////////////
   // Helping methods to write changes
-  
-  // TODO [rh] workaround for qx bug #260 (TreeFullControl doesn't update icon 
-  //      when it is changed) 
+
+  // TODO [rh] workaround for qx bug #260 (TreeFullControl doesn't update icon
+  //      when it is changed)
   private static void writeImage( final TreeItem item ) throws IOException {
     Image image = item.getImage();
     WidgetLCAUtil.writeImage( item, Props.IMAGE, "image", image );
   }
-  
+
   private static void preserveFont( final TreeItem treeItem ) {
     IWidgetFontAdapter fontAdapter
       = ( IWidgetFontAdapter )treeItem.getAdapter( IWidgetFontAdapter.class );
@@ -124,23 +127,23 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeFont( treeItem, font );
   }
 
-  private static void writeExpanded( final TreeItem item ) 
-    throws IOException 
+  private static void writeExpanded( final TreeItem item )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( item.getExpanded() );
     writer.set( PROP_EXPANDED, "open", newValue, Boolean.FALSE );
   }
 
-  private static void writeChecked( final TreeItem item ) throws IOException 
+  private static void writeChecked( final TreeItem item ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( item.getChecked() );
     writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
   }
 
-  private static void writeSelection( final TreeItem item ) 
-    throws IOException 
+  private static void writeSelection( final TreeItem item )
+    throws IOException
   {
     Boolean newValue = Boolean.valueOf( isSelected( item ) );
     Boolean defValue = Boolean.FALSE;
@@ -153,28 +156,39 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   private static void writeBackground( final TreeItem item )
       throws IOException {
-    
-    Color color = item.getBackground();
-    if ( WidgetLCAUtil.hasChanged( item, PROP_BACKGROUND, color, Color.getColor( 255, 255, 255 ) ) ) {
+    Object adapter = item.getAdapter( IWidgetColorAdapter.class );
+    IWidgetColorAdapter colorAdapter = ( IWidgetColorAdapter )adapter;
+    Color color = colorAdapter.getUserBackgound();
+    if ( WidgetLCAUtil.hasChanged( item, PROP_BACKGROUND, color, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
-      writer.set( JSConst.QX_FIELD_BG_COLOR, color );
+      if( color == null ) {
+        writer.reset( JSConst.QX_FIELD_BG_COLOR );
+      } else {
+        writer.set( JSConst.QX_FIELD_BG_COLOR, color );
+      }
     }
   }
-  
+
   private static void writeForeground( final TreeItem item )
       throws IOException {
-    Color color = item.getForeground();
-    if ( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND, color, Color.getColor( 0, 0, 0 ) ) ) {
+    Object adapter = item.getAdapter( IWidgetColorAdapter.class );
+    IWidgetColorAdapter colorAdapter = ( IWidgetColorAdapter )adapter;
+    Color color = colorAdapter.getUserForegound();
+    if ( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND, color, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
-      writer.set( JSConst.QX_FIELD_COLOR, color );
+      if( color == null ) {
+        writer.reset( JSConst.QX_FIELD_COLOR );
+      } else {
+        writer.set( JSConst.QX_FIELD_COLOR, color );
+      }
     }
   }
-  
+
   private static boolean isFocused( final TreeItem item ) {
     Tree tree = item.getParent();
     return tree.getSelectionCount() > 0 && tree.getSelection()[ 0 ] == item;
   }
-  
+
   private static boolean isSelected( final TreeItem item ) {
     boolean result = false;
     Tree tree = item.getParent();
@@ -189,13 +203,13 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   /////////////////////////////////
   // Process expand/collapse events
-  
+
   private static void processTreeExpandedEvent( final Widget widget ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String id = request.getParameter( JSConst.EVENT_TREE_EXPANDED );
     if( WidgetUtil.getId( widget ).equals( id ) ) {
       TreeItem treeItem = ( TreeItem )widget;
-      TreeEvent event = new TreeEvent( treeItem.getParent(), 
+      TreeEvent event = new TreeEvent( treeItem.getParent(),
                                        treeItem,
                                        TreeEvent.TREE_EXPANDED );
       event.processEvent();
@@ -207,7 +221,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     String id = request.getParameter( JSConst.EVENT_TREE_COLLAPSED );
     if( WidgetUtil.getId( widget ).equals( id ) ) {
       TreeItem treeItem = ( TreeItem )widget;
-      TreeEvent event = new TreeEvent( treeItem.getParent(), 
+      TreeEvent event = new TreeEvent( treeItem.getParent(),
                                        treeItem,
                                        TreeEvent.TREE_COLLAPSED );
       event.processEvent();
