@@ -511,7 +511,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _removeItem : function( item ) {
       var itemIndex = this._items.indexOf( item );
-      var wasItemVisible = this._isItemVisible( item );
+      var wasItemVisible = this._isItemVisible( itemIndex );
       qx.lang.Array.remove( this._items, item );
       this._itemCount--;
       if( item == this._focusedItem ) {
