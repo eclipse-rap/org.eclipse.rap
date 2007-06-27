@@ -82,7 +82,7 @@ appearances = {
     {
       style : function( states ) {
         return {
-          textColor : states.disabled ? "widget.graytext" : "undefined",
+          textColor : states.disabled ? "widget.graytext" : "undefined"
         };
       }
     },
@@ -1043,7 +1043,7 @@ appearances = {
           left : 0,
           padding : THEME_VALUE( "group.label.padding" ),
           margin : THEME_VALUE( "group.label.margin" ),
-          backgroundColor : "widget.background",
+          backgroundColor : "widget.background"
 // TODO [rst] Group label is not grayed out in SWT - check other toolkits
 //          textColor : states.disabled ? "widget.graytext" : "undefined"
         };
