@@ -16,14 +16,14 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class TableViewerTab extends ExampleTab {
 
+  
   private static final int ADD_ITEMS = 300;
 
   private static final String FIRST_NAME = "firstName";
@@ -152,12 +152,36 @@ public class TableViewerTab extends ExampleTab {
     }
   }
   
+  private static final class PersonFilter extends ViewerFilter {
+    private String text;
+    public void setText( final String string ) {
+      this.text = string;
+    }
+    public boolean select( final Viewer viewer, 
+                           final Object parentElement, 
+                           final Object element )
+    {
+      boolean result = true;
+      Person person = ( Person )element;
+      if( text != null && text.length() > 0 ) {
+        String personText = person.toString().toLowerCase();
+        result = personText.indexOf( text.toLowerCase() ) != -1;
+      }
+      return result;
+    }
+    public boolean isFilterProperty( final Object element, final String prop ) {
+      return true;
+    }
+  }
+
+  private final PersonFilter viewerFilter;
   private TableViewer viewer;
   private final java.util.List persons = new ArrayList();
   private Label lblSelection;
 
   public TableViewerTab( final CTabFolder topFolder ) {
     super( topFolder, "TableViewer" );
+    viewerFilter = new PersonFilter();
   }
 
   private void initPersons() {
@@ -183,8 +207,24 @@ public class TableViewerTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    GridLayout layout = new GridLayout( 1, false );
-    parent.setLayout( layout );
+    parent.setLayout( new GridLayout( 2, false ) );
+    GridDataFactory gridDataFactory;
+    Label lblFilter = new Label( parent, SWT.NONE );
+    lblFilter.setText( "Filter" );
+    lblFilter.setEnabled( ( getStyle() & SWT.VIRTUAL ) == 0 );
+    Text txtFilter = new Text( parent, SWT.BORDER );
+    txtFilter.setEnabled( ( getStyle() & SWT.VIRTUAL ) == 0 );
+    gridDataFactory = GridDataFactory.swtDefaults();
+    gridDataFactory.grab( true, false );
+    gridDataFactory.align( SWT.FILL, SWT.CENTER );
+    gridDataFactory.applyTo( txtFilter );
+    txtFilter.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        Text text = ( Text )event.widget;
+        viewerFilter.setText( text.getText() );
+        viewer.refresh(); 
+      }
+    } );
     if( viewer != null && !viewer.getControl().isDisposed() ) {
       viewer.getControl().dispose();
     }
@@ -199,15 +239,17 @@ public class TableViewerTab extends ExampleTab {
     viewer.setColumnProperties( initColumnProperties( viewer ) );
     viewer.setInput( persons );
     viewer.setItemCount( persons.size() );
+    viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
       public void selectionChanged( final SelectionChangedEvent event ) {
         lblSelection.setText( "Selection: " + event.getSelection() );
       }
     } );
     viewer.getTable().setHeaderVisible( true );
-    GridDataFactory gridDataFactory = GridDataFactory.swtDefaults();
+    gridDataFactory = GridDataFactory.swtDefaults();
     gridDataFactory.grab( true, true );
     gridDataFactory.align( SWT.FILL, SWT.FILL );
+    gridDataFactory.span( 2, SWT.DEFAULT );
     gridDataFactory.applyTo( viewer.getTable() );
     registerControl( viewer.getControl() );
   }
@@ -272,7 +314,9 @@ public class TableViewerTab extends ExampleTab {
           addPerson();
         }
         getViewer().setInput( persons );
-        getViewer().setItemCount( persons.size() );
+        if( ( getStyle() & SWT.VIRTUAL ) != 0 ) {
+          getViewer().setItemCount( persons.size() );
+        }
       }
     } );
   }
