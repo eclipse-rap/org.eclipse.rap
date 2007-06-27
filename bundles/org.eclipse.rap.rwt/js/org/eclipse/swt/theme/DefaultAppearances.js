@@ -78,6 +78,15 @@ appearances = {
     {
     },
     
+    "label-graytext" :
+    {
+      style : function( states ) {
+        return {
+          textColor : states.disabled ? "widget.graytext" : "undefined",
+        };
+      }
+    },
+
     // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
     "label-wrapper" :
     {
@@ -1037,7 +1046,8 @@ appearances = {
           padding : THEME_VALUE( "group.label.padding" ),
           margin : THEME_VALUE( "group.label.margin" ),
           backgroundColor : "widget.background",
-          textColor : states.disabled ? "widget.graytext" : "undefined"
+// TODO [rst] Group label is not grayed out in SWT - check other toolkits
+//          textColor : states.disabled ? "widget.graytext" : "undefined"
         };
       }
     },

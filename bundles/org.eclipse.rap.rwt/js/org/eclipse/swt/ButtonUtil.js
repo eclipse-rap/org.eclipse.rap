@@ -21,6 +21,7 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
       // it is not necessary to check getLabelObject and/or preserve its label
       button.setLabel( "(empty)" );
       button.getLabelObject().setMode( "html" );
+      button.getLabelObject().setAppearance( "label-graytext" );
       button.setLabel( "" );
     },
     

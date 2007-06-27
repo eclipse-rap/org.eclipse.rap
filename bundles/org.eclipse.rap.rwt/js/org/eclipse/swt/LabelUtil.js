@@ -35,6 +35,7 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
       var labelObject = widget.getLabelObject();
       labelObject.setMode( org.eclipse.swt.LabelUtil.MODE_TEXT );
       labelObject.setTextOverflow( false );
+      labelObject.setAppearance( "label-graytext" );
       widget.getLabelObject().setWrap( wrap );
       // TODO [rh] workaround for weird getLabelObject behaviour
       widget.setLabel( "" );
