@@ -23,13 +23,13 @@ import org.eclipse.swt.widgets.*;
 public class ListTab extends ExampleTab {
 
   private static final java.util.List ELEMENTS;
-  
+
   static {
     ELEMENTS = new ArrayList();
-    String text 
+    String text
       = "A very long item that demonstrates horizontal scrolling in a List";
     ELEMENTS.add( text );
-    text = "An item with a linebreak\n(converted to a whitespace)"; 
+    text = "An item with a linebreak\n(converted to a whitespace)";
     ELEMENTS.add( text );
     text = "...and other control chars: \u0003 \t \u0004 \u000F";
     ELEMENTS.add( text );
@@ -37,16 +37,16 @@ public class ListTab extends ExampleTab {
       ELEMENTS.add( "Item " + i );
     }
   }
-  
-  private static final class ListContentProvider 
-    implements IStructuredContentProvider 
+
+  private static final class ListContentProvider
+    implements IStructuredContentProvider
   {
     public Object[] getElements( final Object inputElement ) {
       return ( ( java.util.List )inputElement ).toArray();
     }
-    public void inputChanged( final Viewer viewer, 
-                              final Object oldInput, 
-                              final Object newInput ) 
+    public void inputChanged( final Viewer viewer,
+                              final Object oldInput,
+                              final Object newInput )
     {
       // do nothing
     }
@@ -69,6 +69,8 @@ public class ListTab extends ExampleTab {
     createStyleButton( "V_SCROLL", SWT.V_SCROLL );
     createVisibilityButton();
     createEnablementButton();
+    createFgColorButton();
+    createBgColorButton();
     createFontChooser();
   }
 
@@ -106,8 +108,8 @@ public class ListTab extends ExampleTab {
     Label separator = new Label( parent, separatorStyle );
     separator.setLayoutData( new RowData( 440, 5 ) );
     Label codeLabel = new Label( parent, SWT.WRAP );
-    String codeLabelText 
-      = "Please note that the content of the left List is provided by a " 
+    String codeLabelText
+      = "Please note that the content of the left List is provided by a "
       + "ListViewer with JFace API.";
     codeLabel.setText( codeLabelText );
     Link link = new Link( parent, SWT.NONE );
@@ -122,7 +124,7 @@ public class ListTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createPopupMenu( final Shell parent, final List list ) {
     final Menu menu = new Menu( parent, SWT.POP_UP );
     String[] listItems = list.getItems();
@@ -141,7 +143,7 @@ public class ListTab extends ExampleTab {
     } );
     list.setMenu( menu );
   }
-  
+
   private String getExampleCode() {
     String result
       = "<html><head></head></body>"

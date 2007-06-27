@@ -16,6 +16,7 @@ import org.eclipse.jface.window.IWindowCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
@@ -39,7 +40,29 @@ public class TreeTab extends ExampleTab {
     createAddNodeButton( parent );
     createDisposeNodeButton( parent );
     createSelectNodeButton( parent );
+    createFgColorButton();
+    createBgColorButton();
     createFontChooser();
+    final Button itemFgButton
+      = createPropertyButton( "Custom foreground on 1st item", SWT.CHECK );
+    itemFgButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        TreeItem item = tree.getItem( 0 );
+        Display display = parent.getDisplay();
+        Color green = display.getSystemColor( SWT.COLOR_GREEN );
+        item.setForeground( itemFgButton.getSelection() ? green  : null );
+      }
+    } );
+    final Button itemBgButton
+      = createPropertyButton( "Custom background on 1st item", SWT.CHECK );
+    itemBgButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        TreeItem item = tree.getItem( 0 );
+        Display display = parent.getDisplay();
+        Color red = display.getSystemColor( SWT.COLOR_DARK_RED );
+        item.setBackground( itemBgButton.getSelection() ? red  : null );
+      }
+    } );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -72,9 +95,9 @@ public class TreeTab extends ExampleTab {
           item.getText();
         }
         String message = "You requested a context menu for: " + itemText;
-        MessageDialog.openInformation( tree.getShell(), 
-                                       "Information", 
-                                       message, 
+        MessageDialog.openInformation( tree.getShell(),
+                                       "Information",
+                                       message,
                                        windowCallback );
       }
     } );
@@ -106,7 +129,7 @@ public class TreeTab extends ExampleTab {
         }
         lblTreeEvent.setText( msg );
       }
-      
+
       public void widgetDefaultSelected( final SelectionEvent event ) {
         String title = "Double Click";
         String message = "Double click on " + event.item.getText() + " received";
@@ -125,7 +148,7 @@ public class TreeTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         Image image;
         if( button.getSelection() ) {
-          image = Image.find( "resources/tree_item.gif", 
+          image = Image.find( "resources/tree_item.gif",
                               getClass().getClassLoader() );
         } else {
           image = null;
@@ -144,21 +167,21 @@ public class TreeTab extends ExampleTab {
         if( tree.getSelectionCount() > 0 ) {
           TreeItem selection = tree.getSelection()[ 0 ];
           TreeItem treeItem = new TreeItem( selection, SWT.NONE );
-          Object[] args = new Object[] { 
-            new Integer( selection.getItemCount() ), 
+          Object[] args = new Object[] {
+            new Integer( selection.getItemCount() ),
             selection.getText()
           };
           String text = MessageFormat.format( "SubItem {0} of {1}", args );
           treeItem.setText( text  );
           treeItem.setChecked( true );
-          Image image = Image.find( "resources/tree_item.gif", 
+          Image image = Image.find( "resources/tree_item.gif",
                                     getClass().getClassLoader() );
           treeItem.setImage( image );
         }
       }
     } );
   }
-  
+
   private void createDisposeNodeButton( final Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Dispose Selected Item" );
@@ -180,7 +203,7 @@ public class TreeTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         if( tree.getItemCount() > 0 ) {
           tree.setSelection( tree.getItem( 0 ) );
-        } 
+        }
       }
     } );
   }
@@ -191,7 +214,7 @@ public class TreeTab extends ExampleTab {
       changeImage( items[ i ], image );
     }
   }
-  
+
   private static void changeImage( final TreeItem item, final Image image ) {
     item.setImage( image );
     TreeItem[] items = item.getItems();

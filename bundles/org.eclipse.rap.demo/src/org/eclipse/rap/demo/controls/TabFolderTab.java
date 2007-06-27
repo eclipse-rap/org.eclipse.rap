@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.*;
 public class TabFolderTab extends ExampleTab {
 
   protected static final int MAX_ITEMS = 3;
-  
+
   private TabFolder folder;
   private TabItem[] tabItems;
   private Button[] tabRadios;
@@ -34,6 +34,8 @@ public class TabFolderTab extends ExampleTab {
     createStyleButton( "BOTTOM", SWT.BOTTOM );
     createVisibilityButton();
     createEnablementButton();
+    createFgColorButton();
+    createBgColorButton();
     createFontChooser();
     tabRadios = new Button[ MAX_ITEMS ];
     for( int i = 0; i < MAX_ITEMS; i++ ) {
