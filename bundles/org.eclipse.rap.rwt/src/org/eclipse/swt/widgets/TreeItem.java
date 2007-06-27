@@ -13,8 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.*;
 
 
@@ -455,6 +454,69 @@ public class TreeItem extends Item {
     return checked;
   }
   
+  void clear() {
+    // TODO: [bm] revisit when columns are available
+//    checked = grayed = false;
+    checked = false;
+//    texts = null;
+//    textWidths = new int[ 1 ];
+//    fontHeight = 0;
+//    fontHeights = null;
+//    images = null;
+    foreground = background = null;
+//    displayTexts = null;
+//    cellForegrounds = cellBackgrounds = null;
+    font = null;
+//    cellFonts = null;
+//    cached = false;
+//    text = "";
+//    image = null;
+    setText( "" );
+    setImage( null );
+
+//    int columnCount = parent.columns.length;
+//    if ( columnCount > 0 ) {
+//      displayTexts = new String[ columnCount ];
+//      if ( columnCount > 1 ) {
+//        texts = new String[ columnCount ];
+//        textWidths = new int[ columnCount ];
+//        images = new Image[ columnCount ];
+//      }
+//    }
+  }
+  
+  /**
+   * Clears all the items in the receiver. The text, icon and other
+   * attributes of the items are set to their default values. If the
+   * tree was created with the <code>SWT.VIRTUAL</code> style, these
+   * attributes are requested again as needed.
+   * 
+   * @param all <code>true</code> if all child items should be cleared
+   * recursively, and <code>false</code> otherwise
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see SWT#VIRTUAL
+   * @see SWT#SetData
+   * 
+   * @since 3.2
+   */
+  public void clearAll (boolean recursive) {
+    clearAll (recursive, true);
+  }
+  void clearAll (boolean recursive, boolean doVisualUpdate) {
+    checkWidget ();
+    if (itemHolder.size() == 0) return;
+
+    /* clear the item(s) */
+    for (int i = 0; i < itemHolder.size(); i++) {
+      ( ( TreeItem ) itemHolder.getItem( i ) ).clear ();
+      if (recursive) ( ( TreeItem )itemHolder.getItem( i )).clearAll (true, false);
+    }
+  }
   ///////////////////////////////////////
   // Methods to maintain (sub-) TreeItems
   

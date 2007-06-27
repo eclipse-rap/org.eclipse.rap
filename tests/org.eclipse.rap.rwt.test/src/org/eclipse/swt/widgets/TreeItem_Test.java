@@ -14,8 +14,7 @@ package org.eclipse.swt.widgets;
 import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.*;
 
 public class TreeItem_Test extends TestCase {
 
@@ -118,6 +117,94 @@ public class TreeItem_Test extends TestCase {
     Color green = Color.getColor( 0, 255, 0 );
     item.setForeground( green );
     assertEquals( green, item.getForeground() );
+  }
+  
+  public void testClear() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    assertEquals( "", item.getText() );
+    assertEquals( null, item.getImage() );
+    assertEquals( Boolean.FALSE, Boolean.valueOf( item.getChecked() ) );
+
+    item.setText( "foo" );
+    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    item.setChecked( true );
+
+    assertEquals( "foo", item.getText() );
+    assertEquals( Image.find( RWTFixture.IMAGE1 ), item.getImage() );
+    assertEquals( Boolean.TRUE, Boolean.valueOf( item.getChecked() ) );
+
+    item.clear();
+
+    assertEquals( "", item.getText() );
+    assertEquals( null, item.getImage() );
+    assertEquals( Boolean.FALSE, Boolean.valueOf( item.getChecked() ) );
+  }
+  
+  public void testClearAll() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
+    TreeItem root = new TreeItem( tree, SWT.NONE );
+    
+    for (int i=0; i<2; i++) {
+      TreeItem item0 = new TreeItem (root, 0);
+      item0.setText ("Item " + i);
+      for (int j=0; j<2; j++) {
+        TreeItem item1 = new TreeItem (item0, 0);
+        item1.setText ("Item " + i + " " + j);
+        for (int k=0; k<2; k++) {
+          TreeItem item2 = new TreeItem (item1, 0);
+          item2.setText ("Item " + i + " " + j + " " + k);
+        } 
+      }
+    }
+    
+    for (int i=0; i<2; i++) {
+      TreeItem item0 = root.getItem( i );
+      assertEquals( "Item " + i, item0.getText() );
+      for (int j=0; j<2; j++) {
+        TreeItem item1 = item0.getItem( j );
+        assertEquals( "Item " + i + " " + j, item1.getText() );
+        for (int k=0; k<2; k++) {
+          TreeItem item2 = item1.getItem( k );
+          assertEquals( "Item " + i + " " + j + " " + k, item2.getText() );
+        } 
+      }
+    }
+
+    root.clearAll( false );
+
+    for (int i=0; i<2; i++) {
+      TreeItem item0 = root.getItem( i );
+      assertEquals( "", item0.getText() );
+      for (int j=0; j<2; j++) {
+        TreeItem item1 = item0.getItem( j );
+        assertEquals( "Item " + i + " " + j, item1.getText() );
+        for (int k=0; k<2; k++) {
+          TreeItem item2 = item1.getItem( k );
+          assertEquals( "Item " + i + " " + j + " " + k, item2.getText() );
+        } 
+      }
+    }
+    
+    root.clearAll( true );
+
+    for (int i=0; i<2; i++) {
+      TreeItem item0 = root.getItem( i );
+      assertEquals( "", item0.getText() );
+      for (int j=0; j<2; j++) {
+        TreeItem item1 = item0.getItem( j );
+        assertEquals( "", item1.getText() );
+        for (int k=0; k<2; k++) {
+          TreeItem item2 = item1.getItem( k );
+          assertEquals( "", item2.getText() );
+        } 
+      }
+    }    
   }
   
   protected void setUp() throws Exception {

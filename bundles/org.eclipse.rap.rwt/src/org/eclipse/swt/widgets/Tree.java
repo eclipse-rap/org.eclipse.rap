@@ -12,10 +12,12 @@
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
@@ -513,6 +515,73 @@ public class Tree extends Composite {
     return linesVisible;
   }
   
+  /**
+   * Clears the item at the given zero-relative index in the receiver.
+   * The text, icon and other attributes of the item are set to the default
+   * value.  If the tree was created with the <code>SWT.VIRTUAL</code> style,
+   * these attributes are requested again as needed.
+   *
+   * @param index the index of the item to clear
+   * @param all <code>true</code> if all child items of the indexed item should be
+   * cleared recursively, and <code>false</code> otherwise
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see SWT#VIRTUAL
+   * @see SWT#SetData
+   * 
+   * @since 3.2
+   */
+  public void clear( int index, boolean recursive ) {
+    checkWidget();
+    if ( ! ( 0 <= index && index < itemHolder.size() ) )
+      error( SWT.ERROR_INVALID_RANGE );
+    TreeItem item = ( TreeItem ) itemHolder.getItem( index );
+
+    /* clear the item(s) */
+    item.clear();
+    if ( recursive ) {
+      item.clearAll( true, false );
+    }
+  }
+  
+  /**
+   * Clears all the items in the receiver. The text, icon and other
+   * attributes of the items are set to their default values. If the
+   * tree was created with the <code>SWT.VIRTUAL</code> style, these
+   * attributes are requested again as needed.
+   * 
+   * @param all <code>true</code> if all child items should be cleared
+   * recursively, and <code>false</code> otherwise
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see SWT#VIRTUAL
+   * @see SWT#SetData
+   * 
+   * @since 3.2
+   */
+  public void clearAll( boolean recursive ) {
+    checkWidget();
+    if ( itemHolder.size() == 0 )
+      return;
+
+    /* clear the item(s) */
+    for (int i = 0; i < itemHolder.size(); i++) {
+      ( ( TreeItem ) itemHolder.getItem( i ) ).clear();
+      if ( recursive )
+        ( ( TreeItem ) itemHolder.getItem( i ) ).clearAll( true, false );
+    }
+  }
   // ////////////////////////////////////
   // Listener registration/deregistration
   
