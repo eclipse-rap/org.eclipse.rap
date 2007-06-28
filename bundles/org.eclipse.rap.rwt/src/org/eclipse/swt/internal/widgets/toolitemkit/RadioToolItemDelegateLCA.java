@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -21,23 +21,23 @@ import org.eclipse.swt.widgets.*;
 
 
 final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
-  
+
   // tool item functions as defined in org.eclipse.swt.ToolItemUtil
-  private static final String CREATE_RADIO 
+  private static final String CREATE_RADIO
     = "org.eclipse.swt.ToolItemUtil.createRadio";
   // radio functions as defined in org.eclipse.swt.ButtonUtil
-  private static final String WIDGET_SELECTED 
+  private static final String WIDGET_SELECTED
     = "org.eclipse.swt.ButtonUtil.radioSelected";
-  
-  private final JSListenerInfo JS_LISTENER_INFO 
-    = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
+
+  private final JSListenerInfo JS_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,
                           WIDGET_SELECTED,
                           JSListenerType.STATE_AND_ACTION );
-  
+
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
   }
-  
+
   void readData( final ToolItem toolItem ) {
     if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
       Control[] children = toolItem.getParent().getChildren();
@@ -81,7 +81,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeChanges( toolItem );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
-    WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
+    WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
     // TODO [rh] could be optimized in that way, that qooxdoo forwards the
     //      right-click on a toolbar item to the toolbar iteself if the toolbar

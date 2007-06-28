@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -18,31 +18,32 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 final class ToolItemLCAUtil {
-  
+
   private ToolItemLCAUtil() {
     // prevent instantiation
   }
 
   static void preserveValues( final ToolItem toolItem ) {
     ItemLCAUtil.preserve( toolItem );
-    WidgetLCAUtil.preserveEnabled( toolItem, toolItem.isEnabled() );
+    WidgetLCAUtil.preserveEnabled( toolItem, toolItem.getEnabled() );
     WidgetLCAUtil.preserveToolTipText( toolItem, toolItem.getToolTipText() );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( toolItem );
-    preserveVisible( toolItem );    
+    preserveVisible( toolItem );
     boolean hasListener = SelectionEvent.hasListener( toolItem );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
   }
-  
+
   static void processSelection( final ToolItem toolItem ) {
-    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) 
+    if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) )
     {
       Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
-      SelectionEvent event 
+      SelectionEvent event
         = ToolItemLCAUtil.newSelectionEvent( toolItem, bounds, SWT.NONE );
       event.processEvent();
     }
@@ -60,7 +61,7 @@ final class ToolItemLCAUtil {
                                true,
                                detail );
   }
-  
+
   public static void writeVisible( final ToolItem item ) throws IOException {
     Object adapter = item.getAdapter( IToolItemAdapter.class );
     IToolItemAdapter tia = ( IToolItemAdapter )adapter;
@@ -69,7 +70,7 @@ final class ToolItemLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( item );
     writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
   }
-  
+
   public static void preserveVisible( final ToolItem item ) {
     Object itemadapter = item.getAdapter( IToolItemAdapter.class );
     IToolItemAdapter tia = ( IToolItemAdapter )itemadapter;

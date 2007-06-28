@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -27,17 +27,17 @@ import org.eclipse.swt.widgets.*;
 public class ControlLCAUtil {
 
   public static final int MAX_STATIC_ZORDER = 300;
-  
-  private static final JSListenerInfo FOCUS_GAINED_LISTENER_INFO 
-    = new JSListenerInfo( "focusin", 
-                          "org.eclipse.swt.EventUtil.focusGained", 
+
+  private static final JSListenerInfo FOCUS_GAINED_LISTENER_INFO
+    = new JSListenerInfo( "focusin",
+                          "org.eclipse.swt.EventUtil.focusGained",
                           JSListenerType.ACTION );
-  private static final JSListenerInfo FOCUS_LOST_LISTENER_INFO 
-    = new JSListenerInfo( "focusout", 
-                          "org.eclipse.swt.EventUtil.focusLost", 
+  private static final JSListenerInfo FOCUS_LOST_LISTENER_INFO
+    = new JSListenerInfo( "focusout",
+                          "org.eclipse.swt.EventUtil.focusLost",
                           JSListenerType.ACTION );
-  
-  // Property names to preserve widget property values 
+
+  // Property names to preserve widget property values
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_ACTIVATE_LISTENER = "activateListener";
@@ -47,7 +47,7 @@ public class ControlLCAUtil {
   private ControlLCAUtil() {
     // prevent instance creation
   }
-  
+
   public static void preserveValues( final Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( Props.BOUNDS, control.getBounds() );
@@ -59,33 +59,33 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
     adapter.preserve( Props.VISIBLE, Boolean.valueOf( control.getVisible() ) );
-    WidgetLCAUtil.preserveEnabled( control, control.isEnabled() );
+    WidgetLCAUtil.preserveEnabled( control, control.getEnabled() );
     IControlAdapter controlAdapter
       = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
     adapter.preserve( PROP_FOREGROUND, controlAdapter.getUserForeground() );
     adapter.preserve( PROP_BACKGROUND, controlAdapter.getUserBackground() );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
-    adapter.preserve( Props.CONTROL_LISTENERS, 
+    adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
-    adapter.preserve( PROP_ACTIVATE_LISTENER, 
+    adapter.preserve( PROP_ACTIVATE_LISTENER,
                       Boolean.valueOf( ActivateEvent.hasListener( control ) ) );
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      adapter.preserve( PROP_FOCUS_LISTENER, 
+      adapter.preserve( PROP_FOCUS_LISTENER,
                         Boolean.valueOf( FocusEvent.hasListener( control ) ) );
     }
   }
-  
+
   public static void readBounds( final Control control ) {
     Rectangle current = control.getBounds();
     Rectangle newBounds = WidgetLCAUtil.readBounds( control, current );
     control.setBounds( newBounds );
   }
-  
+
   public static void writeBounds( final Control control ) throws IOException {
     Composite parent = control.getParent();
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
   }
-  
+
   public static void writeZIndex( final Control control ) throws IOException {
     // TODO [rst] remove if statement as soon as z-order on shells is
     //      implemented completely
@@ -95,12 +95,12 @@ public class ControlLCAUtil {
       writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
     }
   }
-  
+
   // TODO [rh] there seems to be a qooxdoo problem when trying to change the
   //      visibility of a newly created widget (no flushGlobalQueues was called)
-  //      MSG: Modification of property "visibility" failed with exception: 
+  //      MSG: Modification of property "visibility" failed with exception:
   //           Error - Element must be created previously!
-  public static void writeVisible( final Control control ) 
+  public static void writeVisible( final Control control )
     throws IOException
   {
     // we only need getVisible here (not isVisible), as qooxdoo also hides/shows
@@ -114,7 +114,9 @@ public class ControlLCAUtil {
   public static void writeEnabled( final Control control )
     throws IOException
   {
-    WidgetLCAUtil.writeEnabled( control, control.isEnabled() );
+    // TODO [rst] Using isEnabled() results in unnecessarily updating child
+    //            widgets of enabled/disabled controls.
+    WidgetLCAUtil.writeEnabled( control, control.getEnabled() );
   }
 
   public static void writeChanges( final Control control ) throws IOException {
@@ -131,7 +133,7 @@ public class ControlLCAUtil {
     writeActivateListener( control );
     writeFocusListener( control );
   }
-  
+
   public static void writeResizeNotificator( final Widget widget )
     throws IOException
   {
@@ -141,7 +143,7 @@ public class ControlLCAUtil {
     writer.addListener( JSConst.QX_EVENT_CHANGE_HEIGHT,
                         JSConst.JS_WIDGET_RESIZED );
   }
-  
+
   public static void writeMoveNotificator( final Widget widget )
     throws IOException
   {
@@ -151,31 +153,31 @@ public class ControlLCAUtil {
     writer.addListener( JSConst.QX_EVENT_CHANGE_LOCATION_Y,
                         JSConst.JS_WIDGET_MOVED );
   }
-  
+
   public static void writeMenu( final Control control ) throws IOException {
     WidgetLCAUtil.writeMenu( control, control.getMenu() );
   }
-  
-  public static void writeToolTip( final Control control ) 
-    throws IOException 
+
+  public static void writeToolTip( final Control control )
+    throws IOException
   {
     WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
   }
-  
+
   // TODO [rh] move this to WidgetLCAUtil, move test case along, change LCA's
   //      to use this instead of manually setting images
-  public static void writeImage( final Widget widget, final Image image ) 
-    throws IOException 
+  public static void writeImage( final Widget widget, final Image image )
+    throws IOException
   {
     if( WidgetLCAUtil.hasChanged( widget, Props.IMAGE, image, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
-      // work around qooxdoo, that interprets 'null' as an image path 
+      // work around qooxdoo, that interprets 'null' as an image path
       String path = image == null ? "" : Image.getPath( image );
       writer.set( JSConst.QX_FIELD_ICON, path );
     }
   }
 
-  public static void writeForeground( final Control control ) throws IOException 
+  public static void writeForeground( final Control control ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( control );
     Object adapter = control.getAdapter( IControlAdapter.class );
@@ -187,7 +189,7 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void writeBackground( final Control control ) throws IOException 
+  public static void writeBackground( final Control control ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( control );
     Object adapter = control.getAdapter( IControlAdapter.class );
@@ -201,12 +203,12 @@ public class ControlLCAUtil {
       }
     }
   }
-  
+
   /**
    * Writes SWT style flags that must be handled on the client side (e.g.
    * <code>SWT.BORDER</code>). Flags are transmitted as qooxdoo <q>states</q>
    * that will be respected by the appearance that renders the widget.
-   * 
+   *
    * @param widget
    * @throws IOException
    */
@@ -226,8 +228,8 @@ public class ControlLCAUtil {
     Font newValue = controlAdapter.getUserFont();
     WidgetLCAUtil.writeFont( control, newValue );
   }
-  
-  public static void writeActivateListener( final Control control ) 
+
+  public static void writeActivateListener( final Control control )
     throws IOException
   {
     Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
@@ -242,7 +244,7 @@ public class ControlLCAUtil {
       writer.call( control.getShell(), function, args );
     }
   }
-  
+
   /**
    * Note that there is no corresponding readData metod to fire the focus events
    * that are send by the JavaScript event listeners that are registered below.
@@ -252,24 +254,24 @@ public class ControlLCAUtil {
    * also fire FocusEvents. The current client-side focusControl is read in
    * DisplayLCA#readData.
    */
-  private static void writeFocusListener( final Control control ) 
-    throws IOException 
+  private static void writeFocusListener( final Control control )
+    throws IOException
   {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       boolean hasListener = FocusEvent.hasListener( control );
-      writer.updateListener( FOCUS_GAINED_LISTENER_INFO, 
-                             PROP_FOCUS_LISTENER, 
+      writer.updateListener( FOCUS_GAINED_LISTENER_INFO,
+                             PROP_FOCUS_LISTENER,
                              hasListener );
-      writer.updateListener( FOCUS_LOST_LISTENER_INFO, 
-                             PROP_FOCUS_LISTENER, 
+      writer.updateListener( FOCUS_LOST_LISTENER_INFO,
+                             PROP_FOCUS_LISTENER,
                              hasListener );
     }
   }
 
   //////////
   // Z-INDEX
-  
+
   /**
    * Determines the z-index to render for a given control.
    */
@@ -282,11 +284,11 @@ public class ControlLCAUtil {
     }
     return max - controlAdapter.getZIndex();
   }
-  
+
   ////////////
   // Tab index
 
-  private static void writeTabIndex( final Control control ) throws IOException 
+  private static void writeTabIndex( final Control control ) throws IOException
   {
     if( control instanceof Shell ) {
       // tabIndex must be a positive value
@@ -360,12 +362,12 @@ public class ControlLCAUtil {
     result &= control.getClass() != SashForm.class;
     return result;
   }
-  
+
   /////////////////////
   // SELECTION LISTENER
 
-  public static void processSelection( final Widget widget, 
-                                       final Item item, 
+  public static void processSelection( final Widget widget,
+                                       final Item item,
                                        final boolean readBounds )
   {
     String eventId = JSConst.EVENT_WIDGET_SELECTED;
@@ -387,7 +389,7 @@ public class ControlLCAUtil {
       event.processEvent();
     }
   }
-  
+
   private static SelectionEvent createSelectionEvent( final Widget widget,
                                                       final Item item,
                                                       final boolean readBounds,
@@ -396,7 +398,7 @@ public class ControlLCAUtil {
     Rectangle bounds;
     if( widget instanceof Control && readBounds ) {
       Control control = ( Control )widget;
-      bounds = WidgetLCAUtil.readBounds( control, control.getBounds() ); 
+      bounds = WidgetLCAUtil.readBounds( control, control.getBounds() );
     } else {
       bounds = new Rectangle( 0, 0, 0, 0 );
     }

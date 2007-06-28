@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -20,12 +20,12 @@ import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.ToolItem;
 
 final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
-  
+
   // tool item functions as defined in org.eclipse.swt.ToolItemUtil
-  private static final String CREATE_PUSH 
+  private static final String CREATE_PUSH
     = "org.eclipse.swt.ToolItemUtil.createPush";
 
-  private final static JSListenerInfo JS_LISTENER_INFO 
+  private final static JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
                           JSConst.JS_WIDGET_SELECTED,
                           JSListenerType.ACTION );
@@ -33,7 +33,7 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
   }
-  
+
   void readData( final ToolItem toolItem ) {
     ToolItemLCAUtil.processSelection( toolItem );
   }
@@ -47,7 +47,7 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
     };
     writer.callStatic( CREATE_PUSH, args );
   }
-  
+
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeText( toolItem, true );
@@ -63,7 +63,7 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
-    WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
+    WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
   }
 }

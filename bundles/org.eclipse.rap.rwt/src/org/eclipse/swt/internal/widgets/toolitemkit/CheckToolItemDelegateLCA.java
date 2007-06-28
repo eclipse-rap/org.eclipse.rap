@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -22,13 +22,13 @@ import org.eclipse.swt.widgets.ToolItem;
 final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
 
   // check functions as defined in org.eclipse.swt.ButtonUtil
-  private static final String WIDGET_SELECTED 
+  private static final String WIDGET_SELECTED
     = "org.eclipse.swt.ButtonUtil.checkSelected";
   // tool item functions as defined in org.eclipse.swt.ToolItemUtil
-  private static final String CREATE_CHECK 
+  private static final String CREATE_CHECK
     = "org.eclipse.swt.ToolItemUtil.createCheck";
-  
-  private final JSListenerInfo JS_LISTENER_INFO 
+
+  private final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
                           WIDGET_SELECTED,
                           JSListenerType.STATE_AND_ACTION );
@@ -39,7 +39,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
     adapter.preserve( "selection",
                       Boolean.valueOf( toolItem.getSelection() ) );
   }
-  
+
   void readData( final ToolItem toolItem ) {
     if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
       String value = WidgetLCAUtil.readPropertyValue( toolItem, "selection" );
@@ -75,15 +75,17 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( toolItem ) );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
-    WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
+    WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
     writeSelection( toolItem, toolItem.getSelection() );
   }
-  
-  void writeSelection( ToolItem toolItem, boolean selection ) throws IOException {
-	  JSWriter writer = JSWriter.getWriterFor( toolItem );
-	  Boolean newValue = Boolean.valueOf( selection );
-	  Boolean defValue = Boolean.FALSE;
-	  writer.set( "selection", "checked", newValue, defValue );
+
+  void writeSelection( final ToolItem toolItem, final boolean selection )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( toolItem );
+    Boolean newValue = Boolean.valueOf( selection );
+    Boolean defValue = Boolean.FALSE;
+    writer.set( "selection", "checked", newValue, defValue );
   }
 }

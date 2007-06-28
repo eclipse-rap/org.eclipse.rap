@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -28,12 +28,12 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
   private static final String DROP_DOWN_SUFFIX = "_dropDown";
 
   // tool item functions as defined in org.eclipse.swt.ToolItemUtil
-  private static final String CREATE_DROP_DOWN 
+  private static final String CREATE_DROP_DOWN
     = "org.eclipse.swt.ToolItemUtil.createDropDown";
-  private static final String UPDATE_DROP_DOWN_LISTENER 
+  private static final String UPDATE_DROP_DOWN_LISTENER
     = "org.eclipse.swt.ToolItemUtil.updateDropDownListener";
-  
-  private final static JSListenerInfo JS_BUTTON_LISTENER_INFO 
+
+  private final static JSListenerInfo JS_BUTTON_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
                           JSConst.JS_WIDGET_SELECTED,
                           JSListenerType.ACTION );
@@ -41,7 +41,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
   void preserveValues( final ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
   }
-  
+
   void readData( final ToolItem toolItem ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String widgetId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED );
@@ -52,7 +52,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
       if( toolItemId.equals( widgetId ) ) {
         Rectangle defaultValue = new Rectangle( 0, 0, 0, 0 );
         Rectangle bounds = WidgetLCAUtil.readBounds( toolItemId, defaultValue );
-        SelectionEvent event 
+        SelectionEvent event
           = ToolItemLCAUtil.newSelectionEvent( toolItem, bounds, SWT.ARROW );
         event.processEvent();
       }
@@ -68,7 +68,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
     };
     writer.callStatic( CREATE_DROP_DOWN, args );
   }
-  
+
   void renderChanges( final ToolItem toolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( toolItem );
     ItemLCAUtil.writeChanges( toolItem );
@@ -84,15 +84,15 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
                            SelectionEvent.hasListener( toolItem ) );
     writeDropDownListener( toolItem );
     WidgetLCAUtil.writeToolTip( toolItem, toolItem.getToolTipText() );
-    WidgetLCAUtil.writeEnabled( toolItem, toolItem.isEnabled() );
+    WidgetLCAUtil.writeEnabled( toolItem, toolItem.getEnabled() );
     ToolItemLCAUtil.writeVisible( toolItem );
   }
-  
+
   //////////////////
   // helping methods
-  
-  private static void writeDropDownListener( final ToolItem toolItem ) 
-    throws IOException 
+
+  private static void writeDropDownListener( final ToolItem toolItem )
+    throws IOException
   {
     Boolean value = Boolean.valueOf( SelectionEvent.hasListener( toolItem ) );
     String prop = Props.SELECTION_LISTENERS;
