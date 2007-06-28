@@ -12,9 +12,13 @@
 package org.eclipse.swt.widgets;
 
 import java.util.Arrays;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+
+import com.w4t.engine.lifecycle.PhaseId;
 
 public class List_Test extends TestCase {
 
@@ -853,6 +857,7 @@ public class List_Test extends TestCase {
   }
   
   public void testFocusIndexForSingle() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.SINGLE );
@@ -901,7 +906,7 @@ public class List_Test extends TestCase {
     assertEquals( 1, list.getFocusIndex() );
     assertEquals( -1, list.getSelectionIndex() );
     
-    // Don't move focusIndex when selection a non-existing item
+    // Don't move focusIndex when selecting a non-existing item
     list.removeAll();
     list.add( "item0" );
     list.add( "item1" );
@@ -909,6 +914,11 @@ public class List_Test extends TestCase {
     list.setSelection( 0 );
     list.setSelection( 1234 );
     assertEquals( 0, list.getFocusIndex() );
+
+    // Ensure that using List with ListViewer and 'empty' ContentProvider works
+    list.removeAll();
+    list.deselectAll();
+    assertEquals( -1, list.getFocusIndex() );
   }
   
   public void testFocusIndexForMulti() {
@@ -952,6 +962,11 @@ public class List_Test extends TestCase {
     list.add( "item2" );
     list.setSelection( 1, 2 );
     assertEquals( 1, list.getFocusIndex() );
+
+    // Ensure that using List with ListViewer and 'empty' ContentProvider works
+    list.removeAll();
+    list.deselectAll();
+    assertEquals( -1, list.getFocusIndex() );
   }
   
   public void testDispose() {

@@ -843,10 +843,13 @@ public class List extends Scrollable {
   }
   
   private void updateFocusIndexAfterSelectionChange() {
-    if( model.getSelectionIndex() == -1 ) {
-      focusIndex = 0;
-    } else {
-      focusIndex = model.getSelectionIndices()[ 0 ];
+    focusIndex = -1;
+    if( model.getItemCount() > 0 ) {
+      if( model.getSelectionIndex() == -1 ) {
+        focusIndex = 0;
+      } else {
+        focusIndex = model.getSelectionIndices()[ 0 ];
+      }
     }
   }
 
