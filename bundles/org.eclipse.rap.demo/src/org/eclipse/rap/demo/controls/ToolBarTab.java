@@ -36,6 +36,8 @@ public class ToolBarTab extends ExampleTab {
     createStyleButton( "FLAT", SWT.FLAT );
     createVisibilityButton();
     createEnablementButton();
+// TODO [rst] Uncomment when setting background works on toolbar
+//    createBgColorButton();
     createFontChooser();
   }
 
@@ -71,7 +73,7 @@ public class ToolBarTab extends ExampleTab {
     item4.setImage( imageSearch );
     item4.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
-System.out.println( "check");        
+System.out.println( "check");
       }
     } );
     ToolItem item5 = new ToolItem( toolBar, SWT.RADIO );

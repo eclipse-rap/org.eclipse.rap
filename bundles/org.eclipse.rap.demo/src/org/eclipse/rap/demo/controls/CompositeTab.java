@@ -26,10 +26,10 @@ public class CompositeTab extends ExampleTab {
     createBgColorButton();
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new FillLayout() );
+  protected void createExampleControls( final Composite parent ) {
+    parent.setLayout( new FillLayout() );
     int style = getStyle();
-    final Composite comp = new Composite( top, style );
+    final Composite comp = new Composite( parent, style );
     registerControl( comp );
   }
 }

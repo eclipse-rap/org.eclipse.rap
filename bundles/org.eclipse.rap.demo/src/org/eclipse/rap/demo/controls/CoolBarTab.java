@@ -25,7 +25,7 @@ public class CoolBarTab extends ExampleTab {
   private final Image image3;
   private final Image image4;
   private CoolBar coolBar;
-  
+
   public CoolBarTab( final CTabFolder topFolder ) {
     super( topFolder, "CoolBar" );
     ClassLoader loader = getClass().getClassLoader();

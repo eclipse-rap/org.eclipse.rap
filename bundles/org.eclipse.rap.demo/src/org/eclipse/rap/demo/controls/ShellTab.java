@@ -23,13 +23,15 @@ import org.eclipse.swt.widgets.*;
 public class ShellTab extends ExampleTab {
 
   private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
-  
+
   private java.util.List shells;
-  private boolean createInvisible = false;
-  private boolean createAsDialog = false;
-  private boolean createMenu = false;
-  private boolean showClientArea = false;
   private Image shellImage;
+
+  private Button createInvisibleButton;
+  private Button createAsDialogButton;
+  private Button createWithMenuButton;
+  private Button showClientAreaButton;
+//  private Button customBgColorButton;
 
   public ShellTab( final CTabFolder topFolder ) {
     super( topFolder, "Shell" );
@@ -49,34 +51,15 @@ public class ShellTab extends ExampleTab {
     createStyleButton( "RESIZE", SWT.RESIZE );
 //    createStyleButton( "TOOL", SWT.TOOL );
     createStyleButton( "ON_TOP", SWT.ON_TOP );
-    final Button invisibleButton = createPropertyButton( "Create invisible" );
-    invisibleButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        createInvisible = invisibleButton.getSelection();
-      }
-    } );
-    final Button dialogButton = createPropertyButton( "Create as dialog" );
-    dialogButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        createAsDialog = dialogButton.getSelection();
-      }
-    } );
-    final Button menuButton = createPropertyButton( "Add menu" );
-    menuButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        createMenu = menuButton.getSelection();
-      }
-    } );
-    final Button clientAreaButton = createPropertyButton( "Show client area" );
-    clientAreaButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        showClientArea = clientAreaButton.getSelection();
-      }
-    } );
-    // TODO [rh] uncomment once changing images on Shell works 
+    createInvisibleButton = createPropertyButton( "Create invisible" );
+    createAsDialogButton = createPropertyButton( "Create as dialog" );
+    createWithMenuButton = createPropertyButton( "Add menu" );
+    showClientAreaButton = createPropertyButton( "Show client area" );
+//    customBgColorButton = createPropertyButton( "Custom background" );
+    // TODO [rh] uncomment once changing images on Shell works
 //    String text = "Show/hide image";
 //    final Button showHideImage = createPropertyButton( text, SWT.PUSH );
-//    String toolTip 
+//    String toolTip
 //      = "Shows or hides the image of the most recently opened shell";
 //    showHideImage.setToolTipText( toolTip );
 //    showHideImage.addSelectionListener( new SelectionAdapter() {
@@ -124,7 +107,7 @@ public class ShellTab extends ExampleTab {
         setShellsVisible( false );
       }
     } );
-    
+
     Button enableAllButton = new Button( top, SWT.PUSH );
     enableAllButton.setText( "Enable All Shells" );
     enableAllButton.setLayoutData( new RowData( 150, 25 ) );
@@ -142,7 +125,7 @@ public class ShellTab extends ExampleTab {
         setShellsEnabled( false );
       }
     } );
-    
+
     Button closeAllButton = new Button( top, SWT.PUSH );
     closeAllButton.setText( "Close All Shells" );
     closeAllButton.setLayoutData( new RowData( 150, 25 ) );
@@ -155,39 +138,42 @@ public class ShellTab extends ExampleTab {
   private void createShell() {
     final int style = getStyle();
     final Shell shell;
-    if( createAsDialog ) {
-      shell = new Shell( getShell(), style );      
+    if( createAsDialogButton.getSelection() ) {
+      shell = new Shell( getShell(), style );
     } else {
       shell = new Shell( getShell().getDisplay(), style );
     }
+//    if( customBgColorButton.getSelection() ) {
+//      shell.setBackground( BG_COLOR_BROWN );
+//    }
     shell.setLocation( getNextShellLocation() );
     if( true ) {
-      createShellContents1( shell );      
+      createShellContents1( shell );
     } else {
-      createShellContents2( shell );      
+      createShellContents2( shell );
     }
     int num = shells.size() + 1;
     shell.setText( "Test Shell " + num );
     shell.setImage( shellImage );
-    if( !createInvisible ) {
+    if( !createInvisibleButton.getSelection() ) {
       shell.open();
     }
     shells.add( shell );
   }
-  
+
   /*
    * Creates a shell with a size of 300 x 200 px and displays the bounds of its
    * client area.
    */
   private void createShellContents1( final Shell shell ) {
     shell.setSize( 300, 200 );
-    if( createMenu ) {
+    if( createWithMenuButton.getSelection() ) {
       createMenuBar( shell );
     }
     final Composite comp1 = new Composite( shell, SWT.NONE );
     final Composite comp2 = new Composite( shell, SWT.NONE );
     comp2.moveAbove( comp1 );
-    if( showClientArea ) {
+    if( showClientAreaButton.getSelection() ) {
       comp1.setBackground( Color.getColor( 200, 0, 0 ) );
       comp2.setBackground( Color.getColor( 200, 200, 200 ) );
     }
@@ -219,7 +205,7 @@ public class ShellTab extends ExampleTab {
    * 140 x 40 px. Can be used to test the Shell.computeTrim mehtod.
    */
   private void createShellContents2( final Shell shell ) {
-    if( createMenu ) {
+    if( createWithMenuButton.getSelection() ) {
       createMenuBar( shell );
     }
     RowLayout layout = new RowLayout();
@@ -238,7 +224,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createMenuBar( final Shell shell ) {
     // menu bar
     Menu menuBar = new Menu( shell, SWT.BAR );
@@ -278,7 +264,7 @@ public class ShellTab extends ExampleTab {
     item.setMenu( cascadeMenu );
     new MenuItem( cascadeMenu, SWT.PUSH ).setText( "Date" );
     new MenuItem( cascadeMenu, SWT.PUSH ).setText( "Line Break" );
-    // search 
+    // search
     Menu searchMenu = new Menu( shell, SWT.DROP_DOWN );
     searchItem.setMenu( searchMenu );
     new MenuItem( searchMenu, SWT.PUSH ).setText( "Enabled" );
@@ -303,7 +289,7 @@ public class ShellTab extends ExampleTab {
     new MenuItem( disabledMenu, SWT.PUSH ).setText( "Import" );
     new MenuItem( disabledMenu, SWT.PUSH ).setText( "Export" );
   }
-  
+
   private Point getNextShellLocation() {
     Point result = getShell().getLocation();
     int count = shells.size() % 12;
@@ -311,7 +297,7 @@ public class ShellTab extends ExampleTab {
     result.y += 50 + count * 10;
     return result ;
   }
-  
+
   private void closeShells() {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
@@ -321,7 +307,7 @@ public class ShellTab extends ExampleTab {
     }
     shells.clear();
   }
-  
+
   private void setShellsVisible( final boolean visible ) {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
@@ -329,7 +315,7 @@ public class ShellTab extends ExampleTab {
       shell.setVisible( visible );
     }
   }
-  
+
   private void setShellsEnabled( final boolean enabled ) {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {

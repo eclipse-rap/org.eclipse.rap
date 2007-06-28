@@ -20,16 +20,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class ComboTab extends ExampleTab {
-  
-  private static final String[] ITEMS = new String[] { 
-    "Eiffel", 
-    "Java", 
-    "Python", 
-    "Ruby", 
-    "Simula", 
-    "Smalltalk" 
+
+  private static final String[] ITEMS = new String[] {
+    "Eiffel",
+    "Java",
+    "Python",
+    "Ruby",
+    "Simula",
+    "Smalltalk"
   };
-  
+
   private Combo emptyCombo;
   private Combo filledCombo;
   private Combo preselectedCombo;
@@ -44,6 +44,10 @@ public class ComboTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createRemoveAllButton( parent );
+    // TODO [rst] uncomment as soon as setting foreground and background works
+    //            on Combo (bug 194756)
+//    createFgColorButton();
+//    createBgColorButton();
     createFontChooser();
   }
 
@@ -118,7 +122,7 @@ public class ComboTab extends ExampleTab {
         String message = "Selected item: " + event.getSelection().toString();
         Shell shell = parent.getShell();
         MessageDialog.openInformation( shell, "Info", message, null );
-      } 
+      }
     } );
     Menu menu = new Menu( viewerCombo );
     MenuItem menuItem = new MenuItem( menu, SWT.NONE );
@@ -129,7 +133,7 @@ public class ComboTab extends ExampleTab {
     registerControl( preselectedCombo );
     registerControl( viewerCombo );
   }
-  
+
   private static GridData colSpan2() {
     GridData result = new GridData( SWT.BEGINNING, SWT.CENTER, false, false );
     result.horizontalSpan = 2;

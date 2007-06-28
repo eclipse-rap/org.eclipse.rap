@@ -31,6 +31,9 @@ public class SpinnerTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createRangeControls( parent );
+// TODO [rst] Uncomment when setting fg and bg on spinner works (bug 194772)
+    createFgColorButton();
+    createBgColorButton();
     createFontChooser();
   }
 
@@ -66,8 +69,8 @@ public class SpinnerTab extends ExampleTab {
     String inc = String.valueOf( spinner.getIncrement() );
     final Text txtInc = createLabeledText( parent, "Increment", inc );
     String pageInc = String.valueOf( spinner.getIncrement() );
-    final Text txtPageInc = createLabeledText( parent, 
-                                               "PageIncrement", 
+    final Text txtPageInc = createLabeledText( parent,
+                                               "PageIncrement",
                                                pageInc );
     String sel = String.valueOf( spinner.getSelection() );
     final Text txtSelection = createLabeledText( parent, "Selection", sel );
@@ -83,10 +86,10 @@ public class SpinnerTab extends ExampleTab {
       }
     } );
   }
-  
-  private Text createLabeledText( final Composite parent, 
-                                  final String text, 
-                                  final String value ) 
+
+  private Text createLabeledText( final Composite parent,
+                                  final String text,
+                                  final String value )
   {
     Composite container = new Composite( parent, SWT.NONE );
     container.setLayout( new GridLayout( 2, false ) );
