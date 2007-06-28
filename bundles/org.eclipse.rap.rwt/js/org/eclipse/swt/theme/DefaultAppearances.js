@@ -695,7 +695,7 @@ appearances = {
 
     /*
     ---------------------------------------------------------------------------
-      FIELDS
+      TEXT
     ---------------------------------------------------------------------------
     */
 
@@ -715,11 +715,11 @@ appearances = {
         };
       }
     },
-    
+
     "text-area" : {
       include : "text-field"
     },
-    
+
     /*
     ---------------------------------------------------------------------------
       COMBOBOX
@@ -929,7 +929,7 @@ appearances = {
         };
       }
     },
-    
+
     "tab-view-bar" :
     {
       style : function( states ) {
@@ -938,24 +938,24 @@ appearances = {
         };
       }
     },
-    
+
     "tab-view-pane" :
     {
       style : function( states ) {
         return {
 //          height          : "1*",
-          backgroundColor : "widget.background", // "#FAFBFE",
-          border          : new qx.renderer.border.Border(1, "solid", "#aca899"),
+          backgroundColor : "widget.background",
+          border          : new qx.renderer.border.Border(1, "solid", "widget.thinborder"),
           padding         : 10
         };
       }
     },
-    
+
     "tab-view-page" :
     {
-// TODO [rst] disappeared in qx 0.7
 //      style : function( states ) {
 //        return {
+// TODO [rst] disappeared in qx 0.7
 //          top    : 0,
 //          right  : 0,
 //          bottom : 0,
@@ -969,17 +969,17 @@ appearances = {
       include : "atom",
 
       style : function( states ) {
-        var border_top_normal = new qx.renderer.border.Border(1, "solid", "#aca899");
+        var border_top_normal = new qx.renderer.border.Border(1, "solid", "widget.thinborder");
         border_top_normal.setWidthBottom(0);
 
-        var border_top_checked = new qx.renderer.border.Border(1, "solid", "#aca899");
+        var border_top_checked = new qx.renderer.border.Border(1, "solid", "widget.thinborder");
         border_top_checked.setWidthBottom(0);
         border_top_checked.setTop(3, "solid", "widget.selection-marker");
 
-        var border_bottom_normal = new qx.renderer.border.Border(1, "solid", "#aca899");
+        var border_bottom_normal = new qx.renderer.border.Border(1, "solid", "widget.thinborder");
         border_bottom_normal.setWidthTop(0);
 
-        var border_bottom_checked = new qx.renderer.border.Border(1, "solid", "#aca899");
+        var border_bottom_checked = new qx.renderer.border.Border(1, "solid", "widget.thinborder");
         border_bottom_checked.setWidthTop(0);
         border_bottom_checked.setBottom(3, "solid", "widget.selection-marker");
 
