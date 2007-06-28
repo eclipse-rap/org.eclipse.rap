@@ -16,7 +16,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.swt.events.TreeEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
@@ -159,32 +160,16 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   private static void writeBackground( final TreeItem item )
       throws IOException {
-    Object adapter = item.getAdapter( IWidgetColorAdapter.class );
-    IWidgetColorAdapter colorAdapter = ( IWidgetColorAdapter )adapter;
-    Color color = colorAdapter.getUserBackgound();
-    if ( WidgetLCAUtil.hasChanged( item, PROP_BACKGROUND, color, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      if( color == null ) {
-        writer.reset( JSConst.QX_FIELD_BG_COLOR );
-      } else {
-        writer.set( JSConst.QX_FIELD_BG_COLOR, color );
-      }
-    }
+    IWidgetColorAdapter colorAdapter
+      = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+    WidgetLCAUtil.writeBackground( item, colorAdapter.getUserBackgound() );
   }
 
   private static void writeForeground( final TreeItem item )
       throws IOException {
-    Object adapter = item.getAdapter( IWidgetColorAdapter.class );
-    IWidgetColorAdapter colorAdapter = ( IWidgetColorAdapter )adapter;
-    Color color = colorAdapter.getUserForegound();
-    if ( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND, color, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      if( color == null ) {
-        writer.reset( JSConst.QX_FIELD_COLOR );
-      } else {
-        writer.set( JSConst.QX_FIELD_COLOR, color );
-      }
-    }
+    IWidgetColorAdapter colorAdapter
+      = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+    WidgetLCAUtil.writeForeground( item, colorAdapter.getUserForegound() );
   }
 
   private static void writeGrayed( final TreeItem item ) throws IOException {
@@ -192,7 +177,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     Boolean newValue = Boolean.valueOf( item.getGrayed() );
     writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
   }
-  
+
   private static boolean isFocused( final TreeItem item ) {
     Tree tree = item.getParent();
     return tree.getSelectionCount() > 0 && tree.getSelection()[ 0 ] == item;

@@ -38,8 +38,6 @@ public class ControlLCAUtil {
                           JSListenerType.ACTION );
 
   // Property names to preserve widget property values
-  private static final String PROP_BACKGROUND = "background";
-  private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_ACTIVATE_LISTENER = "activateListener";
   private static final String PROP_FOCUS_LISTENER = "focusListener";
   private static final String PROP_TAB_INDEX = "tabIndex";
@@ -62,8 +60,10 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveEnabled( control, control.getEnabled() );
     IControlAdapter controlAdapter
       = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
-    adapter.preserve( PROP_FOREGROUND, controlAdapter.getUserForeground() );
-    adapter.preserve( PROP_BACKGROUND, controlAdapter.getUserBackground() );
+    WidgetLCAUtil.preserveForeground( control,
+                                      controlAdapter.getUserForeground() );
+    WidgetLCAUtil.preserveBackground( control,
+                                      controlAdapter.getUserBackground() );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
     adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
@@ -177,31 +177,21 @@ public class ControlLCAUtil {
     }
   }
 
-  public static void writeForeground( final Control control ) throws IOException
+  public static void writeForeground( final Control control )
+    throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( control );
-    Object adapter = control.getAdapter( IControlAdapter.class );
-    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
-    Color color = controlAdapter.getUserForeground();
-    if( WidgetLCAUtil.hasChanged( control, PROP_FOREGROUND, color, null ) ) {
-      Object[] args = new Object[] { control, color };
-      writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
-    }
+    IControlAdapter controlAdapter
+      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    WidgetLCAUtil.writeForeground( control,
+                                   controlAdapter.getUserForeground() );
   }
 
-  public static void writeBackground( final Control control ) throws IOException
+  public static void writeBackground( final Widget control ) throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( control );
-    Object adapter = control.getAdapter( IControlAdapter.class );
-    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
-    Color newValue = controlAdapter.getUserBackground();
-    if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND, newValue, null ) ) {
-      if( newValue == null ) {
-        writer.reset( JSConst.QX_FIELD_BG_COLOR );
-      } else {
-        writer.set( PROP_BACKGROUND, JSConst.QX_FIELD_BG_COLOR, newValue, null );
-      }
-    }
+    IControlAdapter controlAdapter
+      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    WidgetLCAUtil.writeBackground( control,
+                                   controlAdapter.getUserBackground() );
   }
 
   /**

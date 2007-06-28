@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -20,69 +20,86 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.engine.service.ContextProvider;
 
 
 public final class WidgetLCAUtil {
-  
+
   private static final String PARAM_X = "bounds.x";
   private static final String PARAM_Y = "bounds.y";
   private static final String PARAM_WIDTH = "bounds.width";
   private static final String PARAM_HEIGHT = "bounds.height";
-  
+
   private static final String PROP_TOOL_TIP_TEXT = "toolTip";
   private static final String PROP_FONT = "font";
+  private static final String PROP_FOREGROUND = "foreground";
+  private static final String PROP_BACKGROUND = "background";
   private static final String PROP_ENABLED = "enabled";
-  
+
   private static final Pattern HTML_ESCAPE_PATTERN
     = Pattern.compile( "&|<|>|\\\"" );
-  private static final Pattern DOUBLE_QUOTE_PATTERN 
+  private static final Pattern DOUBLE_QUOTE_PATTERN
     = Pattern.compile( "\"" );
 
   private WidgetLCAUtil() {
     // prevent instantiation
   }
-  
+
   /////////////////////////////////////////////
   // Methods to preserve common property values
-  
-  public static void preserveToolTipText( final Widget widget, 
-                                          final String toolTip ) 
+
+  public static void preserveToolTipText( final Widget widget,
+                                          final String toolTip )
   {
     String text = toolTip == null ? "" : toolTip;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_TOOL_TIP_TEXT, text );
   }
-  
+
   public static void preserveFont( final Widget widget, final Font font ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_FONT, font );
   }
-  
-  public static void preserveEnabled( final Widget widget, 
-                                      final boolean enabled ) 
+
+  public static void preserveForeground( final Widget widget,
+                                         final Color foreground )
+  {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_FOREGROUND, foreground );
+  }
+
+  public static void preserveBackground( final Widget widget,
+                                         final Color background )
+  {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_BACKGROUND, background );
+  }
+
+  public static void preserveEnabled( final Widget widget,
+                                      final boolean enabled )
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_ENABLED, Boolean.valueOf( enabled ) );
   }
-  
+
   ////////////////////////////////////////////////////
   // Methods to determine changes of widget properties
-  
+
   /**
    * <p>Determines whether the property of the given <code>widget</code> has
-   * changed in comparison to its 'preserved' value and thus 'something' needs 
+   * changed in comparison to its 'preserved' value and thus 'something' needs
    * to be rendered in order to reflect the changes on the client side.</p>
    * <p>If there is no preserved value, <code>null</code> will be assumed.</p>
-   * @param widget the widget whose property is to be compared, must not be 
+   * @param widget the widget whose property is to be compared, must not be
    * <code>null</code>.
-   * @param property the name of the property under which the preserved value 
+   * @param property the name of the property under which the preserved value
    * can be looked up. Must not be <code>null</code>.
    * @param newValue the value that is compared to the preserved value
    */
-  public static boolean hasChanged( final Widget widget, 
-                                    final String property, 
-                                    final Object newValue ) 
+  public static boolean hasChanged( final Widget widget,
+                                    final String property,
+                                    final Object newValue )
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     Object oldValue = adapter.getPreserved( property );
@@ -93,21 +110,21 @@ public final class WidgetLCAUtil {
    * <p>Determines whether the property of the given <code>widget</code> has
    * changed in comparison to its 'preserved' value.</p>
    * <p>In case it is the first time that the widget is rendered (it is not yet
-   * present on the client side) <code>true</code> is only returned if the 
-   * <code>newValue</code> differs from the <code>defaultValue</code>. Otherwise 
+   * present on the client side) <code>true</code> is only returned if the
+   * <code>newValue</code> differs from the <code>defaultValue</code>. Otherwise
    * the decision is delegated to {@link hasChanged(Widget,String,Object)
    * <code>hasChanged(Widget,String,Object)</code>}.</p>
-   * @param widget the widget whose property is to be compared, must not be 
+   * @param widget the widget whose property is to be compared, must not be
    * <code>null</code>.
-   * @param property the name of the property under which the preserved value 
+   * @param property the name of the property under which the preserved value
    * can be looked up. Must not be <code>null</code>.
    * @param newValue the value that is compared to the preserved value
-   * @param defaultValue the default value 
+   * @param defaultValue the default value
    */
-  public static boolean hasChanged( final Widget widget, 
-                                    final String property, 
-                                    final Object newValue, 
-                                    final Object defaultValue ) 
+  public static boolean hasChanged( final Widget widget,
+                                    final String property,
+                                    final Object newValue,
+                                    final Object defaultValue )
   {
     boolean result;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -121,12 +138,12 @@ public final class WidgetLCAUtil {
 
   ///////////////////////////////////////////
   // Methods to read request parameter values
-  
+
   /**
    * <p>Returns the value of the given widget's property. The value is read out
    * from the request and may be null if no value for the given property
    * was submitted.</p>
-   * 
+   *
    * @param widget the widget to which the given property belongs.
    * @param propertyName the name of the widget-property that should be
    *                     read from the request.
@@ -135,8 +152,8 @@ public final class WidgetLCAUtil {
    *                                    in particular properties that are
    *                                    non primitive with their own props.
    */
-  public static String readPropertyValue( final Widget widget, 
-                                          final String propertyName ) 
+  public static String readPropertyValue( final Widget widget,
+                                          final String propertyName )
   {
     HttpServletRequest request = ContextProvider.getRequest();
     StringBuffer key = new StringBuffer();
@@ -147,21 +164,21 @@ public final class WidgetLCAUtil {
   }
 
   public static boolean wasEventSent( final Widget widget,
-                                      final String eventName ) 
+                                      final String eventName )
   {
     HttpServletRequest request = ContextProvider.getRequest();
     String widgetId = request.getParameter( eventName );
     return WidgetUtil.getId( widget ).equals( widgetId );
   }
-  
-  public static Rectangle readBounds( final Widget widget, 
-                                      final Rectangle defValue ) 
+
+  public static Rectangle readBounds( final Widget widget,
+                                      final Rectangle defValue )
   {
     return readBounds( WidgetUtil.getId( widget ), defValue );
   }
 
-  public static Rectangle readBounds( final String widgetId, 
-                                      final Rectangle defValue ) 
+  public static Rectangle readBounds( final String widgetId,
+                                      final Rectangle defValue )
   {
     int x = readBoundsX( widgetId, defValue.x );
     int y = readBoundsY( widgetId, defValue.y );
@@ -169,34 +186,34 @@ public final class WidgetLCAUtil {
     int height = readBoundsHeight( widgetId, defValue.height );
     return new Rectangle( x, y, width, height );
   }
-  
+
   /////////////////////////////////////////////////////////
   // Methods to write JavaScript code for widget properties
-  
-  public static void writeBounds( final Widget widget, 
-                                  final Control parent, 
-                                  final Rectangle bounds, 
-                                  final boolean clip ) 
-    throws IOException 
+
+  public static void writeBounds( final Widget widget,
+                                  final Control parent,
+                                  final Rectangle bounds,
+                                  final boolean clip )
+    throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     // TODO [rh] replace code below with WidgetUtil.hasChanged
     Rectangle oldBounds = ( Rectangle )adapter.getPreserved( Props.BOUNDS );
     Rectangle newBounds = bounds;
     if( !adapter.isInitialized() || !newBounds.equals( oldBounds ) ) {
-      
+
       // the SWT coordinates for client area differ in some cases to
       // the widget realisation of qooxdoo
       if( parent != null ) {
         AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
-        newBounds = parentLCA.adjustCoordinates( newBounds ); 
+        newBounds = parentLCA.adjustCoordinates( newBounds );
       }
-      
+
       JSWriter writer = JSWriter.getWriterFor( widget );
       int[] args = new int[]{
         newBounds.x, newBounds.width, newBounds.y, newBounds.height
       };
-      
+
       writer.set( "space", args );
       if( !WidgetUtil.getAdapter( widget ).isInitialized() ) {
         writer.set( "minWidth", 0 );
@@ -216,17 +233,17 @@ public final class WidgetLCAUtil {
       JSWriter writer = JSWriter.getWriterFor( widget );
       writer.set( "contextMenu", menu );
       if( menu == null ) {
-        writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU, 
+        writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU,
                                JSConst.JS_CONTEXT_MENU );
       } else {
-        writer.addListener( JSConst.QX_EVENT_CONTEXTMENU, 
+        writer.addListener( JSConst.QX_EVENT_CONTEXTMENU,
                             JSConst.JS_CONTEXT_MENU );
       }
     }
   }
 
-  public static void writeToolTip( final Widget widget, final String toolTip ) 
-    throws IOException 
+  public static void writeToolTip( final Widget widget, final String toolTip )
+    throws IOException
   {
     String text = toolTip == null ? "" : toolTip;
     if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
@@ -238,18 +255,18 @@ public final class WidgetLCAUtil {
 
   /////////////////////////////////////////////////
   // write-methods used by other ...LCAUtil classes
-  
-  public static void writeImage( final Widget widget, final Image image ) 
-    throws IOException 
+
+  public static void writeImage( final Widget widget, final Image image )
+    throws IOException
   {
     writeImage( widget, Props.IMAGE, JSConst.QX_FIELD_ICON, image );
   }
 
-  public static void writeImage( final Widget widget, 
-                                 final String javaProperty, 
-                                 final String jsProperty, 
-                                 final Image image ) 
-    throws IOException 
+  public static void writeImage( final Widget widget,
+                                 final String javaProperty,
+                                 final String jsProperty,
+                                 final Image image )
+    throws IOException
   {
     if( WidgetLCAUtil.hasChanged( widget, javaProperty, image, null ) ) {
       String imagePath = image == null ? "" : Image.getPath( image );
@@ -257,20 +274,20 @@ public final class WidgetLCAUtil {
       writer.set( jsProperty, imagePath );
     }
   }
-  
+
   public static void writeFont( final Widget widget, final Font font )
     throws IOException
   {
     writeFont( widget, font, false );
   }
-  
-  private static void writeFont( final Widget widget, 
-                                final Font font, 
-                                final boolean force ) 
-    throws IOException 
+
+  private static void writeFont( final Widget widget,
+                                 final Font font,
+                                 final boolean force )
+    throws IOException
   {
-    if(    force 
-        || WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) 
+    if(    force
+        || WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) )
     {
       JSWriter writer = JSWriter.getWriterFor( widget );
       if( font != null ) {
@@ -289,7 +306,32 @@ public final class WidgetLCAUtil {
       }
     }
   }
-  
+
+  public static void writeForeground( final Widget widget,
+                                      final Color newColor )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
+      Object[] args = new Object[] { widget, newColor };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
+    }
+  }
+
+  public static void writeBackground( final Widget widget,
+                                      final Color newColor )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    if( WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, newColor, null ) ) {
+      if( newColor == null ) {
+        writer.reset( JSConst.QX_FIELD_BG_COLOR );
+      } else {
+        writer.set( PROP_BACKGROUND, JSConst.QX_FIELD_BG_COLOR, newColor, null );
+      }
+    }
+  }
+
   public static void writeEnabled( final Widget widget, final boolean enabled )
     throws IOException
   {
@@ -299,8 +341,8 @@ public final class WidgetLCAUtil {
     writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
   }
 
-  private static String readPropertyValue( final String widgetId, 
-                                           final String propertyName ) 
+  private static String readPropertyValue( final String widgetId,
+                                           final String propertyName )
   {
     HttpServletRequest request = ContextProvider.getRequest();
     StringBuffer key = new StringBuffer();
@@ -312,31 +354,31 @@ public final class WidgetLCAUtil {
 
   //////////////////////////////////////////////////////////////////
   // Helping methods to read bounds for a widget from request params
-  
+
   private static int readBoundsY( final String widgetId, final int defValue ) {
     String value = readPropertyValue( widgetId, PARAM_Y );
     return readBoundsValue( value, defValue );
   }
-  
+
   private static int readBoundsX( final String widgetId, final int defValue ) {
     String value = readPropertyValue( widgetId, PARAM_X );
     return readBoundsValue( value, defValue );
   }
 
-  private static int readBoundsWidth( final String widgetId, 
-                                      final int defValue ) 
+  private static int readBoundsWidth( final String widgetId,
+                                      final int defValue )
   {
     String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_WIDTH );
     return readBoundsValue( value, defValue );
   }
 
-  private static int readBoundsHeight( final String widgetId, 
-                                       final int defValue ) 
+  private static int readBoundsHeight( final String widgetId,
+                                       final int defValue )
   {
     String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_HEIGHT );
     return readBoundsValue( value, defValue );
   }
-  
+
   private static int readBoundsValue( final String value, final int current ) {
     int result;
     if( value != null && !"null".equals( value ) ) {
@@ -349,7 +391,7 @@ public final class WidgetLCAUtil {
 
   ///////////////////////////////////////
   // Helping method to test for equality
-  
+
   static boolean equals( final Object object1, final Object object2 ) {
     boolean result;
     if( object1 == object2 ) {
@@ -373,10 +415,10 @@ public final class WidgetLCAUtil {
     }
     return result;
   }
-  
+
   ////////////////////////////////////
-  // Helping method to split font name  
-  
+  // Helping method to split font name
+
   static String[] parseFontName( final String name ) {
     String[] result = name.split( "," );
     for( int i = 0; i < result.length; i++ ) {
@@ -386,10 +428,10 @@ public final class WidgetLCAUtil {
     }
     return result;
   }
-  
+
   //////////////////////////////////////
   // Escaping of reserved XML characters
-  
+
   // Note: The entity &apos; is not defined in HTML. It should be handled by
   //       this method once we produce XHTML output.
   /**

@@ -39,7 +39,7 @@
 
   <color name = "widget.thinborder"
       description = "Color for thin lines as shown by Group, TabFolder headers, Table headers, etc."
-      default = "214, 210, 194" />
+      default = "172, 168, 153" />
 
   <color name = "widget.graytext"
       description = "Color for text on disabled widgets"
