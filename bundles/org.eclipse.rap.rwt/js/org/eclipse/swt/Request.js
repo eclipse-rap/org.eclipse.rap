@@ -46,7 +46,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
       return;
     }
     this._currentRequest = null;
-    return this.base( arguments );
   },
 
   members : {
@@ -82,7 +81,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     
     /**
      * Returns the parameter value for the given name or null if no parameter
-     * of such name exists. 
+     * with such a name exists. 
      */
     getParameter : function( name ) {
       var result = this._parameters[ name ];
@@ -95,7 +94,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
     /**
      * Adds the given eventType to this request. The sourceId denotes the id of
      * the widget that caused the event.
-     * In addition, events are given a sequential number when added.
      */
     addEvent : function( eventType, sourceId ) {
       this._parameters[ eventType ] = sourceId;
@@ -110,7 +108,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
       if( !this._inDelayedSend ) {
         this._inDelayedSend = true;
         // Wait and then actually send the request
-        // TODO [rh] optimize wait interval (below 60ms seems to not work reliable)
+        // TODO [rh] optimize wait interval (below 60ms seems to not work 
+        //      reliable)
         qx.client.Timer.once( this._sendImmediate, this, 60 );
       }
     },
