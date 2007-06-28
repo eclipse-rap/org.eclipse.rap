@@ -912,7 +912,7 @@ appearances = {
     
     /*
     ---------------------------------------------------------------------------
-      TABVIEW
+      TAB FOLDER
     ---------------------------------------------------------------------------
     */
 
@@ -920,8 +920,8 @@ appearances = {
     {
       style : function( states ) {
         return {
+          textColor : "widget.foreground",
           font : "widget.font",
-          textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           spacing : -1,
           border : states.rwt_BORDER 
             ? "control.BORDER.border" 
@@ -1036,6 +1036,7 @@ appearances = {
             result.marginBottom = 3;
           }
         }
+        result.textColor = states.disabled ? "widget.graytext" : "undefined";
         return result;
       }
     },
@@ -1096,35 +1097,31 @@ appearances = {
     {
       style : function( states ) {
         return {
-          width           : 60,
-          height          : 22,
-          border          : states.rwt_BORDER ? "inset" : "undefined",
-          backgroundColor : "white"
+          backgroundColor : "list.background",
+          border : states.rwt_BORDER ? "text.BORDER.border" : "text.border"
         };
       }
     },
 
     "spinner-field" :
     {
-      include : "text-field",
-
       style : function( states ) {
         return {
-//          width  : "1*",
-          border : "undefined"
+          top : 0,
+          left : 0,
+          right : 0,
+          bottom : 0,
+          textColor : states.disabled ? "widget.graytext" : "undefined"
         };
       }
     },
 
-    "spinner-button-up" :
+    "spinner-button" :
     {
       style : function( states ) {
         var result = {
-//          height          : "1*",
           width : 16,
-          source : "widget/arrows/up_small.gif",
-          backgroundColor : "widget.background",
-          padding : [ 0, 0, 0, 3 ]
+          backgroundColor : "widget.background"
         };
         if( states.rwt_FLAT ) {
           result.border = "undefined";
@@ -1134,27 +1131,28 @@ appearances = {
           result.border = "outset";
         }
         return result;
+      }
+    },
+    
+    "spinner-button-up" :
+    {
+      include : "spinner-button",
+      style : function( states ) {
+        return {
+          source : "widget/arrows/up_small.gif",
+          padding : [ 0, 0, 0, 3 ]
+        };
       }
     },
 
     "spinner-button-down" :
     {
+      include : "spinner-button",
       style : function( states ) {
-        var result = {
-//          height          : "1*",
-          width : 16,
+        return {
           source : "widget/arrows/down_small.gif",
-          backgroundColor : "widget.background",
           padding       : [ 1, 0, 0, 3 ]
         };
-        if( states.rwt_FLAT ) {
-          result.border = "undefined";
-        } else if( states.pressed || states.checked || states.abandoned ) {
-          result.border = "inset";
-        } else {
-          result.border = "outset";
-        }
-        return result;
       }
     },
     
