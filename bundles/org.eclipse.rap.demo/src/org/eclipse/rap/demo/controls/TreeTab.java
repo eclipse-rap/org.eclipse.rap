@@ -63,6 +63,13 @@ public class TreeTab extends ExampleTab {
         item.setBackground( itemBgButton.getSelection() ? red  : null );
       }
     } );
+    final Button itemGrayButton2 = createPropertyButton( "Gray out 2nd item",
+        SWT.CHECK );
+    itemGrayButton2.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        tree.getItem( 1 ).setGrayed( itemGrayButton2.getSelection() );
+      }
+    } );
   }
 
   protected void createExampleControls( final Composite parent ) {

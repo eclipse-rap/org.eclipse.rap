@@ -23,11 +23,12 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     row.addIndent();
     // CheckBox
     this._checkBox = null;
+    this._checked = false;
     if ( qx.lang.String.contains( parentItem.getTree().getRWTStyle(), "check" ) ) 
     {
-      this._checkBox = new qx.ui.form.CheckBox();
-      this._checkBox.setTabIndex( -1 );
-      this._checkBox.addEventListener( "changeChecked", this._onChangeChecked, this );
+      this._checkBox = new qx.ui.basic.Image();
+      this._checkBox.setAppearance( "tree-check-box" );
+      this._checkBox.addEventListener( "click", this._onCheckBoxClick, this );
       this._checkBox.addEventListener( "dblclick", this._onCheckBoxDblClick, this );
       row.addObject( this._checkBox, false );
     }
@@ -48,7 +49,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   
   destruct : function() {
     if( this._checkBox != null ) {
-      this._checkBox.removeEventListener( "changeChecked", this._onChangeChecked, this );
+      this._checkBox.removeEventListener( "click", this._onChangeChecked, this );
       this._checkBox.removeEventListener( "dblclick", this._onCheckBoxDblClick, this );
       this._checkBox.dispose();
     }
@@ -77,7 +78,19 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 
     setChecked : function( value ) {
       if( this._checkBox != null ) {
-        this._checkBox.setChecked( value );
+        if( value ) {
+          this._checkBox.addState( "checked" );
+        } else {
+          this._checkBox.removeState( "checked" );
+        }
+      }
+    },
+    
+    setGrayed : function( value ) {
+      if( value ) {
+          this._checkBox.addState( "grayed" );
+      } else {
+          this._checkBox.removeState( "grayed" );
       }
     },
     
@@ -128,6 +141,16 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       return result;
     },
 
+    _onCheckBoxClick : function( evt ) {
+      this._checked = !this._checked;
+      if( this._checked ) {
+          this._checkBox.addState( "checked" );
+      } else {
+          this._checkBox.removeState( "checked" );
+      }
+      this._onChangeChecked( evt );
+    },
+    
     /*
      * Prevent double clicks on check boxes from being propageted to the tree.
      */
@@ -139,7 +162,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
-      req.addParameter( id + ".checked", this._checkBox.getChecked() );
+      req.addParameter( id + ".checked", this._checked );
       this.getTree()._notifyChangeItemCheck( this );
     },
 

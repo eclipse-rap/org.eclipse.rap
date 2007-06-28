@@ -31,6 +31,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public static final String PROP_SELECTION = "selection";
   public static final String PROP_BACKGROUND = "background";
   public static final String PROP_FOREGROUND = "foreground";
+  public static final String PROP_GRAYED = "grayed";
 
   // Expanded/collapsed state constants, used by readData
   private static final String STATE_COLLAPSED = "collapsed";
@@ -51,6 +52,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
     adapter.preserve( PROP_FOREGROUND, colorAdapter.getUserForegound() );
     adapter.preserve( PROP_BACKGROUND, colorAdapter.getUserBackgound() );
+    adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
   }
 
   public void readData( final Widget widget ) {
@@ -94,6 +96,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     writeSelection( treeItem );
     writeExpanded( treeItem );
     writeChecked( treeItem );
+    writeGrayed( treeItem );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -184,6 +187,12 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void writeGrayed( final TreeItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    Boolean newValue = Boolean.valueOf( item.getGrayed() );
+    writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
+  }
+  
   private static boolean isFocused( final TreeItem item ) {
     Tree tree = item.getParent();
     return tree.getSelectionCount() > 0 && tree.getSelection()[ 0 ] == item;

@@ -207,6 +207,19 @@ public class TreeItem_Test extends TestCase {
     }    
   }
   
+  public void test_setGrayedZ() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree newTree = new Tree( shell, SWT.CHECK );
+    TreeItem tItem = new TreeItem( newTree, 0 );
+    assertEquals( false, tItem.getGrayed() );
+    tItem.setGrayed( true );
+    assertTrue( tItem.getGrayed() );
+    tItem.setGrayed( false );
+    assertEquals( false, tItem.getGrayed() );
+    newTree.dispose();
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

@@ -13,8 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.*;
 
 
@@ -43,6 +42,7 @@ public class TreeItem extends Item {
   private boolean expanded;
   private boolean checked;
   private Color background, foreground;
+  private boolean grayed;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -464,6 +464,47 @@ public class TreeItem extends Item {
   public boolean getChecked() {
     checkWidget();
     return checked;
+  }
+  
+  /**
+   * Sets the grayed state of the checkbox for this item.  This state change 
+   * only applies if the Tree was created with the SWT.CHECK style.
+   *
+   * @param grayed the new grayed state of the checkbox
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setGrayed( boolean value ) {
+    checkWidget();
+    if ( ( parent.getStyle() & SWT.CHECK ) == 0 )
+      return;
+    if ( grayed == value )
+      return;
+    grayed = value;
+// if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+  }
+  
+  /**
+   * Returns <code>true</code> if the receiver is grayed,
+   * and false otherwise. When the parent does not have
+   * the <code>CHECK style, return false.
+   * <p>
+   *
+   * @return the grayed state of the checkbox
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public boolean getGrayed() {
+    checkWidget();
+//    if ( !parent.checkData( this, true ) )
+//      error( SWT.ERROR_WIDGET_DISPOSED );
+    return grayed;
   }
   
   void clear() {

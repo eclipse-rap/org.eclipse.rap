@@ -888,6 +888,28 @@ appearances = {
       include : "tree-folder-label"
     },
 
+    "tree-check-box" : {
+      include : "image",
+      style : function( states ) {
+        var result = {};
+        if( states.grayed ) {
+          if( states.checked ) {
+            result.source = "widget/table/check_gray_on.gif";
+          } else {
+            result.source = "widget/table/check_gray_off.gif";
+          }
+        } else {
+          if( states.checked ) {
+            result.source = "widget/table/check_white_on.gif";
+          } else {
+            result.source = "widget/table/check_white_off.gif";
+          }
+        }
+        result.marginRight = 3;
+        return result;
+      }
+    },
+    
     /*
     ---------------------------------------------------------------------------
       TABVIEW
