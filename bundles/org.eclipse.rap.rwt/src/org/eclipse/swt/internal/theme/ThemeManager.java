@@ -252,7 +252,7 @@ public class ThemeManager {
       for( int i = 0; i < THEMEABLE_WIDGETS.length; i++ ) {
         try {
           processThemeableWidget( THEMEABLE_WIDGETS[ i ] );
-        } catch( Exception e ) {
+        } catch( final Exception e ) {
           throw new RuntimeException( "Initialization failed", e );
         }
       }
@@ -493,11 +493,11 @@ public class ThemeManager {
     try {
       Class adapterClass = loader.loadClass( adapterClassName );
       result = ( IThemeAdapter )adapterClass.newInstance();
-    } catch( ClassNotFoundException e ) {
+    } catch( final ClassNotFoundException e ) {
       // ignore and try to load from next package name variant
-    } catch( InstantiationException e ) {
+    } catch( final InstantiationException e ) {
       throw new RuntimeException( msg + className, e );
-    } catch( IllegalAccessException e ) {
+    } catch( final IllegalAccessException e ) {
       throw new RuntimeException( msg + className, e );
     }
     return result;

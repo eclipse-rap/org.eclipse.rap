@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Text fields -->
+
+<theme>
+
+  <border name="text.border"
+      description="Border for text fields. Also used for spinner widget."
+      default="none"/>
+
+  <border name="text.BORDER.border"
+      description="Border for text fields with BORDER style. Also used for spinner."
+      default="2 inset"/>
+
+</theme>

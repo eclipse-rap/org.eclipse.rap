@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.theme;
 public class QxBorder implements QxType {
 
   // TODO [rst] Implement properties for left, right, etc.
-  
+
   private static final String DARKSHADOW_LIGHTSHADOW
     = getBorderColors( "widget.darkshadow", "widget.lightshadow" );
   private static final String LIGHTSHADOW_DARKSHADOW
@@ -23,15 +23,15 @@ public class QxBorder implements QxType {
     = getBorderColors( "widget.shadow", "widget.highlight" );
   private static final String HIGHLIGHT_SHADOW
     = getBorderColors( "widget.highlight", "widget.shadow" );
-  
+
   public final int width;
-  
+
   public final String style;
 
   // TODO [rst] Color is either a valid color string or a named color from the
-  //            color theme. Check for valid colors. 
+  //            color theme. Check for valid colors.
   public final String color;
-  
+
   public static final String[] VALID_STYLES = new String[] {
     "groove",
     "ridge",
@@ -43,7 +43,7 @@ public class QxBorder implements QxType {
     "double",
     "none"
   };
-  
+
   public QxBorder( final String value ) {
     String[] parts = value.split( "\\s+" );
     if( parts.length > 3 ) {
@@ -86,7 +86,7 @@ public class QxBorder implements QxType {
     this.style = style == null ? "solid" : style;
     this.color = color;
   }
-  
+
   public String getQxStyle() {
     String result = style;
     if( color == null ) {
@@ -102,7 +102,7 @@ public class QxBorder implements QxType {
     }
     return result;
   }
-  
+
   public String getQxColors() {
     String result = null;
     if( color == null && width == 2 ) {
@@ -127,7 +127,7 @@ public class QxBorder implements QxType {
     }
     return result;
   }
-  
+
   public String getQxInnerColors() {
     String result = null;
     if( color == null && width == 2 ) {
@@ -143,11 +143,23 @@ public class QxBorder implements QxType {
     }
     return result;
   }
-  
+
   public String toDefaultString() {
-    return width + " " + style + " " + color;
+    StringBuffer result = new StringBuffer();
+    if( width == 0 ) {
+      result.append( "none" );
+    } else {
+      result.append( width );
+      result.append( " " );
+      result.append( style );
+      if( color != null ) {
+        result.append( " " );
+        result.append( color );
+      }
+    }
+    return result.toString();
   }
-  
+
   public boolean equals( final Object object ) {
     // TODO [rst] Adapt this method as soon as properties for left, right, etc. exist
     boolean result;
@@ -164,7 +176,7 @@ public class QxBorder implements QxType {
     }
     return result;
   }
-  
+
   public int hashCode() {
     // TODO [rst] Adapt this method as soon as properties for left, right, etc.
     //            exist
@@ -175,13 +187,13 @@ public class QxBorder implements QxType {
     result += 37 * result + color.hashCode();
     return result;
   }
-  
+
   public String toString() {
     // TODO [rst] Adapt this method as soon as properties for left, right, etc.
     //            exist
     return "QxBorder {" + width + ", " + style + ", " + color + "}";
   }
-  
+
   public static boolean isValidStyle( final String string ) {
     boolean result = false;
     for( int i = 0; i < VALID_STYLES.length && !result; i++ ) {
@@ -189,7 +201,7 @@ public class QxBorder implements QxType {
     }
     return result;
   }
-  
+
   private static String getBorderColors( final String color1, final String color2 ) {
     StringBuffer result = new StringBuffer();
     result.append( "[ \"");
@@ -211,7 +223,7 @@ public class QxBorder implements QxType {
       if( width < 0 ) {
         throw new IllegalArgumentException( "Negative width" );
       }
-    } catch( NumberFormatException e ) {
+    } catch( final NumberFormatException e ) {
     }
     return width;
   }
@@ -220,7 +232,7 @@ public class QxBorder implements QxType {
     String result = null;
     for( int j = 0; j < VALID_STYLES.length && result == null; j++ ) {
       if( VALID_STYLES[ j ].equalsIgnoreCase( string ) ) {
-        result = VALID_STYLES[ j ]; 
+        result = VALID_STYLES[ j ];
       }
     }
     return result;

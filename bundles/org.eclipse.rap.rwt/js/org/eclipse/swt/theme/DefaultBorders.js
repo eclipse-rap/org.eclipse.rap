@@ -113,19 +113,7 @@
       color : [ "widget.lightshadow", "widget.darkshadow", "widget.darkshadow", "widget.lightshadow" ],
       innerColor : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ]
     },
-    
-    // -- text --
-    
-    "text.border" : {
-      width : 0
-    },
-    
-    "text.BORDER.border" : {
-      width : 2,
-      color : [ "widget.shadow", "widget.highlight", "widget.highlight", "widget.shadow" ],
-      innerColor : [ "widget.darkshadow", "widget.lightshadow", "widget.lightshadow", "widget.darkshadow" ]
-    },
-    
+        
     // -- table --
     
     "table.column.border" : {
