@@ -213,6 +213,29 @@ public class TabFolder extends Composite {
   }
 
   /**
+   * Sets the receiver's selection to the given item.
+   * The current selected is first cleared, then the new item is
+   * selected.
+   *
+   * @param item the item to select
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the item is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setSelection( final TabItem item ) {
+    checkWidget();
+    if( item == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    setSelection( new TabItem[]{ item } );
+  }
+  
+  /**
    * Sets the receiver's selection to be the given array of items.
    * The current selected is first cleared, then the new items are
    * selected.
@@ -232,12 +255,9 @@ public class TabFolder extends Composite {
     if( items == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    Item[] list = itemHolder.getItems();
     int newIndex = -1;
-    for( int i = 0; i < list.length; i++ ) {
-      if( items.length > 0 && items[ 0 ] == list[ i ] ) {
-        newIndex = i;
-      }
+    if( items.length > 0 ) {
+      newIndex = itemHolder.indexOf( items[ 0 ] );
     }
     setSelection( newIndex );
   }
@@ -416,8 +436,10 @@ public class TabFolder extends Composite {
   void createItem( final TabItem item, final int index ) {
     itemHolder.insert( item, index );
     if( getItemCount() == 1 ) {
-      // TODO [rh] mismatch to SWT: SWT fires a SelectionEvent here
       setSelection( 0 );
+      SelectionEvent event 
+        = new SelectionEvent( this, item, SelectionEvent.WIDGET_SELECTED );
+      event.processEvent();
     }
   }
 

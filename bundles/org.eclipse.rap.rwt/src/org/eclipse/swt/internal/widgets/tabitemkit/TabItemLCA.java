@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
 import java.io.IOException;
+
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
@@ -44,25 +45,31 @@ public class TabItemLCA extends AbstractWidgetLCA {
   }
   
   public void readData( final Widget widget ) {
-    String value = WidgetLCAUtil.readPropertyValue( widget, PROP_CHECKED );
+    String value = WidgetLCAUtil.readPropertyValue( widget, "checked" );
     if( value != null && Boolean.valueOf( value ).booleanValue() ) {
-      TabItem tabItem = ( TabItem )widget;
-      TabFolder parent = tabItem.getParent();
-      TabItem[] items = parent.getItems();
+      TabItem item = ( TabItem )widget;
+      TabFolder folder = item.getParent();
+      TabItem[] items = folder.getItems();
+      // Override preserved values with those already present on the client-side
       for( int i = 0; i < items.length; i++ ) {
-        if( items[ i ] == tabItem ) {
-          TabItem[] oldSelection = parent.getSelection();
+        if( items[ i ] == item ) {
+          TabItem[] oldSelection = folder.getSelection();
           if( oldSelection.length == 1 ) {
             IWidgetAdapter adapter = WidgetUtil.getAdapter( oldSelection[ 0 ] );
             adapter.preserve( PROP_CHECKED, Boolean.FALSE );
           }
-          IWidgetAdapter adapter = WidgetUtil.getAdapter( tabItem );
+          IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
           adapter.preserve( PROP_CHECKED, Boolean.TRUE );
-          // TODO: [fappel] see comment in TabFolderLCA.processAction
-          parent.setSelection( i );
+          folder.setSelection( i );
         }
       }
+      String eventId = JSConst.EVENT_WIDGET_SELECTED_ITEM;
+      if( WidgetLCAUtil.wasEventSent( item, eventId ) ) {
+        ControlLCAUtil.processSelection( folder, item, true );
+      }
     }
+
+    
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -73,14 +80,14 @@ public class TabItemLCA extends AbstractWidgetLCA {
       WidgetUtil.getId( tabItem.getParent() )
     };
     writer.callStatic( "org.eclipse.swt.TabUtil.createTabItem", args );
-    setJSParent( tabItem );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
+    setJSParent( tabItem );
     JSWriter writer = JSWriter.getWriterFor( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
-    writeCheckedState( tabItem );
+    writeSelection( tabItem );
     writer.updateListener( JS_LISTENER_INFO, 
                            Props.SELECTION_LISTENERS, 
                            SelectionEvent.hasListener( tabItem.getParent() ) );
@@ -95,12 +102,10 @@ public class TabItemLCA extends AbstractWidgetLCA {
   //////////////////
   // helping methods
   
-  private void writeCheckedState( final TabItem item ) throws IOException {
+  private void writeSelection( final TabItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( isChecked( item ) );
-    if( WidgetLCAUtil.hasChanged( item, PROP_CHECKED, newValue, Boolean.FALSE ) ) {
-      writer.set( JSConst.QX_FIELD_CHECKED, isChecked( item ) );
-    }
+    writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
   }
   
   private boolean isChecked( final TabItem tabItem ) {

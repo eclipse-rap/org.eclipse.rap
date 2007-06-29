@@ -53,6 +53,8 @@ public final class JSConst {
   // Parameter names that specify further event details 
   public static final String EVENT_WIDGET_SELECTED_DETAIL 
     = "org.eclipse.swt.events.widgetSelected.detail";
+  public static final String EVENT_WIDGET_SELECTED_ITEM
+    = "org.eclipse.swt.events.widgetSelected.item";
   public static final String EVENT_SET_DATA_INDEX
     = "org.eclipse.swt.events.setData.index";
   
