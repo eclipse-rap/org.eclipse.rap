@@ -164,13 +164,32 @@ public class TabItem extends Item {
     checkWidget();
     if( control != null ) {
       if( control.isDisposed() ) {
-        SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+        error( SWT.ERROR_INVALID_ARGUMENT );
       }
-      if( control.getParent() != parent ) {
-        SWT.error( SWT.ERROR_INVALID_PARENT );
+      if( control.parent != parent ) {
+        error( SWT.ERROR_INVALID_PARENT );
       }
     }
+    if( this.control != null && this.control.isDisposed() ) {
+      this.control = null;
+    }
+    Control oldControl = this.control;
+    Control newControl = control;
     this.control = control;
+    int index = parent.indexOf( this );
+    if( index != parent.getSelectionIndex() ) {
+      if( newControl != null ) {
+        newControl.setVisible( false );
+      }
+    } else {
+      if( newControl != null ) {
+        newControl.setBounds( parent.getClientArea() );
+        newControl.setVisible( true );
+      }
+      if( oldControl != null ) {
+        oldControl.setVisible( false );
+      }
+    }
   }
   
   public void setImage( final Image image ) {

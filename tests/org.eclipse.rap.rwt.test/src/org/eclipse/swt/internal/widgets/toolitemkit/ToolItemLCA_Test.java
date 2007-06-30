@@ -30,127 +30,127 @@ import com.w4t.util.browser.Ie6;
 
 public class ToolItemLCA_Test extends TestCase {
 
-    public void testPreserveValues() {
-        Display display = new Display();
-        Composite shell = new Shell( display, SWT.NONE );
-        ToolBar tb = new ToolBar( shell, SWT.FLAT );
-        ToolItem item = new ToolItem( tb, SWT.CHECK );
-        RWTFixture.markInitialized( display );
-        RWTFixture.preserveWidgets();
-        IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-        Boolean hasListeners;
-        hasListeners
-          = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-        assertEquals( Boolean.FALSE, hasListeners );
-        assertEquals( "", adapter.getPreserved( Props.TEXT ) );
-        assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
-        assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
+  public void testPreserveValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.FLAT );
+    ToolItem item = new ToolItem( tb, SWT.CHECK );
+    RWTFixture.markInitialized( display );
+    RWTFixture.preserveWidgets();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    Boolean hasListeners;
+    hasListeners
+    = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( Boolean.FALSE, hasListeners );
+    assertEquals( "", adapter.getPreserved( Props.TEXT ) );
+    assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
 
-        RWTFixture.clearPreserved();
-        SelectionListener selectionListener = new SelectionAdapter() {};
-        item.addSelectionListener( selectionListener );
+    RWTFixture.clearPreserved();
+    SelectionListener selectionListener = new SelectionAdapter() {};
+    item.addSelectionListener( selectionListener );
 
-        item.setText( "some text" );
-        item.setImage( Image.find( RWTFixture.IMAGE1 ) );
-        item.setSelection( true );
+    item.setText( "some text" );
+    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    item.setSelection( true );
 
-        RWTFixture.preserveWidgets();
-        adapter = WidgetUtil.getAdapter( item );
-        hasListeners
-          = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-        assertEquals( Boolean.TRUE, hasListeners );
-        assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-        assertEquals( Image.find( RWTFixture.IMAGE1 ),
-                      adapter.getPreserved( Props.IMAGE ) );
-        assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
-        display.dispose();
-    }
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( item );
+    hasListeners
+    = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( Boolean.TRUE, hasListeners );
+    assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
+    assertEquals( Image.find( RWTFixture.IMAGE1 ),
+                  adapter.getPreserved( Props.IMAGE ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
+    display.dispose();
+  }
 
-    public void testCheckItemSelected() throws IOException {
-        final boolean[] wasEventFired = { false };
-        Display display = new Display();
-        Shell shell = new Shell( display, SWT.NONE );
-        ToolBar tb = new ToolBar( shell, SWT.FLAT );
-        final ToolItem item = new ToolItem( tb, SWT.CHECK );
-        item.addSelectionListener( new SelectionAdapter() {
-          public void widgetSelected( final SelectionEvent event ) {
-            wasEventFired[ 0 ] = true;
-            assertEquals( null, event.item );
-            assertSame( item, event.getSource() );
-            assertEquals( true, event.doit );
-            assertEquals( 0, event.x );
-            assertEquals( 0, event.y );
-            assertEquals( 0, event.width );
-            assertEquals( 0, event.height );
-            assertEquals( true, item.getSelection() );
-          }
-        } );
+  public void testCheckItemSelected() throws IOException {
+    final boolean[] wasEventFired = { false };
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.FLAT );
+    final ToolItem item = new ToolItem( tb, SWT.CHECK );
+    item.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        wasEventFired[ 0 ] = true;
+        assertEquals( null, event.item );
+        assertSame( item, event.getSource() );
+        assertEquals( true, event.doit );
+        assertEquals( 0, event.x );
+        assertEquals( 0, event.y );
+        assertEquals( 0, event.width );
+        assertEquals( 0, event.height );
+        assertEquals( true, item.getSelection() );
+      }
+    } );
 
-        String displayId = DisplayUtil.getAdapter( display ).getId();
-        String menuItemId = WidgetUtil.getId( item );
-        Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-        Fixture.fakeRequestParam( menuItemId + ".selection", "true" );
-        Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
-        new RWTLifeCycle().execute();
-        assertEquals( true, wasEventFired[ 0 ] );
-    }
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String menuItemId = WidgetUtil.getId( item );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( menuItemId + ".selection", "true" );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
+    new RWTLifeCycle().execute();
+    assertEquals( true, wasEventFired[ 0 ] );
+  }
 
-    public void testRenderChanges() throws IOException {
-        Fixture.fakeResponseWriter();
-        Display display = new Display();
-        Shell shell = new Shell( display , SWT.NONE );
-        ToolBar tb = new ToolBar( shell, SWT.FLAT );
-        final ToolItem item = new ToolItem( tb, SWT.CHECK );
-        shell.open();
-        RWTFixture.markInitialized( display );
-        RWTFixture.markInitialized( item );
-        RWTFixture.clearPreserved();
-        RWTFixture.preserveWidgets();
-        ToolItemLCA itemLCA = new ToolItemLCA();
-        item.setText( "benny" );
-        itemLCA.renderChanges( item );
-        assertTrue( Fixture.getAllMarkup().endsWith( "setLabel( \"benny\" );" ) );
-        
-        RWTFixture.clearPreserved();
-        RWTFixture.preserveWidgets();
-        item.setSelection( true );
-        itemLCA.renderChanges( item );
-        assertTrue( Fixture.getAllMarkup().endsWith( "setChecked( true );" ) );
-        
-        
-        Fixture.fakeResponseWriter();
-        RWTFixture.clearPreserved();
-        RWTFixture.preserveWidgets();
-        itemLCA.renderChanges( item );
-        assertEquals( "", Fixture.getAllMarkup() );
-    }
+  public void testRenderChanges() throws IOException {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.FLAT );
+    final ToolItem item = new ToolItem( tb, SWT.CHECK );
+    shell.open();
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( item );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    ToolItemLCA itemLCA = new ToolItemLCA();
+    item.setText( "benny" );
+    itemLCA.renderChanges( item );
+    assertTrue( Fixture.getAllMarkup().endsWith( "setLabel( \"benny\" );" ) );
 
-    public void testReadData() {
-        Display display = new Display();
-        Composite shell = new Shell( display, SWT.NONE );
-        ToolBar tb = new ToolBar( shell, SWT.FLAT );
-        final ToolItem item = new ToolItem( tb, SWT.CHECK );
-        String itemId = WidgetUtil.getId( item );
-        // read changed selection
-        Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
-        Fixture.fakeRequestParam( itemId + ".selection", "true" );
-        WidgetUtil.getLCA( item ).readData( item );
-        assertEquals( Boolean.TRUE, Boolean.valueOf( item.getSelection() ) );
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    item.setSelection( true );
+    itemLCA.renderChanges( item );
+    assertTrue( Fixture.getAllMarkup().endsWith( "setChecked( true );" ) );
 
-        // XXX: is there a way to clear the request params?
-        Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
-        Fixture.fakeRequestParam( itemId + ".selection", "false" );
-        WidgetUtil.getLCA( item ).readData( item );
-        assertEquals( Boolean.FALSE, Boolean.valueOf(item.getSelection() ) );
-    }
 
-    protected void setUp() throws Exception {
-        RWTFixture.setUp();
-        Fixture.fakeResponseWriter();
-        Fixture.fakeBrowser( new Ie6( true, true ) );
-    }
+    Fixture.fakeResponseWriter();
+    RWTFixture.clearPreserved();
+    RWTFixture.preserveWidgets();
+    itemLCA.renderChanges( item );
+    assertEquals( "", Fixture.getAllMarkup() );
+  }
 
-    protected void tearDown() throws Exception {
-        RWTFixture.tearDown();
-    }
+  public void testReadData() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.FLAT );
+    final ToolItem item = new ToolItem( tb, SWT.CHECK );
+    String itemId = WidgetUtil.getId( item );
+    // read changed selection
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
+    Fixture.fakeRequestParam( itemId + ".selection", "true" );
+    WidgetUtil.getLCA( item ).readData( item );
+    assertEquals( Boolean.TRUE, Boolean.valueOf( item.getSelection() ) );
+
+    // XXX: is there a way to clear the request params?
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
+    Fixture.fakeRequestParam( itemId + ".selection", "false" );
+    WidgetUtil.getLCA( item ).readData( item );
+    assertEquals( Boolean.FALSE, Boolean.valueOf(item.getSelection() ) );
+  }
+
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+    Fixture.fakeResponseWriter();
+    Fixture.fakeBrowser( new Ie6( true, true ) );
+  }
+
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
+  }
 }

@@ -277,8 +277,26 @@ public class TabFolder extends Composite {
    */
   public void setSelection( final int selectionIndex ) {
     checkWidget();
-    if( selectionIndex >= -1 && selectionIndex < itemHolder.size() ) {
+    int oldIndex = this.selectionIndex;
+    int newIndex = selectionIndex;
+    if( oldIndex != newIndex && newIndex >= -1 && newIndex < itemHolder.size() ) 
+    {
+      if( oldIndex != -1 ) {
+        TabItem item = ( TabItem )itemHolder.getItem( oldIndex );
+        Control control = item.getControl();
+        if( control != null && !control.isDisposed() ) {
+          control.setVisible( false );
+        }
+      }
       this.selectionIndex = selectionIndex;
+      if( newIndex != -1 ) {
+        TabItem item = ( TabItem )itemHolder.getItem( newIndex );
+        Control control = item.getControl();
+        if( control != null && !control.isDisposed() ) {
+          control.setBounds( getClientArea() );
+          control.setVisible( true );
+        }
+      }
     }
   }
 
@@ -314,9 +332,9 @@ public class TabFolder extends Composite {
 
   public Rectangle getClientArea() {
     checkWidget();
-    Rectangle current = getBounds();
-    int width = current.width;
-    int height = current.height;
+    Rectangle bounds = getBounds();
+    int width = bounds.width;
+    int height = bounds.height;
     int border = 1;
     int hTabBar = 23;
     return new Rectangle( border,

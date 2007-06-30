@@ -179,6 +179,31 @@ public class TabFolderAndItem_Test extends TestCase {
     assertSame( item0, folder.getSelection()[ 0 ] );
   }
   
+  public void testSelectedControl() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    shell.open();
+
+    TabItem item0 = new TabItem( folder, SWT.NONE );
+    Control control0 = new Button( folder, SWT.PUSH );
+    item0.setControl( control0 );
+    assertTrue( control0.getVisible() );
+    
+    TabItem item1 = new TabItem( folder, SWT.NONE );
+    Control control1 = new Button( folder, SWT.PUSH );
+    item1.setControl( control1 );
+    assertFalse( control1.getVisible() );
+    
+    folder.setSelection( item1 );
+    assertTrue( control1.getVisible() );
+    
+    Control alternativeControl1 = new Button( folder, SWT.PUSH );
+    item1.setControl( alternativeControl1 );
+    assertFalse( control1.getVisible() );
+    assertTrue( alternativeControl1.getVisible() );
+  }
+
   public void testImages() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );

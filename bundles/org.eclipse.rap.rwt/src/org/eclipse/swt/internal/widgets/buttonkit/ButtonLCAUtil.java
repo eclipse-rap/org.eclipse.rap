@@ -22,12 +22,12 @@ import org.eclipse.swt.widgets.Button;
 
 final class ButtonLCAUtil {
 
-  private static final String PARAM_SELECTION = "selection";
 
   static final String PROP_SELECTION = "selection";
-
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_DEFAULT = "defaultButton";
+
+  private static final String PARAM_SELECTION = "selection";
 
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.CENTER );
 

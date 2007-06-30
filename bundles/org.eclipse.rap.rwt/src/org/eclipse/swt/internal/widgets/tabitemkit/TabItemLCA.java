@@ -31,45 +31,33 @@ public class TabItemLCA extends AbstractWidgetLCA {
 
 
   public void preserveValues( final Widget widget ) {
-    TabItem tabItem = ( TabItem )widget;
-    ItemLCAUtil.preserve( tabItem );
+    TabItem item = ( TabItem )widget;
+    ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_CHECKED, Boolean.valueOf( isChecked( tabItem ) ) );
+    adapter.preserve( PROP_CHECKED, Boolean.valueOf( isChecked( item ) ) );
     // preserve the listener state of the parent tabfolder here, since the
     // javascript handling is added to the clientside tab buttons and therefore
     // the jswriter will check the preserved state of the tabitem...
-    TabFolder parent = tabItem.getParent();
-    boolean hasListeners = SelectionEvent.hasListener( parent );
+    TabFolder folder = item.getParent();
+    boolean hasListeners = SelectionEvent.hasListener( folder );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListeners ) );
   }
   
   public void readData( final Widget widget ) {
     String value = WidgetLCAUtil.readPropertyValue( widget, "checked" );
-    if( value != null && Boolean.valueOf( value ).booleanValue() ) {
-      TabItem item = ( TabItem )widget;
-      TabFolder folder = item.getParent();
-      TabItem[] items = folder.getItems();
-      // Override preserved values with those already present on the client-side
-      for( int i = 0; i < items.length; i++ ) {
-        if( items[ i ] == item ) {
-          TabItem[] oldSelection = folder.getSelection();
-          if( oldSelection.length == 1 ) {
-            IWidgetAdapter adapter = WidgetUtil.getAdapter( oldSelection[ 0 ] );
-            adapter.preserve( PROP_CHECKED, Boolean.FALSE );
-          }
-          IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-          adapter.preserve( PROP_CHECKED, Boolean.TRUE );
-          folder.setSelection( i );
+    if( Boolean.valueOf( value ).booleanValue() ) {
+      final TabItem item = ( TabItem )widget;
+      final TabFolder folder = item.getParent();
+      // TODO [rh] same hack as in CTabFolderLCA#readData
+      // Read selected item and process selection event
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          folder.setSelection( item );
+          ControlLCAUtil.processSelection( folder, item, false );
         }
-      }
-      String eventId = JSConst.EVENT_WIDGET_SELECTED_ITEM;
-      if( WidgetLCAUtil.wasEventSent( item, eventId ) ) {
-        ControlLCAUtil.processSelection( folder, item, true );
-      }
+      } );
     }
-
-    
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {

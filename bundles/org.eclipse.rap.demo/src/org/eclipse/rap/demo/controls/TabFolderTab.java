@@ -20,6 +20,7 @@ public class TabFolderTab extends ExampleTab {
 
   protected static final int MAX_ITEMS = 3;
 
+  private boolean onDemandContent;
   private TabFolder folder;
   private TabItem[] tabItems;
   private Button[] tabRadios;
@@ -34,46 +35,88 @@ public class TabFolderTab extends ExampleTab {
     createStyleButton( "BOTTOM", SWT.BOTTOM );
     createVisibilityButton();
     createEnablementButton();
+    createOnDemandButton( parent );
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
     tabRadios = new Button[ MAX_ITEMS ];
     for( int i = 0; i < MAX_ITEMS; i++ ) {
-      String title = "Select Tab " + ( i + 1 );
-      tabRadios[ i ] = createPropertyButton( title, SWT.RADIO );
-      final int j = i;
+      tabRadios[ i ] = createPropertyButton( "Select Tab " + i, SWT.RADIO );
+      final int itemIndex = i;
       tabRadios[ i ].addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent event ) {
-          folder.setSelection( j );
+          folder.setSelection( itemIndex );
         }
       } );
     }
     tabRadios[ 0 ].setSelection( true );
+    createChangeContentButton( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
-    int style = getStyle();
-    folder = new TabFolder( parent, style );
-    tabItems = new TabItem[ 3 ];
-    for( int i = 0; i < 3; i++ ) {
-      tabItems[ i ] = new TabItem( folder, style );
-      tabItems[ i ].setText( "Tab " + ( i + 1 ) );
-      Text content = new Text( folder, SWT.WRAP | SWT.MULTI );
-      content.setText( "Lorem ipsum dolor sit amet, consectetur adipisicing "
-        + "elit, sed do eiusmod tempor incididunt ut labore et "
-        + "dolore magna aliqua." );
-      tabItems[ i ].setControl( content );
-    }
-    folder.setSelection( 0 );
+    folder = new TabFolder( parent, getStyle() );
+    tabItems = new TabItem[ MAX_ITEMS ];
     folder.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        for( int i = 0; i < MAX_ITEMS; i++ ) {
-          tabRadios[ i ].setSelection( event.item == tabItems[ i ] );
+      public void widgetSelected( final SelectionEvent event ) {
+        TabItem item = ( TabItem )event.item;
+        if( tabRadios != null ) {
+          int index = item.getParent().indexOf( item );
+          for( int i = 0; i < MAX_ITEMS; i++ ) {
+            tabRadios[ i ].setSelection( index == i );
+          }
         }
+        createItemContent( item );
       }
     } );
+    for( int i = 0; i < MAX_ITEMS; i++ ) {
+      tabItems[ i ] = new TabItem( folder, SWT.NONE );
+      tabItems[ i ].setText( "TabItem " + i );
+      if( !onDemandContent ) {
+        createItemContent( tabItems[ i ] );
+      }
+    }
     registerControl( folder );
   }
 
+  private void createOnDemandButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.CHECK );
+    button.setText( "Create Item Content on Demand" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Button button = ( Button )event.widget;
+        onDemandContent = button.getSelection();
+        createNew();
+      }
+    } );
+  }
+
+  private void createChangeContentButton( final Composite parent ) {
+    Button btnChangeContent = new Button( parent, SWT.PUSH );
+    btnChangeContent.setText( "Change Content for Selected Item" );
+    btnChangeContent.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        TabItem item = folder.getSelection()[ 0 ];
+        Label content = new Label( folder, SWT.NONE );
+        int index = folder.indexOf( item );
+        content.setText( "Alternate content for tab item " + index );
+        item.setControl( content );
+      }
+    } );
+  }
+
+  private void createItemContent( final TabItem item ) {
+    if( item.getControl() == null ) {
+      TabFolder folder = item.getParent();
+      Text content = new Text( folder, SWT.WRAP | SWT.MULTI | SWT.READ_ONLY );
+      int index = folder.indexOf( item );
+      String text = "This is the content for item " + index;
+      if( onDemandContent ) {
+        text += "\nIt was created on demand, when the item was selected " 
+             +  "for the first time through user interaction.";
+      }
+      content.setText( text );
+      item.setControl( content );
+    }
+  }
 }
