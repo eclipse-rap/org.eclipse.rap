@@ -68,6 +68,8 @@ public class TextTab extends ExampleTab {
     createBgColorButton();
     createFontChooser();
     createLimitText( parent );
+    createSelectionChooser( parent );
+    createSelectionQuery( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -192,6 +194,67 @@ public class TextTab extends ExampleTab {
     return result;
   }
 
+  private void createSelectionChooser( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 5, false ) );
+    Label lblSelectionFrom = new Label( composite, SWT.NONE );
+    lblSelectionFrom.setText( "Selection from" );
+    final Text txtSelectionFrom = new Text( composite, SWT.BORDER );
+    Label lblSelectionTo = new Label( composite, SWT.NONE );
+    lblSelectionTo.setText( "to" );
+    final Text txtSelectionTo = new Text( composite, SWT.BORDER );
+    Button btnChange = new Button( composite, SWT.PUSH );
+    btnChange.setText( "Change" );
+    btnChange.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int from = parseInt( txtSelectionFrom.getText() );
+        int to = parseInt( txtSelectionTo.getText() );
+        if( to >= 0 && from <= to  ) {
+          // TODO [rh] remove this as soon as selection for MULTI text works
+          if( ( simpleText.getStyle() & SWT.MULTI ) != 0 ) {
+            noSelectionForMultiTextInfo();
+          } else {
+            simpleText.setSelection( from, to );
+            modifyText.setSelection( from, to );
+          }
+        } else {
+          String msg 
+            = "Invalid Selection: " 
+            + txtSelectionFrom.getText()
+            + " - "
+            + txtSelectionTo.getText();
+          MessageDialog.openError( getShell(), "Error", msg, null );
+        }
+      }
+    } );
+  }
+
+  private void createSelectionQuery( final Composite parent ) {
+    Button btnGetSelection = new Button( parent, SWT.PUSH );
+    btnGetSelection.setText( "Get Selection" );
+    btnGetSelection.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        // TODO [rh] remove this as soon as selection for MULTI text works
+        if( ( simpleText.getStyle() & SWT.MULTI ) != 0 ) {
+          noSelectionForMultiTextInfo();
+        } else {
+          Point simpleTextSelection = simpleText.getSelection();
+          Point modifyTextSelection = modifyText.getSelection();
+          String msg 
+            = "Selection in 'Simple Text' ranges from " 
+            + simpleTextSelection.x 
+            + " to " 
+            + simpleTextSelection.y
+            + "\nSelection in 'Text with ModifyListener' ranges from "
+            + modifyTextSelection.x
+            + " to "
+            + modifyTextSelection.y;
+          MessageDialog.openInformation( getShell(), "Information", msg, null );
+        }
+      }
+    } );
+  }
+
   private void createLimitText( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
@@ -217,6 +280,23 @@ public class TextTab extends ExampleTab {
         text.setText( String.valueOf( limit ) );
       }
     } );
+  }
+
+  private int parseInt( final String text ) {
+    int result;
+    try {
+      result = Integer.parseInt( text );
+    } catch( NumberFormatException e ) {
+      result = -1;
+    }
+    return result;
+  }
+
+  private void noSelectionForMultiTextInfo() {
+    String msg 
+      = "Sorry, changing the selection is not yet implemented for " 
+      + "Text with style MULTI.";
+    MessageDialog.openInformation( getShell(), "Information", msg, null );
   }
 
   private static Point getPreferredSize( final Text text ) {
