@@ -176,8 +176,9 @@ public abstract class TypedEvent extends Event {
   public String toString() {
     return getName()
         + "{"
+        + widget 
 //        TODO [rst] uncomment when these public fields are implemented
-//        + widget + " time=" + time + 
+//        + " time=" + time + 
         + " data=" 
         + data
         + "}";
