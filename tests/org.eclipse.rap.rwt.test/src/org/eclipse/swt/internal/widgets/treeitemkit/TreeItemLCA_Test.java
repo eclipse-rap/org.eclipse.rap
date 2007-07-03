@@ -164,7 +164,6 @@ public class TreeItemLCA_Test extends TestCase {
     treeItem.setForeground( Color.getColor( 0, 255, 0 ) );
     tiLCA.renderChanges( treeItem );
 
-    System.out.println( Fixture.getAllMarkup() );
     expected = "wm.setForeground( w, \"#00ff00\" );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
 
