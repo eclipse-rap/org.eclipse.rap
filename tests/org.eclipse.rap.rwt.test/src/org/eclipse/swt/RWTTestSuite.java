@@ -14,8 +14,7 @@ package org.eclipse.swt;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.eclipse.swt.browser.Browser_Test;
-import org.eclipse.swt.custom.CTabFolder_Test;
-import org.eclipse.swt.custom.CTabItem_Test;
+import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.externalbrowser.ExternalBrowser_Test;
 import org.eclipse.swt.graphics.*;
@@ -111,6 +110,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ToolBar_Test.class );
     suite.addTestSuite( CTabFolder_Test.class );
     suite.addTestSuite( CTabItem_Test.class );
+    suite.addTestSuite( CLabel_Test.class );
     suite.addTestSuite( CoolBar_Test.class );
     suite.addTestSuite( CoolItem_Test.class );
     suite.addTestSuite( Label_Test.class );

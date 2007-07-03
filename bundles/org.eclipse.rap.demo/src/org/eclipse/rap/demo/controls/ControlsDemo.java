@@ -51,6 +51,8 @@ public class ControlsDemo implements IEntryPoint {
 //    tab.createContents();
     tab = new CBannerTab( topFolder );
     tab.createContents();
+    tab = new CLabelTab( topFolder );
+    tab.createContents();
     tab = new ComboTab( topFolder );
     tab.createContents();
     tab = new CompositeTab( topFolder );

@@ -100,6 +100,26 @@ appearances = {
       }
     },
     
+    // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
+    "c-label-wrapper" :
+    {
+      style : function( states ) {
+      	var result = { };
+        
+        result.textColor = states.disabled ? "widget.graytext" : "widget.foreground";
+        result.backgroundColor = "widget.background";
+        result.font = "widget.font";
+        if( states.rwt_SHADOW_IN ) {
+          result.border = "thinInset";
+        } else if( states.rwt_SHADOW_OUT ) {
+          result.border = "thinOutset";
+        } else {
+          result.border = states.rwt_BORDER ? "label.BORDER.border" : "label.border"
+        }
+        return result;
+      }
+    },
+    
     "htmlcontainer" :
     {
       include : "label"

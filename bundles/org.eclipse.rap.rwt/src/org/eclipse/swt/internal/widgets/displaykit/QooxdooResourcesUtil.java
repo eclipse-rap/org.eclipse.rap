@@ -53,6 +53,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/custom/CTabFolder.js";
   private static final String CTAB_ITEM_JS 
     = "org/eclipse/swt/custom/CTabItem.js";
+  private static final String CLABEL_UTIL_JS 
+  = "org/eclipse/swt/CLabelUtil.js";
   private static final String COOL_ITEM_JS 
     = "org/eclipse/swt/widgets/CoolItem.js";
   private static final String LIST_JS 
@@ -160,6 +162,7 @@ final class QooxdooResourcesUtil {
       register( LINK_UTIL_JS );
       register( EXTERNALBROWSER_UTIL_JS );
       register( PROGRESS_BAR_JS );
+      register( CLABEL_UTIL_JS );
       
       // register contributions
       registerContributions();
