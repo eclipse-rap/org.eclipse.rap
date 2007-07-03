@@ -9,8 +9,8 @@
 
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import org.eclipse.rap.swt.theme.IControlThemeAdapter;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.widgets.controlkit.IControlThemeAdapter;
 import org.eclipse.swt.widgets.Button;
 
 public interface IButtonThemeAdapter extends IControlThemeAdapter {

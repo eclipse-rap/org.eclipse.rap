@@ -11,13 +11,13 @@
 
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rap.swt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.theme.*;
+import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.controlkit.IControlThemeAdapter;
 import org.eclipse.swt.lifecycle.IControlAdapter;
 
 /**
@@ -350,8 +350,7 @@ public abstract class Control extends Widget {
     Color result = background;
     if( background == null ) {
       IControlThemeAdapter adapter = getControlThemeAdapter();
-      QxColor qxColor = adapter.getBackground( this );
-      result = Color.getColor( qxColor.red, qxColor.green, qxColor.blue );
+      result = adapter.getBackground( this );
     }
     return result;
   }
@@ -391,8 +390,7 @@ public abstract class Control extends Widget {
     Color result = foreground;
     if( foreground == null ) {
       IControlThemeAdapter adapter = getControlThemeAdapter();
-      QxColor qxColor = adapter.getForeground( this );
-      result = Color.getColor( qxColor.red, qxColor.green, qxColor.blue );
+      result = adapter.getForeground( this );
     }
     return result;
   }
@@ -435,8 +433,7 @@ public abstract class Control extends Widget {
     Font result = font;
     if( font == null ) {
       IControlThemeAdapter adapter = getControlThemeAdapter();
-      QxFont qxFont = adapter.getFont( this );
-      result = qxFont.asSWTFont();
+      result = adapter.getFont( this );
     }
     return result;
   }

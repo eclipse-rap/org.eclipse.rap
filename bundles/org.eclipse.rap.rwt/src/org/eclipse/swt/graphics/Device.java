@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -20,7 +20,7 @@ import org.eclipse.swt.internal.theme.ThemeUtil;
  * TODO [fappel] comment
  */
 public abstract class Device {
-    
+
   /**
    * Returns the matching standard color for the given
    * constant, which should be one of the color constants
@@ -29,7 +29,7 @@ public abstract class Device {
    * in will result in the color black. This color should
    * not be free'd because it was allocated by the system,
    * not the application.
-   * 
+   *
    * @param id the color constant
    * @return the matching color
    *
@@ -119,8 +119,8 @@ public abstract class Device {
    */
   public Font getSystemFont() {
     checkDevice();
-    QxFont qxFont = ThemeUtil.getTheme().getFont( "widget.font" );
-    return qxFont.asSWTFont();
+    QxFont font = ThemeUtil.getTheme().getFont( "widget.font" );
+    return QxFont.createFont( font );
   }
 
   public void checkDevice() {

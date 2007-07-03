@@ -4,24 +4,26 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.swt.internal.widgets.controlkit;
+package org.eclipse.rap.swt.theme;
 
-import org.eclipse.swt.internal.theme.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 
 public interface IControlThemeAdapter extends IThemeAdapter {
 
   abstract public int getBorderWidth ( Control control );
 
-  abstract public QxColor getForeground( Control control );
-  
-  abstract public QxColor getBackground( Control control );
+  abstract public Color getForeground( Control control );
 
-  public abstract QxFont getFont( Control control );
+  abstract public Color getBackground( Control control );
+
+  public abstract Font getFont( Control control );
 
 }

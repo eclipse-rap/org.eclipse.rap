@@ -18,12 +18,10 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.internal.theme.ThemeDefinitionReader.ThemeDef;
 import org.eclipse.swt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
 import org.eclipse.swt.resources.ResourceManager;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Widget;
 import org.xml.sax.SAXException;
 
 import com.w4t.HtmlResponseWriter;
@@ -180,6 +178,8 @@ public class ThemeManager {
 
   private static ThemeManager instance;
 
+  private final List customWidgets;
+  private final List addAppearances;
   private final Map themeDefs;
   private final Map themes;
   private final Map adapters;
@@ -196,35 +196,37 @@ public class ThemeManager {
   private static final Class[] THEMEABLE_WIDGETS = new Class[] {
 //  Browser.class,
 //  CBanner.class,
-    Button.class,
-    Combo.class,
+    org.eclipse.swt.widgets.Button.class,
+    org.eclipse.swt.widgets.Combo.class,
 //  Composite.class,
-    Control.class,
-    CoolBar.class,
-    CTabFolder.class,
-    Group.class,
-    Label.class,
-    Link.class,
-    List.class,
-    Menu.class,
-    ProgressBar.class,
+    org.eclipse.swt.widgets.Control.class,
+    org.eclipse.swt.widgets.CoolBar.class,
+    org.eclipse.swt.custom.CTabFolder.class,
+    org.eclipse.swt.widgets.Group.class,
+    org.eclipse.swt.widgets.Label.class,
+    org.eclipse.swt.widgets.Link.class,
+    org.eclipse.swt.widgets.List.class,
+    org.eclipse.swt.widgets.Menu.class,
+    org.eclipse.swt.widgets.ProgressBar.class,
 //  Sash.class,
 //  SashForm.class,
 //  Scrollable.class,
 //  Scrollbar.class,
 //  ScrolledComposite.class,
-    Shell.class,
-    Spinner.class,
-    TabFolder.class,
-    Table.class,
-    Text.class,
-    ToolBar.class,
-    Tree.class,
-    Widget.class,
+    org.eclipse.swt.widgets.Shell.class,
+    org.eclipse.swt.widgets.Spinner.class,
+    org.eclipse.swt.widgets.TabFolder.class,
+    org.eclipse.swt.widgets.Table.class,
+    org.eclipse.swt.widgets.Text.class,
+    org.eclipse.swt.widgets.ToolBar.class,
+    org.eclipse.swt.widgets.Tree.class,
+    org.eclipse.swt.widgets.Widget.class,
   };
 
   private ThemeManager() {
     // prevent instantiation from outside
+    customWidgets = new ArrayList();
+    addAppearances = new ArrayList();
     themeDefs = new LinkedHashMap();
     themes = new HashMap();
     adapters = new HashMap();
@@ -249,12 +251,16 @@ public class ThemeManager {
     log( "____ ThemeManager intialize" );
     if( !initialized ) {
       predefinedTheme = new Theme( PREDEFINED_THEME_NAME );
-      for( int i = 0; i < THEMEABLE_WIDGETS.length; i++ ) {
-        try {
+      try {
+        for( int i = 0; i < THEMEABLE_WIDGETS.length; i++ ) {
           processThemeableWidget( THEMEABLE_WIDGETS[ i ] );
-        } catch( final Exception e ) {
-          throw new RuntimeException( "Initialization failed", e );
         }
+        Iterator widgetIter = customWidgets.iterator();
+        while( widgetIter.hasNext() ) {
+          processThemeableWidget( ( Class )widgetIter.next() );
+        }
+      } catch( final Exception e ) {
+        throw new RuntimeException( "Initialization failed", e );
       }
       Iterator iterator = themeDefs.keySet().iterator();
       while( iterator.hasNext() ) {
@@ -288,6 +294,8 @@ public class ThemeManager {
 
   public void deregisterAll() {
     if( initialized ) {
+      customWidgets.clear();
+      addAppearances.clear();
       themeDefs.clear();
       themes.clear();
       adapters.clear();
@@ -295,6 +303,13 @@ public class ThemeManager {
       initialized = false;
       log( "deregistered" );
     }
+  }
+
+  public void addThemeableWidget( final Class widget ) {
+    if( initialized ) {
+      throw new IllegalStateException( "ThemeManager is already initialized" );
+    }
+    customWidgets.add( widget );
   }
 
   public void registerTheme( final String id,
@@ -425,40 +440,41 @@ public class ThemeManager {
    * @throws InvalidThemeFormatException
    * @throws ParserConfigurationException
    * @throws FactoryConfigurationError
+   * @throws IllegalAccessException
+   * @throws InstantiationException
    */
   private void processThemeableWidget( final Class clazz )
-    throws IOException, FactoryConfigurationError, ParserConfigurationException
+    throws IOException, FactoryConfigurationError,
+    ParserConfigurationException, InstantiationException,
+    IllegalAccessException
   {
+    log( "Processing widget: " + clazz.getName() );
     String[] variants = getPackageVariants( clazz.getPackage().getName() );
     String className = getSimpleClassName( clazz );
     ClassLoader loader = clazz.getClassLoader();
-    IThemeAdapter themeAdapter = null;
     boolean found = false;
     for( int i = 0; i < variants.length && !found ; i++ ) {
       String pkgName = variants[ i ] + "." + className.toLowerCase() + "kit";
       // TODO [rst] Is it possible to recognize whether a package exists?
-      //      Information should not be collected from different package name
-      //      variants.
-      loadThemeDef( loader, pkgName, className );
-      themeAdapter = loadThemeAdapter( loader, pkgName, className );
-      if( themeAdapter != null ) {
-        log( "ThemeAdapter found: " + themeAdapter );
-        adapters.put( clazz, themeAdapter );
-        found = true;
-      }
+      log( "looking through package " + pkgName );
+      found |= loadThemeDef( loader, pkgName, className );
+      found |= loadAppearanceJs( loader, pkgName, className );
+      found |= loadThemeAdapter( loader, pkgName, className, clazz );
     }
   }
 
-  private void loadThemeDef( final ClassLoader loader,
-                             final String pkgName,
-                             final String className )
+  private boolean loadThemeDef( final ClassLoader loader,
+                                final String pkgName,
+                                final String className )
     throws IOException, FactoryConfigurationError, ParserConfigurationException
   {
+    boolean result = false;
     String resPkgName = pkgName.replace( '.', '/' );
     String fileName = resPkgName + "/" + className + ".theme.xml";
     InputStream inStream = loader.getResourceAsStream( fileName );
     if( inStream != null ) {
       log( "Found theme definition file: " +  fileName );
+      result = true;
       try {
         ThemeDefinitionReader reader = new ThemeDefinitionReader( inStream );
         reader.read( new ThemeDefHandler() {
@@ -476,29 +492,65 @@ public class ThemeManager {
         inStream.close();
       }
     }
+    return result;
+  }
+
+  private boolean loadAppearanceJs( final ClassLoader loader,
+                                    final String pkgName,
+                                    final String className )
+    throws IOException
+  {
+    boolean result = false;
+    String resPkgName = pkgName.replace( '.', '/' );
+    String fileName = resPkgName + "/" + className + ".appearances.js";
+    InputStream inStream = loader.getResourceAsStream( fileName );
+    if( inStream != null ) {
+      log( "Found appearance js file: " +  fileName );
+      result = true;
+      try {
+        StringBuffer sb = new StringBuffer();
+        InputStreamReader reader = new InputStreamReader( inStream, "UTF-8" );
+        BufferedReader br = new BufferedReader( reader );
+        for( int i = 0; i < 100; i++ ) {
+          int character = br.read();
+          while( character != -1 ) {
+            sb.append( ( char )character );
+            character = br.read();
+          }
+        }
+        addAppearances.add( stripTemplate( sb.toString() ) );
+      } finally {
+        inStream.close();
+      }
+    }
+    return result;
   }
 
   /**
    * Tries to load the theme adapter for a class from a given package.
    * @return the theme adapter or <code>null</code> if not found.
+   * @throws IllegalAccessException
+   * @throws InstantiationException
    */
-  private IThemeAdapter loadThemeAdapter( final ClassLoader loader,
-                                          final String pkgName,
-                                          final String className )
+  private boolean loadThemeAdapter( final ClassLoader loader,
+                                    final String pkgName,
+                                    final String className,
+                                    final Class clazz )
+    throws InstantiationException, IllegalAccessException
   {
-    IThemeAdapter result = null;
+    boolean result = false;
+    IThemeAdapter themeAdapter = null;
     String adapterClassName = pkgName + '.' + className + "ThemeAdapter";
-    String msg = "Failed to load theme adapter for class ";
-    log( "try to load '" + adapterClassName + "'" );
     try {
       Class adapterClass = loader.loadClass( adapterClassName );
-      result = ( IThemeAdapter )adapterClass.newInstance();
+      themeAdapter = ( IThemeAdapter )adapterClass.newInstance();
+      if( themeAdapter != null ) {
+        log( "Found theme adapter class: " + themeAdapter.getClass().getName() );
+        result = true;
+        adapters.put( clazz, themeAdapter );
+      }
     } catch( final ClassNotFoundException e ) {
       // ignore and try to load from next package name variant
-    } catch( final InstantiationException e ) {
-      throw new RuntimeException( msg + className, e );
-    } catch( final IllegalAccessException e ) {
-      throw new RuntimeException( msg + className, e );
     }
     return result;
   }
@@ -710,9 +762,9 @@ public class ThemeManager {
     return writer.getGeneratedCode();
   }
 
-  private static String createAppearanceTheme( final Theme theme,
-                                               final String id )
-  throws IOException
+  private String createAppearanceTheme( final Theme theme,
+                                        final String id )
+    throws IOException
   {
     ClassLoader classLoader = ThemeManager.class.getClassLoader();
     String resource = "org/eclipse/swt/theme/DefaultAppearances.js";
@@ -724,6 +776,11 @@ public class ThemeManager {
                                           theme.getName(),
                                           ThemeWriter.APPEARANCE );
     writer.writeValues( appearances );
+    Iterator iterator = addAppearances.iterator();
+    while( iterator.hasNext() ) {
+      String addAppearances = ( String )iterator.next();
+      writer.writeValues( addAppearances );
+    }
     return writer.getGeneratedCode();
   }
 

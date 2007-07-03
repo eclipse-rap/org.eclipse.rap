@@ -11,7 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.tablekit;
 
-import org.eclipse.swt.internal.widgets.controlkit.IControlThemeAdapter;
+import org.eclipse.rap.swt.theme.IControlThemeAdapter;
 
 
 public interface ITableThemeAdapter extends IControlThemeAdapter {

@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.groupkit;
 
+import org.eclipse.rap.swt.theme.IControlThemeAdapter;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.controlkit.IControlThemeAdapter;
 
 public interface IGroupThemeAdapter extends IControlThemeAdapter {
 

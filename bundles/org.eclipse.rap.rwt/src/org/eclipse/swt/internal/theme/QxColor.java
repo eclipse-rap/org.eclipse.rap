@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -14,10 +14,12 @@ package org.eclipse.swt.internal.theme;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.swt.graphics.Color;
+
 public class QxColor implements QxType {
 
   private static final Map NAMED_COLORS = new HashMap();
-  
+
   static {
     // register 16 standard HTML colors
     NAMED_COLORS.put( "black", new int[] { 0, 0, 0 } );
@@ -37,12 +39,12 @@ public class QxColor implements QxType {
     NAMED_COLORS.put( "teal", new int[] { 0, 128, 128 } );
     NAMED_COLORS.put( "aqua", new int[] { 0, 255, 255 } );
   }
-  
+
   public final String name;
   public final int red;
   public final int green;
   public final int blue;
-  
+
   public QxColor( final String color ) {
     if( color == null ) {
       throw new NullPointerException( "null argument" );
@@ -63,7 +65,7 @@ public class QxColor implements QxType {
           throw new IllegalArgumentException( "Illegal number of characters in color definition: "
                                               + color );
         }
-      } catch( NumberFormatException e ) {
+      } catch( final NumberFormatException e ) {
         throw new IllegalArgumentException( "Illegal number format in color definition: "
                                             + color );
       }
@@ -81,7 +83,7 @@ public class QxColor implements QxType {
           green = Integer.parseInt( parts[ 1 ] );
           blue = Integer.parseInt( parts[ 2 ] );
           name = toHtmlString( red, green, blue );
-        } catch( NumberFormatException e ) {
+        } catch( final NumberFormatException e ) {
           throw new IllegalArgumentException( "Illegal number format in color definition: "
                                               + color );
         }
@@ -90,11 +92,11 @@ public class QxColor implements QxType {
       }
     }
   }
-  
+
   public String toDefaultString() {
     return red + ", " + green + ", " + blue;
   }
-  
+
   public static String toHtmlString( final int red, final int green, final int blue )
   {
     StringBuffer sb = new StringBuffer();
@@ -104,7 +106,7 @@ public class QxColor implements QxType {
     sb.append( getHexStr( blue ) );
     return sb.toString();
   }
-  
+
   public boolean equals( final Object obj ) {
     boolean result = false;
     if( obj == this ) {
@@ -113,7 +115,7 @@ public class QxColor implements QxType {
       QxColor other = ( QxColor )obj;
       result =  other.red == red
              && other.green == green
-             && other.blue == blue; 
+             && other.blue == blue;
     }
     return result;
   }
@@ -131,7 +133,11 @@ public class QxColor implements QxType {
            + blue
            + "}";
   }
-  
+
+  public static Color createColor( final QxColor color ) {
+    return Color.getColor( color.red, color.green, color.blue );
+  }
+
   private static String getHexStr( final int value ) {
     String hex = Integer.toHexString( value );
     return hex.length() == 1 ? "0" + hex : hex;

@@ -13,16 +13,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 import org.eclipse.swt.internal.theme.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
 
 public class ButtonThemeAdapter implements IButtonThemeAdapter {
-  
+
   // Width of check boxes and radio buttons
   static final int CHECK_WIDTH = 13;
-  
+
   // Height of check boxes and radio buttons
   static final int CHECK_HEIGHT = 13;
-  
+
   public int getBorderWidth( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
     QxBorder qxBorder;
@@ -36,7 +37,7 @@ public class ButtonThemeAdapter implements IButtonThemeAdapter {
     // TODO [rst] Ensure that borders have the same size for all four sides
     return qxBorder.width;
   }
-  
+
   public Point getSize( final Button button ) {
     Theme theme = ThemeUtil.getTheme();
     int width = 0, height = 0;
@@ -72,30 +73,31 @@ public class ButtonThemeAdapter implements IButtonThemeAdapter {
     return new Point( width, height );
   }
 
-  public QxColor getForeground( final Control control ) {
+  public Color getForeground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
-    return theme.getColor( "button.foreground" );
-  }
-  
-  public QxColor getBackground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    QxColor result;
-    if( ( control.getStyle() & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-      result = theme.getColor( "button.CHECK.background" );
-    } else {
-      result = theme.getColor( "button.background" );
-    }
-    return result;
+    QxColor color = theme.getColor( "button.foreground" );
+    return QxColor.createColor( color );
   }
 
-  public QxFont getFont( final Control control ) {
+  public Color getBackground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
-    QxFont result;
-    if( ( control.getStyle() & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
-      result = theme.getFont( "button.font" );
+    QxColor color;
+    if( ( control.getStyle() & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
+      color = theme.getColor( "button.CHECK.background" );
     } else {
-      result = theme.getFont( "widget.font" );
+      color = theme.getColor( "button.background" );
     }
-    return result;
+    return QxColor.createColor( color );
+  }
+
+  public Font getFont( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    QxFont font;
+    if( ( control.getStyle() & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
+      font = theme.getFont( "button.font" );
+    } else {
+      font = theme.getFont( "widget.font" );
+    }
+    return QxFont.createFont( font );
   }
 }

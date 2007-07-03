@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -13,15 +13,15 @@ package org.eclipse.swt.internal.theme;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.swt.theme.IControlThemeAdapter;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.internal.widgets.buttonkit.IButtonThemeAdapter;
-import org.eclipse.swt.internal.widgets.controlkit.IControlThemeAdapter;
 import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
 import org.eclipse.swt.widgets.*;
 
 
 public class ThemeManager_Test extends TestCase {
-  
+
   public void testThemeAdapter() throws Exception {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
@@ -43,7 +43,7 @@ public class ThemeManager_Test extends TestCase {
     assertNotNull( themeAdapter );
     assertTrue( themeAdapter instanceof IShellThemeAdapter );
   }
-  
+
   public void testRegister() throws Exception {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
@@ -60,7 +60,7 @@ public class ThemeManager_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testDeregister() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -80,13 +80,13 @@ public class ThemeManager_Test extends TestCase {
     assertNotNull( theme );
     assertEquals( "RAP Default Theme", theme.getName() );
   }
-  
+
   public void testRegisterResources() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     manager.registerResources();
   }
-  
+
   public void testTemplate() throws Exception {
     String content;
     String template;
@@ -100,12 +100,12 @@ public class ThemeManager_Test extends TestCase {
     template = ThemeManager.stripTemplate( content );
     assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakeNewRequest();
   }
-  
+
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }

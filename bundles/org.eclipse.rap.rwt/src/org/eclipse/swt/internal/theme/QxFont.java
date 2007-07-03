@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -24,7 +24,7 @@ public class QxFont implements QxType {
 
   private static final Pattern FONT_DEF_PATTERN
     = Pattern.compile( "(\".+?\"|'.+?'|\\S[^\\s,]+)(\\s*,)?" );
-  
+
   public final String[] family;
   public final int size;
   public final boolean bold;
@@ -38,7 +38,7 @@ public class QxFont implements QxType {
     int size = 0;
     boolean bold = false;
     boolean italic = false;
-    
+
     Matcher matcher = FONT_DEF_PATTERN.matcher( fontDef );
     while( matcher.find() ) {
       String part = matcher.group( 1 );
@@ -46,8 +46,7 @@ public class QxFont implements QxType {
       if( c == '"' || c == '\'' ) {
         part = part.substring( 1, part.length() - 1 );
       }
-      boolean hasComma = matcher.group( 2 ) != null;
-
+//      boolean hasComma = matcher.group( 2 ) != null;
       if( "bold".equalsIgnoreCase( part ) ) {
         bold = true;
       } else if( "italic".equalsIgnoreCase( part ) ) {
@@ -62,9 +61,7 @@ public class QxFont implements QxType {
         }
       }
     }
-    
     // TODO [rst] Check for illegal input and throw exception
-    
     this.family = ( String[] )family.toArray( new String[ family.size() ] );
     this.bold = bold;
     this.italic = italic;
@@ -112,7 +109,7 @@ public class QxFont implements QxType {
       result =  Arrays.equals( other.family, family )
              && other.size == size
              && other.bold == bold
-             && other.italic == italic; 
+             && other.italic == italic;
     }
     return result;
   }
@@ -144,25 +141,25 @@ public class QxFont implements QxType {
     result.append( "}" );
     return result.toString();
   }
-  
-  public Font asSWTFont() {
-    String name = getFamilyAsString();
+
+  public static Font createFont( final QxFont font ) {
+    String name = font.getFamilyAsString();
     int style = SWT.NORMAL;
-    if( bold ) {
+    if( font.bold ) {
       style |= SWT.BOLD;
     }
-    if( italic ) {
+    if( font.italic ) {
       style |= SWT.ITALIC;
     }
-    FontData data = new FontData( name, size, style );
+    FontData data = new FontData( name, font.size, style );
     return Font.getFont( data );
   }
-  
+
   private static int parseSize( final String string ) {
     int size = -1;
     try {
       size = Integer.parseInt( string );
-    } catch( NumberFormatException e ) {
+    } catch( final NumberFormatException e ) {
     }
     return size;
   }
