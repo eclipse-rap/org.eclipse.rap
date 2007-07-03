@@ -79,10 +79,10 @@ public class SelectionEvent extends TypedEvent {
    *
    * @param e the untyped event containing the information
    */
-  public SelectionEvent(Event e) {
-		this(e.widget, e.item, e.type, new Rectangle(e.x, e.y, e.width,
-				e.height), e.text, e.doit, e.detail);
-	}
+  public SelectionEvent( Event e ) {
+    this( e.widget, e.item, e.type,
+        new Rectangle( e.x, e.y, e.width, e.height ), e.text, e.doit, e.detail );
+  }
   
   public SelectionEvent( final Widget widget,
                          final Item item,
