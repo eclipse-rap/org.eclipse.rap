@@ -11,6 +11,8 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.lifecycle.IEntryPoint;
@@ -40,20 +42,22 @@ public class LayoutDemo implements IEntryPoint {
     topFolder.marginWidth = 5;
     topFolder.marginHeight = 5;
     topFolder.setSelectionBackground( Color.getColor( 0, 128, 192 ) );
-    ExampleTab tab;
-    tab = new FillLayoutTab( topFolder );
-    tab.createContents();
-    tab = new RowLayoutTab( topFolder );
-    tab.createContents();
-    tab = new GridLayoutTab( topFolder );
-    tab.createContents();
-    tab = new StackLayoutTab( topFolder );
-    tab.createContents();
-    tab = new NestedLayoutsTab( topFolder );
-    tab.createContents();
-    tab = new TextSizeTab( topFolder );
-    tab.createContents();
+    final ExampleTab[] tabs = new ExampleTab[] {
+      new FillLayoutTab( topFolder ),
+      new RowLayoutTab( topFolder ),
+      new GridLayoutTab( topFolder ),
+      new StackLayoutTab( topFolder ),
+      new NestedLayoutsTab( topFolder ),
+      new TextSizeTab( topFolder ),
+    };
+    tabs[ 0 ].createContents();
     topFolder.setSelection( 0 );
+    topFolder.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent evt ) {
+        int index = topFolder.getSelectionIndex();
+        tabs[ index ].createContents();
+      }
+    } );
   }
 
   /**

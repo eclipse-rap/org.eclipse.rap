@@ -120,6 +120,13 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
+  }
+
   ////////////////////////////////////////////////////
   // Helping method sto read client-side state changes
   

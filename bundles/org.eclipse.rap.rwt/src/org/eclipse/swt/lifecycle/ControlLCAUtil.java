@@ -12,6 +12,7 @@
 package org.eclipse.swt.lifecycle;
 
 import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
@@ -37,10 +38,21 @@ public class ControlLCAUtil {
                           "org.eclipse.swt.EventUtil.focusLost",
                           JSListenerType.ACTION );
 
+  private static final String JS_STYLE_FLAG_FLAT = "rwt_FLAT";
+  private static final String JS_STYLE_FLAG_BORDER = "rwt_BORDER";
+  
+  private static final String JS_PROP_TAB_INDEX = "tabIndex";
+  
+  private static final String JS_FUNC_ADD_STATE = "addState";
+  private static final String JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET
+    = "removeActivateListenerWidget";
+  private static final String JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET 
+    = "addActivateListenerWidget";
+
   // Property names to preserve widget property values
   private static final String PROP_ACTIVATE_LISTENER = "activateListener";
   private static final String PROP_FOCUS_LISTENER = "focusListener";
-  private static final String PROP_TAB_INDEX = "tabIndex";
+  private static final String PROP_TAB_INDEX = JS_PROP_TAB_INDEX;
 
   private ControlLCAUtil() {
     // prevent instance creation
@@ -85,6 +97,10 @@ public class ControlLCAUtil {
     Composite parent = control.getParent();
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
   }
+  
+  public static void resetBounds() throws IOException {
+    WidgetLCAUtil.resetBounds();
+  }
 
   public static void writeZIndex( final Control control ) throws IOException {
     // TODO [rst] remove if statement as soon as z-order on shells is
@@ -94,6 +110,11 @@ public class ControlLCAUtil {
       Integer newValue = new Integer( getZIndex( control ) );
       writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
     }
+  }
+  
+  public static void resetZIndex() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JSConst.QX_FIELD_Z_INDEX );
   }
 
   // TODO [rh] there seems to be a qooxdoo problem when trying to change the
@@ -110,6 +131,12 @@ public class ControlLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( control );
     writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
   }
+  
+  public static void resetVisible() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    // TODO [fappel]: check whether to use reset
+    writer.set( JSConst.QX_FIELD_VISIBLE, true );
+  }
 
   public static void writeEnabled( final Control control )
     throws IOException
@@ -119,6 +146,10 @@ public class ControlLCAUtil {
     WidgetLCAUtil.writeEnabled( control, control.getEnabled() );
   }
 
+  public static void resetEnabled() throws IOException {
+    WidgetLCAUtil.resetEnabled();
+  }
+  
   public static void writeChanges( final Control control ) throws IOException {
     writeBounds( control );
     writeZIndex( control );
@@ -133,6 +164,22 @@ public class ControlLCAUtil {
     writeActivateListener( control );
     writeFocusListener( control );
   }
+  
+  public static void resetChanges() throws IOException {
+    resetFocusListener();
+    // resetting Activation Listener is automatically done by JSWriter#dispose
+    resetMenu();
+    resetToolTip();
+    resetFont();
+    resetBackground();
+    resetForeground();
+    resetEnabled();
+    resetVisible();
+    resetTabIndex();
+    resetZIndex();
+    resetBounds();
+  }
+
 
   public static void writeResizeNotificator( final Widget widget )
     throws IOException
@@ -157,6 +204,10 @@ public class ControlLCAUtil {
   public static void writeMenu( final Control control ) throws IOException {
     WidgetLCAUtil.writeMenu( control, control.getMenu() );
   }
+  
+  public static void resetMenu() throws IOException {
+    WidgetLCAUtil.resetMenu();
+  }
 
   public static void writeToolTip( final Control control )
     throws IOException
@@ -164,6 +215,10 @@ public class ControlLCAUtil {
     WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
   }
 
+  public static void resetToolTip() throws IOException {
+    WidgetLCAUtil.resetToolTip();
+  }
+  
   // TODO [rh] move this to WidgetLCAUtil, move test case along, change LCA's
   //      to use this instead of manually setting images
   public static void writeImage( final Widget widget, final Image image )
@@ -186,12 +241,20 @@ public class ControlLCAUtil {
                                    controlAdapter.getUserForeground() );
   }
 
+  public static void resetForeground() throws IOException {
+    WidgetLCAUtil.resetForeground();
+  }
+  
   public static void writeBackground( final Widget control ) throws IOException
   {
     IControlAdapter controlAdapter
       = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
     WidgetLCAUtil.writeBackground( control,
                                    controlAdapter.getUserBackground() );
+  }
+  
+  public static void resetBackground() throws IOException {
+    WidgetLCAUtil.resetBackground();
   }
 
   /**
@@ -205,10 +268,14 @@ public class ControlLCAUtil {
   public static void writeStyleFlags( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     if( ( widget.getStyle() & SWT.BORDER ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_BORDER" } );
+      writer.call( JSWriter.WIDGET_MANAGER_REF, 
+                   JS_FUNC_ADD_STATE, 
+                   new Object[]{ widget, JS_STYLE_FLAG_BORDER } );
     }
     if( ( widget.getStyle() & SWT.FLAT ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_FLAT" } );
+      writer.call( JSWriter.WIDGET_MANAGER_REF,
+                   JS_FUNC_ADD_STATE, 
+                   new Object[]{ widget, JS_STYLE_FLAG_FLAT } );
     }
   }
 
@@ -217,6 +284,10 @@ public class ControlLCAUtil {
     IControlAdapter controlAdapter = ( IControlAdapter )adapter;
     Font newValue = controlAdapter.getUserFont();
     WidgetLCAUtil.writeFont( control, newValue );
+  }
+  
+  public static void resetFont() throws IOException {
+    WidgetLCAUtil.resetFont();
   }
 
   public static void writeActivateListener( final Control control )
@@ -227,11 +298,22 @@ public class ControlLCAUtil {
     String prop = PROP_ACTIVATE_LISTENER;
     if( WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) ) {
       String function = newValue.booleanValue()
-                      ? "addActivateListenerWidget"
-                      : "removeActivateListenerWidget";
+                      ? JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
+                      : JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET;
       JSWriter writer = JSWriter.getWriterFor( control );
       Object[] args = new Object[] { control };
       writer.call( control.getShell(), function, args );
+    }
+  }
+  
+  static void resetActivateListener( final Control control )
+    throws IOException
+  {
+    if( ActivateEvent.hasListener( control ) ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      writer.call( control.getShell(),
+                   JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET,
+                   new Object[] { control } );
     }
   }
 
@@ -259,6 +341,14 @@ public class ControlLCAUtil {
     }
   }
 
+  private static void resetFocusListener() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.removeListener( FOCUS_GAINED_LISTENER_INFO.getEventType(),
+                           FOCUS_GAINED_LISTENER_INFO.getJSListener() );
+    writer.removeListener( FOCUS_LOST_LISTENER_INFO.getEventType(),
+                           FOCUS_LOST_LISTENER_INFO.getJSListener() );
+  }
+  
   //////////
   // Z-INDEX
 
@@ -293,10 +383,15 @@ public class ControlLCAUtil {
       Integer newValue = new Integer( tabIndex );
       JSWriter writer = JSWriter.getWriterFor( control );
       // there is no reliable default value for all controls
-      writer.set( PROP_TAB_INDEX, "tabIndex", newValue );
+      writer.set( PROP_TAB_INDEX, JS_PROP_TAB_INDEX, newValue );
     }
   }
 
+  private static void resetTabIndex() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JS_PROP_TAB_INDEX );
+  }
+  
   /**
    * Recursively computes the tab indices for all child controls of a given
    * composite and stores the resulting values in the control adapters.
@@ -392,6 +487,12 @@ public class ControlLCAUtil {
     } else {
       bounds = new Rectangle( 0, 0, 0, 0 );
     }
-    return new SelectionEvent( widget, item, type, bounds, null, true, SWT.NONE );
+    return new SelectionEvent( widget, 
+                               item, 
+                               type, 
+                               bounds, 
+                               null, 
+                               true, 
+                               SWT.NONE );
   }
 }

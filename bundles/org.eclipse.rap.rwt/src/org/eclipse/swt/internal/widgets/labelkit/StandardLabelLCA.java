@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.labelkit;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
@@ -22,6 +23,14 @@ import org.eclipse.swt.widgets.Label;
 
 public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
+  static final String PREFIX_TYPE_POOL_ID
+    = StandardLabelLCA.class.getName();
+  private static final String TYPE_POOL_ID_BORDER
+    = PREFIX_TYPE_POOL_ID + "_BORDER";
+  private static final String TYPE_POOL_ID_FLAT
+    = PREFIX_TYPE_POOL_ID + "_FLAT";
+  private static final String QX_TYPE = "qx.ui.basic.Atom";
+
   private static final Pattern NEWLINE_PATTERN
     = Pattern.compile( "\\r\\n|\\r|\\n" );
 
@@ -29,7 +38,14 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_IMAGE = "image";
 
+  private static final String JS_FUNC_LABEL_UTIL_SET_ALIGNMENT
+    = "org.eclipse.swt.LabelUtil.setAlignment";
+  private static final String JS_FUNC_LABEL_UTIL_SET_IMAGE
+    = "org.eclipse.swt.LabelUtil.setImage";
+  private static final String JS_FUNC_LABEL_UTIL_SET_TEXT
+    = "org.eclipse.swt.LabelUtil.setText";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
+  private static final Object[] PARAM_NULL = new Object[] { null };
 
   void preserveValues( final Label label ) {
     ControlLCAUtil.preserveValues( label );
@@ -44,11 +60,20 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
-    writer.newWidget( "qx.ui.basic.Atom" );
+    writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( label );
     Boolean wrap = Boolean.valueOf( ( label.getStyle() & SWT.WRAP ) != 0 );
     Object[] args = { label, wrap };
     writer.callStatic( "org.eclipse.swt.LabelUtil.initialize", args  );
+    
+    // TODO [fappel]: Workaround: foreground color reset does not work with
+    //                labels. Because of this set the color explicitly
+    //                during initialization. Seems to be some trouble with atom.
+    Object[] argsFG = new Object[] { label, label.getForeground() };
+    writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", argsFG );
+    // TODO [fappel]: Workaround: icon reset does not work with labels and
+    //                IE. Because of this set icon explicitly to null.
+    writer.call( "setIcon", PARAM_NULL );
   }
   
   void renderChanges( final Label label ) throws IOException {
@@ -62,7 +87,20 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     JSWriter writer = JSWriter.getWriterFor( label );
     writer.dispose();
   }
+  
+  void createResetHandlerCalls( final String typePoolId ) throws IOException {
+    resetAlignment();
+    resetText();
+    ControlLCAUtil.resetChanges();
+  }
+  
+  String getTypePoolId( final Label label ) throws IOException {
+    return LabelLCA.getTypePoolId( label,
+                                   TYPE_POOL_ID_BORDER, 
+                                   TYPE_POOL_ID_FLAT );
+  }
 
+  
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
@@ -74,8 +112,13 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       text = matcher.replaceAll( "<br/>" );
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{ label, text };
-      writer.callStatic( "org.eclipse.swt.LabelUtil.setText", args );
+      writer.callStatic( JS_FUNC_LABEL_UTIL_SET_TEXT, args );
     }
+  }
+  
+  private static void resetText() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.set( "label", "" );
   }
 
   private static void writeImage( final Label label ) throws IOException {
@@ -91,7 +134,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       }
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{ label, imagePath };
-      writer.callStatic( "org.eclipse.swt.LabelUtil.setImage", args );
+      writer.callStatic( JS_FUNC_LABEL_UTIL_SET_IMAGE, args );
     }
   }
 
@@ -104,9 +147,13 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       Object[] args = new Object[]{
         label, getAlignment( label.getAlignment() )
       };
-      // TODO [rh] re-use JSVar constants defined in JSConst
-      writer.callStatic( "org.eclipse.swt.LabelUtil.setAlignment", args );
+      writer.callStatic( JS_FUNC_LABEL_UTIL_SET_ALIGNMENT, args );
     }
+  }
+  
+  private static void resetAlignment() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( "horizontalChildrenAlign" );
   }
 
   private static String getAlignment( final int alignment ) {

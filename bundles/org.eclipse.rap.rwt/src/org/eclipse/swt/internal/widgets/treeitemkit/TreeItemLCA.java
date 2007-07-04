@@ -106,6 +106,14 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     writer.call( "destroy", null );
     writer.dispose();
   }
+  
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
+  }
+  
 
   ///////////////////////////////////
   // Helping methods to write changes

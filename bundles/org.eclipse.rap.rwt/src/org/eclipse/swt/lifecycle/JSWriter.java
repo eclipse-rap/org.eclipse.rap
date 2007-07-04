@@ -17,9 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.graphics.IColor;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.HtmlResponseWriter;
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
@@ -37,6 +40,10 @@ public final class JSWriter {
   public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
   public static JSVar WIDGET_REF = new JSVar( "w" );
   
+  private static final Object[] NULL_PARAMETER = new Object[] { null };
+  private static final String NEW_WIDGET_PATTERN
+    =   "var w = wm.newWidget( \"{0}\", \"{1}\", {2}, "
+      + "{3,number,#}, ''{4}''{5} );";
   private static final Pattern DOUBLE_QUOTE_PATTERN 
     = Pattern.compile( "(\"|\\\\)" );
   private static final Pattern NEWLINE_PATTERN 
@@ -72,6 +79,10 @@ public final class JSWriter {
     return result;
   }
   
+  public static JSWriter getWriterForResetHandler() {
+    return new JSWriter( null );
+  }
+  
   private JSWriter( final Widget widget ) {
     this.widget = widget;
   }
@@ -84,39 +95,27 @@ public final class JSWriter {
     throws IOException 
   {
     ensureWidgetManager();
-    String code 
-      = "var w = new {0}({1});"
-      + "{2}.add( w, \"{3}\", {4} );";
-    Object[] args1 = new Object[] { 
-      className, 
-      createParamList( args ), 
-      WIDGET_MANAGER_REF, 
+    String typePoolId = getTypePoolId( widget );
+    Object[] args1 = new Object[] {
       WidgetUtil.getId( widget ), 
-      widget instanceof Control ? Boolean.TRUE : Boolean.FALSE
+      getJSParentId( widget ),
+      useSetParent(),
+      typePoolId == null ? null : new Integer( typePoolId.hashCode() ), 
+      className, 
+      createParamList( ", '", args, "'", false ) 
     };
-    String out = MessageFormat.format( code, args1 );
+    String out = MessageFormat.format( NEW_WIDGET_PATTERN, args1 );
     getWriter().write( out );
     setCurrentWidgetRef( widget );
     if( widget instanceof Shell ) {
       call( "addToDocument", null );
-    } else if( widget instanceof Control ){
-      setParent( ( Control )widget );
-    }
-  }
-
-  public void setParent( final Control control ) throws IOException {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    if( adapter.getJSParent() == null ) {
-      setParent( WidgetUtil.getId( control.getParent() ) );
-    } else {
-      setParent( adapter.getJSParent() );
     }
   }
   
   public void setParent( final String parentId ) throws IOException {
     call( WIDGET_MANAGER_REF, "setParent", new Object[] { widget, parentId } );
   }
-  
+
   public void set( final String jsProperty, final String value ) 
     throws IOException 
   {
@@ -220,8 +219,7 @@ public final class JSWriter {
   }
   
   public void reset( final String jsProperty ) throws IOException {
-    String resetterName = getResetterName( jsProperty );
-    call( widget, resetterName, new Object[ 0 ] );
+    call( widget, getResetterName( jsProperty ), new Object[ 0 ] );
   }
   
   public void addListener( final String property, 
@@ -342,6 +340,21 @@ public final class JSWriter {
     write( "{0}.{1}({2});", target, function, params );
   }
   
+  public void startCall( final JSVar target,
+                         final String function,
+                         final Object[] args )
+    throws IOException
+  {
+    ensureWidgetManager();
+    String params = createParamList( " ", args, "", false );
+    write( "{0}.{1}({2}", target, function, params );    
+  }
+  
+  public void endCall( final Object[] args ) throws IOException {
+    getWriter().write( createParamList( "", args, "", false )  );
+    getWriter().write( " );" );
+  }
+  
   // TODO [rh] should we name this method 'call' and make it a static method?
   public void callStatic( final String function, final Object[] args ) 
     throws IOException 
@@ -362,6 +375,13 @@ public final class JSWriter {
   public void dispose() throws IOException {
     ensureWidgetManager();
     String widgetId = WidgetUtil.getId( widget );
+    if( widget instanceof Control ) {
+      ControlLCAUtil.resetActivateListener( ( Control )widget );
+    }
+    if( widget instanceof Button && ButtonLCA.isDefault( ( Button )widget ) ) {
+      Button button = ( Button )widget;
+      call( button.getShell(), "setDefaultButton", NULL_PARAMETER );
+    }
     call( WIDGET_MANAGER_REF, "dispose", new Object[] { widgetId } );
   }
   
@@ -431,17 +451,44 @@ public final class JSWriter {
     StringBuffer buffer = new StringBuffer();
     buffer.append( info.getJSListener() );
     buffer.append( "Action" );
-    String jsListenerAction = buffer.toString();
-    return jsListenerAction;
+    return buffer.toString();
   }
   
 
   /////////////////////////////////////////////////////////////////////
   // Helping methods for JavaScript WidgetManager and Widget references
+
+
+  private Boolean useSetParent() {
+    return   !( widget instanceof Shell )&& widget instanceof Control 
+           ? Boolean.TRUE 
+           : Boolean.FALSE;
+  }
   
-  private static void ensureWidgetManager() throws IOException {
+  private String getTypePoolId( final Widget widget ) throws IOException {
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( widget );
+    return lca.getTypePoolId( widget );
+  }
+
+  private String getJSParentId( final Widget widget ) {
+    String result = "";
+    if( !(widget instanceof Shell ) && widget instanceof Control ) {
+      Control control = ( Control )widget;
+      IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+      if( adapter.getJSParent() == null ) {
+        result = WidgetUtil.getId( control.getParent() );
+      } else {
+        result = adapter.getJSParent();
+      }
+    }
+    return result;
+  }
+  
+  private void ensureWidgetManager() throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    if( stateInfo.getAttribute( HAS_WINDOW_MANAGER ) == null ) {
+    if(    widget != null 
+        && stateInfo.getAttribute( HAS_WINDOW_MANAGER ) == null )
+    {
       write( "var {0} = org.eclipse.swt.WidgetManager.getInstance();", 
              WIDGET_MANAGER_REF );
       stateInfo.setAttribute( HAS_WINDOW_MANAGER, Boolean.TRUE );
@@ -466,8 +513,7 @@ public final class JSWriter {
   
   private static Widget getCurrentWidgetRef() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Widget result = ( Widget )stateInfo.getAttribute( CURRENT_WIDGET_REF );
-    return result;
+    return ( Widget )stateInfo.getAttribute( CURRENT_WIDGET_REF );
   }
   
   private static String createFindWidgetById( final Widget widget ) {
@@ -500,11 +546,18 @@ public final class JSWriter {
   }
   
   private static String createParamList( final Object[] args ) {
+    return createParamList( " ", args, " ", true );
+  }
+  
+  private static String createParamList( final String startList, 
+                                         final Object[] args, 
+                                         final String endList,
+                                         final boolean useCurrentWidgetRef ) {
     StringBuffer params = new StringBuffer();
     if( args != null ) {
       for( int i = 0; i < args.length; i++ ) {
         if( i == 0 ) {
-          params.append( " " );
+          params.append( startList );
         }
         if( args[ i ] instanceof String ) {
           params.append( '"' );
@@ -515,7 +568,7 @@ public final class JSWriter {
           params.append( args[ i ] );
           params.append( '"' );
         } else if( args[ i ] instanceof Widget ) {
-          if( args[ i ] == getCurrentWidgetRef() ) {
+          if( useCurrentWidgetRef && args[ i ] == getCurrentWidgetRef() ) {
             params.append( "w" );
           } else {
             params.append( createFindWidgetById( ( Widget )args[ i ] ) );
@@ -532,7 +585,7 @@ public final class JSWriter {
           params.append( args[ i ] );
         }
         if( i == args.length - 1 ) {
-          params.append( " " );
+          params.append( endList );
         } else {
           params.append( ", " );
         }

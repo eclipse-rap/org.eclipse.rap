@@ -49,5 +49,12 @@ public class GroupLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  } 
+  
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
   }
 }

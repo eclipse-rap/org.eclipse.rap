@@ -22,6 +22,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.*;
 import com.w4t.Fixture.TestServletContext;
 import com.w4t.engine.lifecycle.*;
@@ -154,6 +155,15 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
 
             public void renderDispose( final Widget widget ) throws IOException
             {
+            }
+            public void createResetHandlerCalls( final String typePoolId ) 
+              throws IOException
+            {
+            }
+            public String getTypePoolId( final Widget widget )
+              throws IOException
+            {
+              return null;
             }
           };
         }

@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.browser.browserkit;
 
 import java.io.*;
+
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.lifecycle.*;
@@ -73,6 +74,13 @@ public class BrowserLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  }
+  
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
   }
 
   private static String registerHtml( final String html ) throws IOException {

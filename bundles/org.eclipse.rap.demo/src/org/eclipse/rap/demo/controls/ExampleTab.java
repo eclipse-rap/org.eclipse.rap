@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.*;
 
 abstract class ExampleTab {
   
+  private boolean contentCreated;
   private static final int MAX_COLORS = 4;
   private final CTabFolder folder;
   private final List controls;
@@ -45,6 +46,7 @@ abstract class ExampleTab {
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
+  private final CTabItem item;
   
   public static final Color BG_COLOR_GREEN = Color.getColor( 154, 205, 50 );
   public static final Color BG_COLOR_BLUE = Color.getColor( 105, 89, 205 );
@@ -56,16 +58,21 @@ abstract class ExampleTab {
   public ExampleTab( final CTabFolder parent, final String title ) {
     folder = parent;
     controls = new ArrayList();
-    CTabItem item = new CTabItem( parent, SWT.NONE );
+    item = new CTabItem( folder, SWT.NONE );
     item.setText( title + " " );
-    Control sashForm = createSashForm();
-    item.setControl( sashForm );
-    initColors();
   }
 
   public void createContents() {
-    createExampleControls( exmplComp );
-    createStyleControls( styleComp);
+    if( !contentCreated ) {
+      Control sashForm = createSashForm();
+      item.setControl( sashForm );
+      initColors();
+      createExampleControls( exmplComp );
+      createStyleControls( styleComp );
+      exmplComp.layout();
+      styleComp.layout();
+      contentCreated = true;
+    }
   }
   
   protected void createNew() {

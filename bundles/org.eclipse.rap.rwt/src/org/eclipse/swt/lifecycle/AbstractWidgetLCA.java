@@ -14,10 +14,12 @@ package org.eclipse.swt.lifecycle;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Widget;
+
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
 
@@ -68,7 +70,12 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
   public abstract void renderChanges( Widget widget ) throws IOException;
   
   public abstract void renderDispose( Widget widget ) throws IOException;
-
+  
+  public abstract void createResetHandlerCalls( String typePoolId )
+    throws IOException;
+  
+  public abstract String getTypePoolId( Widget widget ) throws IOException;
+  
   private static void addToDisposeList( final Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     List disposalList = ( List )stateInfo.getAttribute( DISPOSAL_LIST );

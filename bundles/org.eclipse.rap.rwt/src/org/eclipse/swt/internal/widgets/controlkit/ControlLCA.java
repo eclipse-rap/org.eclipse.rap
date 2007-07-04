@@ -39,4 +39,13 @@ public class ControlLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     // do nothing
   }
+  
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+    // do nothing
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    // do nothing
+    return null;
+  }
 }

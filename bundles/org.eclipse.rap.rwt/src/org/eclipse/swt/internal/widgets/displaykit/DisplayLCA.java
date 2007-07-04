@@ -13,29 +13,36 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import javax.servlet.http.*;
+
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.engine.ResourceRegistry;
 import org.eclipse.swt.internal.lifecycle.IDisplayLifeCycleAdapter;
-import org.eclipse.swt.internal.theme.*;
+import org.eclipse.swt.internal.theme.ThemeManager;
+import org.eclipse.swt.internal.theme.ThemeUtil;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.resources.IResource;
 import org.eclipse.swt.resources.ResourceManager;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.*;
 import com.w4t.engine.requests.RequestParams;
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
+
+  private static final String DISPOSE_HANDLER_REGISTRY
+    = "org.eclipse.rap.disposeHandlerRegistry";
+  private static final JSVar DISPOSE_HANDLER_START
+    = new JSVar( "function( " + JSWriter.WIDGET_REF + " ) {" );
 
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
@@ -277,10 +284,45 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   
   private static void disposeWidgets() throws IOException {
     Widget[] disposedWidgets = AbstractWidgetLCA.getDisposedWidgets();
-    for( int i = 0; i < disposedWidgets.length; i++ ) {
-      AbstractWidgetLCA lca = WidgetUtil.getLCA( disposedWidgets[ i ] );
-      lca.renderDispose( disposedWidgets[ i ] );
+    // [fappel]: client side disposal order is crucial for the widget
+    //           caching mechanism - we need to dispose of children first. This
+    //           is reverse to the server side mechanism (which is analog to 
+    //           SWT).
+    for( int i = disposedWidgets.length - 1; i >= 0; i-- ) {
+      Widget toDispose = disposedWidgets[ i ];
+      AbstractWidgetLCA lca = WidgetUtil.getLCA( toDispose );
+      
+      Set disposeHandler = getAlreadyRegisteredHandlers();
+      String key = lca.getTypePoolId( toDispose );
+      if( !( key == null ) && !disposeHandler.contains( key ) ) {
+        JSWriter writer = JSWriter.getWriterFor( toDispose );
+        Object[] params = new Object[] { 
+          key == null ? null : new Integer( key.hashCode() ), 
+          DISPOSE_HANDLER_START
+        };
+        writer.startCall( JSWriter.WIDGET_MANAGER_REF,
+                          "registerResetHandler", 
+                          params );
+        try {
+          lca.createResetHandlerCalls( key );
+        } finally {
+          writer.endCall( new Object[] { new JSVar( "}" ) } );
+          disposeHandler.add( key );
+        }
+      }
+      
+      lca.renderDispose( toDispose );
     }
+  }
+
+  private static Set getAlreadyRegisteredHandlers() {
+    HttpSession session = ContextProvider.getSession();
+    Set result = ( Set )session.getAttribute( DISPOSE_HANDLER_REGISTRY );
+    if( result == null ) {
+      result = new HashSet();
+      session.setAttribute( DISPOSE_HANDLER_REGISTRY, result );
+    }
+    return result;
   }
   
   private static void writeScriptTag( final HtmlResponseWriter out, 

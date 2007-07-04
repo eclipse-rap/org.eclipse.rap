@@ -20,6 +20,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     qx.ui.layout.CanvasLayout.call( this );
     this._swtStyle = style;
     this.setAppearance( "separator" );
+    
+    this._shadowOut = new qx.renderer.border.Border( 1, "outset" );
+    this._shadowIn = new qx.renderer.border.Border( 1, "solid", "white" );
 
     // Fix IE Styling issues
     this.setStyleProperty( "fontSize", "0" );
@@ -31,7 +34,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     this._line.setBorder( this._getLineBorder( style ) );
     this.addEventListener( "changeWidth", this._updateLineBounds, this );
     this.addEventListener( "changeHeight", this._updateLineBounds, this );
-    this.add(this._line);
+    this.add( this._line );
   },
   
   destruct : function() {
@@ -42,6 +45,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
   },
   
   members : {
+    /**
+     * This is used by the widget manager to reinitialize cached separator
+     * widgets.
+     */
+    reInit : function( style ) {
+      this._swtStyle = style;
+      this._line.setBorder( this._getLineBorder( style ) );
+    },
 
     _updateLineBounds : function() {
       var borderSize = 0;
@@ -64,17 +75,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     },
 
     _getLineBorder : function( style ) {
+      // TODO [fappel]: check whether we could improve memory consumption
+      //                by using static shadowIn and shadowOut border
       var result = null;
       if( qx.lang.String.contains( style, "SHADOW_OUT" ) ) {
-        result = new qx.renderer.border.Border( 1, "outset" );
+        result = this._shadowOut;
       } else if( qx.lang.String.contains( style, "SHADOW_IN" ) ) {
-        result = new qx.renderer.border.Border( 1, "solid", "white" );
+        result = this._shadowIn;
       }
       if( result != null ) {
         if( this._isHorizontal() ) {
           result.setWidthLeft( 0 );
           result.setWidthRight( 0 );
+          result.setWidthTop( 1 );
+          result.setWidthBottom( 1 );
         } else {
+          result.setWidthLeft( 1 );
+          result.setWidthRight( 1 );
           result.setWidthTop( 0 );
           result.setWidthBottom( 0 );
         }

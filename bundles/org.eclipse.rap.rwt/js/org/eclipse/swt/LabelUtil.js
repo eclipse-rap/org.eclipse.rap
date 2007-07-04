@@ -25,22 +25,24 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     APPEARANCE : "label-wrapper",
     
     initialize : function( widget, wrap ) {
-      widget.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_TOP );
-      widget.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
-      widget.setAppearance( org.eclipse.swt.LabelUtil.APPEARANCE );
-      widget.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-      // TODO [rh] workaround for weird getLabelObject behaviour
-      widget.setLabel( "(empty)" );
-      // end workaround
-      var labelObject = widget.getLabelObject();
-      labelObject.setMode( org.eclipse.swt.LabelUtil.MODE_TEXT );
-      labelObject.setTextOverflow( false );
-      labelObject.setAppearance( "label-graytext" );
-      widget.getLabelObject().setWrap( wrap );
-      // TODO [rh] workaround for weird getLabelObject behaviour
-      widget.setLabel( "" );
-      // end workaround
-      widget.setHideFocus( true );
+      if( !widget.getUserData( "pooled" ) ) {
+        widget.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_TOP );
+        widget.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
+        widget.setAppearance( org.eclipse.swt.LabelUtil.APPEARANCE );
+        widget.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+        // TODO [rh] workaround for weird getLabelObject behaviour
+        widget.setLabel( "(empty)" );
+        // end workaround
+        var labelObject = widget.getLabelObject();
+        labelObject.setMode( org.eclipse.swt.LabelUtil.MODE_TEXT );
+        labelObject.setTextOverflow( false );
+        labelObject.setAppearance( "label-graytext" );
+        widget.getLabelObject().setWrap( wrap );
+        // TODO [rh] workaround for weird getLabelObject behaviour
+        widget.setLabel( "" );
+        // end workaround
+        widget.setHideFocus( true );
+      }
     },
     
     setText : function( widget, text ) {

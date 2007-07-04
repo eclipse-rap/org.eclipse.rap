@@ -52,6 +52,13 @@ public final class ToolItemLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
+  }
+  
   private static ToolItemDelegateLCA getLCADelegate( final Widget widget ) {
     ToolItemDelegateLCA result;
     int style = ( ( ToolItem )widget ).getStyle();

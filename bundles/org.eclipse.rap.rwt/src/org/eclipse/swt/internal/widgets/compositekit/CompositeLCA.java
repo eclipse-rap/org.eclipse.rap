@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.compositekit;
 
 import java.io.IOException;
+
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
@@ -19,6 +20,14 @@ import org.eclipse.swt.widgets.Widget;
 
 public class CompositeLCA extends AbstractWidgetLCA {
   
+  private static final String QX_TYPE = "qx.ui.layout.CanvasLayout";
+  private static final String PREFIX_TYPE_POOL_ID
+    = CompositeLCA.class.getName();
+  private static final String TYPE_POOL_ID_BORDER
+    = PREFIX_TYPE_POOL_ID + "_BORDER";
+  private static final String TYPE_POOL_ID_FLAT
+    = PREFIX_TYPE_POOL_ID + "_FLAT";
+
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
   }
@@ -28,7 +37,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "qx.ui.layout.CanvasLayout" );
+    writer.newWidget( QX_TYPE );
     writer.set( "appearance", "composite" );
     writer.set( "overflow", "hidden" );
     writer.set( "hideFocus", true );
@@ -42,5 +51,22 @@ public class CompositeLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
+  }
+  
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+    ControlLCAUtil.resetChanges();
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+//    String result;
+//    if( ( widget.getStyle() & SWT.BORDER ) != 0 ) {
+//      result = TYPE_POOL_ID_BORDER;
+//    } else {
+//      result = TYPE_POOL_ID_FLAT;
+//    }
+//    return result;
+    return null;
   }
 }

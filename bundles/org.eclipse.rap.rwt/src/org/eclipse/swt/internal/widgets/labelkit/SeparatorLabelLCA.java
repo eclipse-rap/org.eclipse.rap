@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.lifecycle.ControlLCAUtil;
 import org.eclipse.swt.lifecycle.JSWriter;
@@ -21,6 +22,14 @@ import org.eclipse.swt.widgets.Widget;
 
 public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
+  static final String PREFIX_TYPE_POOL_ID
+    = SeparatorLabelLCA.class.getName();
+  private static final String TYPE_POOL_ID_BORDER
+    = PREFIX_TYPE_POOL_ID + "_BORDER";
+  private static final String TYPE_POOL_ID_FLAT
+    = PREFIX_TYPE_POOL_ID + "_FLAT";
+  private static final String QX_TYPE = "org.eclipse.swt.widgets.Separator";
+  
   void preserveValues( final Label label ) {
     ControlLCAUtil.preserveValues( label );
   }
@@ -31,7 +40,7 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
     Object[] args = new Object[] { getStyle( label ) };
-    writer.newWidget( "org.eclipse.swt.widgets.Separator", args );
+    writer.newWidget( QX_TYPE, args );
     ControlLCAUtil.writeStyleFlags( label );
   }
 
@@ -60,5 +69,15 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
     } 
     result.append( shadow );
     return result.toString();
+  }
+
+  void createResetHandlerCalls( final String typePoolId ) throws IOException {
+    ControlLCAUtil.resetChanges();
+  }
+
+  String getTypePoolId( final Label label ) throws IOException {
+    return LabelLCA.getTypePoolId( label,
+                                   TYPE_POOL_ID_BORDER, 
+                                   TYPE_POOL_ID_FLAT );
   }
 }

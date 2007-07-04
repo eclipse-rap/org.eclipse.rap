@@ -12,11 +12,21 @@
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
-import org.eclipse.swt.lifecycle.*;
+
+import org.eclipse.swt.lifecycle.ControlLCAUtil;
+import org.eclipse.swt.lifecycle.JSWriter;
 import org.eclipse.swt.widgets.Text;
 
 final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
 
+  static final String PREFIX_TYPE_POOL_ID
+    = PasswordTextDelegateLCA.class.getName();
+  private static final String TYPE_POOL_ID_BORDER
+    = PREFIX_TYPE_POOL_ID + "_BORDER";
+  private static final String TYPE_POOL_ID_FLAT
+    = PREFIX_TYPE_POOL_ID + "_FLAT";
+  private static final String QX_TYPE = "qx.ui.form.PasswordField";
+  
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
@@ -34,18 +44,14 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
 
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( "qx.ui.form.PasswordField" );
+    writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeNoSpellCheck( text );
   }
 
   void renderChanges( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
     ControlLCAUtil.writeChanges( text );
-    String newValue = text.getText();
-    if( WidgetLCAUtil.hasChanged( text, TextLCAUtil.PROP_TEXT, newValue, "" ) ) {
-      writer.set( "value", TextLCAUtil.stripNewlines( newValue ) );
-    }
+    TextLCAUtil.writeText( text );
     TextLCAUtil.writeReadOnly( text );
     TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
@@ -55,5 +61,20 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
   void renderDispose( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.dispose();
+  }
+
+  String getTypePoolId( final Text text ) throws IOException {
+    return TextLCAUtil.getTypePoolId( text, 
+                                      TYPE_POOL_ID_BORDER, 
+                                      TYPE_POOL_ID_FLAT );
+  }
+
+  void createResetHandlerCalls( final String typePoolId ) throws IOException {
+    TextLCAUtil.resetModifyListener();
+    TextLCAUtil.resetSelection();
+    TextLCAUtil.resetTextLimit();
+    TextLCAUtil.resetReadOnly();
+    TextLCAUtil.resetText();
+    ControlLCAUtil.resetChanges();
   }
 }

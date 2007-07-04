@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.engine.service.ContextProvider;
 
 
@@ -109,6 +110,14 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.call( "close", null );
     writer.dispose();
   }
+  
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
+  }
+  
   
   //////////////////
   // Helping methods

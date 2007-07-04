@@ -122,6 +122,14 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
+  }
+  
+  
   //////////////////////////////////////////
   // Helping method to write JavaScript code
   

@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 
@@ -120,7 +121,7 @@ public class Widget_Test extends TestCase {
     widget.dispose();
     assertEquals( true, widget.isDisposed() );
   }
-  
+
   public void testDisposeFromIllegalThread() {
     Display display = new Display();
     Shell shell = new Shell( display );

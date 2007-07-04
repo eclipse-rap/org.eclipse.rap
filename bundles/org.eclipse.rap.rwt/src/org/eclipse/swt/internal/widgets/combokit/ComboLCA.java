@@ -84,6 +84,13 @@ public class ComboLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
+  }
+  
   private static void writeItems( final Combo combo ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( combo );
     String[] items = combo.getItems();

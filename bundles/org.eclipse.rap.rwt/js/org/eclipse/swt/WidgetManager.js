@@ -23,6 +23,12 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     // Holds the association between widget-id's and widget-instances.
     // Key: id (string), value: widget instanace (qx.ui.core.Widget)
     this._map = {};
+    
+    // initialize widget pool
+    this._widgetPool = new Object();
+    // this field is needed as Opera has some problems with
+    // accessing local variables in eval expressions.
+    this._current = null;
   },
 
   statics : {
@@ -53,6 +59,120 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
 
   members : {
     /**
+     * Disposes of the widget that is registered with the given id. The widget 
+     * is disconnected from its parent, its 'dispose' method is called and it is 
+     * removed from this WidgetManager (see remove).
+     * No action is taken if there is no widget registered for the given id or 
+     * the widget was already disposed of.
+     * In case of a widget type that supports pooling the widget is disconnected
+     * from its parent, its 'disposeHandler' that reinitializes the widget is
+     * called and it's added to the pool to be ready for reuse.
+     */
+    dispose : function( id ) {
+      var widget = this.findWidgetById( id );
+      if( widget != null ) {
+        this.remove( widget );
+        if( !widget.isDisposed() ) {
+          this._removeToolTipPopup( widget );        
+          // TODO [rh] workaround for disposing of a Sash: if( parent && ...
+          var parent = widget.getParent();
+          if( parent && parent.getChildren() ) {
+            widget.setParent( null );
+          }
+          // handle widgets that are pooled
+          var typePoolId = widget.getUserData( "typePoolId" );
+          if( typePoolId != null ) {
+            var typePool = this._widgetPool[ typePoolId ];
+            typePool.handler( widget );
+            widget.setUserData( "pooled", true );
+            typePool.elements.push( widget );
+
+          // dispose of widgets that are not pooled
+          } else {
+            widget.dispose();
+          }
+        }
+      }
+    },
+    
+    registerResetHandler : function( typePoolId, handler ) {
+      var typePool = new Object();
+      typePool.elements = new Array();
+      typePool.handler = handler;
+      this._widgetPool[ typePoolId ] = typePool;
+    },
+    
+  	newWidget : function( widgetId, parentId, isControl, typePoolId, type ) {
+  	  this.newWidget( widgetId, parentId, isControl, typePoolId, type, null );
+  	},
+  	
+  	newWidget : function( widgetId, 
+  	                      parentId, 
+  	                      isControl, 
+  	                      typePoolId, 
+  	                      type, 
+  	                      paramList )
+  	{
+      // Note [fappel]: Do not remove the 'wm' declaration. This is needed
+      //                for IE if the 'newExpression' has a reference to
+      //                the variable defined in the script from the server.
+      // TODO [fappel]: Think about improvement of the hardcoded expression... 
+      var wm = this;
+      
+      var result = null;
+      // if the widget type supports pooling get a widget from the pool -
+      // if available...
+      if( typePoolId != null && this._widgetPool[ typePoolId ] ) {
+        var typePool = this._widgetPool[ typePoolId ];
+        result = typePool.elements.pop();
+        if( paramList != null ) {
+          // If paramList isn't empty we have to reinitialize the widget.
+          // Luckily only our own js widgets use this...
+          var expression =   "org.eclipse.swt.WidgetManager.getInstance()."
+                           + "_current.reInit(" 
+                           + paramList 
+                           + ");"
+          // Assignment of the field _current is needed as Opera has some 
+          // problems with accessing local variables in eval expressions.
+          this._current = result;
+          window.eval( expression );
+          this._current = null;
+        }
+      }
+      
+      // ... otherwise create a new one
+      if( result == null ) {
+        var newExpression;
+        if( paramList != null ) {
+          newExpression = "new " + type + "(" + paramList + ");";
+        } else {
+          newExpression = "new " + type + "();";
+        }
+        result = window.eval( newExpression );
+        result.setUserData( "typePoolId", typePoolId );
+        result.setUserData( "pooled", false );
+      }
+      
+      // map the widget to the server side widgetId
+      this.add( result, widgetId, isControl );
+      
+      // insert controls into the widget tree
+      if( isControl ) {
+        this.setParent( result, parentId );
+      }
+      return result;
+  	},
+  	
+  	addState : function( widget, state ) {
+  	  if( !widget.getUserData ) {
+  	    this.debug( "no userdata:" + widget );
+  	  }
+  	  if( !widget.getUserData( "pooled" ) ) {
+  	    widget.addState( state );
+  	  }
+  	},
+  	
+    /**
      * Registeres the given widget under the given id at the WidgetManager.
      */
     add : function( widget, id, isControl ) {
@@ -70,29 +190,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     remove : function( widget ) {
       var id = this.findIdByWidget( widget );
       delete this._map[ id ];
-    },
-
-    /**
-     * Disposes of the widget that is registered with the given id. The widget 
-     * is disconnected from its parent, its 'dispose' method is called and it is 
-     * removed from this WidgetManager (see remove).
-     * No action is taken if there is no widget registered for the given id or 
-     * the widget was already disposed of.
-     */
-    dispose : function( id ) {
-      var widget = this.findWidgetById( id );
-      if( widget != null ) {
-        if( !widget.isDisposed() ) {
-          // TODO [rh] workaround for disposing of a Sash: if( parent && ...
-          var parent = widget.getParent();
-          if( parent && parent.getChildren() ) {
-            widget.setParent( null );
-          }
-          this._removeToolTipPopup( widget );
-          widget.dispose();
-        }
-        this.remove( widget );
-      }
     },
 
     /**
@@ -138,7 +235,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       var parent = this.findWidgetById( parentId );
       // TODO [rh] there seems to be a difference between add and setParent
       //      when using add sizes and clipping are treated differently
-      //  parent.add( widget );
+      // parent.add( widget );
       widget.setParent( parent );
     },
 

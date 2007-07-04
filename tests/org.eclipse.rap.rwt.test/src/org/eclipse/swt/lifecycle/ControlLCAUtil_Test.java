@@ -39,8 +39,11 @@ public class ControlLCAUtil_Test extends TestCase {
     RWTFixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeBounds( shell );
-    String expected
-      = "w.setSpace( 0, 0, 0, 0 );w.setMinWidth( 0 );w.setMinHeight( 0 );";
+    // TODO [fappel]: check whether minWidth and minHeight is still needed - 
+    //                causes problems on FF with caching
+    //String expected
+    //  = w.setSpace( 0, 0, 0, 0 );w.setMinWidth( 0 );w.setMinHeight( 0 );";
+    String expected = "w.setSpace( 0, 0, 0, 0 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     // Ensure that unchanged bound do not lead to markup
     Fixture.fakeResponseWriter();

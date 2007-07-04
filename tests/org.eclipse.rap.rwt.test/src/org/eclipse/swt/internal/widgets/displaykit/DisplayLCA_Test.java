@@ -14,7 +14,9 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -26,6 +28,7 @@ import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.*;
 import com.w4t.engine.requests.RequestParams;
 import com.w4t.util.browser.Ie6up;
@@ -38,6 +41,7 @@ public class DisplayLCA_Test extends TestCase {
   private final List renderInitLog = new ArrayList();
   private final List renderChangesLog = new ArrayList();
   private final List renderDisposeLog = new ArrayList();
+  private final List renderDisposeHandlerRegistration = new ArrayList();
 
   private final class DisposeTestButton extends Button {
 
@@ -127,6 +131,9 @@ public class DisplayLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final Button button = new DisposeTestButton( shell, SWT.PUSH );
+    final Button button2 = new DisposeTestButton( shell, SWT.PUSH );
+    final Button button3 = new DisposeTestButton( shell, SWT.CHECK );
+    
     String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
     
@@ -156,6 +163,44 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button ) );
     assertTrue( renderDisposeLog.contains( button ) );
+    assertFalse( renderDisposeHandlerRegistration.isEmpty() );
+    
+    clearLogs();
+    button2.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        button2.setText( "should be ignored" );
+        button2.dispose();
+      }
+    } );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    lifeCycle.execute();
+
+    assertEquals( 0, renderInitLog.size() );
+    assertFalse( renderChangesLog.contains( button2 ) );
+    assertTrue( renderDisposeLog.contains( button2 ) );
+    assertFalse( renderDisposeHandlerRegistration.contains( button2 ) );
+    
+    clearLogs();
+    button3.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        button3.setText( "should be ignored" );
+        button3.dispose();
+      }
+    } );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    lifeCycle.execute();
+
+    assertEquals( 0, renderInitLog.size() );
+    assertFalse( renderChangesLog.contains( button3 ) );
+    assertTrue( renderDisposeLog.contains( button3 ) );
+    assertFalse( renderDisposeHandlerRegistration.isEmpty() );
+
   }
 
   protected void setUp() throws Exception {
@@ -202,6 +247,19 @@ public class DisplayLCA_Test extends TestCase {
               }
               log.add( widget );
               renderChangesLog.add( widget );
+            }
+            
+            
+            public String getTypePoolId( final Widget widget )
+              throws IOException
+            {
+              return getClass().getName() + "_" + widget.getStyle();
+            }
+            
+            public void createResetHandlerCalls( final String typePoolId )
+              throws IOException
+            {
+              renderDisposeHandlerRegistration.add( typePoolId );
             }
 
             public void renderDispose( final Widget widget ) throws IOException
@@ -294,5 +352,6 @@ public class DisplayLCA_Test extends TestCase {
     renderInitLog.clear();
     renderChangesLog.clear();
     renderDisposeLog.clear();
+    renderDisposeHandlerRegistration.clear();
   }
 }

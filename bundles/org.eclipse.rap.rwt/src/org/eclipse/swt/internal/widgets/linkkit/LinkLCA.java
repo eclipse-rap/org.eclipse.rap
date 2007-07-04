@@ -72,7 +72,14 @@ public class LinkLCA extends AbstractWidgetLCA {
     writer.callStatic( "org.eclipse.swt.LinkUtil.destroy", args );
     writer.dispose();
   }
-
+  
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
+  }
+  
   private void writeSelectionListener( final Link link ) throws IOException {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( link ) );
     Boolean defValue = Boolean.FALSE;

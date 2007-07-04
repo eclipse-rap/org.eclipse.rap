@@ -19,6 +19,7 @@ import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.engine.service.ContextProvider;
 
 public final class TreeLCA extends AbstractWidgetLCA {
@@ -69,7 +70,14 @@ public final class TreeLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-
+  
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
+  }
+  
   private static void processWidgetSelectedEvent( final Tree tree ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String eventName = JSConst.EVENT_WIDGET_SELECTED;

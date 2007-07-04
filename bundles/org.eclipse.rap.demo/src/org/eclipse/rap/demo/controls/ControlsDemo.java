@@ -11,6 +11,8 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
@@ -43,58 +45,42 @@ public class ControlsDemo implements IEntryPoint {
     Color selFg = display.getSystemColor( SWT.COLOR_LIST_SELECTION_TEXT );
     topFolder.setSelectionBackground( selBg );
     topFolder.setSelectionForeground( selFg );
-    ExampleTab tab = new ProgressBarTab( topFolder );
-    tab.createContents();
-    tab = new ButtonTab( topFolder );
-    tab.createContents();
-//    tab = new RequestTab( topFolder );
-//    tab.createContents();
-    tab = new CBannerTab( topFolder );
-    tab.createContents();
-    tab = new CLabelTab( topFolder );
-    tab.createContents();
-    tab = new ComboTab( topFolder );
-    tab.createContents();
-    tab = new CompositeTab( topFolder );
-    tab.createContents();
-    tab = new CoolBarTab( topFolder );
-    tab.createContents();
-    tab = new DialogsTab( topFolder );
-    tab.createContents();
-    tab = new LabelTab( topFolder );
-    tab.createContents();
-    tab = new ListTab( topFolder );
-    tab.createContents();
-    tab = new SashTab( topFolder );
-    tab.createContents();
-    tab = new SashFormTab( topFolder );
-    tab.createContents();
-    tab = new ShellTab( topFolder );
-    tab.createContents();
-    tab = new TabFolderTab( topFolder );
-    tab.createContents();
-    tab = new TableTab( topFolder );
-    tab.createContents();
-    tab = new TableViewerTab( topFolder );
-    tab.createContents();
-    tab = new TextTab( topFolder );
-    tab.createContents();
-    tab = new TextSizeTab( topFolder );
-    tab.createContents();
-    tab = new SpinnerTab( topFolder );
-    tab.createContents();
-    tab = new ToolBarTab( topFolder );
-    tab.createContents();
-    tab = new TreeTab( topFolder );
-    tab.createContents();
-    tab = new BrowserTab( topFolder );
-    tab.createContents();
-    tab = new ContainmentTab( topFolder );
-    tab.createContents();
-    tab = new ZOrderTab( topFolder );
-    tab.createContents();
-    tab = new FocusTab( topFolder );
-    tab.createContents();
+    
+    final ExampleTab[] tabs = new ExampleTab[] {
+      new ProgressBarTab( topFolder ),
+      new ButtonTab( topFolder ),
+//      new RequestTab( topFolder ),
+      new CBannerTab( topFolder ),
+      new CLabelTab( topFolder ),
+      new ComboTab( topFolder ),
+      new CompositeTab( topFolder ),
+      new CoolBarTab( topFolder ),
+      new DialogsTab( topFolder ),
+      new LabelTab( topFolder ),
+      new ListTab( topFolder ),
+      new SashTab( topFolder ),
+      new SashFormTab( topFolder ),
+      new ShellTab( topFolder ),
+      new TabFolderTab( topFolder ),
+      new TableTab( topFolder ),
+      new TableViewerTab( topFolder ),
+      new TextTab( topFolder ),
+      new TextSizeTab( topFolder ),
+      new SpinnerTab( topFolder ),
+      new ToolBarTab( topFolder ),
+      new TreeTab( topFolder ),
+      new BrowserTab( topFolder ),
+      new ContainmentTab( topFolder ),
+      new ZOrderTab( topFolder ),
+      new FocusTab( topFolder )
+    };
+    tabs[ 0 ].createContents();
     topFolder.setSelection( 0 );
+    topFolder.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent evt ) {
+        int index = topFolder.getSelectionIndex();
+        tabs[ index ].createContents();
+      }
+    } );
   }
 }

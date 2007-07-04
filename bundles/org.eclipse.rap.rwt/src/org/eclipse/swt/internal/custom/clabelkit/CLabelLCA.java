@@ -29,7 +29,7 @@ public class CLabelLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
   
   public void preserveValues( Widget widget ) {
-    CLabel label = (CLabel) widget;
+    CLabel label = ( CLabel )widget;
     ControlLCAUtil.preserveValues( label );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
     adapter.preserve( PROP_TEXT, label.getText() );
@@ -37,19 +37,21 @@ public class CLabelLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ALIGNMENT, new Integer( label.getAlignment() ) );
   }
 
-  public void renderChanges( Widget widget ) throws IOException {
-    CLabel label = (CLabel) widget;
+  public void renderChanges( final Widget widget ) throws IOException {
+    CLabel label = ( CLabel )widget;
     ControlLCAUtil.writeChanges( label );
     writeText( label );
     writeImage( label );
     writeAlignment( label );
   }
 
-  public void renderDispose( Widget widget ) throws IOException {
+  public void renderDispose( final Widget widget ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
   }
 
-  public void renderInitialization( Widget widget ) throws IOException {
-    CLabel label = (CLabel) widget;
+  public void renderInitialization( final Widget widget ) throws IOException {
+    CLabel label = ( CLabel )widget;
     JSWriter writer = JSWriter.getWriterFor( label );
     writer.newWidget( "qx.ui.basic.Atom" );
     
@@ -64,7 +66,16 @@ public class CLabelLCA extends AbstractWidgetLCA {
     writer.callStatic( "org.eclipse.swt.CLabelUtil.initialize", args  );
   }
 
-  public void readData( Widget widget ) {
+  public void readData( final Widget widget ) {
+  }
+  
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
   }
 
   private static void writeText( final CLabel label ) throws IOException {

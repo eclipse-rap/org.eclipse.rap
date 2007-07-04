@@ -12,6 +12,8 @@
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
+import java.text.MessageFormat;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.swt.lifecycle.JSWriter;
@@ -48,6 +50,31 @@ public final class TextLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+    getLCADelegate( typePoolId ).createResetHandlerCalls( typePoolId );
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+//    return getLCADelegate( widget ).getTypePoolId( ( Text )widget );
+    return null;
+  }
+  
+  private static AbstractTextDelegateLCA getLCADelegate( final String tpId ) {
+    AbstractTextDelegateLCA result;
+    if( tpId.startsWith( PasswordTextDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
+      result = PASSWORD;
+    } else if( tpId.startsWith( SingleTextDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
+      result = SINGLE;
+    } else if( tpId.startsWith( MultiTextDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
+      result = MULTI;
+    } else {
+      String txt= "The typePoolId ''{0}'' is not supported.";
+      String msg = MessageFormat.format( txt, new Object[] { tpId } );
+      throw new IllegalArgumentException( msg );
+    }
+    return result;
+  }
+  
   private static AbstractTextDelegateLCA getLCADelegate( final Widget widget ) {
     AbstractTextDelegateLCA result;
     int style = ( ( Text )widget ).getStyle();

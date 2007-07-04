@@ -56,8 +56,23 @@ public class RenderDispose_Test extends TestCase {
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     lifeCycle.execute();
+    
+//    String expectedStart 
+//      =   "org.eclipse.swt.EventUtil.suspendEventHandling();"
+//        + "var wm = org.eclipse.swt.WidgetManager.getInstance();"
+//        + "wm.registerResetHandler( ";
+//    String functionHandler = ", function( w ) {"; 
+//    String expectedEnd
+//      =   "} );wm.dispose( \"w3\" );"
+//        + "qx.ui.core.Widget.flushGlobalQueues();"
+//        + "org.eclipse.swt.EventUtil.resumeEventHandling();";
+//    String allMarkup = Fixture.getAllMarkup();
+//    assertTrue( allMarkup.startsWith( expectedStart ) );
+//    assertTrue( allMarkup.indexOf( functionHandler ) != 0 );
+//    assertTrue( allMarkup.endsWith( expectedEnd ) );
+    
     String expected 
-        = "org.eclipse.swt.EventUtil.suspendEventHandling();"
+      =   "org.eclipse.swt.EventUtil.suspendEventHandling();"
         + "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "wm.dispose( \"w3\" );"
         + "qx.ui.core.Widget.flushGlobalQueues();"

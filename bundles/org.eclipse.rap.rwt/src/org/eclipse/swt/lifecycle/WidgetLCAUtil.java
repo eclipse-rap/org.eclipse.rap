@@ -26,6 +26,8 @@ import com.w4t.engine.service.ContextProvider;
 
 public final class WidgetLCAUtil {
 
+  private static final String JS_PROP_CLIP_WIDTH = "clipWidth";
+  private static final String JS_PROP_CLIP_HEIGHT = "clipHeight";
   private static final String PARAM_X = "bounds.x";
   private static final String PARAM_Y = "bounds.y";
   private static final String PARAM_WIDTH = "bounds.width";
@@ -37,6 +39,11 @@ public final class WidgetLCAUtil {
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_ENABLED = "enabled";
 
+  private static final String JS_PROP_SPACE = "space";
+  private static final String JS_PROP_CONTEXT_MENU = "contextMenu";
+
+  private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
+  
   private static final Pattern HTML_ESCAPE_PATTERN
     = Pattern.compile( "&|<|>|\\\"" );
   private static final Pattern DOUBLE_QUOTE_PATTERN
@@ -214,16 +221,19 @@ public final class WidgetLCAUtil {
         newBounds.x, newBounds.width, newBounds.y, newBounds.height
       };
 
-      writer.set( "space", args );
-      if( !WidgetUtil.getAdapter( widget ).isInitialized() ) {
-        writer.set( "minWidth", 0 );
-        writer.set( "minHeight", 0 );
-      }
+      writer.set( JS_PROP_SPACE, args );
       if( clip ) {
-        writer.set( "clipHeight", args[ 3 ] );
-        writer.set( "clipWidth", args[ 1 ] );
+        writer.set( JS_PROP_CLIP_HEIGHT, args[ 3 ] );
+        writer.set( JS_PROP_CLIP_WIDTH, args[ 1 ] );
       }
     }
+  }
+  
+  public static void resetBounds() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JS_PROP_CLIP_WIDTH );
+    writer.reset( JS_PROP_CLIP_HEIGHT );
+    writer.set( JS_PROP_SPACE, new int[] { 0, 0, 0, 0 } );
   }
 
   public static void writeMenu( final Widget widget, final Menu menu )
@@ -231,7 +241,7 @@ public final class WidgetLCAUtil {
   {
     if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( "contextMenu", menu );
+      writer.set( JS_PROP_CONTEXT_MENU, menu );
       if( menu == null ) {
         writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU,
                                JSConst.JS_CONTEXT_MENU );
@@ -241,6 +251,13 @@ public final class WidgetLCAUtil {
       }
     }
   }
+  
+  public static void resetMenu() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JS_PROP_CONTEXT_MENU );
+    writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU,
+                           JSConst.JS_CONTEXT_MENU );
+  }
 
   public static void writeToolTip( final Widget widget, final String toolTip )
     throws IOException
@@ -249,10 +266,18 @@ public final class WidgetLCAUtil {
     if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       Object[] args = new Object[] { widget, escapeText( text, false ) };
-      writer.call( JSWriter.WIDGET_MANAGER_REF, "setToolTip", args );
+      writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_TOOL_TIP, args );
     }
   }
 
+  public static void resetToolTip() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.call( JSWriter.WIDGET_MANAGER_REF,
+                 JS_FUNC_SET_TOOL_TIP,
+                 new Object[] { JSWriter.WIDGET_REF } );
+  }
+  
+  
   /////////////////////////////////////////////////
   // write-methods used by other ...LCAUtil classes
 
@@ -307,6 +332,11 @@ public final class WidgetLCAUtil {
     }
   }
 
+  public static void resetFont() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JSConst.QX_FIELD_FONT );
+  }
+  
   public static void writeForeground( final Widget widget,
                                       final Color newColor )
     throws IOException
@@ -316,6 +346,13 @@ public final class WidgetLCAUtil {
       Object[] args = new Object[] { widget, newColor };
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
     }
+  }
+  
+  public static void resetForeground() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( "textColor" );
+    String listener = "org.eclipse.swt.WidgetManager._onAppearSetForeground";
+    writer.removeListener( "appear", listener );
   }
 
   public static void writeBackground( final Widget widget,
@@ -332,6 +369,11 @@ public final class WidgetLCAUtil {
     }
   }
 
+  public static void resetBackground() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JSConst.QX_FIELD_BG_COLOR );
+  }
+  
   public static void writeEnabled( final Widget widget, final boolean enabled )
     throws IOException
   {
@@ -339,6 +381,12 @@ public final class WidgetLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Boolean defValue = Boolean.TRUE;
     writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
+  }
+  
+  public static void resetEnabled() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    // TODO [fappel]: check whether to use reset
+    writer.set( JSConst.QX_FIELD_ENABLED, true );
   }
 
   private static String readPropertyValue( final String widgetId,

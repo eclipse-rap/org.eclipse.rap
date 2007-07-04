@@ -204,6 +204,13 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
   
+  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  }
+  
+  public String getTypePoolId( final Widget widget ) throws IOException {
+    return null;
+  }
+  
 //  public Rectangle adjustCoordinates( final Rectangle bounds ) {
 //    int border = 1;
 //    int hTabBar = 23;

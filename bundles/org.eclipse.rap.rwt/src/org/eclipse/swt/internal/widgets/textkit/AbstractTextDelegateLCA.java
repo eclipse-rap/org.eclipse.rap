@@ -21,4 +21,6 @@ abstract class AbstractTextDelegateLCA {
   abstract void renderInitialization( Text text ) throws IOException;
   abstract void renderChanges( Text text ) throws IOException;
   abstract void renderDispose( Text text ) throws IOException;
+  abstract void createResetHandlerCalls( String typePoolId ) throws IOException;
+  abstract String getTypePoolId( Text text ) throws IOException;
 }

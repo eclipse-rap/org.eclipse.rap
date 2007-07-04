@@ -12,12 +12,21 @@
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
+
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Button;
 
 final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
+
+  static final String PREFIX_TYPE_POOL_ID
+    = CheckButtonDelegateLCA.class.getName();
+  private static final String TYPE_POOL_ID_BORDER
+    = PREFIX_TYPE_POOL_ID + "_BORDER";
+  private static final String TYPE_POOL_ID_FLAT
+    = PREFIX_TYPE_POOL_ID + "_FLAT";
+  private static final String QX_TYPE = "qx.ui.form.CheckBox";
 
   // check box event listner function, defined in org.eclipse.swt.ButtonUtil
   private static final String WIDGET_SELECTED 
@@ -41,9 +50,15 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( button );
-    writer.newWidget( "qx.ui.form.CheckBox" );
+    writer.newWidget( QX_TYPE );
     ButtonLCAUtil.writeLabelMode( button );
     ControlLCAUtil.writeStyleFlags( button );
+    
+    // TODO [fappel]: Workaround: foreground color reset does not work with
+    //                checkboxes. Because of this set the color explicitly
+    //                during initialization. Seems to be some trouble with atom.
+    Object[] args = new Object[] { button, button.getForeground() };
+    writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
   }
 
   // TODO [rh] qooxdoo checkBox cannot display images, should we ignore
@@ -65,5 +80,21 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   void renderDispose( final Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.dispose();
+  }
+
+  String getTypePoolId( final Button button ) throws IOException {
+    return ButtonLCAUtil.getTypePoolId( button, 
+                                        TYPE_POOL_ID_BORDER, 
+                                        TYPE_POOL_ID_FLAT );
+  }
+
+  void createResetHandlerCalls( final String typePoolId ) throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.removeListener( JS_LISTENER_INFO.getEventType(),
+                           JS_LISTENER_INFO.getJSListener() );
+    ButtonLCAUtil.resetAlignment();
+    ButtonLCAUtil.resetText();
+    ButtonLCAUtil.resetSelection();
+    ControlLCAUtil.resetChanges();
   }
 }

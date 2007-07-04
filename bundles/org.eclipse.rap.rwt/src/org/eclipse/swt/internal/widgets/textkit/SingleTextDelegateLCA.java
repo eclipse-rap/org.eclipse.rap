@@ -20,6 +20,14 @@ import org.eclipse.swt.widgets.Text;
 
 final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
   
+  static final String PREFIX_TYPE_POOL_ID
+    = SingleTextDelegateLCA.class.getName();
+  private static final String TYPE_POOL_ID_BORDER
+    = PREFIX_TYPE_POOL_ID + "_BORDER";
+  private static final String TYPE_POOL_ID_FLAT
+    = PREFIX_TYPE_POOL_ID + "_FLAT";
+  private static final String QX_TYPE = "qx.ui.form.TextField";
+
   private static final String PROP_SELECTION_LISTENER = "selectionListener";
 
   private final static JSListenerInfo JS_SELECTION_LISTENER_INFO
@@ -48,26 +56,21 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
 
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( "qx.ui.form.TextField" );
+    writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeNoSpellCheck( text );
   }
 
   void renderChanges( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
     ControlLCAUtil.writeChanges( text );
-    String newValue = text.getText();
-    if( WidgetLCAUtil.hasChanged( text, TextLCAUtil.PROP_TEXT, newValue, "" ) ) 
-    {
-      writer.set( "value", TextLCAUtil.stripNewlines( newValue ) );
-    }
+    TextLCAUtil.writeText( text );
     TextLCAUtil.writeReadOnly( text );
     TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );
     writeSelectionListener( text );
   }
-  
+
   void renderDispose( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.dispose();
@@ -82,5 +85,27 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
                              PROP_SELECTION_LISTENER,
                              SelectionEvent.hasListener( text ) );
     }
+  }
+
+  String getTypePoolId( final Text text ) throws IOException {
+    return TextLCAUtil.getTypePoolId( text, 
+                                      TYPE_POOL_ID_BORDER, 
+                                      TYPE_POOL_ID_FLAT );
+  }
+
+  void createResetHandlerCalls( final String typePoolId ) throws IOException {
+    TextLCAUtil.resetSelection();
+    TextLCAUtil.resetModifyListener();
+    resetSelectionListener();
+    TextLCAUtil.resetTextLimit();
+    TextLCAUtil.resetReadOnly();
+    TextLCAUtil.resetText();
+    ControlLCAUtil.resetChanges();
+  }
+
+  private void resetSelectionListener() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.removeListener( JS_SELECTION_LISTENER_INFO.getEventType(),
+                           JS_SELECTION_LISTENER_INFO.getJSListener() );
   }
 }

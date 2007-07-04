@@ -39,6 +39,12 @@ final class TextLCAUtil {
   private static final Point DEFAULT_SELECTION
     = new Point( 0, 0 );
 
+  private static final String JS_PROP_MAX_LENGTH = "maxLength";
+  private static final String JS_PROP_READ_ONLY = "readOnly";
+  private static final String JS_PROP_VALUE = "value";
+  private static final String JS_LISTENER_ON_MOUSE_UP 
+    = "org.eclipse.swt.TextUtil.onMouseUp";
+  private static final String JS_EVENT_MOUSE_UP = "mouseup";
   private static final JSListenerInfo JS_MODIFY_LISTENER_INFO 
     = new JSListenerInfo( JSConst.QX_EVENT_KEY_UP, 
                           "org.eclipse.swt.TextUtil.modifyText", 
@@ -85,7 +91,12 @@ final class TextLCAUtil {
   static void writeReadOnly( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     Boolean newValue = Boolean.valueOf( !text.getEditable() );
-    writer.set( PROP_READONLY, "readOnly", newValue, Boolean.FALSE );
+    writer.set( PROP_READONLY, JS_PROP_READ_ONLY, newValue, Boolean.FALSE );
+  }
+  
+  static void resetReadOnly() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JS_PROP_READ_ONLY );
   }
 
   static void writeNoSpellCheck( final Text text ) throws IOException {
@@ -109,15 +120,20 @@ final class TextLCAUtil {
       if( newValue.intValue() < 0 ) {
         newValue = null;
       }
-      writer.set( "maxLength", newValue );
+      writer.set( JS_PROP_MAX_LENGTH, newValue );
     }
+  }
+
+  static void resetTextLimit() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JS_PROP_MAX_LENGTH );
   }
 
   static void writeSelection( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     if( !adapter.isInitialized() ) {
-      writer.addListener( "mouseup", "org.eclipse.swt.TextUtil.onMouseUp" );
+      writer.addListener( JS_EVENT_MOUSE_UP, JS_LISTENER_ON_MOUSE_UP );
     }
     Point newValue = text.getSelection();
     Point defValue = DEFAULT_SELECTION;
@@ -132,6 +148,18 @@ final class TextLCAUtil {
     }
   }
   
+  static void resetSelection() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.removeListener( JS_EVENT_MOUSE_UP, JS_LISTENER_ON_MOUSE_UP );
+    writer.removeListener( "appear", 
+                           "org.eclipse.swt.TextUtil._onAppearSetSelection" );
+    // TODO [fappel]: ugly hack, needed for FireFox: manipulation of protected
+    //                field
+    writer.callFieldAssignment( JSWriter.WIDGET_REF,
+                                "_isCreated",
+                                "false" );
+  }
+  
   static void writeModifyListener( final Text text ) throws IOException {
     if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
       JSWriter writer = JSWriter.getWriterFor( text );
@@ -144,11 +172,44 @@ final class TextLCAUtil {
                              hasListener );
     }
   }
+  
+  static void resetModifyListener() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.removeListener( JS_MODIFY_LISTENER_INFO.getEventType(), 
+                           JS_MODIFY_LISTENER_INFO.getJSListener() );
+  }
 
+  static void writeText( final Text text ) throws IOException {
+    String newValue = text.getText();
+    JSWriter writer = JSWriter.getWriterFor( text );
+    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) 
+    {
+      writer.set( JS_PROP_VALUE, stripNewlines( newValue ) );
+    }
+  }
+  
+  static void resetText() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JS_PROP_VALUE );
+  }
+  
   /**
    * Returns the given string with all newlines replaced with spaces.
    */
   static String stripNewlines( final String text ) {
     return NEWLINE_PATTERN.matcher( text ).replaceAll( " " );
+  }
+
+  static String getTypePoolId( final Text text, 
+                               final String idBorder, 
+                               final String idFlat )
+  {
+    String result;
+    if( ( text.getStyle() & SWT.BORDER ) != 0 ) {
+      result = idBorder;
+    } else {
+      result = idFlat;
+    }
+    return result;
   }
 }

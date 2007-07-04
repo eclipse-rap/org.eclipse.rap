@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -24,11 +25,11 @@ final class ButtonLCAUtil {
 
 
   static final String PROP_SELECTION = "selection";
+  private static final String JS_PROP_HORIZONTAL_CHILDREN_ALIGN 
+    = "horizontalChildrenAlign";
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_DEFAULT = "defaultButton";
-
   private static final String PARAM_SELECTION = "selection";
-
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.CENTER );
 
   
@@ -61,8 +62,14 @@ final class ButtonLCAUtil {
     String text = button.getText();
     if( WidgetLCAUtil.hasChanged( button, Props.TEXT, text, "" ) ) {
       text = WidgetLCAUtil.escapeText( text, true );
-      writer.set( JSConst.QX_FIELD_LABEL, text);      
+      writer.set( JSConst.QX_FIELD_LABEL, text );      
     }
+  }
+  
+  static void resetText() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    // Note [fappel]: reset doesn't work, so use setting to empty string
+    writer.set( JSConst.QX_FIELD_LABEL, "" );      
   }
 
   static void writeImage( final Button button ) throws IOException {
@@ -79,6 +86,11 @@ final class ButtonLCAUtil {
     }
   }
 
+  static void resetImage() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JSConst.QX_FIELD_ICON );
+  }
+  
   static void writeAlignment( final Button button ) throws IOException {
     if( ( button.getStyle() & SWT.ARROW ) == 0 ) {
       Integer newValue = new Integer( button.getAlignment() );
@@ -101,16 +113,26 @@ final class ButtonLCAUtil {
             value = "left";
           break;
         }
-        writer.set( "horizontalChildrenAlign", value );
+        writer.set( JS_PROP_HORIZONTAL_CHILDREN_ALIGN, value );
       }
     }
   }
 
+  static void resetAlignment() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JS_PROP_HORIZONTAL_CHILDREN_ALIGN );
+  }
+  
   static void writeSelection( final Button button ) throws IOException {
     Boolean newValue = Boolean.valueOf( button.getSelection() ); 
     Boolean defValue = Boolean.FALSE;
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.set( PROP_SELECTION, JSConst.QX_FIELD_CHECKED, newValue, defValue );
+  }
+  
+  static void resetSelection() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.set(  JSConst.QX_FIELD_CHECKED, Boolean.FALSE );
   }
   
   static void writeDefault( Button button ) throws IOException {
@@ -131,7 +153,20 @@ final class ButtonLCAUtil {
                        new Object[] { button } );
   }
   
-  private static boolean isDefaultButton( final Button button ) {
+  static boolean isDefaultButton( final Button button ) {
     return button.getShell().getDefaultButton() == button;
+  }
+  
+  static String getTypePoolId( final Button button, 
+                               final String idBorder, 
+                               final String idFlat )
+  {
+    String result;
+    if( ( button.getStyle() & SWT.BORDER ) != 0 ) {
+      result = idBorder;
+    } else {
+      result = idFlat;
+    }
+    return result;
   }
 }

@@ -26,6 +26,7 @@ import org.eclipse.swt.internal.lifecycle.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.Fixture;
 import com.w4t.engine.requests.RequestParams;
 
@@ -60,7 +61,18 @@ public class CTabFolderLCA_Test extends TestCase {
           }
           public void renderDispose( final Widget widget ) throws IOException {
           }
-          public void renderInitialization( final Widget widget ) throws IOException {
+          public void createResetHandlerCalls( final String typePoolId )
+            throws IOException
+          {
+          }
+          public String getTypePoolId( final Widget widget )
+            throws IOException
+          {
+            return null;
+          }
+          public void renderInitialization( final Widget widget )
+            throws IOException
+          {
           }
           public void readData( final Widget widget ) {
           }
