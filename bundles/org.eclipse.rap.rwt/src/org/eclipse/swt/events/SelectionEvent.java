@@ -13,7 +13,9 @@ package org.eclipse.swt.events;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.Adaptable;
 
 
@@ -70,7 +72,35 @@ public class SelectionEvent extends TypedEvent {
 	 */
   public boolean doit;
   
+  /**
+   * The item that was selected.
+   */
   public Item item;
+
+  /**
+   * Extra detail information about the selection, depending on the widget.
+   * <!--
+   * <p><b>Sash</b><ul>
+   * <li>{@link org.eclipse.swt.SWT#DRAG}</li>
+   * </ul></p><p><b>ScrollBar and Slider</b><ul>
+   * <li>{@link org.eclipse.swt.SWT#DRAG}</li>
+   * <li>{@link org.eclipse.swt.SWT#HOME}</li>
+   * <li>{@link org.eclipse.swt.SWT#END}</li>
+   * <li>{@link org.eclipse.swt.SWT#ARROW_DOWN}</li>
+   * <li>{@link org.eclipse.swt.SWT#ARROW_UP}</li>
+   * <li>{@link org.eclipse.swt.SWT#PAGE_DOWN}</li>
+   * <li>{@link org.eclipse.swt.SWT#PAGE_UP}</li>
+   * -->
+   * </ul></p><p><b>Table and Tree</b><ul>
+   * <li>{@link org.eclipse.swt.SWT#CHECK}</li>
+   * <!--
+   * </ul></p><p><b>Text</b><ul>
+   * <li>{@link org.eclipse.swt.SWT#CANCEL}</li>
+   * -->
+   * </ul></p><p><b>CoolItem and ToolItem</b><ul>
+   * <li>{@link org.eclipse.swt.SWT#ARROW}</li>
+   * </ul></p>
+   */
   public int detail;
   
   /**
@@ -79,9 +109,14 @@ public class SelectionEvent extends TypedEvent {
    *
    * @param e the untyped event containing the information
    */
-  public SelectionEvent( Event e ) {
-    this( e.widget, e.item, e.type,
-        new Rectangle( e.x, e.y, e.width, e.height ), e.text, e.doit, e.detail );
+  public SelectionEvent( final Event e ) {
+    this( e.widget,
+          e.item,
+          e.type,
+          new Rectangle( e.x, e.y, e.width, e.height ),
+          e.text,
+          e.doit,
+          e.detail );
   }
   
   public SelectionEvent( final Widget widget,
@@ -128,6 +163,10 @@ public class SelectionEvent extends TypedEvent {
     return LISTENER;
   }
   
+  protected boolean allowProcessing() {
+    return EventUtil.isAccessible( widget );
+  }
+
   public static boolean hasListener( final Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }

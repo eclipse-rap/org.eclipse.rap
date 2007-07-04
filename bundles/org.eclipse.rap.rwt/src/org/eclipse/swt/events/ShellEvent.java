@@ -12,6 +12,7 @@
 package org.eclipse.swt.events;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.EventUtil;
 
 import com.w4t.Adaptable;
 
@@ -22,7 +23,6 @@ import com.w4t.Adaptable;
  *
  * @see ShellListener
  */
-// TODO [rh] should we support the 'doit' flag, at least for shellClosed?
 public class ShellEvent extends TypedEvent {
 
   public static final int SHELL_CLOSED = SWT.Close;
@@ -53,6 +53,16 @@ public class ShellEvent extends TypedEvent {
 
   protected Class getListenerType() {
     return LISTENER;
+  }
+  
+  protected boolean allowProcessing() {
+    boolean result;
+    if( getID() == SHELL_CLOSED ) {
+      result = EventUtil.isAccessible( widget );
+    } else {
+      result = true;
+    }
+    return result;
   }
   
   public static boolean hasListener( final Adaptable adaptable ) {

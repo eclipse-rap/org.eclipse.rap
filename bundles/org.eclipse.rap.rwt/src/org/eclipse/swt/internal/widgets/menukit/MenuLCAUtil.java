@@ -49,13 +49,11 @@ final class MenuLCAUtil {
   }
   
   public static void readMenuEvent( final Menu menu ) {
-    String eventId = JSConst.EVENT_MENU_SHOWN;
-    if( WidgetLCAUtil.wasEventSent( menu, eventId ) ) {
+    if( WidgetLCAUtil.wasEventSent( menu, JSConst.EVENT_MENU_SHOWN ) ) {
       MenuEvent event = new MenuEvent( menu, MenuEvent.MENU_SHOWN );
       event.processEvent();
     }
-    eventId = JSConst.EVENT_MENU_HIDDEN;
-    if( WidgetLCAUtil.wasEventSent( menu, eventId ) ) {
+    if( WidgetLCAUtil.wasEventSent( menu, JSConst.EVENT_MENU_HIDDEN ) ) {
       MenuEvent event = new MenuEvent( menu, MenuEvent.MENU_HIDDEN );
       event.processEvent();
     }

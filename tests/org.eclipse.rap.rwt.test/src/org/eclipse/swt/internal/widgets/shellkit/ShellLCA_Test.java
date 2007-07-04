@@ -32,6 +32,7 @@ public class ShellLCA_Test extends TestCase {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
+    shell.open();
     shell.addShellListener( new ShellAdapter() {
       public void shellClosed( final ShellEvent event ) {
         log.append( "closed" );

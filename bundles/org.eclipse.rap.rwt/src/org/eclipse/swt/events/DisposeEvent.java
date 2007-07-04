@@ -38,6 +38,10 @@ public final class DisposeEvent extends TypedEvent {
   protected Class getListenerType() {
     return LISTENER;
   }
+  
+  protected boolean allowProcessing() {
+    return true;
+  }
 
   public static void addListener( final Adaptable adaptable, 
                                   final DisposeListener listener )

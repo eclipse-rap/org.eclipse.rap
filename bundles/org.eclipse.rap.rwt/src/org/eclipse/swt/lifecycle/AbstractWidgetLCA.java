@@ -85,5 +85,4 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
     }
     disposalList.add( widget );
   }
-
 }

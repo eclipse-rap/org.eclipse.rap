@@ -48,6 +48,10 @@ public class SetDataEvent extends TypedEvent {
   protected Class getListenerType() {
     return LISTENER;
   }
+  
+  protected boolean allowProcessing() {
+    return true;
+  }
 
   public static void addListener( final Adaptable adaptable, 
                                   final SetDataListener listener )

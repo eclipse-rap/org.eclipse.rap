@@ -21,7 +21,8 @@ import org.eclipse.swt.internal.lifecycle.CurrentPhase;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.SetDataEvent;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Widget;
 
 import com.w4t.engine.lifecycle.PhaseId;
 import com.w4t.engine.service.ContextProvider;
@@ -148,26 +149,17 @@ public abstract class TypedEvent extends Event {
     TypedEvent[] scheduledEvents = getScheduledEvents();
     for( int i = 0; i < scheduledEvents.length; i++ ) {
       if(    eventClass.equals( scheduledEvents[ i ].getClass() ) 
-          && isSourceEnabled( scheduledEvents[ i ] ) ) 
+          && scheduledEvents[ i ].allowProcessing() ) 
       {
         scheduledEvents[ i ].processEvent();
       }
     }
   }
 
-  ///////////////////////////////////
-  // Check enablement of event source
+  ////////////////////////////////////
+  // Prevent unwanted event processing 
   
-  // TODO [rh] preliminary: maybe it would be better to handle this in the
-  //      respective LCAs
-  private static boolean isSourceEnabled( final TypedEvent event ) {
-    boolean result = true;
-    if( event.getSource() instanceof Control ) {
-      Control control = ( Control ) event.getSource();
-      result = control.getEnabled();
-    }
-    return result;
-  }
+  protected abstract boolean allowProcessing();
   
   //////////////////////////////
   // toString & getName from SWT 

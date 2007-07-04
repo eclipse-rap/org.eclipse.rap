@@ -46,6 +46,10 @@ public final class ActivateEvent extends TypedEvent {
   protected Class getListenerType() {
     return LISTENER;
   }
+  
+  protected boolean allowProcessing() {
+    return true;
+  }
 
   public static void addListener( final Adaptable adaptable, 
                                   final ActivateListener listener )

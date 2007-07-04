@@ -279,26 +279,6 @@ public final class RWTFixture {
     
   }
   
-  
-  /**
-   *  Simple program that prints the constant definitions of the SWT
-   *  class which can be used for updates of the SWT class. Not very
-   *  sophisticated, but it works for the moment...
-   */
-  public static void main( final String[] arx ) throws IOException {
-    String rwtDir = System.getProperty( "user.dir" ).replaceAll( ".test", "" );
-    String path = SWT.class.getName().replace( '.', '/' );
-    String src = rwtDir + "/src/" + path + ".java";
-    BufferedReader reader = new BufferedReader( new FileReader( src ) );
-    String line = reader.readLine();
-    while( line != null ) {
-      if( line.startsWith( "  public static final " ) ) {
-        System.out.println( line );
-      }
-      line = reader.readLine();
-    }
-  }
-
   public static void fakeContext() {
     TestRequest request = new TestRequest();
     TestResponse response = new TestResponse();
@@ -307,5 +287,4 @@ public final class RWTFixture {
     ServiceContext context = new ServiceContext( request, response );
     ContextProvider.setContext( context );
   }
-
 }

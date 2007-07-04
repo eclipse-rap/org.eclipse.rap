@@ -21,6 +21,9 @@ import com.w4t.engine.service.IServiceStateInfo;
 
 public class ProcessActionRunner {
   
+  private static final String ATTR_RUNNABLE_LIST 
+    = ProcessActionRunner.class.getName();
+
   public static void add( final Runnable runnable ) {
     if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
         || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
@@ -28,11 +31,10 @@ public class ProcessActionRunner {
       runnable.run();
     } else {
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      String key = ProcessActionRunner.class.getName();
-      List list = ( List )stateInfo.getAttribute( key );
+      List list = ( List )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );
       if( list == null ) {
         list = new ArrayList();
-        stateInfo.setAttribute( key, list );
+        stateInfo.setAttribute( ATTR_RUNNABLE_LIST, list );
       }
       if( !list.contains( runnable ) ) {
         list.add(  runnable );
@@ -42,8 +44,7 @@ public class ProcessActionRunner {
   
   public static void execute() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    String key = ProcessActionRunner.class.getName();
-    List list = ( List )stateInfo.getAttribute( key );
+    List list = ( List )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );
     if( list != null ) {
       Runnable[] runables = new Runnable[ list.size() ];
       list.toArray( runables );

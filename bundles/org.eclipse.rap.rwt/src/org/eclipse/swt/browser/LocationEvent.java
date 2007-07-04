@@ -73,6 +73,12 @@ public class LocationEvent extends TypedEvent {
   protected Class getListenerType() {
     return LISTENER;
   }
+  
+  protected boolean allowProcessing() {
+    // It is safe to always allow to firethis event as it is only generated
+    // server-side
+    return true;
+  }
 
   public static boolean hasListener( final Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );

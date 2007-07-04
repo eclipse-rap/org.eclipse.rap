@@ -14,7 +14,9 @@ package org.eclipse.swt.custom;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
+
 import com.w4t.Adaptable;
 
 public class CTabFolderEvent extends TypedEvent {
@@ -96,6 +98,10 @@ public class CTabFolderEvent extends TypedEvent {
 
   protected Class getListenerType() {
     return LISTENER;
+  }
+  
+  protected boolean allowProcessing() {
+    return EventUtil.isAccessible( widget );
   }
   
   public static boolean hasListener( final Adaptable adaptable ) {

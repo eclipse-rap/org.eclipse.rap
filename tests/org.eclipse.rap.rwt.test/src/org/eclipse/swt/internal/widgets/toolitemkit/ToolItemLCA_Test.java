@@ -70,8 +70,8 @@ public class ToolItemLCA_Test extends TestCase {
     final boolean[] wasEventFired = { false };
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    ToolBar tb = new ToolBar( shell, SWT.FLAT );
-    final ToolItem item = new ToolItem( tb, SWT.CHECK );
+    ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
+    final ToolItem item = new ToolItem( toolBar, SWT.CHECK );
     item.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
@@ -85,12 +85,13 @@ public class ToolItemLCA_Test extends TestCase {
         assertEquals( true, item.getSelection() );
       }
     } );
+    shell.open();
 
     String displayId = DisplayUtil.getAdapter( display ).getId();
-    String menuItemId = WidgetUtil.getId( item );
+    String toolItemId = WidgetUtil.getId( item );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( menuItemId + ".selection", "true" );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
+    Fixture.fakeRequestParam( toolItemId + ".selection", "true" );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, toolItemId );
     new RWTLifeCycle().execute();
     assertEquals( true, wasEventFired[ 0 ] );
   }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -18,7 +18,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.ItemHolder;
 
 /**
  * Instances of this class are selectable user interface objects that represent
@@ -59,7 +58,6 @@ public class CoolItem extends Item {
   boolean wrap;
   Image arrowImage = null;
   private List selectionListeners;
-  private int order;
 
 //  private static final class CoolItemOrderComparator implements Comparator {
 //

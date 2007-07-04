@@ -19,6 +19,7 @@ import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
+import org.eclipse.swt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.widgets.MenuHolder.IMenuHolderAdapter;
 
 /**
@@ -620,9 +621,14 @@ public class Shell extends Composite {
    */
   public void close() {
     checkWidget();
-    ShellEvent shellEvent = new ShellEvent( this, ShellEvent.SHELL_CLOSED );
-    shellEvent.processEvent();
-    dispose();
+    ProcessActionRunner.add( new Runnable() {
+      public void run() {
+        ShellEvent shellEvent 
+          = new ShellEvent( Shell.this, ShellEvent.SHELL_CLOSED );
+        shellEvent.processEvent();
+        Shell.this.dispose();
+      }
+    } );
   }
 
   ///////////////////////////

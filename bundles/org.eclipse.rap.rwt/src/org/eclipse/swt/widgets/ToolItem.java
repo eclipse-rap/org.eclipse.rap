@@ -16,7 +16,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation;
-import org.eclipse.swt.internal.theme.ThemeUtil;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 

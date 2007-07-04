@@ -12,6 +12,7 @@
 package org.eclipse.swt.events;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Control;
 import com.w4t.Adaptable;
 
@@ -54,6 +55,10 @@ public final class FocusEvent extends TypedEvent {
 
   protected Class getListenerType() {
     return LISTENER;
+  }
+
+  protected boolean allowProcessing() {
+    return EventUtil.isAccessible( widget );
   }
 
   public static void addListener( final Adaptable adaptable, 

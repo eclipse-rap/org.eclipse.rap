@@ -166,7 +166,6 @@ public class TreeItemLCA_Test extends TestCase {
 
     expected = "wm.setForeground( w, \"#00ff00\" );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
-
   }
 
   protected void setUp() throws Exception {
