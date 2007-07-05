@@ -12,16 +12,19 @@
 package org.eclipse.swt.internal.lifecycle;
 
 import java.util.Enumeration;
-import javax.servlet.http.HttpSession;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.swt.lifecycle.IWidgetLifeCycleAdapter;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.Fixture;
 import com.w4t.engine.service.ContextProvider;
+import com.w4t.engine.service.ISessionStore;
 
 public class LifeCycleAdapter_Test extends TestCase {
 
@@ -116,7 +119,7 @@ public class LifeCycleAdapter_Test extends TestCase {
   }
 
   private void removeDisplay() {
-    HttpSession session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSession();
     Enumeration attributeNames = session.getAttributeNames();
     String toRemove = null;
     while( toRemove == null && attributeNames.hasMoreElements() ) {

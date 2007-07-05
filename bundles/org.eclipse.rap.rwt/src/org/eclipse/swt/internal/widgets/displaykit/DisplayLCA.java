@@ -16,7 +16,8 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
@@ -34,8 +35,7 @@ import org.eclipse.swt.widgets.*;
 
 import com.w4t.*;
 import com.w4t.engine.requests.RequestParams;
-import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.IServiceStateInfo;
+import com.w4t.engine.service.*;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
@@ -316,7 +316,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static Set getAlreadyRegisteredHandlers() {
-    HttpSession session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSession();
     Set result = ( Set )session.getAttribute( DISPOSE_HANDLER_REGISTRY );
     if( result == null ) {
       result = new HashSet();

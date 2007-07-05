@@ -11,10 +11,13 @@
 
 package org.eclipse.swt;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
+
 import javax.servlet.http.HttpSession;
+
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.swt.internal.lifecycle.*;
@@ -26,6 +29,7 @@ import org.eclipse.swt.resources.IResourceManagerFactory;
 import org.eclipse.swt.resources.ResourceManager;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
+
 import com.w4t.*;
 import com.w4t.Fixture.*;
 import com.w4t.engine.lifecycle.*;
@@ -241,7 +245,7 @@ public final class RWTFixture {
   }
 
   public static void fakeNewRequest() {
-    HttpSession session = ContextProvider.getSession();
+    HttpSession session = ContextProvider.getRequest().getSession();
     TestRequest request = new TestRequest();
     request.setSession( session );
     TestResponse response = new TestResponse();

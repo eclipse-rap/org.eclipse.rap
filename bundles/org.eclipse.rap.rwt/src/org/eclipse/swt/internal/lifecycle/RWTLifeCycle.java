@@ -16,13 +16,13 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.http.HttpSession;
+
 import org.eclipse.swt.internal.engine.AdapterFactoryRegistry;
 import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
+
 import com.w4t.ParamCheck;
 import com.w4t.engine.lifecycle.*;
-import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.IServiceStateInfo;
+import com.w4t.engine.service.*;
 
 /**
  * TODO: [fappel] comment
@@ -120,7 +120,7 @@ public class RWTLifeCycle extends LifeCycle {
   
   
   private void initialize() {
-    HttpSession session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSession();
     if( session.getAttribute( INITIALIZED ) == null ) {
       AdapterFactoryRegistry.register();
       session.setAttribute( INITIALIZED, Boolean.TRUE );

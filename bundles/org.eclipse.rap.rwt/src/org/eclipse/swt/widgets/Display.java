@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -32,6 +31,7 @@ import com.w4t.Adaptable;
 import com.w4t.W4TContext;
 import com.w4t.engine.requests.RequestParams;
 import com.w4t.engine.service.ContextProvider;
+import com.w4t.engine.service.ISessionStore;
 
 /**
  * Instances of this class are responsible for managing the
@@ -131,7 +131,7 @@ public class Display extends Device implements Adaptable {
   }
   
   private final List shells;
-  private HttpSession session;
+  private ISessionStore session;
   private Rectangle bounds;
   private Shell activeShell;
   private IDisplayAdapter displayAdapter;
@@ -163,7 +163,7 @@ public class Display extends Device implements Adaptable {
       String msg = "Currently only one display per session is supported.";
       throw new IllegalStateException( msg );
     }
-    session.setAttribute( DISPLAY_ID, this );
+    ContextProvider.getSession().setAttribute( DISPLAY_ID, this );
     shells = new ArrayList(); 
     readInitialBounds();
   }
@@ -883,9 +883,9 @@ public class Display extends Device implements Adaptable {
 
   private final class DisplayAdapter implements IDisplayAdapter {
     
-    private final HttpSession session;
+    private final ISessionStore session;
     
-    private DisplayAdapter( final HttpSession session ) {
+    private DisplayAdapter( final ISessionStore session ) {
       this.session = session;      
     }
 
@@ -905,7 +905,7 @@ public class Display extends Device implements Adaptable {
       Display.this.setFocusControl( focusControl );
     }
 
-    public HttpSession getSession() {
+    public ISessionStore getSession() {
       return session;
     }
 

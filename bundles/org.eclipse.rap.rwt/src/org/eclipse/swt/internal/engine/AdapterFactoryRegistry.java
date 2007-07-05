@@ -14,6 +14,9 @@ package org.eclipse.swt.internal.engine;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.w4t.*;
 import com.w4t.engine.service.ContextProvider;
 
@@ -83,7 +86,8 @@ public class AdapterFactoryRegistry {
       } catch( final Throwable thr ) {
         String text = "Could not create an instance of ''{0}''.";
         String msg = MessageFormat.format( text, new Object[] { clazz } );
-        ContextProvider.getSession().getServletContext().log( msg, thr );
+        HttpServletRequest request = ContextProvider.getRequest();
+        request.getSession().getServletContext().log( msg, thr );
       }
     }
   }

@@ -12,8 +12,9 @@
 package org.eclipse.swt.internal.theme;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
 import com.w4t.engine.service.ContextProvider;
+import com.w4t.engine.service.ISessionStore;
 
 /**
  * Used to switch between themes at runtime.
@@ -34,7 +35,7 @@ public class ThemeUtil {
     HttpServletRequest request = ContextProvider.getRequest();
     String result = request.getParameter( THEME_URL_PARM );
     ThemeManager manager = ThemeManager.getInstance();
-    HttpSession session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSession();
     if( result != null && manager.hasTheme( result ) ) {
       session.setAttribute( CURR_THEME_ATTR, result );
     }
@@ -50,7 +51,7 @@ public class ThemeUtil {
   }
 
   public static void setCurrentTheme( final String themeId ) {
-    HttpSession session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSession();
     session.setAttribute( CURR_THEME_ATTR, themeId );
   }
 
