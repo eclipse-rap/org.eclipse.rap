@@ -24,10 +24,10 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     
     APPEARANCE : "label-wrapper",
     
-    initialize : function( widget, wrap ) {
+    initialize : function( widget ) {
+      widget.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
       if( !widget.getUserData( "pooled" ) ) {
         widget.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_TOP );
-        widget.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
         widget.setAppearance( org.eclipse.swt.LabelUtil.APPEARANCE );
         widget.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
         // TODO [rh] workaround for weird getLabelObject behaviour
@@ -37,12 +37,15 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
         labelObject.setMode( org.eclipse.swt.LabelUtil.MODE_TEXT );
         labelObject.setTextOverflow( false );
         labelObject.setAppearance( "label-graytext" );
-        widget.getLabelObject().setWrap( wrap );
         // TODO [rh] workaround for weird getLabelObject behaviour
         widget.setLabel( "" );
         // end workaround
         widget.setHideFocus( true );
       }
+    },
+    
+    setWrap : function( widget, wrap ) {
+      widget.getLabelObject().setWrap( wrap );
     },
     
     setText : function( widget, text ) {

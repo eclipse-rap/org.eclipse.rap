@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -20,7 +20,7 @@ public final class EventUtil {
   private EventUtil() {
     // prevent instantiation
   }
-  
+
   public static boolean isAccessible( final Widget widget ) {
     boolean result = !widget.isDisposed();
     if( result ) {
@@ -62,7 +62,7 @@ public final class EventUtil {
     }
     return result;
   }
-  
+
   private static boolean isAccessible( final MenuItem menuItem ) {
     boolean result = menuItem.getEnabled();
     if( result ) {
@@ -85,14 +85,16 @@ public final class EventUtil {
     }
     return result;
   }
-  
+
+  // TODO [rst] A modal shell can open another modal shell. Hence, there can be
+  //            more than one modal shell, only the top-level one is accessible
   private static Shell getModalShell( final Display display ) {
     Shell modalShell = null;
     Shell[] shells = display.getShells();
     for( int i = 0; modalShell == null && i < shells.length; i++ ) {
       Shell shell = shells[ i ];
-      if(   ( shell.getStyle() & SWT.APPLICATION_MODAL ) != 0 
-          && shell.isVisible() ) 
+      if(   ( shell.getStyle() & SWT.APPLICATION_MODAL ) != 0
+          && shell.isVisible() )
       {
         modalShell = shell;
       }

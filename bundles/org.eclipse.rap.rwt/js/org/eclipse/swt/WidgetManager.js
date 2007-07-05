@@ -73,21 +73,20 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( widget != null ) {
         this.remove( widget );
         if( !widget.isDisposed() ) {
-          this._removeToolTipPopup( widget );        
+          this._removeToolTipPopup( widget );
           // TODO [rh] workaround for disposing of a Sash: if( parent && ...
           var parent = widget.getParent();
           if( parent && parent.getChildren() ) {
             widget.setParent( null );
           }
-          // handle widgets that are pooled
+          // handle widgets that can be pooled
           var typePoolId = widget.getUserData( "typePoolId" );
           if( typePoolId != null ) {
             var typePool = this._widgetPool[ typePoolId ];
             typePool.handler( widget );
             widget.setUserData( "pooled", true );
             typePool.elements.push( widget );
-
-          // dispose of widgets that are not pooled
+          // dispose of widgets that cannot be pooled
           } else {
             widget.dispose();
           }
@@ -125,12 +124,12 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( typePoolId != null && this._widgetPool[ typePoolId ] ) {
         var typePool = this._widgetPool[ typePoolId ];
         result = typePool.elements.pop();
-        if( paramList != null ) {
+        if( result && paramList != null ) {
           // If paramList isn't empty we have to reinitialize the widget.
           // Luckily only our own js widgets use this...
           var expression =   "org.eclipse.swt.WidgetManager.getInstance()."
-                           + "_current.reInit(" 
-                           + paramList 
+                           + "_current.reInit("
+                           + paramList
                            + ");"
           // Assignment of the field _current is needed as Opera has some 
           // problems with accessing local variables in eval expressions.
@@ -161,15 +160,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         this.setParent( result, parentId );
       }
       return result;
-  	},
-  	
-  	addState : function( widget, state ) {
-  	  if( !widget.getUserData ) {
-  	    this.debug( "no userdata:" + widget );
-  	  }
-  	  if( !widget.getUserData( "pooled" ) ) {
-  	    widget.addState( state );
-  	  }
   	},
   	
     /**
@@ -251,18 +241,19 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
 
     setForeground : function( widget, color ) {
-      if ( widget.isMaterialized() ) {  // TODO [rh] isMaterialized or isCreated?
+// TODO [rst] It seems that this workaround is not necessary anymore
+//      if ( widget.isMaterialized() ) {  // TODO [rh] isMaterialized or isCreated?
         if( color == null ) {
           widget.resetTextColor();
         } else {
           widget.setTextColor( color );
         }
-      } else {
-        widget.addEventListener( 
-          "appear",
-          org.eclipse.swt.WidgetManager._onAppearSetForeground,
-          color );
-      }
+//      } else {
+//        widget.addEventListener( 
+//          "appear",
+//          org.eclipse.swt.WidgetManager._onAppearSetForeground,
+//          color );
+//      }
     },
 
     // TODO [rh] setting the font (for foreground color applies the same) does not

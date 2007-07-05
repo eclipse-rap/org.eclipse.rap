@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -20,19 +20,15 @@ import org.eclipse.swt.widgets.Button;
 
 final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
-  static final String PREFIX_TYPE_POOL_ID
+  static final String TYPE_POOL_ID
     = CheckButtonDelegateLCA.class.getName();
-  private static final String TYPE_POOL_ID_BORDER
-    = PREFIX_TYPE_POOL_ID + "_BORDER";
-  private static final String TYPE_POOL_ID_FLAT
-    = PREFIX_TYPE_POOL_ID + "_FLAT";
   private static final String QX_TYPE = "qx.ui.form.CheckBox";
 
   // check box event listner function, defined in org.eclipse.swt.ButtonUtil
-  private static final String WIDGET_SELECTED 
+  private static final String WIDGET_SELECTED
     = "org.eclipse.swt.ButtonUtil.checkSelected";
-  
-  private final JSListenerInfo JS_LISTENER_INFO 
+
+  private final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
                           WIDGET_SELECTED,
                           JSListenerType. STATE_AND_ACTION );
@@ -45,7 +41,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     ButtonLCAUtil.readSelection( button );
     ControlLCAUtil.processSelection( button, null, true );
   }
-  
+
   void renderInitialization( final Button button )
     throws IOException
   {
@@ -53,7 +49,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     writer.newWidget( QX_TYPE );
     ButtonLCAUtil.writeLabelMode( button );
     ControlLCAUtil.writeStyleFlags( button );
-    
+
     // TODO [fappel]: Workaround: foreground color reset does not work with
     //                checkboxes. Because of this set the color explicitly
     //                during initialization. Seems to be some trouble with atom.
@@ -83,9 +79,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   }
 
   String getTypePoolId( final Button button ) throws IOException {
-    return ButtonLCAUtil.getTypePoolId( button, 
-                                        TYPE_POOL_ID_BORDER, 
-                                        TYPE_POOL_ID_FLAT );
+    return TYPE_POOL_ID;
   }
 
   void createResetHandlerCalls( final String typePoolId ) throws IOException {
@@ -96,5 +90,6 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     ButtonLCAUtil.resetText();
     ButtonLCAUtil.resetSelection();
     ControlLCAUtil.resetChanges();
+    ControlLCAUtil.resetStyleFlags();
   }
 }

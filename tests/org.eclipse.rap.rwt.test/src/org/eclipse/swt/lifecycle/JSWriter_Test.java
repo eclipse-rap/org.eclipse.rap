@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -60,9 +60,9 @@ public class JSWriter_Test extends TestCase {
     // ensure that the WidgetManager gets initialized
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.newWidget( "qx.ui.form.Button" );
-    String expected 
+    String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.newWidget( \"w1\", \"w2\", true, " 
+        + "var w = wm.newWidget( \"w1\", \"w2\", true, "
         + getTypePoolIdHash( shell.button )
         + ", 'qx.ui.form.Button' );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -86,7 +86,7 @@ public class JSWriter_Test extends TestCase {
     AbstractWidgetLCA lca = WidgetUtil.getLCA( widget );
     return lca.getTypePoolId( widget );
   }
-  
+
   public void testNewWidget() throws Exception {
     Display display = new Display();
     TestShell shell = new TestShell( display );
@@ -94,7 +94,7 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "qx.ui.form.Button" );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.newWidget( \"w1\", \"w2\", true, " 
+        + "var w = wm.newWidget( \"w1\", \"w2\", true, "
         + getTypePoolIdHash( shell.button )
         + ", 'qx.ui.form.Button' );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -140,12 +140,20 @@ public class JSWriter_Test extends TestCase {
         + ", 'TreeItem' );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testResetJSProperty() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     Fixture.fakeResponseWriter();
     writer.reset( "testProperty" );
     assertEquals( "w.resetTestProperty();", Fixture.getAllMarkup() );
+  }
+
+  public void testResetJSPropertyChain() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    Fixture.fakeResponseWriter();
+    writer.reset( new String[] { "labelObject", "testProperty" } );
+    String expected = "w.getLabelObject().resetTestProperty();";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
   public void testSetParent() throws IOException {
@@ -214,7 +222,7 @@ public class JSWriter_Test extends TestCase {
     expected = "w.setTextValues( \"new\\nline\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testCallWithObjectArray() throws IOException {
     Display display = new Display();
     TestShell shell = new TestShell( display );
@@ -248,65 +256,65 @@ public class JSWriter_Test extends TestCase {
     TestShell shell = new TestShell( display );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.set( "boolValues", new boolean[] { true, false } );
-    String expected 
+    String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "var w = wm.findWidgetById( \"w1\" );"
       + "w.setBoolValues( true, false );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
   }
-  
+
   public void testSetWidgetArray() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display );
     Widget widget1 = new Button( shell, SWT.PUSH );
     Widget widget2 = new Button( shell, SWT.PUSH );
-    
-    // call JSWriter once to get rid of prologue 
+
+    // call JSWriter once to get rid of prologue
     JSWriter writer = JSWriter.getWriterFor( shell );
     Fixture.fakeBrowser( new Default( true, true ) );
     Fixture.fakeResponseWriter();
     writer.set( "foo", "bar" );
 
-    // set property value to an empty array 
+    // set property value to an empty array
     Fixture.fakeBrowser( new Default( true, true ) );
     Fixture.fakeResponseWriter();
     writer.set( "buttons", "buttons", new Widget[ 0 ], null );
-    assertEquals( "w.setButtons( [] );", 
+    assertEquals( "w.setButtons( [] );",
                   Fixture.getAllMarkup() );
-    
+
     // set property value to an array that contains one item
     Fixture.fakeBrowser( new Default( true, true ) );
     Fixture.fakeResponseWriter();
     writer.set( "buttons", "buttons", new Object[] { widget1 }, null );
-    assertEquals( "w.setButtons( [wm.findWidgetById( \"w2\" ) ] );", 
+    assertEquals( "w.setButtons( [wm.findWidgetById( \"w2\" ) ] );",
                   Fixture.getAllMarkup() );
-    
+
     // set property value to an array that contains two items
     Fixture.fakeBrowser( new Default( true, true ) );
     Fixture.fakeResponseWriter();
     writer.set( "buttons", "buttons", new Object[] { widget1, widget2 }, null );
-    String expected 
-      = "w.setButtons( [wm.findWidgetById( \"w2\" )," 
+    String expected
+      = "w.setButtons( [wm.findWidgetById( \"w2\" ),"
       + "wm.findWidgetById( \"w3\" ) ] );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testSetWithPropertyChainAndObjectArray() throws Exception {
     Display display = new Display();
     TestShell shell = new TestShell( display );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
-    writer.set( new String[] { "prop1", "prop2" }, 
+    writer.set( new String[] { "prop1", "prop2" },
                 new Object[] { new JSVar( "var1" ), new JSVar( "var2" ) } );
-    String expected 
+    String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "var w = wm.findWidgetById( \"w1\" );"
       + "w.getProp1().setProp2( var1, var2 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
-    
+
   }
-  
+
   public void testSetChangedString() throws Exception {
     Display display = new Display();
     TestShell shell = new TestShell( display );
@@ -454,18 +462,18 @@ public class JSWriter_Test extends TestCase {
     expected = "var w = wm.findWidgetById( \"w2\" );w.buttonFunction();";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testCallWithCharacterParam() throws IOException {
     Display display = new Display();
     TestShell shell = new TestShell( display );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     Object[] args = new Object[] { new Character( 'A' ) };
     writer.call( new JSVar( "a" ), "setChar", args );
-    String expected 
+    String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "a.setChar( \"A\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
   }
 
   public void testTargetedCallForJSVar() throws IOException {
@@ -474,7 +482,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     Fixture.fakeResponseWriter();
     writer.call( new JSVar( "a" ), "doSomething", null );
-    String expected 
+    String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "a.doSomething();";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -486,7 +494,7 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     // add listener directly to the widget
     writer.addListener( "execute", "buttonExecuted1" );
-    String expected 
+    String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "var w = wm.findWidgetById( \"w1\" );"
       + "w.addEventListener( \"execute\", buttonExecuted1 );";
@@ -498,31 +506,31 @@ public class JSWriter_Test extends TestCase {
     writer.addListener( "prop", "type", "jshandler" );
     expected += "w.getProp().addEventListener( \"type\", jshandler );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
     display.dispose();
   }
-  
+
   public void testRemoveListener() throws Exception {
     Display display = new Display();
     TestShell shell = new TestShell( display );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
-    
-    // add listener directly to the widget 
+
+    // add listener directly to the widget
     writer.removeListener( "execute", "buttonExecuted1" );
-    String expected 
-      = "var wm = org.eclipse.swt.WidgetManager.getInstance();" 
-      + "var w = wm.findWidgetById( \"w1\" );" 
+    String expected
+      = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w1\" );"
       + "w.removeEventListener( \"execute\", buttonExecuted1 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     writer.removeListener( "execute", "buttonExecuted2" );
     expected += "w.removeEventListener( \"execute\", buttonExecuted2 );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
     // add listener of a property object of the widget
     writer.removeListener( "prop", "type", "jshandler" );
     expected += "w.getProp().removeEventListener( \"type\", jshandler );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
     display.dispose();
   }
 
@@ -614,7 +622,7 @@ public class JSWriter_Test extends TestCase {
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     JSWriter writer = JSWriter.getWriterFor( item );
-    JSListenerInfo jsListenerInfo 
+    JSListenerInfo jsListenerInfo
       = new JSListenerInfo( "type",
                             "event",
                             JSListenerType.STATE_AND_ACTION );
@@ -663,7 +671,7 @@ public class JSWriter_Test extends TestCase {
              + "w.addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testUpdateListenerStateAndActionWithActionFirst()
     throws Exception
   {
@@ -688,7 +696,7 @@ public class JSWriter_Test extends TestCase {
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( folder ) );
-    String expected 
+    String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "var w = wm.findWidgetById( \"w4\" );"
       + "w.addEventListener( \"type\", eventAction );";
@@ -718,7 +726,7 @@ public class JSWriter_Test extends TestCase {
              + "w.addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testUpdateListenerOnPropertyAction() throws Exception {
     // set up widget hierarchy for testing
     Display display = new Display();
@@ -735,11 +743,11 @@ public class JSWriter_Test extends TestCase {
     JSListenerInfo jsListenerInfo
       = new JSListenerInfo( "execute", "selectedEvent", JSListenerType.ACTION );
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     assertEquals( "", Fixture.getAllMarkup() );
-    
+
     SelectionListener selectionListener = new SelectionAdapter() {};
     // Test initial rendering with listeners
     button.addSelectionListener( selectionListener );
@@ -747,15 +755,15 @@ public class JSWriter_Test extends TestCase {
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
-    String expected 
-      = "var wm = org.eclipse.swt.WidgetManager.getInstance();" 
-      + "var w = wm.findWidgetById( \"w3\" );" 
+    String expected
+      = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
+      + "var w = wm.findWidgetById( \"w3\" );"
       + "w.getPropertyName().addEventListener( \"execute\", selectedEvent );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
     // Test adding the first listeners
     Fixture.fakeResponseWriter();
     button.removeSelectionListener( selectionListener );
@@ -764,8 +772,8 @@ public class JSWriter_Test extends TestCase {
     RWTFixture.preserveWidgets();
     button.addSelectionListener( selectionListener );
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
 
     // Test adding a further listener: leads to no markup
@@ -775,8 +783,8 @@ public class JSWriter_Test extends TestCase {
     SelectionListener selectionListener2 = new SelectionAdapter() {};
     button.addSelectionListener( selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     assertEquals( "", Fixture.getAllMarkup() );
 
@@ -787,22 +795,22 @@ public class JSWriter_Test extends TestCase {
     button.removeSelectionListener( selectionListener );
     button.removeSelectionListener( selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     expected
       = "w.getPropertyName().removeEventListener"
       + "( \"execute\", selectedEvent );";
-    assertEquals( expected, 
+    assertEquals( expected,
                   Fixture.getAllMarkup() );
-    
+
     // Test that no changes to listeners do not cause any additional markup
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( button ) );
     assertEquals( "", Fixture.getAllMarkup() );
   }
@@ -813,7 +821,7 @@ public class JSWriter_Test extends TestCase {
     Composite shell = new Shell( display , SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
-    
+
     // Test initial rendering with no action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
@@ -824,15 +832,15 @@ public class JSWriter_Test extends TestCase {
     JSListenerInfo jsListenerInfo
       = new JSListenerInfo( "type", "event", JSListenerType.STATE_AND_ACTION );
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( folder ) );
-    String expected 
-      =   "var wm = org.eclipse.swt.WidgetManager.getInstance();" 
-        + "var w = wm.findWidgetById( \"w4\" );" 
+    String expected
+      =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
+        + "var w = wm.findWidgetById( \"w4\" );"
         + "w.getPropertyName().addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
     // Test rendering with action listener added
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     adapter.setInitialized( true );
@@ -842,14 +850,14 @@ public class JSWriter_Test extends TestCase {
     SelectionEvent.addListener( folder, selectionListener );
     Fixture.fakeResponseWriter();
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( folder ) );
-    expected 
+    expected
       = "w.getPropertyName().removeEventListener( \"type\", event );"
       + "w.getPropertyName().addEventListener( \"type\", eventAction );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
     // Test adding a further listener: leads to no markup
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
@@ -857,11 +865,11 @@ public class JSWriter_Test extends TestCase {
     SelectionListener selectionListener2 = new SelectionAdapter() {};
     SelectionEvent.addListener( folder, selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( folder ) );
     assertEquals( "", Fixture.getAllMarkup() );
-    
+
     // Test removing all the above added listener
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
@@ -869,10 +877,10 @@ public class JSWriter_Test extends TestCase {
     SelectionEvent.removeListener( folder, selectionListener );
     SelectionEvent.removeListener( folder, selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
-                           jsListenerInfo, 
-                           Props.SELECTION_LISTENERS, 
+                           jsListenerInfo,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( folder ) );
-    expected 
+    expected
       = "w.getPropertyName().removeEventListener( \"type\", eventAction );"
       + "w.getPropertyName().addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -883,21 +891,21 @@ public class JSWriter_Test extends TestCase {
     TestShell shell = new TestShell( display );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.dispose();
-    String expected 
+    String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "wm.dispose( \"w1\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
     Fixture.fakeResponseWriter();
     shell.setDefaultButton( shell.button );
     writer.dispose();
-    expected 
+    expected
       =   "var t = wm.findWidgetById( \"w2\" );"
         + "t.setDefaultButton( null );"
         + "wm.dispose( \"w1\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testWigetRef() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -905,7 +913,7 @@ public class JSWriter_Test extends TestCase {
     Widget widget2 = new Label( shell, SWT.NONE );
     JSWriter writer1 = JSWriter.getWriterFor( widget1 );
     JSWriter writer2 = JSWriter.getWriterFor( widget2 );
-    
+
     Fixture.fakeResponseWriter();
     writer1.set( "visible", false );
     String findWidget = "findWidgetById";
@@ -914,20 +922,20 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer1.set( "visible", true );
     assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) == -1 );
-    
+
     Fixture.fakeResponseWriter();
     writer2.set( "visible", true );
     assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) != -1 );
-    
+
     Fixture.fakeResponseWriter();
     writer2.set( "visible", true );
     assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) == -1 );
-    
+
     Fixture.fakeResponseWriter();
     writer1.set( "visible", true );
     assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) != -1 );
   }
-  
+
   public void testEscapeString() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -935,11 +943,11 @@ public class JSWriter_Test extends TestCase {
     JSWriter writer = JSWriter.getWriterFor( label  );
     // Run once, thus JSWriter will outut the prologue which is not under test
     writer.set( "dummy", false );
-    
+
     Fixture.fakeResponseWriter();
     writer.set( "html", "abc" );
     assertEquals( "w.setHtml( \"abc\" );", Fixture.getAllMarkup() );
-    
+
     Fixture.fakeResponseWriter();
     writer.set( "html", "a\"bc" );
     assertEquals( "w.setHtml( \"a\\\"bc\" );", Fixture.getAllMarkup() );
@@ -977,7 +985,7 @@ public class JSWriter_Test extends TestCase {
     assertEquals( "w.setHtml( \"\\n\\n\" );", Fixture.getAllMarkup() );
 
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

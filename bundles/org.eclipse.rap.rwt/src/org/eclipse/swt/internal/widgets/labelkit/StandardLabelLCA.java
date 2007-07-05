@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -23,13 +23,8 @@ import org.eclipse.swt.widgets.Label;
 
 public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
-  static final String PREFIX_TYPE_POOL_ID
-    = StandardLabelLCA.class.getName();
-  private static final String TYPE_POOL_ID_BORDER
-    = PREFIX_TYPE_POOL_ID + "_BORDER";
-  private static final String TYPE_POOL_ID_FLAT
-    = PREFIX_TYPE_POOL_ID + "_FLAT";
   private static final String QX_TYPE = "qx.ui.basic.Atom";
+  static final String TYPE_POOL_ID = StandardLabelLCA.class.getName();
 
   private static final Pattern NEWLINE_PATTERN
     = Pattern.compile( "\\r\\n|\\r|\\n" );
@@ -63,19 +58,16 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( label );
     Boolean wrap = Boolean.valueOf( ( label.getStyle() & SWT.WRAP ) != 0 );
-    Object[] args = { label, wrap };
-    writer.callStatic( "org.eclipse.swt.LabelUtil.initialize", args  );
-    
-    // TODO [fappel]: Workaround: foreground color reset does not work with
-    //                labels. Because of this set the color explicitly
-    //                during initialization. Seems to be some trouble with atom.
-    Object[] argsFG = new Object[] { label, label.getForeground() };
-    writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", argsFG );
+    Object[] args = { label };
+    writer.callStatic( "org.eclipse.swt.LabelUtil.initialize", args );
+    Object[] argsWrap = { label, wrap };
+    writer.callStatic( "org.eclipse.swt.LabelUtil.setWrap", argsWrap );
+
     // TODO [fappel]: Workaround: icon reset does not work with labels and
     //                IE. Because of this set icon explicitly to null.
     writer.call( "setIcon", PARAM_NULL );
   }
-  
+
   void renderChanges( final Label label ) throws IOException {
     ControlLCAUtil.writeChanges( label );
     writeText( label );
@@ -87,20 +79,19 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     JSWriter writer = JSWriter.getWriterFor( label );
     writer.dispose();
   }
-  
+
   void createResetHandlerCalls( final String typePoolId ) throws IOException {
     resetAlignment();
     resetText();
     ControlLCAUtil.resetChanges();
-  }
-  
-  String getTypePoolId( final Label label ) throws IOException {
-    return LabelLCA.getTypePoolId( label,
-                                   TYPE_POOL_ID_BORDER, 
-                                   TYPE_POOL_ID_FLAT );
+    ControlLCAUtil.resetStyleFlags();
   }
 
-  
+  String getTypePoolId( final Label label ) throws IOException {
+    return TYPE_POOL_ID;
+  }
+
+
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
@@ -115,7 +106,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       writer.callStatic( JS_FUNC_LABEL_UTIL_SET_TEXT, args );
     }
   }
-  
+
   private static void resetText() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.set( "label", "" );
@@ -141,7 +132,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   private static void writeAlignment( final Label label ) throws IOException {
     Integer alignment = new Integer( label.getAlignment() );
     Integer defValue = DEFAULT_ALIGNMENT;
-    if( WidgetLCAUtil.hasChanged( label, PROP_ALIGNMENT, alignment, defValue ) ) 
+    if( WidgetLCAUtil.hasChanged( label, PROP_ALIGNMENT, alignment, defValue ) )
     {
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{
@@ -150,10 +141,11 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
       writer.callStatic( JS_FUNC_LABEL_UTIL_SET_ALIGNMENT, args );
     }
   }
-  
+
   private static void resetAlignment() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( "horizontalChildrenAlign" );
+    writer.reset( new String[] { "labelObject", "textAlign" } );
   }
 
   private static String getAlignment( final int alignment ) {

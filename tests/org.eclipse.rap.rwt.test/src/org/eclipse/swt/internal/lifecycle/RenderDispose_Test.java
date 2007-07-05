@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -56,28 +56,20 @@ public class RenderDispose_Test extends TestCase {
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     lifeCycle.execute();
-    
-//    String expectedStart 
-//      =   "org.eclipse.swt.EventUtil.suspendEventHandling();"
-//        + "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-//        + "wm.registerResetHandler( ";
-//    String functionHandler = ", function( w ) {"; 
-//    String expectedEnd
-//      =   "} );wm.dispose( \"w3\" );"
-//        + "qx.ui.core.Widget.flushGlobalQueues();"
-//        + "org.eclipse.swt.EventUtil.resumeEventHandling();";
-//    String allMarkup = Fixture.getAllMarkup();
-//    assertTrue( allMarkup.startsWith( expectedStart ) );
-//    assertTrue( allMarkup.indexOf( functionHandler ) != 0 );
-//    assertTrue( allMarkup.endsWith( expectedEnd ) );
-    
-    String expected 
+
+    String expectedStart
       =   "org.eclipse.swt.EventUtil.suspendEventHandling();"
         + "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "wm.dispose( \"w3\" );"
+        + "wm.registerResetHandler( ";
+    String functionHandler = ", function( w ) {";
+    String expectedEnd
+      =   "} );wm.dispose( \"w3\" );"
         + "qx.ui.core.Widget.flushGlobalQueues();"
         + "org.eclipse.swt.EventUtil.resumeEventHandling();";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    String allMarkup = Fixture.getAllMarkup();
+    assertTrue( allMarkup.startsWith( expectedStart ) );
+    assertTrue( allMarkup.indexOf( functionHandler ) != 0 );
+    assertTrue( allMarkup.endsWith( expectedEnd ) );
   }
 
   public void testDisposeNotYetInitialized() throws IOException {

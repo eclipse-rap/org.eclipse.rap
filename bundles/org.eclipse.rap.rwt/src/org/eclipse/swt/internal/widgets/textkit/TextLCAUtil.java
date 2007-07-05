@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -25,7 +25,7 @@ import com.w4t.util.browser.Mozilla;
 
 
 final class TextLCAUtil {
-  
+
   private static final Pattern NEWLINE_PATTERN
     = Pattern.compile( "\\r\\n|\\r|\\n" );
   static final String PROP_TEXT = "text";
@@ -34,7 +34,7 @@ final class TextLCAUtil {
   static final String PROP_MODIFY_LISTENER = "modifyListener";
   static final String PROP_READONLY = "readonly";
 
-  private static final Integer DEFAULT_TEXT_LIMIT 
+  private static final Integer DEFAULT_TEXT_LIMIT
     = new Integer( Text.MAX_TEXT_LIMIT );
   private static final Point DEFAULT_SELECTION
     = new Point( 0, 0 );
@@ -42,16 +42,16 @@ final class TextLCAUtil {
   private static final String JS_PROP_MAX_LENGTH = "maxLength";
   private static final String JS_PROP_READ_ONLY = "readOnly";
   private static final String JS_PROP_VALUE = "value";
-  private static final String JS_LISTENER_ON_MOUSE_UP 
+  private static final String JS_LISTENER_ON_MOUSE_UP
     = "org.eclipse.swt.TextUtil.onMouseUp";
   private static final String JS_EVENT_MOUSE_UP = "mouseup";
-  private static final JSListenerInfo JS_MODIFY_LISTENER_INFO 
-    = new JSListenerInfo( JSConst.QX_EVENT_KEY_UP, 
-                          "org.eclipse.swt.TextUtil.modifyText", 
+  private static final JSListenerInfo JS_MODIFY_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_KEY_UP,
+                          "org.eclipse.swt.TextUtil.modifyText",
                           JSListenerType.STATE_AND_ACTION );
-  private static final JSListenerInfo JS_BLUR_LISTENER_INFO 
-    = new JSListenerInfo( JSConst.QX_EVENT_BLUR, 
-                          "org.eclipse.swt.TextUtil.modifyTextOnBlur", 
+  private static final JSListenerInfo JS_BLUR_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_BLUR,
+                          "org.eclipse.swt.TextUtil.modifyTextOnBlur",
                           JSListenerType.ACTION );
 
   private TextLCAUtil() {
@@ -67,14 +67,14 @@ final class TextLCAUtil {
     adapter.preserve( PROP_MODIFY_LISTENER, Boolean.valueOf( hasListener ) );
     adapter.preserve( PROP_READONLY, Boolean.valueOf( ! text.getEditable() ) );
   }
-  
+
   static void readText( final Text text ) {
     String newText = WidgetLCAUtil.readPropertyValue( text, "text" );
     if( newText != null ) {
       text.setText( newText );
     }
   }
-  
+
   static void readSelection( final Text text ) {
     Point selection = text.getSelection();
     String value = WidgetLCAUtil.readPropertyValue( text, "selectionStart" );
@@ -87,13 +87,13 @@ final class TextLCAUtil {
     }
     text.setSelection( selection );
   }
-  
+
   static void writeReadOnly( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     Boolean newValue = Boolean.valueOf( !text.getEditable() );
     writer.set( PROP_READONLY, JS_PROP_READ_ONLY, newValue, Boolean.FALSE );
   }
-  
+
   static void resetReadOnly() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JS_PROP_READ_ONLY );
@@ -113,7 +113,7 @@ final class TextLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( text );
     Integer newValue = new Integer( text.getTextLimit() );
     Integer defValue = DEFAULT_TEXT_LIMIT;
-    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, defValue ) ) 
+    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, defValue ) )
     {
       // Negative values are treated as 'no limit' which is achieved by passing
       // null to the client-side maxLength property
@@ -140,59 +140,54 @@ final class TextLCAUtil {
     // TODO [rh] could be optimized: when text was changed and selection is 0,0
     //      there is no need to write JavaScript since the client resets the
     //      selection as well when the new text is set.
-    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, defValue ) ) { 
+    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, defValue ) ) {
       Integer start = new Integer( newValue.x );
       Integer count = new Integer( text.getSelectionCount() );
-      writer.callStatic( "org.eclipse.swt.TextUtil.setSelection", 
+      writer.callStatic( "org.eclipse.swt.TextUtil.setSelection",
                          new Object[] { text, start, count } );
     }
   }
-  
+
   static void resetSelection() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.removeListener( JS_EVENT_MOUSE_UP, JS_LISTENER_ON_MOUSE_UP );
-    writer.removeListener( "appear", 
+    writer.removeListener( "appear",
                            "org.eclipse.swt.TextUtil._onAppearSetSelection" );
-    // TODO [fappel]: ugly hack, needed for FireFox: manipulation of protected
-    //                field
-    writer.callFieldAssignment( JSWriter.WIDGET_REF,
-                                "_isCreated",
-                                "false" );
   }
-  
+
   static void writeModifyListener( final Text text ) throws IOException {
     if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
       JSWriter writer = JSWriter.getWriterFor( text );
       boolean hasListener = ModifyEvent.hasListener( text );
-      writer.updateListener( JS_MODIFY_LISTENER_INFO, 
-                             PROP_MODIFY_LISTENER, 
+      writer.updateListener( JS_MODIFY_LISTENER_INFO,
+                             PROP_MODIFY_LISTENER,
                              hasListener );
-      writer.updateListener( JS_BLUR_LISTENER_INFO, 
-                             PROP_MODIFY_LISTENER, 
+      writer.updateListener( JS_BLUR_LISTENER_INFO,
+                             PROP_MODIFY_LISTENER,
                              hasListener );
     }
   }
-  
+
   static void resetModifyListener() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.removeListener( JS_MODIFY_LISTENER_INFO.getEventType(), 
+    writer.removeListener( JS_MODIFY_LISTENER_INFO.getEventType(),
                            JS_MODIFY_LISTENER_INFO.getJSListener() );
   }
 
   static void writeText( final Text text ) throws IOException {
     String newValue = text.getText();
     JSWriter writer = JSWriter.getWriterFor( text );
-    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) 
+    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) )
     {
       writer.set( JS_PROP_VALUE, stripNewlines( newValue ) );
     }
   }
-  
+
   static void resetText() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JS_PROP_VALUE );
   }
-  
+
   /**
    * Returns the given string with all newlines replaced with spaces.
    */
@@ -200,8 +195,8 @@ final class TextLCAUtil {
     return NEWLINE_PATTERN.matcher( text ).replaceAll( " " );
   }
 
-  static String getTypePoolId( final Text text, 
-                               final String idBorder, 
+  static String getTypePoolId( final Text text,
+                               final String idBorder,
                                final String idFlat )
   {
     String result;

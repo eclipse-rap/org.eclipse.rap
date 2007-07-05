@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -22,21 +22,16 @@ import org.eclipse.swt.widgets.Widget;
 
 public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
-  static final String PREFIX_TYPE_POOL_ID
-    = SeparatorLabelLCA.class.getName();
-  private static final String TYPE_POOL_ID_BORDER
-    = PREFIX_TYPE_POOL_ID + "_BORDER";
-  private static final String TYPE_POOL_ID_FLAT
-    = PREFIX_TYPE_POOL_ID + "_FLAT";
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Separator";
-  
+  static final String TYPE_POOL_ID = SeparatorLabelLCA.class.getName();
+
   void preserveValues( final Label label ) {
     ControlLCAUtil.preserveValues( label );
   }
 
   void readData( final Label label ) {
   }
-  
+
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
     Object[] args = new Object[] { getStyle( label ) };
@@ -66,18 +61,17 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
       shadow = "SHADOW_IN|";
     } else if( ( style & SWT.SHADOW_NONE ) != 0 ) {
       shadow = "SHADOW_NONE|";
-    } 
+    }
     result.append( shadow );
     return result.toString();
   }
 
   void createResetHandlerCalls( final String typePoolId ) throws IOException {
     ControlLCAUtil.resetChanges();
+    ControlLCAUtil.resetStyleFlags();
   }
 
   String getTypePoolId( final Label label ) throws IOException {
-    return LabelLCA.getTypePoolId( label,
-                                   TYPE_POOL_ID_BORDER, 
-                                   TYPE_POOL_ID_FLAT );
+    return TYPE_POOL_ID;
   }
 }

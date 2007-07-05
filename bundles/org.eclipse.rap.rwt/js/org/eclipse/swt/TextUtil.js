@@ -198,7 +198,7 @@ qx.Class.define("org.eclipse.swt.TextUtil", {
     },
 
     setSelection : function( text, start, length ) {
-      if( text.isCreated() ) {
+      if( text.isCreated() && !text.getUserData( "pooled" ) ) {
         org.eclipse.swt.TextUtil._doSetSelection( text, start, length );
       }
       else {

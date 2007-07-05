@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -30,38 +30,38 @@ import com.w4t.engine.service.IServiceStateInfo;
 /**
  * TODO [rh] JavaDoc
  * <p></p>
- * <p>Note that the JavaScript code that is rendered relies on the client-side 
- * <code>org.eclipse.swt.WidgetManager</code> to be present. </p> 
+ * <p>Note that the JavaScript code that is rendered relies on the client-side
+ * <code>org.eclipse.swt.WidgetManager</code> to be present. </p>
  */
 // TODO [rh] decide whether method arguments are to be checked (not-null, etc)
-//      this also applies for other 'SPI's. 
+//      this also applies for other 'SPI's.
 public final class JSWriter {
-  
+
   public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
   public static JSVar WIDGET_REF = new JSVar( "w" );
-  
+
   private static final Object[] NULL_PARAMETER = new Object[] { null };
   private static final String NEW_WIDGET_PATTERN
     =   "var w = wm.newWidget( \"{0}\", \"{1}\", {2}, "
       + "{3,number,#}, ''{4}''{5} );";
-  private static final Pattern DOUBLE_QUOTE_PATTERN 
+  private static final Pattern DOUBLE_QUOTE_PATTERN
     = Pattern.compile( "(\"|\\\\)" );
-  private static final Pattern NEWLINE_PATTERN 
+  private static final Pattern NEWLINE_PATTERN
     = Pattern.compile( "\\r\\n|\\r|\\n" );
   private static final String NEWLINE_ESCAPE = "\\\\n";
-  
+
   private static final JSVar TARGET_REF = new JSVar( "t" );
-  
-  private static final String WRITER_MAP 
+
+  private static final String WRITER_MAP
     = JSWriter.class.getName() + "#map";
-  private static final String HAS_WINDOW_MANAGER 
+  private static final String HAS_WINDOW_MANAGER
     = JSWriter.class.getName() + "#hasWindowManager";
-  private static final String CURRENT_WIDGET_REF 
+  private static final String CURRENT_WIDGET_REF
     = JSWriter.class.getName() + "#currentWidgetRef";
   private static final String FORMAT_EMPTY = "";
-  
+
   private final Widget widget;
-  
+
   public static JSWriter getWriterFor( final Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JSWriter result;
@@ -78,11 +78,11 @@ public final class JSWriter {
     }
     return result;
   }
-  
+
   public static JSWriter getWriterForResetHandler() {
     return new JSWriter( null );
   }
-  
+
   private JSWriter( final Widget widget ) {
     this.widget = widget;
   }
@@ -91,18 +91,18 @@ public final class JSWriter {
     newWidget( className, null );
   }
 
-  public void newWidget( final String className, final Object[] args ) 
-    throws IOException 
+  public void newWidget( final String className, final Object[] args )
+    throws IOException
   {
     ensureWidgetManager();
     String typePoolId = getTypePoolId( widget );
     Object[] args1 = new Object[] {
-      WidgetUtil.getId( widget ), 
+      WidgetUtil.getId( widget ),
       getJSParentId( widget ),
       useSetParent(),
-      typePoolId == null ? null : new Integer( typePoolId.hashCode() ), 
-      className, 
-      createParamList( ", '", args, "'", false ) 
+      typePoolId == null ? null : new Integer( typePoolId.hashCode() ),
+      className,
+      createParamList( ", '", args, "'", false )
     };
     String out = MessageFormat.format( NEW_WIDGET_PATTERN, args1 );
     getWriter().write( out );
@@ -111,35 +111,35 @@ public final class JSWriter {
       call( "addToDocument", null );
     }
   }
-  
+
   public void setParent( final String parentId ) throws IOException {
     call( WIDGET_MANAGER_REF, "setParent", new Object[] { widget, parentId } );
   }
 
-  public void set( final String jsProperty, final String value ) 
-    throws IOException 
+  public void set( final String jsProperty, final String value )
+    throws IOException
   {
     call( getSetterName( jsProperty ), new Object[] { value } );
   }
-  
-  public void set( final String jsProperty, final int value ) 
-    throws IOException 
+
+  public void set( final String jsProperty, final int value )
+    throws IOException
   {
     set( jsProperty, new int[] { value } );
   }
-  
-  public void set( final String jsProperty, final float value ) 
-    throws IOException 
+
+  public void set( final String jsProperty, final float value )
+    throws IOException
   {
     set( jsProperty, new float[] { value } );
   }
-  
-  public void set( final String jsProperty, final boolean value ) 
-    throws IOException 
+
+  public void set( final String jsProperty, final boolean value )
+    throws IOException
   {
     set( jsProperty, new boolean[] { value } );
   }
-  
+
   public void set( final String jsProperty, final int[] values )
     throws IOException
   {
@@ -150,7 +150,7 @@ public final class JSWriter {
     }
     call( widget, functionName, integers );
   }
-  
+
   public void set( final String jsProperty, final float[] values )
   throws IOException
   {
@@ -161,7 +161,7 @@ public final class JSWriter {
     }
     call( widget, functionName, floats );
   }
-  
+
   public void set( final String jsProperty, final boolean[] values )
     throws IOException
   {
@@ -170,59 +170,64 @@ public final class JSWriter {
     for( int i = 0; i < values.length; i++ ) {
       parameters[ i ] = Boolean.valueOf( values[ i ] );
     }
-    String pattern = createSetPatternForPrimitives( values.length, 
+    String pattern = createSetPatternForPrimitives( values.length,
                                                     FORMAT_EMPTY );
     writeProperty( pattern, jsProperty, parameters );
   }
-  
-  public void set( final String jsProperty, final Object value ) 
-    throws IOException 
+
+  public void set( final String jsProperty, final Object value )
+    throws IOException
   {
     set( jsProperty, new Object[] { value } );
   }
 
-  public void set( final String jsProperty, final Object[] values ) 
-    throws IOException 
+  public void set( final String jsProperty, final Object[] values )
+    throws IOException
   {
     call( widget, getSetterName( jsProperty ), values );
   }
-  
+
 
   public void set( final String[] jsPropertyChain, final Object[] values )
     throws IOException
   {
-    call( widget, createPropertyChain( jsPropertyChain ), values );
+    call( widget, createPropertyChain( jsPropertyChain, false ), values );
   }
 
-  public void set( final String javaProperty, 
-                   final String jsProperty, 
-                   final Object newValue ) 
-    throws IOException 
+  public void set( final String javaProperty,
+                   final String jsProperty,
+                   final Object newValue )
+    throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     if(    !adapter.isInitialized()
-        || WidgetLCAUtil.hasChanged( widget, javaProperty, newValue ) ) 
+        || WidgetLCAUtil.hasChanged( widget, javaProperty, newValue ) )
     {
       set( jsProperty, newValue );
     }
   }
-  
-  public void set( final String javaProperty, 
-                   final String jsProperty, 
+
+  public void set( final String javaProperty,
+                   final String jsProperty,
                    final Object newValue,
-                   final Object defValue ) 
-    throws IOException 
+                   final Object defValue )
+    throws IOException
   {
     if( WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defValue ) ) {
       set( jsProperty, new Object[] { newValue } );
     }
   }
-  
+
   public void reset( final String jsProperty ) throws IOException {
     call( widget, getResetterName( jsProperty ), new Object[ 0 ] );
   }
-  
-  public void addListener( final String property, 
+
+  public void reset( final String[] jsPropertyChain ) throws IOException {
+    Object[] args = new Object[ 0 ];
+    call( widget, createPropertyChain( jsPropertyChain, true ), args );
+  }
+
+  public void addListener( final String property,
                            final String eventType,
                            final String listener )
     throws IOException
@@ -244,45 +249,45 @@ public final class JSWriter {
       write( code, getGetterName( property ), eventType, listener );
     }
   }
-  
-  public void addListener( final String eventType, final String listener ) 
-    throws IOException 
+
+  public void addListener( final String eventType, final String listener )
+    throws IOException
   {
     addListener( null, eventType, listener );
   }
 
 
-  public void updateListener( final String property, 
-                              final JSListenerInfo info, 
-                              final String javaListener, 
+  public void updateListener( final String property,
+                              final JSListenerInfo info,
+                              final String javaListener,
                               final boolean hasListeners )
     throws IOException
   {
     if( info.getJSListenerType() == JSListenerType.ACTION ) {
       updateActionListener( property, info, javaListener, hasListeners );
     } else {
-      updateStateAndActionListener( property, 
-                                    info, 
-                                    javaListener, 
+      updateStateAndActionListener( property,
+                                    info,
+                                    javaListener,
                                     hasListeners );
     }
   }
 
-  public void updateListener( final JSListenerInfo info, 
+  public void updateListener( final JSListenerInfo info,
                               final String javaListener,
-                              final boolean hasListeners ) 
-    throws IOException 
+                              final boolean hasListeners )
+    throws IOException
   {
     updateListener( null, info, javaListener, hasListeners );
   }
 
-  public void removeListener( final String eventType, final String listener ) 
-    throws IOException 
+  public void removeListener( final String eventType, final String listener )
+    throws IOException
   {
     removeListener( null, eventType, listener );
   }
 
-  public void removeListener( final String property, 
+  public void removeListener( final String property,
                               final String eventType,
                               final String listener )
     throws IOException
@@ -306,14 +311,14 @@ public final class JSWriter {
   }
 
 
-  public void call( final String function, final Object[] args ) 
-    throws IOException 
+  public void call( final String function, final Object[] args )
+    throws IOException
   {
     call( widget, function, args );
   }
-  
-  public void call( final Widget target, 
-                    final String function, 
+
+  public void call( final Widget target,
+                    final String function,
                     final Object[] args )
     throws IOException
   {
@@ -330,8 +335,8 @@ public final class JSWriter {
     write( "{0}.{1}({2});", refVariable, function, params );
   }
 
-  public void call( final JSVar target, 
-                    final String function, 
+  public void call( final JSVar target,
+                    final String function,
                     final Object[] args )
     throws IOException
   {
@@ -339,7 +344,7 @@ public final class JSWriter {
     String params = createParamList( args );
     write( "{0}.{1}({2});", target, function, params );
   }
-  
+
   public void startCall( final JSVar target,
                          final String function,
                          final Object[] args )
@@ -347,31 +352,31 @@ public final class JSWriter {
   {
     ensureWidgetManager();
     String params = createParamList( " ", args, "", false );
-    write( "{0}.{1}({2}", target, function, params );    
+    write( "{0}.{1}({2}", target, function, params );
   }
-  
+
   public void endCall( final Object[] args ) throws IOException {
     getWriter().write( createParamList( "", args, "", false )  );
     getWriter().write( " );" );
   }
-  
+
   // TODO [rh] should we name this method 'call' and make it a static method?
-  public void callStatic( final String function, final Object[] args ) 
-    throws IOException 
+  public void callStatic( final String function, final Object[] args )
+    throws IOException
   {
     ensureWidgetManager();
     String params = createParamList( args );
     write( "{0}({1});", function, params );
   }
-  
-  public void callFieldAssignment( final JSVar target, 
-                                   final String field, 
+
+  public void callFieldAssignment( final JSVar target,
+                                   final String field,
                                    final String value )
     throws IOException
   {
     write( "{0}.{1} = {2};", target, field, value );
   }
-  
+
   public void dispose() throws IOException {
     ensureWidgetManager();
     String widgetId = WidgetUtil.getId( widget );
@@ -384,14 +389,14 @@ public final class JSWriter {
     }
     call( WIDGET_MANAGER_REF, "dispose", new Object[] { widgetId } );
   }
-  
-  
+
+
   ////////////////////////////////////////////////////////////////
   // helping methods for client side listener addition and removal
-  
+
   private void updateActionListener( final String property,
                                      final JSListenerInfo info,
-                                     final String javaListener, 
+                                     final String javaListener,
                                      final boolean hasListeners )
     throws IOException
   {
@@ -413,8 +418,8 @@ public final class JSWriter {
   }
 
   private void updateStateAndActionListener( final String property,
-                                             final JSListenerInfo info, 
-                                             final String javaListener, 
+                                             final JSListenerInfo info,
+                                             final String javaListener,
                                              final boolean hasListeners )
     throws IOException
   {
@@ -424,23 +429,23 @@ public final class JSWriter {
       if( hadListeners == null || Boolean.FALSE.equals( hadListeners ) ) {
         if( hasListeners ) {
           removeListener( property, info.getEventType(), info.getJSListener() );
-          addListener( property, 
-                       info.getEventType(), 
+          addListener( property,
+                       info.getEventType(),
                        createJsActionListener( info ) );
         }
       } else {
         if( !hasListeners ) {
-          removeListener( property, 
-                          info.getEventType(), 
+          removeListener( property,
+                          info.getEventType(),
                           createJsActionListener( info ) );
           addListener( property, info.getEventType(), info.getJSListener() );
         }
       }
     } else {
       if( hasListeners ) {
-        addListener( property, 
+        addListener( property,
                      info.getEventType(),
-                     createJsActionListener( info ) );        
+                     createJsActionListener( info ) );
       } else {
         addListener( property, info.getEventType(), info.getJSListener() );
       }
@@ -453,18 +458,18 @@ public final class JSWriter {
     buffer.append( "Action" );
     return buffer.toString();
   }
-  
+
 
   /////////////////////////////////////////////////////////////////////
   // Helping methods for JavaScript WidgetManager and Widget references
 
 
   private Boolean useSetParent() {
-    return   !( widget instanceof Shell )&& widget instanceof Control 
-           ? Boolean.TRUE 
+    return   !( widget instanceof Shell )&& widget instanceof Control
+           ? Boolean.TRUE
            : Boolean.FALSE;
   }
-  
+
   private String getTypePoolId( final Widget widget ) throws IOException {
     AbstractWidgetLCA lca = WidgetUtil.getLCA( widget );
     return lca.getTypePoolId( widget );
@@ -483,13 +488,13 @@ public final class JSWriter {
     }
     return result;
   }
-  
+
   private void ensureWidgetManager() throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    if(    widget != null 
+    if(    widget != null
         && stateInfo.getAttribute( HAS_WINDOW_MANAGER ) == null )
     {
-      write( "var {0} = org.eclipse.swt.WidgetManager.getInstance();", 
+      write( "var {0} = org.eclipse.swt.WidgetManager.getInstance();",
              WIDGET_MANAGER_REF );
       stateInfo.setAttribute( HAS_WINDOW_MANAGER, Boolean.TRUE );
     }
@@ -505,29 +510,29 @@ public final class JSWriter {
       setCurrentWidgetRef( widget );
     }
   }
-  
+
   private static void setCurrentWidgetRef( final Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( CURRENT_WIDGET_REF, widget );
   }
-  
+
   private static Widget getCurrentWidgetRef() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return ( Widget )stateInfo.getAttribute( CURRENT_WIDGET_REF );
   }
-  
+
   private static String createFindWidgetById( final Widget widget ) {
     return createFindWidgetById( WidgetUtil.getId( widget ) );
   }
 
   private static String createFindWidgetById( final String id ) {
-    return MessageFormat.format( "{0}.findWidgetById( \"{1}\" )", 
+    return MessageFormat.format( "{0}.findWidgetById( \"{1}\" )",
                                  new Object[] { WIDGET_MANAGER_REF, id } );
   }
-  
+
   ///////////////////////////////////////////////
   // Helping methods tp construct parameter lists
-  
+
   private static String createSetPatternForPrimitives( final int parameterCount,
                                                        final String typeAndStyle )
   {
@@ -544,13 +549,13 @@ public final class JSWriter {
     buffer.append( " );" );
     return buffer.toString();
   }
-  
+
   private static String createParamList( final Object[] args ) {
     return createParamList( " ", args, " ", true );
   }
-  
-  private static String createParamList( final String startList, 
-                                         final Object[] args, 
+
+  private static String createParamList( final String startList,
+                                         final Object[] args,
                                          final String endList,
                                          final boolean useCurrentWidgetRef ) {
     StringBuffer params = new StringBuffer();
@@ -573,13 +578,13 @@ public final class JSWriter {
           } else {
             params.append( createFindWidgetById( ( Widget )args[ i ] ) );
           }
-        } else if( args[ i ] instanceof JSVar ) { 
+        } else if( args[ i ] instanceof JSVar ) {
           params.append( args[ i ] );
         } else if( args[ i ] instanceof Color ) {
           params.append( '"' );
           params.append( ( ( IColor )args[ i ] ).toColorValue() );
           params.append( '"' );
-        } else if( args[ i ] instanceof Object[] ) { 
+        } else if( args[ i ] instanceof Object[] ) {
           params.append( createArray( ( Object[] )args[ i ] ) );
         } else {
           params.append( args[ i ] );
@@ -593,7 +598,7 @@ public final class JSWriter {
     }
     return params.toString();
   }
-  
+
   private static String createArray( final Object[] array ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( '[' );
@@ -617,22 +622,27 @@ public final class JSWriter {
     buffer.append( ']' );
     return buffer.toString();
   }
-  
-  private String createPropertyChain( final String[] jsPropertyChain ) {
+
+  private String createPropertyChain( final String[] jsPropertyChain,
+                                      final boolean forReset )
+  {
     StringBuffer buffer = new StringBuffer();
     int last = jsPropertyChain.length - 1;
     for( int i = 0; i < last; i++ ) {
       buffer.append( getGetterName( jsPropertyChain[ i ] ) );
       buffer.append( "()." );
     }
-    buffer.append( getSetterName( jsPropertyChain[ last ] ) );
+    if( forReset ) {
+      buffer.append( getResetterName( jsPropertyChain[ last ] ) );
+    } else {
+      buffer.append( getSetterName( jsPropertyChain[ last ] ) );
+    }
     return buffer.toString();
   }
 
-
   ////////////////////////////////////////
-  // Helping methods to manipulate strings 
-  
+  // Helping methods to manipulate strings
+
   private static String capitalize( final String text ) {
     String result;
     if( Character.isUpperCase( text.charAt( 0 ) ) ) {
@@ -646,7 +656,7 @@ public final class JSWriter {
     }
     return result;
   }
-  
+
   // TODO [rh] try to unite the various regex patterns
   // TODO [rh] revise how to handle newline characters (\n)
   private static String escapeString( final String input ) {
@@ -663,32 +673,32 @@ public final class JSWriter {
     functionName.append( capitalize( jsProperty ) );
     return functionName.toString();
   }
-  
+
   private static String getResetterName( final String jsProperty ) {
     StringBuffer functionName = new StringBuffer();
     functionName.append( "reset" );
     functionName.append( capitalize( jsProperty ) );
     return functionName.toString();
   }
-  
+
   private static String getGetterName( final String jsProperty ) {
     StringBuffer functionName = new StringBuffer();
     functionName.append( "get" );
     functionName.append( capitalize( jsProperty ) );
     return functionName.toString();
   }
-  
+
   /////////////////////////////////////////////////////////
-  // Helping methods to write to the actual response writer 
-  
-  private static void write( final String pattern, final Object arg1 ) 
-    throws IOException 
+  // Helping methods to write to the actual response writer
+
+  private static void write( final String pattern, final Object arg1 )
+    throws IOException
   {
     String out = MessageFormat.format( pattern, new Object[] { arg1 } );
     getWriter().write( out );
   }
-  
-  private static void writeProperty( final String pattern, 
+
+  private static void writeProperty( final String pattern,
                                      final String propertyName,
                                      final Object[] arx )
     throws IOException
@@ -699,27 +709,27 @@ public final class JSWriter {
     String out = MessageFormat.format( pattern, arguments );
     getWriter().write( out );
   }
-  
-  private static void write( final String pattern, 
-                             final Object arg1, 
-                             final Object arg2 ) 
-    throws IOException 
+
+  private static void write( final String pattern,
+                             final Object arg1,
+                             final Object arg2 )
+    throws IOException
   {
     String out = MessageFormat.format( pattern, new Object[] { arg1, arg2 } );
     getWriter().write( out );
   }
-  
-  private static void write( final String pattern, 
-                             final Object arg1, 
-                             final Object arg2, 
-                             final Object arg3 ) 
-  throws IOException 
+
+  private static void write( final String pattern,
+                             final Object arg1,
+                             final Object arg2,
+                             final Object arg3 )
+  throws IOException
   {
     Object[] args = new Object[] { arg1, arg2, arg3 };
     String out = MessageFormat.format( pattern, args );
     getWriter().write( out );
   }
-  
+
   private static HtmlResponseWriter getWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return stateInfo.getResponseWriter();

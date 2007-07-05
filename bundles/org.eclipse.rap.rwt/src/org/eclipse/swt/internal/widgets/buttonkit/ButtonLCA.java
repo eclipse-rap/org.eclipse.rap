@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -21,11 +21,11 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class ButtonLCA extends AbstractWidgetLCA {
-  
+
   private final static ButtonDelegateLCA PUSH = new PushButtonDelegateLCA();
   private final static ButtonDelegateLCA CHECK = new CheckButtonDelegateLCA();
   private final static ButtonDelegateLCA RADIO = new RadioButtonDelegateLCA();
-  
+
   public void preserveValues( final Widget widget ) {
     getLCADelegate( widget ).preserveValues( ( Button )widget );
   }
@@ -45,27 +45,26 @@ public final class ButtonLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     getLCADelegate( widget ).renderDispose( ( Button )widget );
   }
-  
+
   public void createResetHandlerCalls( final String typePoolId) throws IOException {
     getLCADelegate( typePoolId ).createResetHandlerCalls( typePoolId );
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
-//    return getLCADelegate( widget ).getTypePoolId( ( Button )widget );
-    return null;
+    return getLCADelegate( widget ).getTypePoolId( ( Button )widget );
   }
-  
+
   public static boolean isDefault( final Button button ) {
     return ButtonLCAUtil.isDefaultButton( button );
   }
-  
+
   private static ButtonDelegateLCA getLCADelegate( final String tpId ) {
     ButtonDelegateLCA result;
-    if( tpId.startsWith( CheckButtonDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
+    if( tpId.startsWith( CheckButtonDelegateLCA.TYPE_POOL_ID ) ) {
       result = CHECK;
-    } else if( tpId.startsWith( PushButtonDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
+    } else if( tpId.startsWith( PushButtonDelegateLCA.TYPE_POOL_ID ) ) {
       result = PUSH;
-    } else if( tpId.startsWith( RadioButtonDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
+    } else if( tpId.startsWith( RadioButtonDelegateLCA.TYPE_POOL_ID ) ) {
       result = RADIO;
     } else {
       String txt= "The typePoolId ''{0}'' is not supported.";
@@ -74,7 +73,7 @@ public final class ButtonLCA extends AbstractWidgetLCA {
     }
     return result;
   }
- 
+
   private static ButtonDelegateLCA getLCADelegate( final Widget widget ) {
     ButtonDelegateLCA result;
     int style = ( ( Button )widget ).getStyle();

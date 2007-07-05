@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -22,11 +22,11 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class TextLCA extends AbstractWidgetLCA {
 
-  private final static AbstractTextDelegateLCA SINGLE 
+  private final static AbstractTextDelegateLCA SINGLE
     = new SingleTextDelegateLCA();
-  private final static AbstractTextDelegateLCA PASSWORD 
+  private final static AbstractTextDelegateLCA PASSWORD
     = new PasswordTextDelegateLCA();
-  private final static AbstractTextDelegateLCA MULTI 
+  private final static AbstractTextDelegateLCA MULTI
     = new MultiTextDelegateLCA();
 
   public void preserveValues( final Widget widget ) {
@@ -53,12 +53,11 @@ public final class TextLCA extends AbstractWidgetLCA {
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
     getLCADelegate( typePoolId ).createResetHandlerCalls( typePoolId );
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
-//    return getLCADelegate( widget ).getTypePoolId( ( Text )widget );
-    return null;
+    return getLCADelegate( widget ).getTypePoolId( ( Text )widget );
   }
-  
+
   private static AbstractTextDelegateLCA getLCADelegate( final String tpId ) {
     AbstractTextDelegateLCA result;
     if( tpId.startsWith( PasswordTextDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
@@ -74,7 +73,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
+
   private static AbstractTextDelegateLCA getLCADelegate( final Widget widget ) {
     AbstractTextDelegateLCA result;
     int style = ( ( Text )widget ).getStyle();

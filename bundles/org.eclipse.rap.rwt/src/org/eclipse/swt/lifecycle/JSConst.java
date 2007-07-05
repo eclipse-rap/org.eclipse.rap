@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -16,26 +16,26 @@ package org.eclipse.swt.lifecycle;
  * TODO [rh] JavaDoc
  */
 public final class JSConst {
-  
+
   //////////////////////////
   // Request parameter names
-  
+
   // SWT keys used to identify which kind of SWT-Event is requested
-  public static final String EVENT_WIDGET_SELECTED 
+  public static final String EVENT_WIDGET_SELECTED
     = "org.eclipse.swt.events.widgetSelected";
-  public static final String EVENT_WIDGET_DEFAULT_SELECTED 
+  public static final String EVENT_WIDGET_DEFAULT_SELECTED
     = "org.eclipse.swt.events.widgetDefaultSelected";
-  public static final String EVENT_WIDGET_RESIZED 
+  public static final String EVENT_WIDGET_RESIZED
     = "org.eclipse.swt.events.widgetResized";
   public static final String EVENT_WIDGET_MOVED
     = "org.eclipse.swt.events.widgetMoved";
-  public static final String EVENT_WIDGET_ACTIVATED 
+  public static final String EVENT_WIDGET_ACTIVATED
     = "org.eclipse.swt.events.controlActivated";
-  public static final String EVENT_SHELL_ACTIVATED 
+  public static final String EVENT_SHELL_ACTIVATED
     = "org.eclipse.swt.events.shellActivated";
-  public static final String EVENT_TREE_EXPANDED 
+  public static final String EVENT_TREE_EXPANDED
     = "org.eclipse.swt.events.treeExpanded";
-  public static final String EVENT_TREE_COLLAPSED 
+  public static final String EVENT_TREE_COLLAPSED
     = "org.eclipse.swt.events.treeCollapsed";
   public static final String EVENT_MODIFY_TEXT
     = "org.eclipse.swt.events.modifyText";
@@ -49,23 +49,23 @@ public final class JSConst {
     = "org.eclipse.swt.events.menuHidden";
   public static final String EVENT_SET_DATA
     = "org.eclipse.swt.events.setData";
-  
-  // Parameter names that specify further event details 
-  public static final String EVENT_WIDGET_SELECTED_DETAIL 
+
+  // Parameter names that specify further event details
+  public static final String EVENT_WIDGET_SELECTED_DETAIL
     = "org.eclipse.swt.events.widgetSelected.detail";
   public static final String EVENT_WIDGET_SELECTED_ITEM
     = "org.eclipse.swt.events.widgetSelected.item";
   public static final String EVENT_SET_DATA_INDEX
     = "org.eclipse.swt.events.setData.index";
-  
-  /** 
-   * <p>Indicates that a shell was closed on the client side. The parameter 
+
+  /**
+   * <p>Indicates that a shell was closed on the client side. The parameter
    * value holds the id of the shell that was closed.</p> */
-  public static final String EVENT_SHELL_CLOSED 
+  public static final String EVENT_SHELL_CLOSED
     = "org.eclipse.swt.widgets.Shell_close";
-  
+
   // function pointers for client side event handling
-  public static final String JS_WIDGET_SELECTED 
+  public static final String JS_WIDGET_SELECTED
     = "org.eclipse.swt.EventUtil.widgetSelected";
   public static final String JS_WIDGET_RESIZED
     = "org.eclipse.swt.EventUtil.widgetResized";
@@ -73,13 +73,18 @@ public final class JSConst {
     = "org.eclipse.swt.EventUtil.widgetMoved";
   public static final String JS_SHELL_CLOSED
     = "org.eclipse.swt.EventUtil.shellClosed";
-  public static final String JS_TREE_SELECTED 
+  public static final String JS_TREE_SELECTED
     = "org.eclipse.swt.TreeUtil.widgetSelected";
-  public static final String JS_CONTEXT_MENU 
+  public static final String JS_CONTEXT_MENU
     = "org.eclipse.swt.MenuUtil.contextMenu";
-  
-  // keys of the Qooxdoo listeners, used to register the client side 
-  // eventhandlers 
+
+  // states that represent SWT style flags
+  public static final String JS_STYLE_FLAG_BORDER = "rwt_BORDER";
+  public static final String JS_STYLE_FLAG_FLAT = "rwt_FLAT";
+  public static final String JS_STYLE_FLAG_TOGGLE = "rwt_TOGGLE";
+
+  // keys of the Qooxdoo listeners, used to register the client side
+  // eventhandlers
   public static final String QX_EVENT_EXECUTE = "execute";
   public static final String QX_EVENT_BLUR = "blur";
   public static final String QX_EVENT_KEYDOWN = "keydown";
@@ -92,7 +97,7 @@ public final class JSConst {
   public static final String QX_EVENT_CONTEXTMENU = "contextmenu";
   public static final String QX_EVENT_CHANGE_SELECTED = "changeSelected";
   public static final String QX_EVENT_CHANGE_CHECKED = "changeChecked";
-  
+
   // field names
   public static final String QX_FIELD_LABEL = "label";
   public static final String QX_FIELD_ICON = "icon";
@@ -108,20 +113,24 @@ public final class JSConst {
   public static final String QX_FIELD_APPEARANCE = "appearance";
   public static final String QX_FIELD_Z_INDEX = "zIndex";
   public static final String QX_FIELD_TAB_INDEX = "tabIndex";
-  
+
   // constants
   public static final JSVar QX_CONST_VERTICAL_ORIENTATION
     = new JSVar( "qx.constant.Layout.ORIENTATION_VERTICAL" );
-  public static final JSVar QX_CONST_HORIZONTAL_ORIENTATION 
+  public static final JSVar QX_CONST_HORIZONTAL_ORIENTATION
     = new JSVar( "qx.constant.Layout.ORIENTATION_HORIZONTAL" );
-  
-  public static final JSVar QX_CONST_ALIGN_RIGHT 
+
+  public static final JSVar QX_CONST_ALIGN_RIGHT
     = new JSVar( "qx.constant.Layout.ALIGN_RIGHT" );
-  public static final JSVar QX_CONST_ALIGN_CENTER 
+  public static final JSVar QX_CONST_ALIGN_CENTER
     = new JSVar( "qx.constant.Layout.ALIGN_CENTER" );
-  public static final JSVar QX_CONST_ALIGN_LEFT 
+  public static final JSVar QX_CONST_ALIGN_LEFT
     = new JSVar( "qx.constant.Layout.ALIGN_LEFT" );
-  
+
+  // functions
+  public static final String QX_FUNC_ADD_STATE = "addState";
+  public static final String QX_FUNC_REMOVE_STATE = "removeState";
+
   private JSConst() {
     // prevent instantiation
   }
