@@ -10,7 +10,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
  
-qx.Class.define("qx.constant.Style", {
+qx.Class.define( "qx.constant.Style", {
 
   statics : {
     POSITION_ABSOLUTE       : "absolute",
@@ -20,6 +20,7 @@ qx.Class.define("qx.constant.Style", {
     CURSOR_WAIT             : "wait",
     CURSOR_PROGRESS         : "progress",
     CURSOR_DEFAULT          : "default",
+    CURSOR_HAND             : "pointer",
     OVERFLOW_AUTO           : "auto",
     OVERFLOW_HIDDEN         : "hidden",
     OVERFLOW_BOTH           : "scroll",
