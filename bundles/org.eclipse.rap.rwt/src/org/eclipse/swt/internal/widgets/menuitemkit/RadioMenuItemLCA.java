@@ -133,10 +133,10 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
   // Helping methods to control client-side RadioManager(s)
   
   private static MenuItem getFirstSiblingRadioItem( final MenuItem menuItem ) {
-    MenuItem result = null;
+    MenuItem result = menuItem;
     MenuItem[] siblingMenuItems = menuItem.getParent().getItems();
     int index = menuItem.getParent().indexOf( menuItem ) - 1;
-    while( index >= 0 && result == null ) {
+    while( index >= 0 && result == menuItem ) {
       if( ( siblingMenuItems[ index ].getStyle() & SWT.RADIO ) == 0 ) {
         result = siblingMenuItems[ index + 1 ];
       }

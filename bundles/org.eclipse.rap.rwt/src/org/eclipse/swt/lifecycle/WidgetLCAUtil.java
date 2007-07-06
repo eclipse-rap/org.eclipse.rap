@@ -294,12 +294,20 @@ public final class WidgetLCAUtil {
     throws IOException
   {
     if( WidgetLCAUtil.hasChanged( widget, javaProperty, image, null ) ) {
-      String imagePath = image == null ? "" : Image.getPath( image );
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( jsProperty, imagePath );
+      writeImage( widget, jsProperty, image );
     }
   }
 
+  public static void writeImage( final Widget widget,
+                                 final String jsProperty,
+                                 final Image image )
+    throws IOException
+  {
+    String imagePath = image == null ? null : Image.getPath( image );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.set( jsProperty, imagePath );
+  }
+  
   public static void writeFont( final Widget widget, final Font font )
     throws IOException
   {
