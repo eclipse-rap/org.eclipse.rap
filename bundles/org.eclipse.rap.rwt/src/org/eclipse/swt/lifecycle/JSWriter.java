@@ -219,12 +219,11 @@ public final class JSWriter {
   }
 
   public void reset( final String jsProperty ) throws IOException {
-    call( widget, getResetterName( jsProperty ), new Object[ 0 ] );
+    call( widget, getResetterName( jsProperty ), null );
   }
 
   public void reset( final String[] jsPropertyChain ) throws IOException {
-    Object[] args = new Object[ 0 ];
-    call( widget, createPropertyChain( jsPropertyChain, true ), args );
+    call( widget, createPropertyChain( jsPropertyChain, true ), null );
   }
 
   public void addListener( final String property,
