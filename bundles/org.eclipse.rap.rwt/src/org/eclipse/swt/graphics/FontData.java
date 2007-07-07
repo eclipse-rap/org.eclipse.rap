@@ -140,7 +140,7 @@ public final class FontData {
     }
     return result;
   }
-  
+
   public int hashCode() {
     return name.hashCode() ^ height ^ style;
   }

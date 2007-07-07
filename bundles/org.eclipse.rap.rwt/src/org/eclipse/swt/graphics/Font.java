@@ -22,13 +22,6 @@ public final class Font extends Resource {
   
   private static final Map fonts = new HashMap();
   
-  private final FontData[] fontData;
-  
-  private Font( final FontData data ) {
-    this.fontData = new FontData[] { data };
-  }
-  
-  
   /**
    * TODO [fappel]: comment
    */
@@ -57,14 +50,53 @@ public final class Font extends Resource {
     return getFont( data.getName(), data.getHeight(), data.getStyle() );
   }
 
+
+  private final FontData[] fontData;
+  
+  private Font( final FontData data ) {
+    this.fontData = new FontData[] { data };
+  }
+  
   /**
    * TODO [fappel]: comment
    */
   public FontData[] getFontData() {
-    return fontData;
+    FontData[] result = new FontData[ fontData.length ];
+    System.arraycopy( fontData, 0, result, 0, fontData.length );
+    return result;
   }
 
-  
+  /**
+   * Returns a string containing a concise, human-readable
+   * description of the receiver.
+   *
+   * @return a string representation of the receiver
+   */
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "Font {" );
+    if( fontData.length > 0 ) {
+      buffer.append( fontData[ 0 ].getName() );
+      buffer.append( "," );
+      buffer.append( fontData[ 0 ].getHeight() );
+      buffer.append( "," );
+      int style = fontData[ 0 ].getStyle();
+      String styleName;
+      if( ( style & SWT.BOLD ) != 0 && ( style & SWT.ITALIC ) != 0 ) {
+        styleName = "BOLD|ITALIC";
+      } else if( ( style & SWT.BOLD ) != 0 ) {
+        styleName = "BOLD";
+      } else if( ( style & SWT.ITALIC ) != 0 ) {
+        styleName = "ITALIC";
+      } else {
+        styleName = "NORMAL";
+      }
+      buffer.append( styleName );
+    }
+    buffer.append( "}" );
+    return buffer.toString();
+  }
+
   //////////////////
   // Helping methods
   

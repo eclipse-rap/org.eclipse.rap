@@ -36,6 +36,20 @@ public class Font_Test extends TestCase {
     assertSame( font.getFontData()[ 0 ], font.getFontData()[ 0 ] );
   }
   
+  public void testGetFontData() {
+    // Derive bold font from regular font 
+    Font regularFont = Font.getFont( "roman", 1, SWT.NORMAL );
+    FontData[] fontDatas = regularFont.getFontData();
+    fontDatas[ 0 ] = new FontData( fontDatas[ 0 ].getName(),
+                                   fontDatas[ 0 ].getHeight(),
+                                   fontDatas[ 0 ].getStyle() | SWT.BOLD );
+    Font boldFont = Font.getFont( fontDatas[ 0 ] );
+    // Ensure bold font is actually bold
+    assertEquals( boldFont.getFontData()[ 0 ].getStyle(), SWT.BOLD );
+    // Ensure that the font we derived from stays the same
+    assertEquals( regularFont.getFontData()[ 0 ].getStyle(), SWT.NORMAL );
+  }
+  
   public void testGetFontWithIllegalArguments() {
     try {
       Font.getFont( null, 1, SWT.NONE );

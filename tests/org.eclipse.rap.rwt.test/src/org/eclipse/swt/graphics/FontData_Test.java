@@ -42,4 +42,17 @@ public class FontData_Test extends TestCase {
     fontData3 = new FontData( "arial", 1, SWT.NORMAL );
     assertFalse( fontData1.equals( fontData3 ) );
   }
+  
+  public void testHashCode() {
+    FontData fontData1 = new FontData( "roman", 1, SWT.NORMAL );
+    FontData fontData2 = new FontData( "roman", 1, SWT.NORMAL );
+    assertEquals( fontData1.hashCode(), fontData2.hashCode() );
+    assertFalse( fontData1.hashCode() == new Object().hashCode() );
+    FontData fontData3 = new FontData( "roman", 1, SWT.BOLD );
+    assertFalse( fontData1.hashCode() == fontData3.hashCode() );
+    fontData3 = new FontData( "roman", 2, SWT.NORMAL );
+    assertFalse( fontData1.hashCode() ==fontData3.hashCode() );
+    fontData3 = new FontData( "arial", 1, SWT.NORMAL );
+    assertFalse( fontData1.hashCode() ==fontData3.hashCode() );
+  }
 }
