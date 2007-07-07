@@ -508,7 +508,7 @@ public class CoolBar extends Composite {
     int row = findItem( item ).y;
     if ( row == -1 )
       return;
-    Rectangle bounds = item.internalGetBounds();
+    // Rectangle bounds = item.internalGetBounds();
     removeItemFromRow( item, row, true );
 
     int index = 0;
@@ -541,7 +541,7 @@ public class CoolBar extends Composite {
     int newRowIndex = (items[oldRowIndex].length == 1) ? oldRowIndex
         : oldRowIndex + 1;
     removeItemFromRow( item, oldRowIndex, false );
-    Rectangle old = item.internalGetBounds();
+    // Rectangle old = item.internalGetBounds();
     // internalRedraw(old.x, old.y, CoolItem.MINIMUM_WIDTH, old.height);
     if ( newRowIndex == items.length ) {
       /* Create a new bottom row for the item. */
@@ -590,7 +590,7 @@ public class CoolBar extends Composite {
     item.setBounds( x, bounds.y, width, bounds.height );
     item.requestedWidth = width;
 
-    int damagedWidth = bounds.x - x + CoolItem.MINIMUM_WIDTH;
+    // int damagedWidth = bounds.x - x + CoolItem.MINIMUM_WIDTH;
     // if (damagedWidth > CoolItem.MINIMUM_WIDTH) {
     // internalRedraw(x, bounds.y, damagedWidth, bounds.height);
     // }
@@ -630,8 +630,8 @@ public class CoolBar extends Composite {
     left.setBounds( leftBounds.x, leftBounds.y, leftWidth, leftBounds.height );
     left.requestedWidth = leftWidth;
 
-    int damagedWidth = x - bounds.x + CoolItem.MINIMUM_WIDTH
-        + CoolItem.MARGIN_WIDTH;
+    // int damagedWidth = x - bounds.x + CoolItem.MINIMUM_WIDTH
+    //     + CoolItem.MARGIN_WIDTH;
     // if (x - bounds.x > 0) {
     // internalRedraw(bounds.x - CoolItem.MARGIN_WIDTH, bounds.y, damagedWidth,
     // bounds.height);
@@ -649,7 +649,7 @@ public class CoolBar extends Composite {
         return;
     }
     removeItemFromRow( item, oldRowIndex, false );
-    Rectangle old = item.internalGetBounds();
+    // Rectangle old = item.internalGetBounds();
     // internalRedraw(old.x, old.y, CoolItem.MINIMUM_WIDTH, old.height);
     int newRowIndex = Math.max( 0, oldRowIndex - 1 );
     if ( oldRowIndex == 0 ) {
