@@ -49,7 +49,7 @@ public class TabFolderLCA_Test extends TestCase {
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
 
     String displayId = DisplayUtil.getAdapter( display ).getId();
-    String item0Id = WidgetUtil.getId( item0 );
+    String folderId = WidgetUtil.getId( folder );
     String item1Id = WidgetUtil.getId( item1 );
 
     // Run life cycle once to reduce markup that is written for the actual 
@@ -62,8 +62,8 @@ public class TabFolderLCA_Test extends TestCase {
 
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( item0Id + ".checked", "false" );
-    Fixture.fakeRequestParam( item1Id + ".checked", "true" );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
     lifeCycle.execute();
     RWTFixture.fakeUIThread();
     assertEquals( 1, folder.getSelectionIndex() );
@@ -97,7 +97,6 @@ public class TabFolderLCA_Test extends TestCase {
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     
     String displayId = DisplayUtil.getAdapter( display ).getId();
-    String item0Id = WidgetUtil.getId( item0 );
     String item1Id = WidgetUtil.getId( item1 );
     String folderId = WidgetUtil.getId( folder );
     
@@ -112,8 +111,6 @@ public class TabFolderLCA_Test extends TestCase {
     events.clear();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( item0Id + ".checked", "false" );
-    Fixture.fakeRequestParam( item1Id + ".checked", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
     

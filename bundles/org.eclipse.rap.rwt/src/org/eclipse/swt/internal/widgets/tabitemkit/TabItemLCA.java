@@ -13,46 +13,36 @@ package org.eclipse.swt.internal.widgets.tabitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
 
 public class TabItemLCA extends AbstractWidgetLCA {
 
-  private static final String PROP_CHECKED = "checked";
+  private static final String PROP_SELECTED = "selected";
 
-  private final static JSListenerInfo JS_LISTENER_INFO
-    = new JSListenerInfo( "changeChecked",
-                          "org.eclipse.swt.TabUtil.tabSelected",
-                          JSListenerType.STATE_AND_ACTION );
+  private static final String JS_FUNC_TAB_SELECTED 
+    = "org.eclipse.swt.TabUtil.tabSelected";
+  private static final String QX_EVENT_CHANGE_CHECKED = "changeChecked";
 
 
   public void preserveValues( final Widget widget ) {
     TabItem item = ( TabItem )widget;
     ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_CHECKED, Boolean.valueOf( isChecked( item ) ) );
-    // preserve the listener state of the parent tabfolder here, since the
-    // javascript handling is added to the clientside tab buttons and therefore
-    // the jswriter will check the preserved state of the tabitem...
-    TabFolder folder = item.getParent();
-    boolean hasListeners = SelectionEvent.hasListener( folder );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( hasListeners ) );
+    adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( item ) ) );
   }
   
   public void readData( final Widget widget ) {
-    String value = WidgetLCAUtil.readPropertyValue( widget, "checked" );
-    if( Boolean.valueOf( value ).booleanValue() ) {
-      final TabItem item = ( TabItem )widget;
-      final TabFolder folder = item.getParent();
-      // TODO [rh] same hack as in CTabFolderLCA#readData
-      // Read selected item and process selection event
+    // TODO [rh] same hack as in CTabFolderLCA#readData
+    // Read selected item and process selection event
+    final TabItem item = ( TabItem )widget;
+    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_WIDGET_SELECTED_ITEM ) ) 
+    {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
+          TabFolder folder = item.getParent();
           folder.setSelection( item );
           ControlLCAUtil.processSelection( folder, item, false );
         }
@@ -68,22 +58,20 @@ public class TabItemLCA extends AbstractWidgetLCA {
       WidgetUtil.getId( tabItem.getParent() )
     };
     writer.callStatic( "org.eclipse.swt.TabUtil.createTabItem", args );
+    writer.addListener( QX_EVENT_CHANGE_CHECKED, JS_FUNC_TAB_SELECTED );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     setJSParent( tabItem );
-    JSWriter writer = JSWriter.getWriterFor( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
     writeSelection( tabItem );
-    writer.updateListener( JS_LISTENER_INFO, 
-                           Props.SELECTION_LISTENERS, 
-                           SelectionEvent.hasListener( tabItem.getParent() ) );
   }
   
   public void renderDispose( final Widget widget ) throws IOException {
     // TODO [rh] preliminary: find out how to properly dispose of a TabItem
     JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.removeListener( QX_EVENT_CHANGE_CHECKED, JS_FUNC_TAB_SELECTED );
     writer.dispose();
   }
 
@@ -100,11 +88,11 @@ public class TabItemLCA extends AbstractWidgetLCA {
   
   private void writeSelection( final TabItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
-    Boolean newValue = Boolean.valueOf( isChecked( item ) );
-    writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
+    Boolean newValue = Boolean.valueOf( isSelected( item ) );
+    writer.set( PROP_SELECTED, "checked", newValue, Boolean.FALSE );
   }
   
-  private boolean isChecked( final TabItem tabItem ) {
+  private boolean isSelected( final TabItem tabItem ) {
     TabFolder parent = tabItem.getParent();
     int selectionIndex = parent.getSelectionIndex();
     return selectionIndex != -1 && parent.getItem( selectionIndex ) == tabItem;

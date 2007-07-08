@@ -92,25 +92,14 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
     },
 
     tabSelected : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var req = org.eclipse.swt.Request.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        req.addParameter( id + ".checked", evt.getTarget().getChecked() );
-      }
-    },
-
-    tabSelectedAction : function( evt ) {
-      org.eclipse.swt.TabUtil.tabSelected( evt );
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
-          && evt.getTarget().getChecked() ) 
-      {
+      var tab = evt.getTarget();
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && tab.getChecked() ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         // TODO [rst] Add item parameter in doWidgetSelected
-        var itemId = widgetManager.findIdByWidget( evt.getTarget() );
+        var itemId = widgetManager.findIdByWidget( tab );
         req.addParameter( "org.eclipse.swt.events.widgetSelected.item", 
                           itemId );
-        var id = widgetManager.findIdByWidget( evt.getTarget().tabView );
+        var id = widgetManager.findIdByWidget( tab.tabView );
         org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
       }
     }

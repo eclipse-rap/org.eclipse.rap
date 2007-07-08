@@ -612,39 +612,38 @@ public class JSWriter_Test extends TestCase {
   {
     // set up widget hierarchy for testing
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
+    Button checkBox = new Button( shell, SWT.CHECK );
     // Test initial rendering with no action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
     RWTFixture.markInitialized( display );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    JSWriter writer = JSWriter.getWriterFor( item );
+    JSWriter writer = JSWriter.getWriterFor( checkBox );
     JSListenerInfo jsListenerInfo
       = new JSListenerInfo( "type",
                             "event",
                             JSListenerType.STATE_AND_ACTION );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w4\" );"
+      + "var w = wm.findWidgetById( \"w3\" );"
       + "w.addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Test rendering with action listener added
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( checkBox );
     adapter.setInitialized( true );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     SelectionListener selectionListener = new SelectionAdapter() {};
-    SelectionEvent.addListener( folder, selectionListener );
+    SelectionEvent.addListener( checkBox, selectionListener );
     Fixture.fakeResponseWriter();
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     expected =   "w.removeEventListener( \"type\", event );"
                + "w.addEventListener( \"type\", eventAction );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -653,20 +652,20 @@ public class JSWriter_Test extends TestCase {
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     SelectionListener selectionListener2 = new SelectionAdapter() {};
-    SelectionEvent.addListener( folder, selectionListener2 );
+    SelectionEvent.addListener( checkBox, selectionListener2 );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     assertEquals( "", Fixture.getAllMarkup() );
     // Test removing all the above added listener
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    SelectionEvent.removeListener( folder, selectionListener );
-    SelectionEvent.removeListener( folder, selectionListener2 );
+    SelectionEvent.removeListener( checkBox, selectionListener );
+    SelectionEvent.removeListener( checkBox, selectionListener2 );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     expected = "w.removeEventListener( \"type\", eventAction );"
              + "w.addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -677,9 +676,8 @@ public class JSWriter_Test extends TestCase {
   {
     // set up widget hierarchy for testing
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
+    Button checkBox = new Button( shell, SWT.CHECK );
     // Test initial rendering with action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
     RWTFixture.markInitialized( display );
@@ -687,41 +685,41 @@ public class JSWriter_Test extends TestCase {
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     SelectionListener selectionListener = new SelectionAdapter() {};
-    SelectionEvent.addListener( folder, selectionListener );
-    JSWriter writer = JSWriter.getWriterFor( item );
+    SelectionEvent.addListener( checkBox, selectionListener );
+    JSWriter writer = JSWriter.getWriterFor( checkBox );
     JSListenerInfo jsListenerInfo
       = new JSListenerInfo( "type",
                             "event",
                             JSListenerType.STATE_AND_ACTION );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w4\" );"
+      + "var w = wm.findWidgetById( \"w3\" );"
       + "w.addEventListener( \"type\", eventAction );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // Test adding a further listener: leads to no markup
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( checkBox );
     adapter.setInitialized( true );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     SelectionListener selectionListener2 = new SelectionAdapter() {};
-    SelectionEvent.addListener( folder, selectionListener2 );
+    SelectionEvent.addListener( checkBox, selectionListener2 );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     assertEquals( "", Fixture.getAllMarkup() );
     // Test removing all the above added listener
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    SelectionEvent.removeListener( folder, selectionListener );
-    SelectionEvent.removeListener( folder, selectionListener2 );
+    SelectionEvent.removeListener( checkBox, selectionListener );
+    SelectionEvent.removeListener( checkBox, selectionListener2 );
     writer.updateListener( jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     expected = "w.removeEventListener( \"type\", eventAction );"
              + "w.addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -730,7 +728,7 @@ public class JSWriter_Test extends TestCase {
   public void testUpdateListenerOnPropertyAction() throws Exception {
     // set up widget hierarchy for testing
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE);
+    Composite shell = new Shell( display, SWT.NONE);
     Button button = new Button( shell, SWT.NONE );
 
     // Test initial rendering with no listeners
@@ -818,9 +816,8 @@ public class JSWriter_Test extends TestCase {
   public void testUpdateListenerOnPropertyStateAndAction() throws IOException {
     // set up widget hierarchy for testing
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
-    TabFolder folder = new TabFolder( shell, SWT.NONE );
-    TabItem item = new TabItem( folder, SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
+    Button checkBox = new Button( shell, SWT.CHECK );
 
     // Test initial rendering with no action listeners
     Fixture.fakeBrowser( new Ie6( true, true ) );
@@ -828,31 +825,31 @@ public class JSWriter_Test extends TestCase {
     RWTFixture.markInitialized( display );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    JSWriter writer = JSWriter.getWriterFor( item );
+    JSWriter writer = JSWriter.getWriterFor( checkBox );
     JSListenerInfo jsListenerInfo
       = new JSListenerInfo( "type", "event", JSListenerType.STATE_AND_ACTION );
     writer.updateListener( PROPERTY_NAME,
                            jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w4\" );"
+        + "var w = wm.findWidgetById( \"w3\" );"
         + "w.getPropertyName().addEventListener( \"type\", event );";
     assertEquals( expected, Fixture.getAllMarkup() );
 
     // Test rendering with action listener added
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( checkBox );
     adapter.setInitialized( true );
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     SelectionListener selectionListener = new SelectionAdapter() {};
-    SelectionEvent.addListener( folder, selectionListener );
+    SelectionEvent.addListener( checkBox, selectionListener );
     Fixture.fakeResponseWriter();
     writer.updateListener( PROPERTY_NAME,
                            jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     expected
       = "w.getPropertyName().removeEventListener( \"type\", event );"
       + "w.getPropertyName().addEventListener( \"type\", eventAction );";
@@ -863,23 +860,23 @@ public class JSWriter_Test extends TestCase {
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     SelectionListener selectionListener2 = new SelectionAdapter() {};
-    SelectionEvent.addListener( folder, selectionListener2 );
+    SelectionEvent.addListener( checkBox, selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
                            jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     assertEquals( "", Fixture.getAllMarkup() );
 
     // Test removing all the above added listener
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
-    SelectionEvent.removeListener( folder, selectionListener );
-    SelectionEvent.removeListener( folder, selectionListener2 );
+    SelectionEvent.removeListener( checkBox, selectionListener );
+    SelectionEvent.removeListener( checkBox, selectionListener2 );
     writer.updateListener( PROPERTY_NAME,
                            jsListenerInfo,
                            Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( folder ) );
+                           SelectionEvent.hasListener( checkBox ) );
     expected
       = "w.getPropertyName().removeEventListener( \"type\", eventAction );"
       + "w.getPropertyName().addEventListener( \"type\", event );";
