@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -22,10 +22,15 @@ import org.eclipse.swt.widgets.Widget;
 
 public class BrowserLCA extends AbstractWidgetLCA {
 
+  private static final String QX_TYPE = "qx.ui.embed.Iframe";
+
   private static final String QX_FIELD_SOURCE = "source";
-  
+
+  private static final String TYPE_POOL_ID = BrowserLCA.class.getName();
+
   private static final String PROP_URL = "url";
   private static final String PROP_TEXT = "text";
+
 
   public void preserveValues( final Widget widget ) {
     Browser browser = ( Browser )widget;
@@ -37,13 +42,13 @@ public class BrowserLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
   }
-  
+
   public void renderInitialization( final Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
     JSWriter writer = JSWriter.getWriterFor( browser );
-    writer.newWidget( "qx.ui.embed.Iframe" );
+    writer.newWidget( QX_TYPE );
     writer.set( JSConst.QX_FIELD_APPEARANCE , "browser" );
-    // TODO [rh] preliminary workaround to make Browser accessible by tab 
+    // TODO [rh] preliminary workaround to make Browser accessible by tab
     writer.set( JSConst.QX_FIELD_TAB_INDEX, 1 );
     // TODO [rh] nice-to-have: prevent popup menu from showing, disable widget
     ControlLCAUtil.writeStyleFlags( widget );
@@ -57,8 +62,8 @@ public class BrowserLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( browser );
     String text = getText( browser );
     String url = browser.getUrl();
-    if(    WidgetLCAUtil.hasChanged( browser, PROP_TEXT, text, null ) 
-        || WidgetLCAUtil.hasChanged( browser, PROP_URL, url, null ) ) 
+    if(    WidgetLCAUtil.hasChanged( browser, PROP_TEXT, text, null )
+        || WidgetLCAUtil.hasChanged( browser, PROP_URL, url, null ) )
     {
       if( text != null ) {
         String textUrl = registerHtml( text );
@@ -75,12 +80,17 @@ public class BrowserLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-  
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( QX_FIELD_SOURCE );
+    ControlLCAUtil.resetStyleFlags();
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
-    return null;
+    return TYPE_POOL_ID;
   }
 
   private static String registerHtml( final String html ) throws IOException {
@@ -105,7 +115,7 @@ public class BrowserLCA extends AbstractWidgetLCA {
     result.append( ".html" );
     return result.toString();
   }
-  
+
   private static String getText( final Browser browser ) {
     Object adapter = browser.getAdapter( IBrowserAdapter.class );
     IBrowserAdapter browserAdapter = ( IBrowserAdapter )adapter;
