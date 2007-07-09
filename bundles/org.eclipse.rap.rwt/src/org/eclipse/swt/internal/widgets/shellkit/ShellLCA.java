@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -25,7 +25,7 @@ import com.w4t.engine.service.ContextProvider;
 
 
 public final class ShellLCA extends AbstractWidgetLCA {
-  
+
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
   private static final String PROP_ACTIVE_CONTROL = "activeControl";
@@ -43,7 +43,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_MODE, getMode( shell ) );
   }
 
-  public void readData( final Widget widget ) { 
+  public void readData( final Widget widget ) {
     Shell shell = ( Shell )widget;
     ControlLCAUtil.readBounds( shell );
     if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_CLOSED ) ) {
@@ -87,14 +87,14 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
     ControlLCAUtil.writeResizeNotificator( widget );
     ControlLCAUtil.writeMoveNotificator( widget );
-    writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY, 
+    writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY,
                         JSConst.JS_SHELL_CLOSED );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
+    // TODO [rst] Do not render bounds if shell is maximized
     ControlLCAUtil.writeChanges( shell );
-    writeMaximize( shell );
     writeImage( shell );
     writeText( shell );
     // Important: Order matters, writing setActive() before open() leads to
@@ -110,24 +110,17 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.call( "close", null );
     writer.dispose();
   }
-  
+
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
     return null;
   }
-  
-  
+
+
   //////////////////
   // Helping methods
-  
-  private static void writeMaximize( final Shell shell ) throws IOException {
-    if( shell.getBounds().equals( shell.getDisplay().getBounds() ) ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.call( "maximize", new Object[ 0 ] );
-    }
-  }
 
   private static void writeText( final Shell shell ) throws IOException {
     String text = shell.getText();
@@ -152,10 +145,10 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   /////////////////////////////////////////////
   // Methods to read and write the active shell
-  
+
   private static void writeActiveShell( final Shell shell ) throws IOException {
     Shell activeShell = shell.getDisplay().getActiveShell();
-    boolean hasChanged 
+    boolean hasChanged
       = WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
     if( shell == activeShell && hasChanged ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
@@ -173,7 +166,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       event = new ActivateEvent( shell, ActivateEvent.ACTIVATED );
       event.processEvent();
       ShellEvent shellEvent;
-      shellEvent 
+      shellEvent
         = new ShellEvent( lastActiveShell, ShellEvent.SHELL_DEACTIVATED );
       shellEvent.processEvent();
       shellEvent = new ShellEvent( shell, ShellEvent.SHELL_ACTIVATED );
@@ -196,8 +189,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   /////////////////////////////////////////////////////
   // Methods to handle activeControl and ActivateEvents
-  
-  private static void writeActiveControl( final Shell shell ) throws IOException 
+
+  private static void writeActiveControl( final Shell shell ) throws IOException
   {
     Control activeControl = getActiveControl( shell );
     String prop = PROP_ACTIVE_CONTROL;
@@ -206,7 +199,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       writer.set( "activeControl", new Object[] { activeControl } );
     }
   }
-  
+
   // TODO [rh] is this safe for multiple shells?
   private static void processActivate( final Shell shell ) {
     HttpServletRequest request = ContextProvider.getRequest();
@@ -217,7 +210,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
         setActiveControl( shell, widget );
       }
     } else {
-      String activeControlId 
+      String activeControlId
         = WidgetLCAUtil.readPropertyValue( shell, "activeControl" );
       Widget widget = WidgetUtil.find( shell, activeControlId );
       if( widget != null ) {
@@ -233,13 +226,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
     return activeControl;
   }
 
-  private static void setActiveControl( final Shell shell, final Widget widget ) 
+  private static void setActiveControl( final Shell shell, final Widget widget )
   {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     shellAdapter.setActiveControl( ( Control )widget );
   }
-  
+
   private static void writeImage( final Shell shell ) throws IOException {
     if( showImage( shell ) ) {
       Image image = shell.getImage();
@@ -249,11 +242,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
       }
     }
   }
-  
+
   private static boolean showImage( final Shell shell ) {
     return ( shell.getStyle() & ( SWT.MIN | SWT.MAX | SWT.CLOSE ) ) != 0;
   }
-  
+
   private static void writeMode( final Shell shell ) throws IOException {
     Object defValue = null;
     Object newValue = getMode( shell );
@@ -262,7 +255,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       writer.set( "mode", newValue );
     }
   }
-  
+
   private static String getMode( final Shell shell ) {
     String result = null;
     if( shell.getMinimized() ) {

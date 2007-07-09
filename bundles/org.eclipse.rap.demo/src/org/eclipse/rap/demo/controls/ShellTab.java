@@ -108,6 +108,34 @@ public class ShellTab extends ExampleTab {
       }
     } );
 
+    Button MaximizeAllButton = new Button( top, SWT.PUSH );
+    MaximizeAllButton.setText( "Maximize All Shells" );
+    MaximizeAllButton.setLayoutData( new RowData( 150, 25 ) );
+    MaximizeAllButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        setShellsMaximized( true );
+      }
+    } );
+
+    Button minimizeAllButton = new Button( top, SWT.PUSH );
+    minimizeAllButton.setText( "Minimize All Shells" );
+    minimizeAllButton.setLayoutData( new RowData( 150, 25 ) );
+    minimizeAllButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        setShellsMinimized( true );
+      }
+    } );
+
+    Button restoreAllButton = new Button( top, SWT.PUSH );
+    restoreAllButton.setText( "Restore All Shells" );
+    restoreAllButton.setLayoutData( new RowData( 150, 25 ) );
+    restoreAllButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        setShellsMinimized( false );
+        setShellsMaximized( false );
+      }
+    } );
+
     Button enableAllButton = new Button( top, SWT.PUSH );
     enableAllButton.setText( "Enable All Shells" );
     enableAllButton.setLayoutData( new RowData( 150, 25 ) );
@@ -321,6 +349,22 @@ public class ShellTab extends ExampleTab {
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();
       shell.setEnabled( enabled );
+    }
+  }
+
+  private void setShellsMinimized( final boolean minimized ) {
+    Iterator iter = shells.iterator();
+    while( iter.hasNext() ) {
+      Shell shell = ( Shell )iter.next();
+      shell.setMinimized( minimized );
+    }
+  }
+
+  private void setShellsMaximized( final boolean maximized ) {
+    Iterator iter = shells.iterator();
+    while( iter.hasNext() ) {
+      Shell shell = ( Shell )iter.next();
+      shell.setMaximized( maximized );
     }
   }
 
