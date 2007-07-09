@@ -11,7 +11,7 @@
 
 // TODO [rst] This file is now read and substituted by the ThemeManager and may
 //            be renamed in the future.
-
+borders = {
 // BEGIN TEMPLATE (do not remove this line)
 
     "black" :
@@ -124,4 +124,37 @@
     "table.column.hover.border" : {
       width : [ 0, 1, 2, 0 ],
       color : [ "widget.selection-marker", "widget.thinborder" ]
+    },
+    
+    // -- separator --
+    
+    "separator.shadowin.horizontal.border" : {
+      widthTop : 1,
+      widthBottom : 1,
+      colorTop : "widget.lightshadow",
+      colorBottom : "widget.highlight"
+    },
+    
+    "separator.shadowin.vertical.border" : {
+      widthLeft : 1,
+      widthRight : 1,
+      colorLeft : "widget.lightshadow",
+      colorRight : "widget.highlight"
+    },
+    
+    "separator.shadowout.horizontal.border" : {
+      widthTop : 1,
+      widthBottom : 1,
+      colorTop : "widget.highlight",
+      colorBottom : "widget.shadow"
+    },
+    
+    "separator.shadowout.vertical.border" : {
+      widthLeft : 1,
+      widthRight : 1,
+      colorLeft : "widget.highlight",
+      colorRight : "widget.shadow"
     }
+
+// END TEMPLATE
+};

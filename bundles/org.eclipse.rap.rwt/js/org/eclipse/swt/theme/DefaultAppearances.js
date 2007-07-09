@@ -1471,16 +1471,35 @@ appearances = {
 
     // ------------------------------------------------------------------------
     // Label (style SWT.SEPARATOR)
-    
+
     "separator" : {
       style : function( states ) {
         return {
-          textColor : states.disabled ? "widget.graytext" : "undefined",
+          horizontalChildrenAlign : "center",
+          verticalChildrenAlign : "middle",
           border : states.rwt_BORDER ? "thinInset" : "undefined"
         }
       }
     },
-    
+
+    "separator-line" : {
+      style : function( states ) {
+        var result = {
+          width : states.vertical ? "auto" : "100%",
+          height : states.vertical ? "100%" : "auto"
+        };
+        var orient = states.vertical ? "vertical" : "horizontal";
+        if( states.rwt_SHADOW_IN ) {
+          result.border = "separator.shadowin." + orient + ".border";
+        } else if( states.rwt_SHADOW_OUT ) {
+          result.border = "separator.shadowout." + orient + ".border";
+        } else {
+          result.border = "undefined";
+        }
+        return result;
+      }
+    },
+
     // ------------------------------------------------------------------------
     // Link
     

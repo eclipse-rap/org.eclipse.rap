@@ -14,15 +14,19 @@ package org.eclipse.swt.internal.widgets.labelkit;
 import java.io.IOException;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.lifecycle.ControlLCAUtil;
-import org.eclipse.swt.lifecycle.JSWriter;
+import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Widget;
 
 
 public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Separator";
+  private static final String JS_FUNC_ADD_LINE_STYLE = "addLineStyle";
+  private static final String JS_FUNC_REMOVE_LINE_STYLE = "removeLineStyle";
+  private static final Object[] PARAM_SHADOW_IN
+    = new Object[] { JSConst.JS_STYLE_FLAG_SHADOW_IN };
+  private static final Object[] PARAM_SHADOW_OUT
+    = new Object[] { JSConst.JS_STYLE_FLAG_SHADOW_OUT };
   static final String TYPE_POOL_ID = SeparatorLabelLCA.class.getName();
 
   void preserveValues( final Label label ) {
@@ -34,9 +38,9 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
-    Object[] args = new Object[] { getStyle( label ) };
-    writer.newWidget( QX_TYPE, args );
+    writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( label );
+    writeStyle( label );
   }
 
   void renderChanges( final Label label ) throws IOException {
@@ -48,30 +52,31 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
     writer.dispose();
   }
 
-  private static String getStyle( final Widget widget ) {
-    StringBuffer result = new StringBuffer();
-    int style = widget.getStyle();
-    if( ( style & SWT.HORIZONTAL ) != 0 ) {
-      result.append( "HORIZONTAL|" );
-    } else {
-      result.append( "VERTICAL|" );
-    }
-    String shadow = "SHADOW_OUT";
-    if( ( style & SWT.SHADOW_IN ) != 0 ) {
-      shadow = "SHADOW_IN|";
-    } else if( ( style & SWT.SHADOW_NONE ) != 0 ) {
-      shadow = "SHADOW_NONE|";
-    }
-    result.append( shadow );
-    return result.toString();
-  }
-
   void createResetHandlerCalls( final String typePoolId ) throws IOException {
     ControlLCAUtil.resetChanges();
     ControlLCAUtil.resetStyleFlags();
+    resetStyle();
   }
 
   String getTypePoolId( final Label label ) throws IOException {
     return TYPE_POOL_ID;
+  }
+
+  private static void writeStyle( final Label label ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( label );
+    int style = label.getStyle();
+    String orient = ( style & SWT.VERTICAL ) != 0 ? "vertical" : "horizontal";
+    writer.set( JSConst.QX_FIELD_ORIENTATION, orient );
+    if( ( style & SWT.SHADOW_IN ) != 0 ) {
+      writer.call( JS_FUNC_ADD_LINE_STYLE, PARAM_SHADOW_IN );
+    } else if( ( style & SWT.SHADOW_OUT ) != 0 ) {
+      writer.call( JS_FUNC_ADD_LINE_STYLE, PARAM_SHADOW_OUT );
+    }
+  }
+
+  private static void resetStyle() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.call( JS_FUNC_REMOVE_LINE_STYLE, PARAM_SHADOW_IN );
+    writer.call( JS_FUNC_REMOVE_LINE_STYLE, PARAM_SHADOW_OUT );
   }
 }
