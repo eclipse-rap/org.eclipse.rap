@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -39,7 +39,7 @@ public class Label extends Control {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -90,7 +90,7 @@ public class Label extends Control {
    * '&amp;' can be escaped by doubling it in the string, causing
    * a single '&amp;' to be displayed.
    * </p>
-   * 
+   *
    * @param string the new text
    *
    * @exception IllegalArgumentException <ul>
@@ -128,7 +128,7 @@ public class Label extends Control {
     checkWidget();
     return text;
   }
-  
+
   /**
    * Sets the receiver's image to the argument, which may be
    * null indicating that no image should be displayed.
@@ -136,7 +136,7 @@ public class Label extends Control {
    * @param image the image to display on the receiver (may be null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -144,7 +144,7 @@ public class Label extends Control {
    * </ul>
    */
   // TODO [rst] Clarify or remove this comment:
-  // TODO: The LCA does not yet handle images. So, setting an image currently 
+  // TODO: The LCA does not yet handle images. So, setting an image currently
   public void setImage( final Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
@@ -152,7 +152,7 @@ public class Label extends Control {
       text = "";
     }
   }
-  
+
   /**
    * Returns the receiver's image if it has one, or null
    * if it does not.
@@ -175,7 +175,7 @@ public class Label extends Control {
    * or <code>CENTER</code>.  If the receiver is a <code>SEPARATOR</code>
    * label, the argument is ignored and the alignment is not changed.
    *
-   * @param alignment the new alignment 
+   * @param alignment the new alignment
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -184,8 +184,8 @@ public class Label extends Control {
    */
   public void setAlignment( final int alignment ) {
     checkWidget();
-    if(    ( style & SWT.SEPARATOR ) == 0 
-        && ( alignment & ( SWT.LEFT | SWT.RIGHT | SWT.CENTER ) ) != 0 ) 
+    if(    ( style & SWT.SEPARATOR ) == 0
+        && ( alignment & ( SWT.LEFT | SWT.RIGHT | SWT.CENTER ) ) != 0 )
     {
       style &= ~( SWT.LEFT | SWT.RIGHT | SWT.CENTER );
       style |= alignment & ( SWT.LEFT | SWT.RIGHT | SWT.CENTER );
@@ -196,10 +196,10 @@ public class Label extends Control {
    * Returns a value which describes the position of the
    * text or image in the receiver. The value will be one of
    * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code>
-   * unless the receiver is a <code>SEPARATOR</code> label, in 
+   * unless the receiver is a <code>SEPARATOR</code> label, in
    * which case, <code>NONE</code> is returned.
    *
-   * @return the alignment 
+   * @return the alignment
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -222,8 +222,11 @@ public class Label extends Control {
     }
     return result;
   }
-  
-  public Point computeSize( int wHint, int hHint, boolean changed ) {
+
+  public Point computeSize( final int wHint,
+                            final int hHint,
+                            final boolean changed )
+  {
     checkWidget();
     int width = 0, height = 0, border = getBorderWidth();
     if( ( style & SWT.SEPARATOR ) != 0 ) {
@@ -258,25 +261,25 @@ public class Label extends Control {
     height += border * 2;
     return new Point( width, height );
   }
-  
+
   String getNameText() {
     return getText();
   }
 
   //////////////////
   // Helping methods
-  
+
   private static int checkStyle( final int style ) {
     int result = style;
     result |= SWT.NO_FOCUS;
     if( ( style & SWT.SEPARATOR ) != 0 ) {
       result = checkBits( result, SWT.VERTICAL, SWT.HORIZONTAL, 0, 0, 0, 0 );
-      result = checkBits ( result, 
-                           SWT.SHADOW_OUT, 
-                           SWT.SHADOW_IN, 
-                           SWT.SHADOW_NONE, 
-                           0, 
-                           0, 
+      result = checkBits ( result,
+                           SWT.SHADOW_OUT,
+                           SWT.SHADOW_IN,
+                           SWT.SHADOW_NONE,
+                           0,
+                           0,
                            0 );
     }
     result = checkBits( result, SWT.LEFT, SWT.CENTER, SWT.RIGHT, 0, 0, 0 );

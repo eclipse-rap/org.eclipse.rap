@@ -40,7 +40,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   private static final String JS_FUNC_LABEL_UTIL_SET_TEXT
     = "org.eclipse.swt.LabelUtil.setText";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
-  private static final Object[] PARAM_NULL = new Object[] { null };
+//  private static final Object[] PARAM_NULL = new Object[] { null };
 
   void preserveValues( final Label label ) {
     ControlLCAUtil.preserveValues( label );
@@ -62,10 +62,6 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     writer.callStatic( "org.eclipse.swt.LabelUtil.initialize", args );
     Object[] argsWrap = { label, wrap };
     writer.callStatic( "org.eclipse.swt.LabelUtil.setWrap", argsWrap );
-
-    // TODO [fappel]: Workaround: icon reset does not work with labels and
-    //                IE. Because of this set icon explicitly to null.
-    writer.call( "setIcon", PARAM_NULL );
   }
 
   void renderChanges( final Label label ) throws IOException {
@@ -83,6 +79,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   void createResetHandlerCalls( final String typePoolId ) throws IOException {
     resetAlignment();
     resetText();
+    resetImage();
     ControlLCAUtil.resetChanges();
     ControlLCAUtil.resetStyleFlags();
   }
@@ -109,6 +106,8 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static void resetText() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
+//    TODO [rst] Calling resetLabel throws JS error in IE
+//    writer.reset( "label" );
     writer.set( "label", "" );
   }
 
@@ -116,6 +115,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     Image image = label.getImage();
     if( WidgetLCAUtil.hasChanged( label, Props.IMAGE, image, null ) )
     {
+      JSWriter writer = JSWriter.getWriterFor( label );
       String imagePath;
       if( image == null ) {
         imagePath = null;
@@ -123,10 +123,16 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
         // TODO passing image bounds to qooxdoo can speed up rendering
         imagePath = Image.getPath( image );
       }
-      JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{ label, imagePath };
       writer.callStatic( JS_FUNC_LABEL_UTIL_SET_IMAGE, args );
     }
+  }
+
+  private static void resetImage() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+//    TODO [rst] Both, calling setIcon( "" ) and resetIcon throws JS error in IE
+//    writer.reset( "icon" );
+//    writer.set( "icon", "" );
   }
 
   private static void writeAlignment( final Label label ) throws IOException {

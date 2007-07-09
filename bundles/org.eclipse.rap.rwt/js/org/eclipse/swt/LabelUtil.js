@@ -49,32 +49,40 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     },
     
     setText : function( widget, text ) {
-      widget.setLabel( text );
-      widget.setShow( org.eclipse.swt.LabelUtil.SHOW_LABEL );
+      if ( text != null ) {
+        widget.setLabel( text );
+      } else {
+        widget.resetLabel();
+      }
+      org.eclipse.swt.LabelUtil._showText( widget );
     },
-
+    
     setImage : function( widget, imagePath ) {
-      widget.setIcon( imagePath );
-      // TODO [rst] could speed up rendering if available on the server side
-      // widget.setIconWidth();
-      // widget.setIconHeight();
-      if( imagePath != null ) {
-        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_ICON );
+      if( imagePath ) {
+        widget.setIcon( imagePath );
+        org.eclipse.swt.LabelUtil._showImage( widget );
       } else {
-        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_LABEL );
+        widget.resetIcon();
+        org.eclipse.swt.LabelUtil._showText( widget );
       }
     },
-
-    // TODO [rh] workaround for weird getLabelObject behaviour
+    
+    _showText : function( widget ) {
+        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_LABEL );
+        // TODO [rst] Workaround for recycled Atoms which do not clear their
+        //            text label
+        widget.getLabelObject().setVisibility( true );
+    },
+    
+    _showImage : function( widget ) {
+        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_ICON );
+        // TODO [rst] Workaround for recycled Atoms which do not clear their
+        //            text label
+        widget.getLabelObject().setVisibility( false );
+    },
+    
     setAlignment : function( widget, align ) {
-      if( widget.getLabelObject() != null ) {
-        widget.getLabelObject().setTextAlign( align );
-      } else {
-        var oldLabel = widget.getLabel();
-        widget.setLabel( "(empty)" );
-        widget.getLabelObject().setTextAlign( align );
-        widget.setLabel( oldLabel );
-      }
+      widget.getLabelObject().setTextAlign( align );
       widget.setHorizontalChildrenAlign( align );
     }
   }
