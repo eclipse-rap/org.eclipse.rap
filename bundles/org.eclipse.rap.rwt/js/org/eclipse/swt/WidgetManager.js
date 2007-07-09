@@ -29,9 +29,12 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     // this field is needed as Opera has some problems with
     // accessing local variables in eval expressions.
     this._current = null;
+    
+    this._fontPool = new Object();
+    this._tooltipPool = new Array();
   },
 
-  statics : {
+  statics : {    
     _onAppearFocus : function( evt ) {
       var widget = this;
       widget.focus();
@@ -95,10 +98,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
     
     registerResetHandler : function( typePoolId, handler ) {
-      var typePool = new Object();
-      typePool.elements = new Array();
-      typePool.handler = handler;
-      this._widgetPool[ typePoolId ] = typePool;
+      this._createWidgetPool( typePoolId, handler );
     },
     
   	newWidget : function( widgetId, parentId, isControl, typePoolId, type ) {
@@ -256,20 +256,43 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
 //      }
     },
 
-    // TODO [rh] setting the font (for foreground color applies the same) does not
-    //      work (is ignored) for an Atom that was created within the same
-    //      JavaScript response (see note below)
+    /**
+     * Creates a new caching pool for widgets with the given pooling id.
+     */
+    _createWidgetPool : function( typePoolId, resetHandler ) {
+      var typePool = new Object();
+      typePool.elements = new Array();
+      typePool.handler = resetHandler;
+      this._widgetPool[ typePoolId ] = typePool;        
+    },
+
+    // ========================================================================
+    // FONT HANDLING
+
     setFont : function( widget, name, size, bold, italic ) {
       if( widget.setFont ) { // test if font property is supported
-        var font = new qx.renderer.font.Font( size, name );
-        font.setBold( bold );
-        font.setItalic( italic );
+        var font = this._createFont( name, size, bold, italic );
         widget.setFont( font );
       } else {
         this.debug( widget.classname + " does not support fonts" );
       }
     },
-    
+
+    _createFont : function( name, size, bold, italic ) {
+      var id = name + size + bold + italic;
+      var font = this._fontPool[ id ];
+      if( !font ) {
+        font = new qx.renderer.font.Font( size, name );
+        font.setBold( bold );
+        font.setItalic( italic );
+        this._fontPool[ id ] = font;
+      }
+      return font;
+    },
+
+    // ========================================================================
+    // TOOL TIP HANDLING
+
     /**
      * Sets the toolTipText for the given widget. An empty or null toolTipText
      * removes the tool tip of the widget.
@@ -277,29 +300,40 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     setToolTip : function( widget, toolTipText ) {
       // remove and dispose of an eventually existing tool tip
       this._removeToolTipPopup( widget );
-      // TODO [rh] can we avoid to destroy/create the tooltip every time its text
-      //      gets changed?
       if( toolTipText != null && toolTipText != "" ) {
-        var toolTip = new qx.ui.popup.ToolTip();
-        var atom = toolTip.getAtom();
-        atom.setLabel( "(empty)" );
-        atom.getLabelObject().setMode( "html" );
-        atom.setLabel( toolTipText );
+        var toolTip = this._createToolTipPopup( toolTipText );
         widget.setToolTip( toolTip );
       }
     },
 
     /**
-     * Removes and disposes of the tool tip that is assigned to the given widget.
+     * Fetches a recycled tool tip popup from the widget pool if available or
+     * creates one otherwise.
+     */
+    _createToolTipPopup : function( text ) {
+      var toolTip = this._tooltipPool.pop();
+      if( !toolTip ) {
+        toolTip = new qx.ui.popup.ToolTip();
+        var atom = toolTip.getAtom();
+        atom.setLabel( "(empty)" );
+        atom.getLabelObject().setMode( "html" );
+        atom.setLabel( text );
+      }
+      return toolTip;
+    },
+
+    /**
+     * Removes the tool tip that is assigned to the given widget and stores it
+     * in the widget pool.
      * If the widget has no tool tip assigned, nothing is done.
      */
     _removeToolTipPopup : function( widget ) {
       var toolTip = widget.getToolTip();
       widget.setToolTip( null );
-      if( toolTip != null ) {
+      if( toolTip ) {
         // hide tooltip as disposing a visible one might cause app to hang
         toolTip.hide();
-        toolTip.dispose();
+        this._tooltipPool.push( toolTip );
       }
     }
   }
