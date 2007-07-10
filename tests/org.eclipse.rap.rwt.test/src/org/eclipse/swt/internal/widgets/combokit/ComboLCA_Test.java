@@ -24,7 +24,7 @@ public class ComboLCA_Test extends TestCase {
 
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
@@ -32,14 +32,14 @@ public class ComboLCA_Test extends TestCase {
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }
-  
+
   public void testPreserveValues() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.DEFAULT );
     RWTFixture.markInitialized( display );
-    
-    // Test preserving a combo with no items and (naturally) no selection  
+
+    // Test preserving a combo with no items and (naturally) no selection
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
@@ -48,7 +48,7 @@ public class ComboLCA_Test extends TestCase {
     Boolean hasListeners;
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
-    
+
     // Test preserving combo with items were one is selected
     RWTFixture.clearPreserved();
     combo.add( "item 1" );
@@ -83,20 +83,20 @@ public class ComboLCA_Test extends TestCase {
     combo.add( "item 2" );
     comboLCA.renderChanges( combo );
     String expected;
-    expected 
-      = "ComboUtil.createComboBoxItems( \""
+    expected
+      = "ComboUtil.createComboBoxItems( wm.findWidgetById( \""
       + WidgetUtil.getId( combo )
-      + "\", [ \"item 1\", \"item 2\" ] );";
+      + "\" ), [ \"item 1\", \"item 2\" ] );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     combo.select( 1 );
     comboLCA.renderChanges( combo );
-    expected 
-      = "ComboUtil.select( \""
+    expected
+      = "ComboUtil.select( wm.findWidgetById( \""
       + WidgetUtil.getId( combo )
-      + "\", 1 );";
+      + "\" ), 1 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
