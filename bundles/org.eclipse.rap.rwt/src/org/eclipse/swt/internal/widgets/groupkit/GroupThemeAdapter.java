@@ -11,27 +11,15 @@
 
 package org.eclipse.swt.internal.widgets.groupkit;
 
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.theme.*;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 
-public class GroupThemeAdapter implements IGroupThemeAdapter {
-
-  public int getBorderWidth( final Control control ) {
-    return 0;
-  }
-
-  public Color getBackground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    QxColor color = theme.getColor( "widget.background" );
-    return QxColor.createColor( color );
-  }
-
-  public Color getForeground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    QxColor color = theme.getColor( "widget.foreground" );
-    return QxColor.createColor( color );
-  }
+public class GroupThemeAdapter extends ControlThemeAdapter
+  implements IGroupThemeAdapter
+{
 
   public Font getFont( final Control control ) {
     Theme theme = ThemeUtil.getTheme();

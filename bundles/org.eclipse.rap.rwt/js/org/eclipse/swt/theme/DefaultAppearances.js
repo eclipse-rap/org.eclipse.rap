@@ -1071,7 +1071,10 @@ appearances = {
     {
       style : function( states ) {
         return {
-          backgroundColor : "widget.background"
+          backgroundColor : "widget.background",
+          border : states.rwt_BORDER
+            ? "control.BORDER.border"
+            : "control.border"
         };
       }
     },
@@ -1086,6 +1089,7 @@ appearances = {
           left : 0,
           padding : THEME_VALUE( "group.label.padding" ),
           margin : THEME_VALUE( "group.label.margin" ),
+          font : "group.label.font",
           backgroundColor : "widget.background"
 // TODO [rst] Group label is not grayed out in SWT - check other toolkits
 //          textColor : states.disabled ? "widget.graytext" : "undefined"

@@ -138,8 +138,9 @@ public class Group extends Composite {
     Rectangle bounds = getBounds();
     IGroupThemeAdapter adapter = getGroupThemeAdapter();
     Rectangle trimmings = adapter.getTrimmingSize();
-    int width = Math.max( 0, bounds.width - trimmings.width );
-    int height = Math.max( 0, bounds.height - trimmings.height );
+    int border = getBorderWidth();
+    int width = Math.max( 0, bounds.width - trimmings.width - 2 * border );
+    int height = Math.max( 0, bounds.height - trimmings.height - 2 * border );
     return new Rectangle( trimmings.x, trimmings.y, width, height );
   }
 
@@ -150,10 +151,11 @@ public class Group extends Composite {
   {
     IGroupThemeAdapter adapter = getGroupThemeAdapter();
     Rectangle trimmings = adapter.getTrimmingSize();
+    int border = getBorderWidth();
     return super.computeTrim( x - trimmings.x,
                               y - trimmings.y,
-                              width + trimmings.width,
-                              height + trimmings.height );
+                              width + trimmings.width + 2 * border,
+                              height + trimmings.height + 2* border );
   }
 
   String getNameText() {
