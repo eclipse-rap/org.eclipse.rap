@@ -157,6 +157,7 @@ appearances = {
     {
       style : function( states ) {
         return {
+          font : "widget.font",
           textColor : states.disabled ? "widget.graytext" : "widget.foreground",
           cursor : "default",
           width : "auto",
