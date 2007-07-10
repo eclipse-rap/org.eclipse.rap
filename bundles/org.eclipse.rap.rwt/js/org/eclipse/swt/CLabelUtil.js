@@ -30,7 +30,7 @@ qx.Class.define( "org.eclipse.swt.CLabelUtil", {
       widget.setLabel( "(empty)" );
       // end workaround
       var labelObject = widget.getLabelObject();
-      labelObject.setMode( org.eclipse.swt.LabelUtil.MODE_TEXT );
+      labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
       labelObject.setTextOverflow( false );
       labelObject.setAppearance( "label-graytext" );
       widget.getLabelObject().setWrap( false );

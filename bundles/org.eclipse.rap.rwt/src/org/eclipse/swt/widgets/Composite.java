@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
 public class Composite extends Scrollable {
 
   private Layout layout;
+  int layoutCount;
   private final ControlHolder controlHolder = new ControlHolder();
   private Control[] tabList;
   
@@ -151,13 +152,59 @@ public class Composite extends Scrollable {
   }
 
   /**
+   * Returns <code>true</code> if the receiver has deferred
+   * the performing of layout, and <code>false</code> otherwise.
+   *
+   * @return the receiver's deferred layout state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #setLayoutDeferred(boolean)
+   * @see #isLayoutDeferred()
+   */
+  public boolean getLayoutDeferred() {
+    checkWidget();
+    return layoutCount > 0;
+  }
+
+  /**
+   * Returns <code>true</code> if the receiver or any ancestor 
+   * up to and including the receiver's nearest ancestor shell
+   * has deferred the performing of layouts.  Otherwise, <code>false</code>
+   * is returned.
+   *
+   * @return the receiver's deferred layout state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #setLayoutDeferred(boolean)
+   * @see #getLayoutDeferred()
+   */
+  public boolean isLayoutDeferred() {
+    checkWidget();
+    return findDeferredControl() != null;
+  }
+
+  /**
    * If the receiver has a layout, asks the layout to <em>lay out</em>
    * (that is, set the size and location of) the receiver's children. 
    * If the receiver does not have a layout, do nothing.
    * <p>
    * This is equivalent to calling <code>layout(true)</code>.
    * </p>
-   *
+   * <p>
+   * Note: Layout is different from painting. If a child is
+   * moved or resized such that an area in the parent is
+   * exposed, then the parent will paint. If no child is
+   * affected, the parent will not paint.
+   * </p>
+   * 
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -165,11 +212,207 @@ public class Composite extends Scrollable {
    */
   public void layout() {
     checkWidget();
+    layout( true );
+  }
+
+  /**
+   * If the receiver has a layout, asks the layout to <em>lay out</em>
+   * (that is, set the size and location of) the receiver's children. 
+   * If the argument is <code>true</code> the layout must not rely
+   * on any information it has cached about the immediate children. If it
+   * is <code>false</code> the layout may (potentially) optimize the
+   * work it is doing by assuming that none of the receiver's 
+   * children has changed state since the last layout.
+   * If the receiver does not have a layout, do nothing.
+   * <p>
+   * If a child is resized as a result of a call to layout, the 
+   * resize event will invoke the layout of the child.  The layout
+   * will cascade down through all child widgets in the receiver's widget 
+   * tree until a child is encountered that does not resize.  Note that 
+   * a layout due to a resize will not flush any cached information 
+   * (same as <code>layout(false)</code>).
+   * </p>
+   * <p>
+   * Note: Layout is different from painting. If a child is
+   * moved or resized such that an area in the parent is
+   * exposed, then the parent will paint. If no child is
+   * affected, the parent will not paint.
+   * </p>
+   *
+   * @param changed <code>true</code> if the layout must flush its caches, and <code>false</code> otherwise
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void layout( final boolean changed ) {
+    checkWidget();
     if( layout != null ) {
-      layout.layout( this, true );
+      layout( changed, false );
+    } 
+  }
+
+  /**
+   * If the receiver has a layout, asks the layout to <em>lay out</em>
+   * (that is, set the size and location of) the receiver's children. 
+   * If the changed argument is <code>true</code> the layout must not rely
+   * on any information it has cached about its children. If it
+   * is <code>false</code> the layout may (potentially) optimize the
+   * work it is doing by assuming that none of the receiver's 
+   * children has changed state since the last layout.
+   * If the all argument is <code>true</code> the layout will cascade down
+   * through all child widgets in the receiver's widget tree, regardless of
+   * whether the child has changed size.  The changed argument is applied to 
+   * all layouts.  If the all argument is <code>false</code>, the layout will
+   * <em>not</em> cascade down through all child widgets in the receiver's widget 
+   * tree.  However, if a child is resized as a result of a call to layout, the 
+   * resize event will invoke the layout of the child.  Note that 
+   * a layout due to a resize will not flush any cached information 
+   * (same as <code>layout(false)</code>).
+   * </p>
+   * <p>
+   * Note: Layout is different from painting. If a child is
+   * moved or resized such that an area in the parent is
+   * exposed, then the parent will paint. If no child is
+   * affected, the parent will not paint.
+   * </p>
+   *
+   * @param changed <code>true</code> if the layout must flush its caches, and <code>false</code> otherwise
+   * @param all <code>true</code> if all children in the receiver's widget tree should be laid out, and <code>false</code> otherwise
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void layout( final boolean changed, final boolean all ) {
+    checkWidget();
+    if( layout != null || all ) {
+      markLayout( changed, all );
+      updateLayout( true, all );
+    } 
+  }
+
+  /**
+   * Forces a lay out (that is, sets the size and location) of all widgets that 
+   * are in the parent hierarchy of the changed control up to and including the 
+   * receiver.  The layouts in the hierarchy must not rely on any information 
+   * cached about the changed control or any of its ancestors.  The layout may 
+   * (potentially) optimize the work it is doing by assuming that none of the 
+   * peers of the changed control have changed state since the last layout.
+   * If an ancestor does not have a layout, skip it.
+   * <p>
+   * Note: Layout is different from painting. If a child is
+   * moved or resized such that an area in the parent is
+   * exposed, then the parent will paint. If no child is
+   * affected, the parent will not paint.
+   * </p>
+   * 
+   * @param changed a control that has had a state change which requires a recalculation of its size
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the changed array is null any of its controls are null or have been disposed</li> 
+   *    <li>ERROR_INVALID_PARENT - if any control in changed is not in the widget tree of the receiver</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void layout( final Control[] changed ) {
+    checkWidget();
+    if( changed == null ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    for( int i = 0; i < changed.length; i++ ) {
+      Control control = changed[ i ];
+      if( control == null ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      if( control.isDisposed() ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      boolean ancestor = false;
+      Composite composite = control.parent;
+      while( composite != null ) {
+        ancestor = composite == this;
+        if( ancestor ) {
+          break;
+        }
+        composite = composite.parent;
+      }
+      if( !ancestor ) {
+        error( SWT.ERROR_INVALID_PARENT );
+      }
+    }
+    int updateCount = 0;
+    Composite[] update = new Composite[ 16 ];
+    for( int i = 0; i < changed.length; i++ ) {
+      Control child = changed[ i ];
+      Composite composite = child.parent;
+      while( child != this ) {
+        if( composite.layout != null ) {
+          composite.state |= LAYOUT_NEEDED;
+          if( !composite.layout.flushCache( child ) ) {
+            composite.state |= LAYOUT_CHANGED;
+          }
+        }
+        if( updateCount == update.length ) {
+          Composite[] newUpdate = new Composite[ update.length + 16 ];
+          System.arraycopy( update, 0, newUpdate, 0, update.length );
+          update = newUpdate;
+        }
+        child = update[ updateCount++ ] = composite;
+        composite = child.parent;
+      }
+    }
+    for( int i = updateCount - 1; i >= 0; i-- ) {
+      update[ i ].updateLayout( true, false );
     }
   }
-  
+
+  void markLayout( final boolean changed, final boolean all ) {
+    if( layout != null ) {
+      state |= LAYOUT_NEEDED;
+      if( changed ) {
+        state |= LAYOUT_CHANGED;
+      }
+    }
+    if( all ) {
+      Control[] children = controlHolder.getControls();
+      for( int i = 0; i < children.length; i++ ) {
+        children[ i ].markLayout( changed, all );
+      }
+    }
+  }
+
+  void updateLayout( final boolean resize, final boolean all ) {
+    Composite parent = findDeferredControl();
+    if( parent != null ) {
+      parent.state |= LAYOUT_CHILD;
+      return;
+    }
+    if( ( state & LAYOUT_NEEDED ) != 0 ) {
+      boolean changed = ( state & LAYOUT_CHANGED ) != 0;
+      state &= ~( LAYOUT_NEEDED | LAYOUT_CHANGED );
+// if (resize) setResizeChildren (false);
+      layout.layout( this, changed );
+// if (resize) setResizeChildren (true);
+    }
+    if( all ) {
+      state &= ~LAYOUT_CHILD;
+      Control[] children = controlHolder.getControls();
+      for( int i = 0; i < children.length; i++ ) {
+        children[ i ].updateLayout( resize, all );
+      }
+    }
+  }
+
+  Composite findDeferredControl() {
+    return layoutCount > 0 ? this : parent.findDeferredControl();
+  }
+
   public Point computeSize( final int wHint,
                             final int hHint,
                             final boolean changed )
@@ -363,10 +606,15 @@ public class Composite extends Scrollable {
   // Resize helper
   
   void notifyResize( final Point oldSize ) {
+    // TODO [rh] revise this: the SWT code (method sendResize) first calls
+    //      'super' (fires resize events) and *then* does the layouting
     if( !oldSize.equals( getSize() ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          layout();
+          if( !isDisposed() && layout != null ) {
+            markLayout( false, false );
+            updateLayout( false, false );
+          }
         }
       } );
     }

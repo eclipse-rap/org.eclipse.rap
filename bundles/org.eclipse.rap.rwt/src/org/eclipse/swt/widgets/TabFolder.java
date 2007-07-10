@@ -253,13 +253,18 @@ public class TabFolder extends Composite {
   public void setSelection( final TabItem[] items ) {
     checkWidget();
     if( items == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      error( SWT.ERROR_NULL_ARGUMENT );
     }
-    int newIndex = -1;
-    if( items.length > 0 ) {
-      newIndex = itemHolder.indexOf( items[ 0 ] );
+    if( items.length == 0 ) {
+      setSelection( -1, false );
+    } else {
+      for( int i = items.length - 1; i >= 0; --i ) {
+        int index = indexOf( items[ i ] );
+        if( index != -1 ) {
+          setSelection( index, false );
+        }
+      }
     }
-    setSelection( newIndex );
   }
 
   /**
@@ -275,12 +280,17 @@ public class TabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final int selectionIndex ) {
-    checkWidget();
-    int oldIndex = this.selectionIndex;
-    int newIndex = selectionIndex;
-    if( oldIndex != newIndex && newIndex >= -1 && newIndex < itemHolder.size() ) 
-    {
+  public void setSelection( final int index ) {
+    checkWidget ();
+    int count = itemHolder.size();
+    if( index >= 0 && index < count ) {
+      setSelection( index, false );
+    } 
+  }
+
+  private void setSelection( final int index, final boolean notify ) {
+    int oldIndex = getSelectionIndex();
+    if( oldIndex != index ) {
       if( oldIndex != -1 ) {
         TabItem item = ( TabItem )itemHolder.getItem( oldIndex );
         Control control = item.getControl();
@@ -288,13 +298,15 @@ public class TabFolder extends Composite {
           control.setVisible( false );
         }
       }
-      this.selectionIndex = selectionIndex;
+      selectionIndex = index;
+      int newIndex = selectionIndex;
       if( newIndex != -1 ) {
-        TabItem item = ( TabItem )itemHolder.getItem( newIndex );
-        Control control = item.getControl();
-        if( control != null && !control.isDisposed() ) {
-          control.setBounds( getClientArea() );
-          control.setVisible( true );
+        updateSelectedItemControl();
+        if( notify ) {
+          TabItem item = ( TabItem )itemHolder.getItem( newIndex );
+          SelectionEvent event 
+            = new SelectionEvent( this, item, SelectionEvent.WIDGET_SELECTED );
+          event.processEvent();
         }
       }
     }
@@ -454,10 +466,26 @@ public class TabFolder extends Composite {
   void createItem( final TabItem item, final int index ) {
     itemHolder.insert( item, index );
     if( getItemCount() == 1 ) {
-      setSelection( 0 );
-      SelectionEvent event 
-        = new SelectionEvent( this, item, SelectionEvent.WIDGET_SELECTED );
-      event.processEvent();
+      setSelection( 0, true );
+    }
+  }
+  
+  /////////
+  // Resize
+  
+  void notifyResize( final Point oldSize ) {
+    super.notifyResize( oldSize );
+    updateSelectedItemControl();
+  }
+
+  private void updateSelectedItemControl() {
+    int index = getSelectionIndex();
+    if( index != -1 ) {
+      Control control = getItem( index ).getControl();
+      if( control != null && !control.isDisposed() ) {
+        control.setBounds( getClientArea() );
+        control.setVisible( true );
+      }
     }
   }
 

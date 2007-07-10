@@ -252,6 +252,35 @@ public class DuplicateRequest_Test extends TestCase {
     assertEquals( 1, events.size() );
   }
   
+  public void testNestedModalShell() throws IOException {
+    final java.util.List events = new ArrayList(); 
+    Display display = new Display();
+    final Shell shell1 = new Shell( display, SWT.APPLICATION_MODAL );
+    shell1.setSize( 100, 100 );
+    shell1.open();
+    
+    Shell shell2 = new Shell( display, SWT.APPLICATION_MODAL );
+    shell2.setSize( 100, 100 );
+    Button button = new Button( shell2, SWT.PUSH );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        events.add( event );
+      }
+    } );
+    shell2.open();
+    
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String buttonId = WidgetUtil.getId( button );
+    
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    lifeCycle.execute();
+    RWTFixture.fakeUIThread();
+    assertEquals( 1, events.size() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeBrowser( new Ie6( true, true ) );

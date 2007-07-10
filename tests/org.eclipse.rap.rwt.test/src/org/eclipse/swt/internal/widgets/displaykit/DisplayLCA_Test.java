@@ -317,6 +317,7 @@ public class DisplayLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
+    shell.open();
     String displayId = DisplayUtil.getId( display );
     String controlId = WidgetUtil.getId( control );
     
@@ -327,11 +328,13 @@ public class DisplayLCA_Test extends TestCase {
     lifeCycle.execute();
     assertEquals( control, display.getFocusControl() );
 
+    // Request parameter focusControl with value 'null' is ignored
+    Control previousFocusControl = display.getFocusControl();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
     new RWTLifeCycle().execute();
-    assertEquals( null, display.getFocusControl() );
+    assertEquals( previousFocusControl, display.getFocusControl() );
   }
 
   protected void tearDown() throws Exception {

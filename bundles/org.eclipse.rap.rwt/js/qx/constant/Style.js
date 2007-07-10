@@ -34,6 +34,9 @@ qx.Class.define( "qx.constant.Style", {
     FOCUS_OUTLINE           : "1px dotted invert",
 
     // from here on are RWT extensions
-    BORDER_SOLID            : "solid"
+    BORDER_SOLID            : "solid",
+    
+    // Constant for Label#setMode 
+    LABEL_MODE_HTML : "html"
   }
 });

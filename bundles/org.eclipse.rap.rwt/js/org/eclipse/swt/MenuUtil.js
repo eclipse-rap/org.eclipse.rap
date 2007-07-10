@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
       // Note: called directly after creating the menuItem instance, therefore
       // it is not necessary to check getLabelObject and/or preserve its label
       menuItem.setLabel( "(empty)" );
-      // TODO [rh] for some reason this workaround oesn't work for 
+      // TODO [rh] for some reason this workaround doesn't work for 
       //      qx.ui.menubar.Button, the labelObject is still null
       if( menuItem.getLabelObject() != null ) {
         menuItem.getLabelObject().setMode( "html" );
@@ -80,7 +80,7 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var name = wm.findIdByWidget( menuItem ) + "RadioMgr";
       var manager = new qx.manager.selection.RadioManager( name );
-      menuItem.setManager(manager);
+      menuItem.setManager( manager );
     },
 
     assignRadioManager : function( firstMenuItem, menuItem ) {
@@ -92,7 +92,6 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
       var manager = menuItem.getManager();
       manager.remove( menuItem );
       menuItem.dispose();
-
       if( manager.getItems().length == 0 ) {
         manager.dispose();
       }
@@ -100,11 +99,15 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
 
     setMenuListener : function( menu, isset ) {
       if( isset ) {
-        menu.addEventListener( "beforeAppear", org.eclipse.swt.MenuUtil._menuShown );
-        menu.addEventListener( "disappear", org.eclipse.swt.MenuUtil._menuHidden );
+        menu.addEventListener( "beforeAppear", 
+                               org.eclipse.swt.MenuUtil._menuShown );
+        menu.addEventListener( "disappear", 
+                               org.eclipse.swt.MenuUtil._menuHidden );
       } else {
-        menu.removeEventListener("beforeAppear", org.eclipse.swt.MenuUtil._menuShown );
-        menu.removeEventListener("disappear", org.eclipse.swt.MenuUtil._menuHidden );
+        menu.removeEventListener( "beforeAppear", 
+                                  org.eclipse.swt.MenuUtil._menuShown );
+        menu.removeEventListener( "disappear", 
+                                  org.eclipse.swt.MenuUtil._menuHidden );
       }
     },
 

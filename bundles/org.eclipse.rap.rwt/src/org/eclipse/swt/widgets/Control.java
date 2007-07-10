@@ -952,6 +952,14 @@ public abstract class Control extends Widget {
     checkWidget();
     this.layoutData = layoutData;
   }
+  
+  void markLayout( final boolean changed, final boolean all ) {
+    /* Do nothing */
+  }
+
+  void updateLayout( final boolean resize, final boolean all ) {
+    /* Do nothing */
+  }
 
   //////////////////////
   // ToolTip operations

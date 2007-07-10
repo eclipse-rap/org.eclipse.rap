@@ -226,11 +226,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
     return activeControl;
   }
 
-  private static void setActiveControl( final Shell shell, final Widget widget )
+  private static void setActiveControl( final Shell shell, final Widget widget ) 
   {
-    Object adapter = shell.getAdapter( IShellAdapter.class );
-    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
-    shellAdapter.setActiveControl( ( Control )widget );
+    if( EventUtil.isAccessible( widget ) ) {
+      Object adapter = shell.getAdapter( IShellAdapter.class );
+      IShellAdapter shellAdapter = ( IShellAdapter )adapter;
+      shellAdapter.setActiveControl( ( Control )widget );
+    }
   }
 
   private static void writeImage( final Shell shell ) throws IOException {

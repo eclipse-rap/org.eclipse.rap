@@ -56,7 +56,6 @@ public abstract class Widget implements Adaptable {
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;
   static final int DEFAULT_HEIGHT = 64;
-  static final int LAYOUT_CHANGED = 1 << 6;
   
   /* Global state flags */
   static final int DISPOSED = 1 << 0;
@@ -65,6 +64,15 @@ public abstract class Widget implements Adaptable {
   static final int DISABLED = 1 << 3;
   static final int HIDDEN = 1 << 4;
   
+  /* A layout was requested on this widget */
+  static final int LAYOUT_NEEDED  = 1<<5;
+  
+  /* The preferred size of a child has changed */
+  static final int LAYOUT_CHANGED = 1<<6;
+  
+  /* A layout was requested in this widget hierarchy */
+  static final int LAYOUT_CHILD = 1<<7;
+
   int style;
   int state;
   private IEventAdapter eventAdapter;

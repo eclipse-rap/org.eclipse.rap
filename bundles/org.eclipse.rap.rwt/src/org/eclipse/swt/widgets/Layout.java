@@ -47,6 +47,18 @@ public abstract class Layout {
 	protected abstract void layout(Composite composite, boolean flushCache);
 
 	/**
+	 * Instruct the layout to flush any cached values
+	 * associated with the control specified in the argument 
+	 * <code>control</code>.
+	 * 
+	 * @param control a control managed by this layout
+	 * @return true if the Layout has flushed all cached information associated with control
+	 */
+	protected boolean flushCache (Control control) {
+	  return false;
+	}
+
+	/**
 	 * Computes and returns the size of the specified composite's client area
 	 * according to this layout.
 	 * <p>

@@ -41,11 +41,13 @@ public class TabFolderAndItem_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
-    folder.addSelectionListener( new SelectionAdapter() {
+    folder.setSize( 100, 100 );
+    SelectionListener selectionListener = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         log.add( e );
       }
-    } );
+    };
+    folder.addSelectionListener( selectionListener );
     
     assertEquals( -1, folder.getSelectionIndex() );
     assertEquals( 0, folder.getSelection().length );
@@ -67,6 +69,14 @@ public class TabFolderAndItem_Test extends TestCase {
     assertNull( event.data );
     assertEquals( SWT.NONE, event.detail );
     assertNull( event.text );
+    
+    // ... and the same wihtout a SelectionListener
+    folder.removeSelectionListener( selectionListener );
+    item.dispose();
+    item = new TabItem( folder, SWT.NONE );
+    assertEquals( 0, folder.getSelectionIndex() );
+    assertEquals( 1, folder.getSelection().length );
+    assertSame( item, folder.getSelection()[ 0 ] );
   }
   
   public void testIndexOf() {
@@ -146,8 +156,9 @@ public class TabFolderAndItem_Test extends TestCase {
 
     folder.setSelection( -1 );
     selection = folder.getSelection();
-    assertEquals( 0, selection.length );
-    assertEquals( -1, folder.getSelectionIndex() );
+    assertEquals( 1, selection.length );
+    assertSame( item1, selection[ 0 ] );
+    assertEquals( 1, folder.getSelectionIndex() );
     
     // Ensure that no event is fired when selection is changed programmatically
     final boolean[] eventOccured = new boolean[] { false };

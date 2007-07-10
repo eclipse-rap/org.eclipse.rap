@@ -20,8 +20,6 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     SHOW_LABEL : "label",
     SHOW_ICON : "icon",
     
-    MODE_TEXT : "html",
-    
     APPEARANCE : "label-wrapper",
     
     initialize : function( widget ) {
@@ -34,7 +32,7 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
         widget.setLabel( "(empty)" );
         // end workaround
         var labelObject = widget.getLabelObject();
-        labelObject.setMode( org.eclipse.swt.LabelUtil.MODE_TEXT );
+        labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
         labelObject.setTextOverflow( false );
         labelObject.setAppearance( "label-graytext" );
         // TODO [rh] workaround for weird getLabelObject behaviour

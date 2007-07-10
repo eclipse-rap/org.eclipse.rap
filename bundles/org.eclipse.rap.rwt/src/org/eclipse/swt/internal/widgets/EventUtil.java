@@ -41,64 +41,34 @@ public final class EventUtil {
   }
 
   private static boolean isAccessible( final Control control ) {
-    boolean result;
-    result = control.getEnabled() && control.getVisible();
-    if( result ) {
-      Shell modalShell = getModalShell( control.getDisplay() );
-      if( modalShell != null && control.getShell() != modalShell ) {
-        result = false;
-      }
-    }
-    return result;
+    return    control.getEnabled() 
+           && control.getVisible() 
+           && isShellAccessible( control.getShell() );
   }
 
   private static boolean isAccessible( final Menu menu ) {
-    boolean result = menu.getEnabled();
-    if( result ) {
-      Shell modalShell = getModalShell( menu.getDisplay() );
-      if( modalShell != null && menu.getShell() != modalShell ) {
-        result = false;
-      }
-    }
-    return result;
+    return menu.getEnabled() && isShellAccessible( menu.getShell() );
   }
 
   private static boolean isAccessible( final MenuItem menuItem ) {
-    boolean result = menuItem.getEnabled();
-    if( result ) {
-      Shell modalShell = getModalShell( menuItem.getDisplay() );
-      if( modalShell != null && menuItem.getMenu().getShell() != modalShell ) {
-        result = false;
-      }
-    }
-    return result;
+    Shell shell = menuItem.getParent().getShell();
+    return menuItem.getEnabled() && isShellAccessible( shell );
   }
 
   private static boolean isAccessible( final ToolItem toolItem ) {
-    boolean result = toolItem.getEnabled();
-    if( result ) {
-      Shell modalShell = getModalShell( toolItem.getDisplay() );
-      ToolBar toolBar = toolItem.getParent();
-      if( modalShell != null && toolBar.getShell() != modalShell ) {
-        result = false;
-      }
-    }
-    return result;
+    Shell shell = toolItem.getParent().getShell();
+    return toolItem.getEnabled() && isShellAccessible( shell );
   }
 
-  // TODO [rst] A modal shell can open another modal shell. Hence, there can be
-  //            more than one modal shell, only the top-level one is accessible
-  private static Shell getModalShell( final Display display ) {
+  private static boolean isShellAccessible( final Shell shell ) {
     Shell modalShell = null;
-    Shell[] shells = display.getShells();
-    for( int i = 0; modalShell == null && i < shells.length; i++ ) {
-      Shell shell = shells[ i ];
-      if(   ( shell.getStyle() & SWT.APPLICATION_MODAL ) != 0
-          && shell.isVisible() )
-      {
-        modalShell = shell;
-      }
+    Shell activeShell = shell.getDisplay().getActiveShell();
+    if(    activeShell != null 
+        && activeShell.isVisible() 
+        && ( activeShell.getStyle() & SWT.APPLICATION_MODAL ) != 0 ) 
+    {
+      modalShell = activeShell;
     }
-    return modalShell;
+    return modalShell == null || shell == modalShell;
   }
 }

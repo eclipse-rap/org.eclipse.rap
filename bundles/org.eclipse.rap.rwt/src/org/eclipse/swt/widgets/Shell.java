@@ -457,6 +457,10 @@ public class Shell extends Composite {
     return adapter;
   }
   
+  Composite findDeferredControl() {
+    return layoutCount > 0 ? this : null;
+  }
+  
   //////////
   // MenuBar
   

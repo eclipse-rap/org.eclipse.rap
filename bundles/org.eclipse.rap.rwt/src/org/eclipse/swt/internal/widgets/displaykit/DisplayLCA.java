@@ -27,6 +27,7 @@ import org.eclipse.swt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.theme.ThemeUtil;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.resources.IResource;
@@ -414,7 +415,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void readFocusControl( final Display display ) {
     // TODO [rh] revise this: traversing the widget tree once more only to find
-    //      out which control is focus. Could that be optimized?
+    //      out which control is focused. Could that be optimized?
     HttpServletRequest request = ContextProvider.getRequest();
     StringBuffer focusControlParam = new StringBuffer();
     focusControlParam.append( DisplayUtil.getId( display ) );
@@ -423,8 +424,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     if( id != null ) {
       Control focusControl = null;
       // Even though the loop below would anyway result in focusControl == null
-      // the client may send 'null' to indicate that there no control on the
-      // active shell currently has the input focus.
+      // the client may send 'null' to indicate that no control on the active
+      // shell currently has the input focus.
       if( !"null".equals(  id ) ) {
         Shell[] shells = display.getShells();
         for( int i = 0; focusControl == null && i < shells.length; i++ ) {
@@ -434,7 +435,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
           }
         }
       }
-      getDisplayAdapter( display ).setFocusControl( focusControl );
+      if( focusControl != null && EventUtil.isAccessible( focusControl ) ) {
+        getDisplayAdapter( display ).setFocusControl( focusControl );
+      }
     }
   }
 
