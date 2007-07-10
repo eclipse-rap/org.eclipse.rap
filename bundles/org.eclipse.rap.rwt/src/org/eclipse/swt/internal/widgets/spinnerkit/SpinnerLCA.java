@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -21,6 +21,8 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class SpinnerLCA extends AbstractWidgetLCA {
 
+  private static final String QX_TYPE = "org.eclipse.swt.widgets.Spinner";
+  private static final String TYPE_POOL_ID = SpinnerLCA.class.getName();
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_MAXIMUM = "maximum";
   private static final String PROP_MINIMUM = "minimum";
@@ -36,9 +38,9 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_MINIMUM, new Integer( spinner.getMinimum() ) );
     adapter.preserve( PROP_MAXIMUM, new Integer( spinner.getMaximum() ) );
     adapter.preserve( PROP_INCREMENT, new Integer( spinner.getIncrement() ) );
-    adapter.preserve( PROP_PAGE_INCREMENT, 
+    adapter.preserve( PROP_PAGE_INCREMENT,
                       new Integer( spinner.getPageIncrement() ) );
-    adapter.preserve( PROP_MODIFY_LISTENER, 
+    adapter.preserve( PROP_MODIFY_LISTENER,
                       Boolean.valueOf( ModifyEvent.hasListener( spinner ) ) );
   }
 
@@ -57,31 +59,15 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
     JSWriter writer = JSWriter.getWriterFor( spinner );
-    boolean readOnly = ( spinner.getStyle() & SWT.READ_ONLY ) != 0;
-    boolean border = ( spinner.getStyle() & SWT.BORDER ) != 0;
-    Object[] args = { 
-      Boolean.valueOf( readOnly ), 
-      Boolean.valueOf( border ) 
-    };
-    writer.newWidget( "org.eclipse.swt.widgets.Spinner", args );
+    writer.newWidget( QX_TYPE );
+    ControlLCAUtil.writeStyleFlags( widget );
+    writeReadOnly( spinner );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     Spinner spinner = ( Spinner )widget;
     ControlLCAUtil.writeChanges( spinner );
-    writeSetInt( spinner, PROP_MINIMUM, "min", spinner.getMinimum(), 0 );
-    writeSetInt( spinner, PROP_MAXIMUM, "max", spinner.getMaximum(), 100 );
-    writeSetInt( spinner, 
-                 PROP_INCREMENT, 
-                 "incrementAmount", 
-                 spinner.getIncrement(), 
-                 1 );
-    writeSetInt( spinner, 
-                 PROP_PAGE_INCREMENT, 
-                 "pageIncrementAmount", 
-                 spinner.getPageIncrement(), 
-                 10 );
-    writeSetInt( spinner, PROP_SELECTION, "value", spinner.getSelection(), 0 );
+    writeValues( spinner );
     writeModifyListener( spinner );
   }
 
@@ -89,34 +75,75 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-  
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+    ControlLCAUtil.resetStyleFlags();
+    resetReadOnly();
+    resetValues();
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
-    return null;
+    return TYPE_POOL_ID;
   }
-  
 
   //////////////////////////////////////
   // Helping methods to write JavaScript
-  
-  private static void writeSetInt( final Spinner spinner,
+
+  private static void writeValues( final Spinner spinner ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( spinner );
+    writeSetInt( writer, PROP_MINIMUM, "min", spinner.getMinimum(), 0 );
+    writeSetInt( writer, PROP_MAXIMUM, "max", spinner.getMaximum(), 100 );
+    writeSetInt( writer,
+                 PROP_INCREMENT,
+                 "incrementAmount",
+                 spinner.getIncrement(),
+                 1 );
+    writeSetInt( writer,
+                 PROP_PAGE_INCREMENT,
+                 "pageIncrementAmount",
+                 spinner.getPageIncrement(),
+                 10 );
+    writeSetInt( writer, PROP_SELECTION, "value", spinner.getSelection(), 0 );
+  }
+
+  private static void resetValues() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+//    TODO [rst] Missing resetters in QX_TYPE, discuss with qooxdoo
+//    writer.reset( "min" );
+//    writer.reset( "max" );
+    writer.reset( "incrementAmount" );
+    writer.reset( "pageIncrementAmount" );
+    writer.reset( "value" );
+  }
+
+  private static void writeSetInt( final JSWriter writer,
                                    final String javaProperty,
                                    final String jsProperty,
                                    final int newValue,
-                                   final int defValue ) 
+                                   final int defValue )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( spinner );
-    writer.set( javaProperty, 
-                jsProperty, 
-                new Integer( newValue ), 
+    writer.set( javaProperty,
+                jsProperty,
+                new Integer( newValue ),
                 new Integer( defValue ) );
   }
 
-  private static void writeModifyListener( final Spinner spinner ) 
-    throws IOException 
+  private static void writeReadOnly( final Spinner spinner ) throws IOException {
+    boolean readOnly = ( spinner.getStyle() & SWT.READ_ONLY ) != 0;
+    JSWriter writer = JSWriter.getWriterFor( spinner );
+    writer.set( JSConst.QX_FIELD_EDITABLE, !readOnly );
+  }
+
+  private static void resetReadOnly() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( JSConst.QX_FIELD_EDITABLE );
+  }
+
+  private static void writeModifyListener( final Spinner spinner )
+    throws IOException
   {
     if( ( spinner.getStyle() & SWT.READ_ONLY ) == 0 ) {
       JSWriter writer = JSWriter.getWriterFor( spinner );

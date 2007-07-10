@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -13,28 +12,34 @@
 qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
   extend : qx.ui.form.Spinner,
 
-  construct : function( readOnly, border ) {
+  construct : function() {
     this.base( arguments );
-    this.setEditable( !readOnly );
-    this._isModified = false;
-    this._hasModifyListener = false;
-    if( border ) {
-      this.addState( "rwt_BORDER" );
-    }
-    this.getManager().addEventListener( "change", this._onChangeValue, this );
-    this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
-    this._textfield.addEventListener( "blur", this._onChangeValue, this );
-    this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+    this.rap_init();
   },
 
   destruct : function() {
-    this.getManager().removeEventListener( "change", this._onChangeValue, this );
-    this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
-    this._textfield.removeEventListener( "blur", this._onChangeValue, this );
-    this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
+    this.rap_reset();
   },
 
   members : {
+    
+    rap_init : function() {
+      this.debug( "_____ rap init" );
+      this._isModified = false;
+      this._hasModifyListener = false;
+      this.getManager().addEventListener( "change", this._onChangeValue, this );
+      this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
+      this._textfield.addEventListener( "blur", this._onChangeValue, this );
+      this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+    },
+    
+    rap_reset : function() {
+      this.debug( "_____ rap reset" );
+      this.getManager().removeEventListener( "change", this._onChangeValue, this );
+      this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
+      this._textfield.removeEventListener( "blur", this._onChangeValue, this );
+      this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
+    },
     
     setFont : function( value ) {
       this._textfield.setFont( value );

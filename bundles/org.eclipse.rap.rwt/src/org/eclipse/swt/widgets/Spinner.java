@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -43,9 +43,10 @@ import com.w4t.util.SessionLocale;
 // TODO cut/copy/past not implemented
 // TODO SelectionListener: widgetSelected is fired whenever the value changes
 public class Spinner extends Composite {
-  
+
   private static final int UP_DOWN_HEIGHT = 18;
-  
+  private static final int UP_DOWN_WIDTH = 16;
+
   private int digits = 0;
   private int increment = 1;
   private int maximum = 100;
@@ -59,7 +60,7 @@ public class Spinner extends Composite {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -107,8 +108,8 @@ public class Spinner extends Composite {
 //  }
 
   /////////////////////////////////////////
-  // Methods to control range and increment 
-  
+  // Methods to control range and increment
+
   /**
    * Returns the amount that the receiver's value will be
    * modified by when the up/down arrows are pressed.
@@ -143,7 +144,7 @@ public class Spinner extends Composite {
       increment = value;
     }
   }
-  
+
   /**
    * Returns the minimum value which the receiver will allow.
    *
@@ -158,7 +159,7 @@ public class Spinner extends Composite {
     checkWidget();
     return minimum;
   }
-  
+
   /**
    * Sets the minimum value that the receiver will allow.  This new
    * value will be ignored if it is negative or is not less than the receiver's
@@ -181,7 +182,7 @@ public class Spinner extends Composite {
       }
     }
   }
-  
+
   /**
    * Returns the maximum value which the receiver will allow.
    *
@@ -217,9 +218,9 @@ public class Spinner extends Composite {
       if( selection > maximum ) {
         selection = maximum;
       }
-    } 
+    }
   }
-  
+
   /**
    * Returns the amount that the receiver's position will be
    * modified by when the page up/down keys are pressed.
@@ -235,7 +236,7 @@ public class Spinner extends Composite {
     checkWidget();
     return pageIncrement;
   }
-  
+
   /**
    * Sets the amount that the receiver's position will be
    * modified by when the page up/down keys are pressed
@@ -252,13 +253,13 @@ public class Spinner extends Composite {
     checkWidget();
     if( value >= 1 ) {
       pageIncrement = value;
-    } 
+    }
   }
 
   /**
    * Returns the <em>selection</em>, which is the receiver's position.
    *
-   * @return the selection 
+   * @return the selection
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -269,7 +270,7 @@ public class Spinner extends Composite {
     checkWidget();
     return selection;
   }
-  
+
   /**
    * Sets the <em>selection</em>, which is the receiver's
    * position, to the argument. If the argument is not within
@@ -289,13 +290,13 @@ public class Spinner extends Composite {
     ModifyEvent modifyEvent = new ModifyEvent( this );
     modifyEvent.processEvent();
   }
-  
+
   /**
    * Sets the receiver's selection, minimum value, maximum
    * value, digits, increment and page increment all at once.
    * <p>
    * Note: This is similar to setting the values individually
-   * using the appropriate methods, but may be implemented in a 
+   * using the appropriate methods, but may be implemented in a
    * more efficient fashion on some platforms.
    * </p>
    *
@@ -310,7 +311,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setValues( final int selection,
@@ -330,7 +331,7 @@ public class Spinner extends Composite {
 
   ///////////////////
   // Size calculation
-  
+
   public Point computeSize( final int wHint,
                             final int hHint,
                             final boolean changed )
@@ -352,8 +353,8 @@ public class Spinner extends Composite {
         string = buffer.toString();
       }
       Point textSize = FontSizeEstimation.stringExtent( string, getFont() );
-      width = textSize.y;
-      height = textSize.x;
+      width = textSize.x + UP_DOWN_WIDTH;
+      height = textSize.y;
     }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
@@ -386,18 +387,19 @@ public class Spinner extends Composite {
     result.x -= margins;
     result.width += margins;
     if( ( style & SWT.BORDER ) != 0 ) {
-      result.x -= 1;
-      result.y -= 1;
-      result.width += 2;
-      result.height += 2;
+      int border = getBorderWidth();
+      result.x -= border ;
+      result.y -= border;
+      result.width += 2 * border;
+      result.height += 2 * border;
     }
-    result.width += ScrollBar.SCROLL_BAR_WIDTH;
+    result.width += UP_DOWN_WIDTH;
     return result;
   }
-  
+
   /////////////////////////////////////////////
   // Event listener registration/deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's text is modified, by sending
@@ -420,7 +422,7 @@ public class Spinner extends Composite {
   public void addModifyListener( final ModifyListener listener ) {
     ModifyEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the receiver's text is modified.
@@ -441,10 +443,10 @@ public class Spinner extends Composite {
   public void removeModifyListener( final ModifyListener listener ) {
     ModifyEvent.removeListener( this, listener );
   }
-  
+
   //////////////////
   // Helping methods
-  
+
   String getDecimalSeparator () {
     Locale locale;
     if( SessionLocale.isSet() ) {

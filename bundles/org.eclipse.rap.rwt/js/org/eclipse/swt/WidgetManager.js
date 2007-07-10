@@ -88,6 +88,10 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
             var typePool = this._widgetPool[ typePoolId ];
             typePool.handler( widget );
             widget.setUserData( "pooled", true );
+            // EXPERIMENTAL: If the widget has a reset method, call it
+            if( widget.rap_reset ) {
+              widget.rap_reset();
+            }
             typePool.elements.push( widget );
           // dispose of widgets that cannot be pooled
           } else {
@@ -124,18 +128,24 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( typePoolId != null && this._widgetPool[ typePoolId ] ) {
         var typePool = this._widgetPool[ typePoolId ];
         result = typePool.elements.pop();
-        if( result && paramList != null ) {
-          // If paramList isn't empty we have to reinitialize the widget.
-          // Luckily only our own js widgets use this...
-          var expression =   "org.eclipse.swt.WidgetManager.getInstance()."
-                           + "_current.reInit("
-                           + paramList
-                           + ");"
-          // Assignment of the field _current is needed as Opera has some 
-          // problems with accessing local variables in eval expressions.
-          this._current = result;
-          window.eval( expression );
-          this._current = null;
+        if( result ) {
+          if( paramList != null ) {
+            // If paramList isn't empty we have to reinitialize the widget.
+            // Luckily only our own js widgets use this...
+            var expression =   "org.eclipse.swt.WidgetManager.getInstance()."
+                             + "_current.reInit("
+                             + paramList
+                             + ");"
+            // Assignment of the field _current is needed as Opera has some 
+            // problems with accessing local variables in eval expressions.
+            this._current = result;
+            window.eval( expression );
+            this._current = null;
+          }
+          // EXPERIMENTAL: If the widget has an init method, call it
+          if( result.rap_init ) {
+            result.rap_init();
+          }
         }
       }
       
