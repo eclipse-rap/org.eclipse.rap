@@ -43,9 +43,21 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     },
     
     /** Populates the Combo denoted by the given id with the items. */
-    createComboBoxItems : function(id, items) {
-      var combo 
-        = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );
+    createComboBoxItems : function( combo, items ) {
+      org.eclipse.swt.ComboUtil._doCreateItems( combo, items );
+      // TODO [rst] Find workaround for reparenting problems 
+      /*
+      if( !combo.getUserData( "pooled" ) ) {
+        org.eclipse.swt.ComboUtil._doCreateItems( combo, items );      	
+      } else {
+        combo.setUserData( "onAppear.setItems", items );
+        combo.addEventListener( "appear",
+                                org.eclipse.swt.ComboUtil._onAppearCreateItems );
+      }
+      */
+    },
+
+    _doCreateItems : function( combo, items ) {
       combo.removeAll();
       for( var i = 0; i < items.length; i++ ) {
         var item = new qx.ui.form.ListItem();
@@ -54,13 +66,21 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         item.setLabel( items[ i ] );
         combo.add( item );
       }
-      org.eclipse.swt.WidgetManager.getInstance().add( combo, id, false );
     },
 
+/*
+    _onAppearCreateItems : function( evt ) {
+      var combo = evt.getTarget();
+      var items = combo.getUserData( "onAppear.setItems" );
+      org.eclipse.swt.ComboUtil._doCreateItems( combo, items );
+      combo.setUserData( "onAppear.setItems", null );
+      combo.removeEventListener( "appear", 
+                                 org.eclipse.swt.ComboUtil._onAppearCreateItems );
+    },
+*/
+
     /** Selects a combo box item. */
-    select : function( id, index ) {
-      var combo 
-        = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );
+    select : function( combo, index ) {
       var items = combo.getList().getChildren();
       var item = null;
       if( index >= 0 && index <= items.length - 1 ) {

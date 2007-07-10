@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -21,27 +21,31 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Widget;
 
 public class ComboLCA extends AbstractWidgetLCA {
-  
+
+  private static final String QX_TYPE = "qx.ui.form.ComboBox";
+
   private static final Pattern NEWLINE_PATTERN
     = Pattern.compile( "\\r\\n|\\r|\\n" );
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
-  
+
   // Constants for ComboUtil.js
-  private static final String WIDGET_SELECTED = 
+  private static final String WIDGET_SELECTED =
     "org.eclipse.swt.ComboUtil.onSelectionChanged";
-  private static final String CREATE_COMBOBOX_ITEMS = 
+  private static final String CREATE_COMBOBOX_ITEMS =
     "org.eclipse.swt.ComboUtil.createComboBoxItems";
-  private static final String SELECT_COMBOBOX_ITEM = 
+  private static final String SELECT_COMBOBOX_ITEM =
     "org.eclipse.swt.ComboUtil.select";
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
-  
-  private static final JSListenerInfo JS_LISTENER_INFO 
-    = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED, 
-                          WIDGET_SELECTED, 
+
+  private static final JSListenerInfo JS_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,
+                          WIDGET_SELECTED,
                           JSListenerType.STATE_AND_ACTION );
+
+//  private static final String TYPE_POOL_ID = ComboLCA.class.getName();
 
 
   public void preserveValues( final Widget widget ) {
@@ -55,7 +59,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
   }
-  
+
   public void readData( final Widget widget ) {
     Combo combo = ( Combo )widget;
     String value = WidgetLCAUtil.readPropertyValue( widget, "selectedItem" );
@@ -66,10 +70,10 @@ public class ComboLCA extends AbstractWidgetLCA {
       ControlLCAUtil.processSelection( combo, null, true );
     }
   }
-  
+
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "qx.ui.form.ComboBox" );
+    writer.newWidget( QX_TYPE );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -84,13 +88,20 @@ public class ComboLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.call( "removeAll", new Object[] {} );
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
+//    TODO [rst] Enable pooling when re-parenting problems with
+//               qx.ui.form.ComboBox are solved
+//    return TYPE_POOL_ID;
     return null;
   }
-  
+
   private static void writeItems( final Combo combo ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( combo );
     String[] items = combo.getItems();
@@ -101,14 +112,14 @@ public class ComboLCA extends AbstractWidgetLCA {
         items[ i ] = matcher.replaceAll( " " );
         items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
       }
-      Object[] args = new Object[]{ WidgetUtil.getId( combo ), items };
+      Object[] args = new Object[]{ combo, items };
       writer.callStatic( CREATE_COMBOBOX_ITEMS, args );
     }
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( combo ) );
   }
-  
+
   private static void writeSelected( final Combo combo ) throws IOException {
     Integer newValue = new Integer( combo.getSelectionIndex() );
     if( WidgetLCAUtil.hasChanged( combo,
@@ -117,7 +128,7 @@ public class ComboLCA extends AbstractWidgetLCA {
                                   DEFAULT_SELECTION ) )
     {
       JSWriter writer = JSWriter.getWriterFor( combo );
-      Object[] args = new Object[]{ WidgetUtil.getId( combo ), newValue };
+      Object[] args = new Object[]{ combo, newValue };
       writer.callStatic( SELECT_COMBOBOX_ITEM, args );
     }
   }
