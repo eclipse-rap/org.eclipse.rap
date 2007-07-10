@@ -12,6 +12,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.internal.graphics.FontSizeEstimation;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 
 /** 
@@ -43,6 +44,9 @@ import org.eclipse.swt.internal.widgets.IListAdapter;
  */
 public class List extends Scrollable {
 
+  // This value must be kept in sync with appearance of list items
+  private static final int VERTICAL_ITEM_MARGIN = 4;
+  
   private final ListModel model;
   private int focusIndex = -1;
   private IListAdapter listAdapter;
@@ -772,6 +776,23 @@ public class List extends Scrollable {
       }
     }
     return result;
+  }
+
+  /**
+   * Returns the height of the area which would be used to
+   * display <em>one</em> of the items in the list.
+   *
+   * @return the height of one item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public int getItemHeight() {
+    checkWidget();
+    int margin = VERTICAL_ITEM_MARGIN * 2;
+    return FontSizeEstimation.getCharHeight( getFont() ) + margin;
   }
 
   /////////////////////////////////////////
