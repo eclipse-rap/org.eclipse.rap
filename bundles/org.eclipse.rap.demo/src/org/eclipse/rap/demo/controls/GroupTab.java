@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -27,6 +27,7 @@ public class GroupTab extends ExampleTab {
   }
 
   protected void createStyleControls(Composite top) {
+    createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
     createEnablementButton();
     createFgColorButton();
@@ -36,7 +37,7 @@ public class GroupTab extends ExampleTab {
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
-    group = new Group( parent, SWT.NONE );
+    group = new Group( parent, getStyle() );
     group.setLayout( new FillLayout() );
     group.setText( "A group with one white label" );
     Label content = new Label( group, SWT.NONE );

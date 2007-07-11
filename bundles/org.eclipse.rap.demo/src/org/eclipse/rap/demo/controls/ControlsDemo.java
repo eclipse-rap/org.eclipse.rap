@@ -45,7 +45,7 @@ public class ControlsDemo implements IEntryPoint {
     Color selFg = display.getSystemColor( SWT.COLOR_LIST_SELECTION_TEXT );
     topFolder.setSelectionBackground( selBg );
     topFolder.setSelectionForeground( selFg );
-    
+
     final ExampleTab[] tabs = new ExampleTab[] {
       new ProgressBarTab( topFolder ),
       new ButtonTab( topFolder ),
@@ -56,6 +56,7 @@ public class ControlsDemo implements IEntryPoint {
       new CompositeTab( topFolder ),
       new CoolBarTab( topFolder ),
       new DialogsTab( topFolder ),
+      new GroupTab( topFolder ),
       new LabelTab( topFolder ),
       new ListTab( topFolder ),
       new SashTab( topFolder ),
