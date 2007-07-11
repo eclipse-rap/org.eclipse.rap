@@ -129,6 +129,16 @@ final class TextLCAUtil {
     writer.reset( JS_PROP_MAX_LENGTH );
   }
 
+  // TODO [rst] Possible workaround for weird pooling problems with wrap
+  //            property. See qx bug 300. This method might be replaced with a
+  //            simple JSWriter#set call when this bug is fixed.
+  static void writeWrap( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    Boolean value = Boolean.valueOf( ( text.getStyle() & SWT.WRAP ) != 0 );
+    writer.callStatic( "org.eclipse.swt.TextUtil.setWrap",
+                       new Object[] { text, value } );
+  }
+
   static void writeSelection( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
@@ -193,18 +203,5 @@ final class TextLCAUtil {
    */
   static String stripNewlines( final String text ) {
     return NEWLINE_PATTERN.matcher( text ).replaceAll( " " );
-  }
-
-  static String getTypePoolId( final Text text,
-                               final String idBorder,
-                               final String idFlat )
-  {
-    String result;
-    if( ( text.getStyle() & SWT.BORDER ) != 0 ) {
-      result = idBorder;
-    } else {
-      result = idFlat;
-    }
-    return result;
   }
 }

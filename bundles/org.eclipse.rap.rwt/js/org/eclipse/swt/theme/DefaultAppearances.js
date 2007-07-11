@@ -727,10 +727,6 @@ appearances = {
           border : states.rwt_BORDER ? "text.BORDER.border" : "text.border",
           font : "widget.font",
           padding : states.rwt_BORDER ? [ 1, 4 ] : [ 0, 3 ],
-//          TODO [rst] Do we still need this? Seems to work without as well
-//                     Do we ever create a widget without setting its size?
-//          width           : "auto",
-//          height          : "auto",
           textColor       : states.disabled ? "widget.graytext" : "undefined",
           backgroundColor : "list.background"
         };

@@ -10,7 +10,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.swt.TextUtil", {
+qx.Class.define( "org.eclipse.swt.TextUtil", {
 
   statics : {
     
@@ -223,6 +223,27 @@ qx.Class.define("org.eclipse.swt.TextUtil", {
       text.setSelectionStart( start );
       text.setUserData( "selectionLength", length );
       text.setSelectionLength( length );
+    },
+    
+    // TODO [rst] Workaround for pooling problems with wrap property in IE.
+    //            These methods can probably be dropped once qx bug 300 is fixed.
+    setWrap : function( text, wrap ) {
+      if( text.isCreated() && !text.getUserData( "pooled" ) ) {
+        text.setWrap( wrap );
+      } else {
+        text.setUserData( "onAppear.wrap", wrap );
+        text.addEventListener( "appear",
+                               org.eclipse.swt.TextUtil._onAppearSetWrap );
+      }
+    },
+
+    _onAppearSetWrap : function( evt ) {
+      var text = evt.getTarget();
+      var wrap = text.getUserData( "onAppear.wrap" );
+      text.setUserData( "onAppear.wrap", undefined );
+      text.setWrap( wrap );
+      text.removeEventListener( "appear",
+                                org.eclipse.swt.TextUtil._onAppearSetWrap );
     },
     
     ////////////////////////////

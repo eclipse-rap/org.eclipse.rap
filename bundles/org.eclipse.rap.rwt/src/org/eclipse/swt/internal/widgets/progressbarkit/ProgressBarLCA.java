@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -14,7 +14,8 @@ package org.eclipse.swt.internal.widgets.progressbarkit;
 import java.io.IOException;
 
 import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.ProgressBar;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ProgressBarLCA extends AbstractWidgetLCA {
@@ -46,8 +47,6 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     ProgressBar pBar = ( ProgressBar )widget;
-    // TODO [rst] Style flags can never change, remove this line
-    ControlLCAUtil.writeStyleFlags( pBar );
     ControlLCAUtil.writeChanges( pBar );
     // do not change range and selection order
     writeSetInt( pBar, PROP_MINIMUM, "minimum", pBar.getMinimum(), 0 );
@@ -59,10 +58,10 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-  
+
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
     return null;
   }

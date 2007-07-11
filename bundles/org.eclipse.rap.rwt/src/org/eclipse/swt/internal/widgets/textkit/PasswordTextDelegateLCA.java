@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -19,14 +19,11 @@ import org.eclipse.swt.widgets.Text;
 
 final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
 
-  static final String PREFIX_TYPE_POOL_ID
+  static final String TYPE_POOL_ID
     = PasswordTextDelegateLCA.class.getName();
-  private static final String TYPE_POOL_ID_BORDER
-    = PREFIX_TYPE_POOL_ID + "_BORDER";
-  private static final String TYPE_POOL_ID_FLAT
-    = PREFIX_TYPE_POOL_ID + "_FLAT";
+
   private static final String QX_TYPE = "qx.ui.form.PasswordField";
-  
+
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
@@ -57,16 +54,14 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );
   }
-  
+
   void renderDispose( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.dispose();
   }
 
   String getTypePoolId( final Text text ) throws IOException {
-    return TextLCAUtil.getTypePoolId( text, 
-                                      TYPE_POOL_ID_BORDER, 
-                                      TYPE_POOL_ID_FLAT );
+    return TYPE_POOL_ID;
   }
 
   void createResetHandlerCalls( final String typePoolId ) throws IOException {

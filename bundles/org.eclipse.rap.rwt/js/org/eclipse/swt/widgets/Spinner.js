@@ -24,7 +24,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
   members : {
     
     rap_init : function() {
-      this.debug( "_____ rap init" );
       this._isModified = false;
       this._hasModifyListener = false;
       this.getManager().addEventListener( "change", this._onChangeValue, this );
@@ -34,7 +33,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     },
     
     rap_reset : function() {
-      this.debug( "_____ rap reset" );
       this.getManager().removeEventListener( "change", this._onChangeValue, this );
       this._textfield.removeEventListener( "keyinput", this._onChangeValue, this );
       this._textfield.removeEventListener( "blur", this._onChangeValue, this );

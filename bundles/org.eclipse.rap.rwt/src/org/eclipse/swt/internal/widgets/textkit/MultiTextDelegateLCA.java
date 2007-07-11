@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -12,7 +12,7 @@
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
-import org.eclipse.swt.SWT;
+
 import org.eclipse.swt.lifecycle.ControlLCAUtil;
 import org.eclipse.swt.lifecycle.JSWriter;
 import org.eclipse.swt.widgets.Text;
@@ -20,15 +20,11 @@ import org.eclipse.swt.widgets.Text;
 // TODO [rh] bring selection for multi-line text to work. Currently there
 //      occur JavaScript errors. (see readSelection, writeSelection)
 final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
-  
-  static final String PREFIX_TYPE_POOL_ID
-    = MultiTextDelegateLCA.class.getName();
-  private static final String TYPE_POOL_ID_BORDER
-    = PREFIX_TYPE_POOL_ID + "_BORDER";
-  private static final String TYPE_POOL_ID_FLAT
-    = PREFIX_TYPE_POOL_ID + "_FLAT";
 
   private static final String QX_TYPE = "qx.ui.form.TextArea";
+
+  static final String TYPE_POOL_ID
+    = MultiTextDelegateLCA.class.getName();
 
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
@@ -50,7 +46,9 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeNoSpellCheck( text );
-    writer.set( "wrap", ( text.getStyle() & SWT.WRAP ) != 0 );
+//    TODO [rst] Disabled writing of wrap state since it only works in Opera and
+//               also interferes with object pooling in IE.
+//    TextLCAUtil.writeWrap( text );
   }
 
   void renderChanges( final Text text ) throws IOException {
@@ -62,16 +60,14 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeModifyListener( text );
   }
-  
+
   void renderDispose( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.dispose();
   }
 
   String getTypePoolId( final Text text ) throws IOException {
-    return TextLCAUtil.getTypePoolId( text, 
-                                      TYPE_POOL_ID_BORDER, 
-                                      TYPE_POOL_ID_FLAT );
+    return TYPE_POOL_ID;
   }
 
   void createResetHandlerCalls( final String typePoolId ) throws IOException {

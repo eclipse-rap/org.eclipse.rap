@@ -60,11 +60,11 @@ public final class TextLCA extends AbstractWidgetLCA {
 
   private static AbstractTextDelegateLCA getLCADelegate( final String tpId ) {
     AbstractTextDelegateLCA result;
-    if( tpId.startsWith( PasswordTextDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
+    if( PasswordTextDelegateLCA.TYPE_POOL_ID.equals( tpId ) ) {
       result = PASSWORD;
-    } else if( tpId.startsWith( SingleTextDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
+    } else if( SingleTextDelegateLCA.TYPE_POOL_ID.equals( tpId ) ) {
       result = SINGLE;
-    } else if( tpId.startsWith( MultiTextDelegateLCA.PREFIX_TYPE_POOL_ID ) ) {
+    } else if( MultiTextDelegateLCA.TYPE_POOL_ID.equals( tpId ) ) {
       result = MULTI;
     } else {
       String txt= "The typePoolId ''{0}'' is not supported.";
