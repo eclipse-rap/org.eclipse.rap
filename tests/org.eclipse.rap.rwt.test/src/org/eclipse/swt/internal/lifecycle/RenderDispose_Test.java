@@ -12,14 +12,15 @@
 package org.eclipse.swt.internal.lifecycle;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
-import org.eclipse.swt.lifecycle.*;
+import org.eclipse.swt.lifecycle.DisplayUtil;
 import org.eclipse.swt.widgets.*;
+
 import com.w4t.Fixture;
 import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.requests.RequestParams;
@@ -30,6 +31,8 @@ public class RenderDispose_Test extends TestCase {
   private final PreserveWidgetsPhaseListener preserveWidgetsPhaseListener
     = new PreserveWidgetsPhaseListener();
 
+  // TODO [rst] reactivate when PUSH button takes part in object pooling again
+  /*
   public void testDispose() throws IOException {
     RWTLifeCycle lifeCycle = new RWTLifeCycle();
     // set up the test widget hierarchy
@@ -71,6 +74,7 @@ public class RenderDispose_Test extends TestCase {
     assertTrue( allMarkup.indexOf( functionHandler ) != 0 );
     assertTrue( allMarkup.endsWith( expectedEnd ) );
   }
+  */
 
   public void testDisposeNotYetInitialized() throws IOException {
     // set up the test widget hierarchy
