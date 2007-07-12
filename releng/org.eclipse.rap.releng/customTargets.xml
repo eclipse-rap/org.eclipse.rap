@@ -311,7 +311,7 @@
 		<!-- copy targets -->
 		<copy todir="${buildOuputDirectory}">
 			<fileset dir="${fBuildLocation}">
-				<include name="rap-1.0-N-incubation-target-*" />
+				<include name="rap-1.0-${buildType}-incubation-target-*" />
 			</fileset>
 		</copy>
 
