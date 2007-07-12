@@ -75,6 +75,9 @@ public class BarEditor extends EditorPart {
   }
 
   public void setFocus() {
-    editor.setFocus();
+    // TODO: [bm] commented this out as focus does not work anyway
+    // according to bug 190435 and causes javascript errors in some situations
+    
+    //editor.setFocus();
   }
 }
