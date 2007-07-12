@@ -130,6 +130,20 @@ public class Display extends Device implements Adaptable {
     return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
   }
   
+  /**
+   * Returns the default display. One is created (making the
+   * thread that invokes this method its user-interface thread)
+   * if it did not already exist.
+   * 
+   * RWT specific: This will not return a new display if there is none
+   * available. This may be fixed in the future.
+   * 
+   * @return the default display
+   */
+  public static Display getDefault () {
+    return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
+  }
+  
   private final List shells;
   private ISessionStore session;
   private Rectangle bounds;
