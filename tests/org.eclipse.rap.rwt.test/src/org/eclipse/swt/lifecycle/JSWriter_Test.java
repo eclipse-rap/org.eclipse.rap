@@ -18,10 +18,12 @@ import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 import com.w4t.Fixture;
+import com.w4t.engine.requests.RequestParams;
 import com.w4t.util.browser.Default;
 import com.w4t.util.browser.Ie6;
 
@@ -933,6 +935,41 @@ public class JSWriter_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( findWidget ) != -1 );
   }
 
+  // see bug 195735: Widget disposal causes NullPointerException
+  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=195735
+  public void testWidgetDisposal() throws Exception {
+    Display display = new Display();
+    String displayId = DisplayUtil.getId( display );
+    Shell shell = new Shell( display, SWT.NONE );
+    final Text text = new Text( shell, SWT.MULTI );
+    final Tree tree = new Tree( shell, SWT.SINGLE );
+    for( int i = 0; i < 5; i++ ) {
+      TreeItem t1 = new TreeItem( tree, SWT.NONE );
+      t1.setText( "foo" + i );
+    }
+    Button button = new Button( shell, SWT.PUSH );
+    button.addSelectionListener( new SelectionAdapter() {
+
+      public void widgetSelected( SelectionEvent e ) {
+        text.dispose();
+        tree.dispose();
+      }
+    } );
+    // Run requests to initialize the 'system'
+    RWTFixture.fakeNewRequest();
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.execute();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    lifeCycle.execute();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED,
+                              WidgetUtil.getId( button ) );
+    lifeCycle.execute();
+  }
+  
   public void testEscapeString() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );

@@ -503,7 +503,7 @@ public final class JSWriter {
     ensureWidgetManager();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Object currentWidgetRef = stateInfo.getAttribute( CURRENT_WIDGET_REF );
-    if( widget != currentWidgetRef ) {
+    if( widget != currentWidgetRef && widget != null ) {
       String code = "var {0} = {1};";
       write( code, WIDGET_REF, createFindWidgetById( widget ) );
       setCurrentWidgetRef( widget );
