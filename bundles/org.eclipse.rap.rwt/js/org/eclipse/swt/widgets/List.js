@@ -15,25 +15,48 @@
 qx.Class.define("org.eclipse.swt.widgets.List", {
   extend : qx.ui.form.List,
 
-  construct : function( multiSelection ) {
+  construct : function() {
     this.base( arguments );
-    // Should changeSelection events passed to the server-side?
-    // state == no, action == yes
-    this._changeSelectionNotification = "state";
     this.setMarkLeadingItem( true );
-    // qx.manager.selection.SelectionManager
-    var manager = this.getManager();
-    manager.setMultiSelection( multiSelection );
-    manager.addEventListener( "changeSelection", this._onChangeSelection, this );
-    manager.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
-    this.addEventListener( "focus", this._onFocusIn, this );
-    this.addEventListener( "blur", this._onFocusOut, this );
-    this.addEventListener( "click", this._onClick, this );
-    this.addEventListener( "dblclick", this._onDblClick, this );
+    this.rap_init();
   },
 
   members : {
-    /** Sets the given aray of items. */
+    
+    init : function( multiSelection ) {
+      var manager = this.getManager();
+      manager.setMultiSelection( multiSelection );
+    },
+    
+    rap_init : function( multiSelection ) {
+      // Should changeSelection events passed to the server-side?
+      // state == no, action == yes
+      this._changeSelectionNotification = "state";
+      // qx.manager.selection.SelectionManager
+      var manager = this.getManager();
+      manager.addEventListener( "changeSelection", this._onChangeSelection, this );
+      manager.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+      this.addEventListener( "focus", this._onFocusIn, this );
+      this.addEventListener( "blur", this._onFocusOut, this );
+      this.addEventListener( "click", this._onClick, this );
+      this.addEventListener( "dblclick", this._onDblClick, this );
+    },
+    
+    rap_reset : function() {
+      var manager = this.getManager();
+      manager.removeEventListener( "changeSelection", 
+                                   this._onChangeSelection, 
+                                   this );
+      manager.removeEventListener( "changeLeadItem", 
+                                   this._onChangeLeadItem, 
+                                   this );
+      this.removeEventListener( "focus", this._onFocusIn, this );
+      this.removeEventListener( "blur", this._onFocusOut, this );
+      this.removeEventListener( "click", this._onClick, this );
+      this.removeEventListener( "dblclick", this._onDblClick, this );
+    },
+    
+    /** Sets the given array of items. */
     setItems : function( items ) {
       // preserve selection and focused item
       var manager = this.getManager();
@@ -140,17 +163,7 @@ qx.Class.define("org.eclipse.swt.widgets.List", {
     },
 
     dispose : function() {
-      var manager = this.getManager();
-      manager.removeEventListener( "changeSelection", 
-                                   this._onChangeSelection, 
-                                   this );
-      manager.removeEventListener( "changeLeadItem", 
-                                   this._onChangeLeadItem, 
-                                   this );
-      this.removeEventListener( "focus", this._onFocusIn, this );
-      this.removeEventListener( "blur", this._onFocusOut, this );
-      this.removeEventListener( "click", this._onClick, this );
-      this.removeEventListener( "dblclick", this._onDblClick, this );
+      this.rap_reset();
     },
 
     _onChangeSelection : function( evt ) {

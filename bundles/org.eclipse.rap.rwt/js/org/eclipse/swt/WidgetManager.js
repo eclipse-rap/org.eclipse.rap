@@ -147,6 +147,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
             result.rap_init();
           }
         }
+//        this.debug( "_____ recycled: " + result );
       }
       
       // ... otherwise create a new one
@@ -160,7 +161,9 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         result = window.eval( newExpression );
         result.setUserData( "typePoolId", typePoolId );
         result.setUserData( "pooled", false );
+//        this.debug( "_____ created: " + result );
       }
+      
       
       // map the widget to the server side widgetId
       this.add( result, widgetId, isControl );
@@ -171,7 +174,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       }
       return result;
   	},
-  	
+
     /**
      * Registeres the given widget under the given id at the WidgetManager.
      */

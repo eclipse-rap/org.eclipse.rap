@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -25,25 +25,28 @@ import org.eclipse.swt.widgets.Widget;
 
 public class ListLCA extends AbstractWidgetLCA {
 
-  private static final Pattern NEWLINE_PATTERN 
+  private static final String QX_TYPE = "org.eclipse.swt.widgets.List";
+
+  private static final String TYPE_POOL_ID = null;
+
+  private static final Pattern NEWLINE_PATTERN
     = Pattern.compile( "\\r\\n|\\r|\\n" );
 
   // Property names, used when preserving values
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_ITEMS = "items";
   private static final String PROP_FOCUS_INDEX = "focusIndex";
-  
+
   private static final Integer DEFAULT_SINGLE_SELECTION = new Integer( -1 );
   private static final int[] DEFAULT_MULTI_SELECTION = new int[ 0 ];
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_FOCUS_INDEX = new Integer( -1 );
 
-  
   public void preserveValues( final Widget widget ) {
     List list = ( List  )widget;
     ControlLCAUtil.preserveValues( list );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.SELECTION_LISTENERS, 
+    adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( list ) ) );
     adapter.preserve( PROP_ITEMS, list.getItems() );
     adapter.preserve( PROP_FOCUS_INDEX, new Integer( list.getFocusIndex() ) );
@@ -60,14 +63,14 @@ public class ListLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     List list = ( List )widget;
     JSWriter writer = JSWriter.getWriterFor( list );
-    Boolean multiSelection = isSingle( list ) ? Boolean.FALSE : Boolean.TRUE;
-    writer.newWidget( "org.eclipse.swt.widgets.List", 
-                      new Object[] { multiSelection } );
+    writer.newWidget( QX_TYPE );
+    Boolean multiSelection = Boolean.valueOf( !isSingle( list ) );
+    writer.call( "init", new Object[] { multiSelection } );
     ControlLCAUtil.writeStyleFlags( list );
     writeOverflow( list );
   }
 
-  // TODO [rh] keep scroll position, even when exchanging items 
+  // TODO [rh] keep scroll position, even when exchanging items
   public void renderChanges( final Widget widget ) throws IOException {
     List list = ( List )widget;
     // order of writeChanges, writeItems, writeSelection, writeFocus is crucial
@@ -82,18 +85,21 @@ public class ListLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-  
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+    ControlLCAUtil.resetStyleFlags();
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
-    return null;
+    return TYPE_POOL_ID;
   }
-  
+
 
   ////////////////////////////////////
   // Helping methods to preserve state
-  
+
   private static void preserveSelection( final List list ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
     Object selection;
@@ -107,7 +113,7 @@ public class ListLCA extends AbstractWidgetLCA {
 
   ///////////////////////////////////////////
   // Helping methods to write JavaScript code
-  
+
   private static void writeItems( final List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
     String[] items = list.getItems();
@@ -148,7 +154,7 @@ public class ListLCA extends AbstractWidgetLCA {
       }
     }
   }
-  
+
   private static void writeFocusIndex( final List list ) throws IOException {
     String prop = PROP_FOCUS_INDEX;
     Integer newValue = new Integer( list.getFocusIndex() );
@@ -175,7 +181,7 @@ public class ListLCA extends AbstractWidgetLCA {
     writer.set( "overflow", overflow );
   }
 
-  private static void updateSelectionListeners( final List list ) 
+  private static void updateSelectionListeners( final List list )
     throws IOException
   {
     String prop = Props.SELECTION_LISTENERS;
@@ -183,7 +189,7 @@ public class ListLCA extends AbstractWidgetLCA {
     Boolean defValue = Boolean.FALSE;
     if( WidgetLCAUtil.hasChanged( list, prop, newValue, defValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( list );
-      String value = newValue.booleanValue() ? "action" : "state"; 
+      String value = newValue.booleanValue() ? "action" : "state";
       writer.set( "changeSelectionNotification", value );
     }
   }
@@ -219,8 +225,8 @@ public class ListLCA extends AbstractWidgetLCA {
   }
 
   //////////////////
-  // Helping methods 
-  
+  // Helping methods
+
   private static boolean isSingle( final List list ) {
     return ( list.getStyle() & SWT.SINGLE ) != 0;
   }

@@ -89,8 +89,8 @@ public class ListTab extends ExampleTab {
     viewer.setInput( ELEMENTS );
     list.addSelectionListener( new SelectionAdapter() {
       public void widgetDefaultSelected( SelectionEvent event ) {
-        int index = list.getSelectionIndex();
-        String message = "Item " + index + " selected";
+        String item = list.getItem( list.getSelectionIndex() );
+        String message = "Selected Item: " + item;
         MessageDialog.openInformation( getShell(), "Selection", message, null );
       }
     } );
