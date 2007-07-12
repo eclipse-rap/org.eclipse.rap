@@ -170,5 +170,16 @@
               id="org.eclipse.rap.demo.actionSet">
         </actionSet>
      </perspectiveExtension>
-  </extension>  
+  </extension>
+  <extension
+        point="org.eclipse.ui.editors">
+     <editor
+           class="org.eclipse.rap.demo.editor.FooEditor"
+           contributorClass="org.eclipse.rap.demo.editor.FooEditorContributor"
+           extensions="*"
+           icon="icons/status.gif"
+           id="org.eclipse.rap.demo.editor"
+           name="Foo Editor">
+     </editor>
+  </extension>
 </plugin>

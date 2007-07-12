@@ -17,7 +17,7 @@ public class PlanningPerspective implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) {
 	    String editorArea = layout.getEditorArea();
-	    layout.setEditorAreaVisible( false );
+	    layout.setEditorAreaVisible( true );
 	    IFolderLayout topLeft = layout.createFolder( "topLeft",
 	                                                 IPageLayout.LEFT,
 	                                                 0.25f,

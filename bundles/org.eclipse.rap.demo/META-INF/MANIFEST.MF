@@ -4,7 +4,8 @@ Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.demo; singleton := true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.rap.ui.workbench
+Require-Bundle: org.eclipse.rap.ui.workbench,
+ org.eclipse.core.runtime
 Import-Package: javax.servlet;version="[2.3.0,2.5.0)",
  javax.servlet.http;version="[2.3.0,2.5.0)"
 Bundle-Vendor: %Bundle-Vendor
