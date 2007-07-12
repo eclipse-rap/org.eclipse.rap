@@ -19,6 +19,7 @@ plugin@org.eclipse.rap.w4t=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tech
 
 # demo
 plugin@org.eclipse.rap.demo=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo
+plugin@org.eclipse.rap.demo.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.demo.databinding
 
 # sdk
 feature@org.eclipse.rap.sdk=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.sdk-feature,org.eclipse.rap.sdk
@@ -31,6 +32,11 @@ plugin@org.apache.commons.logging=v1_0_4,:pserver:anonymous@dev.eclipse.org:/cvs
 # equinox http stuff
 plugin@org.eclipse.equinox.http.registry=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.registry
 plugin@org.eclipse.equinox.http.servlet=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.servlet
+
+# databinding
+plugin@org.eclipse.core.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.core.databinding
+plugin@org.eclipse.core.databinding.beans=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.core.databinding.beans
+plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.jface.databinding
 
 # jetty
 plugin@org.eclipse.equinox.http.jetty=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.jetty
