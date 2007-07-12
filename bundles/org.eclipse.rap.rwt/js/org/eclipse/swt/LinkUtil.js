@@ -8,10 +8,12 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 /**
- * This class contains static functions needed for labels.
+ * This class contains static functions needed for the SWT Link widget.
  */
 qx.Class.define( "org.eclipse.swt.LinkUtil", {
+
   /*
   *****************************************************************************
      STATICS
@@ -38,17 +40,18 @@ qx.Class.define( "org.eclipse.swt.LinkUtil", {
       if( widget && !widget.isDisposed() ) {
         var children = widget.getChildren();
         var child = children[0];
-        while ( child ) {
+        while( child ) {
           widget.remove( child );
-          if (child.hasEventListeners( "mousedown" ) ) {
+          if( child.hasEventListeners( "mousedown" ) ) {
             child.removeEventListener( "mousedown",
                                        org.eclipse.swt.LinkUtil._onMouseDown );
           }
-          if (child.hasEventListeners( "keydown" ) ) {
+          if( child.hasEventListeners( "keydown" ) ) {
             child.removeEventListener( "keydown",
                                        org.eclipse.swt.LinkUtil._onKeyDown );
           }
-          child.dispose();
+          
+//          child.dispose();
           child = children[0];
         }
       }

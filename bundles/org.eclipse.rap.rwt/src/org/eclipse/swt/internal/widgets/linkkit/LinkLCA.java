@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -22,6 +22,10 @@ import org.eclipse.swt.widgets.Widget;
 import com.w4t.engine.service.ContextProvider;
 
 public class LinkLCA extends AbstractWidgetLCA {
+
+  private static final String QX_TYPE = "qx.ui.layout.HorizontalBoxLayout";
+
+  private static final String TYPE_POOL_ID = LinkLCA.class.getName();
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_SEL_LISTENER = "selectionListener";
@@ -52,10 +56,10 @@ public class LinkLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "qx.ui.layout.HorizontalBoxLayout" );
+    writer.newWidget( QX_TYPE );
     writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );
     Object[] args = new Object[] { widget };
-    writer.callStatic( "org.eclipse.swt.LinkUtil.init", args  );
+    writer.callStatic( "org.eclipse.swt.LinkUtil.init", args );
     ControlLCAUtil.writeStyleFlags( widget );
   }
 
@@ -72,14 +76,20 @@ public class LinkLCA extends AbstractWidgetLCA {
     writer.callStatic( "org.eclipse.swt.LinkUtil.destroy", args );
     writer.dispose();
   }
-  
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+    ControlLCAUtil.resetStyleFlags();
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    Object[] args = new Object[]{ JSWriter.WIDGET_REF };
+    writer.callStatic( "org.eclipse.swt.LinkUtil.clear", args );
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
-    return null;
+    return TYPE_POOL_ID;
   }
-  
+
   private void writeSelectionListener( final Link link ) throws IOException {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( link ) );
     Boolean defValue = Boolean.FALSE;
