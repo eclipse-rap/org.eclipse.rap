@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.perspectives">
+	  <perspective
+     			 class="org.eclipse.rap.demo.databinding.DataBindingPerspective"
+     			 icon="icons/ejbBinding_obj.gif"
+     			 id="org.eclipse.rap.demo.databinding.DataBindingPerspective"
+     			 name="Data Binding Perspective">
+     </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="Databinding.Examples"
+            class="org.eclipse.rap.demo.databinding.DatabindingSnippetsView"
+            icon="icons/ejbBinding_obj.gif"
+            id="org.eclipse.rap.demo.databinding.DatabindingSnippetsView"
+            name="Databinding Snippets"/>
+      <view
+            category="Databinding.Examples"
+            class="org.eclipse.rap.demo.databinding.nestedselection.TestMasterDetailView"
+            icon="icons/sessions.gif"
+            id="org.eclipse.rap.demo.databinding.nestedselection.TestMasterDetailView"
+            name="MasterDetail Example"/>
+      <category
+            id="Databinding.Examples"
+            name="Databinding Examples"/>
+   </extension>
+     
+</plugin>
