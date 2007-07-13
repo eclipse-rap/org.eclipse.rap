@@ -726,7 +726,7 @@ appearances = {
         return {
           border : states.rwt_BORDER ? "text.BORDER.border" : "text.border",
           font : "widget.font",
-          padding : states.rwt_BORDER ? [ 1, 4 ] : [ 0, 3 ],
+          padding : states.rwt_BORDER ? [ 2, 1, 2, 4 ] : [ 1, 1, 1, 3 ],
           textColor       : states.disabled ? "widget.graytext" : "undefined",
           backgroundColor : "list.background"
         };
@@ -734,7 +734,12 @@ appearances = {
     },
 
     "text-area" : {
-      include : "text-field"
+      include : "text-field",
+      style : function( states ) {
+        return {
+          padding : states.rwt_BORDER ? [ 0, 0, 0, 4 ] : [ 0, 0, 0, 3 ]
+        };
+      }
     },
 
     /*

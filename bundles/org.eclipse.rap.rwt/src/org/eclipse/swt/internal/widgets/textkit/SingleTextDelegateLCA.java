@@ -73,17 +73,6 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     writer.dispose();
   }
 
-  private static void writeSelectionListener( final Text text )
-    throws IOException
-  {
-    if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( text );
-      writer.updateListener( JS_SELECTION_LISTENER_INFO,
-                             PROP_SELECTION_LISTENER,
-                             SelectionEvent.hasListener( text ) );
-    }
-  }
-
   String getTypePoolId( final Text text ) throws IOException {
     return TYPE_POOL_ID;
   }
@@ -96,9 +85,21 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.resetReadOnly();
     TextLCAUtil.resetText();
     ControlLCAUtil.resetChanges();
+    ControlLCAUtil.resetStyleFlags();
   }
 
-  private void resetSelectionListener() throws IOException {
+  private static void writeSelectionListener( final Text text )
+    throws IOException
+  {
+    if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( text );
+      writer.updateListener( JS_SELECTION_LISTENER_INFO,
+                             PROP_SELECTION_LISTENER,
+                             SelectionEvent.hasListener( text ) );
+    }
+  }
+
+  private static void resetSelectionListener() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.removeListener( JS_SELECTION_LISTENER_INFO.getEventType(),
                            JS_SELECTION_LISTENER_INFO.getJSListener() );

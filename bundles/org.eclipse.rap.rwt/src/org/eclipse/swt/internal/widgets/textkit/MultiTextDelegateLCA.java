@@ -76,5 +76,6 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.resetReadOnly();
     TextLCAUtil.resetText();
     ControlLCAUtil.resetChanges();
+    ControlLCAUtil.resetStyleFlags();
   }
 }

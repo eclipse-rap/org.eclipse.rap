@@ -71,5 +71,6 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.resetReadOnly();
     TextLCAUtil.resetText();
     ControlLCAUtil.resetChanges();
+    ControlLCAUtil.resetStyleFlags();
   }
 }
