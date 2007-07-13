@@ -18,7 +18,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-class GridLayoutTab extends ExampleTab {
+public class GridLayoutTab extends ExampleTab {
 
   private boolean propPrefSize;
   private boolean propEqualWidth;
@@ -48,7 +48,6 @@ class GridLayoutTab extends ExampleTab {
     GridLayout parentLayout = new GridLayout();
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
-
     Composite comp = new Composite( parent, SWT.NONE );
     comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
     GridLayout gridLayout = new GridLayout();
@@ -58,31 +57,31 @@ class GridLayoutTab extends ExampleTab {
     gridLayout.makeColumnsEqualWidth = propEqualWidth;
     comp.setLayout( gridLayout );
 
-    Button button1 = new Button(comp, SWT.PUSH);
-    button1.setText("B1");
+    Button button1 = new Button( comp, SWT.PUSH );
+    button1.setText( "B1" );
     GridData gridData = new GridData();
     gridData.verticalAlignment = GridData.FILL;
-    button1.setLayoutData(gridData);
+    button1.setLayoutData( gridData );
 
-    new Button(comp, SWT.PUSH).setText( "Wide Button 2" );
+    new Button( comp, SWT.PUSH ).setText( "Wide Button 2" );
 
     Button button3 = new Button( comp, SWT.PUSH );
-    button3.setText("Button 3");
+    button3.setText( "Button 3" );
     gridData = new GridData();
     gridData.verticalAlignment = GridData.FILL;
     gridData.verticalSpan = 2;
     gridData.grabExcessVerticalSpace = true;
     gridData.horizontalAlignment = GridData.FILL;
     gridData.grabExcessHorizontalSpace = true;
-    button3.setLayoutData(gridData);
+    button3.setLayoutData( gridData );
 
-    Button button4 = new Button( comp, SWT.PUSH);
-    button4.setText("B4");
+    Button button4 = new Button( comp, SWT.PUSH );
+    button4.setText( "B4" );
     gridData = new GridData();
     gridData.verticalAlignment = GridData.FILL;
-    button4.setLayoutData(gridData);
+    button4.setLayoutData( gridData );
 
-    new Button( comp, SWT.PUSH).setText("Button 5");    
+    new Button( comp, SWT.PUSH).setText( "Button 5" );
 
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );

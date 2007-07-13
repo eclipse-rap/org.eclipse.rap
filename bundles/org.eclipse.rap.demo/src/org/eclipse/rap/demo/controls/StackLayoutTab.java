@@ -19,7 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-class StackLayoutTab extends ExampleTab {
+public class StackLayoutTab extends ExampleTab {
 
   private static final int COUNT = 5;
   private Composite comp;
@@ -54,7 +54,7 @@ class StackLayoutTab extends ExampleTab {
     GridLayout parentLayout = new GridLayout();
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
-    
+
     comp = new Composite( parent, SWT.NONE );
     comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
     stackLayout = new StackLayout();
@@ -68,7 +68,7 @@ class StackLayoutTab extends ExampleTab {
       button.setFont( Font.getFont( "Serif", 24, SWT.BOLD ) );
       bArray[ i ] = button;
     }
-    stackLayout.topControl = bArray[ 0 ];
+    stackLayout.topControl = bArray[ index ];
 
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );

@@ -17,7 +17,7 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-class FillLayoutTab extends ExampleTab {
+public class FillLayoutTab extends ExampleTab {
 
   private boolean propPrefSize;
 
@@ -42,10 +42,10 @@ class FillLayoutTab extends ExampleTab {
     GridLayout parentLayout = new GridLayout();
     parentLayout.marginWidth = 5;
     parent.setLayout( parentLayout );
-    
+
     Composite comp = new Composite( parent, SWT.NONE );
     comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
-    
+
     FillLayout fillLayout = new FillLayout( style );
     fillLayout.marginWidth = 3;
     fillLayout.marginHeight = 3;
