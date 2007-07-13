@@ -57,7 +57,6 @@ public class TestMasterDetailView extends ViewPart {
         if( changed instanceof IObserving ) {
           changed = ( ( IObserving )changed ).getObserved();
         }
-        System.out.println( "changed: " + changed );
       }
       return result;
     }

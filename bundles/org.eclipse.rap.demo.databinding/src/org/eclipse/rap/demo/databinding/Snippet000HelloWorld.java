@@ -53,7 +53,6 @@ public class Snippet000HelloWorld extends Group {
       String oldValue = this.name;
       this.name = name;
       firePropertyChange( "name", oldValue, this.name );
-      System.out.println( "Property 'name' changed value: [" + name + "]" );
     }
   }
   // The View's model--the root of our Model graph for this particular GUI.
@@ -135,6 +134,5 @@ public class Snippet000HelloWorld extends Group {
       e.printStackTrace();
     }
     // Print the results
-    System.out.println( "person.getName() = " + viewModel.getPerson().getName() );
   }
 }
