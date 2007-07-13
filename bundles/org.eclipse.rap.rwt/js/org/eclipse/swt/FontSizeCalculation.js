@@ -46,8 +46,10 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       }
       lbl.setText( item[ 1 ] );
       wm.setFont( lbl, item[ 2 ], item[ 3 ], item[ 4 ], item[ 5 ] );
-      return [ lbl._computePreferredInnerWidth(), 
-               lbl._computePreferredInnerHeight() ];
+      var result =  [ lbl._computePreferredInnerWidth(), 
+                      lbl._computePreferredInnerHeight() ];
+      qx.ui.basic.Label._getMeasureNode().style.width = "auto";
+      return result;
     },
     
     _addRequestParam : function ( name, value ) {
