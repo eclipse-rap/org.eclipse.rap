@@ -256,7 +256,7 @@ public class FontSizeCalculator_Test extends TestCase {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     storage.save( out );
     String[] expected = new String[] { 
-      "#" + DefaultFontSizeStorage.COMMENT + "\n",
+//      "#" + DefaultFontSizeStorage.COMMENT + "\n",
       DefaultFontSizeStorage.PREFIX_FONT_KEY + "0=1|arial|10|0|\n",
       DefaultFontSizeStorage.PREFIX_FONT_KEY + "=1|helvetia|12|0|\n",
       "0=9,10\n",
