@@ -34,8 +34,8 @@ plugin@org.eclipse.equinox.http.registry=HEAD,:pserver:anonymous@dev.eclipse.org
 plugin@org.eclipse.equinox.http.servlet=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.servlet
 
 # databinding
-plugin@org.eclipse.core.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.core.databinding
-plugin@org.eclipse.core.databinding.beans=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.core.databinding.beans
+plugin@org.eclipse.rap.core.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding
+plugin@org.eclipse.rap.core.databinding.beans=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding.beans
 plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.jface.databinding
 
 # jetty
