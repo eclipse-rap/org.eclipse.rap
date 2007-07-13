@@ -370,7 +370,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     Object oldValue = displayAdapter.getPreserved( PROP_FOCUS_CONTROL );
     if( isInitialRequest( display ) || oldValue != display.getFocusControl() ) {
       // TODO [rst] Added null check as a NPE occurred in some rare cases
-      if( display.getFocusControl() != null ) {
+      Control focusControl = display.getFocusControl();
+      // TODO [fappel]: remove text check after bug #190435 is fixed
+      if( focusControl != null && !( focusControl instanceof Text ) ) {
         // TODO [rh] use JSWriter to output focus JavaScript 
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
         HtmlResponseWriter out = stateInfo.getResponseWriter();
