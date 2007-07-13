@@ -242,11 +242,15 @@ final class FontSizeCalculationHandler
     for( int i = 0; hasItems && i < calculationItems.length; i++ ) {
       ICalculationItem item = calculationItems[ i ];
       String name = String.valueOf( item.hashCode() );
-      Point size = getSize( request.getParameter( name ) );
-      FontSizeDataBase.store( item.getFont(), 
-                              item.getString(), 
-                              item.getWrapWidth(),
-                              size );
+      String value = request.getParameter( name );
+      // TODO [fappel]: Workaround for background process problem
+      if( value != null ) {
+        Point size = getSize( value );
+        FontSizeDataBase.store( item.getFont(), 
+                                item.getString(), 
+                                item.getWrapWidth(),
+                                size );
+      }
     }
   }
   
