@@ -86,6 +86,7 @@ final class FontSizeCalculationHandler
             };
             WidgetTreeVisitor.accept( shells[ i ], visitor );
             shells[ i ].setSize( buffer.x + 1000, buffer.y + 1000 );
+            WidgetTreeVisitor.accept( shells[ i ], visitor );
             shells[ i ].setSize( buffer );
           }
         }
