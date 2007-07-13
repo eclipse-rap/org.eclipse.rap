@@ -11,7 +11,7 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
@@ -55,7 +55,7 @@ public class ButtonThemeAdapter implements IButtonThemeAdapter {
       }
     }
     if( text.length() > 0 ) {
-      Point extent = FontSizeEstimation.stringExtent( text, button.getFont() );
+      Point extent = FontSizeCalculator.stringExtent( button.getFont(), text );
       height = Math.max( height, extent.y );
       width += extent.x;
     }

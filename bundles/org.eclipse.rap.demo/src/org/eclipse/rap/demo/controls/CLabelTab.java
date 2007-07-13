@@ -61,6 +61,10 @@ public class CLabelTab extends ExampleTab {
     CLabel right = new CLabel( parent, style );
     right.setText( "And more" );
     right.setImage( image2 );
+    
+    registerControl( left );
+    registerControl( center );
+    registerControl( right );
   }
 
 }

@@ -38,19 +38,21 @@ public class SpinnerTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new GridLayout( 2, false ) );
+    GridLayout gridLayout = new GridLayout( 2, false );
+    parent.setLayout( gridLayout );
     Label label = new Label( parent, SWT.NONE );
     label.setText( "Simple Spinner" );
     spinner = new Spinner( parent, getStyle() );
-    spinner.setLayoutData( new GridData( 60, 22 ) );
+    Util.textSizeAdjustment( label, spinner );
     label = new Label( parent, SWT.NONE );
     label.setText( "Spinner with ModifyListener" );
     modifySpinner = new Spinner( parent, getStyle() );
-    modifySpinner.setLayoutData( new GridData( 60, 22 ) );
+    Util.textSizeAdjustment( label, modifySpinner );
     label = new Label( parent, SWT.NONE );
     label.setText( "Current value" );
     final Label lblSpinnerValue = new Label( parent, SWT.NONE );
-    lblSpinnerValue.setLayoutData( new GridData( 60, 22 ) );
+    lblSpinnerValue.setText( String.valueOf( modifySpinner.getSelection() ) );
+    Util.textSizeAdjustment( label, lblSpinnerValue );
     modifySpinner.addModifyListener( new ModifyListener() {
       public void modifyText( final ModifyEvent event ) {
         String value = String.valueOf( modifySpinner.getSelection() );
@@ -93,12 +95,17 @@ public class SpinnerTab extends ExampleTab {
   {
     Composite container = new Composite( parent, SWT.NONE );
     container.setLayout( new GridLayout( 2, false ) );
-    Label label = new Label( container, SWT.NONE );
-    label.setLayoutData( new GridData( 100, 20 ) );
+    final Label label = new Label( container, SWT.NONE );
     label.setText( text );
-    Text result = new Text( container, SWT.BORDER );
-    result.setLayoutData( new GridData( 50, 20 ) );
+    final Text result = new Text( container, SWT.BORDER );
     result.setText( value );
+    parent.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent e ) {
+        int height = label.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y;
+        int width = height * 3;
+        result.setLayoutData( new GridData( width, height ) );        
+      }
+    } );
     return result;
   }
 }

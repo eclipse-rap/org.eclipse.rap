@@ -20,10 +20,12 @@ import java.util.regex.Pattern;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.graphics.IColor;
+import org.eclipse.swt.internal.lifecycle.CurrentPhase;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.widgets.*;
 
 import com.w4t.HtmlResponseWriter;
+import com.w4t.engine.lifecycle.PhaseId;
 import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
 
@@ -83,8 +85,8 @@ public final class JSWriter {
     return new JSWriter( null );
   }
 
-  private JSWriter( final Widget widget ) {
-    this.widget = widget;
+  private JSWriter( final Widget iwidgetdget ) {
+    this.widget = iwidgetdget;
   }
 
   public void newWidget( final String className ) throws IOException {
@@ -490,13 +492,23 @@ public final class JSWriter {
 
   private void ensureWidgetManager() throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    if(    widget != null
+    if(    currentPhaseIsRender()
+        && widget != null
         && stateInfo.getAttribute( HAS_WINDOW_MANAGER ) == null )
     {
       write( "var {0} = org.eclipse.swt.WidgetManager.getInstance();",
              WIDGET_MANAGER_REF );
       stateInfo.setAttribute( HAS_WINDOW_MANAGER, Boolean.TRUE );
     }
+  }
+
+  // TODO [fappel]: FontSizeCalculation causes problems with widget manager
+  //                in IE. See FontSizeCalculationHandler#createFontParam. 
+  //                Untill a better solution is found this hack is needed.
+  private boolean currentPhaseIsRender() {
+    return CurrentPhase.get() != PhaseId.PROCESS_ACTION
+        && CurrentPhase.get() != PhaseId.PREPARE_UI_ROOT
+        && CurrentPhase.get() != PhaseId.READ_DATA;
   }
 
   private void ensureWidgetRef() throws IOException {

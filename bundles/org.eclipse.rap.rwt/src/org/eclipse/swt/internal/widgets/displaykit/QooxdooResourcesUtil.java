@@ -14,9 +14,11 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import java.io.File;
 import java.util.Enumeration;
 import java.util.zip.ZipFile;
+
 import org.eclipse.swt.internal.engine.ResourceRegistry;
 import org.eclipse.swt.resources.IResource;
 import org.eclipse.swt.resources.ResourceManager;
+
 import com.w4t.*;
 import com.w4t.IResourceManager.RegisterOptions;
 import com.w4t.engine.service.ContextProvider;
@@ -89,6 +91,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/externalbrowser/Util.js";
   private static final String PROGRESS_BAR_JS 
     = "org/eclipse/swt/widgets/ProgressBar.js";
+  private static final String FONT_SIZE_CALCULATION_JS
+    = "org/eclipse/swt/FontSizeCalculation.js";
   private static final String QX_CONSTANT_CORE_JS
     = "qx/constant/Core.js";
   private static final String QX_CONSTANT_LAYOUT_JS
@@ -162,6 +166,7 @@ final class QooxdooResourcesUtil {
       register( LINK_UTIL_JS );
       register( EXTERNALBROWSER_UTIL_JS );
       register( PROGRESS_BAR_JS );
+      register( FONT_SIZE_CALCULATION_JS );
       register( CLABEL_UTIL_JS );
       
       // register contributions

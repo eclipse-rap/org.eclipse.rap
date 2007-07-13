@@ -14,8 +14,7 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.externalbrowser.ExternalBrowser;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
@@ -39,8 +38,7 @@ class BrowserTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
 //    createEnablementButton();
-    createUrlSelector( parent );
-    createHtmlSelector( parent );
+    createUrlAndHTMLSelector( parent );
     createExternalBrowserSelector( parent );
   }
 
@@ -50,42 +48,43 @@ class BrowserTab extends ExampleTab {
     registerControl( browser );
   }
 
-  private void createUrlSelector( final Composite parent ) {
+  private void createUrlAndHTMLSelector( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
-    Label label = new Label( composite, SWT.NONE );
-    label.setLayoutData( new RowData( 35, 20 ) );
-    label.setText( "URL" );
-    final Text text = new Text( composite, SWT.BORDER );
-    text.setLayoutData( new RowData( 170, 20 ) );
-    text.setText( "http://eclipse.org/rap" );
-    Button button = new Button( composite, SWT.PUSH );
-    button.setLayoutData( new RowData( 45, 20 ) );
-    button.setText( "Go" );
-    button.addSelectionListener( new SelectionAdapter() {
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label lblURL = new Label( composite, SWT.NONE );
+    lblURL.setText( "URL" );
+    final Text txtURL = new Text( composite, SWT.BORDER );
+    txtURL.setText( "http://eclipse.org/rap" );
+    Button btnURL = new Button( composite, SWT.PUSH );
+    btnURL.setText( "Go" );
+    btnURL.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        browser.setUrl( text.getText() );
+        browser.setUrl( txtURL.getText() );
       }
     } );
-  }
-
-  private void createHtmlSelector( final Composite parent ) {
-    Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( new RowLayout( SWT.VERTICAL ) );
-    Label label = new Label( composite, SWT.NONE );
-    label.setLayoutData( new RowData( 50, 18 ) );
-    label.setText( "HTML" );
-    final Text text = new Text( composite, SWT.BORDER | SWT.MULTI );
-    text.setText( DEFAULT_HTML );
-    text.setLayoutData( new RowData( 200, 150 ) );
-    Button button = new Button( composite, SWT.PUSH );
-    button.setLayoutData( new RowData( 50, 20 ) );
-    button.setText( "Go" );
-    button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        browser.setText( text.getText() );
+    
+    final Label lblHTML = new Label( composite, SWT.NONE );
+    lblHTML.setText( "HTML" );
+    lblHTML.setLayoutData( new GridData( GridData.VERTICAL_ALIGN_BEGINNING ) );
+    
+    final Text txtHTML = new Text( composite, SWT.BORDER | SWT.MULTI );
+    txtHTML.setText( DEFAULT_HTML );
+    lblHTML.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent evt ) {
+        GridData data
+          = new GridData( txtURL.getSize().x, lblHTML.getSize().y * 8 );
+        txtHTML.setLayoutData( data );
       }
     } );
+    
+    Button btnHTML = new Button( composite, SWT.PUSH );
+    btnHTML.setText( "Go" );
+    btnHTML.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        browser.setText( txtHTML.getText() );
+      }
+    } );
+    btnHTML.setLayoutData( new GridData( GridData.VERTICAL_ALIGN_BEGINNING ) );
   }
 
   private void createExternalBrowserSelector( final Composite parent ) {

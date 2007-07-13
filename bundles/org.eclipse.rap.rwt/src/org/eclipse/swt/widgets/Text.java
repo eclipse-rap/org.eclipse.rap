@@ -16,7 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 
 /**
  * Instances of this class are selectable user interface
@@ -465,7 +465,8 @@ public class Text extends Scrollable {
       if( wrap && wHint != SWT.DEFAULT ) {
         wrapWidth = wHint;
       }
-      Point extent = FontSizeEstimation.textExtent( text, wrapWidth, getFont() );
+      Point extent
+        = FontSizeCalculator.textExtent( getFont(), text, wrapWidth );
       if( extent.x != 0 ) {
         width = extent.x + 10;
       }
@@ -490,9 +491,9 @@ public class Text extends Scrollable {
   }
   
   public Rectangle computeTrim( final int x,
-                                 final int y,
-                                 final int width,
-                                 final int height )
+                                final int y,
+                                final int width,
+                                final int height )
   {
     Rectangle result = super.computeTrim( x, y, width, height );
     if( ( style & SWT.H_SCROLL ) != 0 ) {

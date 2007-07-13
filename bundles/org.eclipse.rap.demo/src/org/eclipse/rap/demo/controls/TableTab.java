@@ -12,8 +12,7 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
@@ -221,7 +220,7 @@ public class TableTab extends ExampleTab {
     Label label = new Label( composite, SWT.NONE );
     label.setText( "Add" );
     final Text text = new Text( composite, SWT.BORDER );
-    text.setLayoutData( new GridData( 30, SWT.DEFAULT ) );
+    Util.textSizeAdjustment( label, text );
     text.setText( "1" );
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Item(s)" );
@@ -334,7 +333,7 @@ public class TableTab extends ExampleTab {
     Label label = new Label( composite, SWT.NONE );
     label.setText( "Columns" );
     final Text text = new Text( composite, SWT.BORDER );
-    text.setLayoutData( new RowData( 40, 20 ) );
+    Util.textSizeAdjustment( label, text );
     text.setText( String.valueOf( columns ) );
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Change" );
@@ -357,10 +356,12 @@ public class TableTab extends ExampleTab {
     Label lblIndex = new Label( composite, SWT.NONE );
     lblIndex.setText( "Index" );
     final Text txtIndex = new Text( composite, SWT.BORDER );
+    Util.textSizeAdjustment( lblIndex, txtIndex );
     txtIndex.setText( "0" );
     Label lblText = new Label( composite, SWT.NONE );
     lblText.setText( "Text" );
     final Text txtText = new Text( composite, SWT.BORDER );
+    Util.textSizeAdjustment( lblText, txtText );
     Button button = new Button( composite, SWT.PUSH );
     GridData gridData 
       = new GridData( SWT.BEGINNING, SWT.CENTER, false, false, 4, SWT.DEFAULT );
@@ -400,7 +401,7 @@ public class TableTab extends ExampleTab {
     Label label = new Label( composite, SWT.NONE );
     label.setText( "ItemCount" );
     final Text text = new Text( composite, SWT.BORDER );
-    text.setLayoutData( new RowData( 40, 20 ) );
+    Util.textSizeAdjustment( label, text );
     text.setText( String.valueOf( getTable().getItemCount() ) );
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Change" );
@@ -433,32 +434,32 @@ public class TableTab extends ExampleTab {
     } );
   }
 
-//  private void createImagesControl() {
-//    Composite composite = new Composite( styleComp, SWT.NONE );
-//    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
-//    Label label = new Label( composite , SWT.NONE );
-//    label.setText( "Columns width images" );
-//    final Spinner spinner = new Spinner( composite , SWT.BORDER );
-//    spinner.setLayoutData( new RowData( 50, 20 ) );
-//    Button button = new Button( composite , SWT.PUSH );
-//    button.setText( "Change" );
-//    button.addSelectionListener( new SelectionAdapter() {
-//      public void widgetSelected( final SelectionEvent event ) {
-//        int count = spinner.getSelection();
-//        for( int i = 0; i < table.getItemCount(); i++ ) {
-//          for( int c = 0; c < table.getColumnCount(); c++ ) {
-//            TableItem item = table.getItem( i );
-//            if( c < count ) {
-//              item.setImage( c, bigImage );
-//            } else {
-//              item.setImage( c, null );
-//            }
-//          }
-//        }
-//      }
-//    } );
-//  }
 
+  //  private void createImagesControl() {
+  //    Composite composite = new Composite( styleComp, SWT.NONE );
+  //    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+  //    Label label = new Label( composite , SWT.NONE );
+  //    label.setText( "Columns width images" );
+  //    final Spinner spinner = new Spinner( composite , SWT.BORDER );
+  //    Button button = new Button( composite , SWT.PUSH );
+  //    button.setText( "Change" );
+  //    button.addSelectionListener( new SelectionAdapter() {
+  //      public void widgetSelected( final SelectionEvent event ) {
+  //        int count = spinner.getSelection();
+  //        for( int i = 0; i < table.getItemCount(); i++ ) {
+  //          for( int c = 0; c < table.getColumnCount(); c++ ) {
+  //            TableItem item = table.getItem( i );
+  //            if( c < count ) {
+  //              item.setImage( c, bigImage );
+  //            } else {
+  //              item.setImage( c, null );
+  //            }
+  //          }
+  //        }
+  //      }
+  //    } );
+  //  }
+  
   private Table getTable() {
     return table;
   }

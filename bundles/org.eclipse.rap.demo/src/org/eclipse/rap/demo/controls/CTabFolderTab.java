@@ -15,7 +15,6 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.*;
 
 public class CTabFolderTab extends ExampleTab {
@@ -71,7 +70,6 @@ public class CTabFolderTab extends ExampleTab {
     parent.setLayout( new FillLayout() );
     int style = getStyle();
     folder = new CTabFolder( parent, style );
-    folder.setLayoutData( new RowData( 250, 200 ) );
     for( int i = 0; i < 3; i++ ) {
       CTabItem item = new CTabItem( folder, style );
       item.setText( "Tab " + ( i + 1 ) );

@@ -12,6 +12,8 @@
 package org.eclipse.swt.internal.graphics;
 
 import junit.framework.TestCase;
+
+import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
@@ -27,21 +29,21 @@ public class FontSizeEstimation_Test extends TestCase {
     assertTrue( charHeight > 9 );
     assertTrue( charHeight < 13 );
     String string = "TestString";
-    Point extent10 = FontSizeEstimation.stringExtent( string , font10 );
+    Point extent10 = FontSizeEstimation.stringExtent( font10 , string );
     assertTrue( extent10.x > 30 );
     assertTrue( extent10.x < 60 );
     assertTrue( extent10.y >= charHeight );
     assertTrue( extent10.y < charHeight * 2 );
     Font font12 = Font.getFont( "Helvetica", 12, SWT.NORMAL );
-    Point extent12 = FontSizeEstimation.stringExtent( string , font12 );
+    Point extent12 = FontSizeEstimation.stringExtent( font12 , string );
     assertTrue( extent12.x > extent10.x );
     string = "Test1 Test2 Test3 Test4 Test5";
     int width = 0;
-    Point extent = FontSizeEstimation.textExtent( string, width , font10 );
+    Point extent = FontSizeEstimation.textExtent( font10, string , width );
     assertTrue( extent.y >= charHeight );
     assertTrue( extent.y < charHeight * 2 );
     width = 40;
-    extent = FontSizeEstimation.textExtent( string, width , font10 );
+    extent = FontSizeEstimation.textExtent( font10, string , width );
     assertTrue( extent.x <= width );
     assertTrue( extent.y >= charHeight * 2 );
     assertTrue( extent.y < charHeight * 1.5 * 5 );
@@ -50,9 +52,17 @@ public class FontSizeEstimation_Test extends TestCase {
   // Test for a case where text width == wrapWidth
   public void testEndlessLoopProblem() {
     Font font = Font.getFont( "Helvetica", 11, SWT.NORMAL );
-    Point extent = FontSizeEstimation.textExtent( "Zusatzinfo (Besuch)",
-                                                  100,
-                                                  font );
+    Point extent = FontSizeEstimation.textExtent( font,
+                                                  "Zusatzinfo (Besuch)",
+                                                  100 );
     assertEquals( 100, extent.x );
+  }
+  
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+  }
+  
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
   }
 }

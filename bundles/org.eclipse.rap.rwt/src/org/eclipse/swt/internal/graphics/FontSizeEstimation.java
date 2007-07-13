@@ -15,15 +15,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 
-public class FontSizeEstimation {
+class FontSizeEstimation {
 
   /**
    * Estimates the size of a given text. Linebreaks are not respected.
-   * @param string the text whose size to estimate
    * @param font the font to perform the estimation for
+   * @param string the text whose size to estimate
    * @return the estimated size
    */
-  public static Point stringExtent( final String string, final Font font ) {    
+  static Point stringExtent( final Font font, final String string ) {    
     if ( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -35,15 +35,15 @@ public class FontSizeEstimation {
   /**
    * Estimates the size of a given text, respecting line breaks and wrapping at
    * a given width.
-   * 
+   * @param font the font to perform the estimation for
    * @param string the text whose size to estimate
    * @param wrapWidth the width to wrap at in pixels, 0 stands for no wrapping
-   * @param font the font to perform the estimation for
+   * 
    * @return the estimated size
    */
-  public static Point textExtent( final String string,
-                                  final int wrapWidth,
-                                  final Font font )
+  static Point textExtent( final Font font,
+                           final String string,
+                           final int wrapWidth )
   {
     if ( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -85,7 +85,7 @@ public class FontSizeEstimation {
    * @param font the font to perform the estimation for
    * @return the estimated character height in pixels
    */
-  public static int getCharHeight( final Font font ) {
+  static int getCharHeight( final Font font ) {
     // at 72 dpi, 1 pt == 1 px
     return font.getFontData()[ 0 ].getHeight();
   }
@@ -97,12 +97,20 @@ public class FontSizeEstimation {
    * @param font the font to perform the estimation for
    * @return the estimated average character width in pixels
    */
-  public static float getAvgCharWidth( final Font font ) {
-    float width = font.getFontData()[ 0 ].getHeight() * 0.48f;
-    if( ( font.getFontData()[ 0 ].getStyle() & SWT.BOLD ) != 0 ) {
-      width *= 1.45;
+  static float getAvgCharWidth( final Font font ) {
+    float result;
+    FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
+    if( probeStore.containsProbeResult( font ) ) {
+      // we can improve char width estimations in case that we already have the
+      // specified font probed.
+      result = probeStore.getProbeResult( font ).getAvgCharWidth();
+    } else {
+      result = font.getFontData()[ 0 ].getHeight() * 0.48f;
+      if( ( font.getFontData()[ 0 ].getStyle() & SWT.BOLD ) != 0 ) {
+        result *= 1.45;
+      }
     }
-    return width;
+    return result;
   }
   
   /**

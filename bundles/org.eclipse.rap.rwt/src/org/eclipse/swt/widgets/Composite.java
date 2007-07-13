@@ -446,9 +446,62 @@ public class Composite extends Scrollable {
     Rectangle trim = computeTrim( 0, 0, size.x, size.y );
     return new Point( trim.width, trim.height );
   }
+  
+  /**
+   * Clears any data that has been cached by a Layout for all widgets that 
+   * are in the parent hierarchy of the changed control up to and including the 
+   * receiver.  If an ancestor does not have a layout, it is skipped.
+   * 
+   * @param changed an array of controls that changed state and require a recalculation of size
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the changed array is null any of its controls are null or have been disposed</li> 
+   *    <li>ERROR_INVALID_PARENT - if any control in changed is not in the widget tree of the receiver</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 3.1
+   */
+  public void changed( Control[] changed ) {
+    checkWidget();
+    if( changed == null )
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    for( int i = 0; i < changed.length; i++ ) {
+      Control control = changed[ i ];
+      if( control == null )
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      if( control.isDisposed() )
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      boolean ancestor = false;
+      Composite composite = control.parent;
+      while( composite != null ) {
+        ancestor = composite == this;
+        if( ancestor )
+          break;
+        composite = composite.parent;
+      }
+      if( !ancestor )
+        error( SWT.ERROR_INVALID_PARENT );
+    }
+    for( int i = 0; i < changed.length; i++ ) {
+      Control child = changed[ i ];
+      Composite composite = child.parent;
+      while( child != this ) {
+        if( composite.layout == null || !composite.layout.flushCache( child ) )
+        {
+          composite.state |= LAYOUT_CHANGED;
+        }
+        child = composite;
+        composite = child.parent;
+      }
+    }
+  }
 
-  ////////////////////
-  // setFocus override 
+  // //////////////////
+  // setFocus override
   
   public boolean setFocus() {
     checkWidget();
@@ -573,6 +626,7 @@ public class Composite extends Scrollable {
   boolean isTabGroup() {
     return true;
   }
+  
   
   /////////////////////////////////////
   // Helping method used by computeSize

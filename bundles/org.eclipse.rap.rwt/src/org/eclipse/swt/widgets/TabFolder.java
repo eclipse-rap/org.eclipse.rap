@@ -16,7 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
@@ -496,7 +496,7 @@ public class TabFolder extends Composite {
     Point result = new Point( 0, 0 );
     String text = item.getText();
     if( text != null ) {
-      Point extent = FontSizeEstimation.stringExtent( text, getFont() );
+      Point extent = FontSizeCalculator.stringExtent( getFont(), text );
       // TODO [rst] these are only rough estimations
       result.x += extent.x + 10 + 6;
       result.y = extent.y + 4 + 6;

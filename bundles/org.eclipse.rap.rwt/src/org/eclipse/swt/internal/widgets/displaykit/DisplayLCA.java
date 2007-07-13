@@ -23,6 +23,7 @@ import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.engine.ResourceRegistry;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.theme.ThemeUtil;
@@ -269,18 +270,23 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static String jsAppInitialization( final String displayId ) {
-    // TODO [rh] use StringBuffer
-    String code 
-      = "var req = org.eclipse.swt.Request.getInstance();" 
-      + "req.setUrl( \"{0}\" );"
-      + "req.setUIRootId( \"{1}\" );"
-      + "var app = new org.eclipse.swt.Application();" 
-      + "qx.core.Init.getInstance().setApplication( app );";
+    StringBuffer code = new StringBuffer();
+    
+    // font size measurment
+    code.append( FontSizeCalculator.writeStartupJSProbe() );
+    
+    // application 
+    code.append( "var req = org.eclipse.swt.Request.getInstance();" ); 
+    code.append( "req.setUrl( \"{0}\" );" );
+    code.append( "req.setUIRootId( \"{1}\" );" );
+    code.append( "var app = new org.eclipse.swt.Application();" ); 
+    code.append( "qx.core.Init.getInstance().setApplication( app );" );
+    
     Object[] param = new Object[] { 
       ContextProvider.getRequest().getServletPath().substring( 1 ),
       displayId
     };
-    return MessageFormat.format( code, param );
+    return MessageFormat.format( code.toString(), param );
   }
   
   private static void disposeWidgets() throws IOException {

@@ -16,6 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.widgets.*;
@@ -1292,7 +1293,9 @@ public class CTabFolder extends Composite {
     } else {
       CTabItem[] items = getItems();
       if( items.length == 0 ) {
-        tabHeight = 20 + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN;
+        int charHeight
+          = Math.max( 20, FontSizeCalculator.getCharHeight( this.getFont() ) );
+        tabHeight = charHeight + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN;
       } else {
         int maxHeight = 0;
         for( int i = 0; i < items.length; i++ ) {

@@ -84,7 +84,6 @@ public class ShellTab extends ExampleTab {
     }
     Button openShellButton = new Button( top, SWT.PUSH );
     openShellButton.setText( "Open Shell" );
-    openShellButton.setLayoutData( new RowData( 150, 25 ) );
     openShellButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         createShell();
@@ -92,7 +91,6 @@ public class ShellTab extends ExampleTab {
 
     Button showAllButton = new Button( top, SWT.PUSH );
     showAllButton.setText( "Show All Shells" );
-    showAllButton.setLayoutData( new RowData( 150, 25 ) );
     showAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         setShellsVisible( true );
@@ -101,7 +99,6 @@ public class ShellTab extends ExampleTab {
 
     Button hideAllButton = new Button( top, SWT.PUSH );
     hideAllButton.setText( "Hide All Shells" );
-    hideAllButton.setLayoutData( new RowData( 150, 25 ) );
     hideAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         setShellsVisible( false );
@@ -110,7 +107,6 @@ public class ShellTab extends ExampleTab {
 
     Button MaximizeAllButton = new Button( top, SWT.PUSH );
     MaximizeAllButton.setText( "Maximize All Shells" );
-    MaximizeAllButton.setLayoutData( new RowData( 150, 25 ) );
     MaximizeAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         setShellsMaximized( true );
@@ -119,7 +115,6 @@ public class ShellTab extends ExampleTab {
 
     Button minimizeAllButton = new Button( top, SWT.PUSH );
     minimizeAllButton.setText( "Minimize All Shells" );
-    minimizeAllButton.setLayoutData( new RowData( 150, 25 ) );
     minimizeAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         setShellsMinimized( true );
@@ -128,7 +123,6 @@ public class ShellTab extends ExampleTab {
 
     Button restoreAllButton = new Button( top, SWT.PUSH );
     restoreAllButton.setText( "Restore All Shells" );
-    restoreAllButton.setLayoutData( new RowData( 150, 25 ) );
     restoreAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         setShellsMinimized( false );
@@ -138,7 +132,6 @@ public class ShellTab extends ExampleTab {
 
     Button enableAllButton = new Button( top, SWT.PUSH );
     enableAllButton.setText( "Enable All Shells" );
-    enableAllButton.setLayoutData( new RowData( 150, 25 ) );
     enableAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         setShellsEnabled( true );
@@ -147,7 +140,6 @@ public class ShellTab extends ExampleTab {
 
     Button disableAllButton = new Button( top, SWT.PUSH );
     disableAllButton.setText( "Disable All Shells" );
-    disableAllButton.setLayoutData( new RowData( 150, 25 ) );
     disableAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         setShellsEnabled( false );
@@ -156,7 +148,6 @@ public class ShellTab extends ExampleTab {
 
     Button closeAllButton = new Button( top, SWT.PUSH );
     closeAllButton.setText( "Close All Shells" );
-    closeAllButton.setLayoutData( new RowData( 150, 25 ) );
     closeAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         closeShells();
@@ -210,9 +201,10 @@ public class ShellTab extends ExampleTab {
     comp2.setBounds( ca.x + 1, ca.y + 1, ca.width - 2, ca.height - 2 );
     Button closeButton = new Button( shell, SWT.PUSH );
     closeButton.setText( "Close This Window" );
+    closeButton.pack();
     closeButton.moveAbove( comp2 );
     int centerX = ( ca.width - ca.x ) / 2;
-    closeButton.setBounds( centerX - 55, ca.height - 45, 110, 25 );
+    closeButton.setLocation( centerX - closeButton.getSize().x / 2, ca.height - 45 );
     closeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         shell.close();

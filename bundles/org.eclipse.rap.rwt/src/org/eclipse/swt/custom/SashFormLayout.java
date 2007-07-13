@@ -133,6 +133,8 @@ class SashFormLayout extends Layout {
         // newSashes[i].setForeground(sashForm.foreground);
         // newSashes[i].addListener(SWT.Selection, sashForm.sashListener);
         newSashes[ i ] = new Sash( sashForm, sashForm.sashStyle );
+        newSashes[ i ].setBackground( sashForm.background );
+        newSashes[ i ].setForeground( sashForm.foreground );
         newSashes[ i ].addSelectionListener( sashForm.sashListener );
       }
       sashForm.sashes = newSashes;
@@ -140,7 +142,7 @@ class SashFormLayout extends Layout {
     if( sashForm.sashes.length > controls.length - 1 ) {
       if( controls.length == 0 ) {
         for( int i = 0; i < sashForm.sashes.length; i++ ) {
-          // sashForm.sashes[i].dispose();
+           sashForm.sashes[ i ].dispose();
         }
         sashForm.sashes = new Sash[ 0 ];
       } else {

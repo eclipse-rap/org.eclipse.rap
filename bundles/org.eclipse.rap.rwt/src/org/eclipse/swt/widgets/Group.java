@@ -137,7 +137,7 @@ public class Group extends Composite {
     checkWidget();
     Rectangle bounds = getBounds();
     IGroupThemeAdapter adapter = getGroupThemeAdapter();
-    Rectangle trimmings = adapter.getTrimmingSize();
+    Rectangle trimmings = adapter.getTrimmingSize( this );
     int border = getBorderWidth();
     int width = Math.max( 0, bounds.width - trimmings.width - 2 * border );
     int height = Math.max( 0, bounds.height - trimmings.height - 2 * border );
@@ -150,7 +150,7 @@ public class Group extends Composite {
                                 final int height )
   {
     IGroupThemeAdapter adapter = getGroupThemeAdapter();
-    Rectangle trimmings = adapter.getTrimmingSize();
+    Rectangle trimmings = adapter.getTrimmingSize( this );
     int border = getBorderWidth();
     return super.computeTrim( x - trimmings.x,
                               y - trimmings.y,
@@ -175,7 +175,6 @@ public class Group extends Composite {
   private IGroupThemeAdapter getGroupThemeAdapter() {
     ThemeManager themeMgr = ThemeManager.getInstance();
     IThemeAdapter themeAdapter = themeMgr.getThemeAdapter( getClass() );
-    IGroupThemeAdapter result = ( IGroupThemeAdapter )themeAdapter;
-    return result;
+    return ( IGroupThemeAdapter )themeAdapter;
   }
 }

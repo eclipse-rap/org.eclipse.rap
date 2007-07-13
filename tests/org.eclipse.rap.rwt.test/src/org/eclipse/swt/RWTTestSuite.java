@@ -20,6 +20,7 @@ import org.eclipse.swt.externalbrowser.ExternalBrowser_Test;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.swt.internal.engine.*;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator_Test;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation_Test;
 import org.eclipse.swt.internal.lifecycle.*;
 import org.eclipse.swt.internal.theme.*;
@@ -129,6 +130,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Font_Test.class );
     suite.addTestSuite( FontData_Test.class );
     suite.addTestSuite( FontSizeEstimation_Test.class );
+    suite.addTestSuite( FontSizeCalculator_Test.class );
 
     suite.addTestSuite( DisplayLCA_Test.class );
     suite.addTestSuite( ControlLCA_Test.class );

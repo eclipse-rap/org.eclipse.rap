@@ -11,10 +11,10 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 public class LabelTab extends ExampleTab {
@@ -36,7 +36,7 @@ public class LabelTab extends ExampleTab {
     text1 = "Some Text";
     text2 = "Some Other Text";
     labelImage = null;
-    labelText = "A Label";
+    labelText = "A Label with text";
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -61,20 +61,28 @@ public class LabelTab extends ExampleTab {
 
   protected void createExampleControls( final Composite parent ) {
     int style = getStyle();
-    varSizeLabel = new Label( parent, style );
-    varSizeLabel.setLocation( 10, 10 );
-    updateLabel( varSizeLabel );
+    RowLayout rowLayout = new RowLayout( SWT.VERTICAL );
+    parent.setLayout( rowLayout );
     fixedSizeLabel = new Label( parent, style );
     fixedSizeLabel.setText(   "Fixed size Label with some very long text\n"
-                    + "and another line" );
-    fixedSizeLabel.setLocation( 150, 10 );
-    fixedSizeLabel.setSize( 100, 100 );
+                              + "and another line" );
+    parent.addControlListener( new ControlAdapter() {
+      public void controlResized(ControlEvent e) {
+        Point size = fixedSizeLabel.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+        fixedSizeLabel.setLayoutData( new RowData( size.x, size.y * 2) );      
+      }
+    } );
+    fixedSizeLabel.setLayoutData( new RowData( 300, 100 ) );
+    new Label( parent, SWT.NONE );
+    varSizeLabel = new Label( parent, style );
     registerControl( varSizeLabel );
     registerControl( fixedSizeLabel );
+
     
-    Button text1Button = new Button( parent, SWT.PUSH );
+    Composite buttons = new Composite( parent, SWT.NONE );
+    buttons.setLayout( new FillLayout() );
+    Button text1Button = new Button( buttons, SWT.PUSH );
     text1Button.setText( "Text 1" );
-    text1Button.setBounds( 10, 50, 80, 20 );
     text1Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         labelText = text1;
@@ -82,9 +90,8 @@ public class LabelTab extends ExampleTab {
         updateLabel( varSizeLabel );
       }
     } );
-    Button text2Button = new Button( parent, SWT.PUSH );
+    Button text2Button = new Button( buttons, SWT.PUSH );
     text2Button.setText( "Text 2" );
-    text2Button.setBounds( 10, 75, 80, 20 );
     text2Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         labelText = text2;
@@ -92,24 +99,23 @@ public class LabelTab extends ExampleTab {
         updateLabel( varSizeLabel );
       }
     } );
-    Button image1Button = new Button( parent, SWT.PUSH );
+    Button image1Button = new Button( buttons, SWT.PUSH );
     image1Button.setText( "Image 1" );
-    image1Button.setBounds( 10, 100, 80, 20 );
     image1Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         labelImage = image1;
         updateLabel( varSizeLabel );
       }
     } );
-    Button image2Button = new Button( parent, SWT.PUSH );
+    Button image2Button = new Button( buttons, SWT.PUSH );
     image2Button.setText( "Image 2" );
-    image2Button.setBounds( 10, 125, 80, 20 );
     image2Button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent e ) {
         labelImage = image2;
         updateLabel( varSizeLabel );
       }
     } );
+    updateLabel( varSizeLabel );
   }
   
   private void createChangeLabelControl( final Composite parent ) {
@@ -123,6 +129,8 @@ public class LabelTab extends ExampleTab {
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         varSizeLabel.setText( text.getText() );
+        text.setText( "" );
+        varSizeLabel.pack();
       }
     } );
   }

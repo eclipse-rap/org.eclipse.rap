@@ -14,7 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 
 /**
  * A Label can display a text or an image, but not both. The label always
@@ -238,16 +238,19 @@ public class Label extends Control {
         width = lineWidth;
         height = DEFAULT_HEIGHT;
       }
-    } else if( ( image != null ) ) {
+    } else if( image != null ) {
       Rectangle rect = image.getBounds();
       width = rect.width;
       height = rect.height;
-    } else if( ( text.length() > 0 ) ) {
+    } else if( text.length() > 0 ) {
+      // TODO [fappel]: check if 'text.length() == 0' should be treated
+      //                specially
       int wrapWidth = 0;
       if( ( style & SWT.WRAP ) != 0 && wHint != SWT.DEFAULT ) {
         wrapWidth = wHint;
       }
-      Point extent = FontSizeEstimation.textExtent( text, wrapWidth, getFont() );
+      Point extent
+        = FontSizeCalculator.textExtent( getFont(), text, wrapWidth );
       width = extent.x + 8;
       height = extent.y + 2;
     }

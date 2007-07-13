@@ -15,6 +15,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
@@ -60,7 +61,8 @@ public class FocusTab extends ExampleTab {
     createFocusButton( "Focus Table", table, parent );
     createFocusButton( "Focus Tree", tree, parent );
     createFocusButton( "Focus Composite", composite, parent );
-    Label label = new Label( parent, SWT.NONE );
+    
+    final Label label = new Label( parent, SWT.NONE );
     label.setText( "Log" );
     log = new List( parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
     log.setLayoutData( new RowData( 300, 120 ) );
@@ -152,7 +154,6 @@ public class FocusTab extends ExampleTab {
   {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( text );
-    button.setLayoutData( new RowData( 140, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         targetControl.forceFocus();

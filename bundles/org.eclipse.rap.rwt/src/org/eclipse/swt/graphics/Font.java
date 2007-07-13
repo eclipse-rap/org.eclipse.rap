@@ -21,6 +21,12 @@ import org.eclipse.swt.SWT;
 public final class Font extends Resource {
   
   private static final Map fonts = new HashMap();
+  private final FontData[] fontData;
+
+  // prevent instance creation
+  private Font( final FontData data ) {
+    this.fontData = new FontData[] { data };
+  }
   
   /**
    * TODO [fappel]: comment
@@ -48,13 +54,6 @@ public final class Font extends Resource {
    */
   public static Font getFont( final FontData data ) {
     return getFont( data.getName(), data.getHeight(), data.getStyle() );
-  }
-
-
-  private final FontData[] fontData;
-  
-  private Font( final FontData data ) {
-    this.fontData = new FontData[] { data };
   }
   
   /**

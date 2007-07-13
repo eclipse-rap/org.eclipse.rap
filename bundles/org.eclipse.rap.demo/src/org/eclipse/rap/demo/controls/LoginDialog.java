@@ -32,9 +32,9 @@ public class LoginDialog extends Dialog {
   private String password;
 
   public LoginDialog( final Shell parent,
-                       final String title,
-                       final String message,
-                       final String defaultUsername ) 
+                      final String title,
+                      final String message,
+                      final String defaultUsername ) 
   {
     super( parent );
     this.title = title;
@@ -59,8 +59,6 @@ public class LoginDialog extends Dialog {
     data.horizontalAlignment = GridData.CENTER;
     data.verticalAlignment = GridData.CENTER;
     data.horizontalSpan = 2;
-    data.widthHint = 280;
-    data.heightHint = 25;
     mesgLabel.setLayoutData( data );
     if( message != null ) {
       mesgLabel.setText( message );
@@ -70,13 +68,10 @@ public class LoginDialog extends Dialog {
     Label userLabel = new Label( composite, SWT.NONE );
     userLabel.setText( "Username:" );
     data = new GridData();
-    data.widthHint = 60;
-    data.heightHint = 20;
     data.verticalAlignment = GridData.CENTER;
     userLabel.setLayoutData( data );
     userText = new Text( composite, SWT.BORDER );
     data = new GridData( GridData.FILL_HORIZONTAL );
-    data.heightHint = 20;
     userText.setLayoutData( data );
     if( username != null ) {
       userText.setText( username );
@@ -87,13 +82,10 @@ public class LoginDialog extends Dialog {
     Label passLabel = new Label( composite, SWT.NONE );
     passLabel.setText( "Password:" );
     data = new GridData();
-    data.widthHint = 60;
-    data.heightHint = 20;
     data.verticalAlignment = GridData.CENTER;
     passText = new Text( composite, SWT.BORDER | SWT.PASSWORD );
     passLabel.setLayoutData( data );
     data = new GridData( GridData.FILL_HORIZONTAL );
-    data.heightHint = 20;
     passText.setLayoutData( data );
     return composite;
   }

@@ -11,8 +11,8 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
 public class SashTab extends ExampleTab {
@@ -22,7 +22,7 @@ public class SashTab extends ExampleTab {
   }
 
   protected void createStyleControls( final Composite parent ) {
-    createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "BORDER", SWT.BORDER, true );
     createStyleButton( "VERTICAL", SWT.VERTICAL );
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
     createVisibilityButton();
@@ -30,15 +30,18 @@ public class SashTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite top ) {
-    top.setLayout( new RowLayout() );
+    top.setLayout( new FillLayout() );
+    Color white = top.getDisplay().getSystemColor( SWT.COLOR_WHITE );
     int style = getStyle();
-    Label label = new Label( top, SWT.NONE );
-    label.setLayoutData( new RowData( 50, 20 ) );
-    label.setText( "Sash ->" );
-    Sash sash = new Sash( top, style );
-    sash.setLayoutData( ( sash.getStyle() & SWT.HORIZONTAL ) != 0
-                          ? new RowData( 100, 10 )
-                          : new RowData( 10, 100 ) );
+    Label label1 = new Label( top, SWT.NONE );
+    label1.setBackground( white );
+    label1.setText( "Sash:" );
+    Sash sash = new Sash( top, style | SWT.BORDER );
+    if( ( sash.getStyle() & SWT.HORIZONTAL ) != 0 ){
+      top.setLayout( new FillLayout( SWT.VERTICAL ) );      
+    }
+    Label label2 = new Label( top, SWT.NONE );
+    label2.setBackground( white );
     registerControl( sash );
   }
 }

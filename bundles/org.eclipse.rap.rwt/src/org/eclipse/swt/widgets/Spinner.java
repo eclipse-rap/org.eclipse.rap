@@ -13,13 +13,15 @@ package org.eclipse.swt.widgets;
 
 import java.text.*;
 import java.util.Locale;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+
 import com.w4t.util.SessionLocale;
 
 /**
@@ -352,7 +354,7 @@ public class Spinner extends Composite {
         }
         string = buffer.toString();
       }
-      Point textSize = FontSizeEstimation.stringExtent( string, getFont() );
+      Point textSize = FontSizeCalculator.stringExtent( getFont(), string );
       width = textSize.x + UP_DOWN_WIDTH;
       height = textSize.y;
     }

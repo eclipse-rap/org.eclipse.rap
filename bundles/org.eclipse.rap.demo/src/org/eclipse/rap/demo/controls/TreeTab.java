@@ -168,7 +168,6 @@ public class TreeTab extends ExampleTab {
   private void createAddNodeButton( final Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Add child item" );
-    button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         if( tree.getSelectionCount() > 0 ) {
@@ -192,7 +191,6 @@ public class TreeTab extends ExampleTab {
   private void createDisposeNodeButton( final Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Dispose Selected Item" );
-    button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         if( tree.getSelectionCount() > 0 ) {

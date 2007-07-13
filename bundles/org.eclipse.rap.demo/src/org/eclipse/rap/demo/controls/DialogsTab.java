@@ -26,6 +26,7 @@ class DialogsTab extends ExampleTab {
   private Label loginDlgResLabel;
   private Label messageDlgResLabel;
   private Label errorDlgResLabel;
+  private Composite parent;
 
   public DialogsTab( final CTabFolder topFolder ) {
     super( topFolder, "Dialogs" );
@@ -35,90 +36,118 @@ class DialogsTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
+    this.parent = parent;
     parent.setLayout( new GridLayout() );
     Group group1 = new Group( parent, SWT.NONE );
     group1.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     group1.setText( "JFace Dialogs" );
-    Group group2 = new Group( parent, SWT.NONE );
-    group2.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-    group2.setText( "Custom Dialogs" );
+    group1.setLayout( new GridLayout( 3, true ) );
+    
     // JFace input dialog
     Button showInputDlgButton = new Button( group1, SWT.PUSH );
     showInputDlgButton.setText( "Input Dialog" );
-    showInputDlgButton.setBounds( 20, 30, 90, 25 );
     showInputDlgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showInputDialog();
       }
     } );
+    showInputDlgButton.setLayoutData( createGridDataFillBoth() );
+    insertSpaceLabels( group1, 2 );
+    
     inputDlgResLabel = new Label( group1, SWT.WRAP );
     inputDlgResLabel.setText( "Result:" );
-    inputDlgResLabel.setBounds( 50, 60, 300, 20 );
+    insertSpaceLabels( group1, 2 );
+    
     Button showMessageInfoDlgButton = new Button( group1, SWT.PUSH );
+    showMessageInfoDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageInfoDlgButton.setText( "Info Message" );
-    showMessageInfoDlgButton.setBounds( 20, 90, 90, 25 );
     showMessageInfoDlgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogInfo();
       }
     } );
+    
     Button showMessageWarningDlgButton = new Button( group1, SWT.PUSH );
+    showMessageWarningDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageWarningDlgButton.setText( "Warning Dialog" );
-    showMessageWarningDlgButton.setBounds( 120, 90, 90, 25 );
     showMessageWarningDlgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogWarning();
       }
     } );
     Button showMessageErrorDlgButton = new Button( group1, SWT.PUSH );
+    showMessageErrorDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageErrorDlgButton.setText( "Error Message" );
-    showMessageErrorDlgButton.setBounds( 220, 90, 90, 25 );
     showMessageErrorDlgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogError();
       }
     } );
+    
     Button showMessageQuestionDlgButton = new Button( group1, SWT.PUSH );
+    showMessageQuestionDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageQuestionDlgButton.setText( "Question Dialog" );
-    showMessageQuestionDlgButton.setBounds( 20, 120, 90, 25 );
     showMessageQuestionDlgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogQuestion();
       }
     } );
     Button showMessageConfirmDlgButton = new Button( group1, SWT.PUSH );
+    showMessageConfirmDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageConfirmDlgButton.setText( "Confirm Message" );
-    showMessageConfirmDlgButton.setBounds( 120, 120, 90, 25 );
     showMessageConfirmDlgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showMessageDialogConfirm();
       }
     } );
+    insertSpaceLabels( group1, 1 );
+    
     messageDlgResLabel = new Label( group1, SWT.WRAP );
     messageDlgResLabel.setText( "Result:" );
-    messageDlgResLabel.setBounds( 50, 150, 300, 20 );
+    insertSpaceLabels( group1, 2 );
+    
     Button showErrorDlgButton = new Button( group1, SWT.PUSH );
+    showErrorDlgButton.setLayoutData( createGridDataFillBoth() );
     showErrorDlgButton.setText( "Error Dialog" );
-    showErrorDlgButton.setBounds( 20, 180, 90, 25 );
     showErrorDlgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showErrorDialog();
       }
     } );
+    insertSpaceLabels( group1, 2 );
+
     errorDlgResLabel = new Label( group1, SWT.WRAP );
     errorDlgResLabel.setText( "Result:" );
-    errorDlgResLabel.setBounds( 50, 210, 300, 40 );
+    insertSpaceLabels( group1, 2 );
+    
+    
+    Group group2 = new Group( parent, SWT.NONE );
+    group2.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+    group2.setText( "Custom Dialogs" );
+    group2.setLayout( new GridLayout( 3, true ) );
+
     Button showLoginDlgButton = new Button( group2, SWT.PUSH );
     showLoginDlgButton.setText( "Login Dialog" );
-    showLoginDlgButton.setBounds( 20, 30, 90, 25 );
     showLoginDlgButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showLoginDialog();
       }
     } );
+    showLoginDlgButton.setLayoutData( createGridDataFillBoth() );
+    insertSpaceLabels( group2, 2 );
+    
     loginDlgResLabel = new Label( group2, SWT.WRAP );
     loginDlgResLabel.setText( "Result:" );
-    loginDlgResLabel.setBounds( 50, 60, 300, 40 );
+  }
+
+  private GridData createGridDataFillBoth() {
+    return new GridData( GridData.FILL_BOTH );
+  }
+
+  private void insertSpaceLabels( final Group group, final int count ) {
+    for( int i = 0; i < count; i++ ) {
+      new Label( group, SWT.NONE );
+    }
   }
 
   private void showInputDialog() {
@@ -143,6 +172,7 @@ class DialogsTab extends ExampleTab {
         } else {
           inputDlgResLabel.setText( "No Result" );
         }
+        parent.layout();
       }
     } );
   }
@@ -153,6 +183,7 @@ class DialogsTab extends ExampleTab {
     IWindowCallback callback = new IWindowCallback() {
       public void windowClosed( final int returnCode ) {
         messageDlgResLabel.setText( "Info closed (" + returnCode + ")" );
+        parent.layout();
       }
     };
     MessageDialog.openInformation( getShell(), title, mesg, callback );
@@ -164,6 +195,7 @@ class DialogsTab extends ExampleTab {
     MessageDialog.openError( getShell(), title, mesg, new IWindowCallback() {
       public void windowClosed( final int returnCode ) {
         messageDlgResLabel.setText( "Error closed (" + returnCode + ")" );
+        parent.layout();
       }
     } );
   }
@@ -177,6 +209,7 @@ class DialogsTab extends ExampleTab {
     MessageDialog.openQuestion( getShell(), title, mesg, new IWindowCallback() {
       public void windowClosed( final int returnCode ) {
         messageDlgResLabel.setText( "Question closed (" + returnCode + ")" );
+        parent.layout();
       }
     } );
   }
@@ -187,6 +220,7 @@ class DialogsTab extends ExampleTab {
     MessageDialog.openConfirm( getShell(), title, mesg, new IWindowCallback() {
       public void windowClosed( final int returnCode ) {
         messageDlgResLabel.setText( "Confirm closed (" + returnCode + ")" );
+        parent.layout();
       }
     } );
   }
@@ -197,6 +231,7 @@ class DialogsTab extends ExampleTab {
     MessageDialog.openWarning( getShell(), title, mesg, new IWindowCallback() {
       public void windowClosed( final int returnCode ) {
         messageDlgResLabel.setText( "Warning closed (" + returnCode + ")" );
+        parent.layout();
       }
     } );
   }
@@ -216,6 +251,7 @@ class DialogsTab extends ExampleTab {
     IWindowCallback callback = new IWindowCallback() {
       public void windowClosed( int returnCode ) {
         errorDlgResLabel.setText( "Error Dialog closed (" + returnCode + ")" );
+        parent.layout();
       }
     };
     ErrorDialog.openError( getShell(), title, mesg, status, callback );
@@ -239,6 +275,7 @@ class DialogsTab extends ExampleTab {
                                   + " ("
                                   + returnCode
                                   + ")" );
+        parent.layout();
       }
     } );
   }

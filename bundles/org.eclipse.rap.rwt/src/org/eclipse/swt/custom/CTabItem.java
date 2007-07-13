@@ -14,7 +14,7 @@ package org.eclipse.swt.custom;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -383,7 +383,17 @@ public class CTabItem extends Item {
   // Helping methods used by CTabFolder to control item size and location
 
   int preferredHeight() {
-    return 20;
+    Image image = getImage();
+    int h = ( image == null ) ? 0 : image.getBounds().height;
+    String text = getText();
+    // TODO [fappel]: check gc height calculation alternative 
+    if( font == null ) {
+      Font parentFont = getParent().getFont();
+      h = Math.max( h, FontSizeCalculator.textExtent( parentFont, text, 0 ).y );
+    } else {
+      h = Math.max( h, FontSizeCalculator.textExtent( font, text,  0 ).y );
+    }
+    return h + TOP_MARGIN + BOTTOM_MARGIN;
   }
   
   int preferredWidth( final boolean isSelected, final boolean minimum ) {
@@ -393,8 +403,7 @@ public class CTabItem extends Item {
       Image image = getImage();
       if( image != null ) {
         // TODO [rh] determine bounds for image
-//        width += image.getBounds().width;
-        width += 20;
+        width += image.getBounds().width;
       }
       String text = null;
       if( minimum ) {
@@ -416,7 +425,7 @@ public class CTabItem extends Item {
         if( width > 0 ) {
           width += INTERNAL_SPACING;
         }
-        width += FontSizeEstimation.stringExtent( text, getFont() ).x;
+        width += FontSizeCalculator.stringExtent( getFont(), text ).x;
       }
       if( canClose() && ( isSelected || parent.getUnselectedCloseVisible() ) ) {
         if( result > 0 ) {

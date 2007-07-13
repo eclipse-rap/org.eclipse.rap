@@ -13,8 +13,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.IWindowCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
@@ -88,7 +87,7 @@ public class ButtonTab extends ExampleTab {
     group.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     group.setText( "Default Button" );
     group.setLayout( new RowLayout( SWT.HORIZONTAL ) );
-    Label label = new Label( group, SWT.NONE );
+    final Label label = new Label( group, SWT.NONE );
     label.setText( "Enter some text and press Return" );
     final Text text = new Text( group, SWT.BORDER | SWT.SINGLE );
     defaultButton = new Button( group, style | SWT.PUSH );
@@ -116,12 +115,18 @@ public class ButtonTab extends ExampleTab {
       item.setText( "Item " + ( i + 1 ) );
     }
     parent.setMenu( menu );
+    parent.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent e ) {
+        int height = label.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y;
+        int width = height * 5;
+        text.setLayoutData( new RowData( width, height ) );        
+      }
+    } );
   }
 
   private void createImageButton( final Composite parent ) {
     final Button imageButton = new Button( parent, SWT.CHECK );
     imageButton.setText( "Push Button with Image" );
-    imageButton.setLayoutData( new RowData( 160, 20 ) );
     imageButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         showImage = imageButton.getSelection();

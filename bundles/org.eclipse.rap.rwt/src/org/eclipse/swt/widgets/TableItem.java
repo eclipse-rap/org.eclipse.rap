@@ -14,7 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 
 /**
  * Instances of this class represent a selectable user interface object
@@ -483,7 +483,7 @@ public class TableItem extends Item {
       left = getCheckWidth( 0 );
       top = getTop( itemIndex );
       Font font = parent.getFont();
-      width = FontSizeEstimation.stringExtent( getText(), font ).x;
+      width = FontSizeCalculator.stringExtent( font, getText() ).x;
       Image image = data != null && data.length > 0 ? data[ 0 ].image : null;
       if( image != null ) {
         width += image.getBounds().width;
@@ -513,7 +513,7 @@ public class TableItem extends Item {
   final int getHeight() {
     // TODO [rh] replace with this.getFont() once TableItem supports fonts
     // TODO [rh] preliminary: this is only an approximation for item height
-    int result = FontSizeEstimation.getCharHeight( parent.getFont() ) + 4;
+    int result = FontSizeCalculator.getCharHeight( parent.getFont() ) + 4;
     int columnCount = Math.max( parent.getColumnCount(), 1 );
     for( int i = 0; i < columnCount; i++ ) {
       Rectangle imageBounds = getImageBounds( i );
@@ -538,7 +538,7 @@ public class TableItem extends Item {
   final int getMaxWidth( final int index ) {
     int result = getCheckWidth( index );
     Font font = parent.getFont();
-    result += FontSizeEstimation.stringExtent( getText( index ), font ).x;
+    result += FontSizeCalculator.stringExtent( font, getText( index ) ).x;
     Image image = getImage( index );
     if( image != null ) {
       result += image.getBounds().width;

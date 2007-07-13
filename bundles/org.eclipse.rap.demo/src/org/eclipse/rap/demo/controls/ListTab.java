@@ -16,8 +16,8 @@ import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 public class ListTab extends ExampleTab {
@@ -75,10 +75,11 @@ public class ListTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout() );
+    parent.setLayout( new GridLayout( 2, true ) );
     int style = getStyle();
+    
     list = new List( parent, style );
-    list.setLayoutData( new RowData( 200, 200 ) );
+    list.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     Menu menu = new Menu( list );
     MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     menuItem.setText( "Context menu item" );
@@ -95,25 +96,29 @@ public class ListTab extends ExampleTab {
       }
     } );
     registerControl( list );
+    
     // List 2
     List list2 = new List( parent, style );
     list2.add( "Item 1" );
     list2.add( "Item 2" );
     list2.add( "Item 3" );
-    list2.setLayoutData( new RowData( 200, 200 ) );
+    list2.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     registerControl( list2 );
     createPopupMenu( parent.getShell(), list2 );
+    
     // Code
     int separatorStyle = SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT;
     Label separator = new Label( parent, separatorStyle );
-    separator.setLayoutData( new RowData( 440, 5 ) );
+    separator.setLayoutData( createGridDataWithSpan() );
     Label codeLabel = new Label( parent, SWT.WRAP );
     String codeLabelText
       = "Please note that the content of the left List is provided by a "
       + "ListViewer with JFace API.";
     codeLabel.setText( codeLabelText );
+    codeLabel.setLayoutData( createGridDataWithSpan() );
     Link link = new Link( parent, SWT.NONE );
     link.setText( "See <a>example code</a>" );
+    link.setLayoutData( createGridDataWithSpan() );
     link.addSelectionListener( new SelectionAdapter() {
       private String code = getExampleCode();
       public void widgetSelected( final SelectionEvent event ) {
@@ -123,6 +128,12 @@ public class ListTab extends ExampleTab {
         dialog.open();
       }
     } );
+  }
+
+  private GridData createGridDataWithSpan() {
+    GridData gridData = new GridData( GridData.FILL_HORIZONTAL );
+    gridData.horizontalSpan = 2;
+    return gridData;
   }
 
   private void createPopupMenu( final Shell parent, final List list ) {

@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.groupkit;
 
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -27,13 +28,15 @@ public class GroupThemeAdapter extends ControlThemeAdapter
     return QxFont.createFont( font );
   }
 
-  public Rectangle getTrimmingSize() {
+  public Rectangle getTrimmingSize( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
     QxBoxDimensions margin = theme.getBoxDimensions( "group.margin" );
     QxBoxDimensions padding = theme.getBoxDimensions( "group.padding" );
     QxBorder frame = theme.getBorder( "group.frame.border" );
     int left = margin.left + frame.width + padding.left;
     int top = margin.top + frame.width + padding.top;
+    Font font = control.getFont();
+    top = Math.max( top, FontSizeCalculator.getCharHeight( font ) );
     int right = margin.right + frame.width + padding.right;
     int bottom = margin.bottom + frame.width + padding.bottom;
     return new Rectangle( left, top, left + right, top + bottom );

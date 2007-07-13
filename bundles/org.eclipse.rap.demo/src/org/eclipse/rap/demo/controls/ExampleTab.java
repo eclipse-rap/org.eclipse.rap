@@ -205,8 +205,6 @@ abstract class ExampleTab {
       }
     } );
     button.setData( "style", new Integer( style ) );
-    // preferred size does not work:
-    button.setLayoutData( new RowData( 100, 20 ) );
     button.setSelection( checked );
     return button;
   }
@@ -218,8 +216,6 @@ abstract class ExampleTab {
   protected Button createPropertyButton( final String text, final int style ) {
     Button button = new Button( styleComp, style );
     button.setText( text );
-    // preferred size does not work:
-    button.setLayoutData( new RowData( 100, 20 ) );
     return button;
   }
   
@@ -232,7 +228,6 @@ abstract class ExampleTab {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Visble" );
     button.setSelection( visible ); 
-    button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         visible = button.getSelection();
@@ -251,7 +246,6 @@ abstract class ExampleTab {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Enabled" );
     button.setSelection( enabled );
-    button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         enabled = button.getSelection();
@@ -271,7 +265,6 @@ abstract class ExampleTab {
     fgColorChooser = new ColorChooser();
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Fg Color" );
-    button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         fgIndex = ( fgIndex + 1 ) % MAX_COLORS;
@@ -292,7 +285,6 @@ abstract class ExampleTab {
     bgColorChooser = new ColorChooser();
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Bg Color" );
-    button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         bgIndex = ( bgIndex + 1 ) % MAX_COLORS;
@@ -305,7 +297,6 @@ abstract class ExampleTab {
   protected Button createFontChooser() {
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Font" );
-    button.setLayoutData( new RowData( 100, 20 ) );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         fontChooser = new SimpleFontDialog( getShell() );

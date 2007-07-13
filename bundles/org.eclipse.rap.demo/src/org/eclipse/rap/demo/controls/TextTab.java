@@ -73,9 +73,10 @@ public class TextTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout( SWT.VERTICAL ) );
+    parent.setLayout( new FillLayout( SWT.VERTICAL ) );
     simpleText = createText( parent, getStyle() );
     registerControl( simpleText );
+    new Label( parent, SWT.NONE );
     modifyText = createModifyText( parent, getStyle() );
     registerControl( modifyText );
   }
@@ -94,9 +95,9 @@ public class TextTab extends ExampleTab {
     Label lblEnterText = new Label( grpContainer, SWT.NONE );
     lblEnterText.setText( "Enter some text, please" );
     final Text result = new Text( grpContainer, style );
+    result.setText( "used for preferred size" );
     Point preferred = getPreferredSize( result );
     result.setLayoutData( new GridData( preferred.x, preferred.y ) );
-    grpContainer.setLayoutData( new RowData( 400, 140 + preferred.y ) );
     result.setText(   "Lorem ipsum dolor sit amet, consectetur adipisici "
                     + "elit, sed do eiusmod tempor incididunt ut labore et "
                     + "dolore magna aliqua.\n"
@@ -153,7 +154,6 @@ public class TextTab extends ExampleTab {
     lblEnterText.setText( "Enter some text, please" );
     final Text result = new Text( grpContainer, style );
     Point preferred = getPreferredSize( result );
-    grpContainer.setLayoutData( new RowData( 400, 140 + preferred.y ) );
     result.setLayoutData( new GridData( preferred.x, preferred.y ) );
     final Button btnChange = new Button( grpContainer, SWT.PUSH );
     final Label lblTextContent = new Label( grpContainer, SWT.WRAP );
@@ -200,9 +200,11 @@ public class TextTab extends ExampleTab {
     Label lblSelectionFrom = new Label( composite, SWT.NONE );
     lblSelectionFrom.setText( "Selection from" );
     final Text txtSelectionFrom = new Text( composite, SWT.BORDER );
+    Util.textSizeAdjustment( lblSelectionFrom, txtSelectionFrom );
     Label lblSelectionTo = new Label( composite, SWT.NONE );
     lblSelectionTo.setText( "to" );
     final Text txtSelectionTo = new Text( composite, SWT.BORDER );
+    Util.textSizeAdjustment( lblSelectionTo, txtSelectionTo );
     Button btnChange = new Button( composite, SWT.PUSH );
     btnChange.setText( "Change" );
     btnChange.addSelectionListener( new SelectionAdapter() {
@@ -261,6 +263,7 @@ public class TextTab extends ExampleTab {
     Label label = new Label( composite, SWT.NONE );
     label.setText( "TextLimit" );
     final Text text = new Text( composite, SWT.BORDER );
+    Util.textSizeAdjustment( label, text );
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Change" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -301,10 +304,10 @@ public class TextTab extends ExampleTab {
 
   private static Point getPreferredSize( final Text text ) {
     Point result;
-    if( ( text.getStyle() & SWT.SINGLE ) != 0 ) {
-      result = new Point( 200, 20 );
-    } else {
-      result = new Point( 200, 100 );
+    result = text.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+    result = new Point( result.y * 4, result.y );
+    if( ( text.getStyle() & SWT.SINGLE ) == 0 ) {
+      result = new Point( result.x * 2, result.y * 4 );
     }
     return result;
   }

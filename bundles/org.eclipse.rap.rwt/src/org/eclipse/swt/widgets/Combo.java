@@ -16,7 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 
 /**
  * Instances of this class are controls that allow the user
@@ -433,13 +433,13 @@ public class Combo extends Composite {
   {
     checkWidget();
     int width = 0;
-    Point lineHeight = FontSizeEstimation.stringExtent( "M", getFont() );
-    int height = lineHeight.y + 4;
+    int height = FontSizeCalculator.getCharHeight( getFont() );
     if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
       String[] items = model.getItems();
       for( int i = 0; i < items.length; i++ ) {
         if( !"".equals( items[ i ] ) ) {
-          Point extent = FontSizeEstimation.stringExtent( items[ i ], getFont() );
+          Point extent
+            = FontSizeCalculator.stringExtent( getFont(), items[ i ] );
           width = Math.max( width, extent.x + 10 );
         }
       }

@@ -11,11 +11,9 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.*;
 
 public class CoolBarTab extends ExampleTab {
@@ -47,24 +45,40 @@ public class CoolBarTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    parent.setLayout( new RowLayout() );
     int style = getStyle();
     coolBar = new CoolBar( parent, style );
-    coolBar.setLayoutData( new RowData( 500, 65 ) );
+    
     // Create toolBar1 to be displayed in the first CoolItem
-    ToolBar toolBar1 = createToolBar( coolBar, SWT.NONE );
-    toolBar1.setSize( 250, 25 );
-    CoolItem coolItem1 = new CoolItem( coolBar, style );
-    coolItem1.setSize( 250, 25 );
+    final CoolItem coolItem1 = new CoolItem( coolBar, style );
+    final ToolBar toolBar1 = createToolBar( coolBar, SWT.NONE );
     coolItem1.setControl( toolBar1 );
+  
     // Create toolBar2 to be displayed in the second CoolItem
+    final CoolItem coolItem2 = new CoolItem( coolBar, style );
     ToolBar toolBar2 = createToolBar( coolBar, SWT.NONE );
-    toolBar2.setSize( 250, 25 );
-    CoolItem coolItem2 = new CoolItem( coolBar, style );
-    coolItem2.setSize( 250, 25 );
     coolItem2.setControl( toolBar2 );
+    
     // Register CoolBar
     registerControl( coolBar );
+
+    parent.addControlListener( new ControlAdapter() {
+      public void controlResized( final ControlEvent e ) {
+        computeSize( toolBar1, coolItem1, coolItem2 );
+      }
+    } );
+    computeSize( toolBar1, coolItem1, coolItem2 );
+  }
+
+  private void computeSize( final ToolBar toolBar1,
+                            final CoolItem coolItem1,
+                            final CoolItem coolItem2 )
+  {
+    Point size = toolBar1.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+    // TODO [fappel]: check whether size adjustment is really needed or a bug . 
+    size = new Point( size.x + ( int )( size.x * 0.1 ), size.y );
+    coolItem1.setSize( size );
+    coolItem2.setSize( size );
+    coolBar.setSize( coolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
   private ToolBar createToolBar( final Composite parent, final int id ) {

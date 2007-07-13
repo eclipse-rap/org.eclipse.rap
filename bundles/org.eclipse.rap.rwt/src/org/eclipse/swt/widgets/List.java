@@ -12,7 +12,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.internal.widgets.IListAdapter;
 
 /** 
@@ -792,7 +792,7 @@ public class List extends Scrollable {
   public int getItemHeight() {
     checkWidget();
     int margin = VERTICAL_ITEM_MARGIN * 2;
-    return FontSizeEstimation.getCharHeight( getFont() ) + margin;
+    return FontSizeCalculator.getCharHeight( getFont() ) + margin;
   }
 
   /////////////////////////////////////////
