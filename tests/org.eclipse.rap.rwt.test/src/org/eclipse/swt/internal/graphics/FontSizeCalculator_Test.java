@@ -253,8 +253,8 @@ public class FontSizeCalculator_Test extends TestCase {
     Integer key1 = new Integer( 1 );
     storage.storeStringSize( key1, point1 );
     
-    StringWriter writer = new StringWriter();
-    storage.save( writer );
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    storage.save( out );
     String[] expected = new String[] { 
       "#" + DefaultFontSizeStorage.COMMENT + "\n",
       DefaultFontSizeStorage.PREFIX_FONT_KEY + "0=1|arial|10|0|\n",
@@ -263,14 +263,14 @@ public class FontSizeCalculator_Test extends TestCase {
       "1=11,12\n"
     };
     for( int i = 0; i < expected.length; i++ ) {
-      assertTrue( writer.toString().indexOf( expected[ i ]  ) != 0 );
+      assertTrue( out.toString().indexOf( expected[ i ]  ) != 0 );
     }
     
     storage.resetFontList();
     storage.resetStringSizes();
     
-    StringReader reader = new StringReader( writer.toString() );
-    storage.read( reader );
+    ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
+    storage.read( in );
     
     Point actual = storage.lookupStringSize( key0 );
     assertEquals( point0, actual );

@@ -89,7 +89,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
   //////////////
   // persistance
   
-  public void save( final Writer out ) throws IOException {
+  public void save( final OutputStream out ) throws IOException {
     Properties properties = new Properties();
     Font[] fontList;
     synchronized( lock ) {
@@ -115,7 +115,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
     properties.store( out, COMMENT );
   }
   
-  public void read( final Reader in ) throws IOException {
+  public void read( final InputStream in ) throws IOException {
     Properties properties = new Properties();
     properties.load( in );
     synchronized( lock ) {
