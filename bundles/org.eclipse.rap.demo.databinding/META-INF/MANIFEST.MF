@@ -6,5 +6,5 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.rap.jface.databinding,
  org.eclipse.rap.ui.workbench,
- org.eclipse.core.databinding,
- org.eclipse.core.databinding.beans
+ org.eclipse.rap.core.databinding,
+ org.eclipse.rap.core.databinding.beans
