@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -20,20 +20,27 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
-  
+
+  private static final String QX_TYPE
+    = "org.eclipse.swt.custom.ScrolledComposite";
+
+  private static final String TYPE_POOL_ID
+    = ScrolledCompositeLCA.class.getName();
+
   private static final Integer ZERO = new Integer( 0 );
 
   // Request parameter names
-  private static final String PARAM_H_BAR_SELECTION 
-    = "horizontalBar.selection"; 
-  private static final String PARAM_V_BAR_SELECTION 
-    = "verticalBar.selection"; 
-  
+  private static final String PARAM_H_BAR_SELECTION
+    = "horizontalBar.selection";
+  private static final String PARAM_V_BAR_SELECTION
+    = "verticalBar.selection";
+
   // Property names for preserve value mechanism
   private static final String PROP_BOUNDS = "clientArea";
   private static final String PROP_OVERFLOW = "overflow";
   private static final String PROP_H_BAR_SELECTION = "hBarSelection";
   private static final String PROP_V_BAR_SELECTION = "vBarSelection";
+
 
   public void preserveValues( final Widget widget ) {
     ScrolledComposite composite = ( ScrolledComposite )widget;
@@ -41,15 +48,15 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( composite );
     adapter.preserve( PROP_BOUNDS, composite.getBounds() );
     adapter.preserve( PROP_OVERFLOW, getOverflow( composite ) );
-    adapter.preserve( PROP_H_BAR_SELECTION, 
+    adapter.preserve( PROP_H_BAR_SELECTION,
                       getBarSelection( composite.getHorizontalBar() ) );
-    adapter.preserve( PROP_V_BAR_SELECTION, 
+    adapter.preserve( PROP_V_BAR_SELECTION,
                       getBarSelection( composite.getVerticalBar() ) );
   }
 
   public void readData( final Widget widget ) {
     ScrolledComposite composite = ( ScrolledComposite )widget;
-    String value 
+    String value
       = WidgetLCAUtil.readPropertyValue( widget, PARAM_H_BAR_SELECTION );
     if( value != null && composite.getHorizontalBar() != null ) {
       composite.getHorizontalBar().setSelection( Integer.parseInt( value ) );
@@ -62,7 +69,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.newWidget( "org.eclipse.swt.custom.ScrolledComposite" );
+    writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( widget );
   }
 
@@ -71,9 +78,8 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( composite );
     writeClipBounds( composite );
     writeScrollBars( composite );
-    // TODO [rh] initial positioning of the client-side scroll bar does not work 
-    writeHBarSelection( composite );
-    writeVBarSelection( composite );
+    // TODO [rh] initial positioning of the client-side scroll bar does not work
+    writeBarSelection( composite );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -83,46 +89,56 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   }
 
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+    ControlLCAUtil.resetChanges();
+    resetClipBounds();
+    resetScrollBars();
+    resetBarSelection();
+    ControlLCAUtil.resetStyleFlags();
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
-    return null;
+    return TYPE_POOL_ID;
   }
-  
+
 
   ///////////////////////////////////
   // Helping methods to write changes
 
-  private static void writeScrollBars( final ScrolledComposite composite ) 
-    throws IOException 
+  private static void writeScrollBars( final ScrolledComposite composite )
+    throws IOException
   {
     String overflow = getOverflow( composite );
     JSWriter writer = JSWriter.getWriterFor( composite );
     writer.set( PROP_OVERFLOW, "overflow", overflow, null );
   }
 
-  private static void writeHBarSelection( final ScrolledComposite composite )
+  private static void resetScrollBars() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( "overflow" );
+  }
+
+  private static void writeBarSelection( final ScrolledComposite composite )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( composite );
-    Integer selection = getBarSelection( composite.getHorizontalBar() );
-    if( selection != null ) {
-      writer.set( PROP_H_BAR_SELECTION, "hBarSelection", selection, ZERO );
+    Integer hBarSelection = getBarSelection( composite.getHorizontalBar() );
+    if( hBarSelection != null ) {
+      writer.set( PROP_H_BAR_SELECTION, "hBarSelection", hBarSelection, ZERO );
+    }
+    Integer vBarSelection = getBarSelection( composite.getHorizontalBar() );
+    if( vBarSelection != null ) {
+      writer.set( PROP_V_BAR_SELECTION, "vBarSelection", vBarSelection, ZERO );
     }
   }
 
-  private static void writeVBarSelection( final ScrolledComposite composite )
+  private static void resetBarSelection() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.set( "hBarSelection", 0 );
+    writer.set( "vBarSelection", 0 );
+  }
+
+  private static void writeClipBounds( final ScrolledComposite composite )
     throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( composite );
-    Integer selection = getBarSelection( composite.getVerticalBar() );
-    if( selection != null ) {
-      writer.set( PROP_V_BAR_SELECTION, "vBarSelection", selection, ZERO );
-    }
-  }
-
-  private static void writeClipBounds( final ScrolledComposite composite ) 
-    throws IOException 
   {
     Rectangle bounds = composite.getBounds();
     if( WidgetLCAUtil.hasChanged( composite, PROP_BOUNDS, bounds, null ) ) {
@@ -131,7 +147,13 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
       writer.set( "clipHeight", bounds.height );
     }
   }
-  
+
+  private static void resetClipBounds() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( "clipWidth" );
+    writer.reset( "clipHeight" );
+  }
+
   private static String getOverflow( final ScrolledComposite composite ) {
     String result;
     ScrollBar horizontalBar = composite.getHorizontalBar();
@@ -149,7 +171,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
+
   ///////////////////////////////////////////////////////////////////////////
   // Helping methods to obtain scroll bar properties
 

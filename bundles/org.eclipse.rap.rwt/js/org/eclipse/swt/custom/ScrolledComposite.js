@@ -13,7 +13,7 @@
 qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
   extend : qx.ui.layout.CanvasLayout,
 
-  construct : function( style ) {
+  construct : function() {
     this.base( arguments );
     this.setAppearance( "scrolledcomposite" );
     this._initialScrollTop = null;
