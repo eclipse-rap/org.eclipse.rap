@@ -9,13 +9,17 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.*;
 
 public class LinkTab extends ExampleTab {
+
+  private Link customLink;
 
   public LinkTab( final CTabFolder topFolder ) {
     super( topFolder, "Link" );
@@ -28,6 +32,7 @@ public class LinkTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
+    createCustomLinkControl( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -39,8 +44,33 @@ public class LinkTab extends ExampleTab {
     link2.setText( "Link without href" );
     Link link3 = new Link( parent, style );
     link3.setText( "<a>Link with one href</a>" );
+    customLink = new Link( parent, style );
+    customLink.setText( "Custom link, use controls to your right to change" );
+    customLink.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        String msg = "Link widget selected, text=" + event.text;
+        MessageDialog.openInformation( getShell(), "Information", msg, null );
+      }
+    } );
     registerControl( link1 );
     registerControl( link2 );
     registerControl( link3 );
+    registerControl( customLink );
+  }
+
+  private void createCustomLinkControl( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label lblText = new Label( composite, SWT.NONE );
+    lblText.setText( "Text" );
+    final Text txtText = new Text( composite, SWT.BORDER );
+    Button btnChange = new Button( composite, SWT.PUSH );
+    btnChange.setText( "Change" );
+    btnChange.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        customLink.setText( txtText.getText() );
+      }
+    } );
+    
   }
 }

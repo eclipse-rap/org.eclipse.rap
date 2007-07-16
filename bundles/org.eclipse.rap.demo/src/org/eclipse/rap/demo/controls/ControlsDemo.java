@@ -59,6 +59,7 @@ public class ControlsDemo implements IEntryPoint {
       new GroupTab( topFolder ),
       new LabelTab( topFolder ),
       new ListTab( topFolder ),
+      new LinkTab( topFolder ),
       new SashTab( topFolder ),
       new SashFormTab( topFolder ),
       new ShellTab( topFolder ),
