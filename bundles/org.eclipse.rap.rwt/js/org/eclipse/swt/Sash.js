@@ -19,7 +19,7 @@ qx.Class.define( "org.eclipse.swt.Sash", {
     this.base( arguments, orientation );
     this.setShowKnob( false );
   },
-  
+
   destruct : function() {
     
   },
@@ -99,7 +99,8 @@ qx.Class.define( "org.eclipse.swt.Sash", {
       // notify server
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      org.eclipse.swt.EventUtil.doWidgetSelected( id, leftBuffer, topBuffer, this.getWidth(), this.getHeight() );
+      org.eclipse.swt.EventUtil.doWidgetSelected( id, leftBuffer, topBuffer,
+          this.getWidth(), this.getHeight() );
     },
 
     _normalizeX : function( e ) {
@@ -124,6 +125,9 @@ qx.Class.define( "org.eclipse.swt.Sash", {
         toMove = parentHeight - this.getTop() - this.getHeight();
       }
       return toMove;
-    }
+    },
+
+    // TODO [rst] Make WidgetManager happy
+    reInit: function() { }
   }
 });
