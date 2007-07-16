@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.theme;
 import junit.framework.TestCase;
 
 public class QxBorder_Test extends TestCase {
-  
+
   public void testConstructor() throws Exception {
     try {
       new QxBorder( null );
@@ -35,7 +35,7 @@ public class QxBorder_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testDefaults() throws Exception {
     QxBorder border;
     border = new QxBorder( "" );
@@ -48,6 +48,8 @@ public class QxBorder_Test extends TestCase {
     border = new QxBorder( "2" );
     assertEquals( 2, border.width );
     assertEquals( "solid", border.style );
+    border = new QxBorder( "1px" );
+    assertEquals( 1, border.width );
     border = new QxBorder( "black" );
     assertEquals( 1, border.width );
     assertEquals( "solid", border.style );
@@ -57,7 +59,7 @@ public class QxBorder_Test extends TestCase {
     assertEquals( "dashed", border.style );
     assertEquals( "red", border.color );
   }
-  
+
   public void testQxColors() throws Exception {
     QxBorder border;
     // none
@@ -69,37 +71,45 @@ public class QxBorder_Test extends TestCase {
     assertEquals( "[ \"widget.shadow\", \"widget.highlight\", \"widget.highlight\", \"widget.shadow\" ]",
                   border.getQxColors() );
     // thin outset
-    border = new QxBorder( "1 outset" );
+    border = new QxBorder( "1px outset" );
     assertEquals( "solid", border.getQxStyle() );
     assertEquals( "[ \"widget.highlight\", \"widget.shadow\", \"widget.shadow\", \"widget.highlight\" ]",
                   border.getQxColors() );
     // inset
-    border = new QxBorder( "2 inset" );
+    border = new QxBorder( "2px inset" );
     assertEquals( "solid", border.getQxStyle() );
-    assertEquals( "[ \"widget.shadow\", \"widget.highlight\", \"widget.highlight\", \"widget.shadow\" ]", 
+    assertEquals( "[ \"widget.shadow\", \"widget.highlight\", \"widget.highlight\", \"widget.shadow\" ]",
                   border.getQxColors() );
-    assertEquals( "[ \"widget.darkshadow\", \"widget.lightshadow\", \"widget.lightshadow\", \"widget.darkshadow\" ]", 
+    assertEquals( "[ \"widget.darkshadow\", \"widget.lightshadow\", \"widget.lightshadow\", \"widget.darkshadow\" ]",
                   border.getQxInnerColors() );
     // outset
     border = new QxBorder( "2 outset" );
     assertEquals( "solid", border.getQxStyle() );
-    assertEquals( "[ \"widget.lightshadow\", \"widget.darkshadow\", \"widget.darkshadow\", \"widget.lightshadow\" ]", 
+    assertEquals( "[ \"widget.lightshadow\", \"widget.darkshadow\", \"widget.darkshadow\", \"widget.lightshadow\" ]",
                   border.getQxColors() );
-    assertEquals( "[ \"widget.highlight\", \"widget.shadow\", \"widget.shadow\", \"widget.highlight\" ]", 
+    assertEquals( "[ \"widget.highlight\", \"widget.shadow\", \"widget.shadow\", \"widget.highlight\" ]",
                   border.getQxInnerColors() );
     // groove
     border = new QxBorder( "2 groove" );
     assertEquals( "solid", border.getQxStyle() );
-    assertEquals( "[ \"widget.shadow\", \"widget.highlight\", \"widget.highlight\", \"widget.shadow\" ]", 
+    assertEquals( "[ \"widget.shadow\", \"widget.highlight\", \"widget.highlight\", \"widget.shadow\" ]",
                   border.getQxColors() );
-    assertEquals( "[ \"widget.highlight\", \"widget.shadow\", \"widget.shadow\", \"widget.highlight\" ]", 
+    assertEquals( "[ \"widget.highlight\", \"widget.shadow\", \"widget.shadow\", \"widget.highlight\" ]",
                   border.getQxInnerColors() );
     // ridge
     border = new QxBorder( "2 ridge" );
     assertEquals( "solid", border.getQxStyle() );
-    assertEquals( "[ \"widget.highlight\", \"widget.shadow\", \"widget.shadow\", \"widget.highlight\" ]", 
+    assertEquals( "[ \"widget.highlight\", \"widget.shadow\", \"widget.shadow\", \"widget.highlight\" ]",
                   border.getQxColors() );
-    assertEquals( "[ \"widget.shadow\", \"widget.highlight\", \"widget.highlight\", \"widget.shadow\" ]", 
+    assertEquals( "[ \"widget.shadow\", \"widget.highlight\", \"widget.highlight\", \"widget.shadow\" ]",
                   border.getQxInnerColors() );
+  }
+
+  public void testDefaultString() throws Exception {
+    QxBorder border;
+    border = new QxBorder( "3 solid red" );
+    assertEquals( "3px solid red", border.toDefaultString() );
+    border = new QxBorder( "1 dashed #ff0000" );
+    assertEquals( "1px dashed #ff0000", border.toDefaultString() );
   }
 }

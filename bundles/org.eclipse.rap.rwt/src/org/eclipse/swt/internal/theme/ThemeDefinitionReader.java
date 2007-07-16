@@ -41,19 +41,20 @@ public class ThemeDefinitionReader {
       this.description = description;
     }
   }
-  
+
   public interface ThemeDefHandler {
     public abstract void readThemeDef( ThemeDef def );
   }
-  
+
   private static final String NODE_ROOT = "theme";
   private static final String TYPE_FONT = "font";
   private static final String TYPE_COLOR = "color";
+  private static final String TYPE_BOOLEAN = "boolean";
   private static final String TYPE_BORDER = "border";
   private static final String TYPE_BOXDIMENSION = "boxdim";
   private static final String TYPE_DIMENDSION = "dimension";
   private static final String TYPE_IMAGE = "image";
-  
+
   private static final String THEME_DEF_SCHEMA = "themedef.xsd";
   private static final String JAXP_SCHEMA_LANGUAGE
     = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
@@ -61,7 +62,7 @@ public class ThemeDefinitionReader {
     = "http://www.w3.org/2001/XMLSchema";
 
   private InputStream inputStream;
-  
+
   /**
    * An instance of this class reads theme definitions from an XML resource.
    * @param inputStream input stream from a theme definition XML
@@ -104,7 +105,9 @@ public class ThemeDefinitionReader {
     if( TYPE_FONT.equals( type ) ) {
       value = new QxFont( defaultStr );
     } else if( TYPE_COLOR.equals( type ) ) {
-        value = new QxColor( defaultStr );
+      value = new QxColor( defaultStr );
+    } else if( TYPE_BOOLEAN.equals( type ) ) {
+      value = new QxBoolean( defaultStr );
     } else if( TYPE_BORDER.equals( type ) ) {
       value = new QxBorder( defaultStr );
     } else if( TYPE_BOXDIMENSION.equals( type ) ) {
@@ -131,7 +134,7 @@ public class ThemeDefinitionReader {
     }
     return result;
   }
-  
+
   private Document parseThemeDefinition( final InputStream is )
     throws FactoryConfigurationError, ParserConfigurationException,
     SAXException, IOException

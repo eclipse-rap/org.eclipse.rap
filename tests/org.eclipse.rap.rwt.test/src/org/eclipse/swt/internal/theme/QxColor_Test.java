@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -13,10 +13,8 @@ package org.eclipse.swt.internal.theme;
 
 import junit.framework.TestCase;
 
-import org.eclipse.swt.internal.theme.QxColor;
-
 public class QxColor_Test extends TestCase {
-  
+
   public void test6HexNotation() throws Exception {
     QxColor color;
     color = new QxColor( "#0023ff" );
@@ -28,7 +26,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( 239, color.green );
     assertEquals( 239, color.blue );
   }
-  
+
   public void test3HexNotation() throws Exception {
     QxColor color;
     color = new QxColor( "#03f" );
@@ -41,7 +39,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( 204, color.blue );
     assertEquals( new QxColor( "#ffffff"), new QxColor( "#fff" ) );
   }
-  
+
   public void testIllegalHexNotation() throws Exception {
     try {
       new QxColor( "#0000" );
@@ -56,7 +54,7 @@ public class QxColor_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testNamedColors() throws Exception {
     QxColor color;
     color = new QxColor( "white" );
@@ -70,7 +68,7 @@ public class QxColor_Test extends TestCase {
     assertEquals( 0, color.blue );
     assertEquals( "black", color.name );
   }
-  
+
   public void testCommaSeparatedValues() throws Exception {
     QxColor color;
     color = new QxColor( "100, 23, 42" );
@@ -79,13 +77,13 @@ public class QxColor_Test extends TestCase {
     assertEquals( 42, color.blue );
     assertEquals( "#64172a", color.name );
   }
-  
+
   public void testToString() throws Exception {
     QxColor color;
     color = new QxColor( "100, 23, 42" );
     assertEquals( "QxColor {100, 23, 42}", color.toString() );
   }
-  
+
   public void testInvalidNames() throws Exception {
     try {
       new QxColor( "grey" );
@@ -93,5 +91,11 @@ public class QxColor_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+  }
+
+  public void testDefaultString() throws Exception {
+    QxColor color;
+    color = new QxColor( "100, 23, 42" );
+    assertEquals( "#64172a", color.toDefaultString() );
   }
 }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -123,7 +123,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Spinner_Test.class );
     suite.addTestSuite( ExternalBrowser_Test.class );
     suite.addTestSuite( ProgressBar_Test.class );
-    
+
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );
     suite.addTestSuite( RGB_Test.class );
@@ -153,7 +153,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ComboLCA_Test.class );
     suite.addTestSuite( ToolItemLCA_Test.class );
     suite.addTestSuite( TabFolderLCA_Test.class );
-    
+
     suite.addTestSuite( Theme_Test.class );
     suite.addTestSuite( ThemeManager_Test.class );
     suite.addTestSuite( ThemeUtil_Test.class );
@@ -161,8 +161,11 @@ public class RWTTestSuite {
     suite.addTestSuite( ThemeDefinitionReader_Test.class );
     suite.addTestSuite( QxColor_Test.class );
     suite.addTestSuite( QxBorder_Test.class );
+    suite.addTestSuite( QxBoolean_Test.class );
+    suite.addTestSuite( QxDimension_Test.class );
+    suite.addTestSuite( QxBoxDimensions_Test.class );
     suite.addTestSuite( QxFont_Test.class );
-    
+
     return suite;
   }
 }

@@ -51,7 +51,7 @@ public class ButtonThemeAdapter implements IButtonThemeAdapter {
       width = bounds.width;
       height = bounds.height;
       if( text.length() > 0 ) {
-        width += spacing.getInt();
+        width += spacing.value;
       }
     }
     if( text.length() > 0 ) {

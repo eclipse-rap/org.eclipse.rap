@@ -825,14 +825,18 @@ public class ThemeManager {
       String key = matcher.group( 1 );
       QxType result = theme.getValue( key );
       String repl;
-      if( result instanceof QxDimension ) {
+      if( result instanceof QxBoolean ) {
+        QxBoolean bool = ( QxBoolean )result;
+        repl = String.valueOf( bool.value );
+      } else if( result instanceof QxDimension ) {
         QxDimension dim = ( QxDimension )result;
-        repl = String.valueOf( dim.getInt() );
+        repl = String.valueOf( dim.value );
       } else if( result instanceof QxBoxDimensions ) {
         QxBoxDimensions boxdim = ( QxBoxDimensions )result;
         repl = boxdim.toJsArray();
       } else {
-        String mesg = "Only dimensions and box dimensions can be substituted in appearance templates";
+        String mesg = "Only boolean values, dimensions, and box dimensions"
+                      + " can be substituted in appearance templates";
         throw new IllegalArgumentException( mesg );
       }
       matcher.appendReplacement( sb, repl );

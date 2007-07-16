@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.theme;
 import junit.framework.TestCase;
 
 public class QxFont_Test extends TestCase {
-  
+
   public void testParse1() throws Exception {
     String def = "bold 16 \"Bitstream Vera Sans\" , Helvetica,sans-serif";
     QxFont qxFont = new QxFont( def  );
@@ -25,12 +25,10 @@ public class QxFont_Test extends TestCase {
     assertEquals( "Bitstream Vera Sans", qxFont.family[ 0 ] );
     assertEquals( "Helvetica", qxFont.family[ 1 ] );
     assertEquals( "sans-serif", qxFont.family[ 2 ] );
-    assertEquals( "bold 16 \"Bitstream Vera Sans\", Helvetica, sans-serif",
-                  qxFont.toDefaultString() );
   }
-  
+
   public void testParse2() throws Exception {
-    String def = "italic 11 'Bitstream Vera Sans', Helvetica, sans-serif";
+    String def = "italic 11px 'Bitstream Vera Sans', Helvetica, sans-serif";
     QxFont qxFont = new QxFont( def  );
     assertFalse( qxFont.bold );
     assertTrue( qxFont.italic );
@@ -39,7 +37,12 @@ public class QxFont_Test extends TestCase {
     assertEquals( "Bitstream Vera Sans", qxFont.family[ 0 ] );
     assertEquals( "Helvetica", qxFont.family[ 1 ] );
     assertEquals( "sans-serif", qxFont.family[ 2 ] );
-    assertEquals( "italic 11 \"Bitstream Vera Sans\", Helvetica, sans-serif",
-                  qxFont.toDefaultString() );
+  }
+
+  public void testDefaultString() throws Exception {
+    String input = "bold 16 \"Bitstream Vera Sans\" , 'Helvetica',sans-serif";
+    String exp = "bold 16px \"Bitstream Vera Sans\", Helvetica, sans-serif";
+    QxFont qxFont = new QxFont( input );
+    assertEquals( exp, qxFont.toDefaultString() );
   }
 }

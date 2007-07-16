@@ -94,10 +94,12 @@ public class QxColor implements QxType {
   }
 
   public String toDefaultString() {
-    return red + ", " + green + ", " + blue;
+    return toHtmlString( red, green, blue );
   }
 
-  public static String toHtmlString( final int red, final int green, final int blue )
+  public static String toHtmlString( final int red,
+                                     final int green,
+                                     final int blue )
   {
     StringBuffer sb = new StringBuffer();
     sb.append( "#" );

@@ -106,8 +106,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static void resetText() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
-//    TODO [rst] Calling resetLabel throws JS error in IE
-//    writer.reset( "label" );
+//    TODO [rst] Calling resetLabel() throws JS error in IE
     writer.set( "label", "" );
   }
 
@@ -130,9 +129,8 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static void resetImage() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
-//    TODO [rst] Both, calling setIcon( "" ) and resetIcon throws JS error in IE
-//    writer.reset( "icon" );
-//    writer.set( "icon", "" );
+//    TODO [rst] resetIcon() throws JS error in IE
+    writer.set( "icon", ( String )null );
   }
 
   private static void writeAlignment( final Label label ) throws IOException {

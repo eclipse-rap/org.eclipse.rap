@@ -44,8 +44,11 @@ public class QxBorder implements QxType {
     "none"
   };
 
-  public QxBorder( final String value ) {
-    String[] parts = value.split( "\\s+" );
+  public QxBorder( final String input ) {
+    if( input == null ) {
+      throw new NullPointerException( "null argument" );
+    }
+    String[] parts = input.split( "\\s+" );
     if( parts.length > 3 ) {
       throw new IllegalArgumentException( "Illegal number of arguments for border" );
     }
@@ -55,6 +58,7 @@ public class QxBorder implements QxType {
     for( int i = 0; i < parts.length; i++ ) {
       String part = parts[ i ];
       boolean parsed = "".equals( part );
+      // parse style
       if( !parsed && style == null ) {
         String parsedStyle = parseStyle( part );
         if( parsedStyle != null ) {
@@ -62,13 +66,18 @@ public class QxBorder implements QxType {
           parsed = true;
         }
       }
+      // parse width
       if( !parsed && width == -1 ) {
-        int parsedWidth = parseWidth( part );
-        if( parsedWidth != -1 ) {
-          width = parsedWidth;
+        Integer parsedWidth = QxDimension.parseLength( part );
+        if( parsedWidth != null ) {
+          if( parsedWidth.intValue() < 0 ) {
+            throw new IllegalArgumentException( "Negative width: " + part );
+          }
+          width = parsedWidth.intValue();
           parsed = true;
         }
       }
+      // parse color
       if( !parsed && color == null ) {
         color = part;
         parsed = true;
@@ -149,7 +158,7 @@ public class QxBorder implements QxType {
     if( width == 0 ) {
       result.append( "none" );
     } else {
-      result.append( width );
+      result.append( width + "px" );
       result.append( " " );
       result.append( style );
       if( color != null ) {
@@ -216,22 +225,10 @@ public class QxBorder implements QxType {
     return result.toString();
   }
 
-  private static int parseWidth( final String string ) {
-    int width = -1;
-    try {
-      width = Integer.parseInt( string );
-      if( width < 0 ) {
-        throw new IllegalArgumentException( "Negative width" );
-      }
-    } catch( final NumberFormatException e ) {
-    }
-    return width;
-  }
-
-  private static String parseStyle( final String string ) {
+  private static String parseStyle( final String part ) {
     String result = null;
     for( int j = 0; j < VALID_STYLES.length && result == null; j++ ) {
-      if( VALID_STYLES[ j ].equalsIgnoreCase( string ) ) {
+      if( VALID_STYLES[ j ].equalsIgnoreCase( part ) ) {
         result = VALID_STYLES[ j ];
       }
     }

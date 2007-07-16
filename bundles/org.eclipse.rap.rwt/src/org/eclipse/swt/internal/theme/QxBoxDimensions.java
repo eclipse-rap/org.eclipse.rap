@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -14,13 +14,13 @@ package org.eclipse.swt.internal.theme;
 public class QxBoxDimensions implements QxType {
 
   public final int top;
-  
+
   public final int right;
-  
+
   public final int bottom;
-  
+
   public final int left;
-  
+
   public QxBoxDimensions( final int top,
                           final int right,
                           final int bottom,
@@ -31,40 +31,39 @@ public class QxBoxDimensions implements QxType {
     this.bottom = bottom;
     this.left = left;
   }
-  
-  public QxBoxDimensions( final String value ) {
-    String[] parts = value.split( "\\s+" );
+
+  public QxBoxDimensions( final String input ) {
+    if( input == null ) {
+      throw new NullPointerException( "null argument" );
+    }
+    String[] parts = input.split( "\\s+" );
     if( parts.length == 0 || parts.length > 4 ) {
       throw new IllegalArgumentException( "Illegal number of arguments for box dimensions" );
     }
     int top, right, left, bottom;
-    try {
-      top = right = bottom = left = Integer.parseInt( parts[ 0 ] );
-      if( parts.length >= 2 ) {
-        right = left = Integer.parseInt( parts[ 1 ] );        
-      }
-      if( parts.length >= 3 ) {
-        bottom = Integer.parseInt( parts[ 2 ] );        
-      }
-      if( parts.length == 4 ) {
-        left = Integer.parseInt( parts[ 3 ] );        
-      }
-    } catch( NumberFormatException e ) {
-      throw new IllegalArgumentException( "Illegal number format" );
+    top = right = bottom = left = parsePxValue( parts[ 0 ] );
+    if( parts.length >= 2 ) {
+      right = left = parsePxValue( parts[ 1 ] );
+    }
+    if( parts.length >= 3 ) {
+      bottom = parsePxValue( parts[ 2 ] );
+    }
+    if( parts.length == 4 ) {
+      left = parsePxValue( parts[ 3 ] );
     }
     this.top = top;
     this.bottom = bottom;
     this.left = left;
     this.right = right;
   }
-  
+
   /**
    * Returns <code>left + right</code> for convenience.
    */
   public int getWidth() {
     return left + right;
   }
-  
+
   /**
    * Returns <code>top + bottom</code> for convenience.
    */
@@ -77,9 +76,9 @@ public class QxBoxDimensions implements QxType {
   }
 
   public String toDefaultString() {
-    return top + " " + right + " " + bottom + " " + left;
+    return top + "px " + right + "px " + bottom + "px " + left + "px";
   }
-  
+
   public boolean equals( final Object object ) {
     boolean result = false;
     if( object == this ) {
@@ -108,5 +107,13 @@ public class QxBoxDimensions implements QxType {
            + ", "
            + right
            + "}";
+  }
+
+  private static int parsePxValue( final String part ) {
+    Integer result = QxDimension.parseLength( part );
+    if( result == null ) {
+      throw new IllegalArgumentException( "Illegal parameter: " + part );
+    }
+    return result.intValue();
   }
 }

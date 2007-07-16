@@ -52,9 +52,12 @@ public class QxFont implements QxType {
       } else if( "italic".equalsIgnoreCase( part ) ) {
         italic = true;
       } else {
-        int parsedSize = parseSize( part );
-        if( parsedSize != -1 ) {
-          size = parsedSize;
+        Integer parsedSize = QxDimension.parseLength( part );
+        if( parsedSize != null ) {
+          if( parsedSize.intValue() < 0 ) {
+            throw new IllegalArgumentException( "Negative width: " + part );
+          }
+          size = parsedSize.intValue();
         } else {
           // TODO [rst] Check commas
           family.add( part );
@@ -95,7 +98,7 @@ public class QxFont implements QxType {
       result.append( "italic " );
     }
     result.append( size );
-    result.append( " " );
+    result.append( "px " );
     result.append( getFamilyAsString() );
     return result.toString();
   }
@@ -153,14 +156,5 @@ public class QxFont implements QxType {
     }
     FontData data = new FontData( name, font.size, style );
     return Font.getFont( data );
-  }
-
-  private static int parseSize( final String string ) {
-    int size = -1;
-    try {
-      size = Integer.parseInt( string );
-    } catch( final NumberFormatException e ) {
-    }
-    return size;
   }
 }
