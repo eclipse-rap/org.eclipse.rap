@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for SWT Tree widget -->
+
+<theme>
+
+  <!--
+  <boolean name="tree.lines.visible"
+      description="Whether tree lines should be shown"
+      default="true"/>
+  -->
+
+</theme>

@@ -9,17 +9,13 @@
 
 package org.eclipse.swt.internal.widgets.treekit;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.theme.*;
+import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 
-public class TreeThemeAdapter implements ITreeThemeAdapter {
-
-  public int getBorderWidth( final Control control ) {
-    return ( control.getStyle() & SWT.BORDER ) != 0 ? 2 : 0;
-  }
+public class TreeThemeAdapter extends ControlThemeAdapter implements ITreeThemeAdapter {
 
   public Color getForeground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();

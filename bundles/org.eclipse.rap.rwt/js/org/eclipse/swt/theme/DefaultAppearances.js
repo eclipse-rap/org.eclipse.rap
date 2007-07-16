@@ -891,6 +891,7 @@ appearances = {
       include : "tree-folder",
       style : function( states ) {
         return {
+//          useTreeLines : false,
           verticalChildrenAlign : "top",
           backgroundColor : "list.background",
           border : states.rwt_BORDER
