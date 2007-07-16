@@ -44,6 +44,9 @@ public final class Image extends Resource {
     if( path == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
+    if( "".equals( path ) ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     Image result;
     if( images.containsKey( path ) ) {
       result = ( Image )images.get( path );
@@ -59,6 +62,9 @@ public final class Image extends Resource {
     if( path == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
+    if( "".equals( path ) ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
     Image result;
     if( images.containsKey( path ) ) {
       result = ( Image )images.get( path );
@@ -68,7 +74,7 @@ public final class Image extends Resource {
     return result;
   }
   
-  public static synchronized String getPath ( final Image image ) {
+  public static synchronized String getPath( final Image image ) {
     String result = null;
     Iterator it = images.entrySet().iterator();
     boolean next = true;

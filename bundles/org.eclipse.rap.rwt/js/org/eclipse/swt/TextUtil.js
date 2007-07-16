@@ -183,7 +183,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
           text.setUserData( "selectionStart", start );
           org.eclipse.swt.TextUtil._setPropertyParam( text, "selectionStart", start );
         }
-        if( text.getUserData ("selectionLength" ) != length ) {
+        if( text.getUserData( "selectionLength" ) != length ) {
           text.setUserData( "selectionLength", length );
           org.eclipse.swt.TextUtil._setPropertyParam( text, "selectionCount", length );
         }
@@ -262,6 +262,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
             && !evt.isCtrlPressed() 
             && !evt.isMetaPressed() ) 
         {
+          evt.setPropagationStopped( true );
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var id = widgetManager.findIdByWidget( evt.getTarget() );
           var req = org.eclipse.swt.Request.getInstance();

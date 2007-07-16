@@ -42,7 +42,7 @@ qx.Class.define( "org.eclipse.swt.ButtonUtil", {
         }
       }
       if( radioManager == null ) {
-        radioManager = new qx.manager.selection.RadioManager();
+        radioManager = new qx.ui.selection.RadioManager();
       }
       radioManager.add( button );
     },

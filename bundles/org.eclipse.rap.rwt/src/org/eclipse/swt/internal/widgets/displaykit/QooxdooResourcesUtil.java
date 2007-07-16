@@ -120,6 +120,7 @@ final class QooxdooResourcesUtil {
       // start generated code (see main method)
 
       manager.register( "resource/static/history/historyHelper.html", HTML.CHARSET_NAME_ISO_8859_1 );
+      manager.register( "resource/static/html/blank.html" );
       manager.register( "resource/static/image/blank.gif" );
       manager.register( "resource/static/image/dotted_white.gif" );
       manager.register( "script/custom.js", HTML.CHARSET_NAME_ISO_8859_1, RegisterOptions.VERSION );

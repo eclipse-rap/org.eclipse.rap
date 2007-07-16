@@ -63,9 +63,9 @@ qx.Class.define( "org.eclipse.swt.Sash", {
       // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=180334
       this.setZIndex( 1e7 );
       // initialize the slider
-      if (!this.isLiveResize()) {
-        this._slider._applyRuntimeLeft( this._splitter.getOffsetLeft() );
-        this._slider._applyRuntimeTop( this._splitter.getOffsetTop() );
+      if( !this.isLiveResize() ) {
+        this._slider._renderRuntimeLeft( this._splitter.getOffsetLeft() );
+        this._slider._renderRuntimeTop( this._splitter.getOffsetTop() );
         this._slider.setWidth( this._splitter.getBoxWidth() );
         this._slider.setHeight( this._splitter.getBoxHeight() );
         this._slider.show();
@@ -99,8 +99,11 @@ qx.Class.define( "org.eclipse.swt.Sash", {
       // notify server
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
-      org.eclipse.swt.EventUtil.doWidgetSelected( id, leftBuffer, topBuffer,
-          this.getWidth(), this.getHeight() );
+      org.eclipse.swt.EventUtil.doWidgetSelected( id, 
+                                                  leftBuffer, 
+                                                  topBuffer, 
+                                                  this.getWidth(), 
+                                                  this.getHeight() );
     },
 
     _normalizeX : function( e ) {
@@ -126,8 +129,9 @@ qx.Class.define( "org.eclipse.swt.Sash", {
       }
       return toMove;
     },
-
+    
     // TODO [rst] Make WidgetManager happy
-    reInit: function() { }
+    reInit: function() { 
+    }
   }
 });

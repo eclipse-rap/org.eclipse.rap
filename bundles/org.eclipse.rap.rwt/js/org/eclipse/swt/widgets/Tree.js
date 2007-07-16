@@ -11,20 +11,20 @@
  ******************************************************************************/
 
 /**
- * This class encapulates the qx.ui.treefullcontrol.Tree to make it more
- * suitable for usage in RWT.
+ * This class encapulates the qx.ui.tree.Tree to make it more suitable for 
+ * usage in RWT.
  * The style parameter mimics the RWT style flag. Possible values (strings)
  * are: multi, check
  */
 qx.Class.define( "org.eclipse.swt.widgets.Tree", {
-  extend : qx.ui.treefullcontrol.Tree,
+  extend : qx.ui.tree.Tree,
 
   construct : function( style ) {
-    var trs = qx.ui.treefullcontrol.TreeRowStructure.getInstance().standard( "" );
-    qx.ui.treefullcontrol.Tree.call( this, trs );
+    var trs = qx.ui.tree.TreeRowStructure.getInstance().standard( "" );
+    this.base( arguments, trs );
     this.setOverflow( qx.constant.Style.OVERFLOW_AUTO );
     this.setHideNode( true );
-    this.setUseTreeLines( true );
+    this.setRootOpenClose( true );
     this.setUseDoubleClick( false );  // true supresses dblclick events !
 
     // TODO [rh] this is only to make the tree focusable at all
@@ -50,6 +50,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
     this.removeEventListener( "treeOpenWithContent", this._onItemExpanded, this );
     this.removeEventListener( "treeClose", this._onItemCollapsed, this );
+    this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "focus", this._onFocusIn, this );
     this.removeEventListener( "blur", this._onFocusOut, this );
   },

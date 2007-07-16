@@ -13,9 +13,9 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.lifecycle.*;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 
 final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
@@ -37,7 +37,7 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.preserveValues( text );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_SELECTION_LISTENER,
-                      Boolean.valueOf( SelectionEvent.hasListener( text ) ) );
+                      Boolean.valueOf( hasSelectionListener( text ) ) );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -91,12 +91,18 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
   private static void writeSelectionListener( final Text text )
     throws IOException
   {
-    if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( text );
-      writer.updateListener( JS_SELECTION_LISTENER_INFO,
-                             PROP_SELECTION_LISTENER,
-                             SelectionEvent.hasListener( text ) );
-    }
+    JSWriter writer = JSWriter.getWriterFor( text );
+    writer.updateListener( JS_SELECTION_LISTENER_INFO,
+                           PROP_SELECTION_LISTENER,
+                           hasSelectionListener( text ) );
+  }
+
+  private static boolean hasSelectionListener( final Text text ) {
+    // Emulate SWT (on Windows) where a default button takes precedence over
+    // a SelectionListener on a text field when both are on the same shell.
+    Button defButton = text.getShell().getDefaultButton();
+    boolean hasDefaultButton = defButton != null && defButton.isVisible();
+    return !hasDefaultButton && SelectionEvent.hasListener( text );
   }
 
   private static void resetSelectionListener() throws IOException {

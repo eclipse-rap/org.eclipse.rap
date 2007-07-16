@@ -47,6 +47,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
     }
     this._currentRequest = null;
   },
+  
+  events : {
+    "send" : "qx.event.type.DataEvent"
+  },
 
   members : {
     setUrl : function( url ) {

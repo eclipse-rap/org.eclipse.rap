@@ -56,24 +56,6 @@ public class ShellTab extends ExampleTab {
     createWithMenuButton = createPropertyButton( "Add menu" );
     showClientAreaButton = createPropertyButton( "Show client area" );
 //    customBgColorButton = createPropertyButton( "Custom background" );
-    // TODO [rh] uncomment once changing images on Shell works
-//    String text = "Show/hide image";
-//    final Button showHideImage = createPropertyButton( text, SWT.PUSH );
-//    String toolTip
-//      = "Shows or hides the image of the most recently opened shell";
-//    showHideImage.setToolTipText( toolTip );
-//    showHideImage.addSelectionListener( new SelectionAdapter() {
-//      public void widgetSelected( final SelectionEvent e ) {
-//        if( shells.size() > 0 ) {
-//          Shell shell = ( Shell )shells.get( shells.size() - 1 );
-//          if( shell.getImage() == null ) {
-//            shell.setImage( shellImage );
-//          } else {
-//            shell.setImage( null );
-//          }
-//        }
-//      }
-//    } );
   }
 
   protected void createExampleControls( final Composite top ) {

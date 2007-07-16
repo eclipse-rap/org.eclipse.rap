@@ -10,14 +10,11 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-// TODO [rst] Setting the "icon" property on a qx.ui.window.Window does not
-//      work with the current qx version. Changed constructor to be able to set
-//      a window icon at all.
 qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   extend : qx.ui.window.Window,
 
-  construct : function( icon ) {
-    this.base( arguments, "", icon );
+  construct : function() {
+    this.base( arguments );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     // TODO [rh] HACK to set mode on Label that shows the caption, _captionTitle
     //      is a 'protected' field on class Window

@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
       // TODO [rh] for some reason this workaround doesn't work for 
       //      qx.ui.menubar.Button, the labelObject is still null
       if( menuItem.getLabelObject() != null ) {
-        menuItem.getLabelObject().setMode( "html" );
+        menuItem.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
       }
       menuItem.setLabel( "" );
     },
@@ -79,8 +79,8 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
     createRadioManager : function( menuItem ) {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var name = wm.findIdByWidget( menuItem ) + "RadioMgr";
-      var manager = new qx.manager.selection.RadioManager( name );
-      menuItem.setManager( manager );
+      var manager = new qx.ui.selection.RadioManager( name );
+      menuItem.setManager(manager);
     },
 
     assignRadioManager : function( firstMenuItem, menuItem ) {

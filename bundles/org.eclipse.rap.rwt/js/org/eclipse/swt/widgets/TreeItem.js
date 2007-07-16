@@ -11,14 +11,14 @@
  ******************************************************************************/
 
 /**
- * This class encapulates the qx.ui.treefullcontrol.TreeFolder to make it more
+ * This class encapulates the qx.ui.tree.TreeFolder to make it more
  * suitable for usage in RWT.
  */
 qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
-  extend : qx.ui.treefullcontrol.TreeFolder,
+  extend : qx.ui.tree.TreeFolder,
 
   construct : function( parentItem ) {
-    var row = qx.ui.treefullcontrol.TreeRowStructure.getInstance().newRow();
+    var row = qx.ui.tree.TreeRowStructure.getInstance().newRow();
     // Indentation
     row.addIndent();
     // CheckBox
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   		this.getLabelObject().setBackgroundColor( value );
   	},
   	
-  	// TODO: [bm] needed to override the property setters to apply color to label
+  	// TODO: [bm] needed to override the property setters to apply color to label too
   	setTextColor : function ( value ) {
   		this.getLabelObject().setTextColor( value );
   	},

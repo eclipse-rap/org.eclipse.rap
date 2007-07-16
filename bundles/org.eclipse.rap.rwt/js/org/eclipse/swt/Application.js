@@ -49,11 +49,10 @@ qx.Class.define( "org.eclipse.swt.Application", {
     main : function( evt ) {
       this.base( arguments );
       
-      var aliasMgr = qx.manager.object.AliasManager.getInstance();
       // Overwrite the default mapping for internal images. This is necessary
       // if the application is deployed under a root different from "/".
-      aliasMgr.add( "static", "./resource/static" );
-      aliasMgr.add( "org.eclipse.swt", "./resource" );
+      qx.io.Alias.getInstance().add( "static", "./resource/static" );
+      qx.io.Alias.getInstance().add( "org.eclipse.swt", "./resource" );
       
       // Observe window size
       var doc = qx.ui.core.ClientDocument.getInstance();

@@ -24,7 +24,7 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
     this._tabHeight = 20;
     //
     var borderColor = "#c0c0c0";
-    var border = new qx.renderer.border.Border( 1, "solid", borderColor );
+    var border = new qx.ui.core.Border( 1, "solid", borderColor );
     this.setBorder( border );
     //
     this._topRight = null;
@@ -35,26 +35,26 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
     this._maxButton = null;
     this._minButton = null;
     // Construct highlight border lines
-    var highlightBorder = new qx.renderer.border.Border();
+    var highlightBorder = new qx.ui.core.Border();
     highlightBorder.setLeft( 2, "solid", borderColor );
     this._highlightLeft = new qx.ui.basic.Atom();
     this._highlightLeft.setBorder( highlightBorder );
     this._highlightLeft.setWidth( 2 );
     this.add( this._highlightLeft );
-    highlightBorder = new qx.renderer.border.Border();
+    highlightBorder = new qx.ui.core.Border();
     highlightBorder.setRight(2, "solid", borderColor);
     this._highlightRight = new qx.ui.basic.Atom();
     this._highlightRight.setBorder( highlightBorder );
     this._highlightRight.setWidth( 2 );
     this.add( this._highlightRight );
-    highlightBorder = new qx.renderer.border.Border();
+    highlightBorder = new qx.ui.core.Border();
     highlightBorder.setTop( 2, "solid", borderColor );
     this._highlightTop = new qx.ui.basic.Atom();
     this._highlightTop.setBorder( highlightBorder );
     this._highlightTop.setLeft( 0 );
     this._highlightTop.setHeight( 2 );
     this.add( this._highlightTop );
-    highlightBorder = new qx.renderer.border.Border();
+    highlightBorder = new qx.ui.core.Border();
     highlightBorder.setBottom( 2, "solid", borderColor );
     this._highlightBottom = new qx.ui.basic.Atom();
     this._highlightBottom.setBorder( highlightBorder );
@@ -63,7 +63,7 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
     this.add( this._highlightBottom );
     // Create horizontal line that separates the button bar from the rest of
     // the client area
-    border = new qx.renderer.border.Border();
+    border = new qx.ui.core.Border();
     border.setTop( 1, "solid", borderColor );
     this._separator = new qx.ui.basic.Atom();
     this._separator.setBorder( border );
@@ -100,19 +100,19 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
 
     // TODO [rh] optimize usage of border objects (get, change, set)
     setSelectionBackground : function( color ) {
-      var highlightBorder = new qx.renderer.border.Border();
+      var highlightBorder = new qx.ui.core.Border();
       highlightBorder.setLeft(2, "solid", color);
       this._highlightLeft.setBorder(highlightBorder);
 
-      highlightBorder = new qx.renderer.border.Border();
+      highlightBorder = new qx.ui.core.Border();
       highlightBorder.setRight(2, "solid", color);
       this._highlightRight.setBorder(highlightBorder);
 
-      highlightBorder = new qx.renderer.border.Border();
+      highlightBorder = new qx.ui.core.Border();
       highlightBorder.setTop(2, "solid", color);
       this._highlightTop.setBorder(highlightBorder);
 
-      highlightBorder = new qx.renderer.border.Border();
+      highlightBorder = new qx.ui.core.Border();
       highlightBorder.setBottom(2, "solid", color);
       this._highlightBottom.setBorder(highlightBorder);
     },

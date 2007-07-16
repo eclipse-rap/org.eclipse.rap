@@ -79,13 +79,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._clientArea.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
     this._clientArea.addEventListener( "appear", this._onClientAppear, this );
     // Create horizontal scrollBar
-    this._horzScrollBar = new qx.ui.core.ScrollBar( true );
+    this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
     this._horzScrollBar.setMergeEvents( true );
     this.add( this._horzScrollBar );
     this._horzScrollBar.setHeight( this._horzScrollBar.getPreferredBoxHeight() );
     this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
     // Create vertical scrollBar
-    this._vertScrollBar = new qx.ui.core.ScrollBar( false );
+    this._vertScrollBar = new qx.ui.basic.ScrollBar( false );
     this._vertScrollBar.setMergeEvents( true );
     this.add( this._vertScrollBar );
     this._vertScrollBar.setWidth( this._vertScrollBar.getPreferredBoxWidth() );
@@ -148,12 +148,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._checkBoxes = null;
     }
   },
+  
+  events : {
+    "itemselected" : "qx.event.type.DataEvent",
+    "itemdefaultselected" : "qx.event.type.DataEvent",
+    "itemchecked" : "qx.event.type.DataEvent"
+  },
 
   statics : {
     CHECK_WIDTH : 21,
     
     // Initialized at the end of the file
-    ROW_BORDER : new qx.renderer.border.Border(),
+    ROW_BORDER : new qx.ui.core.Border(),
     
     ////////////////////////////////////
     // Helper to determine modifier keys
@@ -839,11 +845,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         qx.ui.core.Widget.flushGlobalQueues();
       }
       var top = this._clientArea.getTop();
-      this._resizeLine._applyRuntimeTop( top ); 
+      this._resizeLine._renderRuntimeTop( top );
       var left = x - 2 - this._horzScrollBar.getValue();
-      this._resizeLine._applyRuntimeLeft( left );
+      this._resizeLine._renderRuntimeLeft( left );
       var height = this._clientArea.getHeight();
-      this._resizeLine._applyRuntimeHeight( height );
+      this._resizeLine._renderRuntimeHeight( height );
       this._resizeLine.removeStyleProperty( "visibility" );
     },
 

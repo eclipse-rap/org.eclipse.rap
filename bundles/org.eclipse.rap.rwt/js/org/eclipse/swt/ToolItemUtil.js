@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       if( neighbour ) {
         radio.radioManager = neighbour.radioManager;
       } else {
-        radio.radioManager = new qx.manager.selection.RadioManager();
+        radio.radioManager = new qx.ui.selection.RadioManager();
       }
       radio.radioManager.add( radio );
       if( selected ) {

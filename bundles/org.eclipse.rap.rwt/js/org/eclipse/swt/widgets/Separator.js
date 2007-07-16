@@ -50,7 +50,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     },
     
     onChangeOrientation : function( event ) {
-      this.debug( "_____ " + event.getData() );
       if( event.getData() == "vertical" ) {
         this._line.addState( "vertical" );
       } else {

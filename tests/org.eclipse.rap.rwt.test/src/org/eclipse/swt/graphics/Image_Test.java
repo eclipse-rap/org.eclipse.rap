@@ -92,6 +92,27 @@ public class Image_Test extends TestCase {
     Image image = Image.find( "test.gif", is );
     assertNotNull( image );
   }
+  
+  public void testFindWithIllegalArguments() {
+    try {
+      Image.find( null );
+      fail( "Image#find must not allow null-argument" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    try {
+      Image.find( "" );
+      fail( "Image#find must not allow empty string argument" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      Image.find( "", new ByteArrayInputStream( new byte[ 1 ] ) );
+      fail( "Image#find must not allow empty string argument" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+  }
 
   public void testImageBounds() {
     IResourceManager manager = ResourceManager.getInstance();

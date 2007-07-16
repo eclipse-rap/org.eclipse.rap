@@ -55,14 +55,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    // TODO [rst] Setting the "icon" property on a qx.ui.window.Window does not
-    // work with the current qx version. Remove this workaround as soon as this
-    // bug is fixed: http://bugzilla.qooxdoo.org/show_bug.cgi?id=87
     Shell shell = ( Shell )widget;
-    Object[] args = new Object[] {
-      showImage( shell ) ? Image.getPath( shell.getImage() ) : null
-    };
-    writer.newWidget( "org.eclipse.swt.widgets.Shell", args );
+    writer.newWidget( "org.eclipse.swt.widgets.Shell", null );
     ControlLCAUtil.writeStyleFlags( widget );
     int style = widget.getStyle();
     if( ( style & SWT.APPLICATION_MODAL ) != 0 ) {
@@ -78,7 +72,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.set( "allowMaximize", ( style & SWT.MAX ) != 0 );
     writer.set( "showClose", ( style & SWT.CLOSE ) != 0 );
     writer.set( "allowClose", ( style & SWT.CLOSE ) != 0 );
-    writer.set( "resizeable", ( style & SWT.RESIZE ) != 0 );
+    Boolean resizable = Boolean.valueOf( ( style & SWT.RESIZE ) != 0 );
+    writer.set( "resizable", 
+                new Object[] { resizable, resizable, resizable, resizable } );
     writer.set( "alwaysOnTop", ( style & SWT.ON_TOP ) != 0 );
     if( shell.getParent() instanceof Shell ) {
       // TODO [rh] a setter that doesn't work like a setter, could be passed to

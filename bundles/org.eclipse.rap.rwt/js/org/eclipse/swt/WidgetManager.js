@@ -295,7 +295,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       var id = name + size + bold + italic;
       var font = this._fontPool[ id ];
       if( !font ) {
-        font = new qx.renderer.font.Font( size, name );
+        font = new qx.ui.core.Font( size, name );
         font.setBold( bold );
         font.setItalic( italic );
         this._fontPool[ id ] = font;

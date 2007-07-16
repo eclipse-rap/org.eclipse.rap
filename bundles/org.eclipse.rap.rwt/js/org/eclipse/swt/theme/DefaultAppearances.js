@@ -29,6 +29,38 @@ appearances = {
     ---------------------------------------------------------------------------
     */
 
+    "cursor-dnd-move" : {
+      style : function(states) {
+        return {
+          source : "widget/cursors/move.gif"
+        };
+      }
+    },
+
+    "cursor-dnd-copy" : {
+      style : function(states) {
+        return {
+          source : "widget/cursors/copy.gif"
+        };
+      }
+    },
+
+    "cursor-dnd-alias" : {
+      style : function(states) {
+        return {
+          source : "widget/cursors/alias.gif"
+        };
+      }
+    },
+
+    "cursor-dnd-nodrop" : {
+      style : function(states) {
+        return {
+          source : "widget/cursors/nodrop.gif"
+        };
+      }
+    },
+
     "client-document" :
     {
       style : function( states ) {
@@ -891,7 +923,6 @@ appearances = {
       include : "tree-folder",
       style : function( states ) {
         return {
-//          useTreeLines : false,
           verticalChildrenAlign : "top",
           backgroundColor : "list.background",
           border : states.rwt_BORDER
@@ -968,7 +999,7 @@ appearances = {
         return {
 //          height          : "1*",
           backgroundColor : "widget.background",
-          border          : new qx.renderer.border.Border(1, "solid", "widget.thinborder"),
+          border          : new qx.ui.core.Border(1, "solid", "widget.thinborder"),
           padding         : 10
         };
       }
@@ -992,17 +1023,17 @@ appearances = {
       include : "atom",
 
       style : function( states ) {
-        var border_top_normal = new qx.renderer.border.Border(1, "solid", "widget.thinborder");
+        var border_top_normal = new qx.ui.core.Border(1, "solid", "widget.thinborder");
         border_top_normal.setWidthBottom(0);
 
-        var border_top_checked = new qx.renderer.border.Border(1, "solid", "widget.thinborder");
+        var border_top_checked = new qx.ui.core.Border(1, "solid", "widget.thinborder");
         border_top_checked.setWidthBottom(0);
         border_top_checked.setTop(3, "solid", "widget.selection-marker");
 
-        var border_bottom_normal = new qx.renderer.border.Border(1, "solid", "widget.thinborder");
+        var border_bottom_normal = new qx.ui.core.Border(1, "solid", "widget.thinborder");
         border_bottom_normal.setWidthTop(0);
 
-        var border_bottom_checked = new qx.renderer.border.Border(1, "solid", "widget.thinborder");
+        var border_bottom_checked = new qx.ui.core.Border(1, "solid", "widget.thinborder");
         border_bottom_checked.setWidthTop(0);
         border_bottom_checked.setBottom(3, "solid", "widget.selection-marker");
 
@@ -1130,7 +1161,7 @@ appearances = {
       }
     },
 
-    "spinner-field" :
+    "spinner-text-field" :
     {
       style : function( states ) {
         return {
@@ -1367,19 +1398,19 @@ appearances = {
       include: "atom",
         
       style: function( states ) {
-        var border_top = new qx.renderer.border.Border();
+        var border_top = new qx.ui.core.Border();
         border_top.setRight( 1, "solid", "#c0c0c0" );
 
-        var border_top_checked = new qx.renderer.border.Border();
+        var border_top_checked = new qx.ui.core.Border();
         border_top_checked.setLeft( 1, "outset", null );
         border_top_checked.setTop( 1, "outset", null );
         border_top_checked.setRight( 1, "solid", "#c0c0c0" );
 
-        var border_bottom = new qx.renderer.border.Border();
+        var border_bottom = new qx.ui.core.Border();
         border_bottom.setLeft( 1, "solid", "#c0c0c0" );
         border_bottom.setRight( 1, "solid", "#c0c0c0" );
 
-        var border_bottom_checked = new qx.renderer.border.Border();
+        var border_bottom_checked = new qx.ui.core.Border();
         border_bottom_checked.setTop( 1, "solid", "#c0c0c0" );
         border_bottom_checked.setLeft( 1, "solid", "#c0c0c0" );
         border_bottom_checked.setRight( 1, "solid", "#c0c0c0" );
@@ -1556,6 +1587,15 @@ appearances = {
           backgroundColor : "progressbar.foreground"
         }
       }
+    },
+
+    "scrollbar-blocker" : {
+      style : function( states ) {
+        return { 
+          backgroundColor : "black", 
+          opacity : 0.2 
+        };
+      }
     }
-// END TEMPLATE
+    // END TEMPLATE
 };
