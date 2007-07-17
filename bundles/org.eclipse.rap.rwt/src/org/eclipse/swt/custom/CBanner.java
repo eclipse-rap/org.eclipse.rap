@@ -192,7 +192,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public Control getBottom() {
-    // checkWidget();
+    checkWidget();
     return bottom;
   }
 
@@ -213,7 +213,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public Control getLeft() {
-    // checkWidget();
+    checkWidget();
     return left;
   }
 
@@ -230,7 +230,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public Control getRight() {
-    // checkWidget();
+    checkWidget();
     return right;
   }
 
@@ -243,7 +243,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public Point getRightMinimumSize() {
-    // checkWidget();
+    checkWidget();
     return new Point( rightMinWidth, rightMinHeight );
   }
 
@@ -254,7 +254,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public int getRightWidth() {
-    // checkWidget();
+    checkWidget();
     if( right == null )
       return 0;
     if( rightWidth == SWT.DEFAULT ) {
@@ -272,7 +272,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public boolean getSimple() {
-    // checkWidget();
+    checkWidget();
     return simple;
   }
 
@@ -365,7 +365,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public void setBottom( Control control ) {
-    // checkWidget();
+    checkWidget();
     if( control != null && control.getParent() != this ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
@@ -394,7 +394,7 @@ public class CBanner extends Composite {
    *              </ul>
    */
   public void setLayout( Layout layout ) {
-    // checkWidget();
+    checkWidget();
     return;
   }
 
@@ -416,7 +416,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public void setLeft( Control control ) {
-    // checkWidget();
+    checkWidget();
     if( control != null && control.getParent() != this ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
@@ -446,7 +446,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public void setRight( Control control ) {
-    // checkWidget();
+    checkWidget();
     if( control != null && control.getParent() != this ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
@@ -474,7 +474,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public void setRightMinimumSize( Point size ) {
-    // checkWidget();
+    checkWidget();
     if( size == null || size.x < SWT.DEFAULT || size.y < SWT.DEFAULT )
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     rightMinWidth = size.x;
@@ -497,7 +497,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public void setRightWidth( int width ) {
-    // checkWidget();
+    checkWidget();
     if( width < SWT.DEFAULT )
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     rightWidth = width;
@@ -518,7 +518,7 @@ public class CBanner extends Composite {
    * @since 1.0
    */
   public void setSimple( boolean simple ) {
-    // checkWidget();
+    checkWidget();
     if( this.simple != simple ) {
       this.simple = simple;
       if( simple ) {
