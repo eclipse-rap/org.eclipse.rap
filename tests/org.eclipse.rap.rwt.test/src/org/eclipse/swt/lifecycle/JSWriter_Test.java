@@ -64,7 +64,7 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "qx.ui.form.Button" );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.newWidget( \"w1\", \"w2\", true, "
+        + "var w = wm.newWidget( \"w2\", \"w3\", true, "
         + getTypePoolIdHash( shell.button )
         + ", 'qx.ui.form.Button' );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -72,7 +72,7 @@ public class JSWriter_Test extends TestCase {
     // twice
     writer = JSWriter.getWriterFor( shell.button );
     writer.newWidget( "qx.ui.form.Button" );
-    expected +=   "var w = wm.newWidget( \"w1\", \"w2\", true, "
+    expected +=   "var w = wm.newWidget( \"w2\", \"w3\", true, "
                 + getTypePoolIdHash( shell.button )
                 +  ", 'qx.ui.form.Button' );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -96,7 +96,7 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "qx.ui.form.Button" );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.newWidget( \"w1\", \"w2\", true, "
+        + "var w = wm.newWidget( \"w2\", \"w3\", true, "
         + getTypePoolIdHash( shell.button )
         + ", 'qx.ui.form.Button' );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -122,7 +122,7 @@ public class JSWriter_Test extends TestCase {
     writer.newWidget( "qx.ui.form.Button", new Object[]{ "abc" } );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.newWidget( \"w1\", \"w2\", true, "
+        + "var w = wm.newWidget( \"w2\", \"w3\", true, "
         + getTypePoolIdHash( shell.button )
         + ", 'qx.ui.form.Button', '\"abc\"' );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -137,7 +137,7 @@ public class JSWriter_Test extends TestCase {
     writer = JSWriter.getWriterFor( item );
     writer.newWidget( "TreeItem", null );
     expected
-      =   "var w = wm.newWidget( \"w3\", \"\", false, "
+      =   "var w = wm.newWidget( \"w4\", \"\", false, "
         + getTypePoolIdHash( item )
         + ", 'TreeItem' );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -176,7 +176,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "text", "xyz" );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w1\" );w.setText( \"xyz\" );";
+        + "var w = wm.findWidgetById( \"w2\" );w.setText( \"xyz\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
   }
@@ -189,7 +189,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "width", 20000000 );
     String expected
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-        + "var w = wm.findWidgetById( \"w1\" );w.setWidth( 20000000 );";
+        + "var w = wm.findWidgetById( \"w2\" );w.setWidth( 20000000 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
   }
@@ -201,7 +201,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "allowStretchY", true );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w1\" );w.setAllowStretchY( true );";
+      + "var w = wm.findWidgetById( \"w2\" );w.setAllowStretchY( true );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
   }
@@ -215,7 +215,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( "setTextValues", new String[] { "abc", "xyz" } );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w1\" );"
+      + "var w = wm.findWidgetById( \"w2\" );"
       + "w.setTextValues( \"abc\", \"xyz\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
     // test string with newline
@@ -235,7 +235,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( "setIntegerValues", values );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w1\" );"
+      + "var w = wm.findWidgetById( \"w2\" );"
       + "w.setIntegerValues( 1, 2 );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
@@ -247,7 +247,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "intValues", new int[] { 1, 2 } );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w1\" );"
+      + "var w = wm.findWidgetById( \"w2\" );"
       + "w.setIntValues( 1, 2 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
@@ -260,7 +260,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "boolValues", new boolean[] { true, false } );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w1\" );"
+      + "var w = wm.findWidgetById( \"w2\" );"
       + "w.setBoolValues( true, false );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
@@ -289,7 +289,7 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeBrowser( new Default( true, true ) );
     Fixture.fakeResponseWriter();
     writer.set( "buttons", "buttons", new Object[] { widget1 }, null );
-    assertEquals( "w.setButtons( [wm.findWidgetById( \"w2\" ) ] );",
+    assertEquals( "w.setButtons( [wm.findWidgetById( \"w3\" ) ] );",
                   Fixture.getAllMarkup() );
 
     // set property value to an array that contains two items
@@ -297,8 +297,8 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer.set( "buttons", "buttons", new Object[] { widget1, widget2 }, null );
     String expected
-      = "w.setButtons( [wm.findWidgetById( \"w2\" ),"
-      + "wm.findWidgetById( \"w3\" ) ] );";
+      = "w.setButtons( [wm.findWidgetById( \"w3\" ),"
+      + "wm.findWidgetById( \"w4\" ) ] );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
@@ -310,7 +310,7 @@ public class JSWriter_Test extends TestCase {
                 new Object[] { new JSVar( "var1" ), new JSVar( "var2" ) } );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w1\" );"
+      + "var w = wm.findWidgetById( \"w2\" );"
       + "w.getProp1().setProp2( var1, var2 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     display.dispose();
@@ -355,7 +355,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( "function1", null );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w1\" );"
+      + "var w = wm.findWidgetById( \"w2\" );"
       + "w.function1();";
     assertEquals( expected, Fixture.getAllMarkup() );
     writer.call( "function2", null );
@@ -389,7 +389,7 @@ public class JSWriter_Test extends TestCase {
       shell.button
     };
     writer.callStatic( "doSomethingStaticWithButton", args );
-    expected = "doSomethingStaticWithButton( wm.findWidgetById( \"w1\" ) );";
+    expected = "doSomethingStaticWithButton( wm.findWidgetById( \"w2\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
     writer.call( "test", null ); // creates widget ref
     Fixture.fakeResponseWriter();
@@ -416,52 +416,52 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomethingWithShell", args );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var t = wm.findWidgetById( \"w1\" );"
-      + "t.doSomethingWithShell( wm.findWidgetById( \"w1\" ) );";
+      + "var t = wm.findWidgetById( \"w2\" );"
+      + "t.doSomethingWithShell( wm.findWidgetById( \"w2\" ) );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     writer.call( shell, "doSomething", new Object[ 0 ] );
-    expected = "var t = wm.findWidgetById( \"w1\" );t.doSomething();";
+    expected = "var t = wm.findWidgetById( \"w2\" );t.doSomething();";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     writer.call( shell, "doSomething", new Object[]{
       new Integer( 123 )
     } );
-    expected = "var t = wm.findWidgetById( \"w1\" );t.doSomething( 123 );";
+    expected = "var t = wm.findWidgetById( \"w2\" );t.doSomething( 123 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     args = new Object[] { "abc", new Integer( 123 ) };
     writer.call( shell, "doSomething", args );
-    expected =   "var t = wm.findWidgetById( \"w1\" );"
+    expected =   "var t = wm.findWidgetById( \"w2\" );"
                + "t.doSomething( \"abc\", 123 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     args = new Object[] { shell, shell.combo.getItems() };
     writer.call( shell, "doSomething", args );
-    expected =   "var t = wm.findWidgetById( \"w1\" );"
-               + "t.doSomething( wm.findWidgetById( \"w1\" ), "
+    expected =   "var t = wm.findWidgetById( \"w2\" );"
+               + "t.doSomething( wm.findWidgetById( \"w2\" ), "
                + "[ \"test\", \"test2\", \"test3\" ] );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     args = new Object[] { shell, new String[ 0 ] };
     writer.call( shell, "doSomething", args );
-    expected =   "var t = wm.findWidgetById( \"w1\" );"
-               + "t.doSomething( wm.findWidgetById( \"w1\" ), "
+    expected =   "var t = wm.findWidgetById( \"w2\" );"
+               + "t.doSomething( wm.findWidgetById( \"w2\" ), "
                + "[] );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     writer.call( shell, "doSomething", null );
-    expected = "var t = wm.findWidgetById( \"w1\" );t.doSomething();";
+    expected = "var t = wm.findWidgetById( \"w2\" );t.doSomething();";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     args = new Object[] { null };
     writer.call( shell, "doSomething", args );
-    expected =   "var t = wm.findWidgetById( \"w1\" );"
+    expected =   "var t = wm.findWidgetById( \"w2\" );"
                + "t.doSomething( null );";
     assertEquals( expected, Fixture.getAllMarkup() );
     Fixture.fakeResponseWriter();
     writer.call( shell.button, "buttonFunction", null );
-    expected = "var w = wm.findWidgetById( \"w2\" );w.buttonFunction();";
+    expected = "var w = wm.findWidgetById( \"w3\" );w.buttonFunction();";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
@@ -498,7 +498,7 @@ public class JSWriter_Test extends TestCase {
     writer.addListener( "execute", "buttonExecuted1" );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w1\" );"
+      + "var w = wm.findWidgetById( \"w2\" );"
       + "w.addEventListener( \"execute\", buttonExecuted1 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     writer.addListener( "execute", "buttonExecuted2" );
@@ -521,7 +521,7 @@ public class JSWriter_Test extends TestCase {
     writer.removeListener( "execute", "buttonExecuted1" );
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "var w = wm.findWidgetById( \"w1\" );"
+      + "var w = wm.findWidgetById( \"w2\" );"
       + "w.removeEventListener( \"execute\", buttonExecuted1 );";
     assertEquals( expected, Fixture.getAllMarkup() );
     writer.removeListener( "execute", "buttonExecuted2" );
@@ -892,16 +892,16 @@ public class JSWriter_Test extends TestCase {
     writer.dispose();
     String expected
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-      + "wm.dispose( \"w1\" );";
+      + "wm.dispose( \"w2\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
     shell.setDefaultButton( shell.button );
     writer.dispose();
     expected
-      =   "var t = wm.findWidgetById( \"w2\" );"
+      =   "var t = wm.findWidgetById( \"w3\" );"
         + "t.setDefaultButton( null );"
-        + "wm.dispose( \"w1\" );";
+        + "wm.dispose( \"w2\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

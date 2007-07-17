@@ -113,12 +113,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
   
   public void render( final Display display ) throws IOException {
-    // TODO [rh] HACK: This is to ensure that the first Display has id 'w1'. The 
-    //      current IIndexTemplate implementation relies on this fact.
-    //      see org.eclipse.rap.ui.internal.servlet.IndexTemplate and remove
-    //      this when a proper solution is in place.
-    DisplayUtil.getId( display );
-
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter out = stateInfo.getResponseWriter();
     HttpServletResponse response = ContextProvider.getResponse();

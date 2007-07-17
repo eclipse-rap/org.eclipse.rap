@@ -25,7 +25,11 @@ public final class WidgetAdapter implements IWidgetAdapter {
   private IRenderRunnable renderRunnable;
 
   public WidgetAdapter() {
-    id = IdGenerator.getInstance().newId();
+    this( IdGenerator.getInstance().newId() );
+  }
+  
+  public WidgetAdapter( final String id ) {
+    this.id = id;
     preservedValues = new HashMap();
   }
   

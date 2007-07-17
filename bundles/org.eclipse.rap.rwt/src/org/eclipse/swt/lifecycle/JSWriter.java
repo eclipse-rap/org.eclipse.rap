@@ -384,6 +384,7 @@ public final class JSWriter {
     if( widget instanceof Control ) {
       ControlLCAUtil.resetActivateListener( ( Control )widget );
     }
+    // TODO [rh] why can't setDefaultButton( null ) not be written in ButtonLCA?
     if( widget instanceof Button && ButtonLCA.isDefault( ( Button )widget ) ) {
       Button button = ( Button )widget;
       call( button.getShell(), "setDefaultButton", NULL_PARAMETER );

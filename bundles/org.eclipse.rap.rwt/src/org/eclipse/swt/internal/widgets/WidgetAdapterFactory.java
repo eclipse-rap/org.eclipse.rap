@@ -23,6 +23,8 @@ import com.w4t.AdapterFactory;
  * TODO [rh] JavaDoc
  * <p></p>
  */
+//TODO [rh] This class is currently not in use, see Display#getAdater() and 
+//     Widget#getAdapter()
 public final class WidgetAdapterFactory implements AdapterFactory {
 
   private static final Class[] ADAPTER_LIST = new Class[] { 
@@ -45,7 +47,7 @@ public final class WidgetAdapterFactory implements AdapterFactory {
       Integer hash = new Integer( adaptable.hashCode() );
       result = map.get( hash );
       if( result == null ) {
-        result = new WidgetAdapter();
+        result = new WidgetAdapter( IdGenerator.getInstance().newId() );
         map.put( hash, result );
       }
     }

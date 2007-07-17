@@ -217,6 +217,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     RWTFixture.deregisterAdapterFactories();
     RWTFixture.deregisterResourceManager();
     Fixture.removeContext();
+    EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 
   private static void fakeUIRootRequestParam( final Display display ) {

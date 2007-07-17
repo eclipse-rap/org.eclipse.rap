@@ -76,7 +76,7 @@ public class WidgetAdapter_Test extends TestCase {
     display = new Display();
     IWidgetAdapter adapter2
       = ( IWidgetAdapter )display.getAdapter( IWidgetAdapter.class );
-    assertTrue( adapter1.getId() != adapter2.getId() );
+    assertEquals( adapter1.getId(), adapter2.getId() );
     display.dispose();
   }
 

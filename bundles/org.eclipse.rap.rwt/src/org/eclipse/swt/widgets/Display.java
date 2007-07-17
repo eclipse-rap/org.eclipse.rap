@@ -24,7 +24,9 @@ import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.lifecycle.UICallBackManager;
 import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
+import org.eclipse.swt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.lifecycle.UICallBackUtil;
 
 import com.w4t.Adaptable;
@@ -148,9 +150,10 @@ public class Display extends Device implements Adaptable {
   private ISessionStore session;
   private Rectangle bounds;
   private Shell activeShell;
-  private IDisplayAdapter displayAdapter;
   private List filters;
   private Control focusControl;
+  private IDisplayAdapter displayAdapter;
+  private WidgetAdapter widgetAdapter;
 
   /**
    * Constructs a new instance of this class.
@@ -486,6 +489,11 @@ public class Display extends Device implements Adaptable {
         displayAdapter = new DisplayAdapter( session );
       }
       result = displayAdapter;
+    } else if( adapter == IWidgetAdapter.class ) {
+      if( widgetAdapter == null ) {
+        widgetAdapter = new WidgetAdapter( "w1" );
+      }
+      result = widgetAdapter;
     } else {
       result = W4TContext.getAdapterManager().getAdapter( this, adapter );  
     }

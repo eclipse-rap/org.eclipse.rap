@@ -123,6 +123,7 @@ public abstract class Widget implements Adaptable {
     this.style = style;
   }
 
+  // TODO [rh] revise: shouldn't getAdapter be guarded by checkWidget as well?
   public Object getAdapter( final Class adapter ) {
     Object result = null;
     if( adapter == IEventAdapter.class ) {

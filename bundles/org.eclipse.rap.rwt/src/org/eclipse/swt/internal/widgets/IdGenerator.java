@@ -30,15 +30,14 @@ final class IdGenerator extends SessionSingletonBase {
     return ( IdGenerator )getInstance( IdGenerator.class );
   }
   
-  private int lastId = 0;
+  private int lastId = 1;
   
   private IdGenerator() {
     // prevent instantiation from outside
   }
   
   /**
-   * <p>Returns a session-wide unique integer. The first value returned
-   * is 1.</p>
+   * <p>Returns a session-wide unique integer.</p>
    */
   String newId() {
     lastId++;

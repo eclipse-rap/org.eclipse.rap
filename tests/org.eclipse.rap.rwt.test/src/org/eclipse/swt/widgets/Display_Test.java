@@ -12,12 +12,17 @@
 package org.eclipse.swt.widgets;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
-import org.eclipse.swt.*;
+
+import org.eclipse.swt.RWTFixture;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.lifecycle.EntryPointManager;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.lifecycle.DisplayUtil;
+import org.eclipse.swt.lifecycle.*;
+
 import com.w4t.Fixture;
 import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.requests.RequestParams;
@@ -26,6 +31,15 @@ import com.w4t.engine.service.ServiceContext;
 
 public class Display_Test extends TestCase {
 
+  public static final class EnsureIdEntryPoint implements IEntryPoint {
+    public Display createUI() {
+      Display display = new Display();
+      Shell shell = new Shell( display );
+      WidgetUtil.getId( shell );
+      return display;
+    }
+  }
+  
   public void testSingleDisplayPerSession() {
     Device display = new Display();
     assertEquals( Display.getCurrent(), display );
@@ -235,6 +249,17 @@ public class Display_Test extends TestCase {
     display.removeFilter( SWT.FocusIn, listener );
   }
 
+  public void testEnsureIdIsW1() throws IOException {
+    Class entryPointClass = EnsureIdEntryPoint.class;
+    EntryPointManager.register( EntryPointManager.DEFAULT, entryPointClass );
+    RWTFixture.fakeNewRequest();
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.execute();
+    RWTFixture.fakeUIThread();
+    assertEquals( "w1", DisplayUtil.getId( Display.getCurrent() ) );
+    EntryPointManager.deregister( EntryPointManager.DEFAULT );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

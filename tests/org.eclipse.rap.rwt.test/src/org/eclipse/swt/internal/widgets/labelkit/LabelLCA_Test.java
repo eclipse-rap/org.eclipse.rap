@@ -46,37 +46,37 @@ public class LabelLCA_Test extends TestCase {
     label.setText( "test" );
     lca.renderChanges( label );
     String expected 
-      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"test\" );";
+      = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"test\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "\ntest" );
     lca.renderChanges( label );
     expected 
-      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"<br/>test\" );";
+      = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"<br/>test\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "te\nst" );
     lca.renderChanges( label );
     expected 
-      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"te<br/>st\" );";
+      = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/>st\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "test\n" );
     lca.renderChanges( label );
     expected 
-      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"test<br/>\" );";
+      = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"test<br/>\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "te\n\nst" );
     lca.renderChanges( label );
     expected 
-      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"te<br/><br/>st\" );";
+      = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/><br/>st\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     label.setText( "te\ns\nt" );
     lca.renderChanges( label );
     expected 
-      = "LabelUtil.setText( wm.findWidgetById( \"w1\" ), \"te<br/>s<br/>t\" );";
+      = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/>s<br/>t\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
