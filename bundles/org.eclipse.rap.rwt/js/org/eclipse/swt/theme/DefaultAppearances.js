@@ -759,7 +759,7 @@ appearances = {
           border : states.rwt_BORDER ? "text.BORDER.border" : "text.border",
           font : "widget.font",
           padding : states.rwt_BORDER ? [ 2, 1, 2, 4 ] : [ 1, 1, 1, 3 ],
-          textColor       : states.disabled ? "widget.graytext" : "undefined",
+          textColor : states.disabled ? "widget.graytext" : "undefined",
           backgroundColor : "list.background"
         };
       }
@@ -1311,79 +1311,7 @@ appearances = {
         return result;
       }
     },
-    
-    /*
-    ---------------------------------------------------------------------------
-      SPLITPANE
-    ---------------------------------------------------------------------------
-    */
 
-    "splitpane" :
-    {
-      style : function( states ) {
-        return {
-//          overflow : "hidden",
-          border : states.rwt_BORDER ? "inset" : "undefined"
-        };
-      }
-    },
-
-    "splitpane-glasspane" :
-    {
-      style : function( states ) {
-        return {
-//          zIndex          : 1e7,
-          backgroundColor : "widget.shadow",
-          opacity : states.visible ? 0.2 : 0
-        };
-      }
-    },
-
-    "splitpane-splitter" :
-    {
-      style : function( states ) {
-        return {
-//          backgroundColor : "widget.background", TODO [rst] why did we remove this?
-          cursor : states.disabled 
-            ? "undefined" : states.horizontal ? "col-resize" : "row-resize"
-        };
-      }
-    },
-
-    "splitpane-slider" :
-    {
-      style : function( states ) {
-        return {
-          opacity : 0.5,
-//          zIndex  : 1e8,
-          backgroundColor : states.dragging ? "widget.darkshadow" : "widget.background"
-        };
-      }
-    },
-    
-    // Not used since 'knob' is never displayed but necessary to prevent error
-    // when using SplitPane
-    "splitpane-knob" :
-    {
-      style : function( states ) {
-        var result = { opacity : states.dragging ? 0.5 : 1.0 };
-        if( states.horizontal ) {
-          result.top = "33%";
-          result.left = null;
-          result.marginLeft = -6;
-          result.marginTop = 0;
-          result.cursor = "col-resize";
-        } else if( states.vertical ) {
-          result.top = null;
-          result.left = "33%";
-          result.marginTop = -6;
-          result.marginLeft = 0;
-          result.cursor = "row-resize";
-        }
-        return result;
-      }
-    },
-    
     /*
     ---------------------------------------------------------------------------
       RAP-SPECIFIC APPEARANCES
@@ -1391,10 +1319,33 @@ appearances = {
     */
     
     // ------------------------------------------------------------------------
+    // Sash
+    
+    "sash" : {
+      style : function( states ) {
+        return {
+          border : states.rwt_BORDER ? "inset" : "undefined",
+          cursor : states.disabled ? "undefined"
+                                   : states.horizontal ? "row-resize"
+                                                       : "col-resize"
+        };
+      }
+    },
+    
+    "sash-slider" : {
+      style : function( states ) {
+        return {
+          zIndex : 1e7,
+          opacity : 0.3,
+          backgroundColor : "black"
+        };
+      }
+    },
+    
+    // ------------------------------------------------------------------------
     // CTabFolder
 
-    "c-tab-item" :
-    {
+    "c-tab-item" : {
       include: "atom",
         
       style: function( states ) {
@@ -1576,7 +1527,7 @@ appearances = {
           border : "thinInset",
           backgroundImage : "widget/progressbar/barbg.gif",
           backgroundColor : "progressbar.background"
-      }
+        }
       }
     },
 
@@ -1586,7 +1537,7 @@ appearances = {
           backgroundImage : "widget/progressbar/bar.gif",
           backgroundColor : "progressbar.foreground"
         }
-      }
+        }
     },
 
     "scrollbar-blocker" : {
@@ -1597,5 +1548,5 @@ appearances = {
         };
       }
     }
-    // END TEMPLATE
+// END TEMPLATE
 };

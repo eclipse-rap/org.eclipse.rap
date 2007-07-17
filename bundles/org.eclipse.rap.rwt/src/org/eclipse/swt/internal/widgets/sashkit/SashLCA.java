@@ -12,9 +12,9 @@
 package org.eclipse.swt.internal.widgets.sashkit;
 
 import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
@@ -24,11 +24,7 @@ public final class SashLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.Sash";
 
-   private static final String TYPE_POOL_ID_PREFIX = SashLCA.class.getName();
-   private static final String TYPE_POOL_ID_HORIZONTAL
-     = TYPE_POOL_ID_PREFIX + "_HORIZONTAL";
-   private static final String TYPE_POOL_ID_VERTICAL
-     = TYPE_POOL_ID_PREFIX + "_VERTICAL";
+  private static final String TYPE_POOL_ID = SashLCA.class.getName();
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -45,33 +41,18 @@ public final class SashLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     Sash sash = ( Sash )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
-    // Due to a current qooxdoo bug, the orientation must be set in the
-    // constructor. Doesn't hurt us anyway.
+    writer.newWidget( QX_TYPE );
     JSVar orientation
       = ( sash.getStyle() & SWT.HORIZONTAL ) != 0
-      ? JSConst.QX_CONST_VERTICAL_ORIENTATION
-      : JSConst.QX_CONST_HORIZONTAL_ORIENTATION;
-    writer.newWidget( QX_TYPE, new Object[] { orientation } );
+      ? JSConst.QX_CONST_HORIZONTAL_ORIENTATION
+      : JSConst.QX_CONST_VERTICAL_ORIENTATION;
+    writer.set( JSConst.QX_FIELD_ORIENTATION, orientation );
     ControlLCAUtil.writeStyleFlags( widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     Sash sash = ( Sash )widget;
     ControlLCAUtil.writeChanges( sash );
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    Rectangle oldBounds = ( Rectangle )adapter.getPreserved( Props.BOUNDS );
-    Rectangle newBounds = sash.getBounds();
-    if(    !adapter.isInitialized()
-        || oldBounds == null
-        || oldBounds.width != newBounds.width )
-    {
-      if( ( sash.getStyle() & SWT.HORIZONTAL ) != 0 ) {
-        writer.set( "splitterSize", newBounds.height );
-      } else {
-        writer.set( "splitterSize", newBounds.width );
-      }
-    }
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -82,20 +63,11 @@ public final class SashLCA extends AbstractWidgetLCA {
   public void createResetHandlerCalls( final String typePoolId )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    ControlLCAUtil.resetStyleFlags();
     ControlLCAUtil.resetChanges();
-    writer.set( "splitterSize", 0 );
+    ControlLCAUtil.resetStyleFlags();
   }
 
   public String getTypePoolId( final Widget widget ) throws IOException {
-    String result;
-    Sash sash = ( Sash )widget;
-    if ( ( sash .getStyle() & SWT.HORIZONTAL ) != 0 ) {
-      result = TYPE_POOL_ID_HORIZONTAL;
-    } else {
-      result = TYPE_POOL_ID_VERTICAL;
-    }
-    return result;
+    return TYPE_POOL_ID;
   }
 }

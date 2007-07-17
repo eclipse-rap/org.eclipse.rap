@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -59,7 +59,7 @@ public class SashLCA_Test extends TestCase {
     sash.setBounds( new Rectangle( 20, 100, 50, 60 ) );
     SashLCA sashLCA = new SashLCA();
     sashLCA.renderChanges( sash );
-    assertTrue( Fixture.getAllMarkup().endsWith( "setSplitterSize( 50 );" ) );
+    assertTrue( Fixture.getAllMarkup().endsWith( "setSpace( 20, 50, 100, 60 );" ) );
     RWTFixture.clearPreserved();
     Fixture.fakeResponseWriter();
     RWTFixture.preserveWidgets();

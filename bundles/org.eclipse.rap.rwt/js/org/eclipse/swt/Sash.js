@@ -1,6 +1,5 @@
-
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,129 +8,177 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
- 
-// TODO [rh] @fappel: please revise this. Removed glass pane handling (because
-//      it was removed from SplitPane. As far as I can see, everything works.
-qx.Class.define( "org.eclipse.swt.Sash", {
-  extend : qx.ui.splitpane.SplitPane,
 
-  construct : function( orientation ) {
-    this.base( arguments, orientation );
-    this.setShowKnob( false );
+qx.Class.define( "org.eclipse.swt.Sash", {
+  extend : qx.ui.layout.CanvasLayout,
+
+  construct : function() {
+    this.base( arguments );
+    this.setOverflow( null );
+    this.setHtmlProperty( "unselectable", "on" );
+    this._slider = new qx.ui.layout.CanvasLayout();
+    this._slider.setAppearance( "sash-slider" );
+    this._slider.setVisibility( false );
+    // Fix IE Styling issues
+    this._slider.setStyleProperty( "fontSize", "0" );
+    this._slider.setStyleProperty( "lineHeight", "0" );        
+    this.add( this._slider );
+    this.initOrientation();
+    this._bufferZIndex = null;
   },
 
   destruct : function() {
-    
+    this._removeStyle( getOrientation() );
+    this._disposeObjects( "_slider" );
+  },
+
+  properties : {
+
+    appearance : {
+      refine : true,
+      init : "sash"
+    },
+
+    orientation : {
+      check : [ "horizontal", "vertical" ],
+      apply : "_applyOrientation",
+      init : "horizontal",
+      nullable : true
+    }
+
   },
 
   members : {
-    _onSplitterMouseDownX : function( e ) {
-      if( !e.isLeftButtonPressed() ) {
-        return;
-      }
-      this._commonMouseDown();
-      if( this.getEnabled() ) {
-        // activate global cursor
-        this.getTopLevelWidget().setGlobalCursor( "col-resize" );
-        this._slider.addState( "dragging" );
 
-        // initialize the drag session
-        this._dragOffset = e.getPageX();
+    _onMouseDownX : function( evt ) {
+      if( evt.isLeftButtonPressed() ) {
+        if( this.getEnabled() ) {
+          this._commonMouseDown();
+          this._dragOffset = evt.getPageX();
+          this._minMove = - this.getLeft() - this._frameOffset;
+          this._maxMove = this.getParent().getWidth() - this.getLeft()
+                              - this.getWidth() - this._frameOffset;
+        }
       }
     },
 
-    _onSplitterMouseDownY : function( e ) {
-      if ( !e.isLeftButtonPressed() ) {
-        return;
-      }
-      this._commonMouseDown();
-      if( this.getEnabled() ) {
-        // activate global cursor
-        this.getTopLevelWidget().setGlobalCursor( "row-resize" );
-        this._slider.addState( "dragging" );
-        // initialize the drag session
-        this._dragOffset = e.getPageY();
+    _onMouseDownY : function( evt ) {
+      if( evt.isLeftButtonPressed() ) {
+        if( this.getEnabled() ) {
+          this._commonMouseDown();
+          this._dragOffset = evt.getPageY();
+          this._minMove = - this.getTop() - this._frameOffset;
+          this._maxMove = this.getParent().getHeight() - this.getTop()
+                              - this.getHeight() - this._frameOffset;
+        }
       }
     },
 
     _commonMouseDown : function() {
-      // enable capturing
-      this._splitter.setCapture( true );
-      // show the slider also outside of the sash's bounds
-      this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-      // update z-index to be on top
-      // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=180334
+      this.setCapture( true );
+      this.getTopLevelWidget().setGlobalCursor( this.getCursor() );
+      // Used to subtract border width
+      // Note: Assumes that the Sash border has equal width on all four edges
+      this._frameOffset = this.getFrameWidth() / 2;
+      this._slider.setLeft( 0 - this._frameOffset );
+      this._slider.setTop( 0 - this._frameOffset );
+      this._slider.setWidth( this.getWidth() );
+      this._slider.setHeight( this.getHeight() );
+      this._bufferZIndex = this.getZIndex();
       this.setZIndex( 1e7 );
-      // initialize the slider
-      if( !this.isLiveResize() ) {
-        this._slider._renderRuntimeLeft( this._splitter.getOffsetLeft() );
-        this._slider._renderRuntimeTop( this._splitter.getOffsetTop() );
-        this._slider.setWidth( this._splitter.getBoxWidth() );
-        this._slider.setHeight( this._splitter.getBoxHeight() );
-        this._slider.show();
+      this._slider.show();
+    },
+
+    _onMouseUpX : function( evt ) {
+      if( this.getCapture() ) {
+        this._commonMouseUp();
       }
     },
 
-    _onSplitterMouseUpX : function( e ) {
-      if( !this._splitter.getCapture() ) {
-        return;
+    _onMouseUpY : function( evt ) {
+      if( this.getCapture() ) {
+        this._commonMouseUp();
       }
-      this._commonMouseUp();
-    },
-
-    _onSplitterMouseUpY : function( e ) {
-      if( !this._splitter.getCapture() ) {
-        return;
-      }
-      this._commonMouseUp();
     },
 
     _commonMouseUp : function() {
-      // buffer move information
-      var leftBuffer = this.getLeft() + this._slider.getOffsetLeft();
-      var topBuffer = this.getTop() + this._slider.getOffsetTop();
-      // disable capturing
-      this._splitter.setCapture( false );
-      // reset the global cursor
+      // TODO [rst] Clarify what the getOffsetLeft() does
+      var leftOffset = this._slider.getLeft() + this._frameOffset;
+      var topOffset = this._slider.getTop() + this._frameOffset;
+      this._slider.hide();
+      this.setCapture( false );
       this.getTopLevelWidget().setGlobalCursor( null );
-      // cleanup dragsession
-      this._slider.removeState( "dragging" );
+      if( this._bufferZIndex != null ) {
+        this.setZIndex( this._bufferZIndex );
+      }
       // notify server
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      org.eclipse.swt.EventUtil.doWidgetSelected( id, 
-                                                  leftBuffer, 
-                                                  topBuffer, 
-                                                  this.getWidth(), 
-                                                  this.getHeight() );
+      if( leftOffset != 0 || topOffset != 0 ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        org.eclipse.swt.EventUtil.doWidgetSelected( id, 
+                                                    this.getLeft() + leftOffset, 
+                                                    this.getTop() + topOffset, 
+                                                    this.getWidth(), 
+                                                    this.getHeight() );
+      }
     },
 
-    _normalizeX : function( e ) {
-      var toMove = e.getPageX() - this._dragOffset;
-      if( this.getLeft() + toMove < 0 ) {
-        toMove = -this.getLeft();
+    _onMouseMoveX : function( evt ) {
+      if( this.getCapture() ) {
+        var toMove = evt.getPageX() - this._dragOffset;
+        this._slider.setLeft( this._normalizeMove( toMove ) );
       }
-      var parentWidth = this.getParent().getWidth();
-      if( this.getLeft() + this.getWidth() + toMove > parentWidth ) {
-        toMove = parentWidth - this.getLeft() - this.getWidth();
-      }
-      return toMove;
     },
 
-    _normalizeY : function( e ) {
-      var toMove = e.getPageY() - this._dragOffset;
-      if( this.getTop() + toMove < 0 ) {
-        toMove = -this.getTop();
+    _onMouseMoveY : function( evt ) {
+      if( this.getCapture() ) {
+        var toMove = evt.getPageY() - this._dragOffset;
+        this._slider.setTop( this._normalizeMove( toMove ) );
       }
-      var parentHeight = this.getParent().getHeight();
-      if( this.getTop() + this.getHeight() + toMove > parentHeight ) {
-        toMove = parentHeight - this.getTop() - this.getHeight();
-      }
-      return toMove;
     },
-    
-    // TODO [rst] Make WidgetManager happy
-    reInit: function() { 
+
+    _normalizeMove : function( toMove ) {
+      var result = toMove;
+      if( result < this._minMove ) {
+        result = this._minMove;
+      }
+      if( result > this._maxMove ) {
+        result = this._maxMove;
+      }
+      return result;
+    },
+
+    _applyOrientation : function( value, old ) {
+      this._removeStyle( old );
+      this._setStyle( value );
+    },
+
+    _setStyle : function( style ) {
+      if( style == "horizontal" ) {
+        this.addEventListener( "mousedown", this._onMouseDownY, this );
+        this.addEventListener( "mousemove", this._onMouseMoveY, this );
+        this.addEventListener( "mouseup", this._onMouseUpY, this );
+        this.addState( "horizontal" );
+      } else if( style == "vertical" ) {
+        this.addEventListener( "mousemove", this._onMouseMoveX, this );
+        this.addEventListener( "mousedown", this._onMouseDownX, this );
+        this.addEventListener( "mouseup", this._onMouseUpX, this );
+        this.addState( "vertical" );
+      }
+    },
+
+    _removeStyle : function( style ) {
+      if( style == "horizontal" ) {
+        this.removeEventListener( "mousedown", this._onMouseDownY, this );
+        this.removeEventListener( "mousemove", this._onMouseMoveY, this );
+        this.removeEventListener( "mouseup", this._onMouseUpY, this );
+        this.removeState( "horizontal" );
+      } else if( style == "vertical" ) {
+        this.removeEventListener( "mousedown", this._onMouseDownX, this );
+        this.removeEventListener( "mousemove", this._onMouseMoveX, this );
+        this.removeEventListener( "mouseup", this._onMouseUpX, this );
+        this.removeState( "vertical" );
+      }
     }
   }
 });
