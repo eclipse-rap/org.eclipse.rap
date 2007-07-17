@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
   extend : qx.ui.tree.Tree,
 
   construct : function( style ) {
-    var trs = qx.ui.tree.TreeRowStructure.getInstance().standard( "" );
+    var trs = qx.ui.tree.TreeRowStructure.getInstance().newRow();
     this.base( arguments, trs );
     this.setOverflow( qx.constant.Style.OVERFLOW_AUTO );
     this.setHideNode( true );

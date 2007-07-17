@@ -31,18 +31,24 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
 
   // Constants for ComboUtil.js
-  private static final String WIDGET_SELECTED =
+  private static final String JS_FUNC_WIDGET_SELECTED =
     "org.eclipse.swt.ComboUtil.onSelectionChanged";
-  private static final String CREATE_COMBOBOX_ITEMS =
+  private static final String JS_FUNC_CREATE_COMBOBOX_ITEMS =
     "org.eclipse.swt.ComboUtil.createComboBoxItems";
-  private static final String SELECT_COMBOBOX_ITEM =
+  private static final String JS_FUNC_SELECT_COMBOBOX_ITEM =
     "org.eclipse.swt.ComboUtil.select";
+  private static final String JS_FUNC_INITIALIZE =
+    "org.eclipse.swt.ComboUtil.initialize";
+  private static final String JS_FUNC_DEINITIALIZE 
+    = "org.eclipse.swt.ComboUtil.deinitialize";
+
+  // Propery names for preserve-value facility 
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
 
   private static final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,
-                          WIDGET_SELECTED,
+                          JS_FUNC_WIDGET_SELECTED,
                           JSListenerType.STATE_AND_ACTION );
 
 //  private static final String TYPE_POOL_ID = ComboLCA.class.getName();
@@ -74,6 +80,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( QX_TYPE );
+    writer.callStatic( JS_FUNC_INITIALIZE, new Object[] { widget } );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -85,6 +92,7 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.callStatic( JS_FUNC_DEINITIALIZE, new Object[] { widget } );
     writer.dispose();
   }
 
@@ -92,7 +100,9 @@ public class ComboLCA extends AbstractWidgetLCA {
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.call( "removeAll", new Object[] {} );
+    // TODO [rh] how to pass widget to static function in reset-handler?
+//    writer.callStatic( JS_FUNC_DEINITIALIZE, new Object[] { ??? } );
+    writer.call( "removeAll", null );
   }
 
   public String getTypePoolId( final Widget widget ) throws IOException {
@@ -113,7 +123,7 @@ public class ComboLCA extends AbstractWidgetLCA {
         items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
       }
       Object[] args = new Object[]{ combo, items };
-      writer.callStatic( CREATE_COMBOBOX_ITEMS, args );
+      writer.callStatic( JS_FUNC_CREATE_COMBOBOX_ITEMS, args );
     }
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
@@ -129,7 +139,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     {
       JSWriter writer = JSWriter.getWriterFor( combo );
       Object[] args = new Object[]{ combo, newValue };
-      writer.callStatic( SELECT_COMBOBOX_ITEM, args );
+      writer.callStatic( JS_FUNC_SELECT_COMBOBOX_ITEM, args );
     }
   }
 }

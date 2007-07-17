@@ -16,6 +16,16 @@
 qx.Class.define( "org.eclipse.swt.ComboUtil", {
 
   statics : {
+
+    initialize : function( combo ) {
+      combo.addEventListener( "changeFont", 
+                              org.eclipse.swt.ComboUtil._onChangeFont );
+    },
+    
+    deinitialize : function( combo ) {
+      combo.removeEventListener( "changeFont", 
+                                 org.eclipse.swt.ComboUtil._onChangeFont );
+    },
     
     onSelectionChanged : function( evt ) {
       // TODO [rst] This listener was also called on focus out, if no item was
@@ -64,6 +74,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         item.setLabel( "(empty)" );
         item.getLabelObject().setMode( "html" );
         item.setLabel( items[ i ] );
+        item.setFont( combo.getFont() );
         combo.add( item );
       }
     },
@@ -87,6 +98,21 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         item = items[ index ];
       }
       combo.setSelected( item );
+    },
+    
+    _onChangeFont : function( evt ) {
+      var combo = evt.getTarget();
+      // Apply changed font to embedded text-field and drop-down-button
+      var children = combo.getChildren();
+      for( var i = 0; i < children.length; i++ ) {
+        children[ i ].setFont( combo.getFont() );
+      }  
+      // Apply changed font to items
+      var items = combo.getList().getChildren();
+      for( var i = 0; i < items.length; i++ ) {
+        items[ i ].setFont( combo.getFont() );
+      }
     }
+    
   }
 });

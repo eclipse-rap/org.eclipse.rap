@@ -43,22 +43,13 @@ public class ComboTab extends ExampleTab {
     createStyleButton( "BORDER", SWT.BORDER );
     createVisibilityButton();
     createEnablementButton();
+    createAddButton( parent );
     createRemoveAllButton( parent );
     // TODO [rst] uncomment as soon as setting foreground and background works
     //            on Combo (bug 194756)
 //    createFgColorButton();
 //    createBgColorButton();
     createFontChooser();
-  }
-
-  private void createRemoveAllButton( final Composite parent ) {
-    Button button = new Button( parent , SWT.PUSH );
-    button.setText( "Remove All" );
-    button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        filledCombo.removeAll();
-      }
-    } );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -132,6 +123,32 @@ public class ComboTab extends ExampleTab {
     registerControl( filledCombo );
     registerControl( preselectedCombo );
     registerControl( viewerCombo );
+  }
+
+  private void createAddButton( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label lblAddItem = new Label( composite, SWT.NONE );
+    lblAddItem.setText( "Add Item to Empty Combo" );
+    final Text txtAddItem = new Text( composite, SWT.BORDER );
+    txtAddItem.setText( "New Item" );
+    Button btnAddItem = new Button( composite, SWT.PUSH );
+    btnAddItem.setText( "Go" );
+    btnAddItem.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        emptyCombo.add( txtAddItem.getText() );
+      }
+    } );
+  }
+
+  private void createRemoveAllButton( final Composite parent ) {
+    Button button = new Button( parent , SWT.PUSH );
+    button.setText( "Remove All" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        filledCombo.removeAll();
+      }
+    } );
   }
 
   private static GridData colSpan2() {
