@@ -25,9 +25,14 @@ import org.eclipse.swt.widgets.*;
 public class TreeTab extends ExampleTab {
 
   private Tree tree;
+  private boolean showImages;
+  private final Image treeImage;
 
   public TreeTab( final CTabFolder topFolder ) {
     super( topFolder, "Tree" );
+    treeImage = Image.find( "resources/tree_item.gif",
+                            getClass().getClassLoader() );
+    showImages = true;
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -84,6 +89,9 @@ public class TreeTab extends ExampleTab {
         TreeItem subitem = new TreeItem( item, SWT.NONE );
         subitem.setText( "Subnode_" + ( i + 1 ) );
       }
+    }
+    if( showImages ) {
+      changeImage( tree, treeImage );
     }
     final Label lblTreeEvent = new Label( parent, SWT.NONE );
     lblTreeEvent.setLayoutData( new RowData( 200, 22 ) );
@@ -153,14 +161,8 @@ public class TreeTab extends ExampleTab {
     button.setSelection( true );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        Image image;
-        if( button.getSelection() ) {
-          image = Image.find( "resources/tree_item.gif",
-                              getClass().getClassLoader() );
-        } else {
-          image = null;
-        }
-        changeImage( tree, image );
+        showImages = button.getSelection();
+        changeImage( tree, showImages ? treeImage : null );
       }
     } );
   }
@@ -180,9 +182,9 @@ public class TreeTab extends ExampleTab {
           String text = MessageFormat.format( "SubItem {0} of {1}", args );
           treeItem.setText( text  );
           treeItem.setChecked( true );
-          Image image = Image.find( "resources/tree_item.gif",
-                                    getClass().getClassLoader() );
-          treeItem.setImage( image );
+          if( showImages ) {
+            treeItem.setImage( treeImage );
+          }
         }
       }
     } );
