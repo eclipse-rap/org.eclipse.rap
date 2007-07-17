@@ -21,8 +21,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
   },
 
   members : {
-    // TODO [rst] Enable when new qx version is in place
-    /*
     rap_init : function() {
       this.addEventListener( "changeBackgroundColor",
                              this._onChangeBackgroundColor );
@@ -32,13 +30,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
       this.removeEventListener( "changeBackgroundColor",
                              this._onChangeBackgroundColor );
     },
-    
+
+// TODO [rst] Never called, check with next qooxdoo version 
     _onChangeBackgroundColor : function() {
       var group = evt.getTarget();
       var newColor = evt.getValue();
+//      group.debug( "_____ changing bg color: " + newColor );
       group.getLegendObject().setBackgroundColor( newColor );
     },
-    */
     
     _getLabelObject : function() {
       if ( this.getLegendObject().getLabelObject() == null ) {

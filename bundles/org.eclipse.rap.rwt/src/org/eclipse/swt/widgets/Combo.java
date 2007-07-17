@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -16,11 +16,14 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.theme.ThemeManager;
+import org.eclipse.swt.internal.widgets.combokit.IComboThemeAdapter;
 
 /**
  * Instances of this class are controls that allow the user
- * to choose an item from a list of items, or optionally 
+ * to choose an item from a list of items, or optionally
  * enter a new value by typing it into an editable text
  * field. Often, <code>Combo</code>s are used in the same place
  * where a single selection <code>List</code> widget could
@@ -33,7 +36,7 @@ import org.eclipse.swt.internal.graphics.FontSizeCalculator;
  * which access one versus the other (compare for example,
  * <code>clearSelection()</code> and <code>deselectAll()</code>).
  * The API documentation is careful to indicate either "the
- * receiver's list" or the "the receiver's text field" to 
+ * receiver's list" or the "the receiver's text field" to
  * distinguish between the two cases.
  * </p><p>
  * Note that although this class is a subclass of <code>Composite</code>,
@@ -64,14 +67,14 @@ public class Combo extends Composite {
 
   private static final int DROP_DOWN_BUTTON_WIDTH = 14;
   private final ListModel model;
-  
+
   /**
    * Constructs a new instance of this class given its parent
    * and a style value describing its behavior and appearance.
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -102,7 +105,7 @@ public class Combo extends Composite {
 
   //////////////////////////////////////
   // Methods to manipulate the selection
-  
+
   /**
    * Returns the zero-relative index of the item which is currently
    * selected in the receiver's list, or -1 if no item is selected.
@@ -120,7 +123,7 @@ public class Combo extends Composite {
   }
 
   /**
-   * Selects the item at the given zero-relative index in the receiver's 
+   * Selects the item at the given zero-relative index in the receiver's
    * list.  If the item at the index was already selected, it remains
    * selected. Indices that are out of range are ignored.
    *
@@ -137,7 +140,7 @@ public class Combo extends Composite {
   }
 
   /**
-   * Deselects the item at the given zero-relative index in the receiver's 
+   * Deselects the item at the given zero-relative index in the receiver's
    * list.  If the item at the index was already deselected, it remains
    * deselected. Indices that are out of range are ignored.
    *
@@ -154,7 +157,7 @@ public class Combo extends Composite {
       model.setSelection( -1 );
     }
   }
-  
+
   /**
    * Deselects all selected items in the receiver's list.
    * <p>
@@ -173,10 +176,10 @@ public class Combo extends Composite {
     checkWidget();
     model.deselectAll();
   }
-  
+
   ///////////////////////////////////////
   // Methods to manipulate and get items
-  
+
   /**
    * Adds the argument to the end of the receiver's list.
    *
@@ -196,7 +199,7 @@ public class Combo extends Composite {
     checkWidget();
     model.add( string );
   }
-  
+
   /**
    * Adds the argument to the receiver's list at the given
    * zero-relative index.
@@ -224,7 +227,7 @@ public class Combo extends Composite {
     checkWidget();
     model.add( string, index );
   }
-  
+
   /**
    * Removes the item from the receiver's list at the given
    * zero-relative index.
@@ -243,10 +246,10 @@ public class Combo extends Composite {
     checkWidget();
     model.remove( index );
   }
-  
+
   /**
    * Removes the items from the receiver's list which are
-   * between the given zero-relative start and end 
+   * between the given zero-relative start and end
    * indices (inclusive).
    *
    * @param start the start of the range
@@ -264,10 +267,10 @@ public class Combo extends Composite {
     checkWidget();
     model.remove( start, end );
   }
-  
+
   /**
    * Searches the receiver's list starting at the first item
-   * until an item is found that is equal to the argument, 
+   * until an item is found that is equal to the argument,
    * and removes that item from the list.
    *
    * @param string the item to remove
@@ -285,7 +288,7 @@ public class Combo extends Composite {
     checkWidget();
     model.remove( string );
   }
-  
+
   /**
    * Removes all of the items from the receiver's list and clear the
    * contents of receiver's text field.
@@ -299,7 +302,7 @@ public class Combo extends Composite {
     checkWidget();
     model.removeAll();
   }
-  
+
   /**
    * Sets the text of the item in the receiver's list at the given
    * zero-relative index to the string argument. This is equivalent
@@ -341,7 +344,7 @@ public class Combo extends Composite {
     checkWidget();
     model.setItems( items );
   }
-  
+
   /**
    * Returns the item at the given, zero-relative index in the
    * receiver's list. Throws an exception if the index is out
@@ -362,14 +365,14 @@ public class Combo extends Composite {
     checkWidget();
     return model.getItem( index );
   }
-  
+
   /**
    * Returns a (possibly empty) array of <code>String</code>s which are
-   * the items in the receiver's list. 
+   * the items in the receiver's list.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver's list
@@ -383,7 +386,7 @@ public class Combo extends Composite {
     checkWidget();
     return model.getItems();
   }
-  
+
   /**
    * Returns the number of items contained in the receiver's list.
    *
@@ -398,7 +401,7 @@ public class Combo extends Composite {
     checkWidget();
     return model.getItemCount();
   }
-  
+
   /**
    * Returns a string containing a copy of the contents of the
    * receiver's text field, or an empty string if there are no
@@ -444,6 +447,13 @@ public class Combo extends Composite {
         }
       }
     }
+    Rectangle padding = getPadding();
+    if( width != 0 ) {
+      width += padding.width + DROP_DOWN_BUTTON_WIDTH;
+    }
+    if( height != 0 ) {
+      height += padding.height;
+    }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
     }
@@ -456,13 +466,12 @@ public class Combo extends Composite {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    width += DROP_DOWN_BUTTON_WIDTH;
     int border = getBorderWidth();
     height += 2 * border;
     width += 2 * border;
     return new Point( width, height );
   }
-  
+
   /////////////////////////////////////////
   // Listener registration/de-registration
 
@@ -516,18 +525,25 @@ public class Combo extends Composite {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-  
+
   boolean isTabGroup() {
     return true;
   }
-  
+
   String getNameText() {
     return getText();
   }
-  
+
   //////////////////
-  // Helping methods 
-  
+  // Helping methods
+
+  private Rectangle getPadding() {
+    ThemeManager manager = ThemeManager.getInstance();
+    IComboThemeAdapter adapter
+      = ( IComboThemeAdapter )manager.getThemeAdapter( getClass() );
+    return adapter.getPadding( this );
+  }
+
   private static int checkStyle( final int style ) {
     int result = style;
     /*
@@ -543,7 +559,7 @@ public class Combo extends Composite {
      * all platforms.
      */
     result &= ~SWT.BORDER;
-    
+
     /*
      * Even though it is legal to create this widget
      * with scroll bars, they serve no useful purpose

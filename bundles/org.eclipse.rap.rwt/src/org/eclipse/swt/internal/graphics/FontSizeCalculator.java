@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -26,8 +26,8 @@ import com.w4t.engine.service.ContextProvider;
 import com.w4t.engine.service.IServiceStateInfo;
 
 public class FontSizeCalculator {
-  
-  private static final String JS_CALCULATOR 
+
+  private static final String JS_CALCULATOR
     = FontSizeCalculator.class.getName() + ".hasJSCalculator";
   private static final String CALCULATION_ITEMS
     = FontSizeCalculator.class.getName() + ".CalculationItems";
@@ -35,23 +35,23 @@ public class FontSizeCalculator {
     = new ICalculationItem[ 0 ];
   private static final Pattern NEWLINE_PATTERN
     = Pattern.compile( "\\r\\n|\\r|\\n" );
-  private static final int STRING_EXTEND = 0;
-  private static final int TEXT_EXTEND = 1;
+  private static final int STRING_EXTENT = 0;
+  private static final int TEXT_EXTENT = 1;
 
-  
+
   public interface ICalculationItem {
     Font getFont();
     String getString();
     int getWrapWidth();
   }
 
-  
+
   private FontSizeCalculator() {
     // prevent instance creation
   }
-  
+
   public static Point stringExtent( final Font font, final String string ) {
-    return doMeasurement( font, string, SWT.DEFAULT, STRING_EXTEND );
+    return doMeasurement( font, string, SWT.DEFAULT, STRING_EXTENT );
   }
 
   public static Point textExtent( final Font font,
@@ -61,10 +61,10 @@ public class FontSizeCalculator {
     // TODO [fappel]: replace with decent implementation
     Point result;
     if( wrapWidth <= 0 ) {
-      result = doMeasurement( font, string, wrapWidth, TEXT_EXTEND );
+      result = doMeasurement( font, string, wrapWidth, TEXT_EXTENT );
       result.y = getCharHeight( font );
     } else {
-      Point testSize = doMeasurement( font, string, wrapWidth, TEXT_EXTEND );
+      Point testSize = doMeasurement( font, string, wrapWidth, TEXT_EXTENT );
       if( testSize.x < wrapWidth ) {
         result = testSize;
       } else {
@@ -79,21 +79,21 @@ public class FontSizeCalculator {
     }
     return result;
   }
-  
+
   private static Point doMeasurement( final Font font,
                                       final String string,
-                                      final int wrapWidth, 
+                                      final int wrapWidth,
                                       final int estimationMode )
   {
     String toMeasure = createMeasureString( string, true );
     Point result = FontSizeDataBase.lookup( font, toMeasure, wrapWidth );
     if( result == null ) {
       switch( estimationMode ) {
-        case TEXT_EXTEND: {
+        case TEXT_EXTENT: {
           result = FontSizeEstimation.textExtent( font, string, wrapWidth );
         }
         break;
-        case STRING_EXTEND: {
+        case STRING_EXTENT: {
           result = FontSizeEstimation.stringExtent( font, string );
         }
         break;
@@ -105,7 +105,7 @@ public class FontSizeCalculator {
     }
     return result;
   }
-  
+
   public static int getCharHeight( final Font font ) {
     int result;
     FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
@@ -118,7 +118,7 @@ public class FontSizeCalculator {
     }
     return result;
   }
-  
+
   public static float getAvgCharWidth( final Font font ) {
     float result;
     FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
@@ -131,7 +131,7 @@ public class FontSizeCalculator {
     }
     return result;
   }
-  
+
   public static String writeStartupJSProbe() {
     StringBuffer result = new StringBuffer();
     IProbe[] probeList = FontSizeProbeStore.getProbeList();
@@ -149,24 +149,24 @@ public class FontSizeCalculator {
     }
     return result.toString();
   }
-  
+
   public static void readStartupProbes() {
     IProbe[] probeList = FontSizeProbeStore.getProbeList();
     FontSizeCalculationHandler.readProbedFonts( probeList );
   }
-  
+
   public static ICalculationItem[] getCalculationItems() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    ICalculationItem[] result 
+    ICalculationItem[] result
       = ( ICalculationItem[] )stateInfo.getAttribute( CALCULATION_ITEMS );
     if( result == null ) {
       result = EMTY_ITEMS;
     }
     return result;
   }
-  
-  private static void addCalculationItem( final Font font, 
-                                          final String string, 
+
+  private static void addCalculationItem( final Font font,
+                                          final String string,
                                           final int wrapWidth )
   {
     ICalculationItem[] oldItems = getCalculationItems();
@@ -194,11 +194,11 @@ public class FontSizeCalculator {
       stateInfo.setAttribute( CALCULATION_ITEMS, newItems );
       if( stateInfo.getAttribute( JS_CALCULATOR ) == null ) {
         stateInfo.setAttribute( JS_CALCULATOR, new Object() );
-        FontSizeCalculationHandler.register(); 
+        FontSizeCalculationHandler.register();
       }
     }
   }
-  
+
   private static String createMeasureString( final String string,
                                              final boolean wrap )
   {
@@ -211,4 +211,4 @@ public class FontSizeCalculator {
     }
     return result;
   }
-} 
+}

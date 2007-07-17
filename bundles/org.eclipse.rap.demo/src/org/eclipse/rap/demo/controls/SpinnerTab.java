@@ -64,27 +64,34 @@ public class SpinnerTab extends ExampleTab {
   }
 
   private void createRangeControls( final Composite parent ) {
+    Group group = new Group( parent, SWT.NONE );
+    group.setText( "Settings" );
+    group.setLayout( new GridLayout( 2, false ) );
+
     String minimum = String.valueOf( spinner.getMinimum() );
-    final Text txtMin = createLabeledText( parent, "Minimum", minimum );
+    final Text txtMin = createLabeledText( group, "Minimum", minimum );
     String maximum = String.valueOf( spinner.getMaximum() );
-    final Text txtMax = createLabeledText( parent, "Maximum", maximum );
+    final Text txtMax = createLabeledText( group, "Maximum", maximum );
     String inc = String.valueOf( spinner.getIncrement() );
-    final Text txtInc = createLabeledText( parent, "Increment", inc );
+    final Text txtInc = createLabeledText( group, "Increment", inc );
     String pageInc = String.valueOf( spinner.getIncrement() );
-    final Text txtPageInc = createLabeledText( parent,
+    final Text txtPageInc = createLabeledText( group,
                                                "PageIncrement",
                                                pageInc );
     String sel = String.valueOf( spinner.getSelection() );
-    final Text txtSelection = createLabeledText( parent, "Selection", sel );
-    Button btnApply = new Button( parent, SWT.PUSH );
+    final Text txtSelection = createLabeledText( group, "Selection", sel );
+    Button btnApply = new Button( group, SWT.PUSH );
     btnApply.setText( "Apply" );
+    GridData btnApplyData = new GridData( GridData.HORIZONTAL_ALIGN_END );
+    btnApplyData.horizontalSpan = 2;
+    btnApply.setLayoutData( btnApplyData );
     btnApply.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         spinner.setMinimum( Integer.parseInt( txtMin.getText() ) );
         spinner.setMaximum( Integer.parseInt( txtMax.getText() ) );
         spinner.setIncrement( Integer.parseInt( txtInc.getText() ) );
         spinner.setPageIncrement( Integer.parseInt( txtPageInc.getText() ) );
-        spinner.setPageIncrement( Integer.parseInt( txtSelection.getText() ) );
+        spinner.setSelection( Integer.parseInt( txtSelection.getText() ) );
       }
     } );
   }
@@ -93,19 +100,11 @@ public class SpinnerTab extends ExampleTab {
                                   final String text,
                                   final String value )
   {
-    Composite container = new Composite( parent, SWT.NONE );
-    container.setLayout( new GridLayout( 2, false ) );
-    final Label label = new Label( container, SWT.NONE );
+    final Label label = new Label( parent, SWT.NONE );
     label.setText( text );
-    final Text result = new Text( container, SWT.BORDER );
+    final Text result = new Text( parent, SWT.BORDER );
     result.setText( value );
-    parent.addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent e ) {
-        int height = label.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y;
-        int width = height * 3;
-        result.setLayoutData( new GridData( width, height ) );        
-      }
-    } );
+    result.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
     return result;
   }
 }

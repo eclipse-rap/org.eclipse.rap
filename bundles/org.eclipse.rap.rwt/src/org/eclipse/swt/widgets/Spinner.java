@@ -21,6 +21,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.theme.ThemeManager;
+import org.eclipse.swt.internal.widgets.spinnerkit.ISpinnerThemeAdapter;
 
 import com.w4t.util.SessionLocale;
 
@@ -46,7 +48,7 @@ import com.w4t.util.SessionLocale;
 // TODO SelectionListener: widgetSelected is fired whenever the value changes
 public class Spinner extends Composite {
 
-  private static final int UP_DOWN_HEIGHT = 18;
+  private static final int UP_DOWN_MIN_HEIGHT = 16;
   private static final int UP_DOWN_WIDTH = 16;
 
   private int digits = 0;
@@ -355,8 +357,9 @@ public class Spinner extends Composite {
         string = buffer.toString();
       }
       Point textSize = FontSizeCalculator.stringExtent( getFont(), string );
-      width = textSize.x + UP_DOWN_WIDTH;
-      height = textSize.y;
+      Rectangle padding = getPadding();
+      width = textSize.x + UP_DOWN_WIDTH + padding.width;
+      height = textSize.y + padding.height;
     }
     if( width == 0 ) {
       width = DEFAULT_WIDTH;
@@ -372,7 +375,7 @@ public class Spinner extends Composite {
     }
     Rectangle trim = computeTrim( 0, 0, width, height );
     if( hHint == SWT.DEFAULT ) {
-      int upDownHeight = UP_DOWN_HEIGHT + 2 * getBorderWidth();
+      int upDownHeight = UP_DOWN_MIN_HEIGHT + 2 * getBorderWidth();
       trim.height = Math.max( trim.height, upDownHeight );
     }
     return new Point( trim.width, trim.height );
@@ -385,9 +388,6 @@ public class Spinner extends Composite {
   {
     checkWidget();
     Rectangle result = new Rectangle( x, y, width, height );
-    int margins = 1;
-    result.x -= margins;
-    result.width += margins;
     if( ( style & SWT.BORDER ) != 0 ) {
       int border = getBorderWidth();
       result.x -= border ;
@@ -461,6 +461,13 @@ public class Spinner extends Composite {
     DecimalFormatSymbols formatSymbols = format.getDecimalFormatSymbols();
     char decimalSeparator = formatSymbols.getDecimalSeparator();
     return String.valueOf( decimalSeparator );
+  }
+
+  private Rectangle getPadding() {
+    ThemeManager manager = ThemeManager.getInstance();
+    ISpinnerThemeAdapter adapter
+      = ( ISpinnerThemeAdapter )manager.getThemeAdapter( getClass() );
+    return adapter.getPadding( this );
   }
 
   private static int checkStyle( final int style ) {

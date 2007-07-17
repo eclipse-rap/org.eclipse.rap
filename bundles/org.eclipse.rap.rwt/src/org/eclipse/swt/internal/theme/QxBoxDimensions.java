@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.internal.theme;
 
+import org.eclipse.swt.graphics.Rectangle;
+
 public class QxBoxDimensions implements QxType {
 
   public final int top;
@@ -115,5 +117,12 @@ public class QxBoxDimensions implements QxType {
       throw new IllegalArgumentException( "Illegal parameter: " + part );
     }
     return result.intValue();
+  }
+
+  public static Rectangle createRectangle( final QxBoxDimensions boxdim ) {
+    return new Rectangle( boxdim.left,
+                          boxdim.top,
+                          boxdim.left + boxdim.right,
+                          boxdim.top + boxdim.bottom );
   }
 }

@@ -752,13 +752,12 @@ appearances = {
     ---------------------------------------------------------------------------
     */
 
-    "text-field" :
-    {
+    "text-field" : {
       style : function( states ) {
         return {
           border : states.rwt_BORDER ? "text.BORDER.border" : "text.border",
           font : "widget.font",
-          padding : states.rwt_BORDER ? [ 2, 1, 2, 4 ] : [ 1, 1, 1, 3 ],
+          padding : THEME_VALUE( "text.SINGLE.padding" ),
           textColor : states.disabled ? "widget.graytext" : "undefined",
           backgroundColor : "list.background"
         };
@@ -1169,6 +1168,7 @@ appearances = {
           left : 0,
           right : 0,
           bottom : 0,
+          padding : THEME_VALUE( "text.SINGLE.padding" ),
           textColor : states.disabled ? "widget.graytext" : "undefined"
         };
       }
@@ -1198,7 +1198,7 @@ appearances = {
       style : function( states ) {
         return {
           source : "widget/arrows/up_small.gif",
-          padding : [ 0, 0, 0, 3 ]
+          padding : [ 0, 3, 1 ]
         };
       }
     },
@@ -1209,7 +1209,7 @@ appearances = {
       style : function( states ) {
         return {
           source : "widget/arrows/down_small.gif",
-          padding       : [ 1, 0, 0, 3 ]
+          padding       : [ 0, 3, 1 ]
         };
       }
     },
