@@ -778,8 +778,8 @@ public class ThemeManager {
     writer.writeValues( appearances );
     Iterator iterator = addAppearances.iterator();
     while( iterator.hasNext() ) {
-      String addAppearances = ( String )iterator.next();
-      writer.writeValues( addAppearances );
+      String addAppearance = ( String )iterator.next();
+      writer.writeValues( substituteTemplate( addAppearance, theme ) );
     }
     return writer.getGeneratedCode();
   }
