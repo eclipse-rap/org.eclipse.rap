@@ -185,7 +185,6 @@
 		</fileset>
 		<!-- 3.3 base -->
 		<fileset dir="${baseLocation_33}/plugins" id="33base">
-			<include name="org.apache.commons.logging_*" />
 			<include name="org.eclipse.core.commands_*" />
 			<include name="org.eclipse.core.contenttype_*" />
 			<include name="org.eclipse.core.expressions_*" />
@@ -193,12 +192,10 @@
 			<include name="org.eclipse.core.runtime_*" />
 			<include name="org.eclipse.equinox.app_*" />
 			<include name="org.eclipse.equinox.common_*" />
-			<include name="org.eclipse.equinox.http.servlet_*" />
 			<include name="org.eclipse.equinox.preferences_*" />
 			<include name="org.eclipse.equinox.registry_*" />
 			<include name="org.eclipse.osgi.services_*" />
 			<include name="org.eclipse.osgi_*" />
-			<include name="org.mortbay.jetty_*" />
 		</fileset>
 
 		<!-- copy all the needed plugins -->
@@ -275,7 +272,7 @@
 
 			<batchtest fork="no" todir="${reports.tests}">
 				<fileset dir="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot">
-					<include name="**/*Test*.class" />
+					<include name="**/*_Test*.class" />
 
 					<exclude name="**/AllTests_Suite.class" />
 					<exclude name="**/PerformanceAndMemoryTest.class" />
