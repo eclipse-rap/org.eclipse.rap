@@ -17,7 +17,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
 
   construct : function() {
     this.base( arguments );
-    this.setAppearance( "separator" );
 
     // Fix IE Styling issues
     this.setStyleProperty( "fontSize", "0" );
@@ -28,15 +27,25 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     this._line.setAnonymous( true );
     this._line.setAppearance( "separator-line" );
     this.add( this._line );
-    this.addEventListener( "changeOrientation", this.onChangeOrientation, this );
+  },
+  
+  properties : {
+
+    appearance : {
+      refine : true,
+      init : "separator"
+    },
+
+    lineOrientation : {
+      check : [ "horizontal", "vertical" ],
+      apply : "_applyLineOrientation",
+      init : "horizontal",
+      nullable : true
+    }
   },
   
   destruct : function() {
-    if( this._line ) {
-      this.removeEventListener( "changeOrientation", this.onChangeOrientation, this );
-      this._line.dispose();
-      this._line = null;
-    }
+    this._disposeObjects( "_line" );
   },
   
   members : {
@@ -49,11 +58,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
       this._line.removeState( style );
     },
     
-    onChangeOrientation : function( event ) {
-      if( event.getData() == "vertical" ) {
-        this._line.addState( "vertical" );
+    _applyLineOrientation : function( value, old ) {
+      if( value == "vertical" ) {
+        this.setHorizontalChildrenAlign( "center" );
+        this._line.setWidth( "auto" );
+        this._line.setHeight( "100%" );
+        this._line.addState( "rwt_VERTICAL" );
       } else {
-        this._line.removeState( "vertical" );
+        this.setVerticalChildrenAlign( "middle" );
+        this._line.setWidth( "100%" );
+        this._line.setHeight( "auto" );
+        this._line.removeState( "rwt_VERTICAL" );
       }
     }
   }

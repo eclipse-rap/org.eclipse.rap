@@ -1464,8 +1464,6 @@ appearances = {
     "separator" : {
       style : function( states ) {
         return {
-          horizontalChildrenAlign : "center",
-          verticalChildrenAlign : "middle",
           border : states.rwt_BORDER ? "thinInset" : "undefined"
         }
       }
@@ -1473,11 +1471,8 @@ appearances = {
 
     "separator-line" : {
       style : function( states ) {
-        var result = {
-          width : states.vertical ? "auto" : "100%",
-          height : states.vertical ? "100%" : "auto"
-        };
-        var orient = states.vertical ? "vertical" : "horizontal";
+        var result = {};
+        var orient = states.rwt_VERTICAL ? "vertical" : "horizontal";
         if( states.rwt_SHADOW_IN ) {
           result.border = "separator.shadowin." + orient + ".border";
         } else if( states.rwt_SHADOW_OUT ) {

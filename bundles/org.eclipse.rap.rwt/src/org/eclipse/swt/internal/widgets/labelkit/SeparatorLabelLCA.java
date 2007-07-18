@@ -23,6 +23,7 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Separator";
   private static final String JS_FUNC_ADD_LINE_STYLE = "addLineStyle";
   private static final String JS_FUNC_REMOVE_LINE_STYLE = "removeLineStyle";
+  private static final String JS_FIELD_LINE_ORIENTATION = "lineOrientation";
   private static final Object[] PARAM_SHADOW_IN
     = new Object[] { JSConst.JS_STYLE_FLAG_SHADOW_IN };
   private static final Object[] PARAM_SHADOW_OUT
@@ -66,7 +67,7 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
     JSWriter writer = JSWriter.getWriterFor( label );
     int style = label.getStyle();
     String orient = ( style & SWT.VERTICAL ) != 0 ? "vertical" : "horizontal";
-    writer.set( JSConst.QX_FIELD_ORIENTATION, orient );
+    writer.set( JS_FIELD_LINE_ORIENTATION, orient );
     if( ( style & SWT.SHADOW_IN ) != 0 ) {
       writer.call( JS_FUNC_ADD_LINE_STYLE, PARAM_SHADOW_IN );
     } else if( ( style & SWT.SHADOW_OUT ) != 0 ) {
@@ -78,5 +79,6 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.call( JS_FUNC_REMOVE_LINE_STYLE, PARAM_SHADOW_IN );
     writer.call( JS_FUNC_REMOVE_LINE_STYLE, PARAM_SHADOW_OUT );
+    writer.reset( JS_FIELD_LINE_ORIENTATION );
   }
 }
