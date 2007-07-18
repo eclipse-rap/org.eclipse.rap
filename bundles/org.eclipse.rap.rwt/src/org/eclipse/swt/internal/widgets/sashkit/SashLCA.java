@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.*;
 
 public final class SashLCA extends AbstractWidgetLCA {
 
-  private static final String QX_TYPE = "org.eclipse.swt.Sash";
+  private static final String QX_TYPE = "org.eclipse.swt.widgets.Sash";
 
   private static final String TYPE_POOL_ID = SashLCA.class.getName();
 

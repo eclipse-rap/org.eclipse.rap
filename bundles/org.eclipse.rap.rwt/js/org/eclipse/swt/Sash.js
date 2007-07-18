@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.swt.Sash", {
+qx.Class.define( "org.eclipse.swt.widgets.Sash", {
   extend : qx.ui.layout.CanvasLayout,
 
   construct : function() {
