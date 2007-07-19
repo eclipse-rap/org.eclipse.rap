@@ -388,10 +388,17 @@ public class Shell extends Composite {
     hTopTrim += getTitleBarHeight();
     hTopTrim += getMenuBarHeight();
     int border = getBorderWidth();
+    
+    ///////////////////////////////////////////////
+    // TODO [fappel] experimental (rounded corners)
+    //int hBottomTrim = 20;
+    int hBottomTrim = 0;
+    ///////////////////////////////////////////////
+    
     return new Rectangle( padding.left,
                           hTopTrim + padding.top,
                           bounds.width - padding.left - padding.right - border * 2,
-                          bounds.height - hTopTrim - padding.top - padding.bottom - border * 2 );
+                          bounds.height -hBottomTrim - hTopTrim - padding.top - padding.bottom - border * 2 );
   }
   
   // TODO [rst] Move to class Decorations, as soon as it exists
