@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
   },
 
   destruct : function() {
-    this._removeStyle( getOrientation() );
+    this._removeStyle( this.getOrientation() );
     this._disposeObjects( "_slider" );
   },
 
