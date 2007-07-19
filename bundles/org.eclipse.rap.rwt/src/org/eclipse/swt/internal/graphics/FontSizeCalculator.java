@@ -51,7 +51,13 @@ public class FontSizeCalculator {
   }
 
   public static Point stringExtent( final Font font, final String string ) {
-    return doMeasurement( font, string, SWT.DEFAULT, STRING_EXTENT );
+    Point result;
+    if( string.length() == 0 ) {
+      result = new Point( 0, getCharHeight( font ) );
+    } else {
+      result = doMeasurement( font, string, SWT.DEFAULT, STRING_EXTENT );
+    }
+    return result;
   }
 
   public static Point textExtent( final Font font,

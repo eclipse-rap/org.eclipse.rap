@@ -121,6 +121,9 @@ public class FontSizeCalculator_Test extends TestCase {
     FontSizeDataBase.store( font, TEST_STRING, SWT.DEFAULT, storedSize );
     calculated = FontSizeCalculator.stringExtent( font, TEST_STRING );
     assertEquals( storedSize, calculated );
+    
+    Point emptyStringSize = FontSizeCalculator.stringExtent( font, "" );
+    assertEquals( new Point( 0, 10 ), emptyStringSize );
   }
   
   public void testCharHeight() {
