@@ -494,6 +494,8 @@ public class Text extends Scrollable {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
+    // TODO [rst] Workaround for two missing pixels (Ö, p are cut off), revise
+    height += 2;
     Rectangle trim = computeTrim( 0, 0, width, height );
     return new Point( trim.width, trim.height );
   }
