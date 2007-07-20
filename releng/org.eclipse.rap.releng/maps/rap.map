@@ -38,6 +38,9 @@ plugin@org.eclipse.rap.core.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:
 plugin@org.eclipse.rap.core.databinding.beans=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding.beans
 plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.jface.databinding
 
+# forms
+plugin@org.eclipse.rap.ui.forms=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.forms
+
 # jetty
 plugin@org.eclipse.equinox.http.jetty=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.jetty
 plugin@org.mortbay.jetty=v5_1_11,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty
