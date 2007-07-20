@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -39,49 +38,87 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
         widget.setLabel( "" );
         // end workaround
         widget.setHideFocus( true );
+        // track DOM insertion state
+        widget.addEventListener( "beforeRemoveDom",
+                                 org.eclipse.swt.LabelUtil._onRemoveDom );
+        widget.addEventListener( "insertDom",
+                                 org.eclipse.swt.LabelUtil._onInsertDom );
       }
+    },
+    
+    _onRemoveDom : function( evt ) {
+      var widget = evt.getTarget();
+      widget._isInDOM = false;
+    },
+    
+    _onInsertDom : function( evt ) {
+      var widget = evt.getTarget();
+      widget._isInDOM = true;
     },
     
     setWrap : function( widget, wrap ) {
       widget.getLabelObject().setWrap( wrap );
     },
     
-    setText : function( widget, text ) {
-      if ( text != null ) {
-        widget.setLabel( text );
-      } else {
-        widget.resetLabel();
-      }
-      org.eclipse.swt.LabelUtil._showText( widget );
-    },
-    
-    setImage : function( widget, imagePath ) {
-      if( imagePath ) {
-        widget.setIcon( imagePath );
-        org.eclipse.swt.LabelUtil._showImage( widget );
-      } else {
-        widget.resetIcon();
-        org.eclipse.swt.LabelUtil._showText( widget );
-      }
-    },
-    
-    _showText : function( widget ) {
-        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_LABEL );
-        // TODO [rst] Workaround for recycled Atoms which do not clear their
-        //            text label
-        widget.getLabelObject().setVisibility( true );
-    },
-    
-    _showImage : function( widget ) {
-        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_ICON );
-        // TODO [rst] Workaround for recycled Atoms which do not clear their
-        //            text label
-        widget.getLabelObject().setVisibility( false );
-    },
-    
     setAlignment : function( widget, align ) {
       widget.getLabelObject().setTextAlign( align );
       widget.setHorizontalChildrenAlign( align );
+    },
+    
+    setText : function( widget, text ) {
+      if( widget._isInDOM ) {
+        org.eclipse.swt.LabelUtil._doSetText( widget, text );
+      } else {
+        widget.setUserData( "setText", text );
+        widget.addEventListener( "insertDom",
+                                 org.eclipse.swt.LabelUtil._setTextDelayed );
+      }
+    },
+    
+    setImage : function( widget, imagePath ) {
+      if( widget._isInDOM ) {
+        org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );
+      } else {
+        widget.setUserData( "setImage", imagePath );
+        widget.addEventListener( "insertDom",
+                                 org.eclipse.swt.LabelUtil._setImageDelayed );
+      }
+    },
+    
+    _setTextDelayed : function( evt ) {
+      var widget = evt.getTarget();
+      var text = widget.getUserData( "setText" );
+      org.eclipse.swt.LabelUtil._doSetText( widget, text );
+      widget.removeEventListener( "insertDom",
+                                  org.eclipse.swt.LabelUtil._setTextDelayed );
+    },
+    
+    _setImageDelayed : function( evt ) {
+      var widget = evt.getTarget();
+      var imagePath = widget.getUserData( "setImage" );
+      org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );
+      widget.removeEventListener( "insertDom",
+                                  org.eclipse.swt.LabelUtil._setImageDelayed );
+    },
+    
+    _doSetText : function( widget, text ) {
+      if ( text != null ) {
+        widget.setLabel( text );
+      } else {
+        // TODO [rst] widget.resetLabel() throws JS error
+        widget.setLabel( "" );
+      }
+      widget.setShow( org.eclipse.swt.LabelUtil.SHOW_LABEL );
+    },
+    
+    _doSetImage : function( widget, imagePath ) {
+      if( imagePath ) {
+        widget.setIcon( imagePath );
+        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_ICON );
+      } else {
+        widget.resetIcon();
+        widget.setShow( org.eclipse.swt.LabelUtil.SHOW_LABEL );
+      }
     }
   }
 });

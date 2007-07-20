@@ -88,7 +88,6 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     return TYPE_POOL_ID;
   }
 
-
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
@@ -106,8 +105,8 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static void resetText() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
-//    TODO [rst] Calling resetLabel() throws JS error in IE
-    writer.set( "label", "" );
+    Object[] args = new Object[]{ JSWriter.WIDGET_REF, null };
+    writer.callStatic( JS_FUNC_LABEL_UTIL_SET_TEXT, args );
   }
 
   private static void writeImage( final Label label ) throws IOException {
@@ -129,8 +128,8 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static void resetImage() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
-//    TODO [rst] resetIcon() throws JS error in IE
-    writer.set( "icon", ( String )null );
+    Object[] args = new Object[]{ JSWriter.WIDGET_REF, null };
+    writer.callStatic( JS_FUNC_LABEL_UTIL_SET_IMAGE, args );
   }
 
   private static void writeAlignment( final Label label ) throws IOException {

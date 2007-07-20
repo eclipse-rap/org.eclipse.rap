@@ -86,7 +86,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
           var typePoolId = widget.getUserData( "typePoolId" );
           if( typePoolId != null ) {
             var typePool = this._widgetPool[ typePoolId ];
-            typePool.handler( widget );
+            typePool.resetHandler( widget );
             widget.setUserData( "pooled", true );
             // EXPERIMENTAL: If the widget has a reset method, call it
             if( widget.rap_reset ) {
@@ -101,8 +101,8 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       }
     },
     
-    registerResetHandler : function( typePoolId, handler ) {
-      this._createWidgetPool( typePoolId, handler );
+    registerResetHandler : function( typePoolId, resetHandler ) {
+      this._createWidgetPool( typePoolId, resetHandler );
     },
     
   	newWidget : function( widgetId, parentId, isControl, typePoolId, type ) {
@@ -163,7 +163,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         result.setUserData( "pooled", false );
 //        this.debug( "_____ created: " + result );
       }
-      
       
       // map the widget to the server side widgetId
       this.add( result, widgetId, isControl );
@@ -275,7 +274,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     _createWidgetPool : function( typePoolId, resetHandler ) {
       var typePool = new Object();
       typePool.elements = new Array();
-      typePool.handler = resetHandler;
+      typePool.resetHandler = resetHandler;
       this._widgetPool[ typePoolId ] = typePool;        
     },
 
