@@ -256,7 +256,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       this._clientAreaBg.setEdge( 0 );
       this.add( this._clientAreaBg );
       
-      
       this.addEventListener( "appear", function() {
         var bgColor = this.getBackgroundColor();
         this._clientAreaBg.setBackgroundColor( bgColor );
@@ -274,7 +273,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
             corner.style.height
               = ( this._radius + this._titleBarSpacer ) + "px";
           }
-          corner.style.backgroundColor = "#transparent";
+          corner.style.backgroundColor = "transparent";
           
           this._computeCurve( corner );
           var cornerName = org.eclipse.swt.widgets.Shell.CORNER_NAMES[ i ];
@@ -285,7 +284,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         bottom.style.position = "absolute";
         bottom.style.left = this._radius;
         bottom.style.height = this._radius - 1;
-        bottom.style.backgroundColor = "#9dd0ea;" // TODO Color
+        bottom.style.backgroundColor = "#9dd0ea" // TODO Color
         this._bottom = bottom.cloneNode( true );
         element.appendChild( this._bottom );
         
@@ -314,16 +313,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     _computeCurve : function( corner ) {
       for( var i = 0; i < this._radius; i++ ) {
         var angle = Math.asin( i / this._radius );
-        var hyp = i / Math.sin( angle );
-        var ak = Math.cos( angle ) * hyp;
+        var ak;
+        if( angle != 0 ) {
+          var hyp = i / Math.sin( angle );
+          ak = Math.cos( angle ) * hyp;
+        } else {
+          ak = this._radius;
+        }
        
         var span = document.createElement( "span" );
         span.style.position = "absolute";
         span.style.height = "1px";
-        span.style.backgroundColor = "#9dd0ea;" // TODO Color
+        span.style.backgroundColor = "#9dd0ea" // TODO Color
         span.style.display = "block";
-        
-        switch( Number.eval( corner.id ) ) {
+        switch( eval( corner.id ) ) {
           case 0:
             span.style.left = ( this._radius - ak ) + "px";
             span.style.width = ak + "px"
@@ -337,12 +340,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
           case 2:
             span.style.left = ( this._radius - ak ) + "px";
             span.style.width = ak + "px"
-            span.style.top = i - 1 + "px"
+            span.style.top = ( i - 1 ) + "px"
           break;
           case 3:
             span.style.left = "0px";
             span.style.width = ak + "px"
-            span.style.top = i - 1 + "px"
+            span.style.top = ( i - 1 ) + "px"
           break;
         }
         corner.appendChild( span.cloneNode( true ) );
@@ -351,14 +354,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     },
     
     _appendTitleBarSpacer : function( corner ) {
-      if( Number.eval( corner.id ) < 3 ) {
+      if( eval( corner.id ) < 3 ) {
         var titleBarSpacer = document.createElement( "span" );
         titleBarSpacer.style.position = "absolute";
         titleBarSpacer.style.top = this._radius;
         titleBarSpacer.style.left = 0;
         titleBarSpacer.style.width = this._radius;
         titleBarSpacer.style.height = this._titleBarSpacer;
-        titleBarSpacer.style.backgroundColor = "#9dd0ea;" // TODO color
+        titleBarSpacer.style.backgroundColor = "#9dd0ea" // TODO color
         corner.appendChild( titleBarSpacer.cloneNode( true ) );
       }
     },
