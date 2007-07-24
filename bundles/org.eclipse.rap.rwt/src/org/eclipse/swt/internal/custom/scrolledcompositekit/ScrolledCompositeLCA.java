@@ -125,7 +125,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     if( hBarSelection != null ) {
       writer.set( PROP_H_BAR_SELECTION, "hBarSelection", hBarSelection, ZERO );
     }
-    Integer vBarSelection = getBarSelection( composite.getHorizontalBar() );
+    Integer vBarSelection = getBarSelection( composite.getVerticalBar() );
     if( vBarSelection != null ) {
       writer.set( PROP_V_BAR_SELECTION, "vBarSelection", vBarSelection, ZERO );
     }

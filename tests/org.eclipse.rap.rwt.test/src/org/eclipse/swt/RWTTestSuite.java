@@ -19,6 +19,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.externalbrowser.ExternalBrowser_Test;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
+import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA_Test;
 import org.eclipse.swt.internal.engine.*;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator_Test;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation_Test;
@@ -132,6 +133,7 @@ public class RWTTestSuite {
     suite.addTestSuite( FontSizeEstimation_Test.class );
     suite.addTestSuite( FontSizeCalculator_Test.class );
 
+    // == LCAs ==
     suite.addTestSuite( DisplayLCA_Test.class );
     suite.addTestSuite( ControlLCA_Test.class );
     suite.addTestSuite( LabelLCA_Test.class );
@@ -153,7 +155,9 @@ public class RWTTestSuite {
     suite.addTestSuite( ComboLCA_Test.class );
     suite.addTestSuite( ToolItemLCA_Test.class );
     suite.addTestSuite( TabFolderLCA_Test.class );
+    suite.addTestSuite( ScrolledCompositeLCA_Test.class );
 
+    // == Theming ==
     suite.addTestSuite( Theme_Test.class );
     suite.addTestSuite( ThemeManager_Test.class );
     suite.addTestSuite( ThemeUtil_Test.class );
