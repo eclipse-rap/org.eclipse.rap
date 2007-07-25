@@ -65,7 +65,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     ButtonLCA lca = new ButtonLCA();
     lca.renderChanges( button );
-    System.out.println( Fixture.getAllMarkup() );
     assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) == -1 );
   }
 
