@@ -17,8 +17,7 @@ import java.util.regex.Pattern;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 public class ComboLCA extends AbstractWidgetLCA {
 
@@ -39,10 +38,10 @@ public class ComboLCA extends AbstractWidgetLCA {
     "org.eclipse.swt.ComboUtil.select";
   private static final String JS_FUNC_INITIALIZE =
     "org.eclipse.swt.ComboUtil.initialize";
-  private static final String JS_FUNC_DEINITIALIZE 
+  private static final String JS_FUNC_DEINITIALIZE
     = "org.eclipse.swt.ComboUtil.deinitialize";
 
-  // Propery names for preserve-value facility 
+  // Propery names for preserve-value facility
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
 
@@ -84,10 +83,19 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( widget );
     Combo combo = ( Combo )widget;
     ControlLCAUtil.writeChanges( combo );
     writeItems( combo );
     writeSelected( combo );
+
+    // workaround for broken context menu on qx ComboBox
+    // see http://bugzilla.qooxdoo.org/show_bug.cgi?id=465
+    Menu menu = combo.getMenu();
+    if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu , null ) ) {
+      Object[] args = new Object[] { combo };
+      writer.callStatic( "org.eclipse.swt.ComboUtil.applyContextMenu", args );
+    }
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

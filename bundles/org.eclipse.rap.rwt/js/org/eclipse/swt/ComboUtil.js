@@ -18,12 +18,12 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
   statics : {
 
     initialize : function( combo ) {
-      combo.addEventListener( "changeFont", 
+      combo.addEventListener( "changeFont",
                               org.eclipse.swt.ComboUtil._onChangeFont );
     },
     
     deinitialize : function( combo ) {
-      combo.removeEventListener( "changeFont", 
+      combo.removeEventListener( "changeFont",
                                  org.eclipse.swt.ComboUtil._onChangeFont );
     },
     
@@ -112,7 +112,14 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       for( var i = 0; i < items.length; i++ ) {
         items[ i ].setFont( combo.getFont() );
       }
-    }
+    },
     
+    // workaround for broken context menu on qx ComboBox
+    // see http://bugzilla.qooxdoo.org/show_bug.cgi?id=465
+    applyContextMenu : function( combo ) {
+      var menu = combo.getContextMenu();
+      combo._field.setContextMenu( menu );
+      combo._button.setContextMenu( menu );
+    }
   }
 });
