@@ -135,7 +135,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
             var expression =   "org.eclipse.swt.WidgetManager.getInstance()."
                              + "_current.reInit("
                              + paramList
-                             + ");"
+                             + ");";
             // Assignment of the field _current is needed as Opera has some 
             // problems with accessing local variables in eval expressions.
             this._current = result;

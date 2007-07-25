@@ -159,7 +159,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       var selectedItems = this.getManager().getSelectedItems();
       // Set a flag that signals unfocused state on every item.
       for( var i = 0; i < selectedItems.length; i++ ) {
-        var label_ = selectedItems[ i ].getLabelObject()
+        var label_ = selectedItems[ i ].getLabelObject();
         if( label_ != null ) {
           if( this._hasFocus ) {
             label_.removeState( "parent_unfocused" );

@@ -284,7 +284,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         bottom.style.position = "absolute";
         bottom.style.left = this._radius;
         bottom.style.height = this._radius - 1;
-        bottom.style.backgroundColor = "#9dd0ea" // TODO Color
+        bottom.style.backgroundColor = "#9dd0ea"; // TODO Color
         this._bottom = bottom.cloneNode( true );
         element.appendChild( this._bottom );
         
@@ -324,28 +324,28 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         var span = document.createElement( "span" );
         span.style.position = "absolute";
         span.style.height = "1px";
-        span.style.backgroundColor = "#9dd0ea" // TODO Color
+        span.style.backgroundColor = "#9dd0ea"; // TODO Color
         span.style.display = "block";
         switch( eval( corner.id ) ) {
           case 0:
             span.style.left = ( this._radius - ak ) + "px";
-            span.style.width = ak + "px"
-            span.style.top = ( this._radius - i ) + "px"
+            span.style.width = ak + "px";
+            span.style.top = ( this._radius - i ) + "px";
           break;
           case 1:
             span.style.left = "0px";
-            span.style.width = ak + "px"
-            span.style.top = ( this._radius - i ) + "px"
+            span.style.width = ak + "px";
+            span.style.top = ( this._radius - i ) + "px";
           break;
           case 2:
             span.style.left = ( this._radius - ak ) + "px";
-            span.style.width = ak + "px"
-            span.style.top = ( i - 1 ) + "px"
+            span.style.width = ak + "px";
+            span.style.top = ( i - 1 ) + "px";
           break;
           case 3:
             span.style.left = "0px";
-            span.style.width = ak + "px"
-            span.style.top = ( i - 1 ) + "px"
+            span.style.width = ak + "px";
+            span.style.top = ( i - 1 ) + "px";
           break;
         }
         corner.appendChild( span.cloneNode( true ) );
@@ -361,7 +361,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         titleBarSpacer.style.left = 0;
         titleBarSpacer.style.width = this._radius;
         titleBarSpacer.style.height = this._titleBarSpacer;
-        titleBarSpacer.style.backgroundColor = "#9dd0ea" // TODO color
+        titleBarSpacer.style.backgroundColor = "#9dd0ea"; // TODO color
         corner.appendChild( titleBarSpacer.cloneNode( true ) );
       }
     },

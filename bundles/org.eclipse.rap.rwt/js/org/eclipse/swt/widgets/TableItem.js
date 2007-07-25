@@ -188,7 +188,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         + "width:" + width + org.eclipse.swt.widgets.TableItem.PX 
         + "height:" + height + org.eclipse.swt.widgets.TableItem.PX
         + "\"" 
-        + org.eclipse.swt.widgets.TableItem.DIV_START_CLOSE
+        + org.eclipse.swt.widgets.TableItem.DIV_START_CLOSE;
       return result;
     },
     
