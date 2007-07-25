@@ -20,11 +20,19 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     initialize : function( combo ) {
       combo.addEventListener( "changeFont",
                               org.eclipse.swt.ComboUtil._onChangeFont );
+      combo.addEventListener( "changeBackgroundColor",
+                              org.eclipse.swt.ComboUtil._onChangeBackgoundColor );
+      combo.addEventListener( "changeTextColor",
+                              org.eclipse.swt.ComboUtil._onChangeTextColor );
     },
     
     deinitialize : function( combo ) {
       combo.removeEventListener( "changeFont",
                                  org.eclipse.swt.ComboUtil._onChangeFont );
+      combo.removeEventListener( "changeBackgroundColor",
+                                 org.eclipse.swt.ComboUtil._onChangeBackgoundColor );
+      combo.removeEventListener( "changeTextColor",
+                                 org.eclipse.swt.ComboUtil._onChangeTextColor );
     },
     
     onSelectionChanged : function( evt ) {
@@ -112,6 +120,24 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       for( var i = 0; i < items.length; i++ ) {
         items[ i ].setFont( combo.getFont() );
       }
+    },
+    
+    // workaround for broken property on qx ComboBox
+    _onChangeBackgoundColor : function( evt ) {
+      var combo = evt.getTarget();
+      var value = evt.getData();
+      combo.debug( "_____ bg " + value );
+      combo._field.setBackgroundColor( value );
+      combo._list.setBackgroundColor( value );
+    },
+    
+    // workaround for broken property on qx ComboBox
+    _onChangeTextColor : function( evt ) {
+      var combo = evt.getTarget();
+      var value = evt.getData();
+      combo.debug( "_____ fg " + value );
+      combo._field.setTextColor( value );
+      combo._list.setTextColor( value );
     },
     
     // workaround for broken context menu on qx ComboBox
