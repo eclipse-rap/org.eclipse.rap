@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -26,6 +27,8 @@ import com.w4t.engine.service.ContextProvider;
 
 public final class WidgetLCAUtil {
 
+  private static final String JS_PROP_HEIGHT = "height";
+  private static final String JS_PROP_WIDTH = "width";
   private static final String JS_PROP_CLIP_WIDTH = "clipWidth";
   private static final String JS_PROP_CLIP_HEIGHT = "clipHeight";
   private static final String PARAM_X = "bounds.x";
@@ -43,7 +46,7 @@ public final class WidgetLCAUtil {
   private static final String JS_PROP_CONTEXT_MENU = "contextMenu";
 
   private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
-  
+
   private static final Pattern HTML_ESCAPE_PATTERN
     = Pattern.compile( "&|<|>|\\\"" );
   private static final Pattern DOUBLE_QUOTE_PATTERN
@@ -217,18 +220,26 @@ public final class WidgetLCAUtil {
       }
 
       JSWriter writer = JSWriter.getWriterFor( widget );
-      int[] args = new int[]{
-        newBounds.x, newBounds.width, newBounds.y, newBounds.height
-      };
-
-      writer.set( JS_PROP_SPACE, args );
+      // Note [rst] Children of ScrolledComposites must not render their x and y
+      //            coordinates as the content of SCs is scrolled automatically
+      //            by the client according to the position of the scrollbars.
+      //            Setting negative values breaks the layout on the client.
+      if( parent instanceof ScrolledComposite ) {
+        writer.set( JS_PROP_WIDTH, newBounds.width );
+        writer.set( JS_PROP_HEIGHT, newBounds.height );
+      } else {
+        int[] args = new int[] {
+          newBounds.x, newBounds.width, newBounds.y, newBounds.height
+        };
+        writer.set( JS_PROP_SPACE, args );
+      }
       if( clip ) {
-        writer.set( JS_PROP_CLIP_HEIGHT, args[ 3 ] );
-        writer.set( JS_PROP_CLIP_WIDTH, args[ 1 ] );
+        writer.set( JS_PROP_CLIP_WIDTH, newBounds.width );
+        writer.set( JS_PROP_CLIP_HEIGHT, newBounds.height );
       }
     }
   }
-  
+
   public static void resetBounds() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JS_PROP_CLIP_WIDTH );
@@ -251,7 +262,7 @@ public final class WidgetLCAUtil {
       }
     }
   }
-  
+
   public static void resetMenu() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JS_PROP_CONTEXT_MENU );
@@ -276,8 +287,8 @@ public final class WidgetLCAUtil {
                  JS_FUNC_SET_TOOL_TIP,
                  new Object[] { JSWriter.WIDGET_REF } );
   }
-  
-  
+
+
   /////////////////////////////////////////////////
   // write-methods used by other ...LCAUtil classes
 
@@ -307,7 +318,7 @@ public final class WidgetLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.set( jsProperty, imagePath );
   }
-  
+
   public static void writeFont( final Widget widget, final Font font )
     throws IOException
   {
@@ -344,7 +355,7 @@ public final class WidgetLCAUtil {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JSConst.QX_FIELD_FONT );
   }
-  
+
   public static void writeForeground( final Widget widget,
                                       final Color newColor )
     throws IOException
@@ -355,7 +366,7 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
     }
   }
-  
+
   public static void resetForeground() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( "textColor" );
@@ -381,7 +392,7 @@ public final class WidgetLCAUtil {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JSConst.QX_FIELD_BG_COLOR );
   }
-  
+
   public static void writeEnabled( final Widget widget, final boolean enabled )
     throws IOException
   {
@@ -390,7 +401,7 @@ public final class WidgetLCAUtil {
     Boolean defValue = Boolean.TRUE;
     writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
   }
-  
+
   public static void resetEnabled() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     // TODO [fappel]: check whether to use reset

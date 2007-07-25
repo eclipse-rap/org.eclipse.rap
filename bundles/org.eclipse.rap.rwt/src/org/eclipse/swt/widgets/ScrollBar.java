@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -19,9 +19,9 @@ import org.eclipse.swt.graphics.Point;
 
 /**
  * Instances of this class are selectable user interface
- * objects that represent a range of positive, numeric values. 
+ * objects that represent a range of positive, numeric values.
  * <p>
- * At any given moment, a given scroll bar will have a 
+ * At any given moment, a given scroll bar will have a
  * single 'selection' that is considered to be its
  * value, which is constrained to be within the range of
  * values the scroll bar represents (that is, between its
@@ -61,7 +61,7 @@ import org.eclipse.swt.graphics.Point;
  * have no operating system resources and are not children of the control.
  * For this reason, scroll bars are treated specially.  To create a control
  * that looks like a scroll bar but has operating system resources, use
- * <code>Slider</code>. 
+ * <code>Slider</code>.
  * </p>
  * <dl>
  * <dt><b>Styles:</b></dt>
@@ -82,16 +82,16 @@ import org.eclipse.swt.graphics.Point;
  *
  * <p>(current) limitations:</p>
  * <ul>
- * <li>minimum, maximum, thumb, increment and pageIncrement properties are not 
+ * <li>minimum, maximum, thumb, increment and pageIncrement properties are not
  * rendered (no corresponding client-side property)</li>
- * <li>size (width when V_SCROLL, height when H_SCROLL) is hard-coded and may 
+ * <li>size (width when V_SCROLL, height when H_SCROLL) is hard-coded and may
  * not match what the browser actually shows</li>
- * </ul>  
+ * </ul>
  */
 // TODO [rh] include ScrollBar in widget hierarchy (child of Scrollable)?
 public class ScrollBar extends Widget {
 
-  // TODO [rh] scroll bar size could be determined in index.html and be held 
+  // TODO [rh] scroll bar size could be determined in index.html and be held
   //      individually per session
   static final int SCROLL_BAR_WIDTH = 16;
   static final int SCROLL_BAR_HEIGHT = 16;
@@ -126,13 +126,13 @@ public class ScrollBar extends Widget {
     checkWidget();
     return parent;
   }
-  
+
   /////////////
   // Visibility
-  
+
   /**
    * Marks the receiver as visible if the argument is <code>true</code>,
-   * and marks it invisible otherwise. 
+   * and marks it invisible otherwise.
    * <p>
    * If one of the receiver's ancestors is not visible or some
    * other condition makes the receiver not visible, marking
@@ -175,7 +175,7 @@ public class ScrollBar extends Widget {
     checkWidget();
     return ( state & HIDDEN ) == 0;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is visible and all
    * of the receiver's ancestors are visible and <code>false</code>
@@ -194,10 +194,10 @@ public class ScrollBar extends Widget {
     checkWidget();
     return getVisible() && parent.isVisible();
   }
-  
+
   /////////////
   // Enablement
-  
+
   /**
    * Enables the receiver if the argument is <code>true</code>,
    * and disables it otherwise. A disabled control is typically
@@ -232,7 +232,7 @@ public class ScrollBar extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #isEnabled
    */
   public boolean getEnabled() {
@@ -252,7 +252,7 @@ public class ScrollBar extends Widget {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #getEnabled
    */
   public boolean isEnabled() {
@@ -280,7 +280,7 @@ public class ScrollBar extends Widget {
     } else {
       result.x = SCROLL_BAR_HEIGHT;
     }
-    return result; 
+    return result;
   }
 
   /**
@@ -319,7 +319,7 @@ public class ScrollBar extends Widget {
     checkWidget();
     this.thumb = thumb;
   }
-  
+
   /**
    * Returns the maximum value which the receiver will allow.
    *
@@ -400,9 +400,14 @@ public class ScrollBar extends Widget {
    */
   public void setSelection( final int selection ) {
     checkWidget();
-    this.selection = selection;
+    if( this.selection != selection ) {
+      this.selection = selection;
+      SelectionEvent evt
+        = new SelectionEvent( this, null, SelectionEvent.WIDGET_SELECTED );
+      evt.processEvent();
+    }
   }
-  
+
   /**
    * Returns the single 'selection' that is the receiver's value.
    *
@@ -417,10 +422,10 @@ public class ScrollBar extends Widget {
     checkWidget();
     return selection;
   }
-  
+
   ////////////////////
   // SelectionListener
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's value changes, by sending
@@ -479,10 +484,10 @@ public class ScrollBar extends Widget {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-  
+
   // /////////////////
   // Widget overrides
-  
+
   public Display getDisplay() {
     checkWidget();
     return parent.getDisplay();
@@ -500,7 +505,7 @@ public class ScrollBar extends Widget {
 
   //////////////////
   // Helping methods
-  
+
   private static int checkStyle( final int style ) {
     return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }

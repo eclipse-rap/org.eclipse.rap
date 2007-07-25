@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -31,14 +31,14 @@ public class ControlLCA_Test extends TestCase {
     RWTFixture.fakeUIThread();
     ThemeManager.getInstance().initialize();
   }
-  
+
   protected void tearDown() throws Exception {
 // TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
 //    ThemeManager.getInstance().deregisterAll();
     RWTFixture.removeUIThread();
     RWTFixture.tearDown();
   }
-  
+
   public void testPreserveValues() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -57,20 +57,20 @@ public class ControlLCA_Test extends TestCase {
     listeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, listeners );
   }
-  
+
   public void testWriteVisibility() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     shell.open();
     AbstractWidgetLCA lca = WidgetUtil.getLCA( button );
-    
+
     // Initial JavaScript code must not contain setVisibility()
     Fixture.fakeResponseWriter();
     lca.renderInitialization( button );
     lca.renderChanges( button );
     assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) == -1 );
-    
+
     // Unchanged visible attribute must not be rendered
     Fixture.fakeResponseWriter();
     RWTFixture.markInitialized( display );
@@ -88,7 +88,7 @@ public class ControlLCA_Test extends TestCase {
     lca.renderChanges( button );
     assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) != -1 );
   }
-  
+
   public void testWriteBounds() throws IOException {
     Fixture.fakeBrowser( new Mozilla1_7up( true, true ) );
     Display display = new Display();
@@ -96,7 +96,7 @@ public class ControlLCA_Test extends TestCase {
     Control control = new Button( shell, SWT.PUSH );
     Composite parent = control.getParent();
 
-    // call writeBounds once to elimniate the uninteresting JavaScript prolog 
+    // call writeBounds once to elimniate the uninteresting JavaScript prolog
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
 
@@ -104,30 +104,30 @@ public class ControlLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     control.setBounds( 1, 2, 100, 200 );
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
-    // TODO [fappel]: check whether minWidth and minHeight is still needed - 
+    // TODO [fappel]: check whether minWidth and minHeight is still needed -
     //                causes problems on FF with caching
-    // String expected 
-    //   = "w.setSpace( 1, 100, 2, 200 );" 
-    //   + "w.setMinWidth( 0 );w.setMinHeight( 0 );"; 
-    String expected = "w.setSpace( 1, 100, 2, 200 );"; 
+    // String expected
+    //   = "w.setSpace( 1, 100, 2, 200 );"
+    //   + "w.setMinWidth( 0 );w.setMinHeight( 0 );";
+    String expected = "w.setSpace( 1, 100, 2, 200 );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    
+
     // Test with clip
     Fixture.fakeResponseWriter();
     control.setBounds( 1, 2, 100, 200 );
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), true );
-    // TODO [fappel]: check whether minWidth and minHeight is still needed - 
+    // TODO [fappel]: check whether minWidth and minHeight is still needed -
     //                causes problems on FF with caching
-    //expected 
-    //  =   "w.setSpace( 1, 100, 2, 200 );" 
-    //    + "w.setMinWidth( 0 );w.setMinHeight( 0 );" 
+    //expected
+    //  =   "w.setSpace( 1, 100, 2, 200 );"
+    //    + "w.setMinWidth( 0 );w.setMinHeight( 0 );"
     //    + "w.setClipHeight( 200 );w.setClipWidth( 100 );";
-    expected 
-      =   "w.setSpace( 1, 100, 2, 200 );" 
-        + "w.setClipHeight( 200 );w.setClipWidth( 100 );";
+    expected
+      =   "w.setSpace( 1, 100, 2, 200 );"
+        + "w.setClipWidth( 100 );w.setClipHeight( 200 );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testWriteFocusListener() throws IOException {
     FocusAdapter focusListener = new FocusAdapter() {
     };
@@ -137,8 +137,8 @@ public class ControlLCA_Test extends TestCase {
     label.addFocusListener( focusListener );
     Button button = new Button( shell, SWT.PUSH );
     button.addFocusListener( focusListener );
-    // Test that JavaScript focus listeners are rendered for a focusable control 
-    // (e.g. button) 
+    // Test that JavaScript focus listeners are rendered for a focusable control
+    // (e.g. button)
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeChanges( button ); // calls writeFocusListener
     String focusGained = "org.eclipse.swt.EventUtil.focusGained";
@@ -146,11 +146,11 @@ public class ControlLCA_Test extends TestCase {
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( focusGained ) != -1 );
     assertTrue( markup.indexOf( focusLost ) != -1 );
-    
+
     // Test that for a non-focusable control (e.g. label), no focus-listener
-    // JavaScript code is emitted 
+    // JavaScript code is emitted
     Fixture.fakeResponseWriter();
-    ControlLCAUtil.writeChanges( label ); 
+    ControlLCAUtil.writeChanges( label );
     markup = Fixture.getAllMarkup();
     assertEquals( -1, markup.indexOf( focusGained ) );
     assertEquals( -1, markup.indexOf( focusLost ) );
