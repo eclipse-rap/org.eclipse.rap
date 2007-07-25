@@ -34,6 +34,7 @@ import com.w4t.*;
 import com.w4t.Fixture.*;
 import com.w4t.engine.lifecycle.*;
 import com.w4t.engine.service.*;
+import com.w4t.engine.util.JsConcatenator;
 import com.w4t.util.browser.Ie6;
 
 
@@ -47,9 +48,24 @@ public final class RWTFixture {
     }
   }
 
-  public final static class TestResourceManager implements IResourceManager {
+  public final static class TestResourceManager
+    implements IResourceManager, Adaptable
+  {
 
     private ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    
+    public Object getAdapter( final Class adapter ) {
+      return new JsConcatenator() {
+        public void startJsConcatenation() {
+        }
+        public String getContent() {
+          return "";
+        }
+        public String getLocation() {
+          return "";
+        }
+      };
+    }
     
     public String getCharset( final String name ) {
       return null;

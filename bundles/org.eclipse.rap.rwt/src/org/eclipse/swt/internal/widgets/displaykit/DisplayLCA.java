@@ -34,6 +34,9 @@ import org.eclipse.swt.widgets.*;
 import com.w4t.*;
 import com.w4t.engine.requests.RequestParams;
 import com.w4t.engine.service.*;
+import com.w4t.engine.util.JsConcatenator;
+import com.w4t.util.browser.BrowserLoader;
+import com.w4t.util.browser.Opera;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
@@ -202,19 +205,30 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void writeJSLibraries() throws IOException {
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
-    String[] libraries = out.getJSLibraries();
-    IResourceManager manager = ResourceManager.getInstance();
-    for( int i = 0; i < libraries.length; i++ ) {      
-      String location = manager.getLocation( libraries[ i ] );
-      writeScriptTag( out, location );
+    JsConcatenator jsConcatenator = getJsConcatenator();
+    Browser browser = BrowserLoader.load();
+    if( browser instanceof Opera ) {
+      // TODO [fappel]: Opera has problems with inlining our concatenated
+      //                javascript (Error-console says error compiling inline
+      //                script...). Detect why.
+      writeScriptTag( out, jsConcatenator.getLocation() );
+    } else {
+      writeScriptBlock( out, jsConcatenator.getContent() );
     }
-    
+
     IResource[] resources = ResourceRegistry.get();
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ].isExternal() ) {
         writeScriptTag( out, resources[ i ].getLocation() );
       }
     }
+  }
+
+  private static JsConcatenator getJsConcatenator() {
+    IResourceManager manager = ResourceManager.getInstance();
+    Adaptable adaptable = ( Adaptable )manager;
+    Object adapter = adaptable.getAdapter( JsConcatenator.class );
+    return ( JsConcatenator )adapter;
   }
   
   public void readData( final Display display ) {
@@ -330,6 +344,17 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
     out.writeAttribute( HTML.SRC, library, null );
     out.writeAttribute( HTML.CHARSET, HTML.CHARSET_NAME_UTF_8, null );
+    out.endElement( HTML.SCRIPT );
+  }
+
+  private static void writeScriptBlock( final HtmlResponseWriter out, 
+                                        final String content ) 
+  throws IOException 
+  {
+    out.startElement( HTML.SCRIPT, null );
+    out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
+    out.writeAttribute( HTML.CHARSET, HTML.CHARSET_NAME_UTF_8, null );
+    out.write( content );
     out.endElement( HTML.SCRIPT );
   }
 

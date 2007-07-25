@@ -42,5 +42,5 @@ public final class ResourceManager {
       _instance = factory.create();
     }
     return _instance;
-  }
+  }  
 }
