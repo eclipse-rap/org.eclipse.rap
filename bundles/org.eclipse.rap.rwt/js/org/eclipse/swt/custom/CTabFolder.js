@@ -345,7 +345,7 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
         if( !item.isSelected() ) {
           // deselect any previous selected CTabItem
           var items = this.getChildren();
-          for( var i=0; i<items.length; i++ ) {
+          for( var i = 0; i < items.length; i++ ) {
             if ( items[ i ].classname == "org.eclipse.swt.custom.CTabItem" ) {
               items[ i ].setSelected( false );
             }
