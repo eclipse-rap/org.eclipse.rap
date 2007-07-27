@@ -66,22 +66,30 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
     },
     
     setText : function( widget, text ) {
-      if( widget._isInDOM ) {
-        org.eclipse.swt.LabelUtil._doSetText( widget, text );
-      } else {
+      if( !widget.isCreated() ) {
+        widget.setUserData( "setText", text );
+        widget.addEventListener( "appear",
+                                 org.eclipse.swt.LabelUtil._setTextDelayed );
+      } else if( !widget.isInDOM ) {
         widget.setUserData( "setText", text );
         widget.addEventListener( "insertDom",
                                  org.eclipse.swt.LabelUtil._setTextDelayed );
+      } else {
+        org.eclipse.swt.LabelUtil._doSetText( widget, text );
       }
     },
     
     setImage : function( widget, imagePath ) {
-      if( widget._isInDOM ) {
-        org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );
-      } else {
+      if( !widget.isCreated() ) {
+        widget.setUserData( "setImage", imagePath );
+        widget.addEventListener( "appear",
+                                 org.eclipse.swt.LabelUtil._setImageDelayed );
+      } else if( !widget._isInDOM ) {
         widget.setUserData( "setImage", imagePath );
         widget.addEventListener( "insertDom",
                                  org.eclipse.swt.LabelUtil._setImageDelayed );
+      } else {
+        org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );
       }
     },
     
@@ -89,6 +97,8 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
       var widget = evt.getTarget();
       var text = widget.getUserData( "setText" );
       org.eclipse.swt.LabelUtil._doSetText( widget, text );
+      widget.removeEventListener( "appear",
+                                  org.eclipse.swt.LabelUtil._setTextDelayed );
       widget.removeEventListener( "insertDom",
                                   org.eclipse.swt.LabelUtil._setTextDelayed );
     },
@@ -97,6 +107,8 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
       var widget = evt.getTarget();
       var imagePath = widget.getUserData( "setImage" );
       org.eclipse.swt.LabelUtil._doSetImage( widget, imagePath );
+      widget.removeEventListener( "appear",
+                                  org.eclipse.swt.LabelUtil._setImageDelayed );
       widget.removeEventListener( "insertDom",
                                   org.eclipse.swt.LabelUtil._setImageDelayed );
     },
