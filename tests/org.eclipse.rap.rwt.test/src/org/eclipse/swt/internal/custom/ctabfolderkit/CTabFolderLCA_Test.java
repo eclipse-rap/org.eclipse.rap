@@ -281,7 +281,7 @@ public class CTabFolderLCA_Test extends TestCase {
   private static Menu getShowListMenu( final CTabFolder folder ) {
     Menu result = null;
     try {
-      Field field = CTabFolder.class.getDeclaredField( "showListMenu" );
+      Field field = CTabFolder.class.getDeclaredField( "showMenu" );
       field.setAccessible( true );
       result = ( Menu )field.get( folder );
     } catch( Exception e ) {

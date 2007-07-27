@@ -17,8 +17,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
@@ -116,8 +114,7 @@ public class ControlLCAUtil_Test extends TestCase {
   public void testWriteImage() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
-    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    CTabItem item = new CTabItem( folder, SWT.NONE );
+    Label item = new Label( shell, SWT.NONE );
 
     // for an un-initialized control: no image -> no markup
     Fixture.fakeResponseWriter();

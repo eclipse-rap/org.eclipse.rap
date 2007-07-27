@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.internal.custom;
 
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Rectangle;
 
 
@@ -23,4 +24,6 @@ public interface ICTabFolderAdapter {
   Rectangle getMaximizeRect();
   
   void showListMenu();
+  
+  boolean showItemImage( CTabItem item );
 }

@@ -80,7 +80,7 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var name = wm.findIdByWidget( menuItem ) + "RadioMgr";
       var manager = new qx.ui.selection.RadioManager( name );
-      menuItem.setManager(manager);
+      menuItem.setManager( manager );
     },
 
     assignRadioManager : function( firstMenuItem, menuItem ) {
@@ -121,9 +121,9 @@ qx.Class.define( "org.eclipse.swt.MenuUtil", {
         var preItem = this.getUserData( "preItem" );
         if( !preItem ) {
           preItem = new qx.ui.menu.Button();
-          preItem.setLabel("...");
+          preItem.setLabel( "..." );
           preItem.setEnabled( false );
-          this.add(preItem);
+          this.add( preItem );
           this.setUserData( "preItem", preItem );
         }
         // hide all but the preliminary item

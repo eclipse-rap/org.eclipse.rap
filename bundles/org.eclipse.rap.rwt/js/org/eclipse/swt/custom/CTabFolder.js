@@ -78,6 +78,15 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
     this.addEventListener( "keypress", this._onKeyPress, this );
   },
 
+  destruct : function() {
+    // use hideMin/MaxButton to dispose of toolTips
+    this.hideMinButton();
+    this.hideMaxButton();
+    this.removeEventListener( "changeWidth", this._onChangeWidth, this );
+    this.removeEventListener( "changeHeight", this._onChangeHeight, this );
+    this.removeEventListener( "keypress", this._onKeyPress, this );
+  },
+
   statics : { 
     BUTTON_SIZE : 18
   },
@@ -86,7 +95,8 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
     setTabHeight : function( tabHeight ) {
       this._tabHeight = tabHeight;
       this._separator.setTop( this._tabHeight );
-      this._highlightTop.setTop( this._separator.getTop() + this._separator.getHeight() );
+      var top = this._separator.getTop() + this._separator.getHeight();
+      this._highlightTop.setTop( top );
       if( this._minButton != null ) {
         this._minButton.setTop( this._getButtonTop() );
       }
@@ -121,20 +131,20 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
       return ( this._tabHeight / 2 ) - ( org.eclipse.swt.custom.CTabFolder.BUTTON_SIZE / 2 );
     },
 
-    showChevron : function( left ) {
+    showChevron : function( left, top, width, height ) {
       if( this._chevron == null ) {
         // Create chevron button
         this._chevron = new qx.ui.toolbar.Button();
         this._chevron.addState( "rwt_FLAT" );
         this._chevron.setShow( "icon" );
-        this._chevron.setTop( this._getButtonTop() );
-        this._chevron.setHeight( org.eclipse.swt.custom.CTabFolder.BUTTON_SIZE );
-        this._chevron.setWidth( org.eclipse.swt.custom.CTabFolder.BUTTON_SIZE );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
         this._chevron.setIcon( "resource/widget/rap/ctabfolder/chevron.gif" );
         this.add( this._chevron );
       }
+      this._chevron.setTop( top );
       this._chevron.setLeft( left );
+      this._chevron.setWidth( width );
+      this._chevron.setHeight( height );
     },
 
     hideChevron : function() {
@@ -181,22 +191,21 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
       }
     },
 
-    showMaxButton : function( left, toolTipText ) {
+    showMaxButton : function( left, top, width, height, toolTipText ) {
       if( this._maxButton == null ) {
         this._maxButton = new qx.ui.toolbar.Button();
         this._maxButton.addState( "rwt_FLAT" );
         this._maxButton.setShow( "icon" );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
-        this._maxButton.setTop( this._getButtonTop() );
-        this._maxButton.setHeight( org.eclipse.swt.custom.CTabFolder.BUTTON_SIZE );
-        this._maxButton.setWidth( org.eclipse.swt.custom.CTabFolder.BUTTON_SIZE );
         this._maxButton.addEventListener( "execute", this._onMinMaxExecute, this );
         this.add( this._maxButton );
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         wm.setToolTip( this._maxButton, toolTipText );
       }
-
+      this._maxButton.setTop( top );
       this._maxButton.setLeft( left );
+      this._maxButton.setWidth( width );
+      this._maxButton.setHeight( height );
     },
 
     hideMaxButton : function() {
@@ -210,21 +219,21 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
       }
     },
 
-    showMinButton : function( left, toolTipText ) {
+    showMinButton : function( left, top, width, height, toolTipText ) {
       if( this._minButton == null ) {
         this._minButton = new qx.ui.toolbar.Button();
         this._minButton.addState( "rwt_FLAT" );
         this._minButton.setShow( "icon" );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
-        this._minButton.setTop( this._getButtonTop() );
-        this._minButton.setHeight( org.eclipse.swt.custom.CTabFolder.BUTTON_SIZE );
-        this._minButton.setWidth( org.eclipse.swt.custom.CTabFolder.BUTTON_SIZE );
         this._minButton.addEventListener( "execute", this._onMinMaxExecute, this );
         this.add( this._minButton );
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         wm.setToolTip( this._minButton, toolTipText );
       }
+      this._minButton.setTop( top );
       this._minButton.setLeft( left );
+      this._minButton.setWidth( width );
+      this._minButton.setHeight( height );
     },
 
     hideMinButton : function( left ) {
@@ -248,19 +257,6 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
 
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
-    },
-
-    dispose : function() {
-      if (this.getDisposed()) {
-        return;
-      }
-      // use hideMin/MaxButton to dispose of toolTips
-      this.hideMinButton();
-      this.hideMaxButton();
-      this.removeEventListener( "changeWidth", this._onChangeWidth, this );
-      this.removeEventListener( "changeHeight", this._onChangeHeight, this );
-      this.removeEventListener( "keypress", this._onKeyPress, this );
-      return qx.ui.layout.CanvasLayout.prototype.dispose.call( this );
     },
 
     _onChangeWidth : function( evt ) {

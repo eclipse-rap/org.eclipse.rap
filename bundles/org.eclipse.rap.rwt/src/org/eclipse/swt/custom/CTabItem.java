@@ -52,11 +52,12 @@ public class CTabItem extends Item {
   int shortenedTextWidth;
   
   boolean showing = false;
+  final boolean showClose;
   int x;
   int y;
-  
   int width;
   int height;
+  Rectangle closeRect = new Rectangle( 0, 0, 0, 0 );
   
   /**
    * Constructs a new instance of this class given its parent
@@ -122,13 +123,14 @@ public class CTabItem extends Item {
    */
   public CTabItem( final CTabFolder parent, final int style, final int index ) {
     super( parent, checkStyle( style ) );
+    showClose = ( style & SWT.CLOSE ) != 0;
     this.parent = parent;
-    parent.createItem( this, index );
     widgetFontAdapter = new IWidgetFontAdapter() {
       public Font getUserFont() {
         return font;
       }
     };
+    parent.createItem( this, index );
   }
 
   public Object getAdapter( final Class adapter ) {
@@ -391,58 +393,106 @@ public class CTabItem extends Item {
       Font parentFont = getParent().getFont();
       h = Math.max( h, FontSizeCalculator.textExtent( parentFont, text, 0 ).y );
     } else {
-      h = Math.max( h, FontSizeCalculator.textExtent( font, text,  0 ).y );
+      h = Math.max( h, FontSizeCalculator.textExtent( font, text, 0 ).y );
     }
     return h + TOP_MARGIN + BOTTOM_MARGIN;
   }
   
   int preferredWidth( final boolean isSelected, final boolean minimum ) {
-    int result = 0;
-    if( !isDisposed() ) {
-      int width = 0;
-      Image image = getImage();
-      if( image != null ) {
-        // TODO [rh] determine bounds for image
-        width += image.getBounds().width;
-      }
-      String text = null;
-      if( minimum ) {
-        int minChars = parent.getMinimumCharacters();
-        text = minChars == 0 ? null : getText();
-        if( text != null && text.length() > minChars ) {
-          int end = minChars < ELLIPSIS.length() + 1 
-                  ? minChars 
-                  : minChars - ELLIPSIS.length();
-          text = text.substring( 0, end );
-          if( minChars > ELLIPSIS.length() + 1 ) {
-            text += ELLIPSIS;
-          }
+    // NOTE: preferred width does not include the "dead space" caused
+    // by the curve.
+    if (isDisposed()) return 0;
+    int w = 0;
+    Image image = getImage();
+    if (image != null && (isSelected || parent.showUnselectedImage)) {
+      w += image.getBounds().width;
+    }
+    String text = null;
+    if (minimum) {
+      int minChars = parent.minChars;
+      text = minChars == 0 ? null : getText();
+      if (text != null && text.length() > minChars) {
+        if (useEllipses()) {
+          int end = minChars < ELLIPSIS.length() + 1 ? minChars : minChars - ELLIPSIS.length();
+          text = text.substring(0, end);
+          if (minChars > ELLIPSIS.length() + 1) text += ELLIPSIS;
+        } else {
+          int end = minChars;
+          text = text.substring(0, end);
         }
+      }
+    } else {
+      text = getText();
+    }
+    if (text != null) {
+      if (w > 0) w += INTERNAL_SPACING;
+      if (font == null) {
+//        w += gc.textExtent(text, FLAGS).x;
+        w += FontSizeCalculator.stringExtent( getFont(), text ).x;
       } else {
-        text = getText();
+//        Font gcFont = gc.getFont();
+//        gc.setFont(font);
+//        w += gc.textExtent(text, FLAGS).x;
+//        gc.setFont(gcFont);
+        w += FontSizeCalculator.stringExtent( getFont(), text ).x;
       }
-      if( text != null ) {
-        if( width > 0 ) {
-          width += INTERNAL_SPACING;
+    }
+    if (parent.showClose || showClose) {
+      if (isSelected || parent.showUnselectedClose) {
+        if (w > 0) w += INTERNAL_SPACING;
+        w += CTabFolder.BUTTON_SIZE;
+      }
+    }
+    return w + LEFT_MARGIN + RIGHT_MARGIN;
+  }
+
+  /*
+   * Return whether to use ellipses or just truncate labels
+   */
+  boolean useEllipses() {
+    return parent.simple;
+  }
+
+  /* (intentionally non-JavaDoc'ed)
+   * Return whether the image (if any) should be shown or omitted if there is 
+   * not enough space. The code is copied from the drawSelected and 
+   * drawUnselected methods ins SWT.
+   */
+  boolean showImage() {
+    boolean result = false;
+    if( parent.getSelection() == this ) {
+      int rightEdge = Math.min (x + width, parent.getRightItemEdge());
+      // draw Image
+      int xDraw = x + LEFT_MARGIN;
+      if (parent.single && (parent.showClose || showClose)) xDraw += CTabFolder.BUTTON_SIZE; 
+      Image image = getImage();
+      if (image != null) {
+        Rectangle imageBounds = image.getBounds();
+        // only draw image if it won't overlap with close button
+        int maxImageWidth = rightEdge - xDraw - RIGHT_MARGIN;
+        if (!parent.single && closeRect.width > 0) maxImageWidth -= closeRect.width + INTERNAL_SPACING;
+        if (imageBounds.width < maxImageWidth) {
+          result = true;
         }
-        width += FontSizeCalculator.stringExtent( getFont(), text ).x;
       }
-      if( canClose() && ( isSelected || parent.getUnselectedCloseVisible() ) ) {
-        if( result > 0 ) {
-          result += INTERNAL_SPACING;
+    } else {
+      int xDraw = x + LEFT_MARGIN;
+      Image image = getImage();
+      if (image != null && parent.showUnselectedImage) {
+        Rectangle imageBounds = image.getBounds();
+        // only draw image if it won't overlap with close button
+        int maxImageWidth = x + width - xDraw - RIGHT_MARGIN;
+        if (parent.showUnselectedClose && (parent.showClose || showClose)) {
+          maxImageWidth -= closeRect.width + INTERNAL_SPACING;
         }
-        result += CTabFolder.BUTTON_SIZE;
+        if (imageBounds.width < maxImageWidth) {
+          result = true;
+        }
       }
-      result = width + LEFT_MARGIN + RIGHT_MARGIN;
     }
     return result;
   }
-
-  boolean canClose() {
-    return   ( parent.getStyle() & SWT.CLOSE ) != 0 
-          || ( getStyle() & SWT.CLOSE ) != 0;
-  }
-
+  
   //////////////////
   // Helping methods
   
