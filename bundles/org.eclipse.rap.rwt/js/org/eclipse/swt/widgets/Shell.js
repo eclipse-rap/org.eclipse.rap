@@ -19,7 +19,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     // TODO [rh] HACK to set mode on Label that shows the caption, _captionTitle
     //      is a 'protected' field on class Window
     this._captionTitle.setMode( "html" );
-    this._isDialogWindow = false;
     this._activeControl = null;
     this._activateListenerWidgets = new Array();
     // TODO [rh] check whether these listeners must be removed upon disposal
@@ -75,6 +74,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       // TODO [rh] remove _legacy
       _legacy : true,
       type    : "boolean"
+    },
+    
+    dialogMode : {
+      type : "boolean"
     }
   },
 
@@ -90,10 +93,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       } else {
         this.setShowCaption( false );
       }
-    },
-
-    setDialogWindow : function() {
-      this._isDialogWindow = true;
     },
 
     /**
@@ -189,7 +188,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         if( defButton != null && defButton.isSeeable() ) {
           defButton.execute();
         }
-      } else if( keyId == "Escape" && this._isDialogWindow ) {
+      } else if( keyId == "Escape" && this.getDialogMode ) {
         this.close();
       }
     },

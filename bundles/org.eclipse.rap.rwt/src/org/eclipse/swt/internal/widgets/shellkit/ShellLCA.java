@@ -26,6 +26,8 @@ import com.w4t.engine.service.ContextProvider;
 
 public final class ShellLCA extends AbstractWidgetLCA {
 
+  private static final String QX_TYPE = "org.eclipse.swt.widgets.Shell";
+  private static final String TYPE_POOL_ID = ShellLCA.class.getName();
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
   private static final String PROP_ACTIVE_CONTROL = "activeControl";
@@ -56,7 +58,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Shell shell = ( Shell )widget;
-    writer.newWidget( "org.eclipse.swt.widgets.Shell", null );
+    writer.newWidget( QX_TYPE, null );
     ControlLCAUtil.writeStyleFlags( widget );
     int style = widget.getStyle();
     if( ( style & SWT.APPLICATION_MODAL ) != 0 ) {
@@ -73,14 +75,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.set( "showClose", ( style & SWT.CLOSE ) != 0 );
     writer.set( "allowClose", ( style & SWT.CLOSE ) != 0 );
     Boolean resizable = Boolean.valueOf( ( style & SWT.RESIZE ) != 0 );
-    writer.set( "resizable", 
+    writer.set( "resizable",
                 new Object[] { resizable, resizable, resizable, resizable } );
     writer.set( "alwaysOnTop", ( style & SWT.ON_TOP ) != 0 );
-    if( shell.getParent() instanceof Shell ) {
-      // TODO [rh] a setter that doesn't work like a setter, could be passed to
-      //      constructor or renamed to markAsDialogWindow or similar
-      writer.call( "setDialogWindow", new Object[ 0 ] );
-    }
+    boolean isDialog = shell.getParent() instanceof Shell;
+    writer.set( "dialogMode", isDialog );
     ControlLCAUtil.writeResizeNotificator( widget );
     ControlLCAUtil.writeMoveNotificator( widget );
     writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY,
@@ -103,17 +102,27 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.call( "close", null );
+    writer.set( "visibility", false );
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.call( "removeState", new Object[]{ "rwt_TITLE" } );
+    writer.set( "modal", false );
+    ControlLCAUtil.resetStyleFlags();
+    ControlLCAUtil.resetResizeNotificator();
+    ControlLCAUtil.resetMoveNotificator();
+    writer.removeListener( JSConst.QX_EVENT_CHANGE_VISIBILITY,
+                           JSConst.JS_SHELL_CLOSED );
   }
 
   public String getTypePoolId( final Widget widget ) throws IOException {
+//    return TYPE_POOL_ID;
     return null;
   }
-
 
   //////////////////
   // Helping methods
@@ -222,7 +231,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     return activeControl;
   }
 
-  private static void setActiveControl( final Shell shell, final Widget widget ) 
+  private static void setActiveControl( final Shell shell, final Widget widget )
   {
     if( EventUtil.isAccessible( widget ) ) {
       Object adapter = shell.getAdapter( IShellAdapter.class );

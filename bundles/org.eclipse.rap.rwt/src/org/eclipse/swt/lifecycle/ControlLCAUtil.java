@@ -180,7 +180,6 @@ public class ControlLCAUtil {
     resetBounds();
   }
 
-
   public static void writeResizeNotificator( final Widget widget )
     throws IOException
   {
@@ -191,6 +190,16 @@ public class ControlLCAUtil {
                         JSConst.JS_WIDGET_RESIZED );
   }
 
+  public static void resetResizeNotificator()
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.removeListener( JSConst.QX_EVENT_CHANGE_WIDTH,
+                           JSConst.JS_WIDGET_RESIZED );
+    writer.removeListener( JSConst.QX_EVENT_CHANGE_HEIGHT,
+                           JSConst.JS_WIDGET_RESIZED );
+  }
+
   public static void writeMoveNotificator( final Widget widget )
     throws IOException
   {
@@ -199,6 +208,16 @@ public class ControlLCAUtil {
                         JSConst.JS_WIDGET_MOVED );
     writer.addListener( JSConst.QX_EVENT_CHANGE_LOCATION_Y,
                         JSConst.JS_WIDGET_MOVED );
+  }
+
+  public static void resetMoveNotificator()
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.removeListener( JSConst.QX_EVENT_CHANGE_LOCATION_X,
+                           JSConst.JS_WIDGET_MOVED );
+    writer.removeListener( JSConst.QX_EVENT_CHANGE_LOCATION_Y,
+                           JSConst.JS_WIDGET_MOVED );
   }
 
   public static void writeMenu( final Control control ) throws IOException {
