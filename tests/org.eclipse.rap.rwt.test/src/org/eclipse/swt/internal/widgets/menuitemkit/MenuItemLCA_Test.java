@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -26,7 +26,7 @@ import com.w4t.util.browser.Ie6;
 
 
 public class MenuItemLCA_Test extends TestCase {
-  
+
   public void testWidgetSelected() throws IOException {
     final boolean[] wasEventFired = { false };
     Display display = new Display();
@@ -46,7 +46,7 @@ public class MenuItemLCA_Test extends TestCase {
         assertEquals( 0, event.height );
       }
     } );
-    
+
     String displayId = DisplayUtil.getAdapter( display ).getId();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String menuItemId = WidgetUtil.getId( menuItem );
@@ -76,7 +76,7 @@ public class MenuItemLCA_Test extends TestCase {
         assertEquals( true, menuItem.getSelection() );
       }
     } );
-    
+
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String menuItemId = WidgetUtil.getId( menuItem );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -85,7 +85,7 @@ public class MenuItemLCA_Test extends TestCase {
     new RWTLifeCycle().execute();
     assertEquals( true, wasEventFired[ 0 ] );
   }
-  
+
   public void testRadioItemSelected() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -97,10 +97,10 @@ public class MenuItemLCA_Test extends TestCase {
     MenuItem radioItem1Group1 = new MenuItem( menu, SWT.RADIO );
     MenuItem radioItem2Group1 = new MenuItem( menu, SWT.RADIO );
     new MenuItem( menu, SWT.CHECK );
-    
+
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String radioItem1Group1Id = WidgetUtil.getId( radioItem1Group1 );
-    
+
     radioItem2Group1.setSelection( true );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( radioItem1Group1Id + ".selection", "true" );
@@ -110,13 +110,33 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( false, radioItem2Group1.getSelection() );
     RWTFixture.removeUIThread();
   }
-  
+
+  public void testRadioManagerReference() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Menu menuBar = new Menu( shell, SWT.BAR );
+    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
+    Menu menu = new Menu( menuBarItem );
+    menuBarItem.setMenu( menu );
+    new MenuItem( menu, SWT.PUSH );
+    new MenuItem( menu, SWT.CHECK );
+    MenuItem radio1 = new MenuItem( menu, SWT.RADIO );
+    MenuItem radio2 = new MenuItem( menu, SWT.RADIO );
+
+    Fixture.fakeResponseWriter();
+    MenuItemLCA lca = new MenuItemLCA();
+    lca.renderInitialization( radio2 );
+    String id = WidgetUtil.getId( radio1 );
+    String expected = "assignRadioManager( wm.findWidgetById( \"" + id + "\" )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6( true, true ) );
   }
-  
+
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -24,10 +24,10 @@ import org.eclipse.swt.widgets.MenuItem;
 final class RadioMenuItemLCA extends MenuItemDelegateLCA {
 
   private static final String PROP_SELECTION = "selection";
-  
-  private static final JSListenerInfo JS_LISTENER_INFO 
-    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE, 
-                          "org.eclipse.swt.MenuUtil.radioMenuItemSelected", 
+
+  private static final JSListenerInfo JS_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
+                          "org.eclipse.swt.MenuUtil.radioMenuItemSelected",
                           JSListenerType.STATE_AND_ACTION );
 
 
@@ -35,9 +35,9 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     ItemLCAUtil.preserve( menuItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     boolean hasListener = SelectionEvent.hasListener( menuItem );
-    adapter.preserve( Props.SELECTION_LISTENERS, 
+    adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
-    adapter.preserve( PROP_SELECTION, 
+    adapter.preserve( PROP_SELECTION,
                       Boolean.valueOf( menuItem.getSelection() ) );
     adapter.preserve( Props.ENABLED,
                       Boolean.valueOf( menuItem.getEnabled() ) );
@@ -54,16 +54,16 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     }
     ControlLCAUtil.processSelection( menuItem, null, false );
   }
-  
+
   void renderInitialization( final MenuItem menuItem ) throws IOException {
     MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.RadioButton", true );
     MenuItem firstSiblingItem = getFirstSiblingRadioItem( menuItem );
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     if( firstSiblingItem == menuItem ) {
-      writer.callStatic( "org.eclipse.swt.MenuUtil.createRadioManager", 
+      writer.callStatic( "org.eclipse.swt.MenuUtil.createRadioManager",
                          new Object[] { menuItem } );
     } else {
-      writer.callStatic( "org.eclipse.swt.MenuUtil.assignRadioManager", 
+      writer.callStatic( "org.eclipse.swt.MenuUtil.assignRadioManager",
                          new Object[] { firstSiblingItem, menuItem } );
     }
   }
@@ -73,19 +73,19 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     // TODO [rh] qooxdoo does not handle radio menu items with images, should
     //      we already ignore them when calling MenuItem#setImage()?
     MenuItemLCAUtil.writeImageAndText( menuItem );
-    writer.updateListener( JS_LISTENER_INFO, 
-                           Props.SELECTION_LISTENERS, 
+    writer.updateListener( JS_LISTENER_INFO,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( menuItem ) );
-    writer.set( PROP_SELECTION, 
-                "checked", 
-                Boolean.valueOf( menuItem.getSelection() ), 
+    writer.set( PROP_SELECTION,
+                "checked",
+                Boolean.valueOf( menuItem.getSelection() ),
                 Boolean.FALSE );
     MenuItemLCAUtil.writeEnabled( menuItem );
   }
 
   void renderDispose( final MenuItem menuItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.callStatic( "org.eclipse.swt.MenuUtil.disposeRadioMenuItem", 
+    writer.callStatic( "org.eclipse.swt.MenuUtil.disposeRadioMenuItem",
                        new Object[] { menuItem } );
   }
 
@@ -98,7 +98,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
       items[ i ].setSelection( false );
     }
   }
-  
+
   private static MenuItem[] getSiblingRadioItems( final MenuItem menuItem ) {
     java.util.List radioItems = new ArrayList();
     MenuItem[] siblingMenuItems = menuItem.getParent().getItems();
@@ -128,17 +128,17 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
     radioItems.toArray( result );
     return result;
   }
-  
+
   /////////////////////////////////////////////////////////
   // Helping methods to control client-side RadioManager(s)
-  
+
   private static MenuItem getFirstSiblingRadioItem( final MenuItem menuItem ) {
     MenuItem result = menuItem;
     MenuItem[] siblingMenuItems = menuItem.getParent().getItems();
     int index = menuItem.getParent().indexOf( menuItem ) - 1;
-    while( index >= 0 && result == menuItem ) {
-      if( ( siblingMenuItems[ index ].getStyle() & SWT.RADIO ) == 0 ) {
-        result = siblingMenuItems[ index + 1 ];
+    while( index >= 0 ) {
+      if( ( siblingMenuItems[ index ].getStyle() & SWT.RADIO ) != 0 ) {
+        result = siblingMenuItems[ index ];
       }
       index--;
     }
