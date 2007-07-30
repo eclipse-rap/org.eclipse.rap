@@ -230,57 +230,10 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     throws IOException
   {
     Integer tabHeight = new Integer( tabFolder.getTabHeight() );
-    Integer def = DEFAULT_TAB_HEIGHT;
-    if( WidgetLCAUtil.hasChanged( tabFolder, PROP_TAB_HEIGHT, tabHeight, def ) ) {
-      JSWriter writer = JSWriter.getWriterFor( tabFolder );
-      writer.set( "tabHeight", tabFolder.getTabHeight() );
-    }
+    JSWriter writer = JSWriter.getWriterFor( tabFolder );
+    writer.set( PROP_TAB_HEIGHT, "tabHeight", tabHeight, DEFAULT_TAB_HEIGHT );
   }
 
-//  // TODO [rh] revise this mess; layout code should go to CTabFolder
-//  private static void writeMinMaxVisible( final CTabFolder tabFolder ) 
-//    throws IOException 
-//  {
-//    JSWriter writer = JSWriter.getWriterFor( tabFolder );
-//    // bounds changed?
-//    String prop = Props.BOUNDS;
-//    Rectangle newBounds = tabFolder.getBounds();
-//    boolean boundsChanged 
-//      = WidgetUtil.hasChanged( tabFolder, prop, newBounds, null );
-//    // max button changed?
-//    Boolean maxVisible = Boolean.valueOf( tabFolder.getMaximizeVisible() );
-//    prop = PROP_MAXIMIZE_VISIBLE;
-//    boolean maxChanged 
-//      = WidgetUtil.hasChanged( tabFolder, prop, maxVisible, Boolean.FALSE );
-//    // min button changed?
-//    Boolean minVisible = Boolean.valueOf( tabFolder.getMinimizeVisible() );
-//    prop = PROP_MINIMIZE_VISIBLE;
-//    boolean minChanged 
-//      = WidgetUtil.hasChanged( tabFolder, prop, minVisible, Boolean.FALSE );
-//    
-//    if( boundsChanged || minChanged || maxChanged ) {
-//      int left = tabFolder.getClientArea().width;
-//      if( tabFolder.getMaximizeVisible() ) {
-//        left -= MIN_MAX_BUTTON_WIDTH;
-//        writer.call( "showMaxButton", new Object[] { new Integer( left ) } );
-//      } else {
-//        writer.call( "hideMaxButton", null );
-//      }
-//      if( tabFolder.getMinimizeVisible() ) {
-//        left -= MIN_MAX_BUTTON_WIDTH;
-//        writer.call( "showMinButton", new Object[] { new Integer( left ) } );
-//      } else {
-//        writer.call( "hideMinButton", null );
-//      }
-//    }
-//    if(    minChanged && minVisible.booleanValue() 
-//        || maxChanged && maxVisible.booleanValue() ) 
-//    {
-//      Object[] args = new Object[] { "Minimize", "Maximize" };
-//      writer.call( "setMinMaxToolTips", args );
-//    }
-//  }
-  
   private static void writeMinMaxVisible( final CTabFolder tabFolder ) 
     throws IOException 
   {
@@ -288,8 +241,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     boolean minChanged = hasMinChanged( tabFolder );
     boolean maxChanged = hasMaxChanged( tabFolder );
     if( minChanged || maxChanged ) {
-      Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
-      ICTabFolderAdapter tabFolderAdapter = ( ICTabFolderAdapter )adapter;
+      ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
       if( tabFolder.getMaximizeVisible() ) {
         Rectangle maximizeRect = tabFolderAdapter.getMaximizeRect();
         Object[] args = new Object[] { 
@@ -320,8 +272,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   }
   
   private static boolean hasMinChanged( final CTabFolder tabFolder ) {
-    Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
-    ICTabFolderAdapter tabFolderAdapter = ( ICTabFolderAdapter )adapter;
+    ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
     Boolean minVisible = Boolean.valueOf( tabFolder.getMinimizeVisible() );
     boolean visibilityChanged;
     visibilityChanged = WidgetLCAUtil.hasChanged( tabFolder, 
@@ -340,8 +291,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   }
   
   private static boolean hasMaxChanged( final CTabFolder tabFolder ) {
-    Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
-    ICTabFolderAdapter tabFolderAdapter = ( ICTabFolderAdapter )adapter;
+    ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
     Boolean maxVisible = Boolean.valueOf( tabFolder.getMaximizeVisible() );
     boolean visibilityChanged;
     visibilityChanged = WidgetLCAUtil.hasChanged( tabFolder, 
@@ -416,10 +366,10 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( tabFolder );
       if( visible.booleanValue() ) {
         Object[] args = new Object[] { 
-          new Integer( tabFolderAdapter.getChevronRect().x ), 
-          new Integer( tabFolderAdapter.getChevronRect().y ),
-          new Integer( tabFolderAdapter.getChevronRect().width ),
-          new Integer( tabFolderAdapter.getChevronRect().height )
+          new Integer( chevronRect.x ), 
+          new Integer( chevronRect.y ),
+          new Integer( chevronRect.width ),
+          new Integer( chevronRect.height )
         };
         writer.call( "showChevron", args );
         if( visibilityChanged && tabFolderAdapter.getChevronVisible() ) {
@@ -438,7 +388,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     Color bg = tabFolder.getSelectionBackground();
     writer.set( PROP_SELECTION_BG, "selectionBackground", bg, null );
   }
-
+  
   private static ICTabFolderAdapter getCTabFolderAdapter( 
     final CTabFolder tabFolder ) 
   {

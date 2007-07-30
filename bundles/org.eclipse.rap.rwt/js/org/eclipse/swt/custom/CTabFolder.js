@@ -97,15 +97,17 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
       this._separator.setTop( this._tabHeight );
       var top = this._separator.getTop() + this._separator.getHeight();
       this._highlightTop.setTop( top );
+      var buttonTop = this._getButtonTop();
       if( this._minButton != null ) {
-        this._minButton.setTop( this._getButtonTop() );
+        this._minButton.setTop( buttonTop );
       }
       if( this._maxButton != null ) {
-        this._maxButton.setTop( this._getButtonTop() );
+        this._maxButton.setTop( buttonTop );
       }
       if( this._chevron != null ) {
-        this._chevron.setTop( this._getButtonTop() );
+        this._chevron.setTop( buttonTop );
       }
+      this._onChangeHeight();
     },
 
     // TODO [rh] optimize usage of border objects (get, change, set)
@@ -260,20 +262,20 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
     },
 
     _onChangeWidth : function( evt ) {
-      this._separator.setWidth(this.getWidth() - 2);
-      this._highlightRight.setLeft(this.getWidth() - 2 - this._highlightRight.getWidth());
-      this._highlightTop.setWidth(this.getWidth() - 2);
-      this._highlightBottom.setWidth(this.getWidth() - 2);
+      this._separator.setWidth( this.getWidth() - 2 );
+      this._highlightRight.setLeft( this.getWidth() - 2 - this._highlightRight.getWidth() );
+      this._highlightTop.setWidth( this.getWidth() - 2 );
+      this._highlightBottom.setWidth( this.getWidth() - 2 );
     },
 
     _onChangeHeight : function( evt ) {
       var top = this._separator.getTop() + this._separator.getHeight() + 2;
       var height = this.getHeight() - top - 4;
-      this._highlightLeft.setTop(top);
-      this._highlightLeft.setHeight(height);
-      this._highlightRight.setTop(top);
-      this._highlightRight.setHeight(height);
-      this._highlightBottom.setHeight(this.getHeight() - 2);
+      this._highlightLeft.setTop( top );
+      this._highlightLeft.setHeight( height );
+      this._highlightRight.setTop( top );
+      this._highlightRight.setHeight( height );
+      this._highlightBottom.setHeight( this.getHeight() - 2 );
     },
 
     _onChevronExecute : function( evt ) {

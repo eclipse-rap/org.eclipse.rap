@@ -15,7 +15,6 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;

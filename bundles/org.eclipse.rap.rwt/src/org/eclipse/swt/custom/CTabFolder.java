@@ -62,8 +62,6 @@ import org.eclipse.swt.widgets.*;
 public class CTabFolder extends Composite {
 
   // internal constants
-  static final int DEFAULT_WIDTH = 64;
-  static final int DEFAULT_HEIGHT = 64;
   static final int BUTTON_SIZE = 18;
 
   static final int SELECTION_FOREGROUND = SWT.COLOR_LIST_FOREGROUND;

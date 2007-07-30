@@ -36,7 +36,6 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     = "unselectedCloseVisible";
 
 
-
   public void preserveValues( final Widget widget ) {
     CTabItem item = ( CTabItem )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
