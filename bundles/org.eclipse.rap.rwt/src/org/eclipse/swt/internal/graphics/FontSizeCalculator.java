@@ -160,6 +160,10 @@ public class FontSizeCalculator {
     IProbe[] probeList = FontSizeProbeStore.getProbeList();
     FontSizeCalculationHandler.readProbedFonts( probeList );
   }
+  
+  public static int getProbeCount() {
+    return FontSizeProbeStore.getProbeList().length;
+  }
 
   public static ICalculationItem[] getCalculationItems() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
