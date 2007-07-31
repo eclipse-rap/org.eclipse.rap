@@ -29,8 +29,9 @@ public class TableTab extends ExampleTab {
   private int columnsWidthImages = 0;
   private int columns = 5;
   private final Image columnImage;
+  private Image itemImage;
   private final Image smallImage; 
-//  private final Image bigImage; 
+  private final Image largeImage; 
 
   public TableTab( final CTabFolder folder ) {
     super( folder, "Table" );
@@ -38,8 +39,9 @@ public class TableTab extends ExampleTab {
                               getClass().getClassLoader() );
     smallImage = Image.find( "resources/newfile_wiz.gif", 
                              getClass().getClassLoader() );
-//    bigImage = Image.find( "resources/big_image.png", 
-//                           getClass().getClassLoader() );
+    largeImage = Image.find( "resources/big_image.png", 
+                             getClass().getClassLoader() );
+    itemImage = smallImage;
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -60,16 +62,18 @@ public class TableTab extends ExampleTab {
     createSelectItemButton();
     createDisposeFirstColumnButton();
     createDisposeSelectionButton();
+    createRecreateButton();
     createTopIndexButton();
     createShowSelectionButton();
     createChangeCheckButton();
     createChangeGrayButton();
     createChangeColumnsControl();
     createRevertColumnOrderButton();
+    createPackColumnsButton();
     createChangeItemControl();
     createChangeItemCountControl();
-    // TODO [rh] enable as soon as images are working properly
-//    createImagesControl();
+    createImagesControl();
+    createAlignmentControl();
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -201,14 +205,14 @@ public class TableTab extends ExampleTab {
     int index = item.getParent().indexOf( item );
     if( columns == 0 ) {
       item.setText( "Item " + index );
-      if( columnsWidthImages == 1 ) {
-        item.setImage( smallImage );
+      if( columnsWidthImages >= 1 ) {
+        item.setImage( itemImage );
       }
     } else {
       for( int i = 0; i < columns; i++ ) {
         item.setText( i, "Item" + index + "-" + i );
         if( i < columnsWidthImages ) {
-          item.setImage( i, smallImage );
+          item.setImage( i, itemImage );
         }
       }
     }
@@ -282,6 +286,22 @@ public class TableTab extends ExampleTab {
     } );
   }
   
+  private void createRecreateButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Recreate Last Item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int count = getTable().getItemCount();
+        if( count > 0 ) {
+          TableItem item = getTable().getItem( count - 1 );
+          item.dispose();
+          item = addItem();
+          item.setText( "Recreated" );
+        }
+      }
+    } );
+  }
+
   private void createTopIndexButton() {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Set topIndex = 100" );
@@ -434,32 +454,83 @@ public class TableTab extends ExampleTab {
     } );
   }
 
+  private void createPackColumnsButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Pack Columns" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        TableColumn[] columns = getTable().getColumns();
+        for( int i = 0; i < columns.length; i++ ) {
+          columns[ i ].pack();
+        }
+      }
+    } );
+  }
 
-  //  private void createImagesControl() {
-  //    Composite composite = new Composite( styleComp, SWT.NONE );
-  //    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
-  //    Label label = new Label( composite , SWT.NONE );
-  //    label.setText( "Columns width images" );
-  //    final Spinner spinner = new Spinner( composite , SWT.BORDER );
-  //    Button button = new Button( composite , SWT.PUSH );
-  //    button.setText( "Change" );
-  //    button.addSelectionListener( new SelectionAdapter() {
-  //      public void widgetSelected( final SelectionEvent event ) {
-  //        int count = spinner.getSelection();
-  //        for( int i = 0; i < table.getItemCount(); i++ ) {
-  //          for( int c = 0; c < table.getColumnCount(); c++ ) {
-  //            TableItem item = table.getItem( i );
-  //            if( c < count ) {
-  //              item.setImage( c, bigImage );
-  //            } else {
-  //              item.setImage( c, null );
-  //            }
-  //          }
-  //        }
-  //      }
-  //    } );
-  //  }
+  private void createImagesControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label lblImages = new Label( composite , SWT.NONE );
+    lblImages.setText( "Images:" );
+    final Button rbSmall = new Button( composite, SWT.RADIO );
+    rbSmall.setSelection( itemImage == smallImage );
+    rbSmall.setText( "Small" );
+    Button rbLarge = new Button( composite, SWT.RADIO );
+    rbLarge.setSelection( itemImage == largeImage );
+    rbLarge.setText( "Large" );
+    Label lblOn = new Label( composite, SWT.NONE );
+    lblOn.setText( "On" );
+    final Spinner spnCount = new Spinner( composite , SWT.BORDER );
+    Button btnChange = new Button( composite , SWT.PUSH );
+    btnChange.setText( "Columns" );
+    btnChange.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        columnsWidthImages = spnCount.getSelection();
+        if( rbSmall.getSelection() ) {
+          itemImage = smallImage;
+        } else {
+          itemImage = largeImage;
+        }
+        for( int i = 0; i < table.getItemCount(); i++ ) {
+          for( int c = 0; c < table.getColumnCount(); c++ ) {
+            TableItem item = table.getItem( i );
+            if( c < columnsWidthImages ) {
+              item.setImage( c, itemImage );
+            } else {
+              item.setImage( c, null );
+            }
+          }
+        }
+      }
+    } );
+  }
   
+  private void createAlignmentControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Alignment" );
+    final Combo combo = new Combo( composite, SWT.READ_ONLY );
+    combo.add( "SWT.LEFT" );
+    combo.add( "SWT.CENTER" );
+    combo.add( "SWT.RIGHT" );
+    combo.select( 0 );
+    combo.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int alignment = SWT.LEFT;
+        if( combo.getSelectionIndex() == 1 ) {
+          alignment = SWT.CENTER;
+        } else if( combo.getSelectionIndex() == 2 ) {
+          alignment = SWT.RIGHT;
+        }
+        TableColumn[] columns = getTable().getColumns();
+        for( int i = 0; i < columns.length; i++ ) {
+          columns[ i ].setAlignment( alignment );
+        }
+      }
+    } );
+  }
+
   private Table getTable() {
     return table;
   }
