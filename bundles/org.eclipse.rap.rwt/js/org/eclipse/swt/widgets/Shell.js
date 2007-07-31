@@ -188,7 +188,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         if( defButton != null && defButton.isSeeable() ) {
           defButton.execute();
         }
-      } else if( keyId == "Escape" && this.getDialogMode ) {
+      } else if( keyId == "Escape" && this.getDialogMode() ) {
         this.close();
       }
     },
