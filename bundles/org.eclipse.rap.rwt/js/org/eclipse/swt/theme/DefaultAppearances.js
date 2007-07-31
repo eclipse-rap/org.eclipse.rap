@@ -1270,7 +1270,9 @@ appearances = {
     
     "table-row" : {
       style : function( states ) {
-        var result = {};
+        var result = {
+          cursor : "default"          
+        };
         if( states.disabled ) {
           if( states.selected ) {
             result.backgroundColor = "list.selection.unfocused.background";
@@ -1286,6 +1288,11 @@ appearances = {
             result.backgroundColor = null;
             result.textColor = null;
           }
+        }
+        if( states.lines ) {
+          result.border = "table.row.horizontalLine";
+        } else {
+          result.border = "undefined";
         }
         return result;
       }

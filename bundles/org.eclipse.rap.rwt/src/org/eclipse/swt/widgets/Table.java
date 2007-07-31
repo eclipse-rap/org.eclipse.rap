@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.lifecycle.ProcessActionRunner;
@@ -133,6 +133,9 @@ public class Table extends Composite {
   }
   
   private final class TableAdapter implements ITableAdapter {
+    public int getCheckWidth() {
+      return Table.this.getCheckWidth();
+    }
     public int getFocusIndex() {
       return Table.this.focusIndex; 
     }
@@ -145,9 +148,25 @@ public class Table extends Composite {
       Table.this.checkData( Table.this.getItem( index ), index );  
     }
     
+    public int getDefaultColumnWidth() {
+      int result = 0;
+      TableItem[] items = getItems();
+      for( int i = 0; i < items.length; i++ ) {
+        result = Math.max( result, items[i].getPackWidth( 0 ) );
+      }
+      return result;
+    }
+    
     public int getColumnLeft( final TableColumn column ) {
       int index = Table.this.indexOf( column );
       return Table.this.getColumn( index ).getLeft();
+    }
+
+    public boolean isItemVisible( final TableItem item ) {
+      return item.isVisible();
+    }
+    public boolean isItemVirtual( final TableItem item ) {
+      return !item.cached;
     }
   }
   
@@ -169,7 +188,8 @@ public class Table extends Composite {
   }
   
   private static final int GRID_WIDTH = 1;
-  private static final int DEFAULT_ITEM_HEIGHT = 15;
+  private static final int CHECK_HEIGHT = 13;
+  
   private static final TableItem[] EMPTY_ITEMS = new TableItem[ 0 ];
 
   private final ItemHolder itemHolder;
@@ -184,6 +204,7 @@ public class Table extends Composite {
   private int focusIndex;
   private TableColumn sortColumn;
   private int sortDirection;
+  private Point itemImageSize;
   
   /**
    * Constructs a new instance of this class given its parent
@@ -502,8 +523,12 @@ public class Table extends Composite {
         }
         index++;
       }
+      // TODO [rh] do not eagerly create items when VIRTUAL
       for( int i = oldItemCount; i < newItemCount; i++ ) {
-        TableItem item = new TableItem( this, SWT.NONE, i, !isVirtual );
+        new TableItem( this, SWT.NONE, i, !isVirtual );
+      }
+      for( int i = oldItemCount; i < newItemCount; i++ ) {
+        TableItem item = ( TableItem )itemHolder.getItem( i );
         if( item.isVisible() ) {
           checkData( item, itemHolder.indexOf( item ) );
         }
@@ -1711,12 +1736,15 @@ public class Table extends Composite {
    * 
    * @since 1.0 
    */
+  // TODO [rh] preliminary: this is only an approximation for item height
   public int getItemHeight() {
     checkWidget();
-    int result = DEFAULT_ITEM_HEIGHT;
-    if( itemHolder.size() > 0 ) {
-      TableItem item = ( TableItem )itemHolder.getItem( 0 );
-      result = item.getHeight();
+    // TODO [rh] replace with this.getFont() once TableItem supports fonts
+    int result = FontSizeCalculator.getCharHeight( getFont() ) + 4;
+    int itemImageHeight = getItemImageSize().y;
+    result = Math.max( itemImageHeight, result );
+    if( ( style & SWT.CHECK ) != 0 ) {
+      result = Math.max( CHECK_HEIGHT, result );
     }
     return result;
   }
@@ -1971,5 +1999,25 @@ public class Table extends Composite {
     int result = style;
     result |= SWT.H_SCROLL | SWT.V_SCROLL;
     return checkBits( result, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );
+  }
+  
+  final void updateItemImageSize( final Image image ) {
+    if( image != null && itemImageSize == null ) {
+      Rectangle imageBounds = image.getBounds();
+      itemImageSize = new Point( imageBounds.width, imageBounds.height );
+    }
+  }
+  
+  final Point getItemImageSize() {
+    return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
+  }
+
+  final int getCheckWidth() {
+    int result = 0;
+    if( ( Table.this.style & SWT.CHECK ) != 0 ) {
+      // TODO [rh] read from theme
+      result = 21;
+    }
+    return result;
   }
 }

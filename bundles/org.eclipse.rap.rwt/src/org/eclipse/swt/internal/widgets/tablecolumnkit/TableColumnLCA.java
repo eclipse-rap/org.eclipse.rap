@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
+import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
@@ -27,7 +28,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     = "widget/table/up.png";
   private static final String SORT_IMAGE_DOWN 
     = "widget/table/down.png";
-  
+
   // Property names to preserve values
   private static final String PROP_LEFT = "left";
   private static final String PROP_WIDTH = "width";
@@ -35,11 +36,9 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   private static final String PROP_SORT_IMAGE = "sortImage";
   private static final String PROP_RESIZABLE = "resizable";
   private static final String PROP_MOVEABLE = "moveable";
-  private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
   
   private static final Integer DEFAULT_LEFT = new Integer( 0 );
-  private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
   
   private static final JSListenerInfo SELECTION_LISTENER
     = new JSListenerInfo( "click", "this.onClick", JSListenerType.ACTION );
@@ -49,6 +48,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     ItemLCAUtil.preserve( column );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
+    TableLCAUtil.preserveAlignment( column );
     adapter.preserve( PROP_Z_INDEX, new Integer( getZIndex( column ) ) );
     adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
     adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
@@ -57,7 +57,6 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( column.getResizable() ) );
     adapter.preserve( PROP_MOVEABLE, 
                       Boolean.valueOf( column.getMoveable() ) );
-    adapter.preserve( PROP_ALIGNMENT, new Integer( column.getAlignment() ) );
     adapter.preserve( PROP_SELECTION_LISTENERS, 
                       Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
   }
@@ -122,7 +121,9 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId ) 
+    throws IOException 
+  {
   }
   
   public String getTypePoolId( final Widget widget ) throws IOException {
@@ -146,6 +147,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.set( PROP_WIDTH, "width", newValue, null );
   }
 
+  // TODO [rh] writing Z-Index seems unnecessary since it is relative to the
+  //      parent and thus could be hard-coded client-side
   private static void writeZIndex( final TableColumn column ) throws IOException 
   {
     JSWriter writer = JSWriter.getWriterFor( column );
@@ -180,10 +183,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     throws IOException 
   {
     JSWriter writer = JSWriter.getWriterFor( column );
-    Integer newValue = new Integer( column.getAlignment() );
-    Integer defValue = DEFAULT_ALIGNMENT;
-    if( WidgetLCAUtil.hasChanged( column, PROP_ALIGNMENT, newValue, defValue ) ) 
-    {
+    if( TableLCAUtil.hasAlignmentChanged( column ) ) {
+      Integer newValue = new Integer( column.getAlignment() );
       JSVar alignment = JSConst.QX_CONST_ALIGN_LEFT;
       if( newValue.intValue() == SWT.CENTER ) {
         alignment = JSConst.QX_CONST_ALIGN_CENTER;
@@ -191,7 +192,6 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
         alignment = JSConst.QX_CONST_ALIGN_RIGHT;
       }
       writer.set( "horizontalChildrenAlign", new Object[] { alignment } );
-      
     }
   }
 

@@ -196,28 +196,33 @@ public final class JSWriter {
     call( widget, createPropertyChain( jsPropertyChain, false ), values );
   }
 
-  public void set( final String javaProperty,
-                   final String jsProperty,
-                   final Object newValue )
+  public boolean set( final String javaProperty,
+                      final String jsProperty,
+                      final Object newValue )
     throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    if(    !adapter.isInitialized()
-        || WidgetLCAUtil.hasChanged( widget, javaProperty, newValue ) )
-    {
+    boolean changed 
+      =  !adapter.isInitialized()
+      || WidgetLCAUtil.hasChanged( widget, javaProperty, newValue );
+    if( changed ) {
       set( jsProperty, newValue );
     }
+    return changed;
   }
 
-  public void set( final String javaProperty,
-                   final String jsProperty,
-                   final Object newValue,
-                   final Object defValue )
+  public boolean set( final String javaProperty,
+                      final String jsProperty,
+                      final Object newValue,
+                      final Object defValue )
     throws IOException
   {
-    if( WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defValue ) ) {
+    boolean changed 
+      = WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defValue );
+    if( changed ) {
       set( jsProperty, new Object[] { newValue } );
     }
+    return changed;
   }
 
   public void reset( final String jsProperty ) throws IOException {
@@ -467,7 +472,7 @@ public final class JSWriter {
 
 
   private Boolean useSetParent() {
-    return   !( widget instanceof Shell )&& widget instanceof Control
+    return   !( widget instanceof Shell ) && widget instanceof Control
            ? Boolean.TRUE
            : Boolean.FALSE;
   }

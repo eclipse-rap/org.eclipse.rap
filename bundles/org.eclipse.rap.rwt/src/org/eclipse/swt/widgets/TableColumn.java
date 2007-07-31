@@ -266,7 +266,7 @@ public class TableColumn extends Item {
    */
   public void pack() {
     checkWidget();
-    // Compute width from the column
+    // Compute width from the column itself
     Font font = parent.getFont();
     int width = FontSizeCalculator.stringExtent( font, getText() ).x;
     Image image = getImage();
@@ -283,8 +283,8 @@ public class TableColumn extends Item {
     TableItem[] items = parent.getItems();
     for( int i = 0; i < items.length; i++ ) {
       // dont't access virtual items, they would get resolved unintentionally
-      if( items[ i ].cached ) {   
-        int itemWidth = items[ i ].getMaxWidth( columnIndex );
+      if( items[ i ].cached ) {
+        int itemWidth = items[ i ].getCheckWidth( columnIndex ) + items[ i ].getPackWidth( columnIndex );
         if( itemWidth > width ) {
           width = itemWidth;
         }

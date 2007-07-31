@@ -18,11 +18,13 @@ import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
 import com.w4t.Fixture;
+import com.w4t.engine.lifecycle.PhaseId;
 import com.w4t.engine.requests.RequestParams;
 
 
@@ -54,6 +56,62 @@ public class TableLCA_Test extends TestCase {
     assertEquals( "SetDataEvent", log.toString() );
     String tableItemCtor = "org.eclipse.swt.widgets.TableItem";
     assertTrue( Fixture.getAllMarkup().indexOf( tableItemCtor ) != -1 );
+  }
+  
+  public void testGetMeasureItemWithoutColumnsVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final String[] data = new String[ 1000 ];
+    for( int i = 0; i < data.length; i++ ) {
+      data[ i ] = "";
+    }
+    Listener setDataListener = new Listener() {
+      public void handleEvent( final Event event ) {
+        TableItem item = ( TableItem )event.item;
+        int index = item.getParent().indexOf( item );
+        item.setText( data[ index  ] );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.addListener( SWT.SetData, setDataListener );
+    table.setSize( 90, 90 );
+    table.setItemCount( data.length );
+    shell.open();
+    
+    int resolvedItemCount;
+    TableItem measureItem;
+    // Test with items that all have the same width
+    resolvedItemCount = countResolvedItems( table );
+    measureItem = TableLCAUtil.getMeasureItem( table );
+    assertNotNull( measureItem );
+    assertEquals( resolvedItemCount, countResolvedItems( table ) );
+    
+    // Test with items that have ascending length
+    data[ 0 ] = "a";
+    for( int i = 1; i < data.length; i++ ) {
+      data[ i ] = data[ i - 1 ] + "a";
+    }
+    table.getItem( 100 ).getText();  // resolves item
+    resolvedItemCount = countResolvedItems( table );
+    measureItem = TableLCAUtil.getMeasureItem( table );
+    int measureItemIndex = measureItem.getParent().indexOf( measureItem );
+    assertEquals( 100, measureItemIndex );
+    assertEquals( resolvedItemCount, countResolvedItems( table ) );
+  }
+  
+  private static int countResolvedItems( final Table table ) {
+    int result = 0;
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    TableItem[] items = table.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      if( !tableAdapter.isItemVirtual( items[ i ] ) ) {
+        result++;
+      }
+    }
+    return result;
   }
   
   protected void setUp() throws Exception {

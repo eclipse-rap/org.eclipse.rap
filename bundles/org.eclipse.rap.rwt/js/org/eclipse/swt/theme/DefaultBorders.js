@@ -126,6 +126,13 @@ borders = {
       color : [ "widget.selection-marker", "widget.thinborder" ]
     },
     
+    "table.row.horizontalLine" : {
+      widthTop : 1,
+      widthBottom : 1,
+      colorTop : "table.row.line",
+      colorBottom : "table.row.line"
+    },
+    
     // -- separator --
     
     "separator.shadowin.horizontal.border" : {

@@ -198,6 +198,10 @@ public class TableColumn_Test extends TestCase {
     assertTrue( column.getWidth() >= image.getBounds().width );
     
     // An item wider than the column itself strechtes the column
+    while( table.getColumnCount() > 0 ) {
+      table.getColumn( 0 ).dispose();
+    }
+    table.removeAll();
     column = new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setImage( image );

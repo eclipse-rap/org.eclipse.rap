@@ -25,6 +25,7 @@ import com.w4t.engine.service.ContextProvider;
 
 public final class TableLCA extends AbstractWidgetLCA {
 
+  // Property names to preserve values
   private static final String PROP_HEADER_HEIGHT = "headerHeight";
   private static final String PROP_HEADER_VISIBLE = "headerVisible";
   private static final String PROP_LINES_VISIBLE = "linesVisible";
@@ -53,11 +54,12 @@ public final class TableLCA extends AbstractWidgetLCA {
     = new JSListenerInfo( "itemchecked", 
                           "this.onItemChecked", 
                           JSListenerType.ACTION );
+
   
   public void preserveValues( final Widget widget ) {
     Table table = ( Table )widget;
     ControlLCAUtil.preserveValues( table );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
     adapter.preserve( PROP_HEADER_HEIGHT, 
                       new Integer( table.getHeaderHeight() ) );
     adapter.preserve( PROP_HEADER_VISIBLE, 
@@ -65,6 +67,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_LINES_VISIBLE, 
                       Boolean.valueOf( table.getLinesVisible() ) );
     adapter.preserve( PROP_ITEM_HEIGHT, new Integer( table.getItemHeight() ) );
+    TableLCAUtil.preserveItemMetrics( table );
     adapter.preserve( PROP_ITEM_COUNT, new Integer( table.getItemCount() ) );
     adapter.preserve( PROP_TOP_INDEX, new Integer( table.getTopIndex() ) );
     adapter.preserve( PROP_SELECTION_LISTENERS, 
@@ -102,6 +105,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeHeaderHeight( table );
     writerHeaderVisible( table );
     writeItemHeight( table );
+    TableLCAUtil.writeItemMetrics( table );
     writeItemCount( table );
     writeTopIndex( table );
     writeLinesVisible( table );
@@ -264,16 +268,9 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static int getDefaultColumnWidth( final Table table ) {
     int result = 0;
     if( table.getColumnCount() == 0 ) {
-      TableItem[] items = table.getItems();
-      for( int i = 0; i < items.length; i++ ) {
-        int width = items[ i ].getBounds().width;
-        if( width > result ) {
-          result = width;
-        }
-      }
-      if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
-        result += TableItem.CHECK_WIDTH;
-      }
+      Object adapter = table.getAdapter( ITableAdapter.class );
+      ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+      result = tableAdapter.getDefaultColumnWidth();
     }
     return result;
   }

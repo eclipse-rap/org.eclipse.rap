@@ -11,5 +11,12 @@
   <color name = "table.column.hover.background"
       description = "Background color for table column headers on mouse over"
       default = "248, 485, 255" />
-
+  
+  <color name = "table.row.line"
+      description = "Grid line color when linesVisible is true"
+      default = "238, 238, 238" />
+  
+  <dimension name = "table.checkbox.width" 
+      default="21" />
+      
 </theme>

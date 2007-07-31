@@ -17,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
@@ -1112,6 +1113,25 @@ public class Table_Test extends TestCase {
     assertEquals( 1, items.length );
   }
   
+  public void testItemCountWhileSetDataEvent() {
+    final boolean[] eventHandled = { false };
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    final Table table = new Table( shell, SWT.VIRTUAL );
+    table.setSize( 90, 90 );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( final Event event ) {
+        eventHandled[ 0 ] = true;
+        assertEquals( 200, table.getItemCount() );
+      }
+    } );
+    table.setItemCount( 200 );
+    assertTrue( eventHandled[ 0 ] );
+    assertEquals( 200, table.getItemCount() );
+  }
+  
   public void testResizeWithVirtualItems() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -1127,6 +1147,34 @@ public class Table_Test extends TestCase {
     // Enlarge the table so that the item will become visible
     table.setSize( 200, 200 );
     assertEquals( 1, ItemHolder.getItems( table ).length );
+  }
+  
+  public void testItemImageSize() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+
+    // Test initial itemImageSize
+    assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
+    
+    // Setting a null-image shouldn't change anything
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setImage( ( Image )null );
+    assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
+    
+    // Setting the first image also sets the itemImageSize for always and ever
+    item.setImage( Image.find( RWTFixture.IMAGE_50x100 ) );
+    assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
+
+    // Ensure that the itemImageSize - once detemined - does not change anymore
+    item.setImage( Image.find( RWTFixture.IMAGE_100x50 ) );
+    assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
+    
+    // Ensure that the method returns the actual image size, not clipped by the
+    // available width given by the column 
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.setWidth( 20 ); // image width is 50
+    assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
   }
 
   private static void clearColumns( final Table table ) {

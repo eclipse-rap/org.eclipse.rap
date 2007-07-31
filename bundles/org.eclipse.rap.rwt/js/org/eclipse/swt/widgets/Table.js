@@ -28,8 +28,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     //      available
     this.setTabIndex( 1 );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-    // Helper flag to swallow unwanted click-events while double-clicking
-    this._suspendClicks = false;
+    // Denotes the row that received the last click-event to swallow unwanted 
+    // click-events while double-clicking
+    this._suspendClicksOnRow = null;
     // Draw grid lines?
     this._linesVisible = false;
     this._borderWidth = 0;
@@ -65,6 +66,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._virtualItem.setTexts ( [ "..." ] );
     // One resize line shown while resizing a column, provided for all columns  
     this._resizeLine = null;
+    // left and width values for the item-image and -text part for each column
+    this._itemImageLeft = new Array();
+    this._itemImageWidth = new Array();
+    this._itemTextLeft = new Array();
+    this._itemTextWidth = new Array();
     //
     // Construct a column area where columns can be scrolled in
     this._columnArea = new qx.ui.layout.CanvasLayout();
@@ -158,9 +164,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
   statics : {
     CHECK_WIDTH : 21,
     
-    // Initialized at the end of the file
-    ROW_BORDER : new qx.ui.core.Border(),
-    
     ////////////////////////////////////
     // Helper to determine modifier keys
     
@@ -230,7 +233,30 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     getItemHeight : function() {
       return this._itemHeight;  
     },
-
+    
+    setItemMetrics : function( columnIndex, imageLeft, imageWidth, textLeft, textWidth ) {
+      this._itemImageLeft[ columnIndex ] = imageLeft;
+      this._itemImageWidth[ columnIndex ] = imageWidth;
+      this._itemTextLeft[ columnIndex ] = textLeft;
+      this._itemTextWidth[ columnIndex ] = textWidth;
+    },
+    
+    getItemImageLeft : function( columnIndex ) {
+      return this._itemImageLeft[ columnIndex ];
+    },
+    
+    getItemImageWidth : function( columnIndex ) {
+      return this._itemImageWidth[ columnIndex ];
+    },
+    
+    getItemTextLeft : function( columnIndex ) {
+      return this._itemTextLeft[ columnIndex ];
+    },
+    
+    getItemTextWidth : function( columnIndex ) {
+      return this._itemTextWidth[ columnIndex ];
+    },
+    
     setTopIndex : function( value ) {
       var scrollPos = value * this._itemHeight;
       this._vertScrollBar.setValue( scrollPos );
@@ -282,7 +308,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     setLinesVisible : function( value ) {
       this._linesVisible = value;
       for( var i = 0; i < this._rows.length; i++ ) {
-        this._rows[ i ].setBorder( org.eclipse.swt.widgets.Table.ROW_BORDER );
+        this._rows[ i ].setLinesVisible( value );        
       }
       this._updateRows();
     },
@@ -345,14 +371,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
     
     _onRowClick : function( evt ) {
-      var rowIndex = this._rows.indexOf( evt.getTarget() );
+      var row = evt.getTarget();
+      var rowIndex = this._rows.indexOf( row );
       var itemIndex = this._topIndex + rowIndex;
       if(    itemIndex >= 0 
           && itemIndex < this._itemCount
           && this._items[ itemIndex ]
-          && !this._suspendClicks ) 
+          && this._suspendClicksOnRow != row ) 
       {
-        this._suspendClicks = true;
+        this._suspendClicksOnRow = row;
         qx.client.Timer.once( this._resumeClicks, this, 500 );
         var item = this._items[ itemIndex ];
         if( this._multiSelect ) {
@@ -395,7 +422,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
     
     _resumeClicks : function() {
-      this._suspendClicks = false;
+      this._suspendClicksOnRow = null;
     },
     
     _onRowDblClick : function( evt ) {
@@ -620,7 +647,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _onColumnChangeSize : function( evt ) {
       this._updateScrollWidth();
-      this._updateRows();
     },
 
     ///////////////////////////////////////////
@@ -713,6 +739,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               newRow.addEventListener( "dblclick", this._onRowDblClick, this );
               newRow.addEventListener( "keydown", this._onRowKeyDown, this );
               newRow.addEventListener( "contextmenu", this._onRowContextMenu, this );
+              newRow.setLinesVisible( this._linesVisible );
               this._clientArea.add( newRow );
               this._rows.push( newRow );
             }
@@ -896,6 +923,3 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     }
   }
 });
-
-qx.Clazz.ROW_BORDER.setTop( 1, qx.constant.Style.BORDER_SOLID, "#eeeeee" );
-qx.Clazz.ROW_BORDER.setBottom( 1, qx.constant.Style.BORDER_SOLID, "#eeeeee" );

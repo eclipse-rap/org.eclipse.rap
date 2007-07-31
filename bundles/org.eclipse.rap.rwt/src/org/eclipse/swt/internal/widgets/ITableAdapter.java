@@ -11,13 +11,21 @@
 package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
 public interface ITableAdapter {
+
+  int getCheckWidth();
 
   int getFocusIndex();
   void setFocusIndex( int focusIndex );
   
   void checkData( int index );
   
-  int getColumnLeft( TableColumn column );  
+  int getColumnLeft( TableColumn column );
+  int getDefaultColumnWidth();
+  
+  boolean isItemVisible( TableItem item );
+  boolean isItemVirtual( TableItem item );
+
 }

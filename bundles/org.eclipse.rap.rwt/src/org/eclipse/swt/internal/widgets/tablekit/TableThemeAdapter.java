@@ -38,4 +38,9 @@ public class TableThemeAdapter implements ITableThemeAdapter {
     QxFont font = theme.getFont( "widget.font" );
     return QxFont.createFont( font );
   }
+  
+  public int getCheckBoxWidth( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    return theme.getDimension( "table.checkbox.width" ).value;
+  }
 }

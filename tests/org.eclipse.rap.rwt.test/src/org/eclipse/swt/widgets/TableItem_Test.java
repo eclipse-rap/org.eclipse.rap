@@ -17,6 +17,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
 
 import com.w4t.engine.lifecycle.PhaseId;
 
@@ -82,10 +83,10 @@ public class TableItem_Test extends TestCase {
     item.setText( "some text" );
     assertTrue( item.getBounds().width > 0 );
     
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 11 );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
-    column1.setWidth( 11 );
-    TableColumn column2 = new TableColumn( table, SWT.NONE );
-    column2.setWidth( 22 );
+    column1.setWidth( 22 );
     
     // simple case: bounds for first and only item
     item.setText( "" );
@@ -93,19 +94,84 @@ public class TableItem_Test extends TestCase {
     assertEquals( 0, bounds.x );
     assertEquals( 0, bounds.y );
     assertTrue( bounds.height > 0 );
-    assertEquals( column1.getWidth(), bounds.width );
+    assertEquals( column0.getWidth(), bounds.width );
     
     // bounds for item in second column
     item.setText( 1, "abc" );
     bounds = item.getBounds( 1 );
-    assertTrue( bounds.x >= column1.getWidth() );
+    assertTrue( bounds.x >= column0.getWidth() );
     assertEquals( 0, bounds.y );
     assertTrue( bounds.height > 0 );
-    assertEquals( column2.getWidth(), bounds.width );
+    assertEquals( column1.getWidth(), bounds.width );
 
     // bounds for out-of-range item 
     bounds = item.getBounds( table.getColumnCount() + 100 );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+  }
+  
+  public void testImageBoundsWithoutColumns() {
+    // Test setup
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    // Common variables
+    Rectangle bounds;
+    
+    // Asking for the bounds of a non-existing image returns an empty rectangle
+    bounds = item.getImageBounds( 1 ); 
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+    bounds = item.getImageBounds( 100 ); 
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+
+    // A zero-width rectangle is returned when asking for an unset image of the 
+    // imaginary first column
+    bounds = item.getImageBounds( 0 ); 
+    assertEquals( 0, bounds.x );
+    assertEquals( 0, bounds.y );
+    assertEquals( 0, bounds.width );
+    assertTrue( bounds.height > 0 );
+    
+    // Set an actual image - its size rule the bounds returned 
+    item.setImage( 0, Image.find( RWTFixture.IMAGE_100x50 ) );
+    bounds = item.getImageBounds( 0 ); 
+    assertEquals( 50, bounds.height );
+    assertEquals( 100, bounds.width );
+  }
+  
+  public void testImageBoundsWidthColumns() {
+    // Test setup
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    // Common variables
+    Rectangle bounds;
+    
+    // Asking for the bounds of a non-existing image returns an empty rectangle
+    bounds = item.getImageBounds( -1 ); 
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+    bounds = item.getImageBounds( 100 ); 
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), bounds );
+
+    // Bounds of an image of a column that provides enough space are ruled by
+    // the images size 
+    column.setWidth( 1000 );
+    item.setImage( 0, Image.find( RWTFixture.IMAGE_100x50 ) );
+    bounds = item.getImageBounds( 0 ); 
+    assertEquals( 50, bounds.height );
+    assertEquals( 100, bounds.width );
+
+    // A column width that is smaller than the images width does not clip the 
+    // image bounds
+    column.setWidth( 20 );
+    item.setImage( 0, Image.find( RWTFixture.IMAGE_100x50 ) );
+    bounds = item.getImageBounds( 0 ); 
+    assertEquals( 50, bounds.height );
+    assertEquals( 100, bounds.width );
   }
   
   public void testBoundsWithCheckedTable() {
@@ -120,9 +186,17 @@ public class TableItem_Test extends TestCase {
     table = new Table( shell, SWT.CHECK );
     new TableColumn( table, SWT.NONE );
     item = new TableItem( table, SWT.NONE );
-    assertTrue( item.getBounds().x > 0 );
+    assertTrue( item.getBounds().x >= getCheckWidth( table ) );
+    assertTrue( item.getBounds( 0 ).x >= getCheckWidth( table ) );
+    // with re-ordered columns
+    table = new Table( shell, SWT.CHECK );
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    table.setColumnOrder( new int[] { 1, 0 } );
+    item = new TableItem( table, SWT.NONE );
+    assertTrue( item.getBounds( 1 ).x >= getCheckWidth( table ) );
   }
-  
+
   public void testBoundsWidthReorderedColumns() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -167,6 +241,9 @@ public class TableItem_Test extends TestCase {
     assertEquals( "", item.getText( 5 ) );
     item.setText( "yes" );
     assertEquals( "yes", item.getText() );
+    item = new TableItem( table, SWT.NONE );
+    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    assertEquals( "", item.getText() );
     
     // Test with columns
     table.removeAll();
@@ -178,6 +255,9 @@ public class TableItem_Test extends TestCase {
     assertEquals( "", item.getText( 1 ) );
     item.setText( 5, "abc" );
     assertEquals( "", item.getText( 5 ) );
+    item = new TableItem( table, SWT.NONE );
+    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    assertEquals( "", item.getText() );
   }
   
   public void testImage() {
@@ -251,5 +331,12 @@ public class TableItem_Test extends TestCase {
 
     table.clear( 100 );
     assertEquals( false, item.cached );
+  }
+
+  private static int getCheckWidth( final Table table ) {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    int checkWidth = tableAdapter.getCheckWidth();
+    return checkWidth;
   }
 }

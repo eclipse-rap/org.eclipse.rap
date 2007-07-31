@@ -19,9 +19,18 @@ qx.Class.define( "org.eclipse.swt.widgets.TableRow", {
   construct : function() {
     this.base( arguments );
     this.setAppearance( "table-row" );
+    this.setSelectable( false );
   },
 
   members : {
+    
+    setLinesVisible : function( value ) {
+      if( value ) {
+        this.addState( "lines" );
+      } else {
+        this.removeState( "lines" );
+      }
+    },
 
     // Override default focus behaviour
     _applyStateStyleFocus : qx.core.Variant.select( "qx.client",

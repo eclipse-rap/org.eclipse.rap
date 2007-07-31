@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
+import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
@@ -88,10 +89,20 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
-    writeTexts( item );
-    writeImages( item );
-    writeChecked( item );
-    writeGrayed( item );
+    Table table = item.getParent();
+    boolean needUpdate = false;
+    needUpdate |= writeTexts( item );
+    needUpdate |= writeImages( item );
+    needUpdate |= writeChecked( item );
+    needUpdate |= writeGrayed( item );
+    if( isVisible( item ) ) {
+      needUpdate |= TableLCAUtil.hasItemMetricsChanged( table );
+      needUpdate |= TableLCAUtil.hasAlignmentChanged( table );
+    }
+    if( needUpdate ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.call( "update", null );
+    }
     writeSelection( item );
     writeFocused( item );
   }
@@ -130,46 +141,51 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   ///////////////////////
   // RenderChanges helper
   
-  private static void writeTexts( final TableItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
+  private static boolean writeTexts( final TableItem item ) throws IOException {
+    boolean changed = false;
     String[] texts = getTexts( item );
     if( WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts ) ) {
+      changed = true;
       for( int i = 0; i < texts.length; i++ ) {
         // TODO [rh] for some reason doesn't work with escapeText
 //        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
         texts[ i ] = encodeHTML( item.getText( i ) );
       }
+      JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "texts", new Object[] { texts } );
     }
+    return changed;
   }
-
-  private static void writeImages( final TableItem item ) throws IOException {
+  
+  private static boolean writeImages( final TableItem item ) throws IOException 
+  {
+    boolean changed = false;
     JSWriter writer = JSWriter.getWriterFor( item );
-    // TODO [rh] optimize when !isInitialized: for all images != null: setImg
     Image[] images = getImages( item );
-    Integer[] imageWidths = new Integer[ images.length ];
     if( WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images ) ) {
+      changed = true;
       String[] imagePaths = new String[ images.length ];
       for( int i = 0; i < imagePaths.length; i++ ) {
         imagePaths[ i ] = Image.getPath( images[ i ] );
-        imageWidths[ i ] = new Integer( item.getImageBounds( i ).width );
       }
-      writer.set( "images", new Object[] { imagePaths, imageWidths } );
+      writer.set( "images", new Object[] { imagePaths } );
     }
+    return changed;
   }
 
-  private void writeChecked( final TableItem item )
+  private static boolean writeChecked( final TableItem item )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( item.getChecked() );
-    writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
+    return writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
   }
   
-  private static void writeGrayed( final TableItem item ) throws IOException {
+  private static boolean writeGrayed( final TableItem item ) throws IOException 
+  {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( item.getGrayed() );
-    writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
+    return writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
   }
   
   private static void writeSelection( final TableItem item ) throws IOException 
@@ -205,22 +221,22 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   
   private static String[] getTexts( final TableItem item ) {
     int columnCount = getColumnCount( item );
-    String[] texts = new String[ columnCount ];
+    String[] result = new String[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
-      texts[ i ] = item.getText( i );
+      result[ i ] = item.getText( i );
     }
-    return texts;
+    return result;
   }
 
   private static Image[] getImages( final TableItem item ) {
     int columnCount = getColumnCount( item );
-    Image[] images = new Image[ columnCount ];
+    Image[] result = new Image[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
-      images[ i ] = item.getImage( i );
+      result[ i ] = item.getImage( i );
     }
-    return images;
+    return result;
   }
-
+  
   private static int getColumnCount( final TableItem item ) {
     return Math.max( 1, item.getParent().getColumnCount() );
   }
@@ -237,5 +253,11 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     int focusIndex = tableAdapter.getFocusIndex();
     return focusIndex != -1 && item == table.getItem( focusIndex ); 
+  }
+
+  private static boolean isVisible( final TableItem item ) {
+    Object adapter = item.getParent().getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.isItemVisible( item );
   }
 }

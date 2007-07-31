@@ -31,12 +31,11 @@ import org.eclipse.swt.internal.graphics.FontSizeCalculator;
  */
 public class TableItem extends Item {
 
-  // TODO [rh] make private but accessible from TabelLCA#getDefaultColumnWidth
-  public static final int CHECK_WIDTH = 21;
-  private static final int CHECK_HEIGHT = 13;
-
+  private static final int RIGHT_MARGIN = 2;
+  private static final int IMAGE_TEXT_GAP = 2;
+  
   private static final class Data {
-    String text;
+    String text = "";
     Image image;
   }
   
@@ -254,9 +253,10 @@ public class TableItem extends Item {
         data[ index ] = new Data();
       }
       data[ index ].image = image;
+      parent.updateItemImageSize( image );
     }
   }
-  
+
   /**
    * Sets the image for multiple columns in the table. 
    * 
@@ -311,52 +311,6 @@ public class TableItem extends Item {
     }
     return result;
   }
-
-  /**
-   * Returns a rectangle describing the size and location
-   * relative to its parent of an image at a column in the
-   * table.  An empty rectangle is returned if index exceeds
-   * the index of the table's last column.
-   *
-   * @param index the index that specifies the column
-   * @return the receiver's bounding image rectangle
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  public Rectangle getImageBounds( final int index ) {
-    checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
-    Rectangle result;
-    Image image = getImage( index );
-    if( image != null ) {
-      result = image.getBounds();
-    } else {
-      result = new Rectangle( 0, 0, 0, 0 );
-    }
-    return result;
-  }
-
-  /**
-   * Gets the image indent.
-   *
-   * @return the indent
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  public int getImageIndent () {
-    checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
-    // The only method to manipulate the image indent (setImageIndent) is 
-    // deprecated and this not implemented, therefore we can safely return 0
-    return 0;
-  }
-
 
   ///////////////////
   // Checked & Grayed
@@ -474,78 +428,181 @@ public class TableItem extends Item {
   public Rectangle getBounds( final int index ) {
     checkWidget();
     parent.checkData( this, parent.indexOf( this ) );
+    Rectangle result;
+    int columnCount = parent.getColumnCount();
+    if( columnCount > 0 && ( index < 0 || index >= columnCount ) ) {
+      result = new Rectangle( 0, 0, 0, 0 );
+    } else {
+      Rectangle imageBounds = getImageBounds( index );
+      Rectangle textBounds = getTextBounds( index );
+      int left = imageBounds.x;
+      int top = imageBounds.y;
+      int width;
+      if( index == 0 && columnCount == 0 ) {
+        int gap = getImageGap( index );
+        width = 2 + imageBounds.width + gap + textBounds.width + 2;
+      } else {
+        width = parent.getColumn( index ).getWidth(); 
+      }
+      int height = imageBounds.height;
+      result = new Rectangle( left, top, width, height );
+    }
+    return result;
+  }
+  
+  /**
+   * Returns a rectangle describing the size and location
+   * relative to its parent of an image at a column in the
+   * table.  An empty rectangle is returned if index exceeds
+   * the index of the table's last column.
+   *
+   * @param index the index that specifies the column
+   * @return the receiver's bounding image rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Rectangle getImageBounds( final int index ) {
+    checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
+    int left = 0;
+    int top = 0; 
+    int width = 0;
+    int height = 0;
+    int columnCount = parent.getColumnCount();
+    if( index == 0 && columnCount == 0 ) {
+      int itemIndex = parent.indexOf( this );
+      left = getCheckWidth( index );
+      top = getTop( itemIndex );
+      width = getImageWidth( index );
+      height = parent.getItemHeight();
+    } else if( index >= 0 && index < columnCount ) {
+      int itemIndex = parent.indexOf( this );
+      left = getCheckWidth( index ) + parent.getColumn( index ).getLeft();
+      top = getTop( itemIndex );
+      width = getImageWidth( index );
+      height = parent.getItemHeight();
+    } 
+    return new Rectangle( left, top, width, height );
+  }
+
+  /**
+   * Gets the image indent.
+   *
+   * @return the indent
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public int getImageIndent () {
+    checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
+    // The only method to manipulate the image indent (setImageIndent) is 
+    // deprecated and this not implemented, therefore we can safely return 0
+    return 0;
+  }
+  
+  /**
+   * Returns a rectangle describing the size and location
+   * relative to its parent of the text at a column in the
+   * table.  An empty rectangle is returned if index exceeds
+   * the index of the table's last column.
+   *
+   * @param index the index that specifies the column
+   * @return the receiver's bounding text rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.3
+   */
+  public Rectangle getTextBounds( final int index ) {
+    checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
     int itemIndex = parent.indexOf( this );
     int left = 0;
     int top = 0; 
     int width = 0;
     int height = 0;
     if( index == 0 && parent.getColumnCount() == 0 ) {
-      left = getCheckWidth( 0 );
+      Rectangle imageBounds = getImageBounds( 0 );
+      left = imageBounds.x + imageBounds.width + getImageGap( 0 );
       top = getTop( itemIndex );
       Font font = parent.getFont();
-      width = FontSizeCalculator.stringExtent( font, getText() ).x;
-      Image image = data != null && data.length > 0 ? data[ 0 ].image : null;
-      if( image != null ) {
-        width += image.getBounds().width;
-      }
-      height = getHeight();
+      width = FontSizeCalculator.stringExtent( font, getText( 0 ) ).x;
+      height = parent.getItemHeight();
     } else {
       if( itemIndex != -1 && index < parent.getColumnCount() ) {
-        TableColumn[] columns = parent.getColumns();
-        left = columns[ index ].getLeft() + getCheckWidth( index );
+        Rectangle imageBounds = getImageBounds( index );
+        int gap = getImageGap( index );
+        left = imageBounds.x + imageBounds.width + gap;
         top = getTop( itemIndex );
-        width = columns[ index ].getWidth();
-        height = getHeight();
-        width -= getCheckWidth( index );
+        width = getColumnWidth( index ) - ( gap + imageBounds.width );
+        if( width < 0 ) {
+          width = 0;
+        }
+        height = parent.getItemHeight();
       } 
     }
     return new Rectangle( left, top, width, height );
   }
-  
-  final int getTop( final int itemIndex ) {
-    int result = 0;
-    for( int i = 0; i < itemIndex; i++ ) {
-      result += parent.getItem( i ).getHeight();
-    }
-    return result;
+
+  private int getColumnWidth( final int index ) {
+    TableColumn column = parent.getColumn( index );
+    return column.getWidth() - getCheckWidth( index );
+  }
+
+  private int getTop( final int itemIndex ) {
+    return itemIndex * parent.getItemHeight();
   }
   
-  final int getHeight() {
-    // TODO [rh] replace with this.getFont() once TableItem supports fonts
-    // TODO [rh] preliminary: this is only an approximation for item height
-    int result = FontSizeCalculator.getCharHeight( parent.getFont() ) + 4;
-    int columnCount = Math.max( parent.getColumnCount(), 1 );
-    for( int i = 0; i < columnCount; i++ ) {
-      Rectangle imageBounds = getImageBounds( i );
-      if( imageBounds.height > result ) {
-        result = imageBounds.height;
-      }
-    }
-    if( ( parent.style & SWT.CHECK ) != 0 ) {
-      result = Math.max( CHECK_HEIGHT, result );
-    }
-    return result;
+  final int getPackWidth( final int index ) {
+    return 
+        getImageWidth( index )
+      + getImageGap( index )
+      + FontSizeCalculator.stringExtent( parent.getFont(), getText( index ) ).x
+      + RIGHT_MARGIN;
   }
   
   final int getCheckWidth( final int index ) {
+//    return index == 0 ? parent.getCheckWidth() : 0;
     int result = 0;
-    if( index == 0 && ( getParent().getStyle() & SWT.CHECK ) != 0 ) {
-      result = CHECK_WIDTH;
+    if( index == 0 && parent.getColumnCount() == 0 ) {
+      result = parent.getCheckWidth();
+    } else {
+      int[] columnOrder = parent.getColumnOrder();
+      if( columnOrder[ 0 ] == index ) {
+        result = parent.getCheckWidth();
+      }
     }
     return result;
   }
   
-  final int getMaxWidth( final int index ) {
-    int result = getCheckWidth( index );
-    Font font = parent.getFont();
-    result += FontSizeCalculator.stringExtent( font, getText( index ) ).x;
+  private int getImageWidth( final int index ) {
+    int width = 0;
     Image image = getImage( index );
     if( image != null ) {
-      result += image.getBounds().width;
+      width = parent.getItemImageSize().x;
     }
-    return result;
+    return width;
   }
   
+  private int getImageGap( final int index ) {
+    int result = 0;
+    Image image = getImage( index );
+    if( image != null ) {
+      result = IMAGE_TEXT_GAP;
+    }
+    return result;
+    
+  }
+
   ///////////////////////////////////////
   // Clear item data (texts, images, etc)
 
@@ -593,7 +650,6 @@ public class TableItem extends Item {
   //////////////////
   // helping methods
   
-
   final boolean isVisible() {
     boolean result = false;
     int visibleItemCount = parent.getVisibleItemCount();

@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     this.setLeft( 0 );
     // Set the label part to 'html mode'
     this.setLabel( "(empty)" );
-    this.getLabelObject().setMode( "html" );
+    this.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
     this.setLabel( "" );
     // Add this column to the list of coluimns maintained by the table
     this._table = parent;
@@ -77,7 +77,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         && ( qx.core.Client.getInstance().getMajor() > 1 
              || qx.core.Client.getInstance().getMinor() >= 8 ) ) 
         ? "ew-resize" 
-        : "e-resize"
+        : "e-resize",
+        
+    STATE_MOVING : "moving",
+    STATE_MOUSE_OVER : "mouseover"      
   },
    
   members : {
@@ -121,7 +124,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     },
 
     _onMouseOver : function( evt ) {
-      this.addState( "mouseover" );
+      this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOUSE_OVER );
     },
 
     /////////////////////////////
@@ -140,7 +143,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._bufferedZIndex = this.getZIndex();
         this.setZIndex( 1e8 );
         this._table._unhookColumnMove( this );
-        this.addState( "moving" );
+        this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
         this._offsetX = evt.getPageX() - this.getLeft();
         this._initialLeft = this.getLeft();
       }
@@ -160,7 +163,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this.setCapture( false );
         this.setZIndex( this._bufferedZIndex );
         this._table._hookColumnMove( this );
-        this.removeState( "moving" );
+        this.removeState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
         if(    this.getLeft() < this._initialLeft - 1 
             || this.getLeft() > this._initialLeft + 1 ) 
         {
@@ -193,7 +196,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     },
 
     _onMouseOut : function( evt ) {
-      this.removeState( "mouseover" );
+      this.removeState( org.eclipse.swt.widgets.TableColumn.STATE_MOUSE_OVER );
       if( !this._inResize ) {
         this.getTopLevelWidget().setGlobalCursor( null );
       }
