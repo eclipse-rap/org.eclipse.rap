@@ -70,7 +70,7 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
         widget.setUserData( "setText", text );
         widget.addEventListener( "appear",
                                  org.eclipse.swt.LabelUtil._setTextDelayed );
-      } else if( !widget.isInDOM ) {
+      } else if( !widget._isInDOM ) {
         widget.setUserData( "setText", text );
         widget.addEventListener( "insertDom",
                                  org.eclipse.swt.LabelUtil._setTextDelayed );
