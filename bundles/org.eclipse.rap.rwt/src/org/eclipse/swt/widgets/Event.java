@@ -8,7 +8,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
 
 /**
@@ -29,7 +28,7 @@ public class Event {
   /**
    * the display where the event occurred
    */
-  public Device display;
+  public Display display;
   /**
    * the widget that issued the event
    */

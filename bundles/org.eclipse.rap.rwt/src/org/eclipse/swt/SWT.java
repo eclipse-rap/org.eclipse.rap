@@ -250,6 +250,14 @@ public class SWT {
    */
   public static final int SetData = 36;
 
+  /**
+   * Event detail field that indicates a user-interface component
+   * draws the background (value is 1&lt;&lt;3).
+   *
+   * @since 3.2
+   */
+  public static final int BACKGROUND = 1 << 3;
+
   
   public static final int DEFAULT = -1;
   public static final int HORIZONTAL = 1 << 8;
