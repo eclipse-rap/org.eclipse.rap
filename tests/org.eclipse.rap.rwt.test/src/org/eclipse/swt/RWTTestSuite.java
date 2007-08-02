@@ -13,6 +13,7 @@ package org.eclipse.swt;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 import org.eclipse.swt.browser.Browser_Test;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.*;
@@ -44,6 +45,7 @@ import org.eclipse.swt.internal.widgets.tableitemkit.TableItemLCA_Test;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCA_Test;
 import org.eclipse.swt.internal.widgets.textkit.TextLCA_Test;
 import org.eclipse.swt.internal.widgets.toolitemkit.ToolItemLCA_Test;
+import org.eclipse.swt.internal.widgets.treecolumnkit.TreeColumnLCA_Test;
 import org.eclipse.swt.internal.widgets.treeitemkit.TreeItemLCA_Test;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA_Test;
 import org.eclipse.swt.lifecycle.*;
@@ -101,6 +103,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Button_Test.class );
     suite.addTestSuite( Tree_Test.class );
     suite.addTestSuite( TreeItem_Test.class );
+    suite.addTestSuite( TreeColumn_Test.class );
     suite.addTestSuite( TabFolderAndItem_Test.class );
     suite.addTestSuite( Menu_Test.class );
     suite.addTestSuite( MenuItem_Test.class );
@@ -142,6 +145,7 @@ public class RWTTestSuite {
     suite.addTestSuite( SashLCA_Test.class );
     suite.addTestSuite( TreeLCA_Test.class );
     suite.addTestSuite( TreeItemLCA_Test.class );
+    suite.addTestSuite( TreeColumnLCA_Test.class );
     suite.addTestSuite( ShellLCA_Test.class );
     suite.addTestSuite( MenuLCA_Test.class );
     suite.addTestSuite( MenuItemLCA_Test.class );

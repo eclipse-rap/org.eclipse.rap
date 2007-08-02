@@ -18,32 +18,48 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   extend : qx.ui.tree.TreeFolder,
 
   construct : function( parentItem ) {
-    var row = qx.ui.tree.TreeRowStructure.getInstance().newRow();
+    this._row = qx.ui.tree.TreeRowStructure.getInstance().newRow();
     // Indentation
-    row.addIndent();
+    //this._row.addIndent();
     // CheckBox
     this._checkBox = null;
     this._checked = false;
-    if ( qx.lang.String.contains( parentItem.getTree().getRWTStyle(), "check" ) ) 
+    // TODO reactivate
+    if ( qx.lang.String.contains( parentItem.getTree().getParent().getRWTStyle(), "check" ) )
     {
       this._checkBox = new qx.ui.basic.Image();
       this._checkBox.setAppearance( "tree-check-box" );
       this._checkBox.addEventListener( "click", this._onCheckBoxClick, this );
       this._checkBox.addEventListener( "dblclick", this._onCheckBoxDblClick, this );
-      row.addObject( this._checkBox, false );
+      this._row.addObject( this._checkBox, false );
     }
     // Image
     // TODO [rh] these dummy images are necessary since it is currently not
     //      possible to change images when they were not set here initially
-    row.addIcon( "widget/tree/folder_closed.gif", 
+    this._row.addIcon( "widget/tree/folder_closed.gif", 
                  "widget/tree/folder_open.gif" );
     // Text
-    row.addLabel( "" );
+    this._row.addLabel( "foo" );
+    // Everything else should be right justified    	
+    //var spacer = new qx.ui.basic.HorizontalSpacer;
+		//this._row.addObject(spacer, true);
+    
+    
     // Construct TreeItem
-    this.base( arguments, row );
+    this.base( arguments, this._row );
     this.addEventListener( "click", this._onClick, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
+    this.addEventListener( "appear", this._onAppear, this );
     parentItem.add( this );
+    
+    this._texts = null;
+    this._images = null;
+    this._colLabels = new Array();
+    // add labels for every column
+    for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
+      this.columnAdded();
+    }
+
     this.getLabelObject().setMode( "html" );
   },
   
@@ -55,6 +71,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     }
     this.removeEventListener( "click", this._onClick, this );
     this.removeEventListener( "dblclick", this._onDblClick, this );
+    this.removeEventListener( "appear", this._onAppear, this );
   },
 
   members : {
@@ -115,7 +132,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
      */
     _onClick : function( evt ) {
       if( this._checkEventTarget( evt ) ) {
-        this.getTree()._notifyItemClick( this );
+        this.getTree().getParent()._notifyItemClick( this );
       }
     },
 
@@ -124,7 +141,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
      */
     _onDblClick : function( evt ) {
       if( this._checkEventTarget( evt ) ) {
-        this.getTree()._notifyItemDblClick( this );
+        this.getTree().getParent()._notifyItemDblClick( this );
       }
     },
 
@@ -170,6 +187,61 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
      * Prevent auto expand on click
      */
     _onmouseup : function( evt ) {
+    },
+    
+    _onAppear : function( evt ) {
+    	this.updateColumnsWidth();
+    },
+    
+    setTexts : function( texts ) {
+      this._texts = texts;
+      this.updateItem();
+    },
+    
+    setImages : function( images ) {
+    	this._images = images;
+    	this.updateItem();
+    },
+    
+    columnAdded : function() {
+    	var obj = new qx.ui.basic.Label( "" );
+    	this._row.addObject(obj, true);
+    	this._colLabels.push( obj );
+    },
+    
+    updateItem : function() {
+    	// TODO: update images
+    	if( this._texts != null ) {
+	    	var colOrder = this.getTree().getParent().getColumnOrder();
+	    	var colCount = Math.max ( 1, this.getTree().getParent()._columns.length );
+	    	for( var c = 0; c < colCount; c++ ) {
+	    		var col = colOrder[ c ];
+	    		if( c == 0 ) {
+	    			this.setLabel( this._texts[ col ]);
+	    		} else {
+	    		  this._colLabels[ c -1 ].setText( this._texts[ col ] );
+	    		}
+	    	}
+    	}
+    },
+    
+    updateColumnsWidth : function() {
+    	var columnWidth = new Array();
+      for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
+        columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
+      }
+			if( columnWidth.length > 0 ) {
+				this.getLabelObject().setWidth( columnWidth[ 0 ]
+					- this.getIconObject().getWidth()
+					- ( this.getLevel() * 19));  // TODO: [bm] replace with computed indent width
+			  var coLabel;
+	    	for( var i=1; i<columnWidth.length; i++ ) {
+	    		coLabel = this._colLabels[ i-1 ];
+	    		if( coLabel != null ) {
+	    			coLabel.setWidth( columnWidth[ i ] );
+	    		}
+	    	}
+			}
     }
-  }
-});
+    
+  }});

@@ -28,8 +28,8 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class Item extends Widget {
 
-  private String text;
-  private Image image;
+  String text;
+  Image image;
 
   /**
    * Constructs a new instance of this class given its parent

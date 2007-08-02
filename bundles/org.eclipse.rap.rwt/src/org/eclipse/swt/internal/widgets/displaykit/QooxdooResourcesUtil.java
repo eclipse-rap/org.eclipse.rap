@@ -67,6 +67,10 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/widgets/Tree.js";
   private static final String TREE_ITEM_JS 
     = "org/eclipse/swt/widgets/TreeItem.js";
+  private static final String TREE_ITEM_UTIL_JS 
+  = "org/eclipse/swt/TreeItemUtil.js";
+  private static final String TREE_COLUMN_JS
+  = "org/eclipse/swt/widgets/TreeColumn.js";
   private static final String SCROLLED_COMPOSITE_JS 
     = "org/eclipse/swt/custom/ScrolledComposite.js";
   private static final String SEPARATOR_JS 
@@ -154,6 +158,8 @@ final class QooxdooResourcesUtil {
       register( SHELL_JS );
       register( TREE_JS );
       register( TREE_ITEM_JS );
+      register( TREE_ITEM_UTIL_JS );
+      register( TREE_COLUMN_JS );
       register( SCROLLED_COMPOSITE_JS );
       register( SEPARATOR_JS );
       register( LABEL_UTIL_JS );

@@ -135,7 +135,7 @@ public class Tree_Test extends TestCase {
       // expected
     }
     try {
-      tree.indexOf( null );
+      tree.indexOf( (TreeItem) null );
       fail( "Must not allow to call indexOf for null" );
     } catch( NullPointerException e ) {
       // expected
@@ -144,6 +144,27 @@ public class Tree_Test extends TestCase {
     Tree anotherTree = new Tree( shell, SWT.NONE );
     TreeItem anotherItem = new TreeItem( anotherTree, SWT.NONE );
     assertEquals( -1, tree.indexOf( anotherItem ) );
+  }
+  
+  public void testIndexOfColumns() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn col = new TreeColumn( tree, SWT.NONE );
+    assertEquals( 0, tree.indexOf( col ) );
+    col.dispose();
+    try {
+      tree.indexOf( col );
+      fail( "Must not allow to call indexOf for disposed item" );
+    } catch( IllegalArgumentException e ) {
+      // expected
+    }
+    try {
+      tree.indexOf( ( TreeColumn )null );
+      fail( "Must not allow to call indexOf for null" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
   }
   
   public void testExpandCollapse() {
@@ -452,6 +473,104 @@ public class Tree_Test extends TestCase {
     RWTFixture.tearDown();
   }
 
+  public void test_getColumnCount() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    assertEquals( 0, tree.getColumnCount() );
+    TreeColumn column0 = new TreeColumn( tree, SWT.NONE );
+    assertEquals( 1, tree.getColumnCount() );
+    TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
+    assertEquals( 2, tree.getColumnCount() );
+    TreeColumn column2 = new TreeColumn( tree, SWT.NONE );
+    assertEquals( 3, tree.getColumnCount() );
+    column0.dispose();
+    assertEquals( 2, tree.getColumnCount() );
+    column1.dispose();
+    assertEquals( 1, tree.getColumnCount() );
+    column2.dispose();
+    assertEquals( 0, tree.getColumnCount() );
+  }
+  
+  public void testGetColumnI() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    try {
+      tree.getColumn( 0 );
+      fail( "No exception thrown for index out of range" );
+    } catch( IllegalArgumentException e ) {
+    }
+    TreeColumn column0 = new TreeColumn( tree, SWT.LEFT );
+    try {
+      tree.getColumn( 1 );
+      fail( "No exception thrown for index out of range" );
+    } catch( IllegalArgumentException e ) {
+    }
+    assertEquals( column0, tree.getColumn( 0 ) );
+    TreeColumn column1 = new TreeColumn( tree, SWT.LEFT );
+    assertEquals( column1, tree.getColumn( 1 ) );
+    column1.dispose();
+    try {
+      tree.getColumn( 1 );
+      fail( "No exception thrown for index out of range" );
+    } catch( IllegalArgumentException e ) {
+    }
+    column0.dispose();
+    try {
+      tree.getColumn( 0 );
+      fail( "No exception thrown for index out of range" );
+    } catch( IllegalArgumentException e ) {
+    }
+  }
+
+  public void test_getColumns() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    assertEquals( 0, tree.getColumns().length );
+    TreeColumn column0 = new TreeColumn( tree, SWT.LEFT );
+    TreeColumn[] columns = tree.getColumns();
+    assertEquals( 1, columns.length );
+    assertEquals( column0, columns[ 0 ] );
+    column0.dispose();
+    assertEquals( 0, tree.getColumns().length );
+    column0 = new TreeColumn( tree, SWT.LEFT );
+    TreeColumn column1 = new TreeColumn( tree, SWT.RIGHT, 1 );
+    columns = tree.getColumns();
+    assertEquals( 2, columns.length );
+    assertEquals( column0, columns[ 0 ] );
+    assertEquals( column1, columns[ 1 ] );
+    column0.dispose();
+    columns = tree.getColumns();
+    assertEquals( 1, columns.length );
+    assertEquals( column1, columns[ 0 ] );
+    column1.dispose();
+    assertEquals( 0, tree.getColumns().length );
+  }
+  
+  public void testSetHeaderVisible() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    assertFalse( tree.getHeaderVisible() );
+    tree.setHeaderVisible( true );
+    assertTrue( tree.getHeaderVisible() );
+    tree.setHeaderVisible( false );
+    assertFalse( tree.getHeaderVisible() );
+  }
+  
+  public void testGetHeaderHeight() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    assertEquals( 0, tree.getHeaderHeight() );
+    tree.setHeaderVisible( true );
+    assertTrue( tree.getHeaderHeight() > 0 );
+    tree.setHeaderVisible( false );
+    assertEquals( 0, tree.getHeaderHeight() );
+  }
+  
   private static boolean contains( final TreeItem[] items, 
                                    final TreeItem item ) 
   {

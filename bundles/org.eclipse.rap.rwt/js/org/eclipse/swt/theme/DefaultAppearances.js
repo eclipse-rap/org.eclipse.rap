@@ -963,6 +963,42 @@ appearances = {
       }
     },
     
+    "tree-column" : {
+      style : function( states ) {
+        var result = {
+          cursor : "default",
+          paddingLeft : 2,
+          paddingRight : 2,
+          spacing : 2,
+          textColor : states.disabled ? "widget.graytext" : "undefined"
+        };
+        // TODO: [bm] introduce tree colors
+        if( states.mouseover && !states.disabled ) {
+          result.backgroundColor = "table.column.hover.background";
+          result.border          = "table.column.hover.border";
+        } else {
+          result.backgroundColor = "table.column.background";
+          result.border          = "table.column.border";
+        }
+        if( states.moving ) {
+          result.opacity = 0.6;
+        } else {
+          result.opacity = 1.0;
+        }
+        return result;
+      }
+    },
+    
+    "tree-column-resizer" : {
+      style : function( sates ) {
+        return {
+          // TODO [rh] use same bg-color as splitpane-spltter (see there)
+          backgroundColor : "#d6d5d9",
+          width : 3
+        }
+      }
+    },
+    
     /*
     ---------------------------------------------------------------------------
       TAB FOLDER

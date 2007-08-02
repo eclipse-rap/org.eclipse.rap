@@ -15,7 +15,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
+import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
 
 
 /**
@@ -44,6 +50,8 @@ public class TreeItem extends Item {
   private boolean checked;
   private Color background, foreground;
   private boolean grayed;
+  private String[] texts;
+  private Image[] images;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -185,6 +193,10 @@ public class TreeItem extends Item {
         return background;
       }
     };
+    
+    int columnCount = parent.columnHolder.size();
+    texts = new String[ columnCount ];
+    images = new Image[ columnCount ];
   }
 
   public Object getAdapter( final Class adapter ) {
@@ -516,11 +528,169 @@ public class TreeItem extends Item {
     return grayed;
   }
 
+  /**
+   * Returns the text stored at the given column index in the receiver,
+   * or empty string if the text has not been set.
+   *
+   * @param index the column index
+   * @return the text stored at the given column index in the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public String getText (int columnIndex) {
+      checkWidget ();
+      return getText (columnIndex, true);
+  }
+  
+  String getText (int columnIndex, boolean checkData) {
+    // TODO virtual flag
+//    if (checkData && !parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
+    int validColumnCount = Math.max (1, parent.columnHolder.size());
+    if (!(0 <= columnIndex && columnIndex < validColumnCount)) return "";   //$NON-NLS-1$
+    if (columnIndex == 0) return super.getText ();  /* super is intentional here */
+    if (texts [columnIndex] == null) return ""; //$NON-NLS-1$
+    return texts [columnIndex];
+  }
+  
+  /**
+   * Sets the text for multiple columns in the tree. 
+   * 
+   * @param strings the array of new strings
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public void setText (String[] value) {
+      checkWidget ();
+      if (value == null) error (SWT.ERROR_NULL_ARGUMENT);
+      // TODO make a smarter implementation of this
+      for (int i = 0; i < value.length; i++) {
+          if (value [i] != null) setText (i, value [i]);
+      }
+  }
+  
+  /**
+   * Sets the receiver's text at a column
+   *
+   * @param index the column index
+   * @param string the new text
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public void setText (int columnIndex, String value) {
+      checkWidget ();
+      if (value == null) error (SWT.ERROR_NULL_ARGUMENT);
+      int validColumnCount = Math.max (1, parent.columnHolder.size());
+      if (!(0 <= columnIndex && columnIndex < validColumnCount)) return;
+      if (value.equals (getText (columnIndex, false))) return;
+      if (columnIndex == 0) {
+          super.setText (value);
+      } else {
+          texts [columnIndex] = value;        
+      }
+//      if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+  }
+  
+  /**
+   * Returns the image stored at the given column index in the receiver,
+   * or null if the image has not been set or if the column does not exist.
+   *
+   * @param index the column index
+   * @return the image stored at the given column index in the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public Image getImage (int columnIndex) {
+      checkWidget ();
+      return getImage (columnIndex, true);
+  }
+  
+  /**
+   * Returns a rectangle describing the size and location
+   * relative to its parent of an image at a column in the
+   * table.  An empty rectangle is returned if index exceeds
+   * the index of the table's last column.
+   *
+   * @param index the index that specifies the column
+   * @return the receiver's bounding image rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Rectangle getImageBounds( final int index ) {
+    checkWidget();
+//    parent.checkData( this, parent.indexOf( this ) );
+    Rectangle result;
+    Image image = getImage( index );
+    if( image != null ) {
+      result = image.getBounds();
+    } else {
+      result = new Rectangle( 0, 0, 0, 0 );
+    }
+    return result;
+  }
+  
+  Image getImage (int columnIndex, boolean checkData) {
+//      if (checkData && !parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
+      int validColumnCount = Math.max (1, parent.columnHolder.size());
+      if (!(0 <= columnIndex && columnIndex < validColumnCount)) return null;
+      if (columnIndex == 0) return super.getImage (); /* super is intentional here */
+      return images [columnIndex];
+  }
+  
+  /*
+   * Returns the receiver's ideal width for the specified columnIndex.
+   */
+  int getPreferredWidth (int columnIndex) {
+    int width = 0;
+    width += FontSizeCalculator.textExtent( parent.getFont(), getText( columnIndex ), 0 ).x;
+    int orderedIndex = parent.columnHolder.size() == 0 ? 0 : ((TreeColumn)parent.columnHolder.getItem( columnIndex )).getOrderIndex ();
+    if (orderedIndex == 0) {
+      width += 19; // TODO find proper solution
+      width += 3; //Tree.MARGIN_IMAGE;
+  
+      //Image image = getImage (columnIndex, false);
+      Image image = getImage ();
+      if (image != null) {
+          width += image.getBounds ().width;
+          width += 3; //Tree.MARGIN_IMAGE;
+      }
+    }
+    return width;
+  }
+  
   void clear() {
     // TODO: [bm] revisit when columns are available
 //    checked = grayed = false;
     checked = false;
-//    texts = null;
+    texts = null;
 //    textWidths = new int[ 1 ];
 //    fontHeight = 0;
 //    fontHeights = null;
@@ -531,22 +701,123 @@ public class TreeItem extends Item {
     font = null;
 //    cellFonts = null;
 //    cached = false;
-//    text = "";
-//    image = null;
     setText( "" );
-    setImage( null );
+    setImage( (Image) null );
 
-//    int columnCount = parent.columns.length;
-//    if ( columnCount > 0 ) {
+    int columnCount = parent.columnHolder.size();
+    if ( columnCount > 0 ) {
 //      displayTexts = new String[ columnCount ];
-//      if ( columnCount > 1 ) {
-//        texts = new String[ columnCount ];
+      if ( columnCount > 1 ) {
+        texts = new String[ columnCount ];
 //        textWidths = new int[ columnCount ];
-//        images = new Image[ columnCount ];
-//      }
-//    }
+        images = new Image[ columnCount ];
+      }
+    }
   }
 
+  /*
+   * Updates internal structures in the receiver and its child items to handle the creation of a new column.
+   */
+  void addColumn( TreeColumn column ) {
+    int index = column.getIndex();
+    int columnCount = parent.columnHolder.size();
+    if( columnCount > 1 ) {
+      if( columnCount == 2 ) {
+        texts = new String[ 2 ];
+      } else {
+        String[] newTexts = new String[ columnCount ];
+        System.arraycopy( texts, 0, newTexts, 0, index );
+        System.arraycopy( texts, index, newTexts, index + 1, columnCount
+                                                             - index
+                                                             - 1 );
+        texts = newTexts;
+      }
+      if( index == 0 ) {
+        texts[ 1 ] = text;
+        text = ""; //$NON-NLS-1$
+      }
+      
+      if( columnCount == 2 ) {
+        images = new Image[ 2 ];
+      } else {
+        Image[] newImages = new Image[ columnCount ];
+        System.arraycopy( images, 0, newImages, 0, index );
+        System.arraycopy( images, index, newImages, index + 1, columnCount
+                                                               - index
+                                                               - 1 );
+        images = newImages;
+      }
+      if( index == 0 ) {
+        images[ 1 ] = image;
+        image = null;
+      }
+    }
+    /* notify all child items as well */
+    for( int i = 0; i < itemHolder.size(); i++ ) {
+      TreeItem child = ( TreeItem )itemHolder.getItem( i );
+      child.addColumn( column );
+    }
+  }
+  
+  /**
+   * Sets the receiver's image at a column.
+   *
+   * @param index the column index
+   * @param image the new image
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public void setImage (int columnIndex, Image value) {
+      checkWidget ();
+
+      TreeColumn[] columns = ( TreeColumn[] )parent.columnHolder.getItems();
+      int validColumnCount = Math.max (1, columns.length);
+      if (!(0 <= columnIndex && columnIndex < validColumnCount)) return;
+      Image image = getImage (columnIndex, false);
+      if (value == image) return;
+      if (value != null && value.equals (image)) return;
+      if (columnIndex == 0) {
+          super.setImage (value);
+      } else {
+          images [columnIndex] = value;
+      }
+//      if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+  }
+  
+  /**
+   * Sets the image for multiple columns in the tree. 
+   * 
+   * @param images the array of new images
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the array of images is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if one of the images has been disposed</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public void setImage (Image[] value) {
+      checkWidget ();
+      if (value == null) error (SWT.ERROR_NULL_ARGUMENT);
+      
+      // TODO make a smarter implementation of this
+      for (int i = 0; i < value.length; i++) {
+          if (value [i] != null) setImage (i, value [i]);
+      }
+  }
+  
   /**
    * Clears all the items in the receiver. The text, icon and other
    * attributes of the items are set to their default values. If the

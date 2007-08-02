@@ -15,8 +15,17 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TreeEvent;
+import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
 /**
@@ -75,10 +84,44 @@ public class Tree extends Composite {
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
   
   private final ItemHolder itemHolder;
+  /* package*/ final ItemHolder columnHolder;
   private TreeItem[] selection;
-
   private boolean linesVisible;
-
+  private int[] columnOrder;
+  private TreeColumn sortColumn;
+  private boolean headerVisible = false;
+  
+  private final class CompositeItemHolder implements IItemHolderAdapter {
+    public void add( final Item item ) {
+      if( item instanceof TreeItem ) {
+        itemHolder.add( item );
+      } else {
+        columnHolder.add( item );
+      }
+    }
+    public void insert( final Item item, final int index ) {
+      if( item instanceof TreeItem ) {
+        itemHolder.insert( item, index );
+      } else {
+        columnHolder.insert( item, index );
+      }
+    }
+    public void remove( final Item item ) {
+      if( item instanceof TreeItem ) {
+        itemHolder.remove( item );
+      } else {
+        columnHolder.remove( item );
+      }
+    }
+    public Item[] getItems() {
+      TreeItem[] items = ( TreeItem[] )itemHolder.getItems();
+      Item[] columns = columnHolder.getItems();
+      Item[] result = new Item[ items.length + columns.length ];
+      System.arraycopy( columns, 0, result, 0, columns.length );
+      System.arraycopy( items, 0, result, columns.length, items.length );
+      return result;
+    }
+  }
 
   /**
    * Constructs a new instance of this class given its parent
@@ -113,13 +156,14 @@ public class Tree extends Composite {
   public Tree( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
     itemHolder = new ItemHolder( TreeItem.class );
+    columnHolder = new ItemHolder ( TreeColumn.class );
     selection = EMPTY_SELECTION;
   }
 
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = itemHolder;
+      result = new CompositeItemHolder();
     } else {
       result = super.getAdapter( adapter );
     }
@@ -579,6 +623,371 @@ public class Tree extends Composite {
       if ( recursive )
         ( ( TreeItem ) itemHolder.getItem( i ) ).clearAll( true, false );
     }
+  }
+  
+  /**
+   * Returns the number of columns contained in the receiver.
+   * If no <code>TreeColumn</code>s were created by the programmer,
+   * this value is zero, despite the fact that visually, one column
+   * of items may be visible. This occurs when the programmer uses
+   * the tree like a list, adding items but never creating a column.
+   *
+   * @return the number of columns
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public int getColumnCount () {
+      checkWidget ();
+      return columnHolder.size();
+  }
+  
+  void createItem (TreeColumn column, int index) {
+    columnHolder.insert( column, index );
+    if( columnOrder == null ) {
+      columnOrder = new int[] { index };
+    } else {
+      int length = columnOrder.length;
+      for( int i = index; i < length; i++ ) {
+        columnOrder[ i ]++;
+      }
+      int[] newColumnOrder = new int[ length + 1 ];
+      System.arraycopy( columnOrder, 0, newColumnOrder, 0, index );
+      System.arraycopy( columnOrder, 
+                        index, 
+                        newColumnOrder, 
+                        index + 1, 
+                        length - index );
+      columnOrder = newColumnOrder;
+      columnOrder[ index ] = index;
+    }
+    
+    /* allow all items to update their internal structures accordingly */
+    for (int i = 0; i < itemHolder.size(); i++) {
+      TreeItem child = ( TreeItem) itemHolder.getItem( i );
+      child.addColumn (column);
+    }
+    
+  }
+  
+  final void destroyColumn( final TreeColumn column ) {
+    int index = indexOf( column );
+    // Remove data from TreeItems
+//    TreeItem[] items = getItems();
+    // TODO [bm] dipose unneccesary data
+//    for( int i = 0; i < items.length; i++ ) {
+//      items[ i ].removeData( index );
+//    }
+    // Reset sort column if necessary
+    if( column == sortColumn ) {
+      sortColumn = null;
+    }
+    // Remove from column holder
+    columnHolder.remove( column );
+    // Remove from column order
+    int length = columnOrder.length;
+    int[] newColumnOrder = new int[ length - 1 ];
+    int count = 0;
+    for( int i = 0; i < length; i++ ) {
+      if( columnOrder[ i ] != index ) {
+        int newOrder = columnOrder[ i ];
+        if( index < newOrder ) {
+          newOrder--;
+        }
+        newColumnOrder[ count ] = newOrder;
+        count++;
+      }
+    }
+    columnOrder = newColumnOrder;
+  }
+  
+  /**
+   * Returns the height of the receiver's header 
+   *
+   * @return the height of the header or zero if the header is not visible
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1 
+   */
+  public int getHeaderHeight () {
+      checkWidget ();
+      int result = 0;
+      if (headerVisible)  {
+        int textHeight = FontSizeCalculator.getCharHeight( getFont() );
+        int imageHeight = 0;
+        for( int i = 0; i < getColumnCount(); i++ ) {
+          Image image = getColumn( i ).getImage();
+          int height = image == null ? 0 : image.getBounds().height;
+          if( height > imageHeight ) {
+            imageHeight = height;
+          }
+        }
+        result = Math.max( textHeight, imageHeight ) + 4;
+      }
+      return result;
+  }
+  
+  /**
+   * Marks the receiver's header as visible if the argument is <code>true</code>,
+   * and marks it invisible otherwise. 
+   * <p>
+   * If one of the receiver's ancestors is not visible or some
+   * other condition makes the receiver not visible, marking
+   * it visible may not actually cause it to be displayed.
+   * </p>
+   *
+   * @param show the new visibility state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public void setHeaderVisible (boolean value) {
+      checkWidget ();
+      if (headerVisible == value) return;      /* no change */
+      headerVisible = value;
+  }
+  
+  /**
+   * Returns <code>true</code> if the receiver's header is visible,
+   * and <code>false</code> otherwise.
+   * <p>
+   * If one of the receiver's ancestors is not visible or some
+   * other condition makes the receiver not visible, this method
+   * may still indicate that it is considered visible even though
+   * it may not actually be showing.
+   * </p>
+   *
+   * @return the receiver's header's visibility state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public boolean getHeaderVisible () {
+      checkWidget ();
+      return headerVisible;
+  }
+  
+  /**
+   * Searches the receiver's list starting at the first column
+   * (index 0) until a column is found that is equal to the 
+   * argument, and returns the index of that column. If no column
+   * is found, returns -1.
+   *
+   * @param column the search column
+   * @return the index of the column
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the column is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public int indexOf (TreeColumn column) {
+    checkWidget();
+    if( column == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if (column.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
+    return columnHolder.indexOf( column );
+  }
+
+  TreeColumn[] getOrderedColumns () {
+    // TODO [bm] proper implementation
+    return getColumns();
+  }
+  
+  /**
+   * Returns the column at the given, zero-relative index in the
+   * receiver. Throws an exception if the index is out of range.
+   * Columns are returned in the order that they were created.
+   * If no <code>TreeColumn</code>s were created by the programmer,
+   * this method will throw <code>ERROR_INVALID_RANGE</code> despite
+   * the fact that a single column of data may be visible in the tree.
+   * This occurs when the programmer uses the tree like a list, adding
+   * items but never creating a column.
+   *
+   * @param index the index of the column to return
+   * @return the column at the given index
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see Tree#getColumnOrder()
+   * @see Tree#setColumnOrder(int[])
+   * @see TreeColumn#getMoveable()
+   * @see TreeColumn#setMoveable(boolean)
+   * @see SWT#Move
+   * 
+   * @since 3.1
+   */
+  public TreeColumn getColumn (int index) {
+      checkWidget ();
+      if (!(0 <= index && index < columnHolder.size())) error (SWT.ERROR_INVALID_RANGE);
+      return ( TreeColumn ) columnHolder.getItem( index );
+  }
+  
+  /**
+   * Returns an array of <code>TreeColumn</code>s which are the
+   * columns in the receiver. Columns are returned in the order
+   * that they were created.  If no <code>TreeColumn</code>s were
+   * created by the programmer, the array is empty, despite the fact
+   * that visually, one column of items may be visible. This occurs
+   * when the programmer uses the tree like a list, adding items but
+   * never creating a column.
+   * <p>
+   * Note: This is not the actual structure used by the receiver
+   * to maintain its list of items, so modifying the array will
+   * not affect the receiver. 
+   * </p>
+   *
+   * @return the items in the receiver
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see Tree#getColumnOrder()
+   * @see Tree#setColumnOrder(int[])
+   * @see TreeColumn#getMoveable()
+   * @see TreeColumn#setMoveable(boolean)
+   * @see SWT#Move
+   * 
+   * @since 3.1
+   */
+  public TreeColumn[] getColumns () {
+      checkWidget ();
+      return ( TreeColumn[] ) columnHolder.getItems();
+  }
+  
+  /**
+   * Sets the order that the items in the receiver should 
+   * be displayed in to the given argument which is described
+   * in terms of the zero-relative ordering of when the items
+   * were added.
+   *
+   * @param order the new order to display the items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the item order is null</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the item order is not the same length as the number of items</li>
+   * </ul>
+   * 
+   * @see Tree#getColumnOrder()
+   * @see TreeColumn#getMoveable()
+   * @see TreeColumn#setMoveable(boolean)
+   * @see SWT#Move
+   * 
+   * @since 3.2
+   */
+  public void setColumnOrder (int [] order) {
+    checkWidget();
+    if( order == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    int columnCount = getColumnCount();
+    if( order.length != columnCount ) {
+      error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( columnCount > 0 ) {
+      int[] oldOrder = new int[ columnCount ];
+      System.arraycopy( columnOrder, 0, oldOrder, 0, columnOrder.length );
+      boolean reorder = false;
+      boolean[] seen = new boolean[ columnCount ];
+      for( int i = 0; i < order.length; i++ ) {
+        int index = order[ i ];
+        if( index < 0 || index >= columnCount ) {
+          error( SWT.ERROR_INVALID_RANGE );
+        }
+        if( seen[ index ] ) {
+          error( SWT.ERROR_INVALID_ARGUMENT );
+        }
+        seen[ index ] = true;
+        if( index != oldOrder[ i ] ) {
+          reorder = true;
+        }
+      }
+      if( reorder ) {
+        System.arraycopy( order, 0, columnOrder, 0, columnOrder.length );
+        for( int i = 0; i < seen.length; i++ ) {
+          if( oldOrder[ i ] != columnOrder[ i ] ) {
+            TreeColumn column = getColumn( columnOrder[ i ] );
+            int controlMoved = ControlEvent.CONTROL_MOVED;
+            ControlEvent controlEvent = new ControlEvent( column, controlMoved );
+            controlEvent.processEvent();
+          }
+        }
+      }
+    } 
+  }
+  
+  /**
+   * Returns an array of zero-relative integers that map
+   * the creation order of the receiver's items to the
+   * order in which they are currently being displayed.
+   * <p>
+   * Specifically, the indices of the returned array represent
+   * the current visual order of the items, and the contents
+   * of the array represent the creation order of the items.
+   * </p><p>
+   * Note: This is not the actual structure used by the receiver
+   * to maintain its list of items, so modifying the array will
+   * not affect the receiver. 
+   * </p>
+   *
+   * @return the current visual order of the receiver's items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see Tree#setColumnOrder(int[])
+   * @see TreeColumn#getMoveable()
+   * @see TreeColumn#setMoveable(boolean)
+   * @see SWT#Move
+   * 
+   * @since 3.2
+   */
+  public int[] getColumnOrder () {
+      checkWidget();
+    int[] result;
+    if( columnHolder.size() == 0 ) {
+      result = new int[ 0 ];
+    } else {
+      result = new int[ columnOrder.length ];
+      System.arraycopy( columnOrder, 0, result, 0, columnOrder.length );
+    }
+    return result;
   }
   // ////////////////////////////////////
   // Listener registration/deregistration

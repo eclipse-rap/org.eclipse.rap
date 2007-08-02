@@ -33,6 +33,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public static final String PROP_BACKGROUND = "background";
   public static final String PROP_FOREGROUND = "foreground";
   public static final String PROP_GRAYED = "grayed";
+  public static final String PROP_TEXTS = "texts";
+  public static final String PROP_IMAGES = "images";
 
   // Expanded/collapsed state constants, used by readData
   private static final String STATE_COLLAPSED = "collapsed";
@@ -46,6 +48,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
     adapter.preserve( TreeItemLCA.PROP_EXPANDED,
                       Boolean.valueOf( treeItem.getExpanded() ) );
+    adapter.preserve( PROP_TEXTS, getTexts( treeItem ) );
+    adapter.preserve( PROP_IMAGES, getImages( treeItem ) );
     boolean selection = isSelected( treeItem );
     adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
     TreeItem item = ( TreeItem )widget;
@@ -82,15 +86,17 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       parent = treeItem.getParentItem();
     }
     Object[] args = new Object[] {
+      WidgetUtil.getId( treeItem ),
       parent
     };
-    writer.newWidget( "org.eclipse.swt.widgets.TreeItem", args );
+    writer.callStatic( "org.eclipse.swt.TreeItemUtil.createTreeItem", args );
+    
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
-    ItemLCAUtil.writeText( treeItem );
-    writeImage( treeItem );
+    writeTexts( treeItem );
+    writeImages( treeItem );
     writeFont( treeItem );
     writeBackground( treeItem );
     writeForeground( treeItem );
@@ -118,13 +124,21 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   ///////////////////////////////////
   // Helping methods to write changes
 
-  // TODO [rh] workaround for qx bug #260 (TreeFullControl doesn't update icon
-  //      when it is changed)
-  private static void writeImage( final TreeItem item ) throws IOException {
-    Image image = item.getImage();
-    WidgetLCAUtil.writeImage( item, Props.IMAGE, "image", image );
+  private static void writeImages( final TreeItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    // TODO [rh] optimize when !isInitialized: for all images != null: setImg
+    Image[] images = getImages( item );
+    Integer[] imageWidths = new Integer[ images.length ];
+    if( WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images ) ) {
+      String[] imagePaths = new String[ images.length ];
+      for( int i = 0; i < imagePaths.length; i++ ) {
+        imagePaths[ i ] = Image.getPath( images[ i ] );
+        imageWidths[ i ] = new Integer( item.getImageBounds( i ).width );
+      }
+      writer.set( "images", new Object[] { imagePaths, imageWidths } );
+    }
   }
-
+  
   private static void preserveFont( final TreeItem treeItem ) {
     IWidgetFontAdapter fontAdapter
       = ( IWidgetFontAdapter )treeItem.getAdapter( IWidgetFontAdapter.class );
@@ -180,6 +194,42 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeForeground( item, colorAdapter.getUserForegound() );
   }
 
+  private static void writeTexts( final TreeItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    String[] texts = getTexts( item );
+    if( WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts ) ) {
+      // TODO: [bm] escape text
+//      for( int i = 0; i < texts.length; i++ ) {
+        // TODO [rh] for some reason doesn't work with escapeText
+//        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
+//        texts[ i ] = encodeHTML( item.getText( i ) );
+//      }
+      writer.set( "texts", new Object[] { texts } );
+    }
+  }
+  
+  private static String[] getTexts( final TreeItem item ) {
+    int columnCount = getColumnCount( item );
+    String[] texts = new String[ columnCount ];
+    for( int i = 0; i < columnCount; i++ ) {
+      texts[ i ] = item.getText( i );
+    }
+    return texts;
+  }
+  
+  private static Image[] getImages( final TreeItem item ) {
+    int columnCount = getColumnCount( item );
+    Image[] images = new Image[ columnCount ];
+    for( int i = 0; i < columnCount; i++ ) {
+      images[ i ] = item.getImage( i );
+    }
+    return images;
+  }
+  
+  private static int getColumnCount( final TreeItem item ) {
+    return Math.max( 1, item.getParent().getColumnCount() );
+  }
+  
   private static void writeGrayed( final TreeItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( item.getGrayed() );
