@@ -743,7 +743,6 @@ public class TreeItem extends Item {
     if( !( 0 <= index && index < itemHolder.size() ) )
       error( SWT.ERROR_INVALID_RANGE );
     TreeItem item = ( TreeItem )itemHolder.getItem( index );
-    /* if there are no columns then the horizontal scrollbar may need adjusting */
     /* clear the item(s) */
     item.clear();
     if( recursive ) {
