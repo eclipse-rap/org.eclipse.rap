@@ -41,7 +41,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   },
 
   statics : {
-    // Constants usd to render img element that holds the item image
+    // Constants used to produce markup that holds the item image
     IMG_START : "<div ",
     IMG_STYLE_OPEN : "style=\"position:absolute;overflow:hidden;",
     IMG_STYLE_CLOSE : "\"",
@@ -50,7 +50,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     IMG_SRC_CLOSE : "\" />",
     IMG_END : "</div>",
     
-    // Constants used to render span element that holds the item text
+    // Constants used to produce markup that holds the item text
     TEXT_OPEN : "<div ",
     TEXT_STYLE_OPEN : "style=\"position:absolute;overflow:hidden;vertical-align:middle;white-space:nowrap;",
     TEXT_STYLE_CLOSE : "\"",

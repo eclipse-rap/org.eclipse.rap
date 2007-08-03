@@ -103,7 +103,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     Table table = ( Table )widget;
     ControlLCAUtil.writeChanges( table );
     writeHeaderHeight( table );
-    writerHeaderVisible( table );
+    writeHeaderVisible( table );
     writeItemHeight( table );
     TableLCAUtil.writeItemMetrics( table );
     writeItemCount( table );
@@ -158,7 +158,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
   
-  private void processSetData( final Table table ) {
+  private static void processSetData( final Table table ) {
     boolean setDataEvent 
       = WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_SET_DATA );
     if( setDataEvent ) {
@@ -184,7 +184,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( PROP_HEADER_HEIGHT, "headerHeight", newValue, null );
   }
 
-  private static void writerHeaderVisible( final Table table ) 
+  private static void writeHeaderVisible( final Table table ) 
     throws IOException 
   {
     JSWriter writer = JSWriter.getWriterFor( table );
@@ -205,6 +205,9 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private static void writeTopIndex( final Table table ) throws IOException {
+    // TODO [rh] investigate if we can optimize item updates by rendering
+    //      item.update()-JS-code from the server-side. e.g. compare 
+    //      item.preservedIsVisible != item.currentIsVisible
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = new Integer( table.getTopIndex() );
     writer.set( PROP_TOP_INDEX, "topIndex", newValue, DEFAULT_TOP_INDEX );

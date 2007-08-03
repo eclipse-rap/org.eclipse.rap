@@ -19,6 +19,9 @@ import java.util.logging.Logger;
 
 import org.eclipse.swt.internal.engine.AdapterFactoryRegistry;
 import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
+import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.swt.widgets.*;
 
 import com.w4t.ParamCheck;
 import com.w4t.engine.lifecycle.*;
@@ -152,6 +155,7 @@ public class RWTLifeCycle extends LifeCycle {
     }
     if( current == PhaseId.PROCESS_ACTION ) {
       UICallBackManager.getInstance().processRunnablesInUIThread();
+      checkDataForVirtualWidgets();
     }
   }
 
@@ -184,6 +188,25 @@ public class RWTLifeCycle extends LifeCycle {
       PhaseListener[] result = new PhaseListener[ listeners.size() ];
       listeners.toArray( result );
       return result;
+    }
+  }
+
+  private static void checkDataForVirtualWidgets() {
+    AllWidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+      public boolean doVisit( final Widget widget ) {
+        Object adapter = widget.getAdapter( IVirtualWidgetAdapter.class );
+        if( adapter != null ) {
+          IVirtualWidgetAdapter virtualWidgetAdapter 
+            = ( IVirtualWidgetAdapter )adapter;
+          virtualWidgetAdapter.checkData();
+        }
+        return true;
+      }
+    };
+    Display display = Display.getCurrent();
+    Shell[] shells = display.getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      WidgetTreeVisitor.accept( shells[ i ], visitor );
     }
   }
 }

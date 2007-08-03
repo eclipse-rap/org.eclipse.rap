@@ -17,6 +17,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
@@ -101,6 +103,34 @@ public class TableLCA_Test extends TestCase {
     assertEquals( resolvedItemCount, countResolvedItems( table ) );
   }
   
+  public void testCheckData() throws IOException {
+    final Table[] table = { null };
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Button button = new Button( shell, SWT.PUSH );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        table[ 0 ] = new Table( shell, SWT.VIRTUAL );
+        table[ 0 ].setSize( 90, 90 );
+        table[ 0 ].setItemCount( 500 );
+        assertFalse( isItemVirtual( table[ 0 ].getItem( 0 ) ) );
+        table[ 0 ].clearAll();
+      }
+    } );
+    shell.open();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    String buttonId = WidgetUtil.getId( button );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId  );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.execute();
+    
+    RWTFixture.fakeUIThread();
+    assertFalse( isItemVirtual( table[ 0 ].getItem( 0 ) ) );
+  }
+
   private static int countResolvedItems( final Table table ) {
     int result = 0;
     Object adapter = table.getAdapter( ITableAdapter.class );
@@ -114,6 +144,12 @@ public class TableLCA_Test extends TestCase {
     return result;
   }
   
+  private static boolean isItemVirtual( final TableItem item ) {
+    Object adapter = item.getParent().getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.isItemVirtual( item );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

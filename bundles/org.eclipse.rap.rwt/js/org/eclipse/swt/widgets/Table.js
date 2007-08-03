@@ -258,8 +258,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
     
     setTopIndex : function( value ) {
-      var scrollPos = value * this._itemHeight;
-      this._vertScrollBar.setValue( scrollPos );
+      this._vertScrollBar.setValue( value * this._itemHeight );
       this._internalSetTopIndex( value );
       this._topIndexChanged = false;
     },

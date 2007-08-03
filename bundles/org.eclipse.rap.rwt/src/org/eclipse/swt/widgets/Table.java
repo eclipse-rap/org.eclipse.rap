@@ -165,25 +165,21 @@ public class Table extends Composite {
     public boolean isItemVisible( final TableItem item ) {
       return item.isVisible();
     }
+    
     public boolean isItemVirtual( final TableItem item ) {
       return !item.cached;
     }
   }
   
-  private static final class ResizeListener extends ControlAdapter {
+  private final class VirtualWidgetAdapter implements IVirtualWidgetAdapter {
+    public void checkData() {
+      Table.this.checkData();
+    }
+  }
+  
+  private final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
-      Table table = ( Table )event.widget;
-      boolean visible = true;
-      int index = Math.min( 0, table.getTopIndex() );
-      int count = table.getItemCount();
-      while( visible && index < count ) {
-        TableItem item = table.getItem( index );
-        visible = item.isVisible();
-        if( visible ) {
-          table.checkData( item, index );
-        }
-        index++;
-      }
+      Table.this.checkData();
     }
   }
   
@@ -195,6 +191,7 @@ public class Table extends Composite {
   private final ItemHolder itemHolder;
   private final ItemHolder columnHolder;
   private final ITableAdapter tableAdapter;
+  private IVirtualWidgetAdapter virtualWidgetAdapter;
   private final ResizeListener resizeListener;
   private int[] columnOrder;
   private TableItem[] selection;
@@ -263,6 +260,11 @@ public class Table extends Composite {
       result = new CompositeItemHolder();
     } else if( adapter == ITableAdapter.class ) {
       result = tableAdapter;
+    } else if( adapter == IVirtualWidgetAdapter.class ) {
+      if( virtualWidgetAdapter == null ) {
+        virtualWidgetAdapter = new VirtualWidgetAdapter();
+      }
+      result = virtualWidgetAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -1945,6 +1947,20 @@ public class Table extends Composite {
   
   //////////////////
   // helping methods
+
+  private void checkData() {
+    boolean visible = true;
+    int index = Math.min( 0, getTopIndex() );
+    int count = getItemCount();
+    while( visible && index < count ) {
+      TableItem item = getItem( index );
+      visible = item.isVisible();
+      if( visible ) {
+        checkData( item, index );
+      }
+      index++;
+    }
+  }
 
   final void checkData( final TableItem item, final int index ) {
     if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {

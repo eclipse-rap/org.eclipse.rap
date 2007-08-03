@@ -481,7 +481,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
           try {
             writer.write( jsEnableUICallBack() );
           } catch( IOException e ) {
-            // [rh] exception handling
+            // TODO [rh] exception handling
             e.printStackTrace();
           } finally {
             W4TContext.getLifeCycle().removePhaseListener( this );
