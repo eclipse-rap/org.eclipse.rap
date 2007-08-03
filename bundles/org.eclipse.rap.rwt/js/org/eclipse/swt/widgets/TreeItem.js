@@ -39,11 +39,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this._row.addIcon( "widget/tree/folder_closed.gif", 
                  "widget/tree/folder_open.gif" );
     // Text
-    this._row.addLabel( "foo" );
-    // Everything else should be right justified    	
-    //var spacer = new qx.ui.basic.HorizontalSpacer;
-		//this._row.addObject(spacer, true);
-    
+    this._row.addLabel( "" );
     
     // Construct TreeItem
     this.base( arguments, this._row );
@@ -53,12 +49,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     parentItem.add( this );
     
     this._texts = null;
-    this._images = null;
+    this._images = new Array();
     this._colLabels = new Array();
-    // add labels for every column
-    for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
-      this.columnAdded();
-    }
 
     this.getLabelObject().setMode( "html" );
   },
@@ -75,6 +67,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   },
 
   members : {
+    
   	// TODO: [bm] needed to override the property setters to apply color to label
   	setBackgroundColor : function ( value ) {
   		this.getLabelObject().setBackgroundColor( value );
@@ -204,25 +197,42 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     },
     
     columnAdded : function() {
-    	var obj = new qx.ui.basic.Label( "" );
-    	this._row.addObject(obj, true);
-    	this._colLabels.push( obj );
+			
     },
     
     updateItem : function() {
-    	// TODO: update images
+	    var colOrder = this.getTree().getParent().getColumnOrder();
+	    var colCount = Math.max ( 1, this.getTree().getParent()._columns.length );
     	if( this._texts != null ) {
-	    	var colOrder = this.getTree().getParent().getColumnOrder();
-	    	var colCount = Math.max ( 1, this.getTree().getParent()._columns.length );
 	    	for( var c = 0; c < colCount; c++ ) {
 	    		var col = colOrder[ c ];
-	    		if( c == 0 ) {
-	    			this.setLabel( this._texts[ col ]);
-	    		} else {
-	    		  this._colLabels[ c -1 ].setText( this._texts[ col ] );
+	    		var text = this._texts[ col ];
+	    		if( text != null && text != "") {
+		    		if( c == 0 ) {
+		    			this.setLabel( this._texts[ col ]);
+		    		} else {
+		    			if( this._colLabels[ c -1 ] == null ) {
+		    				if( this._images[ col ] != null
+		    					|| this._colLabels[ c -1 ] instanceof qx.ui.basic.Label ) {
+			    			  var obj = new qx.ui.basic.Atom( "" );
+	    						obj.setHorizontalChildrenAlign( "left" );
+		    				} else {
+		    					var obj = new qx.ui.basic.Label();
+		    					// remap function names
+		    					obj.setLabel = function( value ) { this.setText( value ); }
+		    					obj.setIcon = function( value ) { /* empty cause we have atoms to display images */ }
+		    				}
+    						this._row.addObject(obj, true);
+    						this._colLabels[ c -1 ] = obj;
+		    			}
+		    		  this._colLabels[ c -1 ].setLabel( this._texts[ col ] );
+		    		  this._colLabels[ c -1 ].setIcon( this._images[ col ] );
+		    		  //this.getTree().addChildToTreeQueue( this._colLabels[ c -1 ] );
+		    		}
 	    		}
 	    	}
     	}
+    	//this.getTree().flushTreeQueue();
     },
     
     updateColumnsWidth : function() {
