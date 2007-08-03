@@ -81,6 +81,8 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  */
 public class Tree extends Composite {
 
+  
+
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
   
   private final ItemHolder itemHolder;
@@ -90,6 +92,8 @@ public class Tree extends Composite {
   private int[] columnOrder;
   private TreeColumn sortColumn;
   private boolean headerVisible = false;
+  private TreeAdapter treeAdapter;
+  private TreeItem showItem;
   
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
@@ -120,6 +124,18 @@ public class Tree extends Composite {
       System.arraycopy( columns, 0, result, 0, columns.length );
       System.arraycopy( items, 0, result, columns.length, items.length );
       return result;
+    }
+  }
+
+  public class TreeAdapter {
+
+    public TreeItem getShowItem() {
+      return Tree.this.showItem;
+    }
+
+    
+    public void clearShowItem() {
+      Tree.this.showItem = null;
     }
   }
 
@@ -164,6 +180,8 @@ public class Tree extends Composite {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = new CompositeItemHolder();
+    } else if( adapter == TreeAdapter.class ) {
+      result = new TreeAdapter();
     } else {
       result = super.getAdapter( adapter );
     }
@@ -330,8 +348,7 @@ public class Tree extends Composite {
   		parent = parent.getParentItem();
   	}
   	
-  	// TODO: scroll to the item - see also SWT bug 6203
-  	// use Qooxdoo Widget#scrollIntoView ?
+  	showItem = item;
   }
   /////////////////////////////////////
   // Methods to get/set/clear selection

@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
   extend : qx.ui.layout.CanvasLayout,
 
   construct : function( style ) {
-  	this.base( arguments );
+    this.base( arguments );
     
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
 
@@ -69,14 +69,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
 
     // Create horizontal scrollBar
     this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
-    //this._horzScrollBar.setMergeEvents( true );
     this._horzScrollBar.setHeight( this._horzScrollBar.getPreferredBoxHeight() );
     this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
     this.add( this._horzScrollBar );
     
     // Create vertical scrollBar
     this._vertScrollBar = new qx.ui.basic.ScrollBar( false );
-    //this._vertScrollBar.setMergeEvents( true );
     this._vertScrollBar.setWidth( this._vertScrollBar.getPreferredBoxWidth() );
     this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
     this.add( this._vertScrollBar );
@@ -87,22 +85,22 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
   },
   
   destruct : function() {
-  	this.removeEventListener( "changeWidth", this._onChangeSize, this );
+    this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
-  	
+
     if( this._columnArea ) {
       this._columnArea.dispose();
       this._columnArea = null;
     }
     if( this._tree ) {
-	    var manager = this._tree.getManager();
-	    manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
-	    this._tree.removeEventListener( "treeOpenWithContent", this._onItemExpanded, this );
-	    this._tree.removeEventListener( "treeClose", this._onItemCollapsed, this );
-	    this._tree.removeEventListener( "contextmenu", this._onContextMenu, this );
-	    this._tree.removeEventListener( "focus", this._onFocusIn, this );
-	    this._tree.removeEventListener( "blur", this._onFocusOut, this );
-	    this._tree.removeEventListener( "appear", this._updateLayout, this );
+      var manager = this._tree.getManager();
+      manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
+      this._tree.removeEventListener( "treeOpenWithContent", this._onItemExpanded, this );
+      this._tree.removeEventListener( "treeClose", this._onItemCollapsed, this );
+      this._tree.removeEventListener( "contextmenu", this._onContextMenu, this );
+      this._tree.removeEventListener( "focus", this._onFocusIn, this );
+      this._tree.removeEventListener( "blur", this._onFocusOut, this );
+      this._tree.removeEventListener( "appear", this._updateLayout, this );
       this._tree.dispose();
       this._tree = null;
     }
@@ -126,16 +124,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       this._columnArea.add( column );
       this._columns.push( column );
       this._updateScrollWidth();
-			this._updateLayout();
+      this._updateLayout();
       
       // inform all items about the new column
       var items = this._tree.getItems( true, false );
       if( items.length > 0 ) {
-	      for( var i = 0; i < items.length; i++ ) {
-	      	if(items[ i ] instanceof org.eclipse.swt.widgets.TreeItem ) {
-	          items[ i ].columnAdded();
-	      	}
-	      }
+        for( var i = 0; i < items.length; i++ ) {
+          if(items[ i ] instanceof org.eclipse.swt.widgets.TreeItem ) {
+            items[ i ].columnAdded();
+          }
+        }
       }
     },
     
@@ -170,7 +168,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     },
     
     getColumnCount : function() {
-    	return this._columns.length;
+      return this._columns.length;
     },
     
     getDefaultColumnWidth : function() {
@@ -178,29 +176,29 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     },
     
     getColumnsWidth : function() {
-    	var width = 0;
-    	for(var i=0; i<this._columns.length; i++) {
-    		width += this._columns[ i ].getWidth();
-    	}
-    	return width;
+      var width = 0;
+      for(var i=0; i<this._columns.length; i++) {
+        width += this._columns[ i ].getWidth();
+      }
+      return width;
     },
     
     _removeColumn : function( column ) {
-    	column.removeEventListener( "changeWidth", this._onColumnChangeSize, this );
+      column.removeEventListener( "changeWidth", this._onColumnChangeSize, this );
     },
 
-		_onColumnChangeSize : function( evt ) {
-			var items = this._tree.getItems( true, false );
+    _onColumnChangeSize : function( evt ) {
+      var items = this._tree.getItems( true, false );
       if( items.length > 0 ) {
-	      for( var i = 0; i < items.length; i++ ) {
-	      	if(items[ i ] instanceof org.eclipse.swt.widgets.TreeItem ) {
-	          items[ i ].updateColumnsWidth();
-	      	}
-	      }
+        for( var i = 0; i < items.length; i++ ) {
+          if(items[ i ] instanceof org.eclipse.swt.widgets.TreeItem ) {
+            items[ i ].updateColumnsWidth();
+          }
+        }
       }
       this._updateScrollWidth();
-		},
-		
+    },
+
     //////////////////////////////////////////////////////////////
     // Show and hide the resize line used by column while resizing
 
@@ -225,23 +223,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     },
         
     setHeaderHeight : function( height ) {
-    	this._columnAreaHeight = height;
-    	this._columnArea.setHeight( this._columnAreaHeight );
+      this._columnAreaHeight = height;
+      this._columnArea.setHeight( this._columnAreaHeight );
       var columns = this._columnArea.getChildren();
       for( var i = 0; i < columns.length; i++ ) {
         columns[ i ].setHeight( height );
       }
-    	this._updateLayout();
+      this._updateLayout();
     },
     
     setHeaderVisible : function( value ) {
       this._columnArea.setDisplay( value );
       this._headerVisible = value;
-			this._updateLayout();
+      this._updateLayout();
     },
     
     getTree : function() {
-    	return this._tree;
+      return this._tree;
     },
 
     getColumnAreaHeight : function() {
@@ -251,15 +249,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       return 0;
     },
     
-	  _updateLayout : function() {
-	  	if( !this._tree.isCreated() ) {
-      	this._tree.addEventListener( "appear",
+    showItem : function( item ) {
+      // TODO: [bm] implement scroll to item
+    },
+    
+    _updateLayout : function() {
+      if( !this._tree.isCreated() ) {
+        this._tree.addEventListener( "appear",
                                  this._updateLayout, this );
         return;
       }
-    	//this._columnArea.setWidth( this.getColumnsWidth() );
-			this._columnArea.setWidth( this.getWidth() );
-    	this._columnArea.setHeight( this.getColumnAreaHeight() );
+      this._columnArea.setWidth( this.getWidth() );
+      this._columnArea.setHeight( this.getColumnAreaHeight() );
       this._tree.setWidth( Math.max( this.getWidth(), this.getColumnsWidth() ) );
       this._tree.setHeight( Math.max( this.getHeight() - this.getColumnAreaHeight(), this.getItemsHeight() ) );
       this._tree.setTop( this.getColumnAreaHeight() );
@@ -269,41 +270,40 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         this._horzScrollBar.setHeight( 0 );
         
       } else {
-      	console.log("show horz scrollbar");
         this._horzScrollBar.setDisplay( true );
-	    	this._horzScrollBar.setLeft( 0 );
+        this._horzScrollBar.setLeft( 0 );
         this._horzScrollBar.setHeight( this._horzScrollBar.getPreferredBoxHeight() );
-	    	this._horzScrollBar.setTop( this.getHeight() - this._horzScrollBar.getPreferredBoxHeight() );
-	      this._horzScrollBar.setWidth( this.getWidth() );
-	      this._updateScrollWidth();
+        this._horzScrollBar.setTop( this.getHeight() - this._horzScrollBar.getPreferredBoxHeight() );
+        this._horzScrollBar.setWidth( this.getWidth() );
+        this._updateScrollWidth();
       }
 
-			if( (this.getHeight() - this.getColumnAreaHeight() ) < this.getItemsHeight() ) {
+      if( (this.getHeight() - this.getColumnAreaHeight() ) < this.getItemsHeight() ) {
         this._vertScrollBar.setDisplay( true );
-	    	this._vertScrollBar.setWidth( this._vertScrollBar.getPreferredBoxWidth() );
-	    	this._vertScrollBar.setLeft( this.getWidth() - this._vertScrollBar.getPreferredBoxWidth() );
-	    	this._vertScrollBar.setHeight( this.getHeight() - this._horzScrollBar.getHeight() - this.getColumnAreaHeight() );
-	    	this._vertScrollBar.setTop( this.getColumnAreaHeight() );
-	    	
-	      this._updateScrollHeight();
-				this._horzScrollBar.setWidth( this._horzScrollBar.getWidth() - this._vertScrollBar.getWidth() );
-			} else {
+       this._vertScrollBar.setWidth( this._vertScrollBar.getPreferredBoxWidth() );
+       this._vertScrollBar.setLeft( this.getWidth() - this._vertScrollBar.getPreferredBoxWidth() );
+       this._vertScrollBar.setHeight( this.getHeight() - this._horzScrollBar.getHeight() - this.getColumnAreaHeight() );
+       this._vertScrollBar.setTop( this.getColumnAreaHeight() );
+
+        this._updateScrollHeight();
+        this._horzScrollBar.setWidth( this._horzScrollBar.getWidth() - this._vertScrollBar.getWidth() );
+      } else {
         this._vertScrollBar.setDisplay( false );
-	    	this._vertScrollBar.setWidth( 0 );
-			}
-		},
-		
-		_onHorzScrollBarChangeValue : function() {
+       this._vertScrollBar.setWidth( 0 );
+      }
+    },
+
+    _onHorzScrollBarChangeValue : function() {
       this._columnArea.setLeft( 0 - this._horzScrollBar.getValue() );
       this._tree.setLeft( 0 - this._horzScrollBar.getValue() );
     },
     
-		_onVertScrollBarChangeValue : function() {
+    _onVertScrollBarChangeValue : function() {
       this._tree.setTop( this.getColumnAreaHeight() - this._vertScrollBar.getValue() );
     },
 
     _onChangeSize : function( evt ) {
-			this._updateLayout();
+      this._updateLayout();
     },
     
     /**
@@ -327,11 +327,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     },
     
     setColumnOrder : function ( order ) {
-    	this._columnOrder = order;
+      this._columnOrder = order;
     },
     
     getColumnOrder : function() {
-    	return this._columnOrder;
+      return this._columnOrder;
     },
     
     /////////////////

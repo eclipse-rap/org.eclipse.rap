@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.Tree.TreeAdapter;
 
 import com.w4t.engine.service.ContextProvider;
 
@@ -41,7 +42,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_TREE_LISTENERS = "treeListeners";
   private static final String PROP_HEADER_HEIGHT = "headerHeight";
   private static final String PROP_HEADER_VISIBLE = "headerVisible";
-  private static final String PROP_COLUMN_ORDER = "headerVisible";
+  private static final String PROP_COLUMN_ORDER = "columnOrder";
   
   public void preserveValues( final Widget widget ) {
     Tree tree  = ( Tree )widget;
@@ -55,8 +56,14 @@ public final class TreeLCA extends AbstractWidgetLCA {
                       new Integer( tree.getHeaderHeight() ) );
     adapter.preserve( PROP_HEADER_VISIBLE, 
                       Boolean.valueOf( tree.getHeaderVisible() ) );
+    
+    int[] values = tree.getColumnOrder();
+    Integer[] columnOrder = new Integer[ values.length ];
+    for( int i = 0; i < values.length; i++ ) {
+      columnOrder[ i ] = new Integer( values[ i ] );
+    }
     adapter.preserve( PROP_COLUMN_ORDER, 
-                      tree.getColumnOrder() );
+                      columnOrder );
   }
   
   public void readData( final Widget widget ) {
@@ -86,14 +93,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
     updateSelectionListener( tree );
     updateTreeListener( tree );
     writeHeaderHeight( tree );
-    writerHeaderVisible( tree );
+    writeHeaderVisible( tree );
     writeColumnOrder( tree );
+    writeShowItem( tree );
     Control[] children = tree.getChildren();
     for( int i = 0; i < children.length; i++ ) {
       IWidgetAdapter adapter = WidgetUtil.getAdapter( children[ i ] );
       adapter.setJSParent( getItemJSParent( tree ) );
     }
   }
+
 
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -167,6 +176,13 @@ public final class TreeLCA extends AbstractWidgetLCA {
   /////////////////////////////////////////////////////////////
   // Helping methods to write JavaScript for changed properties
 
+  private void writeShowItem( Tree tree ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( tree );
+    TreeAdapter adapter = ( TreeAdapter )tree.getAdapter( TreeAdapter.class );
+    Item showItem = adapter.getShowItem();
+    writer.call( tree, "showItem", new Object[] { showItem } );
+  }
+
   private static void writeHeaderHeight( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getHeaderHeight() );
@@ -177,20 +193,22 @@ public final class TreeLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( tree );
     int[] values = tree.getColumnOrder();
     if( values.length > 0 ) {
-      Integer[] integers = new Integer[ values.length ];
+      Integer[] newValue = new Integer[ values.length ];
       for( int i = 0; i < values.length; i++ ) {
-        integers[ i ] = new Integer( values[ i ] );
+        newValue[ i ] = new Integer( values[ i ] );
       }
-      writer.set( PROP_COLUMN_ORDER, "columnOrder", integers, null );
+      if( WidgetLCAUtil.hasChanged( tree, PROP_COLUMN_ORDER, newValue, new Integer[] {} ) ) {
+        writer.set( PROP_COLUMN_ORDER, "columnOrder", newValue, null );
+      }
     }
   }
 
-  private static void writerHeaderVisible( final Tree tree )
+  private static void writeHeaderVisible( final Tree tree )
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Boolean newValue = Boolean.valueOf( tree.getHeaderVisible() );
-    writer.set( PROP_HEADER_VISIBLE, "headerVisible", newValue, null );
+    writer.set( PROP_HEADER_VISIBLE, "headerVisible", newValue, Boolean.FALSE );
   }
   
   private static void updateSelectionListener( final Tree tree ) 
