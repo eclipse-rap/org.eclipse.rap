@@ -222,7 +222,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 	    		var text = this._texts[ col ];
 	    		if( text != null && text != "") {
 		    		if( c == 0 ) {
-		    			this.setLabel( this._texts[ col ]);
+		    			this.setLabel( this._texts[ col ] );
+		    		  this.setImage( this._images[ col ] );
 		    		} else {
 		    			if( this._colLabels[ c -1 ] == null ) {
 		    				if( this._images[ col ] != null
@@ -264,6 +265,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 	    		coLabel = this._colLabels[ i-1 ];
 	    		if( coLabel != null ) {
 	    			coLabel.setWidth( columnWidth[ i ] );
+	    			console.log("setting with of " + coLabel.getLabel() + " to " + coLabel.getWidth());
 	    		}
 	    	}
 			}
