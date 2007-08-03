@@ -68,23 +68,31 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 
   members : {
     
-  	// TODO: [bm] needed to override the property setters to apply color to label
-  	setBackgroundColor : function ( value ) {
-  		this.getLabelObject().setBackgroundColor( value );
-  	},
-  	
-  	// TODO: [bm] needed to override the property setters to apply color to label too
-  	setTextColor : function ( value ) {
-  		this.getLabelObject().setTextColor( value );
-  	},
+    // TODO: [bm] needed to override the property setters to apply color to label
+    setBackgroundColor : function ( value ) {
+      this.getLabelObject().setBackgroundColor( value );
+      // we have to go through each column
+      for(var i=0; i<this._colLabels.length; i++) {
+        this._colLabels[ i ].setBackgroundColor( value );
+      }
+    },
 
-  	resetBackgroundColor : function ( value ) {
-  	    this.getLabelObject().resetBackgroundColor();
-  	},
+    // TODO: [bm] needed to override the property setters to apply color to label too
+    setTextColor : function ( value ) {
+      this.getLabelObject().setTextColor( value );
+      // we have to go through each column
+      for(var i=0; i<this._colLabels.length; i++) {
+       this._colLabels[ i ].setTextColor( value );
+      }
+    },
 
-  	resetTextColor : function ( value ) {
-  	   this.getLabelObject().resetTextColor();
-  	},
+    resetBackgroundColor : function ( value ) {
+        this.getLabelObject().resetBackgroundColor();
+    },
+
+    resetTextColor : function ( value ) {
+       this.getLabelObject().resetTextColor();
+    },
 
     setChecked : function( value ) {
       if( this._checkBox != null ) {
@@ -216,23 +224,23 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 		    					|| this._colLabels[ c -1 ] instanceof qx.ui.basic.Label ) {
 			    			  var obj = new qx.ui.basic.Atom( "" );
 	    						obj.setHorizontalChildrenAlign( "left" );
+	    						obj.setHeight( this.getLabelObject().getHeight() );
 		    				} else {
 		    					var obj = new qx.ui.basic.Label();
 		    					// remap function names
 		    					obj.setLabel = function( value ) { this.setText( value ); }
 		    					obj.setIcon = function( value ) { /* empty cause we have atoms to display images */ }
+	    						obj.setHeight( this.getLabelObject().getHeight() );
 		    				}
     						this._row.addObject(obj, true);
     						this._colLabels[ c -1 ] = obj;
 		    			}
 		    		  this._colLabels[ c -1 ].setLabel( this._texts[ col ] );
 		    		  this._colLabels[ c -1 ].setIcon( this._images[ col ] );
-		    		  //this.getTree().addChildToTreeQueue( this._colLabels[ c -1 ] );
 		    		}
 	    		}
 	    	}
     	}
-    	//this.getTree().flushTreeQueue();
     },
     
     updateColumnsWidth : function() {
