@@ -223,7 +223,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 	    		if( text != null && text != "") {
 		    		if( c == 0 ) {
 		    			this.setLabel( this._texts[ col ] );
-		    		  this.setImage( this._images[ col ] );
+		    			// TODO [bm] remove if when image bug is fixed
+		    			if( this._images[ col ] != null ) {
+  		    		  this.setImage( this._images[ col ] );
+		    			}
 		    		} else {
 		    			if( this._colLabels[ c -1 ] == null ) {
 		    				if( this._images[ col ] != null
