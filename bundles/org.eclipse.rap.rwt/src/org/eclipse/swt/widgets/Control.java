@@ -16,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.lifecycle.IControlAdapter;
@@ -1237,6 +1238,62 @@ public abstract class Control extends Widget {
    */
   public void removeFocusListener( final FocusListener listener ) {
     FocusEvent.removeListener( this, listener );
+  }
+  
+  ///////////////
+  // drawing (Note that we can't realy force a redraw. This is just a 
+  //         fake to for event notifications that come on OS systems
+  //         with redraws)
+  
+  /**
+   * If the argument is <code>false</code>, causes subsequent drawing
+   * operations in the receiver to be ignored. No drawing of any kind
+   * can occur in the receiver until the flag is set to true.
+   * Graphics operations that occurred while the flag was
+   * <code>false</code> are lost. When the flag is set to <code>true</code>,
+   * the entire widget is marked as needing to be redrawn.  Nested calls
+   * to this method are stacked.
+   * <p>
+   * Note: This operation is a hint and may not be supported on some
+   * platforms or for some widgets.
+   * </p>
+   * <p>
+   * Note: With RAP we can't realy force a redraw. This is just a 
+   *       fake to enable event notifications that come on OS systems
+   *       with redraws.
+   * </p>
+   *
+   * @param redraw the new redraw state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setRedraw( boolean redraw ) {
+    checkWidget();
+    RWTLifeCycle.fakeRedraw( this, redraw );
+  }
+  
+
+  /**
+   * Causes the entire bounds of the receiver to be marked
+   * as needing to be redrawn.
+   * 
+   * <p>
+   * Note: With RAP we can't realy force a redraw. This is just a 
+   *       fake to enable event notifications that come on OS systems
+   *       with redraws.
+   * </p>
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void redraw () {
+    checkWidget();
+    RWTLifeCycle.fakeRedraw( this, true );
   }
 
   ////////////

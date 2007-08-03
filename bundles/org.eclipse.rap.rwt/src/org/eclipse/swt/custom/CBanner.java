@@ -530,7 +530,7 @@ public class CBanner extends Composite {
       }
       updateCurve( getSize().y );
       layout();
-//      redraw();
+      redraw();
     }
   }
 

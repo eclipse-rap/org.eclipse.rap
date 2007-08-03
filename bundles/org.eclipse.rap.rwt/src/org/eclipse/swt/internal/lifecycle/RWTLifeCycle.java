@@ -17,11 +17,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.internal.engine.AdapterFactoryRegistry;
 import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
 
 import com.w4t.ParamCheck;
 import com.w4t.engine.lifecycle.*;
@@ -33,12 +32,12 @@ import com.w4t.engine.service.*;
  */
 public class RWTLifeCycle extends LifeCycle {
   
+  private static final String REDRAW_CONTROLS
+    = RWTLifeCycle.class.getName() + ".RedrawWidgets";
   private static final String CURRENT_THREAD
     = RWTLifeCycle.class.getName() + "CurrentThread";
-
   private static final String INITIALIZED
     = RWTLifeCycle.class.getName() + "Initialized";
-
   private final static Logger LOGGER 
     = Logger.getLogger( RWTLifeCycle.class.getName() );
 
@@ -155,7 +154,7 @@ public class RWTLifeCycle extends LifeCycle {
     }
     if( current == PhaseId.PROCESS_ACTION ) {
       UICallBackManager.getInstance().processRunnablesInUIThread();
-      checkDataForVirtualWidgets();
+      doRedrawFake();
     }
   }
 
@@ -191,22 +190,33 @@ public class RWTLifeCycle extends LifeCycle {
     }
   }
 
-  private static void checkDataForVirtualWidgets() {
-    AllWidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
-        Object adapter = widget.getAdapter( IVirtualWidgetAdapter.class );
-        if( adapter != null ) {
-          IVirtualWidgetAdapter virtualWidgetAdapter 
-            = ( IVirtualWidgetAdapter )adapter;
-          virtualWidgetAdapter.checkData();
-        }
-        return true;
+  public static void fakeRedraw( final Control control,
+                                 final boolean redraw )
+  {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Set set = ( Set )stateInfo.getAttribute( REDRAW_CONTROLS );
+    if( set == null ) {
+      set = new HashSet();
+      stateInfo.setAttribute( REDRAW_CONTROLS, set );
+    }
+    if( redraw ) {
+      set.add( control );
+    } else {
+      set.remove( control );
+    }
+  }
+  
+  private void doRedrawFake() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Set set = ( Set )stateInfo.getAttribute( REDRAW_CONTROLS );
+    if( set != null ) {
+      Object[] controls = set.toArray();
+      for( int i = 0; i < controls.length; i++ ) {
+        int evtId = ControlEvent.CONTROL_RESIZED;
+        Control control = ( ( Control )controls[ i ] );
+        ControlEvent evt = new ControlEvent( control, evtId );
+        evt.processEvent();
       }
-    };
-    Display display = Display.getCurrent();
-    Shell[] shells = display.getShells();
-    for( int i = 0; i < shells.length; i++ ) {
-      WidgetTreeVisitor.accept( shells[ i ], visitor );
     }
   }
 }

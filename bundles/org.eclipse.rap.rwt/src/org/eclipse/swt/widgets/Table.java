@@ -81,6 +81,26 @@ import org.eclipse.swt.lifecycle.ProcessActionRunner;
  */
 public class Table extends Composite {
   
+  private static final int GRID_WIDTH = 1;
+  private static final int CHECK_HEIGHT = 13;
+  
+  private static final TableItem[] EMPTY_ITEMS = new TableItem[ 0 ];
+
+  private final ItemHolder itemHolder;
+  private final ItemHolder columnHolder;
+  private final ITableAdapter tableAdapter;
+  private final ResizeListener resizeListener;
+  private int[] columnOrder;
+  private TableItem[] selection;
+  private boolean linesVisible;
+  private boolean headerVisible;
+  private int topIndex;
+  private int focusIndex;
+  private TableColumn sortColumn;
+  private int sortDirection;
+  private Point itemImageSize;
+  
+  
   // handle the fact that we have two item types to deal with
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
@@ -165,43 +185,27 @@ public class Table extends Composite {
     public boolean isItemVisible( final TableItem item ) {
       return item.isVisible();
     }
-    
     public boolean isItemVirtual( final TableItem item ) {
       return !item.cached;
     }
   }
   
-  private final class VirtualWidgetAdapter implements IVirtualWidgetAdapter {
-    public void checkData() {
-      Table.this.checkData();
-    }
-  }
-  
-  private final class ResizeListener extends ControlAdapter {
+  private static final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
-      Table.this.checkData();
+      Table table = ( Table )event.widget;
+      boolean visible = true;
+      int index = Math.min( 0, table.getTopIndex() );
+      int count = table.getItemCount();
+      while( visible && index < count ) {
+        TableItem item = table.getItem( index );
+        visible = item.isVisible();
+        if( visible ) {
+          table.checkData( item, index );
+        }
+        index++;
+      }
     }
   }
-  
-  private static final int GRID_WIDTH = 1;
-  private static final int CHECK_HEIGHT = 13;
-  
-  private static final TableItem[] EMPTY_ITEMS = new TableItem[ 0 ];
-
-  private final ItemHolder itemHolder;
-  private final ItemHolder columnHolder;
-  private final ITableAdapter tableAdapter;
-  private IVirtualWidgetAdapter virtualWidgetAdapter;
-  private final ResizeListener resizeListener;
-  private int[] columnOrder;
-  private TableItem[] selection;
-  private boolean linesVisible;
-  private boolean headerVisible;
-  private int topIndex;
-  private int focusIndex;
-  private TableColumn sortColumn;
-  private int sortDirection;
-  private Point itemImageSize;
   
   /**
    * Constructs a new instance of this class given its parent
@@ -260,11 +264,6 @@ public class Table extends Composite {
       result = new CompositeItemHolder();
     } else if( adapter == ITableAdapter.class ) {
       result = tableAdapter;
-    } else if( adapter == IVirtualWidgetAdapter.class ) {
-      if( virtualWidgetAdapter == null ) {
-        virtualWidgetAdapter = new VirtualWidgetAdapter();
-      }
-      result = virtualWidgetAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -1947,20 +1946,6 @@ public class Table extends Composite {
   
   //////////////////
   // helping methods
-
-  private void checkData() {
-    boolean visible = true;
-    int index = Math.min( 0, getTopIndex() );
-    int count = getItemCount();
-    while( visible && index < count ) {
-      TableItem item = getItem( index );
-      visible = item.isVisible();
-      if( visible ) {
-        checkData( item, index );
-      }
-      index++;
-    }
-  }
 
   final void checkData( final TableItem item, final int index ) {
     if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {

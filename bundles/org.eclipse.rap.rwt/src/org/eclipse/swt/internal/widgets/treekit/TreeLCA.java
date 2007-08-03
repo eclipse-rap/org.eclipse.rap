@@ -19,19 +19,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.swt.lifecycle.ControlLCAUtil;
-import org.eclipse.swt.lifecycle.IWidgetAdapter;
-import org.eclipse.swt.lifecycle.JSConst;
-import org.eclipse.swt.lifecycle.JSWriter;
-import org.eclipse.swt.lifecycle.WidgetLCAUtil;
-import org.eclipse.swt.lifecycle.WidgetUtil;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.swt.widgets.Widget;
-import org.eclipse.swt.widgets.Tree.TreeAdapter;
+import org.eclipse.swt.lifecycle.*;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Tree.TreeItemAdapter;
 
 import com.w4t.engine.service.ContextProvider;
 
@@ -178,7 +168,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private void writeShowItem( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
-    TreeAdapter adapter = ( TreeAdapter )tree.getAdapter( TreeAdapter.class );
+    TreeItemAdapter adapter
+      = ( TreeItemAdapter )tree.getAdapter( TreeItemAdapter.class );
     Item showItem = adapter.getShowItem();
     writer.call( tree, "showItem", new Object[] { showItem } );
   }

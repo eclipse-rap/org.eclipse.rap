@@ -1210,11 +1210,10 @@ public class CoolBar extends Composite {
    */
   public void setLocked( boolean locked ) {
     checkWidget();
-    // if (isLocked != locked) {
-    // redraw();
-    // }
+    if( isLocked != locked ) {
+      redraw();
+    }
     isLocked = locked;
-
   }
 
   /**

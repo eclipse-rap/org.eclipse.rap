@@ -13,15 +13,9 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
-import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
-import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
-import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.*;
 
 
 /**
@@ -87,6 +81,45 @@ public class TreeItem extends Item {
     this( parent, null, style, -1 );
   }
 
+  /**
+   * Constructs a new instance of this class given its parent (which must be a
+   * <code>Tree</code> or a <code>TreeItem</code>), a style value
+   * describing its behavior and appearance, and the index at which to place it
+   * in the items maintained by its parent.
+   * <p>
+   * The style value is either one of the style constants defined in class
+   * <code>SWT</code> which is applicable to instances of this class, or must
+   * be built by <em>bitwise OR</em>'ing together (that is, using the
+   * <code>int</code> "|" operator) two or more of those <code>SWT</code>
+   * style constants. The class description lists the style constants that are
+   * applicable to the class. Style bits are also inherited from superclasses.
+   * </p>
+   * 
+   * @param parent a tree control which will be the parent of the new instance
+   *            (cannot be null)
+   * @param style the style of control to construct
+   * @param index the zero-relative index to store the receiver in its parent
+   * @exception IllegalArgumentException
+   *                <ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   *                <li>ERROR_INVALID_RANGE - if the index is not between 0 and
+   *                the number of elements in the parent (inclusive)</li>
+   *                </ul>
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the parent</li>
+   *                <li>ERROR_INVALID_SUBCLASS - if this class is not an
+   *                allowed subclass</li>
+   *                </ul>
+   * @see SWT
+   * @see Widget#checkSubclass
+   * @see Widget#getStyle
+   */
+  public TreeItem( Tree parent, int style, int index ) {
+    this( parent, null, style, index );
+  }
+  
   /**
    * Constructs a new instance of this class given its parent
    * (which must be a <code>Tree</code> or a <code>TreeItem</code>)
@@ -700,7 +733,6 @@ public class TreeItem extends Item {
 //    cellForegrounds = cellBackgrounds = null;
     font = null;
 //    cellFonts = null;
-//    cached = false;
     setText( "" );
     setImage( (Image) null );
 
@@ -999,6 +1031,25 @@ public class TreeItem extends Item {
       items[ i ].dispose();
     }
   }
+  
+  /**
+   * Sets the number of child items contained in the receiver.
+   * 
+   * @param count the number of items
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *                disposed</li>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the receiver</li>
+   *                </ul>
+   * @since 3.2
+   */
+  public void setItemCount( int count ) {
+    checkWidget();
+    parent.setItemCount( count, this );
+  }
+
 
   /////////////////////////////////
   // Methods to dispose of the item

@@ -15,18 +15,12 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.TreeEvent;
-import org.eclipse.swt.events.TreeListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
-import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
-import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.swt.lifecycle.ProcessActionRunner;
 
 /**
  * Instances of this class provide a selectable user interface object
@@ -81,8 +75,6 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  */
 public class Tree extends Composite {
 
-  
-
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
   
   private final ItemHolder itemHolder;
@@ -94,6 +86,9 @@ public class Tree extends Composite {
   private boolean headerVisible = false;
   private TreeAdapter treeAdapter;
   private TreeItem showItem;
+  private final ResizeListener resizeListener;
+  private final TreeListener expandListener;
+  private TreeItem currentItem;
   
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
@@ -126,16 +121,65 @@ public class Tree extends Composite {
       return result;
     }
   }
-
-  public class TreeAdapter {
-
+  
+  public class TreeItemAdapter {
     public TreeItem getShowItem() {
       return Tree.this.showItem;
     }
-
     
     public void clearShowItem() {
       Tree.this.showItem = null;
+    }
+  }
+  
+  private static final class ResizeListener extends ControlAdapter {
+    public void controlResized( final ControlEvent event ) {
+      final Tree tree = ( Tree )event.widget;
+//      boolean visible = true;
+      // TODO [fappel]: This implementation has to be changed, once that
+      //                real virtual behavior is in place
+      WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+        public boolean doVisit( Widget widget ) {
+          boolean result = true;
+          if( widget instanceof TreeItem ) { // ignore tree
+            TreeItem item = ( TreeItem )widget;
+            if( item.getParentItem() == null || item.getExpanded() ) {
+              result = false;
+              int index;
+              TreeItem parentItem = item.getParentItem();
+              if( parentItem != null ) {
+                index = parentItem.indexOf( item );
+              } else {
+                index = item.getParent().indexOf( item );
+              }
+              tree.checkData( item, index );
+            }
+          }
+          return result;
+        }
+      };
+      WidgetTreeVisitor.accept( tree, visitor );
+    }
+  }
+  
+  private static final class ExpandListener extends TreeAdapter {
+    public void treeExpanded( final TreeEvent event ) {
+      Tree tree = ( Tree )event.widget;
+      TreeItem item = ( TreeItem )event.item;
+      TreeItem[] children = item.getItems();
+      for( int i = 0; i < children.length; i++ ) {
+        checkChildData( tree, children[ i ] );
+      }
+    }
+
+    private void checkChildData( final Tree tree, final TreeItem item ) {
+      int index;
+      if( item.getParentItem() == null ) {
+        index = tree.indexOf( item );
+      } else {
+        index = item.getParentItem().indexOf( item );
+      }
+      tree.checkData( item, index );
     }
   }
 
@@ -174,14 +218,23 @@ public class Tree extends Composite {
     itemHolder = new ItemHolder( TreeItem.class );
     columnHolder = new ItemHolder ( TreeColumn.class );
     selection = EMPTY_SELECTION;
+    if( ( this.style & SWT.VIRTUAL ) != 0 ) {
+      resizeListener = new ResizeListener();
+      addControlListener( resizeListener );
+      expandListener = new ExpandListener();
+      addTreeListener( expandListener );
+    } else {
+      resizeListener = null;
+      expandListener = null;
+    }
   }
 
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = new CompositeItemHolder();
-    } else if( adapter == TreeAdapter.class ) {
-      result = new TreeAdapter();
+    } else if( adapter == TreeItemAdapter.class ) {
+      result = new TreeItemAdapter();
     } else {
       result = super.getAdapter( adapter );
     }
@@ -190,6 +243,65 @@ public class Tree extends Composite {
   
   ///////////////////////////
   // Methods to manage items 
+  
+  /**
+   * Sets the number of root-level items contained in the receiver.
+   *
+   * @param count the number of items
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.0
+   */
+  public void setItemCount( final int itemCount ) {
+    checkWidget();
+    setItemCount( itemCount, null ); 
+  }
+  
+  void setItemCount( final int itemCount, final TreeItem parent ) {
+    // TODO [fappel]: This implementation may has to be changed, once that
+    //                real virtual behavior is in place.
+    int oldItemCount;
+    if( parent == null ) {
+      oldItemCount = getItemCount();
+    } else {
+      oldItemCount = parent.getItemCount();
+    }
+    int newItemCount = Math.max( 0, itemCount );
+    if( newItemCount != oldItemCount ) {
+//      boolean isVirtual = ( style & SWT.VIRTUAL ) != 0;
+      TreeItem[] items;
+      if( parent == null ) {
+        items = getItems();
+      } else {
+        items = parent.getItems();
+      }
+      int index = newItemCount;
+      while( index < oldItemCount ) {
+        TreeItem item = items[ index ];
+        if( item != null && !item.isDisposed() ) {
+          item.dispose();
+        }
+        index++;
+      }
+      for( int i = oldItemCount; i < newItemCount; i++ ) {
+        TreeItem child;
+        if( parent == null ) {
+          child = new TreeItem( this, SWT.NONE, i );
+        } else {
+          child = new TreeItem( parent, SWT.NONE, i );
+        }
+        checkData( child, i );
+      }
+  //    if( itemCount == 0 ) {
+  //      setScrollWidth( null, false );
+  //    }
+    }
+  }
+
 
   /**
    * Returns the number of items contained in the receiver
@@ -1112,6 +1224,13 @@ public class Tree extends Composite {
   ////////////////////////////////
   // Methods to cleanup on dispose
   
+  protected void releaseWidget() {
+    super.releaseWidget();
+    if( resizeListener != null ) {
+      removeControlListener( resizeListener );
+    }
+  }
+  
   protected void releaseChildren() {
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -1140,6 +1259,35 @@ public class Tree extends Composite {
   
   //////////////////
   // Helping methods
+
+  final void checkData( final TreeItem item, final int index ) {
+    // TODO [fappel]: This implementation may has to be changed, once that
+    //                real virtual behavior is in place.
+    if( ( style & SWT.VIRTUAL ) != 0 /*&& !item.cached*/ ) {
+      if( currentItem == null ) {
+        currentItem = item;
+      } 
+      try {
+        if( currentItem == item || item.getParentItem() == currentItem ) {
+          ProcessActionRunner.add( new Runnable() {
+            public void run() {
+//              item.cached = true;
+              SetDataEvent event = new SetDataEvent( Tree.this, item, index );
+              event.processEvent();
+              // widget could be disposed at this point
+              if( isDisposed() || item.isDisposed() ) {
+                SWT.error( SWT.ERROR_WIDGET_DISPOSED );
+              }
+            }
+          } );
+        }
+      } finally {
+        if( currentItem == item ) {
+          currentItem = null;
+        }
+      }
+    } 
+  }
   
   private static int checkStyle( final int style ) {
     int result = style | SWT.H_SCROLL | SWT.V_SCROLL;
