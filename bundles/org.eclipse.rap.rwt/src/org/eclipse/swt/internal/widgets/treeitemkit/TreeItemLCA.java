@@ -95,8 +95,9 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
-    writeTexts( treeItem );
+    // [bm] order is important, images needs to be written before texts
     writeImages( treeItem );
+    writeTexts( treeItem );
     writeFont( treeItem );
     writeBackground( treeItem );
     writeForeground( treeItem );
@@ -135,7 +136,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
         imagePaths[ i ] = Image.getPath( images[ i ] );
         imageWidths[ i ] = new Integer( item.getImageBounds( i ).width );
       }
-      writer.set( "images", new Object[] { imagePaths, imageWidths } );
+      //writer.set( "images", new Object[] { imagePaths, imageWidths } );
+      writer.set( "images", new Object[] { imagePaths } );
     }
   }
   

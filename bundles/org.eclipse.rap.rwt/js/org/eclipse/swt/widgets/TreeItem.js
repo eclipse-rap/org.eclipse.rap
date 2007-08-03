@@ -55,10 +55,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 
     this.getLabelObject().setMode( "html" );
     
-    // TODO [bm] need to set the colors to prevent inheritance of colors
-    // replace with theme colors
-    this.setTextColor( "#000000" );
-    this.setBackgroundColor( "#ffffff" );
+    // TODO [bm] need to set the color to prevent inheritance of colors
+    this.setBackgroundColor( "transparent" );
   },
   
   destruct : function() {
@@ -76,7 +74,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   members : {
     
     _onChangeBackgroundColor : function( evt ) {
-    	if( evt.value == undefined ) return;
+      if( typeof evt.value == "undefined" ) return;
     	this.getLabelObject().setBackgroundColor( evt.value );
       // we have to go through each column
     	for(var i=0; i<this._colLabels.length; i++) {
@@ -86,6 +84,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     
     // TODO: [bm] needed to override the property setters to apply color to label too
     setTextColor : function ( value ) {
+      if( typeof value == "undefined" ) return;
       this.getLabelObject().setTextColor( value );
       // we have to go through each column
       for(var i=0; i<this._colLabels.length; i++) {
@@ -208,7 +207,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     
     setImages : function( images ) {
     	this._images = images;
-    	this.updateItem();
     },
     
     columnAdded : function() {
@@ -229,6 +227,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 		    			if( this._colLabels[ c -1 ] == null ) {
 		    				if( this._images[ col ] != null
 		    					|| this._colLabels[ c -1 ] instanceof qx.ui.basic.Label ) {
+		    					// create new atom / replace label with atom if needed
 			    			  var obj = new qx.ui.basic.Atom( "" );
 	    						obj.setHorizontalChildrenAlign( "left" );
 	    						obj.setHeight( this.getLabelObject().getHeight() );
@@ -241,6 +240,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 		    				}
     						this._row.addObject(obj, true);
     						this._colLabels[ c -1 ] = obj;
+    						
 		    			}
 		    		  this._colLabels[ c -1 ].setLabel( this._texts[ col ] );
 		    		  this._colLabels[ c -1 ].setIcon( this._images[ col ] );
