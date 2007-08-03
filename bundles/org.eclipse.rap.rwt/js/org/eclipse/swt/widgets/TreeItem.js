@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   construct : function( parentItem ) {
     this._row = qx.ui.tree.TreeRowStructure.getInstance().newRow();
     // Indentation
-    //this._row.addIndent();
+    this._row.addIndent();
     // CheckBox
     this._checkBox = null;
     this._checked = false;
@@ -46,6 +46,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this.addEventListener( "click", this._onClick, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
     this.addEventListener( "appear", this._onAppear, this );
+    this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
     parentItem.add( this );
     
     this._texts = null;
@@ -53,6 +54,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this._colLabels = new Array();
 
     this.getLabelObject().setMode( "html" );
+    
+    // TODO [bm] need to set the colors to prevent inheritance of colors
+    // replace with theme colors
+    this.setTextColor( "#000000" );
+    this.setBackgroundColor( "#ffffff" );
   },
   
   destruct : function() {
@@ -64,19 +70,20 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this.removeEventListener( "click", this._onClick, this );
     this.removeEventListener( "dblclick", this._onDblClick, this );
     this.removeEventListener( "appear", this._onAppear, this );
+    this.removeEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
   },
 
   members : {
     
-    // TODO: [bm] needed to override the property setters to apply color to label
-    setBackgroundColor : function ( value ) {
-      this.getLabelObject().setBackgroundColor( value );
+    _onChangeBackgroundColor : function( evt ) {
+    	if( evt.value == undefined ) return;
+    	this.getLabelObject().setBackgroundColor( evt.value );
       // we have to go through each column
-      for(var i=0; i<this._colLabels.length; i++) {
-        this._colLabels[ i ].setBackgroundColor( value );
+    	for(var i=0; i<this._colLabels.length; i++) {
+        this._colLabels[ i ].setBackgroundColor( evt.value );
       }
     },
-
+    
     // TODO: [bm] needed to override the property setters to apply color to label too
     setTextColor : function ( value ) {
       this.getLabelObject().setTextColor( value );

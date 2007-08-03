@@ -9,6 +9,7 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -352,6 +353,74 @@ public class TreeItem_Test extends TestCase {
     assertEquals( images[ 0 ], treeItem.getImage( 0 ) );
   }
 
+//  public void testSetForegroundI() {
+//    Display display = new Display();
+//    Shell shell = new Shell( display, SWT.NONE );
+//    Tree tree = new Tree( shell, SWT.CHECK );
+//    TreeItem treeItem = new TreeItem( tree, 0 );
+//
+//    Color red = display.getSystemColor( SWT.COLOR_RED );
+//    Color blue = display.getSystemColor( SWT.COLOR_BLUE );
+//    // no columns
+//    assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
+//    assertEquals( treeItem.getForeground(), treeItem.getForeground( 0 ) );
+//    treeItem.setForeground( 0, red );
+//    assertEquals( red, treeItem.getForeground( 0 ) );
+//    // index beyond range - no error
+//    treeItem.setForeground( 10, red );
+//    assertEquals( treeItem.getForeground(), treeItem.getForeground( 10 ) );
+//    // with columns
+//    new TreeColumn( tree, SWT.LEFT );
+//    new TreeColumn( tree, SWT.LEFT );
+//    // index beyond range - no error
+//    treeItem.setForeground( 10, red );
+//    assertEquals( treeItem.getForeground(), treeItem.getForeground( 10 ) );
+//    treeItem.setForeground( 0, red );
+//    assertEquals( red, treeItem.getForeground( 0 ) );
+//    treeItem.setForeground( 0, null );
+//    assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
+//    treeItem.setForeground( 0, blue );
+//    treeItem.setForeground( red );
+//    assertEquals( blue, treeItem.getForeground( 0 ) );
+//    treeItem.setForeground( 0, null );
+//    assertEquals( red, treeItem.getForeground( 0 ) );
+//    treeItem.setForeground( null );
+//    assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
+//    try {
+//      Color color = new Color( display, 255, 0, 0 );
+//      color.dispose();
+//      treeItem.setForeground( color );
+//      fail( "No exception thrown for color disposed" );
+//    } catch( IllegalArgumentException e ) {
+//    }
+//  }
+
+  public void testSetForeground() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.CHECK );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+
+    Color color = Color.getColor( 255, 0, 0 );
+    treeItem.setForeground( color );
+    assertEquals( color, treeItem.getForeground() );
+    treeItem.setForeground( null );
+    assertEquals( tree.getForeground(), treeItem.getForeground() );
+  }
+  
+  public void testSetBackground() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.CHECK );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+    
+    Color color = Color.getColor( 255, 0, 0 );
+    treeItem.setBackground( color );
+    assertEquals( color, treeItem.getBackground() );
+    treeItem.setBackground( null );
+    assertEquals( tree.getBackground(), treeItem.getBackground() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
