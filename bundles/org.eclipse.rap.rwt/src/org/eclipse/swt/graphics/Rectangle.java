@@ -13,7 +13,7 @@ package org.eclipse.swt.graphics;
 // Note: This is a verbatim copy of SWT, thus no reformatting was done.
 
 //import org.eclipse.swt.internal.SerializableCompatibility;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
 
 /**
  * Instances of this class represent rectangular areas in an

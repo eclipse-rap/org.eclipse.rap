@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
@@ -27,7 +28,8 @@ public class UntypedEventAdapter
              ShellListener, 
              MenuListener, 
              ModifyListener,
-             SetDataListener
+             SetDataListener,
+             VerifyListener
 {
   private ArrayList listeners = new ArrayList();
 
@@ -126,6 +128,13 @@ public class UntypedEventAdapter
     dispatchEvent( SWT.Modify, event );
   }
   
+  public void verifyText( final VerifyEvent evt ) {
+    Event event = createEvent( SWT.Verify, evt.getSource() );
+    dispatchEvent( SWT.Verify, event );
+    evt.doit = event.doit;
+    evt.text = event.text;
+  }
+  
   public void update( final SetDataEvent evt ) {
     Event event = createEvent( SWT.SetData, evt.getSource() );
     event.item = evt.item;
@@ -169,6 +178,9 @@ public class UntypedEventAdapter
       break;
       case SWT.Modify:
         ModifyEvent.addListener( widget, this );
+      break;
+      case SWT.Verify:
+        VerifyEvent.addListener( widget, this );
       break;
       case SWT.SetData:
         SetDataEvent.addListener( widget, this );
@@ -217,6 +229,9 @@ public class UntypedEventAdapter
       break;
       case SWT.Modify:
         ModifyEvent.removeListener( widget, this );
+      break;
+      case SWT.Verify:
+        VerifyEvent.removeListener( widget, this );
       break;
       case SWT.SetData:
         SetDataEvent.removeListener( widget, this );

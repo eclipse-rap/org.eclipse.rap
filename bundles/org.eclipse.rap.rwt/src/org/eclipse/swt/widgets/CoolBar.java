@@ -14,7 +14,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
+import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 
 /**
  * Instances of this class provide an area for dynamically positioning the items

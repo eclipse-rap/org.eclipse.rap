@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import java.util.EventListener;
+import org.eclipse.swt.internal.SWTEventListener;
 
 /**
  * Classes which implement this interface provide methods that deal with the
@@ -22,7 +22,7 @@ import java.util.EventListener;
  * @see ControlAdapter
  * @see ControlEvent
  */
-public interface ControlListener extends EventListener {
+public interface ControlListener extends SWTEventListener {
 
   /**
    * Sent when the location (x, y) of a control changes relative to its parent

@@ -14,6 +14,8 @@ package org.eclipse.swt.events;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+
 import com.w4t.Adaptable;
 
 /**
@@ -34,6 +36,10 @@ public final class FocusEvent extends TypedEvent {
 
   public static FocusEvent focusLost( final Control control ) {
     return new FocusEvent( control, FOCUS_LOST );
+  }
+  
+  public FocusEvent( final Event event ) {
+    this( ( Control )event.widget, event.type );
   }
   
   private FocusEvent( final Control source, final int id ) {

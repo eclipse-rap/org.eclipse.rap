@@ -11,7 +11,7 @@
 
 package org.eclipse.swt.events;
 
-import java.util.EventListener;
+import org.eclipse.swt.internal.SWTEventListener;
 
 /**
  * <p>Classes which implement this interface provide a method
@@ -27,7 +27,7 @@ import java.util.EventListener;
  * </p>
  * @see DisposeEvent
  */
-public interface DisposeListener extends EventListener {
+public interface DisposeListener extends SWTEventListener {
 
   /**
    * <p>Sent when the widget is disposed.</p>

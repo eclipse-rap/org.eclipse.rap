@@ -216,6 +216,20 @@ public class SWT {
    * @see org.eclipse.swt.events.ModifyEvent
    */
   public static final int Modify = 24;
+  
+  /**
+   * The verify event type (value is 25).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Combo#addVerifyListener
+   * @see org.eclipse.swt.widgets.Text#addVerifyListener
+   * @see org.eclipse.swt.events.VerifyListener#verifyText
+   * @see org.eclipse.swt.events.VerifyEvent
+   */
+  public static final int Verify = 25;
 
   /**
    * The activate event type (value is 26).

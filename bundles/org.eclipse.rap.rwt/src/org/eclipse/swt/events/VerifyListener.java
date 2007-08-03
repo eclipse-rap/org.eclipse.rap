@@ -14,20 +14,20 @@ import org.eclipse.swt.internal.SWTEventListener;
  * events that are generated when text is modified.
  * <p>
  * After creating an instance of a class that implements this interface it can
- * be added to a text widget using the <code>addModifyListener</code> method
- * and removed using the <code>removeModifyListener</code> method. When the
- * text is modified, the modifyText method will be invoked.
+ * be added to a text widget using the <code>addVerifyListener</code> method
+ * and removed using the <code>removeVerifyListener</code> method. When the
+ * text is modified, the verifyText method will be invoked.
  * </p>
  * 
- * @see ModifyEvent
+ * @see verifyEvent
  */
-// TODO [rh] Not yet implemented on: Combo, Spinner, CCombo, (StyledText)
-public interface ModifyListener extends SWTEventListener {
+// TODO [fappel] implementation on controls...
+public interface VerifyListener extends SWTEventListener {
 
   /**
    * Sent when the text is modified.
    * 
    * @param e an event containing information about the modify
    */
-  public void modifyText( ModifyEvent event );
+  public void verifyText( VerifyEvent event );
 }

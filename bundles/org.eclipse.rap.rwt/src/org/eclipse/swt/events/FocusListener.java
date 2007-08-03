@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.eclipse.swt.events;
 
-import java.util.EventListener;
+import org.eclipse.swt.internal.SWTEventListener;
 
 /**
  * Classes which implement this interface provide methods that deal with the
@@ -22,7 +22,7 @@ import java.util.EventListener;
  * @see FocusAdapter
  * @see FocusEvent
  */
-public interface FocusListener extends EventListener {
+public interface FocusListener extends SWTEventListener {
 
   /**
    * Sent when a control gets focus.

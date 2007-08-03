@@ -17,20 +17,8 @@ import java.util.Arrays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.swt.lifecycle.ControlLCAUtil;
-import org.eclipse.swt.lifecycle.IWidgetAdapter;
-import org.eclipse.swt.lifecycle.JSConst;
-import org.eclipse.swt.lifecycle.JSListenerInfo;
-import org.eclipse.swt.lifecycle.JSListenerType;
-import org.eclipse.swt.lifecycle.JSVar;
-import org.eclipse.swt.lifecycle.JSWriter;
-import org.eclipse.swt.lifecycle.ProcessActionRunner;
-import org.eclipse.swt.lifecycle.WidgetLCAUtil;
-import org.eclipse.swt.lifecycle.WidgetUtil;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.lifecycle.*;
+import org.eclipse.swt.widgets.*;
 
 public final class TreeColumnLCA extends AbstractWidgetLCA {
 

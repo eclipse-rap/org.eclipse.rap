@@ -12,6 +12,7 @@
 package org.eclipse.swt.events;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
 
 import com.w4t.Adaptable;
 
@@ -30,6 +31,10 @@ public final class ControlEvent extends TypedEvent {
 
   public ControlEvent( final Object source, final int id ) {
     super( source, id );
+  }
+  
+  public ControlEvent( final Event event ) {
+    this( event.widget, event.type );
   }
 
   protected void dispatchToObserver( final Object listener ) {

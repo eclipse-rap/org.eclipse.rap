@@ -10,11 +10,12 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import junit.framework.TestCase;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.*;
 
 public class UntypedEventAdapter_Test extends TestCase {
 
@@ -77,7 +78,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     adapter.menuShown( new MenuEvent( null, 0 ) );
     assertEquals( SWT.Show, eventType );
     adapter.addListener( SWT.Modify, listener );
-    adapter.modifyText( new ModifyEvent( null ) );
+    adapter.modifyText( new ModifyEvent( ( Control )null ) );
     assertEquals( SWT.Modify, eventType );
     adapter.addListener( SWT.SetData, listener );
     adapter.update( new SetDataEvent( null, null, 0 ) );

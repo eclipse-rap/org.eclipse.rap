@@ -38,6 +38,10 @@ public final class TreeEvent extends SelectionEvent {
   {
     super( widget, item, id );
   }
+  
+  public TreeEvent( final Event event ) {
+    this( event.widget, event.item, event.type );
+  }
 
   protected void dispatchToObserver( final Object listener ) {
     switch( getID() ) {

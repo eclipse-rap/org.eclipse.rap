@@ -13,6 +13,7 @@ package org.eclipse.swt.events;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
+import org.eclipse.swt.widgets.Event;
 
 import com.w4t.Adaptable;
 
@@ -31,8 +32,14 @@ public class ShellEvent extends TypedEvent {
   
   private static final Class LISTENER = ShellListener.class;
   
+  public boolean doit;
+  
   public ShellEvent( final Object source, final int id ) {
     super( source, id );
+  }
+  
+  public ShellEvent( final Event event ) {
+    this( event.widget, event.type );
   }
 
   protected void dispatchToObserver( final Object listener ) {

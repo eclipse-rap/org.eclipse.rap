@@ -21,26 +21,31 @@ import com.w4t.Adaptable;
  * Instances of this class are sent as a result of
  * text being modified.
  *
- * @see ModifyListener
+ * @see VerifyListener
  */
-public class ModifyEvent extends TypedEvent {
+//TODO [fappel] implementation on controls...
+public class VerifyEvent extends TypedEvent {
 
-  public static final int MODIFY_TEXT = SWT.Modify;
-  
-  private static final Class LISTENER = ModifyListener.class;
+  public static final int VERIFY_TEXT = SWT.Verify;
+  private static final Class LISTENER = VerifyListener.class;
 
-  public ModifyEvent( final Control source ) {
-    super( source, MODIFY_TEXT );
+  public String text;
+  public boolean doit;
+  public int start;
+  public int end;
+
+  public VerifyEvent( final Control source ) {
+    super( source, VERIFY_TEXT );
   }
   
-  public ModifyEvent( final Event event ) {
+  public VerifyEvent( final Event event ) {
     this( ( Control )event.widget );
   }
   
   protected void dispatchToObserver( final Object listener ) {
     switch( getID() ) {
-      case MODIFY_TEXT:
-        ( ( ModifyListener )listener ).modifyText( this );
+      case VERIFY_TEXT:
+        ( ( VerifyListener )listener ).verifyText( this );
       break;
       default:
         throw new IllegalStateException( "Invalid event handler type." );
@@ -56,13 +61,13 @@ public class ModifyEvent extends TypedEvent {
   }
 
   public static void addListener( final Adaptable adaptable, 
-                                  final ModifyListener listener )
+                                  final VerifyListener listener )
   {
     addListener( adaptable, LISTENER, listener );
   }
 
   public static void removeListener( final Adaptable adaptable, 
-                                     final ModifyListener listener )
+                                     final VerifyListener listener )
   {
     removeListener( adaptable, LISTENER, listener );
   }
