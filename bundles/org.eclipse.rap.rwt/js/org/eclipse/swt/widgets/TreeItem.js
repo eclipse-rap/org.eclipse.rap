@@ -268,7 +268,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 	    		coLabel = this._colLabels[ i-1 ];
 	    		if( coLabel != null ) {
 	    			coLabel.setWidth( columnWidth[ i ] );
-	    			console.log("setting with of " + coLabel.getLabel() + " to " + coLabel.getWidth());
+// TODO [fappel]: logging causes problem
+//	    			console.log("setting with of " + coLabel.getLabel() + " to " + coLabel.getWidth());
 	    		}
 	    	}
 			}
