@@ -534,7 +534,7 @@ public class TableTab extends ExampleTab {
 
   private void createBackgroundControl() {
     Button button = new Button( styleComp, SWT.PUSH );
-    button.setText( "Change Item Background" );
+    button.setText( "Change Item Appearance" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         Display display = getTable().getDisplay();
