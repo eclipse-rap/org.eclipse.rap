@@ -37,6 +37,9 @@ public class TableItem extends Item {
   private static final class Data {
     String text = "";
     Image image;
+    Font font;
+    Color background;
+    Color foreground;
   }
   
   private final Table parent;
@@ -178,14 +181,7 @@ public class TableItem extends Item {
     }
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
-      if( data == null ) {
-        data = new Data[ count ];
-      } else if( data.length < count ) {
-        enlargeData( count );
-      }
-      if( data[ index ] == null ) {
-        data[ index ] = new Data();
-      }
+      ensureData( index, count );
       data[ index ].text = text;
       markCached();
       parent.redraw();
@@ -249,14 +245,7 @@ public class TableItem extends Item {
     checkWidget();
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
-      if( data == null ) {
-        data = new Data[ count ];
-      } else if( data.length < count ) {
-        enlargeData( count );
-      }
-      if( data[ index ] == null ) {
-        data[ index ] = new Data();
-      }
+      ensureData( index, count );
       data[ index ].image = image;
       parent.updateItemImageSize( image );
       markCached();
@@ -372,10 +361,11 @@ public class TableItem extends Item {
   }
 
   /**
-   * Sets the receiver's foreground color to the color specified
-   * by the argument, or to the default system color for the item
+   * Sets the background color at the given column index in the receiver 
+   * to the color specified by the argument, or to the default system color for the item
    * if the argument is null.
    *
+   * @param index the column index
    * @param color the new color (or null)
    *
    * @exception IllegalArgumentException <ul>
@@ -385,6 +375,61 @@ public class TableItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   */
+  public void setBackground( final int index, final Color color ) {
+    checkWidget();
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      ensureData( index, count );
+      data[ index ].background = color;
+      markCached();
+      parent.redraw();
+    }
+  }
+
+  /**
+   * Returns the background color at the given column index in the receiver.
+   *
+   * @param index the column index
+   * @return the background color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Color getBackground( final int index ) {
+    checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
+    Color result = getBackground();
+    if(    data != null 
+        && index >= 0 
+        && index < data.length 
+        && data[ index ] != null 
+        && data[ index ].background != null ) 
+    {
+      result = data[ index ].background;
+    }
+    return result;
+  }
+
+  /**
+   * Sets the receiver's foreground color to the color specified by the
+   * argument, or to the default system color for the item if the argument is
+   * null.
+   * 
+   * @param color the new color (or null)
+   * @exception IllegalArgumentException
+   *              <ul>
+   *              <li>ERROR_INVALID_ARGUMENT - if the argument has been
+   *              disposed</li>
+   *              </ul>
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
    */
   public void setForeground( final Color color ) {
     checkWidget();
@@ -420,6 +465,60 @@ public class TableItem extends Item {
     return result;
   }
   
+  /**
+   * Sets the foreground color at the given column index in the receiver 
+   * to the color specified by the argument, or to the default system color for the item
+   * if the argument is null.
+   *
+   * @param index the column index
+   * @param color the new color (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setForeground( final int index, final Color color ) {
+    checkWidget();
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      ensureData( index, count );
+      data[ index ].foreground = color;
+      markCached();
+      parent.redraw();
+    }
+  }
+
+  /**
+   * 
+   * Returns the foreground color at the given column index in the receiver.
+   *
+   * @param index the column index
+   * @return the foreground color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Color getForeground( final int index ) {
+    checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
+    Color result = getForeground();
+    if(    data != null 
+        && index >= 0 
+        && index < data.length 
+        && data[ index ] != null 
+        && data[ index ].foreground != null ) 
+    {
+      result = data[ index ].foreground;
+    }
+    return result;
+  }
+
   /**
    * Sets the font that the receiver will use to paint textual information
    * for this item to the font specified by the argument, or to the default font
@@ -466,6 +565,61 @@ public class TableItem extends Item {
     return result;
   }
   
+  /**
+   * Sets the font that the receiver will use to paint textual information
+   * for the specified cell in this item to the font specified by the 
+   * argument, or to the default font for that kind of control if the 
+   * argument is null.
+   *
+   * @param index the column index
+   * @param font the new font (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setFont( final int index, final Font font ) {
+    checkWidget();
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      ensureData( index, count );
+      data[ index ].font = font;
+      markCached();
+      parent.redraw();
+    }
+  }
+
+  /**
+   * Returns the font that the receiver will use to paint textual information
+   * for the specified cell in this item.
+   *
+   * @param index the column index
+   * @return the receiver's font
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Font getFont( final int index ) {
+    checkWidget();
+    parent.checkData( this, parent.indexOf( this ) );
+    Font result = getFont();
+    if(    data != null 
+        && index >= 0 
+        && index < data.length 
+        && data[ index ] != null 
+        && data[ index ].font != null ) 
+    {
+      result = data[ index ].font;
+    }
+    return result;
+  }
+
   ///////////////////
   // Checked & Grayed
   
@@ -673,8 +827,6 @@ public class TableItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 3.3
    */
   public Rectangle getTextBounds( final int index ) {
     checkWidget();
@@ -820,10 +972,17 @@ public class TableItem extends Item {
     }
   }
 
-  private void enlargeData( final int count ) {
-    Data[] newData = new Data[ count ];
-    System.arraycopy( data, 0, newData, 0, data.length );
-    data = newData;
+  private void ensureData( final int index, final int columnCount ) {
+    if( data == null ) {
+      data = new Data[ columnCount ];
+    } else if( data.length < columnCount ) {
+      Data[] newData = new Data[ columnCount ];
+      System.arraycopy( data, 0, newData, 0, data.length );
+      data = newData;
+    }
+    if( data[ index ] == null ) {
+      data[ index ] = new Data();
+    }
   }
 
   private static Table checkNull( final Table table ) {

@@ -192,7 +192,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       String[] css = new String[ fonts.length ];
       for( int i = 0; i < fonts.length; i++ ) {
         css[ i ] = toCss( fonts[ i ] );
-System.out.println( css[ i ] );      
       }
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "fonts", new Object[] { css } );
@@ -308,7 +307,7 @@ System.out.println( css[ i ] );
     int columnCount = getColumnCount( item );
     Font[] result = new Font[ columnCount ];
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getFont();
+      result[ i ] = item.getFont( i );
     }
     return result;
   }
@@ -317,7 +316,7 @@ System.out.println( css[ i ] );
     int columnCount = getColumnCount( item );
     Color[] result = new Color[ columnCount ];
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getBackground();
+      result[ i ] = item.getBackground( i );
     }
     return result;
   }
@@ -326,7 +325,7 @@ System.out.println( css[ i ] );
     int columnCount = getColumnCount( item );
     Color[] result = new Color[ columnCount ];
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getForeground();
+      result[ i ] = item.getForeground( i );
     }
     return result;
   }

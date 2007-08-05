@@ -15,8 +15,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 
 import com.w4t.engine.lifecycle.PhaseId;
@@ -333,6 +332,105 @@ public class TableItem_Test extends TestCase {
     assertEquals( false, item.cached );
   }
 
+  public void testFont() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Font rowFont = Font.getFont( "row-font", 10, SWT.NORMAL );
+    
+    // Test initial value
+    assertEquals( table.getFont(), item.getFont() );
+    
+    // Test setting font for an item that is out of column bounds
+    Font font = Font.getFont( "Arial", 10, SWT.NORMAL );
+    item.setFont( 100, font );
+    assertEquals( table.getFont(), item.getFont( 100 ) );
+    
+    // Test setFont() - becomes default for all cell-fonts
+    item.setFont( rowFont );
+    assertEquals( rowFont, item.getFont() );
+    assertEquals( rowFont, item.getFont( 0 ) );
+    
+    // Test setting and resetting font for a specific cell
+    Font cellFont = Font.getFont( "cell-font", 10, SWT.NORMAL );
+    item.setFont( 0, cellFont );
+    assertEquals( cellFont, item.getFont( 0 ) );
+    item.setFont( 0, null );
+    assertEquals( rowFont, item.getFont( 0 ) );
+    
+    // Resetting item font returns the tables' font
+    item.setFont( null );
+    assertEquals( table.getFont(), item.getFont() );
+  }
+  
+  public void testBackground() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Color rowBackground = Color.getColor( 1, 1, 1 );
+    
+    // Test initial value
+    assertEquals( table.getBackground(), item.getBackground() );
+    
+    // Test setting background for an item that is out of column bounds
+    Color color = Color.getColor( 2, 2, 2 );
+    item.setBackground( 100, color );
+    assertEquals( table.getBackground(), item.getBackground( 100 ) );
+    
+    // Test setBackground() - becomes default for all cell-fonts
+    item.setBackground( rowBackground );
+    assertEquals( rowBackground, item.getBackground() );
+    assertEquals( rowBackground, item.getBackground( 0 ) );
+    
+    // Test setting and resetting background for a specific cell
+    Color cellBackground = Color.getColor( 3, 3, 3 );
+    item.setBackground( 0, cellBackground );
+    assertEquals( cellBackground, item.getBackground( 0 ) );
+    item.setBackground( 0, null );
+    assertEquals( rowBackground, item.getBackground( 0 ) );
+    
+    // Resetting item font returns the tables' font
+    item.setBackground( null );
+    assertEquals( table.getBackground(), item.getBackground() );
+  }
+  
+  public void testForeground() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Color rowForeground = Color.getColor( 1, 1, 1 );
+    
+    // Test initial value
+    assertEquals( table.getForeground(), item.getForeground() );
+    
+    // Test setting foreground for an item that is out of column bounds
+    Color color = Color.getColor( 2, 2, 2 );
+    item.setForeground( 100, color );
+    assertEquals( table.getForeground(), item.getForeground( 100 ) );
+    
+    // Test setForeground() - becomes default for all cell-fonts
+    item.setForeground( rowForeground );
+    assertEquals( rowForeground, item.getForeground() );
+    assertEquals( rowForeground, item.getForeground( 0 ) );
+    
+    // Test setting and resetting foreground for a specific cell
+    Color cellForeground = Color.getColor( 3, 3, 3 );
+    item.setForeground( 0, cellForeground );
+    assertEquals( cellForeground, item.getForeground( 0 ) );
+    item.setForeground( 0, null );
+    assertEquals( rowForeground, item.getForeground( 0 ) );
+    
+    // Resetting item font returns the tables' font
+    item.setForeground( null );
+    assertEquals( table.getForeground(), item.getForeground() );
+  }
+  
   private static int getCheckWidth( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
