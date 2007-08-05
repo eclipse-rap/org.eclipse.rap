@@ -959,8 +959,8 @@ public class TableItem extends Item {
   final boolean isVisible() {
     boolean result = false;
     int visibleItemCount = parent.getVisibleItemCount();
-    int index = parent.indexOf( this );
     if( visibleItemCount > 0 ) {
+      int index = parent.indexOf( this );
       result = index - parent.getTopIndex() <= visibleItemCount;
     }
     return result;

@@ -530,9 +530,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _addItem : function( item, index ) {
       this._items[ index ] = item;
       this._updateScrollHeight();
-      if( this._isItemVisible( index ) ) {
-        this._updateRows();
-      }
     },
 
     _removeItem : function( item ) {

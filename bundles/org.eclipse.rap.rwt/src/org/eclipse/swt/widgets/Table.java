@@ -68,14 +68,9 @@ import org.eclipse.swt.lifecycle.ProcessActionRunner;
  * </p>
  * <p>Current state of Table implementation:</p> 
  * <ul>
- *  <li>VIRTUAL not yet implemented</li>
  *  <li>showSelection and showItem currently do a very rough proximation since
  *  getClientArea is not yet implemented properly</li>
- *  <li>Scroll bars stay enabled even though the table itself is disabled. This
- *  is due to a qooxdoo limitation, see 
- *  http://bugzilla.qooxdoo.org/show_bug.cgi?id=352
- *  </li>
- *  <li>No images yet</li>
+ *  <li>Scroll are visible even though not necessary</li>
  *  <li>No keyboard navigation</li>
  * </ul> 
  */
@@ -1737,10 +1732,8 @@ public class Table extends Composite {
    * 
    * @since 1.0 
    */
-  // TODO [rh] preliminary: this is only an approximation for item height
   public int getItemHeight() {
     checkWidget();
-    // TODO [rh] replace with this.getFont() once TableItem supports fonts
     int result = FontSizeCalculator.getCharHeight( getFont() ) + 4;
     int itemImageHeight = getItemImageSize().y;
     result = Math.max( itemImageHeight, result );
