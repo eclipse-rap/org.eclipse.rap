@@ -13,7 +13,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -74,6 +74,7 @@ public class TableTab extends ExampleTab {
     createChangeItemCountControl();
     createImagesControl();
     createAlignmentControl();
+    createBackgroundControl();
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -526,6 +527,30 @@ public class TableTab extends ExampleTab {
         TableColumn[] columns = getTable().getColumns();
         for( int i = 0; i < columns.length; i++ ) {
           columns[ i ].setAlignment( alignment );
+        }
+      }
+    } );
+  }
+
+  private void createBackgroundControl() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Change Item Background" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Display display = getTable().getDisplay();
+        FontData fontData = getTable().getFont().getFontData()[ 0 ];
+        String fontName = fontData.getName();
+        Font font = Font.getFont( fontName, fontData.getHeight(), SWT.BOLD );
+        Color background = display.getSystemColor( SWT.COLOR_DARK_GREEN );
+        Color foreground = display.getSystemColor( SWT.COLOR_DARK_CYAN );
+        TableItem[] items = getTable().getItems();
+        for( int i = 0; i < items.length; i++ ) {
+          if( i % 2 == 0 ) {
+            items[ i ].setBackground( background );
+          } else {
+            items[ i ].setForeground( foreground );
+            items[ i ].setFont( font );
+          }
         }
       }
     } );

@@ -24,6 +24,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     this._grayed = false;
     this._texts = new Array();
     this._images = new Array();
+    this._fonts = null;
+    this._backgrounds = null;
+    this._foregrounds = null;
     // HACK: Table needs one 'emptyItem' (draws the remaining space that is not 
     //       occupied by actual items) and a 'virtualItem' (represents a not
     //       yet resolved item) 
@@ -66,8 +69,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     HEIGHT : "height:",
     PX : "px;",
     
-    TEXT_ALIGN : "text-align:"
-     
+    TEXT_ALIGN : "text-align:",
+    FONT : "font:",
+    BACKGROUND : "background-color:",
+    FOREGROUND : "color:"
   },
   
   members : {
@@ -94,9 +99,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     
     setSelection : function( value ) {
       if( value ) {
-        this._parent._selectItem( this );
+        this._parent._selectItem( this, false );
       } else {
-        this._parent._unselectItem( this );
+        this._parent._unselectItem( this, false );
       }
     },
     
@@ -112,6 +117,18 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       this._images = images;
     },
     
+    setFonts : function( fonts ) {
+      this._fonts = fonts;
+    },
+    
+    setBackgrounds : function( backgrounds ) {
+      this._backgrounds = backgrounds;
+    },
+    
+    setForegrounds : function( foregrounds ) {
+      this._foregrounds = foregrounds;
+    },
+    
     update : function() {
       this._parent.updateItem( this, true );
     },
@@ -120,6 +137,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
      * Called by Table when updating visible rows to obtain HTML markup that 
      * represents the item.
      */
+     // TODO [rh] use StringBuilder to concatenate markup
     _getMarkup : function() {
       var markup = new Array();
       var left = 0;
@@ -132,12 +150,37 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       if( this._parent.hasCheckBoxes() ) {
         leftOffset = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
       }
+      var font = "";
+      var foreground = "";
+      var background = "";
       for( var i = 0; i < columnCount; i++ ) {
+        // Font
+        if( this._fonts && this._fonts[ i ] ) {
+          font
+            = org.eclipse.swt.widgets.TableItem.FONT 
+            + this._fonts[ i ] 
+            + ";";
+        }
+        // Foreground and background color
+        if( !this._parent._isItemSelected( this ) ) { 
+          if( this._foregrounds && this._foregrounds[ i ] ) {
+            foreground 
+              = org.eclipse.swt.widgets.TableItem.FOREGROUND 
+              + this._foregrounds[ i ] 
+              + ";";
+          }
+          if( this._backgrounds && this._backgrounds[ i ] ) {
+            background 
+              = org.eclipse.swt.widgets.TableItem.BACKGROUND 
+              + this._backgrounds[ i ] 
+              + ";";
+          }
+        }
         // Draw image
         if( this._images && this._images[ i ] ) {
           left = this._parent.getItemImageLeft( i );
           width = this._parent.getItemImageWidth( i );
-          markup.push( this._getImageMarkup( this._images[ i ], left, width ) );
+          markup.push( this._getImageMarkup( this._images[ i ], left, width, background ) );
         }
         // Draw text
         if( this._texts[ i ] !== undefined ) {
@@ -148,13 +191,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           if( column ) {
             align = column.getHorizontalChildrenAlign();
           }
-          markup.push( this._getTextMarkup( this._texts[ i ], align, left, width ) );
+          markup.push( this._getTextMarkup( this._texts[ i ], left, width, align, font, foreground, background ) );
         }
       }
       return markup.join( "" );
     },
     
-    _getImageMarkup : function( image, left, width ) {
+    _getImageMarkup : function( image, left, width, background ) {
       var result = "";
       if( image != null ) {
         // TODO [rh] replace div/img markup with only a div with a bg-image
@@ -172,7 +215,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
             + org.eclipse.swt.widgets.TableItem.PX 
           + org.eclipse.swt.widgets.TableItem.HEIGHT 
             + this._parent.getItemHeight()
-            + org.eclipse.swt.widgets.TableItem.PX 
+            + org.eclipse.swt.widgets.TableItem.PX
+          + background  
           + org.eclipse.swt.widgets.TableItem.IMG_STYLE_CLOSE
           + org.eclipse.swt.widgets.TableItem.IMG_CLOSE
           + org.eclipse.swt.widgets.TableItem.IMG_SRC_OPEN
@@ -183,7 +227,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
       return result;
     },
 
-    _getTextMarkup : function( text, align, left, width ) {
+    _getTextMarkup : function( text, left, width, align, font, foreground, background ) {
       var result;
       if( text == "" ) {
         result = "";
@@ -207,7 +251,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
           + org.eclipse.swt.widgets.TableItem.HEIGHT 
             + this._parent.getItemHeight()
             + org.eclipse.swt.widgets.TableItem.PX
-          + border  
+          + font  
+          + foreground
+          + background
+          + border
           + org.eclipse.swt.widgets.TableItem.TEXT_ALIGN 
             + align
           + org.eclipse.swt.widgets.TableItem.TEXT_STYLE_CLOSE

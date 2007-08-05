@@ -17,8 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
@@ -36,6 +35,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static final String PROP_GRAYED = "grayed";
   private static final String PROP_SELECTED = "selected";
   private static final String PROP_FOCUSED = "focused";
+  private static final String PROP_FONT = "font";
+  private static final String PROP_BACKGROUND = "background";
+  private static final String PROP_FOREGROUND = "foreground";
   
   public void preserveValues( final Widget widget ) {
     TableItem item = ( TableItem )widget;
@@ -48,6 +50,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_IMAGES, getImages( item ) );
     adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( item ) ) );
     adapter.preserve( PROP_FOCUSED, Boolean.valueOf( isFocused( item ) ) );
+    adapter.preserve( PROP_FONT, getFonts( item ) );
+    adapter.preserve( PROP_BACKGROUND, getBackgrounds( item ) );
+    adapter.preserve( PROP_FOREGROUND, getForegrounds( item ) );
   }
 
   public void readData( final Widget widget ) {
@@ -93,8 +98,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     boolean needUpdate = false;
     needUpdate |= writeTexts( item );
     needUpdate |= writeImages( item );
+    needUpdate |= writeFont( item );
+    needUpdate |= writeBackground( item );
+    needUpdate |= writeForeground( item );
     needUpdate |= writeChecked( item );
     needUpdate |= writeGrayed( item );
+    needUpdate |= writeSelection( item );
     if( isVisible( item ) ) {
       needUpdate |= TableLCAUtil.hasItemMetricsChanged( table );
       needUpdate |= TableLCAUtil.hasAlignmentChanged( table );
@@ -103,7 +112,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.call( "update", null );
     }
-    writeSelection( item );
     writeFocused( item );
   }
 
@@ -142,10 +150,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   // RenderChanges helper
   
   private static boolean writeTexts( final TableItem item ) throws IOException {
-    boolean changed = false;
     String[] texts = getTexts( item );
-    if( WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts ) ) {
-      changed = true;
+    boolean result = WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts );
+    if( result ) {
       for( int i = 0; i < texts.length; i++ ) {
         // TODO [rh] for some reason doesn't work with escapeText
 //        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
@@ -154,25 +161,67 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "texts", new Object[] { texts } );
     }
-    return changed;
+    return result;
   }
   
   private static boolean writeImages( final TableItem item ) throws IOException 
   {
-    boolean changed = false;
-    JSWriter writer = JSWriter.getWriterFor( item );
     Image[] images = getImages( item );
-    if( WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images ) ) {
-      changed = true;
+    boolean result = WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images );
+    if( result ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
       String[] imagePaths = new String[ images.length ];
       for( int i = 0; i < imagePaths.length; i++ ) {
         imagePaths[ i ] = Image.getPath( images[ i ] );
       }
       writer.set( "images", new Object[] { imagePaths } );
     }
-    return changed;
+    return result;
   }
 
+  private static boolean writeFont( final TableItem item ) throws IOException {
+    Font[] fonts = getFonts( item );
+    Font[] defValue = new Font[ fonts.length ];
+    for( int i = 0; i < defValue.length; i++ ) {
+      Font parentFont = item.getParent().getFont();
+      defValue[ i ] = parentFont;
+    }
+    boolean result 
+      = WidgetLCAUtil.hasChanged( item, PROP_FONT, fonts, defValue );
+    if( result ) {
+      String[] css = new String[ fonts.length ];
+      for( int i = 0; i < fonts.length; i++ ) {
+        css[ i ] = toCss( fonts[ i ] );
+System.out.println( css[ i ] );      
+      }
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( "fonts", new Object[] { css } );
+    }
+    return result;
+  }
+
+  private boolean writeBackground( final TableItem item ) throws IOException {
+    Color[] backgrounds = getBackgrounds( item );
+    Color parentBackground = item.getParent().getBackground();
+    Color[] defValue = new Color[ getColumnCount( item ) ];
+    for( int i = 0; i < defValue.length; i++ ) {
+      defValue[ i ] = parentBackground;
+    }
+    JSWriter writer = JSWriter.getWriterFor( item );
+    return writer.set( PROP_BACKGROUND, "backgrounds", backgrounds, defValue ); 
+  }
+
+  private boolean writeForeground( final TableItem item ) throws IOException {
+    Color[] foregrounds = getForegrounds( item );
+    Color parentForeground = item.getParent().getForeground();
+    Color[] defValue = new Color[ getColumnCount( item ) ];
+    for( int i = 0; i < defValue.length; i++ ) {
+      defValue[ i ] = parentForeground;
+    }
+    JSWriter writer = JSWriter.getWriterFor( item );
+    return writer.set( PROP_FOREGROUND, "foregrounds", foregrounds, defValue ); 
+  }
+  
   private static boolean writeChecked( final TableItem item )
     throws IOException
   {
@@ -188,11 +237,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
   }
   
-  private static void writeSelection( final TableItem item ) throws IOException 
+  private static boolean writeSelection( final TableItem item ) 
+    throws IOException 
   {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( isSelected( item ) );
-    writer.set( PROP_SELECTED, "selection", newValue, Boolean.FALSE );
+    return writer.set( PROP_SELECTED, "selection", newValue, Boolean.FALSE );
   }
 
   // TODO [rh] check if necessary to honor focusIndex == -1, would mean to
@@ -216,6 +266,23 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
   
+  private static String toCss( final Font font ) {
+    StringBuffer result = new StringBuffer();
+    FontData fontData = font.getFontData()[ 0 ];
+    if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
+      result.append( "italic " );
+    }
+    if( ( fontData.getStyle() & SWT.BOLD ) != 0 ) {
+      result.append( "bold " );
+    }
+    result.append( fontData.getHeight() );
+    result.append( "px " );
+    // TODO [rh] preliminary: low budget font-name-escaping
+    String escapedName = fontData.getName().replaceAll( "\"", "" );
+    result.append( escapedName );
+    return result.toString();
+  }
+
   //////////////////////
   // Item data accessors
   
@@ -237,6 +304,33 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
   
+  private static Font[] getFonts( final TableItem item ) {
+    int columnCount = getColumnCount( item );
+    Font[] result = new Font[ columnCount ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = item.getFont();
+    }
+    return result;
+  }
+  
+  private static Color[] getBackgrounds( final TableItem item ) {
+    int columnCount = getColumnCount( item );
+    Color[] result = new Color[ columnCount ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = item.getBackground();
+    }
+    return result;
+  }
+
+  private static Color[] getForegrounds( final TableItem item ) {
+    int columnCount = getColumnCount( item );
+    Color[] result = new Color[ columnCount ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = item.getForeground();
+    }
+    return result;
+  }
+
   private static int getColumnCount( final TableItem item ) {
     return Math.max( 1, item.getParent().getColumnCount() );
   }

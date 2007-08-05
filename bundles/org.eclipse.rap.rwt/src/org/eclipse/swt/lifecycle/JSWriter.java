@@ -574,7 +574,8 @@ public final class JSWriter {
   private static String createParamList( final String startList,
                                          final Object[] args,
                                          final String endList,
-                                         final boolean useCurrentWidgetRef ) {
+                                         final boolean useCurrentWidgetRef ) 
+  {
     StringBuffer params = new StringBuffer();
     if( args != null ) {
       for( int i = 0; i < args.length; i++ ) {
@@ -629,6 +630,10 @@ public final class JSWriter {
         buffer.append( '"' );
       } else if( array[ i ] instanceof Widget ) {
         buffer.append( createFindWidgetById( ( Widget )array[ i ] ) );
+      } else if( array[ i ] instanceof Color ) {
+        buffer.append( '"' );
+        buffer.append( ( ( IColor )array[ i ] ).toColorValue() );
+        buffer.append( '"' );
       } else {
         buffer.append( array[ i ] );
       }

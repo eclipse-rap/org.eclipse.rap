@@ -320,19 +320,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       return this._checkBoxes != null;
     },
     
-    /**
-     * Select all items that are specified in the given value. Value is an array
-     * of int's that denote the indices of items to be selected
-     */
-    setSelection : function( value ) {
-      while( this._selected.length > 0 ) {
-        this._unselectItem( this._selected[ 0 ] );
-      }
-      for( var i = 0; i < value.length; i++ ) {
-        this._selectItem( this._items[ value[ i ] ] );
-      }
-    },
-    
     setFocusedItem : function( value ) {
       if( value != this._focusedItem ) {
         var oldFocusedItem = this._focusedItem;
@@ -384,9 +371,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if( this._multiSelect ) {
           if( org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt ) ) {
             if( this._isItemSelected( item ) ) {
-              this._unselectItem( item );
+              this._unselectItem( item, true );
             } else {
-              this._selectItem( item );
+              this._selectItem( item, true );
             }
           }
           if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) 
@@ -394,7 +381,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           {
             if( org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) ) {
               while( this._selected.length > 0 ) {
-                this._unselectItem( this._selected[ 0 ] );
+                this._unselectItem( this._selected[ 0 ], true );
               }
             }
             var focusedItemIndex = this._items.indexOf( this._focusedItem );
@@ -402,22 +389,29 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               var start = Math.min( focusedItemIndex, itemIndex );
               var end = Math.max( focusedItemIndex, itemIndex );
               for( var i = start; i <= end; i++ ) {
-                this._selectItem( this._items[ i ] );
+                this._selectItem( this._items[ i ], true );
               }
             }
           } 
           if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
               || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) )
           {
-            this.setSelection( [ itemIndex ] );
+            this._setSingleSelection( itemIndex );
           }
         } else {
-          this.setSelection( [ itemIndex ] );
+          this._setSingleSelection( itemIndex );
         }
         this.setFocusedItem( item );
         this._updateSelectionParam();
         this.createDispatchDataEvent( "itemselected", item );
       }
+    },
+    
+    _setSingleSelection : function( value ) {
+      while( this._selected.length > 0 ) {
+        this._unselectItem( this._selected[ 0 ], true );
+      }
+      this._selectItem( this._items[ value ], true );
     },
     
     _resumeClicks : function() {
@@ -549,33 +543,40 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( item == this._focusedItem ) {
         this._focusedItem = null;
       }
-      this._unselectItem( item );
+      this._unselectItem( item, false );
       this._updateScrollHeight();
       if( wasItemVisible ) {
         this._updateRows();
       }
     },
 
-    _selectItem : function( item ) {
-      // end of hack
+    _selectItem : function( item, update ) {
       this._selected.push( item );
-      this.updateItem( item, false );
       // Make item fully visible
-      var rowIndex = this._getRowIndexFromItem( item );
-      var row = null;
-      if( rowIndex != -1 ) {
-        row = this._rows[ rowIndex ];
-      }
-      if(    row != null 
-          && row.getTop() + row.getHeight() > this._clientArea.getHeight() ) 
-      {
-        this.setTopIndex( this._topIndex + 1 );
+      if( update ) {
+        var changed = false;
+        var rowIndex = this._getRowIndexFromItem( item );
+        var row = null;
+        if( rowIndex != -1 ) {
+          row = this._rows[ rowIndex ];
+        }
+        if(    row != null 
+            && row.getTop() + row.getHeight() > this._clientArea.getHeight() ) 
+        {
+          this.setTopIndex( this._topIndex + 1 );
+          changed = true;
+        }
+        if( !changed ) {
+          this.updateItem( item, true );
+        }
       }
     },
 
-    _unselectItem : function( item ) {
+    _unselectItem : function( item, update ) {
       qx.lang.Array.remove( this._selected, item );
-      this.updateItem( item, false );
+      if( update ) {
+        this.updateItem( item, true );
+      }
     },
 
     _isItemSelected : function( item ) {

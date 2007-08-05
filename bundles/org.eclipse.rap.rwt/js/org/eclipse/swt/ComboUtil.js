@@ -126,7 +126,6 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     _onChangeBackgoundColor : function( evt ) {
       var combo = evt.getTarget();
       var value = evt.getData();
-      combo.debug( "_____ bg " + value );
       combo._field.setBackgroundColor( value );
       combo._list.setBackgroundColor( value );
     },
@@ -135,7 +134,6 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     _onChangeTextColor : function( evt ) {
       var combo = evt.getTarget();
       var value = evt.getData();
-      combo.debug( "_____ fg " + value );
       combo._field.setTextColor( value );
       combo._list.setTextColor( value );
     },

@@ -317,6 +317,35 @@ public class JSWriter_Test extends TestCase {
 
   }
 
+  public void testSetWithStringArray() throws Exception {
+    Fixture.fakeBrowser( new Default( true, true ) );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Widget widget = new Button( shell, SWT.NONE );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+
+    // call JSWriter once to get rid of prologue
+    RWTFixture.markInitialized( widget );
+    Fixture.fakeResponseWriter();
+    writer.set( "foo", "bar" );
+    
+    Fixture.fakeResponseWriter();
+    RWTFixture.clearPreserved();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( "stringArray", new String[] { "a", "b", "c" } );
+    String[] newValue = new String[] { "c", "b", "a" };
+    writer.set( "stringArray", "stringArray", newValue, null );
+    String expected = "w.setStringArray( [ \"c\", \"b\", \"a\" ] );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    RWTFixture.clearPreserved();
+    String[] value = new String[] { "c", "b", "a" };
+    adapter.preserve( "stringArray", value );
+    writer.set( "stringArray", "stringArray", value, null );
+    assertEquals( "", Fixture.getAllMarkup() );
+  }
+
   public void testSetChangedString() throws Exception {
     Display display = new Display();
     TestShell shell = new TestShell( display );

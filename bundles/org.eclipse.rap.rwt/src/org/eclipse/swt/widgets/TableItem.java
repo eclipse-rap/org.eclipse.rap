@@ -39,11 +39,14 @@ public class TableItem extends Item {
     Image image;
   }
   
-  boolean cached;
   private final Table parent;
+  boolean cached;
   private Data[] data;
   private boolean checked;
   private boolean grayed;
+  private Color background;
+  private Color foreground;
+  private Font font;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -184,6 +187,8 @@ public class TableItem extends Item {
         data[ index ] = new Data();
       }
       data[ index ].text = text;
+      markCached();
+      parent.redraw();
     }
   }
 
@@ -254,6 +259,8 @@ public class TableItem extends Item {
       }
       data[ index ].image = image;
       parent.updateItemImageSize( image );
+      markCached();
+      parent.redraw();
     }
   }
 
@@ -312,6 +319,153 @@ public class TableItem extends Item {
     return result;
   }
 
+  ////////////////////
+  // Colors and Fonts
+  
+  /**
+   * Sets the receiver's background color to the color specified
+   * by the argument, or to the default system color for the item
+   * if the argument is null.
+   *
+   * @param color the new color (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setBackground( final Color color ) {
+    checkWidget();
+    if( background != color ) {
+      background = color;
+      if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
+        cached = true;
+      }
+      markCached();
+      parent.redraw();
+    }
+  }
+
+  /**
+   * Returns the receiver's background color.
+   *
+   * @return the background color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Color getBackground() {
+    checkWidget ();
+    parent.checkData( this, parent.indexOf( this ) );
+    Color result;
+    if( background == null ) {
+      result = parent.getBackground();
+    } else {
+      result = background;
+    }
+    return result;
+  }
+
+  /**
+   * Sets the receiver's foreground color to the color specified
+   * by the argument, or to the default system color for the item
+   * if the argument is null.
+   *
+   * @param color the new color (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setForeground( final Color color ) {
+    checkWidget();
+    if( foreground != color ) {
+      foreground = color;
+      if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
+        cached = true;
+      }
+      markCached();
+      parent.redraw();
+    }
+  }
+
+  /**
+   * Returns the foreground color that the receiver will use to draw.
+   *
+   * @return the receiver's foreground color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Color getForeground() {
+    checkWidget ();
+    parent.checkData( this, parent.indexOf( this ) );
+    Color result;
+    if( foreground == null ) {
+      result = parent.getForeground();
+    } else {
+      result = foreground;
+    }
+    return result;
+  }
+  
+  /**
+   * Sets the font that the receiver will use to paint textual information
+   * for this item to the font specified by the argument, or to the default font
+   * for that kind of control if the argument is null.
+   *
+   * @param font the new font (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setFont( final Font font ) {
+    checkWidget();
+    if( this.font != font ) {
+      this.font = font;
+      markCached();
+      parent.redraw();
+    }
+  }
+  
+  /**
+   * Returns the font that the receiver will use to paint textual information for this item.
+   *
+   * @return the receiver's font
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Font getFont () {
+    checkWidget ();
+    parent.checkData( this, parent.indexOf( this ) );
+    Font result;
+    if( font == null ) {
+      result = parent.getFont();
+    } else {
+      result = font;
+    }
+    return result;
+  }
+  
   ///////////////////
   // Checked & Grayed
   
@@ -658,6 +812,12 @@ public class TableItem extends Item {
       result = index - parent.getTopIndex() <= visibleItemCount;
     }
     return result;
+  }
+
+  private void markCached() {
+    if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
+      cached = true;
+    }
   }
 
   private void enlargeData( final int count ) {

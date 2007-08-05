@@ -1241,7 +1241,7 @@ public abstract class Control extends Widget {
   }
   
   ///////////////
-  // drawing (Note that we can't realy force a redraw. This is just a 
+  // drawing (Note that we can't really force a redraw. This is just a 
   //         fake to for event notifications that come on OS systems
   //         with redraws)
   
@@ -1258,7 +1258,7 @@ public abstract class Control extends Widget {
    * platforms or for some widgets.
    * </p>
    * <p>
-   * Note: With RAP we can't realy force a redraw. This is just a 
+   * Note: With RAP we can't really force a redraw. This is just a 
    *       fake to enable event notifications that come on OS systems
    *       with redraws.
    * </p>
@@ -1281,7 +1281,7 @@ public abstract class Control extends Widget {
    * as needing to be redrawn.
    * 
    * <p>
-   * Note: With RAP we can't realy force a redraw. This is just a 
+   * Note: With RAP we can't really force a redraw. This is just a 
    *       fake to enable event notifications that come on OS systems
    *       with redraws.
    * </p>
