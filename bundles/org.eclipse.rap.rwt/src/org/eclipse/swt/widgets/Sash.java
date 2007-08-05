@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 
 /**
  * Instances of the receiver represent a selectable user interface object
@@ -73,6 +74,30 @@ public class Sash extends Control {
   public Sash( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
   }
+
+  public Point computeSize( final int wHint, 
+                            final int hHint,
+                            final boolean changed )
+  {
+    checkWidget();
+    int border = getBorderWidth();
+    int width = border * 2, height = border * 2;
+    if( ( style & SWT.HORIZONTAL ) != 0 ) {
+      width += DEFAULT_WIDTH;
+      height += 3;
+    } else {
+      width += 3;
+      height += DEFAULT_HEIGHT;
+    }
+    if( wHint != SWT.DEFAULT ) {
+      width = wHint + ( border * 2 );
+    }
+    if( hHint != SWT.DEFAULT ) {
+      height = hHint + ( border * 2 );
+    }
+    return new Point( width, height );
+  }
+
 
   /**
    * Adds the listener to the collection of listeners who will
