@@ -36,6 +36,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     // Image
     // TODO [rh] these dummy images are necessary since it is currently not
     //      possible to change images when they were not set here initially
+    //      [bm] replace with the following line when new qx version is in place
+    // this._row.addIcon( null ); 
     this._row.addIcon( "widget/tree/folder_closed.gif", 
                  "widget/tree/folder_open.gif" );
     // Text
@@ -207,6 +209,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     
     setImages : function( images ) {
     	this._images = images;
+      this.updateItem();
     },
     
     columnAdded : function() {
@@ -223,7 +226,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 	    		if( text != null && text != "") {
 		    		if( c == 0 ) {
 		    			this.setLabel( this._texts[ col ] );
-		    			// TODO [bm] remove if when image bug is fixed
+		    			// TODO [bm] remove if-statement when new qx version is in place
 		    			if( this._images[ col ] != null ) {
   		    		  this.setImage( this._images[ col ] );
 		    			}
