@@ -260,16 +260,17 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
         columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
       }
 			if( columnWidth.length > 0 ) {
+				var checkboxWidth = (this._checkBox == null ? 0 : 16); // 13 width + 3 checkbox margin 
 				this.getLabelObject().setWidth( columnWidth[ 0 ]
 					- this.getIconObject().getWidth()
-					- ( this.getLevel() * 19));  // TODO: [bm] replace with computed indent width
+					- ( this.getLevel() * 19)   // TODO: [bm] replace with computed indent width
+					- checkboxWidth
+					- 3 ); // tree-element-label margin
 			  var coLabel;
 	    	for( var i=1; i<columnWidth.length; i++ ) {
 	    		coLabel = this._colLabels[ i-1 ];
 	    		if( coLabel != null ) {
 	    			coLabel.setWidth( columnWidth[ i ] );
-// TODO [fappel]: logging causes problem
-//	    			console.log("setting with of " + coLabel.getLabel() + " to " + coLabel.getWidth());
 	    		}
 	    	}
 			}
