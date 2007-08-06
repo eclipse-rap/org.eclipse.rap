@@ -243,8 +243,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       return 0;
     },
     
-    showItem : function( item ) {
-      // TODO: [bm] implement scroll to item
+    showItem : function( itemOrEvent ) {
+    	var item;
+      if(!(itemOrEvent instanceof org.eclipse.swt.widgets.TreeItem )) {
+      	item = itemOrEvent.getTarget();
+      } else {
+        item = itemOrEvent;
+      }
+      if( !item.isCreated() ) {
+      	item.addEventListener( "appear", this.showItem, this );
+      	return;
+      }
+      item.scrollIntoView();
     },
     
     _updateLayout : function() {
@@ -253,7 +263,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
                                  this._updateLayout, this );
         return;
       }
-      console.log("updateLayout called");
       this._columnArea.setWidth( this.getWidth() );
       this._columnArea.setHeight( this.getColumnAreaHeight() );
       this._tree.setWidth( this.getWidth() );
