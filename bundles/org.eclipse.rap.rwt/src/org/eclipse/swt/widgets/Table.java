@@ -189,7 +189,7 @@ public class Table extends Composite {
     public void controlResized( final ControlEvent event ) {
       Table table = ( Table )event.widget;
       boolean visible = true;
-      int index = Math.min( 0, table.getTopIndex() );
+      int index = Math.max( 0, table.getTopIndex() );
       int count = table.getItemCount();
       while( visible && index < count ) {
         TableItem item = table.getItem( index );
