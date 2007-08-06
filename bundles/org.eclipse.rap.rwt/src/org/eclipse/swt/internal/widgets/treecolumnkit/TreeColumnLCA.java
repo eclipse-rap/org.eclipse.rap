@@ -50,7 +50,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
     adapter.preserve( PROP_Z_INDEX, new Integer( getZIndex( column ) ) );
-//    adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
+    adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
     adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
 //    adapter.preserve( PROP_SORT_IMAGE, getSortImage( column ) );
     adapter.preserve( PROP_RESIZABLE, 

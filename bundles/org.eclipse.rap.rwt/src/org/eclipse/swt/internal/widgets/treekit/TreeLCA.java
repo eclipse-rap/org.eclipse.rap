@@ -171,8 +171,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
     ITreeAdapter adapter
       = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     Item showItem = adapter.getShowItem();
-    if( WidgetLCAUtil.hasChanged( tree, "showItem", showItem, null ) ) {
+    if( showItem != null ) {
       writer.call( tree, "showItem", new Object[] { showItem } );
+      adapter.clearShowItem();
     }
   }
 
