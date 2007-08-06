@@ -41,10 +41,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     // init internal tree widget
     var trs = qx.ui.tree.TreeRowStructure.getInstance().newRow();
     this._tree = new qx.ui.tree.Tree( trs );
-    this._tree.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this._tree.setHideNode( true );
     this._tree.setRootOpenClose( true );
     this._tree.setUseDoubleClick( false );  // true supresses dblclick events !
+    this._tree.setOverflow( qx.constant.Style.OVERFLOW_AUTO );
 
     // TODO [rh] this is only to make the tree focusable at all
     this._tree.setTabIndex( 1 );
@@ -56,28 +56,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     this._tree.addEventListener( "contextmenu", this._onContextMenu, this );
     this._tree.addEventListener( "focus", this._onFocusIn, this );
     this._tree.addEventListener( "blur", this._onFocusOut, this );    
-    this._tree.addEventListener( "mousewheel", this._onTreeMouseWheel, this );    
     this._tree.addEventListener( "appear", this._updateLayout, this );    
     // TODO [rst] Find out why this is not the default appearance
     this._tree.setAppearance( "tree" );
+    
+    // listen for scroll events to move column area
+    this._tree.__onscroll = qx.lang.Function.bindEvent( this._onTreeScroll, this );
+    this._tree.addEventListener( "changeElement", this._onTreeElementChange, this._tree );
+    
     this.add( this._tree );
 
     this._rwtStyle = style;
     this._selectionListeners = false;
     this._treeListeners = false;
     this._hasFocus = false;
-
-    // Create horizontal scrollBar
-    this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
-    this._horzScrollBar.setHeight( this._horzScrollBar.getPreferredBoxHeight() );
-    this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
-    this.add( this._horzScrollBar );
-    
-    // Create vertical scrollBar
-    this._vertScrollBar = new qx.ui.basic.ScrollBar( false );
-    this._vertScrollBar.setWidth( this._vertScrollBar.getPreferredBoxWidth() );
-    this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
-    this.add( this._vertScrollBar );
 
     this.addEventListener( "changeWidth", this._onChangeSize, this );
     this.addEventListener( "changeHeight", this._onChangeSize, this );
@@ -93,6 +85,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       this._columnArea = null;
     }
     if( this._tree ) {
+    	var el = this._tree.getElement();
+	    if (el) {
+	      // remove inline event
+	      if (qx.core.Variant.isSet("qx.client", "mshtml")) {
+	        el.detachEvent("onscroll", this._tree.__onscroll);
+	      } else {
+	        el.removeEventListener("scroll", this._tree.__onscroll, false);
+	      }
+	      delete this.__onscroll;
+	    }
       var manager = this._tree.getManager();
       manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
       this._tree.removeEventListener( "treeOpenWithContent", this._onItemExpanded, this );
@@ -101,29 +103,36 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       this._tree.removeEventListener( "focus", this._onFocusIn, this );
       this._tree.removeEventListener( "blur", this._onFocusOut, this );
       this._tree.removeEventListener( "appear", this._updateLayout, this );
+      this._tree.removeEventListener( "changeElement", this._onTreeElementChange, this._tree );
       this._tree.dispose();
       this._tree = null;
-    }
-    if( this._horzScrollBar ) {
-      this._horzScrollBar.removeEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
-      this._horzScrollBar.dispose();
-      this._horzScrollBar = null;
-    }
-    if( this._vertScrollBar ) {
-      this._vertScrollBar.removeEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
-      this._vertScrollBar.dispose();
-      this._vertScrollBar = null;
     }
   },
   
   members : {
+	  _onTreeElementChange : function( evt ) {
+	    var value = evt.getValue();
+	    if (value)
+	      {
+	        // Register inline event
+	        if (qx.core.Variant.isSet("qx.client", "mshtml")) {
+	          value.attachEvent("onscroll", this.__onscroll);
+	        } else {
+	          value.addEventListener("scroll", this.__onscroll, false);
+	        }
+	      }
+	  },
+	  
+	  _onTreeScroll : function( e ) {
+	    this._columnArea.setLeft( 0 - e.target.scrollLeft );
+	  },
+  
   	_addColumn : function( column ) {
       column.setHeight( this._columnArea.getHeight() );
       this._hookColumnMove( column );
       column.addEventListener( "changeWidth", this._onColumnChangeSize, this );
       this._columnArea.add( column );
       this._columns.push( column );
-      this._updateScrollWidth();
       this._updateLayout();
       
       // inform all items about the new column
@@ -143,20 +152,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     
     _unhookColumnMove : function( column ) {
       column.removeEventListener( "changeLeft", this._onColumnChangeSize, this );
-    },
-    
-    _updateScrollWidth : function() {
-      var width;
-      if( this.getColumnCount() == 0 ) {
-        width = this.getDefaultColumnWidth();
-      } else {
-        width = this.getColumnsWidth();
-      }
-      this._horzScrollBar.setMaximum( width - this._vertScrollBar.getWidth() );
-    },
-    
-    _updateScrollHeight : function() {
-    	this._vertScrollBar.setMaximum( this.getItemsHeight() );
     },
     
     getItemsHeight : function() {
@@ -196,7 +191,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
           }
         }
       }
-      this._updateScrollWidth();
     },
 
     //////////////////////////////////////////////////////////////
@@ -259,47 +253,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
                                  this._updateLayout, this );
         return;
       }
+      console.log("updateLayout called");
       this._columnArea.setWidth( this.getWidth() );
       this._columnArea.setHeight( this.getColumnAreaHeight() );
-      this._tree.setWidth( Math.max( this.getWidth(), this.getColumnsWidth() ) );
-      this._tree.setHeight( Math.max( this.getHeight() - this.getColumnAreaHeight(), this.getItemsHeight() ) );
+      this._tree.setWidth( this.getWidth() );
+      this._tree.setHeight( this.getHeight() - this.getColumnAreaHeight() );
       this._tree.setTop( this.getColumnAreaHeight() );
       
-      if( this._tree.getWidth() == this.getWidth() ) {
-        this._horzScrollBar.setDisplay( false );
-        this._horzScrollBar.setHeight( 0 );
-        
-      } else {
-        this._horzScrollBar.setDisplay( true );
-        this._horzScrollBar.setLeft( 0 );
-        this._horzScrollBar.setHeight( this._horzScrollBar.getPreferredBoxHeight() );
-        this._horzScrollBar.setTop( this.getHeight() - this._horzScrollBar.getPreferredBoxHeight() );
-        this._horzScrollBar.setWidth( this.getWidth() );
-        this._updateScrollWidth();
-      }
-
-      if( (this.getHeight() - this.getColumnAreaHeight() ) < this.getItemsHeight() ) {
-        this._vertScrollBar.setDisplay( true );
-       this._vertScrollBar.setWidth( this._vertScrollBar.getPreferredBoxWidth() );
-       this._vertScrollBar.setLeft( this.getWidth() - this._vertScrollBar.getPreferredBoxWidth() );
-       this._vertScrollBar.setHeight( this.getHeight() - this._horzScrollBar.getHeight() - this.getColumnAreaHeight() );
-       this._vertScrollBar.setTop( this.getColumnAreaHeight() );
-
-        this._updateScrollHeight();
-        this._horzScrollBar.setWidth( this._horzScrollBar.getWidth() - this._vertScrollBar.getWidth() );
-      } else {
-        this._vertScrollBar.setDisplay( false );
-       this._vertScrollBar.setWidth( 0 );
-      }
-    },
-
-    _onHorzScrollBarChangeValue : function() {
-      this._columnArea.setLeft( 0 - this._horzScrollBar.getValue() );
-      this._tree.setLeft( 0 - this._horzScrollBar.getValue() );
-    },
-    
-    _onVertScrollBarChangeValue : function() {
-      this._tree.setTop( this.getColumnAreaHeight() - this._vertScrollBar.getValue() );
     },
 
     _onChangeSize : function( evt ) {
@@ -337,11 +297,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     /////////////////
     // Event Listener
 
-    _onTreeMouseWheel : function( evt ) {
-      var change = evt.getWheelDelta() * 16; // default item height
-      this._vertScrollBar.setValue( this._vertScrollBar.getValue() - change );
-    },
-    
     _onChangeSelection : function( evt ) {
       this._updateSelectedItemState();
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
@@ -383,8 +338,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
           req.send();
         }
       }
-      this._tree.setHeight( Math.max( this.getHeight(), this.getItemsHeight() ) );
-      this._updateScrollHeight();
     },
 
     _onItemCollapsed : function( evt ) {
@@ -398,8 +351,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
           req.send();
         }
       }
-      this._tree.setHeight( Math.max( this.getHeight(), this.getItemsHeight() ) );
-      this._updateScrollHeight();
     },
 
     _onContextMenu : function( evt ) {
