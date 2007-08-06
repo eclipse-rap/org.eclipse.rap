@@ -235,6 +235,18 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getTopIndex() );
   }
   
+  public void testDispose() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.SINGLE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    table.dispose();
+    assertTrue( table.isDisposed() );
+    assertTrue( column.isDisposed() );
+    assertTrue( item.isDisposed() );
+  }
+  
   public void testDisposeSingleSelectedItem() {
     Display display = new Display();
     Shell shell = new Shell( display );

@@ -37,6 +37,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   },
   
   destruct : function() {
+    // When changing this, re-check destructor of Table.js as well as TableLCA
+    // and TableItemLCA 
     if( !this._parent.isDisposed() ) {
       this._parent._removeItem( this );
     }
@@ -76,7 +78,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   },
   
   members : {
-
+    
     setChecked : function( value ) {
       if( this._checked != value ) {
         this._checked = value;

@@ -1930,6 +1930,17 @@ public class Table extends Composite {
   ////////////////
   // Destroy table
   
+  protected void releaseChildren() {
+    Item[] items = itemHolder.getItems();
+    for( int i = 0; i < items.length; i++ ) {
+      items[ i ].dispose();
+    }
+    Item[] columns = columnHolder.getItems();
+    for( int i = 0; i < columns.length; i++ ) {
+      columns[ i ].dispose();
+    }
+  }
+  
   protected void releaseWidget() {
     super.releaseWidget();
     if( resizeListener != null ) {

@@ -115,4 +115,37 @@ public class TableItemLCA_Test extends TestCase {
     lifeCycle.execute();
     assertTrue( executed[ 0 ] );
   }
+  
+  public void testDispose() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Table table = new Table( shell, SWT.CHECK );
+    TableItem itemOnlyDisposed = new TableItem( table, SWT.NONE );
+    TableItem itemWithTableDisposed = new TableItem( table, SWT.NONE );
+    
+    RWTFixture.markInitialized( table );
+    RWTFixture.markInitialized( itemOnlyDisposed );
+    RWTFixture.markInitialized( itemWithTableDisposed );
+    
+    // Test that when a single items is disposed, its JavaScript dispose
+    // function is called
+    itemOnlyDisposed.dispose();
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( itemWithTableDisposed );
+    Fixture.fakeResponseWriter();
+    lca.renderDispose( itemOnlyDisposed );
+    String expected 
+      = "var wm = org.eclipse.swt.WidgetManager.getInstance();" 
+      + "var w = wm.findWidgetById( \"w3\" );" 
+      + "w.dispose();";
+    assertEquals( expected, Fixture.getAllMarkup() );
+
+    // Test that when the whole Tables is dipsosed of, the TableItems dispose
+    // function is *not* called
+    table.dispose();
+    lca = WidgetUtil.getLCA( itemWithTableDisposed );
+    Fixture.fakeResponseWriter();
+    lca.renderDispose( itemWithTableDisposed );
+    assertEquals( "", Fixture.getAllMarkup() );
+    assertTrue( itemWithTableDisposed.isDisposed() );
+  }
 }

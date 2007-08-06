@@ -116,6 +116,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
     this._emptyItem.dispose();
+    // For performance reasons, when disposing a a Table, the server-side LCA 
+    // does *not* dispose of each TableItem, instead this is done here in one 
+    // batch without updating the Tables state as it is in disposal anyway
+    for( var i = 0; i < this._items.length; i++ ) {
+      if( this._items[ i ] ) {
+        this._items[ i ].dispose();
+      }
+    }
+    this._items = null;
     var req = org.eclipse.swt.Request.getInstance();
     if( this._horzScrollBar ) {
       this._horzScrollBar.removeEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );

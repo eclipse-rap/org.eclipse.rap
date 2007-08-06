@@ -121,11 +121,16 @@ public final class TableItemLCA extends AbstractWidgetLCA {
    */
   public void renderDispose( final Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( item );
-    writer.call( "dispose", null );
+    // When the Table is disposed of it takes care of disposing all its items
+    if( !item.getParent().isDisposed() ) {
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.call( "dispose", null );
+    }
   }
 
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId ) 
+    throws IOException 
+  {
   }
   
   public String getTypePoolId( final Widget widget ) throws IOException {
