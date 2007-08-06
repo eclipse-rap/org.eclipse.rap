@@ -20,6 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
 
 public class Tree_Test extends TestCase {
   
@@ -420,6 +421,7 @@ public class Tree_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Tree tree = new Tree(shell, SWT.SINGLE);
+    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     try {
       tree.showItem(null);
       fail("No exception thrown for item == null");
@@ -427,15 +429,19 @@ public class Tree_Test extends TestCase {
 //    catch (IllegalArgumentException e) {
     catch (NullPointerException e) {
     }
+
+    assertEquals( null, adapter.getShowItem() );
     
     int number = 20;
     TreeItem[] items = new TreeItem[number];
     for (int i = 0; i < number; i++) {
       items[i] = new TreeItem(tree, 0);
     }
-    for(int i=0; i<number; i++)
+    for(int i=0; i<number; i++) {
       tree.showItem(items[i]);
-
+      assertEquals( items[i], adapter.getShowItem() );
+    }
+    
     tree.removeAll();
 
     tree = new Tree(shell, SWT.MULTI);

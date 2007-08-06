@@ -84,11 +84,11 @@ public class Tree extends Composite {
   private int[] columnOrder;
   private TreeColumn sortColumn;
   private boolean headerVisible = false;
-  private TreeAdapter treeAdapter;
   private TreeItem showItem;
   private final ResizeListener resizeListener;
   private final TreeListener expandListener;
   private TreeItem currentItem;
+  private ITreeAdapter treeAdapter;
   
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
@@ -122,7 +122,7 @@ public class Tree extends Composite {
     }
   }
   
-  public class TreeItemAdapter {
+  private final class InternalTreeAdapter implements ITreeAdapter {
     public TreeItem getShowItem() {
       return Tree.this.showItem;
     }
@@ -217,6 +217,7 @@ public class Tree extends Composite {
     super( parent, checkStyle( style ) );
     itemHolder = new ItemHolder( TreeItem.class );
     columnHolder = new ItemHolder ( TreeColumn.class );
+    treeAdapter = new InternalTreeAdapter();
     selection = EMPTY_SELECTION;
     if( ( this.style & SWT.VIRTUAL ) != 0 ) {
       resizeListener = new ResizeListener();
@@ -233,8 +234,8 @@ public class Tree extends Composite {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = new CompositeItemHolder();
-    } else if( adapter == TreeItemAdapter.class ) {
-      result = new TreeItemAdapter();
+    } else if( adapter == ITreeAdapter.class ) {
+      result = treeAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

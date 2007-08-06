@@ -19,9 +19,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.swt.widgets.Tree.TreeItemAdapter;
 
 import com.w4t.engine.service.ContextProvider;
 
@@ -168,10 +168,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private void writeShowItem( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
-    TreeItemAdapter adapter
-      = ( TreeItemAdapter )tree.getAdapter( TreeItemAdapter.class );
+    ITreeAdapter adapter
+      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     Item showItem = adapter.getShowItem();
-    writer.call( tree, "showItem", new Object[] { showItem } );
+    if( WidgetLCAUtil.hasChanged( tree, "showItem", showItem, null ) ) {
+      writer.call( tree, "showItem", new Object[] { showItem } );
+    }
   }
 
   private static void writeHeaderHeight( final Tree tree ) throws IOException {
