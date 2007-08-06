@@ -259,6 +259,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     
     updateColumnsWidth : function() {
     	var columnWidth = new Array();
+    	var fullWidth = this.getTree().getParent().getColumnsWidth();
+    	this.setWidth( fullWidth );
       for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
         columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
       }
