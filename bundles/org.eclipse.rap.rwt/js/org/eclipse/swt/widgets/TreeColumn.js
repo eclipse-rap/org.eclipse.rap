@@ -39,13 +39,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
     // accidentially calculate a width of "0auto"
     this.setWidth( 0 );
     // Init left property, seems to be null initially which breaks the markup 
-    // produced by TableItem
+    // produced by TreeItem
     this.setLeft( 0 );
     // Set the label part to 'html mode'
     this.setLabel( "(empty)" );
     this.getLabelObject().setMode( "html" );
     this.setLabel( "foo" );
-    // Add this column to the list of coluimns maintained by the tree
+    // Add this column to the list of columns maintained by the tree
     this._tree = parent;
     this._tree._addColumn( this );
     // Register mouse-listener for 'mouseover' appearance state
