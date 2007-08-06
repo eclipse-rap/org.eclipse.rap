@@ -1237,6 +1237,10 @@ public class Tree extends Composite {
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].dispose();
     }
+    TreeColumn[] cols = ( TreeColumn[] )columnHolder.getItems();
+    for( int c = 0; c < cols.length; c++ ) {
+      cols[ c ].dispose();
+    }
     super.releaseChildren();
   }
   

@@ -97,9 +97,11 @@ public class Tree_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
     tree.dispose();
     assertEquals( true, item.isDisposed() );
     assertEquals( true, subItem.isDisposed() );
+    assertEquals( true, column.isDisposed() );
     assertEquals( 0, tree.getItemCount() );
     assertEquals( 0, item.getItemCount() );
     assertEquals( 0, subItem.getItemCount() );
