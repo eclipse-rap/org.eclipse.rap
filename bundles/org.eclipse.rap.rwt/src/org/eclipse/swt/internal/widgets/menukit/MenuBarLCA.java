@@ -32,6 +32,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     Shell shell = MenuBarLCA.getShell( menu );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_SHELL, shell );
+    // TODO [rh] extract method and move to MenuLCAUtil
     adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
     MenuLCAUtil.preserveMenuListener( menu );
   }

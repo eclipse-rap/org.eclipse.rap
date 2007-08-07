@@ -17,6 +17,9 @@ import org.eclipse.swt.lifecycle.ControlLCAUtil;
 import org.eclipse.swt.lifecycle.JSWriter;
 import org.eclipse.swt.widgets.Text;
 
+import com.w4t.W4TContext;
+import com.w4t.util.browser.Mozilla;
+
 // TODO [rh] bring selection for multi-line text to work. Currently there
 //      occur JavaScript errors. (see readSelection, writeSelection)
 final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
@@ -45,7 +48,7 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( text );
-    TextLCAUtil.writeNoSpellCheck( text );
+    MultiTextDelegateLCA.writeNoSpellCheck( text );
 //    TODO [rst] Disabled writing of wrap state since it only works in Opera and
 //               also interferes with object pooling in IE.
 //    TextLCAUtil.writeWrap( text );
@@ -77,5 +80,15 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.resetText();
     ControlLCAUtil.resetChanges();
     ControlLCAUtil.resetStyleFlags();
+  }
+
+  //////////////////
+  // Helping methods 
+  
+  private static void writeNoSpellCheck( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    if( W4TContext.getBrowser() instanceof Mozilla ) {
+      writer.set( "spellCheck", false );
+    }
   }
 }

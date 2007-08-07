@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.*;
 final class DropDownMenuLCA extends MenuDelegateLCA {
 
   void preserveValues( final Menu menu ) {
+    // TODO [rh] extract method and move to MenuLCAUtil
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
     MenuLCAUtil.preserveMenuListener( menu );

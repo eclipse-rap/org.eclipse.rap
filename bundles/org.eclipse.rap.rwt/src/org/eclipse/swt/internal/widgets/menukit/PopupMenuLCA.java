@@ -24,6 +24,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     = "org.eclipse.swt.MenuUtil.showMenu";
   
   void preserveValues( final Menu menu ) {
+    // TODO [rh] extract method and move to MenuLCAUtil
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
     MenuLCAUtil.preserveMenuListener( menu );

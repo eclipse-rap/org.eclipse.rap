@@ -62,6 +62,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( widget );
     writeReadOnly( spinner );
+    writeWrap( spinner );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -131,7 +132,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
                 new Integer( defValue ) );
   }
 
-  private static void writeReadOnly( final Spinner spinner ) throws IOException {
+  private static void writeReadOnly( final Spinner spinner ) throws IOException 
+  {
     boolean readOnly = ( spinner.getStyle() & SWT.READ_ONLY ) != 0;
     JSWriter writer = JSWriter.getWriterFor( spinner );
     writer.set( JSConst.QX_FIELD_EDITABLE, !readOnly );
@@ -140,6 +142,13 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   private static void resetReadOnly() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JSConst.QX_FIELD_EDITABLE );
+  }
+
+  private static void writeWrap( final Spinner spinner ) throws IOException {
+    if( ( spinner.getStyle() & SWT.WRAP ) != 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( spinner );
+      writer.set( "wrap", true );
+    }
   }
 
   private static void writeModifyListener( final Spinner spinner )

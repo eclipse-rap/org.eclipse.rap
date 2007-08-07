@@ -20,8 +20,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
-import com.w4t.W4TContext;
-import com.w4t.util.browser.Mozilla;
 
 
 final class TextLCAUtil {
@@ -97,16 +95,6 @@ final class TextLCAUtil {
   static void resetReadOnly() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JS_PROP_READ_ONLY );
-  }
-
-  static void writeNoSpellCheck( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    // TODO [rh] this should be solved in qooxdoo
-    //      see http://bugzilla.qooxdoo.org/show_bug.cgi?id=291
-    if( W4TContext.getBrowser() instanceof Mozilla ) {
-      Object[] args = new Object[] { "spellcheck", Boolean.FALSE };
-      writer.call( "setHtmlAttribute", args );
-    }
   }
 
   static void writeTextLimit( final Text text ) throws IOException {

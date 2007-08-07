@@ -40,10 +40,8 @@ import com.w4t.util.SessionLocale;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * WRAP is not supported yet.
  * @since 1.0
  */
-// TODO [rh] style WRAP not yet supported
 // TODO cut/copy/past not implemented
 // TODO SelectionListener: widgetSelected is fired whenever the value changes
 public class Spinner extends Composite {

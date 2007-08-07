@@ -165,8 +165,15 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       }
       
       // map the widget to the server side widgetId
-      this.add( result, widgetId, isControl );
-      
+      if( result.classname == "org.eclipse.swt.widgets.Shell" ) {
+        // TODO [rh] HACK: when a Shell is created, the isControl parameter is
+        //      set to false so that setParent isn't called (see below).
+        //      But to keep the activeControl mechanism working, it must be 
+        //      added to the WidgetManager with the isCcontrol flag set to true     
+        this.add( result, widgetId, true );
+      } else {
+        this.add( result, widgetId, isControl );
+      }
       // insert controls into the widget tree
       if( isControl ) {
         this.setParent( result, parentId );

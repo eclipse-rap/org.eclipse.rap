@@ -11,10 +11,6 @@
 
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import java.io.File;
-import java.util.Enumeration;
-import java.util.zip.ZipFile;
-
 import org.eclipse.swt.internal.engine.ResourceRegistry;
 import org.eclipse.swt.resources.IResource;
 import org.eclipse.swt.resources.ResourceManager;
@@ -28,6 +24,16 @@ import com.w4t.engine.service.IServiceStateInfo;
 // TODO [rh] Should javaScript namespaces include widget and/or custom?
 //      e.g. org/eclipse/swt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
+  
+
+  private static final String CLIENT_LIBRARY_VARIANT
+    = "org.eclipse.swt.clientLibraryVariant";
+  private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "debug";
+  
+  private static final String QX_JS 
+    = "qx.js";
+  private static final String QX_DEBUG_JS 
+    = "qx-debug.js";
   
   private static final String APPLICATION_JS 
     = "org/eclipse/swt/Application.js";
@@ -112,31 +118,22 @@ final class QooxdooResourcesUtil {
     ClassLoader loader = QooxdooResourcesUtil.class.getClassLoader();
     IResourceManager manager = ResourceManager.getInstance();
     ClassLoader bufferedLoader = manager.getContextLoader();
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    // TODO [rh] really need responseWriter? registerResources is called
-    //      from ctor of DisplayLCA...
-    HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
+    manager.setContextLoader( loader );
     try {
-      manager.setContextLoader( loader );
-      
-
-      ///////////////////////////////////////////////
-      // start generated code (see main method)
-
-      manager.register( "resource/static/history/historyHelper.html", HTML.CHARSET_NAME_ISO_8859_1 );
+      manager.register( "resource/static/history/historyHelper.html", 
+                        HTML.CHARSET_NAME_ISO_8859_1 );
       manager.register( "resource/static/html/blank.html" );
       manager.register( "resource/static/image/blank.gif" );
       manager.register( "resource/static/image/dotted_white.gif" );
-      manager.register( "script/custom.js", HTML.CHARSET_NAME_ISO_8859_1, RegisterOptions.VERSION );
-      responseWriter.useJSLibrary( "script/custom.js" );
-
-      // end generated code
-      ///////////////////////////////////////////////
-
-      
+      String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
+      if( DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant ) ) {
+        register( QX_DEBUG_JS );
+      } else {
+        register( QX_JS );
+      }
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
       //      these three files are here o keep DefaultAppearanceTheme.js
-      //      happy that makes heavy use of constants 
+      //      happy that makes heavy use of constants
       register( QX_CONSTANT_CORE_JS );
       register( QX_CONSTANT_LAYOUT_JS );
       register( QX_CONSTANT_STYLE_JS );
@@ -215,42 +212,13 @@ final class QooxdooResourcesUtil {
   
   private static void register( final String libraryName ) {
     IResourceManager manager = ResourceManager.getInstance();
+    // TODO [rh] system property clientLibraryVariant could be used here to
+    //      specify either RegisterOptions.VERSION or VERSION_AND_COMPRESS
     manager.register( libraryName, 
                       HTML.CHARSET_NAME_ISO_8859_1,
                       RegisterOptions.VERSION );
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
     responseWriter.useJSLibrary( libraryName );
-  }
-  
-  /** 
-   * This is a utility method to create the image registration code.
-   */
-  public static void main( final String[] arx ) throws Exception {
-    String projectDir = System.getProperty( "user.dir" );
-    File file = new File( projectDir + "/lib/qooxdoo-0.7.jar");
-    ZipFile archive = new ZipFile( file );
-    Enumeration entries = archive.entries();
-    System.out.println( file );
-    while( entries.hasMoreElements() ) {
-      String entry = entries.nextElement().toString();
-      if( !entry.endsWith( "/" ) ) {
-        if( entry.endsWith( ".html" ) ) {
-          System.out.println(   "manager.register( \"" 
-                              + entry 
-                              + "\", HTML.CHARSET_NAME_ISO_8859_1 );" );
-        } else if( entry.endsWith( ".js" ) ) {
-          System.out.println(   "manager.register( \"" 
-                              + entry
-                              + "\", HTML.CHARSET_NAME_ISO_8859_1, "
-                              + "RegisterOptions.VERSION );" );
-          System.out.println(   "responseWriter.useJSLibrary( \"" 
-                              + entry
-                              + "\" );" );
-        } else {
-          System.out.println( "manager.register( \"" + entry + "\" );" );
-        }
-      }
-    }
   }
 }

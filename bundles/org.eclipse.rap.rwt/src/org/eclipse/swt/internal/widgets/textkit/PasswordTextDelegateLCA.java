@@ -43,7 +43,6 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( text );
-    TextLCAUtil.writeNoSpellCheck( text );
   }
 
   void renderChanges( final Text text ) throws IOException {

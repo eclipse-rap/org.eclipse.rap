@@ -660,7 +660,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     _updateScrollHeight : function() {
       var height = this._itemHeight + this._itemCount * this._itemHeight;
-      this._vertScrollBar.setMaximum( height );
+      // Without the check, it may cause an error in FF when unloading doc 
+      if( !this._vertScrollBar.getDisposed() ) {
+        this._vertScrollBar.setMaximum( height );
+      }
     },
 
     _updateScrollWidth : function() {

@@ -26,6 +26,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     rap_init : function() {
       this._isModified = false;
       this._hasModifyListener = false;
+      this.setWrap( false );
       this.getManager().addEventListener( "change", this._onChangeValue, this );
       this._textfield.addEventListener( "keyinput", this._onChangeValue, this );
       this._textfield.addEventListener( "blur", this._onChangeValue, this );
