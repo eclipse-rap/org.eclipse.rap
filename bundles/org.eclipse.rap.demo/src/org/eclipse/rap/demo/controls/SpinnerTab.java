@@ -28,10 +28,10 @@ public class SpinnerTab extends ExampleTab {
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
+    createStyleButton( "WRAP", SWT.WRAP );
     createVisibilityButton();
     createEnablementButton();
     createRangeControls( parent );
-// TODO [rst] Uncomment when setting fg and bg on spinner works (bug 194772)
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
