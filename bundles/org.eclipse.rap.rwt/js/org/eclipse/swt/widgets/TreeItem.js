@@ -34,12 +34,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       this._row.addObject( this._checkBox, false );
     }
     // Image
-    // TODO [rh] these dummy images are necessary since it is currently not
-    //      possible to change images when they were not set here initially
-    //      [bm] replace with the following line when new qx version is in place
-    // this._row.addIcon( null ); 
-    this._row.addIcon( "widget/tree/folder_closed.gif", 
-                 "widget/tree/folder_open.gif" );
+    this._row.addIcon( null ); 
+
     // Text
     this._row.addLabel( "" );
     
@@ -226,10 +222,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 	    		if( text != null && text != "") {
 		    		if( c == 0 ) {
 		    			this.setLabel( this._texts[ col ] );
-		    			// TODO [bm] remove if-statement when new qx version is in place
-		    			if( this._images[ col ] != null ) {
-  		    		  this.setImage( this._images[ col ] );
-		    			}
+  		    		this.setImage( this._images[ col ] );
 		    		} else {
 		    			if( this._colLabels[ c -1 ] == null ) {
 		    				if( this._images[ col ] != null
