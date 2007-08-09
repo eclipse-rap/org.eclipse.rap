@@ -45,10 +45,8 @@ public class ComboTab extends ExampleTab {
     createEnablementButton();
     createAddButton( parent );
     createRemoveAllButton( parent );
-    // TODO [rst] uncomment as soon as setting foreground and background works
-    //            on Combo (bug 194756)
-//    createFgColorButton();
-//    createBgColorButton();
+    createFgColorButton();
+    createBgColorButton();
     createFontChooser();
   }
 

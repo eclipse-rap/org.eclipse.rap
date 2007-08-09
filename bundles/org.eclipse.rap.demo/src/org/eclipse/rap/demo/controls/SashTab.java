@@ -36,9 +36,9 @@ public class SashTab extends ExampleTab {
     Label label1 = new Label( top, SWT.NONE );
     label1.setBackground( white );
     label1.setText( "Sash:" );
-    Sash sash = new Sash( top, style | SWT.BORDER );
+    Sash sash = new Sash( top, style );
     if( ( sash.getStyle() & SWT.HORIZONTAL ) != 0 ){
-      top.setLayout( new FillLayout( SWT.VERTICAL ) );      
+      top.setLayout( new FillLayout( SWT.VERTICAL ) );
     }
     Label label2 = new Label( top, SWT.NONE );
     label2.setBackground( white );
