@@ -18,6 +18,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
   construct : function() {
     this.base( arguments );
     this._getLabelObject().setMode( "html" );
+    this.addEventListener( "changeBackgroundColor",
+                           this._onChangeBackgroundColor );
   },
 
   members : {
@@ -31,11 +33,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
                              this._onChangeBackgroundColor );
     },
 
-// TODO [rst] Never called, check with next qooxdoo version 
-    _onChangeBackgroundColor : function() {
+    _onChangeBackgroundColor : function( evt ) {
       var group = evt.getTarget();
       var newColor = evt.getValue();
-//      group.debug( "_____ changing bg color: " + newColor );
       group.getLegendObject().setBackgroundColor( newColor );
     },
     
