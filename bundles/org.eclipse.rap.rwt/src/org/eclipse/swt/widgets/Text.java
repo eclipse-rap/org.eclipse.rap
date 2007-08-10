@@ -617,6 +617,14 @@ public class Text extends Scrollable {
     ModifyEvent.removeListener( this, listener );
   }
 
+  // TODO [fappel]: documentation and implementation
+  public void addVerifyListener( final VerifyListener verifyListener ) {
+  }
+
+  // TODO [fappel]: documentation and implementation
+  public void removeVerifyListener( final VerifyListener verifyListener ) {
+  }
+
   boolean isTabGroup() {
     return true;
   }

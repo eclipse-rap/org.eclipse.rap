@@ -424,6 +424,9 @@ public class Combo extends Composite {
     }
     return result;
   }
+  
+  // TODO [fappel]: create missing setText(String) method
+  
 
   ////////////////////
   // Widget dimensions
