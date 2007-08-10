@@ -195,17 +195,22 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     },
     
     _onAppear : function( evt ) {
+    	this.updateItem();
     	this.updateColumnsWidth();
     },
     
     setTexts : function( texts ) {
       this._texts = texts;
-      this.updateItem();
+      if( this.isCreated() ) {
+        this.updateItem();
+      }
     },
     
     setImages : function( images ) {
     	this._images = images;
-      this.updateItem();
+    	if( this.isCreated() ) {
+        this.updateItem();
+    	}
     },
     
     columnAdded : function() {
@@ -221,8 +226,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 	    		var text = this._texts[ col ];
 	    		if( text != null && text != "") {
 		    		if( c == 0 ) {
-		    			this.setLabel( this._texts[ col ] );
-  		    		this.setImage( this._images[ col ] );
+			    			this.setLabel( this._texts[ col ] );
+	  		    		this.setImage( this._images[ col ] );
 		    		} else {
 		    			if( this._colLabels[ c -1 ] == null ) {
 		    				if( this._images[ col ] != null

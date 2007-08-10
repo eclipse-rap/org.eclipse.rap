@@ -916,6 +916,17 @@ appearances = {
       include : "tree-element-label"
     },
 
+    "tree-container" :
+    {
+      style : function( states ) {
+        return {
+          border : states.rwt_BORDER
+            ? "control.BORDER.border"
+            : "control.border"
+        };
+      }
+    },
+    
     "tree" :
     {
       include : "tree-folder",

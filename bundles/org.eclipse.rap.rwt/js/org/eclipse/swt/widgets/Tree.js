@@ -24,6 +24,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     this.base( arguments );
     
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
+    this.setAppearance( "tree-container" );
 
     this._columnArea = new qx.ui.layout.CanvasLayout();
     this._columnArea.setTop( 0 );
@@ -110,6 +111,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
   },
   
   members : {
+  	
+  	// delegater
+  	setBackgroundColor : function( color ) {
+  		this._tree.setBackgroundColor( color );
+  	},
+  	
 	  _onTreeElementChange : function( evt ) {
 	    var value = evt.getValue();
 	    if (value)

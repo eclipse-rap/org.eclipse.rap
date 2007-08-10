@@ -366,6 +366,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // TODO [rh] the browser does not seem to be detected when this 
     //      code gets executed. Once this is fixed, do only render this when
     //      browser is IE
+	// TODO [bm] this could be part of ralfs themeing or?
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
     out.startElement( HTML.STYLE, out );
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_CSS, null );
