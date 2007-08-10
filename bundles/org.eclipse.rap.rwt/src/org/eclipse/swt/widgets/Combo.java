@@ -13,8 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
@@ -528,6 +527,25 @@ public class Combo extends Composite {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
+
+  // TODO [fappel]: documentation and implementation
+  public void addModifyListener( final ModifyListener listener ) {
+    
+  }
+  
+  // TODO [fappel]: documentation and implementation
+  public void removeModifyListener( final ModifyListener listener ) {
+    
+  }
+  
+  // TODO [fappel]: documentation and implementation
+  public void addVerifyListener( final VerifyListener verifyListener ) {
+  }
+
+  // TODO [fappel]: documentation and implementation
+  public void removeVerifyListener( final VerifyListener verifyListener ) {
+  }
+
 
   boolean isTabGroup() {
     return true;

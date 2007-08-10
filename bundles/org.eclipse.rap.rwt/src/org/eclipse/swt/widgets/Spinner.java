@@ -16,8 +16,7 @@ import java.util.Locale;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
@@ -443,6 +442,16 @@ public class Spinner extends Composite {
   public void removeModifyListener( final ModifyListener listener ) {
     ModifyEvent.removeListener( this, listener );
   }
+  
+
+  // TODO [fappel]: documentation and implementation
+  public void addVerifyListener( final VerifyListener verifyListener ) {
+  }
+
+  // TODO [fappel]: documentation and implementation
+  public void removeVerifyListener( final VerifyListener verifyListener ) {
+  }
+
 
   //////////////////
   // Helping methods
