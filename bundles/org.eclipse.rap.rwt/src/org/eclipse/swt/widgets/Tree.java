@@ -464,6 +464,25 @@ public class Tree extends Composite {
   	
   	showItem = item;
   }
+  
+  /**
+   * Shows the selection.  If the selection is already showing in the receiver,
+   * this method simply returns.  Otherwise, the items are scrolled until
+   * the selection is visible.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see Tree#showItem(TreeItem)
+   */
+  public void showSelection() {
+    checkWidget();
+	if (selection.length == 0) return;
+	showItem (selection [0]);
+  }
+  
   /////////////////////////////////////
   // Methods to get/set/clear selection
   

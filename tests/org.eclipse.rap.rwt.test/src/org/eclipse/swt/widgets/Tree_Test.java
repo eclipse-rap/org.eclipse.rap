@@ -597,7 +597,6 @@ public class Tree_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
-    TreeColumn column = new TreeColumn(tree, SWT.NONE);
     
     assertEquals( SWT.NONE, tree.getSortDirection() );
     tree.setSortDirection( SWT.UP );
@@ -605,6 +604,19 @@ public class Tree_Test extends TestCase {
     tree.setSortDirection( SWT.DOWN );
     assertEquals( SWT.DOWN, tree.getSortDirection() );
   }
+  
+  public void testShowSelection() {
+		Display display = new Display();
+		Composite shell = new Shell(display, SWT.NONE);
+		Tree tree = new Tree(shell, SWT.SINGLE);
+
+		TreeItem item;
+
+		tree.showSelection();
+		item = new TreeItem(tree, 0);
+		tree.setSelection(new TreeItem[] { item });
+		tree.showSelection();
+	}
   
   private static boolean contains( final TreeItem[] items, 
                                    final TreeItem item ) 
