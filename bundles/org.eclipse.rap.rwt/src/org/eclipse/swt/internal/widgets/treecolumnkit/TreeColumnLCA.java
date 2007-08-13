@@ -22,17 +22,16 @@ import org.eclipse.swt.widgets.*;
 
 public final class TreeColumnLCA extends AbstractWidgetLCA {
 
-  // TODO
-//  private static final String SORT_IMAGE_UP 
-//    = "widget/table/up.png";
-//  private static final String SORT_IMAGE_DOWN 
-//    = "widget/table/down.png";
+  private static final String SORT_IMAGE_UP 
+    = "widget/table/up.png";
+  private static final String SORT_IMAGE_DOWN 
+    = "widget/table/down.png";
   
   // Property names to preserve values
   private static final String PROP_LEFT = "left";
   private static final String PROP_WIDTH = "width";
   private static final String PROP_Z_INDEX = "zIndex";
-//  private static final String PROP_SORT_IMAGE = "sortImage";
+  private static final String PROP_SORT_IMAGE = "sortImage";
   private static final String PROP_RESIZABLE = "resizable";
   private static final String PROP_MOVEABLE = "moveable";
   private static final String PROP_ALIGNMENT = "alignment";
@@ -52,7 +51,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_Z_INDEX, new Integer( getZIndex( column ) ) );
     adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
     adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
-//    adapter.preserve( PROP_SORT_IMAGE, getSortImage( column ) );
+    adapter.preserve( PROP_SORT_IMAGE, getSortImage( column ) );
     adapter.preserve( PROP_RESIZABLE, 
                       Boolean.valueOf( column.getResizable() ) );
     adapter.preserve( PROP_MOVEABLE, 
@@ -109,7 +108,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     writeWidth( column );
     writeZIndex( column );
     WidgetLCAUtil.writeToolTip( column, column.getToolTipText() );
-//    writeSortImage( column );
+    writeSortImage( column );
     writeResizable( column );
     writeMoveable( column );
     writeAlignment( column );
@@ -153,12 +152,12 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     writer.set( PROP_Z_INDEX, "zIndex", newValue, null );
   }
 //
-//  private static void writeSortImage( final TableColumn column ) 
-//    throws IOException 
-//  {
-//    JSWriter writer = JSWriter.getWriterFor( column );
-//    writer.set( PROP_SORT_IMAGE, "sortImage", getSortImage( column ), "" );
-//  }
+  private static void writeSortImage( final TreeColumn column ) 
+    throws IOException 
+  {
+    JSWriter writer = JSWriter.getWriterFor( column );
+    writer.set( PROP_SORT_IMAGE, "sortImage", getSortImage( column ), "" );
+  }
 
   private static void writeResizable( final TreeColumn column ) 
     throws IOException 
@@ -247,19 +246,19 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   private static int getZIndex( final TreeColumn column ) {
     return ControlLCAUtil.getZIndex( column.getParent() ) + 1;
   }
-//
-//  private static String getSortImage( final TableColumn column ) {
-//    String result = "";
-//    Table table = column.getParent();
-//    if( table.getSortColumn() == column ) {
-//      if( table.getSortDirection() == SWT.UP ) {
-//        result = SORT_IMAGE_UP;
-//      } else if( table.getSortDirection() == SWT.DOWN ) {
-//        result = SORT_IMAGE_DOWN;
-//      }
-//    }
-//    return result;
-//  }
+
+  private static String getSortImage( final TreeColumn column ) {
+    String result = "";
+    Tree tree = column.getParent();
+    if( tree.getSortColumn() == column ) {
+      if( tree.getSortDirection() == SWT.UP ) {
+        result = SORT_IMAGE_UP;
+      } else if( tree.getSortDirection() == SWT.DOWN ) {
+        result = SORT_IMAGE_DOWN;
+      }
+    }
+    return result;
+  }
   
   /////////////////////////////////
   // Helping methods to move column

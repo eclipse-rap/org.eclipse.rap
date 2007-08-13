@@ -581,10 +581,11 @@ public void setResizable (boolean value) {
 	checkWidget ();
 	resizable = value;
 }
-//void setSortDirection (int value) {
-//	if (value == sort) return;
+
+void setSortDirection (int value) {
+	if (value == sort) return;
 //	boolean widthChange = value == SWT.NONE || sort == SWT.NONE;
-//	sort = value;
+	sort = value;
 //	if (widthChange) {
 //		/* 
 //		 * adding/removing the sort arrow decreases/increases the width that is
@@ -597,7 +598,8 @@ public void setResizable (boolean value) {
 //	if (parent.drawCount <= 0 && parent.getHeaderVisible ()) {
 //		parent.header.redraw (getX (), 0, width, parent.getHeaderHeight (), false);
 //	}
-//}
+}
+
 public void setText (String value) {
 	checkWidget ();
 	if (value == null) error (SWT.ERROR_NULL_ARGUMENT);

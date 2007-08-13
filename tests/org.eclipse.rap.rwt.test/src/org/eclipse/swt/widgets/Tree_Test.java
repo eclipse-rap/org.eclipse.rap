@@ -579,6 +579,33 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, tree.getHeaderHeight() );
   }
   
+  public void testSetSortColumn() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeColumn column = new TreeColumn(tree, SWT.NONE);
+    
+    assertEquals( null, tree.getSortColumn() );
+    tree.setSortColumn( column );
+    assertEquals( column, tree.getSortColumn() );
+    tree.setSortColumn( null );
+    assertEquals( null, tree.getSortColumn() );
+    
+  }
+  
+  public void testSetSortDirection() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeColumn column = new TreeColumn(tree, SWT.NONE);
+    
+    assertEquals( SWT.NONE, tree.getSortDirection() );
+    tree.setSortDirection( SWT.UP );
+    assertEquals( SWT.UP, tree.getSortDirection() );
+    tree.setSortDirection( SWT.DOWN );
+    assertEquals( SWT.DOWN, tree.getSortDirection() );
+  }
+  
   private static boolean contains( final TreeItem[] items, 
                                    final TreeItem item ) 
   {

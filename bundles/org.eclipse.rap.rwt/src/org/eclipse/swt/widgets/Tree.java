@@ -83,6 +83,7 @@ public class Tree extends Composite {
   private boolean linesVisible;
   private int[] columnOrder;
   private TreeColumn sortColumn;
+  private int sortDirection = SWT.NONE;
   private boolean headerVisible = false;
   private TreeItem showItem;
   private final ResizeListener resizeListener;
@@ -1078,6 +1079,97 @@ public class Tree extends Composite {
         }
       }
     } 
+  }
+  
+  /**
+   * Sets the column used by the sort indicator for the receiver. A null
+   * value will clear the sort indicator.  The current sort column is cleared 
+   * before the new column is set.
+   *
+   * @param column the column used by the sort indicator or <code>null</code>
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the column is disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.2
+   */
+  public void setSortColumn (TreeColumn column) {
+      checkWidget ();
+      if (column != null && column.isDisposed ()) error (SWT.ERROR_INVALID_ARGUMENT);
+      if (column == sortColumn) return;
+      if (sortColumn != null && !sortColumn.isDisposed ()) {
+          sortColumn.setSortDirection (SWT.NONE);
+      }
+      sortColumn = column;
+      if (sortColumn != null) {
+          sortColumn.setSortDirection (sortDirection);
+      }
+  }
+  /**
+   * Sets the direction of the sort indicator for the receiver. The value 
+   * can be one of <code>UP</code>, <code>DOWN</code> or <code>NONE</code>.
+   *
+   * @param direction the direction of the sort indicator 
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.2
+   */
+  public void setSortDirection (int direction) {
+      checkWidget ();
+      if (direction != SWT.UP && direction != SWT.DOWN && direction != SWT.NONE) return;
+      sortDirection = direction;
+      if (sortColumn == null || sortColumn.isDisposed ()) return;
+      sortColumn.setSortDirection (sortDirection);
+  }
+  
+  /**
+   * Returns the column which shows the sort indicator for
+   * the receiver. The value may be null if no column shows
+   * the sort indicator.
+   *
+   * @return the sort indicator 
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #setSortColumn(TreeColumn)
+   * 
+   * @since 3.2
+   */
+  public TreeColumn getSortColumn () {
+      checkWidget ();
+      return sortColumn;
+  }
+  /**
+   * Returns the direction of the sort indicator for the receiver. 
+   * The value will be one of <code>UP</code>, <code>DOWN</code> 
+   * or <code>NONE</code>.
+   *
+   * @return the sort direction
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @see #setSortDirection(int)
+   * 
+   * @since 3.2
+   */
+  public int getSortDirection () {
+      checkWidget ();
+      return sortDirection;
   }
   
   /**
