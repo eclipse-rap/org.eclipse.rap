@@ -175,6 +175,42 @@ public class Text_Test extends TestCase {
     }
 	}
   
+  // TODO [bm] extend testcase with newline chars for SWT.MULTI
+  public void testAppend() {
+		Display display = new Display();
+		Shell shell = new Shell(display);
+		Text text = new Text(shell, SWT.SINGLE);
+
+		try {
+			text.append(null);
+			fail("No exception thrown for string == null");
+//		} catch (IllegalArgumentException e) {
+		} catch (NullPointerException e) {
+		}
+
+		text = new Text(shell, SWT.SINGLE);
+
+		try {
+			text.append(null);
+			fail("No exception thrown on string == null");
+//		} catch (IllegalArgumentException e) {
+		} catch (NullPointerException e) {
+		}
+
+		// tests a SINGLE line text editor
+		text = new Text(shell, SWT.SINGLE);
+
+		text.setText("01");
+		text.append("23");
+		assertEquals("0123", text.getText());
+		text.append("45");
+		assertEquals("012345", text.getText());
+		text.setSelection(0);
+		text.append("67");
+		assertEquals("01234567", text.getText());
+
+	}
+  
   public void testInsertWithModifyListener() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();

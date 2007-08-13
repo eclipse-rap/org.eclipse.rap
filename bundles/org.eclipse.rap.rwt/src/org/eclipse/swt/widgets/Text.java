@@ -96,6 +96,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
+  // TODO: [bm][fappel] does setText needs to ask VerifyListeners?
   public void setText( final String text ) {
     checkWidget();
     if( text == null ) {
@@ -203,6 +204,29 @@ public class Text extends Scrollable {
     return textLimit;
   }
 
+  /**
+   * Appends a string.
+   * <p>
+   * The new text is appended to the text at
+   * the end of the widget.
+   * </p>
+   *
+   * @param string the string to be appended
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void append (String string) {
+  	checkWidget();
+  	if (string == null) error (SWT.ERROR_NULL_ARGUMENT);
+  	setText(getText() + string);
+  }
+  
   ///////////////////////////////////////////
   // Selection start, count and selected text
 
