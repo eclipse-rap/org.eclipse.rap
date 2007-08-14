@@ -14,10 +14,11 @@ package org.eclipse.swt.internal.widgets.menukit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
 

@@ -13,8 +13,9 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.swt.lifecycle.IRenderRunnable;
-import org.eclipse.swt.lifecycle.IWidgetAdapter;
+
+import org.eclipse.rwt.lifecycle.IRenderRunnable;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 
 public final class WidgetAdapter implements IWidgetAdapter {
   

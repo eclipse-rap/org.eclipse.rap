@@ -12,13 +12,15 @@
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
+
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
-import com.w4t.engine.lifecycle.PhaseId;
 
 
 public class Text_Test extends TestCase {

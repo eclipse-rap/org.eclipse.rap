@@ -12,9 +12,10 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import com.w4t.engine.lifecycle.PhaseId;
 
 public class Composite_Test extends TestCase {
 

@@ -16,14 +16,14 @@ import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbe;
 import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbeResult;
-import org.eclipse.swt.lifecycle.WidgetLCAUtil;
 
-import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.IServiceStateInfo;
 
 public class FontSizeCalculator {
 

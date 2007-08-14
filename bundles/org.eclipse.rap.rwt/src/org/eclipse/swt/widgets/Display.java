@@ -16,24 +16,24 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.UICallBackManager;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.UICallBackUtil;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.swt.internal.lifecycle.UICallBackManager;
-import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
-import org.eclipse.swt.lifecycle.IWidgetAdapter;
-import org.eclipse.swt.lifecycle.UICallBackUtil;
 
-import com.w4t.Adaptable;
-import com.w4t.W4TContext;
-import com.w4t.engine.requests.RequestParams;
-import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.ISessionStore;
 
 /**
  * Instances of this class are responsible for managing the
@@ -495,7 +495,7 @@ public class Display extends Device implements Adaptable {
       }
       result = widgetAdapter;
     } else {
-      result = W4TContext.getAdapterManager().getAdapter( this, adapter );  
+      result = AdapterManagerImpl.getInstance().getAdapter( this, adapter );  
     }
     return result;
   }

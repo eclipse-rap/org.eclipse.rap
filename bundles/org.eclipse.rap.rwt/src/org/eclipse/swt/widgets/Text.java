@@ -11,13 +11,13 @@
 
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
-import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.textkit.ITextThemeAdapter;
 
 /**
@@ -221,6 +221,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
+  // TODO [rh] fire VerifyEvent missing
   public void append (String string) {
   	checkWidget();
   	if (string == null) error (SWT.ERROR_NULL_ARGUMENT);

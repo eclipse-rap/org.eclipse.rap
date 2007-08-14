@@ -13,15 +13,16 @@ package org.eclipse.swt.internal.widgets.controlkit;
 
 import java.io.IOException;
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.browser.Mozilla1_7up;
+import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
-import com.w4t.Fixture;
-import com.w4t.util.browser.Mozilla1_7up;
 
 
 public class ControlLCA_Test extends TestCase {

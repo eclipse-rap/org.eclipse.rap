@@ -11,21 +11,16 @@
 
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
-import java.io.IOException;
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.lifecycle.PreserveWidgetsPhaseListener;
-import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
-import com.w4t.Fixture;
-import com.w4t.engine.lifecycle.PhaseId;
-import com.w4t.engine.requests.RequestParams;
 
 
 public final class CoolBarLCA_Test extends TestCase {

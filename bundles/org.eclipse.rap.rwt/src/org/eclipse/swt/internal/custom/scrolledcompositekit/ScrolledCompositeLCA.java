@@ -12,9 +12,10 @@
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
 import java.io.IOException;
+
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Widget;
 

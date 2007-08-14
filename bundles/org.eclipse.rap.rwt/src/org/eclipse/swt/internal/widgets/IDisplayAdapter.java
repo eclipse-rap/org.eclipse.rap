@@ -11,10 +11,10 @@
 
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
-import com.w4t.engine.service.ISessionStore;
 
 
 /**

@@ -9,10 +9,10 @@
 
 package org.eclipse.swt.internal.widgets.tablekit;
 
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.widgets.Control;
 
 public class TableThemeAdapter implements ITableThemeAdapter {

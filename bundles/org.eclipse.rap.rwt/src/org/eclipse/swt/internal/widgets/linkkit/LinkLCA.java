@@ -13,13 +13,15 @@ package org.eclipse.swt.internal.widgets.linkkit;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Widget;
-import com.w4t.engine.service.ContextProvider;
 
 public class LinkLCA extends AbstractWidgetLCA {
 

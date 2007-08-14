@@ -14,12 +14,13 @@ package org.eclipse.swt.widgets;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 
-import com.w4t.engine.lifecycle.PhaseId;
 
 public class TabFolderAndItem_Test extends TestCase {
 

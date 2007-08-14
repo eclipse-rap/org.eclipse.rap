@@ -11,7 +11,7 @@
 
 package org.eclipse.swt.internal.widgets;
 
-import com.w4t.SessionSingletonBase;
+import org.eclipse.rwt.SessionSingletonBase;
 
 /**
  * <p>Utility class to generate id's for widgets that are unique within a 

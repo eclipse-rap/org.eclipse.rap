@@ -9,10 +9,10 @@
 
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
-import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 

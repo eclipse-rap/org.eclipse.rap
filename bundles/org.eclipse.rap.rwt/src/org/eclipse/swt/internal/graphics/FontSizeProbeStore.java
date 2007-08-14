@@ -14,12 +14,12 @@ package org.eclipse.swt.internal.graphics;
 import java.math.BigDecimal;
 import java.util.*;
 
+import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Display;
 
-import com.w4t.SessionSingletonBase;
-import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.IServiceStateInfo;
 
 final class FontSizeProbeStore extends SessionSingletonBase {
   

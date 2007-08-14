@@ -11,12 +11,12 @@
 
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 
-import com.w4t.Adaptable;
 
 
 public class SetDataEvent extends TypedEvent {

@@ -13,17 +13,21 @@ package org.eclipse.swt.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.internal.AdapterManager;
+import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.event.EventAdapter;
+import org.eclipse.rwt.internal.event.IEventAdapter;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.lifecycle.IWidgetAdapter;
-import com.w4t.*;
-import com.w4t.event.EventAdapter;
-import com.w4t.event.IEventAdapter;
+
 
 /**
  * This class is the abstract superclass of all user interface objects.  
@@ -150,7 +154,7 @@ public abstract class Widget implements Adaptable {
       //                Note: this is still a matter of investigation since
       //                we improve cpu time on cost of memory consumption.
       if( adapterManager == null ) {
-        adapterManager = W4TContext.getAdapterManager();
+        adapterManager = AdapterManagerImpl.getInstance();
       }
       result = adapterManager.getAdapter( this, adapter );
     }

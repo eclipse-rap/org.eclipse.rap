@@ -13,6 +13,8 @@ package org.eclipse.swt.internal.custom.ctabitemkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.graphics.*;
@@ -20,7 +22,6 @@ import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Widget;
 
 

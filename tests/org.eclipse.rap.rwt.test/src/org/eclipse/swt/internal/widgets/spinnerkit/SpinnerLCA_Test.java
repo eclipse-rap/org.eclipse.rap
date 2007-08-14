@@ -12,16 +12,18 @@
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
-import com.w4t.Fixture;
-import com.w4t.engine.requests.RequestParams;
 
 public class SpinnerLCA_Test extends TestCase {
 

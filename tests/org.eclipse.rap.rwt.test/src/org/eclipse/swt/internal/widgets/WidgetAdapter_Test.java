@@ -13,14 +13,16 @@ package org.eclipse.swt.internal.widgets;
 
 import java.io.IOException;
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.browser.Ie6;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.lifecycle.IDisplayLifeCycleAdapter;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
-import com.w4t.Fixture;
-import com.w4t.engine.requests.RequestParams;
-import com.w4t.util.browser.Ie6;
 
 public class WidgetAdapter_Test extends TestCase {
 
@@ -109,7 +111,7 @@ public class WidgetAdapter_Test extends TestCase {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+    WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( shell );
     IRenderRunnable runnable = new IRenderRunnable() {
       public void afterRender() throws IOException {
         log.append( "executed" );

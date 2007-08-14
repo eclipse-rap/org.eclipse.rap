@@ -14,8 +14,8 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 import java.io.IOException;
 import java.text.MessageFormat;
 
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Widget;
 

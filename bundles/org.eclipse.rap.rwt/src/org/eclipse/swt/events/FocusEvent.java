@@ -11,12 +11,12 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 
-import com.w4t.Adaptable;
 
 /**
  * Instances of this class are sent as a result of widgets gaining and losing

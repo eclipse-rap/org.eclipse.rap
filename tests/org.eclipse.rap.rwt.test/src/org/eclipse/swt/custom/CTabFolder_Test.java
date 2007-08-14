@@ -13,6 +13,8 @@ package org.eclipse.swt.custom;
 
 import java.util.Arrays;
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -21,7 +23,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
-import com.w4t.engine.lifecycle.PhaseId;
 
 
 public class CTabFolder_Test extends TestCase {

@@ -11,11 +11,11 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.widgets.ExternalBrowser;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.externalbrowser.ExternalBrowser;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 

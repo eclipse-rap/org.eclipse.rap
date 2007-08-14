@@ -12,8 +12,10 @@
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
+
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.lifecycle.*;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -60,7 +62,8 @@ final class SeparatorToolItemDelegateLCA extends ToolItemDelegateLCA {
       final Object[] args = new Object[] { toolItem, control };
       if( control != null ) {
         // defer call since controls are rendered after items
-        IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+        WidgetAdapter adapter 
+          = ( WidgetAdapter )WidgetUtil.getAdapter( control );
         adapter.setRenderRunnable( new IRenderRunnable() {
           public void afterRender() throws IOException {
             writer.callStatic( SET_CONTROL, args );

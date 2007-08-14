@@ -15,9 +15,10 @@ import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
 import javax.imageio.ImageIO;
+
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.resources.ResourceManager;
-import com.w4t.IResourceManager;
 
 
 public final class Image extends Resource {
@@ -92,6 +93,7 @@ public final class Image extends Resource {
     return images.size();
   }
   
+  // TODO [rh] remove this method, only used by unit tests
   public static synchronized void clear(){
     // TODO: [GR]can we deregister ressources?
 //    Iterator it = images.keySet().iterator();

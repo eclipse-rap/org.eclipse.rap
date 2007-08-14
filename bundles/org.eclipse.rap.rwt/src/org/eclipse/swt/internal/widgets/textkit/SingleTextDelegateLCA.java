@@ -13,8 +13,9 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 

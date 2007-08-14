@@ -12,9 +12,10 @@
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
+
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.swt.lifecycle.JSWriter;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
 

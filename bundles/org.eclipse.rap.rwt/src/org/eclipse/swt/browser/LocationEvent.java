@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.browser;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
-import com.w4t.Adaptable;
 
 
 /**

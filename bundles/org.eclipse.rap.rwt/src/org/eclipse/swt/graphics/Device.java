@@ -11,10 +11,10 @@
 
 package org.eclipse.swt.graphics;
 
+import org.eclipse.rwt.internal.theme.QxFont;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.internal.theme.QxFont;
-import org.eclipse.swt.internal.theme.ThemeUtil;
 
 /**
  * TODO [fappel] comment

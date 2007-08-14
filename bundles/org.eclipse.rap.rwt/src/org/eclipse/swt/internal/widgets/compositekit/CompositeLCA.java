@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets.compositekit;
 
 import java.io.IOException;
 
-import org.eclipse.swt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 

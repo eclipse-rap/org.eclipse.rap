@@ -13,10 +13,10 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.*;
-import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 
-import com.w4t.Fixture;
 
 
 public class Widget_Test extends TestCase {

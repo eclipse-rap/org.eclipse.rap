@@ -19,28 +19,27 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.internal.browser.*;
+import org.eclipse.rwt.internal.engine.ResourceRegistry;
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.resources.JsConcatenator;
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.engine.ResourceRegistry;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
-import org.eclipse.swt.internal.lifecycle.IDisplayLifeCycleAdapter;
-import org.eclipse.swt.internal.theme.ThemeManager;
-import org.eclipse.swt.internal.theme.ThemeUtil;
 import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
-import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.resources.IResource;
-import org.eclipse.swt.resources.ResourceManager;
 import org.eclipse.swt.widgets.*;
-
-import com.w4t.*;
-import com.w4t.engine.requests.RequestParams;
-import com.w4t.engine.service.*;
-import com.w4t.engine.util.JsConcatenator;
-import com.w4t.util.browser.BrowserLoader;
-import com.w4t.util.browser.Opera;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
@@ -298,7 +297,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
   
   private static void disposeWidgets() throws IOException {
-    Widget[] disposedWidgets = AbstractWidgetLCA.getDisposedWidgets();
+    Widget[] disposedWidgets = DisposedWidgets.getAll();
     // [fappel]: client side disposal order is crucial for the widget
     //           caching mechanism - we need to dispose of children first. This
     //           is reverse to the server side mechanism (which is analog to 

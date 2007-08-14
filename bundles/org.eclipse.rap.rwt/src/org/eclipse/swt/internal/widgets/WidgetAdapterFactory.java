@@ -13,10 +13,11 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.swt.lifecycle.IWidgetAdapter;
+
+import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
-import com.w4t.AdapterFactory;
 
 
 /**

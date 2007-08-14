@@ -17,21 +17,24 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.AdapterManager;
+import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.browser.Ie6up;
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
-import org.eclipse.swt.internal.lifecycle.*;
-import org.eclipse.swt.internal.theme.ThemeManager;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
-import com.w4t.*;
-import com.w4t.engine.requests.RequestParams;
-import com.w4t.util.browser.Ie6up;
 
 public class DisplayLCA_Test extends TestCase {
 
@@ -207,7 +210,7 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.setUp();
     RWTFixture.fakeUIThread();
     ThemeManager.getInstance().initialize();
-    AdapterManager manager = W4TContext.getAdapterManager();
+    AdapterManager manager = AdapterManagerImpl.getInstance();
     lifeCycleAdapterFactory = new AdapterFactory() {
 
       private AdapterFactory factory = new LifeCycleAdapterFactory();
@@ -292,7 +295,8 @@ public class DisplayLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final Composite composite = new Shell( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    IWidgetAdapter controlAdapter = WidgetUtil.getAdapter( control );
+    WidgetAdapter controlAdapter 
+      = ( WidgetAdapter )WidgetUtil.getAdapter( control );
     controlAdapter.setRenderRunnable( new IRenderRunnable() {
       public void afterRender() throws IOException {
         boolean initState = WidgetUtil.getAdapter( composite ).isInitialized();
@@ -341,7 +345,7 @@ public class DisplayLCA_Test extends TestCase {
 // TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
 //    ThemeManager.getInstance().deregisterAll();
     RWTFixture.removeUIThread();
-    AdapterManager manager = W4TContext.getAdapterManager();
+    AdapterManager manager = AdapterManagerImpl.getInstance();
     manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );
     manager.deregisterAdapters( lifeCycleAdapterFactory, Widget.class );
     manager.deregisterAdapters( widgetAdapterFactory, Display.class );

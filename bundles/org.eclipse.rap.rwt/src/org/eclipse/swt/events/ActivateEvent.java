@@ -11,9 +11,9 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
-import com.w4t.Adaptable;
 
 /**
  * TODO: [rh] JavaDoc

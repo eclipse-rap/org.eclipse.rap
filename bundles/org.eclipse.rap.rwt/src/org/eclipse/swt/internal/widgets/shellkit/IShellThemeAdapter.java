@@ -11,8 +11,8 @@
 
 package org.eclipse.swt.internal.widgets.shellkit;
 
-import org.eclipse.rap.swt.theme.IControlThemeAdapter;
-import org.eclipse.swt.internal.theme.QxBoxDimensions;
+import org.eclipse.rwt.internal.theme.QxBoxDimensions;
+import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.widgets.Shell;
 
 public interface IShellThemeAdapter extends IControlThemeAdapter {

@@ -14,20 +14,20 @@ package org.eclipse.swt.events;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.rwt.internal.event.Event;
+import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
-import org.eclipse.swt.internal.lifecycle.CurrentPhase;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.SetDataEvent;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
-import com.w4t.engine.lifecycle.PhaseId;
-import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.IServiceStateInfo;
-import com.w4t.event.Event;
 
 
 /**

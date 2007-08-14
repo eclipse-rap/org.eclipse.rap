@@ -13,12 +13,12 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
-import org.eclipse.swt.lifecycle.ControlLCAUtil;
-import org.eclipse.swt.lifecycle.JSWriter;
+import org.eclipse.rwt.internal.browser.Mozilla;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.widgets.Text;
 
-import com.w4t.W4TContext;
-import com.w4t.util.browser.Mozilla;
 
 // TODO [rh] bring selection for multi-line text to work. Currently there
 //      occur JavaScript errors. (see readSelection, writeSelection)
@@ -87,7 +87,7 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
   
   private static void writeNoSpellCheck( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    if( W4TContext.getBrowser() instanceof Mozilla ) {
+    if( ContextProvider.getBrowser() instanceof Mozilla ) {
       writer.set( "spellCheck", false );
     }
   }

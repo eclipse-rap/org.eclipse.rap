@@ -11,12 +11,15 @@ package org.eclipse.swt.graphics;
 import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
+
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.resources.DefaultResourceManagerFactory;
-import org.eclipse.swt.resources.ResourceManager;
-import com.w4t.Fixture;
-import com.w4t.IResourceManager;
+
 
 
 public class Image_Test extends TestCase {

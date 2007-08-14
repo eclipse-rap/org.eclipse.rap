@@ -12,9 +12,11 @@
 package org.eclipse.swt.internal.widgets.menukit;
 
 import java.io.IOException;
+
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 

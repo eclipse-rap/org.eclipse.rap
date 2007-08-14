@@ -14,18 +14,31 @@ package org.eclipse.swt;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.eclipse.rwt.AdapterManager_Test;
+import org.eclipse.rwt.SessionSingleton_Test;
+import org.eclipse.rwt.internal.ConfigurationReader_Test;
+import org.eclipse.rwt.internal.browser.BrowserLoader_Test;
+import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.event.EventAdapter_Test;
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.resources.ResourceManager_Test;
+import org.eclipse.rwt.internal.resources.ResourceUtil_Test;
+import org.eclipse.rwt.internal.service.Logger_Test;
+import org.eclipse.rwt.internal.service.StartupRequest_Test;
+import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.util.HTMLUtil_Test;
+import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.service.ServiceHandler_Test;
+import org.eclipse.rwt.service.SessionStore_Test;
+import org.eclipse.rwt.widgets.ExternalBrowser_Test;
 import org.eclipse.swt.browser.Browser_Test;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.externalbrowser.ExternalBrowser_Test;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA_Test;
-import org.eclipse.swt.internal.engine.*;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator_Test;
 import org.eclipse.swt.internal.graphics.FontSizeEstimation_Test;
-import org.eclipse.swt.internal.lifecycle.*;
-import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
@@ -48,15 +61,34 @@ import org.eclipse.swt.internal.widgets.toolitemkit.ToolItemLCA_Test;
 import org.eclipse.swt.internal.widgets.treecolumnkit.TreeColumnLCA_Test;
 import org.eclipse.swt.internal.widgets.treeitemkit.TreeItemLCA_Test;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA_Test;
-import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.resources.ResourceManager_Test;
 import org.eclipse.swt.widgets.*;
+
 
 
 public class RWTTestSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite( "Test for org.eclipse.swt" );
+    TestSuite suite = new TestSuite( "Test for org.eclipse.rap.rwt" );
+    // Former W4T Tests
+    suite.addTestSuite( AdapterManager_Test.class );
+    suite.addTestSuite( HtmlResponseWriter_Test.class );
+    suite.addTestSuite( HtmlResponseWriterUtil_Test.class );
+    suite.addTestSuite( SessionSingleton_Test.class );
+    suite.addTestSuite( LifeCycleFactory_Test.class );
+    suite.addTestSuite( PhaseId_Test.class );
+    suite.addTestSuite( Scope_Test.class );
+    suite.addTestSuite( Logger_Test.class );
+    suite.addTestSuite( ServiceHandler_Test.class );
+    suite.addTestSuite( SessionStore_Test.class );
+    suite.addTestSuite( EngineConfig_Test.class );
+    suite.addTestSuite( org.eclipse.rwt.internal.resources.ResourceManagerImpl_Test.class );
+    suite.addTestSuite( ResourceUtil_Test.class );
+    suite.addTestSuite( EventAdapter_Test.class );
+    suite.addTestSuite( BrowserLoader_Test.class );
+    suite.addTestSuite( StartupRequest_Test.class );
+    suite.addTestSuite( ConfigurationReader_Test.class );
+    suite.addTestSuite( HTMLUtil_Test.class );
+    // RWT Tests
     suite.addTestSuite( EntryPointManager_Test.class );
     suite.addTestSuite( RWTServletContextListener_Test.class );
     suite.addTestSuite( AdapterFactoryRegistry_Test.class );

@@ -9,9 +9,9 @@
 
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.widgets.Control;
 
 public class SpinnerThemeAdapter implements ISpinnerThemeAdapter {

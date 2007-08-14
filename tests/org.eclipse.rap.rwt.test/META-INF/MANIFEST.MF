@@ -7,7 +7,7 @@ Bundle-Localization: plugin
 Bundle-Vendor: %Bundle-Vendor
 Import-Package: javax.servlet;version="[2.3.0,2.5.0]",
  javax.servlet.http;version="[2.3.0,2.5.0]"
-Require-Bundle: org.eclipse.rap.rwt,
- org.junit,
- org.eclipse.rap.w4t,
- org.eclipse.rap.w4t.test
+Require-Bundle: org.junit,
+ org.eclipse.rap.rwt
+Bundle-ClassPath: .,
+ lib/resource_manager_test.jar

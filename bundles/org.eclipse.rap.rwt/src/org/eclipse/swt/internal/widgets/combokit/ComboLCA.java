@@ -14,9 +14,11 @@ package org.eclipse.swt.internal.widgets.combokit;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
 public class ComboLCA extends AbstractWidgetLCA {

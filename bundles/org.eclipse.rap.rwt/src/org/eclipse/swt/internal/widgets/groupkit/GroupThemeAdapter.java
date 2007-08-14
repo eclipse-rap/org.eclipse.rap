@@ -11,10 +11,10 @@
 
 package org.eclipse.swt.internal.widgets.groupkit;
 
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
-import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 

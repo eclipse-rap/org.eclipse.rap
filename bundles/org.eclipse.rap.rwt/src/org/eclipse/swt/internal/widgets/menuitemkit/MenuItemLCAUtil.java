@@ -12,10 +12,11 @@
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
+
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.lifecycle.JSConst;
-import org.eclipse.swt.lifecycle.JSWriter;
 import org.eclipse.swt.widgets.MenuItem;
 
 final class MenuItemLCAUtil {

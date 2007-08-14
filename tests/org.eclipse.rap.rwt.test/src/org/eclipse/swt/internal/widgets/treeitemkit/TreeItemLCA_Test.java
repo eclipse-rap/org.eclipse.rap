@@ -13,21 +13,22 @@ package org.eclipse.swt.internal.widgets.treeitemkit;
 
 import java.io.IOException;
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.browser.Ie6;
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
-import com.w4t.Fixture;
-import com.w4t.engine.requests.RequestParams;
-import com.w4t.util.browser.Ie6;
 
 public class TreeItemLCA_Test extends TestCase {
 

@@ -9,6 +9,7 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -17,7 +18,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.*;
 
 public class ControlsDemo implements IEntryPoint {

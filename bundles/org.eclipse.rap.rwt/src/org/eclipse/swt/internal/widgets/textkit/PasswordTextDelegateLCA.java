@@ -13,8 +13,8 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
-import org.eclipse.swt.lifecycle.ControlLCAUtil;
-import org.eclipse.swt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.widgets.Text;
 
 final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {

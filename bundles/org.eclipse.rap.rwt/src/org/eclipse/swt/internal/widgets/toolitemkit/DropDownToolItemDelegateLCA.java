@@ -13,15 +13,17 @@ package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
-import com.w4t.engine.service.ContextProvider;
 
 final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
 

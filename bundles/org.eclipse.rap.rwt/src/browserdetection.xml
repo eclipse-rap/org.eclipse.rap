@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<browserdef>
+  <browser>
+    <name>Safari</name>
+    <classname>org.eclipse.rwt.internal.browser.DetectorSafari</classname>
+  </browser>
+  
+  <browser>
+    <name>Konqueror</name>
+    <classname>org.eclipse.rwt.internal.browser.DetectorKonqueror</classname>
+  </browser>
+  
+  <browser>
+    <name>Opera</name>
+    <classname>org.eclipse.rwt.internal.browser.DetectorOpera</classname>
+  </browser>
+  
+  <browser>
+    <name>Internet Explorer</name>
+    <classname>org.eclipse.rwt.internal.browser.DetectorIE</classname>
+  </browser>
+  
+  <browser>
+    <name>Mozilla</name>
+    <classname>org.eclipse.rwt.internal.browser.DetectorMozilla</classname>
+  </browser>
+</browserdef>

@@ -18,24 +18,26 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.Fixture.*;
+import org.eclipse.rwt.internal.AdapterManager;
+import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.browser.Ie6;
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.resources.JsConcatenator;
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.resources.IResourceManagerFactory;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
-import org.eclipse.swt.internal.lifecycle.*;
-import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
-import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.resources.IResourceManagerFactory;
-import org.eclipse.swt.resources.ResourceManager;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
-import com.w4t.*;
-import com.w4t.Fixture.*;
-import com.w4t.engine.lifecycle.*;
-import com.w4t.engine.service.*;
-import com.w4t.engine.util.JsConcatenator;
-import com.w4t.util.browser.Ie6;
 
 
 public final class RWTFixture {
@@ -141,18 +143,11 @@ public final class RWTFixture {
     }
   }
 
-  // 3 images from org.eclipse.rap.w4t.test-project
-  public static final String IMAGE1 
-    = "resources/images/generated/82f7c683860a85c182.gif";
-  public static final String IMAGE2 
-    = "resources/images/generated/a2fb9a01c602ae.gif";
-  public static final String IMAGE3 
-    = "resources/images/generated/dff8c3a4e2b4c79080.gif";
-  
-  public static final String IMAGE_100x50 
-    = "resources/images/test-100x50.png";
-  public static final String IMAGE_50x100 
-    = "resources/images/test-50x100.png";
+  public static final String IMAGE1 = "resources/images/image1.gif";
+  public static final String IMAGE2 = "resources/images/image2.gif";
+  public static final String IMAGE3 = "resources/images/image3.gif";
+  public static final String IMAGE_100x50 = "resources/images/test-100x50.png";
+  public static final String IMAGE_50x100 = "resources/images/test-50x100.png";
 
   private static LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private static WidgetAdapterFactory widgetAdapterFactory;
@@ -166,7 +161,7 @@ public final class RWTFixture {
   public static void setUp() {
     // standard setup
     Fixture.setUp();
-    
+
     ThemeManager.getInstance().initialize();
     registerAdapterFactories();
     PhaseListenerRegistry.add( currentPhaseListener );
@@ -184,6 +179,7 @@ public final class RWTFixture {
   public static void setUpWithoutResourceManager() {
     // standard setup
     Fixture.setUp();
+    BrowserSurvey.indexTemplate = null;
     
     // registration of adapter factories
     registerAdapterFactories();
@@ -209,7 +205,7 @@ public final class RWTFixture {
   }
 
   public static void registerAdapterFactories() {
-    AdapterManager manager = W4TContext.getAdapterManager();
+    AdapterManager manager = AdapterManagerImpl.getInstance();
     lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
     manager.registerAdapters( lifeCycleAdapterFactory, Display.class );
     manager.registerAdapters( lifeCycleAdapterFactory, Widget.class );
@@ -219,7 +215,7 @@ public final class RWTFixture {
   }
   
   public static void deregisterAdapterFactories() {
-    AdapterManager manager = W4TContext.getAdapterManager();
+    AdapterManager manager = AdapterManagerImpl.getInstance();
     manager.deregisterAdapters( widgetAdapterFactory, Display.class );
     manager.deregisterAdapters( widgetAdapterFactory, Widget.class );
     manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );

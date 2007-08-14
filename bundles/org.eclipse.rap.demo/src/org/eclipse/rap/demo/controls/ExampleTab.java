@@ -13,13 +13,13 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.internal.theme.ThemeUtil;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 

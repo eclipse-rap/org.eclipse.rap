@@ -15,6 +15,11 @@ import java.io.IOException;
 
 import javax.servlet.http.*;
 
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Font;
@@ -23,13 +28,7 @@ import org.eclipse.swt.internal.graphics.FontSizeCalculator.ICalculationItem;
 import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbe;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
-
-import com.w4t.HtmlResponseWriter;
-import com.w4t.W4TContext;
-import com.w4t.engine.lifecycle.*;
-import com.w4t.engine.service.*;
 
 final class FontSizeCalculationHandler
   implements PhaseListener, HttpSessionBindingListener
@@ -52,7 +51,7 @@ final class FontSizeCalculationHandler
         FontSizeCalculationHandler handler
           = new FontSizeCalculationHandler( display );
         session.setAttribute( CALCULATION_HANDLER, handler );
-        W4TContext.getLifeCycle().addPhaseListener( handler );
+        LifeCycleFactory.getLifeCycle().addPhaseListener( handler );
       }
     }
   }
@@ -130,7 +129,7 @@ final class FontSizeCalculationHandler
         e.printStackTrace();
       } finally {
         if( renderDone && event.getPhaseId() == PhaseId.PROCESS_ACTION ) {
-          W4TContext.getLifeCycle().removePhaseListener( this );
+          LifeCycleFactory.getLifeCycle().removePhaseListener( this );
           ISessionStore session = ContextProvider.getSession();
           session.removeAttribute( CALCULATION_HANDLER );
         }
@@ -167,7 +166,7 @@ final class FontSizeCalculationHandler
   public void valueUnbound( final HttpSessionBindingEvent event ) {
     UICallBackUtil.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {
-        ILifeCycle lifeCycle = W4TContext.getLifeCycle();
+        ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
         lifeCycle.removePhaseListener( FontSizeCalculationHandler.this );
       }
     } );

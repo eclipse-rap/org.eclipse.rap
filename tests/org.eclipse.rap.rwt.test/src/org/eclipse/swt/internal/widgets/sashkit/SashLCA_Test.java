@@ -13,15 +13,16 @@ package org.eclipse.swt.internal.widgets.sashkit;
 
 import java.io.IOException;
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.lifecycle.IWidgetAdapter;
-import org.eclipse.swt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.*;
-import com.w4t.Fixture;
 
 public class SashLCA_Test extends TestCase {
 

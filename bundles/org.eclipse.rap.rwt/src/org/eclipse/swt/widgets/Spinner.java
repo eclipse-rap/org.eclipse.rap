@@ -11,19 +11,14 @@
 
 package org.eclipse.swt.widgets;
 
-import java.text.*;
-import java.util.Locale;
-
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator;
-import org.eclipse.swt.internal.theme.ThemeManager;
 import org.eclipse.swt.internal.widgets.spinnerkit.ISpinnerThemeAdapter;
-
-import com.w4t.util.SessionLocale;
 
 /**
  * Instances of this class are selectable user interface
@@ -345,7 +340,7 @@ public class Spinner extends Composite {
       if( digits > 0 ) {
         StringBuffer buffer = new StringBuffer();
         buffer.append( string );
-        buffer.append( getDecimalSeparator() );
+        buffer.append( "," );
         int count = digits - string.length();
         while( count >= 0 ) {
           buffer.append( "0" );
@@ -443,7 +438,6 @@ public class Spinner extends Composite {
     ModifyEvent.removeListener( this, listener );
   }
   
-
   // TODO [fappel]: documentation and implementation
   public void addVerifyListener( final VerifyListener verifyListener ) {
   }
@@ -455,20 +449,6 @@ public class Spinner extends Composite {
 
   //////////////////
   // Helping methods
-
-  String getDecimalSeparator () {
-    Locale locale;
-    if( SessionLocale.isSet() ) {
-      locale = SessionLocale.get();
-    } else {
-      locale = Locale.getDefault();
-    }
-    NumberFormat numberFormat = NumberFormat.getCurrencyInstance( locale );
-    DecimalFormat format = ( DecimalFormat )numberFormat;
-    DecimalFormatSymbols formatSymbols = format.getDecimalFormatSymbols();
-    char decimalSeparator = formatSymbols.getDecimalSeparator();
-    return String.valueOf( decimalSeparator );
-  }
 
   private Rectangle getPadding() {
     ThemeManager manager = ThemeManager.getInstance();

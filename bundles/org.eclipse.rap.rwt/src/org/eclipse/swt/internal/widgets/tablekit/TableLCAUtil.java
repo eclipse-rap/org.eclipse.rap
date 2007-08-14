@@ -13,10 +13,10 @@ package org.eclipse.swt.internal.widgets.tablekit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
 

@@ -13,10 +13,11 @@ package org.eclipse.swt.internal.browser.browserkit;
 
 import java.io.*;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
-import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.resources.ResourceManager;
 import org.eclipse.swt.widgets.Widget;
 
 

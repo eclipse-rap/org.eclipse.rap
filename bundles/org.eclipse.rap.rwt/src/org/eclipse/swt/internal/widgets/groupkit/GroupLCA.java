@@ -12,7 +12,8 @@
 package org.eclipse.swt.internal.widgets.groupkit;
 
 import java.io.IOException;
-import org.eclipse.swt.lifecycle.*;
+
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Widget;
 

@@ -12,7 +12,9 @@
 package org.eclipse.swt.internal.widgets;
 
 import java.io.IOException;
-import org.eclipse.swt.lifecycle.*;
+
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Item;
 
 

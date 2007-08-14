@@ -9,8 +9,8 @@
 
 package org.eclipse.swt.internal.widgets.combokit;
 
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.widgets.Control;
 
 public class ComboThemeAdapter implements IComboThemeAdapter {

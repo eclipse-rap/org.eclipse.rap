@@ -10,15 +10,17 @@
 package org.eclipse.swt.internal.widgets.combokit;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
-import com.w4t.Fixture;
-import com.w4t.engine.lifecycle.PhaseId;
 
 public class ComboLCA_Test extends TestCase {
 

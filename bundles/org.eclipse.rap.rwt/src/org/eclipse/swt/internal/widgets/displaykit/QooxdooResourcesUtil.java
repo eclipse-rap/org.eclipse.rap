@@ -11,14 +11,16 @@
 
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import org.eclipse.swt.internal.engine.ResourceRegistry;
-import org.eclipse.swt.resources.IResource;
-import org.eclipse.swt.resources.ResourceManager;
+import org.eclipse.rwt.internal.engine.ResourceRegistry;
+import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.util.HTML;
+import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
-import com.w4t.*;
-import com.w4t.IResourceManager.RegisterOptions;
-import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.IServiceStateInfo;
 
 
 // TODO [rh] Should javaScript namespaces include widget and/or custom?
@@ -122,7 +124,8 @@ final class QooxdooResourcesUtil {
     try {
       manager.register( "resource/static/history/historyHelper.html", 
                         HTML.CHARSET_NAME_ISO_8859_1 );
-      manager.register( "resource/static/html/blank.html" );
+      manager.register( "resource/static/html/blank.html",
+                        HTML.CHARSET_NAME_ISO_8859_1 );
       manager.register( "resource/static/image/blank.gif" );
       manager.register( "resource/static/image/dotted_white.gif" );
       String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
@@ -132,7 +135,7 @@ final class QooxdooResourcesUtil {
         register( QX_JS );
       }
       // TODO [rh] since qx 0.6.5 all constants seem to be 'inlined'
-      //      these three files are here o keep DefaultAppearanceTheme.js
+      //      these three files are here to keep DefaultAppearanceTheme.js
       //      happy that makes heavy use of constants
       register( QX_CONSTANT_CORE_JS );
       register( QX_CONSTANT_LAYOUT_JS );

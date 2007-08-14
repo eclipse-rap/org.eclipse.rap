@@ -13,9 +13,9 @@ package org.eclipse.swt.internal.widgets.tabfolderkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 

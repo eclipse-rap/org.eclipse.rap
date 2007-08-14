@@ -12,16 +12,17 @@
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
+
+import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.lifecycle.*;
-import org.eclipse.swt.resources.ResourceManager;
 import org.eclipse.swt.widgets.Widget;
-import com.w4t.IResourceManager;
 
 
 public final class CTabFolderLCA extends AbstractWidgetLCA {

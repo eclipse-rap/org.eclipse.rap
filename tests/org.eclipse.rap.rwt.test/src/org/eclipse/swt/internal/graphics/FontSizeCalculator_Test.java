@@ -17,23 +17,20 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.engine.PhaseListenerRegistry;
 import org.eclipse.swt.internal.graphics.FontSizeCalculator.ICalculationItem;
 import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbe;
 import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbeResult;
-import org.eclipse.swt.internal.lifecycle.*;
-import org.eclipse.swt.lifecycle.DisplayUtil;
 import org.eclipse.swt.widgets.Display;
-
-import com.w4t.Fixture;
-import com.w4t.engine.lifecycle.*;
-import com.w4t.engine.requests.RequestParams;
-import com.w4t.engine.service.ContextProvider;
-import com.w4t.engine.service.ISessionStore;
 
 
 public class FontSizeCalculator_Test extends TestCase {

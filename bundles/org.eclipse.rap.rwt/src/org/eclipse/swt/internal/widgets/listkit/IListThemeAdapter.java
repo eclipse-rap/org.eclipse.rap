@@ -11,7 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.listkit;
 
-import org.eclipse.rap.swt.theme.IControlThemeAdapter;
+import org.eclipse.rwt.theme.IControlThemeAdapter;
 
 public interface IListThemeAdapter extends IControlThemeAdapter {
 

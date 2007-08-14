@@ -11,7 +11,7 @@
 
 package org.eclipse.rap.demo;
 
-import org.eclipse.swt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 

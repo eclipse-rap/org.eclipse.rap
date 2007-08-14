@@ -13,14 +13,15 @@ package org.eclipse.swt.events;
 
 import java.io.IOException;
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.swt.lifecycle.DisplayUtil;
-import org.eclipse.swt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.*;
-import com.w4t.Fixture;
-import com.w4t.engine.requests.RequestParams;
 
 
 public class FocusEvent_Test extends TestCase {

@@ -11,16 +11,16 @@
 
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.theme.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
-import org.eclipse.swt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.widgets.MenuHolder.IMenuHolderAdapter;
 
 /**

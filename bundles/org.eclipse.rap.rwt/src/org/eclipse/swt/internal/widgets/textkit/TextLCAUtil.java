@@ -14,10 +14,11 @@ package org.eclipse.swt.internal.widgets.textkit;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
 

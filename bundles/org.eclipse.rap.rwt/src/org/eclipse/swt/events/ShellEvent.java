@@ -11,11 +11,11 @@
 
 package org.eclipse.swt.events;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
 
-import com.w4t.Adaptable;
 
 
 /**

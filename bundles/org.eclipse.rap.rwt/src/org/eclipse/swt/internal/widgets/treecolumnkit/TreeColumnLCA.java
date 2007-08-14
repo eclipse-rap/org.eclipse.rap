@@ -14,10 +14,11 @@ package org.eclipse.swt.internal.widgets.treecolumnkit;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
 public final class TreeColumnLCA extends AbstractWidgetLCA {

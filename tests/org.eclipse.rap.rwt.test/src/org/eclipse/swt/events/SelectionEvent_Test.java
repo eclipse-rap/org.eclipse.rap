@@ -12,11 +12,12 @@
 package org.eclipse.swt.events;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
-import com.w4t.engine.lifecycle.PhaseId;
 
 public class SelectionEvent_Test extends TestCase {
 

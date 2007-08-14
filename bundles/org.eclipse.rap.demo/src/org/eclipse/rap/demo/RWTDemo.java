@@ -10,13 +10,13 @@ package org.eclipse.rap.demo;
 
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.*;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.*;
-import org.eclipse.swt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.*;
 
 // TODO: Do we still need this demo ?
