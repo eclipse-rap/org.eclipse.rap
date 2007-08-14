@@ -152,6 +152,45 @@ public class Shell extends Composite {
     state |= HIDDEN;
     this.display.addShell( this );    
   }
+  
+  /**
+   * Constructs a new instance of this class given only the style value
+   * describing its behavior and appearance. This is equivalent to calling
+   * <code>Shell((Display) null, style)</code>.
+   * <p>
+   * The style value is either one of the style constants defined in class
+   * <code>SWT</code> which is applicable to instances of this class, or must
+   * be built by <em>bitwise OR</em>'ing together (that is, using the
+   * <code>int</code> "|" operator) two or more of those <code>SWT</code>
+   * style constants. The class description lists the style constants that are
+   * applicable to the class. Style bits are also inherited from superclasses.
+   * </p>
+   * 
+   * @param style the style of control to construct
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the parent</li>
+   *                <li>ERROR_INVALID_SUBCLASS - if this class is not an
+   *                allowed subclass</li>
+   *                </ul>
+   * @see SWT#BORDER
+   * @see SWT#CLOSE
+   * @see SWT#MIN
+   * @see SWT#MAX
+   * @see SWT#RESIZE
+   * @see SWT#TITLE
+   * @see SWT#NO_TRIM
+   * @see SWT#SHELL_TRIM
+   * @see SWT#DIALOG_TRIM
+   * @see SWT#MODELESS
+   * @see SWT#PRIMARY_MODAL
+   * @see SWT#APPLICATION_MODAL
+   * @see SWT#SYSTEM_MODAL
+   */
+  public Shell( int style ) {
+    this( ( Display )null, style );
+  }
 
   /**
    * Constructs a new instance of this class given only the display
