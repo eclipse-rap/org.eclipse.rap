@@ -17,6 +17,6 @@ package org.eclipse.rwt.service;
  */
 public interface IServiceManager {
   
-  void registerServiceHandler( IServiceHandler serviceHandler );
-  void unregisterServiceHandler( IServiceHandler serviceHandler );
+  void registerServiceHandler( String id, IServiceHandler serviceHandler );
+  void unregisterServiceHandler( String id );
 }

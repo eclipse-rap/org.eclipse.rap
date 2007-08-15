@@ -19,7 +19,6 @@ import javax.servlet.http.*;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.service.ServiceManager;
 
 public class RWTDelegate extends HttpServlet {
 

@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Display;
  * A utility class that provides some static helper methods to perform
  * commonly needed tasks with respect to backround thread management.
  */
-public final class UICallBackUtil {
+public final class UICallBack {
     
   /**
    * Sometimes a backround thread needs to access values that are stored
@@ -63,7 +63,7 @@ public final class UICallBackUtil {
    * @see <code>Display#getThread</code>
    * @see <code>Display#wake</code>
    */
-  public static void activateUICallBack( final String id ) {
+  public static void activate( final String id ) {
     UICallBackServiceHandler.activateUICallBacksFor( id );
   }
   
@@ -85,11 +85,11 @@ public final class UICallBackUtil {
    * @see <code>Display#getThread</code>
    * @see <code>Display#wake</code>
    */
-  public static void deactivateUICallBack( final String id ) {
+  public static void deactivate( final String id ) {
     UICallBackServiceHandler.deactivateUICallBacksFor( id );
   }
   
-  private UICallBackUtil() {
+  private UICallBack() {
     // prevent instance creation
   }
 }

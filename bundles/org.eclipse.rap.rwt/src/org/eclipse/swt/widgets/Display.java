@@ -24,7 +24,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.UICallBackUtil;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -598,7 +598,7 @@ public class Display extends Device implements Adaptable {
 //    if( isDisposed() ) {
 //      error( SWT.ERROR_DEVICE_DISPOSED );
 //    }
-    UICallBackUtil.runNonUIThreadWithFakeContext( this, new Runnable() {
+    UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
         UICallBackManager.getInstance().addAsync( runnable );
       }
@@ -633,7 +633,7 @@ public class Display extends Device implements Adaptable {
 //  if( isDisposed() ) {
 //    error( SWT.ERROR_DEVICE_DISPOSED );
 //  }
-    UICallBackUtil.runNonUIThreadWithFakeContext( this, new Runnable() {
+    UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
         UICallBackManager.getInstance().addSync( runnable );
       }
@@ -655,7 +655,7 @@ public class Display extends Device implements Adaptable {
 //    error( SWT.ERROR_DEVICE_DISPOSED );
 //  }
     if( getThread() != Thread.currentThread() ) {
-      UICallBackUtil.runNonUIThreadWithFakeContext( this, new Runnable() {
+      UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
         public void run() {
           UICallBackManager.getInstance().sendUICallBack();
         }

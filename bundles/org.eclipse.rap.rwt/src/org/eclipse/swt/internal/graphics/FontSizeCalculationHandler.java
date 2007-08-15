@@ -164,7 +164,7 @@ final class FontSizeCalculationHandler
   }
 
   public void valueUnbound( final HttpSessionBindingEvent event ) {
-    UICallBackUtil.runNonUIThreadWithFakeContext( display, new Runnable() {
+    UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {
         ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
         lifeCycle.removePhaseListener( FontSizeCalculationHandler.this );

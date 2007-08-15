@@ -21,7 +21,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.browser.Ie;
 import org.eclipse.rwt.internal.service.BrowserSurvey.IIndexTemplate;
-import org.eclipse.rwt.service.ServiceManager;
 import org.eclipse.swt.RWTFixture;
 
 

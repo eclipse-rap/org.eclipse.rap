@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.BrowserSurvey.IIndexTemplate;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.service.ServiceManager;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.widgets.Display;
 

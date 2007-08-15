@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.service;
+package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +22,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
-import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.service.IServiceHandler;
 import org.w3c.dom.*;
 
 

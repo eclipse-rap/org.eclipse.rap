@@ -19,10 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.Fixture.TestResponse;
 import org.eclipse.rwt.Fixture.TestServletOutputStream;
-import org.eclipse.rwt.internal.service.BrowserSurvey;
-import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.BrowserSurvey.IIndexTemplate;
 import org.eclipse.swt.RWTFixture;
 
@@ -65,8 +65,8 @@ public class ServiceHandler_Test extends TestCase {
     TestResponse testResponse = ( TestResponse )response;
     testResponse.setOutputStream( new TestServletOutputStream() );
     // Register
-    ServiceManager.registerServiceHandler( PROGRAMATIC_HANDLER_ID, 
-                                           new CustomHandler() );
+    RWT.getServiceManager().registerServiceHandler( PROGRAMATIC_HANDLER_ID, 
+                                                    new CustomHandler() );
     Fixture.fakeRequestParam( IServiceHandler.REQUEST_PARAM, 
                               PROGRAMATIC_HANDLER_ID );
     ServiceManager.getHandler().service();
@@ -83,7 +83,7 @@ public class ServiceHandler_Test extends TestCase {
       }
     };
     log = "";
-    ServiceManager.unregisterServiceHandler( PROGRAMATIC_HANDLER_ID );
+    RWT.getServiceManager().unregisterServiceHandler( PROGRAMATIC_HANDLER_ID );
     ServiceManager.getHandler().service();
     assertEquals( "", log );
     BrowserSurvey.indexTemplate = null;

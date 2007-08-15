@@ -8,7 +8,7 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rwt.lifecycle.UICallBackUtil;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
@@ -43,7 +43,7 @@ public class ProgressBarTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent evt ) {
         button.setEnabled( false );
         // activate UI-callback mechanism
-        UICallBackUtil.activateUICallBack( ProgressBarTab.class.getName() );
+        UICallBack.activate( ProgressBarTab.class.getName() );
         // create and start background thread that updates the progress bar
         Thread thread = new Thread( createRunnable( progressBar, button ) );
         thread.setDaemon( true );
@@ -92,7 +92,7 @@ public class ProgressBarTab extends ExampleTab {
                   button.setEnabled( true );
                   // deactivate UI-callback mechanism
                   String id = ProgressBarTab.class.getName();
-                  UICallBackUtil.deactivateUICallBack( id );
+                  UICallBack.deactivate( id );
                   if( panel[ 0 ] != null ) {
                     panel[ 0 ].dispose();
                   }

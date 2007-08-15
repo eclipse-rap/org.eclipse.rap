@@ -18,9 +18,9 @@ import org.eclipse.rwt.internal.lifecycle.ILifeCycle;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.service.IServiceStore;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rwt.service.*;
 
 
 /**
@@ -28,12 +28,28 @@ import org.eclipse.rwt.service.ISessionStore;
  */
 public final class RWT {
 
+  private static final IServiceManager serviceManager = new IServiceManager() {
+    public void registerServiceHandler( final String id, 
+                                        final IServiceHandler serviceHandler ) 
+    {
+      ServiceManager.registerServiceHandler( id, serviceHandler );
+    }
+    public void unregisterServiceHandler( final String id ) 
+    {
+      ServiceManager.unregisterServiceHandler( id );
+    }
+  };
+
   public static ILifeCycle getLifeCycle() {
     return LifeCycleFactory.getLifeCycle();
   }
   
   public static IResourceManager getResourceManager() {
     return ResourceManager.getInstance();
+  }
+  
+  public static IServiceManager getServiceManager() {
+    return serviceManager;
   }
   
   public static IServiceStore getServiceStore() {
