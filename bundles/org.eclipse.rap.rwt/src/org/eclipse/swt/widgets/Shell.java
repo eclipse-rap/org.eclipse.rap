@@ -19,10 +19,9 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.IShellAdapter;
+import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.MenuHolder.IMenuHolderAdapter;
 import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
-import org.eclipse.swt.widgets.MenuHolder.IMenuHolderAdapter;
 
 /**
  * Instances of this class represent the "windows"

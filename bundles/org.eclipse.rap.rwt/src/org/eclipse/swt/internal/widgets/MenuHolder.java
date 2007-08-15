@@ -9,14 +9,16 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.swt.widgets;
+package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
-import org.eclipse.swt.internal.widgets.SlimList;
+
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Widget;
 
 public final class MenuHolder {
 
-  interface IMenuHolderAdapter {
+  public static interface IMenuHolderAdapter {
     // marker interface
   }
 
@@ -39,9 +41,10 @@ public final class MenuHolder {
   public static Menu[] getMenus( final Widget widget ) {
     return getMenuHolder( widget ).getMenus();
   }
+  
   private final List menus;
 
-  MenuHolder() {
+  public MenuHolder() {
     menus = new SlimList();
   }
 
@@ -63,8 +66,9 @@ public final class MenuHolder {
     return menus.size();
   }
 
-  // ////////////////
+  ///////////////////
   // Helping methods
+  
   private static MenuHolder getMenuHolder( final Widget widget ) {
     Object adapter = widget.getAdapter( IMenuHolderAdapter.class );
     return ( MenuHolder )adapter;

@@ -9,12 +9,14 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.swt.widgets;
+package org.eclipse.swt.internal.widgets;
 
 import junit.framework.TestCase;
+
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MenuHolder.IMenuHolderAdapter;
+import org.eclipse.swt.internal.widgets.MenuHolder.IMenuHolderAdapter;
+import org.eclipse.swt.widgets.*;
 
 public class MenuHolder_Test extends TestCase {
 
