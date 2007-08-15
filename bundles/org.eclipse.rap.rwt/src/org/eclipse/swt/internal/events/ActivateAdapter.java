@@ -9,15 +9,17 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.swt.events;
+package org.eclipse.swt.internal.events;
 
-import java.util.EventListener;
 
 /**
  * TODO: [rh] JavaDoc
  */
-public interface ActivateListener extends EventListener {
+public abstract class ActivateAdapter implements ActivateListener {
 
-  public void activated( ActivateEvent event );
-  public void deactivated( ActivateEvent event );
+  public void activated( final ActivateEvent event ) {
+  }
+
+  public void deactivated( final ActivateEvent event ) {
+  }
 }

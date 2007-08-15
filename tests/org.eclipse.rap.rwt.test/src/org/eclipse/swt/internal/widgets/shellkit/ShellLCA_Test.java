@@ -22,6 +22,8 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.events.ActivateListener;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.widgets.*;
 

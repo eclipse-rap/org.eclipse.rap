@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.event;
+package org.eclipse.rwt.internal.events;
 
 import org.eclipse.rwt.Adaptable;
 
