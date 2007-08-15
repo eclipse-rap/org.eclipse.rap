@@ -102,7 +102,7 @@ public class CoolBar_Test extends TestCase {
     try {
       bar.indexOf( null );
       fail( "indexOf must not answer for null item" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }
@@ -167,7 +167,7 @@ public class CoolBar_Test extends TestCase {
     try {
       bar.setItemOrder( null );
       fail( "setItemOrder must not allow null-argument" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // Ensure that nothing that itemOrder hasn't changed
       assertEquals( expectedItemOrder, bar.getItemOrder() );
     }

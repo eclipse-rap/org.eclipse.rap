@@ -54,7 +54,7 @@ public class Font_Test extends TestCase {
     try {
       Font.getFont( null, 1, SWT.NONE );
       fail( "The font name must not be null" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // Expected
     }
     try {

@@ -153,7 +153,7 @@ public class Table_Test extends TestCase {
     try {
       item.setText( 0, null );
       fail( "Parameter index must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
     
@@ -392,9 +392,8 @@ public class Table_Test extends TestCase {
     try {
       table.remove( null );
       fail( "No exception thrown for tableItems == null" );
-    } catch( NullPointerException e ) {
-      // Illegal Argument exception in SWT
-      // NPE in RWT - see SWT error code to exception switch
+    } catch( IllegalArgumentException iae ) {
+    	// expected
     }
     try {
       table.remove( new int[]{
@@ -487,7 +486,8 @@ public class Table_Test extends TestCase {
       table.deselectAll();
       table.setSelection( item1 );
       table.setSelection( ( TableItem )null );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
+      // expected
       assertEquals( 1, table.getSelectionCount() );
       assertEquals( item1, table.getSelection()[ 0 ] );
     }
@@ -613,7 +613,8 @@ public class Table_Test extends TestCase {
       table.deselectAll();
       table.setSelection( item1 );
       table.setSelection( ( TableItem )null );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
+      // expected
       assertEquals( 1, table.getSelectionCount() );
       assertEquals( item1, table.getSelection()[ 0 ] );
     }
@@ -1053,7 +1054,7 @@ public class Table_Test extends TestCase {
     try {
       table.setColumnOrder( null );
       fail( "setColumnOrder must not accept null argument" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     // Passing in an array with more elements than columns is not allowed

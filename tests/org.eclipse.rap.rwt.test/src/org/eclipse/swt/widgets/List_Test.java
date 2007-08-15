@@ -90,7 +90,7 @@ public class List_Test extends TestCase {
     try {
       list.add( null );
       fail( "add( null ) not allowed." );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       assertEquals( sizeBefore, list.getItemCount() );
     }
     
@@ -200,7 +200,7 @@ public class List_Test extends TestCase {
     try {
       list.remove( ( int[] )null );
       fail( "remove(int[]) with an null-argument must throw exception" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       assertEquals( 1, list.getItemCount() );
     }
     
@@ -216,7 +216,7 @@ public class List_Test extends TestCase {
     try {
       list.remove( ( String )null );
       fail( "remove(String) with an null-argument must throw exception" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       assertEquals( 1, list.getItemCount() );
     }
 
@@ -279,7 +279,7 @@ public class List_Test extends TestCase {
     try {
       list.setSelection( ( int[] )null );
       fail( "setSelection(int[]) with null-argument is not allowed" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     list.removeAll();
@@ -384,7 +384,7 @@ public class List_Test extends TestCase {
     try {
       list.setSelection( ( String[] )null );
       fail( "setSelection(String[]) must not allow null-argument" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     
@@ -452,7 +452,7 @@ public class List_Test extends TestCase {
     try {
       list.select( null );
       fail( "Null argument not allowed" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
 
@@ -522,7 +522,7 @@ public class List_Test extends TestCase {
     try {
       list.setSelection( ( int[] )null );
       fail( "setSelection(int[]) with null-argument is not allowed" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     list.removeAll();
@@ -636,7 +636,7 @@ public class List_Test extends TestCase {
     try {
       list.setSelection( ( String[] )null );
       fail( "setSelection(String[]) must not allow null-argument" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
 
@@ -703,7 +703,7 @@ public class List_Test extends TestCase {
     try {
       list.select( null );
       fail( "Null argument not allowed" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
 
@@ -766,7 +766,7 @@ public class List_Test extends TestCase {
     try {
       list.setItem( 0, null );
       fail( "Must check valid range of index" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }
@@ -792,7 +792,7 @@ public class List_Test extends TestCase {
     try {
       list.setItems( null );
       fail( "setItems(null) is not allowed" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       assertEquals( 1, list.getItemCount() );
     }
 

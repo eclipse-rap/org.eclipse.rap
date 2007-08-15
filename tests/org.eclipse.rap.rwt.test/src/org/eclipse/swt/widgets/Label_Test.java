@@ -37,7 +37,7 @@ public class Label_Test extends TestCase {
     try {
       label.setText( null );
       fail( "Must not allow to set null-text." );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }

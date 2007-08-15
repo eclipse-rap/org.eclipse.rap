@@ -62,7 +62,7 @@ public class TreeColumn_Test extends TestCase {
     try {
       new TreeColumn( null, SWT.NONE );
       fail( "Must not allow to create TreeColumn withh null-parent." );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }

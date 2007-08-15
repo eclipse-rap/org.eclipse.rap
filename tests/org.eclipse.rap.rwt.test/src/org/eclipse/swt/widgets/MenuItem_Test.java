@@ -31,7 +31,7 @@ public class MenuItem_Test extends TestCase {
     try {
       new MenuItem( null, SWT.CASCADE );
       fail( "Must not allow null-parent" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     

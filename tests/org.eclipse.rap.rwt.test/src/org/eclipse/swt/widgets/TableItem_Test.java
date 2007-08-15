@@ -67,7 +67,7 @@ public class TableItem_Test extends TestCase {
     try {
       new TableItem( null, SWT.NONE );
       fail( "Must not allow to create TableColumn withh null-parent." );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }

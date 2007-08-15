@@ -126,14 +126,14 @@ public class TabFolderAndItem_Test extends TestCase {
     try {
       folder.setSelection( ( TabItem )null );
       fail( "No exception thrown for selection == null" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     
     try {
       folder.setSelection( ( TabItem[] )null );
       fail( "Parameter items must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
     

@@ -31,7 +31,7 @@ public class ExternalBrowser_Test extends TestCase {
     try {
       ExternalBrowser.open( null, "http://nowhere.org", 0 );
       fail( "ExternalBrowser#open must not allow id == null" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
@@ -43,7 +43,7 @@ public class ExternalBrowser_Test extends TestCase {
     try {
       ExternalBrowser.open( "myId", null, 0 );
       fail( "ExternalBrowser#open must not allow url == null" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }
@@ -53,7 +53,7 @@ public class ExternalBrowser_Test extends TestCase {
     try {
       ExternalBrowser.close( null );
       fail( "ExternalBrowser#close must not allow id == null" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     try {

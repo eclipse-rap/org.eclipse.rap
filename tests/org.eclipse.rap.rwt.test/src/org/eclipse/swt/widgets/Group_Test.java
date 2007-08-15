@@ -36,7 +36,7 @@ public class Group_Test extends TestCase {
     try {
       group.setText( null );
       fail( "Must not allow to set null-text." );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }

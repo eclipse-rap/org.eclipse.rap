@@ -678,7 +678,6 @@ public class SWT {
     switch( code ) {
       /* Null Arguments (non-fatal) */
       case ERROR_NULL_ARGUMENT:
-        throw new NullPointerException( message );
       /* Illegal Arguments (non-fatal) */
       case ERROR_CANNOT_BE_ZERO:
       case ERROR_INVALID_ARGUMENT:

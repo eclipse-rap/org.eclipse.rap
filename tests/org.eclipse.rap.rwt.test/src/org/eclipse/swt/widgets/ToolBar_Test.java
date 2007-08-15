@@ -84,7 +84,7 @@ public class ToolBar_Test extends TestCase {
     try {
       bar.indexOf( null );
       fail( "indexOf must not answer for null item" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }

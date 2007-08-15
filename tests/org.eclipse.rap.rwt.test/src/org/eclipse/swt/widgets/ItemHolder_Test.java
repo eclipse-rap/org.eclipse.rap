@@ -45,7 +45,7 @@ public class ItemHolder_Test extends TestCase {
     try {
       itemHolder.add( null );
       fail( "Parameter item must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
     itemHolder.remove( item );
@@ -58,7 +58,7 @@ public class ItemHolder_Test extends TestCase {
     try {
       itemHolder.remove( null );
       fail( "Parameter item must not be null" );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException npe ) {
       // expected
     }
   }

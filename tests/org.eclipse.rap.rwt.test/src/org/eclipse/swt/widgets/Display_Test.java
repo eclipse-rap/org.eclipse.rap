@@ -216,7 +216,7 @@ public class Display_Test extends TestCase {
     try {
       display.addFilter( SWT.Dispose, null );
       fail( "No exception thrown for addFilter with null argument" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     display.addFilter( SWT.Close, listener );
@@ -231,7 +231,7 @@ public class Display_Test extends TestCase {
     try {
       display.removeFilter( SWT.Dispose, null );
       fail( "No exception thrown for removeFilter with null argument" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     display.removeFilter( SWT.Close, listener );

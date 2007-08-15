@@ -100,7 +100,7 @@ public class Image_Test extends TestCase {
     try {
       Image.find( null );
       fail( "Image#find must not allow null-argument" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     try {

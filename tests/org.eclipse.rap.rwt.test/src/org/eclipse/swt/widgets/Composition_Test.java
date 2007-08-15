@@ -37,7 +37,7 @@ public class Composition_Test extends TestCase {
     try {
       new Button( null, SWT.PUSH );
       fail( "Parent composite must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
   }

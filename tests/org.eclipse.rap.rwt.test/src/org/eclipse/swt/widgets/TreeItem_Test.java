@@ -27,13 +27,13 @@ public class TreeItem_Test extends TestCase {
     try {
       new TreeItem( ( TreeItem )null, SWT.NONE );
       fail( "Must not allow null-parent" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     try {
       new TreeItem( ( Tree )null, SWT.NONE );
       fail( "Must not allow null-parent" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -255,16 +255,14 @@ public class TreeItem_Test extends TestCase {
       treeItem.setText( -1, null );
       fail( "No exception thrown for string == null" );
     }
-// catch (IllegalArgumentException e) {
-    catch( NullPointerException e ) {
+    catch (IllegalArgumentException e) {
       // expected
     }
     try {
       treeItem.setText( 0, null );
       fail( "No exception thrown for string == null" );
     }
-// catch (IllegalArgumentException e) {
-    catch( NullPointerException e ) {
+    catch (IllegalArgumentException e) {
       // expected
     }
   }
@@ -311,8 +309,8 @@ public class TreeItem_Test extends TestCase {
     try {
       treeItem.setImage( ( Image[] )null );
       fail( "No exception thrown for images == null" );
-//    } catch( IllegalArgumentException e ) {
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
+    	// expected
     }
   }
 

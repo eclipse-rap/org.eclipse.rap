@@ -40,7 +40,7 @@ public class ControlHolder_Test extends TestCase {
     try {
       controlHolder.add( null );
       fail( "Parameter control must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
     controlHolder.remove( control );
@@ -54,7 +54,7 @@ public class ControlHolder_Test extends TestCase {
     try {
       controlHolder.remove( null );
       fail( "Parameter item must not be null" );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
   }

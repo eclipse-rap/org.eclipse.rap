@@ -54,14 +54,14 @@ public class Browser_Test extends TestCase {
       browser.setUrl( "oldValue" );
       browser.setUrl( null );
       fail( "Browser#setUrl: null not allowed" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       assertEquals( "oldValue", browser.getUrl() );
     }
     try {
       browser.setText( "oldValue" );
       browser.setText( null );
       fail( "Browser#setText: null not allowed" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       assertEquals( "oldValue", getText( browser ) );
     }
   }

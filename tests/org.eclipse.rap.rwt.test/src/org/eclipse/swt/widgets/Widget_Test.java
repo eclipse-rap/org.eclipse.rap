@@ -81,13 +81,13 @@ public class Widget_Test extends TestCase {
     try {
       widget.setData( null, new Object() );
       fail( "Must not allow to set data with null key" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
       widget.getData( null );
       fail( "Must not allow to get data for null key" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }

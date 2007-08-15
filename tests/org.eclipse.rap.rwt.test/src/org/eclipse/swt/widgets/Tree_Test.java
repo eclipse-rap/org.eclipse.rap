@@ -140,7 +140,7 @@ public class Tree_Test extends TestCase {
     try {
       tree.indexOf( (TreeItem) null );
       fail( "Must not allow to call indexOf for null" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     
@@ -165,7 +165,7 @@ public class Tree_Test extends TestCase {
     try {
       tree.indexOf( ( TreeColumn )null );
       fail( "Must not allow to call indexOf for null" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -235,7 +235,7 @@ public class Tree_Test extends TestCase {
     try {
       tree.setSelection( ( TreeItem )null );
       fail( "must not allow setSelection( null )" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     
@@ -260,7 +260,7 @@ public class Tree_Test extends TestCase {
     try {
       tree.setSelection( (org.eclipse.swt.widgets.TreeItem[] )null );
       fail( "must not allow setSelection( null )" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     
@@ -429,7 +429,7 @@ public class Tree_Test extends TestCase {
       fail("No exception thrown for item == null");
     }
 //    catch (IllegalArgumentException e) {
-    catch (NullPointerException e) {
+    catch (IllegalArgumentException iae) {
     }
 
     assertEquals( null, adapter.getShowItem() );

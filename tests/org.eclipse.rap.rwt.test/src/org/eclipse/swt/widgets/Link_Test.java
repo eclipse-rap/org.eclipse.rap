@@ -37,7 +37,7 @@ public class Link_Test extends TestCase {
     try {
       link.setText( null );
       fail( "Must not allow to set null-text." );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }

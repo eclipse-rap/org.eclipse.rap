@@ -60,7 +60,7 @@ public class Control_Test extends TestCase {
     try {
       control.setBounds( null );
       fail( "Rectangle parameter must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
     control.setBounds( 0, 0, -1, -1 );
@@ -85,7 +85,7 @@ public class Control_Test extends TestCase {
     try {
       control.setLocation( null );
       fail( "Point parameter must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -108,7 +108,7 @@ public class Control_Test extends TestCase {
     try {
       control.setSize( null );
       fail( "Point parameter must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( final IllegalArgumentException iae ) {
       // expected
     }
     control.setSize( -2, -2 );

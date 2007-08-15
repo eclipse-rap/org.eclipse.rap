@@ -186,8 +186,7 @@ public class Text_Test extends TestCase {
 		try {
 			text.append(null);
 			fail("No exception thrown for string == null");
-//		} catch (IllegalArgumentException e) {
-		} catch (NullPointerException e) {
+		} catch (IllegalArgumentException e) {
 		}
 
 		text = new Text(shell, SWT.SINGLE);
@@ -195,8 +194,7 @@ public class Text_Test extends TestCase {
 		try {
 			text.append(null);
 			fail("No exception thrown on string == null");
-//		} catch (IllegalArgumentException e) {
-		} catch (NullPointerException e) {
+		} catch (IllegalArgumentException e) {
 		}
 
 		// tests a SINGLE line text editor

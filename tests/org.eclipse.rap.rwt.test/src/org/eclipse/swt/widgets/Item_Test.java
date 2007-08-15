@@ -42,7 +42,7 @@ public class Item_Test extends TestCase {
     try {
       item.setText( null );
       fail( "Must not allow to set null text" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
