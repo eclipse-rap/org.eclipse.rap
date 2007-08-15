@@ -62,7 +62,7 @@ public class CoolBar extends Composite {
 
   private final ICoolBarAdapter coolbarAdapter = new CoolBarAdapter();
 
-  public class CoolBarAdapter implements ICoolBarAdapter {
+  private class CoolBarAdapter implements ICoolBarAdapter {
 
     public void setItemOrder( int[] itemOrder ) {
       CoolBar.this.setItemOrder( itemOrder );
@@ -70,7 +70,7 @@ public class CoolBar extends Composite {
 
   }
 
-  public class CoolBarItemHolder implements IItemHolderAdapter {
+  private class CoolBarItemHolder implements IItemHolderAdapter {
 
     public void add( Item item ) {
     }
