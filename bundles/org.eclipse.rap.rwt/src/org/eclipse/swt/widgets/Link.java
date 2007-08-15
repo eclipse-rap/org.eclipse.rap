@@ -201,6 +201,7 @@ public class Link extends Control {
   }
   
   public int getBorderWidth() {
+	// TODO: [rst] why overriding control#getBorderWidth
     return ( ( style & SWT.BORDER ) != 0 ) ? 1 : 0;
   }
   

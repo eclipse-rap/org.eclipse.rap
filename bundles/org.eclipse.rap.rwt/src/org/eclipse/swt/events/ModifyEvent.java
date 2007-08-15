@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Event;
  *
  * @see ModifyListener
  */
-public class ModifyEvent extends TypedEvent {
+public final class ModifyEvent extends TypedEvent {
 
   public static final int MODIFY_TEXT = SWT.Modify;
   

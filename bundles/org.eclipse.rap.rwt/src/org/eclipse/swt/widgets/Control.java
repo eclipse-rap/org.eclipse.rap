@@ -140,7 +140,7 @@ public abstract class Control extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public final Composite getParent() {
+  public Composite getParent() {
     checkWidget();
     return parent;
   }

@@ -438,15 +438,6 @@ public class Spinner extends Composite {
     ModifyEvent.removeListener( this, listener );
   }
   
-  // TODO [fappel]: documentation and implementation
-  public void addVerifyListener( final VerifyListener verifyListener ) {
-  }
-
-  // TODO [fappel]: documentation and implementation
-  public void removeVerifyListener( final VerifyListener verifyListener ) {
-  }
-
-
   //////////////////
   // Helping methods
 

@@ -122,8 +122,26 @@ public abstract class Device {
     QxFont font = ThemeUtil.getTheme().getFont( "widget.font" );
     return QxFont.createFont( font );
   }
-
-  public void checkDevice() {
+//  /**
+//   * Throws an <code>SWTException</code> if the receiver can not
+//   * be accessed by the caller. This may include both checks on
+//   * the state of the receiver and more generally on the entire
+//   * execution context. This method <em>should</em> be called by
+//   * device implementors to enforce the standard SWT invariants.
+//   * <p>
+//   * Currently, it is an error to invoke any method (other than
+//   * <code>isDisposed()</code> and <code>dispose()</code>) on a
+//   * device that has had its <code>dispose()</code> method called.
+//   * </p><p>
+//   * In future releases of SWT, there may be more or fewer error
+//   * checks and exceptions may be thrown for different reasons.
+//   * <p>
+//   *
+//   * @exception SWTException <ul>
+//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+//   * </ul>
+//   */
+  protected void checkDevice() {
     // TODO [rh] implementation missing
   }
 

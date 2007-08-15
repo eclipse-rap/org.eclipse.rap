@@ -344,7 +344,7 @@ public class Shell extends Composite {
     return display;
   }
 
-  public final Shell getShell() {
+  public Shell getShell() {
     return this;
   }
 

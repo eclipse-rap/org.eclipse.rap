@@ -267,7 +267,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public final Tree getParent() {
+  public Tree getParent() {
     checkWidget();
     return parent;
   }

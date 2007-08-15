@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @see MenuListener
  */
-public class MenuEvent extends TypedEvent {
+public final class MenuEvent extends TypedEvent {
 
   public static final int MENU_SHOWN = SWT.Show;
   public static final int MENU_HIDDEN = SWT.Hide;

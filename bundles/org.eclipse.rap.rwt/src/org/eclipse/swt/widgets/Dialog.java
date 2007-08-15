@@ -47,9 +47,9 @@ import org.eclipse.swt.SWTException;
  */
 public abstract class Dialog {
 
-  protected int style;
-  protected Shell parent;
-  protected String title;
+  int style;
+  Shell parent;
+  String title;
 
   /**
    * Constructs a new instance of this class given only its

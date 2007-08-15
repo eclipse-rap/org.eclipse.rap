@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Widget;
  * TODO [rh] JavaDoc
  */
 // TODO [rh] SWT TypedEvent has fields display and time, revise this 
-public abstract class TypedEvent extends Event {
+public class TypedEvent extends Event {
 
   public Widget widget;
   
@@ -158,14 +158,30 @@ public abstract class TypedEvent extends Event {
   }
 
   ////////////////////////////////////
-  // Prevent unwanted event processing 
+  // Stub implementations
   
-  protected abstract boolean allowProcessing();
+  protected boolean allowProcessing() {
+	String msg = "Derived classes have to override allowProcessing.";
+	throw new UnsupportedOperationException( msg );
+  }
   
-  //////////////////////////////
+  // Exception to rid of abstract TypedEvent
+  protected void dispatchToObserver( final Object listener ) {
+	String msg = "Derived classes have to override dispatchToObserver.";
+	throw new UnsupportedOperationException( msg );
+  }
+
+  // Exception to rid of abstract TypedEvent
+  protected Class getListenerType() {
+	String msg = "Derived classes have to override getListenerType.";
+	throw new UnsupportedOperationException( msg );
+  }
+  
+  // ////////////////////////////
   // toString & getName from SWT 
   
-  // this implementation is extended by subclasses
+
+// this implementation is extended by subclasses
   public String toString() {
     return getName()
         + "{"

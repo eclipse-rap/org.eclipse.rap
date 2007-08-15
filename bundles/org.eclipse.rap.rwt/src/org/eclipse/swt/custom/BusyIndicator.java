@@ -40,7 +40,7 @@ public class BusyIndicator {
  * </ul>
  */
 
-public static void showWhile(Device display, Runnable runnable) {
+public static void showWhile(Display display, Runnable runnable) {
     if (runnable == null)
         SWT.error(SWT.ERROR_NULL_ARGUMENT);
     if (display == null) {

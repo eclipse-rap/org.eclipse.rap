@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Event;
  *
  * @see ShellListener
  */
-public class ShellEvent extends TypedEvent {
+public final class ShellEvent extends TypedEvent {
 
   public static final int SHELL_CLOSED = SWT.Close;
   public static final int SHELL_ACTIVATED = SWT.Activate;

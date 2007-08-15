@@ -34,7 +34,7 @@ package org.eclipse.swt.graphics;
  *
  * @see Rectangle
  */
-public class Point {
+public final class Point {
   
 	/**
 	 * the x coordinate of the point
