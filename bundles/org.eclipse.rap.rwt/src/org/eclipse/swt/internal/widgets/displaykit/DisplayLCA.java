@@ -21,10 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.browser.*;
-import org.eclipse.rwt.internal.engine.ResourceRegistry;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.JsConcatenator;
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;

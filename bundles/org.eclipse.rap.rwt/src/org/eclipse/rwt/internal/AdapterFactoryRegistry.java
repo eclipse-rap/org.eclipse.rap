@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -19,14 +19,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 
-public class AdapterFactoryRegistry {
+public final class AdapterFactoryRegistry {
   
   private final static List factories = new ArrayList();
   

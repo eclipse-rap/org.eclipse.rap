@@ -468,6 +468,54 @@ public class Combo extends Composite {
     return 0;
   }
 
+//  /**
+//   * Searches the receiver's list starting at the first item
+//   * (index 0) until an item is found that is equal to the 
+//   * argument, and returns the index of that item. If no item
+//   * is found, returns -1.
+//   *
+//   * @param string the search item
+//   * @return the index of the item
+//   *
+//   * @exception IllegalArgumentException <ul>
+//   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+//   * </ul>
+//   * @exception SWTException <ul>
+//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+//   * </ul>
+//   */
+  public int indexOf( final String string ) {
+//    return indexOf( string, 0 );
+    // TODO [rh] IMPLEMENTATION MISSING: indexOf(String,int)
+    return -1;
+  }
+
+//  /**
+//   * Searches the receiver's list starting at the given, 
+//   * zero-relative index until an item is found that is equal
+//   * to the argument, and returns the index of that item. If
+//   * no item is found or the starting index is out of range,
+//   * returns -1.
+//   *
+//   * @param string the search item
+//   * @param start the zero-relative index at which to begin the search
+//   * @return the index of the item
+//   *
+//   * @exception IllegalArgumentException <ul>
+//   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+//   * </ul>
+//   * @exception SWTException <ul>
+//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+//   * </ul>
+//   */
+  public int indexOf( final String string, final int start ) {
+    checkWidget();
+    // TODO [rh] IMPLEMENTATION MISSING
+    return -1;
+  }
+
   /**
    * Returns a string containing a copy of the contents of the
    * receiver's text field, or an empty string if there are no

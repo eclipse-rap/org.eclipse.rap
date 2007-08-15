@@ -24,10 +24,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.Assert;
 
-import org.eclipse.rwt.internal.ConfigurationReader;
-import org.eclipse.rwt.internal.IInitialization;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.Browser;
-import org.eclipse.rwt.internal.engine.EngineConfig;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.resources.*;

@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.resources;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -11,9 +11,9 @@
 
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import org.eclipse.rwt.internal.engine.ResourceRegistry;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.HTML;

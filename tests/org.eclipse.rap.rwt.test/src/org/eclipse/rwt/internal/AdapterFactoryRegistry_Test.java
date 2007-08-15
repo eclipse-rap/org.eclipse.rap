@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal;
 
 import java.io.IOException;
 
@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
+import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;

@@ -8,11 +8,10 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal;
 
 import java.io.File;
 
-import org.eclipse.rwt.internal.IEngineConfig;
 
 
 /** 

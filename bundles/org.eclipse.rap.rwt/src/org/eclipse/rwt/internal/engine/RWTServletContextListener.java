@@ -18,9 +18,9 @@ import java.util.*;
 
 import javax.servlet.*;
 
+import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
-import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeManager.ResourceLoader;

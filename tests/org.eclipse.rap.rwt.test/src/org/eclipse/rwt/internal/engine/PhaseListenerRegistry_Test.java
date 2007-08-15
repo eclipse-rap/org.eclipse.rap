@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.TestServletContext;
+import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.IInitialization;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;

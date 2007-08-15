@@ -17,10 +17,11 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
-import org.eclipse.rwt.internal.IInitialization;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManager;
+import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;

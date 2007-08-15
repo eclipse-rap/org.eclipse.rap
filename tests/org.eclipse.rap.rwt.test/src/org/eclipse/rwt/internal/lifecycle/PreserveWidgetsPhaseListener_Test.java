@@ -23,7 +23,6 @@ import org.eclipse.rwt.Fixture.TestServletContext;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.browser.Ie6up;
-import org.eclipse.rwt.internal.engine.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;

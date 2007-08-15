@@ -9,11 +9,12 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.resources;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.AdapterFactoryRegistry;
 import org.eclipse.rwt.internal.IInitialization;
 import org.eclipse.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;

@@ -16,13 +16,12 @@ import junit.framework.TestSuite;
 
 import org.eclipse.rwt.AdapterManager_Test;
 import org.eclipse.rwt.SessionSingleton_Test;
-import org.eclipse.rwt.internal.ConfigurationReader_Test;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.BrowserLoader_Test;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.event.EventAdapter_Test;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.ResourceManager_Test;
-import org.eclipse.rwt.internal.resources.ResourceUtil_Test;
+import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.Logger_Test;
 import org.eclipse.rwt.internal.service.StartupRequest_Test;
 import org.eclipse.rwt.internal.theme.*;
