@@ -18,8 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.rwt.internal.AdapterFactoryRegistry;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
@@ -40,7 +39,7 @@ public class RWTLifeCycle extends LifeCycle {
     = RWTLifeCycle.class.getName() + "Initialized";
   private final static Logger LOGGER 
     = Logger.getLogger( RWTLifeCycle.class.getName() );
-
+  
   private final static IPhase[] PHASES = new IPhase[] {
     new PrepareUIRoot(),
     new ReadData(),
@@ -67,6 +66,7 @@ public class RWTLifeCycle extends LifeCycle {
     stateInfo.setAttribute( CURRENT_THREAD, thread );
   }
   
+  
   public RWTLifeCycle() {
     listeners = new HashSet();
     listeners.addAll( Arrays.asList( PhaseListenerRegistry.get() ) );    
@@ -77,25 +77,15 @@ public class RWTLifeCycle extends LifeCycle {
       initialize();
       PhaseId current = PhaseId.PREPARE_UI_ROOT;
       while( current != null ) {
-        PhaseId next;
-        beforePhaseExecution( current );
-        try {
-          next = PHASES[ current.getOrdinal() - 1 ].execute();
-        } finally {
-          afterPhaseExecution( current );        
-        }
-        current = next;
+        current = executePhase( current );
       }
-    } catch( final Throwable t ) {
-      // TODO: [fappel] introduce proper exception handling
-      t.printStackTrace();
-      if( t instanceof RuntimeException ) {
-        throw ( RuntimeException )t;
-      }
-      String msg = "An error occured while executing RWTLifeCycle.";
-      throw new RuntimeException( msg, t );
+    } catch( final Throwable throwable ) {
+      RWTLifeCycleSerivceHandlerSync.handleException( throwable );
     } finally {
-      cleanUp();
+      ServiceContext context = ContextProvider.getContext();
+      if( !context.isDisposed() ) { // execution may has been aborted
+        cleanUp();
+      }
     }
   }
 
@@ -117,27 +107,30 @@ public class RWTLifeCycle extends LifeCycle {
     return Scope.APPLICATION;
   }
   
+  
   //////////////////
   // helping methods
-  
-  
-  private void initialize() {
-    ISessionStore session = ContextProvider.getSession();
-    if( session.getAttribute( INITIALIZED ) == null ) {
-      AdapterFactoryRegistry.register();
-      session.setAttribute( INITIALIZED, Boolean.TRUE );
-    }    
-    Thread current = Thread.currentThread();
-    ContextProvider.getStateInfo().setAttribute( CURRENT_THREAD, current );
-    UICallBackManager.getInstance().notifyUIThreadStart();
+
+  PhaseId executePhase( final PhaseId current ) throws IOException {
+    PhaseId next;
+    beforePhaseExecution( current );
+    try {
+      next = PHASES[ current.getOrdinal() - 1 ].execute();
+    } finally {
+      ServiceContext context = ContextProvider.getContext();
+      if( !context.isDisposed() ) { // execution may has been aborted
+        afterPhaseExecution( current );
+      }
+    }
+    return next;
   }
-  
-  private void cleanUp() {
+
+  void cleanUp() {
     UICallBackManager.getInstance().notifyUIThreadEnd();
     ContextProvider.getStateInfo().setAttribute( CURRENT_THREAD, null );
   }
 
-  private void afterPhaseExecution( final PhaseId current ) {
+  void afterPhaseExecution( final PhaseId current ) {
     PhaseListener[] phaseListeners = getPhaseListeners();
     PhaseEvent evt = new PhaseEvent( this, current );
     for( int i = 0; i < phaseListeners.length; i++ ) {
@@ -173,6 +166,17 @@ public class RWTLifeCycle extends LifeCycle {
         }
       }
     }
+  }
+  
+  private void initialize() {
+    ISessionStore session = ContextProvider.getSession();
+    if( session.getAttribute( INITIALIZED ) == null ) {
+      AdapterFactoryRegistry.register();
+      session.setAttribute( INITIALIZED, Boolean.TRUE );
+    }    
+    Thread current = Thread.currentThread();
+    ContextProvider.getStateInfo().setAttribute( CURRENT_THREAD, current );
+    UICallBackManager.getInstance().notifyUIThreadStart();
   }
 
   private static boolean mustNotify( final PhaseId currentId, 
@@ -219,4 +223,5 @@ public class RWTLifeCycle extends LifeCycle {
       }
     }
   }
+
 }

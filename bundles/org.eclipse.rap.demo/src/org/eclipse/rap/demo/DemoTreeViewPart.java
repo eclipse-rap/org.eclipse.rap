@@ -192,7 +192,7 @@ class TreeObject {
 
   public void doubleClick(DoubleClickEvent event) {
       MessageDialog.openInformation(viewer.getTree().getShell(), "Treeviewer",
-              "You doubleclicked on " + event.getSelection().toString(), null);
+              "You doubleclicked on " + event.getSelection().toString());
   }
 
   public TreeViewer getViewer() {

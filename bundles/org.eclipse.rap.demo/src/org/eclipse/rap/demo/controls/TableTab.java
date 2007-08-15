@@ -12,7 +12,8 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
@@ -239,7 +240,7 @@ public class TableTab extends ExampleTab {
         }
         if( count < 0 ) {
           String msg = "Invalid number of TableItems: " + text.getText();
-          MessageDialog.openInformation( getShell(), "Information", msg, null );
+          MessageDialog.openInformation( getShell(), "Information", msg );
         } else {
           for( int i = 0; i < count; i++ ) {
             addItem();

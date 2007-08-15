@@ -15,12 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.*;
 
+import javax.servlet.ServletException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.browser.Ie;
-import org.eclipse.rwt.internal.service.BrowserSurvey.IIndexTemplate;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleSerivceHandlerSync;
 import org.eclipse.swt.RWTFixture;
 
 
@@ -57,11 +60,20 @@ public class Logger_Test extends TestCase {
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.createContext( false );
-    BrowserSurvey.indexTemplate = new IIndexTemplate() {
-      public InputStream getTemplateStream() throws IOException {
+    LifeCycleServiceHandler.configurer 
+      = new ILifeCycleServiceHandlerConfigurer()
+    {
+      public LifeCycleSerivceHandlerSync getSynchronizationHandler() {
+        return new LifeCycleSerivceHandlerSync() {
+          public void service() throws ServletException, IOException {
+            doService();
+          }
+        };
+      }
+      public InputStream getTemplateOfStartupPage() throws IOException {
         return new ByteArrayInputStream( RESPONSE.getBytes() );
       }
-      public boolean modifiedSince() {
+      public boolean isStartupPageModifiedSince() {
         return true;
       }
       public void registerResources() throws IOException {
@@ -73,7 +85,7 @@ public class Logger_Test extends TestCase {
     RWTFixture.tearDown();
     Fixture.removeContext();
     removeAllTestHandlers();
-    BrowserSurvey.indexTemplate = null;
+    LifeCycleServiceHandler.configurer = null; 
   }
   
   public void testRequestHeaderLogging() throws Exception {

@@ -90,8 +90,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
       public void run() {
         MessageDialog.openInformation( window.getShell(),
                                        "RAP Demo",
-                                       "About action clicked",
-                                       null );
+                                       "About action clicked" );
       }
     };
     aboutAction.setText( "About" );
@@ -127,7 +126,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
       public void run() {
         SurveyWizard wizard = new SurveyWizard();
         WizardDialog dlg = new WizardDialog( window.getShell(), wizard );
-        dlg.open( null );
+        dlg.open();
       }
     };
     wizardAction.setText( "Open wizard" );

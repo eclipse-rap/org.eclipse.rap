@@ -52,6 +52,16 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   
   private final static DefaultLifeCycleServiceHandlerSync syncHandler
     = new DefaultLifeCycleServiceHandlerSync();
+   
+  public static ILifeCycleRunner lifeCycleRunner = new ILifeCycleRunner() {
+    public void init() {
+      // do nothing
+    }
+    public void run() throws ServletException, IOException {
+      LifeCycle lifeCycle = ( LifeCycle )LifeCycleFactory.getLifeCycle();
+      lifeCycle.execute();
+    }
+  };
   
   public static ILifeCycleServiceHandlerConfigurer configurer 
     = new ILifeCycleServiceHandlerConfigurer()
@@ -74,18 +84,8 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     public boolean isStartupPageModifiedSince() {
       return true;
     }
-    public LifeCycleServiceHandlerSync getSynchronizationHandler() {
+    public LifeCycleSerivceHandlerSync getSynchronizationHandler() {
       return syncHandler;
-    }
-  };
-  
-  public static ILifeCycleRunner lifeCycleRunner = new ILifeCycleRunner() {
-    public void init() {
-      // do nothing
-    }
-    public void run() throws ServletException, IOException {
-      LifeCycle lifeCycle = ( LifeCycle )LifeCycleFactory.getLifeCycle();
-      lifeCycle.execute();
     }
   };
 
@@ -93,9 +93,9 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     InputStream getTemplateOfStartupPage() throws IOException;
     boolean isStartupPageModifiedSince();
     void registerResources() throws IOException;
-    LifeCycleServiceHandlerSync getSynchronizationHandler();
+    LifeCycleSerivceHandlerSync getSynchronizationHandler();
   }
-  
+    
   public interface ILifeCycleRunner {
     void init();
     void run() throws ServletException, IOException;
@@ -107,7 +107,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
    * only one request at a time can be executed.   
    */
   private final static class DefaultLifeCycleServiceHandlerSync
-    extends LifeCycleServiceHandlerSync
+    extends LifeCycleSerivceHandlerSync
   {
     public void service() throws ServletException, IOException {
       synchronized( ContextProvider.getSession() ) {
@@ -115,13 +115,14 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       }
     }
   }
-
+  
   /**
    * This class handles request synchronization of the 
    * <code>LifeCycleServiceHandler</code>. It was introduced to allow
    * different stratiegies for W4Toolkit and RWT.
+   *  
    */
-  public static abstract class LifeCycleServiceHandlerSync {
+  public static abstract class LifeCycleSerivceHandlerSync {
 
     /**
      * This method installs the fitting synchronization strategie for each 
@@ -152,12 +153,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     checkRequest( session );
     detectBrowser();
     if( isBrowserDetected() ) {
-//      W4TModelUtil.initModel();
-//      wrapStartupRequest( session );
-//      getServiceAdapter( W4TModel.getInstance() ).execute();
-      
-      // TODO [w4t] replacement for the above code 
-      //      see also ServiceManager#setDefaultHandler()
       lifeCycleRunner.init();
       wrapStartupRequest( session );
       lifeCycleRunner.run();

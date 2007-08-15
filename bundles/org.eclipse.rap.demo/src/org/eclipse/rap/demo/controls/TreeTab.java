@@ -12,7 +12,6 @@ package org.eclipse.rap.demo.controls;
 import java.text.MessageFormat;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.window.IWindowCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
@@ -99,11 +98,6 @@ public class TreeTab extends ExampleTab {
     MenuItem treeMenuItem = new MenuItem( treeMenu, SWT.PUSH );
     treeMenuItem.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        IWindowCallback windowCallback = new IWindowCallback() {
-          public void windowClosed( final int returnCode ) {
-            // do nothing
-          }
-        };
         TreeItem item = tree.getSelection()[ 0 ];
         String itemText = "null";
         if( item != null ) {
@@ -112,8 +106,7 @@ public class TreeTab extends ExampleTab {
         String message = "You requested a context menu for: " + itemText;
         MessageDialog.openInformation( tree.getShell(),
                                        "Information",
-                                       message,
-                                       windowCallback );
+                                       message );
       }
     } );
     treeMenuItem.setText( "TreeContextMenuItem" );
@@ -148,7 +141,7 @@ public class TreeTab extends ExampleTab {
       public void widgetDefaultSelected( final SelectionEvent event ) {
         String title = "Double Click";
         String message = "Double click on " + event.item.getText() + " received";
-        MessageDialog.openInformation( getShell(), title, message, null );
+        MessageDialog.openInformation( getShell(), title, message );
       }
     } );
     tree.setSelection( tree.getItem( 0 ) );

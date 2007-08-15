@@ -179,8 +179,8 @@ public final class RWTFixture {
   public static void setUpWithoutResourceManager() {
     // standard setup
     Fixture.setUp();
-    BrowserSurvey.indexTemplate = null;
-    
+    LifeCycleServiceHandler.configurer = null; 
+
     // registration of adapter factories
     registerAdapterFactories();
   }

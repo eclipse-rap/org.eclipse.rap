@@ -13,13 +13,16 @@ package org.eclipse.rwt.internal.service;
 import java.io.*;
 import java.util.*;
 
+import javax.servlet.ServletException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rwt.internal.service.BrowserSurvey.IIndexTemplate;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleSerivceHandlerSync;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.widgets.Display;
@@ -94,16 +97,26 @@ public class StartupRequest_Test extends TestCase {
   
   public void testStartupRequestWithParameter() throws Exception {
     System.setProperty( "lifecycle", RWTLifeCycle.class.getName() );
-    BrowserSurvey.indexTemplate = new IIndexTemplate() {
-      public InputStream getTemplateStream() throws IOException {
+    LifeCycleServiceHandler.configurer
+     = new ILifeCycleServiceHandlerConfigurer()
+    {
+      public LifeCycleSerivceHandlerSync getSynchronizationHandler() {
+        return new LifeCycleSerivceHandlerSync() {
+          public void service() throws ServletException, IOException {
+            doService();
+          }
+        };
+      }
+      public InputStream getTemplateOfStartupPage() throws IOException {
         return new ByteArrayInputStream( "Startup Page".getBytes() );
       }
-      public boolean modifiedSince() {
+      public boolean isStartupPageModifiedSince() {
         return true;
       }
       public void registerResources() throws IOException {
       }
     };
+
     String p1 = "p1";
     String v1 = "v1";
     Fixture.fakeRequestParam( p1, v1 );
@@ -121,7 +134,7 @@ public class StartupRequest_Test extends TestCase {
     ServiceManager.getHandler().service();
 
     assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );
-    BrowserSurvey.indexTemplate = null;
+    LifeCycleServiceHandler.configurer = null;
     System.getProperties().remove( "lifecycle" );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }

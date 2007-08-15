@@ -12,8 +12,6 @@
 package org.eclipse.rwt.internal;
 
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.AdapterManagerImpl;
 
 
 public final class TestAdaptable implements Adaptable {

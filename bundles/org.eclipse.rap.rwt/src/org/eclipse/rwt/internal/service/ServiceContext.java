@@ -119,6 +119,10 @@ public final class ServiceContext {
     this.stateInfo = stateInfo;
   }
   
+  public boolean isDisposed() {
+    return disposed;
+  }
+
   public ISessionStore getSessionStore() {
     if(    sessionStore != null 
         && !( ( SessionStoreImpl )sessionStore ).isBound() )

@@ -18,9 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
-import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.util.*;
-import org.eclipse.rwt.resources.IResourceManager;
 
 
 /** 
@@ -29,38 +27,12 @@ import org.eclipse.rwt.resources.IResourceManager;
  */
 public final class BrowserSurvey {
 
-  public interface IIndexTemplate {
-    InputStream getTemplateStream() throws IOException;
-    void registerResources() throws IOException;
-    boolean modifiedSince();
-  }
-  
-  public static IIndexTemplate indexTemplate = new IIndexTemplate() {
-    public InputStream getTemplateStream() throws IOException {
-      String resourceName = getResourceName();
-      IResourceManager manager = ResourceManagerImpl.getInstance();
-      InputStream result = manager.getResourceAsStream( resourceName );
-      if ( result == null ) {
-        String text =   "Failed to load Browser Survey HTML Page. "
-                      + "Resource {0} could not be found.";
-        String msg = MessageFormat.format( text, new Object[]{ resourceName } );
-        throw new IOException( msg );
-      }
-      return result;
-    }
-    public void registerResources() throws IOException {
-    }
-    public boolean modifiedSince() {
-      return true;
-    }
-  };
-  
   /** 
    * <p>Writes a special html page into the passed HtmlResponseWriter, in order to
    *  determine which browser has originated the request.</p> 
    */
-  public static void sendBrowserSurvey() throws ServletException {
-    if( indexTemplate.modifiedSince() ) {
+  static void sendBrowserSurvey() throws ServletException {
+    if( LifeCycleServiceHandler.configurer.isStartupPageModifiedSince() ) {
       HttpServletRequest request = ContextProvider.getRequest();
       // first check whether a survey has already been sent
       String survey = request.getParameter( RequestParams.SURVEY );
@@ -87,7 +59,7 @@ public final class BrowserSurvey {
     ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
     StringBuffer buffer = new StringBuffer();
     load( buffer );
-    indexTemplate.registerResources();
+    LifeCycleServiceHandler.configurer.registerResources();
     String servletName = ContextProvider.getRequest().getServletPath();
     if( servletName.startsWith( "/" ) ) {
       servletName = servletName.substring( 1 );
@@ -133,7 +105,8 @@ public final class BrowserSurvey {
   
   // TODO [rh] replace this by ResourceUtil#read - encoding is misssing here
   static void load( final StringBuffer buffer ) throws IOException {
-    InputStream inputStream = indexTemplate.getTemplateStream();
+    InputStream inputStream 
+      = LifeCycleServiceHandler.configurer.getTemplateOfStartupPage();
     try {
       byte[] bytes = new byte[512];
       int bytesRead = inputStream.read( bytes );

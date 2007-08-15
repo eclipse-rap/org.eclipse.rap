@@ -18,12 +18,12 @@ import org.eclipse.rwt.AdapterManager_Test;
 import org.eclipse.rwt.SessionSingleton_Test;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.BrowserLoader_Test;
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.engine.PhaseListenerRegistry_Test;
+import org.eclipse.rwt.internal.engine.RWTServletContextListener_Test;
 import org.eclipse.rwt.internal.events.EventAdapter_Test;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.service.Logger_Test;
-import org.eclipse.rwt.internal.service.StartupRequest_Test;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.HTMLUtil_Test;
 import org.eclipse.rwt.lifecycle.*;
@@ -88,6 +88,7 @@ public class RWTTestSuite {
     suite.addTestSuite( StartupRequest_Test.class );
     suite.addTestSuite( ConfigurationReader_Test.class );
     suite.addTestSuite( HTMLUtil_Test.class );
+    suite.addTestSuite( ContextProvider_Test.class );
     // RWT Tests
     suite.addTestSuite( EntryPointManager_Test.class );
     suite.addTestSuite( RWTServletContextListener_Test.class );

@@ -15,7 +15,6 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.EngineConfig;
 
 
 /** unit tests for EngineConfig. */

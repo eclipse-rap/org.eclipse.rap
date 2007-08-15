@@ -63,11 +63,11 @@ public class RequestTab extends ExampleTab {
           }
           Shell shell = parent.getShell();
           String msg = interrupted ? "Interrupted" : "Done";
-          MessageDialog.openInformation( shell, "Information", msg, null );
+          MessageDialog.openInformation( shell, "Information", msg );
         } else {
           Shell shell = parent.getShell();
           String msg = "\'" + timeText + "\' is not a valid processing time.";
-          MessageDialog.openError( shell, "Error", msg, null );
+          MessageDialog.openError( shell, "Error", msg );
         }
       }
     } );

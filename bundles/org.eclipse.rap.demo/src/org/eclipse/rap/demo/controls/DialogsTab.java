@@ -11,7 +11,6 @@ package org.eclipse.rap.demo.controls;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.window.IWindowCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -26,7 +25,6 @@ class DialogsTab extends ExampleTab {
   private Label loginDlgResLabel;
   private Label messageDlgResLabel;
   private Label errorDlgResLabel;
-  private Composite parent;
 
   public DialogsTab( final CTabFolder topFolder ) {
     super( topFolder, "Dialogs" );
@@ -36,7 +34,6 @@ class DialogsTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    this.parent = parent;
     parent.setLayout( new GridLayout() );
     Group group1 = new Group( parent, SWT.NONE );
     group1.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
@@ -56,7 +53,9 @@ class DialogsTab extends ExampleTab {
     
     inputDlgResLabel = new Label( group1, SWT.WRAP );
     inputDlgResLabel.setText( "Result:" );
-    insertSpaceLabels( group1, 2 );
+    GridData gdInputDlgResLabel = new GridData();
+    gdInputDlgResLabel.horizontalSpan = 3;
+    inputDlgResLabel.setLayoutData( gdInputDlgResLabel );
     
     Button showMessageInfoDlgButton = new Button( group1, SWT.PUSH );
     showMessageInfoDlgButton.setLayoutData( createGridDataFillBoth() );
@@ -92,6 +91,7 @@ class DialogsTab extends ExampleTab {
         showMessageDialogQuestion();
       }
     } );
+    
     Button showMessageConfirmDlgButton = new Button( group1, SWT.PUSH );
     showMessageConfirmDlgButton.setLayoutData( createGridDataFillBoth() );
     showMessageConfirmDlgButton.setText( "Confirm Message" );
@@ -165,39 +165,29 @@ class DialogsTab extends ExampleTab {
     String def = "default text";
     final InputDialog dlg;
     dlg = new InputDialog( getShell(), title, mesg, def, val );
-    dlg.open( new IWindowCallback() {
-      public void windowClosed( final int returnCode ) {
-        if( returnCode == InputDialog.OK ) {
-          inputDlgResLabel.setText( "Input Result: " + dlg.getValue() );
-        } else {
-          inputDlgResLabel.setText( "No Result" );
-        }
-        parent.layout();
-      }
-    } );
+    int returnCode = dlg.open();
+    if( returnCode == InputDialog.OK ) {
+      inputDlgResLabel.setText( "Input Result: " + dlg.getValue() );
+    } else {
+      inputDlgResLabel.setText( "No Result" );
+    }
+    inputDlgResLabel.pack();
   }
 
   private void showMessageDialogInfo() {
     String title = "Information";
     String mesg = "Beer and pizza go well together.";
-    IWindowCallback callback = new IWindowCallback() {
-      public void windowClosed( final int returnCode ) {
-        messageDlgResLabel.setText( "Info closed (" + returnCode + ")" );
-        parent.layout();
-      }
-    };
-    MessageDialog.openInformation( getShell(), title, mesg, callback );
+    MessageDialog.openInformation( getShell(), title, mesg );
+    messageDlgResLabel.setText( "Info closed." );
+    messageDlgResLabel.pack();
   }
 
   private void showMessageDialogError() {
     String title = "Error";
     String mesg = "An everyday error occured.\n " + "Nothing to get worried.";
-    MessageDialog.openError( getShell(), title, mesg, new IWindowCallback() {
-      public void windowClosed( final int returnCode ) {
-        messageDlgResLabel.setText( "Error closed (" + returnCode + ")" );
-        parent.layout();
-      }
-    } );
+    MessageDialog.openError( getShell(), title, mesg );
+    messageDlgResLabel.setText( "Error closed." );
+    messageDlgResLabel.pack();
   }
 
   private void showMessageDialogQuestion() {
@@ -206,34 +196,27 @@ class DialogsTab extends ExampleTab {
                   + "Your answer will not be recorded or evaluated "
                   + "nor does this question have any purpose apart from "
                   + "filling the empty space in this dialog window.";
-    MessageDialog.openQuestion( getShell(), title, mesg, new IWindowCallback() {
-      public void windowClosed( final int returnCode ) {
-        messageDlgResLabel.setText( "Question closed (" + returnCode + ")" );
-        parent.layout();
-      }
-    } );
+    boolean result
+      = MessageDialog.openQuestion( getShell(), title, mesg );
+    messageDlgResLabel.setText( "Question closed (" + result + ")" );
+    messageDlgResLabel.pack();
   }
 
   private void showMessageDialogConfirm() {
     String title = "Confirmation";
     String mesg = "Nothing will be done. Ok?";
-    MessageDialog.openConfirm( getShell(), title, mesg, new IWindowCallback() {
-      public void windowClosed( final int returnCode ) {
-        messageDlgResLabel.setText( "Confirm closed (" + returnCode + ")" );
-        parent.layout();
-      }
-    } );
+    boolean result
+      = MessageDialog.openConfirm( getShell(), title, mesg );
+    messageDlgResLabel.setText( "Confirm closed (" + result + ")" );
+    messageDlgResLabel.pack();
   }
 
   private void showMessageDialogWarning() {
     String title = "Warning";
     String mesg = "You have been warned.";
-    MessageDialog.openWarning( getShell(), title, mesg, new IWindowCallback() {
-      public void windowClosed( final int returnCode ) {
-        messageDlgResLabel.setText( "Warning closed (" + returnCode + ")" );
-        parent.layout();
-      }
-    } );
+    MessageDialog.openWarning( getShell(), title, mesg );
+    messageDlgResLabel.setText( "Warning closed." );
+    messageDlgResLabel.pack();
   }
 
   private void showErrorDialog() {
@@ -248,13 +231,9 @@ class DialogsTab extends ExampleTab {
                                  code,
                                  reason,
                                  exception );
-    IWindowCallback callback = new IWindowCallback() {
-      public void windowClosed( int returnCode ) {
-        errorDlgResLabel.setText( "Error Dialog closed (" + returnCode + ")" );
-        parent.layout();
-      }
-    };
-    ErrorDialog.openError( getShell(), title, mesg, status, callback );
+    int returnCode = ErrorDialog.openError( getShell(), title, mesg, status );
+    errorDlgResLabel.setText( "Error Dialog closed (" + returnCode + ")" );
+    errorDlgResLabel.pack();
   }
 
   private void showLoginDialog() {
@@ -263,20 +242,17 @@ class DialogsTab extends ExampleTab {
                                                      "Login",
                                                      message,
                                                      "john" );
-    loginDialog.open( new IWindowCallback() {
-      public void windowClosed( final int returnCode ) {
-        String username = loginDialog.getUsername();
-        String password = loginDialog.getPassword();
-        String pwd = password == null ? "n/a" : password.length() + " chars.";
-        loginDlgResLabel.setText(   "Login Dialog User: "
-                                  + username
-                                  + ", Password: "
-                                  + pwd
-                                  + " ("
-                                  + returnCode
-                                  + ")" );
-        parent.layout();
-      }
-    } );
+    int returnCode = loginDialog.open();
+    String username = loginDialog.getUsername();
+    String password = loginDialog.getPassword();
+    String pwd = password == null ? "n/a" : password.length() + " chars.";
+    loginDlgResLabel.setText(   "Login Dialog User: "
+                               + username
+                               + ", Password: "
+                               + pwd
+                               + " ("
+                               + returnCode
+                               + ")" );
+    loginDlgResLabel.pack();
   }
 }

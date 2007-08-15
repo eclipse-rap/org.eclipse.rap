@@ -92,7 +92,7 @@ public class ListTab extends ExampleTab {
       public void widgetDefaultSelected( SelectionEvent event ) {
         String item = list.getItem( list.getSelectionIndex() );
         String message = "Selected Item: " + item;
-        MessageDialog.openInformation( getShell(), "Selection", message, null );
+        MessageDialog.openInformation( getShell(), "Selection", message );
       }
     } );
     registerControl( list );

@@ -10,7 +10,6 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.window.IWindowCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
@@ -96,15 +95,9 @@ public class ButtonTab extends ExampleTab {
     defaultButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         String message = "The text You entered: " + text.getText();
-        IWindowCallback windowCallback = new IWindowCallback() {
-          public void windowClosed( final int returnCode ) {
-            // do nothing
-          }
-        };
         MessageDialog.openInformation( group.getShell(), 
                                        "Information", 
-                                       message, 
-                                       windowCallback );
+                                       message );
       }
     } );
     

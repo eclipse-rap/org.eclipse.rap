@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.service;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +22,8 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.Fixture.TestResponse;
 import org.eclipse.rwt.Fixture.TestServletOutputStream;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.service.BrowserSurvey.IIndexTemplate;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleSerivceHandlerSync;
 import org.eclipse.swt.RWTFixture;
 
 
@@ -72,20 +72,30 @@ public class ServiceHandler_Test extends TestCase {
     ServiceManager.getHandler().service();
     assertEquals( SERVICE_DONE, log );
     // Unregister
-    BrowserSurvey.indexTemplate = new IIndexTemplate() {
-      public InputStream getTemplateStream() throws IOException {
-        return null;
+    LifeCycleServiceHandler.configurer 
+      = new ILifeCycleServiceHandlerConfigurer()
+    {
+      public LifeCycleSerivceHandlerSync getSynchronizationHandler() {
+        return new LifeCycleSerivceHandlerSync() {
+          public void service() throws ServletException, IOException {
+            doService();
+          }
+        };
       }
-      public boolean modifiedSince() {
-        return false;
+      public InputStream getTemplateOfStartupPage() throws IOException {
+        return new ByteArrayInputStream( "Startup Page".getBytes() );
+      }
+      public boolean isStartupPageModifiedSince() {
+        return true;
       }
       public void registerResources() throws IOException {
       }
     };
+
     log = "";
     RWT.getServiceManager().unregisterServiceHandler( PROGRAMATIC_HANDLER_ID );
     ServiceManager.getHandler().service();
     assertEquals( "", log );
-    BrowserSurvey.indexTemplate = null;
+    LifeCycleServiceHandler.configurer = null; 
   }
 }

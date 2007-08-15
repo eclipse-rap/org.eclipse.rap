@@ -30,8 +30,7 @@ public class BarEditor extends EditorPart {
   public void doSave( IProgressMonitor monitor ) {
     MessageDialog.openInformation( getSite().getShell(),
                                    "Foo Editor",
-                                   "Saved :",
-                                   null );
+                                   "Saved :");
   }
 
   public void doSaveAs() {

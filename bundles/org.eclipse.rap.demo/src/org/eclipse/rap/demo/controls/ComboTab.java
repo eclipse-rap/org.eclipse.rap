@@ -72,7 +72,7 @@ public class ComboTab extends ExampleTab {
         }
         String msg = "Your Selection: " + selection;
         Shell shell = filledCombo.getShell();
-        MessageDialog.openInformation( shell, "Information", msg, null );
+        MessageDialog.openInformation( shell, "Information", msg );
       }
     } );
     Label lblPreselectionCombo = new Label( parent, SWT.NONE );
@@ -86,7 +86,7 @@ public class ComboTab extends ExampleTab {
         int index = preselectedCombo.getSelectionIndex();
         String message = "Selected Item: " + preselectedCombo.getItem( index );
         Shell shell = parent.getShell();
-        MessageDialog.openInformation( shell, "Info", message, null );
+        MessageDialog.openInformation( shell, "Info", message );
       }
     } );
     Label lblViewerCombo = new Label( parent, SWT.NONE );
@@ -110,7 +110,7 @@ public class ComboTab extends ExampleTab {
       public void selectionChanged( final SelectionChangedEvent event ) {
         String message = "Selected item: " + event.getSelection().toString();
         Shell shell = parent.getShell();
-        MessageDialog.openInformation( shell, "Info", message, null );
+        MessageDialog.openInformation( shell, "Info", message );
       }
     } );
     Menu menu = new Menu( viewerCombo );

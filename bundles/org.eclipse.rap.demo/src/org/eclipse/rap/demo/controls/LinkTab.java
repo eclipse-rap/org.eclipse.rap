@@ -49,7 +49,7 @@ public class LinkTab extends ExampleTab {
     customLink.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         String msg = "Link widget selected, text=" + event.text;
-        MessageDialog.openInformation( getShell(), "Information", msg, null );
+        MessageDialog.openInformation( getShell(), "Information", msg );
       }
     } );
     registerControl( link1 );

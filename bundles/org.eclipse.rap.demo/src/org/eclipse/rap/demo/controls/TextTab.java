@@ -30,7 +30,7 @@ public class TextTab extends ExampleTab {
     selectionListener = new SelectionAdapter() {
       public void widgetDefaultSelected( final SelectionEvent event ) {
         String msg = "You pressed the Enter key.";
-        MessageDialog.openInformation( getShell(), "Information", msg, null );
+        MessageDialog.openInformation( getShell(), "Information", msg );
       }
     };
   }
@@ -225,7 +225,7 @@ public class TextTab extends ExampleTab {
             + txtSelectionFrom.getText()
             + " - "
             + txtSelectionTo.getText();
-          MessageDialog.openError( getShell(), "Error", msg, null );
+          MessageDialog.openError( getShell(), "Error", msg );
         }
       }
     } );
@@ -251,7 +251,7 @@ public class TextTab extends ExampleTab {
             + modifyTextSelection.x
             + " to "
             + modifyTextSelection.y;
-          MessageDialog.openInformation( getShell(), "Information", msg, null );
+          MessageDialog.openInformation( getShell(), "Information", msg );
         }
       }
     } );
@@ -299,7 +299,7 @@ public class TextTab extends ExampleTab {
     String msg 
       = "Sorry, changing the selection is not yet implemented for " 
       + "Text with style MULTI.";
-    MessageDialog.openInformation( getShell(), "Information", msg, null );
+    MessageDialog.openInformation( getShell(), "Information", msg );
   }
 
   private static Point getPreferredSize( final Text text ) {
