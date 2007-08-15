@@ -335,6 +335,20 @@ public class SWT {
   public static final int SHADOW_NONE = 1 << 5;
   
   /**
+   * Style constant for full row selection behavior and 
+   * selection constant indicating that a full line should be 
+   * drawn. (value is 1&lt;&lt;16).
+   * <br>Note that for some widgets this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Table</code></li>
+   * <li><code>Tree</code></li>
+   * <li><code>StyledText</code></li>
+   * <li><code>TextLayout</code></li> 
+   * </ul></p>
+   */
+  public static final int FULL_SELECTION = 1 << 16;
+
+  /**
    * Style constant for progress bar behavior (value is 1&lt;&lt;1).
    * <p><b>Used By:</b><ul>
    * <li><code>ProgressBar</code></li>
@@ -349,7 +363,6 @@ public class SWT {
    * <!-- <li><code>Tree</code></li> -->
    * </ul></p>
    */
-  // TODO [rh] uncomment when Tree has support for VIRTUAL
   public static final int VIRTUAL = 1 << 28;
 
   // Dialog Icons

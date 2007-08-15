@@ -176,6 +176,28 @@ public class Combo extends Composite {
     model.deselectAll();
   }
 
+//  /**
+//   * Sets the selection in the receiver's text field to an empty
+//   * selection starting just before the first character. If the
+//   * text field is editable, this has the effect of placing the
+//   * i-beam at the start of the text.
+//   * <p>
+//   * Note: To clear the selected items in the receiver's list, 
+//   * use <code>deselectAll()</code>.
+//   * </p>
+//   *
+//   * @exception SWTException <ul>
+//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+//   * </ul>
+//   *
+//   * @see #deselectAll
+//   */
+  public void clearSelection() {
+    checkWidget();
+    // TODO [rh] IMPLEMENTATION MISSING
+  }
+
   ///////////////////////////////////////
   // Methods to manipulate and get items
 
@@ -401,6 +423,51 @@ public class Combo extends Composite {
     return model.getItemCount();
   }
 
+//  /**
+//   * Sets the number of items that are visible in the drop
+//   * down portion of the receiver's list.
+//   * <p>
+//   * Note: This operation is a hint and is not supported on
+//   * platforms that do not have this concept.
+//   * </p>
+//   *
+//   * @param count the new number of items to be visible
+//   *
+//   * @exception SWTException <ul>
+//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+//   * </ul>
+//   * 
+//   * @since 3.0
+//   */
+  public void setVisibleItemCount (int count) {
+    checkWidget ();
+    // TODO [rh] IMPLEMENTATION MISSING
+  }
+
+//  /**
+//   * Gets the number of items that are visible in the drop
+//   * down portion of the receiver's list.
+//   * <p>
+//   * Note: This operation is a hint and is not supported on
+//   * platforms that do not have this concept.
+//   * </p>
+//   *
+//   * @return the number of items that are visible
+//   *
+//   * @exception SWTException <ul>
+//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+//   * </ul>
+//   * 
+//   * @since 3.0
+//   */
+  public int getVisibleItemCount () {
+    checkWidget ();
+    // TODO [rh] IMPLEMENTATION MISSING
+    return 0;
+  }
+
   /**
    * Returns a string containing a copy of the contents of the
    * receiver's text field, or an empty string if there are no
@@ -424,8 +491,31 @@ public class Combo extends Composite {
     return result;
   }
   
-  // TODO [fappel]: create missing setText(String) method
-  
+//  /**
+//   * Sets the contents of the receiver's text field to the
+//   * given string.
+//   * <p>
+//   * Note: The text field in a <code>Combo</code> is typically
+//   * only capable of displaying a single line of text. Thus,
+//   * setting the text to a string containing line breaks or
+//   * other special characters will probably cause it to 
+//   * display incorrectly.
+//   * </p>
+//   *
+//   * @param string the new text
+//   *
+//   * @exception IllegalArgumentException <ul>
+//   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+//   * </ul>
+//   * @exception SWTException <ul>
+//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+//   * </ul>
+//   */
+  public void setText( String string ) {
+    checkWidget();
+    // TODO [rh] IMPLEMENTATION MISSING
+  }
 
   ////////////////////
   // Widget dimensions
