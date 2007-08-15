@@ -328,20 +328,184 @@ public class TreeItem extends Item {
   }
 
   /**
-   * Sets the font that the receiver will use to paint textual information
-   * for this item to the font specified by the argument, or to the default font
-   * for that kind of control if the argument is null.
+   * Returns a rectangle describing the receiver's size and location
+   * relative to its parent.
    *
-   * @param font the new font (or null)
+   * @return the receiver's bounding rectangle
    *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
+   */
+  public Rectangle getBounds() {
+    checkWidget();
+    // TODO [bm] implementation missing
+    return null;
+  }
+  
+  /**
+   * Returns a rectangle describing the receiver's size and location
+   * relative to its parent at a column in the tree.
+   *
+   * @param index the index that specifies the column
+   * @return the receiver's bounding column rectangle
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public Rectangle getBounds (int columnIndex) {
+    // TODO: [bm] implementation missing
+    return null;
+  }
+  
+  /**
+   * Returns the background color at the given column index in the receiver.
+   *
+   * @param index the column index
+   * @return the background color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public Color getBackground (int columnIndex) {
+    // TODO: [bm] implementation missing
+    return null;
+  }
+  
+  /**
+   * Returns the font that the receiver will use to paint textual information
+   * for the specified cell in this item.
+   *
+   * @param index the column index
+   * @return the receiver's font
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
+   * @since 3.1
+   */
+  public Font getFont (int columnIndex) {
+    // TODO: [bm] implementation missing
+    return null;
+  }
+  
+  /**
+   * 
+   * Returns the foreground color at the given column index in the receiver.
+   *
+   * @param index the column index
+   * @return the foreground color
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public Color getForeground (int columnIndex) {
+    // TODO: [bm] implementation missing
+    return null;
+  }
+  
+  /**
+   * Sets the background color at the given column index in the receiver 
+   * to the color specified by the argument, or to the default system color for the item
+   * if the argument is null.
+   *
+   * @param index the column index
+   * @param color the new color (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   * 
+   */
+  public void setBackground (int columnIndex, Color value) {
+    // TODO: [bm] implementation missing
+  }
+
+  /**
+   * Sets the font that the receiver will use to paint textual information
+   * for the specified cell in this item to the font specified by the 
+   * argument, or to the default font for that kind of control if the 
+   * argument is null.
+   *
+   * @param index the column index
+   * @param font the new font (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   */
+  public void setFont (int columnIndex, Font value) {
+    // TODO [bm] implementation missing
+  }
+  
+  /**
+   * Sets the foreground color at the given column index in the receiver 
+   * to the color specified by the argument, or to the default system color for the item
+   * if the argument is null.
+   *
+   * @param index the column index
+   * @param color the new color (or null)
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * 
+   * @since 3.1
+   * 
+   */
+  public void setForeground (int columnIndex, Color value) {
+    // TODO [bm] implementation missing
+  }
+
+  /**
+   * Sets the font that the receiver will use to paint textual information for
+   * this item to the font specified by the argument, or to the default font for
+   * that kind of control if the argument is null.
+   * 
+   * @param font the new font (or null)
+   * @exception IllegalArgumentException
+   *                <ul>
+   *                <li>ERROR_INVALID_ARGUMENT - if the argument has been
+   *                disposed</li>
+   *                </ul>
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *                disposed</li>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the receiver</li>
+   *                </ul>
    * @since 1.0
    */
   public void setFont( final Font font ) {
