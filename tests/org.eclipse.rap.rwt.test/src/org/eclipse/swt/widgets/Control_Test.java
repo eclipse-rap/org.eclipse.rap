@@ -420,4 +420,36 @@ public class Control_Test extends TestCase {
     control1.forceFocus();
     assertEquals( "", log.toString() );
   }
+  
+  public void testToControl() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Control control = new Button( shell, SWT.PUSH );
+    Point controlCoords = control.toControl( 0, 0 );
+    assertEquals( new Point( 0, 0 ), control.toDisplay( controlCoords.x,
+                                                        controlCoords.y ) );
+    controlCoords = control.toControl( new Point( 0, 0 ) );
+    assertEquals( new Point( 0, 0 ), control.toDisplay( controlCoords ) );
+    try {
+      control.toControl( null );
+      fail( "No exception thrown for null-argument" );
+    } catch( IllegalArgumentException e ) {
+    }
+  }
+
+  public void testToDisplay() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Control control = new Button( shell, SWT.PUSH );
+    Point displayCoords = control.toDisplay( 0, 0 );
+    assertEquals( new Point( 0, 0 ), control.toControl( displayCoords.x,
+                                                        displayCoords.y ) );
+    displayCoords = control.toDisplay( new Point( 0, 0 ) );
+    assertEquals( new Point( 0, 0 ), control.toControl( displayCoords ) );
+    try {
+      control.toDisplay( null );
+      fail( "No exception thrown for null-argument" );
+    } catch( IllegalArgumentException e ) {
+    }
+  }
 }

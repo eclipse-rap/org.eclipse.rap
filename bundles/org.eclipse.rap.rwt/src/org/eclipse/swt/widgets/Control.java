@@ -875,6 +875,49 @@ public abstract class Control extends Widget {
 
   /**
    * Returns a point which is the result of converting the
+   * argument, which is specified in display relative coordinates,
+   * to coordinates relative to the receiver.
+   * <p>
+   * @param x the x coordinate to be translated
+   * @param y the y coordinate to be translated
+   * @return the translated coordinates
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Point toControl( final int x, final int y ) {
+    checkWidget();
+    return getDisplay().map( null, this, x, y );
+  }
+
+  /**
+   * Returns a point which is the result of converting the
+   * argument, which is specified in display relative coordinates,
+   * to coordinates relative to the receiver.
+   * <p>
+   * @param point the point to be translated (must not be null)
+   * @return the translated coordinates
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public Point toControl( final Point point ) {
+    checkWidget();
+    if( point == null ) {
+      error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    return toControl( point.x, point.y );
+  }
+
+  /**
+   * Returns a point which is the result of converting the
    * argument, which is specified in coordinates relative to
    * the receiver, to display relative coordinates.
    * <p>
@@ -892,9 +935,7 @@ public abstract class Control extends Widget {
   public Point toDisplay( final int x, final int y ) {
     // TODO: [fappel] doesn't seem to work right, revise this
     checkWidget();
-    Rectangle current = new Rectangle( x, y, 0, 0 );
-    Rectangle result = getDisplay().map( this, null, current );
-    return new Point( result.x, result.y );
+    return getDisplay().map( this, null, x, y );
   }
 
   /**
