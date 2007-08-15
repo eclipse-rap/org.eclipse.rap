@@ -11,12 +11,12 @@
 
 package org.eclipse.swt.internal.events;
 
-import java.util.EventListener;
+import org.eclipse.swt.internal.SWTEventListener;
 
 /**
  * TODO: [rh] JavaDoc
  */
-public interface ActivateListener extends EventListener {
+public interface ActivateListener extends SWTEventListener {
 
   public void activated( ActivateEvent event );
   public void deactivated( ActivateEvent event );

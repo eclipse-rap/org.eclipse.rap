@@ -38,7 +38,7 @@ final class SimpleFontDialog extends Dialog {
   //            implemented as SessionSingleton
   public SimpleFontDialog( final Shell parent, final int style ) {
     super( parent, style );
-    title = "Font Dialog";
+    setText( "Font Dialog" );
     shell = new Shell( parent, style );
     createControls( shell );
 //    shell.addShellListener( new ShellAdapter() {
@@ -51,8 +51,8 @@ final class SimpleFontDialog extends Dialog {
 
   public void open( final Runnable callback ) {
     this.callback = callback;
-    if( title != null ) {
-      shell.setText( title );
+    if( getText() != null ) {
+      shell.setText( getText() );
     }
     shell.layout();
     shell.setSize( shell.computeSize( 350, SWT.DEFAULT ) );
