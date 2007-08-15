@@ -15,7 +15,8 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.widgets.IMenuAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -43,20 +44,26 @@ final class PopupMenuLCA extends MenuDelegateLCA {
   }
 
   void renderChanges( final Menu menu ) throws IOException {
+    writeShow( menu );
+    MenuLCAUtil.writeEnabled( menu );
+    MenuLCAUtil.writeMenuListener( menu );
+    MenuLCAUtil.writeUnhideMenu( menu );
+  }
+
+  private static void writeShow( final Menu menu ) throws IOException {
     if( menu.isVisible() ) {
       JSWriter writer = JSWriter.getWriterFor( menu );
-      Rectangle bounds = menu.getBounds();
+      IMenuAdapter adapter 
+        = ( IMenuAdapter )menu.getAdapter( IMenuAdapter.class );
+      Point location = adapter.getLocation();
       Object[] args = new Object[] {
         menu,
-        new Integer( bounds.x ),
-        new Integer( bounds.y )
+        new Integer( location.x ),
+        new Integer( location.y )
       };
       writer.callStatic( SHOW_MENU, args );
       menu.setVisible( false );  
     }
-    MenuLCAUtil.writeEnabled( menu );
-    MenuLCAUtil.writeMenuListener( menu );
-    MenuLCAUtil.writeUnhideMenu( menu );
   }
   
   public static void writeEnabled( final Control control )

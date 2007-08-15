@@ -115,6 +115,9 @@ public class Display extends Device implements Adaptable {
 
   private static final String DISPLAY_ID = "org.eclipse.swt.display";
 
+  /* Package Name */
+  static final String PACKAGE_PREFIX = "org.eclipse.swt.widgets.";
+
   private static final String ICON_PATH = "resource/widget/rap/dialog";
   private static final String ERROR_IMAGE_PATH = ICON_PATH + "/error.png";
   private static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";
@@ -950,6 +953,13 @@ public class Display extends Device implements Adaptable {
     SWT.error( code );
   }
   
+  static boolean isValidClass( final Class clazz ) {
+//    String name = clazz.getName();
+//    int index = name.lastIndexOf( '.' );
+//    return name.substring( 0, index + 1 ).equals( PACKAGE_PREFIX );
+    return true;
+  }
+
   private void readInitialBounds() {
     HttpServletRequest request = ContextProvider.getRequest();
     String widthVal = request.getParameter( RequestParams.AVAILABLE_WIDTH );

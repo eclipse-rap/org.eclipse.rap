@@ -13,13 +13,13 @@ package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.IControlAdapter;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -374,18 +374,21 @@ public class ControlLCAUtil {
   }
 
   //////////
-  // Z-INDEX
+  // Z-Index
 
   /**
    * Determines the z-index to render for a given control.
    */
   public static int getZIndex( final Control control ) {
-    Object adapter = control.getAdapter( IControlAdapter.class );
-    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
     int max = MAX_STATIC_ZORDER;
     if( control.getParent() != null ) {
-      max = Math.max( control.getParent().getChildrenCount(), max );
+      // TODO [rh] revise: determining the childrenCount by getting all the
+      //      children might be bad performance-wise. This was done in order to 
+      //      eliminate Composite#getChildrenCount() which no API in SWT 
+      max = Math.max( control.getParent().getChildren().length, max );
     }
+    Object adapter = control.getAdapter( IControlAdapter.class );
+    IControlAdapter controlAdapter = ( IControlAdapter )adapter;
     return max - controlAdapter.getZIndex();
   }
 

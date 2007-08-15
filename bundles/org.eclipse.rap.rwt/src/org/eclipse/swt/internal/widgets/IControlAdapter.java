@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.lifecycle;
+package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;

@@ -40,10 +40,10 @@ import org.eclipse.swt.internal.widgets.textkit.ITextThemeAdapter;
  */
 public class Text extends Scrollable {
 
-  public static final int MAX_TEXT_LIMIT = -1;
+  public static final int LIMIT = Integer.MAX_VALUE;
 
   private String text = "";
-  private int textLimit = MAX_TEXT_LIMIT;
+  private int textLimit = LIMIT;
   private final Point selection = new Point( 0, 0 );
 
   /**

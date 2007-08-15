@@ -16,7 +16,6 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 
 /**
@@ -38,8 +37,9 @@ import org.eclipse.swt.internal.widgets.*;
  */
 public class Menu extends Widget {
 
-  private final Shell parent;
+  private IMenuAdapter menuAdapter;
   private final ItemHolder itemHolder;
+  private final Shell parent;
   private int x;
   private int y;
   private boolean visible = false;
@@ -215,6 +215,15 @@ public class Menu extends Widget {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = itemHolder;
+    } else if( adapter == IMenuAdapter.class ) {
+      if( menuAdapter == null ) {
+        menuAdapter = new IMenuAdapter() {
+          public Point getLocation() {
+            return new Point( x, y );
+          }
+        };
+      }
+      result = menuAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -279,12 +288,6 @@ public class Menu extends Widget {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     setLocation( location.x, location.y );
-  }
-  
-  public Rectangle getBounds() {
-    checkWidget();
-    // TODO: [fappel] how to calculate width and height?
-    return new Rectangle( x, y, 0, 0 );
   }
   
   /**

@@ -34,7 +34,7 @@ final class TextLCAUtil {
   static final String PROP_READONLY = "readonly";
 
   private static final Integer DEFAULT_TEXT_LIMIT
-    = new Integer( Text.MAX_TEXT_LIMIT );
+    = new Integer( Text.LIMIT );
   private static final Point DEFAULT_SELECTION
     = new Point( 0, 0 );
 

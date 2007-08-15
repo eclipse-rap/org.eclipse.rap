@@ -117,6 +117,7 @@ final class ControlHolder {
   
   // ////////////////
   // helping methods
+  
   private static ControlHolder getControlHolder( final Composite composite ) {
     return ( ControlHolder )composite.getAdapter( IControlHolderAdapter.class );
   }

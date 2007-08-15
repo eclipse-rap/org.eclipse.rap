@@ -68,7 +68,7 @@ public class ControlHolder_Test extends TestCase {
     controls = ControlHolder.getControls( shell );
     assertEquals( 1, controls.length );
     assertEquals( control, controls[ 0 ] );
-    assertEquals( 1, shell.getChildrenCount() );
+    assertEquals( 1, shell.getChildren().length );
     control.dispose();
     controls = ControlHolder.getControls( shell );
     assertEquals( 0, controls.length );

@@ -38,7 +38,7 @@ public class Text_Test extends TestCase {
     Shell shell = new Shell( display );
     Text text = new Text( shell, SWT.NONE );
     assertEquals( "", text.getText() );
-    assertEquals( -1, text.getTextLimit() );
+    assertEquals( Text.LIMIT, text.getTextLimit() );
     assertEquals( 0, text.getSelectionCount() );
     assertEquals( new Point( 0, 0 ), text.getSelection() );
   }

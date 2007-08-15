@@ -11,7 +11,6 @@
 
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.lifecycle.IControlAdapter;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
@@ -19,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 /**

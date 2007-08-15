@@ -156,7 +156,7 @@ public class Shell_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Shell descendantShell = new Shell( shell );
-    assertEquals( 0, shell.getChildrenCount() );
+    assertEquals( 0, shell.getChildren().length );
     assertSame( shell, descendantShell.getParent() );
   }
   
