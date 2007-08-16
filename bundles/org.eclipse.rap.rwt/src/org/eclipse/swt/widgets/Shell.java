@@ -15,12 +15,13 @@ import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.internal.widgets.MenuHolder.IMenuHolderAdapter;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
 
 /**
@@ -118,16 +119,12 @@ import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
  *
  * @see SWT
  */
-public class Shell extends Composite {
+public class Shell extends Decorations {
 
   private static final int MODE_NONE = 0;
   private static final int MODE_MAXIMIZED = 1;
   private static final int MODE_MINIMIZED = 2;
   
-  private final Display display;
-  private Menu menuBar;
-  private MenuHolder menuHolder;
-  private DisposeListener menuBarDisposeListener;
   private Control lastActive;
   private IShellAdapter shellAdapter;
   private String text = "";
@@ -340,10 +337,6 @@ public class Shell extends Composite {
     this( parent != null ? parent.display : null, parent, style, 0 );
   }
   
-  public final Display getDisplay() {
-    return display;
-  }
-
   public Shell getShell() {
     return this;
   }
@@ -508,73 +501,12 @@ public class Shell extends Composite {
     return layoutCount > 0 ? this : null;
   }
   
-  //////////
-  // MenuBar
-  
-  /**
-   * Sets the receiver's menu bar to the argument, which
-   * may be null.
-   *
-   * @param menu the new menu bar
-   *
-   * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the menu has been disposed</li> 
-   *    <li>ERROR_INVALID_PARENT - if the menu is not in the same widget tree</li>
-   * </ul>
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  // [doc] move to Decorations
-  public void setMenuBar( final Menu menuBar ) {
-    checkWidget();
-    if( this.menuBar != menuBar ) {
-      if( menuBar != null ) {
-        if( menuBar.isDisposed() ) {
-          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
-        }
-        if( menuBar.getParent() != this ) {
-          SWT.error( SWT.ERROR_INVALID_PARENT );
-        }
-        if( ( menuBar.getStyle() & SWT.BAR ) == 0 ) {
-          SWT.error( SWT.ERROR_MENU_NOT_BAR );
-        }
-      }
-      removeMenuBarDisposeListener();
-      this.menuBar = menuBar;
-      addMenuBarDisposeListener();
-    }
-  }
-
-  /**
-   * Returns the receiver's menu bar if one had previously
-   * been set, otherwise returns null.
-   *
-   * @return the menu bar or null
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  // [doc] move to Decorations
-  public Menu getMenuBar() {
-    checkWidget();
-    return menuBar;
-  }
-
   /////////////////////
   // Adaptable override
 
   public Object getAdapter( final Class adapter ) {
     Object result;
-    if( adapter == IMenuHolderAdapter.class ) {
-      if( menuHolder == null ) {
-        menuHolder = new MenuHolder();
-      }
-      result = menuHolder;
-    } else if( adapter == IShellAdapter.class ) {
+    if( adapter == IShellAdapter.class ) {
       if( shellAdapter == null ) {
         shellAdapter = new IShellAdapter() {
           public Control getActiveControl() {
@@ -931,33 +863,6 @@ public class Shell extends Composite {
     display.removeShell( this );
   }
 
-  protected final void releaseWidget() {
-    removeMenuBarDisposeListener();
-    super.releaseWidget();
-  }
-
-  //////////////////////////////////////////////////////////
-  // Helping methods to observe the disposal of the menuBar
-  
-  private void addMenuBarDisposeListener() {
-    if( menuBar != null ) {
-      if( menuBarDisposeListener == null ) {
-        menuBarDisposeListener = new DisposeListener() {
-          public void widgetDisposed( final DisposeEvent event ) {
-            Shell.this.menuBar = null;
-          }
-        };
-      }
-      menuBar.addDisposeListener( menuBarDisposeListener );
-    }
-  }
-
-  private void removeMenuBarDisposeListener() {
-    if( menuBar != null ) {
-      menuBar.removeDisposeListener( menuBarDisposeListener );
-    }
-  }
-  
   ////////////////////////////////////////////////////////////
   // Methods to maintain activeControl and send ActivateEvents
 

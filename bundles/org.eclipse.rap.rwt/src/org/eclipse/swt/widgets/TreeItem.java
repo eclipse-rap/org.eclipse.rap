@@ -246,14 +246,6 @@ public class TreeItem extends Item {
     return result;
   }
 
-  /////////////////
-  // Item overrides
-
-  public final Display getDisplay() {
-    checkWidget();
-    return parent.getDisplay();
-  }
-
   /////////////////////////
   // Parent/child relations
 

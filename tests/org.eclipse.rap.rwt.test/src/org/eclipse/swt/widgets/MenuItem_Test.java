@@ -34,7 +34,6 @@ public class MenuItem_Test extends TestCase {
     } catch( IllegalArgumentException iae ) {
       // expected
     }
-    
   }
 
   public void testSetMenu() {
@@ -149,6 +148,15 @@ public class MenuItem_Test extends TestCase {
     assertEquals( true, fileMenuItem.isDisposed() );
     assertEquals( true, fileMenu.isDisposed() );
     assertEquals( true, exitMenuItem.isDisposed() );
+  }
+  
+  public void testDisplay() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Menu menu = new Menu( shell, SWT.BAR );
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    assertSame( display, item.getDisplay() );
+    assertSame( menu.getDisplay(), item.getDisplay() );
   }
   
   protected void setUp() throws Exception {

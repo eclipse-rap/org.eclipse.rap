@@ -122,11 +122,6 @@ public class TableColumn extends Item {
     this.parent.createColumn( this, index );
   }
   
-  public Display getDisplay() {
-    checkWidget();
-    return parent.getDisplay();
-  }
-  
   /**
    * Returns the receiver's parent, which must be a <code>Table</code>.
    *

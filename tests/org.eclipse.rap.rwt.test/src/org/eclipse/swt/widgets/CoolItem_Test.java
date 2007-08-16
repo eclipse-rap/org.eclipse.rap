@@ -188,6 +188,15 @@ public class CoolItem_Test extends TestCase {
     CoolItem coolItem = new CoolItem(coolBar, 0);
     assertEquals(coolBar, coolItem.getParent());
   }
+  
+  public void testDisplay() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    CoolBar coolBar = new CoolBar( shell, 0 );
+    CoolItem coolItem = new CoolItem( coolBar, 0 );
+    assertSame( display, coolItem.getDisplay() );
+    assertSame( coolBar.getDisplay(), coolItem.getDisplay() );
+  }
 
   public void test_setPreferredSizeLorg_eclipse_swt_graphics_Point() {
     Display display = new Display();

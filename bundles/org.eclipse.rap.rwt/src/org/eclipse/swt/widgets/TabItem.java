@@ -123,11 +123,6 @@ public class TabItem extends Item {
     return parent;
   }
 
-  public Display getDisplay() {
-    checkWidget();
-    return parent.getDisplay();
-  }
-
   /**
    * Returns the control that is used to fill the client area of
    * the tab folder when the user selects the tab item.  If no

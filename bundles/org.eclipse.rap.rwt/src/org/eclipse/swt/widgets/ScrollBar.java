@@ -485,13 +485,8 @@ public class ScrollBar extends Widget {
     SelectionEvent.removeListener( this, listener );
   }
 
-  // /////////////////
+  ////////////////////
   // Widget overrides
-
-  public Display getDisplay() {
-    checkWidget();
-    return parent.getDisplay();
-  }
 
   protected void releaseChildren() {
   }

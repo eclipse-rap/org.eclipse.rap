@@ -17,8 +17,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 
 
 final class MenuBarLCA extends MenuDelegateLCA {
@@ -30,9 +29,9 @@ final class MenuBarLCA extends MenuDelegateLCA {
     = "menuBarShellClientArea";
   
   void preserveValues( final Menu menu ) {
-    Shell shell = MenuBarLCA.getShell( menu );
+    Decorations parent = getParent( menu );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-    adapter.preserve( PROP_SHELL, shell );
+    adapter.preserve( PROP_SHELL, parent );
     // TODO [rh] extract method and move to MenuLCAUtil
     adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
     MenuLCAUtil.preserveMenuListener( menu );
@@ -61,8 +60,8 @@ final class MenuBarLCA extends MenuDelegateLCA {
   //////////////////////////////////////////////////
   // Helping method to write properties for menu bar
   
-  private static Shell getShell( final Menu menu ) {
-    Shell result = null;
+  private static Decorations getParent( final Menu menu ) {
+    Decorations result = null;
     if( menu.getParent().getMenuBar() == menu ) {
       result = menu.getParent();
     }
@@ -70,19 +69,19 @@ final class MenuBarLCA extends MenuDelegateLCA {
   }
 
   private static void writeParent( final Menu menu ) throws IOException {
-    Shell shell = MenuBarLCA.getShell( menu );
-    if( WidgetLCAUtil.hasChanged( menu, PROP_SHELL, shell, null ) ) {
+    Decorations parent = getParent( menu );
+    if( WidgetLCAUtil.hasChanged( menu, PROP_SHELL, parent, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( menu );
-      writer.set( "parent", shell );
+      writer.set( "parent", parent );
     }
   }
 
   private static void writeBounds( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
-    Shell shell = getShell( menu );
-    if( shell != null ) {
+    Decorations parent = getParent( menu );
+    if( parent != null ) {
       IShellAdapter shellAdapter
-        = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+        = ( IShellAdapter )parent.getAdapter( IShellAdapter.class );
       Rectangle menuBounds = shellAdapter.getMenuBounds();
       String prop = PROP_SHELL_MENU_BOUNDS;
       if( WidgetLCAUtil.hasChanged( menu, prop, menuBounds, null ) ) {

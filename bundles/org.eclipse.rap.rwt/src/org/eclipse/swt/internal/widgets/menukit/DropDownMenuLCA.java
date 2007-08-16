@@ -61,8 +61,8 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
    */
   private static MenuItem[] findReferringMenuItems( final Menu menu ) {
     final List menuItems = new ArrayList();
-    Shell shell = menu.getParent();
-    WidgetTreeVisitor.accept( shell, new  AllWidgetTreeVisitor() {
+    Decorations parent = menu.getParent();
+    WidgetTreeVisitor.accept( parent, new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
         if( widget instanceof MenuItem ) {
           MenuItem menuItem = ( MenuItem )widget;

@@ -165,12 +165,6 @@ public abstract class Control extends Widget {
     return parent.getShell();
   }
 
-  public Display getDisplay() {
-    // do not check control for UI Thread, see bug #193389
-    return parent.getDisplay();
-  }
-
-
   /////////////
   // Visibility
 

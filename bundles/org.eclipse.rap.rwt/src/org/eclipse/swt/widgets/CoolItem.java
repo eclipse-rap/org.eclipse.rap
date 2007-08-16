@@ -819,10 +819,6 @@ public class CoolItem extends Item {
 //    return result;
 //  }
 
-  public Display getDisplay() {
-    return parent.getDisplay();
-  }
-
   protected void releaseChildren() {
   }
 

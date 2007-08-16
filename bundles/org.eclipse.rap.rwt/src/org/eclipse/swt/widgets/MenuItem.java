@@ -391,15 +391,9 @@ public class MenuItem extends Item {
     SelectionEvent.removeListener( this, listener );
   }
 
-  
-  // ///////////////
+  //////////////////
   // Item overrides
   
-  public Display getDisplay() {
-    checkWidget();
-    return parent.getDisplay();
-  }
-
   protected final void releaseChildren() {
     if( menu != null ) {
       removeMenuDisposeListener();

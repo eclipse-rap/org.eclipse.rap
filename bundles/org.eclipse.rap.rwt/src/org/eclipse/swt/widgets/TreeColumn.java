@@ -666,9 +666,6 @@ public void setWidth (int value) {
 //	computeDisplayText (gc);
 //}
 
-public Display getDisplay() {
-  return parent.getDisplay();
-}
 protected void releaseChildren() {
 }
 protected void releaseParent() {

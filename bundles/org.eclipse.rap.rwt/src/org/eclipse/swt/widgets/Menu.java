@@ -39,7 +39,7 @@ public class Menu extends Widget {
 
   private IMenuAdapter menuAdapter;
   private final ItemHolder itemHolder;
-  private final Shell parent;
+  private final Decorations parent;
   private int x;
   private int y;
   private boolean visible = false;
@@ -66,7 +66,7 @@ public class Menu extends Widget {
    * @see Widget#getStyle
    */
   public Menu( final Menu menu ) {
-    this( menu.getParent(), SWT.DROP_DOWN );
+    this( checkNull( menu ).parent, SWT.DROP_DOWN );
   }
 
   /**
@@ -90,7 +90,7 @@ public class Menu extends Widget {
    * @see Widget#getStyle
    */
   public Menu( final MenuItem parent ) {
-    this( parent.getParent().getParent(), SWT.DROP_DOWN );
+    this( checkNull( parent ).getParent().getParent(), SWT.DROP_DOWN );
   }
 
   /**
@@ -113,7 +113,7 @@ public class Menu extends Widget {
    * @see Widget#getStyle
    */
   public Menu( final Control parent ) {
-    this( parent.getShell(), SWT.POP_UP );
+    this( checkNull( parent ).getShell(), SWT.POP_UP );
   }
 
   /**
@@ -147,16 +147,11 @@ public class Menu extends Widget {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Menu( final Shell parent, final int style ) {
+  public Menu( final Decorations parent, final int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     itemHolder = new ItemHolder( MenuItem.class );
     MenuHolder.addMenu( parent, this );
-  }
-
-  public final Display getDisplay() {
-    checkWidget();
-    return parent.getDisplay();
   }
 
   /**
@@ -169,7 +164,7 @@ public class Menu extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public final Shell getParent() {
+  public Decorations getParent() {
     checkWidget();
     return parent;
   }
@@ -307,7 +302,7 @@ public class Menu extends Widget {
    */
   public Shell getShell() {
     checkWidget();
-    return parent;
+    return parent.getShell();
   }
 
   ///////////
@@ -595,6 +590,27 @@ public class Menu extends Widget {
   //////////////////
   // Helping methods
   
+  private static Control checkNull( final Control control ) {
+    if( control == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    return control;
+  }
+
+  private static Menu checkNull( final Menu menu ) {
+    if( menu == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    return menu;
+  }
+
+  private static MenuItem checkNull( final MenuItem item ) {
+    if( item == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    return item;
+  }
+
   private static int checkStyle( final int style ) {
     return checkBits( style, SWT.POP_UP, SWT.BAR, SWT.DROP_DOWN, 0, 0, 0 );
   }

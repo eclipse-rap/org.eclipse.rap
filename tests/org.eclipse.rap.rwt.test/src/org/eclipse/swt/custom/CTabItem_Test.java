@@ -78,6 +78,15 @@ public class CTabItem_Test extends TestCase {
     assertTrue( item2.getBounds().x >= item1Right );
   }
   
+  public void testDisplay() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    assertSame( display, item.getDisplay() );
+    assertSame( folder.getDisplay(), item.getDisplay() );
+  }
+
   public void testSetControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

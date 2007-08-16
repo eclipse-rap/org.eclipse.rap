@@ -12,8 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
-import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
@@ -21,7 +20,7 @@ public class Menu_Test extends TestCase {
 
   public void testMenuBarConstructor() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
     assertSame( shell, menuBar.getParent() );
@@ -30,19 +29,19 @@ public class Menu_Test extends TestCase {
     try {
       new Menu( ( Menu )null );
       fail( "Menu must not accept null-parent in constructor" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
       new Menu( ( Control )null );
       fail( "Menu must not accept null-parent in constructor" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
       new Menu( ( Shell )null );
       fail( "Menu must not accept null-parent in constructor" );
-    } catch( NullPointerException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
     // Test constructor for popup menus
@@ -144,7 +143,7 @@ public class Menu_Test extends TestCase {
       }
     } );
   }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

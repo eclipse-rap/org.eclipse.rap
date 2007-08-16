@@ -17,6 +17,11 @@ package org.eclipse.swt.widgets;
  */
 public class Canvas extends Composite {
 
+  Canvas( final Composite parent ) {
+    // prevent instantiation from outside this package
+    super( parent );
+  }
+
   public Canvas( final Composite parent, final int style ) {
     super( parent, style );
   }

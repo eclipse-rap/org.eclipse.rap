@@ -79,6 +79,7 @@ public abstract class Widget implements Adaptable {
 
   int style;
   int state;
+  Display display;
   private IEventAdapter eventAdapter;
   private Object data;
   private Map keyedData;
@@ -121,10 +122,12 @@ public abstract class Widget implements Adaptable {
    * @see #getStyle
    */
   public Widget( final Widget parent, final int style ) {
+    checkSubclass();
     if( parent == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     this.style = style;
+    this.display = parent.display;
   }
 
   // TODO [rh] revise: shouldn't getAdapter be guarded by checkWidget as well?
@@ -289,7 +292,28 @@ public abstract class Widget implements Adaptable {
     keyedData.put( key, value );
   }
   
-  public abstract Display getDisplay();
+  /**
+   * Returns the <code>Display</code> that is associated with
+   * the receiver.
+   * <p>
+   * A widget's display is either provided when it is created
+   * (for example, top level <code>Shell</code>s) or is the
+   * same as its parent's display.
+   * </p>
+   *
+   * @return the receiver's display
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public Display getDisplay() {
+    // do not check control for UI Thread, see bug #193389
+    Display display = this.display;
+//    if( display == null )
+//      error( SWT.ERROR_WIDGET_DISPOSED );
+    return display;
+  }
 
   /**
    * Returns the receiver's style information.

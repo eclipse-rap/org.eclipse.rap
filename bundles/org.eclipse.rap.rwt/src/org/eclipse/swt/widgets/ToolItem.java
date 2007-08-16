@@ -138,11 +138,6 @@ public class ToolItem extends Item {
     computeInitialWidth();
   }
 
-  public Display getDisplay() {
-    checkWidget();
-    return parent.getDisplay();
-  }
-
   /**
    * Returns the receiver's parent, which must be a <code>ToolBar</code>.
    *

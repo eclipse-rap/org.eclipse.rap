@@ -143,10 +143,6 @@ public class CTabItem extends Item {
     return result;
   }
 
-  public Display getDisplay() {
-    return parent.getDisplay();
-  }
-  
   /**
    * Returns the receiver's parent, which must be a <code>CTabFolder</code>.
    *
