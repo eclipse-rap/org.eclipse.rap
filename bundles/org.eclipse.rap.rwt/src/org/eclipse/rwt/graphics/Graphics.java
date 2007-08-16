@@ -17,13 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.*;
 
 
 public class Graphics {
 
   private final static Map colorPalette = new HashMap();
+
+  private static final Map fonts = new HashMap();
 
   // === COLORS ===
 
@@ -67,12 +68,12 @@ public class Graphics {
     Color result = null;
     try {
       Class colorClass = Color.class;
-      Constructor constr = colorClass.getDeclaredConstructor( new Class[ 0 ] );
-      Field colorNrField = colorClass.getDeclaredField( "colorNr" );
+      Class[] classes = colorClass.getDeclaredClasses();
+      Class colorExtClass = classes[ 0 ];
+      Class[] paramList = new Class[] { int.class };
+      Constructor constr = colorExtClass.getDeclaredConstructor( paramList );
       constr.setAccessible( true );
-      result = ( Color )constr.newInstance( new Object[ 0 ] );
-      colorNrField.setAccessible( true );
-      colorNrField.setInt( result, colorNr );
+      result = ( Color )constr.newInstance( new Object[] { new Integer( colorNr ) } );
     } catch( final Exception e ) {
       throw new RuntimeException( "Failed to instantiate Color", e );
     }

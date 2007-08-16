@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.graphics.ColorUtil;
+import org.eclipse.swt.internal.graphics.IColor;
 import org.eclipse.swt.widgets.Display;
 
 public class Color_Test extends TestCase {
@@ -56,9 +56,9 @@ public class Color_Test extends TestCase {
 
   public void testColorUtil() {
     Color salmon = Graphics.getColor( 250, 128, 114 );
-    assertEquals( "#fa8072", ColorUtil.formatColorForJs( salmon ) );
+    assertEquals( "#fa8072", ( ( IColor )salmon ).toColorValue() );
     Color chocolate = Graphics.getColor( 210, 105, 30 );
-    assertEquals( "#d2691e", ColorUtil.formatColorForJs( chocolate ) );
+    assertEquals( "#d2691e", ( ( IColor )chocolate ).toColorValue() );
   }
 
   public void testGetRGB() {

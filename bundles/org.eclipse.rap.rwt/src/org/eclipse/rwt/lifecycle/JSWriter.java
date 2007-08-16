@@ -23,7 +23,7 @@ import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.internal.graphics.ColorUtil;
+import org.eclipse.swt.internal.graphics.IColor;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.widgets.*;
 
@@ -599,7 +599,7 @@ public final class JSWriter {
           params.append( args[ i ] );
         } else if( args[ i ] instanceof Color ) {
           params.append( '"' );
-          params.append( ColorUtil.formatColorForJs( ( Color )args[ i ] ) );
+          params.append( ( ( IColor )args[ i ] ).toColorValue() );
           params.append( '"' );
         } else if( args[ i ] instanceof Object[] ) {
           params.append( createArray( ( Object[] )args[ i ] ) );
@@ -631,7 +631,7 @@ public final class JSWriter {
         buffer.append( createFindWidgetById( ( Widget )array[ i ] ) );
       } else if( array[ i ] instanceof Color ) {
         buffer.append( '"' );
-        buffer.append( ColorUtil.formatColorForJs( ( Color )array[ i ] ) );
+        buffer.append( ( ( IColor )array[ i ] ).toColorValue() );
         buffer.append( '"' );
       } else {
         buffer.append( array[ i ] );

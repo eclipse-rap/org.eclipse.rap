@@ -12,6 +12,7 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.internal.graphics.IColor;
 
 /**
  * Instances of this class manage the operating system resources that implement
@@ -24,6 +25,36 @@ import org.eclipse.swt.SWTException;
 public class Color extends Resource {
 
   /**
+   * Extension of class <code>Color</code> with an additional method that
+   * returns a color id to pass to qooxdoo.
+   */
+  private static class ColorExt extends Color implements IColor {
+
+    private final String colorValue;
+
+    private ColorExt( final int colorNr ) {
+      super( colorNr );
+      StringBuffer buffer = new StringBuffer();
+      buffer.append( "#" );
+      append( buffer, Integer.toHexString( getRed() ) );
+      append( buffer, Integer.toHexString( getGreen() ) );
+      append( buffer, Integer.toHexString( getBlue() ) );
+      colorValue = buffer.toString();
+    }
+
+    private void append( final StringBuffer buffer, final String value ) {
+      if( value.length() == 1  ) {
+        buffer.append( "0" );
+      }
+      buffer.append( value );
+    }
+
+    public String toColorValue() {
+      return colorValue;
+    }
+  }
+
+  /**
    * Holds the color values within one integer.
    */
   private int colorNr;
@@ -31,7 +62,8 @@ public class Color extends Resource {
   /**
    * Prevents uninitialized instances from being created outside the package.
    */
-  Color() {
+  private Color( final int colorNr ) {
+    this.colorNr = colorNr;
   }
 
   /**
