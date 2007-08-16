@@ -23,7 +23,7 @@ public interface RequestParams {
   /** <p>the servlet parameter name for the w4t administration pages.</p> */
   final static String ADMIN = "w4t_admin";
   /** <p>the servlet parameter name for forcing a new session.</p> */  
-  final static String STARTUP = "w4t_startup";
+  final static String STARTUP = "startup";
   /** <p>the servlet parameter name for the w4t browser survey.</p> */  
   final static String SURVEY = "w4t_survey";
   /** <p>This constant is for documentation purpose only. It is part of the 

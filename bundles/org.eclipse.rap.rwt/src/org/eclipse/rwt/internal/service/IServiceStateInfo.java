@@ -44,12 +44,12 @@ public interface IServiceStateInfo extends IServiceStore {
   Object getEventQueue();
   void setEventQueue( Object eventQueue );
 
-  /** <p>returns whether the w4t_startup request parameter should be ignored
+  /** <p>returns whether the startup request parameter should be ignored
    * during the render phase of the requests lifecycle.</p> 
    */
   boolean isIgnoreStartup();
 
-  /** <p>sets whether the w4t_startup request parameter should be ignored
+  /** <p>sets whether the startup request parameter should be ignored
    * during the render phase of the requests lifecycle.</p>
    */
   void setIgnoreStartup( boolean ignoreStartup );

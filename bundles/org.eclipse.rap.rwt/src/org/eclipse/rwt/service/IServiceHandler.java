@@ -68,7 +68,7 @@ public interface IServiceHandler {
    * <p>The request parameter name to hold the service handlers name as its 
    * value (value is w4t_custom_service_handler).</p>
    */
-  static final String REQUEST_PARAM = "w4t_custom_service_handler";
+  static final String REQUEST_PARAM = "custom_service_handler";
 
   /**
    * <p>This method is called by the W4Toolkit lifecycle to allow the service

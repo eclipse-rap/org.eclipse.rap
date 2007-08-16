@@ -29,7 +29,7 @@ public final class ServiceStateInfo implements IServiceStateInfo {
   private boolean expired = false;
   /** the WebForm processed in the model caused an exception */
   private boolean exceptionOccured = false;
-  /** whether the w4t_startup request parameter should be ignored
+  /** whether the startup request parameter should be ignored
     * during the render phase of the requests lifecycle. */
   private boolean ignoreStartup = false;
   /** <p>The browser as it was detected at session startup.</p> */
@@ -102,16 +102,10 @@ public final class ServiceStateInfo implements IServiceStateInfo {
     this.eventQueue = eventQueue;
   }
   
-  /** returns whether the w4t_startup request parameter should be ignored
-    * during the render phase of the requests lifecycle. 
-    */
   public boolean isIgnoreStartup() {
     return ignoreStartup;
   }
 
-  /** sets whether the w4t_startup request parameter should be ignored
-    * during the render phase of the requests lifecycle. 
-    */
   public void setIgnoreStartup( final boolean ignoreStartup ) {
     this.ignoreStartup = ignoreStartup;
   }
