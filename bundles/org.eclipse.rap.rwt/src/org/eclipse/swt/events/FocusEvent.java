@@ -26,23 +26,16 @@ import org.eclipse.swt.widgets.Event;
  */
 public final class FocusEvent extends TypedEvent {
 
-  private static final int FOCUS_GAINED = SWT.FocusIn;
-  private static final int FOCUS_LOST = SWT.FocusOut;
+  public static final int FOCUS_GAINED = SWT.FocusIn;
+  public static final int FOCUS_LOST = SWT.FocusOut;
+  
   private static final Class LISTENER = FocusListener.class;
 
-  public static FocusEvent focusGained( final Control control ) {
-    return new FocusEvent( control, FOCUS_GAINED );
-  }
-
-  public static FocusEvent focusLost( final Control control ) {
-    return new FocusEvent( control, FOCUS_LOST );
-  }
-  
   public FocusEvent( final Event event ) {
     this( ( Control )event.widget, event.type );
   }
   
-  private FocusEvent( final Control source, final int id ) {
+  public FocusEvent( final Control source, final int id ) {
     super( source, id );
   }
 

@@ -51,10 +51,10 @@ public class UntypedEventAdapter_Test extends TestCase {
     adapter.widgetDefaultSelected( new SelectionEvent( null, null, 0 ) );
     assertEquals( SWT.DefaultSelection, eventType );
     adapter.addListener( SWT.FocusIn, listener );
-    adapter.focusGained( FocusEvent.focusGained( null ) );
+    adapter.focusGained( new FocusEvent( null, FocusEvent.FOCUS_GAINED ) );
     assertEquals( SWT.FocusIn, eventType );
     adapter.addListener( SWT.FocusOut, listener );
-    adapter.focusLost( FocusEvent.focusLost( null ) );
+    adapter.focusLost( new FocusEvent( null, FocusEvent.FOCUS_LOST ) );
     assertEquals( SWT.FocusOut, eventType );
     adapter.addListener( SWT.Expand, listener );
     adapter.treeExpanded( new TreeEvent( null, null, 0 ) );

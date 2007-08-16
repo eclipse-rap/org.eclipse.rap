@@ -243,12 +243,14 @@ public class Display extends Device implements Adaptable {
   private void setFocusControl( final Control focusControl ) {
     if( this.focusControl != focusControl ) {
       if( this.focusControl != null ) {
-        FocusEvent event = FocusEvent.focusLost( this.focusControl );
+        FocusEvent event 
+          = new FocusEvent( this.focusControl, FocusEvent.FOCUS_LOST );
         event.processEvent();
       }
       this.focusControl = focusControl;
       if( this.focusControl != null ) {
-        FocusEvent event = FocusEvent.focusGained( this.focusControl );
+        FocusEvent event 
+          = new FocusEvent( this.focusControl, FocusEvent.FOCUS_GAINED );
         event.processEvent();
       }
     }
