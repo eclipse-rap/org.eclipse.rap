@@ -32,13 +32,14 @@ import org.eclipse.swt.widgets.Widget;
 
 
 /**
- * TODO [rh] JavaDoc
+ * This is the super class for all typed event classes provided
+ * by RWT. Typed events contain particular information which is
+ * applicable to the event occurrence.
+ *
+ * @see org.eclipse.swt.widgets.Event
  */
-// TODO [rh] SWT TypedEvent has fields display and time, revise this 
 public class TypedEvent extends Event {
 
-  public Widget widget;
-  
   private static final String ATTR_SCHEDULED_EVENT_LIST 
     = TypedEvent.class.getName() + "_scheduledEventList";
 
@@ -58,23 +59,37 @@ public class TypedEvent extends Event {
     MenuEvent.class
   };
   
-  public static void processScheduledEvents() {
-    for( int i = 0; i < EVENT_ORDER.length; i++ ) {
-      processEventClass( EVENT_ORDER[ i ] );
-    }
-    clearScheduledEventList();
-  }
+  /**
+   * the widget that issued the event
+   */
+  public Widget widget;
   
   /**
    * a field for application use
    */
   public Object data;
   
+  /**
+   * Constructs a new instance of this class. 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
   public TypedEvent( final Object source, final int id ) {
     super( source, id );
     this.widget = (Widget) source;
   }
   
+  /**
+   * TODO [rh] JavaDoc
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
   public final void processEvent() {
     if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
         || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
@@ -89,6 +104,21 @@ public class TypedEvent extends Event {
     }
   }
 
+  /**
+   * TODO [rh] JavaDoc
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
+  public static void processScheduledEvents() {
+    for( int i = 0; i < EVENT_ORDER.length; i++ ) {
+      processEventClass( EVENT_ORDER[ i ] );
+    }
+    clearScheduledEventList();
+  }
+  
   ////////////////////////////////////
   // methods for filter implementation 
   
@@ -157,31 +187,30 @@ public class TypedEvent extends Event {
     }
   }
 
-  ////////////////////////////////////
+  ///////////////////////
   // Stub implementations
   
   protected boolean allowProcessing() {
-	String msg = "Derived classes have to override allowProcessing.";
-	throw new UnsupportedOperationException( msg );
+  	String msg = "Derived classes must override allowProcessing.";
+  	throw new UnsupportedOperationException( msg );
   }
   
-  // Exception to rid of abstract TypedEvent
+  // Exception to get rid of abstract TypedEvent
   protected void dispatchToObserver( final Object listener ) {
-	String msg = "Derived classes have to override dispatchToObserver.";
-	throw new UnsupportedOperationException( msg );
+  	String msg = "Derived classes must override dispatchToObserver.";
+  	throw new UnsupportedOperationException( msg );
   }
 
-  // Exception to rid of abstract TypedEvent
+  // Exception to get rid of abstract TypedEvent
   protected Class getListenerType() {
-	String msg = "Derived classes have to override getListenerType.";
-	throw new UnsupportedOperationException( msg );
+  	String msg = "Derived classes must override getListenerType.";
+  	throw new UnsupportedOperationException( msg );
   }
   
-  // ////////////////////////////
+  ///////////////////////////////
   // toString & getName from SWT 
-  
 
-// this implementation is extended by subclasses
+  // this implementation is extended by subclasses
   public String toString() {
     return getName()
         + "{"

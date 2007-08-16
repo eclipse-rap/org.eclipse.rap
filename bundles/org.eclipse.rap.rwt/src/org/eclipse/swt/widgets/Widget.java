@@ -52,6 +52,11 @@ import org.eclipse.swt.internal.widgets.WidgetAdapter;
  * hierarchy. No support is provided for user-written classes which are
  * implemented as subclasses of this class.
  * </p>
+ * <p>Even though this class implements <code>Adaptable</code> this interface
+ * is <em>not</em> part of the RWT public API. It is only meant to be shared 
+ * within the packages provided by RWT and should never be accessed from 
+ * application code.
+ * </p>
  *
  * @see #checkSubclass
  */
@@ -130,6 +135,14 @@ public abstract class Widget implements Adaptable {
     this.display = parent.display;
   }
 
+  /**
+   * Implementation of the <code>Adaptable</code> interface 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
   // TODO [rh] revise: shouldn't getAdapter be guarded by checkWidget as well?
   public Object getAdapter( final Class adapter ) {
     Object result = null;

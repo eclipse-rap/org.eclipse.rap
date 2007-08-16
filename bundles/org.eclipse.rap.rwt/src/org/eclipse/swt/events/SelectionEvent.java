@@ -26,6 +26,12 @@ import org.eclipse.swt.widgets.*;
  * Note: The fields that are filled in depend on the widget.
  * </p>
  *
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
+ * this class are <em>not</em> part of the RWT public API. They are marked 
+ * public only so that they can be shared within the packages provided by RWT. 
+ * They should never be accessed from application code.
+ * </p>
+ * 
  * @see SelectionListener
  */
 public class SelectionEvent extends TypedEvent {
@@ -119,6 +125,14 @@ public class SelectionEvent extends TypedEvent {
           e.detail );
   }
   
+  /**
+   * Constructs a new instance of this class. 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
   public SelectionEvent( final Widget widget,
                          final Item item,
                          final int id )
@@ -126,6 +140,14 @@ public class SelectionEvent extends TypedEvent {
     this( widget, item, id, new Rectangle( 0, 0, 0, 0 ), null, true, SWT.NONE );
   }
 
+  /**
+   * Constructs a new instance of this class. 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
   public SelectionEvent( final Widget widget,
                          final Item item,
                          final int id,

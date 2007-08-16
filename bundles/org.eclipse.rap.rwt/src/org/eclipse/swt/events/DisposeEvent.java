@@ -19,14 +19,28 @@ import org.eclipse.swt.SWT;
  * Instances of this class are sent as a result of
  * widgets being disposed.
  *
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
+ * this class are <em>not</em> part of the RWT public API. They are marked 
+ * public only so that they can be shared within the packages provided by RWT. 
+ * They should never be accessed from application code.
+ * </p>
+ * 
  * @see DisposeListener
  */
 public final class DisposeEvent extends TypedEvent {
 
   public static final int WIDGET_DISPOSED = SWT.Dispose;
+
   private static final Class LISTENER = DisposeListener.class;
 
-
+  /**
+   * Constructs a new instance of this class. 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
   public DisposeEvent( final Object source ) {
     super( source, WIDGET_DISPOSED );
   }

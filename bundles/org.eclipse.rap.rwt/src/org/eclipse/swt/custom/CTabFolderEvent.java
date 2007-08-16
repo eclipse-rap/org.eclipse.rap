@@ -17,6 +17,13 @@ import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
 
 
+/**
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
+ * this class are <em>not</em> part of the RWT public API. They are marked 
+ * public only so that they can be shared within the packages provided by RWT. 
+ * They should never be accessed from application code.
+ * </p>
+ */
 public class CTabFolderEvent extends TypedEvent {
   
   // TODO [fappel]: Think about a better solution!
@@ -30,13 +37,50 @@ public class CTabFolderEvent extends TypedEvent {
   
   private static final Class LISTENER = CTabFolder2Listener.class;
   
+  /**
+   * The tab item for the operation.
+   */
   public Widget item;
+
+  /**
+   * A flag indicating whether the operation should be allowed.
+   * Setting this field to <code>false</code> will cancel the operation.
+   * Applies to the close and showList events.
+   */
   public boolean doit;
+  
+  /**
+   * The widget-relative, x coordinate of the chevron button
+   * at the time of the event.  Applies to the showList event.
+   */
   public int x;
+
+  /**
+   * The widget-relative, y coordinate of the chevron button
+   * at the time of the event.  Applies to the showList event.
+   */
   public int y;
+  
+  /**
+   * The width of the chevron button at the time of the event.
+   * Applies to the showList event.
+   */
   public int width;
+
+  /**
+   * The height of the chevron button at the time of the event.
+   * Applies to the showList event.
+   */
   public int height;
   
+  /**
+   * Constructs a new instance of this class. 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
   public CTabFolderEvent( final Object source, final int id ) {
     super( source, id );
   }

@@ -22,6 +22,12 @@ import org.eclipse.swt.widgets.Event;
  * Instances of this class are sent as a result of widgets gaining and losing
  * focus.
  * 
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
+ * this class are <em>not</em> part of the RWT public API. They are marked 
+ * public only so that they can be shared within the packages provided by RWT. 
+ * They should never be accessed from application code.
+ * </p>
+ * 
  * @see FocusListener
  */
 public final class FocusEvent extends TypedEvent {
@@ -31,10 +37,24 @@ public final class FocusEvent extends TypedEvent {
   
   private static final Class LISTENER = FocusListener.class;
 
+  /**
+   * Constructs a new instance of this class based on the
+   * information in the given untyped event.
+   *
+   * @param e the untyped event containing the information
+   */
   public FocusEvent( final Event event ) {
     this( ( Control )event.widget, event.type );
   }
   
+  /**
+   * Constructs a new instance of this class. 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
   public FocusEvent( final Control source, final int id ) {
     super( source, id );
   }

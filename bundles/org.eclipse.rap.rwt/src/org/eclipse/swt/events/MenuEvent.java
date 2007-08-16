@@ -22,6 +22,12 @@ import org.eclipse.swt.widgets.Widget;
  * Instances of this class are sent as a result of
  * menus being shown and hidden.
  *
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
+ * this class are <em>not</em> part of the RWT public API. They are marked 
+ * public only so that they can be shared within the packages provided by RWT. 
+ * They should never be accessed from application code.
+ * </p>
+ *
  * @see MenuListener
  */
 public final class MenuEvent extends TypedEvent {
@@ -30,12 +36,26 @@ public final class MenuEvent extends TypedEvent {
   public static final int MENU_HIDDEN = SWT.Hide;
   private static final Class LISTENER = MenuListener.class;
 
-  public MenuEvent( final Widget widget, final int id ) {
-    super( widget, id );
-  }
-  
+  /**
+   * Constructs a new instance of this class based on the
+   * information in the given untyped event.
+   *
+   * @param e the untyped event containing the information
+   */
   public MenuEvent( final Event event ) {
     this( event.widget, event.type );
+  }
+  
+  /**
+   * Constructs a new instance of this class. 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
+  public MenuEvent( final Widget widget, final int id ) {
+    super( widget, id );
   }
   
   protected void dispatchToObserver( final Object listener ) {
