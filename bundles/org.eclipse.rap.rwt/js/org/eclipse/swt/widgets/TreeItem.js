@@ -185,7 +185,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       var id = wm.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( id + ".checked", this._checked );
-      this.getTree()._notifyChangeItemCheck( this );
+      this.getTree().getParent()._notifyChangeItemCheck( this );
     },
 
     /*
