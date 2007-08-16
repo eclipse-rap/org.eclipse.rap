@@ -53,7 +53,8 @@ public class CoolItem extends Item {
 
   //Keep in sync with defaultValue for handleSize in CoolItem.js
   // (see function updateHandleBounds)
-  public static final int HANDLE_SIZE = 3;
+  // TODO: [bm] usage?
+  private static final int HANDLE_SIZE = 3;
 
   ToolBar chevron;
   boolean wrap;
