@@ -127,7 +127,8 @@ public class StartupRequest_Test extends TestCase {
     EntryPointManager.register( EntryPointManager.DEFAULT, 
                                 DefaultEntryPoint.class );
     Fixture.fakeRequestParam( p1, null );
-    Fixture.fakeRequestParam( "w4t_startup", EntryPointManager.DEFAULT );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, 
+                              EntryPointManager.DEFAULT );
     Fixture.fakeRequestParam( "w4t_scriptEnabled", "true" );
     Fixture.fakeRequestParam( "w4t_ajaxEnabled", "true" );
     Fixture.fakeUserAgent( "myAgent" );
