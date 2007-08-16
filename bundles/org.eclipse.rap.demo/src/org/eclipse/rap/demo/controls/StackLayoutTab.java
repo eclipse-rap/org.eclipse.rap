@@ -8,12 +8,12 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -56,7 +56,7 @@ public class StackLayoutTab extends ExampleTab {
     parent.setLayout( parentLayout );
 
     comp = new Composite( parent, SWT.NONE );
-    comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
+    comp.setBackground( Graphics.getColor( 0xcc, 0xb7, 0x91 ) );
     stackLayout = new StackLayout();
     stackLayout.marginWidth = 3;
     stackLayout.marginHeight = 3;

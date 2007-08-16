@@ -8,11 +8,11 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -44,7 +44,7 @@ public class FillLayoutTab extends ExampleTab {
     parent.setLayout( parentLayout );
 
     Composite comp = new Composite( parent, SWT.NONE );
-    comp.setBackground( Color.getColor( 0xcc, 0xb7, 0x91 ) );
+    comp.setBackground( Graphics.getColor( 0xcc, 0xb7, 0x91 ) );
 
     FillLayout fillLayout = new FillLayout( style );
     fillLayout.marginWidth = 3;

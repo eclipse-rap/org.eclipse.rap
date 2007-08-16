@@ -9,12 +9,14 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -41,7 +43,7 @@ public class LayoutDemo implements IEntryPoint {
     final CTabFolder topFolder = new CTabFolder( parent, SWT.TOP );
     topFolder.marginWidth = 5;
     topFolder.marginHeight = 5;
-    topFolder.setSelectionBackground( Color.getColor( 0, 128, 192 ) );
+    topFolder.setSelectionBackground( Graphics.getColor( 0, 128, 192 ) );
     final ExampleTab[] tabs = new ExampleTab[] {
       new FillLayoutTab( topFolder ),
       new RowLayoutTab( topFolder ),
@@ -62,7 +64,7 @@ public class LayoutDemo implements IEntryPoint {
 
   /**
    * Creates a tab to display a CBannerLayout.
-   * 
+   *
    * TODO [rst] make this a class of its own
    */
   private void createTabCBannerLayout( final TabFolder folder ) {
@@ -91,7 +93,7 @@ public class LayoutDemo implements IEntryPoint {
 
   /**
    * Creates a tab to display a ViewFormLayout.
-   * 
+   *
    * TODO [rst] make this a class of its own
    */
   private void createTabViewFormLayout( final TabFolder folder ) {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -17,6 +17,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.lifecycle.UICallBackManager;
@@ -66,12 +67,12 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
  * <code>Widget</code> and its subclasses), may only be called
  * from the thread. (To support multi-threaded user-interface
  * applications, class <code>Display</code> provides inter-thread
- * communication methods which allow threads other than the 
+ * communication methods which allow threads other than the
  * user-interface thread to request that it perform operations
  * on their behalf.)
  * </li>
  * <li>
- * The thread is not allowed to construct other 
+ * The thread is not allowed to construct other
  * <code>Display</code>s until that display has been disposed.
  * (Note that, this is in addition to the restriction mentioned
  * above concerning platform support for multiple displays. Thus,
@@ -80,8 +81,8 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
  * </li>
  * </ul>
  * Enforcing these attributes allows SWT to be implemented directly
- * on the underlying operating system's event model. This has 
- * numerous benefits including smaller footprint, better use of 
+ * on the underlying operating system's event model. This has
+ * numerous benefits including smaller footprint, better use of
  * resources, safer memory management, clearer program logic,
  * better performance, and fewer overall operating system threads
  * required. The down side however, is that care must be taken
@@ -123,7 +124,7 @@ public class Display extends Device implements Adaptable {
   private static final String INFO_IMAGE_PATH = ICON_PATH + "/information.png";
   private static final String QUESTION_IMAGE_PATH = ICON_PATH + "/question.png";
   private static final String WARNING_IMAGE_PATH = ICON_PATH + "/warning.png";
-  
+
   /**
    * Returns the display which the currently running thread is
    * the user-interface thread for, or null if the currently
@@ -134,21 +135,21 @@ public class Display extends Device implements Adaptable {
   public static Display getCurrent() {
     return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
   }
-  
+
   /**
    * Returns the default display. One is created (making the
    * thread that invokes this method its user-interface thread)
    * if it did not already exist.
-   * 
+   *
    * RWT specific: This will not return a new display if there is none
    * available. This may be fixed in the future.
-   * 
+   *
    * @return the default display
    */
   public static Display getDefault () {
     return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
   }
-  
+
   private final List shells;
   private ISessionStore session;
   private Rectangle bounds;
@@ -162,7 +163,7 @@ public class Display extends Device implements Adaptable {
    * Constructs a new instance of this class.
    * <p>
    * Note: The resulting display is marked as the <em>current</em>
-   * display. If this is the first display which has been 
+   * display. If this is the first display which has been
    * constructed since the application started, it is also
    * marked as the <em>default</em> display.
    * </p>
@@ -184,7 +185,7 @@ public class Display extends Device implements Adaptable {
       throw new IllegalStateException( msg );
     }
     ContextProvider.getSession().setAttribute( DISPLAY_ID, this );
-    shells = new ArrayList(); 
+    shells = new ArrayList();
     readInitialBounds();
   }
 
@@ -220,7 +221,7 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     return new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
   }
-  
+
   /**
    * Returns the control which currently has keyboard focus,
    * or null if keyboard events are not currently going to
@@ -238,7 +239,7 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     return focusControl;
   }
-  
+
   private void setFocusControl( final Control focusControl ) {
     if( this.focusControl != focusControl ) {
       if( this.focusControl != null ) {
@@ -255,7 +256,7 @@ public class Display extends Device implements Adaptable {
 
   ///////////////////////////
   // Systen colors and images
-  
+
   /**
    * Maps a point from one coordinate system to another.
    * When the control is null, coordinates are mapped to
@@ -265,7 +266,7 @@ public class Display extends Device implements Adaptable {
    * systems are mirrored, special care needs to be taken
    * when mapping coordinates from one control to another
    * to ensure the result is correctly mirrored.
-   * 
+   *
    * Mapping a point that is the origin of a rectangle and
    * then adding the width and height is not equivalent to
    * mapping the rectangle.  When one control is mirrored
@@ -275,28 +276,28 @@ public class Display extends Device implements Adaptable {
    * instead of just one point causes both the origin and
    * the corner of the rectangle to be mapped.
    * </p>
-   * 
+   *
    * @param from the source <code>Control</code> or <code>null</code>
    * @param to the destination <code>Control</code> or <code>null</code>
-   * @param point to be mapped 
-   * @return point with mapped coordinates 
-   * 
+   * @param point to be mapped
+   * @return point with mapped coordinates
+   *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
-   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public Point map( final Control from, final Control to, final Point point ) {
     checkDevice();
     if( point == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
-    } 
+    }
     return map( from, to, point.x, point.y );
   }
 
@@ -309,7 +310,7 @@ public class Display extends Device implements Adaptable {
    * systems are mirrored, special care needs to be taken
    * when mapping coordinates from one control to another
    * to ensure the result is correctly mirrored.
-   * 
+   *
    * Mapping a point that is the origin of a rectangle and
    * then adding the width and height is not equivalent to
    * mapping the rectangle.  When one control is mirrored
@@ -319,21 +320,21 @@ public class Display extends Device implements Adaptable {
    * instead of just one point causes both the origin and
    * the corner of the rectangle to be mapped.
    * </p>
-   * 
+   *
    * @param from the source <code>Control</code> or <code>null</code>
    * @param to the destination <code>Control</code> or <code>null</code>
    * @param x coordinates to be mapped
    * @param y coordinates to be mapped
    * @return point with mapped coordinates
-   * 
+   *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public Point map( final Control from,
@@ -345,7 +346,7 @@ public class Display extends Device implements Adaptable {
     Rectangle rectangle = map( from, to, x, y, 0, 0 );
     return new Point( rectangle.x, rectangle.y );
   }
-  
+
   /**
    * Maps a point from one coordinate system to another.
    * When the control is null, coordinates are mapped to
@@ -355,7 +356,7 @@ public class Display extends Device implements Adaptable {
    * systems are mirrored, special care needs to be taken
    * when mapping coordinates from one control to another
    * to ensure the result is correctly mirrored.
-   * 
+   *
    * Mapping a point that is the origin of a rectangle and
    * then adding the width and height is not equivalent to
    * mapping the rectangle.  When one control is mirrored
@@ -365,21 +366,21 @@ public class Display extends Device implements Adaptable {
    * instead of just one point causes both the origin and
    * the corner of the rectangle to be mapped.
    * </p>
-   * 
+   *
    * @param from the source <code>Control</code> or <code>null</code>
    * @param to the destination <code>Control</code> or <code>null</code>
    * @param rectangle to be mapped
    * @return rectangle with mapped coordinates
-   * 
+   *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the rectangle is null</li>
-   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public Rectangle map( final Control from,
@@ -390,14 +391,14 @@ public class Display extends Device implements Adaptable {
     if( rectangle == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return map( from, 
-                to, 
-                rectangle.x, 
-                rectangle.y, 
-                rectangle.width, 
+    return map( from,
+                to,
+                rectangle.x,
+                rectangle.y,
+                rectangle.width,
                 rectangle.height );
   }
-  
+
   /**
    * Maps a point from one coordinate system to another.
    * When the control is null, coordinates are mapped to
@@ -407,7 +408,7 @@ public class Display extends Device implements Adaptable {
    * systems are mirrored, special care needs to be taken
    * when mapping coordinates from one control to another
    * to ensure the result is correctly mirrored.
-   * 
+   *
    * Mapping a point that is the origin of a rectangle and
    * then adding the width and height is not equivalent to
    * mapping the rectangle.  When one control is mirrored
@@ -417,7 +418,7 @@ public class Display extends Device implements Adaptable {
    * instead of just one point causes both the origin and
    * the corner of the rectangle to be mapped.
    * </p>
-   * 
+   *
    * @param from the source <code>Control</code> or <code>null</code>
    * @param to the destination <code>Control</code> or <code>null</code>
    * @param x coordinates to be mapped
@@ -425,22 +426,22 @@ public class Display extends Device implements Adaptable {
    * @param width coordinates to be mapped
    * @param height coordinates to be mapped
    * @return rectangle with mapped coordinates
-   * 
+   *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the Control from or the Control to have been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @since 1.0.2
    */
-  public Rectangle map( final Control from, 
-                        final Control to, 
-                        final int x, 
-                        final int y, 
-                        final int width, 
+  public Rectangle map( final Control from,
+                        final Control to,
+                        final int x,
+                        final int y,
+                        final int width,
                         final int height )
   {
     checkDevice();
@@ -455,7 +456,7 @@ public class Display extends Device implements Adaptable {
         currentFrom = currentFrom.getParent();
       } while( currentFrom != null );
     }
-    
+
     if( to != null ) {
       Control currentTo = to;
       do {
@@ -467,21 +468,21 @@ public class Display extends Device implements Adaptable {
     }
     return new Rectangle( newX, newY, width, height );
   }
-  
+
   //////////
   // Dispose
-  
+
   // TODO [rh] This is preliminary!
   // TODO [rh] move to Device
   public void dispose() {
     ContextProvider.getSession().removeAttribute( DISPLAY_ID );
   }
-  
+
   // TODO [rh] move to Device
   public boolean isDisposed() {
     return false;
   }
-  
+
   /////////////////////
   // Adaptable override
 
@@ -498,14 +499,14 @@ public class Display extends Device implements Adaptable {
       }
       result = widgetAdapter;
     } else {
-      result = AdapterManagerImpl.getInstance().getAdapter( this, adapter );  
+      result = AdapterManagerImpl.getInstance().getAdapter( this, adapter );
     }
     return result;
   }
 
   ///////////////////
   // Shell management
-  
+
   /**
    * Returns the currently active <code>Shell</code>, or null
    * if no shell belonging to the currently running application
@@ -522,7 +523,7 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     return activeShell;
   }
-  
+
   final void setActiveShell( final Shell activeShell ) {
     checkDevice();
     if( this.activeShell != null ) {
@@ -538,7 +539,7 @@ public class Display extends Device implements Adaptable {
       this.activeShell.restoreFocus();
     }
   }
-  
+
   final void addShell( final Shell shell ) {
     shells.add( shell );
   }
@@ -554,17 +555,17 @@ public class Display extends Device implements Adaptable {
       }
     }
   }
-  
+
   ////////////////////
   // Thread management
-  
+
   /**
-   * Returns the user-interface thread for the receiver. Note that the 
+   * Returns the user-interface thread for the receiver. Note that the
    * user-interface thread may change per user-request.
    *
-   * @return the receiver's user-interface thread or null if there's no 
+   * @return the receiver's user-interface thread or null if there's no
    *         current user-request executed that belongs to the display.
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
@@ -572,17 +573,17 @@ public class Display extends Device implements Adaptable {
   public Thread getThread () {
     return RWTLifeCycle.getThread();
   }
-  
+
   /**
    * Causes the <code>run()</code> method of the runnable to
-   * be invoked by the user-interface thread at the next 
-   * reasonable opportunity. Note that the user-interface thread may change 
-   * per user-request. The caller of this method continues 
+   * be invoked by the user-interface thread at the next
+   * reasonable opportunity. Note that the user-interface thread may change
+   * per user-request. The caller of this method continues
    * to run in parallel, and is not notified when the
    * runnable has completed.  Specifying <code>null</code> as the
    * runnable simply wakes the user-interface thread when run.
    * <p>
-   * Note that at the time the runnable is invoked, widgets 
+   * Note that at the time the runnable is invoked, widgets
    * that have the receiver as their display may have been
    * disposed. Therefore, it is necessary to check for this
    * case inside the runnable before accessing the widget.
@@ -593,7 +594,7 @@ public class Display extends Device implements Adaptable {
    * @exception SWTException <ul>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    * @see #syncExec
    */
   public void asyncExec( final Runnable runnable ) {
@@ -607,21 +608,21 @@ public class Display extends Device implements Adaptable {
       }
     } );
   }
-  
+
   /**
    * Causes the <code>run()</code> method of the runnable to
-   * be invoked by the user-interface thread at the next 
-   * reasonable opportunity. Note that the user-interface thread may change 
+   * be invoked by the user-interface thread at the next
+   * reasonable opportunity. Note that the user-interface thread may change
    * per user-request. The thread which calls this method
    * is suspended until the runnable completes.  Specifying <code>null</code>
    * as the runnable simply wakes the user-interface thread.
    * <p>
-   * Note that at the time the runnable is invoked, widgets 
+   * Note that at the time the runnable is invoked, widgets
    * that have the receiver as their display may have been
    * disposed. Therefore, it is necessary to check for this
    * case inside the runnable before accessing the widget.
    * </p>
-   * 
+   *
    * @param runnable code to run on the user-interface thread or <code>null</code>
    *
    * @exception SWTException <ul>
@@ -642,15 +643,15 @@ public class Display extends Device implements Adaptable {
       }
     } );
   }
-  
+
   /**
    * Notifies the client side to send an life cycle request as UI thread to
    * perform UI-updates. Note that this method may be called from any thread.
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   * 
+   *
    */
   public void wake() {
 //  TODO: [fappel] disposal check
@@ -665,10 +666,10 @@ public class Display extends Device implements Adaptable {
       } );
     }
   }
-  
+
   //////////////////////
   // Information methods
-  
+
   /**
    * Returns the matching standard color for the given
    * constant, which should be one of the color constants
@@ -755,9 +756,9 @@ public class Display extends Device implements Adaptable {
     }
     Theme theme = ThemeUtil.getTheme();
     QxColor themeColor = theme.getColor( key );
-    return Color.getColor( themeColor.red, themeColor.green, themeColor.blue ); 
+    return Graphics.getColor( themeColor.red, themeColor.green, themeColor.blue );
   }
-  
+
   /**
    * Returns the matching standard platform image for the given
    * constant, which should be one of the icon constants
@@ -766,7 +767,7 @@ public class Display extends Device implements Adaptable {
    * not the application.  A value of <code>null</code> will
    * be returned either if the supplied constant is not an
    * SWT icon constant or if the platform does not define an
-   * image that corresponds to the constant. 
+   * image that corresponds to the constant.
    *
    * @param id the SWT icon constant
    * @return the corresponding image or <code>null</code>
@@ -781,7 +782,7 @@ public class Display extends Device implements Adaptable {
    * @see SWT#ICON_QUESTION
    * @see SWT#ICON_WARNING
    * @see SWT#ICON_WORKING
-   * 
+   *
    * @since 1.0
    */
   public Image getSystemImage( final int id ) {
@@ -805,7 +806,7 @@ public class Display extends Device implements Adaptable {
     }
     return result;
   }
-  
+
   //////////
   // Filters
 
@@ -824,7 +825,7 @@ public class Display extends Device implements Adaptable {
    * both powerful and dangerous. They should generally be avoided for
    * performance, debugging and code maintenance reasons.
    * </p>
-   * 
+   *
    * @param eventType the type of event to listen for
    * @param listener the listener which should be notified when the event occurs
    * @exception IllegalArgumentException
@@ -860,12 +861,12 @@ public class Display extends Device implements Adaptable {
       }
     } );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will be notified
    * when an event of the given type occurs anywhere in a widget. The event type
    * is one of the event constants defined in class <code>SWT</code>.
-   * 
+   *
    * @param eventType the type of event to listen for
    * @param listener the listener which should no longer be notified when the
    *            event occurs
@@ -901,27 +902,27 @@ public class Display extends Device implements Adaptable {
       filters = null;
     }
   }
-  
-  
+
+
   /////////////////
   // Inner classes
 
   private final class DisplayAdapter implements IDisplayAdapter {
-    
+
     private final ISessionStore session;
-    
+
     private DisplayAdapter( final ISessionStore session ) {
-      this.session = session;      
+      this.session = session;
     }
 
     public void setBounds( final Rectangle bounds ) {
       if( bounds == null ) {
         SWT.error( SWT.ERROR_NULL_ARGUMENT );
       }
-      Display.this.bounds 
+      Display.this.bounds
         = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
     }
-    
+
     public void setActiveShell( final Shell activeShell ) {
       Display.this.setActiveShell( activeShell );
     }
@@ -938,21 +939,21 @@ public class Display extends Device implements Adaptable {
       return getFilterEntries();
     }
   }
-  
+
   //////////////////
   // Helping methods
-  
+
   /**
    * Does whatever display specific cleanup is required, and then uses the code
    * in <code>SWTError.error</code> to handle the error.
-   * 
+   *
    * @param code the descriptive error code
    * @see SWT#error(int)
    */
   void error( int code ) {
     SWT.error( code );
   }
-  
+
   static boolean isValidClass( final Class clazz ) {
 //    String name = clazz.getName();
 //    int index = name.lastIndexOf( '.' );

@@ -96,7 +96,7 @@ public class TreeItem_Test extends TestCase {
     // initial background color should match the parents one
     assertEquals( tree.getBackground(), item.getBackground() );
     // change the colors
-    Color green = Color.getColor( 0, 255, 0 );
+    Color green = display.getSystemColor( SWT.COLOR_GREEN );
     item.setBackground( green );
     assertEquals( green, item.getBackground() );
   }
@@ -109,7 +109,7 @@ public class TreeItem_Test extends TestCase {
     // initial foreground color should match the parents one
     assertEquals( tree.getForeground(), item.getForeground() );
     // change the colors
-    Color green = Color.getColor( 0, 255, 0 );
+    Color green = display.getSystemColor( SWT.COLOR_GREEN );
     item.setForeground( green );
     assertEquals( green, item.getForeground() );
   }
@@ -272,13 +272,13 @@ public class TreeItem_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    
+
     Image[] images = new Image[] {
       Image.find( RWTFixture.IMAGE1 ),
       Image.find( RWTFixture.IMAGE2 ),
       Image.find( RWTFixture.IMAGE3 )
     };
-    
+
     assertNull( treeItem.getImage( 1 ) );
     treeItem.setImage( -1, null );
     assertNull( treeItem.getImage( -1 ) );
@@ -399,26 +399,26 @@ public class TreeItem_Test extends TestCase {
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
 
-    Color color = Color.getColor( 255, 0, 0 );
+    Color color = display.getSystemColor( SWT.COLOR_RED );
     treeItem.setForeground( color );
     assertEquals( color, treeItem.getForeground() );
     treeItem.setForeground( null );
     assertEquals( tree.getForeground(), treeItem.getForeground() );
   }
-  
+
   public void testSetBackground() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    
-    Color color = Color.getColor( 255, 0, 0 );
+
+    Color color = display.getSystemColor( SWT.COLOR_RED );
     treeItem.setBackground( color );
     assertEquals( color, treeItem.getBackground() );
     treeItem.setBackground( null );
     assertEquals( tree.getBackground(), treeItem.getBackground() );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

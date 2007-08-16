@@ -31,21 +31,21 @@ public class CBannerTab extends ExampleTab {
     int style = getStyle();
     
     CBanner banner = new CBanner( top, style );
-//    banner.setBackground( Color.getColor( 240, 250, 190 ) );
+//    banner.setBackground( Graphics.getColor( 240, 250, 190 ) );
     
     Label rightLabel = new Label( banner, SWT.NONE );
     rightLabel.setText( "Right" );
-//    rightLabel.setBackground( Color.getColor( 250, 250, 250 ) );
+//    rightLabel.setBackground( Graphics.getColor( 250, 250, 250 ) );
     banner.setRight( rightLabel );
     
     Label leftLabel = new Label( banner, SWT.NONE );
     leftLabel.setText( "Left" );
-//    leftLabel.setBackground( Color.getColor( 250, 250, 250 ) );
+//    leftLabel.setBackground( Graphics.getColor( 250, 250, 250 ) );
     banner.setLeft( leftLabel );
     
 //    Label bottomLabel = new Label( banner, SWT.NONE );
 //    bottomLabel.setText( "Bottom" );
-//    bottomLabel.setBackground( Color.getColor( 250, 250, 250 ) );
+//    bottomLabel.setBackground( Graphics.getColor( 250, 250, 250 ) );
 //    banner.setBottom( bottomLabel );
 //    
 //    Label contentLabel = new Label( banner, SWT.BORDER );

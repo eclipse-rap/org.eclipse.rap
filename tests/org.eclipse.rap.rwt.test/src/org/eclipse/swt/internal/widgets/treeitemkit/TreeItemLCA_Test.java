@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -23,7 +24,6 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA;
@@ -150,7 +150,7 @@ public class TreeItemLCA_Test extends TestCase {
     RWTFixture.preserveWidgets();
 
     TreeItemLCA tiLCA = new TreeItemLCA();
-    treeItem.setBackground( Color.getColor( 255, 0, 0 ) );
+    treeItem.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
     tiLCA.renderChanges( treeItem );
 
     String expected;
@@ -162,7 +162,7 @@ public class TreeItemLCA_Test extends TestCase {
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
 
-    treeItem.setForeground( Color.getColor( 0, 255, 0 ) );
+    treeItem.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     tiLCA.renderChanges( treeItem );
 
     expected = "wm.setForeground( w, \"#00ff00\" );";

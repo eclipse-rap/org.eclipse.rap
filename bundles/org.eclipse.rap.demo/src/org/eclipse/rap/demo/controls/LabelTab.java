@@ -69,16 +69,16 @@ public class LabelTab extends ExampleTab {
     parent.addControlListener( new ControlAdapter() {
       public void controlResized(ControlEvent e) {
         Point size = fixedSizeLabel.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-        fixedSizeLabel.setLayoutData( new RowData( size.x, size.y * 2) );      
+        fixedSizeLabel.setLayoutData( new RowData( size.x, size.y * 2) );
       }
     } );
-    fixedSizeLabel.setLayoutData( new RowData( 300, 100 ) );
+    fixedSizeLabel.setLayoutData( new RowData( 100, 100 ) );
     new Label( parent, SWT.NONE );
     varSizeLabel = new Label( parent, style );
     registerControl( varSizeLabel );
     registerControl( fixedSizeLabel );
 
-    
+
     Composite buttons = new Composite( parent, SWT.NONE );
     buttons.setLayout( new FillLayout() );
     Button text1Button = new Button( buttons, SWT.PUSH );
@@ -117,7 +117,7 @@ public class LabelTab extends ExampleTab {
     } );
     updateLabel( varSizeLabel );
   }
-  
+
   private void createChangeLabelControl( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );

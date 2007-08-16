@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -26,7 +26,7 @@ public class CLabel_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
-    Color red = Color.getColor( 255, 0, 0 );
+    Color red = display.getSystemColor( SWT.COLOR_RED );
     label.setBackground( red );
     assertEquals( label.getBackground(), red );
   }

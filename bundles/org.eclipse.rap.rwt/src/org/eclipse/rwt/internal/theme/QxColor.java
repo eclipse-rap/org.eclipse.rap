@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.theme;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Color;
 
 public class QxColor implements QxType {
@@ -137,7 +138,7 @@ public class QxColor implements QxType {
   }
 
   public static Color createColor( final QxColor color ) {
-    return Color.getColor( color.red, color.green, color.blue );
+    return Graphics.getColor( color.red, color.green, color.blue );
   }
 
   private static String getHexStr( final int value ) {

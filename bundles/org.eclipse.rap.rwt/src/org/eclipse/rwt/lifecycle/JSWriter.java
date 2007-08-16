@@ -23,7 +23,7 @@ import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.internal.graphics.IColor;
+import org.eclipse.swt.internal.graphics.ColorUtil;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.widgets.*;
 
@@ -201,7 +201,7 @@ public final class JSWriter {
     throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    boolean changed 
+    boolean changed
       =  !adapter.isInitialized()
       || WidgetLCAUtil.hasChanged( widget, javaProperty, newValue );
     if( changed ) {
@@ -216,7 +216,7 @@ public final class JSWriter {
                       final Object defValue )
     throws IOException
   {
-    boolean changed 
+    boolean changed
       = WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defValue );
     if( changed ) {
       set( jsProperty, new Object[] { newValue } );
@@ -508,7 +508,7 @@ public final class JSWriter {
   }
 
   // TODO [fappel]: FontSizeCalculation causes problems with widget manager
-  //                in IE. See FontSizeCalculationHandler#createFontParam. 
+  //                in IE. See FontSizeCalculationHandler#createFontParam.
   //                Untill a better solution is found this hack is needed.
   private boolean currentPhaseIsRender() {
     return CurrentPhase.get() != PhaseId.PROCESS_ACTION
@@ -573,7 +573,7 @@ public final class JSWriter {
   private static String createParamList( final String startList,
                                          final Object[] args,
                                          final String endList,
-                                         final boolean useCurrentWidgetRef ) 
+                                         final boolean useCurrentWidgetRef )
   {
     StringBuffer params = new StringBuffer();
     if( args != null ) {
@@ -599,7 +599,7 @@ public final class JSWriter {
           params.append( args[ i ] );
         } else if( args[ i ] instanceof Color ) {
           params.append( '"' );
-          params.append( ( ( IColor )args[ i ] ).toColorValue() );
+          params.append( ColorUtil.formatColorForJs( ( Color )args[ i ] ) );
           params.append( '"' );
         } else if( args[ i ] instanceof Object[] ) {
           params.append( createArray( ( Object[] )args[ i ] ) );
@@ -631,7 +631,7 @@ public final class JSWriter {
         buffer.append( createFindWidgetById( ( Widget )array[ i ] ) );
       } else if( array[ i ] instanceof Color ) {
         buffer.append( '"' );
-        buffer.append( ( ( IColor )array[ i ] ).toColorValue() );
+        buffer.append( ColorUtil.formatColorForJs( ( Color )array[ i ] ) );
         buffer.append( '"' );
       } else {
         buffer.append( array[ i ] );

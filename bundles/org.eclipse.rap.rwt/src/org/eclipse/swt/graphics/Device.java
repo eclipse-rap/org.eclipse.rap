@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.graphics;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.QxFont;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
@@ -93,7 +94,7 @@ public abstract class Device {
         pixel = 0x02808080;
       break;
     }
-    return Color.getColor( pixel );
+    return Graphics.getColor( pixel );
   }
 
   /**

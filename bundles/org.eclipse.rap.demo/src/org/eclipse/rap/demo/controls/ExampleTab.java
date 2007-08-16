@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
@@ -24,7 +25,7 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 abstract class ExampleTab {
-  
+
   private boolean contentCreated;
   private static final int MAX_COLORS = 4;
   private final CTabFolder folder;
@@ -47,13 +48,13 @@ abstract class ExampleTab {
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
   private final CTabItem item;
-  
-  public static final Color BG_COLOR_GREEN = Color.getColor( 154, 205, 50 );
-  public static final Color BG_COLOR_BLUE = Color.getColor( 105, 89, 205 );
-  public static final Color BG_COLOR_BROWN = Color.getColor( 192, 172, 137 );
-  public static final Color FG_COLOR_RED = Color.getColor( 194, 0, 23 );
-  public static final Color FG_COLOR_BLUE = Color.getColor( 28, 96, 141 );
-  public static final Color FG_COLOR_ORANGE = Color.getColor( 249, 158, 0 );
+
+  public static final Color BG_COLOR_GREEN = Graphics.getColor( 154, 205, 50 );
+  public static final Color BG_COLOR_BLUE = Graphics.getColor( 105, 89, 205 );
+  public static final Color BG_COLOR_BROWN = Graphics.getColor( 192, 172, 137 );
+  public static final Color FG_COLOR_RED = Graphics.getColor( 194, 0, 23 );
+  public static final Color FG_COLOR_BLUE = Graphics.getColor( 28, 96, 141 );
+  public static final Color FG_COLOR_ORANGE = Graphics.getColor( 249, 158, 0 );
 
   public ExampleTab( final CTabFolder parent, final String title ) {
     folder = parent;
@@ -74,7 +75,7 @@ abstract class ExampleTab {
       contentCreated = true;
     }
   }
-  
+
   protected void createNew() {
     controls.clear();
     destroyExampleControls();
@@ -111,14 +112,14 @@ abstract class ExampleTab {
     vertSashForm.setWeights( new int[] { 95, 5 } );
     return vertSashForm;
   }
-  
+
   private void createLeft( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     Group exmplGroup = new Group( parent, SWT.NONE );
     exmplGroup.setLayout( new FillLayout() );
     exmplComp = new Composite( exmplGroup, SWT.NONE );
   }
-  
+
   private void createRight( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     Group styleGroup = new Group( parent, SWT.NONE );
@@ -127,13 +128,13 @@ abstract class ExampleTab {
     styleComp = new Composite( styleGroup, SWT.NONE );
     styleComp.setLayout( new RowLayout( SWT.VERTICAL ) );
   }
-  
+
   private void createFoot( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     text = new Text( parent, SWT.BORDER | SWT.READ_ONLY | SWT.MULTI );
     text.setText( "---" );
   }
-  
+
   private void initColors() {
     bgColors = new Color[ MAX_COLORS ];
     fgColors = new Color[ MAX_COLORS ];
@@ -148,9 +149,9 @@ abstract class ExampleTab {
   }
 
   protected abstract void createStyleControls( final Composite parent);
-  
+
   protected abstract void createExampleControls( final Composite parent );
-  
+
   /**
    * TODO [rst] Refactor ExampleTab to evaluate style controls before example
    *      controls are created.
@@ -158,7 +159,7 @@ abstract class ExampleTab {
   protected void setDefaultStyle( final int style ) {
     this.defaultStyle = style;
   }
-  
+
   /**
    * @deprecated Too much magic. Use
    *             <code>createStyleButton( String fieldName, int style )</code>
@@ -167,7 +168,7 @@ abstract class ExampleTab {
   protected Button createStyleButton( final String fieldName ) {
     return createStyleButton( fieldName, false );
   }
-  
+
   /**
    * @deprecated Too much magic. Use
    *             <code>createStyleButton( String fieldName, int style, boolean checked )</code>
@@ -187,13 +188,13 @@ abstract class ExampleTab {
     button.setEnabled( style != SWT.NONE );
     return button;
   }
-  
+
   protected Button createStyleButton( final String fieldName,
                                       final int style )
   {
     return createStyleButton( fieldName, style, false );
   }
-  
+
   protected Button createStyleButton( final String name,
                                       final int style,
                                       final boolean checked ) {
@@ -212,22 +213,22 @@ abstract class ExampleTab {
   protected Button createPropertyButton( final String text ) {
     return createPropertyButton( text, SWT.CHECK );
   }
-  
+
   protected Button createPropertyButton( final String text, final int style ) {
     Button button = new Button( styleComp, style );
     button.setText( text );
     return button;
   }
-  
+
   /**
    * Creates a checkbutton to show / hide the registered controls.
-   * 
+   *
    * @return the created checkbutton
    */
   protected Button createVisibilityButton( ) {
     final Button button = new Button( styleComp, SWT.CHECK );
     button.setText( "Visble" );
-    button.setSelection( visible ); 
+    button.setSelection( visible );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         visible = button.getSelection();
@@ -239,7 +240,7 @@ abstract class ExampleTab {
 
   /**
    * Creates a checkbutton to enable / disabled the registered controls.
-   * 
+   *
    * @return the created checkbutton.
    */
   protected Button createEnablementButton( ) {
@@ -258,7 +259,7 @@ abstract class ExampleTab {
   /**
    * Creates a button to change the foreground color of the registered
    * controls.
-   * 
+   *
    * @return the created checkbutton.
    */
   protected Button createFgColorButton( ) {
@@ -278,7 +279,7 @@ abstract class ExampleTab {
   /**
    * Creates a button to change the background color of the registered
    * controls.
-   * 
+   *
    * @return the created checkbutton.
    */
   protected Button createBgColorButton( ) {
@@ -293,7 +294,7 @@ abstract class ExampleTab {
     } );
     return button;
   }
-  
+
   protected Button createFontChooser() {
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Font" );
@@ -312,7 +313,7 @@ abstract class ExampleTab {
     } );
     return button;
   }
-  
+
   /**
    * Experimental. Switching themes at runtime does not yet work properly.
    */
@@ -350,19 +351,19 @@ abstract class ExampleTab {
    * Adds a control to the list of registered controls. Registered controls can
    * be hidden and disabled by the checkbuttons in the property area. This
    * method is to be called within <code>createExampleControls</code>.
-   * 
+   *
    * @param control A control that should be remote controlled.
    */
   protected void registerControl( final Control control ) {
     controls.add( control );
   }
-  
+
   protected void log(final String msg) {
     content.append( msg.trim() );
     content.append( text.getLineDelimiter() );
     System.out.println( "LOG: " + msg.trim() );
     text.setText( content.toString() );
-    // TODO: scroll to last line 
+    // TODO: scroll to last line
   }
 
   private void destroyExampleControls() {
@@ -405,7 +406,7 @@ abstract class ExampleTab {
       control.setVisible( visible );
     }
   }
-  
+
   private void updateEnabled( ) {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
@@ -413,7 +414,7 @@ abstract class ExampleTab {
       control.setEnabled( enabled );
     }
   }
-  
+
   private void updateFgColor() {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
@@ -429,7 +430,7 @@ abstract class ExampleTab {
       control.setBackground( bgColors[ bgIndex ] );
     }
   }
-  
+
   private void updateFont() {
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
@@ -437,7 +438,7 @@ abstract class ExampleTab {
       control.setFont( font );
     }
   }
-  
+
   protected Shell getShell() {
     return folder.getShell();
   }

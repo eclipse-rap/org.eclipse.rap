@@ -12,6 +12,7 @@ package org.eclipse.rap.demo.controls;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
@@ -175,8 +176,8 @@ public class ShellTab extends ExampleTab {
     final Composite comp2 = new Composite( shell, SWT.NONE );
     comp2.moveAbove( comp1 );
     if( showClientAreaButton.getSelection() ) {
-      comp1.setBackground( Color.getColor( 200, 0, 0 ) );
-      comp2.setBackground( Color.getColor( 200, 200, 200 ) );
+      comp1.setBackground( Graphics.getColor( 200, 0, 0 ) );
+      comp2.setBackground( Graphics.getColor( 200, 200, 200 ) );
     }
     Rectangle ca = shell.getClientArea();
     comp1.setBounds( ca.x, ca.y, ca.width, ca.height );
@@ -218,7 +219,7 @@ public class ShellTab extends ExampleTab {
     shell.setLayout( layout );
     Button closeButton = new Button( shell, SWT.PUSH );
     closeButton.setText( "Close This Window" );
-    closeButton.setBackground( Color.getColor( 25, 55, 55 ) );
+    closeButton.setBackground( Graphics.getColor( 25, 55, 55 ) );
     closeButton.setLayoutData( new RowData( 140, 40 ) );
     closeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
