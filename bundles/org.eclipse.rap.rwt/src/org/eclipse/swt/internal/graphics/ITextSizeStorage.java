@@ -16,16 +16,28 @@ import org.eclipse.swt.graphics.Point;
 
 
 /**
- * TODO [fappel]: Move to API package
- * TODO [fappel]: Documentation
- * 
+ * TODO [fappel]: Documentation, move to API package
  */
-public interface IFontSizeStorage {
+public interface ITextSizeStorage {
   
+  /**
+   * TODO [fappel]: Documentation
+   */
   Font[] getFontList();
+  
+  /**
+   * TODO [fappel]: Documentation
+   */
   void storeFont( Font font );
   
-  Point lookupStringSize( Integer key );
-  void storeStringSize( Integer key, Point size );
+  /**
+   * TODO [fappel]: Documentation
+   */
+  Point lookupTextSize( Integer key );
+
+  /**
+   * TODO [fappel]: Documentation
+   */
+  void storeTextSize( Integer key, Point size );
   
 }

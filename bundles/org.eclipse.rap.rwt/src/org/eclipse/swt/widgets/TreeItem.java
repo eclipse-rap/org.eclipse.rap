@@ -14,7 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 
 
@@ -859,7 +859,7 @@ public class TreeItem extends Item {
    */
   int getPreferredWidth (int columnIndex) {
     int width = 0;
-    width += FontSizeCalculator.textExtent( parent.getFont(), getText( columnIndex ), 0 ).x;
+    width += TextSizeDetermination.textExtent( parent.getFont(), getText( columnIndex ), 0 ).x;
     int orderedIndex = parent.columnHolder.size() == 0 ? 0 : ((TreeColumn)parent.columnHolder.getItem( columnIndex )).getOrderIndex ();
     if (orderedIndex == 0) {
       width += 19; // TODO find proper solution

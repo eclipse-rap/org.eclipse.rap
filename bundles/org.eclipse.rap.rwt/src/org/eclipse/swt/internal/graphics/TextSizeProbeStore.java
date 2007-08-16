@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Display;
 
 
-final class FontSizeProbeStore extends SessionSingletonBase {
+final class TextSizeProbeStore extends SessionSingletonBase {
   
   // TODO [fappel]: improve probe text determination...
   static String DEFAULT_PROBE;
@@ -36,7 +36,7 @@ final class FontSizeProbeStore extends SessionSingletonBase {
   }
 
   private static final String PROBE_REQUESTS
-    = FontSizeProbeStore.class.getName() + ".ProbeRequests";
+    = TextSizeProbeStore.class.getName() + ".ProbeRequests";
   
   private static Map probes = new HashMap(); 
   
@@ -83,12 +83,12 @@ final class FontSizeProbeStore extends SessionSingletonBase {
     }
   }
   
-  private FontSizeProbeStore() {
+  private TextSizeProbeStore() {
     // prevent instance creation
   }
    
-  static FontSizeProbeStore getInstance() {
-    return ( FontSizeProbeStore )getInstance( FontSizeProbeStore.class );
+  static TextSizeProbeStore getInstance() {
+    return ( TextSizeProbeStore )getInstance( TextSizeProbeStore.class );
   }
   
   IProbeResult getProbeResult( final Font font ) {
@@ -134,7 +134,7 @@ final class FontSizeProbeStore extends SessionSingletonBase {
     IProbe[] result;
     synchronized( probes ) {
       if( probes.isEmpty() ) {
-        Font[] fontList = FontSizeStorageRegistry.obtain().getFontList();
+        Font[] fontList = TextSizeStorageRegistry.obtain().getFontList();
         for( int i = 0; i < fontList.length; i++ ) {
           createProbe( fontList[ i ], getProbeString( fontList[ i ] ) );
         }
@@ -169,15 +169,15 @@ final class FontSizeProbeStore extends SessionSingletonBase {
     synchronized( probes ) {
       probes.put( fontData, result );
     }
-    FontSizeStorageRegistry.obtain().storeFont( font );
+    TextSizeStorageRegistry.obtain().storeFont( font );
     return result;
   }
 
   static void reset() {
     synchronized( probes ) {
-      IFontSizeStorage registry = FontSizeStorageRegistry.obtain();
-      if( registry instanceof DefaultFontSizeStorage ) {
-        ( ( DefaultFontSizeStorage )registry ).resetFontList();
+      ITextSizeStorage registry = TextSizeStorageRegistry.obtain();
+      if( registry instanceof DefaultTextSizeStorage ) {
+        ( ( DefaultTextSizeStorage )registry ).resetFontList();
       }
       probes.clear();
     }
@@ -213,7 +213,7 @@ final class FontSizeProbeStore extends SessionSingletonBase {
       result.append( probe.getString() );
       result.append( "\", " );
       result.append(
-        FontSizeCalculationHandler.createFontParam( probe.getFont() ) );
+        TextSizeDeterminationHandler.createFontParam( probe.getFont() ) );
       result.append( " ]" );
     }
     return result.toString();

@@ -16,7 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 /**
  * Instances of this class represent a column in a table widget.
@@ -263,7 +263,7 @@ public class TableColumn extends Item {
     checkWidget();
     // Compute width from the column itself
     Font font = parent.getFont();
-    int width = FontSizeCalculator.stringExtent( font, getText() ).x;
+    int width = TextSizeDetermination.stringExtent( font, getText() ).x;
     Image image = getImage();
     if( image != null ) {
       width += image.getBounds().width + SPACING;

@@ -14,7 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  
 /**
  * Instances of this class represent a column in a tree widget.
@@ -272,7 +272,7 @@ public int getAlignment () {
 int getContentWidth () {
 	int contentWidth = 0;
 	if (text.length () > 0) {
-		contentWidth += FontSizeCalculator.textExtent( parent.getFont(), text, 0 ).x;
+		contentWidth += TextSizeDetermination.textExtent( parent.getFont(), text, 0 ).x;
 	}
 	if (image != null) {
 		contentWidth += image.getBounds().width;

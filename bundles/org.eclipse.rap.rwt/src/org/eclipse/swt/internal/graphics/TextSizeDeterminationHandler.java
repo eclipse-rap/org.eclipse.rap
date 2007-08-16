@@ -24,18 +24,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator.ICalculationItem;
-import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
 
-final class FontSizeCalculationHandler
+final class TextSizeDeterminationHandler
   implements PhaseListener, HttpSessionBindingListener
 {
   private static final long serialVersionUID = 1L;
   private static final String CALCULATION_HANDLER
-    = FontSizeCalculationHandler.class.getName() + ".CalculationHandler";
+    = TextSizeDeterminationHandler.class.getName() + ".CalculationHandler";
 
   private final Display display;
   private ICalculationItem[] calculationItems;
@@ -48,15 +48,15 @@ final class FontSizeCalculationHandler
     if( display != null && display.getThread() == Thread.currentThread() ) {
       ISessionStore session = ContextProvider.getSession();
       if( session.getAttribute( CALCULATION_HANDLER ) == null ) {
-        FontSizeCalculationHandler handler
-          = new FontSizeCalculationHandler( display );
+        TextSizeDeterminationHandler handler
+          = new TextSizeDeterminationHandler( display );
         session.setAttribute( CALCULATION_HANDLER, handler );
         LifeCycleFactory.getLifeCycle().addPhaseListener( handler );
       }
     }
   }
 
-  private FontSizeCalculationHandler( final Display display ) {
+  private TextSizeDeterminationHandler( final Display display ) {
     this.display = display;
   }
 
@@ -151,7 +151,7 @@ final class FontSizeCalculationHandler
       String value = request.getParameter( name );
       if( value != null ) {
         Point size = getSize( value );
-        FontSizeProbeStore.getInstance().createProbeResult( probe, size );
+        TextSizeProbeStore.getInstance().createProbeResult( probe, size );
       }
     }
   }
@@ -167,7 +167,7 @@ final class FontSizeCalculationHandler
     UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {
         ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
-        lifeCycle.removePhaseListener( FontSizeCalculationHandler.this );
+        lifeCycle.removePhaseListener( TextSizeDeterminationHandler.this );
       }
     } );
   }
@@ -178,7 +178,7 @@ final class FontSizeCalculationHandler
   private ICalculationItem[] writeStringMeasurements()
     throws IOException
   {
-    ICalculationItem[] items = FontSizeCalculator.getCalculationItems();
+    ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
     if( items.length > 0 ) {
       JSWriter writer = JSWriter.getWriterForResetHandler();
       StringBuffer param = new StringBuffer();
@@ -208,7 +208,7 @@ final class FontSizeCalculationHandler
   }
 
   private IProbe[] writeFontProbing() throws IOException {
-    IProbe[] requests = FontSizeProbeStore.getProbeRequests();
+    IProbe[] requests = TextSizeProbeStore.getProbeRequests();
     if( requests.length > 0 ) {
       JSWriter writer = JSWriter.getWriterForResetHandler();
       StringBuffer param = new StringBuffer();
@@ -275,7 +275,7 @@ final class FontSizeCalculationHandler
       // TODO [fappel]: Workaround for background process problem
       if( value != null ) {
         Point size = getSize( value );
-        FontSizeDataBase.store( item.getFont(),
+        TextSizeDataBase.store( item.getFont(),
                                 item.getString(),
                                 item.getWrapWidth(),
                                 size );

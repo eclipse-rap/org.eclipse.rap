@@ -15,7 +15,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
@@ -179,13 +179,13 @@ public class CLabel extends Canvas {
     }
 
     if ( text != null && text.length() > 0 ) {
-      Point e = FontSizeCalculator.stringExtent( getFont(), text );
+      Point e = TextSizeDetermination.stringExtent( getFont(), text );
       size.x += e.x;
       size.y = Math.max( size.y, e.y );
       if ( image != null )
         size.x += GAP;
     } else {
-      size.y = Math.max( size.y, FontSizeCalculator.getCharHeight( getFont() ) );
+      size.y = Math.max( size.y, TextSizeDetermination.getCharHeight( getFont() ) );
     }
 
     return size;

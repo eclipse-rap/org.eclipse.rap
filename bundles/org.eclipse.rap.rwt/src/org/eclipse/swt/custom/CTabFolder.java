@@ -16,7 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.widgets.*;
@@ -1714,7 +1714,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 //      GC gc = new GC(this);
       if (items.length == 0) {
 //        tempHeight = gc.textExtent("Default", CTabItem.FLAGS).y + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN; //$NON-NLS-1$
-        tempHeight = FontSizeCalculator.getCharHeight( getFont() ) + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN;
+        tempHeight = TextSizeDetermination.getCharHeight( getFont() ) + CTabItem.TOP_MARGIN + CTabItem.BOTTOM_MARGIN;
       } else {
         for (int i=0; i < items.length; i++) {
 //          tempHeight = Math.max(tempHeight, items[i].preferredHeight(gc));

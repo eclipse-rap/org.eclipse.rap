@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -32,11 +32,11 @@ final class PrepareUIRoot implements IPhase {
     String startup = request.getParameter( RequestParams.STARTUP );
     PhaseId result;
     if( startup != null ) {
-      FontSizeCalculator.readStartupProbes();
+      TextSizeDetermination.readStartupProbes();
       EntryPointManager.createUI( startup );      
       result = PhaseId.RENDER;
     } else if( Display.getCurrent() == null ) {
-      FontSizeCalculator.readStartupProbes();
+      TextSizeDetermination.readStartupProbes();
       EntryPointManager.createUI( EntryPointManager.DEFAULT );
       result = PhaseId.RENDER;
     } else {

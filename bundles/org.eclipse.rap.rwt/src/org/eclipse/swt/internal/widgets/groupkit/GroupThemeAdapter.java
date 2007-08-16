@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.widgets.groupkit;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 
@@ -36,7 +36,7 @@ public class GroupThemeAdapter extends ControlThemeAdapter
     int left = margin.left + frame.width + padding.left;
     int top = margin.top + frame.width + padding.top;
     Font font = control.getFont();
-    top = Math.max( top, FontSizeCalculator.getCharHeight( font ) );
+    top = Math.max( top, TextSizeDetermination.getCharHeight( font ) );
     int right = margin.right + frame.width + padding.right;
     int bottom = margin.bottom + frame.width + padding.bottom;
     return new Rectangle( left, top, left + right, top + bottom );

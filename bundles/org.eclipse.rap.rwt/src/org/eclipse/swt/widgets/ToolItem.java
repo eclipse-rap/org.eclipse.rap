@@ -15,7 +15,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
@@ -376,7 +376,7 @@ public class ToolItem extends Item {
     
     int height = DEFAULT_HEIGHT;
     if( !"".equals( getText() ) ) {
-      int charHeight = FontSizeCalculator.getCharHeight( parent.getFont()  );
+      int charHeight = TextSizeDetermination.getCharHeight( parent.getFont()  );
       height = Math.max( DEFAULT_HEIGHT, charHeight );
       if( getImage() != null ) {
         height = Math.max( height, getImage().getBounds().y );
@@ -412,7 +412,7 @@ public class ToolItem extends Item {
         // TODO [fappel]: need some more space for the Workbench perspective
         //                switcher. Check this after a proper font size
         //                calculation is in place
-        result += 11 + FontSizeCalculator.stringExtent( font, getText() ).x;
+        result += 11 + TextSizeDetermination.stringExtent( font, getText() ).x;
       }
       if( ( style & SWT.DROP_DOWN ) != 0 ) {
         result += DROP_DOWN_ARROW_WIDTH;

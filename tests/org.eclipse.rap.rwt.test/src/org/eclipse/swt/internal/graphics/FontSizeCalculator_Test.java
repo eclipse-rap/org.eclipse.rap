@@ -28,9 +28,9 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator.ICalculationItem;
-import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbe;
-import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbeResult;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbeResult;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -63,9 +63,9 @@ public class FontSizeCalculator_Test extends TestCase {
       }
       public void beforePhase( final PhaseEvent event ) {
         Font font = Graphics.getFont( "arial", 10, SWT.BOLD );
-        FontSizeCalculator.stringExtent( font, "FirstString" );
+        TextSizeDetermination.stringExtent( font, "FirstString" );
         font = Graphics.getFont( "helvetia, ms sans serif", 12, SWT.BOLD );
-        FontSizeCalculator.stringExtent( font, "SecondString" );
+        TextSizeDetermination.stringExtent( font, "SecondString" );
       }
       public PhaseId getPhaseId() {
         return PhaseId.RENDER;
@@ -73,7 +73,7 @@ public class FontSizeCalculator_Test extends TestCase {
     } );
     lifeCycle.execute();
 
-    String probe = FontSizeProbeStore.DEFAULT_PROBE;
+    String probe = TextSizeProbeStore.DEFAULT_PROBE;
     String[] expected = new String[] {
       "org.eclipse.swt.FontSizeCalculation.probe( [ [",
       ", \"" + probe + "\", [ \"arial\" ], 10, true, false ]",
@@ -91,76 +91,76 @@ public class FontSizeCalculator_Test extends TestCase {
   }
 
   public void testStringExtent() {
-    ICalculationItem[] items = FontSizeCalculator.getCalculationItems();
+    ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
     assertEquals( 0, items.length );
 
     Font font = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    Point calculated = FontSizeCalculator.stringExtent( font , TEST_STRING );
-    Point estimated = FontSizeEstimation.stringExtent( font, TEST_STRING );
+    Point calculated = TextSizeDetermination.stringExtent( font , TEST_STRING );
+    Point estimated = TextSizeEstimation.stringExtent( font, TEST_STRING );
     assertEquals( estimated, calculated );
 
-    items = FontSizeCalculator.getCalculationItems();
+    items = TextSizeDetermination.getCalculationItems();
     assertEquals( 1, items.length );
-    items = FontSizeCalculator.getCalculationItems();
+    items = TextSizeDetermination.getCalculationItems();
     assertEquals( 1, items.length );
 
-    FontSizeCalculator.stringExtent( font , TEST_STRING );
+    TextSizeDetermination.stringExtent( font , TEST_STRING );
     assertEquals( 1, items.length );
-    items = FontSizeCalculator.getCalculationItems();
+    items = TextSizeDetermination.getCalculationItems();
     assertEquals( 1, items.length );
 
     Point storedSize = new Point( 100, 10 );
-    IProbe[] probeRequests = FontSizeProbeStore.getProbeRequests();
+    IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 1, probeRequests.length );
     assertSame( font, probeRequests[ 0 ].getFont() );
 
-    FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     probeStore.createProbeResult( probeRequests[ 0 ], new Point( 10, 10 ) );
-    FontSizeDataBase.store( font, TEST_STRING, SWT.DEFAULT, storedSize );
-    calculated = FontSizeCalculator.stringExtent( font, TEST_STRING );
+    TextSizeDataBase.store( font, TEST_STRING, SWT.DEFAULT, storedSize );
+    calculated = TextSizeDetermination.stringExtent( font, TEST_STRING );
     assertEquals( storedSize, calculated );
 
-    Point emptyStringSize = FontSizeCalculator.stringExtent( font, "" );
+    Point emptyStringSize = TextSizeDetermination.stringExtent( font, "" );
     assertEquals( new Point( 0, 10 ), emptyStringSize );
   }
 
   public void testCharHeight() {
-    IProbe[] probeRequests = FontSizeProbeStore.getProbeRequests();
+    IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 0, probeRequests.length );
 
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    int calculated = FontSizeCalculator.getCharHeight( font0 );
-    int estimated = FontSizeEstimation.getCharHeight( font0 );
+    int calculated = TextSizeDetermination.getCharHeight( font0 );
+    int estimated = TextSizeEstimation.getCharHeight( font0 );
     assertEquals( estimated, calculated, 0 );
 
-    probeRequests = FontSizeProbeStore.getProbeRequests();
+    probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 1, probeRequests.length );
     assertSame( font0, probeRequests[ 0 ].getFont() );
 
-    FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     Point probeSize = new Point( 10, 13 );
     probeStore.createProbeResult( probeRequests[ 0 ], probeSize );
-    calculated = FontSizeCalculator.getCharHeight( font0 );
+    calculated = TextSizeDetermination.getCharHeight( font0 );
     assertEquals( 13, calculated );
   }
 
   public void testAvgCharWidth() {
-    IProbe[] probeRequests = FontSizeProbeStore.getProbeRequests();
+    IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 0, probeRequests.length );
 
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    float calculated = FontSizeCalculator.getAvgCharWidth( font0 );
-    float estimated = FontSizeEstimation.getAvgCharWidth( font0 );
+    float calculated = TextSizeDetermination.getAvgCharWidth( font0 );
+    float estimated = TextSizeEstimation.getAvgCharWidth( font0 );
     assertEquals( estimated, calculated, 0 );
 
-    probeRequests = FontSizeProbeStore.getProbeRequests();
+    probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 1, probeRequests.length );
     assertSame( font0, probeRequests[ 0 ].getFont() );
 
-    FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
-    Point probeSize = new Point( FontSizeProbeStore.DEFAULT_PROBE.length() * 4, 10 );
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
+    Point probeSize = new Point( TextSizeProbeStore.DEFAULT_PROBE.length() * 4, 10 );
     probeStore.createProbeResult( probeRequests[ 0 ], probeSize );
-    calculated = FontSizeCalculator.getAvgCharWidth( font0 );
+    calculated = TextSizeDetermination.getAvgCharWidth( font0 );
     assertEquals( 4, calculated, 0 );
   }
 
@@ -168,67 +168,67 @@ public class FontSizeCalculator_Test extends TestCase {
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
     Font font1 = Graphics.getFont( "helvetia", 12, SWT.NORMAL );
 
-    Point textSize = FontSizeDataBase.lookup( font0, TEST_STRING, SWT.DEFAULT );
+    Point textSize = TextSizeDataBase.lookup( font0, TEST_STRING, SWT.DEFAULT );
     assertNull( textSize );
-    textSize = FontSizeDataBase.lookup( font1, TEST_STRING, SWT.DEFAULT );
+    textSize = TextSizeDataBase.lookup( font1, TEST_STRING, SWT.DEFAULT );
     assertNull( textSize );
 
     try {
       Point point = new Point( 1, 1 );
-      FontSizeDataBase.store( font1, TEST_STRING, SWT.DEFAULT, point );
+      TextSizeDataBase.store( font1, TEST_STRING, SWT.DEFAULT, point );
       fail( "No probe available." );
     } catch( final IllegalStateException ise ) {
     }
 
     // simulate clientside probing...
-    FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     Point probeSize0 = new Point( 10, 10 );
     probeStore.createProbeResult( findRequestedProbe( 0 ), probeSize0 );
     Point probeSize1 = new Point( 12, 12 );
     probeStore.createProbeResult( findRequestedProbe( 1 ), probeSize1 );
 
     Point calculatedTextSize0 = new Point( 100, 10 );
-    FontSizeDataBase.store( font0,
+    TextSizeDataBase.store( font0,
                             TEST_STRING,
                             SWT.DEFAULT,
                             calculatedTextSize0 );
     Point calculatedTextSize1 = new Point( 100, 12 );
-    FontSizeDataBase.store( font1,
+    TextSizeDataBase.store( font1,
                             TEST_STRING,
                             SWT.DEFAULT,
                             calculatedTextSize1 );
-    textSize = FontSizeDataBase.lookup( font0, TEST_STRING, SWT.DEFAULT );
+    textSize = TextSizeDataBase.lookup( font0, TEST_STRING, SWT.DEFAULT );
     assertEquals( calculatedTextSize0, textSize );
-    textSize = FontSizeDataBase.lookup( font1, TEST_STRING, SWT.DEFAULT );
+    textSize = TextSizeDataBase.lookup( font1, TEST_STRING, SWT.DEFAULT );
     assertEquals( calculatedTextSize1, textSize );
   }
 
   private IProbe findRequestedProbe( int i ) {
-    IProbe[] probeRequests = FontSizeProbeStore.getProbeRequests();
-    return FontSizeProbeStore.getProbe( probeRequests[ i ].getFont() );
+    IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
+    return TextSizeProbeStore.getProbe( probeRequests[ i ].getFont() );
   }
 
   public void testProbeStorage() {
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
-    IProbe[] probeList = FontSizeProbeStore.getProbeList();
+    IProbe[] probeList = TextSizeProbeStore.getProbeList();
     assertEquals( 0, probeList.length );
-    IProbe probe0 = FontSizeProbeStore.getProbe( font0 );
+    IProbe probe0 = TextSizeProbeStore.getProbe( font0 );
     assertNull( probe0 );
 
     String probeText0 = "ProbeText0";
-    probe0 = FontSizeProbeStore.createProbe( font0, probeText0 );
-    probeList = FontSizeProbeStore.getProbeList();
+    probe0 = TextSizeProbeStore.createProbe( font0, probeText0 );
+    probeList = TextSizeProbeStore.getProbeList();
     assertEquals( 1, probeList.length );
     assertSame( probe0, probeList[ 0 ] );
-    assertSame( probe0, FontSizeProbeStore.getProbe( font0 ) );
-    assertTrue( FontSizeProbeStore.containsProbe( font0 ) );
+    assertSame( probe0, TextSizeProbeStore.getProbe( font0 ) );
+    assertTrue( TextSizeProbeStore.containsProbe( font0 ) );
     assertSame( probe0.getFont(), font0 );
     assertSame( probe0.getString(), probeText0 );
 
     Font font1 = Graphics.getFont( "arial", 12, SWT.NORMAL );
-    assertFalse( FontSizeProbeStore.containsProbe( font1 ) );
+    assertFalse( TextSizeProbeStore.containsProbe( font1 ) );
 
-    FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     IProbeResult probeResult0 = probeStore.getProbeResult( font0 );
     assertNull( probeResult0 );
 
@@ -241,7 +241,7 @@ public class FontSizeCalculator_Test extends TestCase {
   }
 
   public void testDefaultFontSizeStorage() throws IOException {
-    DefaultFontSizeStorage storage = new DefaultFontSizeStorage();
+    DefaultTextSizeStorage storage = new DefaultTextSizeStorage();
     Font font0 = Graphics.getFont( "arial", 10, SWT.NORMAL );
     Font font1 = Graphics.getFont( "helvetia", 12, SWT.NORMAL );
     storage.storeFont( font0 );
@@ -249,17 +249,17 @@ public class FontSizeCalculator_Test extends TestCase {
 
     Point point0 = new Point( 9, 10 );
     Integer key0 = new Integer( 0 );
-    storage.storeStringSize( key0, point0 );
+    storage.storeTextSize( key0, point0 );
     Point point1 = new Point( 11, 12 );
     Integer key1 = new Integer( 1 );
-    storage.storeStringSize( key1, point1 );
+    storage.storeTextSize( key1, point1 );
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     storage.save( out );
     String[] expected = new String[] {
 //      "#" + DefaultFontSizeStorage.COMMENT + "\n",
-      DefaultFontSizeStorage.PREFIX_FONT_KEY + "0=1|arial|10|0|\n",
-      DefaultFontSizeStorage.PREFIX_FONT_KEY + "=1|helvetia|12|0|\n",
+      DefaultTextSizeStorage.PREFIX_FONT_KEY + "0=1|arial|10|0|\n",
+      DefaultTextSizeStorage.PREFIX_FONT_KEY + "=1|helvetia|12|0|\n",
       "0=9,10\n",
       "1=11,12\n"
     };
@@ -273,9 +273,9 @@ public class FontSizeCalculator_Test extends TestCase {
     ByteArrayInputStream in = new ByteArrayInputStream( out.toByteArray() );
     storage.read( in );
 
-    Point actual = storage.lookupStringSize( key0 );
+    Point actual = storage.lookupTextSize( key0 );
     assertEquals( point0, actual );
-    actual = storage.lookupStringSize( key1 );
+    actual = storage.lookupTextSize( key1 );
     assertEquals( point1, actual );
     Font[] fontList = storage.getFontList();
     List fonts = Arrays.asList( fontList );
@@ -285,40 +285,40 @@ public class FontSizeCalculator_Test extends TestCase {
   }
 
   public void testStorageOverflow() {
-    DefaultFontSizeStorage storage = new DefaultFontSizeStorage();
-    int storeSize = DefaultFontSizeStorage.MIN_STORE_SIZE;
-    DefaultFontSizeStorage.setStoreSize( storeSize );
+    DefaultTextSizeStorage storage = new DefaultTextSizeStorage();
+    int storeSize = DefaultTextSizeStorage.MIN_STORE_SIZE;
+    DefaultTextSizeStorage.setStoreSize( storeSize );
 
     for( int i = 0; i < storeSize - 1; i++ ) {
       Integer key = new Integer( i );
       Point point = new Point( i, i );
-      storage.storeStringSize( key, point );
+      storage.storeTextSize( key, point );
     }
     Integer firstKey = new Integer( 0 );
     // Attention: timestamp update!
-    Point firstPoint = storage.lookupStringSize( firstKey );
+    Point firstPoint = storage.lookupTextSize( firstKey );
     assertEquals( firstPoint, new Point( 0, 0 ) );
 
     Point overflowPoint = new Point( -1, -1 );
     Integer overFlowKey = new Integer( Integer.MAX_VALUE );
-    storage.storeStringSize( overFlowKey, overflowPoint );
+    storage.storeTextSize( overFlowKey, overflowPoint );
 
-    assertEquals( firstPoint, storage.lookupStringSize( firstKey ) );
-    assertEquals( overflowPoint, storage.lookupStringSize( overFlowKey ) );
-    assertNull( storage.lookupStringSize( new Integer( 99 ) ) );
+    assertEquals( firstPoint, storage.lookupTextSize( firstKey ) );
+    assertEquals( overflowPoint, storage.lookupTextSize( overFlowKey ) );
+    assertNull( storage.lookupTextSize( new Integer( 99 ) ) );
     assertEquals( new Point( 101, 101 ),
-                  storage.lookupStringSize( new Integer( 101 ) ) );
+                  storage.lookupTextSize( new Integer( 101 ) ) );
   }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();
-    FontSizeDataBase.reset();
-    FontSizeProbeStore.reset();
+    TextSizeDataBase.reset();
+    TextSizeProbeStore.reset();
   }
 
   protected void tearDown() throws Exception {
-    FontSizeProbeStore.reset();
-    FontSizeDataBase.reset();
+    TextSizeProbeStore.reset();
+    TextSizeDataBase.reset();
     RWTFixture.tearDown();
   }
 }

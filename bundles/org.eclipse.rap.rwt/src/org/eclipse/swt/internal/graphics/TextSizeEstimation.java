@@ -15,7 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 
-class FontSizeEstimation {
+class TextSizeEstimation {
 
   /**
    * Estimates the size of a given text. Linebreaks are not respected.
@@ -99,7 +99,7 @@ class FontSizeEstimation {
    */
   static float getAvgCharWidth( final Font font ) {
     float result;
-    FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     if( probeStore.containsProbeResult( font ) ) {
       // we can improve char width estimations in case that we already have the
       // specified font probed.

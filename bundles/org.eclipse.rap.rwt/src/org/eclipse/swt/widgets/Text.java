@@ -17,7 +17,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.textkit.ITextThemeAdapter;
 
 /**
@@ -495,9 +495,9 @@ public class Text extends Scrollable {
       Point extent;
       // Single-line text field should have same size as Combo, Spinner, etc.
       if( ( getStyle() & SWT.SINGLE ) != 0 ) {
-        extent = FontSizeCalculator.stringExtent( getFont(), text );
+        extent = TextSizeDetermination.stringExtent( getFont(), text );
       } else {
-        extent = FontSizeCalculator.textExtent( getFont(), text, wrapWidth );
+        extent = TextSizeDetermination.textExtent( getFont(), text, wrapWidth );
       }
       Rectangle padding = getPadding();
       if( extent.x != 0 ) {

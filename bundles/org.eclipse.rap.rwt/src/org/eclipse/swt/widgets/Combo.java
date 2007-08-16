@@ -17,7 +17,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.combokit.IComboThemeAdapter;
 
 /**
@@ -576,13 +576,13 @@ public class Combo extends Composite {
   {
     checkWidget();
     int width = 0;
-    int height = FontSizeCalculator.getCharHeight( getFont() );
+    int height = TextSizeDetermination.getCharHeight( getFont() );
     if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
       String[] items = model.getItems();
       for( int i = 0; i < items.length; i++ ) {
         if( !"".equals( items[ i ] ) ) {
           Point extent
-            = FontSizeCalculator.stringExtent( getFont(), items[ i ] );
+            = TextSizeDetermination.stringExtent( getFont(), items[ i ] );
           width = Math.max( width, extent.x + 10 );
         }
       }

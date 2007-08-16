@@ -21,16 +21,16 @@ import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbe;
-import org.eclipse.swt.internal.graphics.FontSizeProbeStore.IProbeResult;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
+import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbeResult;
 
 
-public class FontSizeCalculator {
+public class TextSizeDetermination {
 
   private static final String JS_CALCULATOR
-    = FontSizeCalculator.class.getName() + ".hasJSCalculator";
+    = TextSizeDetermination.class.getName() + ".hasJSCalculator";
   private static final String CALCULATION_ITEMS
-    = FontSizeCalculator.class.getName() + ".CalculationItems";
+    = TextSizeDetermination.class.getName() + ".CalculationItems";
   private static final ICalculationItem[] EMTY_ITEMS
     = new ICalculationItem[ 0 ];
   private static final Pattern NEWLINE_PATTERN
@@ -46,7 +46,7 @@ public class FontSizeCalculator {
   }
 
 
-  private FontSizeCalculator() {
+  private TextSizeDetermination() {
     // prevent instance creation
   }
 
@@ -74,10 +74,10 @@ public class FontSizeCalculator {
       if( testSize.x < wrapWidth ) {
         result = testSize;
       } else {
-        result = FontSizeEstimation.textExtent( font, string, wrapWidth );
+        result = TextSizeEstimation.textExtent( font, string, wrapWidth );
         BigDecimal height = new BigDecimal( result.y );
         BigDecimal charHeight
-          = new BigDecimal( FontSizeEstimation.getCharHeight( font ) );
+          = new BigDecimal( TextSizeEstimation.getCharHeight( font ) );
         int rows
           = height.divide( charHeight, 0, BigDecimal.ROUND_HALF_UP ).intValue();
         result.y = getCharHeight( font ) * rows;
@@ -92,15 +92,15 @@ public class FontSizeCalculator {
                                       final int estimationMode )
   {
     String toMeasure = createMeasureString( string, true );
-    Point result = FontSizeDataBase.lookup( font, toMeasure, wrapWidth );
+    Point result = TextSizeDataBase.lookup( font, toMeasure, wrapWidth );
     if( result == null ) {
       switch( estimationMode ) {
         case TEXT_EXTENT: {
-          result = FontSizeEstimation.textExtent( font, string, wrapWidth );
+          result = TextSizeEstimation.textExtent( font, string, wrapWidth );
         }
         break;
         case STRING_EXTENT: {
-          result = FontSizeEstimation.stringExtent( font, string );
+          result = TextSizeEstimation.stringExtent( font, string );
         }
         break;
         default: {
@@ -114,33 +114,33 @@ public class FontSizeCalculator {
 
   public static int getCharHeight( final Font font ) {
     int result;
-    FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     if( probeStore.containsProbeResult( font ) ) {
       IProbeResult probeResult = probeStore.getProbeResult( font );
       result = probeResult.getSize().y;
     } else {
-      FontSizeProbeStore.addProbeRequest( font );
-      result = FontSizeEstimation.getCharHeight( font );
+      TextSizeProbeStore.addProbeRequest( font );
+      result = TextSizeEstimation.getCharHeight( font );
     }
     return result;
   }
 
   public static float getAvgCharWidth( final Font font ) {
     float result;
-    FontSizeProbeStore probeStore = FontSizeProbeStore.getInstance();
+    TextSizeProbeStore probeStore = TextSizeProbeStore.getInstance();
     if( probeStore.containsProbeResult( font ) ) {
       IProbeResult probeResult = probeStore.getProbeResult( font );
       result = probeResult.getAvgCharWidth();
     } else {
-      FontSizeProbeStore.addProbeRequest( font );
-      result = FontSizeEstimation.getAvgCharWidth( font );
+      TextSizeProbeStore.addProbeRequest( font );
+      result = TextSizeEstimation.getAvgCharWidth( font );
     }
     return result;
   }
 
   public static String writeStartupJSProbe() {
     StringBuffer result = new StringBuffer();
-    IProbe[] probeList = FontSizeProbeStore.getProbeList();
+    IProbe[] probeList = TextSizeProbeStore.getProbeList();
     if( probeList.length > 0 ) {
       result.append( "org.eclipse.swt.FontSizeCalculation.probe(" );
       result.append( "[ " );
@@ -157,12 +157,12 @@ public class FontSizeCalculator {
   }
 
   public static void readStartupProbes() {
-    IProbe[] probeList = FontSizeProbeStore.getProbeList();
-    FontSizeCalculationHandler.readProbedFonts( probeList );
+    IProbe[] probeList = TextSizeProbeStore.getProbeList();
+    TextSizeDeterminationHandler.readProbedFonts( probeList );
   }
   
   public static int getProbeCount() {
-    return FontSizeProbeStore.getProbeList().length;
+    return TextSizeProbeStore.getProbeList().length;
   }
 
   public static ICalculationItem[] getCalculationItems() {
@@ -204,7 +204,7 @@ public class FontSizeCalculator {
       stateInfo.setAttribute( CALCULATION_ITEMS, newItems );
       if( stateInfo.getAttribute( JS_CALCULATOR ) == null ) {
         stateInfo.setAttribute( JS_CALCULATOR, new Object() );
-        FontSizeCalculationHandler.register();
+        TextSizeDeterminationHandler.register();
       }
     }
   }

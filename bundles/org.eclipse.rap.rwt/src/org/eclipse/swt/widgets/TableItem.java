@@ -14,7 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 /**
  * Instances of this class represent a selectable user interface object
@@ -836,7 +836,7 @@ public class TableItem extends Item {
       left = imageBounds.x + imageBounds.width + getImageGap( 0 );
       top = getTop( itemIndex );
       Font font = parent.getFont();
-      width = FontSizeCalculator.stringExtent( font, getText( 0 ) ).x;
+      width = TextSizeDetermination.stringExtent( font, getText( 0 ) ).x;
       height = parent.getItemHeight();
     } else {
       if( itemIndex != -1 && index < parent.getColumnCount() ) {
@@ -867,7 +867,7 @@ public class TableItem extends Item {
     return 
         getImageWidth( index )
       + getImageGap( index )
-      + FontSizeCalculator.stringExtent( parent.getFont(), getText( index ) ).x
+      + TextSizeDetermination.stringExtent( parent.getFont(), getText( index ) ).x
       + RIGHT_MARGIN;
   }
   

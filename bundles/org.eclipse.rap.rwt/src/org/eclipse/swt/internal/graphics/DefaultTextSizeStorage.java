@@ -20,7 +20,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.*;
 
 
-public class DefaultFontSizeStorage implements IFontSizeStorage {
+public class DefaultTextSizeStorage implements ITextSizeStorage {
 
   public static final int MIN_STORE_SIZE = 1000;
   public static final int DEFAULT_STORE_SIZE = 10000;
@@ -61,7 +61,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
     }
   }
 
-  public Point lookupStringSize( final Integer key ) {
+  public Point lookupTextSize( final Integer key ) {
     Point result = null;
     synchronized( lock ) {
       Entry entry = ( Entry )data.get( key );
@@ -74,7 +74,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
     return result;
   }
 
-  public void storeStringSize( final Integer key,
+  public void storeTextSize( final Integer key,
                                final Point size )
   {
     Point clone = defensiveCopy( size );
@@ -128,7 +128,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
           FontData fontData = new FontData( value );
           storeFont( Graphics.getFont( fontData ) );
         } else {
-          storeStringSize( new Integer( key ), parsePoint( value ) );
+          storeTextSize( new Integer( key ), parsePoint( value ) );
         }
       }
     }
@@ -149,7 +149,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
     BigDecimal bdStoreSize = new BigDecimal( storeSize );
     int rounding = BigDecimal.ROUND_HALF_UP;
     clearRange = bdStoreSize.divide( ten, 0, rounding ).intValue();
-    DefaultFontSizeStorage.storeSize = storeSize;
+    DefaultTextSizeStorage.storeSize = storeSize;
   }
 
   public static int getStoreSize() {
@@ -157,7 +157,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
   }
 
   private void handleOverFlow() {
-    if( data.size() >= DefaultFontSizeStorage.storeSize ) {
+    if( data.size() >= DefaultTextSizeStorage.storeSize ) {
       Entry[] entries = new Entry[ data.size() ];
       data.values().toArray( entries );
       Arrays.sort( entries, new Comparator() {

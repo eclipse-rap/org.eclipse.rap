@@ -14,7 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 /**
  * A Label can display a text or an image, but not both. The label always
@@ -250,7 +250,7 @@ public class Label extends Control {
         wrapWidth = wHint;
       }
       Point extent
-        = FontSizeCalculator.textExtent( getFont(), text, wrapWidth );
+        = TextSizeDetermination.textExtent( getFont(), text, wrapWidth );
       width = extent.x + 8;
       height = extent.y + 2;
     }

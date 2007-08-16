@@ -16,7 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 
 /**
@@ -185,7 +185,7 @@ public class Link extends Control {
     int border = getBorderWidth();
     if( ( displayText.length() > 0 ) ) {
       // TODO [rst] change to textExtent when wrap supported
-      Point extent = FontSizeCalculator.stringExtent( getFont(), displayText );
+      Point extent = TextSizeDetermination.stringExtent( getFont(), displayText );
       width = extent.x + 8;
       height = extent.y + 2;
     }

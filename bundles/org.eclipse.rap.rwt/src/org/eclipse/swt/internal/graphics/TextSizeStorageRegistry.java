@@ -16,11 +16,11 @@ package org.eclipse.swt.internal.graphics;
 //                there should no need for synchronization. Due to the 
 //                application scope of the storage synchronizations may cause 
 //                also performance problems.
-public class FontSizeStorageRegistry {
+public class TextSizeStorageRegistry {
   
-  private static IFontSizeStorage storage;
+  private static ITextSizeStorage storage;
   
-  public static void register( final IFontSizeStorage fontSizeStorage ) {
+  public static void register( final ITextSizeStorage fontSizeStorage ) {
     if( storage != null ) {
       String msg
         = "A fontsize storage implementation has already been registered.";
@@ -29,9 +29,9 @@ public class FontSizeStorageRegistry {
     storage = fontSizeStorage;
   }
   
-  public static IFontSizeStorage obtain() {
+  public static ITextSizeStorage obtain() {
     if( storage == null ) {
-      storage = new DefaultFontSizeStorage();
+      storage = new DefaultTextSizeStorage();
     }
     return storage;
   }

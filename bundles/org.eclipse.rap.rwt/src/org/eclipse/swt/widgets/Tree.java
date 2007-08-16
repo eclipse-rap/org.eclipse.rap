@@ -18,7 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 
@@ -871,7 +871,7 @@ public class Tree extends Composite {
       checkWidget ();
       int result = 0;
       if (headerVisible)  {
-        int textHeight = FontSizeCalculator.getCharHeight( getFont() );
+        int textHeight = TextSizeDetermination.getCharHeight( getFont() );
         int imageHeight = 0;
         for( int i = 0; i < getColumnCount(); i++ ) {
           Image image = getColumn( i ).getImage();

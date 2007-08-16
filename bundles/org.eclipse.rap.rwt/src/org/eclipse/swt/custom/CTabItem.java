@@ -14,7 +14,7 @@ package org.eclipse.swt.custom;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -383,9 +383,9 @@ public class CTabItem extends Item {
     // TODO [fappel]: check gc height calculation alternative 
     if( font == null ) {
       Font parentFont = getParent().getFont();
-      h = Math.max( h, FontSizeCalculator.textExtent( parentFont, text, 0 ).y );
+      h = Math.max( h, TextSizeDetermination.textExtent( parentFont, text, 0 ).y );
     } else {
-      h = Math.max( h, FontSizeCalculator.textExtent( font, text, 0 ).y );
+      h = Math.max( h, TextSizeDetermination.textExtent( font, text, 0 ).y );
     }
     return h + TOP_MARGIN + BOTTOM_MARGIN;
   }
@@ -420,13 +420,13 @@ public class CTabItem extends Item {
       if (w > 0) w += INTERNAL_SPACING;
       if (font == null) {
 //        w += gc.textExtent(text, FLAGS).x;
-        w += FontSizeCalculator.stringExtent( getFont(), text ).x;
+        w += TextSizeDetermination.stringExtent( getFont(), text ).x;
       } else {
 //        Font gcFont = gc.getFont();
 //        gc.setFont(font);
 //        w += gc.textExtent(text, FLAGS).x;
 //        gc.setFont(gcFont);
-        w += FontSizeCalculator.stringExtent( getFont(), text ).x;
+        w += TextSizeDetermination.stringExtent( getFont(), text ).x;
       }
     }
     if (parent.showClose || showClose) {

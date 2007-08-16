@@ -15,6 +15,7 @@ import java.io.InputStream;
 
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 
 /**
@@ -56,5 +57,39 @@ public class Graphics {
                                 final InputStream inputStream )
   {
     return ResourceFactory.findImage( path, inputStream );
+  }
+  
+  //////////////////////////
+  // Text-Size-Determination
+  
+  /**
+   * TODO [fappel]: comment
+   */
+  public static Point textExtent( final Font font,
+                                  final String string,
+                                  final int wrapWidth )
+  {
+    return TextSizeDetermination.textExtent( font, string, wrapWidth );
+  }
+  
+  /**
+   * TODO [fappel]: comment
+   */
+  public static Point stringExtent( final Font font, final String string ) {
+    return TextSizeDetermination.stringExtent( font, string );
+  }
+  
+  /**
+   * TODO [fappel]: comment
+   */
+  public static int getCharHeight( final Font font ) {
+    return TextSizeDetermination.getCharHeight( font );
+  }
+  
+  /**
+   * TODO [fappel]: comment
+   */
+  public static float getAvgCharWidth( final Font font ) {
+    return TextSizeDetermination.getAvgCharWidth( font );
   }
 }

@@ -34,7 +34,7 @@ import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.*;
@@ -277,7 +277,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     StringBuffer code = new StringBuffer();
     
     // font size measurment
-    code.append( FontSizeCalculator.writeStartupJSProbe() );
+    code.append( TextSizeDetermination.writeStartupJSProbe() );
     
     // application 
     code.append( "var req = org.eclipse.swt.Request.getInstance();" ); 

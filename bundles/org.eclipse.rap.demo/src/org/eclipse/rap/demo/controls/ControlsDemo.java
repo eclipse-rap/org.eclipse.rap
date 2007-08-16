@@ -17,7 +17,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -93,7 +92,7 @@ public class ControlsDemo implements IEntryPoint {
   }
 
   private static void ensureMinTabHeight( final CTabFolder folder ) {
-    int result = FontSizeCalculator.getCharHeight( folder.getFont() );
+    int result = Graphics.getCharHeight( folder.getFont() );
     if( result < 18 ) {
       folder.setTabHeight( 18 );
     }

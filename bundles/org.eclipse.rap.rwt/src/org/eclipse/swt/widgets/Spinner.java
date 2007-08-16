@@ -17,7 +17,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.spinnerkit.ISpinnerThemeAdapter;
 
 /**
@@ -348,7 +348,7 @@ public class Spinner extends Composite {
         }
         string = buffer.toString();
       }
-      Point textSize = FontSizeCalculator.stringExtent( getFont(), string );
+      Point textSize = TextSizeDetermination.stringExtent( getFont(), string );
       Rectangle padding = getPadding();
       width = textSize.x + UP_DOWN_WIDTH + padding.width;
       height = textSize.y + padding.height;

@@ -17,7 +17,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 /**
  * Instances of this class represent a selectable user interface object that
@@ -355,7 +355,7 @@ public class Button extends Control {
       }
     }
     if( hasText ) {
-      Point extent = FontSizeCalculator.stringExtent( getFont(), text );
+      Point extent = TextSizeDetermination.stringExtent( getFont(), text );
       height = Math.max( height, extent.y );
       width += extent.x;
     }
