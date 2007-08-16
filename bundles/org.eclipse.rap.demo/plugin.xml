@@ -8,25 +8,28 @@
     <theme
         id="org.eclipse.rap.demo.alttheme"
         name="Alternative Demo Theme"
-        file="theme1/theme.properties"
-        default="false"/>
+        file="theme1/theme.properties"/>
   </extension>
   
   <extension
       id="org.eclipse.rap.demo.demoentrypoint"
       point="org.eclipse.rap.ui.entrypoint">
     <entrypoint
-        class="org.eclipse.rap.demo.DemoWorkbench"
-        parameter="default"/>
+          class="org.eclipse.rap.demo.DemoWorkbench"
+          id="org.eclipse.rap.demo.entrypoint1"
+          parameter="default"/>
     <entrypoint
-        class="org.eclipse.rap.demo.RWTDemo"
-        parameter="rwtdemo"/>
+          class="org.eclipse.rap.demo.RWTDemo"
+          id="org.eclipse.rap.demo.entrypoint2"
+          parameter="rwtdemo"/>
     <entrypoint
-        class="org.eclipse.rap.demo.controls.LayoutDemo"
-        parameter="layout"/>
+          class="org.eclipse.rap.demo.controls.LayoutDemo"
+          id="org.eclipse.rap.demo.entrypoint3"
+          parameter="layout"/>
     <entrypoint
-        class="org.eclipse.rap.demo.controls.ControlsDemo"
-        parameter="controls"/>
+          class="org.eclipse.rap.demo.controls.ControlsDemo"
+          id="org.eclipse.rap.demo.entrypoint4"
+          parameter="controls"/>
   </extension>
   
   <extension
