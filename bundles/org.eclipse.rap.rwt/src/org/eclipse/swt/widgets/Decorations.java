@@ -105,7 +105,7 @@ public class Decorations extends Canvas {
   ///////////
   // Disposal
   
-  protected final void releaseWidget() {
+  final void releaseWidget() {
     removeMenuBarDisposeListener();
     super.releaseWidget();
   }

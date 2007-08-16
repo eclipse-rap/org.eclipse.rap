@@ -1210,14 +1210,14 @@ public class TreeItem extends Item {
   /////////////////////////////////
   // Methods to dispose of the item
 
-  protected final void releaseChildren() {
+  final void releaseChildren() {
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].dispose();
     }
   }
 
-  protected final void releaseParent() {
+  final void releaseParent() {
     if( parentItem != null ) {
       ItemHolder.removeItem( parentItem, this );
     } else {
@@ -1226,7 +1226,7 @@ public class TreeItem extends Item {
     parent.removeFromSelection( this );
   }
 
-  protected final void releaseWidget() {
+  final void releaseWidget() {
     // do nothing
   }
 }

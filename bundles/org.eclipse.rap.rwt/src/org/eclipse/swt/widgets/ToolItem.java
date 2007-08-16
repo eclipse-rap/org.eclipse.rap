@@ -548,15 +548,15 @@ public class ToolItem extends Item {
   ///////////////////////////////////
   // Methods to dispose of the widget
   
-  protected void releaseChildren() {
+  void releaseChildren() {
     // do nothing
   }
 
-  protected void releaseParent() {
+  void releaseParent() {
     ItemHolder.removeItem( parent, this );
   }
 
-  protected void releaseWidget() {
+  void releaseWidget() {
     // do nothing
   }
   

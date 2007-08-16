@@ -1336,14 +1336,14 @@ public class Tree extends Composite {
   ////////////////////////////////
   // Methods to cleanup on dispose
   
-  protected void releaseWidget() {
+  void releaseWidget() {
     super.releaseWidget();
     if( resizeListener != null ) {
       removeControlListener( resizeListener );
     }
   }
   
-  protected void releaseChildren() {
+  void releaseChildren() {
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].dispose();

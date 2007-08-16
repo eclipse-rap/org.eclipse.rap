@@ -821,12 +821,12 @@ public class CoolItem extends Item {
 //    return result;
 //  }
 
-  protected void releaseChildren() {
+  void releaseChildren() {
   }
 
-  protected void releaseParent() {
+  void releaseParent() {
   }
 
-  protected void releaseWidget() {
+  void releaseWidget() {
   }
 }

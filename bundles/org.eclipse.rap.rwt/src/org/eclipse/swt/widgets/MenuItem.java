@@ -394,7 +394,7 @@ public class MenuItem extends Item {
   //////////////////
   // Item overrides
   
-  protected final void releaseChildren() {
+  final void releaseChildren() {
     if( menu != null ) {
       removeMenuDisposeListener();
       menu.dispose();
@@ -402,11 +402,11 @@ public class MenuItem extends Item {
     }
   }
 
-  protected final void releaseParent() {
+  final void releaseParent() {
     ItemHolder.removeItem( parent, this );
   }
 
-  protected final void releaseWidget() {
+  final void releaseWidget() {
     // do nothing
   }
 

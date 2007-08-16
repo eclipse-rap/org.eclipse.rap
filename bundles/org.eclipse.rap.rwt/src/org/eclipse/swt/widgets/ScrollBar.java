@@ -488,14 +488,14 @@ public class ScrollBar extends Widget {
   ////////////////////
   // Widget overrides
 
-  protected void releaseChildren() {
+  void releaseChildren() {
   }
 
-  protected void releaseParent() {
+  void releaseParent() {
     // TODO [rh] set references to 'this' scrollBar in parent to null
   }
 
-  protected void releaseWidget() {
+  void releaseWidget() {
   }
 
   //////////////////

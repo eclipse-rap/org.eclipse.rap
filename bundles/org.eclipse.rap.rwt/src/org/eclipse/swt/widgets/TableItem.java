@@ -929,14 +929,14 @@ public class TableItem extends Item {
   /////////////////////////////
   // Widget and Item overrides
 
-  protected void releaseChildren() {
+  void releaseChildren() {
   }
 
-  protected void releaseParent() {
+  void releaseParent() {
     parent.destroyItem( this );
   }
 
-  protected void releaseWidget() {
+  void releaseWidget() {
   }
 
   String getNameText() {

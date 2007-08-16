@@ -28,13 +28,13 @@ public class Item_Test extends TestCase {
         return null;
       }
 
-      protected void releaseChildren() {
+      void releaseChildren() {
       }
 
-      protected void releaseParent() {
+      void releaseParent() {
       }
 
-      protected void releaseWidget() {
+      void releaseWidget() {
       }
     };
     assertEquals( "", item.getText() );
@@ -57,13 +57,13 @@ public class Item_Test extends TestCase {
         return null;
       }
 
-      protected void releaseChildren() {
+      void releaseChildren() {
       }
 
-      protected void releaseParent() {
+      void releaseParent() {
       }
 
-      protected void releaseWidget() {
+      void releaseWidget() {
       }
     };
     item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
@@ -76,13 +76,13 @@ public class Item_Test extends TestCase {
         return null;
       }
 
-      protected void releaseChildren() {
+      void releaseChildren() {
       }
 
-      protected void releaseParent() {
+      void releaseParent() {
       }
 
-      protected void releaseWidget() {
+      void releaseWidget() {
       }
     };
     item2.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
@@ -98,13 +98,13 @@ public class Item_Test extends TestCase {
         return null;
       }
 
-      protected void releaseChildren() {
+      void releaseChildren() {
       }
 
-      protected void releaseParent() {
+      void releaseParent() {
       }
 
-      protected void releaseWidget() {
+      void releaseWidget() {
       }
     };
     item.dispose();

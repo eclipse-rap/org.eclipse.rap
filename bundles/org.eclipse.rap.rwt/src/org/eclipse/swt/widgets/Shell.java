@@ -856,7 +856,7 @@ public class Shell extends Decorations {
   ///////////
   // Disposal
   
-  protected final void releaseParent() {
+  final void releaseParent() {
     // Do not call super.releaseParent() 
     // This method would try to remove a child-shell from its ControlHolder
     // but shells are currently not added to the ControlHolder of its parent

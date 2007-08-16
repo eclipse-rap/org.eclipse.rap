@@ -476,14 +476,14 @@ public class TableColumn extends Item {
   ////////////////////////////
   // Widget and Item overrides
 
-  protected void releaseChildren() {
+  void releaseChildren() {
   }
 
-  protected void releaseParent() {
+  void releaseParent() {
     parent.destroyColumn( this );
   }
 
-  protected void releaseWidget() {
+  void releaseWidget() {
   }
   
   String getNameText() {

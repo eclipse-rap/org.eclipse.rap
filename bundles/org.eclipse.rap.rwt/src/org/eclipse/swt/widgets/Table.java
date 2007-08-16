@@ -1960,7 +1960,7 @@ public class Table extends Composite {
   ////////////////
   // Destroy table
   
-  protected void releaseChildren() {
+  void releaseChildren() {
     Item[] items = itemHolder.getItems();
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].dispose();
@@ -1971,7 +1971,7 @@ public class Table extends Composite {
     }
   }
   
-  protected void releaseWidget() {
+  void releaseWidget() {
     super.releaseWidget();
     if( resizeListener != null ) {
       removeControlListener( resizeListener );

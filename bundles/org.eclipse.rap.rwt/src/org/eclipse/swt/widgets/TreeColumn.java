@@ -666,12 +666,12 @@ public void setWidth (int value) {
 //	computeDisplayText (gc);
 //}
 
-protected void releaseChildren() {
+void releaseChildren() {
 }
-protected void releaseParent() {
+void releaseParent() {
   parent.destroyColumn( this );
 }
-protected void releaseWidget() {
+void releaseWidget() {
 }
 
 
