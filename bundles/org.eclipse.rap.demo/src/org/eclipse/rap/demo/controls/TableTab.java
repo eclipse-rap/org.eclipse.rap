@@ -10,6 +10,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -21,7 +22,7 @@ import org.eclipse.swt.widgets.*;
 public class TableTab extends ExampleTab {
 
   private static final int INITIAL_ITEMS = 1;
-  
+
   private Table table;
   private boolean headerVisible = true;
   private boolean linesVisible;
@@ -31,16 +32,16 @@ public class TableTab extends ExampleTab {
   private int columns = 5;
   private final Image columnImage;
   private Image itemImage;
-  private final Image smallImage; 
-  private final Image largeImage; 
+  private final Image smallImage;
+  private final Image largeImage;
 
   public TableTab( final CTabFolder folder ) {
     super( folder, "Table" );
     columnImage = Image.find( "resources/shell.gif",
                               getClass().getClassLoader() );
-    smallImage = Image.find( "resources/newfile_wiz.gif", 
+    smallImage = Image.find( "resources/newfile_wiz.gif",
                              getClass().getClassLoader() );
-    largeImage = Image.find( "resources/big_image.png", 
+    largeImage = Image.find( "resources/big_image.png",
                              getClass().getClassLoader() );
     itemImage = smallImage;
   }
@@ -202,7 +203,7 @@ public class TableTab extends ExampleTab {
     updateItem( result );
     return result;
   }
-  
+
   private void updateItem( final TableItem item ) {
     int index = item.getParent().indexOf( item );
     if( columns == 0 ) {
@@ -236,7 +237,7 @@ public class TableTab extends ExampleTab {
         try {
           count = Integer.parseInt( text.getText() );
         } catch( NumberFormatException e ) {
-          // 
+          //
         }
         if( count < 0 ) {
           String msg = "Invalid number of TableItems: " + text.getText();
@@ -249,7 +250,7 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createSelectItemButton() {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Select first Item" );
@@ -287,7 +288,7 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createRecreateButton() {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Recreate Last Item" );
@@ -322,7 +323,7 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createChangeCheckButton() {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Change checked for selection" );
@@ -371,7 +372,7 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createChangeItemControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
     composite.setLayout( new GridLayout( 4, false ) );
@@ -385,7 +386,7 @@ public class TableTab extends ExampleTab {
     final Text txtText = new Text( composite, SWT.BORDER );
     Util.textSizeAdjustment( lblText, txtText );
     Button button = new Button( composite, SWT.PUSH );
-    GridData gridData 
+    GridData gridData
       = new GridData( SWT.BEGINNING, SWT.CENTER, false, false, 4, SWT.DEFAULT );
     button.setLayoutData( gridData );
     button.setText( "Change" );
@@ -416,7 +417,7 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createChangeItemCountControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
     composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
@@ -506,7 +507,7 @@ public class TableTab extends ExampleTab {
       }
     } );
   }
-  
+
   private void createAlignmentControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
     composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
@@ -541,7 +542,7 @@ public class TableTab extends ExampleTab {
         Display display = getTable().getDisplay();
         FontData fontData = getTable().getFont().getFontData()[ 0 ];
         String fontName = fontData.getName();
-        Font font = Font.getFont( fontName, fontData.getHeight(), SWT.BOLD );
+        Font font = Graphics.getFont( fontName, fontData.getHeight(), SWT.BOLD );
         Color background = display.getSystemColor( SWT.COLOR_DARK_GREEN );
         Color foreground = display.getSystemColor( SWT.COLOR_DARK_CYAN );
         TableItem[] items = getTable().getItems();

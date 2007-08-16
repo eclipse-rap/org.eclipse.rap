@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -12,8 +12,10 @@
 package org.eclipse.swt.custom;
 
 import java.util.Arrays;
+
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -26,12 +28,12 @@ import org.eclipse.swt.widgets.*;
 
 
 public class CTabFolder_Test extends TestCase {
-  
+
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    
+
     assertEquals( false, folder.getMRUVisible() );
     assertEquals( false, folder.getMaximizeVisible() );
     assertEquals( false, folder.getMinimizeVisible() );
@@ -44,7 +46,7 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( false, folder.getBorderVisible() );
     assertNotNull( folder.getSelectionBackground() );
   }
-  
+
   public void testHierarchy() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -86,17 +88,17 @@ public class CTabFolder_Test extends TestCase {
     CTabItem item2 = new CTabItem( folder1, SWT.NONE );
     folder1.setSelection( item2 );
     CTabItem item3 = new CTabItem( folder1, SWT.NONE );
-    
+
     item3.dispose();
     assertEquals( true, item3.isDisposed() );
     assertEquals( 2, folder1.getItemCount() );
     assertEquals( -1, folder1.indexOf( item3 ) );
-    
+
     folder1.dispose();
     assertEquals( true, folder1.isDisposed() );
     assertEquals( true, item1.isDisposed() );
     assertEquals( 0, folder1.getItemCount() );
-    
+
     // Ensure that no SelectionEvent is sent when disposing of a CTabFolder
     assertEquals( "", log.toString() );
   }
@@ -108,7 +110,7 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( SWT.TOP | SWT.MULTI, folder1.getStyle() );
     assertEquals( SWT.TOP, folder1.getTabPosition() );
     assertEquals( false, folder1.getSingle() );
-    
+
     CTabFolder folder2 = new CTabFolder( shell, -1 );
     assertTrue( ( folder2.getStyle() & SWT.MULTI ) != 0 );
     assertTrue( ( folder2.getStyle() & SWT.TOP ) != 0 );
@@ -131,12 +133,12 @@ public class CTabFolder_Test extends TestCase {
     CTabFolder folder6 = new CTabFolder( shell, SWT.NONE );
     assertEquals( false, folder6.getBorderVisible() );
   }
-  
+
   public void testSelectionIndex() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    
+
     // Test folder without items: initial value must be -1 / null
     assertEquals( -1, folder.getSelectionIndex() );
     assertEquals( null, folder.getSelection() );
@@ -150,12 +152,12 @@ public class CTabFolder_Test extends TestCase {
     folder.setSelection( 0 );
     assertEquals( -1, folder.getSelectionIndex() );
     assertEquals( null, folder.getSelection() );
-    
+
     // Add an item -> must not change selection index
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
     assertEquals( -1, folder.getSelectionIndex() );
     assertEquals( null, folder.getSelection() );
-    
+
     folder.setSelection( 0 );
     assertEquals( 0, folder.getSelectionIndex() );
     assertSame( item1, folder.getSelection() );
@@ -165,20 +167,20 @@ public class CTabFolder_Test extends TestCase {
     folder.setSelection( -1 );
     assertEquals( 0, folder.getSelectionIndex() );
     assertSame( item1, folder.getSelection() );
-    
+
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
     folder.setSelection( item2 );
     assertEquals( 1, folder.getSelectionIndex() );
     assertSame( item2, folder.getSelection() );
-    
+
     item1.dispose();
     assertSame( item2, folder.getSelection() );
     assertEquals( 0, folder.getSelectionIndex() );
-    
+
     item2.dispose();
     assertEquals( null, folder.getSelection() );
   }
-  
+
   public void testSelectionWithControl() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -192,20 +194,20 @@ public class CTabFolder_Test extends TestCase {
     item2.setControl( control2 );
     CTabItem item3 = new CTabItem( folder, SWT.NONE );
     shell.open();
-    
+
     folder.setSelection( item1 );
     assertEquals( true, item1.getControl().getVisible() );
     assertEquals( folder.getClientArea(), item1.getControl().getBounds() );
-    
+
     folder.setSelection( item2 );
     assertEquals( false, item1.getControl().getVisible() );
     assertEquals( true, item2.getControl().getVisible() );
     assertEquals( folder.getClientArea(), item2.getControl().getBounds() );
-    
+
     folder.setSelection( item3 );
     assertEquals( false, item2.getControl().getVisible() );
   }
-  
+
   public void testSelectionWithEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
@@ -231,7 +233,7 @@ public class CTabFolder_Test extends TestCase {
     item2.dispose();
     assertEquals( "widgetSelected", log.toString() );
   }
-  
+
   public void testMinimizeMaximize() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -239,28 +241,28 @@ public class CTabFolder_Test extends TestCase {
     // Test initial state
     assertEquals( false, folder.getMinimized() );
     assertEquals( false, folder.getMaximized() );
-    
+
     // set minimized to the same value it has -> nothing should change
     folder.setMinimized( false );
     assertEquals( false, folder.getMinimized() );
     assertEquals( false, folder.getMaximized() );
-    
+
     // minimize
     folder.setMinimized( true );
     assertEquals( true, folder.getMinimized() );
     assertEquals( false, folder.getMaximized() );
-    
+
     // set maximize to the current value -> nothing should happen
     folder.setMaximized( false );
     assertEquals( true, folder.getMinimized() );
     assertEquals( false, folder.getMaximized() );
-    
+
     // maximize
     folder.setMaximized( true );
     assertEquals( false, folder.getMinimized() );
     assertEquals( true, folder.getMaximized() );
   }
-  
+
   public void testMinMaxVisible() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -271,7 +273,7 @@ public class CTabFolder_Test extends TestCase {
     folder.setMaximizeVisible( false );
     assertEquals( false, folder.getMinimizeVisible() );
   }
-  
+
   public void testResize() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -294,17 +296,17 @@ public class CTabFolder_Test extends TestCase {
     assertTrue( newMinBounds.x < oldMinBounds.x );
     assertTrue( newMaxBounds.x < oldMaxBounds.x );
   }
-  
+
   public void testLayout() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     assertEquals( CTabFolderLayout.class, folder.getLayout().getClass() );
-    
+
     folder.setLayout( new FillLayout() );
     assertEquals( CTabFolderLayout.class, folder.getLayout().getClass() );
   }
-  
+
   public void testTabHeight() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -322,7 +324,7 @@ public class CTabFolder_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testTopRight() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -356,17 +358,17 @@ public class CTabFolder_Test extends TestCase {
     folder.setTopRight( invisibleToolBar );
     assertEquals( false, invisibleToolBar.isVisible() );
   }
-  
+
   public void testSelectionForegroundAndBackground() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
-    
+
     // Set some background color
     Color red = display.getSystemColor( SWT.COLOR_RED );
     folder.setSelectionBackground( red );
     assertEquals( red, folder.getSelectionBackground() );
-    
+
     // Reset to background to default (pass null as parameter)
     folder.setSelectionBackground( null );
     assertNotNull( folder.getSelectionBackground() );
@@ -375,12 +377,12 @@ public class CTabFolder_Test extends TestCase {
     Color white = display.getSystemColor( SWT.COLOR_WHITE );
     folder.setSelectionForeground( white );
     assertEquals( white, folder.getSelectionForeground() );
-    
+
     // Reset to foreground to default (pass null as parameter)
     folder.setSelectionForeground( null );
     assertNotNull( folder.getSelectionForeground() );
   }
-  
+
   public void testChevronVisibilityWithSingleStyle() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -390,13 +392,13 @@ public class CTabFolder_Test extends TestCase {
     folder.setSize( 100, 100 );
     folder.addCTabFolder2Listener( new CTabFolder2Adapter() );
     shell.layout();
-    
+
     // Chevron must be visible when there are no items
     assertEquals( 0, folder.getItemCount() );  // ensure test condition
     assertEquals( true, getChevronVisible( folder ) );
-    
+
     // Behave as SWT does even if it may be a bug
-    // Chevron is visible but its bounds are zero if there is only *one* item 
+    // Chevron is visible but its bounds are zero if there is only *one* item
     // wich is *selected*
     CTabItem item = new CTabItem( folder, SWT.NONE );
     item.setText( "item" );
@@ -407,13 +409,13 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( 1, folder.getItemCount() );
     assertEquals( true, getChevronVisible( folder ) );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), getChevronRect( folder ) );
-    
+
     // Chevron must again be visible after the last item was removed
     item.dispose();
     label.dispose();
     assertEquals( 0, folder.getItemCount() );
     assertEquals( true, getChevronVisible( folder ) );
-    
+
     // Chevron must be visible when there is more than one item regardless of
     // selection
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
@@ -428,8 +430,8 @@ public class CTabFolder_Test extends TestCase {
     item1.dispose();
     item2.dispose();
   }
-  
-  // TODO [rh] misplaced chevron on CTabFolder with style MULTI and 
+
+  // TODO [rh] misplaced chevron on CTabFolder with style MULTI and
   //      setMRUVisible( false );
 //  public void testChevronVisibilityWithMultiStyle() {
 //    Display display = new Display();
@@ -437,7 +439,7 @@ public class CTabFolder_Test extends TestCase {
 //    final CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
 //    folder.setUnselectedCloseVisible( false );
 //    folder.setMRUVisible( false );
-//    folder.setBounds( new Rectangle( 7, 25, 480, 120 ) );    
+//    folder.setBounds( new Rectangle( 7, 25, 480, 120 ) );
 //    final Label topRight = new Label( folder, SWT.NONE );
 //    topRight.setText( "TopRight" );
 //    topRight.setSize( 100, 20 );
@@ -446,7 +448,7 @@ public class CTabFolder_Test extends TestCase {
 //      createItem( folder );
 //    }
 //    shell.open();
-//    
+//
 //    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
 //    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
 //    // until here (5 items) no chevron should be shown
@@ -455,7 +457,7 @@ public class CTabFolder_Test extends TestCase {
 //    assertEquals( 0, folderAdapter.getChevronRect().y );
 //    assertEquals( 0, folderAdapter.getChevronRect().width );
 //    assertEquals( 0, folderAdapter.getChevronRect().height );
-//    
+//
 //    // adding the 6th item should bring up the chevron
 //    createItem( folder );
 //    assertEquals( true, folderAdapter.getChevronVisible() );
@@ -463,12 +465,12 @@ public class CTabFolder_Test extends TestCase {
 //    assertTrue( folderAdapter.getChevronRect().y > 0 );
 //    assertTrue( folderAdapter.getChevronRect().width > 0 );
 //    assertTrue( folderAdapter.getChevronRect().height > 0 );
-//    
+//
 //    // selecting the 6th item (via chevron menu) should make it visible
 //    folder.setSelection( 5 );
 //    assertEquals( true, folder.getItem( 5 ).isShowing() );
 //  }
-  
+
   private static CTabItem createItem( final CTabFolder folder ) {
     CTabItem item = new CTabItem( folder, SWT.CLOSE );
     item.setText( "Tab " + ( folder.getItemCount() + 1 ) );
@@ -476,20 +478,20 @@ public class CTabFolder_Test extends TestCase {
     item.setImage( searchImage() );
     Font systemFont = folder.getDisplay().getSystemFont();
     FontData data = systemFont.getFontData()[ 0 ];
-    item.setFont( Font.getFont( data.getName(), 
-                                data.getHeight(), 
-                                SWT.BOLD ) );
+    item.setFont( Graphics.getFont( data.getName(),
+                                    data.getHeight(),
+                                    SWT.BOLD ) );
     Label label = new Label( folder, SWT.NONE );
     label.setText( "Content for: " + item.getText() );
     item.setControl( label );
     return item;
   }
-  
+
   private static Image searchImage() {
     ClassLoader loader = CTabFolder_Test.class.getClassLoader();
     return Image.find( "org/eclipse/rap/rwt/custom/search_src.gif", loader );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
@@ -503,7 +505,7 @@ public class CTabFolder_Test extends TestCase {
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
     return folderAdapter.getChevronRect();
   }
-  
+
   private static boolean getChevronVisible( final CTabFolder folder ) {
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;

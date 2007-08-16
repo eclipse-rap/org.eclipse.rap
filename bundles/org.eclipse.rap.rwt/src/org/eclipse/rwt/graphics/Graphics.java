@@ -12,7 +12,6 @@
 package org.eclipse.rwt.graphics;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +63,62 @@ public class Graphics {
     return result;
   }
 
+  // === FONTS ===
+
+  /**
+   * TODO [fappel]: comment
+   */
+  public static Font getFont( final FontData data ) {
+    return getFont( data.getName(), data.getHeight(), data.getStyle() );
+  }
+
+  /**
+   * TODO [fappel]: comment
+   */
+  public static Font getFont( final String name,
+                              final int height,
+                              final int style )
+  {
+    validateFontParams( name, height );
+    int checkedStyle = checkFontStyle( style );
+    Font result;
+    FontData fontData = new FontData( name, height, checkedStyle );
+    synchronized( Font.class ) {
+      result = ( Font )fonts.get( fontData );
+      if( result == null ) {
+        result = createFontInstance( fontData );
+        fonts.put( fontData, result );
+      }
+    }
+    return result;
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static void validateFontParams( final String name, final int height ) {
+    if( name == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( height < 0 ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+  }
+
+  private static int checkFontStyle( final int style ) {
+    int result = SWT.NORMAL;
+    if( ( style & SWT.BOLD ) != 0 ) {
+      result |= SWT.BOLD;
+    }
+    if( ( style & SWT.ITALIC ) != 0 ) {
+      result |= SWT.ITALIC;
+    }
+    return result;
+  }
+
+  ////////////////////
+  // Instance creation
+
   private static Color createColorInstance( final int colorNr ) {
     Color result = null;
     try {
@@ -76,6 +131,20 @@ public class Graphics {
       result = ( Color )constr.newInstance( new Object[] { new Integer( colorNr ) } );
     } catch( final Exception e ) {
       throw new RuntimeException( "Failed to instantiate Color", e );
+    }
+    return result;
+  }
+
+  private static Font createFontInstance( final FontData fontData ) {
+    Font result = null;
+    try {
+      Class fontClass = Font.class;
+      Class[] paramList = new Class[] { FontData.class };
+      Constructor constr = fontClass.getDeclaredConstructor( paramList );
+      constr.setAccessible( true );
+      result = ( Font )constr.newInstance( new Object[] { fontData } );
+    } catch( final Exception e ) {
+      throw new RuntimeException( "Failed to instantiate Font", e );
     }
     return result;
   }

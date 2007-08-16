@@ -13,7 +13,9 @@ package org.eclipse.rwt.graphics;
 
 import junit.framework.TestCase;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 
 
 public class Graphics_Test extends TestCase {
@@ -30,5 +32,10 @@ public class Graphics_Test extends TestCase {
     Color red = Graphics.getColor( 255, 0, 0 );
     Color red2 = Graphics.getColor( 255, 0, 0 );
     assertSame( red, red2 );
+  }
+
+  public void testGetFont() throws Exception {
+    Font font = Graphics.getFont( "Times", 12, SWT.BOLD );
+    assertNotNull( font );
   }
 }

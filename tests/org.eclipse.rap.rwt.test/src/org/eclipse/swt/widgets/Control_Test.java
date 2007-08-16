@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -194,7 +195,7 @@ public class Control_Test extends TestCase {
     controlA.dispose();
     assertEquals( true, menu.isDisposed() );
   }
-  
+
   public void testFont() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -203,21 +204,21 @@ public class Control_Test extends TestCase {
 
     // Initially the system font is set
     assertSame( display.getSystemFont(), control.getFont() );
-    
+
     // Setting a parents' font must not affect the childrens font
-    Font compositeFont = Font.getFont( "Composite Font", 12, SWT.NORMAL );
+    Font compositeFont = Graphics.getFont( "Composite Font", 12, SWT.NORMAL );
     composite.setFont( compositeFont );
     assertNotSame( control.getFont(), compositeFont );
-    
-    // (re)setting a font to null assigns the system font to the control 
+
+    // (re)setting a font to null assigns the system font to the control
     Label label = new Label( composite, SWT.NONE );
-    Font labelFont = Font.getFont( "label font", 14, SWT.BOLD );
+    Font labelFont = Graphics.getFont( "label font", 14, SWT.BOLD );
     label.setFont( labelFont );
     assertSame( labelFont, label.getFont() );
     label.setFont( null );
     assertSame( display.getSystemFont(), label.getFont() );
   }
-  
+
   public void testEnabled() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -227,12 +228,12 @@ public class Control_Test extends TestCase {
     // Must be enabled, initially
     assertEquals( true, control.getEnabled() );
     assertEquals( true, control.isEnabled() );
-    
-    // Must react on setEnabled() 
+
+    // Must react on setEnabled()
     control.setEnabled( false );
     assertEquals( false, control.getEnabled() );
     assertEquals( false, control.isEnabled() );
-    
+
     // Test the difference between is- and getEnabled
     control.setEnabled( true );
     composite.setEnabled( false );
@@ -248,16 +249,16 @@ public class Control_Test extends TestCase {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     shell.open();
-    
+
     // Must be enabled, initially
     assertEquals( true, control.getVisible() );
     assertEquals( true, control.isVisible() );
-    
-    // Must react on setEnabled() 
+
+    // Must react on setEnabled()
     control.setVisible( false );
     assertEquals( false, control.getVisible() );
     assertEquals( false, control.isVisible() );
-    
+
     // Test the difference between is- and getEnabled
     control.setVisible( true );
     composite.setVisible( false );
@@ -266,7 +267,7 @@ public class Control_Test extends TestCase {
     assertEquals( true, control.getVisible() );
     assertEquals( false, control.isVisible() );
   }
-  
+
   public void testZOrder() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -304,7 +305,7 @@ public class Control_Test extends TestCase {
     assertEquals( 1, ControlHolder.indexOf( shell, control1 ) );
     shell.dispose();
   }
-  
+
   public void testFocus() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -316,7 +317,7 @@ public class Control_Test extends TestCase {
     assertSame( control1, display.getFocusControl() );
     assertTrue( control1.isFocusControl() );
   }
-  
+
   public void testFocusOnClosedShell() {
     Display display = new Display();
     final Shell shell = new Shell( display, SWT.NONE );
@@ -345,7 +346,7 @@ public class Control_Test extends TestCase {
     };
     shell.addFocusListener( focusListener );
     control2.addFocusListener( focusListener );
-    // focus control on closed shell, returns false 
+    // focus control on closed shell, returns false
     boolean result = control2.forceFocus();
     assertFalse( result );
     assertNotSame( control2, display.getFocusControl() );
@@ -354,10 +355,10 @@ public class Control_Test extends TestCase {
     assertSame( control2, display.getFocusControl() );
     assertFalse( control1.isFocusControl() );
     assertTrue( control2.isFocusControl() );
-    assertEquals( "shell.focusGained|shell.focusLost|control2.focusGained|", 
+    assertEquals( "shell.focusGained|shell.focusLost|control2.focusGained|",
                   log.toString() );
   }
-  
+
   public void testNoFocusControls() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -369,12 +370,12 @@ public class Control_Test extends TestCase {
     boolean result = noFocusControl.setFocus();
     assertFalse( result );
     assertFalse( noFocusControl.isFocusControl() );
-    // ... but calling forceFocus marks even the NO_FOCUS control as focused 
+    // ... but calling forceFocus marks even the NO_FOCUS control as focused
     result = noFocusControl.forceFocus();
     assertTrue( result );
     assertTrue( noFocusControl.isFocusControl() );
   }
-  
+
   public void testDisposeOfFocused() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -396,7 +397,7 @@ public class Control_Test extends TestCase {
     shell.dispose();
     assertSame( null, display.getFocusControl() );
   }
-  
+
   public void testFocusEventsForForceFocus() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
@@ -412,15 +413,15 @@ public class Control_Test extends TestCase {
       }
     } );
     shell.open();
-    // Changing focus programmatically must throw event 
+    // Changing focus programmatically must throw event
     control1.forceFocus();
     assertEquals( "focusGained", log.toString() );
-    // Focusing the same control again must not cause an event. 
+    // Focusing the same control again must not cause an event.
     log.setLength( 0 );
     control1.forceFocus();
     assertEquals( "", log.toString() );
   }
-  
+
   public void testToControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );

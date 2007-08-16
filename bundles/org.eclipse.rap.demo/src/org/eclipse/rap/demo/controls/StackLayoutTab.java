@@ -14,7 +14,6 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -65,7 +64,7 @@ public class StackLayoutTab extends ExampleTab {
     for( int i = 0; i < COUNT; i++ ) {
       Button button = new Button( comp, SWT.PUSH );
       button.setText( "Control " + ( i+1 ) );
-      button.setFont( Font.getFont( "Serif", 24, SWT.BOLD ) );
+      button.setFont( Graphics.getFont( "Serif", 24, SWT.BOLD ) );
       bArray[ i ] = button;
     }
     stackLayout.topControl = bArray[ index ];

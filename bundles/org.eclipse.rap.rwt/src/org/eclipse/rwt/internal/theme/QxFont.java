@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -155,6 +156,6 @@ public class QxFont implements QxType {
       style |= SWT.ITALIC;
     }
     FontData data = new FontData( name, font.size, style );
-    return Font.getFont( data );
+    return Graphics.getFont( data );
   }
 }

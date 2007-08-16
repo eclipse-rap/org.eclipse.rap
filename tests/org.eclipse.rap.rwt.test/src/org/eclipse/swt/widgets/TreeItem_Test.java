@@ -10,6 +10,7 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -58,11 +59,11 @@ public class TreeItem_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
-    Font treeFont = Font.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
+    Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     tree.setFont( treeFont );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     assertSame( treeFont, item.getFont() );
-    Font itemFont = Font.getFont( "ItemFont", 40, SWT.NORMAL );
+    Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
     item.setFont( itemFont );
     assertSame( itemFont, item.getFont() );
     item.setFont( null );

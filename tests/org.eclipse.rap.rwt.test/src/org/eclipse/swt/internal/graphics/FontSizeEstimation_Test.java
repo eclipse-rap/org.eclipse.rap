@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.graphics;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -21,7 +22,7 @@ import org.eclipse.swt.graphics.Point;
 public class FontSizeEstimation_Test extends TestCase {
 
   public void test1() {
-    Font font10 = Font.getFont( "Helvetica", 10, SWT.NORMAL );
+    Font font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     float avgCharWidth = FontSizeEstimation.getAvgCharWidth( font10 );
     assertTrue( avgCharWidth > 3 );
     assertTrue( avgCharWidth < 6 );
@@ -34,7 +35,7 @@ public class FontSizeEstimation_Test extends TestCase {
     assertTrue( extent10.x < 60 );
     assertTrue( extent10.y >= charHeight );
     assertTrue( extent10.y < charHeight * 2 );
-    Font font12 = Font.getFont( "Helvetica", 12, SWT.NORMAL );
+    Font font12 = Graphics.getFont( "Helvetica", 12, SWT.NORMAL );
     Point extent12 = FontSizeEstimation.stringExtent( font12 , string );
     assertTrue( extent12.x > extent10.x );
     string = "Test1 Test2 Test3 Test4 Test5";
@@ -48,20 +49,20 @@ public class FontSizeEstimation_Test extends TestCase {
     assertTrue( extent.y >= charHeight * 2 );
     assertTrue( extent.y < charHeight * 1.5 * 5 );
   }
-  
+
   // Test for a case where text width == wrapWidth
   public void testEndlessLoopProblem() {
-    Font font = Font.getFont( "Helvetica", 11, SWT.NORMAL );
+    Font font = Graphics.getFont( "Helvetica", 11, SWT.NORMAL );
     Point extent = FontSizeEstimation.textExtent( font,
                                                   "Zusatzinfo (Besuch)",
                                                   100 );
     assertEquals( 100, extent.x );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
-  
+
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }

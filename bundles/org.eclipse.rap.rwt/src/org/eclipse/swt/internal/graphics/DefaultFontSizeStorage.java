@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.*;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.*;
 
 
@@ -23,10 +24,10 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
 
   public static final int MIN_STORE_SIZE = 1000;
   public static final int DEFAULT_STORE_SIZE = 10000;
-  
+
   static final String COMMENT = "RAP DefaultFontSizeStorage";
   static final String PREFIX_FONT_KEY = "FONT_";
-  private static Set fonts = new HashSet(); 
+  private static Set fonts = new HashSet();
   private static Map data = new HashMap();
   private static Object lock = new Object();
   private static int storeSize ;
@@ -35,16 +36,16 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
   static {
     setStoreSize( DEFAULT_STORE_SIZE );
   }
-  
+
   private static class Entry {
     private Point point;
     private long timeStamp;
   }
-  
-  
+
+
   /////////////////////////////
   // interface IFontSizeStorage
-  
+
   public Font[] getFontList() {
     Font[] result;
     synchronized( lock ) {
@@ -53,7 +54,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
     }
     return result;
   }
-  
+
   public void storeFont( final Font font ) {
     synchronized( lock ) {
       fonts.add( font );
@@ -64,7 +65,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
     Point result = null;
     synchronized( lock ) {
       Entry entry = ( Entry )data.get( key );
-      if( entry != null ) { 
+      if( entry != null ) {
         entry.timeStamp = clock++;
         result = entry.point;
       }
@@ -73,7 +74,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
     return result;
   }
 
-  public void storeStringSize( final Integer key, 
+  public void storeStringSize( final Integer key,
                                final Point size )
   {
     Point clone = defensiveCopy( size );
@@ -85,10 +86,10 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
       handleOverFlow();
     }
   }
-  
+
   //////////////
   // persistance
-  
+
   public void save( final OutputStream out ) throws IOException {
     Properties properties = new Properties();
     Font[] fontList;
@@ -114,7 +115,7 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
     }
     properties.store( out, COMMENT );
   }
-  
+
   public void read( final InputStream in ) throws IOException {
     Properties properties = new Properties();
     properties.load( in );
@@ -125,15 +126,15 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
         String value = properties.getProperty( key );
         if( key.startsWith( PREFIX_FONT_KEY ) ) {
           FontData fontData = new FontData( value );
-          storeFont( Font.getFont( fontData ) );
+          storeFont( Graphics.getFont( fontData ) );
         } else {
           storeStringSize( new Integer( key ), parsePoint( value ) );
         }
       }
     }
   }
-  
-  
+
+
   ////////////////////
   // overflow handling
 
@@ -150,11 +151,11 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
     clearRange = bdStoreSize.divide( ten, 0, rounding ).intValue();
     DefaultFontSizeStorage.storeSize = storeSize;
   }
-  
+
   public static int getStoreSize() {
     return storeSize;
   }
-  
+
   private void handleOverFlow() {
     if( data.size() >= DefaultFontSizeStorage.storeSize ) {
       Entry[] entries = new Entry[ data.size() ];
@@ -177,32 +178,32 @@ public class DefaultFontSizeStorage implements IFontSizeStorage {
       }
     }
   }
-  
-  
+
+
   //////////////////
   // helping methods
-  
+
   private Point parsePoint( final String value ) {
     String[] values = value.split( "," );
     int x = new Integer( values[ 0 ] ).intValue();
     int y = new Integer( values[ 1 ] ).intValue();
     return new Point( x, y );
   }
-  
+
   // for test purposes only
   void resetFontList() {
     synchronized( fonts ) {
       fonts.clear();
     }
   }
-  
+
   // for test purposes only
   void resetStringSizes() {
     synchronized( data ) {
       data.clear();
     }
   }
-  
+
   private static Point defensiveCopy( final Point point ) {
     Point result = null;
     if( point != null ) {

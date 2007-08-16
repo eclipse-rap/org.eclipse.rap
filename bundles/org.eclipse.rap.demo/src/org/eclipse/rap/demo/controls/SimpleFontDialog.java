@@ -4,13 +4,14 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,11 +30,11 @@ final class SimpleFontDialog extends Dialog {
   private Font font;
   private Shell shell;
   private Runnable callback;
-  
+
   public SimpleFontDialog( final Shell parent ) {
     this( parent, SWT.DIALOG_TRIM | SWT.RESIZE | SWT.APPLICATION_MODAL );
   }
-  
+
   // TODO [rst] When shell close can be prevented, this dialog should be
   //            implemented as SessionSingleton
   public SimpleFontDialog( final Shell parent, final int style ) {
@@ -60,16 +61,16 @@ final class SimpleFontDialog extends Dialog {
     shell.setLocation( parentLocation.x + 20, parentLocation.y + 20 );
     shell.open();
   }
-  
+
   public Font getFont() {
     return font;
   }
-  
+
   public void setFont( final Font font ) {
     this.font = font;
     updateFontControls();
   }
-  
+
   private void createControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 2, false ) );
     SelectionAdapter dummySelectionListener = new SelectionAdapter() {};
@@ -125,22 +126,22 @@ final class SimpleFontDialog extends Dialog {
       }
     } );
   }
-  
+
   private void updateFontControls() {
     if( font != null ) {
       FontData data = font.getFontData()[ 0 ];
       txtName.setText( data.getName() );
       spinSize.setSelection( data.getHeight() );
       chkBold.setSelection( ( data.getStyle() & SWT.BOLD ) != 0 );
-      chkItalic.setSelection( ( data.getStyle() & SWT.ITALIC ) != 0 );      
+      chkItalic.setSelection( ( data.getStyle() & SWT.ITALIC ) != 0 );
     } else {
       txtName.setText( "" );
       spinSize.setSelection( 0 );
       chkBold.setSelection( false );
-      chkItalic.setSelection( false );      
+      chkItalic.setSelection( false );
     }
   }
-  
+
   private void revertPressed() {
     setFont( null );
     if( callback != null ) {
@@ -157,7 +158,7 @@ final class SimpleFontDialog extends Dialog {
 //    shell.setVisible( false );
     shell.close();
   }
-  
+
   private void applyPressed() {
     String name = txtName.getText();
     int height;
@@ -169,7 +170,7 @@ final class SimpleFontDialog extends Dialog {
     if( chkItalic.getSelection() ) {
       style |= SWT.ITALIC;
     }
-    setFont( Font.getFont( name, height, style ) );
+    setFont( Graphics.getFont( name, height, style ) );
     if( callback != null ) {
       callback.run();
     }

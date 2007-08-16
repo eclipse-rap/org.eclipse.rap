@@ -339,13 +339,13 @@ public class TableItem_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    Font rowFont = Font.getFont( "row-font", 10, SWT.NORMAL );
+    Font rowFont = Graphics.getFont( "row-font", 10, SWT.NORMAL );
 
     // Test initial value
     assertEquals( table.getFont(), item.getFont() );
 
     // Test setting font for an item that is out of column bounds
-    Font font = Font.getFont( "Arial", 10, SWT.NORMAL );
+    Font font = Graphics.getFont( "Arial", 10, SWT.NORMAL );
     item.setFont( 100, font );
     assertEquals( table.getFont(), item.getFont( 100 ) );
 
@@ -355,7 +355,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( rowFont, item.getFont( 0 ) );
 
     // Test setting and resetting font for a specific cell
-    Font cellFont = Font.getFont( "cell-font", 10, SWT.NORMAL );
+    Font cellFont = Graphics.getFont( "cell-font", 10, SWT.NORMAL );
     item.setFont( 0, cellFont );
     assertEquals( cellFont, item.getFont( 0 ) );
     item.setFont( 0, null );
