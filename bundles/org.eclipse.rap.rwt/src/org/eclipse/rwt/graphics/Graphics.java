@@ -128,7 +128,8 @@ public class Graphics {
       Class[] paramList = new Class[] { int.class };
       Constructor constr = colorExtClass.getDeclaredConstructor( paramList );
       constr.setAccessible( true );
-      result = ( Color )constr.newInstance( new Object[] { new Integer( colorNr ) } );
+      Object[] param = new Object[] { new Integer( colorNr ) };
+      result = ( Color )constr.newInstance( param );
     } catch( final Exception e ) {
       throw new RuntimeException( "Failed to instantiate Color", e );
     }
