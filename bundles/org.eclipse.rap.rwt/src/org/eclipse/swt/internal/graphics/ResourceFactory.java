@@ -25,7 +25,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 
 
-public class ResourceFactory {
+public final class ResourceFactory {
 
   private final static Map colors = new HashMap();
 
@@ -33,7 +33,8 @@ public class ResourceFactory {
 
   private static final Map images = new HashMap();
 
-  // === COLORS ===
+  /////////
+  // COLORS
 
   public static Color getColor( final RGB rgb ) {
     if( rgb == null ) {
@@ -71,7 +72,8 @@ public class ResourceFactory {
     return result;
   }
 
-  // === FONTS ===
+  ////////
+  // FONTS
 
   public static Font getFont( final FontData data ) {
     return getFont( data.getName(), data.getHeight(), data.getStyle() );
@@ -95,7 +97,8 @@ public class ResourceFactory {
     return result;
   }
 
-  // === IMAGES ===
+  /////////
+  // IMAGES
 
   public static synchronized Image findImage( final String path ) {
     IResourceManager manager = ResourceManager.getInstance();
@@ -152,21 +155,23 @@ public class ResourceFactory {
     return result;
   }
 
+  ///////////////
+  // Test helpers
+
   public static void clear() {
     colors.clear();
     fonts.clear();
     images.clear();
   }
 
-  ///////////////
-  // Test helpers
-
   static int colorsCount() {
     return colors.size();
   }
+  
   static int fontsCount() {
     return fonts.size();
   }
+  
   static int imagesCount() {
     return images.size();
   }
@@ -275,7 +280,8 @@ public class ResourceFactory {
   //////////////////
   // Helping methods
 
-  private static void validateFontParams( final String name, final int height ) {
+  private static void validateFontParams( final String name, final int height ) 
+  {
     if( name == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -343,5 +349,9 @@ public class ResourceFactory {
       throw new RuntimeException( "Failed to instantiate Image", e );
     }
     return result;
+  }
+  
+  private ResourceFactory() {
+    // prevent instantiation
   }
 }

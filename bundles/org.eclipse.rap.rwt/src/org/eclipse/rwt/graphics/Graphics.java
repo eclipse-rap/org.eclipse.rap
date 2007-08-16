@@ -21,7 +21,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 /**
  * TODO [rst] comment
  */
-public class Graphics {
+public final class Graphics {
 
   public static Color getColor( final RGB rgb ) {
     return ResourceFactory.getColor( rgb.red, rgb.green, rgb.blue );
@@ -91,5 +91,9 @@ public class Graphics {
    */
   public static float getAvgCharWidth( final Font font ) {
     return TextSizeDetermination.getAvgCharWidth( font );
+  }
+
+  private Graphics() {
+    // prevent instantiation
   }
 }
