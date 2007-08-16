@@ -21,6 +21,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
@@ -91,7 +92,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       parent
     };
     writer.callStatic( "org.eclipse.swt.TreeItemUtil.createTreeItem", args );
-    
+
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -114,14 +115,14 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     writer.call( "destroy", null );
     writer.dispose();
   }
-  
+
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
     return null;
   }
-  
+
 
   ///////////////////////////////////
   // Helping methods to write changes
@@ -134,14 +135,14 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images ) ) {
       String[] imagePaths = new String[ images.length ];
       for( int i = 0; i < imagePaths.length; i++ ) {
-        imagePaths[ i ] = Image.getPath( images[ i ] );
+        imagePaths[ i ] = ResourceFactory.getImagePath( images[ i ] );
         imageWidths[ i ] = new Integer( item.getImageBounds( i ).width );
       }
       //writer.set( "images", new Object[] { imagePaths, imageWidths } );
       writer.set( "images", new Object[] { imagePaths } );
     }
   }
-  
+
   private static void preserveFont( final TreeItem treeItem ) {
     IWidgetFontAdapter fontAdapter
       = ( IWidgetFontAdapter )treeItem.getAdapter( IWidgetFontAdapter.class );
@@ -210,7 +211,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       writer.set( "texts", new Object[] { texts } );
     }
   }
-  
+
   private static String[] getTexts( final TreeItem item ) {
     int columnCount = getColumnCount( item );
     String[] texts = new String[ columnCount ];
@@ -219,7 +220,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     }
     return texts;
   }
-  
+
   private static Image[] getImages( final TreeItem item ) {
     int columnCount = getColumnCount( item );
     Image[] images = new Image[ columnCount ];
@@ -228,11 +229,11 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     }
     return images;
   }
-  
+
   private static int getColumnCount( final TreeItem item ) {
     return Math.max( 1, item.getParent().getColumnCount() );
   }
-  
+
   private static void writeGrayed( final TreeItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( item.getGrayed() );

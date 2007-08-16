@@ -9,6 +9,7 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
@@ -31,8 +32,8 @@ public class LabelTab extends ExampleTab {
   public LabelTab( final CTabFolder topFolder ) {
     super( topFolder, "Label" );
     ClassLoader classLoader = getClass().getClassLoader();
-    image1 = Image.find( "resources/button-image.gif", classLoader );
-    image2 = Image.find( "resources/newfile_wiz.gif", classLoader );
+    image1 = Graphics.getImage( "resources/button-image.gif", classLoader );
+    image2 = Graphics.getImage( "resources/newfile_wiz.gif", classLoader );
     text1 = "Some Text";
     text2 = "Some Other Text";
     labelImage = null;

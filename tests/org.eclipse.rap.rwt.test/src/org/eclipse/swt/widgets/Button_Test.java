@@ -9,9 +9,10 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author georg
@@ -21,22 +22,20 @@ public class Button_Test extends TestCase {
   public void testImage() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
-    
+
     Button button = new Button( shell, SWT.NONE );
-    button.setImage( Image.find( RWTFixture.IMAGE1 ) );
-    assertSame( Image.find( RWTFixture.IMAGE1 ), button.getImage() );
-    assertEquals( 1, Image.size() );
-    
+    button.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    assertSame( Graphics.getImage( RWTFixture.IMAGE1 ), button.getImage() );
+
     Button button2 = new Button( shell, SWT.NONE );
-    button2.setImage( Image.find( RWTFixture.IMAGE2 ) );
-    assertSame( Image.find( RWTFixture.IMAGE2 ), button2.getImage() );
-    assertEquals( 2, Image.size() );
+    button2.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
+    assertSame( Graphics.getImage( RWTFixture.IMAGE2 ), button2.getImage() );
 
     button2.setImage( null );
     assertEquals( null, button2.getImage() );
 
     Button arrowButton = new Button( shell, SWT.ARROW );
-    arrowButton.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    arrowButton.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     assertEquals( null, arrowButton.getImage() );
   }
 

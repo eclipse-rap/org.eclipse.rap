@@ -174,7 +174,7 @@ public class TreeColumn_Test extends TestCase {
 //    assertTrue( column.getWidth() > 0 );
 //    // Test that an image on a column is taken into account
 //    column = new TreeColumn( tree, SWT.NONE );
-//    Image image = Image.find( "resources/images/test-50x100.png",
+//    Image image = Graphics.findImage( "resources/images/test-50x100.png",
 //                              TreeColumn_Test.class.getClassLoader() );
 //    column.setImage( image );
 //    column.pack();

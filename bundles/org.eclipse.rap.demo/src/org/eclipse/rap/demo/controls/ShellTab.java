@@ -63,7 +63,7 @@ public class ShellTab extends ExampleTab {
     top.setLayout( new RowLayout( SWT.VERTICAL ) );
     if( shellImage == null ) {
       ClassLoader classLoader = getClass().getClassLoader();
-      shellImage = Image.find( ICON_IMAGE_PATH, classLoader );
+      shellImage = Graphics.getImage( ICON_IMAGE_PATH, classLoader );
     }
     Button openShellButton = new Button( top, SWT.PUSH );
     openShellButton.setText( "Open Shell" );
@@ -250,7 +250,7 @@ public class ShellTab extends ExampleTab {
     fileItem.setMenu( fileMenu );
     MenuItem newItem = new MenuItem( fileMenu, SWT.PUSH );
     newItem.setText( "New" );
-    newItem.setImage( Image.find( "resources/newfile_wiz.gif" ) );
+    newItem.setImage( Graphics.getImage( "resources/newfile_wiz.gif" ) );
     new MenuItem( fileMenu, SWT.PUSH ).setText( "Open" );
     new MenuItem( fileMenu, SWT.PUSH ).setText( "Close" );
     // edit menu

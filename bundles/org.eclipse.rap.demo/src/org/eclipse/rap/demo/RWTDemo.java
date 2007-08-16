@@ -9,12 +9,13 @@
 package org.eclipse.rap.demo;
 
 import java.util.ArrayList;
+
 import org.eclipse.jface.viewers.*;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
@@ -29,7 +30,7 @@ public class RWTDemo implements IEntryPoint {
   private Text txtGroupNameTab1;
   private int previousTabSelected = 0;
   private int tabSelected = 0;
-  
+
   class TreeObject {
 
     private String name;
@@ -55,7 +56,7 @@ public class RWTDemo implements IEntryPoint {
       return getName();
     }
   }
-  
+
   class TreeParent extends TreeObject {
 
     private ArrayList children;
@@ -83,7 +84,7 @@ public class RWTDemo implements IEntryPoint {
       return children.size() > 0;
     }
   }
-  
+
   class TreeViewerContentProvider
     implements IStructuredContentProvider, ITreeContentProvider
   {
@@ -153,7 +154,7 @@ public class RWTDemo implements IEntryPoint {
     Display display = new Display();
     final Shell shell = new Shell( display, SWT.SHELL_TRIM );
     shell.setBounds( 10, 10, 800, 600 );
-    
+
     createMenu( shell );
 
     final ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
@@ -167,29 +168,29 @@ public class RWTDemo implements IEntryPoint {
         createShell2( shell.getDisplay() );
       }
     } );
-    
+
     ToolItem item3 = new ToolItem( toolBar, SWT.PUSH );
     item3.setText( "save as" );
 
     ToolItem item4 = new ToolItem( toolBar, SWT.PUSH );
     item4.setText( "print" );
-    
+
     ClassLoader loader = getClass().getClassLoader();
-    item1.setImage( Image.find( "resources/newfile_wiz.gif", loader ) );
-    item2.setImage( Image.find( "resources/newfolder_wiz.gif", loader ) );
-    item3.setImage( Image.find( "resources/newprj_wiz.gif", loader ) );
-    item4.setImage( Image.find( "resources/search_src.gif", loader ) );
-    
+    item1.setImage( Graphics.getImage( "resources/newfile_wiz.gif", loader ) );
+    item2.setImage( Graphics.getImage( "resources/newfolder_wiz.gif", loader ) );
+    item3.setImage( Graphics.getImage( "resources/newprj_wiz.gif", loader ) );
+    item4.setImage( Graphics.getImage( "resources/search_src.gif", loader ) );
+
     final Composite content = new Composite( shell, SWT.NONE );
     content.setLayout( new FillLayout() );
     layoutShell( shell, toolBar, content );
-    
-    
+
+
     SashForm sashForm = new SashForm( content, SWT.HORIZONTAL );
     Composite left = new Composite( sashForm, SWT.NONE );
     Composite right = new Composite( sashForm, SWT.NONE );
     sashForm.setWeights( new int[]{
-      25, 
+      25,
       75
     } );
     left.setLayout( new FormLayout() );
@@ -260,11 +261,11 @@ public class RWTDemo implements IEntryPoint {
     int toolBarHeight = 30;
     toolBar.setBounds( clientArea.x,
                        clientArea.y,
-                       clientArea.width, 
+                       clientArea.width,
                        toolBarHeight );
-    content.setBounds( clientArea.x, 
-                       clientArea.y + toolBarHeight + 1, 
-                       clientArea.width, 
+    content.setBounds( clientArea.x,
+                       clientArea.y + toolBarHeight + 1,
+                       clientArea.width,
                        clientArea.height - toolBarHeight - 1 );
     content.layout();
   }

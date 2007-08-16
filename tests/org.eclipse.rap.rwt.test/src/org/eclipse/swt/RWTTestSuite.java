@@ -37,8 +37,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ctabfolderkit.CTabFolderLCA_Test;
 import org.eclipse.swt.internal.custom.scrolledcompositekit.ScrolledCompositeLCA_Test;
 import org.eclipse.swt.internal.events.ActivateEvent_Test;
-import org.eclipse.swt.internal.graphics.FontSizeCalculator_Test;
-import org.eclipse.swt.internal.graphics.FontSizeEstimation_Test;
+import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
@@ -168,6 +167,7 @@ public class RWTTestSuite {
     suite.addTestSuite( FontData_Test.class );
     suite.addTestSuite( FontSizeEstimation_Test.class );
     suite.addTestSuite( FontSizeCalculator_Test.class );
+    suite.addTestSuite( ResourceFactory_Test.class );
 
     // == LCAs ==
     suite.addTestSuite( DisplayLCA_Test.class );

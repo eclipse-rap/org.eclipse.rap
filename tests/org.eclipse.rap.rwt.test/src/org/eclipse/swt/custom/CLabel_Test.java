@@ -13,10 +13,10 @@ package org.eclipse.swt.custom;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -53,10 +53,11 @@ public class CLabel_Test extends TestCase {
     Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     assertEquals( label.getImage(), null );
-    label
-        .setImage( Image.find( RWTFixture.IMAGE1, getClass().getClassLoader() ) );
-    assertEquals( label.getImage(), Image.find( RWTFixture.IMAGE1, getClass()
-        .getClassLoader() ) );
+    label.setImage( Graphics.getImage( RWTFixture.IMAGE1,
+                                        getClass().getClassLoader() ) );
+    assertEquals( label.getImage(),
+                  Graphics.getImage( RWTFixture.IMAGE1,
+                                      getClass().getClassLoader() ) );
   }
 
   public void testSetText() {

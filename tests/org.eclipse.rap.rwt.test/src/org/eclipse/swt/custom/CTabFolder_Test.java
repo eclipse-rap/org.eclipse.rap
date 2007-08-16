@@ -489,7 +489,7 @@ public class CTabFolder_Test extends TestCase {
 
   private static Image searchImage() {
     ClassLoader loader = CTabFolder_Test.class.getClassLoader();
-    return Image.find( "org/eclipse/rap/rwt/custom/search_src.gif", loader );
+    return Graphics.getImage( "org/eclipse/rap/rwt/custom/search_src.gif", loader );
   }
 
   protected void setUp() throws Exception {

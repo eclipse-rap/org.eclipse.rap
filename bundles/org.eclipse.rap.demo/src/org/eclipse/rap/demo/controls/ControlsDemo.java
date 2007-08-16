@@ -9,6 +9,7 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -29,7 +30,7 @@ public class ControlsDemo implements IEntryPoint {
     createContent( shell );
     shell.setText( "SWT Controls Demo" );
     ClassLoader classLoader = getClass().getClassLoader();
-    Image image = Image.find( "resources/shell.gif", classLoader );
+    Image image = Graphics.getImage( "resources/shell.gif", classLoader );
     shell.setImage( image );
     shell.layout();
     shell.open();
@@ -57,6 +58,7 @@ public class ControlsDemo implements IEntryPoint {
       new ComboTab( topFolder ),
       new CompositeTab( topFolder ),
       new CoolBarTab( topFolder ),
+      new CustomControlTab( topFolder ),
       new DialogsTab( topFolder ),
       new GroupTab( topFolder ),
       new LabelTab( topFolder ),
@@ -66,7 +68,7 @@ public class ControlsDemo implements IEntryPoint {
       new SashFormTab( topFolder ),
       new ShellTab( topFolder ),
       new TabFolderTab( topFolder ),
-      // TODO [rh] bring back when layout problems are solved and demo tab is 
+      // TODO [rh] bring back when layout problems are solved and demo tab is
       //      cleaned up
 //      new CTabFolderTab( topFolder ),
       new TableTab( topFolder ),
@@ -95,6 +97,6 @@ public class ControlsDemo implements IEntryPoint {
     int result = FontSizeCalculator.getCharHeight( folder.getFont() );
     if( result < 18 ) {
       folder.setTabHeight( 18 );
-    } 
+    }
   }
 }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
@@ -22,6 +23,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -316,7 +318,7 @@ public final class WidgetLCAUtil {
                                  final Image image )
     throws IOException
   {
-    String imagePath = image == null ? null : Image.getPath( image );
+    String imagePath = image == null ? null : ResourceFactory.getImagePath( image );
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.set( jsProperty, imagePath );
   }

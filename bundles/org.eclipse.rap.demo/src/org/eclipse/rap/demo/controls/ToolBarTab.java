@@ -9,6 +9,7 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -44,10 +45,10 @@ public class ToolBarTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new RowLayout() );
     ClassLoader loader = getClass().getClassLoader();
-    Image imageNewFile = Image.find( "resources/newfile_wiz.gif", loader );
-    Image imagenewFolder = Image.find( "resources/newfolder_wiz.gif", loader );
-    Image imageNewProj = Image.find( "resources/newprj_wiz.gif", loader );
-    Image imageSearch = Image.find( "resources/search_src.gif", loader );
+    Image imageNewFile = Graphics.getImage( "resources/newfile_wiz.gif", loader );
+    Image imagenewFolder = Graphics.getImage( "resources/newfolder_wiz.gif", loader );
+    Image imageNewProj = Graphics.getImage( "resources/newprj_wiz.gif", loader );
+    Image imageSearch = Graphics.getImage( "resources/search_src.gif", loader );
     toolBar = new ToolBar( parent, getStyle() );
     registerControl( toolBar );
     ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );

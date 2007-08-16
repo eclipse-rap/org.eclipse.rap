@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -21,6 +21,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
@@ -39,7 +40,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static final String PROP_FONT = "font";
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_FOREGROUND = "foreground";
-  
+
   public void preserveValues( final Widget widget ) {
     TableItem item = ( TableItem )widget;
     ItemLCAUtil.preserve( item );
@@ -66,12 +67,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       Table parent = item.getParent();
       int detail = getWidgetSelectedDetail();
       int id = SelectionEvent.WIDGET_SELECTED;
-      SelectionEvent event = new SelectionEvent( parent, 
-                                                 item, 
-                                                 id, 
-                                                 new Rectangle( 0, 0, 0, 0 ), 
-                                                 "", 
-                                                 true, 
+      SelectionEvent event = new SelectionEvent( parent,
+                                                 item,
+                                                 id,
+                                                 new Rectangle( 0, 0, 0, 0 ),
+                                                 "",
+                                                 true,
                                                  detail );
       event.processEvent();
     }
@@ -83,7 +84,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       event.processEvent();
     }
   }
-  
+
   public void renderInitialization( final Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
     JSWriter writer = JSWriter.getWriterFor( item );
@@ -129,19 +130,19 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  public void createResetHandlerCalls( final String typePoolId ) 
-    throws IOException 
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
   {
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
     return null;
   }
-  
+
 
   //////////////////
   // ReadData helper
-  
+
   private static int getWidgetSelectedDetail() {
     int result = SWT.NONE;
     HttpServletRequest request = ContextProvider.getRequest();
@@ -154,7 +155,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   ///////////////////////
   // RenderChanges helper
-  
+
   private static boolean writeTexts( final TableItem item ) throws IOException {
     String[] texts = getTexts( item );
     boolean result = WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts );
@@ -169,8 +170,8 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
-  private static boolean writeImages( final TableItem item ) throws IOException 
+
+  private static boolean writeImages( final TableItem item ) throws IOException
   {
     Image[] images = getImages( item );
     boolean result = WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images );
@@ -178,7 +179,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( item );
       String[] imagePaths = new String[ images.length ];
       for( int i = 0; i < imagePaths.length; i++ ) {
-        imagePaths[ i ] = Image.getPath( images[ i ] );
+        imagePaths[ i ] = ResourceFactory.getImagePath( images[ i ] );
       }
       writer.set( "images", new Object[] { imagePaths } );
     }
@@ -192,7 +193,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       Font parentFont = item.getParent().getFont();
       defValue[ i ] = parentFont;
     }
-    boolean result 
+    boolean result
       = WidgetLCAUtil.hasChanged( item, PROP_FONT, fonts, defValue );
     if( result ) {
       String[] css = new String[ fonts.length ];
@@ -213,7 +214,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       defValue[ i ] = parentBackground;
     }
     JSWriter writer = JSWriter.getWriterFor( item );
-    return writer.set( PROP_BACKGROUND, "backgrounds", backgrounds, defValue ); 
+    return writer.set( PROP_BACKGROUND, "backgrounds", backgrounds, defValue );
   }
 
   private boolean writeForeground( final TableItem item ) throws IOException {
@@ -224,9 +225,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       defValue[ i ] = parentForeground;
     }
     JSWriter writer = JSWriter.getWriterFor( item );
-    return writer.set( PROP_FOREGROUND, "foregrounds", foregrounds, defValue ); 
+    return writer.set( PROP_FOREGROUND, "foregrounds", foregrounds, defValue );
   }
-  
+
   private static boolean writeChecked( final TableItem item )
     throws IOException
   {
@@ -234,16 +235,16 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     Boolean newValue = Boolean.valueOf( item.getChecked() );
     return writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
   }
-  
-  private static boolean writeGrayed( final TableItem item ) throws IOException 
+
+  private static boolean writeGrayed( final TableItem item ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( item.getGrayed() );
     return writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
   }
-  
-  private static boolean writeSelection( final TableItem item ) 
-    throws IOException 
+
+  private static boolean writeSelection( final TableItem item )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( isSelected( item ) );
@@ -252,12 +253,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   // TODO [rh] check if necessary to honor focusIndex == -1, would mean to
   //      call jsTable.setFocusedItem( null ) in TableLCA
-  private static void writeFocused( final TableItem item ) throws IOException 
+  private static void writeFocused( final TableItem item ) throws IOException
   {
     Boolean newValue = Boolean.valueOf( isFocused( item ) );
     Boolean defValue = Boolean.FALSE;
-    if(    newValue.booleanValue() 
-        && WidgetLCAUtil.hasChanged( item, PROP_FOCUSED, newValue, defValue ) ) 
+    if(    newValue.booleanValue()
+        && WidgetLCAUtil.hasChanged( item, PROP_FOCUSED, newValue, defValue ) )
     {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.call( "focus", null );
@@ -270,7 +271,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     result = result.replaceAll( "<", "&#060;" );
     return result;
   }
-  
+
   private static String toCss( final Font font ) {
     StringBuffer result = new StringBuffer();
     FontData fontData = font.getFontData()[ 0 ];
@@ -290,7 +291,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   //////////////////////
   // Item data accessors
-  
+
   private static String[] getTexts( final TableItem item ) {
     int columnCount = getColumnCount( item );
     String[] result = new String[ columnCount ];
@@ -308,7 +309,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
+
   private static Font[] getFonts( final TableItem item ) {
     int columnCount = getColumnCount( item );
     Font[] result = new Font[ columnCount ];
@@ -317,7 +318,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     }
     return result;
   }
-  
+
   private static Color[] getBackgrounds( final TableItem item ) {
     int columnCount = getColumnCount( item );
     Color[] result = new Color[ columnCount ];
@@ -339,7 +340,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static int getColumnCount( final TableItem item ) {
     return Math.max( 1, item.getParent().getColumnCount() );
   }
-  
+
   private static boolean isSelected( final TableItem item ) {
     Table table = item.getParent();
     int index = table.indexOf( item );
@@ -351,7 +352,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     int focusIndex = tableAdapter.getFocusIndex();
-    return focusIndex != -1 && item == table.getItem( focusIndex ); 
+    return focusIndex != -1 && item == table.getItem( focusIndex );
   }
 
   private static boolean isVisible( final TableItem item ) {

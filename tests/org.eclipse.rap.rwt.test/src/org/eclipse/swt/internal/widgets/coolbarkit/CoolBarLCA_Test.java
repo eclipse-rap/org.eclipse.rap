@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -13,12 +13,12 @@ package org.eclipse.swt.internal.widgets.coolbarkit;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -41,14 +41,14 @@ public final class CoolBarLCA_Test extends TestCase {
 
     RWTFixture.markInitialized( item );
     item.setText( "some text" );
-    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     AbstractWidgetLCA lca = WidgetUtil.getLCA( item );
     lca.preserveValues( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     assertEquals( null, adapter.getPreserved( Props.TEXT ) );
     assertEquals(null, adapter.getPreserved( Props.IMAGE ) );
   }
-  
+
 //  public void testItemReordering1() {
 //    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
 //    Display display = new Display();
@@ -67,12 +67,12 @@ public final class CoolBarLCA_Test extends TestCase {
 //    // get adapter to set item order
 //    Object adapter = bar.getAdapter( ICoolBarAdapter.class );
 //    ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
-//    
+//
 //    // ensure initial state
 //    assertEquals( 0, bar.getItemOrder()[ 0 ] );
 //    assertEquals( 1, bar.getItemOrder()[ 1 ] );
 //    assertEquals( 2, bar.getItemOrder()[ 2 ] );
-//    
+//
 //    // Simulate that item2 is dragged left of item1
 //    int newX = item1.getBounds().x - 4;
 //    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_MOVED, item2Id );
@@ -81,7 +81,7 @@ public final class CoolBarLCA_Test extends TestCase {
 //    assertEquals( 0, bar.getItemOrder()[ 0 ] );
 //    assertEquals( 2, bar.getItemOrder()[ 1 ] );
 //    assertEquals( 1, bar.getItemOrder()[ 2 ] );
-//    
+//
 //    // Simulate that item0 is dragged after the last item
 //    cba.setItemOrder( new int[] { 0, 1, 2, } );
 //    newX = item2.getBounds().x + item2.getBounds().width + 10;
@@ -112,7 +112,7 @@ public final class CoolBarLCA_Test extends TestCase {
 //    assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item0 ) ] );
 //    assertEquals( 2, bar.getItemOrder()[ bar.indexOf( item2 ) ] );
 //  }
-  
+
 //  public void testItemReordering2() throws IOException {
 //    Display display = new Display();
 //    Shell shell = new Shell( display, SWT.NONE );
@@ -137,11 +137,11 @@ public final class CoolBarLCA_Test extends TestCase {
 //    RWTFixture.markInitialized( item1 );
 //    RWTFixture.markInitialized( item1.getControl() );
 //    RWTLifeCycle lifeCycle = createLifeCycle();
-//    
+//
 //    // get adapter to set item order
 //    Object adapter = bar.getAdapter( ICoolBarAdapter.class );
 //    ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
-//    
+//
 //    // Drag item0 and drop it inside the bounds of item1
 //    cba.setItemOrder( new int[] { 0, 1 } );
 //    RWTFixture.fakeNewRequest();
@@ -153,7 +153,7 @@ public final class CoolBarLCA_Test extends TestCase {
 //    RWTFixture.fakeUIThread();
 //    assertEquals( 0, bar.getItemOrder()[ bar.indexOf( item1 )] );
 //    assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item0 )] );
-//    
+//
 //    // Drag item0 and drop it beyound the bounds of item1
 //    cba.setItemOrder( new int[] { 0, 1 } );
 //    RWTFixture.removeUIThread();
@@ -168,7 +168,7 @@ public final class CoolBarLCA_Test extends TestCase {
 //    assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item0 )] );
 //    RWTFixture.removeUIThread();
 //  }
-  
+
 //  public void testSnapBackItemMoved() throws IOException {
 //    Display display = new Display();
 //    Shell shell = new Shell( display, SWT.NONE );
@@ -193,11 +193,11 @@ public final class CoolBarLCA_Test extends TestCase {
 //    RWTFixture.markInitialized( item1 );
 //    RWTFixture.markInitialized( item1.getControl() );
 //    RWTLifeCycle lifeCycle = createLifeCycle();
-//    
+//
 //    // get adapter to set item order
 //    Object adapter = bar.getAdapter( ICoolBarAdapter.class );
 //    ICoolBarAdapter cba = (ICoolBarAdapter) adapter;
-//    
+//
 //    // Simulate that fist item is dragged around but dropped at its original
 //    // position
 //    cba.setItemOrder( new int[] { 0, 1 } );
@@ -210,8 +210,8 @@ public final class CoolBarLCA_Test extends TestCase {
 //    RWTFixture.fakeUIThread();
 //    assertEquals( 0, bar.getItemOrder()[ bar.indexOf( item0 )] );
 //    assertEquals( 1, bar.getItemOrder()[ bar.indexOf( item1 )] );
-//    String expected 
-//      = "var w = wm.findWidgetById( \"" + item0Id + "\" );" 
+//    String expected
+//      = "var w = wm.findWidgetById( \"" + item0Id + "\" );"
 //      + "w.setSpace(";
 //    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
 //    RWTFixture.removeUIThread();
@@ -219,7 +219,7 @@ public final class CoolBarLCA_Test extends TestCase {
 
   //////////////////
   // Helping methods
-  
+
   private static RWTLifeCycle createLifeCycle() {
     RWTLifeCycle lifeCycle = new RWTLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );

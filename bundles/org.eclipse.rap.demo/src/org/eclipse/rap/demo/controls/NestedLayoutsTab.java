@@ -8,18 +8,18 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 class NestedLayoutsTab extends ExampleTab {
 
   private boolean propPrefSize = false;
-  
+
   public NestedLayoutsTab( final CTabFolder folder ) {
     super( folder, "Nested Layouts" );
   }
@@ -37,7 +37,7 @@ class NestedLayoutsTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout() );
     Composite comp = new Composite( parent, SWT.NONE );
-    comp.setBackground( BG_COLOR_BROWN );    
+    comp.setBackground( BG_COLOR_BROWN );
     comp.setLayout( new GridLayout() );
     if( propPrefSize ) {
       comp.setLayoutData( new GridData() );
@@ -47,10 +47,10 @@ class NestedLayoutsTab extends ExampleTab {
 
     // Image label
     Label imageLabel = new Label( comp, SWT.NONE );
-    imageLabel.setImage( Image.find( "icons/lockkey.gif",
-                                this.getClass().getClassLoader() ) );
+    imageLabel.setImage( Graphics.getImage( "icons/lockkey.gif",
+                         this.getClass().getClassLoader() ) );
     imageLabel.setLayoutData( new GridData( 32, 32 ) );
-    
+
     // Login data
     Group loginGroup = new Group( comp, SWT.NONE );
     loginGroup.setText( "Login Data" );
@@ -62,7 +62,7 @@ class NestedLayoutsTab extends ExampleTab {
     new Label( loginGroup, SWT.NONE ).setText( "Password:" );
     Text passText = new Text( loginGroup, SWT.PASSWORD | SWT.BORDER );
     passText.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
-    
+
     // Button bar
     Composite buttons = new Composite( comp, SWT.NONE );
     RowLayout buttonLayout = new RowLayout( SWT.HORIZONTAL);

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -16,6 +16,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -24,7 +25,6 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -52,7 +52,7 @@ public class ToolItemLCA_Test extends TestCase {
     item.addSelectionListener( selectionListener );
 
     item.setText( "some text" );
-    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     item.setSelection( true );
 
     RWTFixture.preserveWidgets();
@@ -61,7 +61,7 @@ public class ToolItemLCA_Test extends TestCase {
     = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-    assertEquals( Image.find( RWTFixture.IMAGE1 ),
+    assertEquals( Graphics.getImage( RWTFixture.IMAGE1 ),
                   adapter.getPreserved( Props.IMAGE ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
     display.dispose();

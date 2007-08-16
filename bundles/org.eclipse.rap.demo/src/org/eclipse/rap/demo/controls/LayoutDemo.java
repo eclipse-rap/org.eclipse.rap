@@ -31,7 +31,7 @@ public class LayoutDemo implements IEntryPoint {
     createContents( shell );
     shell.setText( "SWT Layout Demo" );
     ClassLoader classLoader = getClass().getClassLoader();
-    Image image = Image.find( "resources/shell.gif", classLoader );
+    Image image = Graphics.getImage( "resources/shell.gif", classLoader );
     shell.setImage( image  );
     shell.layout();
     shell.open();

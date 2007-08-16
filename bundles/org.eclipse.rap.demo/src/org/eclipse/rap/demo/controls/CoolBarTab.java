@@ -9,6 +9,7 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
@@ -27,10 +28,10 @@ public class CoolBarTab extends ExampleTab {
   public CoolBarTab( final CTabFolder topFolder ) {
     super( topFolder, "CoolBar" );
     ClassLoader loader = getClass().getClassLoader();
-    image1 = Image.find( "resources/newfile_wiz.gif", loader );
-    image2 = Image.find( "resources/newfolder_wiz.gif", loader );
-    image3 = Image.find( "resources/newprj_wiz.gif", loader );
-    image4 = Image.find( "resources/search_src.gif", loader );
+    image1 = Graphics.getImage( "resources/newfile_wiz.gif", loader );
+    image2 = Graphics.getImage( "resources/newfolder_wiz.gif", loader );
+    image3 = Graphics.getImage( "resources/newprj_wiz.gif", loader );
+    image4 = Graphics.getImage( "resources/search_src.gif", loader );
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -47,17 +48,17 @@ public class CoolBarTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     int style = getStyle();
     coolBar = new CoolBar( parent, style );
-    
+
     // Create toolBar1 to be displayed in the first CoolItem
     final CoolItem coolItem1 = new CoolItem( coolBar, style );
     final ToolBar toolBar1 = createToolBar( coolBar, SWT.NONE );
     coolItem1.setControl( toolBar1 );
-  
+
     // Create toolBar2 to be displayed in the second CoolItem
     final CoolItem coolItem2 = new CoolItem( coolBar, style );
     ToolBar toolBar2 = createToolBar( coolBar, SWT.NONE );
     coolItem2.setControl( toolBar2 );
-    
+
     // Register CoolBar
     registerControl( coolBar );
 
@@ -74,7 +75,7 @@ public class CoolBarTab extends ExampleTab {
                             final CoolItem coolItem2 )
   {
     Point size = toolBar1.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-    // TODO [fappel]: check whether size adjustment is really needed or a bug . 
+    // TODO [fappel]: check whether size adjustment is really needed or a bug .
     size = new Point( size.x + ( int )( size.x * 0.1 ), size.y );
     coolItem1.setSize( size );
     coolItem2.setSize( size );

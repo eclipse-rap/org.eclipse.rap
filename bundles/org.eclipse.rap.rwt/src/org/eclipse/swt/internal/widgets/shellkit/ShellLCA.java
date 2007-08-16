@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
@@ -22,6 +23,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
@@ -120,6 +122,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
     ControlLCAUtil.resetMoveNotificator();
     writer.removeListener( JSConst.QX_EVENT_CHANGE_VISIBILITY,
                            JSConst.JS_SHELL_CLOSED );
+    ControlLCAUtil.resetBounds();
+    ControlLCAUtil.resetZIndex();
+    ControlLCAUtil.resetToolTip();
   }
 
   public String getTypePoolId( final Widget widget ) throws IOException {
@@ -248,7 +253,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
       Image image = shell.getImage();
       if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
         JSWriter writer = JSWriter.getWriterFor( shell );
-        writer.set( JSConst.QX_FIELD_ICON, Image.getPath( image ) );
+        writer.set( JSConst.QX_FIELD_ICON, ResourceFactory.getImagePath( image ) );
       }
     }
   }

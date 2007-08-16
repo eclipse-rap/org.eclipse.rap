@@ -18,6 +18,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
 
@@ -80,7 +81,7 @@ final class ButtonLCAUtil {
       if( image == null ) {
         imagePath = "";
       } else {
-        imagePath = Image.getPath( image );
+        imagePath = ResourceFactory.getImagePath( image );
       }
       JSWriter writer = JSWriter.getWriterFor( button );
       writer.set( JSConst.QX_FIELD_ICON, imagePath );

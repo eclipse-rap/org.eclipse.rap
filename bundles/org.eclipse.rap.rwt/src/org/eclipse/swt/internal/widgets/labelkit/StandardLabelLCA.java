@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Label;
 
@@ -119,7 +120,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
         imagePath = null;
       } else {
         // TODO passing image bounds to qooxdoo can speed up rendering
-        imagePath = Image.getPath( image );
+        imagePath = ResourceFactory.getImagePath( image );
       }
       Object[] args = new Object[]{ label, imagePath };
       writer.callStatic( JS_FUNC_LABEL_UTIL_SET_IMAGE, args );

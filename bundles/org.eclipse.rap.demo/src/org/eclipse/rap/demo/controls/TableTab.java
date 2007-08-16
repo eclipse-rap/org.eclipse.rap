@@ -37,11 +37,11 @@ public class TableTab extends ExampleTab {
 
   public TableTab( final CTabFolder folder ) {
     super( folder, "Table" );
-    columnImage = Image.find( "resources/shell.gif",
+    columnImage = Graphics.getImage( "resources/shell.gif",
                               getClass().getClassLoader() );
-    smallImage = Image.find( "resources/newfile_wiz.gif",
+    smallImage = Graphics.getImage( "resources/newfile_wiz.gif",
                              getClass().getClassLoader() );
-    largeImage = Image.find( "resources/big_image.png",
+    largeImage = Graphics.getImage( "resources/big_image.png",
                              getClass().getClassLoader() );
     itemImage = smallImage;
   }

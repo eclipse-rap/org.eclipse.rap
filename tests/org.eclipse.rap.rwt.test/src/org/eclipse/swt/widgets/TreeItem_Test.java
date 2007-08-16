@@ -124,10 +124,10 @@ public class TreeItem_Test extends TestCase {
     assertEquals( null, item.getImage() );
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getChecked() ) );
     item.setText( "foo" );
-    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     item.setChecked( true );
     assertEquals( "foo", item.getText() );
-    assertEquals( Image.find( RWTFixture.IMAGE1 ), item.getImage() );
+    assertEquals( Graphics.getImage( RWTFixture.IMAGE1 ), item.getImage() );
     assertEquals( Boolean.TRUE, Boolean.valueOf( item.getChecked() ) );
     item.clear();
     assertEquals( "", item.getText() );
@@ -275,9 +275,9 @@ public class TreeItem_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, 0 );
 
     Image[] images = new Image[] {
-      Image.find( RWTFixture.IMAGE1 ),
-      Image.find( RWTFixture.IMAGE2 ),
-      Image.find( RWTFixture.IMAGE3 )
+      Graphics.getImage( RWTFixture.IMAGE1 ),
+      Graphics.getImage( RWTFixture.IMAGE2 ),
+      Graphics.getImage( RWTFixture.IMAGE3 )
     };
 
     assertNull( treeItem.getImage( 1 ) );
@@ -322,9 +322,9 @@ public class TreeItem_Test extends TestCase {
     TreeItem treeItem = new TreeItem( tree, 0 );
 
     Image[] images = new Image[] {
-      Image.find( RWTFixture.IMAGE1 ),
-      Image.find( RWTFixture.IMAGE2 ),
-      Image.find( RWTFixture.IMAGE3 )
+      Graphics.getImage( RWTFixture.IMAGE1 ),
+      Graphics.getImage( RWTFixture.IMAGE2 ),
+      Graphics.getImage( RWTFixture.IMAGE3 )
     };
 
     // no columns

@@ -19,6 +19,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -249,7 +250,7 @@ public class ControlLCAUtil {
     if( WidgetLCAUtil.hasChanged( widget, Props.IMAGE, image, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       // work around qooxdoo, that interprets 'null' as an image path
-      String path = image == null ? "" : Image.getPath( image );
+      String path = image == null ? "" : ResourceFactory.getImagePath( image );
       writer.set( JSConst.QX_FIELD_ICON, path );
     }
   }
@@ -383,8 +384,8 @@ public class ControlLCAUtil {
     int max = MAX_STATIC_ZORDER;
     if( control.getParent() != null ) {
       // TODO [rh] revise: determining the childrenCount by getting all the
-      //      children might be bad performance-wise. This was done in order to 
-      //      eliminate Composite#getChildrenCount() which no API in SWT 
+      //      children might be bad performance-wise. This was done in order to
+      //      eliminate Composite#getChildrenCount() which no API in SWT
       max = Math.max( control.getParent().getChildren().length, max );
     }
     Object adapter = control.getAdapter( IControlAdapter.class );

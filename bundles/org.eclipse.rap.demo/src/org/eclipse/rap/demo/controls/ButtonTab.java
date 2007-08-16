@@ -10,6 +10,7 @@
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
@@ -23,7 +24,7 @@ public class ButtonTab extends ExampleTab {
     = "resources/button-image.gif";
 
   private Image buttonImage;
-  
+
   private boolean showImage;
 
   private Button pushButton;
@@ -95,12 +96,12 @@ public class ButtonTab extends ExampleTab {
     defaultButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         String message = "The text You entered: " + text.getText();
-        MessageDialog.openInformation( group.getShell(), 
-                                       "Information", 
+        MessageDialog.openInformation( group.getShell(),
+                                       "Information",
                                        message );
       }
     } );
-    
+
     // Set a context menu
     Menu menu = new Menu( parent );
     for( int i = 0; i < 5; i++ ) {
@@ -112,7 +113,7 @@ public class ButtonTab extends ExampleTab {
       public void controlResized( final ControlEvent e ) {
         int height = label.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y;
         int width = height * 5;
-        text.setLayoutData( new RowData( width, height ) );        
+        text.setLayoutData( new RowData( width, height ) );
       }
     } );
   }
@@ -133,7 +134,7 @@ public class ButtonTab extends ExampleTab {
     if( showImage ) {
       if( buttonImage == null ) {
         ClassLoader classLoader = getClass().getClassLoader();
-        buttonImage = Image.find( BUTTON_IMAGE_PATH, classLoader );
+        buttonImage = Graphics.getImage( BUTTON_IMAGE_PATH, classLoader );
       }
       button.setImage( buttonImage );
     } else {

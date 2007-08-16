@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -12,6 +12,8 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -19,15 +21,15 @@ import org.eclipse.swt.graphics.Point;
 
 
 public class Label_Test extends TestCase {
-  
+
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
-    assertEquals( "", label.getText() ); 
-    assertEquals( SWT.LEFT, label.getAlignment() ); 
+    assertEquals( "", label.getText() );
+    assertEquals( SWT.LEFT, label.getAlignment() );
   }
-  
+
   public void testText() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -41,12 +43,12 @@ public class Label_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testStyle() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Label label;
-    
+
     label = new Label( shell, SWT.NONE );
     assertTrue( ( label.getStyle() & SWT.SEPARATOR ) == 0 );
     assertTrue( ( label.getStyle() & SWT.LEFT ) != 0 );
@@ -62,14 +64,14 @@ public class Label_Test extends TestCase {
     assertTrue( ( label.getStyle() & SWT.SHADOW_OUT ) != 0 );
     assertFalse( ( label.getStyle() & SWT.SHADOW_IN ) != 0 );
   }
-  
+
   public void testSeparatorLabel() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.SEPARATOR );
     label.setText( "bla" );
     assertEquals( "", label.getText() );
-    label.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    label.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     assertEquals( null, label.getImage() );
   }
 
@@ -78,7 +80,7 @@ public class Label_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     label.setText( "bla" );
-    Image image = Image.find( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
     label.setImage( image );
     assertSame( image, label.getImage() );
     assertEquals( "", label.getText() );
@@ -86,7 +88,7 @@ public class Label_Test extends TestCase {
     assertEquals( "xyz", label.getText() );
     assertNull( label.getImage() );
   }
-  
+
   public void testSize() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -102,7 +104,7 @@ public class Label_Test extends TestCase {
     Point extentWrap = labelWrap.computeSize( 100, SWT.DEFAULT );
     assertTrue( extentWrap.y > extentNoWrap.y );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

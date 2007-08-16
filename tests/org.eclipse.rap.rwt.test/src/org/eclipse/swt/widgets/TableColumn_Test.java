@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -24,7 +25,7 @@ import org.eclipse.swt.graphics.Image;
 
 
 public class TableColumn_Test extends TestCase {
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
@@ -32,7 +33,7 @@ public class TableColumn_Test extends TestCase {
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }
-  
+
   public void testCreation() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -48,8 +49,8 @@ public class TableColumn_Test extends TestCase {
     // Try to add an item whit an index which is out of bounds
     try {
       new TableColumn ( table, SWT.NONE, table.getColumnCount() + 8 );
-      String msg 
-        = "Index out of bounds expected when creating a column with " 
+      String msg
+        = "Index out of bounds expected when creating a column with "
         + "index > columnCount";
       fail( msg );
     } catch( IllegalArgumentException e ) {
@@ -80,7 +81,7 @@ public class TableColumn_Test extends TestCase {
     TableColumn column = new TableColumn( table, SWT.NONE );
     assertSame( display, column.getDisplay() );
   }
-  
+
   public void testStyle() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -93,13 +94,13 @@ public class TableColumn_Test extends TestCase {
     column = new TableColumn( table, SWT.RIGHT );
     assertTrue( ( column.getStyle() & SWT.RIGHT ) != 0 );
   }
-  
+
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
-    
+
     assertEquals( 0, column.getWidth() );
     assertEquals( "", column.getText() );
     assertEquals( null, column.getToolTipText() );
@@ -108,12 +109,12 @@ public class TableColumn_Test extends TestCase {
     assertEquals( false, column.getMoveable() );
     assertEquals( SWT.LEFT, column.getAlignment() );
   }
-  
+
   public void testAlignment() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
-    
+
     TableColumn column;
     column = new TableColumn( table, SWT.NONE );
     assertEquals( SWT.LEFT, column.getAlignment() );
@@ -123,13 +124,13 @@ public class TableColumn_Test extends TestCase {
     assertEquals( SWT.CENTER, column.getAlignment() );
     column = new TableColumn( table, SWT.RIGHT );
     assertEquals( SWT.RIGHT, column.getAlignment() );
-    
+
     column.setAlignment( SWT.LEFT );
     assertEquals( SWT.LEFT, column.getAlignment() );
     column.setAlignment( 4712 );
     assertEquals( SWT.LEFT, column.getAlignment() );
   }
-  
+
   public void testWidth() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -137,15 +138,15 @@ public class TableColumn_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
 
-    // Initial value 
+    // Initial value
     assertEquals( 0, column.getWidth() );
-    
+
     // Setting 'normal' width
     column.setWidth( 70 );
     assertEquals( 70, column.getWidth() );
     column.setWidth( 0 );
     assertEquals( 0, column.getWidth() );
-    
+
     // Setting a negative is ignored
     column.setWidth( 4711 );
     column.setWidth( -1 );
@@ -155,7 +156,7 @@ public class TableColumn_Test extends TestCase {
     column.setWidth( -3 );
     assertEquals( 4711, column.getWidth() );
   }
-  
+
   public void testPack() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
@@ -181,22 +182,22 @@ public class TableColumn_Test extends TestCase {
     log.clear();
     column.pack();
     assertEquals( 0, log.size() );
-    
+
     column.removeControlListener( resizeListener );
-    
+
     // pack calculates a minimal width for an empty column
     column = new TableColumn( table, SWT.NONE );
     column.pack();
     assertTrue( column.getWidth() > 0 );
-    
+
     // Test that an image on a column is taken into account
     column = new TableColumn( table, SWT.NONE );
-    Image image = Image.find( "resources/images/test-50x100.png", 
+    Image image = Graphics.getImage( "resources/images/test-50x100.png",
                               TableColumn_Test.class.getClassLoader() );
     column.setImage( image );
     column.pack();
     assertTrue( column.getWidth() >= image.getBounds().width );
-    
+
     // An item wider than the column itself strechtes the column
     while( table.getColumnCount() > 0 ) {
       table.getColumn( 0 ).dispose();
@@ -208,7 +209,7 @@ public class TableColumn_Test extends TestCase {
     column.pack();
     assertTrue( column.getWidth() >= item.getBounds().width );
   }
-  
+
   public void testPackWithVirtual() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
@@ -226,8 +227,8 @@ public class TableColumn_Test extends TestCase {
     Shell shell = new Shell( display );
     Table table;
     TableColumn column;
-    
-    // Must not try to access items if there aren't any 
+
+    // Must not try to access items if there aren't any
     log.clear();
     table = new Table( shell, SWT.VIRTUAL );
     column = new TableColumn( table, SWT.NONE );
@@ -240,11 +241,11 @@ public class TableColumn_Test extends TestCase {
     log.clear();
     table = new Table( shell, SWT.VIRTUAL );
     column = new TableColumn( table, SWT.NONE );
-    table.setSize( 100, 50 ); 
+    table.setSize( 100, 50 );
     table.setItemCount( 100 );
     table.addListener( SWT.SetData, setDataListener );
     column.pack();
-    assertEquals( 0, log.size() ); 
+    assertEquals( 0, log.size() );
   }
 
   public void testResizeEvent() {
@@ -269,7 +270,7 @@ public class TableColumn_Test extends TestCase {
     assertEquals( 1, log.size() );
     event = ( ControlEvent )log.get( 0 );
     assertSame( column, event.getSource() );
-    // Setting the column width to the same value it already has as well leads 
+    // Setting the column width to the same value it already has as well leads
     // to resize event
     log.clear();
     column.setWidth( column.getWidth() );
@@ -277,7 +278,7 @@ public class TableColumn_Test extends TestCase {
     event = ( ControlEvent )log.get( 0 );
     assertEquals( column, event.getSource() );
   }
-  
+
   public void testDisposeLast() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -287,9 +288,9 @@ public class TableColumn_Test extends TestCase {
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( "itemText for column 0" );
     item.setText( 1, "itemText for column 1" );
-    
+
     column1.dispose();
-    assertEquals( "", item.getText( 1 ) ); 
+    assertEquals( "", item.getText( 1 ) );
     assertEquals( "itemText for column 0", item.getText() );
 
     column0.dispose();

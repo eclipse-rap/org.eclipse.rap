@@ -12,6 +12,7 @@ package org.eclipse.rap.demo.controls;
 import java.text.MessageFormat;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
@@ -29,8 +30,8 @@ public class TreeTab extends ExampleTab {
 
   public TreeTab( final CTabFolder topFolder ) {
     super( topFolder, "Tree" );
-    treeImage = Image.find( "resources/tree_item.gif",
-                            getClass().getClassLoader() );
+    treeImage = Graphics.getImage( "resources/tree_item.gif",
+                                   getClass().getClassLoader() );
     showImages = true;
   }
 

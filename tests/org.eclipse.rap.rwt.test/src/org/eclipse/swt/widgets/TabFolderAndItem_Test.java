@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -15,11 +15,11 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
 
 
 public class TabFolderAndItem_Test extends TestCase {
@@ -49,10 +49,10 @@ public class TabFolderAndItem_Test extends TestCase {
       }
     };
     folder.addSelectionListener( selectionListener );
-    
+
     assertEquals( -1, folder.getSelectionIndex() );
     assertEquals( 0, folder.getSelection().length );
-    
+
     // add first item which must become selected and fire a SelectionEvent
     TabItem item = new TabItem( folder, SWT.NONE );
     assertEquals( 0, folder.getSelectionIndex() );
@@ -70,7 +70,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertNull( event.data );
     assertEquals( SWT.NONE, event.detail );
     assertNull( event.text );
-    
+
     // ... and the same wihtout a SelectionListener
     folder.removeSelectionListener( selectionListener );
     item.dispose();
@@ -79,25 +79,25 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 1, folder.getSelection().length );
     assertSame( item, folder.getSelection()[ 0 ] );
   }
-  
+
   public void testIndexOf() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
-    
+
     TabItem item0 = new TabItem( folder, SWT.NONE );
     TabItem item1 = new TabItem( folder, SWT.NONE );
     assertEquals( 0, folder.indexOf( item0 ) );
     assertEquals( 1, folder.indexOf( item1 ) );
-    
+
     item0.dispose();
     assertEquals( 0, folder.indexOf( item1 ) );
-    
+
     TabFolder anotherTabFolder = new TabFolder( shell, SWT.NONE );
     TabItem anotherItem = new TabItem( anotherTabFolder, SWT.NONE );
     assertEquals( -1, folder.indexOf( anotherItem ) );
   }
-  
+
   public void testSelection() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
@@ -111,13 +111,13 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 1, selection.length );
     assertSame( item0, selection[ 0 ] );
     assertEquals( 0, folder.getSelectionIndex() );
-    
+
     folder.setSelection( new TabItem[]{ item1, item0 } );
     selection = folder.getSelection();
     assertEquals( 1, selection.length );
     assertSame( item1, selection[ 0 ] );
     assertEquals( 1, folder.getSelectionIndex() );
-    
+
     folder.setSelection( new TabItem[ 0 ] );
     selection = folder.getSelection();
     assertEquals( 0, selection.length );
@@ -129,14 +129,14 @@ public class TabFolderAndItem_Test extends TestCase {
     } catch( IllegalArgumentException iae ) {
       // expected
     }
-    
+
     try {
       folder.setSelection( ( TabItem[] )null );
       fail( "Parameter items must not be null." );
     } catch( final IllegalArgumentException iae ) {
       // expected
     }
-    
+
     folder.setSelection( 1 );
     selection = folder.getSelection();
     assertEquals( 1, selection.length );
@@ -148,7 +148,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 1, selection.length );
     assertSame( item1, selection[ 0 ] );
     assertEquals( 1, folder.getSelectionIndex() );
-    
+
     folder.setSelection( -2 );
     selection = folder.getSelection();
     assertEquals( 1, selection.length );
@@ -160,7 +160,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 1, selection.length );
     assertSame( item1, selection[ 0 ] );
     assertEquals( 1, folder.getSelectionIndex() );
-    
+
     // Ensure that no event is fired when selection is changed programmatically
     final boolean[] eventOccured = new boolean[] { false };
     SelectionListener listener = new SelectionAdapter() {
@@ -174,7 +174,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 1, folder.getSelectionIndex() );
     assertEquals( false, eventOccured[ 0 ] );
     folder.removeSelectionListener( listener );
-    
+
     // test change of selection index in case of disposing the item thats
     // currently selected
     // TODO: [fappel] note that this is only a preliminarily implementation
@@ -190,7 +190,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 0, folder.getSelectionIndex() );
     assertSame( item0, folder.getSelection()[ 0 ] );
   }
-  
+
   public void testSelectedControl() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -201,15 +201,15 @@ public class TabFolderAndItem_Test extends TestCase {
     Control control0 = new Button( folder, SWT.PUSH );
     item0.setControl( control0 );
     assertTrue( control0.getVisible() );
-    
+
     TabItem item1 = new TabItem( folder, SWT.NONE );
     Control control1 = new Button( folder, SWT.PUSH );
     item1.setControl( control1 );
     assertFalse( control1.getVisible() );
-    
+
     folder.setSelection( item1 );
     assertTrue( control1.getVisible() );
-    
+
     Control alternativeControl1 = new Button( folder, SWT.PUSH );
     item1.setControl( alternativeControl1 );
     assertFalse( control1.getVisible() );
@@ -221,13 +221,11 @@ public class TabFolderAndItem_Test extends TestCase {
     Composite shell = new Shell( display , SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
-    item0.setImage(Image.find( RWTFixture.IMAGE1 ) );
-    assertSame( Image.find( RWTFixture.IMAGE1 ), item0.getImage() );
-    assertEquals( 1, Image.size() );
+    item0.setImage(Graphics.getImage( RWTFixture.IMAGE1 ) );
+    assertSame( Graphics.getImage( RWTFixture.IMAGE1 ), item0.getImage() );
     TabItem item1 = new TabItem( folder, SWT.NONE );
-    item1.setImage(Image.find( RWTFixture.IMAGE2 ) );
-    assertSame( Image.find( RWTFixture.IMAGE2 ), item1.getImage() );
-    assertEquals( 2, Image.size() );
+    item1.setImage(Graphics.getImage( RWTFixture.IMAGE2 ) );
+    assertSame( Graphics.getImage( RWTFixture.IMAGE2 ), item1.getImage() );
   }
 
   public void testHierarchy() {

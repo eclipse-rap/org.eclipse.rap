@@ -689,7 +689,7 @@ public class Display extends Device implements Adaptable {
    *
    * @see SWT
    */
-  public Color getSystemColor( int id ) {
+  public Color getSystemColor( final int id ) {
     checkDevice();
     String key;
     switch( id ) {
@@ -791,17 +791,17 @@ public class Display extends Device implements Adaptable {
     Image result = null;
     switch( id ) {
       case SWT.ICON_ERROR:
-        result = Image.find( Display.ERROR_IMAGE_PATH, classLoader );
+        result = Graphics.getImage( Display.ERROR_IMAGE_PATH, classLoader );
       break;
       case SWT.ICON_WORKING:
       case SWT.ICON_INFORMATION:
-        result = Image.find( Display.INFO_IMAGE_PATH, classLoader );
+        result = Graphics.getImage( Display.INFO_IMAGE_PATH, classLoader );
       break;
       case SWT.ICON_QUESTION:
-        result = Image.find( Display.QUESTION_IMAGE_PATH, classLoader );
+        result = Graphics.getImage( Display.QUESTION_IMAGE_PATH, classLoader );
       break;
       case SWT.ICON_WARNING:
-        result = Image.find( Display.WARNING_IMAGE_PATH, classLoader );
+        result = Graphics.getImage( Display.WARNING_IMAGE_PATH, classLoader );
       break;
     }
     return result;

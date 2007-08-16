@@ -8,6 +8,7 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -80,10 +81,10 @@ class RowLayoutTab extends ExampleTab {
 
   private void createSomeImages( final Composite parent ) {
     ClassLoader imageLoader = getClass().getClassLoader();
-    Image image1 = Image.find( "icons/info.gif", imageLoader );
-    Image image2 = Image.find( "icons/lockkey.gif", imageLoader );
-    Image image3 = Image.find( "icons/test-100x50.png", imageLoader );
-    Image image4 = Image.find( "icons/test-50x100.png", imageLoader );
+    Image image1 = Graphics.getImage( "icons/info.gif", imageLoader );
+    Image image2 = Graphics.getImage( "icons/lockkey.gif", imageLoader );
+    Image image3 = Graphics.getImage( "icons/test-100x50.png", imageLoader );
+    Image image4 = Graphics.getImage( "icons/test-50x100.png", imageLoader );
     Label l1 = new Label( parent, SWT.BORDER );
     l1.setImage( image1 );
     Label l2 = new Label( parent, SWT.BORDER );

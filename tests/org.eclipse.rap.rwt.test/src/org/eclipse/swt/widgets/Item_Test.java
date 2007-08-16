@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -12,9 +12,10 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 
 public class Item_Test extends TestCase {
 
@@ -46,7 +47,7 @@ public class Item_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testImage() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -65,9 +66,8 @@ public class Item_Test extends TestCase {
       protected void releaseWidget() {
       }
     };
-    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
-    assertSame( Image.find( RWTFixture.IMAGE1 ), item.getImage() );
-    assertEquals( 1, Image.size() );
+    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    assertSame( Graphics.getImage( RWTFixture.IMAGE1 ), item.getImage() );
     item.setImage( null );
     assertEquals( null, item.getImage() );
     Item item2 = new Item( shell, SWT.NONE ) {
@@ -85,9 +85,8 @@ public class Item_Test extends TestCase {
       protected void releaseWidget() {
       }
     };
-    item2.setImage( Image.find( RWTFixture.IMAGE2 ) );
-    assertSame( Image.find( RWTFixture.IMAGE2 ), item2.getImage() );
-    assertEquals( 2, Image.size() );
+    item2.setImage( Graphics.getImage( RWTFixture.IMAGE2 ) );
+    assertSame( Graphics.getImage( RWTFixture.IMAGE2 ), item2.getImage() );
   }
 
   public void testDispose() {

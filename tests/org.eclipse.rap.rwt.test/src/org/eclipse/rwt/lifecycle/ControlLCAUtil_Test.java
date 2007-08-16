@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -16,16 +16,17 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -40,7 +41,7 @@ public class ControlLCAUtil_Test extends TestCase {
     RWTFixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeBounds( shell );
-    // TODO [fappel]: check whether minWidth and minHeight is still needed - 
+    // TODO [fappel]: check whether minWidth and minHeight is still needed -
     //                causes problems on FF with caching
     //String expected
     //  = w.setSpace( 0, 0, 0, 0 );w.setMinWidth( 0 );w.setMinHeight( 0 );";
@@ -113,7 +114,7 @@ public class ControlLCAUtil_Test extends TestCase {
     String expected = "wm.setToolTip( w, \"anotherTooltip\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   public void testWriteImage() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -124,16 +125,16 @@ public class ControlLCAUtil_Test extends TestCase {
     RWTFixture.markInitialized( display );
     ControlLCAUtil.writeImage( item, item.getImage() );
     assertEquals( "", Fixture.getAllMarkup() );
-    
+
     // for an un-initialized control: render image, if any
     Fixture.fakeResponseWriter();
-    item.setImage( Image.find( RWTFixture.IMAGE1 ) );
+    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
     ControlLCAUtil.writeImage( item, item.getImage() );
-    String expected = "w.setIcon( \"" 
-                    + Image.getPath( item.getImage() ) 
+    String expected = "w.setIcon( \""
+                    + ResourceFactory.getImagePath( item.getImage() )
                     + "\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    
+
     // for an initialized control with change image: render it
     RWTFixture.markInitialized( item );
     RWTFixture.preserveWidgets();
@@ -142,7 +143,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeImage( item, item.getImage() );
     assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( \"\" );" ) != -1 );
   }
-  
+
   public void testWriteActivateListener() throws IOException {
     ActivateAdapter listener = new ActivateAdapter() {
     };
@@ -150,7 +151,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Label label = new Label( composite, SWT.NONE );
-    
+
     // A non-initialized widget with no listener attached must not render
     // JavaScript code for adding activateListeners
     AbstractWidgetLCA labelLCA = WidgetUtil.getLCA( label );
@@ -160,8 +161,8 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( false, WidgetUtil.getAdapter( label ).isInitialized() );
     assertTrue( markup.length() > 0 );
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
-    
-    // A non-initialized widget with a listener attached must render JavaScript 
+
+    // A non-initialized widget with a listener attached must render JavaScript
     // code for adding activateListeners
     ActivateEvent.addListener( label, listener );
     Fixture.fakeResponseWriter();
@@ -169,7 +170,7 @@ public class ControlLCAUtil_Test extends TestCase {
     markup = Fixture.getAllMarkup();
     assertEquals( false, WidgetUtil.getAdapter( label ).isInitialized() );
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) != -1 );
-    
+
     // An initialized widget with unchanged activateListeners must not render
     // JavaScript code for adding activateListeners
     Fixture.fakeResponseWriter();
@@ -190,7 +191,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
     assertTrue( markup.indexOf( "removeActivateListenerWidget" ) != -1 );
   }
-  
+
   public void testProcessSelection() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer log = new StringBuffer();
@@ -238,11 +239,11 @@ public class ControlLCAUtil_Test extends TestCase {
       new Button( shell, SWT.PUSH );
     }
     Control control = new Button( shell, SWT.PUSH );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control ); 
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     ControlLCAUtil.preserveValues( control );
     assertEquals( new Integer( 1 ), adapter.getPreserved( Props.Z_INDEX ) );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();

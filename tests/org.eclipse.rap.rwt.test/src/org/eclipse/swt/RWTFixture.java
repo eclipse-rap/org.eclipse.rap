@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -32,16 +32,15 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-
 public final class RWTFixture {
-  
+
   public static final class TestResourceManagerFactory
     implements IResourceManagerFactory
   {
@@ -55,7 +54,7 @@ public final class RWTFixture {
   {
 
     private ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    
+
     public Object getAdapter( final Class adapter ) {
       return new JsConcatenator() {
         public void startJsConcatenation() {
@@ -68,7 +67,7 @@ public final class RWTFixture {
         }
       };
     }
-    
+
     public String getCharset( final String name ) {
       return null;
     }
@@ -118,8 +117,8 @@ public final class RWTFixture {
     public void register( final String name, final String charset ) {
     }
 
-    public void register( final String name, 
-                          final String charset, 
+    public void register( final String name,
+                          final String charset,
                           final RegisterOptions options )
     {
     }
@@ -151,13 +150,13 @@ public final class RWTFixture {
 
   private static LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private static WidgetAdapterFactory widgetAdapterFactory;
-  private static PhaseListener currentPhaseListener 
+  private static PhaseListener currentPhaseListener
     = new CurrentPhase.Listener();
 
   private RWTFixture() {
     // prevent instantiation
   }
-  
+
   public static void setUp() {
     // standard setup
     Fixture.setUp();
@@ -165,21 +164,21 @@ public final class RWTFixture {
     ThemeManager.getInstance().initialize();
     registerAdapterFactories();
     PhaseListenerRegistry.add( currentPhaseListener );
-    
+
     // registration of mockup resource manager
     registerResourceManager();
-    
+
     fakeUIThread();
   }
 
   public static void fakeUIThread() {
     RWTLifeCycle.setThread( Thread.currentThread() );
   }
-  
+
   public static void setUpWithoutResourceManager() {
     // standard setup
     Fixture.setUp();
-    LifeCycleServiceHandler.configurer = null; 
+    LifeCycleServiceHandler.configurer = null;
 
     // registration of adapter factories
     registerAdapterFactories();
@@ -187,15 +186,18 @@ public final class RWTFixture {
 
   public static void tearDown() {
     removeUIThread();
-    
+
     // deregistration of mockup resource manager
     deregisterResourceManager();
-    
+
     // deregistration of adapter factories
     deregisterAdapterFactories();
 // TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
 //    ThemeManager.getInstance().deregisterAll();
-    
+
+    // clear Graphics resources
+    ResourceFactory.clear();
+
     // standard teardown
     Fixture.tearDown();
   }
@@ -213,7 +215,7 @@ public final class RWTFixture {
     manager.registerAdapters( widgetAdapterFactory, Display.class );
     manager.registerAdapters( widgetAdapterFactory, Widget.class );
   }
-  
+
   public static void deregisterAdapterFactories() {
     AdapterManager manager = AdapterManagerImpl.getInstance();
     manager.deregisterAdapters( widgetAdapterFactory, Display.class );
@@ -224,14 +226,15 @@ public final class RWTFixture {
 
   public static void registerResourceManager() {
     ResourceManager.register( new TestResourceManagerFactory() );
-    Image.clear();
+    // clear Graphics resources
+    ResourceFactory.clear();
   }
-  
+
   public static void deregisterResourceManager() {
     Fixture.setPrivateField( ResourceManager.class, null, "_instance", null );
     Fixture.setPrivateField( ResourceManager.class, null, "factory", null );
   }
-  
+
   public static void preserveWidgets() {
     PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
     PhaseEvent event = new PhaseEvent( new RWTLifeCycle(), PhaseId.READ_DATA );
@@ -243,13 +246,13 @@ public final class RWTFixture {
     PhaseEvent event = new PhaseEvent( new RWTLifeCycle(), PhaseId.RENDER );
     listener.afterPhase( event );
   }
-  
+
   public static void markInitialized( final Widget widget ) {
     Object adapter = widget.getAdapter( IWidgetAdapter.class );
     WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
     widgetAdapter.setInitialized( true );
   }
-  
+
   public static void markInitialized( final Display display ) {
     Object adapter = display.getAdapter( IWidgetAdapter.class );
     WidgetAdapter widgetAdapter = ( WidgetAdapter )adapter;
@@ -268,23 +271,23 @@ public final class RWTFixture {
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6( true, true ) );
   }
-  
+
   public static void fakePhase( final PhaseId phase ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( CurrentPhase.class.getName() + "#value", 
+    stateInfo.setAttribute( CurrentPhase.class.getName() + "#value",
                             phase );
   }
-  
+
   public static void readDataAndProcessAction( final Widget widget ) {
     AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
     RWTFixture.fakePhase( PhaseId.READ_DATA );
     widgetLCA.readData( widget );
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = widget.getDisplay();
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display ); 
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     displayLCA.processAction( display );
   }
-  
+
   public static void readDataAndProcessAction( final Display display ) {
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     RWTFixture.fakePhase( PhaseId.READ_DATA );
@@ -292,9 +295,9 @@ public final class RWTFixture {
     preserveWidgets();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     displayLCA.processAction( display );
-    
+
   }
-  
+
   public static void fakeContext() {
     TestRequest request = new TestRequest();
     TestResponse response = new TestResponse();

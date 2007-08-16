@@ -787,7 +787,7 @@ public class CoolItem extends Item {
         int imageHeight = Math.max( 1, height - CHEVRON_VERTICAL_TRIM );
         if ( currentImageHeight != imageHeight ) {
           // Image image = createArrowImage (CHEVRON_IMAGE_WIDTH, imageHeight);
-          Image image = Image.find( "resource/widget/rap/coolitem/chevron.gif",
+          Image image = Graphics.getImage( "resource/widget/rap/coolitem/chevron.gif",
               getClass().getClassLoader() );
           chevron.getItem( 0 ).setImage( image );
           // if (arrowImage != null) arrowImage.dispose ();

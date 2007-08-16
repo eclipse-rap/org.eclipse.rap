@@ -11,11 +11,11 @@
 
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.QxFont;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
  * TODO [fappel] comment
@@ -94,7 +94,7 @@ public abstract class Device {
         pixel = 0x02808080;
       break;
     }
-    return Graphics.getColor( pixel );
+    return ResourceFactory.getColor( pixel );
   }
 
   /**

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -18,6 +18,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Widget;
 
@@ -26,10 +27,10 @@ public class CLabelLCA extends AbstractWidgetLCA {
   private static final String PROP_TEXT = "text";
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_IMAGE = "image";
-  
+
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
-  
-  public void preserveValues( Widget widget ) {
+
+  public void preserveValues( final Widget widget ) {
     CLabel label = ( CLabel )widget;
     ControlLCAUtil.preserveValues( label );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
@@ -55,13 +56,13 @@ public class CLabelLCA extends AbstractWidgetLCA {
     CLabel label = ( CLabel )widget;
     JSWriter writer = JSWriter.getWriterFor( label );
     writer.newWidget( "qx.ui.basic.Atom" );
-    
+
     if( ( widget.getStyle() & SWT.SHADOW_IN ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_SHADOW_IN" } );
     } else if( ( widget.getStyle() & SWT.SHADOW_OUT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_SHADOW_OUT" } );
-    } 
-    
+    }
+
     ControlLCAUtil.writeStyleFlags( label );
     Object[] args = { label };
     writer.callStatic( "org.eclipse.swt.CLabelUtil.initialize", args  );
@@ -69,12 +70,12 @@ public class CLabelLCA extends AbstractWidgetLCA {
 
   public void readData( final Widget widget ) {
   }
-  
+
   public void createResetHandlerCalls( final String typePoolId )
     throws IOException
   {
   }
-  
+
   public String getTypePoolId( final Widget widget ) throws IOException {
     return null;
   }
@@ -95,7 +96,7 @@ public class CLabelLCA extends AbstractWidgetLCA {
         imagePath = null;
       } else {
         // TODO passing image bounds to qooxdoo can speed up rendering
-        imagePath = Image.getPath( image );
+        imagePath = ResourceFactory.getImagePath( image );
       }
       JSWriter writer = JSWriter.getWriterFor( label );
       writer.set( JSConst.QX_FIELD_ICON, imagePath );
@@ -105,7 +106,7 @@ public class CLabelLCA extends AbstractWidgetLCA {
   private static void writeAlignment( final CLabel label ) throws IOException {
     Integer alignment = new Integer( label.getAlignment() );
     Integer defValue = DEFAULT_ALIGNMENT;
-    if( WidgetLCAUtil.hasChanged( label, PROP_ALIGNMENT, alignment, defValue ) ) 
+    if( WidgetLCAUtil.hasChanged( label, PROP_ALIGNMENT, alignment, defValue ) )
     {
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{
