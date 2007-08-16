@@ -46,6 +46,15 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static final JSVar DISPOSE_HANDLER_START
     = new JSVar( "function( " + JSWriter.WIDGET_REF + " ) {" );
 
+  private static final String CLIENT_LOG_LEVEL 
+    = "org.eclipse.rwt.clientLogLevel";
+
+  // Maps Java Level to the closest qooxdoo log level
+  private static final Map LOG_LEVEL_MAP = new HashMap( 8 + 1, 1f );
+
+  private static final String PROP_FOCUS_CONTROL = "focusControl";
+  private static final String PROP_CURR_THEME = "currTheme";
+
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
     private IOException ioProblem = null;
@@ -82,16 +91,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       }
     }
   }
-
-  private static final String CLIENT_LOG_LEVEL 
-    = "org.eclipse.swt.clientLogLevel";
-
-  // Maps Java Level to the closest qooxdoo log level
-  private static final Map LOG_LEVEL_MAP = new HashMap( 8 + 1, 1f );
-
-  private static final String PROP_FOCUS_CONTROL = "focusControl";
-
-  private static final String PROP_CURR_THEME = "currTheme";
 
   static {
     // Available qooxdoo log level: 

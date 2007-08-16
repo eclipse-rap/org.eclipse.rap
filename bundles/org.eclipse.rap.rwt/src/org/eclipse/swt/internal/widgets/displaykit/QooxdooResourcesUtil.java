@@ -29,7 +29,7 @@ final class QooxdooResourcesUtil {
   
 
   private static final String CLIENT_LIBRARY_VARIANT
-    = "org.eclipse.swt.clientLibraryVariant";
+    = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "debug";
   
   private static final String QX_JS 
