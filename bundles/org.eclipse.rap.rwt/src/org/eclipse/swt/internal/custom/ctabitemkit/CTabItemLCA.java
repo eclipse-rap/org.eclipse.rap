@@ -61,7 +61,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.wasEventSent( item, EVENT_ITEM_CLOSED ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          CTabFolderEvent event = CTabFolderEvent.close( item );
+          CTabFolderEvent event = createCloseEvent( item );
           event.processEvent();
           if( event.doit ) {
             item.dispose();
@@ -213,6 +213,17 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
         result = null;
       }
     }
+    return result;
+  }
+
+  ///////////////
+  // Event helper 
+  
+  private static CTabFolderEvent createCloseEvent( final CTabItem item ) {
+    CTabFolderEvent result 
+      = new CTabFolderEvent( item.getParent(), CTabFolderEvent.CLOSE );
+    result.item = item;
+    result.doit = true;
     return result;
   }
 }

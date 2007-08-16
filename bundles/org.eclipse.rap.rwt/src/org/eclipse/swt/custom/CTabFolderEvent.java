@@ -13,8 +13,6 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
 
@@ -24,44 +22,13 @@ public class CTabFolderEvent extends TypedEvent {
   // TODO [fappel]: Think about a better solution!
   //                Do not use SWT.None (0) as event handler identifier 
   //                -> causes problems with the filter implementation
-  private static final int CLOSE = 1;
-  private static final int MINIMIZE = 2;
-  private static final int MAXIMIZE = 3;
-  private static final int RESTORE = 4;
-  private static final int SHOW_LIST = 5;
+  public static final int CLOSE = 1;
+  public static final int MINIMIZE = 2;
+  public static final int MAXIMIZE = 3;
+  public static final int RESTORE = 4;
+  public static final int SHOW_LIST = 5;
+  
   private static final Class LISTENER = CTabFolder2Listener.class;
-  
-  public static CTabFolderEvent close( final CTabItem item ) {
-    CTabFolderEvent result = new CTabFolderEvent( item.getParent(), CLOSE );
-    result.item = item;
-    result.doit = true;
-    return result;
-  }
-  
-  public static CTabFolderEvent minimize( final CTabFolder tabFolder ) {
-    return new CTabFolderEvent( tabFolder, MINIMIZE );
-  }
-  
-  public static CTabFolderEvent maximize( final CTabFolder tabFolder ) {
-    return new CTabFolderEvent( tabFolder, MAXIMIZE );
-  }
-  
-  public static CTabFolderEvent restore( final CTabFolder tabFolder ) {
-    return new CTabFolderEvent( tabFolder, RESTORE );
-  }
-  
-  public static CTabFolderEvent showList( final CTabFolder tabFolder ) {
-    CTabFolderEvent result = new CTabFolderEvent( tabFolder, SHOW_LIST );
-    Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
-    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
-    Rectangle chevronRect = folderAdapter.getChevronRect();    
-    result.x = chevronRect.x;
-    result.y = chevronRect.y;
-    result.height = chevronRect.height;
-    result.width = chevronRect.width;
-    result.doit = true;
-    return result;
-  }
   
   public Widget item;
   public boolean doit;
@@ -70,7 +37,7 @@ public class CTabFolderEvent extends TypedEvent {
   public int width;
   public int height;
   
-  private CTabFolderEvent( final Object source, final int id ) {
+  public CTabFolderEvent( final Object source, final int id ) {
     super( source, id );
   }
 

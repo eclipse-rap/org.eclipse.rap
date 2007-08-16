@@ -142,17 +142,17 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
     // Minimized event
     if( WidgetLCAUtil.wasEventSent( tabFolder, EVENT_FOLDER_MINIMIZED ) ) {
-      CTabFolderEvent event = CTabFolderEvent.minimize( tabFolder ); 
+      CTabFolderEvent event = CTabFolderLCA.minimize( tabFolder ); 
       event.processEvent();
     }
     // Maximized event
     if( WidgetLCAUtil.wasEventSent( tabFolder, EVENT_FOLDER_MAXIMIZED ) ) {
-      CTabFolderEvent event = CTabFolderEvent.maximize( tabFolder ); 
+      CTabFolderEvent event = CTabFolderLCA.maximize( tabFolder ); 
       event.processEvent();
     }
     // Restore event
     if( WidgetLCAUtil.wasEventSent( tabFolder, EVENT_FOLDER_RESTORED ) ) {
-      CTabFolderEvent event = CTabFolderEvent.restore( tabFolder ); 
+      CTabFolderEvent event = CTabFolderLCA.restore( tabFolder ); 
       event.processEvent();
     }
     // TODO [rh] it's a hack: necessary because folder.setSelection changes
@@ -175,7 +175,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.wasEventSent( tabFolder, EVENT_SHOW_LIST ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          CTabFolderEvent event = CTabFolderEvent.showList( tabFolder ); 
+          CTabFolderEvent event = CTabFolderLCA.showList( tabFolder ); 
           event.processEvent();
           if( event.doit ) {
             ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
@@ -395,5 +395,34 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   {
     Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
     return ( ICTabFolderAdapter )adapter;
+  }
+
+  ///////////////
+  // Event helper
+  
+  private static CTabFolderEvent showList( final CTabFolder tabFolder ) {
+    CTabFolderEvent result 
+      = new CTabFolderEvent( tabFolder, CTabFolderEvent.SHOW_LIST );
+    Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
+    Rectangle chevronRect = folderAdapter.getChevronRect();    
+    result.x = chevronRect.x;
+    result.y = chevronRect.y;
+    result.height = chevronRect.height;
+    result.width = chevronRect.width;
+    result.doit = true;
+    return result;
+  }
+
+  private static CTabFolderEvent restore( final CTabFolder tabFolder ) {
+    return new CTabFolderEvent( tabFolder, CTabFolderEvent.RESTORE );
+  }
+
+  private static CTabFolderEvent maximize( final CTabFolder tabFolder ) {
+    return new CTabFolderEvent( tabFolder, CTabFolderEvent.MAXIMIZE );
+  }
+
+  private static CTabFolderEvent minimize( final CTabFolder tabFolder ) {
+    return new CTabFolderEvent( tabFolder, CTabFolderEvent.MINIMIZE );
   }
 }
