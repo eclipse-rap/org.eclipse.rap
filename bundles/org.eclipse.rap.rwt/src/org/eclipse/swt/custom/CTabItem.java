@@ -365,16 +365,12 @@ public class CTabItem extends Item {
   ///////////////////
   // Widget overrides
 
-  protected void releaseChildren() {
-    // do nothing
-  }
-
-  protected void releaseParent() {
-    parent.destroyItem( this );
-  }
-
-  protected void releaseWidget() {
-    // do nothing
+  public void dispose() {
+    if( !isDisposed() ) {
+      // if (!isValidThread ()) error (SWT.ERROR_THREAD_INVALID_ACCESS);
+      parent.destroyItem( this );
+      super.dispose();
+    } 
   }
   
   ///////////////////////////////////////////////////////////////////////

@@ -569,11 +569,17 @@ public abstract class Widget implements Adaptable {
     return ( state & DISPOSED ) != 0;
   }
   
-  protected abstract void releaseChildren();
+  void releaseChildren() {
+    // do nothing - derived classes may override
+  }
 
-  protected abstract void releaseParent();
+  void releaseParent() {
+    // do nothing - derived classes may override
+  }
 
-  protected abstract void releaseWidget();
+  void releaseWidget() {
+    // do nothing - derived classes may override
+  }
 
 //  /**
 //   * Checks that this class can be subclassed.

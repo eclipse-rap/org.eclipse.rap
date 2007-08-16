@@ -524,14 +524,16 @@ public class ScrolledComposite extends Composite {
     return content;
   }
 
-  //////////////////
-  // Widget disposal
+  ///////////
+  // Disposal
   
-  protected void releaseWidget() {
-    if( content != null && !content.isDisposed() ) {
-      content.removeControlListener( contentListener );
-    }
-    super.releaseWidget();
+  public void dispose() {
+    if( !isDisposed() ) {
+      if( content != null && !content.isDisposed() ) {
+        content.removeControlListener( contentListener );
+      }
+      super.dispose();
+    } 
   }
   
   ////////////

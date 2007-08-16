@@ -14,6 +14,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -79,13 +80,14 @@ public class CTabFolderTab extends ExampleTab {
                        + "dolore magna aliqua." );
       item.setControl( content );
     }
+    Display display = Display.getCurrent();
+    Color selectionBg = display.getSystemColor( SWT.COLOR_LIST_SELECTION );
+    folder.setSelectionBackground( selectionBg );
     folder.setSelection( 0 );
     folder.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
-        System.out.println( "widgetSelected: " + event );
       }
       public void widgetDefaultSelected( SelectionEvent event ) {
-        System.out.println( "widgetDefaultSelected: " + event );
       }
     });
     registerControl( folder );

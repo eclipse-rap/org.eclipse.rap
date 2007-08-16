@@ -66,6 +66,9 @@ public class ControlsDemo implements IEntryPoint {
       new SashFormTab( topFolder ),
       new ShellTab( topFolder ),
       new TabFolderTab( topFolder ),
+      // TODO [rh] bring back when layout problems are solved and demo tab is 
+      //      cleaned up
+//      new CTabFolderTab( topFolder ),
       new TableTab( topFolder ),
       new TableViewerTab( topFolder ),
       new TextTab( topFolder ),

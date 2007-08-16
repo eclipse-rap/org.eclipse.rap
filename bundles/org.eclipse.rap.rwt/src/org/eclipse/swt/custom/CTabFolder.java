@@ -170,10 +170,9 @@ public class CTabFolder extends Composite {
     highlight_margin = ( style & SWT.FLAT ) != 0 ? 0 : 2;
     //set up default colors
     Display display = getDisplay();
-    selectionForeground = display.getSystemColor(SELECTION_FOREGROUND);
-    selectionBackground = display.getSystemColor(SELECTION_BACKGROUND);
+    selectionForeground = display.getSystemColor( SELECTION_FOREGROUND );
+    selectionBackground = display.getSystemColor( SELECTION_BACKGROUND );
     updateTabHeight( false );
-
     resizeListener = new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
         onResize();
@@ -368,7 +367,7 @@ public class CTabFolder extends Composite {
    * @since 1.0
    */
   public void showSelection () {
-    checkWidget (); 
+    checkWidget(); 
     if( selectedIndex != -1 ) {
       showItem( getSelection() );
     }
@@ -1154,6 +1153,7 @@ public class CTabFolder extends Composite {
   // Control overrides
   
   public void setFont( final Font font ) {
+    checkWidget();
     if( font != getFont() ) {
       super.setFont( font );
       if( !updateTabHeight( false ) ) {
@@ -1190,23 +1190,6 @@ public class CTabFolder extends Composite {
       result = new Rectangle( xClient, yClient, width, height );
     }
     return result;
-  }
-
-  protected void releaseChildren() {
-    CTabItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].dispose();
-    }
-    super.releaseChildren();
-  }
-  
-  protected void releaseWidget() {
-    removeControlListener( resizeListener );
-    unregisterFocusListener();
-    if( showMenu != null ) {
-      showMenu.dispose();
-    }
-    super.releaseWidget();
   }
 
   ///////////////////////////////////////
@@ -1832,6 +1815,30 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
     }
     oldSize = size;
   }
+  
+  ///////////
+  // Disposal
+
+  void onDispose() {
+    /*
+     * Usually when an item is disposed, destroyItem will change the size of the items array, 
+     * reset the bounds of all the tabs and manage the widget associated with the tab.
+     * Since the whole folder is being disposed, this is not necessary.  For speed
+     * the inDispose flag is used to skip over this part of the item dispose.
+     */
+    inDispose = true;
+    removeControlListener( resizeListener );
+    unregisterFocusListener();
+    if( showMenu != null && !showMenu.isDisposed() ) {
+      showMenu.dispose();
+      showMenu = null;
+    }
+    while( itemHolder.size() > 0 ) {
+      Item item = itemHolder.getItem( 0 );
+      item.dispose();
+      itemHolder.remove( item );
+    }
+  }
 
   //////////////////
   // Helping methods
@@ -1861,7 +1868,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
   private void registerDisposeListener() {
     addDisposeListener( new DisposeListener() {
       public void widgetDisposed( final DisposeEvent event ) {
-        inDispose = true;
+        onDispose();
         CTabFolder.this.removeDisposeListener( this );
       }
     } );

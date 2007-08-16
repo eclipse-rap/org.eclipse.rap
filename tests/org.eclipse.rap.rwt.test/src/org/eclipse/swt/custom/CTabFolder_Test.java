@@ -72,6 +72,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testDispose() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuffer  log = new StringBuffer();
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -92,6 +93,7 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( -1, folder1.indexOf( item3 ) );
     
     folder1.dispose();
+    assertEquals( true, folder1.isDisposed() );
     assertEquals( true, item1.isDisposed() );
     assertEquals( 0, folder1.getItemCount() );
     
