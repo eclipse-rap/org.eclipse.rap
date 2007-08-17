@@ -185,4 +185,22 @@
            name="Foo Editor">
      </editor>
   </extension>
+  <extension
+        point="org.eclipse.rap.ui.branding">
+     <branding
+           body="body.html"
+           defaultEntrypointId="org.eclipse.rap.demo.entrypoint1"
+           favicon="icons/favicon2.ico"
+           id="org.eclipse.rap.demo.branding1"
+           servletName="tea"
+           themeId="org.eclipse.rap.demo.alttheme"
+           title="It&apos;s tea-time">
+     </branding>
+     <branding
+           defaultEntrypointId="org.eclipse.rap.demo.entrypoint1"
+           id="org.eclipse.rap.demo.branding2"
+           servletName="rap"
+           title="RAP Startup Page">
+     </branding>
+  </extension>
 </plugin>
