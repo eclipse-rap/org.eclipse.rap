@@ -437,6 +437,11 @@ abstract class ExampleTab {
       Control control = ( Control )iter.next();
       control.setFont( font );
     }
+    // Force layout
+    if( controls.size() > 0 ) {
+      Composite parent = ( ( Control )controls.get( 0 ) ).getParent();
+      parent.layout( true, true );
+    }
   }
 
   protected Shell getShell() {
