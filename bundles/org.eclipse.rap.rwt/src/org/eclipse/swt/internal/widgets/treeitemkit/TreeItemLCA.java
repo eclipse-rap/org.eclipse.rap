@@ -107,6 +107,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     writeExpanded( treeItem );
     writeChecked( treeItem );
     writeGrayed( treeItem );
+    writeShowItem( treeItem );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -127,6 +128,18 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   ///////////////////////////////////
   // Helping methods to write changes
 
+  private void writeShowItem( final TreeItem item ) throws IOException {
+	Tree tree = item.getParent();
+	ITreeAdapter adapter = ( ITreeAdapter ) tree
+				.getAdapter( ITreeAdapter.class );
+	Item showItem = adapter.getShowItem();
+	if ( showItem != null && showItem == item ) {
+		JSWriter writer = JSWriter.getWriterFor( tree );
+		writer.call( tree, "showItem", new Object[] { showItem } );
+		adapter.clearShowItem();
+	}
+  }
+  
   private static void writeImages( final TreeItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     // TODO [rh] optimize when !isInitialized: for all images != null: setImg

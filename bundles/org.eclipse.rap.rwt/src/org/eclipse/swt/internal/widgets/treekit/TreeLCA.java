@@ -22,7 +22,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -87,7 +86,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writeHeaderHeight( tree );
     writeHeaderVisible( tree );
     writeColumnOrder( tree );
-    writeShowItem( tree );
     Control[] children = tree.getChildren();
     for( int i = 0; i < children.length; i++ ) {
       WidgetAdapter adapter 
@@ -168,17 +166,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   /////////////////////////////////////////////////////////////
   // Helping methods to write JavaScript for changed properties
-
-  private void writeShowItem( Tree tree ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( tree );
-    ITreeAdapter adapter
-      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-    Item showItem = adapter.getShowItem();
-    if( showItem != null ) {
-      writer.call( tree, "showItem", new Object[] { showItem } );
-      adapter.clearShowItem();
-    }
-  }
 
   private static void writeHeaderHeight( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
