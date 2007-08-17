@@ -33,9 +33,9 @@ public final class ExternalBrowser {
   public static final int STATUS = 1 << 3;
 
   private static final String OPEN 
-    = "org.eclipse.rap.widgets.Util.open( \"{0}\", \"{1}\", \"{2}\" );";
+    = "org.eclipse.rwt.widgets.ExternalBrowser.open( \"{0}\", \"{1}\", \"{2}\" );";
   private static final String CLOSE
-    = "org.eclipse.rap.widgets.Util.close( \"{0}\" );";
+    = "org.eclipse.rwt.widgets.ExternalBrowser.close( \"{0}\" );";
 
   public static void open( final String id, final String url, final int style ) 
   {

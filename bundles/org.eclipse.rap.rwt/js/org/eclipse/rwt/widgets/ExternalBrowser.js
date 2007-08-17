@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define( "org.eclipse.swt.externalbrowser.Util",
+qx.Class.define( "org.eclipse.rwt.widgets.ExternalBrowser",
 {
   extend : qx.core.Object,
   
@@ -20,15 +20,15 @@ qx.Class.define( "org.eclipse.swt.externalbrowser.Util",
     
     open : function( id, url, features ) {
       var win = window.open( url, id, features, true );
-      org.eclipse.swt.externalbrowser.Util._map[ id ] = win; 
+      org.eclipse.rwt.widgets.ExternalBrowser._map[ id ] = win; 
     },
     
     close : function( id ) {
-      var win = org.eclipse.swt.externalbrowser.Util._map[ id ];
+      var win = org.eclipse.rwt.widgets.ExternalBrowser._map[ id ];
       if( win != null ) {
         win.close();
       } 
-      delete org.eclipse.swt.externalbrowser.Util._map[ id ];
+      delete org.eclipse.rwt.widgets.ExternalBrowser._map[ id ];
     }
   }
 } );
