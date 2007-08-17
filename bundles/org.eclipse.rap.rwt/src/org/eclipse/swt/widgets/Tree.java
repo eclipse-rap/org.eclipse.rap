@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -743,6 +744,33 @@ public class Tree extends Composite {
     }
   }
   
+  /**
+   * Returns the item at the given point in the receiver
+   * or null if no such item exists. The point is in the
+   * coordinate system of the receiver.
+   * <p>
+   * The item that is returned represents an item that could be selected by the user.
+   * For example, if selection only occurs in items in the first column, then null is 
+   * returned if the point is outside of the item. 
+   * Note that the SWT.FULL_SELECTION style hint, which specifies the selection policy,
+   * determines the extent of the selection.
+   * </p>
+   *
+   * @param point the point used to locate the item
+   * @return the item at the given point, or null if the point is not in a selectable item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public TreeItem getItem (Point point) {
+	  // TODO implement this!
+	  return null;
+  }
   /**
    * Clears all the items in the receiver. The text, icon and other
    * attributes of the items are set to their default values. If the
