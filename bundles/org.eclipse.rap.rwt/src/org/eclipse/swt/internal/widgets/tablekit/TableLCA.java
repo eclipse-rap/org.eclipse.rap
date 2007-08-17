@@ -21,6 +21,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
@@ -115,7 +116,8 @@ public final class TableLCA extends AbstractWidgetLCA {
     // Make the JavaScript client area the parent of all children of table 
     Control[] children = table.getChildren();
     for( int i = 0; i < children.length; i++ ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( children[ i ] );
+      WidgetAdapter adapter 
+        = ( WidgetAdapter )WidgetUtil.getAdapter( children[ i ] );
       adapter.setJSParent( TableLCA.getItemJSParent( table ) );
     }
   }

@@ -24,6 +24,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.graphics.IColor;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.widgets.*;
 
@@ -483,9 +484,9 @@ public final class JSWriter {
 
   private String getJSParentId( final Widget widget ) {
     String result = "";
-    if( !(widget instanceof Shell ) && widget instanceof Control ) {
+    if( !( widget instanceof Shell ) && widget instanceof Control ) {
       Control control = ( Control )widget;
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+      WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( control );
       if( adapter.getJSParent() == null ) {
         result = WidgetUtil.getId( control.getParent() );
       } else {

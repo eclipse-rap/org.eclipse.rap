@@ -16,6 +16,7 @@ import java.io.IOException;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
@@ -106,7 +107,8 @@ public class TabItemLCA extends AbstractWidgetLCA {
       StringBuffer replacementId = new StringBuffer();
       replacementId.append( itemAdapter.getId() );
       replacementId.append( "pg" );
-      IWidgetAdapter controlAdapter = WidgetUtil.getAdapter( control );
+      WidgetAdapter controlAdapter 
+        = ( WidgetAdapter )WidgetUtil.getAdapter( control );
       controlAdapter.setJSParent( replacementId.toString() );
     }
   }

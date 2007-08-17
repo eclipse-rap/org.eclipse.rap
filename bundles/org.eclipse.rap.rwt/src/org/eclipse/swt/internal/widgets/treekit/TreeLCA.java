@@ -23,6 +23,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
@@ -89,7 +90,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writeShowItem( tree );
     Control[] children = tree.getChildren();
     for( int i = 0; i < children.length; i++ ) {
-      IWidgetAdapter adapter = WidgetUtil.getAdapter( children[ i ] );
+      WidgetAdapter adapter 
+        = ( WidgetAdapter )WidgetUtil.getAdapter( children[ i ] );
       adapter.setJSParent( getItemJSParent( tree ) );
     }
   }

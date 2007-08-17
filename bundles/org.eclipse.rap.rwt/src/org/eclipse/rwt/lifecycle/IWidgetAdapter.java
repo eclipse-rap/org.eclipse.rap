@@ -24,7 +24,4 @@ public interface IWidgetAdapter {
   
   void preserve( String propertyName, Object value );
   Object getPreserved( String propertyName );
-
-  void setJSParent( String jsParent );
-  String getJSParent();
 }

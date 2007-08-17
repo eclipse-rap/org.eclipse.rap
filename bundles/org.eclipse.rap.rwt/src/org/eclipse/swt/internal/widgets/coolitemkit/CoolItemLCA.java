@@ -21,8 +21,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -123,7 +122,8 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   private static void setJSParent( final CoolItem coolItem ) {
     Control control = coolItem.getControl();
     if( control != null ) {
-      IWidgetAdapter controlAdapter = WidgetUtil.getAdapter( control );
+      WidgetAdapter controlAdapter 
+        = ( WidgetAdapter )WidgetUtil.getAdapter( control );
       controlAdapter.setJSParent( WidgetUtil.getId( coolItem ) );
     }
   }
