@@ -205,6 +205,14 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void writeJSLibraries() throws IOException {
     HtmlResponseWriter out = ContextProvider.getStateInfo().getResponseWriter();
+    
+    IResource[] resources = ResourceRegistry.get();
+    for( int i = 0; i < resources.length; i++ ) {
+      if( resources[ i ].isExternal() ) {
+        writeScriptTag( out, resources[ i ].getLocation() );
+      }
+    }
+    
     JsConcatenator jsConcatenator = getJsConcatenator();
     Browser browser = BrowserLoader.load();
     if( browser instanceof Opera ) {
@@ -214,13 +222,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       writeScriptTag( out, jsConcatenator.getLocation() );
     } else {
       writeScriptBlock( out, jsConcatenator.getContent() );
-    }
-
-    IResource[] resources = ResourceRegistry.get();
-    for( int i = 0; i < resources.length; i++ ) {
-      if( resources[ i ].isExternal() ) {
-        writeScriptTag( out, resources[ i ].getLocation() );
-      }
     }
   }
 
