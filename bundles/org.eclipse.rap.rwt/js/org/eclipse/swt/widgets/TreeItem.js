@@ -55,6 +55,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     
     // TODO [bm] need to set the color to prevent inheritance of colors
     this.setBackgroundColor( "transparent" );
+    
+    for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
+        this.columnAdded();
+    }
   },
   
   destruct : function() {
@@ -195,26 +199,30 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     },
     
     _onAppear : function( evt ) {
-    	this.updateItem();
-    	this.updateColumnsWidth();
+      this.updateItem();
+      this.updateColumnsWidth();
     },
     
     setTexts : function( texts ) {
       this._texts = texts;
       if( this.isCreated() ) {
-        this.updateItem();
+      	this.updateItem();
       }
     },
     
     setImages : function( images ) {
-    	this._images = images;
-    	if( this.isCreated() ) {
-        this.updateItem();
-    	}
+	  this._images = images;
+  	  if( this.isCreated() ) {
+  		this.updateItem();
+  	  }
     },
     
     columnAdded : function() {
-			
+    	var obj = new qx.ui.basic.Atom( "" );
+	    obj.setHorizontalChildrenAlign( "left" );
+	    obj.setHeight( this.getLabelObject().getHeight() );
+		this._row.addObject(obj, true);
+		this._colLabels[ this._colLabels.length ] = obj;
     },
     
     updateItem : function() {
@@ -226,27 +234,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
 	    		var text = this._texts[ col ];
 	    		if( text != null && text != "") {
 		    		if( c == 0 ) {
-			    			this.setLabel( this._texts[ col ] );
-	  		    		this.setImage( this._images[ col ] );
+		    			this.setLabel( this._texts[ col ] );
+  		    			this.setImage( this._images[ col ] );
 		    		} else {
-		    			if( this._colLabels[ c -1 ] == null ) {
-		    				if( this._images[ col ] != null
-		    					|| this._colLabels[ c -1 ] instanceof qx.ui.basic.Label ) {
-		    					// create new atom / replace label with atom if needed
-			    			  var obj = new qx.ui.basic.Atom( "" );
-	    						obj.setHorizontalChildrenAlign( "left" );
-	    						obj.setHeight( this.getLabelObject().getHeight() );
-		    				} else {
-		    					var obj = new qx.ui.basic.Label();
-		    					// remap function names
-		    					obj.setLabel = function( value ) { this.setText( value ); }
-		    					obj.setIcon = function( value ) { /* empty cause we have atoms to display images */ }
-	    						obj.setHeight( this.getLabelObject().getHeight() );
-		    				}
-    						this._row.addObject(obj, true);
-    						this._colLabels[ c -1 ] = obj;
-    						
-		    			}
 		    		  this._colLabels[ c -1 ].setLabel( this._texts[ col ] );
 		    		  this._colLabels[ c -1 ].setIcon( this._images[ col ] );
 		    		}
@@ -259,24 +249,24 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     	var columnWidth = new Array();
     	var fullWidth = this.getTree().getParent().getColumnsWidth();
     	this.setWidth( fullWidth );
-      for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
-        columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
-      }
-			if( columnWidth.length > 0 ) {
-				var checkboxWidth = (this._checkBox == null ? 0 : 16); // 13 width + 3 checkbox margin 
-				this.getLabelObject().setWidth( columnWidth[ 0 ]
-					- this.getIconObject().getWidth()
-					- ( this.getLevel() * 19)   // TODO: [bm] replace with computed indent width
-					- checkboxWidth
-					- 3 ); // tree-element-label margin
-			  var coLabel;
+      	for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
+       	 columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
+      	}
+		if( columnWidth.length > 0 ) {
+			var checkboxWidth = ( this._checkBox == null ? 0 : 16); // 13 width + 3 checkbox margin 
+			var imageWidth = ( this._images[0] == null ? 0 : this.getIconObject().getWidth() );
+			this.getLabelObject().setWidth( columnWidth[ 0 ]
+				- imageWidth
+				- ( this.getLevel() * 19)   // TODO: [bm] replace with computed indent width
+				- checkboxWidth );
+			var coLabel;
 	    	for( var i=1; i<columnWidth.length; i++ ) {
 	    		coLabel = this._colLabels[ i-1 ];
 	    		if( coLabel != null ) {
 	    			coLabel.setWidth( columnWidth[ i ] );
 	    		}
 	    	}
-			}
+		}
     }
     
   }});
