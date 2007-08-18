@@ -46,7 +46,7 @@ public final class UICallBack {
   
 
   /**
-   * To allow automatically UI-updates by server side background threads
+   * To allow automatic UI-updates by server side background threads
    * activate the UICallBack mechanism. Call this method before the start of
    * a thread and {@link deactivateUICallBack} at the end. Each activation
    * needs a session unique identifier as a kind of reference pointer to be able
@@ -68,7 +68,7 @@ public final class UICallBack {
   }
   
   /**
-   * To allow automatically UI-updates by server side background threads
+   * To allow automatic UI-updates by server side background threads
    * activate the UICallBack mechanism. Call {@link deactivateUICallBack} method
    * before the start of a thread and deactivateUICallBack at the end. Each 
    * activation needs a session unique identifier as a kind of reference pointer
