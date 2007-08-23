@@ -212,7 +212,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       }
       var top = this._tree.getTop();
       this._resizeLine._renderRuntimeTop( top );
-      var left = x - 2; // TODO: add hor scroll value
+      var left = x - 2 + this._columnArea.getLeft();
       this._resizeLine._renderRuntimeLeft( left );
       var height = this._tree.getHeight();
       this._resizeLine._renderRuntimeHeight( height );
