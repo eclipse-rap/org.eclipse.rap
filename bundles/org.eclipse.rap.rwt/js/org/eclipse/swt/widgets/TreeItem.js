@@ -17,7 +17,7 @@
 qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   extend : qx.ui.tree.TreeFolder,
 
-  construct : function( parentItem ) {
+  construct : function( parentItem, tree ) {
     this._row = qx.ui.tree.TreeRowStructure.getInstance().newRow();
     // Indentation
     this._row.addIndent();
@@ -33,6 +33,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       this._checkBox.addEventListener( "dblclick", this._onCheckBoxDblClick, this );
       this._row.addObject( this._checkBox, false );
     }
+
+    this._texts = null;
+    this._images = new Array();
+    this._colLabels = new Array();
+
     // Image
     this._row.addIcon( null ); 
 
@@ -40,6 +45,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this._row.addLabel( "" );
     
     // Construct TreeItem
+    //for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
+    for( var c = 0; c < tree._columns.length; c++ ) {
+        this.columnAdded();
+    }
     this.base( arguments, this._row );
     this.addEventListener( "click", this._onClick, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
@@ -47,18 +56,12 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
     parentItem.add( this );
     
-    this._texts = null;
-    this._images = new Array();
-    this._colLabels = new Array();
 
     this.getLabelObject().setMode( "html" );
     
     // TODO [bm] need to set the color to prevent inheritance of colors
     this.setBackgroundColor( "transparent" );
     
-    for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
-        this.columnAdded();
-    }
   },
   
   destruct : function() {
@@ -77,9 +80,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     
     _onChangeBackgroundColor : function( evt ) {
       if( typeof evt.value == "undefined" ) return;
-    	this.getLabelObject().setBackgroundColor( evt.value );
+      this.getLabelObject().setBackgroundColor( evt.value );
       // we have to go through each column
-    	for(var i=0; i<this._colLabels.length; i++) {
+      for(var i=0; i<this._colLabels.length; i++) {
         this._colLabels[ i ].setBackgroundColor( evt.value );
       }
     },
@@ -206,67 +209,67 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     setTexts : function( texts ) {
       this._texts = texts;
       if( this.isCreated() ) {
-      	this.updateItem();
+        this.updateItem();
       }
     },
     
     setImages : function( images ) {
-	  this._images = images;
-  	  if( this.isCreated() ) {
-  		this.updateItem();
-  	  }
+      this._images = images;
+      if( this.isCreated() ) {
+        this.updateItem();
+      }
     },
     
     columnAdded : function() {
-    	var obj = new qx.ui.basic.Atom( "" );
-	    obj.setHorizontalChildrenAlign( "left" );
-	    obj.setHeight( this.getLabelObject().getHeight() );
-		this._row.addObject(obj, true);
-		this._colLabels[ this._colLabels.length ] = obj;
+      var obj = new qx.ui.basic.Atom( "" );
+      obj.setHorizontalChildrenAlign( "left" );
+      this._row.addObject(obj, true);
+      this._colLabels[ this._colLabels.length ] = obj;
     },
     
     updateItem : function() {
-	    var colOrder = this.getTree().getParent().getColumnOrder();
-	    var colCount = Math.max ( 1, this.getTree().getParent()._columns.length );
-    	if( this._texts != null ) {
-	    	for( var c = 0; c < colCount; c++ ) {
-	    		var col = colOrder[ c ];
-	    		var text = this._texts[ col ];
-	    		if( text != null && text != "") {
-		    		if( c == 0 ) {
-		    			this.setLabel( this._texts[ col ] );
-  		    			this.setImage( this._images[ col ] );
-		    		} else {
-		    		  this._colLabels[ c -1 ].setLabel( this._texts[ col ] );
-		    		  this._colLabels[ c -1 ].setIcon( this._images[ col ] );
-		    		}
-	    		}
-	    	}
-    	}
+      var colOrder = this.getTree().getParent().getColumnOrder();
+      var colCount = Math.max ( 1, this.getTree().getParent()._columns.length );
+      if( this._texts != null ) {
+        for( var c = 0; c < colCount; c++ ) {
+          var col = colOrder[ c ];
+          var text = this._texts[ col ];
+          if( text != null && text != "") {
+            if( c == 0 ) {
+              this.setLabel( this._texts[ col ] );
+                this.setImage( this._images[ col ] );
+            } else {
+              this._colLabels[ c -1 ].setHeight( this.getLabelObject().getHeight() );
+              this._colLabels[ c -1 ].setLabel( this._texts[ col ] );
+              this._colLabels[ c -1 ].setIcon( this._images[ col ] );
+            }
+          }
+        }
+      }
     },
     
     updateColumnsWidth : function() {
-    	var columnWidth = new Array();
-    	var fullWidth = this.getTree().getParent().getColumnsWidth();
-    	this.setWidth( fullWidth );
-      	for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
-       	 columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
-      	}
-		if( columnWidth.length > 0 ) {
-			var checkboxWidth = ( this._checkBox == null ? 0 : 16); // 13 width + 3 checkbox margin 
-			var imageWidth = ( this._images[0] == null ? 0 : this.getIconObject().getWidth() );
-			this.getLabelObject().setWidth( columnWidth[ 0 ]
-				- imageWidth
-				- ( this.getLevel() * 19)   // TODO: [bm] replace with computed indent width
-				- checkboxWidth );
-			var coLabel;
-	    	for( var i=1; i<columnWidth.length; i++ ) {
-	    		coLabel = this._colLabels[ i-1 ];
-	    		if( coLabel != null ) {
-	    			coLabel.setWidth( columnWidth[ i ] );
-	    		}
-	    	}
-		}
+      var columnWidth = new Array();
+      var fullWidth = this.getTree().getParent().getColumnsWidth();
+      this.setWidth( fullWidth );
+        for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
+          columnWidth[ c ] = this.getTree().getParent()._columns[ c ].getWidth();
+        }
+      if( columnWidth.length > 0 ) {
+        var checkboxWidth = ( this._checkBox == null ? 0 : 16); // 13 width + 3 checkbox margin 
+        var imageWidth = ( this._images[0] == null ? 0 : this.getIconObject().getWidth() );
+        this.getLabelObject().setWidth( columnWidth[ 0 ]
+          - imageWidth
+          - ( this.getLevel() * 19)   // TODO: [bm] replace with computed indent width
+          - checkboxWidth );
+        var coLabel;
+         for( var i=1; i<columnWidth.length; i++ ) {
+           coLabel = this._colLabels[ i-1 ];
+           if( coLabel != null ) {
+             coLabel.setWidth( columnWidth[ i ] );
+           }
+         }
+      }
     }
     
   }});

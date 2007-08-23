@@ -89,7 +89,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     }
     Object[] args = new Object[] {
       WidgetUtil.getId( treeItem ),
-      parent
+      parent,
+      treeItem.getParent()
     };
     writer.callStatic( "org.eclipse.swt.TreeItemUtil.createTreeItem", args );
 

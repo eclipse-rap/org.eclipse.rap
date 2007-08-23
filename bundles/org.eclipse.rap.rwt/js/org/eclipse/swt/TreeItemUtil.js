@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.swt.TreeItemUtil", {
 
   statics : {
     
-    createTreeItem : function( widgetId, parent ) {
+    createTreeItem : function( widgetId, parent, tree ) {
     	var wm = org.eclipse.swt.WidgetManager.getInstance();
     	
     	var realParent = null;
@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.swt.TreeItemUtil", {
     		realParent = parent;
     	}
     	
-    	var w = new org.eclipse.swt.widgets.TreeItem( realParent );
+    	var w = new org.eclipse.swt.widgets.TreeItem( realParent, tree );
     	wm.add( w, widgetId, false );
     }
 
