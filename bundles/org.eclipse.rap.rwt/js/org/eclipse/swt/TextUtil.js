@@ -14,6 +14,24 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
   statics : {
     
+    // TODO [rh] workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
+    //      the fix is to exchange the _onblur implementation of qx.ui.forms.Text
+    //      with our own one, that checks paremtn != null before calling 
+    //      setSelectionLength
+    hijack : function( text ) {
+      text.removeEventListener( "blur", text._onblur );   
+      text._onblur = function() {
+        var vValue = this.getComputedValue().toString();
+        if( this._textOnFocus != vValue ) {
+          this.setValue( vValue );
+        }
+        if( this.getParent() != null ) {
+          this.setSelectionLength( 0 );
+        }      
+      };
+      text.addEventListener( "blur", text._onblur );   
+    },
+    
     ///////////////////////////////////////////////////////////////
     // Functions for ModifyEvents and maintenance of the text/value
     
@@ -77,17 +95,15 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       }
     },
 
-    _onSend : function(evt) {
+    _onSend : function( evt ) {
       // NOTE: 'this' references the text widget
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( id + ".text", this.getComputedValue() );
-
       // remove the _onSend listener and change the text widget state to 'unmodified'
       req.removeEventListener( "send", org.eclipse.swt.TextUtil._onSend, this );
       org.eclipse.swt.TextUtil._setModified( this, false );
-
       // Update the value property (which is qooxdoo-wise only updated on
       // focus-lost) to be in sync with server-side
       if( this.getFocused() ) {
