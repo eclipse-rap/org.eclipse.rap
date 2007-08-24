@@ -131,7 +131,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
 	  },
 	  
 	  _onTreeScroll : function( e ) {
-	    this._columnArea.setLeft( 0 - e.target.scrollLeft );
+	    var target = e.target;
+	    if( e.target == null ) {
+	    	target = e.srcElement;
+	    }
+	  	this._columnArea.setLeft( 0 - target.scrollLeft );
 	  },
   
   	_addColumn : function( column ) {
