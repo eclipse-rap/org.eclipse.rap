@@ -47,6 +47,8 @@ public class CLabelTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
+    createFgColorButton();
+    createBgColorButton();
   }
 
   protected void createExampleControls( final Composite parent ) {
