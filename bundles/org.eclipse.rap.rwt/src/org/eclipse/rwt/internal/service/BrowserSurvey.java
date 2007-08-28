@@ -108,7 +108,7 @@ public final class BrowserSurvey {
     InputStream inputStream 
       = LifeCycleServiceHandler.configurer.getTemplateOfStartupPage();
     try {
-      byte[] bytes = new byte[512];
+      byte[] bytes = new byte[ 512 ];
       int bytesRead = inputStream.read( bytes );
       while( bytesRead != -1 ) {
         buffer.append( new String( bytes, 0, bytesRead ) );

@@ -29,11 +29,11 @@ import org.eclipse.swt.widgets.Widget;
 import org.xml.sax.SAXException;
 
 
-public class ThemeManager {
+public final class ThemeManager {
 
   public interface ResourceLoader {
-    public abstract InputStream getResourceAsStream( String resourceName )
-    throws IOException;
+    abstract InputStream getResourceAsStream( String resourceName )
+      throws IOException;
   }
 
   private static final String CHARSET = "UTF-8";
@@ -41,7 +41,7 @@ public class ThemeManager {
   private static final Pattern PATTERN_REPLACE
     = Pattern.compile( "THEME_VALUE\\(\\s*\"(.*?)\"\\s*\\)" );
 
-  private static class ThemeWrapper {
+  private static final class ThemeWrapper {
     final Theme theme;
     final ResourceLoader loader;
     final int count;
@@ -847,7 +847,7 @@ public class ThemeManager {
 
   static String readFromInputStream( final InputStream is,
                                      final String charset )
-  throws IOException
+    throws IOException
   {
     String result = null;
     if( is != null ) {
@@ -874,6 +874,7 @@ public class ThemeManager {
    * Inserts the package path segment <code>internal</code> at every possible
    * position in a given package name.
    */
+  // TODO [rh] seems to be a copy of LifeCycleAdapterFactory, unite if possible
   private static String[] getPackageVariants( final String packageName ) {
     String[] result;
     if( packageName == null || "".equals( packageName ) ) {
@@ -914,7 +915,7 @@ public class ThemeManager {
 
   private void checkId( final String id ) {
     if( id == null ) {
-      throw new NullPointerException( "null argument" );
+      throw new NullPointerException( "id" );
     }
     if( id.length() == 0 ) {
       throw new IllegalArgumentException( "empty id" );
