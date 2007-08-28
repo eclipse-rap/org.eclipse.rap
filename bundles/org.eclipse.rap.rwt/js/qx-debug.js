@@ -18255,11 +18255,7 @@ ex);
 return "<pre>Could not execute json: \n"+vText+"\n</pre>";
 }case qx.util.Mime.JAVASCRIPT:{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+vText);
 }};
-try{if(vText&&vText.length>0){var start=new Date();
-var result=window.eval(vText)||null;
-var stop=new Date();
-this.debug("Time for eval: "+(stop-start)+" ms");
-return result;
+try{if(vText&&vText.length>0){return window.eval(vText)||null;
 }else{return null;
 }}catch(ex){this.error("Could not execute javascript: ["+vText+"]",
 ex);
