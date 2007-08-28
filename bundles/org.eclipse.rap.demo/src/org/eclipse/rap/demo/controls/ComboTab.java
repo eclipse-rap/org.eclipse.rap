@@ -41,6 +41,7 @@ public class ComboTab extends ExampleTab {
 
   protected void createStyleControls( final Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
+    createStyleButton( "READ_ONLY", SWT.READ_ONLY, true);
     createVisibilityButton();
     createEnablementButton();
     createAddButton( parent );

@@ -57,7 +57,6 @@ import org.eclipse.swt.internal.widgets.combokit.IComboThemeAdapter;
  * <hr/>
  * <p>Implementation status:</p>
  * Currently only the DROP_DOWN style is supported.
- * The Combo is READ_ONLY.
  */
 // TODO [rst] Update Javadoc
 // TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
@@ -66,6 +65,7 @@ public class Combo extends Composite {
 
   private static final int DROP_DOWN_BUTTON_WIDTH = 14;
   private final ListModel model;
+  private String text = "";
 
   /**
    * Constructs a new instance of this class given its parent
@@ -468,51 +468,57 @@ public class Combo extends Composite {
     return 0;
   }
 
-//  /**
-//   * Searches the receiver's list starting at the first item
-//   * (index 0) until an item is found that is equal to the 
-//   * argument, and returns the index of that item. If no item
-//   * is found, returns -1.
-//   *
-//   * @param string the search item
-//   * @return the index of the item
-//   *
-//   * @exception IllegalArgumentException <ul>
-//   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
-//   * </ul>
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-//   * </ul>
-//   */
+  /**
+   * Searches the receiver's list starting at the first item
+   * (index 0) until an item is found that is equal to the 
+   * argument, and returns the index of that item. If no item
+   * is found, returns -1.
+   *
+   * @param string the search item
+   * @return the index of the item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public int indexOf( final String string ) {
-//    return indexOf( string, 0 );
-    // TODO [rh] IMPLEMENTATION MISSING: indexOf(String,int)
-    return -1;
+    checkWidget();
+    return indexOf( string, 0 );
   }
 
-//  /**
-//   * Searches the receiver's list starting at the given, 
-//   * zero-relative index until an item is found that is equal
-//   * to the argument, and returns the index of that item. If
-//   * no item is found or the starting index is out of range,
-//   * returns -1.
-//   *
-//   * @param string the search item
-//   * @param start the zero-relative index at which to begin the search
-//   * @return the index of the item
-//   *
-//   * @exception IllegalArgumentException <ul>
-//   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
-//   * </ul>
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-//   * </ul>
-//   */
+  /**
+   * Searches the receiver's list starting at the given, 
+   * zero-relative index until an item is found that is equal
+   * to the argument, and returns the index of that item. If
+   * no item is found or the starting index is out of range,
+   * returns -1.
+   *
+   * @param string the search item
+   * @param start the zero-relative index at which to begin the search
+   * @return the index of the item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public int indexOf( final String string, final int start ) {
     checkWidget();
-    // TODO [rh] IMPLEMENTATION MISSING
+    if( string == null )
+      error( SWT.ERROR_NULL_ARGUMENT );
+    if( !( 0 <= start && start < model.getItemCount() ) )
+      return -1;
+    for( int i = start; i < model.getItemCount(); i++ ) {
+      if( string.equals( model.getItem( i ) ) )
+        return i;
+    }
     return -1;
   }
 
@@ -530,42 +536,53 @@ public class Combo extends Composite {
    */
   public String getText() {
     checkWidget();
-    // TODO [bm] improve this when we introduce !READ_ONLY combos
-    int idx = model.getSelectionIndex();
     String result = "";
-    if( idx != -1 ) {
-      result = model.getItem( idx );
+    if( ( style & SWT.READ_ONLY ) != 0 ) {
+      int idx = model.getSelectionIndex();
+      if( idx != -1 ) {
+        result = model.getItem( idx );
+      }
+    } else {
+      result = text;
     }
     return result;
   }
   
-//  /**
-//   * Sets the contents of the receiver's text field to the
-//   * given string.
-//   * <p>
-//   * Note: The text field in a <code>Combo</code> is typically
-//   * only capable of displaying a single line of text. Thus,
-//   * setting the text to a string containing line breaks or
-//   * other special characters will probably cause it to 
-//   * display incorrectly.
-//   * </p>
-//   *
-//   * @param string the new text
-//   *
-//   * @exception IllegalArgumentException <ul>
-//   *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
-//   * </ul>
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-//   * </ul>
-//   */
+  /**
+   * Sets the contents of the receiver's text field to the given string.
+   * <p>
+   * Note: The text field in a <code>Combo</code> is typically only capable of
+   * displaying a single line of text. Thus, setting the text to a string
+   * containing line breaks or other special characters will probably cause it
+   * to display incorrectly.
+   * </p>
+   * 
+   * @param string the new text
+   * @exception IllegalArgumentException
+   *              <ul>
+   *              <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   *              </ul>
+   * @exception SWTException
+   *              <ul>
+   *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              thread that created the receiver</li>
+   *              </ul>
+   */
   public void setText( final String string ) {
     checkWidget();
-    // TODO [rh] IMPLEMENTATION MISSING
+    if( string == null )
+      error( SWT.ERROR_NULL_ARGUMENT );
+    if( ( style & SWT.READ_ONLY ) != 0 ) {
+      int index = indexOf( string );
+      if( index == -1 )
+        return;
+      select( index );
+    }
+    text = string;
   }
 
-  ////////////////////
+  // //////////////////
   // Widget dimensions
 
   // TODO [rst] Revise: In SWT, a width or height hint of 0 does not result in

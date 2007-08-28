@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -46,6 +47,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   // Propery names for preserve-value facility
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
+  private static final String PROP_EDITABLE = "editable";
 
   private static final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,
@@ -65,6 +67,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION, selection );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
+    adapter.preserve( PROP_EDITABLE, Boolean.valueOf( 
+                      (combo.getStyle() & SWT.READ_ONLY ) != 0 ) );
   }
 
   public void readData( final Widget widget ) {
@@ -72,6 +76,10 @@ public class ComboLCA extends AbstractWidgetLCA {
     String value = WidgetLCAUtil.readPropertyValue( widget, "selectedItem" );
     if( value != null ) {
       combo.select( new Integer( value ).intValue() );
+    }
+    String text = WidgetLCAUtil.readPropertyValue( widget, "changedText" );
+    if( text != null ) {
+      combo.setText( text );
     }
     if( WidgetLCAUtil.wasEventSent( combo, JSConst.EVENT_WIDGET_SELECTED ) ) {
       ControlLCAUtil.processSelection( combo, null, true );
@@ -90,6 +98,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( combo );
     writeItems( combo );
     writeSelected( combo );
+    writeEditable( combo );
 
     // workaround for broken context menu on qx ComboBox
     // see http://bugzilla.qooxdoo.org/show_bug.cgi?id=465
@@ -150,6 +159,14 @@ public class ComboLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( combo );
       Object[] args = new Object[]{ combo, newValue };
       writer.callStatic( JS_FUNC_SELECT_COMBOBOX_ITEM, args );
+    }
+  }
+  
+  private static void writeEditable( final Combo combo ) throws IOException {
+    boolean editable = ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );
+    if( editable ) {
+      JSWriter writer = JSWriter.getWriterFor( combo );
+      writer.set( PROP_EDITABLE, editable );
     }
   }
 }

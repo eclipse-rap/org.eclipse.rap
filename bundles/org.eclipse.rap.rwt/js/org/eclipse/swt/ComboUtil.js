@@ -24,6 +24,8 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
                               org.eclipse.swt.ComboUtil._onChangeBackgoundColor );
       combo.addEventListener( "changeTextColor",
                               org.eclipse.swt.ComboUtil._onChangeTextColor );
+      combo.addEventListener( "changeValue",
+                              org.eclipse.swt.ComboUtil._onChangeValue );
     },
     
     deinitialize : function( combo ) {
@@ -33,6 +35,8 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
                                  org.eclipse.swt.ComboUtil._onChangeBackgoundColor );
       combo.removeEventListener( "changeTextColor",
                                  org.eclipse.swt.ComboUtil._onChangeTextColor );
+      combo.removeEventListener( "changeValue",
+                                 org.eclipse.swt.ComboUtil._onChangeValue );
     },
     
     onSelectionChanged : function( evt ) {
@@ -144,6 +148,18 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       var menu = combo.getContextMenu();
       combo._field.setContextMenu( menu );
       combo._button.setContextMenu( menu );
-    }
+    },
+    
+    _onChangeValue : function( evt ) {
+      if( evt.getData() != null ) {
+        var combo = evt.getTarget();
+        var value = combo.getValue();
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var cboId = widgetManager.findIdByWidget( combo );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( cboId + ".changedText", value );
+      }
+    },
+    
   }
 });
