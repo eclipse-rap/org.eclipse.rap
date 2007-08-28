@@ -69,37 +69,37 @@ public class CLabel extends Canvas {
   private Image backgroundImage;
   private Color background;
 	
-/**
- * Constructs a new instance of this class given its parent
- * and a style value describing its behavior and appearance.
- * <p>
- * The style value is either one of the style constants defined in
- * class <code>SWT</code> which is applicable to instances of this
- * class, or must be built by <em>bitwise OR</em>'ing together 
- * (that is, using the <code>int</code> "|" operator) two or more
- * of those <code>SWT</code> style constants. The class description
- * lists the style constants that are applicable to the class.
- * Style bits are also inherited from superclasses.
- * </p>
- *
- * @param parent a widget which will be the parent of the new instance (cannot be null)
- * @param style the style of widget to construct
- *
- * @exception IllegalArgumentException <ul>
- *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
- * </ul>
- * @exception SWTException <ul>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
- * </ul>
- *
- * @see SWT#LEFT
- * @see SWT#RIGHT
- * @see SWT#CENTER
- * @see SWT#SHADOW_IN
- * @see SWT#SHADOW_OUT
- * @see SWT#SHADOW_NONE
- * @see #getStyle()
- */
+  /**
+   * Constructs a new instance of this class given its parent
+   * and a style value describing its behavior and appearance.
+   * <p>
+   * The style value is either one of the style constants defined in
+   * class <code>SWT</code> which is applicable to instances of this
+   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * (that is, using the <code>int</code> "|" operator) two or more
+   * of those <code>SWT</code> style constants. The class description
+   * lists the style constants that are applicable to the class.
+   * Style bits are also inherited from superclasses.
+   * </p>
+   *
+   * @param parent a widget which will be the parent of the new instance (cannot be null)
+   * @param style the style of widget to construct
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   * </ul>
+   *
+   * @see SWT#LEFT
+   * @see SWT#RIGHT
+   * @see SWT#CENTER
+   * @see SWT#SHADOW_IN
+   * @see SWT#SHADOW_OUT
+   * @see SWT#SHADOW_NONE
+   * @see #getStyle()
+   */
   public CLabel( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     if ( (style & (SWT.CENTER | SWT.RIGHT)) == 0 )
@@ -118,9 +118,10 @@ public class CLabel extends Canvas {
     } );
 
   }
-/**
- * Check the style bits to ensure that no invalid styles are applied.
- */
+
+  /**
+   * Check the style bits to ensure that no invalid styles are applied.
+   */
   private static int checkStyle( int style ) {
     if ( (style & SWT.BORDER) != 0 )
       style |= SWT.SHADOW_IN;
@@ -145,30 +146,30 @@ public class CLabel extends Canvas {
     return e;
   }
   
-/**
- * Returns the alignment.
- * The alignment style (LEFT, CENTER or RIGHT) is returned.
- * 
- * @return SWT.LEFT, SWT.RIGHT or SWT.CENTER
- */
+  /**
+   * Returns the alignment.
+   * The alignment style (LEFT, CENTER or RIGHT) is returned.
+   * 
+   * @return SWT.LEFT, SWT.RIGHT or SWT.CENTER
+   */
   public int getAlignment() {
     checkWidget();
     return align;
   }
 
-/**
- * Return the CLabel's image or <code>null</code>.
- * 
- * @return the image of the label or null
- */
+  /**
+   * Return the CLabel's image or <code>null</code>.
+   * 
+   * @return the image of the label or null
+   */
   public Image getImage() {
     checkWidget();
     return image;
   }
 
-/**
- * Compute the minimum size.
- */
+  /**
+   * Compute the minimum size.
+   */
   private Point getTotalSize( Image image, String text ) {
     Point size = new Point( 0, 0 );
 
@@ -185,7 +186,8 @@ public class CLabel extends Canvas {
       if ( image != null )
         size.x += GAP;
     } else {
-      size.y = Math.max( size.y, TextSizeDetermination.getCharHeight( getFont() ) );
+      int charHeight = TextSizeDetermination.getCharHeight( getFont() );
+      size.y = Math.max( size.y, charHeight );
     }
 
     return size;
@@ -207,11 +209,11 @@ public class CLabel extends Canvas {
     return style;
   }
 
-/**
- * Return the Label's text.
- * 
- * @return the text of the label or null
- */
+  /**
+   * Return the Label's text.
+   * 
+   * @return the text of the label or null
+   */
   public String getText() {
     checkWidget();
     return text;
@@ -229,18 +231,18 @@ public class CLabel extends Canvas {
     appToolTipText = null;
   }
 
-/**
- * Set the alignment of the CLabel.
- * Use the values LEFT, CENTER and RIGHT to align image and text within the available space.
- * 
- * @param align the alignment style of LEFT, RIGHT or CENTER
- * 
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- *    <li>ERROR_INVALID_ARGUMENT - if the value of align is not one of SWT.LEFT, SWT.RIGHT or SWT.CENTER</li>
- * </ul>
- */
+  /**
+   * Set the alignment of the CLabel.
+   * Use the values LEFT, CENTER and RIGHT to align image and text within the available space.
+   * 
+   * @param align the alignment style of LEFT, RIGHT or CENTER
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the value of align is not one of SWT.LEFT, SWT.RIGHT or SWT.CENTER</li>
+   * </ul>
+   */
   public void setAlignment( int align ) {
     checkWidget();
     if ( align != SWT.LEFT && align != SWT.RIGHT && align != SWT.CENTER ) {
@@ -267,16 +269,16 @@ public class CLabel extends Canvas {
     backgroundImage = null;
   }
 
-/**
- * Set the image to be drawn in the background of the label.
- * 
- * @param image the image to be drawn in the background
- * 
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
- */
+  /**
+   * Set the image to be drawn in the background of the label.
+   * 
+   * @param image the image to be drawn in the background
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   // TODO: [bm] review
   public void setBackground( Image image ) {
     checkWidget();
@@ -289,34 +291,36 @@ public class CLabel extends Canvas {
   public void setFont( Font font ) {
     super.setFont( font );
   }
-/**
- * Set the label's Image.
- * The value <code>null</code> clears it.
- * 
- * @param image the image to be displayed in the label or null
- * 
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
- */
+  
+  /**
+   * Set the label's Image.
+   * The value <code>null</code> clears it.
+   * 
+   * @param image the image to be displayed in the label or null
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setImage( Image image ) {
     checkWidget();
     if ( image != this.image ) {
       this.image = image;
     }
   }
-/**
- * Set the label's text.
- * The value <code>null</code> clears it.
- * 
- * @param text the text to be displayed in the label or null
- * 
- * @exception SWTException <ul>
- *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
- *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
- * </ul>
- */
+  
+  /**
+   * Set the label's text.
+   * The value <code>null</code> clears it.
+   * 
+   * @param text the text to be displayed in the label or null
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public void setText( String text ) {
     checkWidget();
     if ( text == null )
@@ -330,6 +334,7 @@ public class CLabel extends Canvas {
     super.setToolTipText( string );
     appToolTipText = super.getToolTipText();
   }
+  
 /**
  * Shorten the given text <code>t</code> so that its length doesn't exceed
  * the given width. The default implementation replaces characters in the
