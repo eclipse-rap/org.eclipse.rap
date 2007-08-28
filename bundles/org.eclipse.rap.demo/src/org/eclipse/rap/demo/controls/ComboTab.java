@@ -127,7 +127,7 @@ public class ComboTab extends ExampleTab {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label lblAddItem = new Label( composite, SWT.NONE );
-    lblAddItem.setText( "Add Item to Empty Combo" );
+    lblAddItem.setText( "Add Item to 'Empty Combo'" );
     final Text txtAddItem = new Text( composite, SWT.BORDER );
     txtAddItem.setText( "New Item" );
     Button btnAddItem = new Button( composite, SWT.PUSH );
@@ -141,7 +141,7 @@ public class ComboTab extends ExampleTab {
 
   private void createRemoveAllButton( final Composite parent ) {
     Button button = new Button( parent , SWT.PUSH );
-    button.setText( "Remove All" );
+    button.setText( "Remove All on 'Filled Combo'" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         filledCombo.removeAll();
