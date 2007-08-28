@@ -216,7 +216,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._columnArea.setHeight( value );
       var columns = this._columnArea.getChildren();
       for( var i = 0; i < columns.length; i++ ) {
-        columns[i].setHeight( value );
+        columns[ i ].setHeight( value );
       }
       this._updateClientAreaSize();
     },
