@@ -93,8 +93,6 @@ final class MenuBarLCA extends MenuDelegateLCA {
           new Integer( menuBounds.height )
         };
         writer.set( "space", args );
-        writer.set( "clipWidth", menuBounds.width );
-        writer.set( "clipHeight", menuBounds.height );
       }
       // We can't preserve values in the right phase because client-side changes
       // wouldn't be noticed this way (perserveValues happens after readData)

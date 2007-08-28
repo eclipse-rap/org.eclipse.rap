@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeColumn", {
     this.removeEventListener( "mousedown", this._onMouseDown, this );
     this.removeEventListener( "mouseup", this._onMouseUp, this );
     this._disposeSortImage();
-    if( !this._tree.isDisposed() ) {
+    if( !this._tree.getDisposed() ) {
       this._tree._removeColumn( this );
     }
   },

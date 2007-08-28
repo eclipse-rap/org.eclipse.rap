@@ -22,45 +22,36 @@ qx.Class.define( "org.eclipse.swt.Application", {
     //  var doc = qx.ui.core.ClientDocument.getInstance();
     //  doc.removeEventListener( "windowresize", this._onResize );
     _onResize : function( evt ) {
-      var doc = qx.ui.core.ClientDocument.getInstance();
+      org.eclipse.swt.Application._appendWindowSize();
+      var req = org.eclipse.swt.Request.getInstance();
+      req.send();
+    },
+    
+    _appendWindowSize : function() {
+      var width = qx.html.Window.getInnerWidth( window );
+      var height = qx.html.Window.getInnerHeight( window );
+      // Append document size to request
       var req = org.eclipse.swt.Request.getInstance();
       var id = req.getUIRootId();
-
-      // TODO [rh] replace code below with qx.dom.Window.getInnerWidth( window )
-      //      and getInnerHeight( window ) when available. Seems like qx 0.6 does
-      //      not yet support these functions.
-      var width = 0;
-      var height = 0;
-      if( document.layers || ( document.getElementById && !document.all ) ) {
-        width = window.innerWidth;
-        height = window.innerHeight;
-      } else if( document.all ) {
-        width = document.body.clientWidth;
-        height = document.body.clientHeight;
-      }
-      // Append document size to request
       req.addParameter( id + ".bounds.width", String( width ) );
       req.addParameter( id + ".bounds.height", String( height ) );
-      req.send();
     }
   },
 
   members : {
     main : function( evt ) {
       this.base( arguments );
-      
       // Overwrite the default mapping for internal images. This is necessary
       // if the application is deployed under a root different from "/".
       qx.io.Alias.getInstance().add( "static", "./resource/static" );
       qx.io.Alias.getInstance().add( "org.eclipse.swt", "./resource" );
-      
       // Observe window size
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.addEventListener( "windowresize", 
                             org.eclipse.swt.Application._onResize );
       // Initial request to obtain startup-shell
+      org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
-      org.eclipse.swt.Application._onResize();  // appends bounds to the request
       req.send();
     },
 
@@ -74,10 +65,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
 //                 + "Your current session data will be lost if you proceed.";
 //      }
       return result;
-    },
-    
-    terminate : function( evt ) {
-      this.base( arguments );
     }
   }
 });

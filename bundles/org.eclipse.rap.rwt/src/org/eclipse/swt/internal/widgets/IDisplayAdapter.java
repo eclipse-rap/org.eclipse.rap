@@ -32,6 +32,8 @@ public interface IDisplayAdapter {
   void setBounds( Rectangle bounds );
   void setActiveShell( Shell shell );
   void setFocusControl( Control control );
+  void invalidateFocus();
+  boolean isFocusInvalidated();
   ISessionStore getSession();
   IFilterEntry[] getFilters();
 }

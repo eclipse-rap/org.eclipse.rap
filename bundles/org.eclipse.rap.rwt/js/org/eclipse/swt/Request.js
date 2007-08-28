@@ -42,9 +42,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
   },
   
   destruct : function() {
-    if( this.getDisposed() ) {
-      return;
-    }
     this._currentRequest = null;
   },
   
@@ -125,7 +122,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
      */
     enableUICallBack : function( url, service_param, service_id ) {
       var request = new qx.io.remote.Request( url, 
-                                              "GET", 
+                                              qx.net.Http.METHOD_GET, 
                                               qx.util.Mime.JAVASCRIPT );
       request.setParameter( service_param, service_id );
       request.setAsynchronous( true );
@@ -153,22 +150,20 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     _sendImmediate : function() {
       this._dispatchSendEvent();
+      // set mandatory parameters; do this after regular params to override them
+      // in case of conflict
+      this._parameters[ "uiRoot" ] = this._uiRootId;
+      this._parameters[ "requestCounter" ] = this._requestCounter;
+
       // create and configure request object
       // To solve bug #165666 we use GET- instead of POST-method
       var request = new qx.io.remote.Request( this._url, 
-                                              "GET", 
+                                              qx.net.Http.METHOD_POST, 
                                               qx.util.Mime.JAVASCRIPT );
-      request.setAsynchronous( true );
-      // apply _parameters map which was filled during client interaction
-      for( var parameterName in this._parameters ) {
-        var value = this._parameters[ parameterName ];
-        request.setParameter( parameterName, value );
-      }
-      // set mandatory parameters; do this after regular params to override them
-      // in case of conflict
-      request.setParameter( "uiRoot", this._uiRootId );
-      request.setParameter( "requestCounter", this._requestCounter );
+      // copy the _parameters map which was filled during client interaction to
+      // the request
       this._inDelayedSend = false;
+      this._copyParameters( request );
       // notify user when request takes longer than 500 ms
       qx.client.Timer.once( this._showWaitHint, this, 500 );
       request.addEventListener( "completed", this._hideWaitHint, this );
@@ -180,22 +175,33 @@ qx.Class.define( "org.eclipse.swt.Request", {
       // clear the parameter list
       this._parameters = {};
     },
+    
+    _copyParameters : function( request ) {
+      var data = new Array();
+      for( var parameterName in this._parameters ) {
+        data.push(   encodeURIComponent( parameterName ) 
+                   + "=" 
+                   + encodeURIComponent( this._parameters[ parameterName ] ) );
+      }
+      request.setData( data.join( "&" ) );
+    },
 
     _logSend : function() {
-      var msg 
-        = "sending request [ " 
-        + "uiRoot=" + this._uiRootId + "; " 
-        + "requestCounter=" + this._requestCounter;
-      for( var parameterName in this._parameters ) {
-        msg += "; " + parameterName + "=" + this._parameters[ parameterName ];
+      if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+        var msg = "sending request [ "; 
+        for( var parameterName in this._parameters ) {
+          msg += parameterName + "=" + this._parameters[ parameterName ] + "; ";
+        }
+        msg += " ]";
+        this.debug( msg );
       }
-      msg += " ]";
-      this.debug( msg );
     },
 
     _showWaitHint : function() {
       if( this._currentRequest != null ) {
-        this.debug( "showWaitHint" );
+        if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+          this.debug( "showWaitHint" );
+        }
         var doc = qx.ui.core.ClientDocument.getInstance();
         doc.setGlobalCursor( qx.constant.Style.CURSOR_PROGRESS );
       }
@@ -205,7 +211,9 @@ qx.Class.define( "org.eclipse.swt.Request", {
       this._currentRequest = null;
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.setGlobalCursor( null );
-      this.debug( "hideWaitHint" );
+      if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+        this.debug( "hideWaitHint" );
+      }
     },
 
     _dispatchSendEvent : function() {

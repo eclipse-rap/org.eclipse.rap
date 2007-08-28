@@ -86,7 +86,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     Rectangle bounds = item.getBounds();
-    WidgetLCAUtil.writeBounds( item, item.getParent(), bounds, true );
+    WidgetLCAUtil.writeBounds( item, item.getParent(), bounds, false );
     writeText( item );
     writeImage( item );
     writeFont( item );

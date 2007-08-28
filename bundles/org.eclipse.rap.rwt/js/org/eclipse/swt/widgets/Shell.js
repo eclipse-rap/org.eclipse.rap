@@ -64,24 +64,24 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   },
 
   properties : {
-    defaultButton : {
-      // TODO [rh] remove _legacy
-      _legacy : true,
-      type    : "object"
-    },
-
     alwaysOnTop : {
-      // TODO [rh] remove _legacy
-      _legacy : true,
-      type    : "boolean"
+      check : "Boolean"
     },
     
     dialogMode : {
-      type : "boolean"
+      check : "Boolean"
     }
   },
 
   members : {
+    setDefaultButton : function( value ) {
+      this._defaultButton = value;
+    },
+    
+    getDefaultButton : function() {
+      return this._defaultButton;  
+    },
+    
     setActiveControl : function( control ) {
       this._activeControl = control;
     },

@@ -237,6 +237,7 @@ public final class WidgetLCAUtil {
         };
         writer.set( JS_PROP_SPACE, args );
       }
+      // TODO [rh] remove clipXXX calls - seems unused
       if( clip ) {
         writer.set( JS_PROP_CLIP_WIDTH, newBounds.width );
         writer.set( JS_PROP_CLIP_HEIGHT, newBounds.height );
@@ -318,9 +319,9 @@ public final class WidgetLCAUtil {
                                  final Image image )
     throws IOException
   {
-    String imagePath = image == null ? null : ResourceFactory.getImagePath( image );
+    String path = image == null ? null : ResourceFactory.getImagePath( image );
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.set( jsProperty, imagePath );
+    writer.set( jsProperty, path );
   }
 
   public static void writeFont( final Widget widget, final Font font )

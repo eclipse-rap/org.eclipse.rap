@@ -956,6 +956,12 @@ public class Shell extends Decorations {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setFocusControl( this );
+    // When a Shell is opened client-side the widget that is currently focused
+    // loses its focus. This is unwanted in the case that the request that 
+    // opened the Shell sets the focus to some widget after opening the Shell.
+    // The fix is to force the DisplayLCA to issue JavaScript that sets the
+    // focus on the server-side focused widget.
+    displayAdapter.invalidateFocus();
   }
 
   ////////////////

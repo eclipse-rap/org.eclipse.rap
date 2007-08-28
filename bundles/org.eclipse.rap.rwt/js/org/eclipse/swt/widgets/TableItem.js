@@ -39,7 +39,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   destruct : function() {
     // When changing this, re-check destructor of Table.js as well as TableLCA
     // and TableItemLCA 
-    if( !this._parent.isDisposed() ) {
+    if( !this._parent.getDisposed() ) {
       this._parent._removeItem( this );
     }
     org.eclipse.swt.WidgetManager.getInstance().remove( this );

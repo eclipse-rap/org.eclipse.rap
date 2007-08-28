@@ -39,16 +39,17 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     _doMeasurement : function( item ) {
       var lbl = org.eclipse.swt.FontSizeCalculation.MEASUREMENT_LABEL;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var measureNode = qx.ui.basic.Label._getMeasureNode();
       if( item[ 6 ] > 0 ) {
-        qx.ui.basic.Label._getMeasureNode().style.width = item[ 6 ];
+        measureNode.style.width = item[ 6 ];
       } else {
-        qx.ui.basic.Label._getMeasureNode().style.width = "auto";
+        measureNode.style.width = "auto";
       }
       lbl.setText( item[ 1 ] );
       wm.setFont( lbl, item[ 2 ], item[ 3 ], item[ 4 ], item[ 5 ] );
       var result =  [ lbl._computePreferredInnerWidth(), 
                       lbl._computePreferredInnerHeight() ];
-      qx.ui.basic.Label._getMeasureNode().style.width = "auto";
+      measureNode.style.width = "auto";
       return result;
     },
     

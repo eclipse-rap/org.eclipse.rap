@@ -17,6 +17,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
@@ -115,6 +116,9 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 public class Display extends Device implements Adaptable {
 
   private static final String DISPLAY_ID = "org.eclipse.swt.display";
+  private static final String INVALIDATE_FOCUS 
+    = DisplayAdapter.class.getName() + "#invalidateFocus";
+
 
   /* Package Name */
   static final String PACKAGE_PREFIX = "org.eclipse.swt.widgets.";
@@ -931,6 +935,15 @@ public class Display extends Device implements Adaptable {
 
     public void setFocusControl( final Control focusControl ) {
       Display.this.setFocusControl( focusControl );
+    }
+
+    public void invalidateFocus() {
+      RWT.getServiceStore().setAttribute( INVALIDATE_FOCUS, Boolean.TRUE );
+    }
+    
+    public boolean isFocusInvalidated() {
+      Object value = RWT.getServiceStore().getAttribute( INVALIDATE_FOCUS );
+      return value != null;
     }
 
     public ISessionStore getSession() {

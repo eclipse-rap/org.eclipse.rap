@@ -37,7 +37,7 @@ qx.Class.define( "org.eclipse.swt.LinkUtil", {
     },
 
     clear : function( widget ) {
-      if( widget && !widget.isDisposed() ) {
+      if( widget && !widget.getDisposed() ) {
         var children = widget.getChildren();
         var child = children[0];
         while( child ) {

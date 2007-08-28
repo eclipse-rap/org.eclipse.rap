@@ -1043,9 +1043,10 @@ appearances = {
       style : function( states ) {
         return {
 //          height          : "1*",
+          overflow : "hidden",
           backgroundColor : "widget.background",
-          border          : new qx.ui.core.Border(1, "solid", "widget.thinborder"),
-          padding         : 10
+          border : new qx.ui.core.Border(1, "solid", "widget.thinborder"),
+          padding : 10
         };
       }
     },
@@ -1469,7 +1470,7 @@ appearances = {
     
     "scrolledcomposite" : {
       include : "",
-      
+
       style : function( states ) {
         return {
           border : states.rwt_BORDER ? "shadow" : "control.border"

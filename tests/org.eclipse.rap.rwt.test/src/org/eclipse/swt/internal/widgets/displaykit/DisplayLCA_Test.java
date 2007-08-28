@@ -206,6 +206,58 @@ public class DisplayLCA_Test extends TestCase {
 
   }
 
+  public void testIsInitializedState() throws IOException {
+    final Boolean[] compositeInitState = new Boolean[] { null };
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Composite composite = new Shell( shell, SWT.NONE );
+    Control control = new Button( composite, SWT.PUSH );
+    WidgetAdapter controlAdapter 
+      = ( WidgetAdapter )WidgetUtil.getAdapter( control );
+    controlAdapter.setRenderRunnable( new IRenderRunnable() {
+      public void afterRender() throws IOException {
+        boolean initState = WidgetUtil.getAdapter( composite ).isInitialized();
+        compositeInitState[ 0 ] = Boolean.valueOf( initState );
+      }
+    } );
+    
+    // Ensure that the isInitialized state is to to true *right* after a widget
+    // was rendered; as opposed to being set to true after the whole widget
+    // tree was rendered
+    Fixture.fakeResponseWriter();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    // check precondition
+    assertEquals( false, WidgetUtil.getAdapter( composite ).isInitialized() );
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    displayLCA.render( display );
+    assertEquals( Boolean.TRUE, compositeInitState[ 0 ] );
+  }
+  
+  public void testFocusControl() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Control control = new Button( shell, SWT.PUSH );
+    shell.open();
+    String displayId = DisplayUtil.getId( display );
+    String controlId = WidgetUtil.getId( control );
+    
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
+    lifeCycle.execute();
+    assertEquals( control, display.getFocusControl() );
+
+    // Request parameter focusControl with value 'null' is ignored
+    Control previousFocusControl = display.getFocusControl();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
+    new RWTLifeCycle().execute();
+    assertEquals( previousFocusControl, display.getFocusControl() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     RWTFixture.fakeUIThread();
@@ -289,58 +341,6 @@ public class DisplayLCA_Test extends TestCase {
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
   }
   
-  public void testIsInitializedState() throws IOException {
-    final Boolean[] compositeInitState = new Boolean[] { null };
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    final Composite composite = new Shell( shell, SWT.NONE );
-    Control control = new Button( composite, SWT.PUSH );
-    WidgetAdapter controlAdapter 
-      = ( WidgetAdapter )WidgetUtil.getAdapter( control );
-    controlAdapter.setRenderRunnable( new IRenderRunnable() {
-      public void afterRender() throws IOException {
-        boolean initState = WidgetUtil.getAdapter( composite ).isInitialized();
-        compositeInitState[ 0 ] = Boolean.valueOf( initState );
-      }
-    } );
-    
-    // Ensure that the isInitialized state is to to true *right* after a widget
-    // was rendered; as opposed to being set to true after the whole widget
-    // tree was rendered
-    Fixture.fakeResponseWriter();
-    String displayId = DisplayUtil.getId( display );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    // check precondition
-    assertEquals( false, WidgetUtil.getAdapter( composite ).isInitialized() );
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
-    displayLCA.render( display );
-    assertEquals( Boolean.TRUE, compositeInitState[ 0 ] );
-  }
-  
-  public void testFocusControl() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Control control = new Button( shell, SWT.PUSH );
-    shell.open();
-    String displayId = DisplayUtil.getId( display );
-    String controlId = WidgetUtil.getId( control );
-    
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    RWTFixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
-    lifeCycle.execute();
-    assertEquals( control, display.getFocusControl() );
-
-    // Request parameter focusControl with value 'null' is ignored
-    Control previousFocusControl = display.getFocusControl();
-    RWTFixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
-    new RWTLifeCycle().execute();
-    assertEquals( previousFocusControl, display.getFocusControl() );
-  }
-
   protected void tearDown() throws Exception {
 // TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
 //    ThemeManager.getInstance().deregisterAll();

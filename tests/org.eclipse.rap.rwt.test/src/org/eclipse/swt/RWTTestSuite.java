@@ -44,6 +44,7 @@ import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCA_Test;
 import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA_Test;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFocus_Test;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA_Test;
 import org.eclipse.swt.internal.widgets.listkit.ListLCA_Test;
 import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA_Test;
@@ -171,6 +172,7 @@ public class RWTTestSuite {
 
     // == LCAs ==
     suite.addTestSuite( DisplayLCA_Test.class );
+    suite.addTestSuite( DisplayLCAFocus_Test.class );
     suite.addTestSuite( ControlLCA_Test.class );
     suite.addTestSuite( LabelLCA_Test.class );
     suite.addTestSuite( TextLCA_Test.class );

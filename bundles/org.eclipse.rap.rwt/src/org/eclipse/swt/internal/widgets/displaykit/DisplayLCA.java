@@ -350,7 +350,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void writeScriptBlock( final HtmlResponseWriter out, 
                                         final String content ) 
-  throws IOException 
+    throws IOException
   {
     out.startElement( HTML.SCRIPT, null );
     out.writeAttribute( HTML.TYPE, HTML.CONTENT_TEXT_JAVASCRIPT, null );
@@ -383,9 +383,13 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void writeFocus( final Display display ) throws IOException {
-    IWidgetAdapter displayAdapter = DisplayUtil.getAdapter( display );
-    Object oldValue = displayAdapter.getPreserved( PROP_FOCUS_CONTROL );
-    if( isInitialRequest( display ) || oldValue != display.getFocusControl() ) {
+    IDisplayAdapter displayAdapter = getDisplayAdapter( display );
+    IWidgetAdapter widgetAdapter = DisplayUtil.getAdapter( display );
+    Object oldValue = widgetAdapter.getPreserved( PROP_FOCUS_CONTROL );
+    if(    !widgetAdapter.isInitialized() 
+        || oldValue != display.getFocusControl() 
+        || displayAdapter.isFocusInvalidated() ) 
+    {
       // TODO [rst] Added null check as a NPE occurred in some rare cases
       Control focusControl = display.getFocusControl();
       if( focusControl != null ) {
@@ -401,11 +405,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static boolean isInitialRequest( final Display display ) {
-    IWidgetAdapter displayAdapter = DisplayUtil.getAdapter( display );
-    return !displayAdapter.isInitialized() && display.getFocusControl() != null;
-  }
-  
   private static void markInitialized( final Display display ) {
     WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
     adapter.setInitialized( true );

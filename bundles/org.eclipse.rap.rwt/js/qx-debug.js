@@ -1,10 +1,11 @@
 if(!window.qxsettings)qxsettings={};
 if(qxsettings["qx.theme"]==undefined)qxsettings["qx.theme"]="org.eclipse.swt.theme.Default";
 if(qxsettings["qx.logAppender"]==undefined)qxsettings["qx.logAppender"]="qx.log.appender.Native";
-if(qxsettings["qx.version"]==undefined)qxsettings["qx.version"]="0.7.0.9276";
+if(qxsettings["qx.version"]==undefined)qxsettings["qx.version"]="0.7.0 (r9276) [debug]";
 if(qxsettings["qx.isSource"]==undefined)qxsettings["qx.isSource"]=false;
 if(!window.qxvariants)qxvariants={};
-qxvariants["qx.debug"]="off";
+qxvariants["qx.compatibility"]="off";
+qxvariants["qx.debug"]="on";
 
 
 
@@ -356,7 +357,8 @@ i){return arr.splice(i,
 removeAll:function(arr){return arr.length=0;
 },
 append:function(arr,
-a){{};
+a){{if(!(typeof (a)=="object"&&a instanceof Array)){throw new Error("The second parameter must be an array!");
+}};
 Array.prototype.push.apply(arr,
 a);
 return arr;
@@ -382,17 +384,25 @@ compilerIsSet:function(){return true;
 },
 define:function(key,
 allowedValues,
-defaultValue){{};
+defaultValue){{if(!this.__isValidArray(allowedValues)){throw new Error('Allowed values of variant "'+key+'" must be defined!');
+}
+if(defaultValue===undefined){throw new Error('Default value of variant "'+key+'" must be defined!');
+}};
 if(!this.__variants[key]){this.__variants[key]={};
-}else{}this.__variants[key].allowedValues=allowedValues;
+}else{if(this.__variants[key].defaultValue!==undefined){throw new Error('Variant "'+key+'" is already defined!');
+}}this.__variants[key].allowedValues=allowedValues;
 this.__variants[key].defaultValue=defaultValue;
 },
 get:function(key){var data=this.__variants[key];
-{};
+{if(data===undefined){throw new Error('Variant "'+key+'" is not defined.');
+}
+if(data.defaultValue===undefined){throw new Error('Variant "'+key+'" is not supported by API.');
+}};
 if(data.value!==undefined){return data.value;
 }return data.defaultValue;
 },
-__init:function(){if(window.qxvariants){for(var key in qxvariants){{};
+__init:function(){if(window.qxvariants){for(var key in qxvariants){{if((key.split(".")).length!==2){throw new Error('Malformed settings key "'+key+'". Must be following the schema "namespace.key".');
+}};
 if(!this.__variants[key]){this.__variants[key]={};
 }this.__variants[key].value=qxvariants[key];
 }window.qxvariants=undefined;
@@ -408,12 +418,16 @@ if(!this.__variants[key]){this.__variants[key]={};
 }this.__variants[key].value=decodeURIComponent(variant[2]);
 }},
 select:function(key,
-variantFunctionMap){{};
+variantFunctionMap){{if(!this.__isValidObject(this.__variants[key])){throw new Error("Variant \""+key+"\" is not defined");
+}
+if(!this.__isValidObject(variantFunctionMap)){throw new Error("the second parameter must be a map!");
+}};
 for(var variant in variantFunctionMap){if(this.isSet(key,
 variant)){return variantFunctionMap[variant];
 }}
 if(variantFunctionMap["default"]!==undefined){return variantFunctionMap["default"];
-}{};
+}{throw new Error('No match for variant "'+key+'" in variants ['+qx.lang.Object.getKeysAsString(variantFunctionMap)+'] found, and no default ("default") given');
+};
 },
 isSet:function(key,
 variants){var access=key+"$"+variants;
@@ -745,7 +759,8 @@ map){return map[key];
 },
 fromArray:function(array){var obj={};
 for(var i=0,
-l=array.length;i<l;i++){{};
+l=array.length;i<l;i++){{switch(typeof array[i]){case "object":case "function":case "undefined":throw new Error("Could not convert complex objects like "+array[i]+" at array index "+i+" to map syntax");
+}};
 obj[array[i].toString()]=true;
 }return obj;
 }}});
@@ -859,7 +874,10 @@ returnNegativeIndex:function(){return -1;
 },
 bind:function(fcn,
 self,
-varargs){{};
+varargs){{if(typeof fcn!=="function"){throw new Error("First parameter to bind() needs to be of type function!");
+}
+if(typeof self!=="object"){throw new Error("Second parameter to bind() needs to be of type object!");
+}};
 if(arguments.length>2){var args=Array.prototype.slice.call(arguments,
 2);
 var wrap=function(){fcn.context=self;
@@ -878,7 +896,10 @@ return ret;
 return wrap;
 },
 bindEvent:function(fcn,
-self){{};
+self){{if(typeof fcn!=="function"){throw new Error("First parameter to bindEvent() needs to be of type function!");
+}
+if(typeof self!=="object"){throw new Error("Second parameter to bindEvent() needs to be of type object!");
+}};
 var wrap=function(event){fcn.context=self;
 var ret=fcn.call(self,
 event||window.event);
@@ -951,7 +972,9 @@ config){if(!config){var config={};
 }if(config.include&&!(config.include instanceof Array)){config.include=[config.include];
 }if(config.implement&&!(config.implement instanceof Array)){config.implement=[config.implement];
 }if(!config.hasOwnProperty("extend")&&!config.type){config.type="static";
-}{};
+}{this.__validateConfig(name,
+config);
+};
 var clazz=this.__createClass(name,
 config.type,
 config.extend,
@@ -1000,7 +1023,8 @@ for(var i=0,
 l=splits.length-1;i<l;i++,
 part=splits[i]){if(!parent[part]){parent=parent[part]={};
 }else{parent=parent[part];
-}}{};
+}}{if(parent[part]!==undefined){throw new Error("An object of the name '"+name+"' already exists and overwriting is not allowed!");
+}};
 parent[part]=object;
 return part;
 },
@@ -1011,13 +1035,18 @@ getTotalNumber:function(){return qx.lang.Object.getLength(this.__registry);
 getByName:function(name){return this.__registry[name];
 },
 include:function(clazz,
-mixin){{};
+mixin){{if(!mixin){throw new Error("Includes of mixins must be mixins. The mixin of class '"+clazz.classname+"' is undefined/null!");
+}qx.Mixin.isCompatible(mixin,
+clazz);
+};
 qx.Class.__addMixin(clazz,
 mixin,
 false);
 },
 patch:function(clazz,
-mixin){{};
+mixin){{qx.Mixin.isCompatible(mixin,
+clazz);
+};
 qx.Class.__addMixin(clazz,
 mixin,
 true);
@@ -1118,9 +1147,58 @@ delete this.$$allowconstruct;
 genericToString:function(){return "[Class "+this.classname+"]";
 },
 __registry:qx.core.Bootstrap.__registry,
-__allowedKeys:null,
-__staticAllowedKeys:null,
-__validateConfig:function(){},
+__allowedKeys:{"type":"string",
+"extend":"function",
+"implement":"object",
+"include":"object",
+"construct":"function",
+"statics":"object",
+"properties":"object",
+"members":"object",
+"settings":"object",
+"variants":"object",
+"events":"object",
+"defer":"function",
+"destruct":"function"},
+__staticAllowedKeys:{"type":"string",
+"statics":"object",
+"settings":"object",
+"variants":"object",
+"defer":"function"},
+__validateConfig:function(name,
+config){if(config.type&&!(config.type==="static"||config.type==="abstract"||config.type==="singleton")){throw new Error('Invalid type "'+config.type+'" definition for class "'+name+'"!');
+}var allowed=config.type==="static"?this.__staticAllowedKeys:this.__allowedKeys;
+for(var key in config){if(!allowed[key]){throw new Error('The configuration key "'+key+'" in class "'+name+'" is not allowed!');
+}
+if(config[key]==null){throw new Error('Invalid key "'+key+'" in class "'+name+'"! The value is undefined/null!');
+}
+if(typeof config[key]!==allowed[key]){throw new Error('Invalid type of key "'+key+'" in class "'+name+'"! The type of the key must be "'+allowed[key]+'"!');
+}}var maps=["statics",
+"properties",
+"members",
+"settings",
+"variants",
+"events"];
+for(var i=0,
+l=maps.length;i<l;i++){var key=maps[i];
+if(config[key]!==undefined&&(config[key] instanceof Array||config[key] instanceof RegExp||config[key] instanceof Date||config[key].classname!==undefined)){throw new Error('Invalid key "'+key+'" in class "'+name+'"! The value needs to be a map!');
+}}if(config.include){if(config.include instanceof Array){for(var i=0,
+a=config.include,
+l=a.length;i<l;i++){if(a[i]==null||a[i].$$type!=="Mixin"){throw new Error('The include definition in class "'+name+'" contains an invalid mixin at position '+i+': '+a[i]);
+}}}else{throw new Error('Invalid include definition in class "'+name+'"! Only mixins and arrays of mixins are allowed!');
+}}if(config.implement){if(config.implement instanceof Array){for(var i=0,
+a=config.implement,
+l=a.length;i<l;i++){if(a[i]==null||a[i].$$type!=="Interface"){throw new Error('The implement definition in class "'+name+'" contains an invalid interface at position '+i+': '+a[i]);
+}}}else{throw new Error('Invalid implement definition in class "'+name+'"! Only interfaces and arrays of interfaces are allowed!');
+}}if(config.include){try{qx.Mixin.checkCompatibility(config.include);
+}catch(ex){throw new Error('Error in include definition of class "'+name+'"! '+ex.message);
+}}if(config.settings){for(var key in config.settings){if(key.substr(0,
+key.indexOf("."))!=name.substr(0,
+name.indexOf("."))){qx.log.Logger.ROOT_LOGGER.error('Forbidden setting "'+key+'" found in "'+name+'". It is forbidden to define a default setting for an external namespace!');
+}}}if(config.variants){for(var key in config.variants){if(key.substr(0,
+key.indexOf("."))!=name.substr(0,
+name.indexOf("."))){throw new Error('Forbidden variant "'+key+'" found in "'+name+'". It is forbidden to define a variant for an external namespace!');
+}}}},
 __createClass:function(name,
 type,
 extend,
@@ -1166,17 +1244,19 @@ if(destruct){if(qx.core.Variant.isSet("qx.aspects",
 destruct,
 "destructor");
 }clazz.$$destructor=destruct;
-}}if(qx.core.Variant.isSet("qx.compatibility",
-"on")){qx.Clazz=clazz;
-qx.Proto=proto||null;
-qx.Super=extend||null;
-}this.__registry[name]=clazz;
+}}{};
+this.__registry[name]=clazz;
 return clazz;
 },
 __addEvents:function(clazz,
 events,
-patch){var key,
-key;
+patch){{if(!qx.core.Target){throw new Error(clazz.classname+": the class 'qx.core.Target' must be availabe to use events!");
+}
+if(typeof events!=="object"||events instanceof Array){throw new Error(clazz.classname+": the events must be defined as map!");
+}
+for(var key in events){if(typeof events[key]!=="string"){throw new Error(clazz.classname+"/"+key+": the event value needs to be a string with the class name of the event object which will be fired.");
+}}if(clazz.$$events&&patch!==true){for(var key in events){if(clazz.$$events[key]!==undefined&&clazz.$$events[key]!==events[key]){throw new Error(clazz.classname+"/"+key+": the event value/type cannot be changed from "+clazz.$$events[key]+" to "+events[key]);
+}}}};
 if(clazz.$$events){for(var key in events){clazz.$$events[key]=events[key];
 }}else{clazz.$$events=events;
 }},
@@ -1186,7 +1266,11 @@ patch){var config;
 if(patch===undefined){patch=false;
 }var attach=!!clazz.$$propertiesAttached;
 for(var name in properties){config=properties[name];
-{};
+{this.__validateProperty(clazz,
+name,
+config,
+patch);
+};
 config.name=name;
 if(!config.refine){if(clazz.$$properties===undefined){clazz.$$properties={};
 }clazz.$$properties[name]=config;
@@ -1207,7 +1291,43 @@ clazz.prototype);
 }else if(config._legacy){qx.core.LegacyProperty.addProperty(config,
 clazz.prototype);
 }}},
-__validateProperty:null,
+__validateProperty:function(clazz,
+name,
+config,
+patch){var has=this.hasProperty(clazz,
+name);
+var compat=config._legacy||config._fast||config._cached;
+if(has){var existingProperty=this.getPropertyDefinition(clazz,
+name);
+var existingCompat=existingProperty._legacy||existingProperty._fast||existingProperty._cached;
+if(compat!=existingCompat){throw new Error("Could not redefine existing property '"+name+"' of class '"+clazz.classname+"'.");
+}
+if(config.refine&&existingProperty.init===undefined){throw new Error("Could not refine a init value if there was previously no init value defined. Property '"+name+"' of class '"+clazz.classname+"'.");
+}}
+if(!has&&config.refine){throw new Error("Could not refine non-existent property: "+name+"!");
+}
+if(has&&!patch){throw new Error("Class "+clazz.classname+" already has a property: "+name+"!");
+}
+if(has&&patch&&!compat){if(!config.refine){throw new Error('Could not refine property "'+name+'" without a "refine" flag in the property definition! This class: '+clazz.classname+', original class: '+this.getByProperty(clazz,
+name).classname+'.');
+}
+for(var key in config){if(key!=="init"&&key!=="refine"){throw new Error("Class "+clazz.classname+" could not refine property: "+name+"! Key: "+key+" could not be refined!");
+}}}
+if(compat){return;
+}var allowed=config.group?qx.core.Property.$$allowedGroupKeys:qx.core.Property.$$allowedKeys;
+for(var key in config){if(allowed[key]===undefined){throw new Error('The configuration key "'+key+'" of property "'+name+'" in class "'+clazz.classname+'" is not allowed!');
+}
+if(config[key]===undefined){throw new Error('Invalid key "'+key+'" of property "'+name+'" in class "'+clazz.classname+'"! The value is undefined: '+config[key]);
+}
+if(allowed[key]!==null&&typeof config[key]!==allowed[key]){throw new Error('Invalid type of key "'+key+'" of property "'+name+'" in class "'+clazz.classname+'"! The type of the key must be "'+allowed[key]+'"!');
+}}
+if(config.transform!=null){if(!(typeof config.transform=="string")){throw new Error('Invalid transform definition of property "'+name+'" in class "'+clazz.classname+'"! Needs to be a String.');
+}}
+if(config.check!=null){if(!(typeof config.check=="string"||config.check instanceof Array||config.check instanceof Function)){throw new Error('Invalid check definition of property "'+name+'" in class "'+clazz.classname+'"! Needs to be a String, Array or Function.');
+}}
+if(config.event!=null&&!this.isSubClassOf(clazz,
+qx.core.Target)){throw new Error("Invalid property '"+name+"' in class '"+clazz.classname+"': Properties defining an event can only be defined in sub classes of 'qx.core.Target'!");
+}},
 __addMembers:function(clazz,
 members,
 patch,
@@ -1219,7 +1339,8 @@ for(var i=0,
 a=qx.lang.Object.getKeys(members),
 l=a.length;i<l;i++){key=a[i];
 member=members[key];
-{};
+{if(patch!==true&&proto[key]!==undefined){throw new Error('Overwriting member "'+key+'" of Class "'+clazz.classname+'" is not allowed!');
+}};
 if(base!==false&&member instanceof Function){if(superproto[key]){member.base=superproto[key];
 }member.self=clazz;
 if(qx.core.Variant.isSet("qx.aspects",
@@ -1229,7 +1350,14 @@ member,
 }}proto[key]=member;
 }},
 __addInterface:function(clazz,
-iface){{};
+iface){{if(!clazz||!iface){throw new Error("Incomplete parameters!");
+}if(this.hasOwnInterface(clazz,
+iface)){throw new Error('Interface "'+iface.name+'" is already used by Class "'+clazz.classname+'" by class: '+this.getByMixin(clazz,
+mixin).classname+'!');
+}qx.Interface.assert(clazz,
+iface,
+true);
+};
 var list=qx.Interface.flatten([iface]);
 if(clazz.$$implements){clazz.$$implements.push(iface);
 clazz.$$flatImplements.push.apply(clazz.$$flatImplements,
@@ -1239,7 +1367,12 @@ clazz.$$flatImplements=list;
 }},
 __addMixin:function(clazz,
 mixin,
-patch){{};
+patch){{if(!clazz||!mixin){throw new Error("Incomplete parameters!");
+}
+if(this.hasMixin(clazz,
+mixin)){throw new Error('Mixin "'+mixin.name+'" is already included into Class "'+clazz.classname+'" by class: '+this.getByMixin(clazz,
+mixin).classname+'!');
+}};
 var list=qx.Mixin.flatten([mixin]);
 var entry;
 for(var i=0,
@@ -1270,7 +1403,18 @@ __wrapConstructor:function(construct,
 name,
 type){var code=[];
 code.push('var clazz=arguments.callee.constructor;');
-{};
+{code.push('if(!(this instanceof clazz))throw new Error("Please initialize ',
+name,
+' objects using the new keyword!");');
+if(type==="abstract"){code.push('if(this.classname===',
+name,
+'.classname)throw new Error("The class ',
+name,
+' is abstract! It is not possible to instantiate it.");');
+}else if(type==="singleton"){code.push('if(!clazz.$$allowconstruct)throw new Error("The class ',
+name,
+' is a singleton! It is not possible to instantiate it directly. Use the static getInstance() method instead.");');
+}};
 code.push('if(!clazz.$$propertiesAttached)qx.core.Property.attach(clazz);');
 code.push('var retval=clazz.$$original.apply(this,arguments);');
 code.push('if(clazz.$$includes){var mixins=clazz.$$flatIncludes;');
@@ -1306,7 +1450,9 @@ statics[key],
 qx.Class.define("qx.Mixin",
 {statics:{define:function(name,
 config){if(config){if(config.include&&!(config.include instanceof Array)){config.include=[config.include];
-}{};
+}{this.__validateConfig(name,
+config);
+};
 var mixin=config.statics?config.statics:{};
 for(var key in mixin){mixin[key].mixin=mixin;
 }if(config.construct){mixin.$$constructor=config.construct;
@@ -1370,8 +1516,34 @@ this.flatten(mixins[i].$$includes));
 genericToString:function(){return "[Mixin "+this.name+"]";
 },
 __registry:{},
-__allowedKeys:null,
-__validateConfig:function(){}}});
+__allowedKeys:{"include":"object",
+"statics":"object",
+"members":"object",
+"properties":"object",
+"events":"object",
+"destruct":"function",
+"construct":"function"},
+__validateConfig:function(name,
+config){var allowed=this.__allowedKeys;
+for(var key in config){if(!allowed[key]){throw new Error('The configuration key "'+key+'" in mixin "'+name+'" is not allowed!');
+}
+if(config[key]==null){throw new Error('Invalid key "'+key+'" in mixin "'+name+'"! The value is undefined/null!');
+}
+if(allowed[key]!==null&&typeof config[key]!==allowed[key]){throw new Error('Invalid type of key "'+key+'" in mixin "'+name+'"! The type of the key must be "'+allowed[key]+'"!');
+}}var maps=["statics",
+"members",
+"properties",
+"events"];
+for(var i=0,
+l=maps.length;i<l;i++){var key=maps[i];
+if(config[key]!==undefined&&(config[key] instanceof Array||config[key] instanceof RegExp||config[key] instanceof Date||config[key].classname!==undefined)){throw new Error('Invalid key "'+key+'" in mixin "'+name+'"! The value needs to be a map!');
+}}if(config.include){for(var i=0,
+a=config.include,
+l=a.length;i<l;i++){if(a[i]==null){throw new Error("Includes of mixins must be mixins. The include number '"+(i+1)+"' in mixin '"+name+"'is undefined/null!");
+}
+if(a[i].$$type!=="Mixin"){throw new Error("Includes of mixins must be mixins. The include number '"+(i+1)+"' in mixin '"+name+"'is not a mixin!");
+}}this.checkCompatibility(config.include);
+}}}});
 
 
 
@@ -1380,7 +1552,9 @@ __validateConfig:function(){}}});
 qx.Class.define("qx.Interface",
 {statics:{define:function(name,
 config){if(config){if(config.extend&&!(config.extend instanceof Array)){config.extend=[config.extend];
-}{};
+}{this.__validateConfig(name,
+config);
+};
 var iface=config.statics?config.statics:{};
 if(config.extend){iface.$$extends=config.extend;
 }
@@ -1435,9 +1609,46 @@ wrap);
 genericToString:function(){return "[Interface "+this.name+"]";
 },
 __registry:{},
-__wrapInterfaceMember:function(){},
-__allowedKeys:null,
-__validateConfig:function(){}}});
+__wrapInterfaceMember:function(iface,
+origFunction,
+functionName,
+preCondition){function wrappedFunction(){if(!preCondition.apply(this,
+arguments)){throw new Error('Pre condition of method "'+functionName+'" defined by "'+iface.name+'" failed.');
+}return origFunction.apply(this,
+arguments);
+}origFunction.wrapper=wrappedFunction;
+return wrappedFunction;
+},
+__allowedKeys:{"extend":"object",
+"statics":"object",
+"members":"object",
+"properties":"object",
+"events":"object"},
+__validateConfig:function(name,
+config){{var allowed=this.__allowedKeys;
+for(var key in config){if(allowed[key]===undefined){throw new Error('The configuration key "'+key+'" in class "'+name+'" is not allowed!');
+}
+if(config[key]==null){throw new Error("Invalid key '"+key+"' in interface '"+name+"'! The value is undefined/null!");
+}
+if(allowed[key]!==null&&typeof config[key]!==allowed[key]){throw new Error('Invalid type of key "'+key+'" in interface "'+name+'"! The type of the key must be "'+allowed[key]+'"!');
+}}var maps=["statics",
+"members",
+"properties",
+"events"];
+for(var i=0,
+l=maps.length;i<l;i++){var key=maps[i];
+if(config[key]!==undefined&&(config[key] instanceof Array||config[key] instanceof RegExp||config[key] instanceof Date||config[key].classname!==undefined)){throw new Error('Invalid key "'+key+'" in interface "'+name+'"! The value needs to be a map!');
+}}if(config.extend){for(var i=0,
+a=config.extend,
+l=a.length;i<l;i++){if(a[i]==null){throw new Error("Extends of interfaces must be interfaces. The extend number '"+i+1+"' in interface '"+name+"' is undefined/null!");
+}
+if(a[i].$$type!=="Interface"){throw new Error("Extends of interfaces must be interfaces. The extend number '"+i+1+"' in interface '"+name+"' is not an interface!");
+}}}if(config.statics){for(var key in config.statics){if(key.toUpperCase()!==key){throw new Error('Invalid key "'+key+'" in interface "'+name+'"! Static constants must be all uppercase.');
+}
+switch(typeof config.statics[key]){case "boolean":case "string":case "number":break;
+default:throw new Error('Invalid key "'+key+'" in interface "'+name+'"! Static constants must be all of a primitive type.');
+}}}};
+}}});
 
 
 
@@ -1629,9 +1840,7 @@ if(newValue===oldValue){return newValue;
 if(!(config.allowNull&&newValue==null)){if(config.hasType&&typeof newValue!==config.type){throw new Error("Attention! The value \""+newValue+"\" is an invalid value for the property \""+config.name+"\" which must be typeof \""+config.type+"\" but is typeof \""+typeof newValue+"\"!");
 }
 if(qx.Class.getByName(config.instance)){if(config.hasInstance&&!(newValue instanceof qx.Class.getByName(config.instance))){throw new Error("Attention! The value \""+newValue+"\" is an invalid value for the property \""+config.name+"\" which must be an instance of \""+config.instance+"\"!");
-}}else if(qx.core.Variant.isSet("qx.compatibility",
-"on")){if(config.hasInstance&&!(newValue instanceof qx.OO.classes[config.instance])){throw new Error("Attention! The value \""+newValue+"\" is an invalid value for the property \""+config.name+"\" which must be an instance of \""+config.instance+"\"!");
-}}
+}}else{}
 if(config.hasClassName&&newValue.classname!=config.classname){throw new Error("Attention! The value \""+newValue+"\" is an invalid value for the property \""+config.name+"\" which must be an object with the classname \""+config.classname+"\"!");
 }
 if(config.hasPossibleValues&&newValue!=null&&!qx.lang.Array.contains(config.possibleValues,
@@ -1771,9 +1980,11 @@ if(parent){var clazz=widget.constructor;
 var inherit=this.$$store.inherit;
 var refresh=this.$$method.refresh;
 var properties;
-{};
+{if(qx.core.Setting.get("qx.propertyDebugLevel")>1){widget.debug("Update widget: "+widget);
+}};
 while(clazz){properties=clazz.$$properties;
-if(properties){for(var name in this.$$inheritable){if(properties[name]){{};
+if(properties){for(var name in this.$$inheritable){if(properties[name]){{if(qx.core.Setting.get("qx.propertyDebugLevel")>2){widget.debug("Updating property: "+name+" to '"+parent[inherit[name]]+"'");
+}};
 widget[refresh[name]](parent[inherit[name]]);
 }}}clazz=clazz.superclass;
 }}},
@@ -1808,7 +2019,8 @@ prefix,
 postfix){var members=clazz.prototype;
 var name=config.name;
 var themeable=config.themeable===true;
-{};
+{if(qx.core.Setting.get("qx.propertyDebugLevel")>1){console.debug("Generating property group: "+name);
+}};
 var setter=[];
 var resetter=[];
 if(themeable){var styler=[];
@@ -1823,7 +2035,8 @@ if(themeable){styler.push(shorthand);
 }}
 for(var i=0,
 a=config.group,
-l=a.length;i<l;i++){{};
+l=a.length;i<l;i++){{if(!this.$$method.set[a[i]]||!this.$$method.reset[a[i]]){throw new Error("Cannot create property group '"+name+"' including non-existing property '"+a[i]+"'!");
+}};
 setter.push("this.",
 this.$$method.set[a[i]],
 "(a[",
@@ -1854,7 +2067,8 @@ config,
 prefix,
 postfix){var members=clazz.prototype;
 var name=config.name;
-{};
+{if(qx.core.Setting.get("qx.propertyDebugLevel")>1){console.debug("Generating property wrappers: "+name);
+}};
 if(config.dispose===undefined&&typeof config.check==="string"){config.dispose=this.__dispose[config.check]||qx.Class.isDefined(config.check);
 }var method=this.$$method;
 var store=this.$$store;
@@ -1936,15 +2150,18 @@ name,
 variant,
 code,
 args){var store=this.$$method[variant][name];
-{members[store]=new Function("value",
+{if(qx.core.Setting.get("qx.propertyDebugLevel")>1){console.debug("Code["+this.$$method[variant][name]+"]: "+code.join(""));
+}try{members[store]=new Function("value",
 code.join(""));
-};
+}catch(ex){alert("Malformed generated code to unwrap method: "+this.$$method[variant][name]+"\n"+code.join(""));
+}};
 if(qx.core.Variant.isSet("qx.aspects",
 "on")){members[store]=qx.core.Aspect.wrap(instance.classname+"."+store,
 members[store],
 "property");
 }if(args===undefined){return instance[store]();
-}else{return instance[store](args[0]);
+}else{return instance[store].apply(instance,
+args);
 }},
 executeOptimizedGetter:function(instance,
 clazz,
@@ -2008,8 +2225,12 @@ var hasCallback=config.apply||config.event||config.inheritable;
 if(variant==="style"||variant==="unstyle"){var store=this.$$store.theme[name];
 }else if(variant==="init"){var store=this.$$store.init[name];
 }else{var store=this.$$store.user[name];
-}{if(!config.nullable||config.check||config.inheritable){code.push('var prop=qx.core.Property;');
-}if(variant==="set"){code.push('if(value===undefined)prop.error(this,2,"'+name+'","'+variant+'",value);');
+}{code.push('var prop=qx.core.Property;');
+if(variant==="init"){code.push('if(this.$$initialized)prop.error(this,0,"'+name+'","'+variant+'",value);');
+}
+if(variant==="refresh"){}else if(incomingValue){code.push('if(arguments.length!==1)prop.error(this,1,"'+name+'","'+variant+'",value);');
+code.push('if(value===undefined)prop.error(this,2,"'+name+'","'+variant+'",value);');
+}else{code.push('if(arguments.length!==0)prop.error(this,3,"'+name+'","'+variant+'",value);');
 }};
 if(incomingValue){if(config.transform){code.push('value=this.',
 config.transform,
@@ -2021,7 +2242,7 @@ store,
 store,
 '===undefined)return;');
 }}if(config.inheritable){code.push('var inherit=prop.$$inherit;');
-}if(incomingValue&&(false||variant==="set")){if(!config.nullable){code.push('if(value===null)prop.error(this,4,"'+name+'","'+variant+'",value);');
+}if(incomingValue&&true){if(!config.nullable){code.push('if(value===null)prop.error(this,4,"'+name+'","'+variant+'",value);');
 }if(config.check!==undefined){if(config.nullable){code.push('if(value!==null)');
 }if(config.inheritable){code.push('if(value!==inherit)');
 }code.push('if(');
@@ -2291,19 +2512,24 @@ getDb:function(){return this.__db;
 },
 dispose:function(){if(this.__disposed){return;
 }this.__disposed=true;
-var disposeStart;
+{if(qx.core.Setting.get("qx.disposerDebugLevel")>=1){var disposeStart=new Date;
+console.debug("Disposing qooxdoo application...");
+}};
 var vObject,
 vObjectDb=this.__db;
 for(var i=vObjectDb.length-1;i>=0;i--){vObject=vObjectDb[i];
 if(vObject&&vObject.__disposed===false){try{vObject.dispose();
 }catch(ex){try{console.warn("Could not dispose: "+vObject+": "+ex);
 }catch(exc){throw new Error("Could not dispose: "+vObject+": "+ex);
-}}}}var elems,
-i,
-l,
-elem,
-key,
-name;
+}}}}{if(qx.core.Setting.get("qx.disposerDebugLevel")>=1){var elems=document.all?document.all:document.getElementsByTagName("*");
+console.debug("Checking "+elems.length+" elements for object references...");
+for(var i=0,
+l=elems.length;i<l;i++){var elem=elems[i];
+for(var key in elem){try{if(typeof elem[key]=="object"){if(elem[key] instanceof qx.core.Object||elem[key] instanceof Array){var name="unknown object";
+if(elem[key] instanceof qx.core.Object){name=elem[key].classname+"["+elem[key].toHashCode()+"]";
+}console.debug("Attribute '"+key+"' references "+name+" in DOM element: "+elem.tagName);
+}}}catch(ex){}}}console.debug("Disposing done in "+(new Date()-disposeStart)+"ms");
+}};
 },
 inGlobalDispose:function(){return this.__disposed;
 }},
@@ -2323,18 +2549,26 @@ self:function(args){return args.callee.self;
 },
 set:function(data,
 value){var setter=qx.core.Property.$$method.set;
-if(typeof data==="string"){{};
+if(typeof data==="string"){{if(!this[setter[data]]){this.warn("No such property: "+data);
+return;
+}};
 return this[setter[data]](value);
-}else{for(var prop in data){{};
+}else{for(var prop in data){{if(!this[setter[prop]]){this.warn("No such property: "+prop);
+continue;
+}};
 this[setter[prop]](data[prop]);
 }return this;
 }},
 get:function(prop){var getter=qx.core.Property.$$method.get;
-{};
+{if(!this[getter[prop]]){this.warn("No such property: "+prop);
+return;
+}};
 return this[getter[prop]]();
 },
 reset:function(prop){var resetter=qx.core.Property.$$method.reset;
-{};
+{if(!this[resetter[prop]]){this.warn("No such property: "+prop);
+return;
+}};
 this[resetter[prop]]();
 },
 __disposed:false,
@@ -2344,7 +2578,8 @@ isDisposed:function(){return this.__disposed;
 },
 dispose:function(){if(this.__disposed){return;
 }this.__disposed=true;
-{};
+{if(qx.core.Setting.get("qx.disposerDebugLevel")>1){console.debug("Disposing "+this.classname+"["+this.toHashCode()+"]");
+}};
 var clazz=this.constructor;
 var mixins;
 while(clazz.superclass){if(clazz.$$destructor){clazz.$$destructor.call(this);
@@ -2352,14 +2587,17 @@ while(clazz.superclass){if(clazz.$$destructor){clazz.$$destructor.call(this);
 for(var i=0,
 l=mixins.length;i<l;i++){if(mixins[i].$$destructor){mixins[i].$$destructor.call(this);
 }}}clazz=clazz.superclass;
-}var vKey;
+}{if(qx.core.Setting.get("qx.disposerDebugLevel")>0){for(var vKey in this){if(this[vKey]!==null&&typeof this[vKey]==="object"&&this.constructor.prototype[vKey]===undefined){console.warn("Missing destruct definition for '"+vKey+"' in "+this.classname+"["+this.toHashCode()+"]: "+this[vKey]);
+delete this[vKey];
+}}}};
 },
 _disposeFields:function(varargs){var name;
 for(var i=0,
 l=arguments.length;i<l;i++){var name=arguments[i];
 if(this[name]==null){continue;
 }
-if(!this.hasOwnProperty(name)){{};
+if(!this.hasOwnProperty(name)){{if(qx.core.Setting.get("qx.disposerDebugLevel")>1){console.debug(this.classname+" has no own field "+name);
+}};
 continue;
 }this[name]=null;
 }},
@@ -2368,7 +2606,8 @@ for(var i=0,
 l=arguments.length;i<l;i++){var name=arguments[i];
 if(this[name]==null){continue;
 }
-if(!this.hasOwnProperty(name)){{};
+if(!this.hasOwnProperty(name)){{if(qx.core.Setting.get("qx.disposerDebugLevel")>1){console.debug(this.classname+" has no own field "+name);
+}};
 continue;
 }
 if(!this[name].dispose){throw new Error(this.classname+" has no own object "+name);
@@ -2379,35 +2618,44 @@ _disposeObjectDeep:function(name,
 deep){var name;
 if(this[name]==null){return;
 }
-if(!this.hasOwnProperty(name)){{};
+if(!this.hasOwnProperty(name)){{if(qx.core.Setting.get("qx.disposerDebugLevel")>1){console.debug(this.classname+" has no own field "+name);
+}};
 return;
-}{};
+}{if(qx.core.Setting.get("qx.disposerDebugLevel")>1){console.debug("Dispose Deep: "+name);
+}};
 this.__disposeObjectsDeepRecurser(this[name],
 deep||0);
 this[name]=null;
 },
 __disposeObjectsDeepRecurser:function(obj,
-deep){if(obj instanceof qx.core.Object){{};
+deep){if(obj instanceof qx.core.Object){{if(qx.core.Setting.get("qx.disposerDebugLevel")>2){console.debug("Sending dispose to "+obj.classname);
+}};
 obj.dispose();
 }else if(obj instanceof Array){for(var i=0,
 l=obj.length;i<l;i++){var entry=obj[i];
 if(entry==null){continue;
 }
-if(typeof entry=="object"){if(deep>0){{};
+if(typeof entry=="object"){if(deep>0){{if(qx.core.Setting.get("qx.disposerDebugLevel")>2){console.debug("- Deep processing item '"+i+"'");
+}};
 this.__disposeObjectsDeepRecurser(entry,
 deep-1);
-}{};
+}{if(qx.core.Setting.get("qx.disposerDebugLevel")>2){console.debug("- Resetting key (object) '"+key+"'");
+}};
 obj[i]=null;
-}else if(typeof entry=="function"){{};
+}else if(typeof entry=="function"){{if(qx.core.Setting.get("qx.disposerDebugLevel")>2){console.debug("- Resetting key (function) '"+key+"'");
+}};
 obj[i]=null;
 }}}else if(obj instanceof Object){for(var key in obj){if(obj[key]==null||!obj.hasOwnProperty(key)){continue;
 }var entry=obj[key];
-if(typeof entry=="object"){if(deep>0){{};
+if(typeof entry=="object"){if(deep>0){{if(qx.core.Setting.get("qx.disposerDebugLevel")>2){console.debug("- Deep processing key '"+key+"'");
+}};
 this.__disposeObjectsDeepRecurser(entry,
 deep-1);
-}{};
+}{if(qx.core.Setting.get("qx.disposerDebugLevel")>2){console.debug("- Resetting key (object) '"+key+"'");
+}};
 obj[key]=null;
-}else if(typeof entry=="function"){{};
+}else if(typeof entry=="function"){{if(qx.core.Setting.get("qx.disposerDebugLevel")>2){console.debug("- Resetting key (function) '"+key+"'");
+}};
 obj[key]=null;
 }}}}},
 settings:{"qx.disposerDebugLevel":0},
@@ -2437,7 +2685,14 @@ construct:function(){this.base(arguments);
 members:{addEventListener:function(type,
 func,
 obj){if(this.getDisposed()){return;
-}{};
+}{if(typeof type!=="string"){this.warn("addEventListener("+type+"): '"+type+"' is not a string!");
+return;
+}
+if(typeof func!=="function"){this.warn("addEventListener("+type+"): '"+func+"' is not a function!");
+return;
+}if(this.constructor.classname&&!qx.Class.supportsEvent(this.constructor,
+type)){this.warn("Objects of class '"+this.constructor.classname+"' do not support the event '"+type+"'");
+}};
 if(this.__listeners===undefined){this.__listeners={};
 }
 if(this.__listeners[type]===undefined){this.__listeners[type]={};
@@ -2638,9 +2893,8 @@ qx.application.IApplication);
 members:{_autoDispose:false,
 _onload:function(e){this.createDispatchEvent("load");
 this.debug("qooxdoo "+qx.core.Version.toString());
-if(qx.core.Variant.isSet("qx.compatibility",
-"on")){this.debug("loaded "+qx.lang.Object.getLength(qx.OO.classes)+" old classes");
-}this.debug("loaded "+qx.Class.getTotalNumber()+" classes");
+{};
+this.debug("loaded "+qx.Class.getTotalNumber()+" classes");
 this.debug("loaded "+qx.Interface.getTotalNumber()+" interfaces");
 this.debug("loaded "+qx.Mixin.getTotalNumber()+" mixins");
 if(qx.Theme){this.debug("loaded "+qx.Theme.getTotalNumber()+" themes");
@@ -2649,18 +2903,29 @@ if(qx.locale&&qx.locale.Manager){this.debug("loaded "+qx.locale.Manager.getInsta
 }var cl=qx.core.Client.getInstance();
 this.debug("client: "+cl.getEngine()+"-"+cl.getMajor()+"."+cl.getMinor()+"/"+cl.getPlatform()+"/"+cl.getLocale());
 this.debug("browser: "+cl.getBrowser()+"/"+(cl.supportsSvg()?"svg":cl.supportsVml()?"vml":"none"));
-{};
+{if(qx.core.Variant.isSet("qx.client",
+"mshtml")){if(!cl.isInQuirksMode()){this.warn("Wrong box sizing: Please modify the document's DOCTYPE!");
+}}};
 if(!this.getApplication()){var clazz=qx.Class.getByName(qx.core.Setting.get("qx.application"));
 if(clazz){this.setApplication(new clazz(this));
 }}
 if(!this.getApplication()){return;
 }this.debug("application: "+this.getApplication().classname);
 var start=new Date;
-{this.getApplication().main();
-};
-var app,
-msg,
-exception;
+{var app=this.getApplication();
+if(app.initialize){this.warn("The 'initialize' method is no longer called automatically! Please call it manually "+"from the end of the constructor or the start of the 'main' method.");
+}
+if(app.finalize){this.warn("The 'finalize' method is no longer called automatically! It is save to call it at the "+"end of the 'main' method.");
+}var msg="The overridden 'main' method has to be called. Please add "+"the following command at beginning of your 'main' method: "+"'this.base(arguments)'. The same is true over overridden "+"'terminate' and 'close' methods.";
+var exception;
+try{app.main();
+}catch(ex){exception=ex;
+}
+if(!app._initializedMain){if(exception){this.error(msg);
+}else{throw new Error(msg);
+}}
+if(exception){throw exception;
+}};
 this.info("main runtime: "+(new Date-start)+"ms");
 },
 _onbeforeunload:function(e){this.createDispatchEvent("beforeunload");
@@ -2717,64 +2982,6 @@ this.folder=typeof RegExp.$4=="string"?RegExp.$4:"";
 settings:{"qx.version":"0.0"},
 defer:function(statics){statics.__init();
 }});
-
-
-
-
-/* ID: qx.OO */
-if(qx.core.Variant.isSet("qx.compatibility",
-"on")){qx.Class.define("qx.OO",
-{statics:{classes:{},
-defineClass:function(vClassName,
-vSuper,
-vConstructor){var vSplitName=vClassName.split(".");
-var vNameLength=vSplitName.length-1;
-var vTempObject=window;
-for(var i=0;i<vNameLength;i++){if(typeof vTempObject[vSplitName[i]]==="undefined"){vTempObject[vSplitName[i]]={};
-}vTempObject=vTempObject[vSplitName[i]];
-}if(typeof vSuper==="undefined"){if(typeof vConstructor!=="undefined"){throw new Error("SuperClass is undefined, but constructor was given for class: "+vClassName);
-}qx.Clazz=vTempObject[vSplitName[i]]={};
-qx.Proto=null;
-qx.Super=null;
-}else if(typeof vConstructor==="undefined"){qx.Clazz=vTempObject[vSplitName[i]]=vSuper;
-qx.Proto=null;
-qx.Super=vSuper;
-}else{qx.Clazz=vTempObject[vSplitName[i]]=vConstructor;
-var vHelperConstructor=function(){};
-vHelperConstructor.prototype=vSuper.prototype;
-qx.Proto=vConstructor.prototype=new vHelperConstructor;
-qx.Super=vConstructor.superclass=vSuper;
-qx.Proto.classname=vConstructor.classname=vClassName;
-qx.Proto.constructor=vConstructor;
-}qx.OO.classes[vClassName]=qx.Class;
-},
-isAvailable:function(vClassName){return qx.OO.classes[vClassName]!=null;
-},
-addFastProperty:function(config){{};
-return qx.core.LegacyProperty.addFastProperty(config,
-qx.Proto);
-},
-addCachedProperty:function(config){{};
-return qx.core.LegacyProperty.addCachedProperty(config,
-qx.Proto);
-},
-addPropertyGroup:function(config){{};
-return qx.Class.addPropertyGroup(config,
-qx.Proto);
-},
-removeProperty:function(config){{};
-return qx.core.LegacyProperty.removeProperty(config,
-qx.Proto);
-},
-changeProperty:function(config){{};
-return qx.core.LegacyProperty.addProperty(config,
-qx.Proto);
-},
-addProperty:function(config){{};
-return qx.core.LegacyProperty.addProperty(config,
-qx.Proto);
-}}});
-}
 
 
 
@@ -3672,7 +3879,9 @@ qx.Class.define("qx.Theme",
 config){if(!config){var config={};
 }
 if(config.include&&!(config.include instanceof Array)){config.include=[config.include];
-}{};
+}{this.__validateConfig(name,
+config);
+};
 var theme={$$type:"Theme",
 name:name,
 title:config.title,
@@ -3724,9 +3933,57 @@ __inheritableKeys:["colors",
 "widgets",
 "appearances",
 "meta"],
-__allowedKeys:null,
-__metaKeys:null,
-__validateConfig:function(){},
+__allowedKeys:{"title":"string",
+"type":"string",
+"extend":"object",
+"colors":"object",
+"borders":"object",
+"fonts":"object",
+"icons":"object",
+"widgets":"object",
+"appearances":"object",
+"meta":"object",
+"include":"object"},
+__metaKeys:{"color":"object",
+"border":"object",
+"font":"object",
+"widget":"object",
+"icon":"object",
+"appearance":"object"},
+__validateConfig:function(name,
+config){var allowed=this.__allowedKeys;
+for(var key in config){if(allowed[key]===undefined){throw new Error('The configuration key "'+key+'" in theme "'+name+'" is not allowed!');
+}
+if(config[key]==null){throw new Error('Invalid key "'+key+'" in theme "'+name+'"! The value is undefined/null!');
+}
+if(allowed[key]!==null&&typeof config[key]!==allowed[key]){throw new Error('Invalid type of key "'+key+'" in theme "'+name+'"! The type of the key must be "'+allowed[key]+'"!');
+}}if(config.title===undefined){throw new Error("Missing title definition in theme: "+name);
+}var maps=["colors",
+"borders",
+"fonts",
+"icons",
+"widgets",
+"appearances",
+"meta"];
+for(var i=0,
+l=maps.length;i<l;i++){var key=maps[i];
+if(config[key]!==undefined&&(config[key] instanceof Array||config[key] instanceof RegExp||config[key] instanceof Date||config[key].classname!==undefined)){throw new Error('Invalid key "'+key+'" in theme "'+name+'"! The value needs to be a map!');
+}}var counter=0;
+for(var i=0,
+l=maps.length;i<l;i++){var key=maps[i];
+if(config[key]){counter++;
+}
+if(counter>1){throw new Error("You can only define one theme category per file! Invalid theme: "+name);
+}}if(!config.extend&&counter===0){throw new Error("You must define at least one entry in your theme configuration :"+name);
+}if(config.meta){var value;
+for(var key in config.meta){value=config.meta[key];
+if(this.__metaKeys[key]===undefined){throw new Error('The key "'+key+'" is not allowed inside a meta theme block.');
+}
+if(typeof value!==this.__metaKeys[key]){throw new Error('The type of the key "'+key+'" inside the meta block is wrong.');
+}
+if(!(typeof value==="object"&&value!==null&&value.$$type==="Theme")){throw new Error('The content of a meta theme must reference to other themes. The value for "'+key+'" in theme "'+name+'" is invalid: '+value);
+}}}if(config.extend&&config.extend.$$type!=="Theme"){throw new Error('Invalid extend in theme "'+name+'": '+config.extend);
+}},
 patch:function(theme,
 mixinTheme){var keyCurrent=this.__extractInheritableKey(mixinTheme);
 if(keyCurrent!==this.__extractInheritableKey(mixinTheme)){throw new Error("The mixins '"+theme.name+"' are not compatible '"+mixinTheme.name+"'!");
@@ -3778,7 +4035,14 @@ this._dynamic={};
 },
 members:{connect:function(callback,
 obj,
-value){{};
+value){{if(!callback){throw new Error("Can not connect to invalid callback: "+callback);
+}
+if(!obj){throw new Error("Can not connect to invalid object: "+obj);
+}
+if(value===undefined){throw new Error("Undefined values are not allowed for connect: "+callback+"["+obj+"]");
+}
+if(typeof value==="boolean"){throw new Error("Boolean values are not allowed for connect: "+callback+"["+obj+"]");
+}};
 var key="v"+obj.toHashCode()+"$"+qx.core.Object.toHashCode(callback);
 var reg=this._registry;
 if(value!==null&&this._preprocess){value=this._preprocess(value);
@@ -5510,13 +5774,15 @@ if(this._hasParent){qx.ui.core.Widget.addToGlobalStateQueue(this);
 _styleFromMap:function(data){var styler=qx.core.Property.$$method.style;
 var unstyler=qx.core.Property.$$method.unstyle;
 var value;
-var prop;
+{for(var prop in data){if(!this[styler[prop]]){throw new Error(this.classname+' has no themeable property "'+prop+'"');
+}}};
 for(var prop in data){value=data[prop];
 value==="undefined"?this[unstyler[prop]]():this[styler[prop]](value);
 }},
 _unstyleFromArray:function(data){var unstyler=qx.core.Property.$$method.unstyle;
-var i,
-l;
+{for(var i=0,
+l=data.length;i<l;i++){if(!this[unstyler[data[i]]]){throw new Error(this.classname+' has no themeable property "'+prop+'"');
+}}};
 for(var i=0,
 l=data.length;i<l;i++){this[unstyler[data[i]]]();
 }},
@@ -6077,7 +6343,49 @@ members._resetRuntimeHeight=function(){this._style.height="";
 if(this._innerStyle){this._innerStyle.height="";
 }};
 }statics.__initLayoutProperties(statics);
-{};
+{if(qx.core.Setting.get("qx.widgetQueueDebugging")){statics.flushGlobalQueues=function(){if(statics._inFlushGlobalQueues||!qx.core.Init.getInstance().getApplication().getUiReady()){return;
+}
+if(!(statics._globalWidgetQueue.length>0||statics._globalElementQueue.length>0||statics._globalStateQueue.length>0||statics._globalJobQueue.length>0||statics._globalLayoutQueue.length>0||statics._fastGlobalDisplayQueue.length>0||!qx.lang.Object.isEmpty(statics._lazyGlobalDisplayQueue))){return;
+}var globalWidgetQueueLength=statics._globalWidgetQueue.length;
+var globalElementQueueLength=statics._globalElementQueue.length;
+var globalStateQueueLength=statics._globalStateQueue.length;
+var globalJobQueueLength=statics._globalJobQueue.length;
+var globalLayoutQueueLength=statics._globalLayoutQueue.length;
+var fastGlobalDisplayQueueLength=statics._fastGlobalDisplayQueue.length;
+var lazyGlobalDisplayQueueLength=statics._lazyGlobalDisplayQueue?statics._lazyGlobalDisplayQueue.length:0;
+statics._inFlushGlobalQueues=true;
+var start;
+start=(new Date).valueOf();
+statics.flushGlobalWidgetQueue();
+var vWidgetDuration=(new Date).valueOf()-start;
+start=(new Date).valueOf();
+statics.flushGlobalStateQueue();
+var vStateDuration=(new Date).valueOf()-start;
+start=(new Date).valueOf();
+statics.flushGlobalElementQueue();
+var vElementDuration=(new Date).valueOf()-start;
+start=(new Date).valueOf();
+statics.flushGlobalJobQueue();
+var vJobDuration=(new Date).valueOf()-start;
+start=(new Date).valueOf();
+statics.flushGlobalLayoutQueue();
+var vLayoutDuration=(new Date).valueOf()-start;
+start=(new Date).valueOf();
+statics.flushGlobalDisplayQueue();
+var vDisplayDuration=(new Date).valueOf()-start;
+var vSum=vWidgetDuration+vStateDuration+vElementDuration+vJobDuration+vLayoutDuration+vDisplayDuration;
+if(vSum>0){var logger=qx.log.Logger.getClassLogger(qx.ui.core.Widget);
+logger.debug("Flush Global Queues");
+logger.debug("Widgets: "+vWidgetDuration+"ms ("+globalWidgetQueueLength+")");
+logger.debug("State: "+vStateDuration+"ms ("+globalStateQueueLength+")");
+logger.debug("Element: "+vElementDuration+"ms ("+globalElementQueueLength+")");
+logger.debug("Job: "+vJobDuration+"ms ("+globalJobQueueLength+")");
+logger.debug("Layout: "+vLayoutDuration+"ms ("+globalLayoutQueueLength+")");
+logger.debug("Display: "+vDisplayDuration+"ms (fast:"+fastGlobalDisplayQueueLength+",lazy:"+lazyGlobalDisplayQueueLength+")");
+window.status="Flush: Widget:"+vWidgetDuration+" State:"+vStateDuration+" Element:"+vElementDuration+" Job:"+vJobDuration+" Layout:"+vLayoutDuration+" Display:"+vDisplayDuration;
+}delete statics._inFlushGlobalQueues;
+};
+}};
 },
 destruct:function(){var elem=this.getElement();
 if(elem){elem.qx_Widget=null;
@@ -8339,7 +8647,8 @@ states);
 styleFromTheme:function(theme,
 id,
 states){var entry=theme.appearances[id];
-if(!entry){{};
+if(!entry){{this.warn("Missing appearance entry: "+id);
+};
 return null;
 }if(!entry.style){if(entry.include){return this.styleFromTheme(theme,
 entry.include,
@@ -10149,7 +10458,8 @@ if(shortcut!=null){this.setShortcut(shortcut);
 }
 if(keyCode!=null){this.warn("The use of keyCode in command is deprecated. Use keyIdentifier instead.");
 this.setKeyCode(keyCode);
-}{};
+}{if(this.__modifier.Alt&&this.__key&&this.__key.length==1){if((this.__key>="A"&&this.__key<="Z")||(this.__key>="0"&&this.__key<="9")){this.warn("A shortcut containing Alt and a letter or number will not work under OS X!");
+}}};
 qx.event.handler.EventHandler.getInstance().addCommand(this);
 },
 properties:{enabled:{init:true,
@@ -12114,14 +12424,8 @@ destruct:function(){if(this._image){this._image.style.filter="";
 /* ID: qx.ui.basic.Label */
 qx.Class.define("qx.ui.basic.Label",
 {extend:qx.ui.basic.Terminator,
-construct:function(text,
-mnemonic,
-mode){this.base(arguments);
-if(mode!=null){this.setMode(mode);
-}
+construct:function(text){this.base(arguments);
 if(text!=null){this.setText(text);
-}
-if(mnemonic!=null){this.setMnemonic(mnemonic);
 }this.initWidth();
 this.initHeight();
 this.initSelectable();
@@ -12156,7 +12460,6 @@ init:"default"},
 text:{apply:"_applyText",
 init:"",
 dispose:true,
-event:"changeText",
 check:"Label"},
 wrap:{check:"Boolean",
 init:false,
@@ -12170,26 +12473,12 @@ nullable:true,
 themeable:true,
 apply:"_applyTextAlign"},
 textOverflow:{check:"Boolean",
-init:true,
-apply:"_applyText"},
+init:true},
 mode:{check:["html",
 "text",
 "auto"],
-init:"auto",
-apply:"_applyText"},
-mnemonic:{check:"String",
-nullable:true,
-apply:"_applyMnemonic"}},
+init:"auto"}},
 members:{_content:"",
-_isHtml:false,
-setHtml:function(html){this.warn("Deprecated: please use setText() instead.");
-this.printStackTrace();
-this.setText(html);
-},
-getHtml:function(){this.warn("Deprecated: please use getText() instead.");
-this.printStackTrace();
-return this.getText();
-},
 _applyTextAlign:function(value,
 old){value===null?this.removeStyleProperty("textAlign"):this.setStyleProperty("textAlign",
 value);
@@ -12215,23 +12504,9 @@ old){value==null?this.removeStyleProperty("whiteSpace"):this.setStyleProperty("w
 value?"normal":"nowrap");
 },
 _applyText:function(value,
-old){qx.locale.Manager.getInstance().connect(this._syncText,
-this,
-this.getText());
+old){this._syncText(this.getText());
 },
-_syncText:function(text){var mode=this.getMode();
-if(mode==="auto"){mode=qx.util.Validation.isValidString(text)&&text.match(/<.*>/)?"html":"text";
-}
-switch(mode){case "text":var escapedText=qx.xml.String.escape(text).replace(/(^ | $)/g,
-"&nbsp;").replace(/  /g,
-"&nbsp;&nbsp;");
-this._isHtml=escapedText!==text;
-this._content=escapedText;
-break;
-case "html":this._isHtml=true;
-this._content=text;
-break;
-}
+_syncText:function(text){this._content=text;
 if(this._isCreated){this._renderContent();
 }},
 _applyMnemonic:function(value,
@@ -12246,11 +12521,8 @@ style.fontFamily=source.fontFamily||"";
 style.fontSize=source.fontSize||"";
 style.fontWeight=source.fontWeight||"";
 style.fontStyle=source.fontStyle||"";
-if(this._isHtml){element.innerHTML=this._content;
-}else{element.innerHTML="";
-qx.dom.Element.setTextContent(element,
-this._content);
-}this._cachedPreferredInnerWidth=element.scrollWidth;
+element.innerHTML=this._content;
+this._cachedPreferredInnerWidth=element.scrollWidth;
 this._cachedPreferredInnerHeight=element.scrollHeight;
 },
 _computePreferredInnerWidth:function(){this._computeObjectNeededDimensions();
@@ -12259,92 +12531,13 @@ return this._cachedPreferredInnerWidth;
 _computePreferredInnerHeight:function(){this._computeObjectNeededDimensions();
 return this._cachedPreferredInnerHeight;
 },
-__patchTextOverflow:function(html,
-inner){return ("<div style='float:left;width:"+(inner-14)+"px;overflow:hidden;white-space:nowrap'>"+html+"</div><span style='float:left'>&hellip;</span>");
-},
 _postApply:function(){var html=this._content;
 var element=this._getTargetNode();
 if(html==null){element.innerHTML="";
-return;
-}
-if(this.getMnemonic()){if(this._mnemonicTest.test(html)){html=RegExp.$1+"<span style=\"text-decoration:underline\">"+RegExp.$7+"</span>"+RegExp.rightContext;
-this._isHtml=true;
-}else{html+=" ("+this.getMnemonic()+")";
-}}var style=element.style;
-if(this.getTextOverflow()&&!this.getWrap()){if(this.getInnerWidth()<this.getPreferredInnerWidth()){style.overflow="hidden";
-if(qx.core.Variant.isSet("qx.client",
-"mshtml|webkit")){style.textOverflow="ellipsis";
-}else if(qx.core.Variant.isSet("qx.client",
-"opera")){style.OTextOverflow="ellipsis";
-}else{html=this.__patchTextOverflow(html,
-this.getInnerWidth());
-this._isHtml=true;
-}}else{style.overflow="";
-if(qx.core.Variant.isSet("qx.client",
-"mshtml|webkit")){style.textOverflow="";
-}else if(qx.core.Variant.isSet("qx.client",
-"opera")){style.OTextOverflow="";
-}}}
-if(this._isHtml){element.innerHTML=html;
-}else{element.innerHTML="";
-qx.dom.Element.setTextContent(element,
-html);
+}else{var style=element.style;
+style.overflow="hidden";
+element.innerHTML=html;
 }}}});
-
-
-
-
-/* ID: qx.xml.String */
-qx.Class.define("qx.xml.String",
-{statics:{escape:function(str){return qx.dom.String.escapeEntities(str,
-qx.xml.Entity.FROM_CHARCODE);
-},
-unescape:function(str){return qx.dom.String.unescapeEntities(str,
-qx.xml.Entity.TO_CHARCODE);
-}}});
-
-
-
-
-/* ID: qx.xml.Entity */
-qx.Class.define("qx.xml.Entity",
-{statics:{TO_CHARCODE:{"quot":34,
-"amp":38,
-"lt":60,
-"gt":62,
-"apos":39},
-FROM_CHARCODE:{34:"quot",
-38:"amp",
-60:"lt",
-62:"gt",
-39:"apos"}}});
-
-
-
-
-/* ID: qx.dom.Element */
-qx.Class.define("qx.dom.Element",
-{statics:{cleanWhitespace:function(el){for(var i=0;i<el.childNodes.length;i++){var node=el.childNodes[i];
-if(node.nodeType==qx.dom.Node.TEXT&&!/\S/.test(node.nodeValue)){el.removeChild(node);
-}}},
-isEmpty:function(el){return el.innerHTML.match(/^\s*$/);
-},
-getTextContent:qx.lang.Object.select(qx.core.Client.getInstance().supportsTextContent()?"textContent":qx.core.Client.getInstance().supportsInnerText()?"innerText":"default",
-{innerText:function(el){return el.innerText||el.text;
-},
-textContent:function(el){return el.textContent;
-},
-"default":function(){throw new Error("This browser does not support any form of text content handling!");
-}}),
-setTextContent:qx.lang.Object.select(qx.core.Client.getInstance().supportsTextContent()?"textContent":qx.core.Client.getInstance().supportsInnerText()?"innerText":"default",
-{innerText:function(el,
-val){el.innerText=val;
-},
-textContent:function(el,
-val){el.textContent=val;
-},
-"default":function(){throw new Error("This browser does not support any form of text content handling!");
-}})}});
 
 
 
@@ -17027,599 +17220,6 @@ qx.Class.define("qx.ui.menubar.MenuBar",
 
 
 
-/* ID: qx.ui.layout.GridLayout */
-qx.Class.define("qx.ui.layout.GridLayout",
-{extend:qx.ui.core.Parent,
-construct:function(){this.base(arguments);
-this._columnData=[];
-this._rowData=[];
-this._spans=[];
-},
-properties:{horizontalSpacing:{check:"Integer",
-init:0,
-apply:"_applyHorizontalSpacing",
-themeable:true},
-verticalSpacing:{check:"Integer",
-init:0,
-apply:"_applyVerticalSpacing",
-themeable:true},
-horizontalChildrenAlign:{check:["left",
-"center",
-"right"],
-init:"left",
-apply:"_applyHorizontalChildrenAlign",
-themeable:true},
-verticalChildrenAlign:{check:["top",
-"middle",
-"bottom"],
-init:"top",
-apply:"_applyVerticalChildrenAlign",
-themeable:true},
-cellPaddingTop:{check:"Integer",
-nullable:true},
-cellPaddingRight:{check:"Integer",
-nullable:true,
-themeable:true},
-cellPaddingBottom:{check:"Integer",
-nullable:true,
-themeable:true},
-cellPaddingLeft:{check:"Integer",
-nullable:true,
-themeable:true}},
-members:{_applyHorizontalSpacing:function(value,
-old){this.addToQueueRuntime("horizontalSpacing");
-this._invalidatePreferredInnerDimensions();
-},
-_applyVerticalSpacing:function(value,
-old){this.addToQueueRuntime("verticalSpacing");
-this._invalidatePreferredInnerDimensions();
-},
-_applyHorizontalChildrenAlign:function(value,
-old){this.addToQueueRuntime("horizontalChildrenAlign");
-this._invalidatePreferredInnerDimensions();
-},
-_applyVerticalChildrenAlign:function(value,
-old){this.addToQueueRuntime("verticalChildrenAlign");
-this._invalidatePreferredInnerDimensions();
-},
-_createLayoutImpl:function(){return new qx.ui.layout.impl.GridLayoutImpl(this);
-},
-add:function(vChild,
-vCol,
-vRow){vChild._col=vCol;
-vChild._row=vRow;
-if(this.isFillCell(vCol,
-vRow)){throw new Error("Could not insert child "+vChild+" into a fill cell: "+vCol+"x"+vRow);
-}this.base(arguments,
-vChild);
-},
-_syncDataFields:function(vData,
-vOldLength,
-vNewLength){if(vNewLength>vOldLength){for(var i=vOldLength;i<vNewLength;i++){vData[i]={};
-}}else if(vOldLength>vNewLength){vData.splice(vNewLength,
-vOldLength-vNewLength);
-}},
-_columnCount:0,
-setColumnCount:function(vCount){this._columnCount=vCount;
-this._syncColumnDataFields();
-},
-getColumnCount:function(){return this._columnCount;
-},
-addColumn:function(){this._columnCount++;
-this._syncColumnDataFields();
-},
-removeColumn:function(){if(this._columnCount>0){this._columnCount--;
-this._syncColumnDataFields();
-}},
-_syncColumnDataFields:function(){var vData=this._columnData;
-var vOldLength=vData.length;
-var vNewLength=this._columnCount;
-this._syncDataFields(vData,
-vOldLength,
-vNewLength);
-},
-_rowCount:0,
-setRowCount:function(vCount){this._rowCount=vCount;
-this._syncRowDataFields();
-},
-getRowCount:function(){return this._rowCount;
-},
-addRow:function(){this._rowCount++;
-this._syncRowDataFields();
-},
-removeRow:function(){if(this._rowCount>0){this._rowCount--;
-this._syncRowDataFields();
-}},
-_syncRowDataFields:function(){var vData=this._rowData;
-var vOldLength=vData.length;
-var vNewLength=this._rowCount;
-this._syncDataFields(vData,
-vOldLength,
-vNewLength);
-},
-_getColumnProperty:function(vColumnIndex,
-vProperty){try{return this._columnData[vColumnIndex][vProperty]||null;
-}catch(ex){this.error("Error while getting column property ("+vColumnIndex+"|"+vProperty+")",
-ex);
-return null;
-}},
-_setupColumnProperty:function(vColumnIndex,
-vProperty,
-vValue){this._columnData[vColumnIndex][vProperty]=vValue;
-this._invalidateColumnLayout();
-},
-_removeColumnProperty:function(vColumnIndex,
-vProperty,
-vValue){delete this._columnData[vColumnIndex][vProperty];
-this._invalidateColumnLayout();
-},
-_invalidateColumnLayout:function(){if(!this._initialLayoutDone||!this._isDisplayable){return;
-}this.forEachVisibleChild(function(){this.addToQueue("width");
-});
-},
-_getRowProperty:function(vRowIndex,
-vProperty){try{return this._rowData[vRowIndex][vProperty]||null;
-}catch(ex){this.error("Error while getting row property ("+vRowIndex+"|"+vProperty+")",
-ex);
-return null;
-}},
-_setupRowProperty:function(vRowIndex,
-vProperty,
-vValue){this._rowData[vRowIndex][vProperty]=vValue;
-this._invalidateRowLayout();
-},
-_removeRowProperty:function(vRowIndex,
-vProperty,
-vValue){delete this._rowData[vRowIndex][vProperty];
-this._invalidateRowLayout();
-},
-_invalidateRowLayout:function(){if(!this._initialLayoutDone||!this._isDisplayable){return;
-}this.forEachVisibleChild(function(){this.addToQueue("height");
-});
-},
-setColumnWidth:function(vIndex,
-vValue){this._setupColumnProperty(vIndex,
-"widthValue",
-vValue);
-var vType=qx.ui.core.Parent.prototype._evalUnitsPixelPercentAutoFlex(vValue);
-this._setupColumnProperty(vIndex,
-"widthType",
-vType);
-var vParsed,
-vComputed;
-switch(vType){case qx.ui.core.Widget.TYPE_PIXEL:vParsed=vComputed=Math.round(vValue);
-break;
-case qx.ui.core.Widget.TYPE_PERCENT:case qx.ui.core.Widget.TYPE_FLEX:vParsed=parseFloat(vValue);
-vComputed=null;
-break;
-case qx.ui.core.Widget.TYPE_AUTO:vParsed=vComputed=null;
-break;
-default:vParsed=vComputed=null;
-}this._setupColumnProperty(vIndex,
-"widthParsed",
-vParsed);
-this._setupColumnProperty(vIndex,
-"widthComputed",
-vComputed);
-},
-setRowHeight:function(vIndex,
-vValue){this._setupRowProperty(vIndex,
-"heightValue",
-vValue);
-var vType=qx.ui.core.Widget.prototype._evalUnitsPixelPercentAutoFlex(vValue);
-this._setupRowProperty(vIndex,
-"heightType",
-vType);
-var vParsed,
-vComputed;
-switch(vType){case qx.ui.core.Widget.TYPE_PIXEL:vParsed=vComputed=Math.round(vValue);
-break;
-case qx.ui.core.Widget.TYPE_PERCENT:case qx.ui.core.Widget.TYPE_FLEX:vParsed=parseFloat(vValue);
-vComputed=null;
-break;
-case qx.ui.core.Widget.TYPE_AUTO:vParsed=vComputed=null;
-break;
-default:vParsed=vComputed=null;
-}this._setupRowProperty(vIndex,
-"heightParsed",
-vParsed);
-this._setupRowProperty(vIndex,
-"heightComputed",
-vComputed);
-},
-getColumnBoxWidth:function(vIndex){var vComputed=this._getColumnProperty(vIndex,
-"widthComputed");
-if(vComputed!=null){return vComputed;
-}var vType=this._getColumnProperty(vIndex,
-"widthType");
-var vParsed=this._getColumnProperty(vIndex,
-"widthParsed");
-var vComputed=null;
-switch(vType){case qx.ui.core.Widget.TYPE_PIXEL:vComputed=Math.max(0,
-vParsed);
-break;
-case qx.ui.core.Widget.TYPE_PERCENT:vComputed=this.getInnerWidth()*Math.max(0,
-vParsed)*0.01;
-break;
-case qx.ui.core.Widget.TYPE_AUTO:vComputed=null;
-break;
-case qx.ui.core.Widget.TYPE_FLEX:vComputed=null;
-break;
-}this._setupColumnProperty(vIndex,
-"widthComputed",
-vComputed);
-return vComputed;
-},
-getRowBoxHeight:function(vIndex){var vComputed=this._getRowProperty(vIndex,
-"heightComputed");
-if(vComputed!=null){return vComputed;
-}var vType=this._getRowProperty(vIndex,
-"heightType");
-var vParsed=this._getRowProperty(vIndex,
-"heightParsed");
-var vComputed=null;
-switch(vType){case qx.ui.core.Widget.TYPE_PIXEL:vComputed=Math.max(0,
-vParsed);
-break;
-case qx.ui.core.Widget.TYPE_PERCENT:vComputed=this.getInnerHeight()*Math.max(0,
-vParsed)*0.01;
-break;
-case qx.ui.core.Widget.TYPE_AUTO:vComputed=null;
-break;
-case qx.ui.core.Widget.TYPE_FLEX:vComputed=null;
-break;
-}this._setupRowProperty(vIndex,
-"heightComputed",
-vComputed);
-return vComputed;
-},
-getComputedCellPaddingLeft:function(vCol,
-vRow){return this.getColumnPaddingLeft(vCol)||this.getRowPaddingLeft(vRow)||this.getCellPaddingLeft()||0;
-},
-getComputedCellPaddingRight:function(vCol,
-vRow){return this.getColumnPaddingRight(vCol)||this.getRowPaddingRight(vRow)||this.getCellPaddingRight()||0;
-},
-getComputedCellPaddingTop:function(vCol,
-vRow){return this.getRowPaddingTop(vRow)||this.getColumnPaddingTop(vCol)||this.getCellPaddingTop()||0;
-},
-getComputedCellPaddingBottom:function(vCol,
-vRow){return this.getRowPaddingBottom(vRow)||this.getColumnPaddingBottom(vCol)||this.getCellPaddingBottom()||0;
-},
-getColumnInnerWidth:function(vCol,
-vRow){return this.getColumnBoxWidth(vCol)-this.getComputedCellPaddingLeft(vCol,
-vRow)-this.getComputedCellPaddingRight(vCol,
-vRow);
-},
-getRowInnerHeight:function(vCol,
-vRow){return this.getRowBoxHeight(vRow)-this.getComputedCellPaddingTop(vCol,
-vRow)-this.getComputedCellPaddingBottom(vCol,
-vRow);
-},
-setColumnHorizontalAlignment:function(vIndex,
-vValue){this._setupColumnProperty(vIndex,
-"horizontalAlignment",
-vValue);
-},
-setColumnVerticalAlignment:function(vIndex,
-vValue){this._setupColumnProperty(vIndex,
-"verticalAlignment",
-vValue);
-},
-setRowHorizontalAlignment:function(vIndex,
-vValue){this._setupRowProperty(vIndex,
-"horizontalAlignment",
-vValue);
-},
-setRowVerticalAlignment:function(vIndex,
-vValue){this._setupRowProperty(vIndex,
-"verticalAlignment",
-vValue);
-},
-getColumnHorizontalAlignment:function(vIndex){return this._getColumnProperty(vIndex,
-"horizontalAlignment");
-},
-getColumnVerticalAlignment:function(vIndex){return this._getColumnProperty(vIndex,
-"verticalAlignment");
-},
-getRowHorizontalAlignment:function(vIndex){return this._getRowProperty(vIndex,
-"horizontalAlignment");
-},
-getRowVerticalAlignment:function(vIndex){return this._getRowProperty(vIndex,
-"verticalAlignment");
-},
-setColumnPaddingTop:function(vIndex,
-vValue){this._setupColumnProperty(vIndex,
-"paddingTop",
-vValue);
-},
-setColumnPaddingRight:function(vIndex,
-vValue){this._setupColumnProperty(vIndex,
-"paddingRight",
-vValue);
-},
-setColumnPaddingBottom:function(vIndex,
-vValue){this._setupColumnProperty(vIndex,
-"paddingBottom",
-vValue);
-},
-setColumnPaddingLeft:function(vIndex,
-vValue){this._setupColumnProperty(vIndex,
-"paddingLeft",
-vValue);
-},
-setRowPaddingTop:function(vIndex,
-vValue){this._setupRowProperty(vIndex,
-"paddingTop",
-vValue);
-},
-setRowPaddingRight:function(vIndex,
-vValue){this._setupRowProperty(vIndex,
-"paddingRight",
-vValue);
-},
-setRowPaddingBottom:function(vIndex,
-vValue){this._setupRowProperty(vIndex,
-"paddingBottom",
-vValue);
-},
-setRowPaddingLeft:function(vIndex,
-vValue){this._setupRowProperty(vIndex,
-"paddingLeft",
-vValue);
-},
-getColumnPaddingTop:function(vIndex){return this._getColumnProperty(vIndex,
-"paddingTop");
-},
-getColumnPaddingRight:function(vIndex){return this._getColumnProperty(vIndex,
-"paddingRight");
-},
-getColumnPaddingBottom:function(vIndex){return this._getColumnProperty(vIndex,
-"paddingBottom");
-},
-getColumnPaddingLeft:function(vIndex){return this._getColumnProperty(vIndex,
-"paddingLeft");
-},
-getRowPaddingTop:function(vIndex){return this._getRowProperty(vIndex,
-"paddingTop");
-},
-getRowPaddingRight:function(vIndex){return this._getRowProperty(vIndex,
-"paddingRight");
-},
-getRowPaddingBottom:function(vIndex){return this._getRowProperty(vIndex,
-"paddingBottom");
-},
-getRowPaddingLeft:function(vIndex){return this._getRowProperty(vIndex,
-"paddingLeft");
-},
-_changeInnerWidth:function(vNew,
-vOld){for(var i=0,
-l=this.getColumnCount();i<l;i++){if(this._getColumnProperty(i,
-"widthType")==qx.ui.core.Widget.TYPE_PERCENT){this._setupColumnProperty(i,
-"widthComputed",
-null);
-}}this.base(arguments,
-vNew,
-vOld);
-},
-_changeInnerHeight:function(vNew,
-vOld){for(var i=0,
-l=this.getRowCount();i<l;i++){if(this._getRowProperty(i,
-"heightType")==qx.ui.core.Widget.TYPE_PERCENT){this._setupRowProperty(i,
-"heightComputed",
-null);
-}}this.base(arguments,
-vNew,
-vOld);
-},
-getInnerWidthForChild:function(vChild){return this._getColumnProperty(vChild._col,
-"widthComputed");
-},
-getInnerHeightForChild:function(vChild){return this._getRowProperty(vChild._row,
-"heightComputed");
-},
-mergeCells:function(vStartCol,
-vStartRow,
-vColLength,
-vRowLength){var vSpans=this._spans;
-var vLength=vSpans.length;
-var vEndCol=vStartCol+vColLength-1;
-var vEndRow=vStartRow+vRowLength-1;
-if(this._collidesWithSpans(vStartCol,
-vStartRow,
-vEndCol,
-vEndRow)){this.debug("Span collision detected!");
-return false;
-}vSpans.push({startCol:vStartCol,
-startRow:vStartRow,
-endCol:vEndCol,
-endRow:vEndRow,
-colLength:vColLength,
-rowLength:vRowLength});
-return true;
-},
-hasSpans:function(){return this._spans.length>0;
-},
-getSpanEntry:function(vCol,
-vRow){for(var i=0,
-s=this._spans,
-l=s.length,
-c;i<l;i++){c=s[i];
-if(vCol>=c.startCol&&vCol<=c.endCol&&vRow>=c.startRow&&vRow<=c.endRow){return c;
-}}return null;
-},
-isSpanStart:function(vCol,
-vRow){for(var i=0,
-s=this._spans,
-l=s.length,
-c;i<l;i++){c=s[i];
-if(c.startCol==vCol&&c.startRow==vRow){return true;
-}}return false;
-},
-isSpanCell:function(vCol,
-vRow){for(var i=0,
-s=this._spans,
-l=s.length,
-c;i<l;i++){c=s[i];
-if(vCol>=c.startCol&&vCol<=c.endCol&&vRow>=c.startRow&&vRow<=c.endRow){return true;
-}}return false;
-},
-isFillCell:function(vCol,
-vRow){for(var i=0,
-s=this._spans,
-l=s.length,
-c;i<l;i++){c=s[i];
-if(vCol>=c.startCol&&vCol<=c.endCol&&vRow>=c.startRow&&vRow<=c.endRow&&(vCol>c.startCol||vRow>c.startRow)){return true;
-}}return false;
-},
-_collidesWithSpans:function(vStartCol,
-vStartRow,
-vEndCol,
-vEndRow){for(var i=0,
-s=this._spans,
-l=s.length,
-c;i<l;i++){c=s[i];
-if(vEndCol>=c.startCol&&vStartCol<=c.endCol&&vEndRow>=c.startRow&&vStartRow<=c.endRow){return true;
-}}return false;
-}},
-destruct:function(){this._disposeFields("_columnData",
-"_rowData",
-"_spans");
-}});
-
-
-
-
-/* ID: qx.ui.layout.impl.GridLayoutImpl */
-qx.Class.define("qx.ui.layout.impl.GridLayoutImpl",
-{extend:qx.ui.layout.impl.LayoutImpl,
-construct:function(vWidget){this.base(arguments,
-vWidget);
-},
-members:{computeChildBoxWidth:function(vChild){var vWidget=this.getWidget();
-var vColWidth=vWidget.getColumnInnerWidth(vChild._col,
-vChild._row);
-if(vWidget.isSpanStart(vChild._col,
-vChild._row)){var vEntry=vWidget.getSpanEntry(vChild._col,
-vChild._row);
-for(var i=1;i<vEntry.colLength;i++){vColWidth+=vWidget.getComputedCellPaddingRight(vChild._col+i-1,
-vChild._row);
-vColWidth+=vWidget.getComputedCellPaddingLeft(vChild._col+i,
-vChild._row);
-vColWidth+=vWidget.getHorizontalSpacing();
-vColWidth+=vWidget.getColumnInnerWidth(vChild._col+i,
-vChild._row);
-}}return vChild.getAllowStretchX()?vColWidth:Math.min(vChild.getWidthValue(),
-vColWidth);
-},
-computeChildBoxHeight:function(vChild){var vWidget=this.getWidget();
-var vRowHeight=vWidget.getRowInnerHeight(vChild._col,
-vChild._row);
-if(vWidget.isSpanStart(vChild._col,
-vChild._row)){var vEntry=vWidget.getSpanEntry(vChild._col,
-vChild._row);
-for(var i=1;i<vEntry.rowLength;i++){vRowHeight+=vWidget.getComputedCellPaddingBottom(vChild._col,
-vChild._row+i-1);
-vRowHeight+=vWidget.getComputedCellPaddingTop(vChild._col,
-vChild._row+i);
-vRowHeight+=vWidget.getVerticalSpacing();
-vRowHeight+=vWidget.getRowInnerHeight(vChild._col,
-vChild._row+i);
-}}return vChild.getAllowStretchY()?vRowHeight:Math.min(vChild.getHeightValue(),
-vRowHeight);
-},
-computeChildrenNeededWidth:function(){var vWidget=this.getWidget();
-var vSpacingX=vWidget.getHorizontalSpacing();
-var vSum=-vSpacingX;
-for(var i=0,
-l=vWidget.getColumnCount();i<l;i++){vSum+=vWidget.getColumnBoxWidth(i)+vSpacingX;
-}return vSum;
-},
-computeChildrenNeededHeight:function(){var vWidget=this.getWidget();
-var vSpacingY=vWidget.getVerticalSpacing();
-var vSum=-vSpacingY;
-for(var i=0,
-l=vWidget.getRowCount();i<l;i++){vSum+=vWidget.getRowBoxHeight(i)+vSpacingY;
-}return vSum;
-},
-updateChildOnInnerWidthChange:function(vChild){vChild._recomputePercentX();
-vChild.addToLayoutChanges("locationX");
-return true;
-},
-updateChildOnInnerHeightChange:function(vChild){vChild._recomputePercentY();
-vChild.addToLayoutChanges("locationY");
-return true;
-},
-layoutChild:function(vChild,
-vJobs){var vWidget=this.getWidget();
-this.layoutChild_sizeX(vChild,
-vJobs);
-this.layoutChild_sizeY(vChild,
-vJobs);
-this.layoutChild_sizeLimitX(vChild,
-vJobs);
-this.layoutChild_sizeLimitY(vChild,
-vJobs);
-this.layoutChild_marginX(vChild,
-vJobs);
-this.layoutChild_marginY(vChild,
-vJobs);
-this.layoutChild_locationX(vChild,
-vJobs);
-this.layoutChild_locationY(vChild,
-vJobs);
-},
-layoutChild_sizeX:function(vChild,
-vJobs){vChild._renderRuntimeWidth(vChild.getBoxWidth());
-},
-layoutChild_sizeY:function(vChild,
-vJobs){vChild._renderRuntimeHeight(vChild.getBoxHeight());
-},
-layoutChild_locationX:function(vChild,
-vJobs){var vWidget=this.getWidget();
-var vSpacingX=vWidget.getHorizontalSpacing();
-var vLocSumX=vWidget.getPaddingLeft()+vWidget.getComputedCellPaddingLeft(vChild._col,
-vChild._row);
-for(var i=0;i<vChild._col;i++){vLocSumX+=vWidget.getColumnBoxWidth(i)+vSpacingX;
-}
-switch(vChild.getHorizontalAlign()||vWidget.getColumnHorizontalAlignment(vChild._col)||vWidget.getRowHorizontalAlignment(vChild._row)||vWidget.getHorizontalChildrenAlign()){case "center":vLocSumX+=Math.round((vWidget.getColumnInnerWidth(vChild._col,
-vChild._row)-vChild.getBoxWidth())/2);
-break;
-case "right":vLocSumX+=vWidget.getColumnInnerWidth(vChild._col,
-vChild._row)-vChild.getBoxWidth();
-break;
-}vChild._renderRuntimeLeft(vLocSumX);
-},
-layoutChild_locationY:function(vChild,
-vJobs){var vWidget=this.getWidget();
-var vSpacingY=vWidget.getVerticalSpacing();
-var vLocSumY=vWidget.getPaddingTop()+vWidget.getComputedCellPaddingTop(vChild._col,
-vChild._row);
-for(var i=0;i<vChild._row;i++){vLocSumY+=vWidget.getRowBoxHeight(i)+vSpacingY;
-}
-switch(vChild.getVerticalAlign()||vWidget.getRowVerticalAlignment(vChild._row)||vWidget.getColumnVerticalAlignment(vChild._col)||vWidget.getVerticalChildrenAlign()){case "middle":vLocSumY+=Math.round((vWidget.getRowInnerHeight(vChild._col,
-vChild._row)-vChild.getBoxHeight())/2);
-break;
-case "bottom":vLocSumY+=vWidget.getRowInnerHeight(vChild._col,
-vChild._row)-vChild.getBoxHeight();
-break;
-}vChild._renderRuntimeTop(vLocSumY);
-}}});
-
-
-
-
-/* ID: qx.ui.basic.VerticalSpacer */
-qx.Class.define("qx.ui.basic.VerticalSpacer",
-{extend:qx.ui.basic.Terminator,
-construct:function(){this.base(arguments);
-this.initHeight();
-},
-properties:{height:{refine:true,
-init:"1*"}}});
-
-
-
-
 /* ID: qx.event.handler.DragAndDropHandler */
 qx.Class.define("qx.event.handler.DragAndDropHandler",
 {type:"singleton",
@@ -18027,57 +17627,6 @@ ystop];
 
 
 
-/* ID: qx.html.Form */
-qx.Class.define("qx.html.Form",
-{statics:{ignoreInputTypes:["file",
-"submit",
-"image",
-"reset",
-"button"],
-ignoreElementTypes:["fieldset"],
-checkElementTypes:["radio",
-"checkbox"],
-multiSelectType:"select-multiple",
-inputFilter:function(vNode){if(vNode.disabled){return false;
-}var vTag=(vNode.tagName||"").toLowerCase();
-if(qx.lang.Array.contains(qx.html.Form.ignoreElementTypes,
-vTag)){return false;
-}var vType=vNode.type.toLowerCase();
-if(qx.lang.Array.contains(qx.html.Form.ignoreInputTypes,
-vType)){return false;
-}
-if(!vNode.checked&&qx.lang.Array.contains(qx.html.Form.checkElementTypes,
-vType)){return false;
-}return true;
-},
-getFields:function(vForm){return Array.filter(vForm.elements,
-qx.html.Form.inputFilter);
-},
-encodeField:function(vNode){var vName=vNode.name||"";
-var vType=(vNode.type||"").toLowerCase();
-if(vType===qx.html.Form.multiSelectType){var vValues=[];
-for(var i=0;i<vNode.options.length;i++){if(vNode.options[i].selected){vValues.push(vName+"="+vNode.options[i].value);
-}}return vValues.join("&");
-}else{return vName+"="+vNode.value;
-}},
-encodeForm:function(vForm){var vFields=qx.html.Form.getFields(vForm);
-var vAll=[];
-for(var i=0,
-l=vFields.length;i<l;i++){vAll.push(qx.html.Form.encodeField(vFields[i]));
-}return vAll.join("&");
-},
-bind:function(vForm,
-vMethod){qx.html.EventRegistration.addEventListener(vForm,
-"submit",
-function(e){e.returnValue=false;
-if(typeof e.preventDefault==="function"){e.preventDefault();
-}return vMethod(e);
-});
-}}});
-
-
-
-
 /* ID: qx.html.Iframe */
 qx.Class.define("qx.html.Iframe",
 {statics:{getWindow:qx.core.Variant.select("qx.client",
@@ -18152,13 +17701,16 @@ useBasicHttpAuth:{check:"Boolean",
 nullable:true}},
 members:{send:function(){throw new Error("send is abstract");
 },
-abort:function(){{};
+abort:function(){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.warn("Aborting...");
+}};
 this.setState("aborted");
 },
-timeout:function(){{};
+timeout:function(){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.warn("Timeout...");
+}};
 this.setState("timeout");
 },
-failed:function(){{};
+failed:function(){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.warn("Failed...");
+}};
 this.setState("failed");
 },
 setRequestHeader:function(vLabel,
@@ -18179,7 +17731,8 @@ getResponseXml:function(){throw new Error("getResponseXml is abstract");
 getFetchedLength:function(){throw new Error("getFetchedLength is abstract");
 },
 _applyState:function(value,
-old){{};
+old){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("State: "+value);
+}};
 switch(value){case "created":this.createDispatchEvent("created");
 break;
 case "configured":this.createDispatchEvent("configured");
@@ -18249,15 +17802,19 @@ vReadyState,
 vIsLocal){if(vIsLocal){switch(vStatusCode){case null:case 0:return true;
 case -1:return vReadyState<4;
 default:return typeof vStatusCode==="undefined";
-}}else{switch(vStatusCode){case -1:{};
+}}else{switch(vStatusCode){case -1:{if(qx.core.Setting.get("qx.ioRemoteDebug")&&vReadyState>3){qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Failed with statuscode: -1 at readyState "+vReadyState);
+}};
 return vReadyState<4;
 case 200:case 304:return true;
 case 201:case 202:case 203:case 204:case 205:return true;
-case 206:{};
+case 206:{if(qx.core.Setting.get("qx.ioRemoteDebug")&&vReadyState===4){qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Failed with statuscode: 206 (Partial content while being complete!)");
+}};
 return vReadyState!==4;
-case 300:case 301:case 302:case 303:case 305:case 400:case 401:case 402:case 403:case 404:case 405:case 406:case 407:case 408:case 409:case 410:case 411:case 412:case 413:case 414:case 415:case 500:case 501:case 502:case 503:case 504:case 505:{};
+case 300:case 301:case 302:case 303:case 305:case 400:case 401:case 402:case 403:case 404:case 405:case 406:case 407:case 408:case 409:case 410:case 411:case 412:case 413:case 414:case 415:case 500:case 501:case 502:case 503:case 504:case 505:{if(qx.core.Setting.get("qx.ioRemoteDebug")){qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Failed with typical HTTP statuscode: "+vStatusCode);
+}};
 return false;
-case 12002:case 12029:case 12030:case 12031:case 12152:case 13030:{};
+case 12002:case 12029:case 12030:case 12031:case 12152:case 13030:{if(qx.core.Setting.get("qx.ioRemoteDebug")){qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Failed with MSHTML specific HTTP statuscode: "+vStatusCode);
+}};
 return false;
 default:if(vStatusCode>206&&vStatusCode<300){return true;
 }qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Unknown status code: "+vStatusCode+" ("+vReadyState+")");
@@ -18341,7 +17898,8 @@ if(vTransportImpl){if(!qx.io.remote.Exchange.canHandle(vTransportImpl,
 vNeeds,
 vResponseType)){continue;
 }
-try{{};
+try{{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("Using implementation: "+vTransportImpl.classname);
+}};
 vTransport=new vTransportImpl;
 this.setImplementation(vTransport);
 vTransport.setUseBasicHttpAuth(vRequest.getUseBasicHttpAuth());
@@ -18352,9 +17910,11 @@ ex);
 }}}this.error("There is no transport implementation available to handle this request: "+vRequest);
 },
 abort:function(){var vImplementation=this.getImplementation();
-if(vImplementation){{};
+if(vImplementation){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("Abort: implementation "+vImplementation.toHashCode());
+}};
 vImplementation.abort();
-}else{{};
+}else{{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("Abort: forcing state to be aborted");
+}};
 this.setState("aborted");
 }},
 timeout:function(){var vImplementation=this.getImplementation();
@@ -18428,7 +17988,8 @@ this);
 }},
 _applyState:function(value,
 old){var vRequest=this.getRequest();
-{};
+{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("State: "+old+" => "+value);
+}};
 switch(value){case "sending":this.createDispatchEvent("sending");
 break;
 case "receiving":this.createDispatchEvent("receiving");
@@ -18439,7 +18000,8 @@ if(!vImpl){break;
 if(this.hasEventListeners(value)){var vResponse=new qx.io.remote.Response(value);
 if(value=="completed"){var vContent=vImpl.getResponseContent();
 vResponse.setContent(vContent);
-if(vContent===null){{};
+if(vContent===null){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("Altered State: "+value+" => failed");
+}};
 value="failed";
 }}vResponse.setStatusCode(vImpl.getStatusCode());
 vResponse.setResponseHeaders(vImpl.getResponseHeaders());
@@ -18593,7 +18155,8 @@ window.location.href);
 var vRequestHeaders=this.getRequestHeaders();
 for(var vId in vRequestHeaders){vRequest.setRequestHeader(vId,
 vRequestHeaders[vId]);
-}try{{};
+}try{{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Request: "+this.getData());
+}};
 vRequest.send(this.getData());
 }catch(ex){if(vLocalRequest){this.failedLocally();
 }else{this.error("Failed to send data: "+ex,
@@ -18606,7 +18169,8 @@ failedLocally:function(){if(this.getState()==="failed"){return;
 }this.warn("Could not load from file: "+this.getUrl());
 this.failed();
 },
-_onreadystatechange:function(e){switch(this.getState()){case "completed":case "aborted":case "failed":case "timeout":{};
+_onreadystatechange:function(e){switch(this.getState()){case "completed":case "aborted":case "failed":case "timeout":{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.warn("Ignore Ready State Change");
+}};
 return;
 }var vReadyState=this.getReadyState();
 if(vReadyState==4){if(!qx.io.remote.Exchange.wasSuccessful(this.getStatusCode(),
@@ -18673,32 +18237,43 @@ if(vResponseXML.documentElement.tagName=="parseerror"){throw new Error("XML-File
 getFetchedLength:function(){var vText=this.getResponseText();
 return typeof vText=="string"?vText.length:0;
 },
-getResponseContent:function(){if(this.getState()!=="completed"){{};
+getResponseContent:function(){if(this.getState()!=="completed"){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.warn("Transfer not complete, ignoring content!");
+}};
 return null;
-}{};
+}{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("Returning content for responseType: "+this.getResponseType());
+}};
 var vText=this.getResponseText();
-switch(this.getResponseType()){case qx.util.Mime.TEXT:case qx.util.Mime.HTML:{};
+switch(this.getResponseType()){case qx.util.Mime.TEXT:case qx.util.Mime.HTML:{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+vText);
+}};
 return vText;
-case qx.util.Mime.JSON:{};
+case qx.util.Mime.JSON:{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+vText);
+}};
 try{if(vText&&vText.length>0){return qx.io.Json.parseQx(vText)||null;
 }else{return null;
 }}catch(ex){this.error("Could not execute json: ["+vText+"]",
 ex);
 return "<pre>Could not execute json: \n"+vText+"\n</pre>";
-}case qx.util.Mime.JAVASCRIPT:{};
-try{if(vText&&vText.length>0){return window.eval(vText)||null;
+}case qx.util.Mime.JAVASCRIPT:{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+vText);
+}};
+try{if(vText&&vText.length>0){var start=new Date();
+var result=window.eval(vText)||null;
+var stop=new Date();
+this.debug("Time for eval: "+(stop-start)+" ms");
+return result;
 }else{return null;
 }}catch(ex){this.error("Could not execute javascript: ["+vText+"]",
 ex);
 return null;
 }case qx.util.Mime.XML:vText=this.getResponseXml();
-{};
+{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+vText);
+}};
 return vText||null;
 default:this.warn("No valid responseType specified ("+this.getResponseType()+")!");
 return null;
 }},
 _applyState:function(value,
-old){{};
+old){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("State: "+value);
+}};
 switch(value){case "created":this.createDispatchEvent("created");
 break;
 case "configured":this.createDispatchEvent("configured");
@@ -18863,29 +18438,36 @@ return vBody?vBody.innerHTML:null;
 },
 getFetchedLength:function(){return 0;
 },
-getResponseContent:function(){if(this.getState()!=="completed"){{};
+getResponseContent:function(){if(this.getState()!=="completed"){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.warn("Transfer not complete, ignoring content!");
+}};
 return null;
-}{};
+}{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("Returning content for responseType: "+this.getResponseType());
+}};
 var vText=this.getIframeTextContent();
-switch(this.getResponseType()){case qx.util.Mime.TEXT:{};
+switch(this.getResponseType()){case qx.util.Mime.TEXT:{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+this._responseContent);
+}};
 return vText;
 break;
 case qx.util.Mime.HTML:vText=this.getIframeHtmlContent();
-{};
+{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+this._responseContent);
+}};
 return vText();
 break;
 case qx.util.Mime.JSON:vText=this.getIframeHtmlContent();
-{};
+{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+this._responseContent);
+}};
 try{return vText&&vText.length>0?qx.io.Json.parseQx(vText):null;
 }catch(ex){return this.error("Could not execute json: ("+vText+")",
 ex);
 }case qx.util.Mime.JAVASCRIPT:vText=this.getIframeHtmlContent();
-{};
+{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+this._responseContent);
+}};
 try{return vText&&vText.length>0?window.eval(vText):null;
 }catch(ex){return this.error("Could not execute javascript: ("+vText+")",
 ex);
 }case qx.util.Mime.XML:vText=this.getIframeDocument();
-{};
+{if(qx.core.Setting.get("qx.ioRemoteDebugData")){this.debug("Response: "+this._responseContent);
+}};
 return vText;
 default:this.warn("No valid responseType specified ("+this.getResponseType()+")!");
 return null;
@@ -18904,98 +18486,6 @@ if(qx.core.Variant.isSet("qx.client",
 if(this._form){document.body.removeChild(this._form);
 }this._disposeFields("_frame",
 "_form");
-}});
-
-
-
-
-/* ID: qx.io.remote.ScriptTransport */
-qx.Class.define("qx.io.remote.ScriptTransport",
-{extend:qx.io.remote.AbstractRemoteTransport,
-construct:function(){this.base(arguments);
-var vUniqueId=++qx.io.remote.ScriptTransport._uniqueId;
-if(vUniqueId>=2000000000){qx.io.remote.ScriptTransport._uniqueId=vUniqueId=1;
-}this._element=null;
-this._uniqueId=vUniqueId;
-},
-statics:{_uniqueId:0,
-_instanceRegistry:{},
-ScriptTransport_PREFIX:"_ScriptTransport_",
-ScriptTransport_ID_PARAM:"_ScriptTransport_id",
-ScriptTransport_DATA_PARAM:"_ScriptTransport_data",
-handles:{synchronous:false,
-asynchronous:true,
-crossDomain:true,
-fileUpload:false,
-programaticFormFields:false,
-responseTypes:[qx.util.Mime.TEXT,
-qx.util.Mime.JAVASCRIPT,
-qx.util.Mime.JSON]},
-isSupported:function(){return true;
-},
-_numericMap:{"uninitialized":1,
-"loading":2,
-"loaded":2,
-"interactive":3,
-"complete":4},
-_requestFinished:function(id,
-content){var vInstance=qx.io.remote.ScriptTransport._instanceRegistry[id];
-if(vInstance==null){{};
-}else{vInstance._responseContent=content;
-vInstance._switchReadyState(qx.io.remote.ScriptTransport._numericMap.complete);
-}}},
-members:{_lastReadyState:0,
-send:function(){var vUrl=this.getUrl();
-vUrl+=(vUrl.indexOf("?")>=0?"&":"?")+qx.io.remote.ScriptTransport.ScriptTransport_ID_PARAM+"="+this._uniqueId;
-var vParameters=this.getParameters();
-var vParametersList=[];
-for(var vId in vParameters){if(vId.indexOf(qx.io.remote.ScriptTransport.ScriptTransport_PREFIX)==0){this.error("Illegal parameter name. The following prefix is used internally by qooxdoo): "+qx.io.remote.ScriptTransport.ScriptTransport_PREFIX);
-}var value=vParameters[vId];
-if(value instanceof Array){for(var i=0;i<value.length;i++){vParametersList.push(encodeURIComponent(vId)+"="+encodeURIComponent(value[i]));
-}}else{vParametersList.push(encodeURIComponent(vId)+"="+encodeURIComponent(value));
-}}
-if(vParametersList.length>0){vUrl+="&"+vParametersList.join("&");
-}vData=this.getData();
-if(vData!=null){vUrl+="&"+qx.io.remote.ScriptTransport.ScriptTransport_DATA_PARAM+"="+encodeURIComponent(vData);
-}qx.io.remote.ScriptTransport._instanceRegistry[this._uniqueId]=this;
-this._element=document.createElement("script");
-this._element.charset="utf-8";
-this._element.src=vUrl;
-{};
-document.body.appendChild(this._element);
-},
-_switchReadyState:function(vReadyState){switch(this.getState()){case "completed":case "aborted":case "failed":case "timeout":this.warn("Ignore Ready State Change");
-return;
-}while(this._lastReadyState<vReadyState){this.setState(qx.io.remote.Exchange._nativeMap[++this._lastReadyState]);
-}},
-setRequestHeader:function(vLabel,
-vValue){},
-getResponseHeader:function(vLabel){return null;
-},
-getResponseHeaders:function(){return {};
-},
-getStatusCode:function(){return 200;
-},
-getStatusText:function(){return "";
-},
-getFetchedLength:function(){return 0;
-},
-getResponseContent:function(){if(this.getState()!=="completed"){{};
-return null;
-}{};
-switch(this.getResponseType()){case qx.util.Mime.TEXT:case qx.util.Mime.JSON:case qx.util.Mime.JAVASCRIPT:{};
-return this._responseContent||null;
-default:this.warn("No valid responseType specified ("+this.getResponseType()+")!");
-return null;
-}}},
-defer:function(statics,
-members,
-properties){qx.io.remote.Exchange.registerType(qx.io.remote.ScriptTransport,
-"qx.io.remote.ScriptTransport");
-},
-destruct:function(){if(this._element){delete qx.io.remote.ScriptTransport._instanceRegistry[this._uniqueId];
-document.body.removeChild(this._element);
-}this._disposeFields("_element");
 }});
 
 
@@ -19140,7 +18630,8 @@ this.dispatchEvent(e);
 this.dispose();
 },
 _applyState:function(value,
-old){{};
+old){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("State: "+value);
+}};
 },
 _applyProhibitCaching:function(value,
 old){if(value){this.setParameter("nocache",
@@ -19223,7 +18714,9 @@ init:3},
 defaultTimeout:{check:"Integer",
 init:5000}},
 members:{_debug:function(){var vText=this._active.length+"/"+(this._queue.length+this._active.length);
-{};
+{if(qx.core.Setting.get("qx.ioRemoteDebug")){this.debug("Progress: "+vText);
+window.status="Request-Queue Progress: "+vText;
+}};
 },
 _check:function(){this._debug();
 if(this._active.length==0&&this._queue.length==0){this._timer.stop();
@@ -19278,9 +18771,14 @@ vTransport.dispose();
 this._check();
 },
 _activeCount:0,
-_onsending:function(e){{};
+_onsending:function(e){{if(qx.core.Setting.get("qx.ioRemoteDebug")){this._activeCount++;
+e.getTarget()._counted=true;
+this.debug("ActiveCount: "+this._activeCount);
+}};
 },
-_oncompleted:function(e){{};
+_oncompleted:function(e){{if(qx.core.Setting.get("qx.ioRemoteDebug")){if(e.getTarget()._counted){this._activeCount--;
+this.debug("ActiveCount: "+this._activeCount);
+}}};
 this._remove(e.getTarget());
 },
 _oninterval:function(e){var vActive=this._active;
@@ -19322,239 +18820,6 @@ destruct:function(){this._disposeObjectDeep("_active",
 this._disposeObjects("_timer");
 this._disposeFields("_queue");
 }});
-
-
-
-
-/* ID: qx.client.NativeWindow */
-qx.Class.define("qx.client.NativeWindow",
-{extend:qx.core.Target,
-construct:function(url,
-name){this.base(arguments);
-this._timer=new qx.client.Timer(100);
-this._timer.addEventListener("interval",
-this._oninterval,
-this);
-if(url!=null){this.setUrl(url);
-}
-if(name!=null){this.setName(name);
-}},
-events:{"load":"qx.event.type.Event",
-"close":"qx.event.type.Event"},
-properties:{open:{check:"Boolean",
-init:false,
-apply:"_applyOpen"},
-width:{check:"Number",
-init:400,
-apply:"_applyDimension"},
-height:{check:"Number",
-init:250,
-apply:"_applyDimension"},
-left:{check:"Number",
-init:100,
-apply:"_applyPosition"},
-top:{check:"Number",
-init:200,
-apply:"_applyPosition"},
-modal:{check:"Boolean",
-init:false},
-dependent:{check:"Boolean",
-init:true},
-url:{check:"String",
-apply:"_applyUrl",
-init:"about:blank"},
-name:{check:"String",
-apply:"_applyName",
-init:""},
-status:{check:"String",
-init:"Ready"},
-showStatusbar:{check:"Boolean",
-init:false},
-showMenubar:{check:"Boolean",
-init:false},
-showLocation:{check:"Boolean",
-init:false},
-showToolbar:{check:"Boolean",
-init:false},
-resizable:{check:"Boolean",
-init:true},
-allowScrollbars:{check:"Boolean",
-init:true},
-location:{group:["left",
-"right"]},
-dimension:{group:["width",
-"height"]}},
-members:{_loaded:false,
-_applyPosition:function(value,
-old){if(!this.isClosed()){try{this._window.moveTo(this.getLeft(),
-this.getTop());
-}catch(ex){this.error("Cross-Domain Scripting problem: Could not move window!",
-ex);
-}}},
-_applyDimension:function(value,
-old){if(!this.isClosed()){try{this._window.resizeTo(this.getWidth(),
-this.getHeight());
-}catch(ex){this.error("Cross-Domain Scripting problem: Could not resize window!",
-ex);
-}}},
-_applyName:function(value,
-old){if(!this.isClosed()){this._window.name=value;
-}},
-_applyUrl:function(value,
-old){if(!this.isClosed()){this._window.location.replace(value!=null?value:("javascript:/"+"/"));
-}},
-_applyOpen:function(value,
-old){value?this._open():this._close();
-},
-isClosed:function(){var vClosed=true;
-if(this._window){try{vClosed=this._window.closed;
-}catch(ex){}}return vClosed;
-},
-open:function(){this.setOpen(true);
-},
-close:function(){this.setOpen(false);
-},
-isLoaded:function(){return this._loaded;
-},
-_open:function(){var conf=[];
-if(this.getWidth()!=null){conf.push("width");
-conf.push("=");
-conf.push(this.getWidth());
-conf.push(",");
-}
-if(this.getHeight()!=null){conf.push("height");
-conf.push("=");
-conf.push(this.getHeight());
-conf.push(",");
-}
-if(this.getLeft()!=null){conf.push("left");
-conf.push("=");
-conf.push(this.getLeft());
-conf.push(",");
-}
-if(this.getTop()!=null){conf.push("top");
-conf.push("=");
-conf.push(this.getTop());
-conf.push(",");
-}conf.push("dependent");
-conf.push("=");
-conf.push(this.getDependent()?"yes":"no");
-conf.push(",");
-conf.push("resizable");
-conf.push("=");
-conf.push(this.getResizable()?"yes":"no");
-conf.push(",");
-conf.push("status");
-conf.push("=");
-conf.push(this.getShowStatusbar()?"yes":"no");
-conf.push(",");
-conf.push("location");
-conf.push("=");
-conf.push(this.getShowLocation()?"yes":"no");
-conf.push(",");
-conf.push("menubar");
-conf.push("=");
-conf.push(this.getShowMenubar()?"yes":"no");
-conf.push(",");
-conf.push("toolbar");
-conf.push("=");
-conf.push(this.getShowToolbar()?"yes":"no");
-conf.push(",");
-conf.push("scrollbars");
-conf.push("=");
-conf.push(this.getAllowScrollbars()?"yes":"no");
-conf.push(",");
-conf.push("modal");
-conf.push("=");
-conf.push(this.getModal()?"yes":"no");
-conf.push(",");
-if(this.getName()!=null){this.setName("qx_NativeWindow"+this.toHashCode());
-}this._window=window.open(this.getUrl(),
-this.getName(),
-conf.join(""));
-if(this.isClosed()){this.error("Window could not be opened. It seems, there is a popup blocker active!");
-}else{try{this._window._native=this;
-this._window.onload=this._onload;
-}catch(ex){}this._timer.start();
-if(this.getModal()){qx.ui.core.ClientDocument.getInstance().block(this);
-}}},
-_close:function(){if(!this._window){return;
-}this._timer.stop();
-if(this.getModal()){qx.ui.core.ClientDocument.getInstance().release(this);
-}if(!this.isClosed()){this._window.close();
-}
-try{this._window._native=null;
-this._window.onload=null;
-}catch(ex){}this._window=null;
-this._loaded=false;
-this.createDispatchEvent("close");
-},
-centerToScreen:function(){this._centerHelper((screen.width-this.getWidth())/2,
-(screen.height-this.getHeight())/2);
-},
-centerToScreenArea:function(){this._centerHelper((screen.availWidth-this.getWidth())/2,
-(screen.availHeight-this.getHeight())/2);
-},
-centerToOpener:function(){this._centerHelper(((qx.html.Window.getInnerWidth(window)-this.getWidth())/2)+qx.html.Location.getScreenBoxLeft(window.document.body),
-((qx.html.Window.getInnerHeight(window)-this.getHeight())/2)+qx.html.Location.getScreenBoxTop(window.document.body));
-},
-_centerHelper:function(l,
-t){this.setLeft(l);
-this.setTop(t);
-if(!this.isClosed()){this.focus();
-}},
-focus:function(){if(!this.isClosed()){this._window.focus();
-}},
-blur:function(){if(!this.isClosed()){this._window.blur();
-}},
-_oninterval:function(e){if(this.isClosed()){this.setOpen(false);
-}else if(!this._loaded){try{if(this._window.document&&this._window.document.readyState=="complete"){this._loaded=true;
-this.createDispatchEvent("load");
-}}catch(ex){}}},
-_onload:function(e){var obj=this._native;
-if(!obj._loaded){obj._loaded=true;
-obj.createDispatchEvent("load");
-}}},
-destruct:function(){if(this.getDependent()){this.close();
-}this._disposeObjects("_timer");
-if(this._window){try{this._window._native=null;
-this._window.onload=null;
-}catch(ex){}this._window=null;
-}}});
-
-
-
-
-/* ID: qx.html.Window */
-qx.Class.define("qx.html.Window",
-{statics:{getInnerWidth:qx.core.Variant.select("qx.client",
-{"mshtml":function(vWindow){if(vWindow.document.documentElement&&vWindow.document.documentElement.clientWidth){return vWindow.document.documentElement.clientWidth;
-}else if(vWindow.document.body){return vWindow.document.body.clientWidth;
-}return 0;
-},
-"default":function(vWindow){return vWindow.innerWidth;
-}}),
-getInnerHeight:qx.core.Variant.select("qx.client",
-{"mshtml":function(vWindow){if(vWindow.document.documentElement&&vWindow.document.documentElement.clientHeight){return vWindow.document.documentElement.clientHeight;
-}else if(vWindow.document.body){return vWindow.document.body.clientHeight;
-}return 0;
-},
-"default":function(vWindow){return vWindow.innerHeight;
-}}),
-getScrollLeft:qx.core.Variant.select("qx.client",
-{"mshtml":function(vWindow){if(vWindow.document.documentElement&&vWindow.document.documentElement.scrollLeft){return vWindow.document.documentElement.scrollLeft;
-}else if(vWindow.document.body){return vWindow.document.body.scrollTop;
-}return 0;
-},
-"default":function(vWindow){return vWindow.document.body.scrollLeft;
-}}),
-getScrollTop:qx.core.Variant.select("qx.client",
-{"mshtml":function(vWindow){if(vWindow.document.documentElement&&vWindow.document.documentElement.scrollTop){return vWindow.document.documentElement.scrollTop;
-}else if(vWindow.document.body){return vWindow.document.body.scrollTop;
-}return 0;
-},
-"default":function(vWindow){return vWindow.document.body.scrollTop;
-}})}});
 
 
 
@@ -19694,6 +18959,40 @@ this._iframeNode.onload=null;
 "_iframeNode",
 "_blockerNode");
 }});
+
+
+
+
+/* ID: qx.html.Window */
+qx.Class.define("qx.html.Window",
+{statics:{getInnerWidth:qx.core.Variant.select("qx.client",
+{"mshtml":function(vWindow){if(vWindow.document.documentElement&&vWindow.document.documentElement.clientWidth){return vWindow.document.documentElement.clientWidth;
+}else if(vWindow.document.body){return vWindow.document.body.clientWidth;
+}return 0;
+},
+"default":function(vWindow){return vWindow.innerWidth;
+}}),
+getInnerHeight:qx.core.Variant.select("qx.client",
+{"mshtml":function(vWindow){if(vWindow.document.documentElement&&vWindow.document.documentElement.clientHeight){return vWindow.document.documentElement.clientHeight;
+}else if(vWindow.document.body){return vWindow.document.body.clientHeight;
+}return 0;
+},
+"default":function(vWindow){return vWindow.innerHeight;
+}}),
+getScrollLeft:qx.core.Variant.select("qx.client",
+{"mshtml":function(vWindow){if(vWindow.document.documentElement&&vWindow.document.documentElement.scrollLeft){return vWindow.document.documentElement.scrollLeft;
+}else if(vWindow.document.body){return vWindow.document.body.scrollTop;
+}return 0;
+},
+"default":function(vWindow){return vWindow.document.body.scrollLeft;
+}}),
+getScrollTop:qx.core.Variant.select("qx.client",
+{"mshtml":function(vWindow){if(vWindow.document.documentElement&&vWindow.document.documentElement.scrollTop){return vWindow.document.documentElement.scrollTop;
+}else if(vWindow.document.body){return vWindow.document.body.scrollTop;
+}return 0;
+},
+"default":function(vWindow){return vWindow.document.body.scrollTop;
+}})}});
 
 
 

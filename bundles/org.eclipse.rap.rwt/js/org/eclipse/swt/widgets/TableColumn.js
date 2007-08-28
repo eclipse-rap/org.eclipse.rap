@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     this.removeEventListener( "mousedown", this._onMouseDown, this );
     this.removeEventListener( "mouseup", this._onMouseUp, this );
     this._disposeSortImage();
-    if( !this._table.isDisposed() ) {
+    if( !this._table.getDisposed() ) {
       this._table._removeColumn( this );
     }
   },
