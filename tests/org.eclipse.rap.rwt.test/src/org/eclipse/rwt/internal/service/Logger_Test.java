@@ -23,7 +23,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.browser.Ie;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleSerivceHandlerSync;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
 import org.eclipse.swt.RWTFixture;
 
 
@@ -63,8 +63,8 @@ public class Logger_Test extends TestCase {
     LifeCycleServiceHandler.configurer 
       = new ILifeCycleServiceHandlerConfigurer()
     {
-      public LifeCycleSerivceHandlerSync getSynchronizationHandler() {
-        return new LifeCycleSerivceHandlerSync() {
+      public LifeCycleServiceHandlerSync getSynchronizationHandler() {
+        return new LifeCycleServiceHandlerSync() {
           public void service() throws ServletException, IOException {
             doService();
           }

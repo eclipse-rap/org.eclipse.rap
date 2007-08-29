@@ -22,7 +22,7 @@ import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.ILifeCycleServiceHandlerConfigurer;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleSerivceHandlerSync;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.widgets.Display;
@@ -100,8 +100,8 @@ public class StartupRequest_Test extends TestCase {
     LifeCycleServiceHandler.configurer
      = new ILifeCycleServiceHandlerConfigurer()
     {
-      public LifeCycleSerivceHandlerSync getSynchronizationHandler() {
-        return new LifeCycleSerivceHandlerSync() {
+      public LifeCycleServiceHandlerSync getSynchronizationHandler() {
+        return new LifeCycleServiceHandlerSync() {
           public void service() throws ServletException, IOException {
             doService();
           }

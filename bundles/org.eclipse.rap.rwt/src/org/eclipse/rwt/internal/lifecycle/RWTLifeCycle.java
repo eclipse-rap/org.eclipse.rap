@@ -80,7 +80,7 @@ public class RWTLifeCycle extends LifeCycle {
         current = executePhase( current );
       }
     } catch( final Throwable throwable ) {
-      RWTLifeCycleSerivceHandlerSync.handleException( throwable );
+      RWTLifeCycleServiceHandlerSync.handleException( throwable );
     } finally {
       ServiceContext context = ContextProvider.getContext();
       if( !context.isDisposed() ) { // execution may has been aborted

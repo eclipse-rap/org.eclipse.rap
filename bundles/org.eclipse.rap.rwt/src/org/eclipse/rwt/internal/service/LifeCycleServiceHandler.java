@@ -84,7 +84,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     public boolean isStartupPageModifiedSince() {
       return true;
     }
-    public LifeCycleSerivceHandlerSync getSynchronizationHandler() {
+    public LifeCycleServiceHandlerSync getSynchronizationHandler() {
       return syncHandler;
     }
   };
@@ -93,7 +93,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     InputStream getTemplateOfStartupPage() throws IOException;
     boolean isStartupPageModifiedSince();
     void registerResources() throws IOException;
-    LifeCycleSerivceHandlerSync getSynchronizationHandler();
+    LifeCycleServiceHandlerSync getSynchronizationHandler();
   }
     
   public interface ILifeCycleRunner {
@@ -107,7 +107,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
    * only one request at a time can be executed.   
    */
   private final static class DefaultLifeCycleServiceHandlerSync
-    extends LifeCycleSerivceHandlerSync
+    extends LifeCycleServiceHandlerSync
   {
     public void service() throws ServletException, IOException {
       synchronized( ContextProvider.getSession() ) {
@@ -122,7 +122,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
    * different stratiegies for W4Toolkit and RWT.
    *  
    */
-  public static abstract class LifeCycleSerivceHandlerSync {
+  public static abstract class LifeCycleServiceHandlerSync {
 
     /**
      * This method installs the fitting synchronization strategie for each 

@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleSerivceHandlerSync;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.LifeCycleControl.LifeCycleLock;
 
@@ -18,8 +18,8 @@ import org.eclipse.rwt.lifecycle.LifeCycleControl.LifeCycleLock;
 // at a time can be sent. Check other cases than page refresh
 // etc. The old W4T synchronization mechanism caused problems
 // with the jface dialog handling.
-public final class RWTLifeCycleSerivceHandlerSync
-  extends LifeCycleSerivceHandlerSync
+public final class RWTLifeCycleServiceHandlerSync
+  extends LifeCycleServiceHandlerSync
 {
 
   private static final String SKIP_RESPONSE

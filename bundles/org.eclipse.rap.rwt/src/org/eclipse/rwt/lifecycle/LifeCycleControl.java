@@ -11,7 +11,7 @@
 
 package org.eclipse.rwt.lifecycle;
 
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycleSerivceHandlerSync;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycleServiceHandlerSync;
 import org.eclipse.rwt.internal.service.ServiceContext;
 
 
@@ -32,13 +32,13 @@ public class LifeCycleControl {
    * TODO [fappel]: comment
    */
   public static void block( final LifeCycleLock lock ) {
-    RWTLifeCycleSerivceHandlerSync.block( lock );
+    RWTLifeCycleServiceHandlerSync.block( lock );
   }
   
   /**
    * TODO [fappel]: comment
    */
   public static void resume( final LifeCycleLock lock ) {
-    RWTLifeCycleSerivceHandlerSync.resume( lock );
+    RWTLifeCycleServiceHandlerSync.resume( lock );
   }
 }
