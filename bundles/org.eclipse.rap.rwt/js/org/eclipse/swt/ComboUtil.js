@@ -159,7 +159,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         var req = org.eclipse.swt.Request.getInstance();
         req.addParameter( cboId + ".changedText", value );
       }
-    },
+    }
     
   }
 });
