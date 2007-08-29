@@ -12,7 +12,6 @@ package org.eclipse.rwt.lifecycle;
 
 import java.util.EventObject;
 
-import org.eclipse.rwt.internal.lifecycle.ILifeCycle;
 
 /**
  * <p>This event is sent to the <code>PhaseListener</code> before and after

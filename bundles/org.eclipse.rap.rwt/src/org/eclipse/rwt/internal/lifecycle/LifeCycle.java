@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.io.IOException;
 import javax.servlet.ServletException;
 
+import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 
 

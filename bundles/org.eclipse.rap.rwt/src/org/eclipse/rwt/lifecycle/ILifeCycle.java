@@ -8,9 +8,8 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.lifecycle;
+package org.eclipse.rwt.lifecycle;
 
-import org.eclipse.rwt.lifecycle.PhaseListener;
 
 /**
  * <p>This interface represents the lifecycle of a request.</p>

@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 
 

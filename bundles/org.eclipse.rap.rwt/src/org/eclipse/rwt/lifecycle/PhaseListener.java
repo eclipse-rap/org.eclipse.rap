@@ -13,7 +13,6 @@ package org.eclipse.rwt.lifecycle;
 import java.io.Serializable;
 import java.util.EventListener;
 
-import org.eclipse.rwt.internal.lifecycle.ILifeCycle;
 
 /**
  * <p>

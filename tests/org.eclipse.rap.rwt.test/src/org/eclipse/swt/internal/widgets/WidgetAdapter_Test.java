@@ -16,8 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.browser.Ie6;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;

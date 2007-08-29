@@ -82,6 +82,13 @@ public class TypedEvent extends Event {
     this.widget = (Widget) source;
   }
   
+  public Object getSource() {
+    // TODO [rh] introduced to get rid of discouraged access warning when 
+    //      application code accesses getSource() which is defined in 
+    //      org.eclipse.rwt.internal.events.Event
+    return super.getSource();
+  }
+
   /**
    * TODO [rh] JavaDoc
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT

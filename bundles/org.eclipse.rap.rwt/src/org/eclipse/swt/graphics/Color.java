@@ -24,9 +24,11 @@ import org.eclipse.swt.internal.graphics.IColor;
  */
 public class Color extends Resource {
 
-  /**
+  /* (intentionally non-JavaDoc'ed)
    * Extension of class <code>Color</code> with an additional method that
    * returns a color id to pass to qooxdoo.
+   * NOTE: Don't remove this class. Despite a possible warning that this class 
+   * is never used locally - it IS. See ResourceFactory#createColorInstance.
    */
   private static class ColorExt extends Color implements IColor {
 

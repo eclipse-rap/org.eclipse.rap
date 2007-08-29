@@ -14,6 +14,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.service.ISessionStore;
 
 

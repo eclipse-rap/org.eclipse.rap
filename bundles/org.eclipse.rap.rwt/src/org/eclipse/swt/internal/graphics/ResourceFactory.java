@@ -313,7 +313,8 @@ public final class ResourceFactory {
       Class[] paramList = new Class[] { int.class };
       Constructor constr = colorExtClass.getDeclaredConstructor( paramList );
       constr.setAccessible( true );
-      result = ( Color )constr.newInstance( new Object[] { new Integer( colorNr ) } );
+      Object[] args = new Object[] { new Integer( colorNr ) };
+      result = ( Color )constr.newInstance( args );
     } catch( final Exception e ) {
       throw new RuntimeException( "Failed to instantiate Color", e );
     }

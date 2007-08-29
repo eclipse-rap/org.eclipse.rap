@@ -14,11 +14,11 @@ package org.eclipse.rwt;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rwt.internal.lifecycle.ILifeCycle;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.*;
 

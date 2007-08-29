@@ -101,11 +101,6 @@ public class Composite extends Scrollable {
     return controlHolder.getControls();
   }
 
-  public int getChildrenCount() {
-    checkWidget();
-    return controlHolder.size();
-  }
-
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IControlHolderAdapter.class ) {
