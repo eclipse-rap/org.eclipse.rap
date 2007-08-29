@@ -57,7 +57,7 @@ public class ComboLCA extends AbstractWidgetLCA {
                           JSListenerType.STATE_AND_ACTION );
   private static final JSListenerInfo JS_MODIFY_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_KEY_UP,
-                        "org.eclipse.swt.TextUtil.modifyText",
+                        "org.eclipse.swt.ComboUtil.modifyText",
                         JSListenerType.STATE_AND_ACTION );
 
 //  private static final String TYPE_POOL_ID = ComboLCA.class.getName();

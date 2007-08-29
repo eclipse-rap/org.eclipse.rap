@@ -26,6 +26,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
                               org.eclipse.swt.ComboUtil._onChangeTextColor );
       combo.addEventListener( "changeValue",
                               org.eclipse.swt.ComboUtil._onChangeValue );
+      org.eclipse.swt.ComboUtil.hijackAutoCompletition( combo );
     },
     
     deinitialize : function( combo ) {
@@ -37,6 +38,66 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
                                  org.eclipse.swt.ComboUtil._onChangeTextColor );
       combo.removeEventListener( "changeValue",
                                  org.eclipse.swt.ComboUtil._onChangeValue );
+    },
+    
+    // workaround for qx bug 555 (ComboBox prevents input when list is visible)
+    // http://bugzilla.qooxdoo.org/show_bug.cgi?id=555
+    hijackAutoCompletition : function( combo ) {
+      combo.removeEventListener("keyinput", combo._onkeyinput);
+      combo._onkeyinput = function(e) {};
+      combo.addEventListener("keyinput", combo._onkeyinput);
+      
+      // TODO: need to prevent clearing the input field when
+      // closing list with Escape key
+    },
+    
+    /**
+     * This function gets assigned to the 'keyup' event of a text widget if 
+     * there was a server-side ModifyListener registered.
+     */
+    modifyTextAction : function( evt ) {
+      var combo = evt.getTarget();
+      if( !( combo instanceof qx.ui.form.ComboBox ) ) {
+      	// this will be called for the combo *and* the inner textfield
+      	// just use the events of the combo
+      	return;
+      }
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
+          && !org.eclipse.swt.TextUtil._isModified( combo ) 
+          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) ) 
+      {
+        var req = org.eclipse.swt.Request.getInstance();
+        // Register 'send'-listener that adds a request param with current text
+        if( !org.eclipse.swt.TextUtil._isModified( combo ) ) {
+          req.addEventListener( "send", org.eclipse.swt.ComboUtil._onSend, combo );
+          org.eclipse.swt.TextUtil._setModified( combo, true );
+        }
+        // add modifyText-event with sender-id to request parameters
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( combo );
+        req.addEvent( "org.eclipse.swt.events.modifyText", id );
+        // register listener that is notified when a request is sent
+        qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedModifyText, 
+                              combo, 
+                              500 );
+      }
+      org.eclipse.swt.TextUtil.updateSelection( combo.getField() );
+    },
+    
+    _onSend : function( evt ) {
+      // NOTE: 'this' references the combo widget
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var id = widgetManager.findIdByWidget( this );
+      var req = org.eclipse.swt.Request.getInstance();
+      req.addParameter( id + ".text", this.getField().getComputedValue() );
+      // remove the _onSend listener and change the text widget state to 'unmodified'
+      req.removeEventListener( "send", org.eclipse.swt.ComboUtil._onSend, this );
+      org.eclipse.swt.TextUtil._setModified( this, false );
+      // Update the value property (which is qooxdoo-wise only updated on
+      // focus-lost) to be in sync with server-side
+      if( this.getFocused() ) {
+        this.setValue( this.getField().getComputedValue() );
+      }
     },
     
     onSelectionChanged : function( evt ) {
