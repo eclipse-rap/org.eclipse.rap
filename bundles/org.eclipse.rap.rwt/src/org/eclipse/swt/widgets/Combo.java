@@ -580,6 +580,8 @@ public class Combo extends Composite {
       select( index );
     }
     text = string;
+    ModifyEvent modifyEvent = new ModifyEvent( this );
+    modifyEvent.processEvent();
   }
 
   // //////////////////
@@ -683,14 +685,52 @@ public class Combo extends Composite {
     SelectionEvent.removeListener( this, listener );
   }
 
-  // TODO [fappel]: documentation and implementation
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the receiver's text is modified, by sending
+   * it one of the messages defined in the <code>ModifyListener</code>
+   * interface.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see ModifyListener
+   * @see #removeModifyListener
+   */
   public void addModifyListener( final ModifyListener listener ) {
-    
+    checkWidget();
+    if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
+    ModifyEvent.addListener( this, listener );
   }
   
-  // TODO [fappel]: documentation and implementation
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the receiver's text is modified.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see ModifyListener
+   * @see #addModifyListener
+   */
   public void removeModifyListener( final ModifyListener listener ) {
-    
+    checkWidget();
+    if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
+    ModifyEvent.removeListener( this, listener );
   }
   
   // TODO [fappel]: documentation and implementation

@@ -157,7 +157,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
         var cboId = widgetManager.findIdByWidget( combo );
         var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( cboId + ".changedText", value );
+        req.addParameter( cboId + ".text", value );
       }
     }
     

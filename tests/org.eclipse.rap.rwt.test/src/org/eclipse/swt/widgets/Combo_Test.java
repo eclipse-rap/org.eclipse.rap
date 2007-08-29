@@ -12,8 +12,12 @@
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 
 /*
  * Note:
@@ -180,6 +184,47 @@ public class Combo_Test extends TestCase {
     assertTrue( combo.isDisposed() );
   }
 
+  protected boolean listenerCalled;
+  public void testAddModifyListener() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    
+    boolean exceptionThrown = false;
+    
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    
+    ModifyListener listener = new ModifyListener() {
+
+      public void modifyText( ModifyEvent event ) {
+        listenerCalled = true;
+      }
+    };
+    try {
+      combo.addModifyListener( null );
+    } catch( IllegalArgumentException e ) {
+      exceptionThrown = true;
+    }
+    assertTrue( "Expected exception not thrown", exceptionThrown );
+    exceptionThrown = false;
+    // test whether all content modifying API methods send a Modify event
+    combo.addModifyListener( listener );
+    listenerCalled = false;
+    combo.setText( "new text" );
+    assertTrue( "setText does not send event", listenerCalled );
+    listenerCalled = false;
+    combo.removeModifyListener( listener );
+    // cause to call the listener.
+    combo.setText( "line" );
+    assertTrue( "Listener not removed", listenerCalled == false );
+    try {
+      combo.removeModifyListener( null );
+    } catch( IllegalArgumentException e ) {
+      exceptionThrown = true;
+    }
+    assertTrue( "Expected exception not thrown", exceptionThrown );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

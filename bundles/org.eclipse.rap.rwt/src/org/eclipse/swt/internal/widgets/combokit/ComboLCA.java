@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -48,11 +49,16 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_EDITABLE = "editable";
+  private static final String PROP_MODIFY_LISTENER = "modifyListener";
 
   private static final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,
                           JS_FUNC_WIDGET_SELECTED,
                           JSListenerType.STATE_AND_ACTION );
+  private static final JSListenerInfo JS_MODIFY_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_KEY_UP,
+                        "org.eclipse.swt.TextUtil.modifyText",
+                        JSListenerType.STATE_AND_ACTION );
 
 //  private static final String TYPE_POOL_ID = ComboLCA.class.getName();
 
@@ -67,8 +73,10 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION, selection );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
+    adapter.preserve( PROP_MODIFY_LISTENER,
+                      Boolean.valueOf( ModifyEvent.hasListener( combo ) ) );
     adapter.preserve( PROP_EDITABLE, Boolean.valueOf( 
-                      (combo.getStyle() & SWT.READ_ONLY ) != 0 ) );
+                      (combo.getStyle() & SWT.READ_ONLY ) == 0 ) );
   }
 
   public void readData( final Widget widget ) {
@@ -77,7 +85,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     if( value != null ) {
       combo.select( new Integer( value ).intValue() );
     }
-    String text = WidgetLCAUtil.readPropertyValue( widget, "changedText" );
+    String text = WidgetLCAUtil.readPropertyValue( widget, "text" );
     if( text != null ) {
       combo.setText( text );
     }
@@ -99,6 +107,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     writeItems( combo );
     writeSelected( combo );
     writeEditable( combo );
+    writeModifyListener( combo );
 
     // workaround for broken context menu on qx ComboBox
     // see http://bugzilla.qooxdoo.org/show_bug.cgi?id=465
@@ -167,6 +176,16 @@ public class ComboLCA extends AbstractWidgetLCA {
     if( editable ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
       writer.set( PROP_EDITABLE, editable );
+    }
+  }
+  
+  static void writeModifyListener( final Combo combo ) throws IOException {
+    if( ( combo.getStyle() & SWT.READ_ONLY ) == 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( combo );
+      boolean hasListener = ModifyEvent.hasListener( combo );
+      writer.updateListener( JS_MODIFY_LISTENER_INFO,
+                             PROP_MODIFY_LISTENER,
+                             hasListener );
     }
   }
 }

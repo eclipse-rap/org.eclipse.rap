@@ -68,8 +68,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
           org.eclipse.swt.TextUtil._setModified( text, true );
         }
         // add modifyText-event with sender-id to request parameters
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget(text);
+        var id = org.eclipse.swt.TextUtil.getIdForWidget( text );
         req.addEvent( "org.eclipse.swt.events.modifyText", id );
         // register listener that is notified when a request is sent
         qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedModifyText, 
@@ -87,8 +86,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       if(    !org_eclipse_rap_rwt_EventUtil_suspend 
           && org.eclipse.swt.TextUtil._isModified( evt.getTarget() ) ) 
       {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        var id = org.eclipse.swt.TextUtil.getIdForWidget( evt.getTarget() );
         var req = org.eclipse.swt.Request.getInstance();
         req.addEvent( "org.eclipse.swt.events.modifyText", id );
         req.send();
@@ -97,8 +95,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     _onSend : function( evt ) {
       // NOTE: 'this' references the text widget
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
+      var id = org.eclipse.swt.TextUtil.getIdForWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
       req.addParameter( id + ".text", this.getComputedValue() );
       // remove the _onSend listener and change the text widget state to 'unmodified'
@@ -117,6 +114,16 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
         var req = org.eclipse.swt.Request.getInstance();
         req.send();
       }
+    },
+    
+    getIdForWidget : function( widget ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        if( widget.getParent() instanceof qx.ui.form.ComboBox ) {
+          id = widgetManager.findIdByWidget( widget.getParent() );
+        } else {
+          id = widgetManager.findIdByWidget( widget );
+        }
+        return id;
     },
 
     _isModified : function( widget ) {
@@ -192,7 +199,8 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     updateSelection : function( text ) {
       // TODO [rh] executing the code below for a TextArea leads to Illegal Argument
-      if( text.classname != "qx.ui.form.TextArea" ) {
+      if( text.classname != "qx.ui.form.TextArea" &&
+        !( text.getParent() instanceof qx.ui.form.ComboBox ) ) {
         var start = text.getSelectionStart();
         var length = text.getSelectionLength();
         if( text.getUserData( "selectionStart" ) != start ) {
