@@ -12,7 +12,6 @@ package org.eclipse.swt.custom;
 
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.widgets.Display;
 
 /**

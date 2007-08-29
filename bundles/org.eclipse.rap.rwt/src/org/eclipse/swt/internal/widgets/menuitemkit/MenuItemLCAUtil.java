@@ -42,8 +42,7 @@ final class MenuItemLCAUtil {
     writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
   }
 
-  static void writeImageAndText( final MenuItem menuItem ) throws IOException 
-  {
+  static void writeImageAndText( final MenuItem menuItem ) throws IOException {
     ItemLCAUtil.writeText( menuItem, true );
     ItemLCAUtil.writeImage( menuItem );
   }

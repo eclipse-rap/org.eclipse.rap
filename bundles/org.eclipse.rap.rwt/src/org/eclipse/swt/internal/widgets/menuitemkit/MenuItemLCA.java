@@ -59,7 +59,9 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
     getDelegateLCA( menuItem ).renderDispose( menuItem );
   }
   
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId ) 
+    throws IOException 
+  {
   }
   
   public String getTypePoolId( final Widget widget ) throws IOException {

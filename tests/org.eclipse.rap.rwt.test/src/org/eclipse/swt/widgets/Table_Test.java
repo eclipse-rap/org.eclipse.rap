@@ -1191,6 +1191,39 @@ public class Table_Test extends TestCase {
     column.setWidth( 20 ); // image width is 50
     assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
   }
+  
+  public void testGetItem() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item;
+    // test with empty table
+    table.setSize( 100, 100 );
+    item = table.getItem( new Point( 200, 200 ) );
+    assertNull( item );
+    item = table.getItem( new Point( 50, 50 ) );
+    assertNull( item );
+    item = table.getItem( new Point( -10, -20 ) );
+    assertNull( item );
+    // test with populated table
+    table.setSize( 100, 100 );
+    for( int i = 0; i < 100; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    assertNotNull( table.getItem( new Point( 5, 5 ) ) );
+    item = table.getItem( new Point( 50, 50 ) );
+    assertNotNull( item );
+    item = table.getItem( new Point( 200, 200 ) );
+    assertNull( item );
+    item = table.getItem( new Point( -10, -20 ) );
+    assertNull( item );
+    item = table.getItem( new Point( 0, 0 ) );
+    assertNotNull( item );
+    assertEquals( 0, table.indexOf( item ) );
+    item = table.getItem( new Point( 0, table.getItemHeight() ) );
+    assertNotNull( item );
+    assertEquals( 0, table.indexOf( item ) );
+  }
 
   private static void clearColumns( final Table table ) {
     while( table.getColumnCount() > 0 ) {

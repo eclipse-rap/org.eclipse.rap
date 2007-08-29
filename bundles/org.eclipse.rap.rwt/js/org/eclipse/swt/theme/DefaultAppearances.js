@@ -612,12 +612,13 @@ appearances = {
     {
       style : function( states ) {
         return {
-          width           : "auto",
-          height          : "auto",
-          textColor       : "menu.foreground",
+          width : "auto",
+          height : "auto",
+          textColor : "menu.foreground",
           backgroundColor : "menu.background",
-          border          : "outset",
-          padding         : 1
+          overflow : "hidden",
+          border : "outset",
+          padding : 1
         };
       }
     },
@@ -638,13 +639,13 @@ appearances = {
     {
       style : function( states ) {
         var result = {
-          minWidth              : "auto",
-          height                : "auto",
-          spacing               : 2,
-          padding               : [ 2, 4 ],
-          cursor                : "default",
+          minWidth : "auto",
+          height : "auto",
+          spacing : 2,
+          padding : [ 2, 4 ],
+          cursor : "default",
           verticalChildrenAlign : "middle",
-          backgroundColor       : states.over ? "menu.hover.background" : "menu.background"
+          backgroundColor : states.over ? "menu.hover.background" : "menu.background"
         };
         if( states.disabled ) {
           result.textColor = "widget.graytext";

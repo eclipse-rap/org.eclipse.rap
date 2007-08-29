@@ -29,6 +29,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
     MenuLCAUtil.preserveMenuListener( menu );
+    MenuLCAUtil.preserveWidth( menu );
   }
   
   void readData( final Menu menu ) {
@@ -52,6 +53,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.writeEnabled( menu );
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
+    MenuLCAUtil.writeWidth( menu );
   }
 
   /**

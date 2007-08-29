@@ -601,33 +601,49 @@ public class Table extends Composite {
   }
   
   
-//  /**
-//   * Returns the item at the given point in the receiver
-//   * or null if no such item exists. The point is in the
-//   * coordinate system of the receiver.
-//   * <p>
-//   * The item that is returned represents an item that could be selected by the user.
-//   * For example, if selection only occurs in items in the first column, then null is 
-//   * returned if the point is outside of the item. 
-//   * Note that the SWT.FULL_SELECTION style hint, which specifies the selection policy,
-//   * determines the extent of the selection.
-//   * </p>
-//   *
-//   * @param point the point used to locate the item
-//   * @return the item at the given point, or null if the point is not in a selectable item
-//   *
-//   * @exception IllegalArgumentException <ul>
-//   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
-//   * </ul>
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-//   * </ul>
-//   */
+  /**
+   * Returns the item at the given point in the receiver
+   * or null if no such item exists. The point is in the
+   * coordinate system of the receiver.
+   * <p>
+   * The item that is returned represents an item that could be selected by the user.
+   * For example, if selection only occurs in items in the first column, then null is 
+   * returned if the point is outside of the item. 
+   * Note that the SWT.FULL_SELECTION style hint, which specifies the selection policy,
+   * determines the extent of the selection.
+   * </p>
+   *
+   * @param point the point used to locate the item
+   * @return the item at the given point, or null if the point is not in a selectable item
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public TableItem getItem( final Point point ) {
     checkWidget();
-    // TODO [rh] IMPLEMENTATION MISSING
-    return null;
+    TableItem result = null;
+    Rectangle clientArea = getClientArea();
+    if(    point.x >= 0 
+        && point.y >= 0 
+        && point.x <= clientArea.width 
+        && point.y <= clientArea.height ) 
+    {
+      int itemHeight = getItemHeight();
+      int index = ( point.y / itemHeight ) - 1;
+      if( point.y == 0 || point.y % itemHeight != 0 ) {
+        index++;
+      }
+      index += topIndex;
+      if( index < getItemCount() ) {
+        result = getItem( index );
+      }
+    }
+    return result;
   }
 
   /**

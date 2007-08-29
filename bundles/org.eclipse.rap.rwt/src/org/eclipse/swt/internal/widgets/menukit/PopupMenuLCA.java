@@ -13,15 +13,14 @@ package org.eclipse.swt.internal.widgets.menukit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IMenuAdapter;
-import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 
 final class PopupMenuLCA extends MenuDelegateLCA {
+
+  private static final String PROP_ENABLED = "enabled";
 
   private static final String SHOW_MENU 
     = "org.eclipse.swt.MenuUtil.showMenu";
@@ -29,8 +28,9 @@ final class PopupMenuLCA extends MenuDelegateLCA {
   void preserveValues( final Menu menu ) {
     // TODO [rh] extract method and move to MenuLCAUtil
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-    adapter.preserve( Props.ENABLED, Boolean.valueOf( menu.getEnabled() ) );
+    adapter.preserve( PROP_ENABLED, Boolean.valueOf( menu.getEnabled() ) );
     MenuLCAUtil.preserveMenuListener( menu );
+    MenuLCAUtil.preserveWidth( menu );
   }
   
   void readData( final Menu menu ) {
@@ -48,6 +48,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     MenuLCAUtil.writeEnabled( menu );
     MenuLCAUtil.writeMenuListener( menu );
     MenuLCAUtil.writeUnhideMenu( menu );
+    MenuLCAUtil.writeWidth( menu );
   }
 
   private static void writeShow( final Menu menu ) throws IOException {
@@ -65,13 +66,4 @@ final class PopupMenuLCA extends MenuDelegateLCA {
       menu.setVisible( false );  
     }
   }
-  
-  public static void writeEnabled( final Control control )
-    throws IOException
-  {
-    Boolean newValue = Boolean.valueOf( control.isEnabled() );
-    JSWriter writer = JSWriter.getWriterFor( control );
-    writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, Boolean.TRUE );
-  }
-
 }

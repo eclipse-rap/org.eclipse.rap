@@ -77,6 +77,7 @@ public class TableTab extends ExampleTab {
     createImagesControl();
     createAlignmentControl();
     createBackgroundControl();
+    createSelectAtPointControl();
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -553,6 +554,42 @@ public class TableTab extends ExampleTab {
             items[ i ].setForeground( foreground );
             items[ i ].setFont( font );
           }
+        }
+      }
+    } );
+  }
+
+  private void createSelectAtPointControl() {
+    Composite composite = new Composite( styleComp, SWT.NONE );
+    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    Label lblSelectAt = new Label( composite, SWT.NONE );
+    lblSelectAt.setText( "Select at X" );
+    final Text txtX = new Text( composite, SWT.BORDER );
+    txtX.setText( "0" );
+    Label lblY = new Label( composite, SWT.NONE );
+    lblY.setText( "Y" );
+    final Text txtY = new Text( composite, SWT.BORDER );
+    txtY.setText( "0" );
+    Button btnSelect = new Button( composite, SWT.PUSH );
+    btnSelect.setText( "OK" );
+    btnSelect.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        try {
+          int x = Integer.parseInt( txtX.getText() );
+          int y = Integer.parseInt( txtY.getText() );
+          Point point = new Point( x, y );
+          TableItem item = getTable().getItem( point );
+          if( item != null ) {
+            getTable().setSelection( item );
+          } else {
+            Shell shell = getTable().getShell();
+            String msg = "No table item at this coordinate.";
+            MessageDialog.openInformation( shell, "Information", msg );
+          }
+        } catch( NumberFormatException e ) {
+          Shell shell = getTable().getShell();
+          String msg = "Invalid x or y coordinate.";
+          MessageDialog.openError( shell, "Error", msg );
         }
       }
     } );
