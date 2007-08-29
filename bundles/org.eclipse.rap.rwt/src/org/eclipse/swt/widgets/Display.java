@@ -137,7 +137,12 @@ public class Display extends Device implements Adaptable {
    * @return the current display
    */
   public static Display getCurrent() {
-    return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
+    Display result = null;
+    if( ContextProvider.hasContext() ) {
+      ISessionStore sessionStore = ContextProvider.getSession();
+      result = ( Display )sessionStore.getAttribute( DISPLAY_ID );
+    }
+    return result;
   }
 
   /**
@@ -151,7 +156,7 @@ public class Display extends Device implements Adaptable {
    * @return the default display
    */
   public static Display getDefault () {
-    return ( Display )ContextProvider.getSession().getAttribute( DISPLAY_ID );
+    return getCurrent();
   }
 
   private final List shells;
