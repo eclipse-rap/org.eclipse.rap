@@ -29,10 +29,10 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   private static final String WIDGET_SELECTED
     = "org.eclipse.swt.ButtonUtil.checkSelected";
 
-  private final JSListenerInfo JS_LISTENER_INFO
+  private static final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_CHECKED,
                           WIDGET_SELECTED,
-                          JSListenerType. STATE_AND_ACTION );
+                          JSListenerType.STATE_AND_ACTION );
 
   void preserveValues( final Button button ) {
     ButtonLCAUtil.preserveValues( button );

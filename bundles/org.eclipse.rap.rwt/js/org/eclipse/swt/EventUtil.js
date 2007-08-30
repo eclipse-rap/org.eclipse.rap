@@ -85,16 +85,6 @@ qx.Class.define("org.eclipse.swt.EventUtil", {
       }
     },
 
-    shellClosed : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.widgets.Shell_close", id );
-        req.send();
-      }
-    },
-
     focusGained : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();

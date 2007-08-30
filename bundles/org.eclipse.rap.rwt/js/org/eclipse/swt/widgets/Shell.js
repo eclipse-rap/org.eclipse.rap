@@ -44,7 +44,32 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       "topRight", 
       "bottomLeft", 
       "bottomRight"
-    ]
+    ],
+
+    onClose : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var shell = evt.getData();
+        shell.hide();
+        org.eclipse.swt.widgets.Shell._appendCloseRequestParam( shell );
+      }
+    },
+    
+    onCloseAction : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var shell = evt.getData();
+        org.eclipse.swt.widgets.Shell._appendCloseRequestParam( shell );
+        org.eclipse.swt.Request.getInstance().send();
+      }      
+    },
+    
+    _appendCloseRequestParam : function( shell ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( shell );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addEvent( "org.eclipse.swt.widgets.Shell_close", id );
+      }
+    }
   },
   
   destruct : function() {
@@ -61,6 +86,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 // TODO [fappel]: remove rounded corners
 /////////////////////////////////////////////////
     
+  },
+
+  events : {
+    "close" : "qx.event.type.DataEvent"
   },
 
   properties : {
@@ -92,6 +121,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         this._captionBar.addState( "rwt_TITLE" );
       } else {
         this.setShowCaption( false );
+      }
+    },
+
+    /** Overrides qx.ui.window.Window#close() */    
+    close : function() {
+      if( this.hasEventListeners( "close" ) ) {
+        var event = new qx.event.type.DataEvent( "close", this );
+        this.dispatchEvent( event, true );
       }
     },
 

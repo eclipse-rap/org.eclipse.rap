@@ -74,8 +74,6 @@ public final class JSConst {
     = "org.eclipse.swt.EventUtil.widgetResized";
   public static final String JS_WIDGET_MOVED
     = "org.eclipse.swt.EventUtil.widgetMoved";
-  public static final String JS_SHELL_CLOSED
-    = "org.eclipse.swt.EventUtil.shellClosed";
   public static final String JS_TREE_SELECTED
     = "org.eclipse.swt.TreeUtil.widgetSelected";
   public static final String JS_CONTEXT_MENU

@@ -606,10 +606,12 @@ public class Shell extends Decorations {
     checkWidget();
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        ShellEvent shellEvent 
+        ShellEvent event 
           = new ShellEvent( Shell.this, ShellEvent.SHELL_CLOSED );
-        shellEvent.processEvent();
-        Shell.this.dispose();
+        event.processEvent();
+        if( event.doit ) {
+          Shell.this.dispose();
+        }
       }
     } );
   }

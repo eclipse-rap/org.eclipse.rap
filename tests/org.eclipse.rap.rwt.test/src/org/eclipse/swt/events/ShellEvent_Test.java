@@ -55,4 +55,24 @@ public class ShellEvent_Test extends TestCase {
     shell.close();
     assertEquals( "", log );
   }
+  
+  public void testDenyClose() {
+    ShellListener listener = new ShellAdapter() {
+      public void shellClosed( final ShellEvent event ) {
+        // Test initial value of dit flag on ShellEvent
+        assertTrue( event.doit );
+        event.doit = false;
+        log += SHELL_CLOSED;
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    shell.addShellListener( listener );
+    shell.open();
+    log = "";
+    shell.close();
+    assertFalse( shell.isDisposed() );
+    assertEquals( SHELL_CLOSED, log );
+    assertTrue( shell.getVisible() );
+  }
 }

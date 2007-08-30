@@ -28,16 +28,22 @@ import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 
-
 public final class ShellLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Shell";
   private static final String TYPE_POOL_ID = ShellLCA.class.getName();
+
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
   private static final String PROP_ACTIVE_CONTROL = "activeControl";
   private static final String PROP_ACTIVE_SHELL = "activeShell";
   private static final String PROP_MODE = "mode";
+  private static final String PROP_SHELL_LISTENER = "shellListener";
+
+  private static final JSListenerInfo JS_CLOSE_LISTENER_INFO
+    = new JSListenerInfo( "close",
+                          "org.eclipse.swt.widgets.Shell.onClose",
+                          JSListenerType.STATE_AND_ACTION );
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -48,6 +54,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TEXT, shell.getText() );
     adapter.preserve( PROP_IMAGE, shell.getImage() );
     adapter.preserve( PROP_MODE, getMode( shell ) );
+    adapter.preserve( PROP_SHELL_LISTENER, 
+                      Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
   }
 
   public void readData( final Widget widget ) {
@@ -87,8 +95,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.set( "dialogMode", isDialog );
     ControlLCAUtil.writeResizeNotificator( widget );
     ControlLCAUtil.writeMoveNotificator( widget );
-    writer.addListener( JSConst.QX_EVENT_CHANGE_VISIBILITY,
-                        JSConst.JS_SHELL_CLOSED );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -103,6 +109,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writeActiveShell( shell );
     writeActiveControl( shell );
     writeMode( shell );
+    writeCloseListener( shell );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -120,8 +127,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     ControlLCAUtil.resetStyleFlags();
     ControlLCAUtil.resetResizeNotificator();
     ControlLCAUtil.resetMoveNotificator();
-    writer.removeListener( JSConst.QX_EVENT_CHANGE_VISIBILITY,
-                           JSConst.JS_SHELL_CLOSED );
+    // TODO [rh] reset close listener when shell pooling is activated
     ControlLCAUtil.resetBounds();
     ControlLCAUtil.resetZIndex();
     ControlLCAUtil.resetToolTip();
@@ -269,6 +275,14 @@ public final class ShellLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( shell );
       writer.set( "mode", newValue );
     }
+  }
+
+  private static void writeCloseListener( final Shell shell ) throws IOException 
+  {
+    JSWriter writer = JSWriter.getWriterFor( shell );
+    writer.updateListener( JS_CLOSE_LISTENER_INFO, 
+                           PROP_SHELL_LISTENER, 
+                           ShellEvent.hasListener( shell ) );
   }
 
   private static String getMode( final Shell shell ) {

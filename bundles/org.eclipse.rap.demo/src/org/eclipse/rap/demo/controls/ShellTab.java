@@ -12,6 +12,7 @@ package org.eclipse.rap.demo.controls;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -26,17 +27,26 @@ public class ShellTab extends ExampleTab {
   private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
 
   private java.util.List shells;
+  private final ShellAdapter confirmCloseListener;
   private Image shellImage;
-
   private Button createInvisibleButton;
   private Button createAsDialogButton;
   private Button createWithMenuButton;
   private Button showClientAreaButton;
+  private Button confirmCloseButton;
 //  private Button customBgColorButton;
 
   public ShellTab( final CTabFolder topFolder ) {
     super( topFolder, "Shell" );
     shells = new ArrayList();
+    confirmCloseListener = new ShellAdapter() {
+      public void shellClosed( final ShellEvent event ) {
+        Shell shell = ( Shell )event.widget;
+        String msg = "Close " + shell.getText() + "?";
+        boolean canClose = MessageDialog.openConfirm( shell, "Confirm", msg );
+        event.doit = canClose;
+      }
+    };
     setDefaultStyle( SWT.SHELL_TRIM );
   }
 
@@ -56,6 +66,7 @@ public class ShellTab extends ExampleTab {
     createAsDialogButton = createPropertyButton( "Create as dialog" );
     createWithMenuButton = createPropertyButton( "Add menu" );
     showClientAreaButton = createPropertyButton( "Show client area" );
+    confirmCloseButton = createPropertyButton( "Confirm Close" );
 //    customBgColorButton = createPropertyButton( "Custom background" );
   }
 
@@ -154,9 +165,12 @@ public class ShellTab extends ExampleTab {
     } else {
       createShellContents2( shell );
     }
-    int num = shells.size() + 1;
-    shell.setText( "Test Shell " + num );
+    int count = shells.size() + 1;
+    shell.setText( "Test Shell " + count );
     shell.setImage( shellImage );
+    if( confirmCloseButton.getSelection() ) {
+      shell.addShellListener( confirmCloseListener );
+    }
     if( !createInvisibleButton.getSelection() ) {
       shell.open();
     }
@@ -183,7 +197,7 @@ public class ShellTab extends ExampleTab {
     comp1.setBounds( ca.x, ca.y, ca.width, ca.height );
     comp2.setBounds( ca.x + 1, ca.y + 1, ca.width - 2, ca.height - 2 );
     Button closeButton = new Button( shell, SWT.PUSH );
-    closeButton.setText( "Close This Window" );
+    closeButton.setText( "Close This Shell" );
     closeButton.pack();
     closeButton.moveAbove( comp2 );
     int centerX = ( ca.width - ca.x ) / 2;
@@ -305,6 +319,7 @@ public class ShellTab extends ExampleTab {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();
+      shell.removeShellListener( confirmCloseListener );
       shell.close();
       shell.dispose();
     }

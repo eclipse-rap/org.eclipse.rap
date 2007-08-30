@@ -66,6 +66,7 @@ public final class ShellEvent extends TypedEvent {
    */
   public ShellEvent( final Object source, final int id ) {
     super( source, id );
+    doit = true;
   }
   
   protected void dispatchToObserver( final Object listener ) {
