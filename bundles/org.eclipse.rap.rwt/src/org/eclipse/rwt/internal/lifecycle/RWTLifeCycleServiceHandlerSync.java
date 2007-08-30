@@ -13,11 +13,6 @@ import org.eclipse.rwt.lifecycle.LifeCycleControl.LifeCycleLock;
 /**
  * TODO [fappel]: documentation
  */
-// TODO [fappel]: No request synchronization for the RAP lifecycle, since
-// the client side js mechanism ensures that only one request
-// at a time can be sent. Check other cases than page refresh
-// etc. The old W4T synchronization mechanism caused problems
-// with the jface dialog handling.
 public final class RWTLifeCycleServiceHandlerSync
   extends LifeCycleServiceHandlerSync
 {
@@ -53,14 +48,12 @@ public final class RWTLifeCycleServiceHandlerSync
       }
     }
 
-    private void finishLifeCycle() {
+    private void finishLifeCycle() throws IOException {
       RWTLifeCycle lifeCycle 
         = ( RWTLifeCycle )RWT.getLifeCycle();
       lifeCycle.afterPhaseExecution( PhaseId.PROCESS_ACTION );
       try {
         lifeCycle.executePhase( PhaseId.RENDER );
-      } catch( final Throwable throwable ) {
-        handleException( throwable );
       } finally {
         lifeCycle.cleanUp();
       }
@@ -107,23 +100,11 @@ public final class RWTLifeCycleServiceHandlerSync
     }
   }
 
-  static void handleException( final Throwable throwable ) {
-    if( throwable instanceof AbortRequestProcessingError ) {
-      throw ( AbortRequestProcessingError )throwable;
-    }
-    // TODO: [fappel] introduce proper exception handling
-    throwable.printStackTrace();
-    if( throwable instanceof RuntimeException ) {
-      throw ( RuntimeException )throwable;
-    }
-    String msg = "An error occured while executing RWTLifeCycle.";
-    throw new RuntimeException( msg, throwable );
-  }
-
   public void service() throws ServletException, IOException {
     synchronized( ContextProvider.getSession() ) {
       final ServletException[] seBuffer = new ServletException[ 1 ];
       final IOException[] ioeBuffer = new IOException[ 1 ];
+      final RuntimeException[] rtBuffer = new RuntimeException[ 1 ];
       final Object lock = new Object();
       final ServiceContext context = ContextProvider.getContext();
   
@@ -134,6 +115,8 @@ public final class RWTLifeCycleServiceHandlerSync
             LOCK.set( lock );
             ContextProvider.setContext( context );
             doService();
+          } catch( final RuntimeException rt ) {
+            rtBuffer[ 0 ] = rt;
           } catch( final ServletException se ) {
             seBuffer[ 0 ] = se;
           } catch( final IOException ioe ) {
@@ -166,6 +149,9 @@ public final class RWTLifeCycleServiceHandlerSync
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
+      }
+      if( rtBuffer[ 0 ] != null ) {
+        throw rtBuffer[ 0 ];
       }
       if( seBuffer[ 0 ] != null ) {
         throw seBuffer[ 0 ];

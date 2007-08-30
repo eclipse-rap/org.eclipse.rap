@@ -159,14 +159,16 @@ qx.Class.define( "org.eclipse.swt.Request", {
       // To solve bug #165666 we use GET- instead of POST-method
       var request = new qx.io.remote.Request( this._url, 
                                               qx.net.Http.METHOD_POST, 
-                                              qx.util.Mime.JAVASCRIPT );
+                                              qx.util.Mime.TEXT );
       // copy the _parameters map which was filled during client interaction to
       // the request
       this._inDelayedSend = false;
       this._copyParameters( request );
       // notify user when request takes longer than 500 ms
       qx.client.Timer.once( this._showWaitHint, this, 500 );
-      request.addEventListener( "completed", this._hideWaitHint, this );
+      request.addEventListener( "completed", this._handleCompleted, this );
+      request.addEventListener( "failed", this._handleFailed, this );
+
       this._logSend();
       // queue request to be sent
       // TODO [rh] check that there is no currently active request
@@ -204,6 +206,41 @@ qx.Class.define( "org.eclipse.swt.Request", {
         }
         var doc = qx.ui.core.ClientDocument.getInstance();
         doc.setGlobalCursor( qx.constant.Style.CURSOR_PROGRESS );
+      }
+    },
+    
+    _handleFailed : function( evt ) {
+      var text = evt.getTarget().getImplementation().getRequest().responseText;
+      document.open( "text/html", true );
+      if( text == "" || text == null ) {
+        document.write( "<html><head><title>Error Page</title></head><body>" );
+        document.write( "<p>Request failed:</p><pre>" );
+        document.write( "HTTP Status Code: " );
+        document.write( evt.getStatusCode() );
+        document.write( "</pre></body></html>")
+      } else {
+        document.write( text );
+      }
+      document.close();
+    },
+    
+    _handleCompleted : function( evt ) {
+      var text = evt.getTarget().getImplementation().getRequest().responseText;
+      try {
+        if( text && text.length > 0 ) {
+          window.eval( text );
+        }
+        this._hideWaitHint( evt );      
+      } catch( ex ) {
+        this.error( "Could not execute javascript: [" + text + "]", ex );
+        document.open( "text/html", true );
+        document.write( "<html><head><title>Error Page</title></head><body>" );
+        document.write( "<p>Could not evaluate javascript response:</p><pre>");
+        document.write( ex );
+        document.write( "\n\n" );
+        document.write( text );
+        document.write( "</pre></body></html>")
+        document.close();
       }
     },
 

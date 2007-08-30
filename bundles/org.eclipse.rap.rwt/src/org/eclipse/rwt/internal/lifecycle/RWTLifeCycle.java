@@ -79,8 +79,6 @@ public class RWTLifeCycle extends LifeCycle {
       while( current != null ) {
         current = executePhase( current );
       }
-    } catch( final Throwable throwable ) {
-      RWTLifeCycleServiceHandlerSync.handleException( throwable );
     } finally {
       ServiceContext context = ContextProvider.getContext();
       if( !context.isDisposed() ) { // execution may has been aborted
