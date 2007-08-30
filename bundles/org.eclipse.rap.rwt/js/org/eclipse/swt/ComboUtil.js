@@ -58,11 +58,9 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     modifyTextAction : function( evt ) {
       var combo = evt.getTarget();
       if( !( combo instanceof qx.ui.form.ComboBox ) ) {
-      	// this will be called for the combo *and* the inner textfield
-      	// just use the events of the combo
-      	return;
+      	combo = combo.getParent();
       }
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
+      if( !org_eclipse_rap_rwt_EventUtil_suspend 
           && !org.eclipse.swt.TextUtil._isModified( combo ) 
           && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) ) 
       {
@@ -82,6 +80,22 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
                               500 );
       }
       org.eclipse.swt.TextUtil.updateSelection( combo.getField() );
+    },
+    
+    /**
+     * This function gets assigned to the 'blur' event of a text widget if there
+     * was a server-side ModifyListener registered.
+     */
+    modifyTextOnBlur : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend 
+          && org.eclipse.swt.TextUtil._isModified( evt.getTarget() ) ) 
+      {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addEvent( "org.eclipse.swt.events.modifyText", id );
+        req.send();
+      }
     },
     
     _onSend : function( evt ) {

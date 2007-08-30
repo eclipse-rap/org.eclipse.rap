@@ -59,6 +59,10 @@ public class ComboLCA extends AbstractWidgetLCA {
     = new JSListenerInfo( JSConst.QX_EVENT_KEY_UP,
                         "org.eclipse.swt.ComboUtil.modifyText",
                         JSListenerType.STATE_AND_ACTION );
+  private static final JSListenerInfo JS_BLUR_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_BLUR,
+                        "org.eclipse.swt.ComboUtil.modifyTextOnBlur",
+                        JSListenerType.ACTION );
 
 //  private static final String TYPE_POOL_ID = ComboLCA.class.getName();
 
@@ -175,7 +179,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     boolean editable = ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );
     if( editable ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
-      writer.set( PROP_EDITABLE, editable );
+      writer.set( PROP_EDITABLE, "editable", Boolean.valueOf( editable ), null );
     }
   }
   
@@ -186,6 +190,9 @@ public class ComboLCA extends AbstractWidgetLCA {
       writer.updateListener( JS_MODIFY_LISTENER_INFO,
                              PROP_MODIFY_LISTENER,
                              hasListener );
+      writer.updateListener( JS_BLUR_LISTENER_INFO,
+              				 PROP_MODIFY_LISTENER,
+              				 hasListener );
     }
   }
 }
