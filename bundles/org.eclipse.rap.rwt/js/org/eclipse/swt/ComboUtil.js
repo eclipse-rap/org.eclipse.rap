@@ -51,6 +51,22 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       // closing list with Escape key
     },
     
+    modifyText : function( evt ) {
+      var combo = evt.getTarget();
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
+          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) ) 
+      {
+        // if not yet done, register an event listener that adds a request param
+        // with the text widgets' content just before the request is sent
+        if( !org.eclipse.swt.TextUtil._isModified( combo ) ) {
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addEventListener( "send", org.eclipse.swt.ComboUtil._onSend, text );
+          org.eclipse.swt.TextUtil._setModified( combo, true );
+        }
+      }
+      org.eclipse.swt.TextUtil.updateSelection( combo );
+    },
+    
     /**
      * This function gets assigned to the 'keyup' event of a text widget if 
      * there was a server-side ModifyListener registered.
