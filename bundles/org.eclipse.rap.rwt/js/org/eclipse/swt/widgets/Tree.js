@@ -183,8 +183,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     
     getColumnsWidth : function() {
       var width = 0;
-      for(var i=0; i<this._columns.length; i++) {
-        width += this._columns[ i ].getWidth();
+      if( this._columns.length > 0 ) {
+	    for(var i=0; i<this._columns.length; i++) {
+	      width += this._columns[ i ].getWidth();
+	    }
+      } else {
+        width = this._tree.getWidth();
       }
       return width;
     },
