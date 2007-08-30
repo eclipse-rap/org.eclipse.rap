@@ -156,7 +156,7 @@ public class TreeItemLCA_Test extends TestCase {
 
     String expected;
     expected = "setBackground( \"#ff0000\" );";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
 
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
@@ -166,7 +166,7 @@ public class TreeItemLCA_Test extends TestCase {
     tiLCA.renderChanges( treeItem );
 
     expected = "wm.setForeground( w, \"#00ff00\" );";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   protected void setUp() throws Exception {
