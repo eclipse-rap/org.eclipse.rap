@@ -151,12 +151,12 @@ public class TreeItemLCA_Test extends TestCase {
 
     TreeItemLCA tiLCA = new TreeItemLCA();
     treeItem.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
+
     tiLCA.renderChanges( treeItem );
 
     String expected;
-    expected = "setBackgroundColor( \"#ff0000\" );";
-
-    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
+    expected = "setBackground( \"#ff0000\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
@@ -166,7 +166,7 @@ public class TreeItemLCA_Test extends TestCase {
     tiLCA.renderChanges( treeItem );
 
     expected = "wm.setForeground( w, \"#00ff00\" );";
-    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   protected void setUp() throws Exception {

@@ -46,6 +46,8 @@ public class TreeItem extends Item {
   private boolean grayed;
   private String[] texts;
   private Image[] images;
+  Color[] cellForegrounds, cellBackgrounds;
+  Font[] cellFonts;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -368,9 +370,15 @@ public class TreeItem extends Item {
    * 
    * @since 3.1
    */
-  public Color getBackground (int columnIndex) {
-    // TODO: [bm] implementation missing
-    return null;
+  public Color getBackground( int columnIndex ) {
+    checkWidget();
+    // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
+    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
+    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) )
+      return getBackground();
+    if( cellBackgrounds == null || cellBackgrounds[ columnIndex ] == null )
+      return getBackground();
+    return cellBackgrounds[ columnIndex ];
   }
   
   /**
@@ -388,8 +396,16 @@ public class TreeItem extends Item {
    * @since 3.1
    */
   public Font getFont (int columnIndex) {
-    // TODO: [bm] implementation missing
-    return null;
+    checkWidget ();
+    return getFont (columnIndex, true);
+  }
+  
+  Font getFont (int columnIndex, boolean checkData) {
+//    if (checkData && !parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
+    int validColumnCount = Math.max (1, parent.columnHolder.size());
+    if (!(0 <= columnIndex && columnIndex < validColumnCount)) return getFont (checkData);
+    if (cellFonts == null || cellFonts [columnIndex] == null) return getFont (checkData);
+    return cellFonts [columnIndex];
   }
   
   /**
@@ -406,9 +422,15 @@ public class TreeItem extends Item {
    * 
    * @since 3.1
    */
-  public Color getForeground (int columnIndex) {
-    // TODO: [bm] implementation missing
-    return null;
+  public Color getForeground( int columnIndex ) {
+    checkWidget();
+    // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
+    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
+    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) )
+      return getForeground();
+    if( cellForegrounds == null || cellForegrounds[ columnIndex ] == null )
+      return getForeground();
+    return cellForegrounds[ columnIndex ];
   }
   
   /**
@@ -431,7 +453,21 @@ public class TreeItem extends Item {
    * 
    */
   public void setBackground (int columnIndex, Color value) {
-    // TODO: [bm] implementation missing
+    checkWidget();
+    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
+    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) )
+      return;
+    if( cellBackgrounds == null ) {
+      cellBackgrounds = new Color[ validColumnCount ];
+    }
+    if( cellBackgrounds[ columnIndex ] == value )
+      return;
+    if( cellBackgrounds[ columnIndex ] != null
+        && cellBackgrounds[ columnIndex ].equals( value ) )
+      return;
+    cellBackgrounds[ columnIndex ] = value;
+//    if( ( parent.style & SWT.VIRTUAL ) != 0 )
+//      cached = true;
   }
 
   /**
@@ -454,7 +490,18 @@ public class TreeItem extends Item {
    * @since 3.1
    */
   public void setFont (int columnIndex, Font value) {
-    // TODO [bm] implementation missing
+    checkWidget ();
+
+    int validColumnCount = Math.max (1, parent.columnHolder.size());
+    if (!(0 <= columnIndex && columnIndex < validColumnCount)) return;
+    if (cellFonts == null) {
+      if (value == null) return;
+      cellFonts = new Font [validColumnCount];
+    }
+    if (cellFonts [columnIndex] == value) return;
+    if (cellFonts [columnIndex] != null && cellFonts [columnIndex].equals (value)) return;
+    cellFonts [columnIndex] = value;
+//    if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
   
   /**
@@ -476,8 +523,21 @@ public class TreeItem extends Item {
    * @since 3.1
    * 
    */
-  public void setForeground (int columnIndex, Color value) {
-    // TODO [bm] implementation missing
+  public void setForeground( int columnIndex, Color value ) {
+    checkWidget();
+    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
+    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) )
+      return;
+    if( cellForegrounds == null ) {
+      cellForegrounds = new Color[ validColumnCount ];
+    }
+    if( cellForegrounds[ columnIndex ] == value )
+      return;
+    if( cellForegrounds[ columnIndex ] != null
+        && cellForegrounds[ columnIndex ].equals( value ) )
+      return;
+    cellForegrounds[ columnIndex ] = value;
+    // if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
   /**
@@ -528,6 +588,14 @@ public class TreeItem extends Item {
     return result;
   }
 
+  Font getFont( boolean checkData ) {
+//    if( checkData && !parent.checkData( this, true ) )
+//      error( SWT.ERROR_WIDGET_DISPOSED );
+    if( font != null )
+      return font;
+    return parent.getFont();
+  }
+  
   /**
    * Sets the receiver's background color to the color specified
    * by the argument, or to the default system color for the item
@@ -877,18 +945,17 @@ public class TreeItem extends Item {
   
   void clear() {
     // TODO: [bm] revisit when columns are available
-//    checked = grayed = false;
-    checked = false;
+    checked = grayed = false;
     texts = null;
 //    textWidths = new int[ 1 ];
 //    fontHeight = 0;
 //    fontHeights = null;
-//    images = null;
+    images = null;
     foreground = background = null;
 //    displayTexts = null;
-//    cellForegrounds = cellBackgrounds = null;
+    cellForegrounds = cellBackgrounds = null;
     font = null;
-//    cellFonts = null;
+    cellFonts = null;
     setText( "" );
     setImage( (Image) null );
 

@@ -876,7 +876,7 @@ appearances = {
       style : function( states ) {
         var result = {
           cursor : "default",
-          height : 15,
+          height : 16,
           padding : 2
         };
         if( states.selected ) {

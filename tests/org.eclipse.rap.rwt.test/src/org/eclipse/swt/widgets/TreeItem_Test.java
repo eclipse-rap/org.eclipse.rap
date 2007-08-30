@@ -37,6 +37,12 @@ public class TreeItem_Test extends TestCase {
     } catch( IllegalArgumentException iae ) {
       // expected
     }
+    try {
+      new TreeItem(tree, SWT.NONE, 5);
+      fail("No exception thrown for illegal index argument");
+    }
+    catch (IllegalArgumentException e) {
+    }
   }
 
   public void testRemoveAll() {
@@ -89,6 +95,21 @@ public class TreeItem_Test extends TestCase {
     assertEquals( true, checkedItem.getChecked() );
   }
 
+  public void test_getExpanded() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
+    
+    assertEquals(false, treeItem.getExpanded());
+    // there must be at least one subitem before you can set the treeitem expanded
+    new TreeItem(treeItem, 0);
+    treeItem.setExpanded(true);
+    assertTrue(treeItem.getExpanded());
+    treeItem.setExpanded(false);
+    assertEquals(false, treeItem.getExpanded());
+  }
+  
   public void testBackgroundColor() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -420,6 +441,108 @@ public class TreeItem_Test extends TestCase {
     assertEquals( tree.getBackground(), treeItem.getBackground() );
   }
 
+  public void testSetForegroundI() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+    Color blue = display.getSystemColor( SWT.COLOR_BLUE );
+    // no columns
+    assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
+    assertEquals( treeItem.getForeground(), treeItem.getForeground( 0 ) );
+    treeItem.setForeground( 0, red );
+    assertEquals( red, treeItem.getForeground( 0 ) );
+    // index beyond range - no error
+    treeItem.setForeground( 10, red );
+    assertEquals( treeItem.getForeground(), treeItem.getForeground( 10 ) );
+    // with columns
+    new TreeColumn( tree, SWT.LEFT );
+    new TreeColumn( tree, SWT.LEFT );
+    // index beyond range - no error
+    treeItem.setForeground( 10, red );
+    assertEquals( treeItem.getForeground(), treeItem.getForeground( 10 ) );
+    treeItem.setForeground( 0, red );
+    assertEquals( red, treeItem.getForeground( 0 ) );
+    treeItem.setForeground( 0, null );
+    assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
+    treeItem.setForeground( 0, blue );
+    treeItem.setForeground( red );
+    assertEquals( blue, treeItem.getForeground( 0 ) );
+    treeItem.setForeground( 0, null );
+    assertEquals( red, treeItem.getForeground( 0 ) );
+    treeItem.setForeground( null );
+    assertEquals( tree.getForeground(), treeItem.getForeground( 0 ) );
+  }
+
+  public void testSetFontI() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+    Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
+    // no columns
+    assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
+    assertTrue( treeItem.getFont().equals( treeItem.getFont( 0 ) ) );
+    treeItem.setFont( 0, font );
+    assertTrue( font.equals( treeItem.getFont( 0 ) ) );
+    // index beyond range - no error
+    treeItem.setFont( 10, font );
+    assertTrue( treeItem.getFont().equals( treeItem.getFont( 10 ) ) );
+    // with columns
+    new TreeColumn( tree, SWT.LEFT );
+    new TreeColumn( tree, SWT.LEFT );
+    // index beyond range - no error
+    treeItem.setFont( 10, font );
+    assertTrue( treeItem.getFont().equals( treeItem.getFont( 10 ) ) );
+    treeItem.setFont( 0, font );
+    assertTrue( font.equals( treeItem.getFont( 0 ) ) );
+    treeItem.setFont( 0, null );
+    assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
+    Font font2 = Graphics.getFont( "Helvetica", 20, SWT.NORMAL );
+    treeItem.setFont( 0, font );
+    treeItem.setFont( font2 );
+    assertTrue( font.equals( treeItem.getFont( 0 ) ) );
+    treeItem.setFont( 0, null );
+    assertTrue( font2.equals( treeItem.getFont( 0 ) ) );
+    treeItem.setFont( null );
+    assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
+  }
+
+  public void testSetBackgroundI() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+    Color blue = display.getSystemColor( SWT.COLOR_BLUE );
+    // no columns
+    assertEquals( tree.getBackground(), treeItem.getBackground( 0 ) );
+    assertEquals( treeItem.getBackground(), treeItem.getBackground( 0 ) );
+    treeItem.setBackground( 0, red );
+    assertEquals( red, treeItem.getBackground( 0 ) );
+    // index beyond range - no error
+    treeItem.setBackground( 10, red );
+    assertEquals( treeItem.getBackground(), treeItem.getBackground( 10 ) );
+    // with columns
+    new TreeColumn( tree, SWT.LEFT );
+    new TreeColumn( tree, SWT.LEFT );
+    // index beyond range - no error
+    treeItem.setBackground( 10, red );
+    assertEquals( treeItem.getBackground(), treeItem.getBackground( 10 ) );
+    treeItem.setBackground( 0, red );
+    assertEquals( red, treeItem.getBackground( 0 ) );
+    treeItem.setBackground( 0, null );
+    assertEquals( tree.getBackground(), treeItem.getBackground( 0 ) );
+    treeItem.setBackground( 0, blue );
+    treeItem.setBackground( red );
+    assertEquals( blue, treeItem.getBackground( 0 ) );
+    treeItem.setBackground( 0, null );
+    assertEquals( red, treeItem.getBackground( 0 ) );
+    treeItem.setBackground( null );
+    assertEquals( tree.getBackground(), treeItem.getBackground( 0 ) );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

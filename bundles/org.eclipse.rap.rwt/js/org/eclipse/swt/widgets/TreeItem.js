@@ -37,6 +37,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this._texts = null;
     this._images = new Array();
     this._colLabels = new Array();
+    this._background = null;
+    this._backgrounds = null;
+    this._foregrounds = null;
+    this._fonts = null;
 
     // Image
     this._row.addIcon( null ); 
@@ -45,7 +49,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this._row.addLabel( "" );
     
     // Construct TreeItem
-    //for( var c = 0; c < this.getTree().getParent()._columns.length; c++ ) {
     for( var c = 0; c < tree._columns.length; c++ ) {
         this.columnAdded();
     }
@@ -53,7 +56,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this.addEventListener( "click", this._onClick, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
     this.addEventListener( "appear", this._onAppear, this );
-    this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
+    //this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
     parentItem.add( this );
     
 
@@ -73,22 +76,16 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     this.removeEventListener( "click", this._onClick, this );
     this.removeEventListener( "dblclick", this._onDblClick, this );
     this.removeEventListener( "appear", this._onAppear, this );
-    this.removeEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
   },
 
   members : {
-    
-    _onChangeBackgroundColor : function( evt ) {
-      if( typeof evt.value == "undefined" ) return;
-      this.getLabelObject().setBackgroundColor( evt.value );
-      // we have to go through each column
-      for(var i=0; i<this._colLabels.length; i++) {
-        this._colLabels[ i ].setBackgroundColor( evt.value );
-      }
+
+    setBackground : function ( value ) {
+    	this._background = value;
     },
     
     // TODO: [bm] needed to override the property setters to apply color to label too
-    setTextColor : function ( value ) {
+     setTextColor : function ( value ) {
       if( typeof value == "undefined" ) return;
       this.getLabelObject().setTextColor( value );
       // we have to go through each column
@@ -220,6 +217,24 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       }
     },
     
+    setBackgrounds : function( backgrounds ) {
+      this._backgrounds = backgrounds;
+      if( this.isCreated() ) {
+        this.updateItem();
+      }
+    },
+    
+    setForegrounds : function( foregrounds ) {
+      this._foregrounds = foregrounds;
+      if( this.isCreated() ) {
+        this.updateItem();
+      }
+    },
+    
+    setFonts : function( fonts ) {
+      this._fonts = fonts;
+    },
+    
     columnAdded : function() {
       var obj = new qx.ui.basic.Atom( "" );
       obj.setHorizontalChildrenAlign( "left" );
@@ -230,6 +245,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     updateItem : function() {
       var colOrder = this.getTree().getParent().getColumnOrder();
       var colCount = Math.max ( 1, this.getTree().getParent()._columns.length );
+      this.setBackgroundColor( this._background );
       if( this._texts != null ) {
         for( var c = 0; c < colCount; c++ ) {
           var col = colOrder[ c ];
@@ -237,11 +253,31 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
           if( text != null && text != "") {
             if( c == 0 ) {
               this.setLabel( this._texts[ col ] );
-                this.setImage( this._images[ col ] );
+              this.setImage( this._images[ col ] );
+              if( this._backgrounds && this._backgrounds[ col ] ) {
+              	this.getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
+              	this.getIndentObject().setBackgroundColor( this._backgrounds[ col ] );
+              }
+              if( this._foregrounds && this._foregrounds[ col ] ) {
+              	this.getLabelObject().setTextColor( this._foregrounds[ col ]);
+              }
+              if( this._fonts && this._fonts[ col ] ) {
+              	// TODO
+              }
             } else {
-              this._colLabels[ c -1 ].setHeight( this.getLabelObject().getHeight() );
+              this._colLabels[ c -1 ].setHeight( this.getIndentObject().getHeight() );
               this._colLabels[ c -1 ].setLabel( this._texts[ col ] );
               this._colLabels[ c -1 ].setIcon( this._images[ col ] );
+              // colors and fonts
+              if( this._backgrounds && this._backgrounds[ col ] ) {
+              	this._colLabels[ c -1 ].getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
+              }
+              if( this._foregrounds && this._foregrounds[ col ] ) {
+              	this._colLabels[ c -1 ].setTextColor( this._foregrounds[ col ]);
+              }
+              if( this._fonts && this._fonts[ col ] ) {
+              	// TODO
+              }
             }
           }
         }
@@ -266,7 +302,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
          for( var i=1; i<columnWidth.length; i++ ) {
            coLabel = this._colLabels[ i-1 ];
            if( coLabel != null ) {
-             coLabel.setWidth( columnWidth[ i ] );
+             coLabel.getLabelObject().setWidth( columnWidth[ i ] );
            }
          }
       }
