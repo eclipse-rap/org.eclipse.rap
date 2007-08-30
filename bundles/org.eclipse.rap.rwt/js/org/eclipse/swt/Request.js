@@ -156,7 +156,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
       this._parameters[ "requestCounter" ] = this._requestCounter;
 
       // create and configure request object
-      // To solve bug #165666 we use GET- instead of POST-method
       var request = new qx.io.remote.Request( this._url, 
                                               qx.net.Http.METHOD_POST, 
                                               qx.util.Mime.TEXT );
@@ -217,7 +216,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         document.write( "<p>Request failed:</p><pre>" );
         document.write( "HTTP Status Code: " );
         document.write( evt.getStatusCode() );
-        document.write( "</pre></body></html>")
+        document.write( "</pre></body></html>" );
       } else {
         document.write( text );
       }
@@ -235,11 +234,11 @@ qx.Class.define( "org.eclipse.swt.Request", {
         this.error( "Could not execute javascript: [" + text + "]", ex );
         document.open( "text/html", true );
         document.write( "<html><head><title>Error Page</title></head><body>" );
-        document.write( "<p>Could not evaluate javascript response:</p><pre>");
+        document.write( "<p>Could not evaluate javascript response:</p><pre>" );
         document.write( ex );
         document.write( "\n\n" );
         document.write( text );
-        document.write( "</pre></body></html>")
+        document.write( "</pre></body></html>" );
         document.close();
       }
     },
