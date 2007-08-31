@@ -23,6 +23,60 @@ public final class RWTLifeCycleServiceHandlerSync
   
   
   /**
+   * The <code>ServiceRunnable</code> triggers the actual lifecycle processing
+   * of the lifecycle service handler. It should be processed in its own 
+   * thread. After the thread has terminated the 
+   * <code>{@link #handleException()}</code> method must be called to ensure
+   * that any exception occured during service execution are rethrown.
+   */
+  private final class ServiceRunnable implements Runnable {
+    private final ServiceContext context;
+    private final Object lock;
+    private RuntimeException rtBuffer;
+    private ServletException seBuffer;
+    private IOException ioeBuffer;
+
+    private ServiceRunnable( final ServiceContext context, final Object lock ) {
+      this.context = context;
+      this.lock = lock;
+    }
+    
+    public void run() {
+      try {
+        LOCK.set( lock );
+        ContextProvider.setContext( context );
+        doService();
+      } catch( final RuntimeException rt ) {
+        rtBuffer = rt;
+      } catch( final ServletException se ) {
+        seBuffer = se;
+      } catch( final IOException ioe ) {
+        ioeBuffer = ioe;
+      } catch( AbortRequestProcessingError arpe ) {
+        // do nothing
+      } finally {
+        terminateResumeThread();
+        synchronized( lock ) {
+          LOCK.set( null );
+          lock.notify();
+        }
+      }
+    }
+    
+    void handleException() throws ServletException, IOException {
+      if( rtBuffer != null ) {
+        throw rtBuffer;
+      }
+      if( seBuffer != null ) {
+        throw seBuffer;
+      }
+      if( ioeBuffer != null ) {
+        throw ioeBuffer;
+      }
+    }
+  }
+
+  /**
    * The response handler is used to continue request processing in a new 
    * <code>Thread</code> if the <code>LifeCycle</code>'s execution was blocked.
    * This is necessary since otherwise the whole session would be blocked.
@@ -45,6 +99,8 @@ public final class RWTLifeCycleServiceHandlerSync
       } catch( final Throwable throwable ) {
         // TODO Auto-generated catch block
         throwable.printStackTrace();
+      } finally {
+        terminateResumeThread();
       }
     }
 
@@ -74,14 +130,15 @@ public final class RWTLifeCycleServiceHandlerSync
         String key = SKIP_RESPONSE;
         stateInfo.setAttribute( key, Thread.currentThread() );
         lock.wait();
-      } catch( InterruptedException e ) {
+      } catch( final InterruptedException e ) {
         throw new AbortRequestProcessingError();
       }
     }
   }
 
   public static void block( final LifeCycleLock lock ) {
-    Thread thread = new Thread( new ResponseHandler(), "ResponseOnBlockedLC" );
+    String id = "ResponseOnBlockedLC" + lock.hashCode();
+    Thread thread = new Thread( new ResponseHandler(), id );
     thread.setDaemon( true );
     thread.start();
     synchronized( lock ) {
@@ -102,44 +159,15 @@ public final class RWTLifeCycleServiceHandlerSync
 
   public void service() throws ServletException, IOException {
     synchronized( ContextProvider.getSession() ) {
-      final ServletException[] seBuffer = new ServletException[ 1 ];
-      final IOException[] ioeBuffer = new IOException[ 1 ];
-      final RuntimeException[] rtBuffer = new RuntimeException[ 1 ];
       final Object lock = new Object();
       final ServiceContext context = ContextProvider.getContext();
   
-      // TODO [fappel]: introduce thread pooling
-      Thread lifeCycleWorker = new Thread( new Runnable() {
-        public void run() {
-          try {
-            LOCK.set( lock );
-            ContextProvider.setContext( context );
-            doService();
-          } catch( final RuntimeException rt ) {
-            rtBuffer[ 0 ] = rt;
-          } catch( final ServletException se ) {
-            seBuffer[ 0 ] = se;
-          } catch( final IOException ioe ) {
-            ioeBuffer[ 0 ] = ioe;
-          } catch( AbortRequestProcessingError arpe ) {
-            // do nothing
-          } finally {
-            ServiceContext context = ContextProvider.getContext();
-            if( !context.isDisposed() ) {
-              IServiceStateInfo stateInfo = context.getStateInfo();
-              Thread thread = ( Thread )stateInfo.getAttribute( SKIP_RESPONSE );
-              if( thread != null ) {
-                ContextProvider.disposeContext();
-                thread.interrupt();
-              }
-            }
-            synchronized( lock ) {
-              LOCK.set( null );
-              lock.notify();
-            }
-          }
-        }
-      } );
+      // TODO [fappel]: introduce thread pooling.
+      // TODO [fappel]: dispose of thread in case it's locked and session
+      //                gets invalidated.
+      String id = "LifeCycleWorker." + lock.hashCode();
+      ServiceRunnable serviceRunnable = new ServiceRunnable( context, lock );
+      Thread lifeCycleWorker = new Thread( serviceRunnable, id );
       lifeCycleWorker.setDaemon( true );
       lifeCycleWorker.start();
       synchronized( lock ) {
@@ -150,14 +178,18 @@ public final class RWTLifeCycleServiceHandlerSync
           e.printStackTrace();
         }
       }
-      if( rtBuffer[ 0 ] != null ) {
-        throw rtBuffer[ 0 ];
-      }
-      if( seBuffer[ 0 ] != null ) {
-        throw seBuffer[ 0 ];
-      }
-      if( ioeBuffer[ 0 ] != null ) {
-        throw ioeBuffer[ 0 ];
+      serviceRunnable.handleException();
+    }
+  }
+
+  private static void terminateResumeThread() {
+    ServiceContext context = ContextProvider.getContext();
+    if( !context.isDisposed() ) {
+      IServiceStateInfo stateInfo = context.getStateInfo();
+      Thread thread = ( Thread )stateInfo.getAttribute( SKIP_RESPONSE );
+      if( thread != null ) {
+        ContextProvider.disposeContext();
+        thread.interrupt();
       }
     }
   }
