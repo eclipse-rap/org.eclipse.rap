@@ -30,6 +30,11 @@
           class="org.eclipse.rap.demo.controls.ControlsDemo"
           id="org.eclipse.rap.demo.entrypoint4"
           parameter="controls"/>
+    <entrypoint
+          class="org.eclipse.rap.demo.StressEntryPoint"
+          id="org.eclipse.rap.demo.stressEntryPoint"
+          parameter="stress">
+    </entrypoint>
   </extension>
   
   <extension

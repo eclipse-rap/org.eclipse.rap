@@ -10,9 +10,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-/**
- * @event send
- */
 qx.Class.define( "org.eclipse.swt.Request", {
   type : "singleton",
   extend : qx.core.Target,
@@ -225,21 +222,39 @@ qx.Class.define( "org.eclipse.swt.Request", {
     
     _handleCompleted : function( evt ) {
       var text = evt.getTarget().getImplementation().getRequest().responseText;
-      try {
-        if( text && text.length > 0 ) {
-          window.eval( text );
-        }
-        this._hideWaitHint( evt );      
-      } catch( ex ) {
-        this.error( "Could not execute javascript: [" + text + "]", ex );
+      if( text && text.indexOf( "<!DOCTYPE" ) === 0 ) {
+        // Handle request to timed out session: write info page and offer
+        // link to restart application. This way was chosen for two reasons: 
+        // - with rendering an anchor tag we can restart the same entry point as 
+        //   is currently used
+        // - as clicking the link issues a regular request, we can be sure that 
+        //   the stale application will be cleaned up properly by the browser
+        var location = window.location;
         document.open( "text/html", true );
-        document.write( "<html><head><title>Error Page</title></head><body>" );
-        document.write( "<p>Could not evaluate javascript response:</p><pre>" );
-        document.write( ex );
-        document.write( "\n\n" );
-        document.write( text );
-        document.write( "</pre></body></html>" );
+        document.write( "<html><head><title>Session timed out</title></head>" );
+        document.write( "<body><p>The server session timed out.</p>" );
+        document.write( "<p>Please click <a href=\"" );
+        document.write( location ); 
+        document.write( "\">here</a> to restart the session.</p>" );
+        document.write( "</body></html>" );
         document.close();
+      } else {
+        try {
+          if( text && text.length > 0 ) {
+            window.eval( text );
+          }
+          this._hideWaitHint( evt );      
+        } catch( ex ) {
+          this.error( "Could not execute javascript: [" + text + "]", ex );
+          document.open( "text/html", true );
+          document.write( "<html><head><title>Error Page</title></head><body>" );
+          document.write( "<p>Could not evaluate javascript response:</p><pre>" );
+          document.write( ex );
+          document.write( "\n\n" );
+          document.write( text );
+          document.write( "</pre></body></html>" );
+          document.close();
+        }
       }
     },
 
