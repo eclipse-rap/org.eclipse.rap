@@ -46,10 +46,10 @@ public class ControlLCAUtil {
                           "org.eclipse.swt.EventUtil.focusLost",
                           JSListenerType.ACTION );
 
-  private static final String JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET
-    = "removeActivateListenerWidget";
   private static final String JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
     = "addActivateListenerWidget";
+  private static final String JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET
+    = "removeActivateListenerWidget";
 
   // Property names to preserve widget property values
   private static final String PROP_ACTIVATE_LISTENER = "activateListener";
@@ -321,22 +321,26 @@ public class ControlLCAUtil {
     Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
     Boolean defValue = Boolean.FALSE;
     String prop = PROP_ACTIVATE_LISTENER;
-    if( WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) ) {
+    Shell shell = control.getShell();
+    if(    !shell.isDisposed() 
+        && WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) ) 
+    {
       String function = newValue.booleanValue()
                       ? JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
                       : JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET;
       JSWriter writer = JSWriter.getWriterFor( control );
       Object[] args = new Object[] { control };
-      writer.call( control.getShell(), function, args );
+      writer.call( shell, function, args );
     }
   }
 
   static void resetActivateListener( final Control control )
     throws IOException
   {
-    if( ActivateEvent.hasListener( control ) ) {
+    Shell shell = control.getShell();
+    if( !shell.isDisposed() && ActivateEvent.hasListener( control ) ) {
       JSWriter writer = JSWriter.getWriterFor( control );
-      writer.call( control.getShell(),
+      writer.call( shell,
                    JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET,
                    new Object[] { control } );
     }

@@ -78,6 +78,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.removeEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.removeEventListener( "send", this._onSend, this );
+    this._activateListenerWidgets = null;
 
 ////////////////////////////////////////////////
 // TODO [fappel] experimental (rounded corners)
