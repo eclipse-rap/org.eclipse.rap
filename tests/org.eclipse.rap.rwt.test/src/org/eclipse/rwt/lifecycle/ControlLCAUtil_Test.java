@@ -190,6 +190,16 @@ public class ControlLCAUtil_Test extends TestCase {
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
     assertTrue( markup.indexOf( "removeActivateListenerWidget" ) != -1 );
+    
+    // When the shell is disposed of, no removeActivateListener must be rendered
+    // Important when disposing of a shell with ShellListener#shellClosed
+    labelLCA.preserveValues( label );
+    ActivateEvent.addListener( label, listener );
+    shell.dispose();
+    ControlLCAUtil.writeActivateListener( label );
+    Fixture.fakeResponseWriter();
+    markup = Fixture.getAllMarkup();
+    assertEquals( -1, markup.indexOf( "removeActivateListenerWidget" ) );
   }
 
   public void testProcessSelection() {
