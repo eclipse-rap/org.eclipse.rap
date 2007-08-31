@@ -36,7 +36,7 @@ public class SessionTimeoutTab extends ExampleTab {
     Label lblInfo = new Label( parent, SWT.WRAP );
     lblInfo.setLayoutData( new GridData( SWT.FILL, SWT.DEFAULT, true, false ) );
     String info 
-      = "Simulate a server-side ession timeout.\n"
+      = "Simulate a server-side session timeout.\n"
       + "Click the 'Invalidate Session' button that will invalidate the " 
       + "session after a short delay.\n"
       + "Thereafter, try to proceed using the application. With the next " 
