@@ -22,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -60,6 +61,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     Tree tree = ( Tree )widget;
     readSelection( tree );
+    readScrollPosition( tree );
     processWidgetSelectedEvent( tree );
     processWidgetDefaultSelectedEvent( tree );
   }
@@ -161,6 +163,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
         selectedItems[ i ] = ( TreeItem )WidgetUtil.find( tree, values[ i ] );
       }
       tree.setSelection( selectedItems );
+    }
+  }
+
+  private static void readScrollPosition( final Tree tree ) {
+    String left = WidgetLCAUtil.readPropertyValue( tree, "scrollLeft" );
+    String top = WidgetLCAUtil.readPropertyValue( tree, "scrollTop" );
+    if( left != null && top != null ) {
+      ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+      adapter.setScrollLeft( Integer.valueOf( left ).intValue() );
+      adapter.setScrollTop( Integer.valueOf( top ).intValue() );
     }
   }
 

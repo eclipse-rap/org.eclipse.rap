@@ -15,6 +15,9 @@ import org.eclipse.swt.widgets.TreeItem;
 public interface ITreeAdapter {
 
   public abstract TreeItem getShowItem();
-
   public abstract void clearShowItem();
+  
+  public abstract void setScrollTop( final int top );
+  public abstract void setScrollLeft( final int left );
+  
 }

@@ -135,10 +135,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
 	    if( e.target == null ) {
 	    	target = e.srcElement;
 	    }
-	  	this._columnArea.setLeft( 0 - target.scrollLeft );
-	  },
+	    this._columnArea.setLeft( 0 - target.scrollLeft );
+	    // inform server about scroll pos
+	    if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var treeId = wm.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( treeId + ".scrollLeft", target.scrollLeft );
+        req.addParameter( treeId + ".scrollTop", target.scrollTop );
+      }
+    },
   
-  	_addColumn : function( column ) {
+    _addColumn : function( column ) {
       column.setHeight( this._columnArea.getHeight() );
       this._hookColumnMove( column );
       column.addEventListener( "changeWidth", this._onColumnChangeSize, this );

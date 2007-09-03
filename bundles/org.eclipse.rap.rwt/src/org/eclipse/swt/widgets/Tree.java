@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
@@ -77,6 +78,7 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 public class Tree extends Composite {
 
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
+  private static final int CHECK_HEIGHT = 13; // keep in sync with appearance
   
   private final ItemHolder itemHolder;
   /* package*/ final ItemHolder columnHolder;
@@ -91,6 +93,7 @@ public class Tree extends Composite {
   private final TreeListener expandListener;
   private TreeItem currentItem;
   private ITreeAdapter treeAdapter;
+  private int scrollTop, scrollLeft;
   
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
@@ -132,6 +135,16 @@ public class Tree extends Composite {
     public void clearShowItem() {
       Tree.this.showItem = null;
     }
+
+    public void setScrollLeft( int left ) {
+      Tree.this.scrollLeft = left;
+    }
+
+    public void setScrollTop( int top ) {
+      Tree.this.scrollTop = top;
+    }
+    
+    
   }
   
   private static final class ResizeListener extends ControlAdapter {
@@ -768,9 +781,59 @@ public class Tree extends Composite {
    * </ul>
    */
   public TreeItem getItem (Point point) {
-	  // TODO implement this!
-	  return null;
+    checkWidget ();
+    if (point == null) error (SWT.ERROR_NULL_ARGUMENT);
+    int index = (point.y - getHeaderHeight ()  + scrollTop) / getItemHeight();
+    // collect all visible items
+    List visibleItems = collectVisibleItems( null );
+    
+    if (!(0 <= index && index < visibleItems.size())) return null;    /* below the last item */
+    TreeItem result = ( TreeItem )visibleItems.get( index );
+    // TODO [bm] consider the x value and columns
+    //if (!result.getHitBounds ().contains (point)) return null;  /* considers the x value */
+    return result;
   }
+  
+  private List collectVisibleItems( final TreeItem parent ) {
+    List result = new ArrayList();
+    TreeItem[] children;
+    if( parent == null )
+      children = getItems();
+    else {
+      children = parent.getItems();
+    }
+    for( int i = 0; i < children.length; i++ ) {
+      TreeItem item = children[ i ];
+      result.add( item );
+      System.out.println(item.getText() + " added to visible list");
+      if( item.getExpanded() ) {
+        result.addAll( collectVisibleItems( item ) );
+      }
+    }
+    return result;
+  }
+  
+  /**
+   * Returns the height of the area which would be used to
+   * display <em>one</em> of the items in the tree.
+   *
+   * @return the height of one item
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  // TODO: [bm] improve and offer as API in next release
+  private int getItemHeight() {
+    checkWidget();
+    int result = TextSizeDetermination.getCharHeight( getFont() ) + 4;
+    if( ( style & SWT.CHECK ) != 0 ) {
+      result = Math.max( CHECK_HEIGHT, result );
+    }
+    return result;
+  }
+  
   /**
    * Clears all the items in the receiver. The text, icon and other
    * attributes of the items are set to their default values. If the
