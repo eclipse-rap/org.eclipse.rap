@@ -52,6 +52,7 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
 //    TODO [rst] Disabled writing of wrap state since it only works in Opera and
 //               also interferes with object pooling in IE.
 //    TextLCAUtil.writeWrap( text );
+    TextLCAUtil.writeHijack( text );
   }
 
   void renderChanges( final Text text ) throws IOException {

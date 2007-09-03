@@ -56,11 +56,7 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( text );
-    // TODO [rh] workaround for 
-    //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
-    //      see TextUtil.js
-    writer.callStatic( "org.eclipse.swt.TextUtil.hijack", 
-                       new Object[] { text } );
+    TextLCAUtil.writeHijack( text );
   }
 
   void renderChanges( final Text text ) throws IOException {

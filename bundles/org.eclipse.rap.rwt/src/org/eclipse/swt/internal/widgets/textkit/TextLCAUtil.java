@@ -86,6 +86,15 @@ final class TextLCAUtil {
     }
     text.setSelection( selection );
   }
+  
+  static void writeHijack( final Text text ) throws IOException {
+    // TODO [rh] workaround for 
+    //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
+    //      see TextUtil.js
+    JSWriter writer = JSWriter.getWriterFor( text );
+    writer.callStatic( "org.eclipse.swt.TextUtil.hijack", 
+                       new Object[] { text } );
+  }
 
   static void writeReadOnly( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
