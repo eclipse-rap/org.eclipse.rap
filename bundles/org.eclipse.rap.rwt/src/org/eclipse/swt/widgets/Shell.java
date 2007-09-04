@@ -585,6 +585,10 @@ public class Shell extends Decorations {
     if( !restoreFocus() && !traverseGroup( true ) ) {
       setFocus();
     }
+    // fire shell activated event
+    // TODO: is there any possibility where it should not be fired on open() ?  
+    ShellEvent shellEvent = new ShellEvent( this, ShellEvent.SHELL_ACTIVATED );
+    shellEvent.processEvent();
   }
 
   /**
