@@ -15,6 +15,8 @@ qx.Class.define( "org.eclipse.swt.Application", {
 
   construct : function() {
     this.base( arguments );
+    
+    var exitMessage = null;
   },
 
   statics : {
@@ -55,16 +57,13 @@ qx.Class.define( "org.eclipse.swt.Application", {
       req.send();
     },
 
+    setConfirmExit : function( msg ) {
+    	this.exitMessage = msg;
+    },
+    
     close : function( evt ) {
       this.base( arguments );
-      // If a non-null (?) value is returned, the user is prompted when leaving the page.
-      // TODO [rst] Make return value configurable
-      var result = null;
-//      if( org.eclipse.rap.confirmExit ) {
-//        result = "You are leaving the application. "
-//                 + "Your current session data will be lost if you proceed.";
-//      }
-      return result;
+      return this.exitMessage;
     }
   }
 });
