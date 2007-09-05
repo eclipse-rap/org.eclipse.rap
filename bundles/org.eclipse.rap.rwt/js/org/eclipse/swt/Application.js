@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
   construct : function() {
     this.base( arguments );
     
-    var exitMessage = null;
+    this._exitMessage = null;
   },
 
   statics : {
@@ -57,13 +57,13 @@ qx.Class.define( "org.eclipse.swt.Application", {
       req.send();
     },
 
-    setConfirmExit : function( msg ) {
-    	this.exitMessage = msg;
+    setExitMessage : function( msg ) {
+    	this._exitMessage = msg;
     },
     
     close : function( evt ) {
       this.base( arguments );
-      return this.exitMessage;
+      return this._exitMessage;
     }
   }
 });

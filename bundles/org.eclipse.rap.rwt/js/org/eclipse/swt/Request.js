@@ -205,7 +205,14 @@ qx.Class.define( "org.eclipse.swt.Request", {
       }
     },
     
+    // prevents exit confirmation for error cases
+    _disableExitMessage : function() {
+    	var app = qx.core.Init.getInstance().getApplication();
+    	app.setExitMessage( null );
+    },
+    
     _handleFailed : function( evt ) {
+      this._disableExitMessage();
       var text = evt.getTarget().getImplementation().getRequest().responseText;
       document.open( "text/html", true );
       if( text == "" || text == null ) {
@@ -229,6 +236,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         //   is currently used
         // - as clicking the link issues a regular request, we can be sure that 
         //   the stale application will be cleaned up properly by the browser
+        this._disableExitMessage();
         var location = window.location;
         document.open( "text/html", true );
         document.write( "<html><head><title>Session timed out</title></head>" );
@@ -245,6 +253,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
           }
           this._hideWaitHint( evt );      
         } catch( ex ) {
+          this._disableExitMessage();
           this.error( "Could not execute javascript: [" + text + "]", ex );
           document.open( "text/html", true );
           document.write( "<html><head><title>Error Page</title></head><body>" );
