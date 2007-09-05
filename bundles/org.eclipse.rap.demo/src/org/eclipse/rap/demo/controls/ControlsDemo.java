@@ -80,7 +80,7 @@ public class ControlsDemo implements IEntryPoint {
       new ContainmentTab( topFolder ),
       new ZOrderTab( topFolder ),
       new FocusTab( topFolder ),
-      new SessionTimeoutTab( topFolder )
+      new ErrorHandlingTab( topFolder )
     };
     tabs[ 0 ].createContents();
     topFolder.setSelection( 0 );

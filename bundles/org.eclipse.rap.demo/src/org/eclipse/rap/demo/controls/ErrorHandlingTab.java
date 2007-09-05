@@ -12,6 +12,10 @@ package org.eclipse.rap.demo.controls;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -20,12 +24,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-public class SessionTimeoutTab extends ExampleTab {
+public class ErrorHandlingTab extends ExampleTab {
 
   private static final int DELAY = 2000;
 
-  public SessionTimeoutTab( final CTabFolder topFolder ) {
-    super( topFolder, "Session Timeout" );
+  public ErrorHandlingTab( final CTabFolder topFolder ) {
+    super( topFolder, "Error Handling" );
   }
 
   protected void createStyleControls( final Composite parent ) {
@@ -63,6 +67,33 @@ public class SessionTimeoutTab extends ExampleTab {
           }
         } );
         thread.start();
+      }
+    } );
+    Button btnErrorResponse = new Button( parent, SWT.PUSH );
+    btnErrorResponse.setText( "Deliver response with JavaScript error" );
+    btnErrorResponse.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        RWT.getLifeCycle().addPhaseListener( new PhaseListener() {
+          private static final long serialVersionUID = 1L;
+          public void beforePhase( final PhaseEvent event ) {
+          }
+          public void afterPhase( final PhaseEvent event ) {
+            IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+            HtmlResponseWriter writer = stateInfo.getResponseWriter();
+            writer.append( "this is no valid JavaScript!" );
+            RWT.getLifeCycle().removePhaseListener( this );
+          }
+          public PhaseId getPhaseId() {
+            return PhaseId.RENDER;
+          }
+        } );
+      }
+    } );
+    Button btnServerError = new Button( parent, SWT.PUSH );
+    btnServerError.setText( "Throw uncaught server-side exeption" );
+    btnServerError.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        throw new RuntimeException( "Shit happens, rama rama ding ding" );
       }
     } );
   }

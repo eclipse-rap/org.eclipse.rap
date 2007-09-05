@@ -17814,7 +17814,7 @@ case 12002:case 12029:case 12030:case 12031:case 12152:case 13030:{if(qx.core.Se
 return false;
 default:if(vStatusCode>206&&vStatusCode<300){return true;
 }qx.log.Logger.getClassLogger(qx.io.remote.Exchange).debug("Unknown status code: "+vStatusCode+" ("+vReadyState+")");
-throw new Error("Unknown status code: "+vStatusCode);
+return false;
 }}},
 statusCodeToString:function(vStatusCode){switch(vStatusCode){case -1:return "Not available";
 case 200:return "Ok";

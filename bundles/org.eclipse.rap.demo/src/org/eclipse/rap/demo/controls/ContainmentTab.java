@@ -11,8 +11,6 @@ package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -30,18 +28,8 @@ public class ContainmentTab extends ExampleTab {
   protected void createStyleControls( final Composite parent ) {
     Button visibleButton = createVisibilityButton();
     visibleButton.setText( "Blue Visible" );
-    visibleButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        changeVisible();
-      }
-    } );
     Button enabledButton = createEnablementButton();
     enabledButton.setText( "Blue Enabled" );
-    enabledButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        changeEnabled();
-      }
-    } );
     createFgColorButton();
     createFontChooser();
   }
@@ -65,37 +53,4 @@ public class ContainmentTab extends ExampleTab {
     button.setText( "Button" );
     registerControl( comp2 );
   }
-
-  private void changeVisible() {
-    System.out.println();
-    System.out.println( "Comp1" );
-    System.out.println( "  getParent: " + comp1.getParent() );
-    System.out.println( "  isVisible: " + comp1.isVisible() );
-    System.out.println( "  getVisible: " + comp1.getVisible() );
-    System.out.println( "Comp2" );
-    System.out.println( "  getParent: " + comp2.getParent() );
-    System.out.println( "  isVisible: " + comp2.isVisible() );
-    System.out.println( "  getVisible: " + comp2.getVisible() );
-    System.out.println( "Comp3" );
-    System.out.println( "  getParent: " + comp3.getParent() );
-    System.out.println( "  isVisible: " + comp3.isVisible() );
-    System.out.println( "  getVisible: " + comp3.getVisible() );
-  }
-
-  private void changeEnabled() {
-    System.out.println();
-    System.out.println( "Comp1" );
-    System.out.println( "  getParent: " + comp1.getParent() );
-    System.out.println( "  isEnabled: " + comp1.isEnabled() );
-    System.out.println( "  getEnabled: " + comp1.getEnabled() );
-    System.out.println( "Comp2" );
-    System.out.println( "  getParent: " + comp2.getParent() );
-    System.out.println( "  isEnabled: " + comp2.isEnabled() );
-    System.out.println( "  getEnabled: " + comp2.getEnabled() );
-    System.out.println( "Comp3" );
-    System.out.println( "  getParent: " + comp3.getParent() );
-    System.out.println( "  isEnabled: " + comp3.isEnabled() );
-    System.out.println( "  getEnabled: " + comp3.getEnabled() );
-  }
-
 }
