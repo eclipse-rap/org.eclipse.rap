@@ -14,12 +14,6 @@
  */
 qx.Class.define( "org.eclipse.swt.LinkUtil", {
 
-  /*
-  *****************************************************************************
-     STATICS
-  *****************************************************************************
-  */
-
   statics : {
     init : function( widget ) {
       widget.setTabIndex( -1 );
@@ -30,7 +24,7 @@ qx.Class.define( "org.eclipse.swt.LinkUtil", {
 
     destroy : function( widget ) {
       org.eclipse.swt.LinkUtil.clear( widget );
-      if (widget.hasEventListeners( "changeTabIndex" ) ) {
+      if( widget.hasEventListeners( "changeTabIndex" ) ) {
         widget.removeEventListener( "changeTabIndex",
                                     org.eclipse.swt.LinkUtil._onTabIndexChange );
       }
@@ -39,7 +33,7 @@ qx.Class.define( "org.eclipse.swt.LinkUtil", {
     clear : function( widget ) {
       if( widget && !widget.getDisposed() ) {
         var children = widget.getChildren();
-        var child = children[0];
+        var child = children[ 0 ];
         while( child ) {
           widget.remove( child );
           if( child.hasEventListeners( "mousedown" ) ) {
@@ -52,7 +46,7 @@ qx.Class.define( "org.eclipse.swt.LinkUtil", {
           }
           
 //          child.dispose();
-          child = children[0];
+          child = children[ 0 ];
         }
       }
     },

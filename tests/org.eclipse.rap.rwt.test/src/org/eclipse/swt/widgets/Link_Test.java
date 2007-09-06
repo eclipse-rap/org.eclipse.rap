@@ -31,7 +31,8 @@ public class Link_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
     String text
-      = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and the <a>SWT</a> homepage.";
+      = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and " 
+      + "the <a>SWT</a> homepage.";
     link.setText( text );
     assertEquals( text, link.getText() );
     try {
@@ -47,7 +48,8 @@ public class Link_Test extends TestCase {
     Shell shell = new Shell( display , SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
     String text
-      = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and the <a>SWT</a> homepage.";
+      = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and " 
+      + "the <a>SWT</a> homepage.";
     link.setText( text );
     ILinkAdapter adapter = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
     String displayText = "Visit the Eclipse.org project and the SWT homepage.";
