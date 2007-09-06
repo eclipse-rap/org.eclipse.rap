@@ -24,6 +24,8 @@ public class TextTab extends ExampleTab {
   private Text simpleText;
   private Text modifyText;
   private final SelectionListener selectionListener;
+  private final VerifyListener blockingVerifyListener;
+  private final VerifyListener numberOnlyVerifyListener; 
 
   public TextTab( final CTabFolder topFolder ) {
     super( topFolder, "Text" );
@@ -31,6 +33,25 @@ public class TextTab extends ExampleTab {
       public void widgetDefaultSelected( final SelectionEvent event ) {
         String msg = "You pressed the Enter key.";
         MessageDialog.openInformation( getShell(), "Information", msg );
+      }
+    };
+    blockingVerifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+System.out.println( "blockingListener: " + event.text );        
+        event.doit = false;
+      }
+    };
+    numberOnlyVerifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+System.out.println( "numberOnlyListener: " + event.text );        
+        StringBuffer allowedText = new StringBuffer();
+        for( int i = 0; i < event.text.length(); i++ ) {
+          char ch = event.text.charAt( i );
+          if( ch >= '0' && ch <= '9' ) {
+            allowedText.append( ch );
+          }
+        }
+        event.text = allowedText.toString();
       }
     };
   }
@@ -44,23 +65,45 @@ public class TextTab extends ExampleTab {
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createVisibilityButton();
     createEnablementButton();
-    final Button editableButton = createPropertyButton( "Editable" );
-    editableButton.setSelection( true );
-    editableButton.addSelectionListener( new SelectionAdapter() {
+    final Button btnEditable = createPropertyButton( "Editable" );
+    btnEditable.setSelection( true );
+    btnEditable.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
-        boolean editable = editableButton.getSelection();
+        boolean editable = btnEditable.getSelection();
         simpleText.setEditable( editable );
         modifyText.setEditable( editable );
       }
     } );
-    final Button selectionListenerButton 
+    final Button btnSelectionListener 
       = createPropertyButton( "SelectionListener", SWT.CHECK );
-    selectionListenerButton.addSelectionListener( new SelectionAdapter() {
+    btnSelectionListener.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         if( SelectionEvent.hasListener( simpleText ) ) {
           simpleText.removeSelectionListener( selectionListener );
         } else {
           simpleText.addSelectionListener( selectionListener );
+        }
+      }
+    } );
+    final Button btnBlockingVerifyListener 
+      = createPropertyButton( "Blocking VerifyListener", SWT.CHECK );
+    btnBlockingVerifyListener.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( btnBlockingVerifyListener.getSelection() ) {
+          simpleText.addVerifyListener( blockingVerifyListener );
+        } else {
+          simpleText.removeVerifyListener( blockingVerifyListener );
+        }
+      }
+    } );
+    final Button btnNumbersOnlyVerifyListener 
+    = createPropertyButton( "Number Only VerifyListener", SWT.CHECK );
+    btnNumbersOnlyVerifyListener.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( btnNumbersOnlyVerifyListener.getSelection() ) {
+          simpleText.addVerifyListener( numberOnlyVerifyListener );
+        } else {
+          simpleText.removeVerifyListener( numberOnlyVerifyListener );
         }
       }
     } );

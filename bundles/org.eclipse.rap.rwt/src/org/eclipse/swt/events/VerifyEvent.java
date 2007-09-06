@@ -35,10 +35,25 @@ public final class VerifyEvent extends TypedEvent {
   public static final int VERIFY_TEXT = SWT.Verify;
   private static final Class LISTENER = VerifyListener.class;
 
-  public String text;
+  /**
+   * A flag indicating whether the operation should be allowed.
+   * Setting this field to <code>false</code> will cancel the operation.
+   */
   public boolean doit;
-  public int start;
-  public int end;
+
+  /**
+   * the new text that will be inserted.
+   * Setting this field will change the text that is about to
+   * be inserted or deleted.
+   */
+  public String text;
+
+  /**
+   * the range of text being modified.
+   * Setting these fields has no effect.
+   */
+  public int start, end;
+
 
   /**
    * Constructs a new instance of this class based on the
@@ -60,6 +75,7 @@ public final class VerifyEvent extends TypedEvent {
    */
   public VerifyEvent( final Control source ) {
     super( source, VERIFY_TEXT );
+    doit = true;
   }
   
   protected void dispatchToObserver( final Object listener ) {
@@ -98,5 +114,22 @@ public final class VerifyEvent extends TypedEvent {
   
   public static Object[] getListeners( final Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
+  }
+
+  /**
+   * Returns a string containing a concise, human-readable
+   * description of the receiver.
+   *
+   * @return a string representation of the event
+   */
+  public String toString() {
+    String string = super.toString();
+    return string.substring( 0, string.length() - 1 ) // remove trailing '}'
+      // differs from SWT: no doit in superclass, thus add explicitly
+      + " doit=" + doit 
+      + " start=" + start
+      + " end=" + end
+      + " text=" + text
+      + "}";
   }
 }

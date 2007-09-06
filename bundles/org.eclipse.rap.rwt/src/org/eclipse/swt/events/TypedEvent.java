@@ -49,6 +49,7 @@ public class TypedEvent extends Event {
     ActivateEvent.class,
     DisposeEvent.class,
     SetDataEvent.class,
+    VerifyEvent.class,
     ModifyEvent.class,
     TreeEvent.class,
     CTabFolderEvent.class,

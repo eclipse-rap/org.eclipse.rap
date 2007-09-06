@@ -62,7 +62,7 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeReadOnly( text );
 //    TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
-    TextLCAUtil.writeModifyListener( text );
+    TextLCAUtil.writeVerifyAndModifyListener( text );
   }
 
   void renderDispose( final Text text ) throws IOException {

@@ -18,6 +18,7 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Text;
 
@@ -27,11 +28,13 @@ final class TextLCAUtil {
 
   private static final Pattern NEWLINE_PATTERN
     = Pattern.compile( "\\r\\n|\\r|\\n" );
+  
   static final String PROP_TEXT = "text";
-  static final String PROP_TEXT_LIMIT = "textLimit";
-  static final String PROP_SELECTION = "selection";
-  static final String PROP_MODIFY_LISTENER = "modifyListener";
-  static final String PROP_READONLY = "readonly";
+  private static final String PROP_TEXT_LIMIT = "textLimit";
+  private static final String PROP_SELECTION = "selection";
+  private static final String PROP_VERIFY_MODIFY_LISTENER 
+    = "verifyModifyListener";
+  private static final String PROP_READONLY = "readonly";
 
   private static final Integer DEFAULT_TEXT_LIMIT
     = new Integer( Text.LIMIT );
@@ -62,15 +65,31 @@ final class TextLCAUtil {
     adapter.preserve( PROP_TEXT, text.getText() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
     adapter.preserve( PROP_SELECTION, text.getSelection() );
-    boolean hasListener = ModifyEvent.hasListener( text );
-    adapter.preserve( PROP_MODIFY_LISTENER, Boolean.valueOf( hasListener ) );
     adapter.preserve( PROP_READONLY, Boolean.valueOf( ! text.getEditable() ) );
+    boolean hasVerifyListener = VerifyEvent.hasListener( text );
+    boolean hasModifyListener = ModifyEvent.hasListener( text );
+    boolean hasListener = hasVerifyListener || hasModifyListener;
+    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER, 
+                      Boolean.valueOf( hasListener ) );
   }
 
   static void readText( final Text text ) {
-    String newText = WidgetLCAUtil.readPropertyValue( text, "text" );
-    if( newText != null ) {
-      text.setText( newText );
+    final String value = WidgetLCAUtil.readPropertyValue( text, "text" );
+    if( value != null ) {
+      // setText needs to be executed in a ProcessAcction runnable as it may
+      // fire a VerifyEvent whose fields (text and doit) need to be evaluated 
+      // before actually setting the new value
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          text.setText( value );
+          // Reset preserved value in case the values wasn't set as-is as this
+          // means that a VerifyListener manipulated or rejected the value
+          if( !value.equals( text.getText() ) ) {
+            IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+            adapter.preserve( PROP_TEXT, null );
+          }
+        }
+      } );
     }
   }
 
@@ -163,15 +182,19 @@ final class TextLCAUtil {
                            "org.eclipse.swt.TextUtil._onAppearSetSelection" );
   }
 
-  static void writeModifyListener( final Text text ) throws IOException {
+  static void writeVerifyAndModifyListener( final Text text ) 
+    throws IOException 
+  {
     if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
       JSWriter writer = JSWriter.getWriterFor( text );
-      boolean hasListener = ModifyEvent.hasListener( text );
+      boolean hasVerifyListener = VerifyEvent.hasListener( text );
+      boolean hasModifyListener = ModifyEvent.hasListener( text );
+      boolean hasListener = hasModifyListener || hasVerifyListener;
       writer.updateListener( JS_MODIFY_LISTENER_INFO,
-                             PROP_MODIFY_LISTENER,
+                             PROP_VERIFY_MODIFY_LISTENER,
                              hasListener );
       writer.updateListener( JS_BLUR_LISTENER_INFO,
-                             PROP_MODIFY_LISTENER,
+                             PROP_VERIFY_MODIFY_LISTENER,
                              hasListener );
     }
   }
@@ -181,7 +204,7 @@ final class TextLCAUtil {
     writer.removeListener( JS_MODIFY_LISTENER_INFO.getEventType(),
                            JS_MODIFY_LISTENER_INFO.getJSListener() );
   }
-
+  
   static void writeText( final Text text ) throws IOException {
     String newValue = text.getText();
     JSWriter writer = JSWriter.getWriterFor( text );

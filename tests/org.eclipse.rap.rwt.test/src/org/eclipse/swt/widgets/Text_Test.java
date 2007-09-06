@@ -18,8 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 
 
@@ -127,6 +126,88 @@ public class Text_Test extends TestCase {
     log.setLength( 0 );
     text.setText( "abc" );
     assertEquals( "modifyEvent|", log.toString() );
+  }
+  
+  public void testVerifyEvent() {
+    VerifyListener verifyListener;
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    final Text text = new Text( shell, SWT.NONE );
+    text.addModifyListener( new ModifyListener() {
+      public void modifyText( final ModifyEvent event ) {
+        log.add( event );
+      }
+    } );
+    text.addVerifyListener( new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        log.add( event );
+      }
+    } );
+    
+    // VerifyEvent is also sent when setting text to the already set value
+    log.clear();
+    text.setText( "" );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
+    
+    // Test verifyListener that prevents (doit=false) change 
+    text.setText( "" );
+    log.clear();
+    verifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        event.doit = false;
+      }
+    };
+    text.addVerifyListener( verifyListener );
+    text.setText( "other" );
+    assertEquals( 1, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    assertEquals( "", text.getText() );
+    text.removeVerifyListener( verifyListener );
+
+    // Test verifyListener that manipulates text 
+    text.setText( "" );
+    log.clear();
+    verifyListener = new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        event.text = "manipulated";
+      }
+    };
+    text.addVerifyListener( verifyListener );
+    text.setText( "other" );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
+    assertEquals( "manipulated", text.getText() );
+    text.removeVerifyListener( verifyListener );
+    
+    // Ensure that VerifyEvent#start and #end denote the positions of the old 
+    // text and #text denotes the text to be set
+    String oldText = "old";
+    text.setText( oldText );
+    log.clear();
+    String newText = oldText + "changed";
+    text.setText( newText );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    VerifyEvent verifyEvent = ( VerifyEvent )log.get( 0 );
+    assertEquals( 0, verifyEvent.start );
+    assertEquals( oldText.length(), verifyEvent.end );
+    assertEquals( newText, verifyEvent.text );
+    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
+    
+    // Ensure that VerifyEvent gets fired when setEditable was set to false
+    text.setText( "" );
+    text.setEditable( false );
+    log.clear();
+    text.setText( "whatever" );
+    assertEquals( 2, log.size() );
+    assertEquals( VerifyEvent.class, log.get( 0 ).getClass() );
+    assertEquals( ModifyEvent.class, log.get( 1 ).getClass() );
+    text.setEditable( true );
   }
   
   // TODO [bm] extend testcase with newline chars and getLineCount

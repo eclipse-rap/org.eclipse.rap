@@ -65,7 +65,7 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeReadOnly( text );
     TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
-    TextLCAUtil.writeModifyListener( text );
+    TextLCAUtil.writeVerifyAndModifyListener( text );
     writeSelectionListener( text );
   }
 

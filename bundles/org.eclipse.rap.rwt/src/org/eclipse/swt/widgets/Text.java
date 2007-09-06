@@ -96,17 +96,19 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  // TODO: [bm][fappel] does setText needs to ask VerifyListeners?
   public void setText( final String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    this.text = text;
-    selection.x = 0;
-    selection.y = 0;
-    ModifyEvent modifyEvent = new ModifyEvent( this );
-    modifyEvent.processEvent();
+    String verifiedText = verifyText( text, 0, this.text.length() );
+    if( verifiedText != null ) {
+      this.text = verifiedText;
+      selection.x = 0;
+      selection.y = 0;
+      ModifyEvent modifyEvent = new ModifyEvent( this );
+      modifyEvent.processEvent();
+    }
   }
 
   /**
@@ -642,16 +644,72 @@ public class Text extends Scrollable {
     ModifyEvent.removeListener( this, listener );
   }
 
-  // TODO [fappel]: documentation and implementation
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the receiver's text is verified, by sending
+   * it one of the messages defined in the <code>VerifyListener</code>
+   * interface.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see VerifyListener
+   * @see #removeVerifyListener
+   */
   public void addVerifyListener( final VerifyListener verifyListener ) {
+    VerifyEvent.addListener( this, verifyListener );
   }
 
-  // TODO [fappel]: documentation and implementation
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the control is verified.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see VerifyListener
+   * @see #addVerifyListener
+   */
   public void removeVerifyListener( final VerifyListener verifyListener ) {
+    VerifyEvent.removeListener( this, verifyListener );
   }
 
   boolean isTabGroup() {
     return true;
+  }
+
+  String verifyText( final String string, final int start, final int end ) {
+    VerifyEvent event = new VerifyEvent( this );
+    event.text = string;
+    event.start = start;
+    event.end = end;
+    event.processEvent();
+    /*
+     * It is possible (but unlikely), that application code could have disposed
+     * the widget in the verify event. If this happens, answer null to cancel
+     * the operation.
+     */
+    String result;
+    if( event.doit && !isDisposed() ) {
+      result = event.text;
+    } else {
+      return null;
+    }
+    return result;
   }
 
   private Rectangle getPadding() {

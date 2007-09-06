@@ -18,12 +18,10 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -32,7 +30,7 @@ public class TextLCA_Test extends TestCase {
 
   public void testPreserveValues() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     text.setText( "abc" );
     RWTFixture.markInitialized( display );
@@ -43,8 +41,9 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testReadData() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     String textId = WidgetUtil.getId( text );
     // read changed text
@@ -62,7 +61,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderChanges() throws IOException {
     Fixture.fakeResponseWriter();
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     shell.open();
     RWTFixture.markInitialized( display );
@@ -83,7 +82,7 @@ public class TextLCA_Test extends TestCase {
   public void testModifyEvent() throws IOException {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
       public void modifyText( final ModifyEvent event ) {
@@ -103,9 +102,34 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "modifyText", log.toString() );
   }
   
+  public void testVerifyEvent() throws IOException {
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    final Text text = new Text( shell, SWT.NONE );
+    text.addVerifyListener( new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        assertEquals( text, event.getSource() );
+        assertEquals( text, event.widget );
+        assertTrue( event.doit );
+        log.append( "verifyText" );
+      }
+    } );
+    shell.open();
+    String displayId = DisplayUtil.getId( display );
+    String textId = WidgetUtil.getId( text );
+    
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( textId + ".text", "verify me" );
+    Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+    new RWTLifeCycle().execute();
+    assertEquals( "verifyText", log.toString() );
+  }
+  
   public void testTextLimit() throws IOException {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
     TextLCA lca = new TextLCA();
     // run LCA one to dump the here uninteresting prolog
