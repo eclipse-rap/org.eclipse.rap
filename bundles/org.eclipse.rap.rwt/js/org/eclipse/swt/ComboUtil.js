@@ -43,9 +43,9 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     // workaround for qx bug 555 (ComboBox prevents input when list is visible)
     // http://bugzilla.qooxdoo.org/show_bug.cgi?id=555
     hijackAutoCompletition : function( combo ) {
-      combo.removeEventListener("keyinput", combo._onkeyinput);
-      combo._onkeyinput = function(e) {};
-      combo.addEventListener("keyinput", combo._onkeyinput);
+      combo.removeEventListener( "keyinput", combo._onkeyinput );
+      combo._onkeyinput = function( e ) {};
+      combo.addEventListener( "keyinput", combo._onkeyinput );
       
       // TODO: need to prevent clearing the input field when
       // closing list with Escape key
@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       if( !( combo instanceof qx.ui.form.ComboBox ) ) {
       	combo = combo.getParent();
       }
-      if( !org_eclipse_rap_rwt_EventUtil_suspend 
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
           && !org.eclipse.swt.TextUtil._isModified( combo ) 
           && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) ) 
       {
@@ -103,7 +103,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
      * was a server-side ModifyListener registered.
      */
     modifyTextOnBlur : function( evt ) {
-      if( !org_eclipse_rap_rwt_EventUtil_suspend 
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
           && org.eclipse.swt.TextUtil._isModified( evt.getTarget() ) ) 
       {
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -156,21 +156,21 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     },
     
     /** Populates the Combo denoted by the given id with the items. */
-    createComboBoxItems : function( combo, items ) {
-      org.eclipse.swt.ComboUtil._doCreateItems( combo, items );
+    setItems : function( combo, items ) {
+      org.eclipse.swt.ComboUtil._doSetItems( combo, items );
       // TODO [rst] Find workaround for reparenting problems 
       /*
       if( !combo.getUserData( "pooled" ) ) {
-        org.eclipse.swt.ComboUtil._doCreateItems( combo, items );      	
+        org.eclipse.swt.ComboUtil._doSetItems( combo, items );      	
       } else {
         combo.setUserData( "onAppear.setItems", items );
         combo.addEventListener( "appear",
-                                org.eclipse.swt.ComboUtil._onAppearCreateItems );
+                                org.eclipse.swt.ComboUtil._onAppearSetItems );
       }
       */
     },
 
-    _doCreateItems : function( combo, items ) {
+    _doSetItems : function( combo, items ) {
       combo.removeAll();
       for( var i = 0; i < items.length; i++ ) {
         var item = new qx.ui.form.ListItem();
@@ -183,7 +183,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     },
 
 /*
-    _onAppearCreateItems : function( evt ) {
+    _onAppearSetItems : function( evt ) {
       var combo = evt.getTarget();
       var items = combo.getUserData( "onAppear.setItems" );
       org.eclipse.swt.ComboUtil._doCreateItems( combo, items );
@@ -242,13 +242,13 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     },
     
     _onChangeValue : function( evt ) {
-      if( evt.getData() != null ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend && evt.getData() != null ) {
         var combo = evt.getTarget();
         var value = combo.getValue();
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var cboId = widgetManager.findIdByWidget( combo );
+        var id = widgetManager.findIdByWidget( combo );
         var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( cboId + ".text", value );
+        req.addParameter( id + ".text", value );
       }
     }
     

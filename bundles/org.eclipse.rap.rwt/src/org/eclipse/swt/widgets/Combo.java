@@ -571,17 +571,22 @@ public class Combo extends Composite {
    */
   public void setText( final String string ) {
     checkWidget();
-    if( string == null )
+    if( string == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
+    }
     if( ( style & SWT.READ_ONLY ) != 0 ) {
       int index = indexOf( string );
-      if( index == -1 )
+      if( index == -1 ) {
         return;
+      }
       select( index );
+    } 
+    String verifiedText = verifyText( string, 0, text.length() );
+    if( verifiedText != null ) {
+      text = verifiedText;
+      ModifyEvent modifyEvent = new ModifyEvent( this );
+      modifyEvent.processEvent();
     }
-    text = string;
-    ModifyEvent modifyEvent = new ModifyEvent( this );
-    modifyEvent.processEvent();
   }
 
   // //////////////////
@@ -733,12 +738,48 @@ public class Combo extends Composite {
     ModifyEvent.removeListener( this, listener );
   }
   
-  // TODO [fappel]: documentation and implementation
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when the receiver's text is verified, by sending
+   * it one of the messages defined in the <code>VerifyListener</code>
+   * interface.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see VerifyListener
+   * @see #removeVerifyListener
+   */
   public void addVerifyListener( final VerifyListener verifyListener ) {
+    VerifyEvent.addListener( this, verifyListener );
   }
 
-  // TODO [fappel]: documentation and implementation
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the control is verified.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see VerifyListener
+   * @see #addVerifyListener
+   */
   public void removeVerifyListener( final VerifyListener verifyListener ) {
+    VerifyEvent.removeListener( this, verifyListener );
   }
 
 
@@ -752,6 +793,27 @@ public class Combo extends Composite {
 
   //////////////////
   // Helping methods
+
+  private String verifyText( final String text, final int start, final int end ) 
+  {
+    VerifyEvent event = new VerifyEvent( this );
+    event.text = text;
+    event.start = start;
+    event.end = end;
+    event.processEvent();
+    /*
+     * It is possible (but unlikely), that application code could have disposed
+     * the widget in the verify event. If this happens, answer null to cancel
+     * the operation.
+     */
+    String result;
+    if( event.doit && !isDisposed() ) {
+      result = event.text;
+    } else {
+      return null;
+    }
+    return result;
+  }
 
   private Rectangle getPadding() {
     ThemeManager manager = ThemeManager.getInstance();

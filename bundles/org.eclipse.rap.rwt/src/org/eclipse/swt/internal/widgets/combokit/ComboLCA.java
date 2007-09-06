@@ -18,8 +18,7 @@ import java.util.regex.Pattern;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -34,22 +33,24 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
 
   // Constants for ComboUtil.js
-  private static final String JS_FUNC_WIDGET_SELECTED =
-    "org.eclipse.swt.ComboUtil.onSelectionChanged";
-  private static final String JS_FUNC_CREATE_COMBOBOX_ITEMS =
-    "org.eclipse.swt.ComboUtil.createComboBoxItems";
-  private static final String JS_FUNC_SELECT_COMBOBOX_ITEM =
-    "org.eclipse.swt.ComboUtil.select";
-  private static final String JS_FUNC_INITIALIZE =
-    "org.eclipse.swt.ComboUtil.initialize";
+  private static final String JS_FUNC_INITIALIZE 
+    = "org.eclipse.swt.ComboUtil.initialize";
   private static final String JS_FUNC_DEINITIALIZE
     = "org.eclipse.swt.ComboUtil.deinitialize";
+  private static final String JS_FUNC_WIDGET_SELECTED =
+    "org.eclipse.swt.ComboUtil.onSelectionChanged";
+  private static final String JS_FUNC_SET_ITEMS =
+    "org.eclipse.swt.ComboUtil.setItems";
+  private static final String JS_FUNC_SELECT =
+    "org.eclipse.swt.ComboUtil.select";
 
   // Propery names for preserve-value facility
   private static final String PROP_ITEMS = "items";
+  private static final String PROP_TEXT = "text";
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_EDITABLE = "editable";
-  private static final String PROP_MODIFY_LISTENER = "modifyListener";
+  private static final String PROP_VERIFY_MODIFY_LISTENER 
+    = "verifyModifyListener";
 
   private static final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,
@@ -75,24 +76,24 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ITEMS, items );
     Integer selection = new Integer( combo.getSelectionIndex() );
     adapter.preserve( PROP_SELECTION, selection );
+    adapter.preserve( PROP_TEXT, combo.getText() );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
-    adapter.preserve( PROP_MODIFY_LISTENER,
-                      Boolean.valueOf( ModifyEvent.hasListener( combo ) ) );
-    adapter.preserve( PROP_EDITABLE, Boolean.valueOf( 
-                      (combo.getStyle() & SWT.READ_ONLY ) == 0 ) );
+    adapter.preserve( PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
+    boolean hasVerifyListener = VerifyEvent.hasListener( combo );
+    boolean hasModifyListener = ModifyEvent.hasListener( combo );
+    boolean hasListener = hasVerifyListener || hasModifyListener;
+    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER, 
+                      Boolean.valueOf( hasListener ) );
   }
 
   public void readData( final Widget widget ) {
-    Combo combo = ( Combo )widget;
+    final Combo combo = ( Combo )widget;
     String value = WidgetLCAUtil.readPropertyValue( widget, "selectedItem" );
     if( value != null ) {
       combo.select( new Integer( value ).intValue() );
     }
-    String text = WidgetLCAUtil.readPropertyValue( widget, "text" );
-    if( text != null ) {
-      combo.setText( text );
-    }
+    readText( combo );
     if( WidgetLCAUtil.wasEventSent( combo, JSConst.EVENT_WIDGET_SELECTED ) ) {
       ControlLCAUtil.processSelection( combo, null, true );
     }
@@ -111,12 +112,12 @@ public class ComboLCA extends AbstractWidgetLCA {
     writeItems( combo );
     writeSelected( combo );
     writeEditable( combo );
-    writeModifyListener( combo );
-
+    writeText( combo );
+    writeVerifyAndModifyListener( combo );
     // workaround for broken context menu on qx ComboBox
     // see http://bugzilla.qooxdoo.org/show_bug.cgi?id=465
     Menu menu = combo.getMenu();
-    if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu , null ) ) {
+    if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
       Object[] args = new Object[] { combo };
       writer.callStatic( "org.eclipse.swt.ComboUtil.applyContextMenu", args );
     }
@@ -144,6 +145,32 @@ public class ComboLCA extends AbstractWidgetLCA {
     return null;
   }
 
+  ///////////////////////////////////////
+  // Helping methods to read client state
+  
+  private static void readText( final Combo combo ) {
+    final String value = WidgetLCAUtil.readPropertyValue( combo, "text" );
+    if( value != null ) {
+      // setText needs to be executed in a ProcessAcction runnable as it may
+      // fire a VerifyEvent whose fields (text and doit) need to be evaluated 
+      // before actually setting the new value
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          combo.setText( value );
+          // Reset preserved value in case the values wasn't set as-is as this
+          // means that a VerifyListener manipulated or rejected the value
+          if( !value.equals( combo.getText() ) ) {
+            IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
+            adapter.preserve( PROP_TEXT, null );
+          }
+        }
+      } );
+    }
+  }
+
+  //////////////////////////////////////////////
+  // Helping methods to write changed properties
+  
   private static void writeItems( final Combo combo ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( combo );
     String[] items = combo.getItems();
@@ -155,7 +182,7 @@ public class ComboLCA extends AbstractWidgetLCA {
         items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
       }
       Object[] args = new Object[]{ combo, items };
-      writer.callStatic( JS_FUNC_CREATE_COMBOBOX_ITEMS, args );
+      writer.callStatic( JS_FUNC_SET_ITEMS, args );
     }
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
@@ -171,28 +198,47 @@ public class ComboLCA extends AbstractWidgetLCA {
     {
       JSWriter writer = JSWriter.getWriterFor( combo );
       Object[] args = new Object[]{ combo, newValue };
-      writer.callStatic( JS_FUNC_SELECT_COMBOBOX_ITEM, args );
+      writer.callStatic( JS_FUNC_SELECT, args );
     }
   }
   
   private static void writeEditable( final Combo combo ) throws IOException {
-    boolean editable = ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );
+    boolean editable = isEditable( combo );
     if( editable ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
-      writer.set( PROP_EDITABLE, "editable", Boolean.valueOf( editable ), null );
+      Boolean newValue = Boolean.valueOf( editable );
+      writer.set( PROP_EDITABLE, "editable", newValue, null );
     }
   }
-  
-  static void writeModifyListener( final Combo combo ) throws IOException {
-    if( ( combo.getStyle() & SWT.READ_ONLY ) == 0 ) {
+
+  private static void writeText( final Combo combo ) throws IOException {
+    if( isEditable( combo ) ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
-      boolean hasListener = ModifyEvent.hasListener( combo );
+      writer.set( PROP_TEXT, "value", combo.getText(), "" );
+    }
+  }
+
+  private static void writeVerifyAndModifyListener( final Combo combo ) 
+    throws IOException 
+  {
+    if( isEditable( combo ) ) {
+      JSWriter writer = JSWriter.getWriterFor( combo );
+      boolean hasVerifyListener = VerifyEvent.hasListener( combo );
+      boolean hasModifyListener = ModifyEvent.hasListener( combo );
+      boolean hasListener = hasVerifyListener || hasModifyListener;
       writer.updateListener( JS_MODIFY_LISTENER_INFO,
-                             PROP_MODIFY_LISTENER,
+                             PROP_VERIFY_MODIFY_LISTENER,
                              hasListener );
       writer.updateListener( JS_BLUR_LISTENER_INFO,
-              				 PROP_MODIFY_LISTENER,
-              				 hasListener );
+                             PROP_VERIFY_MODIFY_LISTENER,
+                             hasListener );
     }
+  }
+
+  //////////////////
+  // Helping methods
+  
+  private static boolean isEditable( final Combo combo ) {
+    return ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );
   }
 }

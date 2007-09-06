@@ -266,7 +266,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     // SelectionListener support
     
     /**
-     * This funciton is registered server-side if a SelectionListener should
+     * This function is registered server-side if a SelectionListener should
      * be notified about hte widgetDefaultSelection event that ovvurs when
      * Enter was pressed.
      */

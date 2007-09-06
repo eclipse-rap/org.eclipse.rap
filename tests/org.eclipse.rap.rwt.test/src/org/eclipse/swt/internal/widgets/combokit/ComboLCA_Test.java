@@ -74,7 +74,7 @@ public class ComboLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    Combo combo = new Combo( shell, SWT.DEFAULT );
+    Combo combo = new Combo( shell, SWT.READ_ONLY );
     shell.open();
     RWTFixture.markInitialized( display );
     RWTFixture.markInitialized( combo );
@@ -86,7 +86,7 @@ public class ComboLCA_Test extends TestCase {
     comboLCA.renderChanges( combo );
     String expected;
     expected
-      = "ComboUtil.createComboBoxItems( wm.findWidgetById( \""
+      = "ComboUtil.setItems( wm.findWidgetById( \""
       + WidgetUtil.getId( combo )
       + "\" ), [ \"item 1\", \"item 2\" ] );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );

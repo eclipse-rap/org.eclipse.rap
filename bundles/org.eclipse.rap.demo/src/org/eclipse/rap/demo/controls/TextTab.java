@@ -23,9 +23,12 @@ public class TextTab extends ExampleTab {
 
   private Text simpleText;
   private Text modifyText;
+  private Button btnSelectionListener;
+  private Button btnBlockingVerifyListener;
+  private Button btnNumbersOnlyVerifyListener; 
   private final SelectionListener selectionListener;
   private final VerifyListener blockingVerifyListener;
-  private final VerifyListener numberOnlyVerifyListener; 
+  private final VerifyListener numberOnlyVerifyListener;
 
   public TextTab( final CTabFolder topFolder ) {
     super( topFolder, "Text" );
@@ -37,13 +40,11 @@ public class TextTab extends ExampleTab {
     };
     blockingVerifyListener = new VerifyListener() {
       public void verifyText( final VerifyEvent event ) {
-System.out.println( "blockingListener: " + event.text );        
         event.doit = false;
       }
     };
     numberOnlyVerifyListener = new VerifyListener() {
       public void verifyText( final VerifyEvent event ) {
-System.out.println( "numberOnlyListener: " + event.text );        
         StringBuffer allowedText = new StringBuffer();
         for( int i = 0; i < event.text.length(); i++ ) {
           char ch = event.text.charAt( i );
@@ -74,37 +75,25 @@ System.out.println( "numberOnlyListener: " + event.text );
         modifyText.setEditable( editable );
       }
     } );
-    final Button btnSelectionListener 
+    btnSelectionListener 
       = createPropertyButton( "SelectionListener", SWT.CHECK );
     btnSelectionListener.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        if( SelectionEvent.hasListener( simpleText ) ) {
-          simpleText.removeSelectionListener( selectionListener );
-        } else {
-          simpleText.addSelectionListener( selectionListener );
-        }
+        updateSelectionListener();
       }
     } );
-    final Button btnBlockingVerifyListener 
+    btnBlockingVerifyListener 
       = createPropertyButton( "Blocking VerifyListener", SWT.CHECK );
     btnBlockingVerifyListener.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        if( btnBlockingVerifyListener.getSelection() ) {
-          simpleText.addVerifyListener( blockingVerifyListener );
-        } else {
-          simpleText.removeVerifyListener( blockingVerifyListener );
-        }
+        updateBlockingVerifyListener();
       }
     } );
-    final Button btnNumbersOnlyVerifyListener 
-    = createPropertyButton( "Number Only VerifyListener", SWT.CHECK );
+    btnNumbersOnlyVerifyListener 
+      = createPropertyButton( "Numbers Only VerifyListener", SWT.CHECK );
     btnNumbersOnlyVerifyListener.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        if( btnNumbersOnlyVerifyListener.getSelection() ) {
-          simpleText.addVerifyListener( numberOnlyVerifyListener );
-        } else {
-          simpleText.removeVerifyListener( numberOnlyVerifyListener );
-        }
+        updateNumbersOnlyVerifyListener();
       }
     } );
     createFgColorButton();
@@ -118,13 +107,16 @@ System.out.println( "numberOnlyListener: " + event.text );
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout( SWT.VERTICAL ) );
     simpleText = createText( parent, getStyle() );
+    updateSelectionListener();
+    updateBlockingVerifyListener();
+    updateNumbersOnlyVerifyListener();
     registerControl( simpleText );
     new Label( parent, SWT.NONE );
     modifyText = createModifyText( parent, getStyle() );
     registerControl( modifyText );
   }
 
-  private static Text createText( final Composite parent, final int style ) {
+  private Text createText( final Composite parent, final int style ) {
     Group grpContainer = new Group( parent, SWT.NONE );
     grpContainer.setText( "Simple Text" );
     grpContainer.setLayout( new GridLayout( 3, false ) );
@@ -343,6 +335,36 @@ System.out.println( "numberOnlyListener: " + event.text );
       = "Sorry, changing the selection is not yet implemented for " 
       + "Text with style MULTI.";
     MessageDialog.openInformation( getShell(), "Information", msg );
+  }
+
+  private void updateSelectionListener() {
+    if( btnSelectionListener != null ) {
+      if( btnSelectionListener.getSelection() ) {
+        simpleText.addSelectionListener( selectionListener );
+      } else {
+        simpleText.removeSelectionListener( selectionListener );
+      }
+    }
+  }
+
+  private void updateBlockingVerifyListener() {
+    if( btnBlockingVerifyListener != null ) {
+      if( btnBlockingVerifyListener.getSelection() ) {
+        simpleText.addVerifyListener( blockingVerifyListener );
+      } else {
+        simpleText.removeVerifyListener( blockingVerifyListener );
+      }
+    }
+  }
+
+  private void updateNumbersOnlyVerifyListener() {
+    if( btnNumbersOnlyVerifyListener != null ) {
+      if( btnNumbersOnlyVerifyListener.getSelection() ) {
+        simpleText.addVerifyListener( numberOnlyVerifyListener );
+      } else {
+        simpleText.removeVerifyListener( numberOnlyVerifyListener );
+      }
+    }
   }
 
   private static Point getPreferredSize( final Text text ) {

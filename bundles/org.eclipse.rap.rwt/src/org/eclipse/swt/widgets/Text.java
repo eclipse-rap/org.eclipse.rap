@@ -692,9 +692,10 @@ public class Text extends Scrollable {
     return true;
   }
 
-  String verifyText( final String string, final int start, final int end ) {
+  private String verifyText( final String text, final int start, final int end ) 
+  {
     VerifyEvent event = new VerifyEvent( this );
-    event.text = string;
+    event.text = text;
     event.start = start;
     event.end = end;
     event.processEvent();

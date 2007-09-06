@@ -13,8 +13,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -33,6 +32,7 @@ public class ComboTab extends ExampleTab {
   private Combo emptyCombo;
   private Combo filledCombo;
   private Combo preselectedCombo;
+  private Combo verifyCombo;
   private Combo viewerCombo;
 
   public ComboTab( final CTabFolder topFolder ) {
@@ -88,6 +88,26 @@ public class ComboTab extends ExampleTab {
         String message = "Selected Item: " + preselectedCombo.getItem( index );
         Shell shell = parent.getShell();
         MessageDialog.openInformation( shell, "Info", message );
+      }
+    } );
+    Label lblVerifyCombo = new Label( parent, SWT.NONE );
+    lblVerifyCombo.setText( "Combo with VerifyListener (only 0-9 allowed)" );
+    verifyCombo = new Combo( parent, style );
+    verifyCombo.setLayoutData( colSpan2() );
+    verifyCombo.add( "0" );
+    verifyCombo.add( "1" );
+    verifyCombo.add( "2" );
+    verifyCombo.add( "3" );
+    verifyCombo.addVerifyListener( new VerifyListener() {
+      public void verifyText( final VerifyEvent event ) {
+        StringBuffer allowedText = new StringBuffer();
+        for( int i = 0; i < event.text.length(); i++ ) {
+          char ch = event.text.charAt( i );
+          if( ch >= '0' && ch <= '9' ) {
+            allowedText.append( ch );
+          }
+        }
+        event.text = allowedText.toString();
       }
     } );
     Label lblViewerCombo = new Label( parent, SWT.NONE );
