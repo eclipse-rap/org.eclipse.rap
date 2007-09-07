@@ -319,9 +319,13 @@ public class ShellTab extends ExampleTab {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();
-      shell.removeShellListener( confirmCloseListener );
-      shell.close();
-      shell.dispose();
+      if( shell.isDisposed() ) {
+        iter.remove();
+      } else {
+        shell.removeShellListener( confirmCloseListener );
+        shell.close();
+        shell.dispose();
+      }
     }
     shells.clear();
   }
@@ -330,7 +334,11 @@ public class ShellTab extends ExampleTab {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();
-      shell.setVisible( visible );
+      if( shell.isDisposed() ) {
+        iter.remove();
+      } else {
+        shell.setVisible( visible );
+      }
     }
   }
 
@@ -338,7 +346,11 @@ public class ShellTab extends ExampleTab {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();
-      shell.setEnabled( enabled );
+      if( shell.isDisposed() ) {
+        iter.remove();
+      } else {
+        shell.setEnabled( enabled );
+      }
     }
   }
 
@@ -346,7 +358,11 @@ public class ShellTab extends ExampleTab {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();
-      shell.setMinimized( minimized );
+      if( shell.isDisposed() ) {
+        iter.remove();
+      } else {
+        shell.setMinimized( minimized );
+      }
     }
   }
 
@@ -354,7 +370,11 @@ public class ShellTab extends ExampleTab {
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();
-      shell.setMaximized( maximized );
+      if( shell.isDisposed() ) {
+        iter.remove();
+      } else {
+        shell.setMaximized( maximized );
+      }
     }
   }
 
