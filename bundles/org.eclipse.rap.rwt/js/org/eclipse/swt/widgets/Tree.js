@@ -491,10 +491,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         for( var i = 0; i < selectedItems.length; i++ ) {
           var item = selectedItems[i];
           if( item != this ) {
-            if( result == "" ) {
-              result += ",";
-            }
             result += wm.findIdByWidget(item);
+            result += ",";
           }
         }
       } else {
