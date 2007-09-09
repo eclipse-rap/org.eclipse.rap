@@ -91,8 +91,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.set( "resizable",
                 new Object[] { resizable, resizable, resizable, resizable } );
     writer.set( "alwaysOnTop", ( style & SWT.ON_TOP ) != 0 );
-    boolean isDialog = shell.getParent() instanceof Shell;
-    writer.set( "dialogMode", isDialog );
+    if( ( shell.getParent() instanceof Shell ) ) {
+      writer.set( "dialogMode", true );
+    }
     ControlLCAUtil.writeResizeNotificator( widget );
     ControlLCAUtil.writeMoveNotificator( widget );
   }
@@ -124,6 +125,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.call( "removeState", new Object[]{ "rwt_TITLE" } );
     writer.set( "modal", false );
+    writer.set( "dialogMode", false );
     ControlLCAUtil.resetStyleFlags();
     ControlLCAUtil.resetResizeNotificator();
     ControlLCAUtil.resetMoveNotificator();

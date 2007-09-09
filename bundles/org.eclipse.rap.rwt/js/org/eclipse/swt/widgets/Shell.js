@@ -21,6 +21,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this._captionTitle.setMode( "html" );
     this._activeControl = null;
     this._activateListenerWidgets = new Array();
+    this._dialogMode = false;
     // TODO [rh] check whether these listeners must be removed upon disposal
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeActive", this._onChangeActive );
@@ -96,10 +97,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   properties : {
     alwaysOnTop : {
       check : "Boolean"
-    },
-    
-    dialogMode : {
-      check : "Boolean"
     }
   },
 
@@ -110,6 +107,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     
     getDefaultButton : function() {
       return this._defaultButton;  
+    },
+    
+    setDialogMode : function( value ) {
+      this._dialogMode = value;
     },
     
     setActiveControl : function( control ) {
@@ -226,7 +227,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         if( defButton != null && defButton.isSeeable() ) {
           defButton.execute();
         }
-      } else if( keyId == "Escape" && this.getDialogMode() ) {
+      } else if( keyId == "Escape" && this._dialogMode ) {
         this.close();
       }
     },
