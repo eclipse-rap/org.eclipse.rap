@@ -102,8 +102,8 @@ public class ContextProvider {
   public static ServiceContext getContext() {
     ServiceContext result = getContextInternal();
     if( result == null ) {
-      String msg =   "No context available outside of the request "
-        + "service lifecycle.";
+      String msg = "No context available outside of the request "
+                 + "service lifecycle.";
       throw new IllegalStateException( msg );
     }
     return result;
