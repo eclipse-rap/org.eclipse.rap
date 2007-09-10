@@ -62,6 +62,14 @@ qx.Class.define( "org.eclipse.swt.Application", {
     },
     
     close : function( evt ) {
+      var req = org.eclipse.swt.Request.getInstance();
+      var id = req.getUIRootId();
+      var request = new qx.io.remote.Request( this._url, 
+                                              qx.net.Http.METHOD_GET, 
+                                              qx.util.Mime.TEXT );
+      request.setParameter( "org.eclipse.swt.closeRequested", id );
+      request.send();
+      
       this.base( arguments );
       return this._exitMessage;
     }

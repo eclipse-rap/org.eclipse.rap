@@ -284,12 +284,14 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     code.append( "var req = org.eclipse.swt.Request.getInstance();" ); 
     code.append( "req.setUrl( \"{0}\" );" );
     code.append( "req.setUIRootId( \"{1}\" );" );
+    code.append( "req.setRequestCounter( \"{2}\" );" );
     code.append( "var app = new org.eclipse.swt.Application();" ); 
     code.append( "qx.core.Init.getInstance().setApplication( app );" );
     
     Object[] param = new Object[] { 
       ContextProvider.getRequest().getServletPath().substring( 1 ),
-      displayId
+      displayId,
+      RWTRequestVersionControl.getVersion()
     };
     return MessageFormat.format( code.toString(), param );
   }

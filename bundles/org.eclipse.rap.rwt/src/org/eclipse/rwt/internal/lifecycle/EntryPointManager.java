@@ -15,8 +15,10 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -26,6 +28,8 @@ import org.eclipse.swt.widgets.Display;
 public final class EntryPointManager {
 
   public static final String DEFAULT = "default";
+  private static final String CURRENT_ENTRY_POINT
+    = EntryPointManager.class.getName() + ".CurrentEntryPointName";
 
   private static final Map registry = new HashMap();
   
@@ -87,6 +91,12 @@ public final class EntryPointManager {
       String msg = MessageFormat.format( text, args );
       throw new IllegalStateException( msg );
     }
+    ContextProvider.getSession().setAttribute( CURRENT_ENTRY_POINT, name );
     return result;
+  }
+
+  public static String getCurrentEntryPoint() {
+    ISessionStore session = ContextProvider.getSession();
+    return ( String )session.getAttribute( CURRENT_ENTRY_POINT );
   }
 }

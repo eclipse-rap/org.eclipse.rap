@@ -145,28 +145,47 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     configurer.getSynchronizationHandler().service();
   }
 
-  private static void internalService() throws ServletException, IOException {
-    HttpSession session = ContextProvider.getSession().getHttpSession();
-    // start point of process time
-    long startTime = System.currentTimeMillis();
-    initializeStateInfo();
-    checkRequest( session );
-    detectBrowser();
-    if( isBrowserDetected() ) {
-      lifeCycleRunner.init();
-      wrapStartupRequest( session );
-      lifeCycleRunner.run();
-    } else {
-      bufferStartupRequestParams( session );
-      BrowserSurvey.sendBrowserSurvey();
+  public static boolean isSessionRestart() {
+    HttpServletRequest request = getRequest();
+    boolean startup = request.getParameter( RequestParams.STARTUP ) != null;
+    String uiRoot = request.getParameter( RequestParams.UIROOT );
+    HttpSession session = request.getSession();
+    return    !session.isNew() && !startup && uiRoot == null 
+           || startup && isBrowserDetected();
+  }
+  
+  public static void initializeStateInfo() {
+    if( getStateInfo() == null ) {
+      IServiceStateInfo stateInfo;
+      stateInfo = new ServiceStateInfo();
+      ContextProvider.getContext().setStateInfo( stateInfo );
     }
-    appendProcessTime( startTime );
-    writeOutput();
+    if( getStateInfo().getResponseWriter() == null ) {
+      HtmlResponseWriter htmlResponseWriter = new HtmlResponseWriter();
+      getStateInfo().setResponseWriter( htmlResponseWriter );
+    }
   }
 
 
   //////////////////
   // helping methods
+  
+  private static void internalService() throws ServletException, IOException {
+    long startTime = System.currentTimeMillis();
+    initializeStateInfo();
+    checkRequest();
+    detectBrowser();
+    if( isBrowserDetected() ) {
+      lifeCycleRunner.init();
+      wrapStartupRequest();
+      lifeCycleRunner.run();
+    } else {
+      bufferStartupRequestParams();
+      BrowserSurvey.sendBrowserSurvey();
+    }
+    appendProcessTime( startTime );
+    writeOutput();
+  }
   
   private static boolean isBrowserDetected() {
     return getBrowser() != null;
@@ -192,22 +211,14 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
   }
   
-  private static void initializeStateInfo() {
-    HtmlResponseWriter htmlResponseWriter = new HtmlResponseWriter();
-    if( getStateInfo() == null ) {
-      IServiceStateInfo stateInfo;
-      stateInfo = new ServiceStateInfo();
-      ContextProvider.getContext().setStateInfo( stateInfo );
-    }
-    getStateInfo().setResponseWriter( htmlResponseWriter );
-  }
-
-  private static void bufferStartupRequestParams( final HttpSession session ) {
+  private static void bufferStartupRequestParams() {
     Map parameters = getRequest().getParameterMap();
-    session.setAttribute( PARAM_BUFFER, new HashMap( parameters ) );
+    HashMap paramBuffer = new HashMap( parameters );
+    getRequest().getSession().setAttribute( PARAM_BUFFER, paramBuffer );
   }
 
-  private static void wrapStartupRequest( final HttpSession session ) {
+  private static void wrapStartupRequest() {
+    HttpSession session = getRequest().getSession();
     Map params = ( Map )session.getAttribute( PARAM_BUFFER );
     if( params != null ) {
       ServiceContext context = ContextProvider.getContext();
@@ -216,22 +227,22 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     session.removeAttribute( PARAM_BUFFER );
   }
 
-  private static void checkRequest( final HttpSession session ) {
-    boolean startup 
-      = getRequest().getParameter( RequestParams.STARTUP ) != null;
-    String uiRoot = getRequest().getParameter( RequestParams.UIROOT );
-    if(    !session.isNew() && !startup && uiRoot == null 
-        || startup && isBrowserDetected() ) 
-    {
-      Enumeration keys = session.getAttributeNames();
-      List keyBuffer = new ArrayList();
-      while( keys.hasMoreElements() ) {
-        keyBuffer.add( keys.nextElement() );
-      }
-      Object[] attributeNames = keyBuffer.toArray();
-      for( int i = 0; i < attributeNames.length; i++ ) {
-        session.removeAttribute( ( String )attributeNames[ i ] );
-      }
+  private static void checkRequest( ) {
+    HttpSession session = getRequest().getSession();
+    if( isSessionRestart() ) {
+      clearSession( session );
+    }
+  }
+
+  private static void clearSession( HttpSession session ) {
+    Enumeration keys = session.getAttributeNames();
+    List keyBuffer = new ArrayList();
+    while( keys.hasMoreElements() ) {
+      keyBuffer.add( keys.nextElement() );
+    }
+    Object[] attributeNames = keyBuffer.toArray();
+    for( int i = 0; i < attributeNames.length; i++ ) {
+      session.removeAttribute( ( String )attributeNames[ i ] );
     }
   }
   
@@ -280,6 +291,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   private static IServiceStateInfo getStateInfo() {
     return ContextProvider.getStateInfo();
   }
+  
 
   //////////////////
   // Logging methods

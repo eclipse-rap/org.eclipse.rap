@@ -118,6 +118,10 @@ public class EntryPointManager_Test extends TestCase {
     Device display = EntryPointManager.createUI( EntryPointManager.DEFAULT );
     assertEquals( "isRunning", log );
     assertNotNull( display );
+    
+    String currentEntryPoint = EntryPointManager.getCurrentEntryPoint();
+    assertEquals( EntryPointManager.DEFAULT, currentEntryPoint );
+    
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 }

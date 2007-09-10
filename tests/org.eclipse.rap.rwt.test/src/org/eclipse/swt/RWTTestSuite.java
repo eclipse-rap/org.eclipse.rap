@@ -43,8 +43,8 @@ import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCA_Test;
 import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA_Test;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFocus_Test;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA_Test;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA_Test;
 import org.eclipse.swt.internal.widgets.listkit.ListLCA_Test;
 import org.eclipse.swt.internal.widgets.menuitemkit.MenuItemLCA_Test;
@@ -81,7 +81,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ServiceHandler_Test.class );
     suite.addTestSuite( SessionStore_Test.class );
     suite.addTestSuite( EngineConfig_Test.class );
-    suite.addTestSuite( org.eclipse.rwt.internal.resources.ResourceManagerImpl_Test.class );
+    suite.addTestSuite( ResourceManagerImpl_Test.class );
     suite.addTestSuite( ResourceUtil_Test.class );
     suite.addTestSuite( EventAdapter_Test.class );
     suite.addTestSuite( BrowserLoader_Test.class );
@@ -89,6 +89,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ConfigurationReader_Test.class );
     suite.addTestSuite( HTMLUtil_Test.class );
     suite.addTestSuite( ContextProvider_Test.class );
+    
     // RWT Tests
     suite.addTestSuite( EntryPointManager_Test.class );
     suite.addTestSuite( RWTServletContextListener_Test.class );
@@ -96,6 +97,7 @@ public class RWTTestSuite {
     suite.addTestSuite( PhaseListenerRegistry_Test.class );
     suite.addTestSuite( ResourceRegistry_Test.class );
     suite.addTestSuite( RWTLifeCycle_Test.class );
+    suite.addTestSuite( RWTRequestVersionControl_Test.class );
     suite.addTestSuite( LifeCycleAdapter_Test.class );
     suite.addTestSuite( ResourceManager_Test.class );
     suite.addTestSuite( PreserveWidgetsPhaseListener_Test.class );
