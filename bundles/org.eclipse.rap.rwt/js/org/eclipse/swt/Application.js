@@ -15,8 +15,14 @@ qx.Class.define( "org.eclipse.swt.Application", {
 
   construct : function() {
     this.base( arguments );
-    
+    this._firstWindowFocusEvent = true;
     this._exitMessage = null;
+  },
+  
+  destruct : function() {
+    var doc = qx.ui.core.ClientDocument.getInstance();
+    doc.removeEventListener( "windowresize", 
+                             org.eclipse.swt.Application._onResize );
   },
 
   statics : {
@@ -64,7 +70,7 @@ qx.Class.define( "org.eclipse.swt.Application", {
     close : function( evt ) {
       var req = org.eclipse.swt.Request.getInstance();
       var id = req.getUIRootId();
-      var request = new qx.io.remote.Request( this._url, 
+      var request = new qx.io.remote.Request( req.getUrl(), 
                                               qx.net.Http.METHOD_GET, 
                                               qx.util.Mime.TEXT );
       request.setParameter( "org.eclipse.swt.closeRequested", id );

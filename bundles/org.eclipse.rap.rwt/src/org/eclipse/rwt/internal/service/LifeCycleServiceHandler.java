@@ -40,9 +40,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   
   // The log level used by all loggers thoughout this class
   private static final Level LOG_LEVEL = Level.FINE;
-  private static final String PARAM_BUFFER
-    = "org.eclipse.rap.w4t.startupRequestParameterBuffer:-)";
-  
   private static Logger requestParamsLogger 
     = Logger.getLogger( LOG_REQUEST_PARAMS );
   private static Logger requestHeaderLogger 
@@ -177,10 +174,11 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     detectBrowser();
     if( isBrowserDetected() ) {
       lifeCycleRunner.init();
-      wrapStartupRequest();
+      RequestParameterBuffer.merge();
       lifeCycleRunner.run();
     } else {
-      bufferStartupRequestParams();
+      Map parameters = ContextProvider.getRequest().getParameterMap();
+      RequestParameterBuffer.store( parameters );
       BrowserSurvey.sendBrowserSurvey();
     }
     appendProcessTime( startTime );
@@ -211,22 +209,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
   }
   
-  private static void bufferStartupRequestParams() {
-    Map parameters = getRequest().getParameterMap();
-    HashMap paramBuffer = new HashMap( parameters );
-    getRequest().getSession().setAttribute( PARAM_BUFFER, paramBuffer );
-  }
-
-  private static void wrapStartupRequest() {
-    HttpSession session = getRequest().getSession();
-    Map params = ( Map )session.getAttribute( PARAM_BUFFER );
-    if( params != null ) {
-      ServiceContext context = ContextProvider.getContext();
-      context.setRequest( new StartupRequest( getRequest(), params ) );
-    }
-    session.removeAttribute( PARAM_BUFFER );
-  }
-
   private static void checkRequest( ) {
     HttpSession session = getRequest().getSession();
     if( isSessionRestart() ) {

@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Display;
 
 
 
-public class StartupRequest_Test extends TestCase {
+public class WrappedRequest_Test extends TestCase {
   
   public static final class DefaultEntryPoint implements IEntryPoint {
     public Display createUI() {
@@ -56,7 +56,7 @@ public class StartupRequest_Test extends TestCase {
     String v3b = "v3b";
     paramMap.put( p2, new String[] { v2 } );    
     paramMap.put( p3, new String[] { v3a, v3b } );    
-    StartupRequest wrapper = new StartupRequest( original, paramMap );
+    WrappedRequest wrapper = new WrappedRequest( original, paramMap );
     
     assertEquals( v0, wrapper.getParameter( p0 ) );
     assertEquals( v1a, wrapper.getParameter( p1 ) );

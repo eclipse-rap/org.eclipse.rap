@@ -85,7 +85,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ResourceUtil_Test.class );
     suite.addTestSuite( EventAdapter_Test.class );
     suite.addTestSuite( BrowserLoader_Test.class );
-    suite.addTestSuite( StartupRequest_Test.class );
+    suite.addTestSuite( WrappedRequest_Test.class );
     suite.addTestSuite( ConfigurationReader_Test.class );
     suite.addTestSuite( HTMLUtil_Test.class );
     suite.addTestSuite( ContextProvider_Test.class );

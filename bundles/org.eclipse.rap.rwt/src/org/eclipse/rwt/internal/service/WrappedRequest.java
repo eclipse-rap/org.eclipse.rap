@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.eclipse.rwt.internal.util.ParamCheck;
 
-final class StartupRequest extends HttpServletRequestWrapper {
+final class WrappedRequest extends HttpServletRequestWrapper {
 
   private final Map parameterMap;
   
-  StartupRequest( final HttpServletRequest request, final Map paramMap ) {
+  WrappedRequest( final HttpServletRequest request, final Map paramMap ) {
     super( request );
     ParamCheck.notNull( paramMap, "paramMap" );
     this.parameterMap = new HashMap( paramMap );

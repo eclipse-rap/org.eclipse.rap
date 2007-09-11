@@ -50,6 +50,10 @@ qx.Class.define( "org.eclipse.swt.Request", {
     setUrl : function( url ) {
       this._url = url;
     },
+    
+    getUrl : function() {
+      return this._url;
+    },
 
     setUIRootId : function( uiRootId ) {
       this._uiRootId = uiRootId;
