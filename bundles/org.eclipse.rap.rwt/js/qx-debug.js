@@ -12914,8 +12914,7 @@ if(value){this._iconObject.addState("selected");
 }else{this._iconObject.removeState("selected");
 }}var vManager=this.getTree().getManager();
 if(old&&vManager.getSelectedItem()==this){vManager.deselectAll();
-}else if(value&&vManager.getSelectedItem()!=this){vManager.setSelectedItem(this);
-}},
+}else if(value&&vManager.getSelectedItem()!=this){}},
 _getRowStructure:function(labelOrTreeRowStructure,
 icon,
 iconSelected){if(labelOrTreeRowStructure instanceof qx.ui.tree.TreeRowStructure){return labelOrTreeRowStructure;
@@ -13368,7 +13367,9 @@ e);
 _onmouseup:function(e){var vOriginalTarget=e.getOriginalTarget();
 switch(vOriginalTarget){case this._indentObject:case this._containerObject:case this:break;
 default:if(!this.getTree().getUseDoubleClick()){this.open();
-}}},
+}this.getTree().getManager().handleMouseUp(e.getTarget(),
+e);
+}},
 _ondblclick:function(e){if(!this.getTree().getUseDoubleClick()){return;
 }this.toggle();
 e.stopPropagation();
