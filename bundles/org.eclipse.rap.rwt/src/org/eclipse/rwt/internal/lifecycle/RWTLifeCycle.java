@@ -81,7 +81,7 @@ public class RWTLifeCycle extends LifeCycle {
       }
     } finally {
       ServiceContext context = ContextProvider.getContext();
-      if( !context.isDisposed() ) { // execution may has been aborted
+      if( !context.isDisposed() ) { // execution may have been aborted
         cleanUp();
       }
     }
@@ -116,7 +116,7 @@ public class RWTLifeCycle extends LifeCycle {
       next = PHASES[ current.getOrdinal() - 1 ].execute();
     } finally {
       ServiceContext context = ContextProvider.getContext();
-      if( !context.isDisposed() ) { // execution may has been aborted
+      if( !context.isDisposed() ) { // execution may have been aborted
         afterPhaseExecution( current );
       }
     }
@@ -139,6 +139,7 @@ public class RWTLifeCycle extends LifeCycle {
         } catch( final Throwable thr ) {
           String text = "Could not execute PhaseListener after phase ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { current } );
+          // TODO [rh] write to servlet context log instead of logger
           LOGGER.log( Level.SEVERE, msg, thr );
         }
       }
@@ -160,6 +161,7 @@ public class RWTLifeCycle extends LifeCycle {
         } catch( final Throwable thr ) {
           String text = "Could not execute PhaseListener before phase ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { current } );
+          // TODO [rh] write to servlet context log instead of logger
           LOGGER.log( Level.SEVERE, msg, thr );
         }
       }
@@ -171,7 +173,8 @@ public class RWTLifeCycle extends LifeCycle {
     if( session.getAttribute( INITIALIZED ) == null ) {
       AdapterFactoryRegistry.register();
       session.setAttribute( INITIALIZED, Boolean.TRUE );
-    }    
+    }
+    // TODO [rh] repalce with a call to setThread
     Thread current = Thread.currentThread();
     ContextProvider.getStateInfo().setAttribute( CURRENT_THREAD, current );
     UICallBackManager.getInstance().notifyUIThreadStart();
