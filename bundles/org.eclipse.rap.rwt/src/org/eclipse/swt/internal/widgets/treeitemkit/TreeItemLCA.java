@@ -225,19 +225,20 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static void writeBackground( final TreeItem item ) throws IOException {
-	  IWidgetColorAdapter colorAdapter
-	  = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+//	  IWidgetColorAdapter colorAdapter
+//	  = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
 	  JSWriter writer = JSWriter.getWriterFor( item );
-	  writer.set( PROP_BACKGROUND, "background", colorAdapter.getUserBackgound(), null );
+	  writer.set( PROP_BACKGROUND, "background", item.getBackground(), null );
   }
 
   private static void writeForeground( final TreeItem item ) throws IOException {
-	  IWidgetColorAdapter colorAdapter
-	  = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
-	  if( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND,
-			  colorAdapter.getUserBackgound(), null ) ) {
-		  WidgetLCAUtil.writeForeground( item, colorAdapter.getUserForegound() );
-	  }
+//	  IWidgetColorAdapter colorAdapter
+//	  = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+//	  if( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND,
+//			  colorAdapter.getUserBackgound(), null ) ) {
+//		  WidgetLCAUtil.writeForeground( item, colorAdapter.getUserForegound() );
+//	  }
+    WidgetLCAUtil.writeForeground( item, item.getForeground() );
   }
 
   private boolean writeBackgrounds( final TreeItem item ) throws IOException {

@@ -34,6 +34,9 @@ import org.eclipse.swt.internal.widgets.*;
  */
 public class TreeItem extends Item {
 
+  private static final int IMAGE_TEXT_GAP = 2;
+  private static final int INDENT_WIDTH = 16;
+  
   private final TreeItem parentItem;
   private final Tree parent;
   private final ItemHolder itemHolder;
@@ -48,6 +51,7 @@ public class TreeItem extends Item {
   private Image[] images;
   Color[] cellForegrounds, cellBackgrounds;
   Font[] cellFonts;
+  int depth;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -208,6 +212,9 @@ public class TreeItem extends Item {
     this.parent = parent;
     this.parentItem = parentItem;
     if( parentItem != null ) {
+      this.depth = parentItem.depth+1;
+    }
+    if( parentItem != null ) {
       int newIndex = index == -1 ? parentItem.getItemCount() : index;
       ItemHolder.insertItem( parentItem, this, newIndex );
     } else {
@@ -334,8 +341,7 @@ public class TreeItem extends Item {
    */
   public Rectangle getBounds() {
     checkWidget();
-    // TODO [bm] implementation missing
-    return null;
+    return getBounds( 0 );
   }
   
   /**
@@ -352,24 +358,62 @@ public class TreeItem extends Item {
    * 
    * @since 3.1
    */
-  public Rectangle getBounds (int columnIndex) {
-    // TODO: [bm] implementation missing
-    return null;
+  public Rectangle getBounds( int columnIndex ) {
+    checkWidget();
+    Rectangle result;
+    int columnCount = parent.getColumnCount();
+    if( columnIndex < 0 || ( columnIndex > columnCount ) ) {
+      result = new Rectangle( 0, 0, 0, 0 );
+    } else if( getParentItem() != null && !getParentItem().getExpanded() ) {
+      result = new Rectangle( 0, 0, 0, 0 );
+    } else {
+      Rectangle imageBounds = getImageBounds( columnIndex );
+      Point textWidth = TextSizeDetermination.stringExtent( getFont(),
+                                                            getText( 0 ) );
+      int left = imageBounds.x + ( depth+1 * INDENT_WIDTH );
+      int top = 16;
+      if( parentItem != null ) {
+        top += parentItem.getBounds( columnIndex ).y;
+      }
+      int width;
+      if( columnIndex == 0 && columnCount == 0 ) {
+        int gap = getImageGap( columnIndex );
+        width = 2 + imageBounds.width + gap + textWidth.x + 2;
+      } else {
+        width = parent.getColumn( columnIndex ).getWidth();
+      }
+      int height = Math.max( textWidth.y, imageBounds.height ) + 2;
+      result = new Rectangle( left, top, width, height );
+    }
+    return result;
+  }
+
+	private int getImageGap( final int index ) {
+    int result = 0;
+    Image image = getImage( index );
+    if( image != null ) {
+      result = IMAGE_TEXT_GAP;
+    }
+    return result;
   }
   
   /**
-   * Returns the background color at the given column index in the receiver.
-   *
-   * @param index the column index
-   * @return the background color
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   * 
-   * @since 3.1
-   */
+	 * Returns the background color at the given column index in the receiver.
+	 * 
+	 * @param index
+	 *            the column index
+	 * @return the background color
+	 * 
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 * 
+	 * @since 3.1
+	 */
   public Color getBackground( int columnIndex ) {
     checkWidget();
     // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
