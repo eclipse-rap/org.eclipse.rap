@@ -487,16 +487,7 @@ public class Display extends Device implements Adaptable {
   // TODO [rh] This is preliminary!
   // TODO [rh] move to Device
   public void dispose() {
-//    ContextProvider.getSession().removeAttribute( DISPLAY_ID );
-    session = null;
-    displayAdapter = null;
-    thread = null;
-    shells.clear();
-    bounds = null;
-    activeShell = null;
-    filters = null;
-    focusControl = null;
-    widgetAdapter = null;    
+    ContextProvider.getSession().removeAttribute( DISPLAY_ID );    
   }
 
   // TODO [rh] move to Device
