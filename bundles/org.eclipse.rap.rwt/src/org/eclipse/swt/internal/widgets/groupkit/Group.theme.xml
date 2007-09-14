@@ -27,7 +27,6 @@
       description="Padding for group box labels (defines space around group label text)"
       default="0 3 0 4"/>
 
-  // TODO [rst] Inherit does not work properly!
   <font name="group.label.font"
       description="Font for group box labels"
       inherit="widget.font"
