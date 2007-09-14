@@ -29,7 +29,6 @@
 
   <font name="group.label.font"
       description="Font for group box labels"
-      inherit="widget.font"
-      default=""/>
+      default="11 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"/>
 
 </theme>
