@@ -12,13 +12,14 @@
 package org.eclipse.swt.internal.widgets.listkit;
 
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-public class ListThemeAdapter implements IListThemeAdapter {
+public class ListThemeAdapter implements IControlThemeAdapter {
 
   public QxBoxDimensions getPadding( final Shell shell ) {
     Theme theme = ThemeUtil.getTheme();

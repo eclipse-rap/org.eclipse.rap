@@ -31,15 +31,10 @@ import org.xml.sax.SAXException;
 
 public final class ThemeManager {
 
-  public interface ResourceLoader {
+  public static interface ResourceLoader {
     abstract InputStream getResourceAsStream( String resourceName )
       throws IOException;
   }
-
-  private static final String CHARSET = "UTF-8";
-
-  private static final Pattern PATTERN_REPLACE
-    = Pattern.compile( "THEME_VALUE\\(\\s*\"(.*?)\"\\s*\\)" );
 
   private static final class ThemeWrapper {
     final Theme theme;
@@ -55,150 +50,90 @@ public final class ThemeManager {
     }
   }
 
-  /**
-   * This map contains all widget images needed by RAP and maps them to a
-   * themeing key. If the key is null, the image is not yet themeable.
-   * TODO [rst] Yes, I know this isn't nice. Find an alternative.
-   */
-  private static final Map WIDGET_RESOURCES_MAP = new HashMap();
-
-  static {
-    WIDGET_RESOURCES_MAP.put( "arrows/down.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/down_small.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/down_tiny.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/first.png", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/forward.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/last.png", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/left.png", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/minimize.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/next.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/previous.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/rewind.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/right.png", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/up.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/up_small.gif", null );
-    WIDGET_RESOURCES_MAP.put( "arrows/up_tiny.gif", null );
-//    WIDGET_RESOURCES_MAP.put( "colorselector/brightness-field.jpg", null );
-//    WIDGET_RESOURCES_MAP.put( "colorselector/brightness-handle.gif", null );
-//    WIDGET_RESOURCES_MAP.put( "colorselector/huesaturation-field.jpg", null );
-//    WIDGET_RESOURCES_MAP.put( "colorselector/huesaturation-handle.gif", null );
-    WIDGET_RESOURCES_MAP.put( "cursors/alias.gif", null );
-    WIDGET_RESOURCES_MAP.put( "cursors/copy.gif", null );
-    WIDGET_RESOURCES_MAP.put( "cursors/move.gif", null );
-    WIDGET_RESOURCES_MAP.put( "cursors/nodrop.gif", null );
-//    WIDGET_RESOURCES_MAP.put( "datechooser/lastMonth.png", null );
-//    WIDGET_RESOURCES_MAP.put( "datechooser/lastYear.png", null );
-//    WIDGET_RESOURCES_MAP.put( "datechooser/nextMonth.png", null );
-//    WIDGET_RESOURCES_MAP.put( "datechooser/nextYear.png", null );
-    WIDGET_RESOURCES_MAP.put( "menu/checkbox.gif", null );
-    WIDGET_RESOURCES_MAP.put( "menu/menu-blank.gif", null );
-    WIDGET_RESOURCES_MAP.put( "menu/radiobutton.gif", null );
-    WIDGET_RESOURCES_MAP.put( "splitpane/knob-horizontal.png", null );
-    WIDGET_RESOURCES_MAP.put( "splitpane/knob-vertical.png", null );
-    WIDGET_RESOURCES_MAP.put( "table/up.png", null );
-    WIDGET_RESOURCES_MAP.put( "table/down.png", null );
-    WIDGET_RESOURCES_MAP.put( "tree/cross.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/cross_minus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/cross_plus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/end.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/end_minus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/end_plus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/line.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/minus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/only_minus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/only_plus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/plus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/start_minus.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/start_plus.gif", null );
-
-    // minimize button
-    WIDGET_RESOURCES_MAP.put( "window/minimize.png",
-                              "shell.minbutton.image" );
-    WIDGET_RESOURCES_MAP.put( "window/minimize.over.png",
-                              "shell.minbutton.over.image" );
-    WIDGET_RESOURCES_MAP.put( "window/minimize.inactive.png",
-                              "shell.minbutton.inactive.image" );
-    WIDGET_RESOURCES_MAP.put( "window/minimize.inactive.over.png",
-                              "shell.minbutton.inactive.over.image" );
-    // maximize button
-    WIDGET_RESOURCES_MAP.put( "window/maximize.png",
-                              "shell.maxbutton.image" );
-    WIDGET_RESOURCES_MAP.put( "window/maximize.over.png",
-                              "shell.maxbutton.over.image" );
-    WIDGET_RESOURCES_MAP.put( "window/maximize.inactive.png",
-                              "shell.maxbutton.inactive.image" );
-    WIDGET_RESOURCES_MAP.put( "window/maximize.inactive.over.png",
-                              "shell.maxbutton.inactive.over.image" );
-    // restore button
-    WIDGET_RESOURCES_MAP.put( "window/restore.png",
-                              "shell.restorebutton.image" );
-    WIDGET_RESOURCES_MAP.put( "window/restore.over.png",
-                              "shell.restorebutton.over.image" );
-    WIDGET_RESOURCES_MAP.put( "window/restore.inactive.png",
-                              "shell.restorebutton.inactive.image" );
-    WIDGET_RESOURCES_MAP.put( "window/restore.inactive.over.png",
-                              "shell.restorebutton.inactive.over.image" );
-    // close button
-    WIDGET_RESOURCES_MAP.put( "window/close.png",
-                              "shell.closebutton.image" );
-    WIDGET_RESOURCES_MAP.put( "window/close.over.png",
-                              "shell.closebutton.over.image" );
-    WIDGET_RESOURCES_MAP.put( "window/close.inactive.png",
-                              "shell.closebutton.inactive.image" );
-    WIDGET_RESOURCES_MAP.put( "window/close.inactive.over.png",
-                              "shell.closebutton.inactive.over.image" );
-
-    WIDGET_RESOURCES_MAP.put( "window/caption_active.gif",
-                              "shell.title.active.bgimage" );
-    WIDGET_RESOURCES_MAP.put( "window/caption_inactive.gif",
-                              "shell.title.inactive.bgimage" );
-    WIDGET_RESOURCES_MAP.put( "tree/folder_open.gif", null );
-    WIDGET_RESOURCES_MAP.put( "tree/folder_closed.gif", null );
-    WIDGET_RESOURCES_MAP.put( "display/bg.gif", null );
-    WIDGET_RESOURCES_MAP.put( "table/check_white_on.gif", null );
-    WIDGET_RESOURCES_MAP.put( "table/check_white_off.gif", null );
-    WIDGET_RESOURCES_MAP.put( "table/check_gray_on.gif", null );
-    WIDGET_RESOURCES_MAP.put( "table/check_gray_off.gif", null );
-    WIDGET_RESOURCES_MAP.put( "progressbar/bar.gif",
-                              "progressbar.fgimage" );
-    WIDGET_RESOURCES_MAP.put( "progressbar/barbg.gif",
-                              "progressbar.bgimage" );
-  }
-
-  /** Where to load the default images from */
-  private static final String WIDGET_RESOURCES_SRC = "resource/widget/rap/";
-
-  private static final String THEME_RESOURCE_DEST = "resource/themes/";
-
-  private static final String JS_THEME_PREFIX = "org.eclipse.swt.theme.";
-
-  private static final String PREDEFINED_THEME_ID = JS_THEME_PREFIX + "Default";
-
-  private static final String PREDEFINED_THEME_NAME = "RAP Default Theme";
-
-  private static ThemeManager instance;
-
-  private final List customWidgets;
-  private final List addAppearances;
-  private final Map themeDefs;
-  private final Map themes;
-  private final Map adapters;
-  private Theme predefinedTheme;
-  private boolean initialized;
-  private String defaultThemeId = PREDEFINED_THEME_ID;
-  private int themeCount;
+  private static final String CHARSET = "UTF-8";
 
   private static final boolean DEBUG
     = "true".equals( System.getProperty( ThemeManager.class.getName() + ".log" ) );
 
-  // Note: The order of widgets also determines the order of the template file
-  // generated by the main method.
-  private static final Class[] THEMEABLE_WIDGETS = new Class[] {
-//  Browser.class,
-//  CBanner.class,
+  private static final Pattern PATTERN_REPLACE
+    = Pattern.compile( "THEME_VALUE\\(\\s*\"(.*?)\"\\s*\\)" );
+
+  /**
+   * This array contains all widget images needed by RAP that are not themeable.
+   * These images are registered by the ThemeManager once for every theme.
+   */
+  private static final String[] WIDGET_NOTHEME_RESOURCES = new String[]{
+    "arrows/down.gif",
+    "arrows/down_small.gif",
+    "arrows/down_tiny.gif",
+    "arrows/first.png",
+    "arrows/forward.gif",
+    "arrows/last.png",
+    "arrows/left.png",
+    "arrows/minimize.gif",
+    "arrows/next.gif",
+    "arrows/previous.gif",
+    "arrows/rewind.gif",
+    "arrows/right.png",
+    "arrows/up.gif",
+    "arrows/up_small.gif",
+    "arrows/up_tiny.gif",
+// "colorselector/brightness-field.jpg",
+// "colorselector/brightness-handle.gif",
+// "colorselector/huesaturation-field.jpg",
+// "colorselector/huesaturation-handle.gif",
+    "cursors/alias.gif",
+    "cursors/copy.gif",
+    "cursors/move.gif",
+    "cursors/nodrop.gif",
+// "datechooser/lastMonth.png",
+// "datechooser/lastYear.png",
+// "datechooser/nextMonth.png",
+// "datechooser/nextYear.png",
+    "menu/checkbox.gif",
+    "menu/menu-blank.gif",
+    "menu/radiobutton.gif",
+    "splitpane/knob-horizontal.png",
+    "splitpane/knob-vertical.png",
+    "table/up.png",
+    "table/down.png",
+    "tree/cross.gif",
+    "tree/cross_minus.gif",
+    "tree/cross_plus.gif",
+    "tree/end.gif",
+    "tree/end_minus.gif",
+    "tree/end_plus.gif",
+    "tree/line.gif",
+    "tree/minus.gif",
+    "tree/only_minus.gif",
+    "tree/only_plus.gif",
+    "tree/plus.gif",
+    "tree/start_minus.gif",
+    "tree/start_plus.gif",
+    "tree/folder_open.gif",
+    "tree/folder_closed.gif",
+    "display/bg.gif",
+    "table/check_white_on.gif",
+    "table/check_white_off.gif",
+    "table/check_gray_on.gif",
+    "table/check_gray_off.gif"
+  };
+
+  /** Where to load the default non-themeable images from */
+  private static final String WIDGET_RESOURCES_SRC = "resource/widget/rap";
+
+  private static final String BLANK_IMAGE_PATH
+    = "resource/static/image/blank.gif";
+
+  private static final String THEME_RESOURCE_DEST = "resource/themes/";
+
+  private static final String THEME_PREFIX = "org.eclipse.swt.theme.";
+
+  private static final String PREDEFINED_THEME_ID = THEME_PREFIX + "Default";
+
+  private static final Class[] THEMEABLE_WIDGETS = new Class[]{
     org.eclipse.swt.widgets.Button.class,
     org.eclipse.swt.widgets.Combo.class,
-//  Composite.class,
     org.eclipse.swt.widgets.Control.class,
     org.eclipse.swt.widgets.CoolBar.class,
     org.eclipse.swt.custom.CTabFolder.class,
@@ -208,11 +143,6 @@ public final class ThemeManager {
     org.eclipse.swt.widgets.List.class,
     org.eclipse.swt.widgets.Menu.class,
     org.eclipse.swt.widgets.ProgressBar.class,
-//  Sash.class,
-//  SashForm.class,
-//  Scrollable.class,
-//  Scrollbar.class,
-//  ScrolledComposite.class,
     org.eclipse.swt.widgets.Shell.class,
     org.eclipse.swt.widgets.Spinner.class,
     org.eclipse.swt.widgets.TabFolder.class,
@@ -220,17 +150,33 @@ public final class ThemeManager {
     org.eclipse.swt.widgets.Text.class,
     org.eclipse.swt.widgets.ToolBar.class,
     org.eclipse.swt.widgets.Tree.class,
-    org.eclipse.swt.widgets.Widget.class,
+    org.eclipse.swt.widgets.Widget.class
   };
+
+  private static final String PREDEFINED_THEME_NAME = "RAP Default Theme";
+
+  private static ThemeManager instance;
+
+  private boolean initialized;
+  private final List customWidgets;
+  private final List addAppearances;
+  private final Map themeDefs;
+  private final Map themes;
+  private final Map adapters;
+  private final Map imageMapping;
+  private Theme predefinedTheme;
+
+  private int themeCount;
 
   private ThemeManager() {
     // prevent instantiation from outside
+    initialized = false;
     customWidgets = new ArrayList();
     addAppearances = new ArrayList();
     themeDefs = new LinkedHashMap();
     themes = new HashMap();
     adapters = new HashMap();
-    initialized = false;
+    imageMapping = new HashMap();
   }
 
   /**
@@ -244,13 +190,12 @@ public final class ThemeManager {
   }
 
   /**
-   * Initializes the ThemeManager, i.e. loads themeing-relevant files and
+   * Initializes the ThemeManager, i.e. loads theming-relevant files and
    * registers themes.
    */
   public void initialize() {
     log( "____ ThemeManager intialize" );
     if( !initialized ) {
-      predefinedTheme = new Theme( PREDEFINED_THEME_NAME );
       try {
         for( int i = 0; i < THEMEABLE_WIDGETS.length; i++ ) {
           processThemeableWidget( THEMEABLE_WIDGETS[ i ] );
@@ -262,33 +207,19 @@ public final class ThemeManager {
       } catch( final Exception e ) {
         throw new RuntimeException( "Initialization failed", e );
       }
+      // initialize predefined theme
+      predefinedTheme = new Theme( PREDEFINED_THEME_NAME );
       Iterator iterator = themeDefs.keySet().iterator();
       while( iterator.hasNext() ) {
         String key = ( String )iterator.next();
         ThemeDef def = ( ThemeDef )themeDefs.get( key );
-        // TODO [rst] Revise inheritance system
-        ThemeDef inheritDef = null;
-        if( def.inherit != null ) {
-          inheritDef = ( ThemeDef )themeDefs.get( def.inherit );
-        }
-        if( inheritDef != null ) {
-          predefinedTheme.setValue( key, inheritDef.defValue );
-        } else {
-          predefinedTheme.setValue( key, def.defValue );
-        }
+        predefinedTheme.setValue( key, def.defValue );
       }
       themes.put( PREDEFINED_THEME_ID, new ThemeWrapper( predefinedTheme,
                                                          null,
                                                          themeCount++ ) );
       initialized = true;
-      log( "=== REGISTERED ADAPTERS ===" );
-      Iterator iter = adapters.keySet().iterator();
-      while( iter.hasNext() ) {
-        Class key = ( Class )iter.next();
-        Object adapter = adapters.get( key );
-        log( key.getName() + ": " + adapter );
-      }
-      log( "=== END REGISTERED ADAPTERS ===" );
+      logRegisteredAdapters();
     }
   }
 
@@ -312,15 +243,25 @@ public final class ThemeManager {
     customWidgets.add( widget );
   }
 
+  /**
+   * Registers a theme from an input stream.
+   *
+   * @param id an id that identifies the theme in the Java code. This id is not
+   *            valid on the client-side. To get the id that is used on the
+   *            client, see method <code>getJsThemeId</code>.
+   * @param name a name that describes the theme. Currently not used.
+   * @param instr an input stream to read the theme from.
+   * @param loader a ResourceLoader instance that is able to load resources
+   *            needed by this theme.
+   */
   public void registerTheme( final String id,
                              final String name,
                              final InputStream instr,
-                             final ResourceLoader loader,
-                             final boolean asDefault )
-  throws IOException
+                             final ResourceLoader loader )
+    throws IOException
   {
     checkInitialized();
-    log( "_____ register theme " + id + ": " + instr + " def: " + asDefault );
+    log( "___ register theme " + id + ": " + instr );
     checkId( id );
     if( themes.containsKey( id ) ) {
       String pattern = "Theme with id ''{0}'' exists already";
@@ -329,11 +270,7 @@ public final class ThemeManager {
       throw new IllegalArgumentException( msg );
     }
     Theme theme = loadThemeFile( name, instr );
-
     themes.put( id, new ThemeWrapper( theme, loader, themeCount++  ) );
-    if( asDefault ) {
-      defaultThemeId = id;
-    }
   }
 
   public void registerResources() throws IOException {
@@ -361,7 +298,7 @@ public final class ThemeManager {
     return wrapper.theme;
   }
 
-  public String[] getAvailableThemeIds() {
+  public String[] getRegisteredThemeIds() {
     checkInitialized();
     String[] result = new String[ themes.size() ];
     return ( String[] )themes.keySet().toArray( result );
@@ -369,7 +306,7 @@ public final class ThemeManager {
 
   public String getDefaultThemeId() {
     checkInitialized();
-    return defaultThemeId;
+    return PREDEFINED_THEME_ID;
   }
 
   public boolean hasThemeAdapter( final Class controlClass ) {
@@ -393,15 +330,21 @@ public final class ThemeManager {
     return result;
   }
 
-  public String getJsThemeId( final String themeId ) {
+  /**
+   * Returns the theme id to use on the client side.
+   */
+  public String getJsThemeId( final String id ) {
     checkInitialized();
     String result;
-    if( PREDEFINED_THEME_ID.equals( themeId ) ) {
+    if( PREDEFINED_THEME_ID.equals( id ) ) {
       result = PREDEFINED_THEME_ID;
     } else {
-      // TODO [rst] check if theme is registered
-      ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
-      result = JS_THEME_PREFIX + "Custom_" + wrapper.count;
+      ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
+      if( wrapper == null ) {
+        String mesg = "No theme registered with id " + id;
+        throw new IllegalArgumentException( mesg );
+      }
+      result = THEME_PREFIX + "Custom_" + wrapper.count;
     }
     return result;
   }
@@ -420,9 +363,11 @@ public final class ThemeManager {
       String key = ( String )iterator.next();
       ThemeDef def = ( ThemeDef )manager.themeDefs.get( key );
       String value = def.defValue.toDefaultString();
-      String description = def.description.replaceAll( "\\n\\s*", "\n# " );
       sb.append( "\n" );
-      sb.append( "# " + description + "\n" );
+      if( def.description == null ) {
+        throw new NullPointerException( "Description missing for " + key );
+      }
+      sb.append( "# " + def.description.replaceAll( "\\n\\s*", "\n# " ) + "\n" );
       sb.append( "# default: " + value + "\n" );
       sb.append( "#" + def.name + ": " + value  + "\n" );
     }
@@ -484,6 +429,9 @@ public final class ThemeManager {
                                                   + def.name );
             }
             themeDefs.put( def.name, def );
+            if( def.targetPath != null ) {
+              imageMapping.put( def.name, def.targetPath );
+            }
           }
         } );
       } catch( final SAXException e ) {
@@ -589,7 +537,7 @@ public final class ThemeManager {
       newTheme.setValue( key, newValue );
     }
     // second loop for inheritance
-    // TODO [rst] handle loops and multi-step inheritance
+    // TODO [rst] detect inheritance loops and handle multi-step inheritance
     iterator = themeDefs.keySet().iterator();
     while( iterator.hasNext() ) {
       String key = ( String )iterator.next();
@@ -601,6 +549,10 @@ public final class ThemeManager {
     return newTheme;
   }
 
+  /**
+   * Creates and registers all JavaScript theme files and images for a given
+   * theme.
+   */
   private void registerThemeFiles( final String id )
     throws IOException
   {
@@ -616,7 +568,7 @@ public final class ThemeManager {
     sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
     sb.append( createMetaTheme( wrapper.theme, jsId ) );
     String themeCode = sb.toString();
-    log( "-- REGISTERED THEME CODE --" );
+    log( "-- REGISTERED THEME CODE FOR " + id + " --" );
     log( themeCode );
     log( "-- END REGISTERED THEME CODE --" );
 // TODO [rst] Load only the default theme at startup
@@ -628,41 +580,68 @@ public final class ThemeManager {
   private void registerWidgetImages( final String id )
     throws IOException
   {
-    Iterator iterator = WIDGET_RESOURCES_MAP.keySet().iterator();
     ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
     Theme theme = wrapper.theme;
     ResourceLoader themeLoader = wrapper.loader;
+    ClassLoader classLoader = ThemeManager.class.getClassLoader();
 
-    while( iterator.hasNext() ) {
-      String imagePath = ( String )iterator.next();
-      String themeKey = ( String )WIDGET_RESOURCES_MAP.get( imagePath );
+    // non-themeable images
+    log( " == register non-themeable images for theme " + id );
+    for( int i = 0; i < WIDGET_NOTHEME_RESOURCES.length; i++ ) {
+      String imagePath = WIDGET_NOTHEME_RESOURCES[ i ];
       InputStream inputStream = null;
-      String res = "";
-      if( themeKey != null ) {
-        QxImage qxImage = theme.getImage( themeKey );
-        if( qxImage != null ) {
-          res = qxImage.getPath();
-        }
-      }
-      if( "".equals( res ) ) {
-        res = WIDGET_RESOURCES_SRC + imagePath;
-        ClassLoader classLoader = ThemeManager.class.getClassLoader();
-        inputStream = classLoader.getResourceAsStream( res );
-      } else {
-        inputStream = themeLoader.getResourceAsStream( res );
-      }
-      if( inputStream == null ) {
-        String pattern = "Resource ''{0}'' not found for theme ''{1}''";
-        Object[] arguments = new Object[]{ res, theme.getName() };
-        String mesg = MessageFormat.format( pattern, arguments  );
+      String res = WIDGET_RESOURCES_SRC + "/" + imagePath;
+      inputStream = classLoader.getResourceAsStream( res );
+      if( inputStream  == null ) {
+        String mesg = "Resource not found: " + res;
         throw new IllegalArgumentException( mesg );
       }
       try {
         String jsId = getJsThemeId( id );
-        String registerPath = getWidgetDestPath( jsId  ) + imagePath;
+        String registerPath = getWidgetDestPath( jsId  ) + "/" + imagePath;
         ResourceManager.getInstance().register( registerPath, inputStream );
+        log( " notheme image registered @ " + registerPath );
       } finally {
         inputStream.close();
+      }
+    }
+
+    // themeable images
+    log( " == register themeable images for theme " + id + ", loader: " + themeLoader );
+    String[] keys = theme.getKeys();
+    for( int i = 0; i < keys.length; i++ ) {
+      String key = keys[ i ];
+      Object value = theme.getValue( key );
+      if( value instanceof QxImage ) {
+        QxImage image = ( QxImage )value;
+        String path = image.getPath();
+        log( " register theme image " + key + ", " + path );
+        InputStream inputStream;
+        if( image.isNone() || "".equals( path ) ) {
+          path = BLANK_IMAGE_PATH;
+          inputStream = classLoader.getResourceAsStream( path );
+        } else if( themeLoader == null ) {
+          inputStream = classLoader.getResourceAsStream( path );
+        } else {
+          inputStream = themeLoader.getResourceAsStream( path );
+        }
+        if( inputStream == null ) {
+          String pattern = "Resource ''{0}'' not found for theme ''{1}''";
+          Object[] arguments = new Object[]{ path, theme.getName() };
+          String mesg = MessageFormat.format( pattern, arguments  );
+          throw new IllegalArgumentException( mesg );
+        }
+        try {
+          String jsId = getJsThemeId( id );
+          // TODO [rst] implement proper path join
+          String widgetDestPath = getWidgetDestPath( jsId  );
+          String targetPath = ( String )imageMapping.get( key );
+          String registerPath = widgetDestPath + "/" + targetPath;
+          ResourceManager.getInstance().register( registerPath, inputStream );
+          log( " theme image registered @ " + registerPath );
+        } finally {
+          inputStream.close();
+        }
       }
     }
   }
@@ -796,7 +775,9 @@ public final class ThemeManager {
   }
 
   private static String getWidgetDestPath( final String id ) {
-    return THEME_RESOURCE_DEST + id + "/widgets/";
+    int start = id.lastIndexOf( '.' ) + 1;
+    int end = id.length();
+    return THEME_RESOURCE_DEST + id.substring( start, end ) + "/widgets";
   }
 
   static String stripTemplate( final String input ) {
@@ -920,6 +901,17 @@ public final class ThemeManager {
     if( id.length() == 0 ) {
       throw new IllegalArgumentException( "empty id" );
     }
+  }
+
+  private void logRegisteredAdapters() {
+    log( "=== REGISTERED ADAPTERS ===" );
+    Iterator iter = adapters.keySet().iterator();
+    while( iter.hasNext() ) {
+      Class key = ( Class )iter.next();
+      Object adapter = adapters.get( key );
+      log( key.getName() + ": " + adapter );
+    }
+    log( "=== END REGISTERED ADAPTERS ===" );
   }
 
   // TODO [rst] Replace with Logger calls

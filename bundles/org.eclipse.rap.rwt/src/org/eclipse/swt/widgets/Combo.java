@@ -18,7 +18,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.internal.widgets.combokit.IComboThemeAdapter;
+import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
 
 /**
  * Instances of this class are controls that allow the user
@@ -817,8 +817,8 @@ public class Combo extends Composite {
 
   private Rectangle getPadding() {
     ThemeManager manager = ThemeManager.getInstance();
-    IComboThemeAdapter adapter
-      = ( IComboThemeAdapter )manager.getThemeAdapter( getClass() );
+    ComboThemeAdapter adapter
+      = ( ComboThemeAdapter )manager.getThemeAdapter( getClass() );
     return adapter.getPadding( this );
   }
 

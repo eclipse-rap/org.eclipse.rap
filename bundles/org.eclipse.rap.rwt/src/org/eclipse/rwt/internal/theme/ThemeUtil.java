@@ -28,7 +28,7 @@ public class ThemeUtil {
 
   public static String[] getAvailableThemeIds() {
     ThemeManager themeMgr = ThemeManager.getInstance();
-    return themeMgr.getAvailableThemeIds();
+    return themeMgr.getRegisteredThemeIds();
   }
 
   public static String getCurrentThemeId() {

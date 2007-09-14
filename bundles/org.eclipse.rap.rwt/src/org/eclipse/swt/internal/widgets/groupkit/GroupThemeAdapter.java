@@ -18,9 +18,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 
-public class GroupThemeAdapter extends ControlThemeAdapter
-  implements IGroupThemeAdapter
-{
+public class GroupThemeAdapter extends ControlThemeAdapter {
 
   public Font getFont( final Control control ) {
     Theme theme = ThemeUtil.getTheme();

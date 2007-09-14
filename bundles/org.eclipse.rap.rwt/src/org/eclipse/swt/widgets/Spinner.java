@@ -14,11 +14,12 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.internal.widgets.spinnerkit.ISpinnerThemeAdapter;
+import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerThemeAdapter;
 
 /**
  * Instances of this class are selectable user interface
@@ -437,14 +438,14 @@ public class Spinner extends Composite {
   public void removeModifyListener( final ModifyListener listener ) {
     ModifyEvent.removeListener( this, listener );
   }
-  
+
   //////////////////
   // Helping methods
 
   private Rectangle getPadding() {
     ThemeManager manager = ThemeManager.getInstance();
-    ISpinnerThemeAdapter adapter
-      = ( ISpinnerThemeAdapter )manager.getThemeAdapter( getClass() );
+    SpinnerThemeAdapter adapter
+      = ( SpinnerThemeAdapter )manager.getThemeAdapter( getClass() );
     return adapter.getPadding( this );
   }
 

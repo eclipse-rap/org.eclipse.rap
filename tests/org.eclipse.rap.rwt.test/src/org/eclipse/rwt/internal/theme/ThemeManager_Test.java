@@ -15,14 +15,15 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.internal.widgets.buttonkit.IButtonThemeAdapter;
-import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
+import org.eclipse.swt.internal.widgets.listkit.ListThemeAdapter;
+import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 import org.eclipse.swt.widgets.*;
 
 
 public class ThemeManager_Test extends TestCase {
 
-  public void testThemeAdapter() throws Exception {
+  public void testThemeAdapters() throws Exception {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
     IThemeAdapter themeAdapter;
@@ -33,28 +34,28 @@ public class ThemeManager_Test extends TestCase {
     // List
     themeAdapter = themeManager.getThemeAdapter( List.class );
     assertNotNull( themeAdapter );
-    assertTrue( themeAdapter instanceof IControlThemeAdapter );
+    assertTrue( themeAdapter instanceof ListThemeAdapter );
     // Button
     themeAdapter = themeManager.getThemeAdapter( Button.class );
     assertNotNull( themeAdapter );
-    assertTrue( themeAdapter instanceof IButtonThemeAdapter );
+    assertTrue( themeAdapter instanceof ButtonThemeAdapter );
     // Shell
     themeAdapter = themeManager.getThemeAdapter( Shell.class );
     assertNotNull( themeAdapter );
-    assertTrue( themeAdapter instanceof IShellThemeAdapter );
+    assertTrue( themeAdapter instanceof ShellThemeAdapter );
   }
 
   public void testRegister() throws Exception {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
     try {
-      themeManager.registerTheme( null, "foo", null, null, false );
+      themeManager.registerTheme( null, "foo", null, null );
       fail( "Null id must throw NullPointerException" );
     } catch( NullPointerException e ) {
       // expected
     }
     try {
-      themeManager.registerTheme( "", "foo", null, null, false );
+      themeManager.registerTheme( "", "foo", null, null );
       fail( "Empty id must throw IlleaglArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -85,9 +86,12 @@ public class ThemeManager_Test extends TestCase {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
     manager.registerResources();
+    String[] themeIds = manager.getRegisteredThemeIds();
+    assertNotNull( themeIds );
+    assertTrue( themeIds.length > 0 );
   }
 
-  public void testTemplate() throws Exception {
+  public void testStripTemplate() throws Exception {
     String content;
     String template;
     content = "Line 1\r\n// BEGIN TEMPLATE (bla)\r\nLine3\r\n";

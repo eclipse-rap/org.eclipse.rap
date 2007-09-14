@@ -18,7 +18,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
-import org.eclipse.swt.internal.widgets.textkit.ITextThemeAdapter;
+import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
 
 /**
  * Instances of this class are selectable user interface
@@ -229,7 +229,7 @@ public class Text extends Scrollable {
   	if (string == null) error (SWT.ERROR_NULL_ARGUMENT);
   	setText(getText() + string);
   }
-  
+
   ///////////////////////////////////////////
   // Selection start, count and selected text
 
@@ -715,8 +715,8 @@ public class Text extends Scrollable {
 
   private Rectangle getPadding() {
     ThemeManager manager = ThemeManager.getInstance();
-    ITextThemeAdapter adapter
-      = ( ITextThemeAdapter )manager.getThemeAdapter( getClass() );
+    TextThemeAdapter adapter
+      = ( TextThemeAdapter )manager.getThemeAdapter( getClass() );
     return adapter.getPadding( this );
   }
 

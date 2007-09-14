@@ -17,6 +17,7 @@
       default = "238, 238, 238" />
   
   <dimension name = "table.checkbox.width" 
+      description = "Width of check boxes"
       default="21" />
       
 </theme>

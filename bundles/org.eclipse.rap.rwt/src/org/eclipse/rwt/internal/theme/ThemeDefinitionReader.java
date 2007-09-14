@@ -30,6 +30,7 @@ public class ThemeDefinitionReader {
     public final String inherit;
     public final QxType defValue;
     public final String description;
+    public String targetPath;
     public ThemeDef( final String name,
                      final String inherit,
                      final QxType defValue,
@@ -102,6 +103,7 @@ public class ThemeDefinitionReader {
     String inherit = getAttributeValue( node, ATTR_INHERIT );
     String defaultStr = getAttributeValue( node, ATTR_DEFAULT );
     QxType value;
+    String targetPath = null;
     if( TYPE_FONT.equals( type ) ) {
       value = new QxFont( defaultStr );
     } else if( TYPE_COLOR.equals( type ) ) {
@@ -115,12 +117,15 @@ public class ThemeDefinitionReader {
     } else if( TYPE_DIMENDSION.equals( type ) ) {
       value = new QxDimension( defaultStr );
     } else if( TYPE_IMAGE.equals( type ) ) {
+      targetPath = getAttributeValue( node, "targetPath" );
       value = new QxImage( defaultStr );
     } else {
       // TODO [rst] Remove when XML validation is active
       throw new IllegalArgumentException( "Illegal type: " + type );
     }
-    return new ThemeDef( name, inherit, value, description );
+    ThemeDef result = new ThemeDef( name, inherit, value, description );
+    result.targetPath = targetPath;
+    return result;
   }
 
   private static String getAttributeValue( final Node node, final String name ) {

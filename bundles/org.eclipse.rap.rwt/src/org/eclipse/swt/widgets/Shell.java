@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
-import org.eclipse.swt.internal.widgets.shellkit.IShellThemeAdapter;
+import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
 
 /**
  * Instances of this class represent the "windows"
@@ -470,30 +470,30 @@ public class Shell extends Decorations {
   }
   
   private int getTitleBarHeight() {
-    IShellThemeAdapter adapter = getShellThemeAdapter();
+    ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getTitleBarHeight( this );
   }
   
   private QxBoxDimensions getTitleBarMargin() {
-    IShellThemeAdapter adapter = getShellThemeAdapter();
+    ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getTitleBarMargin( this );
   }
   
   private int getMenuBarHeight() {
-    IShellThemeAdapter adapter = getShellThemeAdapter();
+    ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getMenuBarHeight( this );
   }
   
   // margin of the client area
   private QxBoxDimensions getPadding() {
-    IShellThemeAdapter adapter = getShellThemeAdapter();
+    ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getPadding( this );
   }
   
-  private IShellThemeAdapter getShellThemeAdapter() {
+  private ShellThemeAdapter getShellThemeAdapter() {
     ThemeManager themeMgr = ThemeManager.getInstance();
     IThemeAdapter themeAdapter = themeMgr.getThemeAdapter( getClass() );
-    IShellThemeAdapter adapter = ( IShellThemeAdapter )themeAdapter;
+    ShellThemeAdapter adapter = ( ShellThemeAdapter )themeAdapter;
     return adapter;
   }
   

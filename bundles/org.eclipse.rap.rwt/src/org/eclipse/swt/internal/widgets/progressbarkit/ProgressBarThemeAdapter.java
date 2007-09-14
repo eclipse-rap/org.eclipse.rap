@@ -12,11 +12,12 @@
 package org.eclipse.swt.internal.widgets.progressbarkit;
 
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Control;
 
-public class ProgressBarThemeAdapter implements IProgressBarThemeAdapter {
+public class ProgressBarThemeAdapter implements IControlThemeAdapter {
 
   public int getBorderWidth( final Control control ) {
     return 0;

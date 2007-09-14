@@ -11,7 +11,7 @@
   <border name="shell.BORDER.border"
       description="Border for shells with BORDER or TITLE style"
       default="2 outset"/>
-  
+
   <color name="shell.background"
       description="Background color for Shells"
       default="248, 248, 255"/>
@@ -23,7 +23,7 @@
   <color name="shell.title.background.gradient"
       description="Second background color for the title bar of active Shells (used for gradient)"
       default="0, 128, 192"/>
-  
+
   <color name="shell.title.foreground"
       description="Text color for the title bar of active Shells"
       default="255, 255, 255"/>
@@ -35,7 +35,7 @@
   <color name="shell.title.inactive.background.gradient"
       description="Second background color for the title bar of inactive Shells (used for gradient)"
       default="121, 150, 165"/>
-  
+
   <color name="shell.title.inactive.foreground"
       description="Text color for the title bar of inactive Shells"
       default="221, 221, 221"/>
@@ -43,11 +43,11 @@
   <font name="shell.title.font"
       description="Font for title bar of Shells"
       default="11 bold 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif"/>
-  
+
   <dimension name="shell.title.height"
       description="Height of the title bar of Shells"
       default="18"/>
-  
+
   <boxdim name="shell.title.margin"
       description="Margins of the title bar of Shells"
       default="0 0 1"/>
@@ -66,76 +66,97 @@
 
   <image name="shell.title.active.bgimage"
       description="Background image for title bar of active Shells"
-      default=""/>
+      targetPath="window/caption_active.gif"
+      default="resource/widget/rap/window/caption_active.gif"/>
 
   <image name="shell.title.inactive.bgimage"
       description="Background image for title bar of inactive Shells"
-      default=""/>
+      targetPath="window/caption_inactive.gif"
+      default="resource/widget/rap/window/caption_inactive.gif"/>
 
   <!-- The button parade -->
-  
+
   <image name="shell.minbutton.image"
       description="Image for minimize button on shells"
-      default=""/>
+      targetPath="window/minimize.png"
+      inherit="shell.minbutton.image"
+      default="resource/widget/rap/window/minimize.png"/>
   <image name="shell.minbutton.over.image"
       description="Image for minimize button on shells on mouse over"
+      targetPath="window/minimize.over.png"
       inherit="shell.minbutton.image"
-      default=""/>
+      default="resource/widget/rap/window/minimize.over.png"/>
   <image name="shell.minbutton.inactive.image"
       description="Image for minimize button on inactive shells"
+      targetPath="window/minimize.inactive.png"
       inherit="shell.minbutton.image"
-      default=""/>
+      default="resource/widget/rap/window/minimize.inactive.png"/>
   <image name="shell.minbutton.inactive.over.image"
       description="Image for minimize button on inactive shells on mouse over"
+      targetPath="window/minimize.inactive.over.png"
       inherit="shell.minbutton.image"
-      default=""/>
+      default="resource/widget/rap/window/minimize.inactive.over.png"/>
+
+  <!-- inherit="shell.minbutton.image" -->
 
   <image name="shell.maxbutton.image"
       description="Image for maximize button of Shells"
-      default=""/>
+      targetPath="window/maximize.png"
+      default="resource/widget/rap/window/maximize.png"/>
   <image name="shell.maxbutton.over.image"
       description="Image for maximize button of Shells"
+      targetPath="window/maximize.over.png"
       inherit="shell.maxbutton.image"
-      default=""/>
+      default="resource/widget/rap/window/maximize.over.png"/>
   <image name="shell.maxbutton.inactive.image"
       description="Image for maximize button of Shells"
+      targetPath="window/maximize.inactive.png"
       inherit="shell.maxbutton.image"
-      default=""/>
+      default="resource/widget/rap/window/maximize.inactive.png"/>
   <image name="shell.maxbutton.inactive.over.image"
       description="Image for maximize button of Shells"
+      targetPath="window/maximize.inactive.over.png"
       inherit="shell.maxbutton.image"
-      default=""/>
+      default="resource/widget/rap/window/maximize.inactive.over.png"/>
 
   <image name="shell.restorebutton.image"
       description="Image for restore from maximized button of Shells"
-      default=""/>
+      targetPath="window/restore.png"
+      default="resource/widget/rap/window/restore.png"/>
   <image name="shell.restorebutton.over.image"
       description="Image for restore from maximized button of Shells"
+      targetPath="window/restore.over.png"
       inherit="shell.restorebutton.image"
-      default=""/>
+      default="resource/widget/rap/window/restore.over.png"/>
   <image name="shell.restorebutton.inactive.image"
       description="Image for restore from maximized button of Shells"
+      targetPath="window/restore.inactive.png"
       inherit="shell.restorebutton.image"
-      default=""/>
+      default="resource/widget/rap/window/restore.inactive.png"/>
   <image name="shell.restorebutton.inactive.over.image"
       description="Image for restore from maximized button of Shells"
+      targetPath="window/restore.inactive.over.png"
       inherit="shell.restorebutton.image"
-      default=""/>
+      default="resource/widget/rap/window/restore.inactive.over.png"/>
 
   <image name="shell.closebutton.image"
       description="Image for close button of Shells"
-      default=""/>
+      targetPath="window/close.png"
+      default="resource/widget/rap/window/close.png"/>
   <image name="shell.closebutton.over.image"
       description="Image for close button of Shells"
+      targetPath="window/close.over.png"
       inherit="shell.closebutton.image"
-      default=""/>
+      default="resource/widget/rap/window/close.over.png"/>
   <image name="shell.closebutton.inactive.image"
       description="Image for close button of Shells"
+      targetPath="window/close.inactive.png"
       inherit="shell.closebutton.image"
-      default=""/>
+      default="resource/widget/rap/window/close.inactive.png"/>
   <image name="shell.closebutton.inactive.over.image"
       description="Image for close button of Shells"
+      targetPath="window/close.inactive.over.png"
       inherit="shell.closebutton.image"
-      default=""/>
+      default="resource/widget/rap/window/close.inactive.over.png"/>
 
 </theme>

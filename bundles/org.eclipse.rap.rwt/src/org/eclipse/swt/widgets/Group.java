@@ -16,7 +16,7 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.groupkit.IGroupThemeAdapter;
+import org.eclipse.swt.internal.widgets.groupkit.GroupThemeAdapter;
 
 
 /**
@@ -136,7 +136,7 @@ public class Group extends Composite {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    IGroupThemeAdapter adapter = getGroupThemeAdapter();
+    GroupThemeAdapter adapter = getGroupThemeAdapter();
     Rectangle trimmings = adapter.getTrimmingSize( this );
     int border = getBorderWidth();
     int width = Math.max( 0, bounds.width - trimmings.width - 2 * border );
@@ -149,7 +149,7 @@ public class Group extends Composite {
                                 final int width,
                                 final int height )
   {
-    IGroupThemeAdapter adapter = getGroupThemeAdapter();
+    GroupThemeAdapter adapter = getGroupThemeAdapter();
     Rectangle trimmings = adapter.getTrimmingSize( this );
     int border = getBorderWidth();
     return super.computeTrim( x - trimmings.x,
@@ -172,9 +172,9 @@ public class Group extends Composite {
     return result & ~( SWT.H_SCROLL | SWT.V_SCROLL );
   }
 
-  private IGroupThemeAdapter getGroupThemeAdapter() {
+  private GroupThemeAdapter getGroupThemeAdapter() {
     ThemeManager themeMgr = ThemeManager.getInstance();
     IThemeAdapter themeAdapter = themeMgr.getThemeAdapter( getClass() );
-    return ( IGroupThemeAdapter )themeAdapter;
+    return ( GroupThemeAdapter )themeAdapter;
   }
 }

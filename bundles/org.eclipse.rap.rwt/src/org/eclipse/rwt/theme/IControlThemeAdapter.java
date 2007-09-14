@@ -18,12 +18,11 @@ import org.eclipse.swt.widgets.Control;
 
 public interface IControlThemeAdapter extends IThemeAdapter {
 
-  abstract public int getBorderWidth ( Control control );
+  public int getBorderWidth ( Control control );
 
-  abstract public Color getForeground( Control control );
+  public Color getForeground( Control control );
 
-  abstract public Color getBackground( Control control );
+  public Color getBackground( Control control );
 
-  public abstract Font getFont( Control control );
-
+  public Font getFont( Control control );
 }

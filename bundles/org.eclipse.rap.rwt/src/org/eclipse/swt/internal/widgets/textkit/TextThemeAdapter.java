@@ -10,11 +10,12 @@
 package org.eclipse.swt.internal.widgets.textkit;
 
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Control;
 
-public class TextThemeAdapter implements ITextThemeAdapter {
+public class TextThemeAdapter implements IControlThemeAdapter {
 
   public int getBorderWidth( final Control control ) {
     return ( control.getStyle() & SWT.BORDER ) != 0 ? 2 : 0;

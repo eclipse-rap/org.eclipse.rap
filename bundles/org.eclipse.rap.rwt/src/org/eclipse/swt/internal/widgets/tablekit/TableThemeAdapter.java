@@ -10,12 +10,13 @@
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Control;
 
-public class TableThemeAdapter implements ITableThemeAdapter {
+public class TableThemeAdapter implements IControlThemeAdapter {
 
   public int getBorderWidth( final Control control ) {
     return ( control.getStyle() & SWT.BORDER ) != 0 ? 2 : 0;
@@ -38,7 +39,7 @@ public class TableThemeAdapter implements ITableThemeAdapter {
     QxFont font = theme.getFont( "widget.font" );
     return QxFont.createFont( font );
   }
-  
+
   public int getCheckBoxWidth( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
     return theme.getDimension( "table.checkbox.width" ).value;

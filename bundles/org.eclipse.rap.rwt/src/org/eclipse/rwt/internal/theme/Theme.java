@@ -17,11 +17,20 @@ public class Theme {
 
   private Map values;
 
+  private final Theme defaultTheme;
+
+  /**
+   * Creates a default theme.
+   */
   public Theme( final String name ) {
     this( name, null );
   }
-  
+
+  /**
+   * Creates a new theme with the given default theme.
+   */
   public Theme( final String name, final Theme defaultTheme ) {
+    this.defaultTheme = defaultTheme;
     this.name = checkName( name );
     if( defaultTheme != null ) {
       values = new HashMap( defaultTheme.values );
@@ -29,11 +38,15 @@ public class Theme {
       values = new HashMap();
     }
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
+  public Theme getDefaultTheme() {
+    return defaultTheme;
+  }
+
   public boolean hasKey( final String key ) {
     return values.containsKey( key );
   }
@@ -50,7 +63,7 @@ public class Theme {
     }
     return ( QxBorder )value;
   }
-  
+
   public QxBoxDimensions getBoxDimensions( final String key ) {
     QxType value = getValue( key );
     if( !( value instanceof QxBoxDimensions ) ) {
@@ -58,7 +71,7 @@ public class Theme {
     }
     return ( QxBoxDimensions )value;
   }
-  
+
   public QxFont getFont( final String key ) {
     QxType value = getValue( key );
     if( !( value instanceof QxFont ) ) {
@@ -66,7 +79,7 @@ public class Theme {
     }
     return ( QxFont )value;
   }
-  
+
   public QxColor getColor( final String key ) {
     QxType value = getValue( key );
     if( !( value instanceof QxColor ) ) {
@@ -74,7 +87,7 @@ public class Theme {
     }
     return ( QxColor )value;
   }
-  
+
   public QxImage getImage( final String key ) {
     QxType value = getValue( key );
     if( !( value instanceof QxImage ) ) {
@@ -82,7 +95,7 @@ public class Theme {
     }
     return ( QxImage )value;
   }
-  
+
   public QxDimension getDimension( final String key ) {
     QxType value = getValue( key );
     if( !( value instanceof QxDimension ) ) {
@@ -90,7 +103,7 @@ public class Theme {
     }
     return ( QxDimension )value;
   }
-  
+
   public QxType getValue( final String key ) {
     QxType value = ( QxType )values.get( key );
     if( value == null ) {
@@ -98,7 +111,7 @@ public class Theme {
     }
     return value;
   }
-  
+
   public void setValue( final String key, final QxType value ) {
     if( values.containsKey( key ) ) {
       if( !values.get( key ).getClass().isInstance( value ) ) {
@@ -108,9 +121,9 @@ public class Theme {
     }
     values.put( key, value );
   }
-  
+
   // TODO [rst] implement equals and hashcode completely
-  
+
   public boolean equals( final Object obj ) {
     boolean result;
     if( obj == this ) {
@@ -123,11 +136,11 @@ public class Theme {
     }
     return result;
   }
-  
+
   public int hashCode() {
     return name.hashCode();
   }
-  
+
   private String checkName( final String name ) {
     if( name == null ) {
       throw new NullPointerException( "null argument" );

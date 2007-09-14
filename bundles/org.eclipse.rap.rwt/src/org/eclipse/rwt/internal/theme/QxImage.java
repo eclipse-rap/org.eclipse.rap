@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -12,23 +12,29 @@
 package org.eclipse.rwt.internal.theme;
 
 public class QxImage implements QxType {
-  
+
+  private final boolean none;
   private final String path;
-  
+
   public QxImage( final String value ) {
-    this.path = value;
+    none = "none".equals( value );
+    path = none ? null : value;
   }
-  
+
   public String getPath() {
     return path;
   }
-  
+
+  public boolean isNone() {
+    return none;
+  }
+
   public String toDefaultString() {
     // returns an empty string, because the default resource path is not to be
     // displayed to the user
     return "";
   }
-  
+
   public boolean equals( final Object object ) {
     boolean result = false;
     if( object == this ) {
@@ -45,8 +51,8 @@ public class QxImage implements QxType {
   }
 
   public String toString () {
-    return "QxImage {"
-           + path
-           + "}";
+    return "QxImage{ "
+           + ( none ? "none" : "path=" + path )
+           + " }";
   }
 }

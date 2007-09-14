@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Widget;
 
 
 /**
- * TODO [rh] JavaDoc 
+ * TODO [rh] JavaDoc
  */
 public class RWTServletContextListener implements ServletContextListener {
 
@@ -49,14 +49,14 @@ public class RWTServletContextListener implements ServletContextListener {
     = "org.eclipse.rap.engine.lifecycle.phaselistener";
   public static final String RESOURCE_PARAM
     = "org.eclipse.rap.resources";
-  
+
   private static final String REGISTERED_ENTRY_POINTS
     = "org.eclipse.swt.registeredEntryPoints";
-  private static final String REGISTERED_PHASE_LISTENERS 
+  private static final String REGISTERED_PHASE_LISTENERS
     = "org.eclipse.swt.registeredPhaseListeners";
   private static final String REGISTERED_RESOURCES
     = "org.eclipse.swt.registeredResources";
-  
+
   ///////////////////////////////////////////
   // implementation of ServletContextListener
 
@@ -77,10 +77,10 @@ public class RWTServletContextListener implements ServletContextListener {
     deregisterResources( evt.getServletContext() );
     deregisterUICallBackServiceHandler();
   }
-  
+
   ////////////////////////////////////////////////////////////
   // helping methods - entry point registration/deregistration
-  
+
   private static void registerSWTThemes( final ServletContext context ) {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -100,10 +100,6 @@ public class RWTServletContextListener implements ServletContextListener {
         if( parts.length >= 2 ) {
           String themeId = parts[ 0 ];
           String fileName = parts[ 1 ];
-          boolean asDefault = false;
-          if( parts.length > 2 ) {
-            asDefault = Boolean.valueOf( parts[ 2 ] ).booleanValue();
-          }
           try {
             InputStream inStream = context.getResourceAsStream( fileName );
             if( inStream != null ) {
@@ -112,13 +108,12 @@ public class RWTServletContextListener implements ServletContextListener {
                 manager.registerTheme( themeId,
                                        themeName,
                                        inStream,
-                                       loader ,
-                                       asDefault );
+                                       loader );
               } finally {
                 inStream.close();
               }
             }
-          } catch( Exception ex ) {
+          } catch( final Exception ex ) {
             String text = "Failed to register SWT theme ''{0}'' "
               + "from file ''{1}''.";
             Object[] args = new Object[] { themeId, fileName };
@@ -147,7 +142,7 @@ public class RWTServletContextListener implements ServletContextListener {
           Class clazz = Class.forName( className );
           EntryPointManager.register( entryPointName, clazz );
           registeredEntryPoints.add( entryPointName );
-        } catch( Exception ex ) {
+        } catch( final Exception ex ) {
           String text = "Failed to register entry point ''{0}''.";
           Object[] args = new Object[] { entryPoint };
           String msg = MessageFormat.format( text, args );
@@ -157,7 +152,7 @@ public class RWTServletContextListener implements ServletContextListener {
     }
     setRegisteredEntryPoints( context, registeredEntryPoints );
   }
-  
+
   private void deregisterSWTTheme( final ServletContext servletContext ) {
     ThemeManager.getInstance().deregisterAll();
   }
@@ -170,26 +165,26 @@ public class RWTServletContextListener implements ServletContextListener {
       }
     }
   }
-  
-  private static void setRegisteredEntryPoints( final ServletContext ctx, 
-                                                final Set entryPoints ) 
+
+  private static void setRegisteredEntryPoints( final ServletContext ctx,
+                                                final Set entryPoints )
   {
     String[] value = new String[ entryPoints.size() ];
     entryPoints.toArray( value );
     ctx.setAttribute( REGISTERED_ENTRY_POINTS, value );
   }
-  
+
   private static String[] getRegisteredEntryPoints( final ServletContext ctx ) {
     return ( String[] )ctx.getAttribute( REGISTERED_ENTRY_POINTS );
   }
 
   //////////////////////////////////////////////////
-  // Helping methods - resource manager registration 
-  
+  // Helping methods - resource manager registration
+
   private static void registerResourceManagerFactory(
     final ServletContext context )
   {
-    String factoryName 
+    String factoryName
       = context.getInitParameter( RESOURCE_MANAGER_FACTORY_PARAM );
     if( factoryName != null ) {
       try {
@@ -202,15 +197,15 @@ public class RWTServletContextListener implements ServletContextListener {
         Object[] args = new Object[] { factoryName };
         String msg = MessageFormat.format( text, args );
         context.log( msg, ex );
-      }      
+      }
     } else {
       ResourceManager.register( new DefaultResourceManagerFactory() );
     }
   }
-  
+
   /////////////////////////////////////////////////
   // Helping methods - adapter factory registration
-  
+
   private static void registerAdapterFactories( final ServletContext context ) {
     String initParam = context.getInitParameter( ADAPTER_FACTORY_PARAM );
     if( initParam != null ) {
@@ -234,20 +229,20 @@ public class RWTServletContextListener implements ServletContextListener {
             String msg = MessageFormat.format( text, param );
             context.log( msg, thr );
           }
-        }        
+        }
       }
     } else {
-      AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class, 
+      AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
                                   Widget.class );
-      AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class, 
+      AdapterFactoryRegistry.add( LifeCycleAdapterFactory.class,
                                   Display.class );
-      AdapterFactoryRegistry.add( WidgetAdapterFactory.class, 
+      AdapterFactoryRegistry.add( WidgetAdapterFactory.class,
                                   Widget.class );
-      AdapterFactoryRegistry.add( WidgetAdapterFactory.class, 
+      AdapterFactoryRegistry.add( WidgetAdapterFactory.class,
                                   Display.class );
     }
   }
-  
+
   ///////////////////////////////////////////////////////////////
   // Helping methods - phase listener registration/deregistration
 
@@ -262,7 +257,7 @@ public class RWTServletContextListener implements ServletContextListener {
           Class clazz = Class.forName( className );
           PhaseListener listener = ( PhaseListener )clazz.newInstance();
           phaseListeners.add( listener );
-        } catch( Throwable thr ) {
+        } catch( final Throwable thr ) {
           String text = "Failed to register phase listener ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { className } );
           context.log( msg, thr );
@@ -289,13 +284,13 @@ public class RWTServletContextListener implements ServletContextListener {
       }
     }
   }
-  
-  private static PhaseListener[] getRegisteredPhaseListeners( 
-    final ServletContext ctx ) 
+
+  private static PhaseListener[] getRegisteredPhaseListeners(
+    final ServletContext ctx )
   {
     return ( PhaseListener[] )ctx.getAttribute( REGISTERED_PHASE_LISTENERS );
   }
-  
+
   private void registerResources( final ServletContext context ) {
     List resources = new ArrayList();
     String initParam = context.getInitParameter( RESOURCE_PARAM );
@@ -307,7 +302,7 @@ public class RWTServletContextListener implements ServletContextListener {
           Class clazz = Class.forName( className );
           IResource resource = ( IResource )clazz.newInstance();
           resources.add( resource );
-        } catch( Throwable thr ) {
+        } catch( final Throwable thr ) {
           String text = "Failed to register resource ''{0}''.";
           String msg = MessageFormat.format( text, new Object[] { className } );
           context.log( msg, thr );
@@ -322,16 +317,16 @@ public class RWTServletContextListener implements ServletContextListener {
     }
     context.setAttribute( REGISTERED_RESOURCES, registeredResources );
   }
-  
+
   private void deregisterResources( final ServletContext context ) {
     ResourceRegistry.clear();
   }
-  
+
   private static void registerUICallBackServiceHandler() {
-    ServiceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID, 
+    ServiceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID,
                                            new UICallBackServiceHandler() );
   }
-  
+
   private static void deregisterUICallBackServiceHandler() {
     String id = UICallBackServiceHandler.HANDLER_ID;
     ServiceManager.unregisterServiceHandler( id );

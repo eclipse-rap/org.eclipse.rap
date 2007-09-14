@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -21,7 +21,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
 /**
  * Instances of this class represent a selectable user interface object that
- * issues notification when pressed and released. 
+ * issues notification when pressed and released.
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd><!--ARROW, -->CHECK, PUSH, RADIO, TOGGLE, FLAT</dd>
@@ -30,7 +30,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  * <dd>Selection</dd>
  * </dl>
  * <p>
- * Note: Only one of the styles <!--ARROW, -->CHECK, PUSH, RADIO, and TOGGLE 
+ * Note: Only one of the styles <!--ARROW, -->CHECK, PUSH, RADIO, and TOGGLE
  * may be specified.
  * </p><p>
  * Note: Only one of the styles LEFT, RIGHT, and CENTER may be specified.
@@ -62,7 +62,7 @@ public class Button extends Control {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -99,7 +99,7 @@ public class Button extends Control {
 
   ////////////////
   // Getter/setter
-  
+
   /**
    * Sets the receiver's text.
    * <p>
@@ -108,7 +108,7 @@ public class Button extends Control {
    * </p>
    * <p>
    * Caution: Mnemonics are not implemented yet.
-   * 
+   *
    * Mnemonics are indicated by an '&amp;' that causes the next
    * character to be the mnemonic.  When the user presses a
    * key sequence that matches the mnemonic, a selection
@@ -118,7 +118,7 @@ public class Button extends Control {
    * escaped by doubling it in the string, causing a single
    * '&amp;' to be displayed.
    * </p>
-   * 
+   *
    * @param string the new text
    *
    * @exception IllegalArgumentException <ul>
@@ -181,9 +181,9 @@ public class Button extends Control {
     }
     return result;
   }
-  
+
   /**
-   * Sets the selection state of the receiver, if it is of type <code>CHECK</code>, 
+   * Sets the selection state of the receiver, if it is of type <code>CHECK</code>,
    * <code>RADIO</code>, or <code>TOGGLE</code>.
    *
    * <p>
@@ -204,7 +204,7 @@ public class Button extends Control {
       this.selected = selected;
     }
   }
-  
+
   /**
    * Returns the receiver's image if it has one, or null
    * if it does not.
@@ -229,7 +229,7 @@ public class Button extends Control {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
-   * </ul> 
+   * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -244,17 +244,17 @@ public class Button extends Control {
       this.image = image;
     }
   }
-  
+
   /**
    * Returns a value which describes the position of the
    * text or image in the receiver. The value will be one of
    * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code><!--
-   * unless the receiver is an <code>ARROW</code> button, in 
+   * unless the receiver is an <code>ARROW</code> button, in
    * which case, the alignment will indicate the direction of
-   * the arrow (one of <code>LEFT</code>, <code>RIGHT</code>, 
-   * <code>UP</code> or <code>DOWN</code>).
+   * the arrow (one of <code>LEFT</code>, <code>RIGHT</code>,
+   * <code>UP</code> or <code>DOWN</code>)-->.
    *
-   * @return the alignment 
+   * @return the alignment
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -290,17 +290,17 @@ public class Button extends Control {
     }
     return result;
   }
-  
+
   /**
    * Controls how text, images and arrows will be displayed
    * in the receiver. The argument should be one of
    * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code><!--
-   * unless the receiver is an <code>ARROW</code> button, in 
+   * unless the receiver is an <code>ARROW</code> button, in
    * which case, the argument indicates the direction of
-   * the arrow (one of <code>LEFT</code>, <code>RIGHT</code>, 
+   * the arrow (one of <code>LEFT</code>, <code>RIGHT</code>,
    * <code>UP</code> or <code>DOWN</code>)-->.
    *
-   * @param alignment the new alignment 
+   * @param alignment the new alignment
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -381,7 +381,7 @@ public class Button extends Control {
 
   ///////////////////////////////////////
   // Listener registration/deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control is selected, by sending
@@ -433,29 +433,29 @@ public class Button extends Control {
 
   //////////////////////////
   // Default Button handling
-  
+
   void setDefault( final boolean isDefault ) {
     this.isDefault = isDefault;
   }
-  
+
   boolean getDefault() {
     return isDefault;
   }
 
   ///////////////////
   // Widget overrides
-  
+
   boolean isTabGroup() {
     return true;
   }
-  
+
   String getNameText() {
     return getText();
   }
-  
+
   //////////////////
   // Helping methods
-  
+
   private static int checkStyle( final int style ) {
     int result = checkBits( style,
                             SWT.PUSH,

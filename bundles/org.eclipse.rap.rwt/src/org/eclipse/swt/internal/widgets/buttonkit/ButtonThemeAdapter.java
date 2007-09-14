@@ -10,13 +10,14 @@
 package org.eclipse.swt.internal.widgets.buttonkit;
 
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 
-public class ButtonThemeAdapter implements IButtonThemeAdapter {
+public class ButtonThemeAdapter implements IControlThemeAdapter {
 
   // Width of check boxes and radio buttons
   static final int CHECK_WIDTH = 13;

@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 
-public class TreeThemeAdapter extends ControlThemeAdapter implements ITreeThemeAdapter {
+public class TreeThemeAdapter extends ControlThemeAdapter {
 
   public Color getForeground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();

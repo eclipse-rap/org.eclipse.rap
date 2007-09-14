@@ -10,10 +10,11 @@
 package org.eclipse.swt.internal.widgets.combokit;
 
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Control;
 
-public class ComboThemeAdapter implements IComboThemeAdapter {
+public class ComboThemeAdapter implements IControlThemeAdapter {
 
   public int getBorderWidth( final Control control ) {
     return 2;
