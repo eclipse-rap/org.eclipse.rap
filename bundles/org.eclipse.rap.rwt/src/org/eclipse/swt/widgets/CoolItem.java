@@ -706,22 +706,24 @@ public class CoolItem extends Item {
    */
   public void setSize( int width, int height ) {
     checkWidget();
-    Point point = parent.fixPoint( width, height );
-    width = Math.max( point.x, minimumWidth + MINIMUM_WIDTH );
-    height = Math.max( point.y, 0 );
+    int newHeight = height;
+    int newWidth = width;
+    Point point = parent.fixPoint( newWidth, newHeight );
+    newWidth = Math.max( point.x, minimumWidth + MINIMUM_WIDTH );
+    newHeight = Math.max( point.y, 0 );
     if ( !ideal ) {
-      preferredWidth = width;
-      preferredHeight = height;
+      preferredWidth = newWidth;
+      preferredHeight = newHeight;
     }
-    itemBounds.width = requestedWidth = width;
-    itemBounds.height = height;
+    itemBounds.width = requestedWidth = newWidth;
+    itemBounds.height = newHeight;
     if ( control != null ) {
-      int controlWidth = width - MINIMUM_WIDTH;
-      if ( (style & SWT.DROP_DOWN) != 0 && width < preferredWidth ) {
+      int controlWidth = newWidth - MINIMUM_WIDTH;
+      if ( (style & SWT.DROP_DOWN) != 0 && newWidth < preferredWidth ) {
         controlWidth -= CHEVRON_IMAGE_WIDTH + CHEVRON_HORIZONTAL_TRIM
             + CHEVRON_LEFT_MARGIN;
       }
-      control.setSize( parent.fixPoint( controlWidth, height ) );
+      control.setSize( parent.fixPoint( controlWidth, newHeight ) );
     }
     parent.relayout();
     updateChevron();

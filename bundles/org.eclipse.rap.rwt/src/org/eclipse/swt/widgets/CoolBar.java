@@ -163,9 +163,10 @@ public class CoolBar extends Composite {
   }
 
   private static int checkStyle( int style ) {
-    style |= SWT.NO_FOCUS;
+    int result = style;
+    result |= SWT.NO_FOCUS;
     // return (style | SWT.NO_REDRAW_RESIZE) & ~(SWT.V_SCROLL | SWT.H_SCROLL);
-    return (style) & ~(SWT.V_SCROLL | SWT.H_SCROLL);
+    return (result) & ~(SWT.V_SCROLL | SWT.H_SCROLL);
   }
 
   // void _setCursor (Cursor cursor) {
@@ -246,17 +247,21 @@ public class CoolBar extends Composite {
    */
   public CoolItem getItem( int index ) {
     checkWidget();
+    CoolItem item = null;
+    int sIndex = index;
     if ( index < 0 )
       error( SWT.ERROR_INVALID_RANGE );
     for ( int row = 0; row < items.length; row++ ) {
-      if ( items[row].length > index ) {
-        return items[row][index];
+      if ( items[row].length > sIndex ) {
+        item = items[row][sIndex];
       } else {
-        index -= items[row].length;
+        sIndex -= items[row].length;
       }
     }
-    error( SWT.ERROR_INVALID_RANGE );
-    return null;
+    if( item == null ) {
+      error( SWT.ERROR_INVALID_RANGE );
+    }
+    return item;
   }
 
   /**
@@ -1236,26 +1241,26 @@ public class CoolBar extends Composite {
    */
   public void setWrapIndices( int[] indices ) {
     checkWidget();
-    if ( indices == null )
-      indices = new int[0];
+    int[] newIndices = indices;
+    if ( newIndices == null )
+      newIndices = new int[0];
     int count = originalItems.length;
-    for ( int i = 0; i < indices.length; i++ ) {
-      if ( indices[i] < 0 || indices[i] >= count ) {
+    for ( int i = 0; i < newIndices.length; i++ ) {
+      if ( newIndices[i] < 0 || newIndices[i] >= count ) {
         error( SWT.ERROR_INVALID_ARGUMENT );
       }
     }
     for ( int i = 0; i < originalItems.length; i++ ) {
       originalItems[i].wrap = false;
     }
-    for ( int i = 0; i < indices.length; i++ ) {
-      int index = indices[i];
+    for ( int i = 0; i < newIndices.length; i++ ) {
+      int index = newIndices[i];
       for ( int row = 0; row < items.length; row++ ) {
         if ( items[row].length > index ) {
           items[row][index].wrap = true;
           break;
-        } else {
-          index -= items[row].length;
         }
+        index -= items[row].length;
       }
     }
     relayout();

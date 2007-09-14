@@ -102,13 +102,14 @@ public class CLabel extends Canvas {
    */
   public CLabel( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
+    int result = style;
     if ( (style & (SWT.CENTER | SWT.RIGHT)) == 0 )
-      style |= SWT.LEFT;
-    if ( (style & SWT.CENTER) != 0 )
+      result |= SWT.LEFT;
+    if ( (result & SWT.CENTER) != 0 )
       align = SWT.CENTER;
-    if ( (style & SWT.RIGHT) != 0 )
+    if ( (result & SWT.RIGHT) != 0 )
       align = SWT.RIGHT;
-    if ( (style & SWT.LEFT) != 0 )
+    if ( (result & SWT.LEFT) != 0 )
       align = SWT.LEFT;
 
     addDisposeListener( new DisposeListener() {
@@ -123,11 +124,12 @@ public class CLabel extends Canvas {
    * Check the style bits to ensure that no invalid styles are applied.
    */
   private static int checkStyle( int style ) {
+    int result = style;
     if ( (style & SWT.BORDER) != 0 )
-      style |= SWT.SHADOW_IN;
+      result |= SWT.SHADOW_IN;
     int mask = SWT.SHADOW_IN | SWT.SHADOW_OUT | SWT.SHADOW_NONE;
-    style = style & mask;
-    return style |= SWT.NO_FOCUS;
+    result = style & mask;
+    return result |= SWT.NO_FOCUS;
   }
 
   public Point computeSize( int wHint, int hHint, boolean changed ) {
@@ -324,7 +326,7 @@ public class CLabel extends Canvas {
   public void setText( String text ) {
     checkWidget();
     if ( text == null )
-      text = ""; //$NON-NLS-1$
+      this.text = ""; //$NON-NLS-1$
     if ( !text.equals( this.text ) ) {
       this.text = text;
     }

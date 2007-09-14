@@ -144,7 +144,13 @@ public class Tree extends Composite {
       Tree.this.scrollTop = top;
     }
     
-    
+    public int getScrollTop() {
+      return Tree.this.scrollTop;
+    }
+
+    public int getScrollLeft() {
+      return Tree.this.scrollLeft;
+    }
   }
   
   private static final class ResizeListener extends ControlAdapter {
