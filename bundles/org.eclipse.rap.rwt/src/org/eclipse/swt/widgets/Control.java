@@ -860,8 +860,6 @@ public abstract class Control extends Widget {
    * </ul>
    */
   public int getBorderWidth() {
-    // TODO: [rst] This must be kept in sync with appearances, controls using
-    //             different borders must overwrite this mehtod
     checkWidget();
     IControlThemeAdapter adapter = getControlThemeAdapter();
     return adapter.getBorderWidth( this );
@@ -988,7 +986,7 @@ public abstract class Control extends Widget {
     checkWidget();
     this.layoutData = layoutData;
   }
-  
+
   void markLayout( final boolean changed, final boolean all ) {
     /* Do nothing */
   }
@@ -1274,12 +1272,12 @@ public abstract class Control extends Widget {
   public void removeFocusListener( final FocusListener listener ) {
     FocusEvent.removeListener( this, listener );
   }
-  
+
   ///////////////
-  // drawing (Note that we can't really force a redraw. This is just a 
+  // drawing (Note that we can't really force a redraw. This is just a
   //         fake to for event notifications that come on OS systems
   //         with redraws)
-  
+
   /**
    * If the argument is <code>false</code>, causes subsequent drawing
    * operations in the receiver to be ignored. No drawing of any kind
@@ -1293,7 +1291,7 @@ public abstract class Control extends Widget {
    * platforms or for some widgets.
    * </p>
    * <p>
-   * Note: With RAP we can't really force a redraw. This is just a 
+   * Note: With RAP we can't really force a redraw. This is just a
    *       fake to enable event notifications that come on OS systems
    *       with redraws.
    * </p>
@@ -1309,14 +1307,14 @@ public abstract class Control extends Widget {
     checkWidget();
     RWTLifeCycle.fakeRedraw( this, redraw );
   }
-  
+
 
   /**
    * Causes the entire bounds of the receiver to be marked
    * as needing to be redrawn.
-   * 
+   *
    * <p>
-   * Note: With RAP we can't really force a redraw. This is just a 
+   * Note: With RAP we can't really force a redraw. This is just a
    *       fake to enable event notifications that come on OS systems
    *       with redraws.
    * </p>
