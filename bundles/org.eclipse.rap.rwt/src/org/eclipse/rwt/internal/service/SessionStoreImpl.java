@@ -137,6 +137,7 @@ public final class SessionStoreImpl
       String name = ( String )names[ i ];
       fireValueUnbound( name, removeAttributeInternal( name ) );
     }
+    listeners.clear();
     bound = false;
   }
   

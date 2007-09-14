@@ -44,7 +44,7 @@ final class TextSizeDeterminationHandler
 
 
   static void register() {
-    final Display display = Display.getCurrent();
+    Display display = Display.getCurrent();
     if( display != null && display.getThread() == Thread.currentThread() ) {
       ISessionStore session = ContextProvider.getSession();
       if( session.getAttribute( CALCULATION_HANDLER ) == null ) {

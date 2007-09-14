@@ -362,6 +362,7 @@ public final class RWTLifeCycleServiceHandlerSync
         stateInfo.setAttribute( key, Thread.currentThread() );
         lock.wait();
       } catch( final InterruptedException e ) {
+        lock.context = null;
         throw new AbortRequestProcessingError();
       }
     }

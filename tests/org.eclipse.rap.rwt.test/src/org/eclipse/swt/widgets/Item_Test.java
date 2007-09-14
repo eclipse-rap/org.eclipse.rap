@@ -23,11 +23,6 @@ public class Item_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Item item = new Item( shell, SWT.NONE ) {
-
-      public Display getDisplay() {
-        return null;
-      }
-
       void releaseChildren() {
       }
 
@@ -52,11 +47,6 @@ public class Item_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Item item = new Item( shell, SWT.NONE ) {
-
-      public Display getDisplay() {
-        return null;
-      }
-
       void releaseChildren() {
       }
 
@@ -71,11 +61,6 @@ public class Item_Test extends TestCase {
     item.setImage( null );
     assertEquals( null, item.getImage() );
     Item item2 = new Item( shell, SWT.NONE ) {
-
-      public Display getDisplay() {
-        return null;
-      }
-
       void releaseChildren() {
       }
 
@@ -90,14 +75,9 @@ public class Item_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
+    final Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Item item = new Item( shell, SWT.NONE ) {
-
-      public Display getDisplay() {
-        return null;
-      }
-
       void releaseChildren() {
       }
 

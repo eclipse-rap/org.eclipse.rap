@@ -19,7 +19,6 @@ import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.events.EventAdapter;
 import org.eclipse.rwt.internal.events.IEventAdapter;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -563,6 +562,8 @@ public abstract class Widget implements Adaptable {
       releaseParent();
       releaseWidget();
       adapterManager = null;
+      data = null;
+      keyedData = null;
       state |= DISPOSED;
     }
   }
@@ -682,7 +683,8 @@ public abstract class Widget implements Adaptable {
    * created the widget and <code>false</code> otherwise
    */
   boolean isValidThread() {
-    return RWTLifeCycle.getThread() == Thread.currentThread();
+    return getDisplay().getThread() == Thread.currentThread();
+//    return RWTLifeCycle.getThread() == Thread.currentThread();
   }
 
   static int checkBits( final int style,

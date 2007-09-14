@@ -60,8 +60,8 @@ public class ControlHolder_Test extends TestCase {
   }
 
   public void testControlHolderAccessors() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    final Display outerDisplay = new Display();
+    Composite shell = new Shell( outerDisplay , SWT.NONE );
     Control[] controls = ControlHolder.getControls( shell );
     assertEquals( 0, controls.length );
     Button control = new Button( shell, SWT.PUSH );
@@ -73,6 +73,9 @@ public class ControlHolder_Test extends TestCase {
     controls = ControlHolder.getControls( shell );
     assertEquals( 0, controls.length );
     Control extended = new Control( null ) {
+      public Display getDisplay() {
+        return outerDisplay;
+      }
     };
     try {
       ControlHolder.addControl( shell, extended );

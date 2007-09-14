@@ -167,6 +167,7 @@ public class Display extends Device implements Adaptable {
   private Control focusControl;
   private IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
+  public Thread thread;
 
   /**
    * Constructs a new instance of this class.
@@ -486,7 +487,16 @@ public class Display extends Device implements Adaptable {
   // TODO [rh] This is preliminary!
   // TODO [rh] move to Device
   public void dispose() {
-    ContextProvider.getSession().removeAttribute( DISPLAY_ID );
+//    ContextProvider.getSession().removeAttribute( DISPLAY_ID );
+    session = null;
+    displayAdapter = null;
+    thread = null;
+    shells.clear();
+    bounds = null;
+    activeShell = null;
+    filters = null;
+    focusControl = null;
+    widgetAdapter = null;    
   }
 
   // TODO [rh] move to Device
@@ -582,7 +592,10 @@ public class Display extends Device implements Adaptable {
    * </ul>
    */
   public Thread getThread () {
-    return RWTLifeCycle.getThread();
+    if( thread == null ) {
+      thread = RWTLifeCycle.getThread();
+    }
+    return thread;
   }
 
   /**

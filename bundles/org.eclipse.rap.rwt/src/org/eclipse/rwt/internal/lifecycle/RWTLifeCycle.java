@@ -24,6 +24,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * TODO: [fappel] comment
@@ -64,6 +65,13 @@ public class RWTLifeCycle extends LifeCycle {
   public static void setThread( final Thread thread ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( CURRENT_THREAD, thread );
+    // DO NOT CHANGE THIS WITHOUT CHECKING PERFORMANCE
+    // For performance reasons the UI thread is also stored directly on the
+    // current display, to speed up Widvget#checkWidget()
+    Display display = Display.getCurrent();
+    if( display != null ) {
+      display.thread = thread;
+    }
   }
   
   
@@ -125,7 +133,7 @@ public class RWTLifeCycle extends LifeCycle {
 
   void cleanUp() {
     UICallBackManager.getInstance().notifyUIThreadEnd();
-    ContextProvider.getStateInfo().setAttribute( CURRENT_THREAD, null );
+    setThread( null );
   }
 
   void afterPhaseExecution( final PhaseId current ) {
@@ -174,9 +182,7 @@ public class RWTLifeCycle extends LifeCycle {
       AdapterFactoryRegistry.register();
       session.setAttribute( INITIALIZED, Boolean.TRUE );
     }
-    // TODO [rh] repalce with a call to setThread
-    Thread current = Thread.currentThread();
-    ContextProvider.getStateInfo().setAttribute( CURRENT_THREAD, current );
+    setThread( Thread.currentThread() );
     UICallBackManager.getInstance().notifyUIThreadStart();
   }
 
