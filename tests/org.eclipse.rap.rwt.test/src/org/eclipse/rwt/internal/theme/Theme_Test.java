@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -36,7 +36,7 @@ public class Theme_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testName() throws Exception {
     Theme theme;
     theme = new Theme( "f" );
@@ -46,7 +46,7 @@ public class Theme_Test extends TestCase {
     theme = new Theme( "Foo" );
     assertEquals( "Foo", theme.getName() );
   }
-  
+
   public void testGetSetValues() throws Exception {
     Theme theme;
     theme = new Theme( "foo" );
@@ -55,8 +55,12 @@ public class Theme_Test extends TestCase {
     QxColor qxColor1 = new QxColor( "#fffaf0" );
     theme.setValue( "foo.border", qxBorder1 );
     assertEquals( qxBorder1, theme.getValue( "foo.border" ) );
-    theme.setValue( "foo.border", qxBorder2 );
-    assertEquals( qxBorder2, theme.getValue( "foo.border" ) );
+    try {
+      theme.setValue( "foo.border", qxBorder2 );
+      fail( "IAE expected when value is redefined" );
+    } catch( Exception e ) {
+      // expected
+    }
     try {
       theme.setValue( "foo.border", qxColor1 );
       fail( "Type of themeable property must remain unchangeable" );
@@ -72,7 +76,7 @@ public class Theme_Test extends TestCase {
     theme.setValue( "foo.foreground", qxColor1 );
     assertEquals( qxColor1, theme.getValue( "foo.foreground" ) );
   }
-  
+
   public void testGetSetTypedValues() throws Exception {
     Theme theme;
     theme = new Theme( "foo" );
@@ -95,15 +99,13 @@ public class Theme_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testGetKeys() throws Exception {
     Theme theme;
     theme = new Theme( "foo" );
     QxBorder qxBorder1 = new QxBorder( "1 solid blue" );
-    QxBorder qxBorder2 = new QxBorder( "2 solid green" );
     QxColor qxColor1 = new QxColor( "#fffaf0" );
     theme.setValue( "foo.border", qxBorder1 );
-    theme.setValue( "foo.border", qxBorder2 );
     theme.setValue( "foo.foreground", qxColor1 );
     String[] keys = theme.getKeys();
     assertEquals( 2, keys.length );
