@@ -30,13 +30,9 @@ public class Theme {
    * Creates a new theme with the given default theme.
    */
   public Theme( final String name, final Theme defaultTheme ) {
-    this.defaultTheme = defaultTheme;
     this.name = checkName( name );
-    if( defaultTheme != null ) {
-      values = new HashMap( defaultTheme.values );
-    } else {
-      values = new HashMap();
-    }
+    this.defaultTheme = defaultTheme;
+    values = new HashMap();
   }
 
   public String getName() {
@@ -47,12 +43,39 @@ public class Theme {
     return defaultTheme;
   }
 
+  /**
+   * Indicates whether this theme has a value for the specified key, no matter
+   * if the value is defined in the theme itself or derived from the default
+   * theme.
+   *
+   * @return <code>true</code> if either the theme itself or its default theme
+   *         has a value for key, <code>false</code> otherwise.
+   */
   public boolean hasKey( final String key ) {
+    boolean result = values.containsKey( key );
+    if( defaultTheme != null ) {
+      result |= defaultTheme.values.containsKey( key );
+    }
+    return result;
+  }
+
+  /**
+   * Indicates whether this theme defines the specified key. If the key is only
+   * defined in the default theme, <code>false</code> is returned.
+   */
+  public boolean definesKey( final String key ) {
     return values.containsKey( key );
   }
 
+  /**
+   * Returns all keys defined in this theme, including the keys of the default
+   * theme.
+   */
   public String[] getKeys() {
-    Set keySet = values.keySet();
+    Set keySet = new HashSet( values.keySet() );
+    if( defaultTheme != null ) {
+      keySet.addAll( defaultTheme.values.keySet() );
+    }
     return ( String[] )keySet.toArray( new String[ keySet.size() ] );
   }
 
@@ -106,6 +129,9 @@ public class Theme {
 
   public QxType getValue( final String key ) {
     QxType value = ( QxType )values.get( key );
+    if( value == null && defaultTheme != null ) {
+      value = ( QxType )defaultTheme.values.get( key );
+    }
     if( value == null ) {
       throw new IllegalArgumentException( "Undefined key: " + key );
     }
@@ -114,8 +140,17 @@ public class Theme {
 
   public void setValue( final String key, final QxType value ) {
     if( values.containsKey( key ) ) {
-      if( !values.get( key ).getClass().isInstance( value ) ) {
-        String msg = "Key '" + key + "' already defined with different type";
+      String msg = "Tried to redefine key: " + key;
+      throw new IllegalArgumentException( msg );
+    }
+    if( defaultTheme != null ) {
+      if( defaultTheme.values.containsKey( key ) ) {
+        if( !defaultTheme.values.get( key ).getClass().isInstance( value ) ) {
+          String msg = "Tried to define key with wrong type: " + key;
+          throw new IllegalArgumentException( msg );
+        }
+      } else {
+        String msg = "Key does not exist in default theme :" + key;
         throw new IllegalArgumentException( msg );
       }
     }

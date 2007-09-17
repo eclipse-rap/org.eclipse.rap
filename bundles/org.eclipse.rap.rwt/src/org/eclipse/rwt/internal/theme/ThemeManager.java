@@ -31,11 +31,6 @@ import org.xml.sax.SAXException;
 
 public final class ThemeManager {
 
-  public static interface ResourceLoader {
-    abstract InputStream getResourceAsStream( String resourceName )
-      throws IOException;
-  }
-
   private static final class ThemeWrapper {
     final Theme theme;
     final ResourceLoader loader;
@@ -617,10 +612,10 @@ public final class ThemeManager {
         String path = image.getPath();
         log( " register theme image " + key + ", " + path );
         InputStream inputStream;
-        if( image.isNone() || "".equals( path ) ) {
+        if( image.isNone() ) {
           path = BLANK_IMAGE_PATH;
           inputStream = classLoader.getResourceAsStream( path );
-        } else if( themeLoader == null ) {
+        } else if( !theme.definesKey( key ) || themeLoader == null ) {
           inputStream = classLoader.getResourceAsStream( path );
         } else {
           inputStream = themeLoader.getResourceAsStream( path );
