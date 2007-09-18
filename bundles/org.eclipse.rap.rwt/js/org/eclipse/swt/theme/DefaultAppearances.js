@@ -809,7 +809,6 @@ appearances = {
       style : function( states ) {
         return {
           height    : "auto",
-          maxHeight : 150,
           border    : "shadow",
           textColor : states.selected ? "list.selection.foreground" : "list.foreground",
           backgroundColor : states.selected ? "list.selection.background" : "list.background"

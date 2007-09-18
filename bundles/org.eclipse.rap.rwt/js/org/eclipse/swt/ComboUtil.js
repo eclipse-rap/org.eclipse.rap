@@ -180,6 +180,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         item.setFont( combo.getFont() );
         combo.add( item );
       }
+//      org.eclipse.swt.ComboUtil._updatePopupHeight( combo );
     },
 
 /*
@@ -203,6 +204,34 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       combo.setSelected( item );
     },
     
+    setVisibleItemCount : function( combo, count ) {
+      combo.setUserData( "visibleItems", count );
+//      org.eclipse.swt.ComboUtil._updatePopupHeight( combo );
+    },
+    
+    setMaxPopupHeight : function( combo, maxHeight ) {
+      combo.getPopup().setMaxHeight( maxHeight );
+    },
+    
+    _updatePopupHeight : function( combo ) {
+      var items = combo.getList().getChildren();
+      var count = combo.getUserData( "visibleItems" );
+      if( count == null ) {
+        count = 5;
+      }
+      combo.debug( "_____ count: " + count );
+      if( items.length > 0 ) {
+        var itemHeight = items[ 0 ].getBoxHeight();
+        var item = items[ 0 ];
+        combo.debug( "_____ item height: " + itemHeight );
+        item.debug( "_____ top, bottom: " + item.getTop() + ", " + item.getBottom() );
+        item.debug( "_____ font: " + item.getFont() );
+        item.debug( "_____ padding: " + item.getPadding() );
+        combo.getPopup().setMaxHeight( itemHeight * count );
+        combo.debug( "_____ msx height: " + ( itemHeight * count ) );
+      }
+    },
+    
     _onChangeFont : function( evt ) {
       var combo = evt.getTarget();
       // Apply changed font to embedded text-field and drop-down-button
@@ -215,6 +244,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       for( var i = 0; i < items.length; i++ ) {
         items[ i ].setFont( combo.getFont() );
       }
+//      org.eclipse.swt.ComboUtil._updatePopupHeight( combo );
     },
     
     // workaround for broken property on qx ComboBox

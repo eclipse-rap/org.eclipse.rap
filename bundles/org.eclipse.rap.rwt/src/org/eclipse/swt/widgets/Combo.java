@@ -54,11 +54,7 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  * </p>
  *
  * @see List
- * <hr/>
- * <p>Implementation status:</p>
- * Currently only the DROP_DOWN style is supported.
  */
-// TODO [rst] Update Javadoc
 // TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
 //      are aded/removed
 public class Combo extends Composite {
@@ -66,6 +62,7 @@ public class Combo extends Composite {
   private static final int DROP_DOWN_BUTTON_WIDTH = 14;
   private final ListModel model;
   private String text = "";
+  private int visibleCount = 5;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -126,7 +123,7 @@ public class Combo extends Composite {
    * list.  If the item at the index was already selected, it remains
    * selected. Indices that are out of range are ignored.
    *
-   * @param index the index of the item to select
+   * @param selectionIndex the index of the item to select
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -182,7 +179,7 @@ public class Combo extends Composite {
 //   * text field is editable, this has the effect of placing the
 //   * i-beam at the start of the text.
 //   * <p>
-//   * Note: To clear the selected items in the receiver's list, 
+//   * Note: To clear the selected items in the receiver's list,
 //   * use <code>deselectAll()</code>.
 //   * </p>
 //   *
@@ -423,54 +420,51 @@ public class Combo extends Composite {
     return model.getItemCount();
   }
 
-//  /**
-//   * Sets the number of items that are visible in the drop
-//   * down portion of the receiver's list.
-//   * <p>
-//   * Note: This operation is a hint and is not supported on
-//   * platforms that do not have this concept.
-//   * </p>
-//   *
-//   * @param count the new number of items to be visible
-//   *
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-//   * </ul>
-//   * 
-//   * @since 3.0
-//   */
-  public void setVisibleItemCount (int count) {
-    checkWidget ();
-    // TODO [rh] IMPLEMENTATION MISSING
+  /**
+   * Sets the number of items that are visible in the drop
+   * down portion of the receiver's list.
+   * <p>
+   * Note: This operation is a hint and is not supported on
+   * platforms that do not have this concept.
+   * </p>
+   *
+   * @param count the new number of items to be visible
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setVisibleItemCount( final int count ) {
+    checkWidget();
+    if( count >= 0 ) {
+      visibleCount = count;
+    }
   }
 
-//  /**
-//   * Gets the number of items that are visible in the drop
-//   * down portion of the receiver's list.
-//   * <p>
-//   * Note: This operation is a hint and is not supported on
-//   * platforms that do not have this concept.
-//   * </p>
-//   *
-//   * @return the number of items that are visible
-//   *
-//   * @exception SWTException <ul>
-//   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-//   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-//   * </ul>
-//   * 
-//   * @since 3.0
-//   */
+  /**
+   * Gets the number of items that are visible in the drop
+   * down portion of the receiver's list.
+   * <p>
+   * Note: This operation is a hint and is not supported on
+   * platforms that do not have this concept.
+   * </p>
+   *
+   * @return the number of items that are visible
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   public int getVisibleItemCount () {
     checkWidget ();
-    // TODO [rh] IMPLEMENTATION MISSING
-    return 0;
+    return visibleCount ;
   }
 
   /**
    * Searches the receiver's list starting at the first item
-   * (index 0) until an item is found that is equal to the 
+   * (index 0) until an item is found that is equal to the
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
@@ -491,7 +485,7 @@ public class Combo extends Composite {
   }
 
   /**
-   * Searches the receiver's list starting at the given, 
+   * Searches the receiver's list starting at the given,
    * zero-relative index until an item is found that is equal
    * to the argument, and returns the index of that item. If
    * no item is found or the starting index is out of range,
@@ -547,7 +541,7 @@ public class Combo extends Composite {
     }
     return result;
   }
-  
+
   /**
    * Sets the contents of the receiver's text field to the given string.
    * <p>
@@ -556,7 +550,7 @@ public class Combo extends Composite {
    * containing line breaks or other special characters will probably cause it
    * to display incorrectly.
    * </p>
-   * 
+   *
    * @param string the new text
    * @exception IllegalArgumentException
    *              <ul>
@@ -580,7 +574,7 @@ public class Combo extends Composite {
         return;
       }
       select( index );
-    } 
+    }
     String verifiedText = verifyText( string, 0, text.length() );
     if( verifiedText != null ) {
       text = verifiedText;
@@ -714,7 +708,7 @@ public class Combo extends Composite {
     if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
     ModifyEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the receiver's text is modified.
@@ -737,14 +731,14 @@ public class Combo extends Composite {
     if (listener == null) error (SWT.ERROR_NULL_ARGUMENT);
     ModifyEvent.removeListener( this, listener );
   }
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's text is verified, by sending
    * it one of the messages defined in the <code>VerifyListener</code>
    * interface.
    *
-   * @param listener the listener which should be notified
+   * @param verifyListener the listener which should be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -765,7 +759,7 @@ public class Combo extends Composite {
    * Removes the listener from the collection of listeners who will
    * be notified when the control is verified.
    *
-   * @param listener the listener which should no longer be notified
+   * @param verifyListener the listener which should no longer be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -794,7 +788,7 @@ public class Combo extends Composite {
   //////////////////
   // Helping methods
 
-  private String verifyText( final String text, final int start, final int end ) 
+  private String verifyText( final String text, final int start, final int end )
   {
     VerifyEvent event = new VerifyEvent( this );
     event.text = text;

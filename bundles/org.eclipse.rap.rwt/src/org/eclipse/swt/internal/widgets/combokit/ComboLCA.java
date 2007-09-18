@@ -19,6 +19,7 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -32,8 +33,11 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
 
+  // Must be in sync with appearance "list-item"
+  private static final int LIST_ITEM_PADDING = 3;
+
   // Constants for ComboUtil.js
-  private static final String JS_FUNC_INITIALIZE 
+  private static final String JS_FUNC_INITIALIZE
     = "org.eclipse.swt.ComboUtil.initialize";
   private static final String JS_FUNC_DEINITIALIZE
     = "org.eclipse.swt.ComboUtil.deinitialize";
@@ -43,6 +47,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     "org.eclipse.swt.ComboUtil.setItems";
   private static final String JS_FUNC_SELECT =
     "org.eclipse.swt.ComboUtil.select";
+  private static final String JS_FUNC_SET_MAX_POPUP_HEIGHT =
+    "org.eclipse.swt.ComboUtil.setMaxPopupHeight";
 
   // Propery names for preserve-value facility
   private static final String PROP_ITEMS = "items";
@@ -51,6 +57,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final String PROP_EDITABLE = "editable";
   private static final String PROP_VERIFY_MODIFY_LISTENER 
     = "verifyModifyListener";
+  private static final String PROP_MAX_POPUP_HEIGHT = "maxPopupHeight";
 
   private static final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,
@@ -76,6 +83,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ITEMS, items );
     Integer selection = new Integer( combo.getSelectionIndex() );
     adapter.preserve( PROP_SELECTION, selection );
+    adapter.preserve( PROP_MAX_POPUP_HEIGHT,
+                      new Integer( getMaxPopupHeight( combo ) ) );
     adapter.preserve( PROP_TEXT, combo.getText() );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
@@ -83,7 +92,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     boolean hasVerifyListener = VerifyEvent.hasListener( combo );
     boolean hasModifyListener = ModifyEvent.hasListener( combo );
     boolean hasListener = hasVerifyListener || hasModifyListener;
-    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER, 
+    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER,
                       Boolean.valueOf( hasListener ) );
   }
 
@@ -111,6 +120,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     writeItems( combo );
     writeSelectionListener( combo );
     writeSelection( combo );
+    writeMaxPopupHeight( combo );
     writeEditable( combo );
     writeText( combo );
     writeVerifyAndModifyListener( combo );
@@ -207,6 +217,20 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
   }
   
+  private static void writeMaxPopupHeight( final Combo combo )
+    throws IOException
+  {
+    Integer newValue = new Integer( getMaxPopupHeight( combo ) );
+    if( WidgetLCAUtil.hasChanged( combo,
+                                  PROP_MAX_POPUP_HEIGHT,
+                                  newValue ) )
+    {
+      JSWriter writer = JSWriter.getWriterFor( combo );
+      Object[] args = new Object[]{ combo, newValue };
+      writer.callStatic( JS_FUNC_SET_MAX_POPUP_HEIGHT, args );
+    }
+  }
+
   private static void writeEditable( final Combo combo ) throws IOException {
     boolean editable = isEditable( combo );
     if( editable ) {
@@ -231,9 +255,9 @@ public class ComboLCA extends AbstractWidgetLCA {
                            Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( combo ) );
   }
-  
-  private static void writeVerifyAndModifyListener( final Combo combo ) 
-    throws IOException 
+
+  private static void writeVerifyAndModifyListener( final Combo combo )
+    throws IOException
   {
     if( isEditable( combo ) ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
@@ -251,8 +275,15 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
-  
+
   private static boolean isEditable( final Combo combo ) {
     return ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );
+  }
+
+  private static int getMaxPopupHeight( final Combo combo ) {
+    int visibleItemCount = combo.getVisibleItemCount();
+    int charHeight = TextSizeDetermination.getCharHeight( combo.getFont() );
+    int padding = 2 * LIST_ITEM_PADDING;
+    return visibleItemCount * ( charHeight + padding );
   }
 }
