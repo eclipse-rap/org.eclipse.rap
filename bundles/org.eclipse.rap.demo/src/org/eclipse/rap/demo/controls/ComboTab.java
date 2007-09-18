@@ -44,8 +44,12 @@ public class ComboTab extends ExampleTab {
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
     createVisibilityButton();
     createEnablementButton();
-    createAddButton( parent );
-    createRemoveAllButton( parent );
+    Group group = new Group( parent, SWT.NONE );
+    group.setText( "Manipulate First Combo" );
+    group.setLayout( new GridLayout() );
+    createAddButton( group, emptyCombo );
+    createRemoveAllButton( group, emptyCombo );
+    createSetVisibleItemCountButton( group, emptyCombo );
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
@@ -144,28 +148,56 @@ public class ComboTab extends ExampleTab {
     registerControl( viewerCombo );
   }
 
-  private void createAddButton( final Composite parent ) {
+  private void createAddButton( final Composite parent, final Combo combo ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label lblAddItem = new Label( composite, SWT.NONE );
-    lblAddItem.setText( "Add Item to 'Empty Combo'" );
+    lblAddItem.setText( "Add Item" );
     final Text txtAddItem = new Text( composite, SWT.BORDER );
     txtAddItem.setText( "New Item" );
     Button btnAddItem = new Button( composite, SWT.PUSH );
     btnAddItem.setText( "Go" );
     btnAddItem.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
-        emptyCombo.add( txtAddItem.getText() );
+        combo.add( txtAddItem.getText() );
       }
     } );
   }
 
-  private void createRemoveAllButton( final Composite parent ) {
-    Button button = new Button( parent , SWT.PUSH );
-    button.setText( "Remove All on 'Filled Combo'" );
+  private void createRemoveAllButton( final Composite parent, final Combo combo )
+  {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 2, false ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Remove All Items " );
+    Button button = new Button( composite , SWT.PUSH );
+    button.setText( "Remove" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        filledCombo.removeAll();
+        combo.removeAll();
+      }
+    } );
+  }
+
+  private void createSetVisibleItemCountButton( final Composite parent,
+                                                final Combo combo )
+  {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Set Visible Item Count to " );
+    final Text text = new Text( composite, SWT.BORDER | SWT.SINGLE );
+    text.setText( "3" );
+    text.setLayoutData( new GridData( 100, SWT.DEFAULT ) );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Set" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        try {
+          int vic = Integer.parseInt( text.getText() );
+          combo.setVisibleItemCount( vic );
+        } catch( NumberFormatException e ) {
+        }
       }
     } );
   }
