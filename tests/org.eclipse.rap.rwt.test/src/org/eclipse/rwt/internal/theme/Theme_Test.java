@@ -35,46 +35,49 @@ public class Theme_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
-  }
-
-  public void testName() throws Exception {
-    Theme theme;
-    theme = new Theme( "f" );
-    assertEquals( "F", theme.getName() );
-    theme = new Theme( "foo" );
-    assertEquals( "Foo", theme.getName() );
-    theme = new Theme( "Foo" );
-    assertEquals( "Foo", theme.getName() );
+    Theme defTheme = new Theme( "Default Theme" );
+    assertNotNull( defTheme );
+    Theme anotherTheme = new Theme( "Another Theme", defTheme );
+    assertNotNull( anotherTheme );
   }
 
   public void testGetSetValues() throws Exception {
-    Theme theme;
-    theme = new Theme( "foo" );
+    Theme defTheme = new Theme( "Default Theme" );
     QxBorder qxBorder1 = new QxBorder( "1 solid blue" );
     QxBorder qxBorder2 = new QxBorder( "2 solid green" );
     QxColor qxColor1 = new QxColor( "#fffaf0" );
-    theme.setValue( "foo.border", qxBorder1 );
-    assertEquals( qxBorder1, theme.getValue( "foo.border" ) );
+    defTheme.setValue( "foo.border", qxBorder1 );
+    assertEquals( qxBorder1, defTheme.getValue( "foo.border" ) );
     try {
-      theme.setValue( "foo.border", qxBorder2 );
+      defTheme.setValue( "foo.border", qxBorder2 );
       fail( "IAE expected when value is redefined" );
-    } catch( Exception e ) {
+    } catch( final Exception e ) {
       // expected
     }
     try {
-      theme.setValue( "foo.border", qxColor1 );
+      defTheme.setValue( "foo.border", qxColor1 );
       fail( "Type of themeable property must remain unchangeable" );
-    } catch( IllegalArgumentException e ) {
+    } catch( final IllegalArgumentException e ) {
       // expected
     }
     try {
-      theme.getValue( "foo.foreground" );
+      defTheme.getValue( "foo.foreground" );
       fail( "Getting an undefined property should result in an Exception" );
-    } catch( IllegalArgumentException e ) {
+    } catch( final IllegalArgumentException e ) {
       // expected
     }
-    theme.setValue( "foo.foreground", qxColor1 );
-    assertEquals( qxColor1, theme.getValue( "foo.foreground" ) );
+    defTheme.setValue( "foo.foreground", qxColor1 );
+    assertEquals( qxColor1, defTheme.getValue( "foo.foreground" ) );
+    Theme theme = new Theme( "Another Theme", defTheme );
+    try {
+      theme.setValue( "foo.bar", qxColor1 );
+      fail( "Setting an undefined key in derived theme should result in IAE" );
+    } catch( final IllegalArgumentException e ) {
+      // expected
+    }
+    assertEquals( qxBorder1, theme.getValue( "foo.border" ) );
+    theme.setValue( "foo.border", qxBorder2 );
+    assertEquals( qxBorder2, theme.getValue( "foo.border" ) );
   }
 
   public void testGetSetTypedValues() throws Exception {
@@ -95,19 +98,40 @@ public class Theme_Test extends TestCase {
     try {
       theme.getBorder( "foo.color" );
       fail( "Typed getter must fail for wrong types" );
-    } catch( IllegalArgumentException e ) {
+    } catch( final IllegalArgumentException e ) {
       // expected
     }
   }
 
   public void testGetKeys() throws Exception {
-    Theme theme;
-    theme = new Theme( "foo" );
     QxBorder qxBorder1 = new QxBorder( "1 solid blue" );
+    QxBorder qxBorder2 = new QxBorder( "2 solid green" );
     QxColor qxColor1 = new QxColor( "#fffaf0" );
-    theme.setValue( "foo.border", qxBorder1 );
-    theme.setValue( "foo.foreground", qxColor1 );
+    Theme defTheme = new Theme( "Default Theme" );
+    defTheme.setValue( "foo.foreground", qxColor1 );
+    defTheme.setValue( "foo.border", qxBorder1 );
+    Theme theme = new Theme( "Another Theme", defTheme );
+    theme.setValue( "foo.border", qxBorder2 );
+    String[] defKeys = defTheme.getKeys();
+    assertEquals( 2, defKeys.length );
     String[] keys = theme.getKeys();
     assertEquals( 2, keys.length );
+  }
+
+  public void testHasKey() throws Exception {
+    Theme defTheme = new Theme( "Default Theme" );
+    QxBorder qxBorder1 = new QxBorder( "1 solid blue" );
+    QxBorder qxBorder2 = new QxBorder( "2 solid green" );
+    assertFalse( defTheme.hasKey( "foo.border" ) );
+    assertFalse( defTheme.definesKey( "foo.border" ) );
+    defTheme.setValue( "foo.border", qxBorder1 );
+    assertTrue( defTheme.hasKey( "foo.border" ) );
+    assertTrue( defTheme.definesKey( "foo.border" ) );
+    Theme theme = new Theme( "Another Theme", defTheme );
+    assertTrue( theme.hasKey( "foo.border" ) );
+    assertFalse( theme.definesKey( "foo.border" ) );
+    theme.setValue( "foo.border", qxBorder2 );
+    assertTrue( theme.hasKey( "foo.border" ) );
+    assertTrue( theme.definesKey( "foo.border" ) );
   }
 }

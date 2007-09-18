@@ -11,36 +11,40 @@ package org.eclipse.rwt.internal.theme;
 
 import java.util.*;
 
-public class Theme {
+public final class Theme {
 
-  private String name;
+  private final String name;
 
-  private Map values;
+  private final Map values;
 
-  private final Theme defaultTheme;
+  private final Map defaultValues;
 
   /**
-   * Creates a default theme.
+   * Creates a new theme which has no default theme. In RWT theming, only the
+   * default theme itself has no default theme.
+   * @param name the name of the theme
    */
   public Theme( final String name ) {
     this( name, null );
   }
 
   /**
-   * Creates a new theme with the given default theme.
+   * Creates a new theme with the given default theme. The default theme
+   * specifies the possible keys and their default values. <strong>Important:</strong>
+   * Modifying the default theme afterwards has no effect on this theme.
+   *
+   * @param name the name of the theme
+   * @param defaultTheme the default theme
    */
   public Theme( final String name, final Theme defaultTheme ) {
-    this.name = checkName( name );
-    this.defaultTheme = defaultTheme;
+    checkName( name );
+    this.name = name;
+    this.defaultValues = defaultTheme != null ? defaultTheme.values : null;
     values = new HashMap();
   }
 
   public String getName() {
     return name;
-  }
-
-  public Theme getDefaultTheme() {
-    return defaultTheme;
   }
 
   /**
@@ -53,8 +57,8 @@ public class Theme {
    */
   public boolean hasKey( final String key ) {
     boolean result = values.containsKey( key );
-    if( defaultTheme != null ) {
-      result |= defaultTheme.values.containsKey( key );
+    if( defaultValues != null ) {
+      result |= defaultValues.containsKey( key );
     }
     return result;
   }
@@ -72,9 +76,11 @@ public class Theme {
    * theme.
    */
   public String[] getKeys() {
-    Set keySet = new HashSet( values.keySet() );
-    if( defaultTheme != null ) {
-      keySet.addAll( defaultTheme.values.keySet() );
+    Set keySet;
+    if( defaultValues != null ) {
+      keySet = defaultValues.keySet();
+    } else {
+      keySet = values.keySet();
     }
     return ( String[] )keySet.toArray( new String[ keySet.size() ] );
   }
@@ -127,10 +133,14 @@ public class Theme {
     return ( QxDimension )value;
   }
 
+  /**
+   * Returns the value for the given key. If the theme does not define a value
+   * for this key, the default value is returned.
+   */
   public QxType getValue( final String key ) {
     QxType value = ( QxType )values.get( key );
-    if( value == null && defaultTheme != null ) {
-      value = ( QxType )defaultTheme.values.get( key );
+    if( value == null && defaultValues != null ) {
+      value = ( QxType )defaultValues.get( key );
     }
     if( value == null ) {
       throw new IllegalArgumentException( "Undefined key: " + key );
@@ -143,9 +153,9 @@ public class Theme {
       String msg = "Tried to redefine key: " + key;
       throw new IllegalArgumentException( msg );
     }
-    if( defaultTheme != null ) {
-      if( defaultTheme.values.containsKey( key ) ) {
-        if( !defaultTheme.values.get( key ).getClass().isInstance( value ) ) {
+    if( defaultValues != null ) {
+      if( defaultValues.containsKey( key ) ) {
+        if( !defaultValues.get( key ).getClass().isInstance( value ) ) {
           String msg = "Tried to define key with wrong type: " + key;
           throw new IllegalArgumentException( msg );
         }
@@ -157,8 +167,6 @@ public class Theme {
     values.put( key, value );
   }
 
-  // TODO [rst] implement equals and hashcode completely
-
   public boolean equals( final Object obj ) {
     boolean result;
     if( obj == this ) {
@@ -166,6 +174,12 @@ public class Theme {
     } else if( obj instanceof Theme ) {
       Theme other = ( Theme )obj;
       result = name.equals( other.name );
+      if( defaultValues == null ) {
+        result &= other.defaultValues == null;
+      } else {
+        result &= defaultValues.equals( other.defaultValues );
+      }
+      result &= values.equals( other.values );
     } else {
       result = false;
     }
@@ -173,19 +187,20 @@ public class Theme {
   }
 
   public int hashCode() {
-    return name.hashCode();
+    int result = name.hashCode();
+    if( defaultValues != null ) {
+      result = result * 23 + defaultValues.hashCode() * 23;
+    }
+    result = result + values.hashCode() * 23;
+    return result;
   }
 
-  private String checkName( final String name ) {
+  private void checkName( final String name ) {
     if( name == null ) {
       throw new NullPointerException( "null argument" );
     }
     if( name.length() == 0 ) {
       throw new IllegalArgumentException( "empty argument" );
     }
-    StringBuffer sb = new StringBuffer();
-    sb.append( name.substring( 0, 1 ).toUpperCase() );
-    sb.append( name.substring( 1, name.length() ) );
-    return sb.toString();
   }
 }
