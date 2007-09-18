@@ -67,7 +67,7 @@ public class RWTLifeCycle extends LifeCycle {
     stateInfo.setAttribute( CURRENT_THREAD, thread );
     // DO NOT CHANGE THIS WITHOUT CHECKING PERFORMANCE
     // For performance reasons the UI thread is also stored directly on the
-    // current display, to speed up Widvget#checkWidget()
+    // current display, to speed up Widget#isValidThread()
     Display display = Display.getCurrent();
     if( display != null ) {
       display.thread = thread;

@@ -13367,7 +13367,7 @@ e);
 _onmouseup:function(e){var vOriginalTarget=e.getOriginalTarget();
 switch(vOriginalTarget){case this._indentObject:case this._containerObject:case this:break;
 default:if(!this.getTree().getUseDoubleClick()){this.open();
-}this.getTree().getManager().handleMouseUp(e.getTarget(),
+}this.getTree().getManager().handleMouseUp(vOriginalTarget.getParent(),
 e);
 }},
 _ondblclick:function(e){if(!this.getTree().getUseDoubleClick()){return;
@@ -17132,7 +17132,7 @@ case vWidget._labelObject:vPos=vMenu.getLabelPosition();
 break;
 case vWidget._shortcutObject:vPos=vMenu.getShortcutPosition();
 break;
-case vWidget._arrowObject:vPos=vMenu.getArrowPosition();
+case vWidget._arrowObject:vPos=vMenu.getWidth()-18;
 break;
 }
 if(vPos!=null){vPos+=vWidget.getPaddingLeft();

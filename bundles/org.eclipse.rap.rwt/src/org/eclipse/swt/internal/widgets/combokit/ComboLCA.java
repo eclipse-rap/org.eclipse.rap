@@ -106,11 +106,11 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
     Combo combo = ( Combo )widget;
     ControlLCAUtil.writeChanges( combo );
     writeItems( combo );
-    writeSelected( combo );
+    writeSelectionListener( combo );
+    writeSelection( combo );
     writeEditable( combo );
     writeText( combo );
     writeVerifyAndModifyListener( combo );
@@ -119,6 +119,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     Menu menu = combo.getMenu();
     if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
       Object[] args = new Object[] { combo };
+      JSWriter writer = JSWriter.getWriterFor( widget );
       writer.callStatic( "org.eclipse.swt.ComboUtil.applyContextMenu", args );
     }
   }
@@ -184,18 +185,22 @@ public class ComboLCA extends AbstractWidgetLCA {
       Object[] args = new Object[]{ combo, items };
       writer.callStatic( JS_FUNC_SET_ITEMS, args );
     }
-    writer.updateListener( JS_LISTENER_INFO,
-                           Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( combo ) );
   }
 
-  private static void writeSelected( final Combo combo ) throws IOException {
+  private static void writeSelection( final Combo combo ) throws IOException {
     Integer newValue = new Integer( combo.getSelectionIndex() );
-    if( WidgetLCAUtil.hasChanged( combo,
-                                  PROP_SELECTION,
-                                  newValue,
-                                  DEFAULT_SELECTION ) )
-    {
+    Integer defValue = DEFAULT_SELECTION;
+    boolean selectionChanged 
+      = WidgetLCAUtil.hasChanged( combo, PROP_SELECTION, newValue, defValue );
+    // The 'textChanged' statement covers the following use case:
+    // combo.add( "a" );  combo.select( 0 );
+    // -- in a subsequent request -- 
+    // combo.removeAll();  combo.add( "b" );  combo.select( 0 );
+    // When only examining selectionIndex, a change cannot be determined
+    boolean textChanged 
+      =    !isEditable( combo )
+        && WidgetLCAUtil.hasChanged( combo, PROP_TEXT, combo.getText(), "" );
+    if( selectionChanged || textChanged ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
       Object[] args = new Object[]{ combo, newValue };
       writer.callStatic( JS_FUNC_SELECT, args );
@@ -218,6 +223,15 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void writeSelectionListener( final Combo combo )
+    throws IOException 
+  {    
+    JSWriter writer = JSWriter.getWriterFor( combo );
+    writer.updateListener( JS_LISTENER_INFO,
+                           Props.SELECTION_LISTENERS,
+                           SelectionEvent.hasListener( combo ) );
+  }
+  
   private static void writeVerifyAndModifyListener( final Combo combo ) 
     throws IOException 
   {

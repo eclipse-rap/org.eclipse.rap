@@ -216,7 +216,7 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
   }
 
-  private static void clearSession( HttpSession session ) {
+  private static void clearSession( final HttpSession session ) {
     Enumeration keys = session.getAttributeNames();
     List keyBuffer = new ArrayList();
     while( keys.hasMoreElements() ) {
