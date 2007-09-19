@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,14 +15,17 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 
-/** <p>The resource manager is responsible for registering resources
- *  like images, css files etc. which are available on the applications 
- *  classpath. The registered files will be read out from their libraries 
- *  and delivered if requested. Usually resources are stored in libraries 
- *  in the WEB-INF/lib directory of a web-application</p>
- *  <p>This allows to package userdefined components with all needed
- *  resources into their own jars, and distribute them independently
- *  from the w4toolkit core library.</p> */ 
+/** 
+ * <p>The resource manager is responsible for registering resources
+ * like images, css files etc. which are available on the applications 
+ * classpath. The registered files will be read out from their libraries 
+ * and delivered if requested. Usually resources are stored in libraries 
+ * in the WEB-INF/lib directory of a web-application</p>
+ * 
+ * <p>This allows to package user-defined components with all needed
+ * resources into their own jars, and distribute them independently
+ * from the RAP core library.</p>
+ */ 
 public interface IResourceManager {
   
   /**

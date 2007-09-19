@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.EventListener;
  * and ending of processing for each standard phase of the request processing
  * lifecycle.
  * </p>
+ * @since 1.0
  * @see ILifeCycle#addPhaseListener(PhaseListener)
  * @see ILifeCycle#removePhaseListener(PhaseListener)
  */
@@ -30,6 +31,8 @@ public interface PhaseListener extends EventListener, Serializable {
    * <p>
    * Handle a notification that the processing for a particular phase of the
    * request processing lifecycle is about to begin.
+   * 
+   * @param event the {@link PhaseEvent}
    * </p>
    */
   public void beforePhase( PhaseEvent event );
@@ -38,6 +41,8 @@ public interface PhaseListener extends EventListener, Serializable {
    * <p>
    * Handle a notification that the processing for a particular phase has just
    * been completed.
+   * 
+   * @param event the {@link PhaseEvent}
    * </p>
    */
   public void afterPhase( PhaseEvent event );
@@ -50,6 +55,8 @@ public interface PhaseListener extends EventListener, Serializable {
    * including <code>PhaseId.ANY</code> to indicate an interest in being
    * notified for all standard phases.
    * </p>
+   * 
+   * @return instance of {@link PhaseId}
    */
   public PhaseId getPhaseId();
 }

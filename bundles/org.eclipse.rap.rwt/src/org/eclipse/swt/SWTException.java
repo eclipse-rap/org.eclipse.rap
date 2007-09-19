@@ -26,6 +26,8 @@ package org.eclipse.swt;
  * </p>
  *
  * @see SWTError
+ * 
+ * @since 1.0
  */
 
 public class SWTException extends RuntimeException {

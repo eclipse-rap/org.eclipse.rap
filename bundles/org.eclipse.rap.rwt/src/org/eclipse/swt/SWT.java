@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt;
+
+import org.eclipse.rwt.graphics.Graphics;
 
 
 
@@ -30,8 +32,9 @@ package org.eclipse.swt;
  * <em>HINT</em> may change from release to release, although we typically
  * will not withdraw support for a <em>HINT</em> once it is made available.
  * </p>
+ * 
+ * @since 1.0
  */
-// TODO [doc] Add javadoc for fields
 public class SWT {
   
   /**
@@ -844,18 +847,24 @@ public class SWT {
   /**
    * The font style constant indicating a normal weight, non-italic font
    * (value is 0).
+   * 
+   * @see Graphics#getFont
    */
   public static final int NORMAL = 0;
   
   /**
    * The font style constant indicating a bold weight font
    * (value is 1&lt;&lt;0).
+   * 
+   * @see Graphics#getFont
    */
   public static final int BOLD = 1 << 0;
   
   /**
    * The font style constant indicating an italic font
    * (value is 1&lt;&lt;1).
+   * 
+   * @see Graphics#getFont
    */
   public static final int ITALIC = 1 << 1;
 

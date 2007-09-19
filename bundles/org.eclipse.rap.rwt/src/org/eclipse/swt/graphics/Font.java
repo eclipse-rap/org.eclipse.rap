@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,16 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 
 // TODO [bm] Javadoc
-// TODO [rh] font property (according and LCA functinality) for the following
+// TODO [rh] font property (according and LCA functionality) for the following
 //      widget missing: TableItem, TreeColumn
+/**
+ * 
+ * @since 1.0
+ * 
+ */
 public final class Font extends Resource {
 
   private final FontData[] fontData;
@@ -25,8 +31,22 @@ public final class Font extends Resource {
     this.fontData = new FontData[] { data };
   }
 
+  // TODO [bm] javadoc - revise this
   /**
-   * TODO [fappel]: comment
+   * Returns an array of <code>FontData</code>s representing the receiver.
+   * <!--
+   * On Windows, only one FontData will be returned per font. On X however, 
+   * a <code>Font</code> object <em>may</em> be composed of multiple X 
+   * fonts. To support this case, we return an array of font data objects.
+   * -->
+   *
+   * @return an array of font data objects describing the receiver
+   *
+   * <!--
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * -->
    */
   public FontData[] getFontData() {
     FontData[] result = new FontData[ fontData.length ];

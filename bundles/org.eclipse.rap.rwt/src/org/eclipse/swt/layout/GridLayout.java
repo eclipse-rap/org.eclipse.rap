@@ -40,6 +40,8 @@ import org.eclipse.swt.widgets.*;
  * </p>
  * 
  * @see GridData
+ * 
+ * @since 1.0
  */
 public final class GridLayout extends Layout {
 

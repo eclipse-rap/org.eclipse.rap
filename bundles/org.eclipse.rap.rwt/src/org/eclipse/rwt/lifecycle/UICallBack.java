@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,14 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * A utility class that provides some static helper methods to perform
- * commonly needed tasks with respect to backround thread management.
+ * commonly needed tasks with respect to background thread management.
+ * 
+ * @since 1.0
  */
 public final class UICallBack {
     
   /**
-   * Sometimes a backround thread needs to access values that are stored
+   * Sometimes a background thread needs to access values that are stored
    * in the session object that started the thread. In particular these
    * values may be stored in session singletons. Accessing these singletons
    * directly from the background thread would fail. This method fakes the

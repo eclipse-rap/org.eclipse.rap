@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.*;
  * </pre>
  * 
  * </p>
+ * 
+ * @since 1.0
  */
 public final class FillLayout extends Layout {
 

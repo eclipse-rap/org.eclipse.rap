@@ -52,6 +52,8 @@ import org.eclipse.swt.widgets.*;
  * </p>
  * 
  * @see RowData
+ * 
+ * @since 1.0
  */
 public final class RowLayout extends Layout {
 

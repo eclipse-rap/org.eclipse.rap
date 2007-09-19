@@ -28,6 +28,8 @@ import org.eclipse.swt.SWT;
  * </p>
  * 
  * @see Color
+ * 
+ * @since 1.0
  */
 // TODO: ... implements SerializableCompatibility
 public final class RGB {

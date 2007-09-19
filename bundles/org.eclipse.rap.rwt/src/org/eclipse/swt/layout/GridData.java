@@ -45,6 +45,8 @@ import org.eclipse.swt.widgets.Control;
  * 
  * @see GridLayout
  * @see Control#setLayoutData
+ * 
+ * @since 1.0
  */
 public final class GridData {
 

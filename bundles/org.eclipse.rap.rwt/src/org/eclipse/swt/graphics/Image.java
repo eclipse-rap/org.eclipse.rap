@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,13 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 
-
+/**
+ * TODO: javadoc
+ * 
+ * @since 1.0
+ */
 public final class Image extends Resource {
 
   private int width;
@@ -31,6 +36,18 @@ public final class Image extends Resource {
   ///////////////////////
   // Public Image methods
 
+  /**
+   * Returns the bounds of the receiver. The rectangle will always
+   * have x and y values of 0, and the width and height of the
+   * image.
+   *
+   * @return a rectangle specifying the image's bounds
+   *
+   * @exception SWTException <ul>
+   * <!--   <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li> -->
+   *    <li>ERROR_INVALID_IMAGE - if the image is not a bitmap or an icon</li>
+   * </ul>
+   */
   public Rectangle getBounds() {
     Rectangle result = null;
 //    TODO [rst] Uncomment if constructor provided

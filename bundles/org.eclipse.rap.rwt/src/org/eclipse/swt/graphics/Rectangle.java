@@ -39,6 +39,8 @@ import org.eclipse.swt.SWT;
  * </p>
  *
  * @see Point
+ * 
+ * @since 1.0
  */
 //public final class Rectangle implements SerializableCompatibility {
 public final class Rectangle {

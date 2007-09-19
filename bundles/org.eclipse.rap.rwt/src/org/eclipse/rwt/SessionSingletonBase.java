@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,9 +39,17 @@ import org.eclipse.rwt.internal.service.IServiceStateInfo;
  * }
  * </pre>
  * </p>
+ * 
+ * @since 1.0
  */
 public abstract class SessionSingletonBase {
 
+  /**
+  * <b>IMPORTANT:</b> This constant is <em>not</em> part of the RWT
+  * public API. It is marked public only so that it can be shared
+  * within the packages provided by RWT. It should never be
+  * referenced from application code.
+  */
   public static final String LOCK
     = SessionSingletonBase.class.getName() + ".Lock";
   

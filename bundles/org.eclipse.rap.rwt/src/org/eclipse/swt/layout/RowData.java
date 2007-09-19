@@ -30,6 +30,8 @@ import org.eclipse.swt.graphics.Point;
  * </p>
  * 
  * @see RowLayout
+ * 
+ * @since 1.0
  */
 public final class RowData {
 

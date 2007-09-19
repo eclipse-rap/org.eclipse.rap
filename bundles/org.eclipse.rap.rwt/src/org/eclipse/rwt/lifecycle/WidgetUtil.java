@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,10 @@ import org.eclipse.swt.widgets.Widget;
 
 
 /**
- * TODO [rh] JavaDoc
+ * This is a helper class to obtain different aspects for a widget
+ * related to the handling of widgets in RAP.
+ * 
+ * @since 1.0
  */
 public final class WidgetUtil {
   
@@ -27,6 +30,13 @@ public final class WidgetUtil {
     // prevent instantiation
   }
   
+  /**
+   * Returns the according {@link IWidgetAdapter} for a specified
+   * widget.
+   * 
+   * @param widget the widget
+   * @return the {@link IWidgetAdapter} instance
+   */
   public static IWidgetAdapter getAdapter( final Widget widget ) {
     IWidgetAdapter result;
     result = ( IWidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
@@ -36,10 +46,27 @@ public final class WidgetUtil {
     return result;   
   }
   
+  /**
+   * Returns the Id of the widget which is used to identify the
+   * widget on the client.
+   * 
+   * @param widget the widget
+   * @return the id
+   */
   public static String getId( final Widget widget ) {
     return getAdapter( widget ).getId();
   }
 
+  /**
+   * Returns the {@link AbstractWidgetLCA} instance for this
+   * widget.
+   * 
+   * @param widget the widget
+   * @return 
+   */
+  // TODO [bm] why do we return AbstractWidgetLCA instead of pulling the interesting
+  // methods up to IWidgetLifeCycleAdapter and using this to talk to the outside
+  // world
   public static AbstractWidgetLCA getLCA( final Widget widget ) {
     Class clazz = ILifeCycleAdapter.class;
     AbstractWidgetLCA result = ( AbstractWidgetLCA )widget.getAdapter( clazz );
@@ -49,6 +76,15 @@ public final class WidgetUtil {
     return result;
   }
   
+  /**
+   * This is used to find a widget with a specified id within a widget tree.
+   * <!-- does anybody have a better word for tree? -->
+   * @param root the root widget where to start the search
+   * @param id the id of the widget
+   * @return the widget or <code>null</code> if there was no widget found with that id within
+   * the tree
+   * <!-- does anybody have a better word for tree? -->
+   */
   public static Widget find( final Composite root, final String id ) {
     final Widget[] result = { null };
     if( id != null ) {

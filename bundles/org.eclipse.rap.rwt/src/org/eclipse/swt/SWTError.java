@@ -35,6 +35,8 @@ package org.eclipse.swt;
  *
  * @see SWTException
  * @see SWT#error(int)
+ * 
+ * @since 1.0
  */
 
 public class SWTError extends Error {
