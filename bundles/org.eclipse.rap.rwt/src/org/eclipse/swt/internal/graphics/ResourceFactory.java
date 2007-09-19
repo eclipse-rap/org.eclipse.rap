@@ -86,12 +86,13 @@ public final class ResourceFactory {
     validateFontParams( name, height );
     int checkedStyle = checkFontStyle( style );
     Font result;
-    FontData fontData = new FontData( name, height, checkedStyle );
+    Integer key = new Integer( name.hashCode() ^ height ^ style );
     synchronized( Font.class ) {
-      result = ( Font )fonts.get( fontData );
+      result = ( Font )fonts.get( key );
       if( result == null ) {
+        FontData fontData = new FontData( name, height, checkedStyle );
         result = createFontInstance( fontData );
-        fonts.put( fontData, result );
+        fonts.put( key, result );
       }
     }
     return result;

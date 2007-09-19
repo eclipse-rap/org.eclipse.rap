@@ -312,15 +312,24 @@ public final class ThemeManager {
   public IThemeAdapter getThemeAdapter( final Class widgetClass ) {
     checkInitialized();
     IThemeAdapter result = null;
-    Class clazz = widgetClass;
-    while( clazz != null && clazz != Widget.class && !hasThemeAdapter( clazz ) ) {
-      clazz = clazz.getSuperclass();
-    }
-    if( hasThemeAdapter( clazz ) ) {
-      result = ( IThemeAdapter )adapters.get( clazz );
+    if( hasThemeAdapter( widgetClass ) ) {
+      result = ( IThemeAdapter )adapters.get( widgetClass );
     } else {
-      throw new IllegalArgumentException( "No theme adapter registered for class "
-                                          + widgetClass.getName() );
+      Class clazz = widgetClass;
+      while(    clazz != null 
+             && clazz != Widget.class 
+             && !hasThemeAdapter( clazz ) )
+      {
+        clazz = clazz.getSuperclass();
+      }
+      if( hasThemeAdapter( clazz ) ) {
+        result = ( IThemeAdapter )adapters.get( clazz );
+        adapters.put( widgetClass, result );
+      } else {
+        String msg = "No theme adapter registered for class "
+                                            + widgetClass.getName();
+        throw new IllegalArgumentException( msg );
+      }
     }
     return result;
   }

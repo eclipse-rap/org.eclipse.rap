@@ -31,6 +31,8 @@ public class QxFont implements QxType {
   public final boolean bold;
   public final boolean italic;
 
+  private String familyAsString;
+
   public QxFont( final String fontDef ) {
     if( fontDef == null ) {
       throw new NullPointerException( "null argument" );
@@ -73,21 +75,24 @@ public class QxFont implements QxType {
   }
 
   public String getFamilyAsString() {
-    StringBuffer result = new StringBuffer();
-    for( int i = 0; i < family.length; i++ ) {
-      if( i > 0 ) {
-        result.append( ", " );
+    if( familyAsString == null ) {
+      StringBuffer buffer = new StringBuffer();
+      for( int i = 0; i < family.length; i++ ) {
+        if( i > 0 ) {
+          buffer.append( ", " );
+        }
+        boolean hasSpace = family[ i ].indexOf( ' ' ) != -1;
+        if( hasSpace ) {
+          buffer.append( "\"" );
+        }
+        buffer.append( family[ i ] );
+        if( hasSpace ) {
+          buffer.append( "\"" );
+        }
       }
-      boolean hasSpace = family[ i ].indexOf( ' ' ) != -1;
-      if( hasSpace ) {
-        result.append( "\"" );
-      }
-      result.append( family[ i ] );
-      if( hasSpace ) {
-        result.append( "\"" );
-      }
+      familyAsString = buffer.toString();
     }
-    return result.toString();
+    return familyAsString;
   }
 
   public String toDefaultString() {

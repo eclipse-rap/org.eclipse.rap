@@ -187,6 +187,10 @@ public class ContextProvider {
     // DO NOT MOVE THIS LINE INTO THE IF BLOCK
     // This would cause a memory leak as disposeContext() is used to dispose
     // of a context *and* disassociate the context from the thread
+    releaseContextHolder();
+  }
+
+  public static void releaseContextHolder() {
     CONTEXT_HOLDER.set( null );
   }
 

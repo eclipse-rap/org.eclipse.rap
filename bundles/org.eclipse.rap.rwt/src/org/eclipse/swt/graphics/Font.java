@@ -49,9 +49,7 @@ public final class Font extends Resource {
    * -->
    */
   public FontData[] getFontData() {
-    FontData[] result = new FontData[ fontData.length ];
-    System.arraycopy( fontData, 0, result, 0, fontData.length );
-    return result;
+    return ( FontData[] )fontData.clone();
   }
 
   /**

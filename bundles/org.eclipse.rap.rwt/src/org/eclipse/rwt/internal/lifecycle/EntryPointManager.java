@@ -38,52 +38,59 @@ public final class EntryPointManager {
     // prevent instantiation
   }
   
-  public static synchronized void register( final String name, 
-                                            final Class clazz ) 
-  {
-    ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( clazz, "clazz" );
-    if( !IEntryPoint.class.isAssignableFrom( clazz ) ) {
-      String text = "The argument 'clazz' must implement {0}.";
-      Object[] args = new Object[] { IEntryPoint.class.getName() };
-      String mag = MessageFormat.format( text, args  );
-      throw new IllegalArgumentException( mag ) ;
+  public static void register( final String name, final Class clazz ) {
+    synchronized( registry ) {
+      ParamCheck.notNull( name, "name" );
+      ParamCheck.notNull( clazz, "clazz" );
+      if( !IEntryPoint.class.isAssignableFrom( clazz ) ) {
+        String text = "The argument 'clazz' must implement {0}.";
+        Object[] args = new Object[] { IEntryPoint.class.getName() };
+        String mag = MessageFormat.format( text, args  );
+        throw new IllegalArgumentException( mag ) ;
+      }
+      if( registry.containsKey( name ) ) {
+        String text = "An entry point named ''{0}'' already exists.";
+        String msg = MessageFormat.format( text, new Object[] { name } );
+        throw new IllegalArgumentException( msg );
+      }
+      registry.put( name, clazz );
     }
-    if( registry.containsKey( name ) ) {
-      String text = "An entry point named ''{0}'' already exists.";
-      String msg = MessageFormat.format( text, new Object[] { name } );
-      throw new IllegalArgumentException( msg );
-    }
-    registry.put( name, clazz );
   }
   
-  public static synchronized void deregister( final String name ) {
-    ParamCheck.notNull( name, "name" );
-    if( !registry.containsKey( name ) ) {
-      String text = "An entry point named ''{0}'' does not exist.";
-      String msg = MessageFormat.format( text, new Object[] { name } );
-      throw new IllegalArgumentException( msg );
+  public static void deregister( final String name ) {
+    synchronized( registry ) {
+      ParamCheck.notNull( name, "name" );
+      if( !registry.containsKey( name ) ) {
+        String text = "An entry point named ''{0}'' does not exist.";
+        String msg = MessageFormat.format( text, new Object[] { name } );
+        throw new IllegalArgumentException( msg );
+      }
+      registry.remove( name );
     }
-    registry.remove( name );
   }
   
-  public static synchronized Display createUI( final String name ) {
-    ParamCheck.notNull( name, "name" );
-    if( !registry.containsKey( name ) ) {
-      String text = "An entry point named ''{0}'' does not exist.";
-      String msg = MessageFormat.format( text, new Object[] { name } );
-      throw new IllegalArgumentException( msg );
-    }
-    Class clazz = ( Class )registry.get( name );
+  public static Display createUI( final String name ) {
     IEntryPoint entryPoint;
-    try {
-      entryPoint = ( IEntryPoint )clazz.newInstance();
-    } catch( Exception e ) {
-      String text = "Failed to instantiate ''{0}''.";
-      Object[] args = new Object[] { clazz.getName() };
-      String msg = MessageFormat.format( text, args );
-      throw new EntryPointInstantiationException( msg, e ) ;
+    Class clazz;
+    synchronized( registry ) {
+      ParamCheck.notNull( name, "name" );
+      if( !registry.containsKey( name ) ) {
+        String text = "An entry point named ''{0}'' does not exist.";
+        String msg = MessageFormat.format( text, new Object[] { name } );
+        throw new IllegalArgumentException( msg );
+      }
+      clazz = ( Class )registry.get( name );
+      try {
+        entryPoint = ( IEntryPoint )clazz.newInstance();
+      } catch( Exception e ) {
+        String text = "Failed to instantiate ''{0}''.";
+        Object[] args = new Object[] { clazz.getName() };
+        String msg = MessageFormat.format( text, args );
+        throw new EntryPointInstantiationException( msg, e ) ;
+      }      
     }
+    // not synchronized to avoid lock in case of opening a blocking
+    // dialog in createUI
     Display result = entryPoint.createUI();
     if( result == null ) {
       String text = "The entry point ''{0}'' did not return a display.";

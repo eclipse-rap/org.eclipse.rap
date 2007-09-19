@@ -79,7 +79,7 @@ public class UICallBackManager_Test extends TestCase {
           public void run() {
             log += RUN_SYNC_EXEC;
           }
-        } );
+        }, null );
         syncRunnable[ 0 ].block();
       }
     } );
@@ -219,12 +219,12 @@ public class UICallBackManager_Test extends TestCase {
           public void run() {
             log += RUN_ASYNC_EXEC;
           }
-        } );
+        }, null );
         instance.addAsync( new Runnable() {
           public void run() {
             log += RUN_ASYNC_EXEC;
           }
-        } );
+        }, null );
       }
     } );
     backgroundThread.start();
@@ -246,7 +246,7 @@ public class UICallBackManager_Test extends TestCase {
               public void run() {
                 log += RUN_ASYNC_EXEC;
               }
-            } );
+            }, null );
           }
         } );
         thread.start();

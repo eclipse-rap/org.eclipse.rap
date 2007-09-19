@@ -12,16 +12,17 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.*;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
 
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 
 
 public class UICallBackManager
   extends SessionSingletonBase
-  implements HttpSessionBindingListener
+  implements SessionStoreListener
 {
 
   private List runnables = new ArrayList();
@@ -39,13 +40,25 @@ public class UICallBackManager
   // no callback thread must be blocked.
   private boolean active;
   
-  final static class SyncRunnable implements Runnable {
-    private final Runnable runnable;
-    SyncRunnable( final Runnable runnable ) {
+  static class RunnableBase implements Runnable {
+    final Runnable runnable;
+    private final Display display;
+    RunnableBase( final Runnable runnable, final Display display ) {
       this.runnable = runnable;
+      this.display = display;
     }
+
     public void run() {
       runnable.run();
+    }
+  }
+  
+  static class SyncRunnable extends RunnableBase implements Runnable {
+    SyncRunnable( final Runnable runnable, final Display display ) {
+      super( runnable, display );
+    }
+    public void run() {
+      super.run();
       synchronized( runnable ) {
         runnable.notifyAll();
       }
@@ -93,16 +106,16 @@ public class UICallBackManager
     }
   }
   
-  public void addAsync( final Runnable runnable ) {
+  public void addAsync( final Runnable runnable, final Display display ) {
     synchronized( runnables ) {
-      runnables.add( runnable );
+      runnables.add( new RunnableBase( runnable, display ) );
       sendUICallBack();
     }
   }
   
-  public void addSync( final Runnable runnable ) {
+  public void addSync( final Runnable runnable, final Display display ) {
     synchronized( runnable ) {
-      SyncRunnable syncRunnable = new SyncRunnable( runnable );
+      SyncRunnable syncRunnable = new SyncRunnable( runnable, display );
       runnables.add( syncRunnable );
       sendUICallBack();
       syncRunnable.block();
@@ -182,15 +195,25 @@ public class UICallBackManager
   
   
   ///////////////////////////////////////
-  // interface HttpSessionBindingListener
-  
-  public void valueBound( final HttpSessionBindingEvent event ) {
-    // do nothing
-  }
+  // interface SessionStoreListener
 
-  public void valueUnbound( final HttpSessionBindingEvent event ) {
+  public void beforeDestroy( final SessionStoreEvent event ) {
     synchronized( runnables ) {
       if( runnables != null ) {
+        RunnableBase[] toBeExecuted = new RunnableBase[ runnables.size() ]; 
+        runnables.toArray( toBeExecuted );
+        for( int i = 0; i < toBeExecuted.length; i++ ) {
+          RunnableBase runnable = toBeExecuted[ i ];
+          Display display = runnable.display;
+          try {
+            UICallBackServiceHandler.runNonUIThreadWithFakeContext( display, 
+                                                                    runnable, 
+                                                                    true );
+          } catch( final RuntimeException re ) {
+            // TODO Auto-generated catch block
+            re.printStackTrace();
+          }
+        }
         runnables.notifyAll();
       }
       runnables.clear();

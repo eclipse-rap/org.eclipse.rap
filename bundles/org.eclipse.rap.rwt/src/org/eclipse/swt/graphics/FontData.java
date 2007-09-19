@@ -194,7 +194,7 @@ public final class FontData {
     boolean result = false;
     if( obj != null && obj instanceof FontData ) {
       FontData toCompare = ( FontData )obj;
-      result =    name.equals( toCompare.name )
+      result =    name.hashCode() == toCompare.name.hashCode()
                && height == toCompare.height
                && style == toCompare.style;
     }

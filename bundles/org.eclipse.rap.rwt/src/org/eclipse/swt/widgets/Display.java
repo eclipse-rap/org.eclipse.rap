@@ -619,7 +619,7 @@ public class Display extends Device implements Adaptable {
 //    }
     UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
-        UICallBackManager.getInstance().addAsync( runnable );
+        UICallBackManager.getInstance().addAsync( runnable, Display.this );
       }
     } );
   }
@@ -654,7 +654,7 @@ public class Display extends Device implements Adaptable {
 //  }
     UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
       public void run() {
-        UICallBackManager.getInstance().addSync( runnable );
+        UICallBackManager.getInstance().addSync( runnable, Display.this );
       }
     } );
   }

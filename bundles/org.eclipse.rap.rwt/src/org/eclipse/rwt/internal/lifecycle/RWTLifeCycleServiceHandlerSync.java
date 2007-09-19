@@ -13,7 +13,7 @@ import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.internal.util.URLHelper;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.LifeCycleControl.LifeCycleLock;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rwt.service.*;
 
 /**
  * TODO [fappel]: documentation
@@ -51,7 +51,7 @@ public final class RWTLifeCycleServiceHandlerSync
       this.context = context;
       this.lock = lock;
     }
-    
+
     public void run() {
       try {
         LOCK.set( lock );
@@ -110,7 +110,7 @@ public final class RWTLifeCycleServiceHandlerSync
         terminateResumeThread();
         synchronized( lock ) {
           LOCK.set( null );
-          lock.notify();
+          lock.notifyAll();
         }
       }
     }
@@ -325,7 +325,7 @@ public final class RWTLifeCycleServiceHandlerSync
         finishLifeCycle();
         LifeCycleServiceHandler.writeOutput();
         synchronized( requestThreadLock ) {
-          requestThreadLock.notify();
+          requestThreadLock.notifyAll();
         }
       } catch( final Throwable throwable ) {
         // TODO Auto-generated catch block
@@ -369,12 +369,13 @@ public final class RWTLifeCycleServiceHandlerSync
   }
 
   public static void block( final LifeCycleLock lock ) {
-    String id = "ResponseOnBlockedLC" + lock.hashCode();
-    Thread thread = new Thread( new ResponseHandler(), id );
-    thread.setDaemon( true );
-    thread.start();
+//    String id = "ResponseOnBlockedLC" + lock.hashCode();
+//    Thread thread = new Thread( new ResponseHandler(), id );
+//    thread.setDaemon( true );
+//    thread.start();
     synchronized( lock ) {
       try {
+        WorkerQueue.execute( new ResponseHandler(), lock );
         lock.wait();
         // dispose the service context that is still stored
         // on the thread since it was blocked, before we could
@@ -390,28 +391,60 @@ public final class RWTLifeCycleServiceHandlerSync
   }
 
   public void service() throws ServletException, IOException {
-    synchronized( ContextProvider.getSession() ) {
+    ISessionStore session = ContextProvider.getSession();
+    synchronized( session ) {
       final Object lock = new Object();
-      final ServiceContext context = ContextProvider.getContext();
-  
-      // TODO [fappel]: introduce thread pooling.
-      // TODO [fappel]: dispose of thread in case it's locked and session
-      //                gets invalidated.
-      String id = "LifeCycleWorker." + lock.hashCode();
-      ServiceRunnable serviceRunnable = new ServiceRunnable( context, lock );
-      Thread lifeCycleWorker = new Thread( serviceRunnable, id );
-      lifeCycleWorker.setDaemon( true );
-      lifeCycleWorker.start();
-      synchronized( lock ) {
-        try {
-          lock.wait();
-        } catch( final InterruptedException e ) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+      try {
+        session.addSessionStoreListener( new SessionStoreListener() {
+          public void beforeDestroy( final SessionStoreEvent event ) {
+            synchronized( lock ) {
+              lock.notify();
+            }
+          }
+        } );
+        final ServiceContext context = ContextProvider.getContext();
+        
+        // TODO [fappel]: introduce thread pooling.
+        // TODO [fappel]: dispose of thread in case it's locked and session
+        //                gets invalidated.
+//        String id = "LifeCycleWorker." + lock.hashCode();
+//        Thread lifeCycleWorker = new Thread( serviceRunnable, id );
+//        lifeCycleWorker.setDaemon( true );
+//        lifeCycleWorker.start();
+        ServiceRunnable serviceRunnable = new ServiceRunnable( context, lock );
+        synchronized( lock ) {
+          try {
+            WorkerQueue.execute( serviceRunnable, lock );
+            lock.wait();
+          } catch( final InterruptedException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
         }
+        serviceRunnable.handleException();
+      } catch( final IllegalStateException ise ) {
+        sendSessionExpired();
       }
-      serviceRunnable.handleException();
     }
+  }
+
+  private void sendSessionExpired() throws IOException {
+    LifeCycleServiceHandler.initializeStateInfo();
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    HtmlResponseWriter out = stateInfo.getResponseWriter();
+    out.append( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 " );
+    out.append( "Transitional//EN\">" );
+    out.startDocument();
+    out.startElement( HTML.HEAD, null );
+    out.startElement( HTML.TITLE, null );
+    String text = "Session has expired!";
+    out.writeText( text, null );
+    out.endElement( HTML.TITLE );
+    out.endElement( HTML.HEAD );
+    out.startElement( HTML.BODY, null );
+    out.writeText( text, null );
+    out.endElement( HTML.BODY );
+    out.endDocument();
   }
 
   static void terminateResumeThread() {
