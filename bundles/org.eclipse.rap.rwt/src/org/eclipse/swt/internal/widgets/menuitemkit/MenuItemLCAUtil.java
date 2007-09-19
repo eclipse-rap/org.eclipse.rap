@@ -32,7 +32,11 @@ final class MenuItemLCAUtil {
       writer.callStatic( "org.eclipse.swt.MenuUtil.setLabelMode", 
                          new Object[] { menuItem } );
     }
-    writer.call( menuItem.getParent(), "add", new Object[]{ menuItem } );
+//    writer.call( menuItem.getParent(), "add", new Object[]{ menuItem } );
+    int index = menuItem.getParent().indexOf( menuItem );
+    writer.call( menuItem.getParent(), 
+                 "addAt", 
+                 new Object[]{ menuItem, new Integer( index ) } );
   }
   
   static void writeEnabled( final MenuItem menuItem ) throws IOException {
