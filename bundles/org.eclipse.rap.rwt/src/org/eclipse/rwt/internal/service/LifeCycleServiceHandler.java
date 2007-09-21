@@ -249,25 +249,27 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   }
 
   public static void writeOutput() throws IOException {
-    HtmlResponseWriter content = getStateInfo().getResponseWriter();
-    PrintWriter out = getOutputWriter();
-    try {
-      // send the head to the client
-      for( int i = 0; i < content.getHeadSize(); i++ ) {
-        out.print( content.getHeadToken( i ) );
+    if( !ContextProvider.getContext().isDisposed() ) {
+      HtmlResponseWriter content = getStateInfo().getResponseWriter();
+      PrintWriter out = getOutputWriter();
+      try {
+        // send the head to the client
+        for( int i = 0; i < content.getHeadSize(); i++ ) {
+          out.print( content.getHeadToken( i ) );
+        }
+        // send the body to the client
+        for( int i = 0; i < content.getBodySize(); i++ ) {
+          out.print( content.getBodyToken( i ) );
+        }
+        // send the foot to the client
+        for( int i = 0; i < content.getFootSize(); i++ ) {
+          out.print( content.getFootToken( i ) );
+        }
+      } finally {
+        out.close();
       }
-      // send the body to the client
-      for( int i = 0; i < content.getBodySize(); i++ ) {
-        out.print( content.getBodyToken( i ) );
-      }
-      // send the foot to the client
-      for( int i = 0; i < content.getFootSize(); i++ ) {
-        out.print( content.getFootToken( i ) );
-      }
-    } finally {
-      out.close();
+      logResponseContent();
     }
-    logResponseContent();
   }
 
   private static IServiceStateInfo getStateInfo() {

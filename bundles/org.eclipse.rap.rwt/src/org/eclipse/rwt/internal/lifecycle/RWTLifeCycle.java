@@ -118,16 +118,16 @@ public class RWTLifeCycle extends LifeCycle {
   // helping methods
 
   PhaseId executePhase( final PhaseId current ) throws IOException {
-    PhaseId next;
+    PhaseId next = null;
     beforePhaseExecution( current );
     try {
-      next = PHASES[ current.getOrdinal() - 1 ].execute();
-    } finally {
       ServiceContext context = ContextProvider.getContext();
-      if( !context.isDisposed() ) { // execution may have been aborted
-        RWTLifeCycleBlockControl.resumeBlocked();        
-        afterPhaseExecution( current );
+      if( !context.isDisposed() ) {
+        next = PHASES[ current.getOrdinal() - 1 ].execute();
       }
+    } finally {
+      RWTLifeCycleBlockControl.resumeBlocked();        
+      afterPhaseExecution( current );
     }
     return next;
   }
@@ -138,40 +138,48 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   void afterPhaseExecution( final PhaseId current ) {
-    PhaseListener[] phaseListeners = getPhaseListeners();
-    PhaseEvent evt = new PhaseEvent( this, current );
-    for( int i = 0; i < phaseListeners.length; i++ ) {
-      PhaseId listenerId = phaseListeners[ i ].getPhaseId();
-      if( mustNotify( current, listenerId ) ) {
-        try {
-          phaseListeners[ i ].afterPhase( evt );
-        } catch( final Throwable thr ) {
-          String text = "Could not execute PhaseListener after phase ''{0}''.";
-          String msg = MessageFormat.format( text, new Object[] { current } );
-          // TODO [rh] write to servlet context log instead of logger
-          LOGGER.log( Level.SEVERE, msg, thr );
+    ServiceContext context = ContextProvider.getContext();
+    if( !context.isDisposed() ) {
+      PhaseListener[] phaseListeners = getPhaseListeners();
+      PhaseEvent evt = new PhaseEvent( this, current );
+      for( int i = 0; i < phaseListeners.length; i++ ) {
+        PhaseId listenerId = phaseListeners[ i ].getPhaseId();
+        if( mustNotify( current, listenerId ) ) {
+          try {
+            phaseListeners[ i ].afterPhase( evt );
+          } catch( final Throwable thr ) {
+            String text
+              = "Could not execute PhaseListener after phase ''{0}''.";
+            String msg = MessageFormat.format( text, new Object[] { current } );
+            // TODO [rh] write to servlet context log instead of logger
+            LOGGER.log( Level.SEVERE, msg, thr );
+          }
         }
       }
-    }
-    if( current == PhaseId.PROCESS_ACTION ) {
-      UICallBackManager.getInstance().processRunnablesInUIThread();
-      doRedrawFake();
+      if( current == PhaseId.PROCESS_ACTION ) {
+        UICallBackManager.getInstance().processRunnablesInUIThread();
+        doRedrawFake();
+      }
     }
   }
 
   private void beforePhaseExecution( final PhaseId current ) {
-    PhaseListener[] phaseListeners = getPhaseListeners();
-    PhaseEvent evt = new PhaseEvent( this, current );
-    for( int i = 0; i < phaseListeners.length; i++ ) {
-      PhaseId listenerId = phaseListeners[ i ].getPhaseId();
-      if( mustNotify( current, listenerId ) ) {
-        try {
-          phaseListeners[ i ].beforePhase( evt );
-        } catch( final Throwable thr ) {
-          String text = "Could not execute PhaseListener before phase ''{0}''.";
-          String msg = MessageFormat.format( text, new Object[] { current } );
-          // TODO [rh] write to servlet context log instead of logger
-          LOGGER.log( Level.SEVERE, msg, thr );
+    ServiceContext context = ContextProvider.getContext();
+    if( !context.isDisposed() ) {
+      PhaseListener[] phaseListeners = getPhaseListeners();
+      PhaseEvent evt = new PhaseEvent( this, current );
+      for( int i = 0; i < phaseListeners.length; i++ ) {
+        PhaseId listenerId = phaseListeners[ i ].getPhaseId();
+        if( mustNotify( current, listenerId ) ) {
+          try {
+            phaseListeners[ i ].beforePhase( evt );
+          } catch( final Throwable thr ) {
+            String text
+              = "Could not execute PhaseListener before phase ''{0}''.";
+            String msg = MessageFormat.format( text, new Object[] { current } );
+            // TODO [rh] write to servlet context log instead of logger
+            LOGGER.log( Level.SEVERE, msg, thr );
+          }
         }
       }
     }

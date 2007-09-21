@@ -12,10 +12,12 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.service.*;
@@ -30,6 +32,8 @@ public class RWTLifeCycleBlockControl {
   private static final ThreadLocal LOCK = new ThreadLocal();
   private static final String SKIP_RESPONSE
     = LifeCycleServiceHandler.class.getName() + ".SKIP_RESPONSE_WRITING";
+  private static final String THROWABLE
+    = RWTLifeCycleBlockControl.class.getName() + ".Throwable";
   
   
   private static class LockData {
@@ -47,9 +51,6 @@ public class RWTLifeCycleBlockControl {
     private final ServiceContext context;
     private final Object lock;
     private final IServiceHandler serviceHandler;
-    private RuntimeException rtBuffer;
-    private ServletException seBuffer;
-    private IOException ioeBuffer;
 
     private ServiceHandlerProcessor( final ServiceContext context, 
                                      final Object lock,
@@ -66,14 +67,17 @@ public class RWTLifeCycleBlockControl {
         ContextProvider.setContext( context );
         serviceHandler.service();
       } catch( final RuntimeException rt ) {
-        rtBuffer = rt;
+        bufferThrowable( rt );
       } catch( final ServletException se ) {
-        seBuffer = se;
+        bufferThrowable( se );
       } catch( final IOException ioe ) {
-        ioeBuffer = ioe;
+        bufferThrowable( ioe );
       } catch( final AbortRequestProcessingError arpe ) {
         // do nothing
-      } finally {
+      } catch( final Throwable thr ) {
+        bufferThrowable( thr );
+      }
+      finally {
         terminateResumeThread();
         synchronized( lock ) {
           LOCK.set( null );
@@ -82,15 +86,36 @@ public class RWTLifeCycleBlockControl {
       }
     }
     
-    void handleException() throws ServletException, IOException {
-      if( rtBuffer != null ) {
-        throw rtBuffer;
-      }
-      if( seBuffer != null ) {
-        throw seBuffer;
-      }
-      if( ioeBuffer != null ) {
-        throw ioeBuffer;
+    private void bufferThrowable( final Throwable thr ) {
+      HttpSession httpSession = ContextProvider.getSession().getHttpSession();
+      httpSession.setAttribute( THROWABLE, thr );
+    }
+    
+    void handleException( final HttpSession session )
+      throws ServletException, IOException
+    {
+      Object thr = session.getAttribute( THROWABLE );
+      session.removeAttribute( THROWABLE );
+      if( thr != null ) {
+        if( thr instanceof RuntimeException ) {
+          throw ( RuntimeException )thr;
+        }
+        if( thr instanceof ServletException ) {
+          throw ( ServletException )thr;
+        }
+        if( thr instanceof IOException ) {
+          throw ( IOException )thr;
+        }
+        if( thr instanceof Error ) {
+          throw ( Error )thr;
+        }
+        String txt = "Unknown Error occured [{0}]: {1}";
+        Object[] params = new Object[] { 
+          thr.getClass().getName(), 
+          ( ( Throwable )thr ).getMessage()
+        };
+        String msg = MessageFormat.format( txt, params );
+        throw new IllegalStateException( msg );
       }
     }
   }
@@ -113,7 +138,7 @@ public class RWTLifeCycleBlockControl {
       // lifecycle
       try {
         ContextProvider.setContext( context );
-        Object[] toTerminate = processResumeQueue();
+        Object[] toTerminate = processResumeQueue( 0 );
         RWTLifeCycle.setThread( Thread.currentThread() );
         finishLifeCycle();
         LifeCycleServiceHandler.writeOutput();
@@ -127,38 +152,6 @@ public class RWTLifeCycleBlockControl {
       } finally {
         terminateResumeThread();
       }
-    }
-
-    private void terminateResumed( final Object[] resumed ) {
-      if( resumed != null ) {
-        for( int i = 0; i < resumed.length; i++ ) {
-          synchronized( resumed[ i ] ) {
-            resumed[ i ].notify();
-          }
-        }
-      }
-    }
-
-    private Object[] processResumeQueue() {
-      Object[] result = null;
-      List queue = getQueue();
-      if( queue != null ) {
-        result = queue.toArray();
-        for( int i = 0; i < result.length; i++ ) {
-          LifeCycleLock lock = ( LifeCycleLock )result[ i ];
-          synchronized( lock ) {
-            getData( lock ).waitForTermination = true;
-            lock.notify();
-            try {
-              lock.wait();
-            } catch( final InterruptedException e ) {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
-            }
-          }
-        }
-      }
-      return result;
     }
 
     private void finishLifeCycle() throws IOException {
@@ -205,11 +198,18 @@ public class RWTLifeCycleBlockControl {
   }
   
   static void resumeBlocked() {
-    List queue = getQueue();
-    if( queue != null && queue.size() > 0 ) {
-      LifeCycleLock lock = ( LifeCycleLock )queue.get( 0 );
-      handleQueuedTermination( lock );
-      handleResumeTermination( lock );
+    ServiceContext context = ContextProvider.getContext();
+    if( !context.isDisposed() ) {  
+      List queue = getQueue();
+      if( queue != null && queue.size() > 0 ) {
+        LifeCycleLock lock = ( LifeCycleLock )queue.get( 0 );
+        handleQueuedTermination( lock );
+        handleResumeTermination( lock );
+        processResumeQueue( 1 );
+        if( !ContextProvider.getContext().isDisposed() ) {
+          RWTLifeCycle.setThread( Thread.currentThread() );
+        }
+      }
     }
   }
 
@@ -262,7 +262,7 @@ public class RWTLifeCycleBlockControl {
           e.printStackTrace();
         }
       }
-      processor.handleException();
+      processor.handleException( session.getHttpSession() );
     }
   }
   
@@ -309,10 +309,20 @@ public class RWTLifeCycleBlockControl {
   private static void terminateResumeThread() {
     ServiceContext context = ContextProvider.getContext();
     if( !context.isDisposed() ) {
-      LifeCycleLock lock = dequeue();
-      if( lock != null && !getData( lock ).waitForTermination ) {
-        ContextProvider.disposeContext();
-        getData( lock ).thread.interrupt();
+      List queue = getQueue();
+      if( queue != null ) {
+        Object[] locks = queue.toArray();
+        for( int i = 0; i < locks.length; i++ ) {
+          LifeCycleLock lock = ( LifeCycleLock )locks[ i ];
+          if( getData( lock ).waitForTermination ) {
+            synchronized( lock ) {
+              lock.notify();
+            }
+          } else {
+            ContextProvider.disposeContext();
+            getData( lock ).thread.interrupt();
+          }
+        }
       }
     }
   }
@@ -343,5 +353,39 @@ public class RWTLifeCycleBlockControl {
   
   private static LockData getData( final LifeCycleLock lock ) {
     return ( LockData )lock.data;
+  }
+  
+
+  private static void terminateResumed( final Object[] resumed ) {
+    if( resumed != null ) {
+      for( int i = 0; i < resumed.length; i++ ) {
+        synchronized( resumed[ i ] ) {
+          resumed[ i ].notify();
+        }
+      }
+    }
+  }
+  private static Object[] processResumeQueue( final int start ) {
+    Object[] result = null;
+    List queue = getQueue();
+    if( queue != null ) {
+      result = queue.toArray();
+      for( int i = start; i < result.length; i++ ) {
+        LifeCycleLock lock = ( LifeCycleLock )result[ i ];
+        if( !getData( lock ).waitForTermination ) {
+          synchronized( lock ) {
+            getData( lock ).waitForTermination = true;
+            lock.notify();
+            try {
+              lock.wait();
+            } catch( final InterruptedException e ) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+    }
+    return result;
   }
 }

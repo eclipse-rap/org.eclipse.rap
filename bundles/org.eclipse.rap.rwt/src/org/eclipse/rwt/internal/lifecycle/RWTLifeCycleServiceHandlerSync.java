@@ -87,7 +87,9 @@ public final class RWTLifeCycleServiceHandlerSync
         sendMultipleClientsPerSessionPage( restartTicket );            
       }
     }
-    RWTRequestVersionControl.store();
+    if( !ContextProvider.getContext().isDisposed() ) {
+      RWTRequestVersionControl.store();
+    }
   }
   
   private boolean isCloseRequested() {
