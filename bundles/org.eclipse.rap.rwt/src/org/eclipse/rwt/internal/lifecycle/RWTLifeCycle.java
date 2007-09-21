@@ -125,6 +125,7 @@ public class RWTLifeCycle extends LifeCycle {
     } finally {
       ServiceContext context = ContextProvider.getContext();
       if( !context.isDisposed() ) { // execution may have been aborted
+        RWTLifeCycleBlockControl.resumeBlocked();        
         afterPhaseExecution( current );
       }
     }

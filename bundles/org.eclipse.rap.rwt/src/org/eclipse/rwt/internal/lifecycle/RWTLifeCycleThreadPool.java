@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH. All rights
  * reserved. This program and the accompanying materials are made available
  * under the terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -12,8 +12,9 @@ import java.util.*;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 
-class WorkerQueue {
-  private final static WorkerQueue _instance = new WorkerQueue( 1 );
+class RWTLifeCycleThreadPool {
+  private final static RWTLifeCycleThreadPool _instance
+    = new RWTLifeCycleThreadPool( 1 );
 
   private final List threads = new ArrayList();
   private final LinkedList queue;
@@ -40,7 +41,7 @@ class WorkerQueue {
   
   private class PoolWorker extends Thread {
     public PoolWorker() {
-      super( "RWT Requst Worker " + threads.size() );
+      super( "RWT Request Worker " + threads.size() );
     }
     
     public void run() {
@@ -77,7 +78,7 @@ class WorkerQueue {
   }
   
 
-  private WorkerQueue( final int initialSize ) {
+  private RWTLifeCycleThreadPool( final int initialSize ) {
     queue = new LinkedList();
     for( int i = 0; i < initialSize; i++ ) {
       createWorker();
