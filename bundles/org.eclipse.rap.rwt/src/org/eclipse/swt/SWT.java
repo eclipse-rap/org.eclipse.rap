@@ -848,7 +848,8 @@ public class SWT {
    * The font style constant indicating a normal weight, non-italic font
    * (value is 0).
    * 
-   * @see Graphics#getFont
+   * @see Graphics#getFont(org.eclipse.swt.graphics.FontData)
+   * @see Graphics#getFont(String, int, int)
    */
   public static final int NORMAL = 0;
   
@@ -856,7 +857,8 @@ public class SWT {
    * The font style constant indicating a bold weight font
    * (value is 1&lt;&lt;0).
    * 
-   * @see Graphics#getFont
+   * @see Graphics#getFont(org.eclipse.swt.graphics.FontData)
+   * @see Graphics#getFont(String, int, int)
    */
   public static final int BOLD = 1 << 0;
   
@@ -864,7 +866,8 @@ public class SWT {
    * The font style constant indicating an italic font
    * (value is 1&lt;&lt;1).
    * 
-   * @see Graphics#getFont
+   * @see Graphics#getFont(org.eclipse.swt.graphics.FontData)
+   * @see Graphics#getFont(String, int, int)
    */
   public static final int ITALIC = 1 << 1;
 

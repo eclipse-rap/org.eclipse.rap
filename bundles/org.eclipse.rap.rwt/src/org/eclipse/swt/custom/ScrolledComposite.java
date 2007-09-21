@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,9 +153,9 @@ public class ScrolledComposite extends Composite {
    * Negative values will be ignored.  Values greater than the maximum scroll 
    * distance will result in scrolling to the end of the scrollbar.
    *
-   * @param x the x coordinate of the content to appear in the top left corner 
+   * @param left the x coordinate of the content to appear in the top left corner 
    * 
-   * @param y the y coordinate of the content to appear in the top left corner 
+   * @param top the y coordinate of the content to appear in the top left corner 
    * 
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -343,12 +343,34 @@ public class ScrolledComposite extends Composite {
     }
   }
   
+  /**
+   * Returns the receiver's horizontal scroll bar if it has
+   * one, and null if it does not.
+   *
+   * @return the horizontal scroll bar (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   // TODO [rh] move to Scrollable
   public ScrollBar getHorizontalBar() {
     checkWidget ();
     return horizontalBar;
   }
 
+  /**
+   * Returns the receiver's vertical scroll bar if it has
+   * one, and null if it does not.
+   *
+   * @return the vertical scroll bar (or null)
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
   // TODO [rh] move to Scrollable
   public ScrollBar getVerticalBar() {
     checkWidget ();

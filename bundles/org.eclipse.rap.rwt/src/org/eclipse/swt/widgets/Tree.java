@@ -886,7 +886,7 @@ public class Tree extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public int getColumnCount () {
       checkWidget ();
@@ -962,7 +962,7 @@ public class Tree extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1 
+   * @since 1.0
    */
   public int getHeaderHeight () {
       checkWidget ();

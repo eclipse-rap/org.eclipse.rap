@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,20 @@ public class CTabFolder extends Composite {
   static final int BUTTON_BORDER = SWT.COLOR_WIDGET_DARK_SHADOW;
   static final int BUTTON_FILL = SWT.COLOR_LIST_BACKGROUND;
 
+  /**
+   * marginWidth specifies the number of pixels of horizontal margin
+   * that will be placed along the left and right edges of the form.
+   *
+   * The default value is 0.
+   */
   public int marginWidth = 0;
+  
+  /**
+   * marginHeight specifies the number of pixels of vertical margin
+   * that will be placed along the top and bottom edges of the form.
+   *
+   * The default value is 0.
+   */
   public int marginHeight = 0;
   
   private final ICTabFolderAdapter tabFolderAdapter = new CTabFolderAdapter();
@@ -518,7 +531,7 @@ public class CTabFolder extends Composite {
    * Marks the receiver's maximize button as visible if the argument is <code>true</code>,
    * and marks it invisible otherwise. 
    *
-   * @param visible the new visibility state
+   * @param maximizeVisible the new visibility state
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -557,7 +570,7 @@ public class CTabFolder extends Composite {
    * Marks the receiver's minimize button as visible if the argument is <code>true</code>,
    * and marks it invisible otherwise. 
    *
-   * @param visible the new visibility state
+   * @param minimizeVisible the new visibility state
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -596,7 +609,7 @@ public class CTabFolder extends Composite {
    * Marks the receiver's minimize button as visible if the argument is <code>true</code>,
    * and marks it invisible otherwise. 
    *
-   * @param visible the new visibility state
+   * @param minimized the new visibility state
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -635,7 +648,7 @@ public class CTabFolder extends Composite {
   /**
    * Sets the maximized state of the receiver.
    *
-   * @param maximize the new maximized state
+   * @param maximized the new maximized state
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -755,7 +768,7 @@ public class CTabFolder extends Composite {
    * Sets the minimum number of characters that will 
    * be displayed in a fully compressed tab.
    * 
-   * @param count the minimum number of characters that will be displayed in a fully compressed tab
+   * @param minimumCharacters the minimum number of characters that will be displayed in a fully compressed tab
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1132,6 +1145,19 @@ public class CTabFolder extends Composite {
     }
   }
 
+  /**
+   * Returns the control in the top right corner of the tab folder. 
+   * Typically this is a close button or a composite with a menu and close button.
+   *
+   * @return the control in the top right corner of the tab folder or null
+   * 
+   * @exception  SWTException <ul>
+   *      <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *      <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   *  </ul>
+   *
+   * @since 1.0
+   */
   public Control getTopRight() {
     checkWidget();
     return topRight;
