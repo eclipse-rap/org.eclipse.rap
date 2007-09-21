@@ -66,9 +66,7 @@ public class UICallBackManager
     public void block() {
       synchronized( runnable ) {
         try {
-          if( Thread.currentThread() != RWTLifeCycle.getThread() ) {
-            runnable.wait();
-          }
+          runnable.wait();
         } catch( final InterruptedException e ) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -115,10 +113,14 @@ public class UICallBackManager
   
   public void addSync( final Runnable runnable, final Display display ) {
     synchronized( runnable ) {
-      SyncRunnable syncRunnable = new SyncRunnable( runnable, display );
-      runnables.add( syncRunnable );
-      sendUICallBack();
-      syncRunnable.block();
+      if( Thread.currentThread() != RWTLifeCycle.getThread() ) {
+        SyncRunnable syncRunnable = new SyncRunnable( runnable, display );
+        runnables.add( syncRunnable );
+        sendUICallBack();
+        syncRunnable.block();
+      } else {
+        runnable.run();
+      }
     }
   }
   
