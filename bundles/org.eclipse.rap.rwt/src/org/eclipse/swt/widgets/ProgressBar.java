@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH. All rights
  * reserved. This program and the accompanying materials are made available
  * under the terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -64,7 +64,7 @@ public class ProgressBar extends Control {
    *                <li>ERROR_INVALID_SUBCLASS - if this class is not an
    *                allowed subclass</li>
    *                </ul>
-   * @see SWT#SMOOTH
+   * <!--@see SWT#SMOOTH-->
    * @see SWT#HORIZONTAL
    * @see SWT#VERTICAL
    * @see Widget#checkSubclass

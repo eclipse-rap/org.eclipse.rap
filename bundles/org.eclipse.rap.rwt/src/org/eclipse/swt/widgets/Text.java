@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,14 @@ import org.eclipse.swt.internal.widgets.textkit.TextThemeAdapter;
  */
 public class Text extends Scrollable {
 
+  /**
+   * The maximum number of characters that can be entered
+   * into a text widget.
+   * <p>
+   * Note that this value is platform dependent, based upon
+   * the native widget implementation.
+   * </p>
+   */
   public static final int LIMIT = Integer.MAX_VALUE;
 
   private String text = "";
@@ -86,7 +94,7 @@ public class Text extends Scrollable {
    * SINGLE and the argument contains multiple lines of text, the result of this
    * operation is undefined and may vary from platform to platform.
    *
-   * @param string the new text
+   * @param text the new text
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the string is null</li>
@@ -140,7 +148,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * @see #DELIMITER
+   * <!--@see #DELIMITER-->
    */
   public String getLineDelimiter() {
     checkWidget();
@@ -162,7 +170,7 @@ public class Text extends Scrollable {
    * receiver's limit to <code>Text.LIMIT</code>.
    * </p>
    *
-   * @param limit new text limit
+   * @param textLimit new text limit
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_CANNOT_BE_ZERO - if the limit is zero</li>
@@ -650,7 +658,7 @@ public class Text extends Scrollable {
    * it one of the messages defined in the <code>VerifyListener</code>
    * interface.
    *
-   * @param listener the listener which should be notified
+   * @param verifyListener the listener which should be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -671,7 +679,7 @@ public class Text extends Scrollable {
    * Removes the listener from the collection of listeners who will
    * be notified when the control is verified.
    *
-   * @param listener the listener which should no longer be notified
+   * @param verifyListener the listener which should no longer be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>

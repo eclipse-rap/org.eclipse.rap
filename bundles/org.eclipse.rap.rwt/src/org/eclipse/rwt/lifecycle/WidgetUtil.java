@@ -62,7 +62,7 @@ public final class WidgetUtil {
    * widget.
    * 
    * @param widget the widget
-   * @return 
+   * @return the lca
    */
   // TODO [bm] why do we return AbstractWidgetLCA instead of pulling the interesting
   // methods up to IWidgetLifeCycleAdapter and using this to talk to the outside

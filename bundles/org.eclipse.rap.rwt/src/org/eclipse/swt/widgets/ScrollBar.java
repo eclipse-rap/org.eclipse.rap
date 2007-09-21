@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,10 +75,10 @@ import org.eclipse.swt.graphics.Point;
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  *
- * @see Slider
+ * <!--@see Slider-->
  * @see Scrollable
- * @see Scrollable#getHorizontalBar
- * @see Scrollable#getVerticalBar
+ * <!--@see Scrollable#getHorizontalBar-->
+ * <!--@see Scrollable#getVerticalBar-->
  *
  * <p>(current) limitations:</p>
  * <ul>
@@ -307,7 +307,7 @@ public class ScrollBar extends Widget {
    * value will be ignored if it is less than one, and will be
    * clamped if it exceeds the receiver's current range.
    *
-   * @param value the new thumb value, which must be at least one and not
+   * @param thumb the new thumb value, which must be at least one and not
    * larger than the size of the current range
    *
    * @exception SWTException <ul>
@@ -341,7 +341,7 @@ public class ScrollBar extends Widget {
    * the thumb and then the selection are adjusted to fit within the
    * new range.
    *
-   * @param value the new maximum
+   * @param maximum the new maximum
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -374,7 +374,7 @@ public class ScrollBar extends Widget {
    * first the thumb and then the selection are adjusted to fit within
    * the new range.
    *
-   * @param value the new minimum
+   * @param minimum the new minimum
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>

@@ -23,14 +23,14 @@ public class PhaseId implements Comparable {
   
   /**
    * <p>The PhaseId <code>ANY</code> is used by the 
-   * {@link org.eclipse.rwt.engine.lifecycle.PhaseListener PhaseListener}
+   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
    * to signal interest in all phases.</p>
    */
   public static final PhaseId ANY = new PhaseId( "ANY" );
   
   /**
    * <p>The PhaseId <code>PREPARE_UI_ROOT</code> is used by the 
-   * {@link org.eclipse.rwt.engine.lifecycle.PhaseListener PhaseListener}
+   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
    * to signal interest in the Prepare UI Root phase.</p>
    */
   public static final PhaseId PREPARE_UI_ROOT 
@@ -38,21 +38,21 @@ public class PhaseId implements Comparable {
   
   /**
    * <p>The PhaseId <code>READ_DATA</code> is used by the 
-   * {@link org.eclipse.rwt.engine.lifecycle.PhaseListener PhaseListener}
+   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
    * to signal interest in the read data phase.</p>
    */
   public static final PhaseId READ_DATA = new PhaseId( "READ_DATA" );
   
   /**
    * <p>The PhaseId <code>PROCESS_ACTION</code> is used by the 
-   * {@link org.eclipse.rwt.engine.lifecycle.PhaseListener PhaseListener}
+   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
    * to signal interest in the process action phase.</p>
    */
   public static final PhaseId PROCESS_ACTION = new PhaseId( "PROCESS_ACTION" );
   
   /**
    * <p>The PhaseId <code>RENDER</code> is used by the 
-   * {@link org.eclipse.rwt.engine.lifecycle.PhaseListener PhaseListener}
+   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
    * to signal interest in the render phase.</p>
    */
   public static final PhaseId RENDER = new PhaseId( "RENDER" );

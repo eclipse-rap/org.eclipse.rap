@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -230,7 +230,7 @@ public class Table extends Composite {
    * @see SWT#MULTI
    * @see SWT#CHECK
    * @see SWT#FULL_SELECTION
-   * @see SWT#HIDE_SELECTION
+   * <!--@see SWT#HIDE_SELECTION-->
    * @see SWT#VIRTUAL
    * @see Widget#checkSubclass
    * @see Widget#getStyle
@@ -363,7 +363,7 @@ public class Table extends Composite {
    * argument, and returns the index of that column. If no column
    * is found, returns -1.
    *
-   * @param column the search column
+   * @param tableColumn the search column
    * @return the index of the column
    *
    * @exception IllegalArgumentException <ul>
@@ -495,7 +495,7 @@ public class Table extends Composite {
   /**
    * Sets the number of items contained in the receiver.
    *
-   * @param count the number of items
+   * @param itemCount the number of items
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1477,7 +1477,7 @@ public class Table extends Composite {
    * at the top of the receiver. This index can change when items
    * are scrolled or new items are added and removed.
    *
-   * @param index the index of the top item
+   * @param topIndex the index of the top item
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1590,7 +1590,7 @@ public class Table extends Composite {
    * it visible may not actually cause it to be displayed.
    * </p>
    *
-   * @param show the new visibility state
+   * @param headerVisible the new visibility state
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -1661,7 +1661,7 @@ public class Table extends Composite {
    * it visible may not actually cause it to be displayed.
    * </p>
    *
-   * @param show the new visibility state
+   * @param linesVisible the new visibility state
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -157,7 +157,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @see #setLayoutDeferred(boolean)
+   * <!--@see #setLayoutDeferred(boolean)-->
    * @see #isLayoutDeferred()
    */
   public boolean getLayoutDeferred() {
@@ -178,7 +178,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @see #setLayoutDeferred(boolean)
+   * <!--@see #setLayoutDeferred(boolean)-->
    * @see #getLayoutDeferred()
    */
   public boolean isLayoutDeferred() {

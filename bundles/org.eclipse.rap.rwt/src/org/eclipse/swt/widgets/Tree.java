@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -269,7 +269,7 @@ public class Tree extends Composite {
   /**
    * Sets the number of root-level items contained in the receiver.
    *
-   * @param count the number of items
+   * @param itemCount the number of items
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -551,7 +551,7 @@ public class Tree extends Composite {
    * If the item is not in the receiver, then it is ignored.
    * </p>
    *
-   * @param item the item to select
+   * @param selection the item to select
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the item is null</li>
@@ -581,7 +581,7 @@ public class Tree extends Composite {
    * then all items are ignored.
    * </p>
    *
-   * @param items the array of items
+   * @param selection the array of items
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the array of items is null</li>
@@ -687,7 +687,7 @@ public class Tree extends Composite {
    * it visible may not actually cause it to be displayed.
    * </p>
    *
-   * @param show the new visibility state
+   * @param value the new visibility state
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -734,7 +734,7 @@ public class Tree extends Composite {
    * these attributes are requested again as needed.
    *
    * @param index the index of the item to clear
-   * @param all <code>true</code> if all child items of the indexed item should be
+   * @param recursive <code>true</code> if all child items of the indexed item should be
    * cleared recursively, and <code>false</code> otherwise
    *
    * @exception IllegalArgumentException <ul>
@@ -846,7 +846,7 @@ public class Tree extends Composite {
    * tree was created with the <code>SWT.VIRTUAL</code> style, these
    * attributes are requested again as needed.
    * 
-   * @param all <code>true</code> if all child items should be cleared
+   * @param recursive <code>true</code> if all child items should be cleared
    * recursively, and <code>false</code> otherwise
    *
    * @exception SWTException <ul>
@@ -991,7 +991,7 @@ public class Tree extends Composite {
    * it visible may not actually cause it to be displayed.
    * </p>
    *
-   * @param show the new visibility state
+   * @param value the new visibility state
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>

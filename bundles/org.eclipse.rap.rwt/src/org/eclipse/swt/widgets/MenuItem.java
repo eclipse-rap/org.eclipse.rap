@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -323,7 +323,7 @@ public class MenuItem extends Item {
    * When the receiver is of type <code>CHECK</code> or <code>RADIO</code>,
    * it is selected when it is checked.
    *
-   * @param selected the new selection state
+   * @param selection the new selection state
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>

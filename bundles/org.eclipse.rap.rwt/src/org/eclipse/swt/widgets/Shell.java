@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -180,10 +180,10 @@ public class Shell extends Decorations {
    * @see SWT#NO_TRIM
    * @see SWT#SHELL_TRIM
    * @see SWT#DIALOG_TRIM
-   * @see SWT#MODELESS
-   * @see SWT#PRIMARY_MODAL
+   * <!--@see SWT#MODELESS-->
+   * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
-   * @see SWT#SYSTEM_MODAL
+   * <!--@see SWT#SYSTEM_MODAL-->
    */
   public Shell( int style ) {
     this( ( Display )null, style );
@@ -250,10 +250,10 @@ public class Shell extends Decorations {
    * @see SWT#NO_TRIM
    * @see SWT#SHELL_TRIM
    * @see SWT#DIALOG_TRIM
-   * @see SWT#MODELESS
-   * @see SWT#PRIMARY_MODAL
+   * <!--@see SWT#MODELESS-->
+   * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
-   * @see SWT#SYSTEM_MODAL
+   * <!--@see SWT#SYSTEM_MODAL-->
    */
   public Shell( final Display display, final int style ) {
     this ( display, null, style, 0 );
@@ -326,11 +326,11 @@ public class Shell extends Decorations {
    * @see SWT#SHELL_TRIM
    * @see SWT#DIALOG_TRIM
    * @see SWT#ON_TOP
-   * @see SWT#TOOL
-   * @see SWT#MODELESS
-   * @see SWT#PRIMARY_MODAL
+   * <!--@see SWT#TOOL-->
+   * <!--@see SWT#MODELESS-->
+   * <!--@see SWT#PRIMARY_MODAL-->
    * @see SWT#APPLICATION_MODAL
-   * @see SWT#SYSTEM_MODAL
+   * <!--@see SWT#SYSTEM_MODAL-->
    */
   // TODO: [doc] what about these shell styles: TOOL, MODELESS, PRIMARY_MODAL and SYSTEM_MODAL
   public Shell( final Shell parent, final int style ) {
@@ -396,7 +396,8 @@ public class Shell extends Decorations {
    * @see Control#setFocus
    * @see Control#setVisible
    * @see Display#getActiveShell
-   * @see Decorations#setDefaultButton
+   * <!--@see Decorations#setDefaultButton-->
+   * @see Shell#setDefaultButton
    * @see Shell#open
    * @see Shell#setActive
    */
@@ -575,7 +576,7 @@ public class Shell extends Decorations {
    * @see Decorations#setDefaultButton (not yet)
    * @see Shell#setDefaultButton
    * @see Shell#setActive
-   * @see Shell#forceActive
+   * <!--@see Shell#forceActive-->
    */
   public void open() {
     checkWidget();
@@ -604,7 +605,7 @@ public class Shell extends Decorations {
    * </ul>
    *
    * @see SWT#Close
-   * @see #dispose
+   * @see Shell#dispose()
    */
   public void close() {
     checkWidget();
@@ -628,7 +629,7 @@ public class Shell extends Decorations {
    * window manager will typically display as the receiver's
    * <em>title</em>, to the argument, which must not be null. 
    *
-   * @param string the new text
+   * @param text the new text
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
@@ -804,7 +805,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * @see #setDefaultButton
+   * @see Shell#setDefaultButton
    */
   // TODO [rst] move to class Decorations as soon as it exists
   public Button getDefaultButton() {
@@ -987,6 +988,30 @@ public class Shell extends Decorations {
 
   // TODO [rst] Move these methods to class Decorations when implemented
 
+  /**
+   * Sets the minimized stated of the receiver.
+   * If the argument is <code>true</code> causes the receiver
+   * to switch to the minimized state, and if the argument is
+   * <code>false</code> and the receiver was previously minimized,
+   * causes the receiver to switch back to either the maximized
+   * or normal states.
+   * <!--
+   * <p>
+   * Note: The result of intermixing calls to <code>setMaximized(true)</code>
+   * and <code>setMinimized(true)</code> will vary by platform. Typically,
+   * the behavior will match the platform user's expectations, but not
+   * always. This should be avoided if possible.
+   * </p>
+   * -->
+   * @param minimized the new maximized state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #setMaximized
+   */
   public void setMinimized( final boolean minimized ) {
     if( minimized ) {
       mode |= MODE_MINIMIZED;
@@ -998,6 +1023,29 @@ public class Shell extends Decorations {
     }
   }
   
+  /**
+   * Sets the maximized state of the receiver.
+   * If the argument is <code>true</code> causes the receiver
+   * to switch to the maximized state, and if the argument is
+   * <code>false</code> and the receiver was previously maximized,
+   * causes the receiver to switch back to either the minimized
+   * or normal states.
+   * <!--<p>
+   * Note: The result of intermixing calls to <code>setMaximized(true)</code>
+   * and <code>setMinimized(true)</code> will vary by platform. Typically,
+   * the behavior will match the platform user's expectations, but not
+   * always. This should be avoided if possible.
+   * </p>
+   * -->
+   * @param maximized the new maximized state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #setMinimized
+   */
   public void setMaximized( final boolean maximized ) {
     if( maximized ) {
       if( mode != MODE_MAXIMIZED ) {
@@ -1011,10 +1059,38 @@ public class Shell extends Decorations {
     }
   }
   
+  /**
+   * Returns <code>true</code> if the receiver is currently
+   * minimized, and false otherwise. 
+   * <p>
+   *
+   * @return the minimized state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #setMinimized
+   */
   public boolean getMinimized() {
     return ( this.mode & MODE_MINIMIZED ) != 0;
   }
   
+  /**
+   * Returns <code>true</code> if the receiver is currently
+   * maximized, and false otherwise. 
+   * <p>
+   *
+   * @return the maximized state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see #setMaximized
+   */
   public boolean getMaximized() {
     return this.mode == MODE_MAXIMIZED;
   }

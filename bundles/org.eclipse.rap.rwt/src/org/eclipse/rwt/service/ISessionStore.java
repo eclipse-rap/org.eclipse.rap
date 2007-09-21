@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@ import javax.servlet.http.HttpSession;
  * the session singleton based infrastructure intact. 
  * 
  * <p>This interface is not intended to be implemented by clients.</p>
+ * 
+ * @since 1.0
  */
 public interface ISessionStore {
 
@@ -119,6 +121,7 @@ public interface ISessionStore {
    * used to get notifcations before the session store is destroyed.
    * If the given listenern is already added the method has no effect.
    *  
+   * @param listener the SessionStoreListener to be added
    * @exception IllegalStateException If this method is called on an invalidated
    *                                  session.
    */
@@ -130,7 +133,8 @@ public interface ISessionStore {
    * used to get notifcations before the session store is destroyed.
    * If the given listener is not added to the session store this method
    * has no effect.
-   *  
+   * 
+   * @param listener the SessionStoreListener to be removed
    * @exception IllegalStateException If this method is called on an invalidated
    *                                  session.
    */
@@ -138,6 +142,8 @@ public interface ISessionStore {
 
   /**
    * Returns the underlying HttpSession instance.
+   * 
+   * @return the HttpSession instance
    */
   HttpSession getHttpSession();
 }

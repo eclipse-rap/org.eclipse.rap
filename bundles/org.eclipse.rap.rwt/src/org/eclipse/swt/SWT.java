@@ -74,7 +74,7 @@ public class SWT {
    * The dispose event type (value is 12).
    * 
    * @see org.eclipse.swt.widgets.Widget#addListener
-   * @see org.eclipse.swt.widgets.Display#addListener
+   * <!--@see org.eclipse.swt.widgets.Display#addListener-->
    * @see org.eclipse.swt.widgets.Event
    * @see org.eclipse.swt.widgets.Widget#addDisposeListener
    * @see org.eclipse.swt.events.DisposeListener#widgetDisposed

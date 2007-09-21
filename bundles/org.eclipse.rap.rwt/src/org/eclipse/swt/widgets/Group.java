@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,8 +71,8 @@ public class Group extends Composite {
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
    *
-   * @see SWT#SHADOW_ETCHED_IN
-   * @see SWT#SHADOW_ETCHED_OUT
+   * <!--@see SWT#SHADOW_ETCHED_IN-->
+   * <!--@see SWT#SHADOW_ETCHED_OUT-->
    * @see SWT#SHADOW_IN
    * @see SWT#SHADOW_OUT
    * @see SWT#SHADOW_NONE
@@ -98,7 +98,7 @@ public class Group extends Composite {
    * '&amp;' can be escaped by doubling it in the string, causing
    * a single '&amp;' to be displayed.
    * </p>
-   * @param string the new text
+   * @param text the new text
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>

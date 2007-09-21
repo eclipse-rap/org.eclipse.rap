@@ -55,7 +55,7 @@ public class Decorations extends Canvas {
    * Sets the receiver's menu bar to the argument, which
    * may be null.
    *
-   * @param menu the new menu bar
+   * @param menuBar the new menu bar
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the menu has been disposed</li> 

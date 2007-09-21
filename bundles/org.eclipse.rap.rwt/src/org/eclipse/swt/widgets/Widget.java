@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -427,7 +427,7 @@ public abstract class Widget implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #removeListener
-   * @see #notifyListeners
+   * <!--@see #notifyListeners-->
    */
   public void addListener( final int eventType, final Listener listener ) {
     checkWidget();
@@ -461,7 +461,7 @@ public abstract class Widget implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #addListener
-   * @see #notifyListeners
+   * <!--@see #notifyListeners-->
    */
   public void removeListener( final int eventType, final Listener listener ) {
     checkWidget();

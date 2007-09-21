@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,12 +34,23 @@ import org.eclipse.swt.widgets.*;
  * <p></p>
  * <p>Note that the JavaScript code that is rendered relies on the client-side
  * <code>org.eclipse.swt.WidgetManager</code> to be present. </p>
+ * 
+ * @see AbstractWidgetLCA
+ * @see ControlLCAUtil
+ * @see WidgetLCAUtil
  */
 // TODO [rh] decide whether method arguments are to be checked (not-null, etc)
 //      this also applies for other 'SPI's.
 public final class JSWriter {
 
+  /**
+   * A reference to the current widget manager on the client side.
+   */
   public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
+  
+  /**
+   * Reference to the widget of this JSWriter instance.
+   */
   public static JSVar WIDGET_REF = new JSVar( "w" );
 
   private static final Object[] NULL_PARAMETER = new Object[] { null };
@@ -64,6 +75,14 @@ public final class JSWriter {
 
   private final Widget widget;
 
+  /**
+   * Returns an instance of {@link JSWriter} for a specified
+   * widget. Only this writer can modify attributes and call methods
+   * on the client-side representation of the widget.
+   * 
+   * @param widget the widget for the requested {@link JSWriter}
+   * @return the corresponding {@link JSWriter}
+   */
   public static JSWriter getWriterFor( final Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JSWriter result;
@@ -81,6 +100,13 @@ public final class JSWriter {
     return result;
   }
 
+  /**
+   * Returns the {@link JSWriter} instance used to reset
+   * a widgets attributes in order to take part in the
+   * pooling mechanism.
+   * 
+   * @return the {@link JSWriter} instance
+   */
   public static JSWriter getWriterForResetHandler() {
     return new JSWriter( null );
   }
@@ -89,10 +115,33 @@ public final class JSWriter {
     this.widget = iwidgetdget;
   }
 
+  /**
+   * Creates a new widget on the client-side by creating an instance of the
+   * corresponding javascript class definition. This is normally done in
+   * the <code>renderInitialization</code> method of the widgets life-cycle
+   * adapter (LCA).
+   * 
+   * @param className the javascript class to initiate
+   * @throws IOException
+   * @see AbstractWidgetLCA#renderInitialization
+   */
   public void newWidget( final String className ) throws IOException {
     newWidget( className, null );
   }
 
+  /**
+   * Creates a new widget on the client-side by creating an instance of the
+   * corresponding javascript class definition. This is normally done in
+   * the <code>renderInitialization</code> method of the widgets life-cycle
+   * adapter (LCA). All arguments passed to this function will be transmitted
+   * to the client and used to call the constructor of the javascript widget.
+   * 
+   * @param className the javascript class to initiate
+   * @param args the arguments for the widgets constructor on the client-side
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA#renderInitialization
+   */
   public void newWidget( final String className, final Object[] args )
     throws IOException
   {
@@ -114,34 +163,86 @@ public final class JSWriter {
     }
   }
 
+  /**
+   * Explicitly sets the parent of the client-side widget.
+   * 
+   * @param parentId the widget id of the parent
+   * @throws IOException
+   * @see WidgetUtil
+   */
   public void setParent( final String parentId ) throws IOException {
     call( WIDGET_MANAGER_REF, "setParent", new Object[] { widget, parentId } );
   }
 
+  /**
+   * Sets the specified property of the client-side widget to a new value.
+   * 
+   * @param jsProperty the attribute to change
+   * @param value the new value
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String jsProperty, final String value )
     throws IOException
   {
     call( getSetterName( jsProperty ), new Object[] { value } );
   }
 
+  /**
+   * Sets the specified property of the client-side widget to a new value.
+   * 
+   * @param jsProperty the attribute to change
+   * @param value the new value
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String jsProperty, final int value )
     throws IOException
   {
     set( jsProperty, new int[] { value } );
   }
 
+  /**
+   * Sets the specified property of the client-side widget to a new value.
+   * 
+   * @param jsProperty the attribute to change
+   * @param value the new value
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String jsProperty, final float value )
     throws IOException
   {
     set( jsProperty, new float[] { value } );
   }
 
+  /**
+   * Sets the specified property of the client-side widget to a new value.
+   * 
+   * @param jsProperty the attribute to change
+   * @param value the new value
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String jsProperty, final boolean value )
     throws IOException
   {
     set( jsProperty, new boolean[] { value } );
   }
 
+  /**
+   * Sets the specified property of the client-side widget to a new value.
+   * 
+   * @param jsProperty the attribute to change
+   * @param values the new values
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String jsProperty, final int[] values )
     throws IOException
   {
@@ -153,6 +254,15 @@ public final class JSWriter {
     call( widget, functionName, integers );
   }
 
+  /**
+   * Sets the specified property of the client-side widget to a new value.
+   * 
+   * @param jsProperty the attribute to change
+   * @param values the new values
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String jsProperty, final float[] values )
   throws IOException
   {
@@ -164,6 +274,15 @@ public final class JSWriter {
     call( widget, functionName, floats );
   }
 
+  /**
+   * Sets the specified property of the client-side widget to a new value.
+   * 
+   * @param jsProperty the attribute to change
+   * @param values the new values
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String jsProperty, final boolean[] values )
     throws IOException
   {
@@ -177,12 +296,30 @@ public final class JSWriter {
     writeProperty( pattern, jsProperty, parameters );
   }
 
+  /**
+   * Sets the specified property of the client-side widget to a new value.
+   * 
+   * @param jsProperty the attribute to change
+   * @param value the new value
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String jsProperty, final Object value )
     throws IOException
   {
     set( jsProperty, new Object[] { value } );
   }
 
+  /**
+   * Sets the specified property of the client-side widget to a new value.
+   * 
+   * @param jsProperty the attribute to change
+   * @param values the new values
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String jsProperty, final Object[] values )
     throws IOException
   {
@@ -190,12 +327,35 @@ public final class JSWriter {
   }
 
 
+  /**
+   * Sets the specified properties of the client-side widget to new values.
+   * 
+   * @param jsPropertyChain the attributes to change
+   * @param values the new values
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   */
   public void set( final String[] jsPropertyChain, final Object[] values )
     throws IOException
   {
     call( widget, createPropertyChain( jsPropertyChain, false ), values );
   }
 
+  /**
+   * Sets the specified properties of the client-side widget to new values.
+   * Uses a specified key to determinate if this value is already
+   * preserved and only sets the new value if it has changed since the last
+   * request. 
+   * 
+   * @param javaProperty the key to use on the server-side
+   * @param jsProperty the attribute to change
+   * @param newValue the new values
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   * @see AbstractWidgetLCA#preserveValues(Widget)
+   */
   public boolean set( final String javaProperty,
                       final String jsProperty,
                       final Object newValue )
@@ -211,6 +371,20 @@ public final class JSWriter {
     return changed;
   }
 
+  /**
+   * Sets the specified properties of the client-side widget to new values.
+   * Uses a specified key to determinate if this value is already
+   * preserved and only sets the new value if it has changed since the last
+   * request. 
+   * 
+   * @param javaProperty the key to use on the server-side
+   * @param jsPropertyChain the attributes to change
+   * @param value the new value
+   * 
+   * @throws IOException
+   * @see AbstractWidgetLCA
+   * @see AbstractWidgetLCA#preserveValues(Widget)
+   */
   public boolean set( final String javaProperty,
                       final String jsProperty,
                       final Object newValue,

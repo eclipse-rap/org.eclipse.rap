@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH. All rights
  * reserved. This program and the accompanying materials are made available
  * under the terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -192,7 +192,7 @@ public class List extends Scrollable {
    * The current selection is first cleared, then the new item is selected.
    * Indices that are out of range are ignored.
    *
-   * @param index the index of the item to select
+   * @param selection the index of the item to select
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -216,7 +216,7 @@ public class List extends Scrollable {
    * If the receiver is single-select and multiple indices are specified,
    * then all indices are ignored.
    *
-   * @param indices the indices of the items to select
+   * @param selection the indices of the items to select
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the array of indices is null</li>
@@ -270,7 +270,7 @@ public class List extends Scrollable {
    * If the receiver is single-select and multiple items are specified,
    * then all items are ignored.
    *
-   * @param items the array of items
+   * @param selection the array of items
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the array of items is null</li>

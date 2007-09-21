@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,9 +108,10 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
  * @see #syncExec
  * @see #asyncExec
  * @see #wake
- * @see #readAndDispatch
- * @see #sleep
- * @see Device#dispose
+ * 
+ * <!--@see #readAndDispatch-->
+ * <!--@see #sleep-->
+ * <!--@see Device#dispose-->
  */
 // TODO: [doc] Update display javadoc
 public class Display extends Device implements Adaptable {
@@ -857,7 +858,7 @@ public class Display extends Device implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #removeFilter
-   * @see #removeListener
+   * <!--@see #removeListener-->
    */
   public void addFilter( final int eventType, final Listener listener ) {
     checkDevice();
@@ -897,7 +898,7 @@ public class Display extends Device implements Adaptable {
    * @see Listener
    * @see SWT
    * @see #addFilter
-   * @see #addListener
+   * <!--@see #addListener-->
    */
   public void removeFilter( final int eventType, final Listener listener ) {
     checkDevice();

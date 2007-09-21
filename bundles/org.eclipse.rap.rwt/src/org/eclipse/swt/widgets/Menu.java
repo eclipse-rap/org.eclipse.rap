@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class Menu extends Widget {
    * for the instance so that the instance will be a drop-down
    * menu on the given parent's parent.
    *
-   * @param parentMenu a menu which will be the parent of the new instance (cannot be null)
+   * @param menu a menu which will be the parent of the new instance (cannot be null)
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
@@ -75,7 +75,7 @@ public class Menu extends Widget {
    * for the instance so that the instance will be a drop-down
    * menu on the given parent's parent menu.
    *
-   * @param parentItem a menu item which will be the parent of the new instance (cannot be null)
+   * @param parent a menu item which will be the parent of the new instance (cannot be null)
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
@@ -520,7 +520,7 @@ public class Menu extends Widget {
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
-   * @param item the search item
+   * @param menuItem the search item
    * @return the index of the item
    *
    * @exception IllegalArgumentException <ul>
@@ -577,11 +577,47 @@ public class Menu extends Widget {
   ///////////////////////////////////////
   // Listener registration/deregistration
   
+  /**
+   * Adds the listener to the collection of listeners who will
+   * be notified when menus are hidden or shown, by sending it
+   * one of the messages defined in the <code>MenuListener</code>
+   * interface.
+   *
+   * @param listener the listener which should be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see MenuListener
+   * @see #removeMenuListener
+   */
   public void addMenuListener( final MenuListener listener ) {
     checkWidget();
     MenuEvent.addListener( this, listener );
   }
 
+  /**
+   * Removes the listener from the collection of listeners who will
+   * be notified when the menu events are generated for the control.
+   *
+   * @param listener the listener which should no longer be notified
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see MenuListener
+   * @see #addMenuListener
+   */
   public void removeMenuListener( final MenuListener listener ) {
     checkWidget();
     MenuEvent.removeListener( this, listener );

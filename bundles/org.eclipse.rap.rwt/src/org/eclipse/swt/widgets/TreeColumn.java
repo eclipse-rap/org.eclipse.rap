@@ -570,7 +570,7 @@ public void setMoveable (boolean moveable) {
  * not resizable cannot be dragged by the user but
  * may be resized by the programmer.
  *
- * @param resizable the resize attribute
+ * @param value the resize attribute
  *
  * @exception SWTException <ul>
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -629,7 +629,7 @@ public void setToolTipText (String string) {
 /**
  * Sets the width of the receiver.
  *
- * @param width the new width
+ * @param value the new width
  *
  * @exception SWTException <ul>
  *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
