@@ -21,6 +21,8 @@ import org.eclipse.swt.widgets.Widget;
  * implementation of this interface.
  * 
  * @see AbstractWidgetLCA
+ * @see WidgetLCAUtil
+ * @since 1.0
  */
 public interface IWidgetLifeCycleAdapter extends ILifeCycleAdapter {
 
@@ -32,8 +34,10 @@ public interface IWidgetLifeCycleAdapter extends ILifeCycleAdapter {
    * the widget, it is later possible to identify the properties that have been
    * modified during the processing of the request.
    * <p>
-   * As a rule of thumb, every property that is written in <code>render</code>
-   * must be preserved in this method.
+   * Implementors can use the method
+   * {@link IWidgetAdapter#preserve(String, Object)}. As a rule of thumb, every
+   * property that is written in <code>render</code> must be preserved in this
+   * method.
    * </p>
    * 
    * @param widget the widget, the properties of which are preserved
