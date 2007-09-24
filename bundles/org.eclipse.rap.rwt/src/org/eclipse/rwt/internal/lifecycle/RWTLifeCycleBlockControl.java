@@ -87,7 +87,6 @@ public class RWTLifeCycleBlockControl {
     }
     
     private void bufferThrowable( final Throwable thr ) {
-thr.printStackTrace();
       HttpSession httpSession = ContextProvider.getSession().getHttpSession();
       httpSession.setAttribute( THROWABLE, thr );
     }
