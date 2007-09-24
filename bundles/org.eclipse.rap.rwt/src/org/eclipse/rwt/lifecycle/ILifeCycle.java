@@ -12,24 +12,53 @@ package org.eclipse.rwt.lifecycle;
 
 
 /**
- * <p>This interface represents the lifecycle of a request.</p>
- * <p>This interface is not intended to be implemented by clients.</p>
- * 
+ * This interface represents the life cycle of a request. It is not intended to
+ * be implemented by clients.
+ * <p>
+ * RWT divides the life cycle of an HTTP request into different phases that are
+ * executed sequentially. Each phase has its special purpose and creates the
+ * prerequisites needed by the following phases for proper execution.
+ * </p>
+ * <p>
+ * The phases are:
+ * <dl>
+ * <dt>Prepare UI Root</dt>
+ * <dd>Responsible for invoking entry points.</dd>
+ * <dt>Read Data</dt>
+ * <dd>Reading request parameters and applying the contained status information
+ * to the corresponding widgets. As an example, if a user has entered some
+ * characters into a Text control, the characters are transmitted and applied to
+ * the text attribute of the Text instance.</dd>
+ * <dt>Process Action</dt>
+ * <dd>Events are processed which trigger user actions. As an example, when a
+ * Button has been pushed, the SelectionListeners attached to the Button are
+ * called.</dd>
+ * <dt>Render</dt>
+ * <dd>JavaScript code is generated for the response, that applies the state
+ * changes to the client. Only those widget attributes that were changed during
+ * the processing of the current request are being rendered. This results in a
+ * minimal amount of data that needs to be transferred to the client. The widget
+ * tree is not manipulated in this phase anymore.</dd>
+ * </dl>
+ * </p>
+ *
  * @since 1.0
  */
 // TODO: [fappel] write lifecycle documentation in package.html
 public interface ILifeCycle {
 
   /**
-   * <p>Registers a <code>PhaseListener</code> with the lifecycle</p>
-   * @param listener the listener to be added, must not be <code>null</code>.
+   * Registers a <code>PhaseListener</code> with the life cycle.
+   *
+   * @param listener the listener to be added, must not be <code>null</code>
    */
   void addPhaseListener( PhaseListener listener );
 
   /**
-   * <p>Removes a <code>PhaseListener</code> from the lifecycle. Has no effect
-   * if an identical listener is not already registered.</p>
-   * @param listener the listener to be removed, must not be <code>null</code>.
+   * Removes a <code>PhaseListener</code> from the life cycle. Has no effect
+   * if an identical listener is not yet registered.
+   *
+   * @param listener the listener to be removed, must not be <code>null</code>
    */
   void removePhaseListener( PhaseListener listener );
 }

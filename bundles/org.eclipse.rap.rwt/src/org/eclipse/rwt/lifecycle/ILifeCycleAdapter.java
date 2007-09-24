@@ -11,5 +11,12 @@
 
 package org.eclipse.rwt.lifecycle;
 
+/**
+ * A stateless callback handler used by RWT to synchronize the state of the
+ * client and the server during the processing of an HTTP request. A life cycle
+ * adapter is responsible for reading and processing data sent with the request,
+ * and creating appropriate JavaScript code for the response.
+ */
 public interface ILifeCycleAdapter {
+
 }

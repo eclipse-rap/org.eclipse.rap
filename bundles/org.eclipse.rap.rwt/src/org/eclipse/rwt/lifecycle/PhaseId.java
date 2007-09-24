@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -13,47 +13,46 @@ package org.eclipse.rwt.lifecycle;
 import java.util.*;
 
 /**
- * <p>A type-safe enumeration that represents all standard lifecycle phases.</p>
- * These can be used for implementations of {@link PhaseListener}
+ * A type-safe enumeration that represents all standard life cycle phases. The
+ * instances can be used to refer to a phase in implementations of
+ * {@link PhaseListener}.
+ * 
  * @since 1.0
  */
 public class PhaseId implements Comparable {
-  
+
   private static int nextOrdinal;
   
   /**
-   * <p>The PhaseId <code>ANY</code> is used by the 
-   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
-   * to signal interest in all phases.</p>
+   * The PhaseId <code>ANY</code> is used by the {@link PhaseListener} to
+   * signal interest in all phases.
    */
   public static final PhaseId ANY = new PhaseId( "ANY" );
-  
+
   /**
-   * <p>The PhaseId <code>PREPARE_UI_ROOT</code> is used by the 
-   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
-   * to signal interest in the Prepare UI Root phase.</p>
+   * The PhaseId <code>PREPARE_UI_ROOT</code> is used by the
+   * {@link PhaseListener} to signal interest in the <em>Prepare UI Root</em>
+   * phase.
    */
-  public static final PhaseId PREPARE_UI_ROOT 
+  public static final PhaseId PREPARE_UI_ROOT
     = new PhaseId( "PREPARE_UI_ROOT" );
   
   /**
-   * <p>The PhaseId <code>READ_DATA</code> is used by the 
-   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
-   * to signal interest in the read data phase.</p>
+   * The PhaseId <code>READ_DATA</code> is used by the {@link PhaseListener}
+   * to signal interest in the <em>Read Data</em> phase.
    */
   public static final PhaseId READ_DATA = new PhaseId( "READ_DATA" );
   
   /**
-   * <p>The PhaseId <code>PROCESS_ACTION</code> is used by the 
-   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
-   * to signal interest in the process action phase.</p>
+   * The PhaseId <code>PROCESS_ACTION</code> is used by the
+   * {@link PhaseListener} to signal interest in the <em>Process Action</em>
+   * phase.
    */
   public static final PhaseId PROCESS_ACTION = new PhaseId( "PROCESS_ACTION" );
   
   /**
-   * <p>The PhaseId <code>RENDER</code> is used by the 
-   * {@link org.eclipse.rwt.lifecycle.PhaseListener PhaseListener}
-   * to signal interest in the render phase.</p>
+   * The PhaseId <code>RENDER</code> is used by the {@link PhaseListener} to
+   * signal interest in the <em>Render</em> phase.
    */
   public static final PhaseId RENDER = new PhaseId( "RENDER" );
   
@@ -65,7 +64,11 @@ public class PhaseId implements Comparable {
     RENDER
   };
   
-  public static final List VALUES 
+  /**
+   * A list containing the instances of this enumeration.
+   */
+  // TODO [rst] Does this have to be public?
+  public static final List VALUES
     = Collections.unmodifiableList( Arrays.asList( values ) );
   
   private final String phaseName;
@@ -83,7 +86,13 @@ public class PhaseId implements Comparable {
   public int compareTo( final Object toCompare ) {
     return this.ordinal - ( ( PhaseId )toCompare ).ordinal;
   }
-
+  
+  /**
+   * Returns the ordinal number that is used for comparison of PhaseIds.
+   *
+   * @return the ordinal number
+   */
+  // TODO [rst] Does this have to be public?
   public int getOrdinal() {
     return ordinal;
   }
