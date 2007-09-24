@@ -391,6 +391,15 @@ public class UICallBackServiceHandler implements IServiceHandler {
                                                     final Runnable runnable,
                                                     final boolean asUIThread )
   {
+    // Don't replace local variables by method calls, since the context may
+    // changes during the methods execution.
+    boolean useDifferentContext
+      = ContextProvider.hasContext() && Display.getCurrent() != display;
+    ServiceContext buffer = null;
+    if( useDifferentContext ) {
+      buffer = ContextProvider.getContext();
+      ContextProvider.releaseContextHolder();
+    }
     boolean useFakeContext = !ContextProvider.hasContext();
     if( useFakeContext ) {
       IDisplayAdapter adapter = getDisplayAdapter( display );
@@ -410,6 +419,9 @@ public class UICallBackServiceHandler implements IServiceHandler {
     } finally {
       if( useFakeContext ) {
         ContextProvider.disposeContext();
+      }
+      if( useDifferentContext ) {
+        ContextProvider.setContext( buffer );
       }
     }
   }

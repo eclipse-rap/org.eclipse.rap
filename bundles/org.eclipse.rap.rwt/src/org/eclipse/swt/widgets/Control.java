@@ -11,8 +11,10 @@
 
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -1305,7 +1307,9 @@ public abstract class Control extends Widget {
    */
   public void setRedraw( boolean redraw ) {
     checkWidget();
-    RWTLifeCycle.fakeRedraw( this, redraw );
+    if( CurrentPhase.get() != PhaseId.PROCESS_ACTION ) {
+      RWTLifeCycle.fakeRedraw( this, redraw );
+    }
   }
 
 
@@ -1324,9 +1328,9 @@ public abstract class Control extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void redraw () {
+  public void redraw() {
     checkWidget();
-    RWTLifeCycle.fakeRedraw( this, true );
+    setRedraw( true );
   }
 
   ////////////

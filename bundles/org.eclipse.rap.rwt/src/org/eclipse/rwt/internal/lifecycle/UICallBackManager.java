@@ -107,7 +107,9 @@ public class UICallBackManager
   public void addAsync( final Runnable runnable, final Display display ) {
     synchronized( runnables ) {
       runnables.add( new RunnableBase( runnable, display ) );
-      sendUICallBack();
+      if( Thread.currentThread() != RWTLifeCycle.getThread() ) {
+        sendUICallBack();
+      }
     }
   }
   
