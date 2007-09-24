@@ -146,4 +146,13 @@ public interface ISessionStore {
    * @return the HttpSession instance
    */
   HttpSession getHttpSession();
+
+  /**
+   * Returns whether this <code>ISessionStore</code> is bound to the
+   * underlying <code>HttpSession</code> or not. If the session store is
+   * unbound it behaves as if the http session it belonged to was invalidated.
+   * 
+   *  @return true if the session store is bound, false otherwise.
+   */
+  boolean isBound();
 }

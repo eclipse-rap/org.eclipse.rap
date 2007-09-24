@@ -90,7 +90,7 @@ public final class SessionStoreImpl
     return session;
   }
   
-  boolean isBound() {
+  public boolean isBound() {
     return bound;
   }
 
@@ -139,6 +139,7 @@ public final class SessionStoreImpl
     }
     listeners.clear();
     bound = false;
+    aboutUnbound = false;
   }
   
   

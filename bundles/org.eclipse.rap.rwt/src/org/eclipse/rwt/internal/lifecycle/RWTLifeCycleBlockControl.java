@@ -87,6 +87,7 @@ public class RWTLifeCycleBlockControl {
     }
     
     private void bufferThrowable( final Throwable thr ) {
+thr.printStackTrace();
       HttpSession httpSession = ContextProvider.getSession().getHttpSession();
       httpSession.setAttribute( THROWABLE, thr );
     }
@@ -249,7 +250,7 @@ public class RWTLifeCycleBlockControl {
   {
     ISessionStore session = ContextProvider.getSession();
     synchronized( session ) {
-      final Object lock = aquireRequestLock();
+      final SessionStoreListener lock = aquireRequestLock();
       final ServiceContext context = ContextProvider.getContext();
       ServiceHandlerProcessor processor
         = new ServiceHandlerProcessor( context, lock, serviceHandler );
@@ -260,6 +261,10 @@ public class RWTLifeCycleBlockControl {
         } catch( final InterruptedException e ) {
           // TODO Auto-generated catch block
           e.printStackTrace();
+        } finally {
+          if( session.isBound() ) {
+            session.removeSessionStoreListener( lock );
+          }
         }
       }
       processor.handleException( session.getHttpSession() );
@@ -289,21 +294,25 @@ public class RWTLifeCycleBlockControl {
     out.endDocument();
   }
   
-  private static Object aquireRequestLock() throws IOException {
-    final Object result = new Object();
-    ISessionStore session = ContextProvider.getSession();
-    try {
-      session.addSessionStoreListener( new SessionStoreListener() {
-        public void beforeDestroy( final SessionStoreEvent event ) {
-          synchronized( result ) {
-            result.notify();
+  private static SessionStoreListener aquireRequestLock() throws IOException {
+    final SessionStoreListener[] result = new SessionStoreListener[ 1 ];
+    result[ 0 ] = new SessionStoreListener() {
+      public void beforeDestroy( final SessionStoreEvent event ) {
+        synchronized( result[ 0 ] ) {
+          if( !LifeCycleServiceHandler.isSessionRestart() ) {
+System.out.println( "don't do this" );
+            result[ 0 ].notify();
           }
         }
-      } );
+      }
+    };
+    ISessionStore session = ContextProvider.getSession();
+    try {
+      session.addSessionStoreListener( result[ 0 ] );
     } catch( final IllegalStateException ise ) {
       sendSessionExpired();
     }
-    return result;
+    return result[ 0 ];
   }
   
   private static void terminateResumeThread() {

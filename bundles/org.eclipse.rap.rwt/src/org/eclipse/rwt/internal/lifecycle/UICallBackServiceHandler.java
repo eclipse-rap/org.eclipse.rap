@@ -395,11 +395,12 @@ public class UICallBackServiceHandler implements IServiceHandler {
     // changes during the methods execution.
     boolean useDifferentContext
       = ContextProvider.hasContext() && Display.getCurrent() != display;
-    ServiceContext buffer = null;
+    ServiceContext contextBuffer = null;
     if( useDifferentContext ) {
-      buffer = ContextProvider.getContext();
+      contextBuffer = ContextProvider.getContext();
       ContextProvider.releaseContextHolder();
     }
+    Thread displayThreadBuffer = display.thread;
     boolean useFakeContext = !ContextProvider.hasContext();
     if( useFakeContext ) {
       IDisplayAdapter adapter = getDisplayAdapter( display );
@@ -414,14 +415,21 @@ public class UICallBackServiceHandler implements IServiceHandler {
         RWTLifeCycle.setThread( Thread.currentThread() );
       }
     }
+    // TODO [fappel]: improve this
+    if( asUIThread ) {
+      display.thread = Thread.currentThread();        
+    }
     try {
       runnable.run();
     } finally {
+      if( asUIThread ) {
+        display.thread = displayThreadBuffer;        
+      }
       if( useFakeContext ) {
         ContextProvider.disposeContext();
       }
       if( useDifferentContext ) {
-        ContextProvider.setContext( buffer );
+        ContextProvider.setContext( contextBuffer );
       }
     }
   }
