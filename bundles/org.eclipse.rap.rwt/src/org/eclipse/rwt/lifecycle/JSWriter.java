@@ -343,7 +343,7 @@ public final class JSWriter {
   }
 
   /**
-   * Sets the specified properties of the client-side widget to new values.
+   * Sets the specified properties of the client-side widget to a new value.
    * Uses a specified key to determinate if this value is already
    * preserved and only sets the new value if it has changed since the last
    * request. 
@@ -351,6 +351,8 @@ public final class JSWriter {
    * @param javaProperty the key to use on the server-side
    * @param jsProperty the attribute to change
    * @param newValue the new values
+   * 
+   * @return if the value was already preserved
    * 
    * @throws IOException
    * @see AbstractWidgetLCA
@@ -372,15 +374,21 @@ public final class JSWriter {
   }
 
   /**
-   * Sets the specified properties of the client-side widget to new values.
+   * Sets the specified properties of the client-side widget to a new value.
    * Uses a specified key to determinate if this value is already
    * preserved and only sets the new value if it has changed since the last
-   * request. 
+   * request. If the widget is rendered (and not yet present on the client side)
+   * <code>true</code> is only returned if the <code>newValue</code> differs
+   * from the <code>defaultValue</code>.
    * 
    * @param javaProperty the key to use on the server-side
-   * @param jsPropertyChain the attributes to change
-   * @param value the new value
+   * @param jsProperty the attributes to change
+   * @param newValue the new value
+   * @param defValue the default value
    * 
+   * @return if the value has changed and <code>true</code> if the value is not yet
+   *         preserved and <code>newValue</code> differs
+   *         from the <code>defaultValue</code>.
    * @throws IOException
    * @see AbstractWidgetLCA
    * @see AbstractWidgetLCA#preserveValues(Widget)
@@ -399,14 +407,39 @@ public final class JSWriter {
     return changed;
   }
 
+  /**
+   * Resets the specified javascript property to its initial value.
+   * 
+   * @param jsProperty the javascript property to reset
+   * 
+   * @throws IOException
+   */
   public void reset( final String jsProperty ) throws IOException {
     call( widget, getResetterName( jsProperty ), null );
   }
 
+  /**
+   * Resets the specified javascript properties to their initial values.
+   * 
+   * @param jsPropertyChain the javascript properties to reset
+   * 
+   * @throws IOException
+   */
   public void reset( final String[] jsPropertyChain ) throws IOException {
     call( widget, createPropertyChain( jsPropertyChain, true ), null );
   }
 
+  /**
+   * This will add a listener to an object specified by the property of
+   * the widget. The listener has to be a javascript function which accepts
+   * exact one parameter - an <code>qx.event.type.Event</code> object.
+   * 
+   * @param property the property of the widget to what the listener should be added
+   * @param eventType the type of the event
+   * @param listener reference to the listener function
+   * 
+   * @throws IOException
+   */
   public void addListener( final String property,
                            final String eventType,
                            final String listener )
@@ -430,6 +463,16 @@ public final class JSWriter {
     }
   }
 
+  /**
+   * This will add a listener to the widget of this {@link JSWriter}. The
+   * listener has to be a javascript function which accepts exact one
+   * parameter - an <code>qx.event.type.Event</code> object.
+   * 
+   * @param eventType the type of the event
+   * @param listener reference to the listener function
+   * 
+   * @throws IOException
+   */
   public void addListener( final String eventType, final String listener )
     throws IOException
   {
@@ -491,12 +534,29 @@ public final class JSWriter {
   }
 
 
+  /**
+   * Calls a specific function of the widget on the client-side.
+   * 
+   * @param function the function name
+   * @param args the arguments for the function
+   * 
+   * @throws IOException
+   */
   public void call( final String function, final Object[] args )
     throws IOException
   {
     call( widget, function, args );
   }
 
+  /**
+   * Calls a specific function of a widget on the client-side.
+   * 
+   * @param target the widget on which the function should be called
+   * @param function the function name
+   * @param args the arguments for the function
+   * 
+   * @throws IOException
+   */
   public void call( final Widget target,
                     final String function,
                     final Object[] args )
@@ -515,6 +575,15 @@ public final class JSWriter {
     write( "{0}.{1}({2});", refVariable, function, params );
   }
 
+  /**
+   * Calls a specific function of a widget on the client-side.
+   * 
+   * @param target the widget on which the function should be called
+   * @param function the function name
+   * @param args the arguments for the function
+   * 
+   * @throws IOException
+   */
   public void call( final JSVar target,
                     final String function,
                     final Object[] args )
@@ -557,6 +626,16 @@ public final class JSWriter {
     write( "{0}.{1} = {2};", target, field, value );
   }
 
+  /**
+   * Dispose is used to dispose the widget of this {@link JSWriter} on the client
+   * side. As todays browser have several memory issues this will only dispose
+   * the widget if there are no pooling informations available.
+   * 
+   * @throws IOException
+   * 
+   * @see AbstractWidgetLCA#getTypePoolId(Widget)
+   * @see AbstractWidgetLCA#createResetHandlerCalls(String)
+   */
   public void dispose() throws IOException {
     ensureWidgetManager();
     String widgetId = WidgetUtil.getId( widget );

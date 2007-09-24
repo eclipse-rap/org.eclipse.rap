@@ -19,7 +19,7 @@ import org.eclipse.swt.internal.SWTEventListener;
  * text is modified, the verifyText method will be invoked.
  * </p>
  * 
- * @see verifyEvent
+ * @see VerifyEvent
  */
 // TODO [fappel] implementation on controls...
 public interface VerifyListener extends SWTEventListener {
@@ -27,7 +27,7 @@ public interface VerifyListener extends SWTEventListener {
   /**
    * Sent when the text is modified.
    * 
-   * @param e an event containing information about the modify
+   * @param event an event containing information about the modify
    */
   public void verifyText( VerifyEvent event );
 }

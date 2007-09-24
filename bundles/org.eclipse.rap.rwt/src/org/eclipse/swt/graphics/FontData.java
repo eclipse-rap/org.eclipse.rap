@@ -144,8 +144,6 @@ public final class FontData {
    * Returns the height of the receiver in points.
    *
    * @return the height of this FontData
-   *
-   * @see #setHeight(int)
    */
   public int getHeight() {
     return height;
@@ -160,8 +158,6 @@ public final class FontData {
    * -->
    * 
    * @return the name of this <code>FontData</code>
-   *
-   * @see #setName
    */
   public String getName() {
     return name;
@@ -173,8 +169,6 @@ public final class FontData {
    * and ITALIC.
    *
    * @return the style of this <code>FontData</code>
-   * 
-   * @see #setStyle
    */
   public int getStyle() {
     return style;

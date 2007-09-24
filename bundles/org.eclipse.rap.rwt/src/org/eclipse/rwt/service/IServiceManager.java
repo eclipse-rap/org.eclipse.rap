@@ -12,9 +12,6 @@
 package org.eclipse.rwt.service;
 
 
-/**
- * TODO [rh] JavaDoc 
- */
 public interface IServiceManager {
   
   void registerServiceHandler( String id, IServiceHandler serviceHandler );

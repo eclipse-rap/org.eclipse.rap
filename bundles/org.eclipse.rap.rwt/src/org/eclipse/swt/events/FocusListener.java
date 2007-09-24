@@ -27,14 +27,14 @@ public interface FocusListener extends SWTEventListener {
   /**
    * Sent when a control gets focus.
    * 
-   * @param e an event containing information about the focus change
+   * @param event an event containing information about the focus change
    */
   public void focusGained( FocusEvent event );
 
   /**
    * Sent when a control loses focus.
    * 
-   * @param e an event containing information about the focus change
+   * @param event an event containing information about the focus change
    */
   public void focusLost( FocusEvent event );
 }

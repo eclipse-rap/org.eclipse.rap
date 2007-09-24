@@ -104,9 +104,6 @@ public final class Graphics {
   //////////////////////////
   // Text-Size-Determination
   
-  /**
-   * TODO [fappel]: comment
-   */
   public static Point textExtent( final Font font,
                                   final String string,
                                   final int wrapWidth )
@@ -114,23 +111,14 @@ public final class Graphics {
     return TextSizeDetermination.textExtent( font, string, wrapWidth );
   }
   
-  /**
-   * TODO [fappel]: comment
-   */
   public static Point stringExtent( final Font font, final String string ) {
     return TextSizeDetermination.stringExtent( font, string );
   }
   
-  /**
-   * TODO [fappel]: comment
-   */
   public static int getCharHeight( final Font font ) {
     return TextSizeDetermination.getCharHeight( font );
   }
   
-  /**
-   * TODO [fappel]: comment
-   */
   public static float getAvgCharWidth( final Font font ) {
     return TextSizeDetermination.getAvgCharWidth( font );
   }

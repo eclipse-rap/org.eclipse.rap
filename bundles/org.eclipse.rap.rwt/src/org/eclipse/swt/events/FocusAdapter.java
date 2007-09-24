@@ -23,7 +23,7 @@ public abstract class FocusAdapter implements FocusListener {
   /**
    * Sent when a control gets focus. The default behavior is to do nothing.
    * 
-   * @param e an event containing information about the focus change
+   * @param event an event containing information about the focus change
    */
   public void focusGained( final FocusEvent event ) {
   }
@@ -31,7 +31,7 @@ public abstract class FocusAdapter implements FocusListener {
   /**
    * Sent when a control loses focus. The default behavior is to do nothing.
    * 
-   * @param e an event containing information about the focus change
+   * @param event an event containing information about the focus change
    */
   public void focusLost( final FocusEvent event ) {
   }

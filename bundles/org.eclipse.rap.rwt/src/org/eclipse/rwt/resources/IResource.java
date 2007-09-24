@@ -13,11 +13,7 @@ package org.eclipse.rwt.resources;
 
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
-/**
- * TODO: [fappel] comment
- * 
- * @since 1.0
- */
+//* @since 1.0
 public interface IResource {
   ClassLoader getLoader();
   String getLocation();

@@ -11,7 +11,9 @@
 
 package org.eclipse.rwt.lifecycle;
 
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -35,8 +37,8 @@ public final class UICallBack {
    * @param runnable The runnable that contains the critical code that 
    *                 needs to have access to a request context.
    *        
-   * @see <code>SessionSingletonBase</code>
-   * @see <code>ContextProvider</code>
+   * @see SessionSingletonBase
+   * @see ContextProvider
    */
   public static void runNonUIThreadWithFakeContext( final Display display,
                                                     final Runnable runnable )
@@ -60,10 +62,10 @@ public final class UICallBack {
    * @param id A session unique identifier to trace the activation and
    *           deactivation.
    *           
-   * @see <code>Display#syncExcec</code>
-   * @see <code>Display#asyncExcec</code>
-   * @see <code>Display#getThread</code>
-   * @see <code>Display#wake</code>
+   * @see Display#syncExec
+   * @see Display#asyncExec
+   * @see Display#getThread
+   * @see Display#wake
    */
   public static void activate( final String id ) {
     UICallBackServiceHandler.activateUICallBacksFor( id );
@@ -82,10 +84,10 @@ public final class UICallBack {
    * @param id A session unique identifier to trace the activation and
    *           deactivation.
    *           
-   * @see <code>Display#syncExcec</code>
-   * @see <code>Display#asyncExcec</code>
-   * @see <code>Display#getThread</code>
-   * @see <code>Display#wake</code>
+   * @see Display#syncExec
+   * @see Display#asyncExec
+   * @see Display#getThread
+   * @see Display#wake
    */
   public static void deactivate( final String id ) {
     UICallBackServiceHandler.deactivateUICallBacksFor( id );

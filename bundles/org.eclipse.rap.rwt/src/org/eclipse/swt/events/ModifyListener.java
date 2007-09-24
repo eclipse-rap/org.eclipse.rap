@@ -27,7 +27,7 @@ public interface ModifyListener extends SWTEventListener {
   /**
    * Sent when the text is modified.
    * 
-   * @param e an event containing information about the modify
+   * @param event an event containing information about the modify
    */
   public void modifyText( ModifyEvent event );
 }
