@@ -879,12 +879,6 @@ appearances = {
           padding : 2
         };
         if( states.selected ) {
-          // TODO [rst] Replace the following lines with commented block below
-          //            when tree focus works correctly (currently clicking on
-          //            a tree item removes focus from the tree)
-          result.textColor = states.disabled ? "widget.graytext" : "list.selection.foreground";
-          result.backgroundColor = "list.selection.background";
-          /*
           if( states.parent_unfocused ) {
             result.textColor = states.disabled ? "widget.graytext" : "list.selection.unfocused.foreground";
             result.backgroundColor = "list.selection.unfocused.background";
@@ -892,7 +886,6 @@ appearances = {
             result.textColor = states.disabled ? "widget.graytext" : "list.selection.foreground";
             result.backgroundColor = "list.selection.background";
           }
-          */
         } else {
           result.textColor = states.disabled ? "widget.graytext" : "undefined";
           result.backgroundColor = "transparent";

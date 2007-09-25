@@ -301,7 +301,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
         var coLabel;
          for( var i=1; i<columnWidth.length; i++ ) {
            coLabel = this._colLabels[ i-1 ];
-           if( coLabel != null ) {
+           if( coLabel != null && coLabel.getLabelObject() != null ) {
              coLabel.getLabelObject().setWidth( columnWidth[ i ] );
            }
          }

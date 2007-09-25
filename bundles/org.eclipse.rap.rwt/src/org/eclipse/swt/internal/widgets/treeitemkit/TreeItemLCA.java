@@ -237,7 +237,9 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 //			  colorAdapter.getUserBackgound(), null ) ) {
 //		  WidgetLCAUtil.writeForeground( item, colorAdapter.getUserForegound() );
 //	  }
-    WidgetLCAUtil.writeForeground( item, item.getForeground() );
+    if( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND, null )) {
+      WidgetLCAUtil.writeForeground( item, item.getForeground() );
+    }
   }
 
   private boolean writeBackgrounds( final TreeItem item ) throws IOException {
@@ -252,10 +254,10 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private boolean writeForegrounds( final TreeItem item ) throws IOException {
-	    IWidgetColorAdapter colorAdapter
-	      = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+//	    IWidgetColorAdapter colorAdapter
+//	      = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
 	  Color[] foregrounds = getForegrounds( item );
-	  Color parentForeground = colorAdapter.getUserForegound();
+	  Color parentForeground = item.getParent().getForeground(); //colorAdapter.getUserForegound();
 	  Color[] defValue = new Color[ getColumnCount( item ) ];
 	  for( int i = 0; i < defValue.length; i++ ) {
 		  defValue[ i ] = parentForeground;
