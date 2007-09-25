@@ -26,6 +26,8 @@ import java.util.Enumeration;
  * <p>This allows to package user-defined components with all needed
  * resources into their own jars, and distribute them independently
  * from the RAP core library.</p>
+ * 
+ * @since 1.0
  */ 
 public interface IResourceManager {
   
@@ -40,6 +42,8 @@ public interface IResourceManager {
    *    <li><code>VERSION_AND_COMPRESS</code> - the resource to be registered will
    *        be versioned and compressed.</li>
    * </ul>
+   * 
+   * @since 1.0
    */
   public final class RegisterOptions {
     

@@ -19,5 +19,6 @@ public interface ITreeAdapter {
   
   public abstract void setScrollTop( final int top );
   public abstract void setScrollLeft( final int left );
-  
+  public int getScrollTop();
+  public int getScrollLeft();
 }

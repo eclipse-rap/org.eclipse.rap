@@ -13,7 +13,9 @@ package org.eclipse.rwt.service;
 
 /**
  * <code>SessionStoreListener</code>s are
- * used to get notifcations before the session store is destroyed.                                session.
+ * used to get notifcations before the session store is destroyed.
+ * 
+ * @since 1.0
  */
 public interface SessionStoreListener {
   

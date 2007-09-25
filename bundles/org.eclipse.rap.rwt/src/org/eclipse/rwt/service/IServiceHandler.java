@@ -14,6 +14,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 
+// TODO: JavaDoc - revise this RAP/W4T
 /** 
  * <p>A service handler is responsible for taking a request and sending
  * an appropriate response by bypassing the standard lifecycle. Clients
@@ -22,7 +23,7 @@ import javax.servlet.ServletException;
  * <ul><li>Implementing the IServiceHandler interface, e.g.
  * <pre>
  * public class MyServiceHandler implements IServiceHandler {
- *   public void serivce() throws IOException, ServletException {
+ *   public void service() throws IOException, ServletException {
  *     HttpServletResponse response = ContextProvider.getResponse();
  *     response.getWriter().write( "Hello World" );
  *   }
@@ -46,8 +47,7 @@ import javax.servlet.ServletException;
  *</li> 
  * <li>Constructing the URL to invoke the service handler. The URL must contain
  * the agreed on parameter value like this: 
- * <code>http://localhost:8080/myapp/W4TDelegate?w4t_custom_service_handler=
- * myServiceHandler</code>.
+ * <code>http://localhost:9090/rap?custom_service_handler=myServiceHandler</code>.
  * The following example code snippet achieves this
  * <pre>
  * StringBuffer url = new StringBuffer();
@@ -68,7 +68,7 @@ public interface IServiceHandler {
   
   /**
    * <p>The request parameter name to hold the service handlers name as its 
-   * value (value is w4t_custom_service_handler).</p>
+   * value (value is custom_service_handler).</p>
    */
   static final String REQUEST_PARAM = "custom_service_handler";
 

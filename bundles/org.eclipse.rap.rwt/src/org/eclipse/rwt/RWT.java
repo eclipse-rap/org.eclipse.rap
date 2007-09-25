@@ -73,7 +73,7 @@ public final class RWT {
   /**
    * Returns a manager to add and remove {@link IServiceHandler}s.
    * 
-   * @return an {@link IServiceManager}
+   * @return the {@link IServiceManager}
    */
   public static IServiceManager getServiceManager() {
     return serviceManager;

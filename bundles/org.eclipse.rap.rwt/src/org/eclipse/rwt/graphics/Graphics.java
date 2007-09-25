@@ -85,16 +85,44 @@ public final class Graphics {
     return ResourceFactory.getFont( name, height, style );
   }
 
+  /**
+   * Returns an instance of {@link Image} based on the specified
+   * image path. The image has to be on the applications class-path.
+   * 
+   * @param path the path to the image
+   * 
+   * @return the image
+   */
   public static Image getImage( final String path ) {
     return ResourceFactory.findImage( path );
   }
 
+  /**
+   * Returns an instance of {@link Image} based on the specified
+   * image path. The image has to be on the applications class-path.
+   * Uses the specified classloader to load the image. 
+   * 
+   * @param path the path to the image
+   * @param imageLoader the classloader to use
+   * 
+   * @return the image
+   */
   public static Image getImage( final String path,
                                 final ClassLoader imageLoader )
   {
     return ResourceFactory.findImage( path, imageLoader );
   }
 
+  
+  /**
+   * Returns an instance of {@link Image} based on the specified
+   * image path. The image will be read from the provided InputStream.
+   * 
+   * @param path the path to the image
+   * @param inputStream the input stream for the image
+   * 
+   * @return the image
+   */
   public static Image getImage( final String path,
                                 final InputStream inputStream )
   {
