@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.*;
  * Utility class that provides a number of useful static methods to support the
  * implementation of widget life cycle adapters.
  * 
+ * @see ControlLCAUtil
  * @since 1.0
  */
 public final class WidgetLCAUtil {
