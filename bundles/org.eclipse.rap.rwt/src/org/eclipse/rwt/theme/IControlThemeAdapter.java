@@ -24,36 +24,40 @@ import org.eclipse.swt.widgets.Control;
 public interface IControlThemeAdapter extends IThemeAdapter {
 
   /**
-   * Returns the width of the control's border.
-   *
+   * Returns the width of the specified control's border.
+   * 
+   * @param control the control whose border width is requested
    * @return the border width in px
    */
   public int getBorderWidth ( Control control );
 
   /**
-   * Returns the default foreground color that the control will use to draw if
-   * no user defined foreground color has been set using
+   * Returns the default foreground color that the specified control will use to
+   * draw if no user defined foreground color has been set using
    * {@link Control#setForeground(Color)}.
-   *
+   * @param control the control whose foreground color is requested
+   * 
    * @return the foreground color
    */
   public Color getForeground( Control control );
 
 
   /**
-   * Returns the default background color that the control will use if no
-   * user-defined background color has been set using
+   * Returns the default background color that the specified control will use if
+   * no user-defined background color has been set using
    * {@link Control#setBackground(Color)}.
-   *
+   * 
+   * @param control the control whose background color is requested
    * @return the background color
    */
   public Color getBackground( Control control );
 
   /**
-   * Returns the default font that the control will use to paint textual
-   * information when no user-defined font has been set using
+   * Returns the default font that the specified control will use to paint
+   * textual information when no user-defined font has been set using
    * {@link Control#setFont(Font)}.
-   *
+   * 
+   * @param control the control whose font is requested
    * @return the font
    */
   public Font getFont( Control control );

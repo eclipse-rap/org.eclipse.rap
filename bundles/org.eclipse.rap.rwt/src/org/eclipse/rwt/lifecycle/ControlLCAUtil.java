@@ -244,13 +244,14 @@ public class ControlLCAUtil {
 
   // TODO [rh] move this to WidgetLCAUtil, move test case along, change LCA's
   //      to use this instead of manually setting images
-  public static void writeImage( final Widget widget, final Image image )
+  public static void writeImage( final Control control, final Image image )
     throws IOException
   {
-    if( WidgetLCAUtil.hasChanged( widget, Props.IMAGE, image, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( widget );
+    WidgetLCAUtil.writeImage( control, image );
+    if( WidgetLCAUtil.hasChanged( control, Props.IMAGE, image, null ) ) {
       // work around qooxdoo, that interprets 'null' as an image path
       String path = image == null ? "" : ResourceFactory.getImagePath( image );
+      JSWriter writer = JSWriter.getWriterFor( control );
       writer.set( JSConst.QX_FIELD_ICON, path );
     }
   }
@@ -268,7 +269,7 @@ public class ControlLCAUtil {
     WidgetLCAUtil.resetForeground();
   }
 
-  public static void writeBackground( final Widget control ) throws IOException
+  public static void writeBackground( final Control control ) throws IOException
   {
     IControlAdapter controlAdapter
       = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
@@ -285,15 +286,16 @@ public class ControlLCAUtil {
    * <code>SWT.BORDER</code>). Flags are transmitted as qooxdoo <q>states</q>
    * that will be respected by the appearance that renders the widget.
    *
-   * @param widget
+   * @param control
    * @throws IOException
    */
-  public static void writeStyleFlags( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    if( ( widget.getStyle() & SWT.BORDER ) != 0 ) {
+  // TODO [rst] Change parameter type to Control
+  public static void writeStyleFlags( final Widget control ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( control );
+    if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
       writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_STYLE_BORDER );
     }
-    if( ( widget.getStyle() & SWT.FLAT ) != 0 ) {
+    if( ( control.getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_STYLE_FLAT );
     }
   }
@@ -322,8 +324,8 @@ public class ControlLCAUtil {
     Boolean defValue = Boolean.FALSE;
     String prop = PROP_ACTIVATE_LISTENER;
     Shell shell = control.getShell();
-    if(    !shell.isDisposed() 
-        && WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) ) 
+    if(    !shell.isDisposed()
+        && WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) )
     {
       String function = newValue.booleanValue()
                       ? JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET

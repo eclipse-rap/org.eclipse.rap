@@ -43,11 +43,11 @@ public final class WidgetUtil {
     if( result == null ) {
       throwAdapterException( IWidgetAdapter.class );
     }
-    return result;   
+    return result;
   }
   
   /**
-   * Returns the Id of the widget which is used to identify the
+   * Returns the id of the widget that is used to identify the
    * widget on the client.
    * 
    * @param widget the widget
