@@ -26,7 +26,7 @@ public class TabFolderAndItem_Test extends TestCase {
 
   public void testGetItemsAndGetItemCount() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     assertEquals( 0, folder.getItemCount() );
     assertEquals( 0, folder.getItems().length );
@@ -82,7 +82,7 @@ public class TabFolderAndItem_Test extends TestCase {
 
   public void testIndexOf() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
 
     TabItem item0 = new TabItem( folder, SWT.NONE );
@@ -101,7 +101,7 @@ public class TabFolderAndItem_Test extends TestCase {
   public void testSelection() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
     TabItem item1 = new TabItem( folder, SWT.NONE );
@@ -193,7 +193,7 @@ public class TabFolderAndItem_Test extends TestCase {
 
   public void testSelectedControl() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     shell.open();
 
@@ -218,7 +218,7 @@ public class TabFolderAndItem_Test extends TestCase {
 
   public void testImages() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
     item0.setImage(Graphics.getImage( RWTFixture.IMAGE1 ) );
@@ -230,7 +230,7 @@ public class TabFolderAndItem_Test extends TestCase {
 
   public void testHierarchy() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
     assertSame( folder, item.getParent() );
@@ -248,12 +248,27 @@ public class TabFolderAndItem_Test extends TestCase {
 
   public void testDispose() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
     folder.dispose();
     assertEquals( true, item.isDisposed() );
     assertEquals( 0, folder.getItemCount() );
+  }
+  
+  public void testItemDispose() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+
+    TabItem item = folder.getItem( 2 );
+    item.dispose();
+    assertEquals( true, item.isDisposed() );
+    assertEquals( 2, folder.getItemCount() );
   }
 
   protected void setUp() throws Exception {
