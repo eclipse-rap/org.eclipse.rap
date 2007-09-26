@@ -89,10 +89,10 @@ public class TableTab extends ExampleTab {
     table = new Table( parent, style );
     table.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        System.out.println( "click: " + event.item );
+        log( "click: " + event.item );
       }
       public void widgetDefaultSelected( final SelectionEvent event ) {
-        System.out.println( "double-click: " + event.item );
+        log( "double-click: " + event.item );
       }
     } );
     if( ( style & SWT.VIRTUAL ) != 0 ) {

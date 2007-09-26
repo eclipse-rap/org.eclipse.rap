@@ -73,8 +73,8 @@ public class ToolBarTab extends ExampleTab {
     ToolItem item4 = new ToolItem( toolBar, SWT.CHECK );
     item4.setImage( imageSearch );
     item4.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-System.out.println( "check");
+      public void widgetSelected( final SelectionEvent event ) {
+        log( "check changed" );
       }
     } );
     ToolItem item5 = new ToolItem( toolBar, SWT.RADIO );

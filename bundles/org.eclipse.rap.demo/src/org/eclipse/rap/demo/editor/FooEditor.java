@@ -24,7 +24,6 @@ public class FooEditor extends MultiPageEditorPart {
   public void doSave( IProgressMonitor monitor ) {
     editor.setDirty( false );
     treeeditor.setDirty( false );
-    System.out.println( "Saving..." );
   }
 
   public void doSaveAs() {

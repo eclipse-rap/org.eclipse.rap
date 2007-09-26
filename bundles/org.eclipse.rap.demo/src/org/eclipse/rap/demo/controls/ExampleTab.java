@@ -358,22 +358,15 @@ abstract class ExampleTab {
     controls.add( control );
   }
 
-  protected void log(final String msg) {
-    content.append( msg.trim() );
-    content.append( text.getLineDelimiter() );
-    System.out.println( "LOG: " + msg.trim() );
+  protected void log( final String msg ) {
+    content.insert( 0, msg.trim() + text.getLineDelimiter() );
     text.setText( content.toString() );
-    // TODO: scroll to last line
   }
 
   private void destroyExampleControls() {
-    Control[] ctrls = exmplComp.getChildren();
-    for( int i = 0; i < ctrls.length; i++ ) {
-      try {
-        ctrls[ i ].dispose();
-      } catch( Exception e ) {
-        System.out.println( e );
-      }
+    Control[] controls = exmplComp.getChildren();
+    for( int i = 0; i < controls.length; i++ ) {
+      controls[ i ].dispose();
     }
   }
 
