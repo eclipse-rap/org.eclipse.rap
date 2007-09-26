@@ -502,8 +502,7 @@ public final class WidgetLCAUtil {
                                  final Image image )
     throws IOException
   {
-    // work around qooxdoo, that interprets 'null' as an image path
-    String path = image == null ? "" : ResourceFactory.getImagePath( image );
+    String path = image == null ? null : ResourceFactory.getImagePath( image );
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.set( jsProperty, path );
   }
