@@ -14,7 +14,8 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -136,5 +137,39 @@ public class ComboLCA_Test extends TestCase {
     WidgetUtil.getLCA( combo ).readData( combo );
     assertEquals( 0, combo.getSelectionIndex() );
     assertEquals( "widgetSelected", log.toString() );
+  }
+  
+  public void testSelectionAfterRemoveAll() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    final Combo combo = new Combo( shell, SWT.READ_ONLY );
+    combo.add( "item 1" );
+    combo.select( 0 );
+    Button button = new Button( shell, SWT.PUSH );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        combo.removeAll();
+        combo.add( "replacement for item 1" );
+        combo.select( 0 );
+      }
+    } );
+
+    String buttonId = WidgetUtil.getId( button );
+    String displayId = DisplayUtil.getId( display );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
+
+    // Execute life cycle once to simulate startup request
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    lifeCycle.execute();
+    
+    // Simulate button click that executes widgetSelected 
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
+    lifeCycle.execute();
+    String expected = "org.eclipse.swt.ComboUtil.select";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 }
