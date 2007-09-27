@@ -304,9 +304,6 @@ public final class WidgetLCAUtil {
    * @param parent the parent of the widget or <code>null</code> if the widget
    *            does not have a parent
    * @param bounds the new bounds of the widget
-   * @param clip if set to <code>true</code>, additional calls are appended
-   *            that set the clipping width and height according to the new
-   *            bounds
    * @throws IOException
    */
   public static void writeBounds( final Widget widget,

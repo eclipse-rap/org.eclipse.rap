@@ -113,7 +113,6 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @param widget the widget to store in the pool
    * @return the type pool id or <code>null</code> if the widget should not be
    *         pooled
-   * @throws IOException
    */
   public abstract String getTypePoolId( Widget widget );
 }
