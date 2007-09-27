@@ -71,7 +71,8 @@ public class TypedEvent extends Event {
   public Object data;
   
   /**
-   * Constructs a new instance of this class. 
+   * Constructs a new instance of this class.
+   * 
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
    * within the packages provided by RWT. It should never be accessed 
@@ -91,7 +92,6 @@ public class TypedEvent extends Event {
   }
 
   /**
-   * TODO [rh] JavaDoc
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
    * within the packages provided by RWT. It should never be accessed 
@@ -113,7 +113,6 @@ public class TypedEvent extends Event {
   }
 
   /**
-   * TODO [rh] JavaDoc
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
    * within the packages provided by RWT. It should never be accessed 

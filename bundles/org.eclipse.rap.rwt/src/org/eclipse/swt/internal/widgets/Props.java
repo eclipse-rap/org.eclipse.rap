@@ -11,10 +11,6 @@
 
 package org.eclipse.swt.internal.widgets;
 
-/**
- * TODO [rh] JavaDoc
- * <p></p>
- */
 // TODO: [fappel] don't know whether it is a good idea to have a global
 //                constant class for properties of different widgets...
 public final class Props {

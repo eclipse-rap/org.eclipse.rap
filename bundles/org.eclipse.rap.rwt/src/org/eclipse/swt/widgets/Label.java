@@ -20,13 +20,13 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  * A Label can display a text or an image, but not both. The label always
  * displays those of both values that has been set last.
  * <p>
+ * <hr />
  * <strong>Note:</strong> Unlike in SWT, setting an image clears the text of the
  * label and vice versa. Thus, after calling <code>setText()</code>, the method
  * <code>getImage()</code> will return <code>null</code>, and after calling
  * <code>setImage()</code>, <code>getText</code> will return the empty string.
  * </p>
  */
-// TODO [doc] Extend javadoc of label
 // TODO [rh] check what should happen with style == SEPARATOR and setForeground
 public class Label extends Control {
 

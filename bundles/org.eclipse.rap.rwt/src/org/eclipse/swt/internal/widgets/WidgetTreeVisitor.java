@@ -14,8 +14,11 @@ package org.eclipse.swt.internal.widgets;
 import org.eclipse.swt.widgets.*;
 
 /**
- * TODO [rh] JavaDoc
- * <p></p>
+ * Utility class that provides a traversal through a widget-tree
+ * using the visitor pattern.
+ * 
+ * <p>The traversal through the children will be skipped if the visit call
+ * on the parent node returns <code>false</code>.</p> 
  */
 public class WidgetTreeVisitor {
 

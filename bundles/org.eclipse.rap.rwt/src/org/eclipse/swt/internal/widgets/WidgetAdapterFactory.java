@@ -20,10 +20,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-/**
- * TODO [rh] JavaDoc
- * <p></p>
- */
 //TODO [rh] This class is currently not in use, see Display#getAdater() and 
 //     Widget#getAdapter()
 public final class WidgetAdapterFactory implements AdapterFactory {

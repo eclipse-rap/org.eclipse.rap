@@ -17,7 +17,13 @@ import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * TODO: [rh] JavaDoc
+ * Instances of this class are sent as a result of controls being activated 
+ * or deactivated.
+ * 
+ * <p>This class is <em>not</em> intended to be used by clients.</p>
+ * 
+ * @see ActivateListener
+ * @since 1.0
  */
 public final class ActivateEvent extends TypedEvent {
 

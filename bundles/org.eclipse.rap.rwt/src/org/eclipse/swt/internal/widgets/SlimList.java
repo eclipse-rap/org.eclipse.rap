@@ -14,9 +14,12 @@ package org.eclipse.swt.internal.widgets;
 import java.util.*;
 
 /**
- * TODO: [fappel] comment
- * <p>
- * </p>
+ * This class is a <code>List</code> implementation that is designed for 
+ * storing </code>Widget</code>s. The implementation is optimized for 
+ * minimal memory footprint, frequent reads and infrequent writes.
+ * <p>Only those methods known to be used by the well-known consumers are
+ * implemented. Other methods throw <code>UnsupportedOperationException</code>s.
+ * </p> 
  */
 public final class SlimList implements List {
 

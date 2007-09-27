@@ -18,9 +18,10 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
- * TODO: JavaDoc
+ * This class is the abstract superclass of all device objects,
+ * such as Display.
  * 
- * @since 1.0
+ * <p>This class is <em>not</em> intended to be directly used by clients.</p>
  */
 public abstract class Device {
 

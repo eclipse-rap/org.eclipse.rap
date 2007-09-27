@@ -13,7 +13,14 @@ package org.eclipse.rwt.service;
 
 
 /**
- * TODO [rh] JavaDoc 
+ * The <code>IServiceStore</code> can be used to store and retrieve
+ * information during a life cycle request.
+ * 
+ * <p><strong>Note:</strong> the <code>IServiceStore</code> has request-scope, 
+ * meaning that all information stored here will be lost at the end of a 
+ * request.</p>
+ * 
+ * @see org.eclipse.rwt.RWT
  */
 public interface IServiceStore {
   

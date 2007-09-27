@@ -103,8 +103,14 @@ public class ScrollBar extends Widget {
   private int maximum;
 
   /**
-  * Creates a new instance of the widget.
-  */
+   * Creates a new instance of the widget.
+   * 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
   // TODO [rh] make package-private as in SWT (not possible since currently
   //      used by ScrolledComposite, see there)
   public ScrollBar( final Scrollable parent, final int style ) {

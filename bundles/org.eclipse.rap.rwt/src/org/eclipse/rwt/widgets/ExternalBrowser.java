@@ -23,13 +23,34 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * This is preliminary API and subject to change without notice.
+ * Utility class to open and close an external browser window.
+ * 
+ * @since 1.0
  */
-// TODO [rh] JavaDoc
 public final class ExternalBrowser {
 
+  /**
+   * Style parameter (value 1&lt;&lt;1) indicating that the address combo and
+   * 'Go' button will created for the browser. 
+   * <p>Note: This style parameter is a hint and might be ignored by some 
+   * browsers.</p>
+   */
   public static final int LOCATION_BAR = 1 << 1;
+
+  /**
+   * Style parameter (value 1&lt;&lt;2) indicating that the navigation bar for
+   * navigating web pages will be created for the web browser.
+   * <p>Note: This style parameter is a hint and might be ignored by some 
+   * browsers.</p>
+   */
   public static final int NAVIGATION_BAR = 1 << 2;
+
+  /**
+   * Style constant (value 1&lt;&lt;3) indicating that status will be tracked
+   * and shown for the browser (page loading progress, text messages etc.).
+   * <p>Note: This style parameter is a hint and might be ignored by some 
+   * browsers.</p>
+   */
   public static final int STATUS = 1 << 3;
 
   private static final String OPEN 
@@ -37,6 +58,19 @@ public final class ExternalBrowser {
   private static final String CLOSE
     = "org.eclipse.rwt.widgets.ExternalBrowser.close( \"{0}\" );";
 
+  /**
+   * Opens the given <code>url</code> in an external browser.
+   * 
+   * <p>The method will reuse an existing browser window if the same
+   * <code>id</code> value is passed to it.</p>
+   * 
+   * @param id if an instance of a browser with the same id is already
+   *   opened, it will be reused instead of opening a new one. The id
+   *   must neither be <code>null</code> nor empty.
+   * @param url the URL to display, must not be <code>null</code>
+   * @param style the style display constants. Style constants should be
+   *   bitwise-ORed together.
+   */
   public static void open( final String id, final String url, final int style ) 
   {
     if( id == null || url == null ) {
@@ -48,6 +82,13 @@ public final class ExternalBrowser {
     executeJS( getOpenJS( id, url, style ) );
   }
   
+  /**
+   * Closes the browser window denoted by the given <code>id</code>. The
+   * method does nothing if there is no browser window with the given id.
+   * 
+   * @param id if an instance of a browser with the same id is opened, 
+   *   it will be close. The id must neither be <code>null</code> nor empty.
+   */
   public static void close( final String id ) {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );

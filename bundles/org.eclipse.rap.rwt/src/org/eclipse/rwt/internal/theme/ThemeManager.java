@@ -248,6 +248,7 @@ public final class ThemeManager {
    * @param instr an input stream to read the theme from.
    * @param loader a ResourceLoader instance that is able to load resources
    *            needed by this theme.
+   * @throws IOException if an I/O error occurs
    */
   public void registerTheme( final String id,
                              final String name,

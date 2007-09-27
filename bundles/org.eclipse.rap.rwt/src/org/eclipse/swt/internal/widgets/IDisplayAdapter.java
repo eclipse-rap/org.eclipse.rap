@@ -17,9 +17,6 @@ import org.eclipse.swt.widgets.*;
 
 
 
-/**
- * TODO [rh] JavaDoc
- */
 public interface IDisplayAdapter {
   
   final static IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];

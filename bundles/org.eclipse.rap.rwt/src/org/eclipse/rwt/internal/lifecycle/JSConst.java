@@ -16,7 +16,7 @@ import org.eclipse.rwt.lifecycle.JSVar;
 
 
 /**
- * TODO [rh] JavaDoc
+ * Commonly used request parameter names and JavaScript names. 
  */
 public final class JSConst {
 

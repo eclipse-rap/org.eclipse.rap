@@ -14,9 +14,22 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 
 /**
- * TODO: javadoc
+ * Instances of this class are graphics which have been prepared
+ * for display on a specific device. That is, they are to display 
+ * on widgets with, for example, <code>Button.setImage()</code>.
  * 
- * @since 1.0
+ * <p>If loaded from a file format that supports it, an
+ * <code>Image</code> may have transparency, meaning that certain
+ * pixels are specified as being transparent when drawn. Examples
+ * of file formats that support transparency are GIF and PNG.</p>
+ * 
+ * <p>In RWT, images are shared among all sessions. Therefore they
+ * lack a public constructor. Images can be created using the 
+ * <code>getImage()</code> methods of class <code>Graphics</code>
+ *
+ * @see org.eclipse.rwt.graphics.Graphics#getImage(String)
+ * @see org.eclipse.rwt.graphics.Graphics#getImage(String, ClassLoader)
+ * @see org.eclipse.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
  */
 public final class Image extends Resource {
 

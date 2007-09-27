@@ -22,6 +22,8 @@ public interface IEventAdapter {
   /**
    * <p>Returns an array containing all registered listeners for the object
    * that returned this <code>IEventAdapter</code>.</p> 
+   * @return an array of listeners or an empty array if no listeners are
+   * available.
    */
   Object[] getListener();
   
@@ -30,6 +32,8 @@ public interface IEventAdapter {
    * <code>listenerType</code> for the object that returned this 
    * <code>IEventAdapter</code>.</p>
    * @param listenerType the type of the listeners to be returned  
+   * @return an array of listeners or an empty array if no listeners are
+   * available.
    */
   Object[] getListener( Class listenerType );
   
@@ -38,6 +42,8 @@ public interface IEventAdapter {
    * <code>listenerType</code> registered for the object that returned this 
    * <code>IEventAdapter</code>.</p>
    * @param listenerType the type of the listeners to be returned  
+   * @return <code>true</code> if any listeners of <code>listenerType</code>
+   * are registered; <code>false</code> otherwise.
    */
   boolean hasListener( Class listenerType );
   

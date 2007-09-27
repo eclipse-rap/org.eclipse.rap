@@ -332,7 +332,6 @@ public class Shell extends Decorations {
    * @see SWT#APPLICATION_MODAL
    * <!--@see SWT#SYSTEM_MODAL-->
    */
-  // TODO: [doc] what about these shell styles: TOOL, MODELESS, PRIMARY_MODAL and SYSTEM_MODAL
   public Shell( final Shell parent, final int style ) {
     this( parent != null ? parent.display : null, parent, style, 0 );
   }
@@ -574,7 +573,7 @@ public class Shell extends Decorations {
    * @see Control#setVisible
    * @see Display#getActiveShell
    * @see Decorations#setDefaultButton (not yet)
-   * @see Shell#setDefaultButton
+   * @see Shell#setDefaultButton(Button)
    * @see Shell#setActive
    * <!--@see Shell#forceActive-->
    */
@@ -639,7 +638,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  // TODO [doc] move to Decorations
+  // TODO [rh] move to Decorations
   public void setText( final String text ) {
     checkWidget();
     if( text == null ) {
@@ -661,7 +660,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  // TODO [doc] move to Decorations
+  // TODO [rh] move to Decorations
   public String getText() {
     checkWidget();
     return text;

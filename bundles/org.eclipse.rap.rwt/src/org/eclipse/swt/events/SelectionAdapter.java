@@ -23,6 +23,7 @@ package org.eclipse.swt.events;
  *
  * @see SelectionListener
  * @see SelectionEvent
+ * @since 1.0
  */
 public abstract class SelectionAdapter implements SelectionListener {
 

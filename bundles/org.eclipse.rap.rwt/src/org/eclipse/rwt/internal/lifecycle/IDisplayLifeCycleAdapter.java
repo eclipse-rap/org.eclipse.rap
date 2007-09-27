@@ -18,10 +18,6 @@ import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.widgets.Display;
 
 
-/**
- * TODO [rh] JavaDoc
- * <p></p>
- */
 public interface IDisplayLifeCycleAdapter extends ILifeCycleAdapter {
 
   void preserveValues( Display display );

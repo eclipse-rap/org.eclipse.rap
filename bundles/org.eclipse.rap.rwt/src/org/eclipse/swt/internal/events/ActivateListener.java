@@ -14,10 +14,18 @@ package org.eclipse.swt.internal.events;
 import org.eclipse.swt.internal.SWTEventListener;
 
 /**
- * TODO: [rh] JavaDoc
+ * Typed listener for the <code>Activate</code> and <code>Deactivate</code>
+ * events.
+ * <p>This class is <em>not</em> intended to be used by clients.</p>
+ * 
+ * @see ActivateAdapter
+ * @see ActivateEvent
+ * @see SWT#Activate
+ * @see SWT#Deactivate
+ * @since 1.0
  */
 public interface ActivateListener extends SWTEventListener {
 
-  public void activated( ActivateEvent event );
-  public void deactivated( ActivateEvent event );
+  void activated( ActivateEvent event );
+  void deactivated( ActivateEvent event );
 }

@@ -74,7 +74,7 @@ final class MenuLCAUtil {
     }
   }
   
-  /**
+  /* (intentionally non-JavaDoc'ed)
    * Activates the menu if a menu event was received (in this case, only a
    * preliminary menu is displayed).
    */
