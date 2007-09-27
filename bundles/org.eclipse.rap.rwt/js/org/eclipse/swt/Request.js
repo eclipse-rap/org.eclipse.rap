@@ -195,7 +195,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       var vTransport = new qx.io.remote.Exchange(vRequest);
       // Establish event connection between qx.io.remote.Exchange instance and
       // qx.io.remote.Request
-      vTransport.addEventListener("created", vRequest._onsending, vRequest);
+      vTransport.addEventListener("sending", vRequest._onsending, vRequest);
       vTransport.addEventListener("receiving", vRequest._onreceiving, vRequest);
       vTransport.addEventListener("completed", vRequest._oncompleted, vRequest);
       vTransport.addEventListener("aborted", vRequest._onaborted, vRequest);
