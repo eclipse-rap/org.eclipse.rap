@@ -101,7 +101,19 @@ qx.Class.define( "org.eclipse.swt.Request", {
       this._parameters[ eventType ] = sourceId;
     },
 
-
+    /**
+     * To enable server callbacks to the UI this method sends a request
+     * that will be blocked by the server till background activities 
+     * require UI updates.
+     */
+    enableUICallBack : function( url, service_param, service_id ) {
+      var request = new qx.io.remote.Request( url, 
+                                              qx.net.Http.METHOD_GET, 
+                                              qx.util.Mime.JAVASCRIPT );
+      request.setParameter( service_param, service_id );
+      this._sendStandalone( request );
+    },
+    
     /**
      * Sends this request. All parameters that were added since the last 'send()'
      * will now be sent.
@@ -114,38 +126,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
         //      reliable)
         qx.client.Timer.once( this._sendImmediate, this, 60 );
       }
-    },
-
-    /**
-     * To enable server callbacks to the UI this method sends a request
-     * that will be blocked by the server till background activities 
-     * require UI updates.
-     */
-    enableUICallBack : function( url, service_param, service_id ) {
-      var request = new qx.io.remote.Request( url, 
-                                              qx.net.Http.METHOD_GET, 
-                                              qx.util.Mime.JAVASCRIPT );
-      request.setParameter( service_param, service_id );
-//      request.send();
-      // TODO [rh] WORKAROUND
-      //       we would need two requestQueues (one for 'normal' requests that 
-      //       is limited to 1 concurrent request and one for the UI callback
-      //       requests (probably without limit)
-      //       Until qooxdoo supports multiple requestQueues we send the UI 
-      //       callback request without letting the requestQueue know
-      var vRequest = request;
-      var vTransport = new qx.io.remote.Exchange(vRequest);
-      // Establish event connection between qx.io.remote.Exchange instance and
-      // qx.io.remote.Request
-      vTransport.addEventListener("created", vRequest._onsending, vRequest);
-      vTransport.addEventListener("receiving", vRequest._onreceiving, vRequest);
-      vTransport.addEventListener("completed", vRequest._oncompleted, vRequest);
-      vTransport.addEventListener("aborted", vRequest._onaborted, vRequest);
-      vTransport.addEventListener("timeout", vRequest._ontimeout, vRequest);
-      vTransport.addEventListener("failed", vRequest._onfailed, vRequest);
-      vTransport._start = (new Date).valueOf();
-      vTransport.send();
-      // END WORKAROUND
     },
 
     _sendImmediate : function() {
@@ -202,6 +182,28 @@ qx.Class.define( "org.eclipse.swt.Request", {
         msg += "]";
         this.debug( msg );
       }
+    },
+
+    _sendStandalone : function( request ) {
+      // TODO [rh] WORKAROUND
+      //      we would need two requestQueues (one for 'normal' requests that 
+      //      is limited to 1 concurrent request and one for the 'independant'
+      //      requests created here
+      //      Until qooxdoo supports multiple requestQueues we create and 
+      //      send this kind of request without knownledge of the request queue
+      var vRequest = request;
+      var vTransport = new qx.io.remote.Exchange(vRequest);
+      // Establish event connection between qx.io.remote.Exchange instance and
+      // qx.io.remote.Request
+      vTransport.addEventListener("created", vRequest._onsending, vRequest);
+      vTransport.addEventListener("receiving", vRequest._onreceiving, vRequest);
+      vTransport.addEventListener("completed", vRequest._oncompleted, vRequest);
+      vTransport.addEventListener("aborted", vRequest._onaborted, vRequest);
+      vTransport.addEventListener("timeout", vRequest._ontimeout, vRequest);
+      vTransport.addEventListener("failed", vRequest._onfailed, vRequest);
+      vTransport._start = (new Date).valueOf();
+      vTransport.send();
+      // END WORKAROUND
     },
 
     ////////////////////////
@@ -359,7 +361,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
       // shutdown or disable all things that could interfere with showing the
       // error page 
       var app = qx.core.Init.getInstance().getApplication();
-      app.setExitMessage( null );
+      app.setExitConfirmation( null );
       qx.io.remote.RequestQueue.getInstance().setEnabled( false );
       // write the error page content
       document.open( "text/html", true );

@@ -46,20 +46,24 @@ public final class RWTLifeCycleServiceHandlerSync
   }
   
   private void serviceInternal() throws ServletException, IOException {
+System.out.println( "SERVICE" );      
     LifeCycleServiceHandler.initializeStateInfo();
     RWTRequestVersionControl.determine();
     if( isCloseRequested() ) {
+System.out.println( "close requested" );      
       // notification that the user has unloaded the client document
       // nothing to do here
     } else if( LifeCycleServiceHandler.isSessionRestart() ) {
       // user requests reload of startup page
       if( isRestartAllowed() ) {
+System.out.println( "restartAllowed = true" );      
         // reload is requested after the unload notification and/or the
         // user explicitly requests a restart
         RWTRequestVersionControl.increase();
         markAsExpired();
         doService();
       } else {
+System.out.println( "restartAllowed = false" );      
         String restartTicket = allowRestart();
         if( isDeepLink() ) {
           bufferRequestParams();
