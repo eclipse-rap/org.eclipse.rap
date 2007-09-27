@@ -16,6 +16,8 @@ package org.eclipse.rwt.lifecycle;
  * client and the server during the processing of an HTTP request. A life cycle
  * adapter is responsible for reading and processing data sent with the request,
  * and creating appropriate JavaScript code for the response.
+ * 
+ * @since 1.0
  */
 public interface ILifeCycleAdapter {
 

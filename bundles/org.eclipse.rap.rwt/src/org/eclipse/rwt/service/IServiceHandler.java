@@ -57,8 +57,10 @@ import javax.servlet.ServletException;
  * url.append( "=myServiceHandler" );
  * String encodedURL = ContextProvider.getResponse().encodeURL( url.toString() );
  * </pre>
+ * <!--
  * This URL could for example be passed to the HRef property of a 
  * <code>WebAnchor</code> and by this be delivered to the client.
+ * -->
  * </li>
  * </p>
  * 
@@ -73,11 +75,12 @@ public interface IServiceHandler {
   static final String REQUEST_PARAM = "custom_service_handler";
 
   /**
-   * <p>This method is called by the W4Toolkit lifecycle to allow the service
+   * <p>This method is called by the RAP lifecycle to allow the service
    * handler to respond to a request.</p>
    * 
    * @throws IOException
    * @throws ServletException
+   * 
    */
   void service() throws IOException, ServletException; 
 

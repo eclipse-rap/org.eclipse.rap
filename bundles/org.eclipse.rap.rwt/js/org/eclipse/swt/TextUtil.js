@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     
     // TODO [rh] workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
     //      the fix is to exchange the _onblur implementation of qx.ui.forms.Text
-    //      with our own one, that checks paremtn != null before calling 
+    //      with our own one, that checks parent != null before calling 
     //      setSelectionLength
     hijack : function( text ) {
       text.removeEventListener( "blur", text._onblur );   

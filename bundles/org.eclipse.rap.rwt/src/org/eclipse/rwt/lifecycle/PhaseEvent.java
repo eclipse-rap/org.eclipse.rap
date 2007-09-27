@@ -18,7 +18,9 @@ import java.util.EventObject;
  * a lifecycle phase is executed.</p>
  * <p>The <code>getSource()</code> method returns an instance of type 
  * <code>ILifeCycle</code>.</p>
- * <p>This class is not inteded to be instantiated by clients.</p>
+ * <p>This class is not intended to be instantiated by clients.</p>
+ * 
+ * @since 1.0
  */
 public class PhaseEvent extends EventObject {
   
