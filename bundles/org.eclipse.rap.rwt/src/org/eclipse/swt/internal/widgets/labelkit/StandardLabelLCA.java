@@ -85,7 +85,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     ControlLCAUtil.resetStyleFlags();
   }
 
-  String getTypePoolId( final Label label ) throws IOException {
+  String getTypePoolId( final Label label ) {
     return TYPE_POOL_ID;
   }
 

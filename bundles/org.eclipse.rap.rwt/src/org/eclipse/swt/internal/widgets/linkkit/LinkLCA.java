@@ -57,12 +57,13 @@ public class LinkLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    Link link = ( Link )widget;
+    JSWriter writer = JSWriter.getWriterFor( link );
     writer.newWidget( QX_TYPE );
     writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );
     Object[] args = new Object[] { widget };
     writer.callStatic( "org.eclipse.swt.LinkUtil.init", args );
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( link );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -88,7 +89,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     writer.callStatic( "org.eclipse.swt.LinkUtil.clear", args );
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return TYPE_POOL_ID;
   }
 

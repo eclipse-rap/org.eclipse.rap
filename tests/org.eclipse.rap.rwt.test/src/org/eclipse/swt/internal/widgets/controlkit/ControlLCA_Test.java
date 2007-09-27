@@ -99,33 +99,18 @@ public class ControlLCA_Test extends TestCase {
 
     // call writeBounds once to elimniate the uninteresting JavaScript prolog
     Fixture.fakeResponseWriter();
-    WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
+    WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
 
     // Test without clip
     Fixture.fakeResponseWriter();
     control.setBounds( 1, 2, 100, 200 );
-    WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
+    WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
     // TODO [fappel]: check whether minWidth and minHeight is still needed -
     //                causes problems on FF with caching
     // String expected
     //   = "w.setSpace( 1, 100, 2, 200 );"
     //   + "w.setMinWidth( 0 );w.setMinHeight( 0 );";
     String expected = "w.setSpace( 1, 100, 2, 200 );";
-    assertEquals( expected, Fixture.getAllMarkup() );
-
-    // Test with clip
-    Fixture.fakeResponseWriter();
-    control.setBounds( 1, 2, 100, 200 );
-    WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), true );
-    // TODO [fappel]: check whether minWidth and minHeight is still needed -
-    //                causes problems on FF with caching
-    //expected
-    //  =   "w.setSpace( 1, 100, 2, 200 );"
-    //    + "w.setMinWidth( 0 );w.setMinHeight( 0 );"
-    //    + "w.setClipHeight( 200 );w.setClipWidth( 100 );";
-    expected
-      =   "w.setSpace( 1, 100, 2, 200 );"
-        + "w.setClipWidth( 100 );w.setClipHeight( 200 );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

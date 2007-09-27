@@ -86,7 +86,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     writer.dispose();
   }
 
-  String getTypePoolId( final Button button ) throws IOException {
+  String getTypePoolId( final Button button ) {
     return TYPE_POOL_ID;
   }
 

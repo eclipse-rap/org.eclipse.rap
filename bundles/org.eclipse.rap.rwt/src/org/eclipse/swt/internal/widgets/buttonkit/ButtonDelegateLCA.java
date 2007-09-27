@@ -22,5 +22,5 @@ abstract class ButtonDelegateLCA {
   abstract void renderChanges( Button button ) throws IOException;
   abstract void renderDispose( Button button ) throws IOException;
   abstract void createResetHandlerCalls( String typePoolId ) throws IOException;
-  abstract String getTypePoolId( Button widget ) throws IOException;
+  abstract String getTypePoolId( Button widget );
 }

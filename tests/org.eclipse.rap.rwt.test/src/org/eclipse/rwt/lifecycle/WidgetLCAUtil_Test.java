@@ -11,12 +11,16 @@
 
 package org.eclipse.rwt.lifecycle;
 
+import java.io.IOException;
 import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -186,6 +190,35 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( "b", fontNames[ 2 ] );
   }
   
+  public void testWriteImage() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Label item = new Label( shell, SWT.NONE );
+
+    // for an un-initialized control: no image -> no markup
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
+    WidgetLCAUtil.writeImage( item, item.getImage() );
+    assertEquals( "", Fixture.getAllMarkup() );
+
+    // for an un-initialized control: render image, if any
+    Fixture.fakeResponseWriter();
+    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    WidgetLCAUtil.writeImage( item, item.getImage() );
+    String expected = "w.setIcon( \""
+                    + ResourceFactory.getImagePath( item.getImage() )
+                    + "\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+
+    // for an initialized control with change image: render it
+    RWTFixture.markInitialized( item );
+    RWTFixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    item.setImage( null );
+    WidgetLCAUtil.writeImage( item, item.getImage() );
+    assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( null );" ) != -1 );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

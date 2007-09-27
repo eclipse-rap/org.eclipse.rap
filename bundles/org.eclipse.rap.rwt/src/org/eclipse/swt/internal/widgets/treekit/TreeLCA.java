@@ -67,17 +67,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    Tree tree = ( Tree )widget;
+    JSWriter writer = JSWriter.getWriterFor( tree );
     StringBuffer style = new StringBuffer();
-    if( ( widget.getStyle() & SWT.MULTI ) != 0 ) {
+    if( ( tree.getStyle() & SWT.MULTI ) != 0 ) {
       style.append( "multi|" );
     }
-    if( ( widget.getStyle() & SWT.CHECK ) != 0 ) {
+    if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {
       style.append( "check|" );
     }
     writer.newWidget( "org.eclipse.swt.widgets.Tree", 
                       new Object[] { style.toString() } );
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( tree );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
@@ -103,10 +104,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
   
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId ) 
+    throws IOException 
+  {
   }
   
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return null;
   }
   

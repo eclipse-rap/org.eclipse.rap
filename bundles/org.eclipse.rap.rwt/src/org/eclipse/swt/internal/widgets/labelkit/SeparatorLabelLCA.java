@@ -61,7 +61,7 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
     resetStyle();
   }
 
-  String getTypePoolId( final Label label ) throws IOException {
+  String getTypePoolId( final Label label ) {
     return TYPE_POOL_ID;
   }
 

@@ -16,7 +16,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -26,7 +25,6 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -113,35 +111,6 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeToolTip( shell );
     String expected = "wm.setToolTip( w, \"anotherTooltip\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-  }
-
-  public void testWriteImage() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
-    Label item = new Label( shell, SWT.NONE );
-
-    // for an un-initialized control: no image -> no markup
-    Fixture.fakeResponseWriter();
-    RWTFixture.markInitialized( display );
-    ControlLCAUtil.writeImage( item, item.getImage() );
-    assertEquals( "", Fixture.getAllMarkup() );
-
-    // for an un-initialized control: render image, if any
-    Fixture.fakeResponseWriter();
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
-    ControlLCAUtil.writeImage( item, item.getImage() );
-    String expected = "w.setIcon( \""
-                    + ResourceFactory.getImagePath( item.getImage() )
-                    + "\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-
-    // for an initialized control with change image: render it
-    RWTFixture.markInitialized( item );
-    RWTFixture.preserveWidgets();
-    Fixture.fakeResponseWriter();
-    item.setImage( null );
-    ControlLCAUtil.writeImage( item, item.getImage() );
-    assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( \"\" );" ) != -1 );
   }
 
   public void testWriteActivateListener() throws IOException {

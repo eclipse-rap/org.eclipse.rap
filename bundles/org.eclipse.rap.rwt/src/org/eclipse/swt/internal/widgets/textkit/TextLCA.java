@@ -54,7 +54,7 @@ public final class TextLCA extends AbstractWidgetLCA {
     getLCADelegate( typePoolId ).createResetHandlerCalls( typePoolId );
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return getLCADelegate( widget ).getTypePoolId( ( Text )widget );
   }
 

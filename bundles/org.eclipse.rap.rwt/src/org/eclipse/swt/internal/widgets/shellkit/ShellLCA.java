@@ -72,7 +72,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Shell shell = ( Shell )widget;
     writer.newWidget( QX_TYPE, null );
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( shell );
     int style = widget.getStyle();
     if( ( style & SWT.APPLICATION_MODAL ) != 0 ) {
       writer.set( "modal", true );
@@ -135,7 +135,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     ControlLCAUtil.resetToolTip();
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
 //    return TYPE_POOL_ID;
     return null;
   }

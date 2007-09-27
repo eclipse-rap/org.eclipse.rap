@@ -33,9 +33,10 @@ public class GroupLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    Group group = ( Group )widget;
+    JSWriter writer = JSWriter.getWriterFor( group );
     writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( group );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -60,7 +61,7 @@ public class GroupLCA extends AbstractWidgetLCA {
     ControlLCAUtil.resetStyleFlags();
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return null;
   }
 }

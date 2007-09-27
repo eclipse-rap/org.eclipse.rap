@@ -89,7 +89,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
   }
   
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return null;
   }
   
@@ -100,7 +100,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   private static void writeBounds( final CoolItem coolItem ) throws IOException 
   {
     Rectangle bounds = coolItem.getBounds();
-    WidgetLCAUtil.writeBounds( coolItem, coolItem.getParent(), bounds, false );
+    WidgetLCAUtil.writeBounds( coolItem, coolItem.getParent(), bounds );
     if( WidgetLCAUtil.hasChanged( coolItem, Props.BOUNDS, bounds, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( coolItem );
       writer.call( "updateHandleBounds", null );

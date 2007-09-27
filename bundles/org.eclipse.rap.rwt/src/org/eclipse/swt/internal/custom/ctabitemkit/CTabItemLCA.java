@@ -86,7 +86,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     Rectangle bounds = item.getBounds();
-    WidgetLCAUtil.writeBounds( item, item.getParent(), bounds, false );
+    WidgetLCAUtil.writeBounds( item, item.getParent(), bounds );
     writeText( item );
     writeImage( item );
     writeFont( item );
@@ -106,7 +106,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
   }
   
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return null;
   }
   

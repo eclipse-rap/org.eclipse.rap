@@ -23,5 +23,5 @@ abstract class AbstractLabelLCADelegate {
   abstract void renderChanges( Label label ) throws IOException;
   abstract void renderDispose( Label label ) throws IOException;
   abstract void createResetHandlerCalls( String typePoolId ) throws IOException;
-  abstract String getTypePoolId( Label label ) throws IOException;
+  abstract String getTypePoolId( Label label );
 }

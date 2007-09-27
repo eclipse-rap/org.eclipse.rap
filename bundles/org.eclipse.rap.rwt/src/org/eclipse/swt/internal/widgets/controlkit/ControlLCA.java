@@ -45,7 +45,7 @@ public class ControlLCA extends AbstractWidgetLCA {
     // do nothing
   }
   
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     // do nothing
     return null;
   }

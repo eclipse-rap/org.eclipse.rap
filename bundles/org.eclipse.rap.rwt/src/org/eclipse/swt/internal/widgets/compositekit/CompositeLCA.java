@@ -14,8 +14,7 @@ package org.eclipse.swt.internal.widgets.compositekit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 public class CompositeLCA extends AbstractWidgetLCA {
@@ -31,12 +30,13 @@ public class CompositeLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    Composite composite = ( Composite )widget;
+    JSWriter writer = JSWriter.getWriterFor( composite );
     writer.newWidget( QX_TYPE );
     writer.set( "appearance", "composite" );
     writer.set( "overflow", "hidden" );
     writer.set( "hideFocus", true );
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( composite );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -55,7 +55,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
     ControlLCAUtil.resetStyleFlags();
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return TYPE_POOL_ID;
   }
 }

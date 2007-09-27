@@ -41,14 +41,14 @@ public final class SashLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     Sash sash = ( Sash )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    JSWriter writer = JSWriter.getWriterFor( sash );
     writer.newWidget( QX_TYPE );
     JSVar orientation
       = ( sash.getStyle() & SWT.HORIZONTAL ) != 0
       ? JSConst.QX_CONST_HORIZONTAL_ORIENTATION
       : JSConst.QX_CONST_VERTICAL_ORIENTATION;
     writer.set( JSConst.QX_FIELD_ORIENTATION, orientation );
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( sash );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -68,7 +68,7 @@ public final class SashLCA extends AbstractWidgetLCA {
     ControlLCAUtil.resetStyleFlags();
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return TYPE_POOL_ID;
   }
 }

@@ -305,9 +305,7 @@ public class DisplayLCA_Test extends TestCase {
             }
             
             
-            public String getTypePoolId( final Widget widget )
-              throws IOException
-            {
+            public String getTypePoolId( final Widget widget ) {
               return getClass().getName() + "_" + widget.getStyle();
             }
             

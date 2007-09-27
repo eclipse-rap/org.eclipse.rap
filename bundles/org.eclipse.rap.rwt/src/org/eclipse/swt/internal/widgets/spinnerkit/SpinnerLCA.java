@@ -62,7 +62,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     Spinner spinner = ( Spinner )widget;
     JSWriter writer = JSWriter.getWriterFor( spinner );
     writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( spinner );
     writeReadOnly( spinner );
     writeWrap( spinner );
   }
@@ -87,7 +87,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     resetValues();
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return TYPE_POOL_ID;
   }
 

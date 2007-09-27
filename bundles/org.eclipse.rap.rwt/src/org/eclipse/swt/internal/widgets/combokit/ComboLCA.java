@@ -149,7 +149,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     writer.call( "removeAll", null );
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
 //    TODO [rst] Enable pooling when re-parenting problems with
 //               qx.ui.form.ComboBox are solved
 //    return TYPE_POOL_ID;

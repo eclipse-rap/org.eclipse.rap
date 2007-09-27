@@ -52,7 +52,7 @@ public class BrowserLCA extends AbstractWidgetLCA {
     // TODO [rh] preliminary workaround to make Browser accessible by tab
     writer.set( JSConst.QX_FIELD_TAB_INDEX, 1 );
     // TODO [rh] nice-to-have: prevent popup menu from showing, disable widget
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( browser );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -90,7 +90,7 @@ public class BrowserLCA extends AbstractWidgetLCA {
     ControlLCAUtil.resetStyleFlags();
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return TYPE_POOL_ID;
   }
 

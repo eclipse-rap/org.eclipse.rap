@@ -65,9 +65,7 @@ public class CTabFolderLCA_Test extends TestCase {
             throws IOException
           {
           }
-          public String getTypePoolId( final Widget widget )
-            throws IOException
-          {
+          public String getTypePoolId( final Widget widget ) {
             return null;
           }
           public void renderInitialization( final Widget widget )

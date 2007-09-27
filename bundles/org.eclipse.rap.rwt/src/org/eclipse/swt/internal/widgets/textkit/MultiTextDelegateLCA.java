@@ -70,7 +70,7 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
     writer.dispose();
   }
 
-  String getTypePoolId( final Text text ) throws IOException {
+  String getTypePoolId( final Text text ) {
     return TYPE_POOL_ID;
   }
 

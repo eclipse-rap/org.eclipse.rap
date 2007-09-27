@@ -46,11 +46,13 @@ public final class ButtonLCA extends AbstractWidgetLCA {
     getLCADelegate( widget ).renderDispose( ( Button )widget );
   }
 
-  public void createResetHandlerCalls( final String typePoolId) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId ) 
+    throws IOException 
+  {
     getLCADelegate( typePoolId ).createResetHandlerCalls( typePoolId );
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return getLCADelegate( widget ).getTypePoolId( ( Button )widget );
   }
 

@@ -98,7 +98,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     }
   }
 
-  String getTypePoolId( final Button button ) throws IOException {
+  String getTypePoolId( final Button button ) {
 //    TODO [rst] Temporarily disabled pooling of PUSH buttons due to obscure JS
 //               errors. Also reactivate test case in RenderDispose_Test!
 //    return TYPE_POOL_ID;

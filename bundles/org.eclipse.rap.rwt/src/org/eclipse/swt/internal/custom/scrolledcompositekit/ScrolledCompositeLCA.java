@@ -69,9 +69,10 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    ScrolledComposite scrolledComposite = ( ScrolledComposite )widget;
+    JSWriter writer = JSWriter.getWriterFor( scrolledComposite );
     writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( scrolledComposite );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -97,7 +98,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     ControlLCAUtil.resetStyleFlags();
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return TYPE_POOL_ID;
   }
 

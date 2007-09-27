@@ -17,9 +17,9 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateEvent;
-import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -58,8 +58,7 @@ public class ControlLCAUtil {
   private static final String PROP_FOCUS_LISTENER = "focusListener";
   private static final String PROP_TAB_INDEX = "tabIndex";
 
-  // TODO [rst] This constant doesn't have to be public
-  public static final int MAX_STATIC_ZORDER = 300;
+  static final int MAX_STATIC_ZORDER = 300;
 
   private ControlLCAUtil() {
     // prevent instance creation
@@ -140,7 +139,7 @@ public class ControlLCAUtil {
    */
   public static void writeBounds( final Control control ) throws IOException {
     Composite parent = control.getParent();
-    WidgetLCAUtil.writeBounds( control, parent, control.getBounds(), false );
+    WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
   }
 
   /**
@@ -449,20 +448,6 @@ public class ControlLCAUtil {
     WidgetLCAUtil.resetToolTip();
   }
 
-  // TODO [rh] move this to WidgetLCAUtil, move test case along, change LCA's
-  //      to use this instead of manually setting images
-  public static void writeImage( final Control control, final Image image )
-    throws IOException
-  {
-    WidgetLCAUtil.writeImage( control, image );
-    if( WidgetLCAUtil.hasChanged( control, Props.IMAGE, image, null ) ) {
-      // work around qooxdoo, that interprets 'null' as an image path
-      String path = image == null ? "" : ResourceFactory.getImagePath( image );
-      JSWriter writer = JSWriter.getWriterFor( control );
-      writer.set( JSConst.QX_FIELD_ICON, path );
-    }
-  }
-
   /**
    * Determines whether the property <code>foreground</code> of the given
    * control has changed during the processing of the current request and if so,
@@ -530,8 +515,8 @@ public class ControlLCAUtil {
    * @param control
    * @throws IOException
    */
-  // TODO [rst] Change parameter type to Control
-  public static void writeStyleFlags( final Widget control ) throws IOException {
+  public static void writeStyleFlags( final Control control ) throws IOException 
+  {
     JSWriter writer = JSWriter.getWriterFor( control );
     if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
       writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_STYLE_BORDER );

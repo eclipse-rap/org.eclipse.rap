@@ -36,13 +36,14 @@ public class ToolBarLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    ToolBar toolBar = ( ToolBar )widget;
+    JSWriter writer = JSWriter.getWriterFor( toolBar );
     writer.newWidget( "qx.ui.toolbar.ToolBar" );
-    if( ( widget.getStyle() & SWT.VERTICAL ) != 0 ){
+    if( ( toolBar.getStyle() & SWT.VERTICAL ) != 0 ){
       writer.set( JSConst.QX_FIELD_ORIENTATION, 
                   JSConst.QX_CONST_VERTICAL_ORIENTATION );
     }
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( toolBar );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
@@ -55,10 +56,12 @@ public class ToolBarLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
   
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId ) 
+    throws IOException 
+  {
   }
   
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return null;
   }
 }

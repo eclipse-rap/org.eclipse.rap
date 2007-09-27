@@ -51,7 +51,7 @@ public class LabelLCA extends AbstractWidgetLCA {
     getDelegate( typePoolId ).createResetHandlerCalls( typePoolId );
   }
 
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return getDelegate( widget ).getTypePoolId( ( Label )widget );
   }
 

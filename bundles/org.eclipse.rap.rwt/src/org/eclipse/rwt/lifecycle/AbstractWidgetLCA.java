@@ -50,6 +50,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
     return bounds;
   }
   
+  // TODO [rh] Javadoc
   public abstract void preserveValues( Widget widget );
   
   /**
@@ -114,5 +115,5 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    *         pooled
    * @throws IOException
    */
-  public abstract String getTypePoolId( Widget widget ) throws IOException;
+  public abstract String getTypePoolId( Widget widget );
 }

@@ -16,8 +16,7 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 public class TabFolderLCA extends AbstractWidgetLCA {
@@ -30,13 +29,14 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    TabFolder tabFolder = ( TabFolder )widget;
+    JSWriter writer = JSWriter.getWriterFor( tabFolder );
     writer.newWidget( "qx.ui.pageview.tabview.TabView" );
     writer.set( "hideFocus", true );
-    if( ( widget.getStyle() & SWT.BOTTOM ) != 0 ) {
+    if( ( tabFolder.getStyle() & SWT.BOTTOM ) != 0 ) {
       writer.set( "placeBarOnTop", false );
     }
-    ControlLCAUtil.writeStyleFlags( widget );
+    ControlLCAUtil.writeStyleFlags( tabFolder );
     writer.addListener( "keypress", 
                         "org.eclipse.swt.TabUtil.onTabFolderKeyPress" );
     writer.addListener( "changeFocused", 
@@ -57,7 +57,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   {
   }
   
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return null;
   }
   

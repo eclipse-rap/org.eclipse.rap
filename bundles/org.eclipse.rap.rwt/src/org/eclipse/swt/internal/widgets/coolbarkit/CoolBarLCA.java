@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.coolbarkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.CoolBar;
@@ -33,12 +34,13 @@ public class CoolBarLCA extends AbstractWidgetLCA {
   }
   
   public void renderInitialization( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
+    CoolBar coolBar = ( CoolBar )widget;
+    JSWriter writer = JSWriter.getWriterFor( coolBar );
     writer.newWidget( "qx.ui.layout.CanvasLayout" );
-    // TODO [rh] use constant from x.constant.Style.js
+    // TODO [rh] use constant from qx.constant.Style.js
     writer.set( "overflow", "hidden" );
-    writer.set( "appearance", "coolbar" );
-    ControlLCAUtil.writeStyleFlags( widget );
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "coolbar" );
+    ControlLCAUtil.writeStyleFlags( coolBar );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
@@ -54,7 +56,7 @@ public class CoolBarLCA extends AbstractWidgetLCA {
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
   }
   
-  public String getTypePoolId( final Widget widget ) throws IOException {
+  public String getTypePoolId( final Widget widget ) {
     return null;
   }
 }

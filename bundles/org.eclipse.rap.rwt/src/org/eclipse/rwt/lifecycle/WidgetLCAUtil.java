@@ -311,8 +311,7 @@ public final class WidgetLCAUtil {
    */
   public static void writeBounds( final Widget widget,
                                   final Control parent,
-                                  final Rectangle bounds,
-                                  final boolean clip )
+                                  final Rectangle bounds )
     throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -339,11 +338,6 @@ public final class WidgetLCAUtil {
           newBounds.x, newBounds.width, newBounds.y, newBounds.height
         };
         writer.set( JS_PROP_SPACE, args );
-      }
-      // TODO [rh] remove clipXXX calls - seems unused
-      if( clip ) {
-        writer.set( JS_PROP_CLIP_WIDTH, newBounds.width );
-        writer.set( JS_PROP_CLIP_HEIGHT, newBounds.height );
       }
     }
   }
