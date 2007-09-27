@@ -79,22 +79,18 @@
   <image name="shell.minbutton.image"
       description="Image for minimize button on shells"
       targetPath="window/minimize.png"
-      inherit="shell.minbutton.image"
       default="resource/widget/rap/window/minimize.png"/>
   <image name="shell.minbutton.over.image"
       description="Image for minimize button on shells on mouse over"
       targetPath="window/minimize.over.png"
-      inherit="shell.minbutton.image"
       default="resource/widget/rap/window/minimize.over.png"/>
   <image name="shell.minbutton.inactive.image"
       description="Image for minimize button on inactive shells"
       targetPath="window/minimize.inactive.png"
-      inherit="shell.minbutton.image"
       default="resource/widget/rap/window/minimize.inactive.png"/>
   <image name="shell.minbutton.inactive.over.image"
       description="Image for minimize button on inactive shells on mouse over"
       targetPath="window/minimize.inactive.over.png"
-      inherit="shell.minbutton.image"
       default="resource/widget/rap/window/minimize.inactive.over.png"/>
 
   <!-- inherit="shell.minbutton.image" -->
@@ -106,17 +102,14 @@
   <image name="shell.maxbutton.over.image"
       description="Image for maximize button of Shells"
       targetPath="window/maximize.over.png"
-      inherit="shell.maxbutton.image"
       default="resource/widget/rap/window/maximize.over.png"/>
   <image name="shell.maxbutton.inactive.image"
       description="Image for maximize button of Shells"
       targetPath="window/maximize.inactive.png"
-      inherit="shell.maxbutton.image"
       default="resource/widget/rap/window/maximize.inactive.png"/>
   <image name="shell.maxbutton.inactive.over.image"
       description="Image for maximize button of Shells"
       targetPath="window/maximize.inactive.over.png"
-      inherit="shell.maxbutton.image"
       default="resource/widget/rap/window/maximize.inactive.over.png"/>
 
   <image name="shell.restorebutton.image"
@@ -126,17 +119,14 @@
   <image name="shell.restorebutton.over.image"
       description="Image for restore from maximized button of Shells"
       targetPath="window/restore.over.png"
-      inherit="shell.restorebutton.image"
       default="resource/widget/rap/window/restore.over.png"/>
   <image name="shell.restorebutton.inactive.image"
       description="Image for restore from maximized button of Shells"
       targetPath="window/restore.inactive.png"
-      inherit="shell.restorebutton.image"
       default="resource/widget/rap/window/restore.inactive.png"/>
   <image name="shell.restorebutton.inactive.over.image"
       description="Image for restore from maximized button of Shells"
       targetPath="window/restore.inactive.over.png"
-      inherit="shell.restorebutton.image"
       default="resource/widget/rap/window/restore.inactive.over.png"/>
 
   <image name="shell.closebutton.image"
@@ -146,17 +136,14 @@
   <image name="shell.closebutton.over.image"
       description="Image for close button of Shells"
       targetPath="window/close.over.png"
-      inherit="shell.closebutton.image"
       default="resource/widget/rap/window/close.over.png"/>
   <image name="shell.closebutton.inactive.image"
       description="Image for close button of Shells"
       targetPath="window/close.inactive.png"
-      inherit="shell.closebutton.image"
       default="resource/widget/rap/window/close.inactive.png"/>
   <image name="shell.closebutton.inactive.over.image"
       description="Image for close button of Shells"
       targetPath="window/close.inactive.over.png"
-      inherit="shell.closebutton.image"
       default="resource/widget/rap/window/close.inactive.over.png"/>
 
 </theme>
