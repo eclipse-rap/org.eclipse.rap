@@ -129,7 +129,7 @@ public final class RWTLifeCycleServiceHandlerSync
   
   /* (intentionally non-JavaDoc'ed)
    * A request is considered to be a 'deep link' when it carries more
-   * parameters than just ones necessary to (re-)start the session.
+   * parameters than just the ones necessary to (re-)start the session.
    * Namely: 'startup' and 'restart' 
    */
   private boolean isDeepLink() {
@@ -217,17 +217,17 @@ public final class RWTLifeCycleServiceHandlerSync
     out.startElement( HTML_P, null );
     String msg 
       = "RAP does not support multiple browser-instances or "
-        + "browser-tabs per session.";
+      + "browser-tabs per session.";
     out.writeText( msg, null );
     out.startElement( HTML.BR, null );
     msg 
       = "A request with deep link parameters was sent to an existing " 
-        + "session and these parameters were passed to this session.";
+      + "session and these parameters were passed to this session.";
     out.writeText( msg, null );
     out.startElement( HTML.BR, null );
     msg 
       = "You may click the link below to restart the session with the " 
-        + "deep link parameters from scratch."; 
+      + "deep link parameters from scratch."; 
     out.writeText( msg, null );
     out.endElement( HTML_P );
     out.startElement( HTML.A, null );
