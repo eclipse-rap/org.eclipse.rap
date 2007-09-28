@@ -144,6 +144,7 @@ public class ComboTab extends ExampleTab {
     viewerCombo.setMenu( menu );
     registerControl( emptyCombo );
     registerControl( filledCombo );
+    registerControl( verifyCombo );
     registerControl( preselectedCombo );
     registerControl( viewerCombo );
   }
