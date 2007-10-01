@@ -130,6 +130,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
 	      }
 	  },
 	  
+	  focus : function()
+    {
+      this._tree.focus();
+    },
+    
 	  _onTreeScroll : function( e ) {
 	    var target = e.target;
 	    if( e.target == null ) {
