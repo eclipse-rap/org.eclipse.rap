@@ -13367,7 +13367,7 @@ e);
 _onmouseup:function(e){var vOriginalTarget=e.getOriginalTarget();
 switch(vOriginalTarget){case this._indentObject:case this._containerObject:case this:break;
 default:if(!this.getTree().getUseDoubleClick()){this.open();
-}this.getTree().getManager().handleMouseUp(vOriginalTarget.getParent(),
+}this.getTree().getManager().handleMouseUp(e.getTarget(),
 e);
 }},
 _ondblclick:function(e){if(!this.getTree().getUseDoubleClick()){return;
@@ -18083,7 +18083,8 @@ requestObjectCount:0,
 isSupported:function(){return qx.net.HttpRequest.create()!=null?true:false;
 },
 createRequestObject:function(){return qx.net.HttpRequest.create();
-}},
+},
+__dummy:function(){}},
 members:{_localRequest:false,
 _lastReadyState:0,
 getRequest:function(){return this._req;
@@ -18291,9 +18292,8 @@ members){qx.io.remote.Exchange.registerType(qx.io.remote.XmlHttpTransport,
 "qx.io.remote.XmlHttpTransport");
 },
 destruct:function(){var vRequest=this.getRequest();
-if(vRequest){if(qx.core.Variant.isSet("qx.client",
-"mshtml")){}else{vRequest.onreadystatechange=null;
-}switch(vRequest.readyState){case 1:case 2:case 3:vRequest.abort();
+if(vRequest){vRequest.onreadystatechange=qx.io.remote.XmlHttpTransport.__dummy;
+switch(vRequest.readyState){case 1:case 2:case 3:vRequest.abort();
 }}this._disposeFields("_req");
 }});
 
