@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Event;
  *
  * @see VerifyListener
  */
-//TODO [fappel] implementation on controls...
 public final class VerifyEvent extends TypedEvent {
 
   public static final int VERIFY_TEXT = SWT.Verify;
@@ -59,7 +58,7 @@ public final class VerifyEvent extends TypedEvent {
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
    *
-   * @param e the untyped event containing the information
+   * @param event the untyped event containing the information
    */
   public VerifyEvent( final Event event ) {
     this( ( Control )event.widget );

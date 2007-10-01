@@ -41,7 +41,7 @@ public final class TreeEvent extends SelectionEvent {
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
    *
-   * @param e the untyped event containing the information
+   * @param event the untyped event containing the information
    */
   public TreeEvent( final Event event ) {
     this( event.widget, event.item, event.type );

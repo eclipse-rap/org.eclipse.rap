@@ -39,7 +39,7 @@ public final class ModifyEvent extends TypedEvent {
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
    *
-   * @param e the untyped event containing the information
+   * @param event the untyped event containing the information
    */
   public ModifyEvent( final Event event ) {
     this( ( Control )event.widget );

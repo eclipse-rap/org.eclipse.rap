@@ -396,7 +396,7 @@ public class Shell extends Decorations {
    * @see Control#setVisible
    * @see Display#getActiveShell
    * <!--@see Decorations#setDefaultButton-->
-   * @see Shell#setDefaultButton
+   * @see Shell#setDefaultButton(Button)
    * @see Shell#open
    * @see Shell#setActive
    */
@@ -804,7 +804,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * @see Shell#setDefaultButton
+   * @see Shell#setDefaultButton(Button)
    */
   // TODO [rst] move to class Decorations as soon as it exists
   public Button getDefaultButton() {

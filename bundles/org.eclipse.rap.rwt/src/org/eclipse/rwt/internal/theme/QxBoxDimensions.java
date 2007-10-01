@@ -40,7 +40,8 @@ public class QxBoxDimensions implements QxType {
     }
     String[] parts = input.split( "\\s+" );
     if( parts.length == 0 || parts.length > 4 ) {
-      throw new IllegalArgumentException( "Illegal number of arguments for box dimensions" );
+      String msg = "Illegal number of arguments for box dimensions";
+      throw new IllegalArgumentException( msg );
     }
     int top, right, left, bottom;
     top = right = bottom = left = parsePxValue( parts[ 0 ] );

@@ -20,8 +20,8 @@ import org.eclipse.swt.internal.SWTEventListener;
  * 
  * @see ActivateAdapter
  * @see ActivateEvent
- * @see SWT#Activate
- * @see SWT#Deactivate
+ * @see org.eclipse.swt.SWT#Activate
+ * @see org.eclipse.swt.SWT#Deactivate
  * @since 1.0
  */
 public interface ActivateListener extends SWTEventListener {

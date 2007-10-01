@@ -50,7 +50,7 @@ public final class ShellEvent extends TypedEvent {
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
    *
-   * @param e the untyped event containing the information
+   * @param event the untyped event containing the information
    */
   public ShellEvent( final Event event ) {
     this( event.widget, event.type );

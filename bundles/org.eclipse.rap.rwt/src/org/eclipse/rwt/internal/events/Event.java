@@ -23,7 +23,6 @@ public abstract class Event {
     this.id = id;
   }
   
-  /** <p>returns the event type of this WebEvent.</p> */
   public int getID() {
     return id;
   }

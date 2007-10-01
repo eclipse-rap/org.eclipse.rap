@@ -442,8 +442,7 @@ public final class WidgetLCAUtil {
    * Determines whether the property <code>image</code> of the given widget
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side image property
-   * of the specified widget. For instances of {@link Control}, use the method
-   * {@link ControlLCAUtil#writeImage(Control, Image)} instead.
+   * of the specified widget.
    * 
    * @param widget the widget whose image property to set
    * @param image the new value of the property
