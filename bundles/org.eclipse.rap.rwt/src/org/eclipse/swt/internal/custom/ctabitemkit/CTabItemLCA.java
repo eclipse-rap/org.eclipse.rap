@@ -41,10 +41,10 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
 
   public void preserveValues( final Widget widget ) {
     CTabItem item = ( CTabItem )widget;
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_TEXT, item.getText() );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    adapter.preserve( PROP_TEXT, getShortenedText( item ) );
     adapter.preserve( PROP_IMAGE, getImage( item ) );
-    WidgetLCAUtil.preserveToolTipText( widget, item.getToolTipText() );
+    WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     adapter.preserve( PROP_BOUNDS, item.getBounds() );
     boolean selected = item == item.getParent().getSelection();
     adapter.preserve( PROP_SELECTED, Boolean.valueOf( selected ) );
@@ -122,10 +122,10 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   }
   
   private void writeText( final CTabItem item ) throws IOException {
-    String text = item.getText();
+    String text = getShortenedText( item );
     if( WidgetLCAUtil.hasChanged( item, Props.TEXT, text ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
       text = WidgetLCAUtil.escapeText( text, false );
+      JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( JSConst.QX_FIELD_LABEL, text ); 
     }
   }
@@ -214,6 +214,13 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
       }
     }
     return result;
+  }
+
+  private static String getShortenedText( final CTabItem item ) {
+    CTabFolder folder = item.getParent();
+    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
+    ICTabFolderAdapter folderAdapter = ( ( ICTabFolderAdapter )adapter );
+    return folderAdapter.getShortenedItemText( item );
   }
 
   ///////////////

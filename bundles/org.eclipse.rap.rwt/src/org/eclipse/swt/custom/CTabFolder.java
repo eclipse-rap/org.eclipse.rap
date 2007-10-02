@@ -107,7 +107,7 @@ public class CTabFolder extends Composite {
   private boolean inDispose;
   boolean minimized;
   boolean maximized;
-  private boolean onBottom;
+  boolean onBottom;
   final boolean simple = true; // no curvy tab items supported (yet)
   boolean single;
   private final Rectangle maxRect = new Rectangle( 0, 0, 0, 0 );
@@ -2101,6 +2101,10 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
     public boolean showItemImage( final CTabItem item ) {
       return item.showImage();
+    }
+    
+    public String getShortenedItemText( final CTabItem item ) {
+      return item.getShortenedText();
     }
   }
 }

@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.custom;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
@@ -456,13 +457,17 @@ public class CTabItem extends Item {
       int rightEdge = Math.min (x + width, parent.getRightItemEdge());
       // draw Image
       int xDraw = x + LEFT_MARGIN;
-      if (parent.single && (parent.showClose || showClose)) xDraw += CTabFolder.BUTTON_SIZE; 
+      if (parent.single && (parent.showClose || showClose)) {
+        xDraw += CTabFolder.BUTTON_SIZE;
+      } 
       Image image = getImage();
       if (image != null) {
         Rectangle imageBounds = image.getBounds();
         // only draw image if it won't overlap with close button
         int maxImageWidth = rightEdge - xDraw - RIGHT_MARGIN;
-        if (!parent.single && closeRect.width > 0) maxImageWidth -= closeRect.width + INTERNAL_SPACING;
+        if (!parent.single && closeRect.width > 0) {
+          maxImageWidth -= closeRect.width + INTERNAL_SPACING;
+        }
         if (imageBounds.width < maxImageWidth) {
           result = true;
         }
@@ -483,6 +488,62 @@ public class CTabItem extends Item {
       }
     }
     return result;
+  }
+  
+  /* (intentionally non-JavaDoc'ed)
+   * The code of this methods is taken from SWT's CTabItem#drawSelected() and 
+   * modified to suit the specifics of RWT.
+   */
+  String getShortenedText() {
+    if( shortenedText == null ) {
+      shortenedText = "";
+      int xDraw = x + LEFT_MARGIN;
+      if( showImage() ) {
+        Rectangle imageBounds = getImage().getBounds();
+        xDraw += imageBounds.width + INTERNAL_SPACING;
+      }
+      int rightEdge = Math.min( x + width, parent.getRightItemEdge() );
+      int textWidth = rightEdge - xDraw - RIGHT_MARGIN;
+      if( !parent.single && closeRect.width > 0 ) {
+        textWidth -= closeRect.width + INTERNAL_SPACING;
+      }
+      if( textWidth > 0 ) {
+        Font itemFont = font == null ? parent.getFont() : font;
+        if( shortenedText == null || shortenedTextWidth != textWidth ) {
+          shortenedText = shortenText( itemFont, getText(), textWidth );
+          shortenedTextWidth = textWidth;
+        }
+      }
+    }
+    return shortenedText;
+  }
+  
+  String shortenText( final Font font, final String text, final int width ) {
+    return useEllipses()
+      ? shortenText( font, text, width, ELLIPSIS )
+      : shortenText( font, text, width, "" );
+  }
+
+  static String shortenText( final Font font, 
+                             String text, 
+                             final int width, 
+                             final String ellipses ) 
+  {
+    if( Graphics.stringExtent( font, text ).x <= width ) {
+      return text;
+    } 
+    int ellipseWidth = Graphics.stringExtent( font, ellipses ).x;
+    int length = text.length();
+    int end = length - 1;
+    while( end > 0 ) {
+      text = text.substring( 0, end );
+      int l = Graphics.stringExtent( font, text ).x;
+      if( l + ellipseWidth <= width ) {
+        return text + ellipses;
+      }
+      end--;
+    }
+    return text.substring( 0, 1 );
   }
   
   //////////////////

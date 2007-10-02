@@ -17,10 +17,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this.setAppearance( "c-tab-item" );
     this.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_MIDDLE );
     this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
+    this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     this.setTabIndex( -1 );
     // Set the label part to 'html mode'
     this.setLabel( "(empty)" );
     this.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
+    this.getLabelObject().setVerticalAlign( qx.constant.Layout.ALIGN_MIDDLE );
     this.setLabel( "" );
     this._selected = false;
     this._unselectedCloseVisible = true;
