@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.internal.events;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -104,5 +106,31 @@ public class ActivateEvent_Test extends TestCase {
     assertEquals( 2, deactivatedCount[ 0 ] );
     assertSame( otherLabel, deactivated[ 0 ] );
     assertSame( otherComposite, deactivated[ 1 ] );
+  }
+  
+  public void testActivateOnFocus() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    // This label gets implicitly focused (and thus activated) on Shell#open()
+    new Label( shell, SWT.NONE );
+    // This is the label to test the ActivateEvent on
+    Label labelToActivate = new Label( shell, SWT.NONE );
+    shell.open();
+    
+    final java.util.List log = new ArrayList();
+    ActivateEvent.addListener( labelToActivate, new ActivateListener() {
+      public void activated( final ActivateEvent event ) {
+        log.add( event );
+      }
+      public void deactivated( final ActivateEvent event ) {
+        log.add( event );
+      }
+    } );
+    labelToActivate.forceFocus();
+    assertEquals( 1, log.size() );
+    ActivateEvent event = ( ActivateEvent )log.get( 0 );
+    assertEquals( labelToActivate, event.widget );
+    assertEquals( ActivateEvent.ACTIVATED, event.getID() );
   }
 }

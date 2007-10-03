@@ -15,8 +15,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -108,7 +107,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     //            strange behavior!
     writeOpen( shell );
     writeActiveShell( shell );
-    writeActiveControl( shell );
     writeMode( shell );
     writeCloseListener( shell );
   }
@@ -211,9 +209,12 @@ public final class ShellLCA extends AbstractWidgetLCA {
   /////////////////////////////////////////////////////
   // Methods to handle activeControl and ActivateEvents
 
-  private static void writeActiveControl( final Shell shell ) throws IOException
+  /* (intentionally non-JavaDoc'ed)
+   * This method is declared public only to be accessible from DisplayLCA
+   */
+  public static void writeActiveControl( final Shell shell ) throws IOException
   {
-    Control activeControl = getActiveControl( shell );
+    final Control activeControl = getActiveControl( shell );
     String prop = PROP_ACTIVE_CONTROL;
     if( WidgetLCAUtil.hasChanged( shell, prop, activeControl, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( shell );

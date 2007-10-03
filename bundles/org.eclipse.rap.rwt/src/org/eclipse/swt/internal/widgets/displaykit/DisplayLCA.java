@@ -37,6 +37,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
@@ -127,7 +128,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
       out.write( "org.eclipse.swt.EventUtil.suspendEventHandling();" );
       disposeWidgets();
-      writeTheme( display, out );
+      writeTheme( display );
       RenderVisitor visitor = new RenderVisitor();
       Composite[] shells = display.getShells();
       for( int i = 0; i < shells.length; i++ ) {
@@ -135,6 +136,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         WidgetTreeVisitor.accept( shell, visitor );
         visitor.reThrowProblem();
       }
+      writeActiveControls( display );
       writeFocus( display );
       out.write( "qx.ui.core.Widget.flushGlobalQueues();" );
       out.write( "org.eclipse.swt.EventUtil.resumeEventHandling();" );
@@ -142,9 +144,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private void writeTheme( final Display display, HtmlResponseWriter out )
-    throws IOException
-  {
+  private static void writeTheme( final Display display ) throws IOException {
     String currThemeId = ThemeUtil.getCurrentThemeId();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldThemeId = adapter.getPreserved( PROP_CURR_THEME );
@@ -152,6 +152,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       String code = "qx.theme.manager.Meta.getInstance().setTheme( "
                   + ThemeManager.getInstance().getJsThemeId( currThemeId )
                   + " );";
+      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+      HtmlResponseWriter out = stateInfo.getResponseWriter();
       out.write( code );
     }
   }
@@ -404,6 +406,19 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         out.write( id ); 
         out.write( "\" );" );
       }
+    }
+  }
+  
+  // TODO [rh] writing activeControl should be handled by the ShellLCA itself
+  //      The reason why this is currently done here is, that the control to
+  //      activate might not yet be created client-side, when ShellLCA writes
+  //      the statement to set the active control.
+  private static void writeActiveControls( final Display display ) 
+    throws IOException 
+  {
+    Shell[] shells = display.getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      ShellLCA.writeActiveControl( shells[ i ] );
     }
   }
 

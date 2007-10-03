@@ -872,7 +872,7 @@ public class Shell extends Decorations {
   ////////////////////////////////////////////////////////////
   // Methods to maintain activeControl and send ActivateEvents
 
-  private void setActiveControl( final Control activateControl ) {
+  void setActiveControl( final Control activateControl ) {
     Control control = activateControl;
     if( control != null && control.isDisposed() ) {
       control = null;
@@ -883,10 +883,10 @@ public class Shell extends Decorations {
     if( lastActive != control ) {
       // Compute the list of controls to be activated and deactivated by finding
       // the first common parent control.
-      Control[] deactivate 
-        = ( lastActive == null ) ? new Control[ 0 ] : getPath( lastActive );
       Control[] activate 
-        = ( control == null ) ? new Control[ 0 ] : getPath( control );
+        = ( control == null ) ? new Control[ 0 ] : control.getPath();
+      Control[] deactivate 
+        = lastActive == null ? new Control[ 0 ] : lastActive.getPath();
       lastActive = control;
       
       int index = 0;
@@ -913,23 +913,6 @@ public class Shell extends Decorations {
     }
   }
 
-  private Control[] getPath( final Control ctrl ) {
-    int count = 0;
-    Control control = ctrl;
-    while( control != this ) {
-      count++;
-      control = control.getParent();
-    }
-    control = ctrl;
-    Control[] result = new Control[ count ];
-    while( control != this ) {
-      count--;
-      result[ count ] = control;
-      control = control.getParent();
-    }
-    return result;
-  }
-  
   /////////////////////////
   // Focus handling methods
 

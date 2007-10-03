@@ -1400,9 +1400,30 @@ public abstract class Control extends Widget {
   // Helping method to set the focus control on display
 
   private void setFocusControl( final Control control ) {
+    // focus
     Object adapter = getDisplay().getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setFocusControl( control );
+    // active
+    Shell shell = getShell();
+    shell.setActiveControl( control );
+  }
+  
+  Control[] getPath() {
+    int count = 0;
+    Shell shell = getShell();
+    Control control = this;
+    while( control != shell ) {
+      count++;
+      control = control.parent;
+    }
+    control = this;
+    Control[] result = new Control[ count ];
+    while( control != shell ) {
+      result[ --count ] = control;
+      control = control.parent;
+    }
+    return result;
   }
 
   ///////////////////////////////////////////////////////
