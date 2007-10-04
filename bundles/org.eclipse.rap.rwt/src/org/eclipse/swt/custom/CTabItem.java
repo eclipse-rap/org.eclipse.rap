@@ -13,11 +13,11 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.IWidgetFontAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Item;
 
 /**
  * Instances of this class represent a selectable user interface object
@@ -496,7 +496,6 @@ public class CTabItem extends Item {
    */
   String getShortenedText() {
     if( shortenedText == null ) {
-      shortenedText = "";
       int xDraw = x + LEFT_MARGIN;
       if( showImage() ) {
         Rectangle imageBounds = getImage().getBounds();
@@ -515,7 +514,7 @@ public class CTabItem extends Item {
         }
       }
     }
-    return shortenedText;
+    return shortenedText == null ? "" : shortenedText;
   }
   
   String shortenText( final Font font, final String text, final int width ) {
