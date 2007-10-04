@@ -103,7 +103,9 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId ) 
+    throws IOException 
+  {
   }
   
   public String getTypePoolId( final Widget widget ) {
@@ -121,7 +123,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveFont( item, font );
   }
   
-  private void writeText( final CTabItem item ) throws IOException {
+  private static void writeText( final CTabItem item ) throws IOException {
     String text = getShortenedText( item );
     if( WidgetLCAUtil.hasChanged( item, Props.TEXT, text ) ) {
       text = WidgetLCAUtil.escapeText( text, false );

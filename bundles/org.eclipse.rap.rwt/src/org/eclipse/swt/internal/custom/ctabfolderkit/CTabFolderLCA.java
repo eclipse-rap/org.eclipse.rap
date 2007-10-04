@@ -264,7 +264,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           new Integer( minimizeRect.width ), 
           new Integer( minimizeRect.height ), 
           "Minimize" 
-          };
+        };
         writer.call( "showMinButton", args );
       } else {
         writer.call( "hideMinButton", null );
@@ -352,7 +352,9 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeChevron( final CTabFolder tabFolder ) throws IOException {
+  private static void writeChevron( final CTabFolder tabFolder ) 
+    throws IOException 
+  {
     ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
     Boolean visible = Boolean.valueOf( tabFolderAdapter.getChevronVisible() );
     Boolean defValue = Boolean.FALSE;
