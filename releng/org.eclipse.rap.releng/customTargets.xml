@@ -192,6 +192,7 @@
 			<include name="org.eclipse.osgi_*" />
 			<include name="org.mortbay.jetty_*" />
 		</fileset>
+		
 		<!-- 3.3 base -->
 		<fileset dir="${baseLocation_33}/plugins" id="33base">
 			<include name="org.eclipse.core.commands_*" />
@@ -205,12 +206,28 @@
 			<include name="org.eclipse.equinox.registry_*" />
 			<include name="org.eclipse.osgi.services_*" />
 			<include name="org.eclipse.osgi_*" />
+			<!-- include sources -->
+			<include name="org.eclipse.rcp.source_*/" />
+			<include name="javax.servlet.source_*/" />
+			<include name="org.apache.commons.logging.source_*/" />
+			<include name="org.mortbay.jetty.source_*/" />
+			<!-- exclude unneeded sources -->
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.runtime.compatibility.auth_*" />
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding_*" />
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding.beanns_*" />
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.jface.databinding_*" />
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.help_*" />
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.jface_*" />
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.ui.workbench_*" />
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.ui_*" />
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.update.configurator_*" />
 		</fileset>
 
-		<!-- copy all the needed plugins -->
+		<!-- copy all the needed plugins + source -->
 		<copy todir="${targetLocation}/eclipse/plugins">
 			<fileset refid="32base" />
 		</copy>
+
 		<copy todir="${targetLocation33}/eclipse/plugins">
 			<fileset refid="33base" />
 		</copy>
@@ -324,7 +341,6 @@
 				<include name="rap-1.0-${buildType}-incubation-target-*" />
 			</fileset>
 		</copy>
-
 		<!-- copy test results -->
 		<copydir dest="${buildOuputDirectory}/tests" src="${fBuildLocation}/reports/html">
 		</copydir>
@@ -332,7 +348,6 @@
 		<!-- copy raw test results -->
 		<copydir dest="${buildOuputDirectory}/testsraw" src="${reports.tests}">
 		</copydir>
-
 	</target>
 
 	<target name="tidyup">
