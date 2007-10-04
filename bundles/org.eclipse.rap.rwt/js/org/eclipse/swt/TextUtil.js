@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
           this.setSelectionLength( 0 );
         }      
       };
-      text.addEventListener( "blur", text._onblur );   
+      text.addEventListener( "blur", text._onblur );
     },
     
     ///////////////////////////////////////////////////////////////
