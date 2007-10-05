@@ -11,7 +11,6 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
@@ -223,7 +222,7 @@ public class ToolBar extends Composite {
     }
     Rectangle trim = computeTrim( 0, 0, width, height );
     int border = getBorderWidth();
-    width = trim.width + border  * 2;
+    width = trim.width + border * 2;
     height = trim.height + border * 2;
     return new Point( width, height );
   }

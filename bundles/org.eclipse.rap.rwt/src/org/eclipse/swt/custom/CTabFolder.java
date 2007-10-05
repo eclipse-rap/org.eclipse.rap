@@ -914,7 +914,7 @@ public class CTabFolder extends Composite {
       updateItemsWithResizeEvent();
     }
   }
-
+  
   /**
    * Returns <code>true</code> if the close button appears 
    * when the user hovers over an unselected tabs.

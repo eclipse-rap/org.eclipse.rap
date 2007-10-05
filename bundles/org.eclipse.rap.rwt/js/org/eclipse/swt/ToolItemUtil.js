@@ -71,7 +71,7 @@ qx.Class.define( "org.eclipse.swt.ToolItemUtil", {
       }
       push.setShow( "both" );
       push.setLabel( "(empty)" );
-      push.getLabelObject().setMode( "html" );
+      push.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
       push.setLabel( "" );
       parent.add( push );
       org.eclipse.swt.WidgetManager.getInstance().add( push, id, false );

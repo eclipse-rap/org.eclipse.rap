@@ -448,7 +448,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    *
-   * @since 1.0.2
+   * @since 1.0
    */
   public Rectangle map( final Control from,
                         final Control to,

@@ -276,11 +276,11 @@ appearances = {
     {
       style : function( states ) {
         return {
-          font            : "widget.font",
-          border          : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
-          textColor       : states.disabled ? "widget.graytext" : "widget.foreground",
-          backgroundColor : "toolbar.background",
-          height          : "auto"
+          font : "widget.font",
+          overflow : "hidden",
+          border : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
+          textColor : states.disabled ? "widget.graytext" : "widget.foreground",
+          backgroundColor : "toolbar.background"
         };
       }
     },
@@ -350,6 +350,7 @@ appearances = {
         var result =
         {
           cursor : "default",
+          overflow : "hidden",
           spacing : 4,
           width : "auto",
           verticalChildrenAlign : "middle",
@@ -366,7 +367,7 @@ appearances = {
         }
         if( states.pressed || states.checked || states.abandoned ) {
           result.border = "thinInset";
-          result.padding = [3, 2, 1, 4 ];
+          result.padding = [ 3, 2, 1, 4 ];
         } else if( !states.rwt_FLAT || states.over ) {
           result.border = "thinOutset";
           result.padding = [ 2, 3 ];
@@ -374,7 +375,6 @@ appearances = {
           result.border = "undefined";
           result.padding = [ 3, 4 ];
         }
-        
         return result;
       }
     },
@@ -1400,8 +1400,8 @@ appearances = {
         border_top.setRight( 1, "solid", "#c0c0c0" );
 
         var border_top_checked = new qx.ui.core.Border();
-        border_top_checked.setTop( 1, "outset", null );
-        border_top_checked.setLeft( 1, "outset", null );
+        border_top_checked.setTop( 1, "solid", null );
+//        border_top_checked.setLeft( 1, "outset", null );
         border_top_checked.setRight( 1, "solid", "#c0c0c0" );
 
         var border_bottom = new qx.ui.core.Border();
