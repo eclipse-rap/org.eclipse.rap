@@ -262,7 +262,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
       Image image = shell.getImage();
       if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
         JSWriter writer = JSWriter.getWriterFor( shell );
-        writer.set( JSConst.QX_FIELD_ICON, ResourceFactory.getImagePath( image ) );
+        writer.set( JSConst.QX_FIELD_ICON,
+                    ResourceFactory.getImagePath( image ) );
       }
     }
   }

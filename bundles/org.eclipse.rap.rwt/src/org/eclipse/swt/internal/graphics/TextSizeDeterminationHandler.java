@@ -15,7 +15,8 @@ import java.io.IOException;
 
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.*;
@@ -87,12 +88,17 @@ final class TextSizeDeterminationHandler
             };
             // TODO [rst] Special handling for ScrolledComposites:
             //            Resizing makes SCs forget about their scroll position.
-            final String sc_origin_key = "org.eclipse.rap.sc-origin";
+            final String scOriginKey = "org.eclipse.rap.sc-origin";
+            final String scContentSizeKey = "org.eclipse.rap.content-size";
             AllWidgetTreeVisitor saveSCOrigins = new AllWidgetTreeVisitor() {
               public boolean doVisit( final Widget widget ) {
                 if( widget instanceof ScrolledComposite ) {
                   ScrolledComposite composite = ( ScrolledComposite )widget;
-                  composite.setData( sc_origin_key, composite.getOrigin() );
+                  composite.setData( scOriginKey, composite.getOrigin() );
+                  Control content = composite.getContent();
+                  if( content != null ) {
+                    content.setData( scContentSizeKey, content.getSize() );
+                  }
                 }
                 return true;
               }
@@ -102,10 +108,20 @@ final class TextSizeDeterminationHandler
                 // restore sc origins
                 if( widget instanceof ScrolledComposite ) {
                   ScrolledComposite composite = ( ScrolledComposite )widget;
-                  Point oldOrigin = ( Point )composite.getData( sc_origin_key );
+                  Point oldOrigin = ( Point )composite.getData( scOriginKey );
                   if( oldOrigin != null ) {
                     composite.setOrigin( oldOrigin );
-                    composite.setData( sc_origin_key, null );
+                    composite.setData( scOriginKey, null );
+                    
+                    Control content = composite.getContent();
+                    if( content != null ) {
+                      Point size = ( Point )content.getData( scContentSizeKey );
+                      if( size != null ) {
+                        content.setSize( size );
+                        content.setData( scContentSizeKey, null );
+                      }
+                    }
+
                   }
                 }
                 return true;

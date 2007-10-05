@@ -193,13 +193,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetMgr.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
-        if( qx.lang.Array.contains( this._activateListenerWidgets, this ) ) {
+// TODO [fappel]: fix this
+//        if( qx.lang.Array.contains( this._activateListenerWidgets, this ) ) {
           req.removeParameter( req.getUIRootId() + ".activeShell" );
           req.addEvent( "org.eclipse.swt.events.shellActivated", id );
           req.send();
-        } else {
-          req.addParameter( req.getUIRootId() + ".activeShell", id );
-        }
+//        } else {
+//          req.addParameter( req.getUIRootId() + ".activeShell", id );
+//        }
       }
       var active = evt.getData();
       if( active ) {

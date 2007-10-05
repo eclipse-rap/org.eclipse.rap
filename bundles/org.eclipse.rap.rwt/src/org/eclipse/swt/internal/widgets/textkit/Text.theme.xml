@@ -10,7 +10,7 @@
 
   <border name="text.BORDER.border"
       description="Border for text fields with BORDER style. Also used for spinner."
-      default="2 inset"/>
+      default="1 inset"/>
 
   <boxdim name="text.SINGLE.padding"
       description="Padding for single-line text fields. Also used for spinner."
