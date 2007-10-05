@@ -105,7 +105,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       }
     },
 
-    setSelectionForeground : function(color) {
+    setSelectionForeground : function( color ) {
       this._selectionForeground = color;
       if( this.isSelected() ) {
         this.setTextColor( this._selectionForeground );
