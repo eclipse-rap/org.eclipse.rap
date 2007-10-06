@@ -55,7 +55,7 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
     this._highlightTop.setHeight( 2 );
     this.add( this._highlightTop );
     highlightBorder = new qx.ui.core.Border();
-    highlightBorder.setBottom( 2, "solid", borderColor );
+    highlightBorder.setTop( 2, "solid", borderColor );
     this._highlightBottom = new qx.ui.basic.Atom();
     this._highlightBottom.setBorder( highlightBorder );
     this._highlightBottom.setLeft( 0 );
@@ -129,7 +129,7 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
       this._highlightTop.setBorder( highlightBorder );
 
       highlightBorder = new qx.ui.core.Border();
-      highlightBorder.setBottom( 2, "solid", color );
+      highlightBorder.setTop( 2, "solid", color );
       this._highlightBottom.setBorder( highlightBorder );
     },
 
