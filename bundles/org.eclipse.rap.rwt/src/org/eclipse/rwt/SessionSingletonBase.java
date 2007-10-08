@@ -21,7 +21,7 @@ import org.eclipse.rwt.internal.service.IServiceStateInfo;
 
 
 /**
- * <p>Subclasses of <code>SessionSingletonBase</code> provide access to an 
+ * <p>Subclasses of <code>SessionSingletonBase</code> provide access to a 
  * unique instance of their type with session scope. This means that in the 
  * context of one user session <code>getInstance(Class)</code> will always return 
  * the same object, but for different user sessions the returned instances 

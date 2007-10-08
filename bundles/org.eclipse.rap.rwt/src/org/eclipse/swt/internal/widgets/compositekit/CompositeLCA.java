@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.*;
 public class CompositeLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "qx.ui.layout.CanvasLayout";
-  private static final String TYPE_POOL_ID = CompositeLCA.class.getName();
+//  private static final String TYPE_POOL_ID = CompositeLCA.class.getName();
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -56,6 +56,10 @@ public class CompositeLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    return TYPE_POOL_ID;
+    // TODO [rh] disabled pooling, see 
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=203499
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=204107 
+//    return TYPE_POOL_ID;
+    return null;
   }
 }

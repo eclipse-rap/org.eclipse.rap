@@ -52,7 +52,11 @@ public class LabelLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    return getDelegate( widget ).getTypePoolId( ( Label )widget );
+    // TODO [rh] disabled pooling, see bugs prefixed with [pooling]
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=204107
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=199142
+//    return getDelegate( widget ).getTypePoolId( ( Label )widget );
+    return null;
   }
 
   private static AbstractLabelLCADelegate getDelegate( final String tpId ) {
