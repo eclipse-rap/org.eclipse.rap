@@ -356,7 +356,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public Rectangle getBounds( int columnIndex ) {
     checkWidget();
@@ -412,7 +412,7 @@ public class TreeItem extends Item {
 	 *                thread that created the receiver</li>
 	 *                </ul>
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
   public Color getBackground( int columnIndex ) {
     checkWidget();
@@ -437,7 +437,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * @since 3.1
+   * @since 1.0
    */
   public Font getFont (int columnIndex) {
     checkWidget ();
@@ -464,7 +464,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public Color getForeground( int columnIndex ) {
     checkWidget();
@@ -493,7 +493,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    * 
    */
   public void setBackground (int columnIndex, Color value) {
@@ -531,7 +531,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public void setFont (int columnIndex, Font value) {
     checkWidget ();
@@ -564,7 +564,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    * 
    */
   public void setForeground( int columnIndex, Color value ) {
@@ -655,7 +655,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * @since 2.0
+   * @since 1.0
    *
    */
   public void setBackground( final Color value ) {
@@ -680,7 +680,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * @since 2.0
+   * @since 1.0
    *
    */
   public Color getBackground() {
@@ -704,7 +704,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * @since 2.0
+   * @since 1.0
    *
    */
   public Color getForeground () {
@@ -725,7 +725,7 @@ public class TreeItem extends Item {
    *
    * @param value the new color (or null)
    *
-   * @since 2.0
+   * @since 1.0
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
@@ -735,7 +735,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    *
-   * @since 2.0
+   * @since 1.0
    *
    */
   public void setForeground( final Color value ) {
@@ -841,7 +841,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public String getText (int columnIndex) {
       checkWidget ();
@@ -871,7 +871,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public void setText (String[] value) {
       checkWidget ();
@@ -896,7 +896,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public void setText (int columnIndex, String value) {
       checkWidget ();
@@ -924,7 +924,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public Image getImage (int columnIndex) {
       checkWidget ();
@@ -1035,7 +1035,7 @@ public class TreeItem extends Item {
    * @see SWT#VIRTUAL
    * @see SWT#SetData
    * 
-   * @since 3.2
+   * @since 1.0
    */
   public void clear( int index, boolean recursive ) {
     checkWidget();
@@ -1107,7 +1107,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public void setImage (int columnIndex, Image value) {
       checkWidget ();
@@ -1140,7 +1140,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    * 
-   * @since 3.1
+   * @since 1.0
    */
   public void setImage (Image[] value) {
       checkWidget ();
@@ -1169,7 +1169,7 @@ public class TreeItem extends Item {
    * @see SWT#VIRTUAL
    * @see SWT#SetData
    *
-   * @since 3.2
+   * @since 1.0
    */
   public void clearAll( final boolean recursive) {
     clearAll( recursive, true );
@@ -1310,7 +1310,7 @@ public class TreeItem extends Item {
    *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *                thread that created the receiver</li>
    *                </ul>
-   * @since 3.2
+   * @since 1.0
    */
   public void setItemCount( int count ) {
     checkWidget();

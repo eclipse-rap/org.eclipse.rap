@@ -44,7 +44,7 @@ public class TestMasterDetailView extends ViewPart {
     }
   }
   /**
-   * @since 3.2
+   * @since 1.0
    */
   private static final class CustomUpdateValueStrategy
     extends UpdateValueStrategy

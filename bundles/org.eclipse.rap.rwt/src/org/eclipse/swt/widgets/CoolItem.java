@@ -201,7 +201,7 @@ public class CoolItem extends Item {
    * @see #removeSelectionListener
    * @see SelectionEvent
    *
-   * @since 2.0
+   * @since 1.0
    */
   public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
@@ -402,7 +402,7 @@ public class CoolItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    *
-   * @since 2.0
+   * @since 1.0
    */
   public Point getMinimumSize() {
     checkWidget();
@@ -517,7 +517,7 @@ public class CoolItem extends Item {
    * @see SelectionListener
    * @see #addSelectionListener
    *
-   * @since 2.0
+   * @since 1.0
    */
   public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
@@ -601,7 +601,7 @@ public class CoolItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    *
-   * @since 2.0
+   * @since 1.0
    */
   public void setMinimumSize( int width, int height ) {
     checkWidget();
@@ -629,7 +629,7 @@ public class CoolItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    *
-   * @since 2.0
+   * @since 1.0
    */
   public void setMinimumSize( Point size ) {
     checkWidget();

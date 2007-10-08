@@ -209,7 +209,7 @@ public Control getEditor () {
  * method should be called after changing one or more fields to
  * force the Editor to resize.
  * 
- * @since 2.1
+ * @since 1.0
  */
 public void layout () {
 	if (editor == null || editor.isDisposed()) return;

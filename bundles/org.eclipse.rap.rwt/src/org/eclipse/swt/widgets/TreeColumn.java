@@ -30,7 +30,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public class TreeColumn extends Item {
 	Tree parent;
@@ -304,7 +304,7 @@ int getContentWidth () {
  * @see TreeColumn#setMoveable(boolean)
  * @see SWT#Move
  * 
- * @since 3.2
+ * @since 1.0
  */
 public boolean getMoveable () {
 	checkWidget ();
@@ -373,7 +373,7 @@ public boolean getResizable () {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public String getToolTipText () {
 	checkWidget ();
@@ -559,7 +559,7 @@ public void setAlignment (int alignment) {
  * @see TreeColumn#getMoveable()
  * @see SWT#Move
  * 
- * @since 3.2
+ * @since 1.0
  */
 public void setMoveable (boolean moveable) {
 	checkWidget ();
@@ -618,7 +618,7 @@ public void setText (String value) {
  *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
  * </ul>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public void setToolTipText (String string) {
 	checkWidget ();

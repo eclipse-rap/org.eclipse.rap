@@ -1151,7 +1151,7 @@ public class CoolBar extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    * 
-   * @since 2.0
+   * @since 1.0
    */
   public boolean getLocked() {
     checkWidget();
@@ -1212,7 +1212,7 @@ public class CoolBar extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    * 
-   * @since 2.0
+   * @since 1.0
    */
   public void setLocked( boolean locked ) {
     checkWidget();

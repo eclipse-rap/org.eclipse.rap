@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.*;
  * Snippet that displays how to bind the validation error of the
  * {@link DataBindingContext} to a label.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class Snippet004DataBindingContextErrorLabel extends Group {
 
@@ -95,7 +95,7 @@ public class Snippet004DataBindingContextErrorLabel extends Group {
   /**
    * Validator that returns validation errors for any value other than 5.
    * 
-   * @since 3.2
+   * @since 1.0
    */
   private static class FiveValidator implements IValidator {
 

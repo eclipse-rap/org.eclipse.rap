@@ -258,7 +258,7 @@ public Rectangle intersection (Rectangle rect) {
  * @see #intersection(Rectangle)
  * @see #isEmpty()
  * 
- * @since 3.0
+ * @since 1.0
  */
 public boolean intersects (int x, int y, int width, int height) {
 	return (x < this.x + this.width) && (y < this.y + this.height) &&

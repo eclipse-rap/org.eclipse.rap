@@ -203,7 +203,7 @@ public void dispose () {
 *
 * @return the zero based index of the column of the cell being tracked by this editor
 *
-* @since 3.1
+* @since 1.0
 */
 public int getColumn () {
 	return column;
@@ -238,7 +238,7 @@ void resize () {
 * 
 * @param column the zero based index of the column of the cell being tracked by this editor
 *
-* @since 3.1
+* @since 1.0
 */
 public void setColumn(int column) {
 	int columnCount = tree.getColumnCount();
@@ -278,7 +278,7 @@ public void setItem (TreeItem item) {
 * @param item the TreeItem for the row of the cell being tracked by this editor
 * @param column the zero based index of the column of the cell being tracked by this editor
 *
-* @since 3.1
+* @since 1.0
 */
 public void setEditor (Control editor, TreeItem item, int column) {
 	setItem(item);
