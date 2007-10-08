@@ -85,19 +85,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       this._columnArea.dispose();
       this._columnArea = null;
     }
-    if( this._tree ) {
+    if( this._tree ) { 
     	var el = this._tree.getElement();
-	    if (el) {
+	    if( el ) {
 	      // remove inline event
-	      if (qx.core.Variant.isSet("qx.client", "mshtml")) {
-	        el.detachEvent("onscroll", this._tree.__onscroll);
+	      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+	        el.detachEvent( "onscroll", this._tree.__onscroll );
 	      } else {
-	        el.removeEventListener("scroll", this._tree.__onscroll, false);
+	        el.removeEventListener( "scroll", this._tree.__onscroll, false );
 	      }
 	      delete this.__onscroll;
 	    }
       var manager = this._tree.getManager();
-      manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
+      if( manager ) {
+        manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
+      }
       this._tree.removeEventListener( "treeOpenWithContent", this._onItemExpanded, this );
       this._tree.removeEventListener( "treeClose", this._onItemCollapsed, this );
       this._tree.removeEventListener( "contextmenu", this._onContextMenu, this );
