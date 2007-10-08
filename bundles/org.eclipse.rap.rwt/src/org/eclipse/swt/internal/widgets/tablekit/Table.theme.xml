@@ -6,11 +6,11 @@
   
   <color name = "table.column.background"
       description = "Background color for table column headers"
-      default = "232, 232, 215" />
+      default = "248, 248, 255" />
   
   <color name = "table.column.hover.background"
       description = "Background color for table column headers on mouse over"
-      default = "248, 485, 255" />
+      default = "248, 248, 255" />
   
   <color name = "table.row.line"
       description = "Grid line color when linesVisible is true"
