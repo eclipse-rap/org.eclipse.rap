@@ -154,6 +154,7 @@ class ViewFormLayout extends Layout {
                       * form.marginWidth
                       + 2
                       * form.highlight;
+
     int count = -1;
     if( leftSize.x > 0 )
       count++;
@@ -163,7 +164,9 @@ class ViewFormLayout extends Layout {
       count++;
     if( count > 0 )
       minTopWidth += count * form.horizontalSpacing;
-    int x = rect.x + rect.width - form.marginWidth - form.highlight;
+//    int x = rect.x + rect.width - form.marginWidth - form.highlight;
+// TODO [rh] hack to fix CTabFolder layout problems
+    int x = rect.x + rect.width - form.marginWidth - form.highlight - 1;
     int y = rect.y + form.marginHeight + form.highlight;
     boolean top = false;
     if( form.separateTopCenter || minTopWidth > rect.width ) {
