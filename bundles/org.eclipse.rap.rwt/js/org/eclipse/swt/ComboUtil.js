@@ -53,6 +53,11 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     
     modifyText : function( evt ) {
       var combo = evt.getTarget();
+      // If the drop-down list is not visible, the target is the text field
+      // instead of the combo.
+      if( !( combo instanceof qx.ui.form.ComboBox ) ) {
+      	combo = combo.getParent();
+      }
       if(    !org_eclipse_rap_rwt_EventUtil_suspend 
           && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) ) 
       {
@@ -60,11 +65,11 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         // with the text widgets' content just before the request is sent
         if( !org.eclipse.swt.TextUtil._isModified( combo ) ) {
           var req = org.eclipse.swt.Request.getInstance();
-          req.addEventListener( "send", org.eclipse.swt.ComboUtil._onSend, text );
+          req.addEventListener( "send", org.eclipse.swt.ComboUtil._onSend, combo );
           org.eclipse.swt.TextUtil._setModified( combo, true );
         }
       }
-      org.eclipse.swt.TextUtil.updateSelection( combo );
+      org.eclipse.swt.TextUtil.updateSelection( combo.getField(), combo );
     },
     
     /**
@@ -73,6 +78,8 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
      */
     modifyTextAction : function( evt ) {
       var combo = evt.getTarget();
+      // If the drop-down list is not visible, the target is the text field
+      // instead of the combo.
       if( !( combo instanceof qx.ui.form.ComboBox ) ) {
       	combo = combo.getParent();
       }
@@ -95,7 +102,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
                               combo, 
                               500 );
       }
-      org.eclipse.swt.TextUtil.updateSelection( combo.getField() );
+      org.eclipse.swt.TextUtil.updateSelection( combo.getField(), combo );
     },
     
     /**
@@ -219,16 +226,10 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       if( count == null ) {
         count = 5;
       }
-      combo.debug( "_____ count: " + count );
       if( items.length > 0 ) {
         var itemHeight = items[ 0 ].getBoxHeight();
         var item = items[ 0 ];
-        combo.debug( "_____ item height: " + itemHeight );
-        item.debug( "_____ top, bottom: " + item.getTop() + ", " + item.getBottom() );
-        item.debug( "_____ font: " + item.getFont() );
-        item.debug( "_____ padding: " + item.getPadding() );
         combo.getPopup().setMaxHeight( itemHeight * count );
-        combo.debug( "_____ msx height: " + ( itemHeight * count ) );
       }
     },
     
@@ -281,6 +282,5 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         req.addParameter( id + ".text", value );
       }
     }
-    
   }
 });

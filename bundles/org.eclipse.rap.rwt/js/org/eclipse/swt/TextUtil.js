@@ -186,26 +186,33 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     
     onMouseUp : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        org.eclipse.swt.TextUtil.updateSelection( evt.getTarget() );
+        var text = evt.getTarget();
+        org.eclipse.swt.TextUtil.updateSelection( text );
       }
     },
 
-    updateSelection : function( text ) {
+    updateSelection : function( text, enclosingWidget ) {
       // TODO [rh] executing the code below for a TextArea leads to Illegal Argument
       if( text.classname != "qx.ui.form.TextArea" ) {
+        var widget = enclosingWidget != null ? enclosingWidget : text;
         var start = text.getSelectionStart();
         var length = text.getSelectionLength();
         if( text.getUserData( "selectionStart" ) != start ) {
           text.setUserData( "selectionStart", start );
-          org.eclipse.swt.TextUtil._setPropertyParam( text, "selectionStart", start );
+          org.eclipse.swt.TextUtil._setPropertyParam( widget,
+                                                      "selectionStart",
+                                                      start );
         }
         if( text.getUserData( "selectionLength" ) != length ) {
           text.setUserData( "selectionLength", length );
-          org.eclipse.swt.TextUtil._setPropertyParam( text, "selectionCount", length );
+          org.eclipse.swt.TextUtil._setPropertyParam( widget,
+                                                      "selectionCount",
+                                                      length );
         }
       }
     },
 
+    // TODO [rst] not text specific, move this function to Request
     _setPropertyParam : function( widget, name, value ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var id = widgetManager.findIdByWidget( widget );

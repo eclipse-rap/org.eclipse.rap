@@ -23,6 +23,9 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
+/**
+ * Life cycle adapter for Combo widgets.
+ */
 public class ComboLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "qx.ui.form.ComboBox";
@@ -50,12 +53,12 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final String JS_FUNC_SET_MAX_POPUP_HEIGHT =
     "org.eclipse.swt.ComboUtil.setMaxPopupHeight";
 
-  // Propery names for preserve-value facility
+  // Property names for preserve-value facility
   private static final String PROP_ITEMS = "items";
   private static final String PROP_TEXT = "text";
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_EDITABLE = "editable";
-  private static final String PROP_VERIFY_MODIFY_LISTENER 
+  private static final String PROP_VERIFY_MODIFY_LISTENER
     = "verifyModifyListener";
   private static final String PROP_MAX_POPUP_HEIGHT = "maxPopupHeight";
 
@@ -163,7 +166,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     final String value = WidgetLCAUtil.readPropertyValue( combo, "text" );
     if( value != null ) {
       // setText needs to be executed in a ProcessAcction runnable as it may
-      // fire a VerifyEvent whose fields (text and doit) need to be evaluated 
+      // fire a VerifyEvent whose fields (text and doit) need to be evaluated
       // before actually setting the new value
       ProcessActionRunner.add( new Runnable() {
         public void run() {
@@ -200,14 +203,14 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static void writeSelection( final Combo combo ) throws IOException {
     Integer newValue = new Integer( combo.getSelectionIndex() );
     Integer defValue = DEFAULT_SELECTION;
-    boolean selectionChanged 
+    boolean selectionChanged
       = WidgetLCAUtil.hasChanged( combo, PROP_SELECTION, newValue, defValue );
     // The 'textChanged' statement covers the following use case:
     // combo.add( "a" );  combo.select( 0 );
-    // -- in a subsequent request -- 
+    // -- in a subsequent request --
     // combo.removeAll();  combo.add( "b" );  combo.select( 0 );
     // When only examining selectionIndex, a change cannot be determined
-    boolean textChanged 
+    boolean textChanged
       =    !isEditable( combo )
         && WidgetLCAUtil.hasChanged( combo, PROP_TEXT, combo.getText(), "" );
     if( selectionChanged || textChanged ) {
@@ -248,8 +251,8 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void writeSelectionListener( final Combo combo )
-    throws IOException 
-  {    
+    throws IOException
+  {
     JSWriter writer = JSWriter.getWriterFor( combo );
     writer.updateListener( JS_LISTENER_INFO,
                            Props.SELECTION_LISTENERS,
