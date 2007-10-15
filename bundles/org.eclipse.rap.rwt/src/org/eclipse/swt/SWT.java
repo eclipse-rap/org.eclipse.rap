@@ -677,7 +677,7 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Text</code></li>
    * <li><code>List</code></li>
-   * <li><code>FileDialog</code></li>
+   * <!-- <li><code>FileDialog</code></li> -->
    * </ul></p>
    */
   public static final int MULTI = 1 << 1;
@@ -819,8 +819,8 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Table</code></li>
    * <li><code>Tree</code></li>
-   * <li><code>StyledText</code></li>
-   * <li><code>TextLayout</code></li> 
+   * <!-- <li><code>StyledText</code></li> -->
+   * <!-- <li><code>TextLayout</code></li> -->
    * </ul></p>
    */
   public static final int FULL_SELECTION = 1 << 16;
