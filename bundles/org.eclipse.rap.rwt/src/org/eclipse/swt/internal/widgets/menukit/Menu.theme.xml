@@ -4,22 +4,29 @@
 
 <theme>
 
-  <color name = "menu.foreground"
-      description = "Text color for menu items"
-      default = "0, 0, 0" />
+  <color name="menu.foreground"
+      description="Text color for menu items"
+      default="0, 0, 0" />
   
-  <color name = "menu.hover.foreground"
-      description = "Text for menu items on mouse over"
-      default = "255, 255, 255" />
+  <color name="menu.hover.foreground"
+      description="Text for menu items on mouse over"
+      default="255, 255, 255" />
   
   <!-- == control.background -->
-  <color name = "menu.background"
-      description = "Background color for menus"
-      default = "248, 248, 255" />
+  <color name="menu.background"
+      description="Background color for menus"
+      default="248, 248, 255" />
   
   <!-- == list.focused.background -->
-  <color name = "menu.hover.background"
-      description = "Background color for menus on mouse over"
-      default = "49, 106, 197" />
+  <color name="menu.hover.background"
+      description="Background color for menus on mouse over"
+      default="49, 106, 197" />
 
+  <border name="menu.border"
+      description="Border for menus"
+      default="2px outset" />
+
+  <boxdim name="menu.padding"
+      description="Padding for menus"
+      default="1px" />
 </theme>

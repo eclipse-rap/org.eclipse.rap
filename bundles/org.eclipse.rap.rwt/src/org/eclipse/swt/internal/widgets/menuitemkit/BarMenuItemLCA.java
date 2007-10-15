@@ -25,16 +25,16 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
 
   private static final Object[] RWT_FLAT = new Object[] { "rwt_FLAT" };
 
-  private static final JSListenerInfo JS_LISTENER_INFO 
-    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE, 
-                          JSConst.JS_WIDGET_SELECTED, 
+  private static final JSListenerInfo JS_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
+                          JSConst.JS_WIDGET_SELECTED,
                           JSListenerType.ACTION );
 
   void preserveValues( final MenuItem menuItem ) {
     ItemLCAUtil.preserve( menuItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     boolean hasListener = SelectionEvent.hasListener( menuItem );
-    adapter.preserve( Props.SELECTION_LISTENERS, 
+    adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( hasListener ) );
     adapter.preserve( Props.ENABLED,
                       Boolean.valueOf( menuItem.getEnabled() ) );
@@ -47,7 +47,8 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   void renderInitialization( final MenuItem menuItem ) throws IOException {
     MenuItemLCAUtil.newItem( menuItem, "qx.ui.menubar.Button", true );
     JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.call( "addState", RWT_FLAT );
+    // Note: qx.ui.menubar.Button extends qx.ui.toolbar.Button
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "menubar-button" );
   }
 
   // TODO [rh] qooxdoo does not handle bar menu items with images, should
@@ -55,8 +56,8 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   void renderChanges( final MenuItem menuItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     ItemLCAUtil.writeText( menuItem, true );
-    writer.updateListener( JS_LISTENER_INFO, 
-                           Props.SELECTION_LISTENERS, 
+    writer.updateListener( JS_LISTENER_INFO,
+                           Props.SELECTION_LISTENERS,
                            SelectionEvent.hasListener( menuItem ) );
     MenuItemLCAUtil.writeEnabled( menuItem );
   }

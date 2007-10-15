@@ -105,14 +105,6 @@ borders = {
     "toolbar.border" : {
       width : 0
     },
-    
-    // -- menu --
-    
-    "menu.border" : { // == outset
-      width : 2,
-      color : [ "widget.lightshadow", "widget.darkshadow", "widget.darkshadow", "widget.lightshadow" ],
-      innerColor : [ "widget.highlight", "widget.shadow", "widget.shadow", "widget.highlight" ]
-    },
         
     // -- table --
     

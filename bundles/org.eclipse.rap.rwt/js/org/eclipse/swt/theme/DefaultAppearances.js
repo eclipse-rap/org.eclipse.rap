@@ -617,8 +617,8 @@ appearances = {
           textColor : "menu.foreground",
           backgroundColor : "menu.background",
           overflow : "hidden",
-          border : "outset",
-          padding : 1
+          border : "menu.border",
+          padding : THEME_VALUE( "menu.padding" )
         };
       }
     },
@@ -699,6 +699,33 @@ appearances = {
           height : 0,
           border : "verticalDivider"
         };
+      }
+    },
+    
+    "menubar-button" :
+    {
+      style : function( states ) {
+        var result =
+        {
+          cursor : "default",
+          overflow : "hidden",
+          spacing : 4,
+          width : "auto",
+          padding : [ 3, 4 ],
+          verticalChildrenAlign : "middle",
+          backgroundImage : states.checked && !states.over ? "static/image/dotted_white.gif" : null,
+        };
+        if( states.disabled ) {
+          result.backgroundColor = "toolbar.background";
+          result.textColor = "widget.graytext";
+        } else if( states.over ) {
+          result.backgroundColor = "menu.hover.background";
+          result.textColor = "menu.hover.foreground";
+        } else {
+          result.backgroundColor = "menu.background";
+          result.textColor = "menu.foreground";
+        }
+        return result;
       }
     },
     
