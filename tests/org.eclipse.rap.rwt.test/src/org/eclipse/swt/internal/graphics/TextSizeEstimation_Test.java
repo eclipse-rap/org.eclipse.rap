@@ -57,38 +57,22 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( charHeight < 13 );
     String testString = "Test String";
     Point stringExtent = TextSizeEstimation.stringExtent( font10 , testString );
-    System.out.println( "stringExtent:" + stringExtent );
     assertTrue( stringExtent.x > 40 );
     assertTrue( stringExtent.x < 70 );
     assertTrue( stringExtent.y >= charHeight );
     assertTrue( stringExtent.y < charHeight * 1.5 );
     String testString2L = testString + "\r\n" + testString;
     Point textExtent2L = TextSizeEstimation.textExtent( font10 , testString2L, 0 );
-    System.out.println( "textExtent:" + textExtent2L );
     assertEquals( stringExtent.x, textExtent2L.x );
     assertTrue( textExtent2L.y >= charHeight * 2 );
     assertTrue( textExtent2L.y < charHeight * 3 );
-    String testString4L = testString + "\r\n" + "\r\n" + testString + "\r\n" + "\r\n" + "\r\n";
-    Point textExtent4L = TextSizeEstimation.textExtent( font10 , testString4L, 0 );
-    System.out.println( "textExtent:" + textExtent4L );
-    assertEquals( stringExtent.x, textExtent4L.x );
-    assertTrue( textExtent4L.y >= charHeight * 4 );
-    assertTrue( textExtent4L.y < charHeight * 5 );
+    String testString5L = testString + "\r\n" + "\r\n" + testString + "\r\n" + "\r\n";
+    Point textExtent5L = TextSizeEstimation.textExtent( font10 , testString5L, 0 );
+    assertEquals( stringExtent.x, textExtent5L.x );
+    assertTrue( textExtent5L.y >= charHeight * 5 );
+    assertTrue( textExtent5L.y < charHeight * 5 + charHeight * 1.5 );
   }
   
-  public void testxx() throws Exception {
-    Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
-    Point extent;
-    extent = TextSizeEstimation.textExtent( font , "x", 0 );
-    System.out.println( extent );
-    extent = TextSizeEstimation.textExtent( font, "x\r\nx", 0 );
-    System.out.println( extent );
-    extent = TextSizeEstimation.textExtent( font, "x\nx\nx", 0 );
-    System.out.println( extent );
-    extent = TextSizeEstimation.textExtent( font, "x\nx\nx\nx", 0 );
-    System.out.println( extent );
-  }
-
   // Test for a case where text width == wrapWidth
   public void testEndlessLoopProblem() {
     Font font = Graphics.getFont( "Helvetica", 11, SWT.NORMAL );
