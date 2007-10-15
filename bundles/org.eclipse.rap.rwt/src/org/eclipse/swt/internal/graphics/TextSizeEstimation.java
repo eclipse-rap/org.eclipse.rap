@@ -11,19 +11,23 @@
 
 package org.eclipse.swt.internal.graphics;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 
 class TextSizeEstimation {
 
+  static Pattern NEWLINE_PATTERN = Pattern.compile( "\\r\\n|\\r|\\n" );
+  
   /**
-   * Estimates the size of a given text. Linebreaks are not respected.
+   * Estimates the size of a given text. Line breaks are not respected.
    * @param font the font to perform the estimation for
    * @param string the text whose size to estimate
    * @return the estimated size
    */
-  static Point stringExtent( final Font font, final String string ) {    
+  static Point stringExtent( final Font font, final String string ) {
     if ( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -50,7 +54,7 @@ class TextSizeEstimation {
     }
     int lineCount = 0;
     int maxWidth = 0;
-    String[] lines = string.split( "\n" );
+    String[] lines = NEWLINE_PATTERN.split( string, -1 );
     for( int i = 0; i < lines.length; i++ ) {
       String line = lines[ i ];
       lineCount++;
@@ -144,8 +148,8 @@ class TextSizeEstimation {
   /**
    * Returns the next substring that can be wrapped.
    */
-  private static String nextSubLine( final String line, 
-                                     final int startIndex ) 
+  private static String nextSubLine( final String line,
+                                     final int startIndex )
   {
     String result = line;
     int index = line.indexOf( ' ', startIndex );
@@ -156,7 +160,7 @@ class TextSizeEstimation {
   }
   
   /**
-   * Returns the width of a given string in pixels. Linebreaks are ignored.
+   * Returns the width of a given string in pixels. Line breaks are ignored.
    */
   private static int getLineWidth( final String line, final Font font ) {
     return Math.round( getAvgCharWidth( font ) * line.length() );

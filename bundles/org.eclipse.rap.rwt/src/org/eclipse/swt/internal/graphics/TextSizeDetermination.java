@@ -68,7 +68,9 @@ public class TextSizeDetermination {
     Point result;
     if( wrapWidth <= 0 ) {
       result = doMeasurement( font, string, wrapWidth, TEXT_EXTENT );
-      result.y = getCharHeight( font );
+      // TODO [rst] This line caused errors with strings that contained more
+      //            than one line - textExtent respects new lines!
+//      result.y = getCharHeight( font );
     } else {
       Point testSize = doMeasurement( font, string, wrapWidth, TEXT_EXTENT );
       if( testSize.x < wrapWidth ) {

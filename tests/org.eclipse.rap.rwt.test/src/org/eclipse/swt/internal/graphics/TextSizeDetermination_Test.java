@@ -34,7 +34,7 @@ import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbeResult;
 import org.eclipse.swt.widgets.Display;
 
 
-public class FontSizeCalculator_Test extends TestCase {
+public class TextSizeDetermination_Test extends TestCase {
 
   private static final String TEST_STRING = "test";
 
@@ -104,7 +104,7 @@ public class FontSizeCalculator_Test extends TestCase {
     items = TextSizeDetermination.getCalculationItems();
     assertEquals( 1, items.length );
 
-    TextSizeDetermination.stringExtent( font , TEST_STRING );
+    TextSizeDetermination.stringExtent( font, TEST_STRING );
     assertEquals( 1, items.length );
     items = TextSizeDetermination.getCalculationItems();
     assertEquals( 1, items.length );

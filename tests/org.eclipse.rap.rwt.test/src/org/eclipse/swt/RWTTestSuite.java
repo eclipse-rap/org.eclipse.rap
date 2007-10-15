@@ -168,8 +168,8 @@ public class RWTTestSuite {
     suite.addTestSuite( RGB_Test.class );
     suite.addTestSuite( Font_Test.class );
     suite.addTestSuite( FontData_Test.class );
-    suite.addTestSuite( FontSizeEstimation_Test.class );
-    suite.addTestSuite( FontSizeCalculator_Test.class );
+    suite.addTestSuite( TextSizeEstimation_Test.class );
+    suite.addTestSuite( TextSizeDetermination_Test.class );
     suite.addTestSuite( ResourceFactory_Test.class );
 
     // == LCAs ==
