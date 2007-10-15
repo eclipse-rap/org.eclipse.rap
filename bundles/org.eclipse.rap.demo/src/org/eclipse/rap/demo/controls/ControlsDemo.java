@@ -49,7 +49,6 @@ public class ControlsDemo implements IEntryPoint {
     topFolder.setSelectionForeground( selFg );
 
     final ExampleTab[] tabs = new ExampleTab[] {
-      new ProgressBarTab( topFolder ),
       new ButtonTab( topFolder ),
 //      new RequestTab( topFolder ),
       new CBannerTab( topFolder ),
@@ -80,6 +79,7 @@ public class ControlsDemo implements IEntryPoint {
       new ContainmentTab( topFolder ),
       new ZOrderTab( topFolder ),
       new FocusTab( topFolder ),
+      new ProgressBarTab( topFolder ),
       new ErrorHandlingTab( topFolder )
     };
     tabs[ 0 ].createContents();
