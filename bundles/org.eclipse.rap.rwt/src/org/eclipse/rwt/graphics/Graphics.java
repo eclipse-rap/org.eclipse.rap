@@ -13,6 +13,7 @@ package org.eclipse.rwt.graphics;
 
 import java.io.InputStream;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
@@ -45,7 +46,7 @@ public final class Graphics {
   /**
    * Returns a {@link Color} given the
    * desired red, green and blue values expressed as ints in the range
-   * 0 to 255 (where 0 is black and 255 is full brightness). 
+   * 0 to 255 (where 0 is black and 255 is full brightness).
    * 
    * @param red the amount of red in the color
    * @param green the amount of green in the color
@@ -100,7 +101,7 @@ public final class Graphics {
   /**
    * Returns an instance of {@link Image} based on the specified
    * image path. The image has to be on the applications class-path.
-   * Uses the specified classloader to load the image. 
+   * Uses the specified classloader to load the image.
    * 
    * @param path the path to the image
    * @param imageLoader the classloader to use
@@ -132,21 +133,74 @@ public final class Graphics {
   //////////////////////////
   // Text-Size-Determination
   
+  /**
+   * Returns the extent of the given string. Tab expansion and carriage return
+   * processing are performed.
+   * <p>
+   * The <em>extent</em> of a string is the width and height of the
+   * rectangular area it would cover if drawn in a particular font.
+   * </p>
+   * 
+   * @param font the font for which the result is valid
+   * @param string the string to measure
+   * @param wrapWidth the maximum width of the text. The text will be wrapped to
+   *            match this width. If set to 0, no wrapping will be performed.
+   * @return a point containing the extent of the string
+   * @exception IllegalArgumentException
+   *                <ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   *                </ul>
+   */
   public static Point textExtent( final Font font,
                                   final String string,
                                   final int wrapWidth )
   {
+    if( string == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     return TextSizeDetermination.textExtent( font, string, wrapWidth );
   }
   
+  /**
+   * Returns the extent of the given string. No tab expansion or carriage return
+   * processing will be performed.
+   * <p>
+   * The <em>extent</em> of a string is the width and height of the
+   * rectangular area it would cover if drawn in a particular font.
+   * </p>
+   * 
+   * @param font the font for which the result is valid
+   * @param string the string to measure
+   * @return a point containing the extent of the string
+   * @exception IllegalArgumentException
+   *                <ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   *                </ul>
+   */
   public static Point stringExtent( final Font font, final String string ) {
+    if( string == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     return TextSizeDetermination.stringExtent( font, string );
   }
   
+  /**
+   * Returns the height of the specified font, measured in pixels.
+   * 
+   * @param font the font for which the result is valid
+   * @return the height of the font
+   */
   public static int getCharHeight( final Font font ) {
     return TextSizeDetermination.getCharHeight( font );
   }
   
+  /**
+   * Returns the average character width of the specified font, measured in
+   * pixels.
+   * 
+   * @param font the font for which the result is valid
+   * @return the average character width of the font
+   */
   public static float getAvgCharWidth( final Font font ) {
     return TextSizeDetermination.getAvgCharWidth( font );
   }
