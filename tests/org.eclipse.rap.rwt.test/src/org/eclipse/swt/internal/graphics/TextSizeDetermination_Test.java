@@ -122,8 +122,21 @@ public class TextSizeDetermination_Test extends TestCase {
 
     Point emptyStringSize = TextSizeDetermination.stringExtent( font, "" );
     assertEquals( new Point( 0, 10 ), emptyStringSize );
+
+    // make sure string extent does not expand line breaks
+    Point singleLine = TextSizeDetermination.stringExtent( font, "First Line" );
+    Point multiLine = TextSizeDetermination.stringExtent( font, "First Line\nSecond Line" );
+    assertEquals( singleLine.y, multiLine.y );
   }
 
+  public void testTextExtent() throws Exception {
+    Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
+    // make sure text extent does expand line breaks
+    Point singleLine = TextSizeDetermination.textExtent( font, "First Line", 0 );
+    Point multiLine = TextSizeDetermination.textExtent( font, "First Line\nSecond Line", 0 );
+    assertTrue( singleLine.y < multiLine.y );
+  }
+  
   public void testCharHeight() {
     IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 0, probeRequests.length );

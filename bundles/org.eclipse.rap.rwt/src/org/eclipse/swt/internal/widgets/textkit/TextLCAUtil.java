@@ -32,7 +32,7 @@ final class TextLCAUtil {
   static final String PROP_TEXT = "text";
   private static final String PROP_TEXT_LIMIT = "textLimit";
   private static final String PROP_SELECTION = "selection";
-  private static final String PROP_VERIFY_MODIFY_LISTENER 
+  private static final String PROP_VERIFY_MODIFY_LISTENER
     = "verifyModifyListener";
   private static final String PROP_READONLY = "readonly";
 
@@ -69,15 +69,15 @@ final class TextLCAUtil {
     boolean hasVerifyListener = VerifyEvent.hasListener( text );
     boolean hasModifyListener = ModifyEvent.hasListener( text );
     boolean hasListener = hasVerifyListener || hasModifyListener;
-    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER, 
+    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER,
                       Boolean.valueOf( hasListener ) );
   }
 
   static void readText( final Text text ) {
     final String value = WidgetLCAUtil.readPropertyValue( text, "text" );
     if( value != null ) {
-      // setText needs to be executed in a ProcessAcction runnable as it may
-      // fire a VerifyEvent whose fields (text and doit) need to be evaluated 
+      // setText needs to be executed in a ProcessAction runnable as it may
+      // fire a VerifyEvent whose fields (text and doit) need to be evaluated
       // before actually setting the new value
       ProcessActionRunner.add( new Runnable() {
         public void run() {
@@ -107,11 +107,11 @@ final class TextLCAUtil {
   }
   
   static void writeHijack( final Text text ) throws IOException {
-    // TODO [rh] workaround for 
+    // TODO [rh] workaround for
     //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
     //      see TextUtil.js
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.callStatic( "org.eclipse.swt.TextUtil.hijack", 
+    writer.callStatic( "org.eclipse.swt.TextUtil.hijack",
                        new Object[] { text } );
   }
 
@@ -182,8 +182,8 @@ final class TextLCAUtil {
                            "org.eclipse.swt.TextUtil._onAppearSetSelection" );
   }
 
-  static void writeVerifyAndModifyListener( final Text text ) 
-    throws IOException 
+  static void writeVerifyAndModifyListener( final Text text )
+    throws IOException
   {
     if( ( text.getStyle() & SWT.READ_ONLY ) == 0 ) {
       JSWriter writer = JSWriter.getWriterFor( text );

@@ -93,7 +93,8 @@ public class TextSizeDetermination {
                                       final int wrapWidth,
                                       final int estimationMode )
   {
-    String toMeasure = createMeasureString( string, true );
+    boolean expandLineDelimitors = estimationMode == TEXT_EXTENT;
+    String toMeasure = createMeasureString( string, expandLineDelimitors );
     Point result = TextSizeDataBase.lookup( font, toMeasure, wrapWidth );
     if( result == null ) {
       switch( estimationMode ) {
@@ -211,15 +212,18 @@ public class TextSizeDetermination {
     }
   }
 
+  // TODO [rst] Perform also TAB expansion to match the default of GC#textExtent( String )
   private static String createMeasureString( final String string,
-                                             final boolean wrap )
+                                             final boolean expandLineDelimitors )
   {
     // TODO [fappel]: revise this - text escape may cause inaccurate
     //                calculations
     String result = WidgetLCAUtil.escapeText( string, true );
-    if( wrap ) {
-      Matcher matcher = NEWLINE_PATTERN.matcher( result );
+    Matcher matcher = NEWLINE_PATTERN.matcher( result );
+    if( expandLineDelimitors ) {
       result = matcher.replaceAll( "<br/>" );
+    } else {
+      result = matcher.replaceAll( " " );
     }
     return result;
   }
