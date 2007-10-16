@@ -23,11 +23,29 @@ import org.eclipse.swt.internal.widgets.ILinkAdapter;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Widget;
 
+/**
+ * Life-cycle adapter for the Link widget
+ */
 public class LinkLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "qx.ui.layout.HorizontalBoxLayout";
 
   private static final String TYPE_POOL_ID = LinkLCA.class.getName();
+
+  private static final String JS_LINK_UTIL = "org.eclipse.swt.LinkUtil";
+  
+  private static final String JS_FUNC_INIT = JS_LINK_UTIL + ".init";
+  
+  private static final String JS_FUNC_ADD_LINK = JS_LINK_UTIL + ".addLink";
+  
+  private static final String JS_FUNC_ADD_TEXT = JS_LINK_UTIL + ".addText";
+  
+  private static final String JS_FUNC_CLEAR = JS_LINK_UTIL + ".clear";
+  
+  private static final String JS_FUNC_DESTROY = JS_LINK_UTIL + ".destroy";
+  
+  private static final String JS_FUNC_SET_SELECTION_LISTENER
+    = JS_LINK_UTIL + ".setSelectionListener";
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_SEL_LISTENER = "selectionListener";
@@ -62,7 +80,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     writer.newWidget( QX_TYPE );
     writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );
     Object[] args = new Object[] { widget };
-    writer.callStatic( "org.eclipse.swt.LinkUtil.init", args );
+    writer.callStatic( JS_FUNC_INIT, args );
     ControlLCAUtil.writeStyleFlags( link );
   }
 
@@ -76,7 +94,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Object[] args = new Object[]{ widget };
-    writer.callStatic( "org.eclipse.swt.LinkUtil.destroy", args );
+    writer.callStatic( JS_FUNC_DESTROY, args );
     writer.dispose();
   }
 
@@ -86,7 +104,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.resetStyleFlags();
     JSWriter writer = JSWriter.getWriterForResetHandler();
     Object[] args = new Object[]{ JSWriter.WIDGET_REF };
-    writer.callStatic( "org.eclipse.swt.LinkUtil.clear", args );
+    writer.callStatic( JS_FUNC_CLEAR, args );
   }
 
   public String getTypePoolId( final Widget widget ) {
@@ -100,8 +118,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     {
       JSWriter writer = JSWriter.getWriterFor( link );
       Object[] args = new Object[]{ link, newValue };
-      writer.callStatic( "org.eclipse.swt.LinkUtil.setSelectionListener",
-                         args );
+      writer.callStatic( JS_FUNC_SET_SELECTION_LISTENER, args );
     }
   }
 
@@ -116,7 +133,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( link, PROP_TEXT, newValue, "" ) ) {
       JSWriter writer = JSWriter.getWriterFor( link );
       Object[] args = new Object[]{ link };
-      writer.callStatic( "org.eclipse.swt.LinkUtil.clear", args );
+      writer.callStatic( JS_FUNC_CLEAR, args );
       ILinkAdapter adapter = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
       String displayText = adapter.getDisplayText();
       Point[] offsets = adapter.getOffsets();
@@ -146,8 +163,11 @@ public class LinkLCA extends AbstractWidgetLCA {
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( link );
-    Object[] args = new Object[]{ link, text };
-    writer.callStatic( "org.eclipse.swt.LinkUtil.addText", args );
+    Object[] args = new Object[]{
+      link,
+      WidgetLCAUtil.escapeText( text, true )
+    };
+    writer.callStatic( JS_FUNC_ADD_TEXT, args );
   }
 
   private void writeLinkText( final Link link,
@@ -155,8 +175,12 @@ public class LinkLCA extends AbstractWidgetLCA {
                               final int index ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( link );
-    Object[] args = new Object[]{ link, text, new Integer( index ) };
-    writer.callStatic( "org.eclipse.swt.LinkUtil.addLink", args );
+    Object[] args = new Object[]{
+      link,
+      WidgetLCAUtil.escapeText( text, true ),
+      new Integer( index )
+    };
+    writer.callStatic( JS_FUNC_ADD_LINK, args );
   }
 
 }
