@@ -35,6 +35,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static final String PROP_IMAGES = "images";
   private static final String PROP_CHECKED = "checked";
   private static final String PROP_GRAYED = "grayed";
+  private static final String PROP_INDEX = "index";
   private static final String PROP_SELECTED = "selected";
   private static final String PROP_FOCUSED = "focused";
   private static final String PROP_FONT = "font";
@@ -43,6 +44,8 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   public void preserveValues( final Widget widget ) {
     TableItem item = ( TableItem )widget;
+    Table table = item.getParent();
+    int index = item.getParent().indexOf( item );
     ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     adapter.preserve( PROP_TOP, new Integer( item.getBounds().y ) );
@@ -50,7 +53,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
     adapter.preserve( PROP_TEXTS, getTexts( item ) );
     adapter.preserve( PROP_IMAGES, getImages( item ) );
-    adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( item ) ) );
+    adapter.preserve( PROP_INDEX, new Integer( index ) );
+    adapter.preserve( PROP_SELECTED, 
+                      Boolean.valueOf( isSelected( table, index ) ) );
     adapter.preserve( PROP_FOCUSED, Boolean.valueOf( isFocused( item ) ) );
     adapter.preserve( PROP_FONT, getFonts( item ) );
     adapter.preserve( PROP_BACKGROUND, getBackgrounds( item ) );
@@ -96,7 +101,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
-    Table table = item.getParent();
     boolean needUpdate = false;
     needUpdate |= writeTexts( item );
     needUpdate |= writeImages( item );
@@ -107,8 +111,10 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     needUpdate |= writeGrayed( item );
     needUpdate |= writeSelection( item );
     if( isVisible( item ) ) {
+      Table table = item.getParent();
       needUpdate |= TableLCAUtil.hasItemMetricsChanged( table );
       needUpdate |= TableLCAUtil.hasAlignmentChanged( table );
+      needUpdate |= hasIndexChanged( item );
     }
     if( needUpdate ) {
       JSWriter writer = JSWriter.getWriterFor( item );
@@ -206,7 +212,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private boolean writeBackground( final TableItem item ) throws IOException {
+  private static boolean writeBackground( final TableItem item ) 
+    throws IOException 
+  {
     Color[] backgrounds = getBackgrounds( item );
     Color parentBackground = item.getParent().getBackground();
     Color[] defValue = new Color[ getColumnCount( item ) ];
@@ -217,7 +225,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return writer.set( PROP_BACKGROUND, "backgrounds", backgrounds, defValue );
   }
 
-  private boolean writeForeground( final TableItem item ) throws IOException {
+  private static boolean writeForeground( final TableItem item ) 
+    throws IOException 
+  {
     Color[] foregrounds = getForegrounds( item );
     Color parentForeground = item.getParent().getForeground();
     Color[] defValue = new Color[ getColumnCount( item ) ];
@@ -289,6 +299,11 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result.toString();
   }
 
+  private static boolean hasIndexChanged( final TableItem item ) {
+    int index = item.getParent().indexOf( item );
+    return WidgetLCAUtil.hasChanged( item, PROP_INDEX, new Integer( index ) );
+  }
+
   //////////////////////
   // Item data accessors
 
@@ -344,7 +359,11 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static boolean isSelected( final TableItem item ) {
     Table table = item.getParent();
     int index = table.indexOf( item );
-    return index != -1 && table.isSelected( index );
+    return isSelected( table, index );
+  }
+
+  private static boolean isSelected( final Table table, final int itemIndex ) {
+    return itemIndex != -1 && table.isSelected( itemIndex );
   }
 
   private static boolean isFocused( final TableItem item ) {

@@ -114,11 +114,12 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeSelectionListener( table );
     writeDefaultColumnWidth( table );
     // Make the JavaScript client area the parent of all children of table 
+    String itemJSParent = getItemJSParent( table );
     Control[] children = table.getChildren();
     for( int i = 0; i < children.length; i++ ) {
       WidgetAdapter adapter 
         = ( WidgetAdapter )WidgetUtil.getAdapter( children[ i ] );
-      adapter.setJSParent( TableLCA.getItemJSParent( table ) );
+      adapter.setJSParent( itemJSParent );
     }
   }
 

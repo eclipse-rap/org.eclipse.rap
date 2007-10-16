@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
@@ -1957,6 +1956,10 @@ public class Table extends Composite {
   
   final void createItem( final TableItem item, final int index ) {
     itemHolder.insert( item, index );
+    // advance focusIndex when an item is inserted before the focused item
+    if( index <= focusIndex ) {
+      focusIndex++;
+    }
   }
   
   final void destroyItem( final TableItem item ) {

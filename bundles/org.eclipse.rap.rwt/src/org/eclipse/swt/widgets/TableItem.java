@@ -825,8 +825,8 @@ public class TableItem extends Item {
    */
   public Rectangle getTextBounds( final int index ) {
     checkWidget();
-    parent.checkData( this, parent.indexOf( this ) );
     int itemIndex = parent.indexOf( this );
+    parent.checkData( this, itemIndex );
     int left = 0;
     int top = 0; 
     int width = 0;

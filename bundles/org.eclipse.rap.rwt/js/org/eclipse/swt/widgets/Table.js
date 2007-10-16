@@ -537,7 +537,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // TableItem management
 
     _addItem : function( item, index ) {
-      this._items[ index ] = item;
+      if( this._items[ index ] ) {
+        this._items.splice( index, 0, item );
+      } else {
+        this._items[ index ] = item;
+      }
       this._updateScrollHeight();
     },
 

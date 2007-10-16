@@ -324,6 +324,15 @@ public class Table_Test extends TestCase {
     table.select( table.indexOf( item2 ) );
     item1.dispose();
     assertEquals( table.indexOf( item2 ), tableAdapter.getFocusIndex() );
+    
+    // Insert an item before the focused one an verify that focus moves on
+    table.removeAll();
+    new TableItem( table, SWT.NONE );
+    table.setSelection( 0 );
+    assertEquals( 0, tableAdapter.getFocusIndex() ); // ensure precondition
+    new TableItem( table, SWT.NONE, 0 );
+    assertEquals( 1, table.getSelectionIndex() );
+    assertEquals( 1, tableAdapter.getFocusIndex() );
   }
 
   public void testRemoveAll() {
