@@ -713,7 +713,7 @@ appearances = {
           width : "auto",
           padding : [ 3, 4 ],
           verticalChildrenAlign : "middle",
-          backgroundImage : states.checked && !states.over ? "static/image/dotted_white.gif" : null,
+          backgroundImage : states.checked && !states.over ? "static/image/dotted_white.gif" : null
         };
         if( states.disabled ) {
           result.backgroundColor = "toolbar.background";
