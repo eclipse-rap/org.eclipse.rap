@@ -87,8 +87,13 @@ public class RWTLifeCycleBlockControl {
     }
     
     private void bufferThrowable( final Throwable thr ) {
-      HttpSession httpSession = ContextProvider.getSession().getHttpSession();
-      httpSession.setAttribute( THROWABLE, thr );
+      try {
+        HttpSession httpSession = ContextProvider.getSession().getHttpSession();
+        httpSession.setAttribute( THROWABLE, thr );
+      } catch( final RuntimeException re ) {
+        thr.printStackTrace();
+        throw re;
+      }
     }
     
     void handleException( final HttpSession session )
@@ -205,9 +210,11 @@ public class RWTLifeCycleBlockControl {
         LifeCycleLock lock = ( LifeCycleLock )queue.get( 0 );
         handleQueuedTermination( lock );
         handleResumeTermination( lock );
-        processResumeQueue( 1 );
         if( !ContextProvider.getContext().isDisposed() ) {
-          RWTLifeCycle.setThread( Thread.currentThread() );
+          processResumeQueue( 1 );
+          if( !ContextProvider.getContext().isDisposed() ) {
+            RWTLifeCycle.setThread( Thread.currentThread() );
+          }
         }
       }
     }
@@ -299,7 +306,6 @@ public class RWTLifeCycleBlockControl {
       public void beforeDestroy( final SessionStoreEvent event ) {
         synchronized( result[ 0 ] ) {
           if( !LifeCycleServiceHandler.isSessionRestart() ) {
-System.out.println( "don't do this" );
             result[ 0 ].notify();
           }
         }
@@ -380,9 +386,10 @@ System.out.println( "don't do this" );
       result = queue.toArray();
       for( int i = start; i < result.length; i++ ) {
         LifeCycleLock lock = ( LifeCycleLock )result[ i ];
-        if( !getData( lock ).waitForTermination ) {
+        LockData data = getData( lock );
+        if( !data.waitForTermination && !data.onResume ) {
           synchronized( lock ) {
-            getData( lock ).waitForTermination = true;
+            data.waitForTermination = true;
             lock.notify();
             try {
               lock.wait();

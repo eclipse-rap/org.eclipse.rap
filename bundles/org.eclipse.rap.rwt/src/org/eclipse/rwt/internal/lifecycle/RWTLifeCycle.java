@@ -133,7 +133,9 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   void cleanUp() {
-    UICallBackManager.getInstance().notifyUIThreadEnd();
+    if( RWTLifeCycle.getThread() == Thread.currentThread() ) {
+      UICallBackManager.getInstance().notifyUIThreadEnd();
+    }
     setThread( null );
   }
 
