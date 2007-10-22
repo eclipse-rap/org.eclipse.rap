@@ -64,6 +64,21 @@ public class LinkLCA_Test extends TestCase {
     assertContains( "LinkUtil.addLink( w, \"&lt;b&gt;Bang&lt;/b&gt;\", 0 )", markup );
   }
   
+  public void testEscape() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Link link = new Link( shell, SWT.NONE );
+    link.setText( "&E<s>ca'pe\" && me" );
+    Fixture.fakeResponseWriter();
+    LinkLCA lca = new LinkLCA();
+    lca.renderChanges( link );
+    // TODO [rst] Bug in SWT Link#parse code - adjust when bug is fixed
+    // String expected = "\"E&lt;s&gt;ca'pe&quot; &amp; me\"";
+    String expected = "\"EE&lt;s&gt;ca'pe&quot;  me\"";
+    String actual = Fixture.getAllMarkup();
+    assertTrue( actual.indexOf( expected ) != -1 );
+  }
+  
   private void assertContains( final String expected, final String string ) {
     String message = "'" + expected + "' not contained in '" + string + "'";
     assertTrue( message , string.indexOf( expected ) != -1 );

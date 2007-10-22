@@ -103,16 +103,40 @@ public class ButtonLCA_Test extends TestCase {
 
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( "org.eclipse.swt.events.widgetSelected", 
+    Fixture.fakeRequestParam( "org.eclipse.swt.events.widgetSelected",
                               buttonId );
     new RWTLifeCycle().execute();
     assertEquals( "widgetSelected", log.toString() );
   }
-
+  
+  public void testEscape() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Button pushButton = new Button( shell, SWT.PUSH );
+    pushButton.setText( "PUSH &E<s>ca'pe\" && me" );
+    Button checkButton = new Button( shell, SWT.CHECK );
+    checkButton.setText( "CHECK &E<s>ca'pe\" && me" );
+    Button radioButton = new Button( shell, SWT.RADIO );
+    radioButton.setText( "RADIO &E<s>ca'pe\" && me" );
+    Fixture.fakeResponseWriter();
+    ButtonDelegateLCA pushLCA = new PushButtonDelegateLCA();
+    pushLCA.renderChanges( pushButton );
+    String expected = "\"PUSH E&lt;s&gt;ca'pe&quot; &amp; me\"";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    ButtonDelegateLCA checkLCA = new CheckButtonDelegateLCA();
+    checkLCA.renderChanges( checkButton );
+    expected = "\"CHECK E&lt;s&gt;ca'pe&quot; &amp; me\"";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    ButtonDelegateLCA radioLCA = new RadioButtonDelegateLCA();
+    radioLCA.renderChanges( radioButton );
+    expected = "\"RADIO E&lt;s&gt;ca'pe&quot; &amp; me\"";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
-
+  
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }

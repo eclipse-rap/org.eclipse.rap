@@ -68,7 +68,6 @@ public final class WidgetLCAUtil {
   private final static Map parsedFonts = new HashMap();
   //////////////////////////////////////////////////////////////////////////////
 
-
   private WidgetLCAUtil() {
     // prevent instantiation
   }
@@ -421,6 +420,9 @@ public final class WidgetLCAUtil {
     String text = toolTip == null ? "" : toolTip;
     if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
+      // Under Windows, ampersand characters are not correctly displayed:
+      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=188271
+      // However, it is correct not to escape mnemonics in tool tips
       Object[] args = new Object[] { widget, escapeText( text, false ) };
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_TOOL_TIP, args );
     }
@@ -749,7 +751,6 @@ public final class WidgetLCAUtil {
     }
     return result;
   }
-  
 
   ////////////////////////////////////
   // Helping method to split font name
@@ -770,12 +771,9 @@ public final class WidgetLCAUtil {
     }
   }
   
-
   //////////////////////////////////////
   // Escaping of reserved XML characters
 
-  // Note: The entity &apos; is not defined in HTML. It should be handled by
-  //       this method once we produce XHTML output.
   /**
    * Replaces all occurrences of the characters <code>&lt;</code>,
    * <code>&gt;</code>, <code>&amp;</code>, and <code>&quot;</code> with
@@ -794,6 +792,9 @@ public final class WidgetLCAUtil {
    *            otherwise all ampersand characters are directly rendered.
    * @return the resulting text
    */
+  // Note [rst]: Single quotes are not escaped as the entity &apos; is not
+  //             defined in HTML 4. They should be handled by this method once
+  //             we produce XHTML output.
   public static String escapeText( final String text, final boolean mnemonics )
   {
 //    int mnemonicPos = -1;

@@ -46,45 +46,56 @@ public class LabelLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     label.setText( "test" );
     lca.renderChanges( label );
-    String expected 
+    String expected
       = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"test\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    Fixture.fakeResponseWriter();
     label.setText( "\ntest" );
     lca.renderChanges( label );
-    expected 
+    expected
       = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"<br/>test\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    Fixture.fakeResponseWriter();
     label.setText( "te\nst" );
     lca.renderChanges( label );
-    expected 
+    expected
       = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/>st\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    Fixture.fakeResponseWriter();
     label.setText( "test\n" );
     lca.renderChanges( label );
-    expected 
+    expected
       = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"test<br/>\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    Fixture.fakeResponseWriter();
     label.setText( "te\n\nst" );
     lca.renderChanges( label );
-    expected 
+    expected
       = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/><br/>st\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    Fixture.fakeResponseWriter();
     label.setText( "te\ns\nt" );
     lca.renderChanges( label );
-    expected 
+    expected
       = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/>s<br/>t\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
-
+  
+  public void testEscape() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+    label.setText( "&E<s>ca'pe\" && text" );
+    label.setToolTipText( "&E<s>ca'pe\" && tooltip" );
+    Fixture.fakeResponseWriter();
+    StandardLabelLCA lca = new StandardLabelLCA();
+    lca.renderChanges( label );
+    String expected1 = "\"E&lt;s&gt;ca'pe&quot; &amp; text\"";
+    String expected2 = "\"&amp;E&lt;s&gt;ca'pe&quot; &amp;&amp; tooltip\"";
+    String actual = Fixture.getAllMarkup();
+    assertTrue( actual.indexOf( expected1 ) != -1 );
+    assertTrue( actual.indexOf( expected2 ) != -1 );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
-
+  
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }

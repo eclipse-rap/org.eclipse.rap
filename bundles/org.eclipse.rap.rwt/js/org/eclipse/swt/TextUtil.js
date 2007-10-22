@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -16,10 +15,10 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     
     // TODO [rh] workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
     //      the fix is to exchange the _onblur implementation of qx.ui.forms.Text
-    //      with our own one, that checks parent != null before calling 
+    //      with our own one, that checks parent != null before calling
     //      setSelectionLength
     hijack : function( text ) {
-      text.removeEventListener( "blur", text._onblur );   
+      text.removeEventListener( "blur", text._onblur );
       text._onblur = function() {
         var vValue = this.getComputedValue().toString();
         if( this._textOnFocus != vValue ) {
@@ -27,7 +26,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
         }
         if( this.getParent() != null ) {
           this.setSelectionLength( 0 );
-        }      
+        }
       };
       text.addEventListener( "blur", text._onblur );
     },
@@ -37,8 +36,8 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     
     modifyText : function( evt ) {
       var text = evt.getTarget();
-      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
-          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) ) 
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend
+          && org.eclipse.swt.TextUtil._isModifyingKey( evt.getKeyIdentifier() ) )
       {
         // if not yet done, register an event listener that adds a request param
         // with the text widgets' content just before the request is sent
@@ -274,7 +273,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     
     /**
      * This function is registered server-side if a SelectionListener should
-     * be notified about hte widgetDefaultSelection event that ovvurs when
+     * be notified about the widgetDefaultSelection event that occurs when
      * Enter was pressed.
      */
     widgetDefaultSelected : function( evt ) {
