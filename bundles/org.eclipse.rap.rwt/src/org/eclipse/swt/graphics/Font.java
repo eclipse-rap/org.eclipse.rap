@@ -49,7 +49,9 @@ public final class Font extends Resource {
    * -->
    */
   public FontData[] getFontData() {
-    return ( FontData[] )fontData.clone();
+    // We support only fontData arrays with one element, so we use this
+    // knowledge to create the defensive copy a little faster
+    return new FontData[] { fontData[ 0 ] };
   }
 
   /**

@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.*;
 //      this also applies for other 'SPI's.
 public final class JSWriter {
 
+
   /**
    * A reference to the current widget manager on the client side.
    */
@@ -72,6 +73,10 @@ public final class JSWriter {
   private static final String CURRENT_WIDGET_REF
     = JSWriter.class.getName() + "#currentWidgetRef";
   private static final String FORMAT_EMPTY = "";
+  private static final Map setterNames = new HashMap();
+  private static final Map getterNames = new HashMap();
+  private static final Map resetterNames = new HashMap();
+
 
   private final Widget widget;
 
@@ -155,8 +160,7 @@ public final class JSWriter {
       className,
       createParamList( ", '", args, "'", false )
     };
-    String out = MessageFormat.format( NEW_WIDGET_PATTERN, args1 );
-    getWriter().write( out );
+    getWriter().write( format( NEW_WIDGET_PATTERN, args1 ) );
     setCurrentWidgetRef( widget );
     if( widget instanceof Shell ) {
       call( "addToDocument", null );
@@ -803,8 +807,9 @@ public final class JSWriter {
   }
 
   private static String createFindWidgetById( final String id ) {
-    return MessageFormat.format( "{0}.findWidgetById( \"{1}\" )",
-                                 new Object[] { WIDGET_MANAGER_REF, id } );
+    String pattern = "{0}.findWidgetById( \"{1}\" )";
+    Object[] args = new Object[] { WIDGET_MANAGER_REF, id };
+    return format( pattern, args );
   }
 
   ///////////////////////////////////////////////
@@ -950,24 +955,45 @@ public final class JSWriter {
   }
 
   private static String getSetterName( final String jsProperty ) {
-    StringBuffer functionName = new StringBuffer();
-    functionName.append( "set" );
-    functionName.append( capitalize( jsProperty ) );
-    return functionName.toString();
+    synchronized( setterNames ) {
+      String result = ( String )setterNames.get( jsProperty );
+      if( result == null ) {
+        StringBuffer functionName = new StringBuffer();
+        functionName.append( "set" );
+        functionName.append( capitalize( jsProperty ) );
+        result =  functionName.toString();
+        setterNames.put( jsProperty, result );
+      }    
+      return result;
+    }
   }
 
   private static String getResetterName( final String jsProperty ) {
-    StringBuffer functionName = new StringBuffer();
-    functionName.append( "reset" );
-    functionName.append( capitalize( jsProperty ) );
-    return functionName.toString();
+    synchronized( resetterNames ) {
+      String result = ( String )resetterNames.get( jsProperty );
+      if( result == null ) {
+        StringBuffer functionName = new StringBuffer();
+        functionName.append( "reset" );
+        functionName.append( capitalize( jsProperty ) );
+        result = functionName.toString();
+        resetterNames.put( jsProperty, result );
+      }
+      return result;
+    }
   }
 
   private static String getGetterName( final String jsProperty ) {
-    StringBuffer functionName = new StringBuffer();
-    functionName.append( "get" );
-    functionName.append( capitalize( jsProperty ) );
-    return functionName.toString();
+    synchronized( getterNames ) {
+      String result = ( String )getterNames.get( jsProperty );
+      if( result == null ) {
+        StringBuffer functionName = new StringBuffer();
+        functionName.append( "get" );
+        functionName.append( capitalize( jsProperty ) );
+        result = functionName.toString();
+        getterNames.put( jsProperty, result );
+      }
+      return result;
+    }
   }
 
   /////////////////////////////////////////////////////////
@@ -976,10 +1002,10 @@ public final class JSWriter {
   private static void write( final String pattern, final Object arg1 )
     throws IOException
   {
-    String out = MessageFormat.format( pattern, new Object[] { arg1 } );
-    getWriter().write( out );
+    Object[] args = new Object[] { arg1 };
+    getWriter().write( format( pattern, args ) );
   }
-
+  
   private static void writeProperty( final String pattern,
                                      final String propertyName,
                                      final Object[] arx )
@@ -988,8 +1014,13 @@ public final class JSWriter {
     Object[] arguments = new Object[ arx.length + 1 ];
     System.arraycopy( arx, 0, arguments, 1, arx.length );
     arguments[ 0 ] = capitalize( propertyName );
-    String out = MessageFormat.format( pattern, arguments );
-    getWriter().write( out );
+    getWriter().write( format( pattern, arguments ) );
+  }
+
+  private static String format( final String pattern,
+                                final Object[] arguments )
+  {
+    return MessageFormat.format( pattern, arguments );
   }
 
   private static void write( final String pattern,
@@ -997,8 +1028,8 @@ public final class JSWriter {
                              final Object arg2 )
     throws IOException
   {
-    String out = MessageFormat.format( pattern, new Object[] { arg1, arg2 } );
-    getWriter().write( out );
+    Object[] args = new Object[] { arg1, arg2 };
+    getWriter().write( format( pattern, args ) );
   }
 
   private static void write( final String pattern,
@@ -1008,12 +1039,10 @@ public final class JSWriter {
   throws IOException
   {
     Object[] args = new Object[] { arg1, arg2, arg3 };
-    String out = MessageFormat.format( pattern, args );
-    getWriter().write( out );
+    getWriter().write( format( pattern, args ) );
   }
 
   private static HtmlResponseWriter getWriter() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return stateInfo.getResponseWriter();
+    return ContextProvider.getStateInfo().getResponseWriter();
   }
 }

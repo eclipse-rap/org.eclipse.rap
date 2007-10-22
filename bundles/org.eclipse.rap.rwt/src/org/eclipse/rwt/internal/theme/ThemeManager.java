@@ -160,6 +160,9 @@ public final class ThemeManager {
   private final Map adapters;
   private final Map imageMapping;
   private Theme predefinedTheme;
+  private final Set registeredThemeFiles;
+  
+
 
   private int themeCount;
 
@@ -172,6 +175,7 @@ public final class ThemeManager {
     themes = new HashMap();
     adapters = new HashMap();
     imageMapping = new HashMap();
+    registeredThemeFiles = new HashSet();
   }
 
   /**
@@ -561,25 +565,30 @@ public final class ThemeManager {
   private void registerThemeFiles( final String id )
     throws IOException
   {
-    ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
-    String jsId = getJsThemeId( id );
-    registerWidgetImages( id );
-    StringBuffer sb = new StringBuffer();
-    sb.append( createColorTheme( wrapper.theme, jsId ) );
-    sb.append( createBorderTheme( wrapper.theme, jsId ) );
-    sb.append( createFontTheme( wrapper.theme, jsId ) );
-    sb.append( createIconTheme( wrapper.theme, jsId ) );
-    sb.append( createWidgetTheme( wrapper.theme, jsId ) );
-    sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
-    sb.append( createMetaTheme( wrapper.theme, jsId ) );
-    String themeCode = sb.toString();
-    log( "-- REGISTERED THEME CODE FOR " + id + " --" );
-    log( themeCode );
-    log( "-- END REGISTERED THEME CODE --" );
+    synchronized( registeredThemeFiles ) {
+      if( !registeredThemeFiles.contains( id ) ) {
+        ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
+        String jsId = getJsThemeId( id );
+        registerWidgetImages( id );
+        StringBuffer sb = new StringBuffer();
+        sb.append( createColorTheme( wrapper.theme, jsId ) );
+        sb.append( createBorderTheme( wrapper.theme, jsId ) );
+        sb.append( createFontTheme( wrapper.theme, jsId ) );
+        sb.append( createIconTheme( wrapper.theme, jsId ) );
+        sb.append( createWidgetTheme( wrapper.theme, jsId ) );
+        sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
+        sb.append( createMetaTheme( wrapper.theme, jsId ) );
+        String themeCode = sb.toString();
+        log( "-- REGISTERED THEME CODE FOR " + id + " --" );
+        log( themeCode );
+        log( "-- END REGISTERED THEME CODE --" );
 // TODO [rst] Load only the default theme at startup
 //    boolean loadOnStartup = defaultThemeId.equals( id );
-    boolean loadOnStartup = true;
-    registerJsLibrary( themeCode, jsId + ".js", loadOnStartup );
+        boolean loadOnStartup = true;
+        registerJsLibrary( themeCode, jsId + ".js", loadOnStartup );
+        registeredThemeFiles.add( id );
+      }
+    }
   }
 
   private void registerWidgetImages( final String id )

@@ -12,7 +12,7 @@
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +61,13 @@ public final class WidgetLCAUtil {
     = Pattern.compile( "&|<|>|\\\"" );
   private static final Pattern DOUBLE_QUOTE_PATTERN
     = Pattern.compile( "\"" );
+  
+  //////////////////////////////////////////////////////////////////////////////
+  // TODO [fappel]: Experimental - profiler seems to indicate that buffering
+  //                improves performance - still under investigation.
+  private final static Map parsedFonts = new HashMap();
+  //////////////////////////////////////////////////////////////////////////////
+
 
   private WidgetLCAUtil() {
     // prevent instantiation
@@ -742,19 +749,27 @@ public final class WidgetLCAUtil {
     }
     return result;
   }
+  
 
   ////////////////////////////////////
   // Helping method to split font name
 
   static String[] parseFontName( final String name ) {
-    String[] result = name.split( "," );
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = result[ i ].trim();
-      Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( result[ i ] );
-      result[ i ] = matcher.replaceAll( "" );
+    synchronized( parsedFonts ) {
+      String[] result = ( String[] )parsedFonts.get( name );
+      if( result == null ) {
+        result = name.split( "," );
+        for( int i = 0; i < result.length; i++ ) {
+          result[ i ] = result[ i ].trim();
+          Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( result[ i ] );
+          result[ i ] = matcher.replaceAll( "" );
+        }
+        parsedFonts.put( name, result );
+      }
+      return result;      
     }
-    return result;
   }
+  
 
   //////////////////////////////////////
   // Escaping of reserved XML characters
