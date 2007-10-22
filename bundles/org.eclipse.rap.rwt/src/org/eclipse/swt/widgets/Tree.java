@@ -811,7 +811,6 @@ public class Tree extends Composite {
     for( int i = 0; i < children.length; i++ ) {
       TreeItem item = children[ i ];
       result.add( item );
-      System.out.println(item.getText() + " added to visible list");
       if( item.getExpanded() ) {
         result.addAll( collectVisibleItems( item ) );
       }

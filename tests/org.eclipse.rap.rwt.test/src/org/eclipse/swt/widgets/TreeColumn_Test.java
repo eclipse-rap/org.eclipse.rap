@@ -11,11 +11,12 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Image;
 
 
 public class TreeColumn_Test extends TestCase {
@@ -143,87 +144,94 @@ public class TreeColumn_Test extends TestCase {
     assertEquals( 4711, column.getWidth() );
   }
 
-//  public void testPack() {
-//    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-//    final java.util.List log = new ArrayList();
-//    ControlAdapter resizeListener = new ControlAdapter() {
-//
-//      public void controlResized( ControlEvent e ) {
-//        log.add( e.widget );
-//      }
-//    };
-//    Display display = new Display();
-//    Shell shell = new Shell( display );
-//    Tree tree = new Tree( shell, SWT.NONE );
-//    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-//    column.addControlListener( resizeListener );
-//    // Ensure that controlResized is fired when pack changes the width
-//    column.setWidth( 12312 );
-//    log.clear();
-//    column.pack();
-//    assertSame( log.get( 0 ), column );
-//    // Ensure that controlResized is *not* fired when pack doesn't change the
-//    // width
-//    log.clear();
-//    column.pack();
-//    assertEquals( 0, log.size() );
-//    column.removeControlListener( resizeListener );
-//    // pack calculates a minimal width for an empty column
-//    column = new TreeColumn( tree, SWT.NONE );
-//    column.pack();
-//    assertTrue( column.getWidth() > 0 );
-//    // Test that an image on a column is taken into account
-//    column = new TreeColumn( tree, SWT.NONE );
-//    Image image = Graphics.findImage( "resources/images/test-50x100.png",
-//                              TreeColumn_Test.class.getClassLoader() );
-//    column.setImage( image );
-//    column.pack();
-//    assertTrue( column.getWidth() >= image.getBounds().width );
-//    // An item wider than the column itself strechtes the column
-//    column = new TreeColumn( tree, SWT.NONE );
-//    TreeItem item = new TreeItem( tree, SWT.NONE );
-//    item.setImage( image );
-//    column.pack();
-//    assertTrue( column.getWidth() >= item.getBounds().width );
-//  }
+  public void testPack() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    ControlAdapter resizeListener = new ControlAdapter() {
 
-// public void testPackWithVirtual() {
-// RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-// final java.util.List log = new ArrayList();
-// Listener setDataListener = new Listener() {
-//
-// public void handleEvent( final Event event ) {
-// log.add( event.item );
-// }
-// };
-// ControlListener resizeListener = new ControlAdapter() {
-//
-// public void controlResized( final ControlEvent event ) {
-// log.add( event.widget );
-// }
-// };
-// Display display = new Display();
-// Shell shell = new Shell( display );
-// Tree tree;
-// TreeColumn column;
-// // Must not try to access items if there aren't any
-// log.clear();
-// Tree = new Tree( shell, SWT.VIRTUAL );
-// column = new TreeColumn( tree, SWT.NONE );
-// column.setWidth( 200 );
-// column.addControlListener( resizeListener );
-// column.pack();
-// assertEquals( 1, log.size() ); // ensure that pack() did something
-// // Ensure that pack does not resolve virtual items
-// log.clear();
-// Tree = new Tree( shell, SWT.VIRTUAL );
-// column = new TreeColumn( tree, SWT.NONE );
-// Tree.setSize( 100, 50 );
-// Tree.setItemCount( 100 );
-// Tree.addListener( SWT.SetData, setDataListener );
-// column.pack();
-// assertEquals( 0, log.size() );
-// }
+      public void controlResized( ControlEvent e ) {
+        log.add( e.widget );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    column.addControlListener( resizeListener );
+    // Ensure that controlResized is fired when pack changes the width
+    column.setWidth( 12312 );
+    log.clear();
+    column.pack();
+    assertSame( log.get( 0 ), column );
+    // Ensure that controlResized is *not* fired when pack doesn't change the
+    // width
+    log.clear();
+    column.pack();
+    assertEquals( 0, log.size() );
+    column.removeControlListener( resizeListener );
+    // pack calculates a minimal width for an empty column
+    column = new TreeColumn( tree, SWT.NONE );
+    column.pack();
+    assertTrue( column.getWidth() > 0 );
+    // Test that an image on a column is taken into account
+    column = new TreeColumn( tree, SWT.NONE );
+    Image image = Graphics.getImage( "resources/images/test-50x100.png",
+                              TreeColumn_Test.class.getClassLoader() );
+    column.setImage( image );
+    column.pack();
+    assertTrue( column.getWidth() >= image.getBounds().width );
+    // An item wider than the column itself strechtes the column
+    column = new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setImage( image );
+    column.pack();
+    assertTrue( column.getWidth() >= item.getBounds().width );
+    int widthNoSortIndicator = column.getWidth();
+    tree.setSortColumn( column );
+    tree.setSortDirection( SWT.UP );
+    column.pack();
+    assertTrue( column.getWidth() > widthNoSortIndicator);
+    
+  }
+
+  public void testPackWithVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List log = new ArrayList();
+    Listener setDataListener = new Listener() {
+
+      public void handleEvent( final Event event ) {
+        log.add( event.item );
+      }
+    };
+    ControlListener resizeListener = new ControlAdapter() {
+
+      public void controlResized( final ControlEvent event ) {
+        log.add( event.widget );
+      }
+    };
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Tree tree;
+    TreeColumn column;
+    // Must not try to access items if there aren't any
+    log.clear();
+    tree = new Tree( shell, SWT.VIRTUAL );
+    column = new TreeColumn( tree, SWT.NONE );
+    column.setWidth( 200 );
+    column.addControlListener( resizeListener );
+    column.pack();
+    assertEquals( 1, log.size() ); // ensure that pack() did something
+    // Ensure that pack does not resolve virtual items
+    log.clear();
+    tree = new Tree( shell, SWT.VIRTUAL );
+    column = new TreeColumn( tree, SWT.NONE );
+    tree.setSize( 100, 50 );
+    tree.setItemCount( 100 );
+    tree.addListener( SWT.SetData, setDataListener );
+    column.pack();
+    assertEquals( 0, log.size() );
+  }
+
   public void testResizeEvent() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();

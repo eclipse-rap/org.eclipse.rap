@@ -463,7 +463,17 @@ public void pack () {
 	checkWidget ();
 	TreeItem[] availableItems = parent.getItems();
 	int index = getIndex ();
-	int newWidth = getPreferredWidth ();
+	int newWidth;
+	newWidth = TextSizeDetermination.stringExtent( parent.getFont(), getText() ).x;
+    newWidth = Math.max(getPreferredWidth (), newWidth);
+    if( image != null ) {
+      newWidth += image.getBounds().width + MARGIN_IMAGE;
+    }
+    if( parent.getSortColumn() == this 
+        && parent.getSortDirection() != SWT.NONE ) 
+    {
+      newWidth += SORT_INDICATOR_WIDTH + MARGIN_IMAGE;
+    }
 	for (int i = 0; i < availableItems.length; i++) {
 		int width = availableItems [i].getPreferredWidth (index);
 		/* ensure that receiver and parent were not disposed in a callback */
@@ -472,6 +482,10 @@ public void pack () {
 			newWidth = Math.max (newWidth, width);
 		}
 	}
+    // Mimic Windows behaviour that has a minimal width 
+    if( newWidth < 12 ) {
+      newWidth = 12;
+    }
 //	if (newWidth != width) parent.updateColumnWidth (this, newWidth);
 	setWidth( newWidth );
 }

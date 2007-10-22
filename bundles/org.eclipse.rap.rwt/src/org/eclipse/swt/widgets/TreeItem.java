@@ -971,7 +971,7 @@ public class TreeItem extends Item {
    */
   int getPreferredWidth (int columnIndex) {
     int width = 0;
-    width += TextSizeDetermination.textExtent( parent.getFont(), getText( columnIndex ), 0 ).x;
+    width += TextSizeDetermination.stringExtent( parent.getFont(), getText( columnIndex ) ).x;
     int orderedIndex = parent.columnHolder.size() == 0 ? 0 : ((TreeColumn)parent.columnHolder.getItem( columnIndex )).getOrderIndex ();
     if (orderedIndex == 0) {
       width += 19; // TODO find proper solution
