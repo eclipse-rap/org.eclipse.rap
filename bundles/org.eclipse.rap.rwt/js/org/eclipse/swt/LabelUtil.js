@@ -70,7 +70,9 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
         widget.setUserData( "setText", text );
         widget.addEventListener( "appear",
                                  org.eclipse.swt.LabelUtil._setTextDelayed );
-      } else if( !widget._isInDOM ) {
+      }
+      // workaround for pooling problems
+      else if( !widget._isInDOM && widget.getUserData( "pooled" ) ) {
         widget.setUserData( "setText", text );
         widget.addEventListener( "insertDom",
                                  org.eclipse.swt.LabelUtil._setTextDelayed );
