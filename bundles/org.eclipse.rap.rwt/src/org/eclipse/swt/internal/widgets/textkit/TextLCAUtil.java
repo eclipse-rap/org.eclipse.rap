@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,20 +76,24 @@ final class TextLCAUtil {
   static void readText( final Text text ) {
     final String value = WidgetLCAUtil.readPropertyValue( text, "text" );
     if( value != null ) {
-      // setText needs to be executed in a ProcessAction runnable as it may
-      // fire a VerifyEvent whose fields (text and doit) need to be evaluated
-      // before actually setting the new value
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          text.setText( value );
-          // Reset preserved value in case the values wasn't set as-is as this
-          // means that a VerifyListener manipulated or rejected the value
-          if( !value.equals( text.getText() ) ) {
-            IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-            adapter.preserve( PROP_TEXT, null );
+      if( VerifyEvent.hasListener( text ) ) {
+        // setText needs to be executed in a ProcessAction runnable as it may
+        // fire a VerifyEvent whose fields (text and doit) need to be evaluated
+        // before actually setting the new value
+        ProcessActionRunner.add( new Runnable() {
+          public void run() {
+            text.setText( value );
+            // Reset preserved value in case the values wasn't set as-is as this
+            // means that a VerifyListener manipulated or rejected the value
+            if( !value.equals( text.getText() ) ) {
+              IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+              adapter.preserve( PROP_TEXT, null );
+            }
           }
-        }
-      } );
+        } );
+      } else {
+        text.setText( value );
+      }
     }
   }
 

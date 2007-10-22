@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -165,20 +165,24 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static void readText( final Combo combo ) {
     final String value = WidgetLCAUtil.readPropertyValue( combo, "text" );
     if( value != null ) {
-      // setText needs to be executed in a ProcessAcction runnable as it may
-      // fire a VerifyEvent whose fields (text and doit) need to be evaluated
-      // before actually setting the new value
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          combo.setText( value );
-          // Reset preserved value in case the values wasn't set as-is as this
-          // means that a VerifyListener manipulated or rejected the value
-          if( !value.equals( combo.getText() ) ) {
-            IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
-            adapter.preserve( PROP_TEXT, null );
+      if( VerifyEvent.hasListener( combo ) ) {
+        // setText needs to be executed in a ProcessAcction runnable as it may
+        // fire a VerifyEvent whose fields (text and doit) need to be evaluated
+        // before actually setting the new value
+        ProcessActionRunner.add( new Runnable() {
+          public void run() {
+            combo.setText( value );
+            // Reset preserved value in case the values wasn't set as-is as this
+            // means that a VerifyListener manipulated or rejected the value
+            if( !value.equals( combo.getText() ) ) {
+              IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
+              adapter.preserve( PROP_TEXT, null );
+            }
           }
-        }
-      } );
+        } );
+      } else {
+        combo.setText( value );
+      }
     }
   }
 
