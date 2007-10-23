@@ -87,13 +87,14 @@ public class LabelLCA extends AbstractWidgetLCA {
                                final String idBorder,
                                final String idFlat )
   {
-    String result;
-    if( ( label.getStyle() & SWT.BORDER ) != 0 ) {
-      result = idBorder;
-    } else {
-      result = idFlat;
-    }
-    return result;
+//    String result;
+//    if( ( label.getStyle() & SWT.BORDER ) != 0 ) {
+//      result = idBorder;
+//    } else {
+//      result = idFlat;
+//    }
+//    return result;
+    return null;
   }
 
 }
