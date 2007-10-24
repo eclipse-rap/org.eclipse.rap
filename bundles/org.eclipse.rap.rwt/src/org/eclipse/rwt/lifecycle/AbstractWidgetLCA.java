@@ -18,6 +18,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -82,16 +83,28 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
   public abstract void renderDispose( Widget widget ) throws IOException;
   
   /**
+   * <p>
    * Writes JavaScript code to the response that resets the client-side state of
    * a disposed widget in order to make it ready for later reuse. After this
    * code has been processed the client-side widget should be in a state that is
    * equivalent to a newly created widget.
-   *
+   * </p>
+   * 
+   * <p>
+   * Subclasses should override this method if pooling is supported by the
+   * widget type this LCA belongs to. To activate pooling override
+   * {@link #getTypePoolId(Widget)}.
+   * </p>
+   * 
+   * @see #getTypePoolId(Widget)
+   * 
    * @param typePoolId the type pool id of the widget to reset
    * @throws IOException
    */
-  public abstract void createResetHandlerCalls( String typePoolId )
-    throws IOException;
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+  }
   
   /**
    * Returns an id that is used to identify the type of a widget in the
@@ -108,10 +121,38 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * suffix. If this method returns <code>null</code>, the widget will not be
    * stored in the widget pool and cannot be reused.
    * </p>
+   * 
+   * <p>
+   * Subclasses may override to activate pooling. In case pooling is activated
+   * the method {@link #createResetHandlerCalls(String)} should also be
+   * overridden.
+   * </p>
+   *         
+   * @see #createResetHandlerCalls(String)
    *
    * @param widget the widget to store in the pool
    * @return the type pool id or <code>null</code> if the widget should not be
    *         pooled
    */
-  public abstract String getTypePoolId( Widget widget );
+  public String getTypePoolId( final Widget widget ) {
+    return null;
+  }
+
+  /**
+   * <p>
+   * As a side effect to redraw calls some native widgets trigger events like 
+   * resize for example. To simulate this behaviour subclasses may override
+   * this method. The method takes as parameter type <code>Control</code>,
+   * since the redraw methods are only available at the <code>Control</code>
+   * subclasses of <code>Widgets</code>.
+   * </p>
+   * 
+   * <p>
+   * Note that the redraw fake takes place between the process action and
+   * the render phase.
+   * </p>
+   * @param control the control on which redraw was called. 
+   */
+  public void doRedrawFake( final Control control ) {
+  }
 }

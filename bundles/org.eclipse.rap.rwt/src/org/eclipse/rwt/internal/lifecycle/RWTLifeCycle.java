@@ -22,7 +22,6 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
@@ -234,10 +233,8 @@ public class RWTLifeCycle extends LifeCycle {
     if( set != null ) {
       Object[] controls = set.toArray();
       for( int i = 0; i < controls.length; i++ ) {
-        int evtId = ControlEvent.CONTROL_RESIZED;
         Control control = ( ( Control )controls[ i ] );
-        ControlEvent evt = new ControlEvent( control, evtId );
-        evt.processEvent();
+        WidgetUtil.getLCA( control ).doRedrawFake( control );
       }
     }
   }

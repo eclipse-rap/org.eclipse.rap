@@ -19,6 +19,7 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -133,6 +134,12 @@ public final class TableLCA extends AbstractWidgetLCA {
   
   public String getTypePoolId( final Widget widget ) {
     return null;
+  }
+  
+  public void doRedrawFake( final Control control ) {
+    int evtId = ControlEvent.CONTROL_RESIZED;
+    ControlEvent evt = new ControlEvent( control, evtId );
+    evt.processEvent();
   }
 
   ////////////////////////////////////////////////////

@@ -28,11 +28,10 @@ import org.eclipse.swt.graphics.*;
 public final class ResourceFactory {
 
   private final static Map colors = new HashMap();
-
   private static final Map fonts = new HashMap();
-
   private static final Map images = new HashMap();
 
+  
   /////////
   // COLORS
 
@@ -71,6 +70,7 @@ public final class ResourceFactory {
     }
     return result;
   }
+  
 
   ////////
   // FONTS
@@ -98,6 +98,7 @@ public final class ResourceFactory {
     return result;
   }
 
+  
   /////////
   // IMAGES
 
@@ -156,6 +157,7 @@ public final class ResourceFactory {
     return result;
   }
 
+  
   ///////////////
   // Test helpers
 
@@ -177,6 +179,7 @@ public final class ResourceFactory {
     return images.size();
   }
 
+  
   //////////////////
   // Helping methods
 
