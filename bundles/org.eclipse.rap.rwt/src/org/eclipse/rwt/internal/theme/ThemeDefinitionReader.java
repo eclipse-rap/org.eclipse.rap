@@ -18,6 +18,10 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
+/**
+ * Reader for theme definition files. These are the "*.theme.xml" files
+ * that define themeable properties of a certain widget.
+ */
 public class ThemeDefinitionReader {
 
   private static final String ATTR_DEFAULT = "default";
@@ -77,14 +81,19 @@ public class ThemeDefinitionReader {
   }
 
   /**
-   * Reads a theme definition from the stream. The stream is kept open after
-   * reading.
+   * Reads a theme definition from the specified stream. The stream is kept open
+   * after reading.
+   * 
+   * @param callback an implementation of the ThemeDefHandler interface that
+   *            handles parsing events
+   * @throws IOException if a I/O error occurs
+   * @throws SAXException if a parse error occurs
    */
   public void read( final ThemeDefHandler callback )
-    throws IOException, FactoryConfigurationError,
-    ParserConfigurationException, SAXException
+    throws SAXException, IOException
   {
-    Document document = parseThemeDefinition( inputStream );
+    Document document;
+    document = parseThemeDefinition( inputStream );
     Node root = document.getElementsByTagName( NODE_ROOT ).item( 0 );
     NodeList childNodes = root.getChildNodes();
     for( int i = 0; i < childNodes.getLength(); i++ ) {
@@ -141,8 +150,7 @@ public class ThemeDefinitionReader {
   }
 
   private Document parseThemeDefinition( final InputStream is )
-    throws FactoryConfigurationError, ParserConfigurationException,
-    SAXException, IOException
+    throws SAXException, IOException
   {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware( true );
@@ -156,7 +164,13 @@ public class ThemeDefinitionReader {
       factory.setNamespaceAware( false );
       factory.setValidating( false );
     }
-    DocumentBuilder builder = factory.newDocumentBuilder();
+    DocumentBuilder builder;
+    try {
+      builder = factory.newDocumentBuilder();
+    } catch( final ParserConfigurationException e ) {
+      String message = "Failed to initialize parser for theme definition files";
+      throw new RuntimeException( message, e );
+    }
 //    builder.setEntityResolver( new EntityResolver() {
 //      public InputSource resolveEntity( final String publicID,
 //                                        final String systemID )

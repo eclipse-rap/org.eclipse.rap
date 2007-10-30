@@ -93,8 +93,6 @@
       targetPath="window/minimize.inactive.over.png"
       default="resource/widget/rap/window/minimize.inactive.over.png"/>
 
-  <!-- inherit="shell.minbutton.image" -->
-
   <image name="shell.maxbutton.image"
       description="Image for maximize button of Shells"
       targetPath="window/maximize.png"

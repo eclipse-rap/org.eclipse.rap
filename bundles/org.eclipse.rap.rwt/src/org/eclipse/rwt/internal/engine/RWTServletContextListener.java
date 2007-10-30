@@ -37,9 +37,10 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class RWTServletContextListener implements ServletContextListener {
 
+  // TODO [rst] Align parameter names with extension point names
   public static final String ENTRYPOINT_PARAM
     = "org.eclipse.swt.entrypoint";
-  public static final String SWT_THEMES_PARAM
+  public static final String THEMES_PARAM
     = "org.eclipse.swt.themes";
   public static final String RESOURCE_MANAGER_FACTORY_PARAM
     = "org.eclipse.swt.resourcemanagerfactory";
@@ -61,7 +62,7 @@ public class RWTServletContextListener implements ServletContextListener {
   // implementation of ServletContextListener
 
   public void contextInitialized( final ServletContextEvent evt ) {
-    registerSWTThemes( evt.getServletContext() );
+    registerThemes( evt.getServletContext() );
     registerEntryPoints( evt.getServletContext() );
     registerResourceManagerFactory( evt.getServletContext() );
     registerAdapterFactories( evt.getServletContext() );
@@ -71,7 +72,7 @@ public class RWTServletContextListener implements ServletContextListener {
   }
 
   public void contextDestroyed( final ServletContextEvent evt ) {
-    deregisterSWTTheme( evt.getServletContext() );
+    deregisterThemes( evt.getServletContext() );
     deregisterEntryPoints( evt.getServletContext() );
     deregisterPhaseListeners( evt.getServletContext() );
     deregisterResources( evt.getServletContext() );
@@ -81,10 +82,10 @@ public class RWTServletContextListener implements ServletContextListener {
   ////////////////////////////////////////////////////////////
   // helping methods - entry point registration/deregistration
 
-  private static void registerSWTThemes( final ServletContext context ) {
+  private static void registerThemes( final ServletContext context ) {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
-    String value = context.getInitParameter( SWT_THEMES_PARAM );
+    String value = context.getInitParameter( THEMES_PARAM );
     ResourceLoader loader = new ResourceLoader() {
       public InputStream getResourceAsStream( final String resourceName )
         throws IOException
@@ -114,7 +115,7 @@ public class RWTServletContextListener implements ServletContextListener {
               }
             }
           } catch( final Exception ex ) {
-            String text = "Failed to register SWT theme ''{0}'' "
+            String text = "Failed to register custom theme ''{0}'' "
               + "from file ''{1}''.";
             Object[] args = new Object[] { themeId, fileName };
             String msg = MessageFormat.format( text, args );
@@ -153,8 +154,8 @@ public class RWTServletContextListener implements ServletContextListener {
     setRegisteredEntryPoints( context, registeredEntryPoints );
   }
 
-  private void deregisterSWTTheme( final ServletContext servletContext ) {
-    ThemeManager.getInstance().deregisterAll();
+  private void deregisterThemes( final ServletContext servletContext ) {
+    ThemeManager.getInstance().reset();
   }
 
   private void deregisterEntryPoints( final ServletContext context ) {

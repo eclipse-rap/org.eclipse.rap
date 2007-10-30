@@ -15,9 +15,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -29,15 +26,19 @@ import org.eclipse.swt.widgets.Widget;
 import org.xml.sax.SAXException;
 
 
+/**
+ * The ThemeManager is responsible for reading custom themes and installing them
+ * on the client.
+ */
 public final class ThemeManager {
 
   private static final class ThemeWrapper {
     final Theme theme;
     final ResourceLoader loader;
     final int count;
-    public ThemeWrapper( final Theme theme,
-                         final ResourceLoader loader,
-                         final int count )
+    ThemeWrapper( final Theme theme,
+                  final ResourceLoader loader,
+                  final int count )
     {
       this.theme = theme;
       this.loader = loader;
@@ -161,8 +162,6 @@ public final class ThemeManager {
   private final Map imageMapping;
   private Theme predefinedTheme;
   private final Set registeredThemeFiles;
-  
-
 
   private int themeCount;
 
@@ -180,6 +179,7 @@ public final class ThemeManager {
 
   /**
    * Returns the sole instance of the ThemeManager.
+   * @return the ThemeManager instance
    */
   public static ThemeManager getInstance() {
     if( instance == null ) {
@@ -189,22 +189,19 @@ public final class ThemeManager {
   }
 
   /**
-   * Initializes the ThemeManager, i.e. loads theming-relevant files and
-   * registers themes.
+   * Initializes the ThemeManager. Theming-relevant files are loaded for all
+   * themeable widgets, resources are registered. If the ThemeManager has
+   * already been initialized, no action is taken.
    */
   public void initialize() {
     log( "____ ThemeManager intialize" );
     if( !initialized ) {
-      try {
-        for( int i = 0; i < THEMEABLE_WIDGETS.length; i++ ) {
-          processThemeableWidget( THEMEABLE_WIDGETS[ i ] );
-        }
-        Iterator widgetIter = customWidgets.iterator();
-        while( widgetIter.hasNext() ) {
-          processThemeableWidget( ( Class )widgetIter.next() );
-        }
-      } catch( final Exception e ) {
-        throw new RuntimeException( "Initialization failed", e );
+      for( int i = 0; i < THEMEABLE_WIDGETS.length; i++ ) {
+        processThemeableWidget( THEMEABLE_WIDGETS[ i ] );
+      }
+      Iterator widgetIter = customWidgets.iterator();
+      while( widgetIter.hasNext() ) {
+        processThemeableWidget( ( Class )widgetIter.next() );
       }
       // initialize predefined theme
       predefinedTheme = new Theme( PREDEFINED_THEME_NAME );
@@ -214,15 +211,21 @@ public final class ThemeManager {
         ThemeDef def = ( ThemeDef )themeDefs.get( key );
         predefinedTheme.setValue( key, def.defValue );
       }
-      themes.put( PREDEFINED_THEME_ID, new ThemeWrapper( predefinedTheme,
-                                                         null,
-                                                         themeCount++ ) );
+      themes.put( PREDEFINED_THEME_ID,
+                  new ThemeWrapper( predefinedTheme, null, themeCount++ ) );
       initialized = true;
-      logRegisteredAdapters();
+      logRegisteredThemeAdapters();
+      
     }
   }
-
-  public void deregisterAll() {
+  
+  /**
+   * Resets the ThemeManager. All registered themes and themeable widgets are
+   * de-registered. If the ThemeManager is not initialized, nothing happens.
+   * After this method has been called the ThemeManager is no longer
+   * initialized.
+   */
+  public void reset() {
     if( initialized ) {
       customWidgets.clear();
       addAppearances.clear();
@@ -234,25 +237,44 @@ public final class ThemeManager {
       log( "deregistered" );
     }
   }
-
+  
+  /**
+   * Adds a custom widget to the list of themeable widgets. Note that this
+   * method must be called <em>before</em> initializing the ThemeManager.
+   * 
+   * @param widget the themeable widget to add, must not be <code>null</code>
+   * @throws IllegalStateException if the ThemeManager is already initialized
+   */
   public void addThemeableWidget( final Class widget ) {
     if( initialized ) {
       throw new IllegalStateException( "ThemeManager is already initialized" );
     }
-    customWidgets.add( widget );
+    if( widget == null ) {
+      throw new NullPointerException( "null argument" );
+    }
+    if( !Widget.class.isAssignableFrom( widget ) ) {
+      String message = "Themeable widget is not a subtype of Widget: "
+                       + widget.getName();
+      throw new IllegalArgumentException( message );
+    }
+    if( !customWidgets.contains( widget ) ) {
+      customWidgets.add( widget );
+    }
   }
 
   /**
-   * Registers a theme from an input stream.
-   *
-   * @param id an id that identifies the theme in the Java code. This id is not
-   *            valid on the client-side. To get the id that is used on the
-   *            client, see method <code>getJsThemeId</code>.
+   * Registers a theme from an input stream. Note that <code>initialize()</code>
+   * must be called first.
+   * 
+   * @param id an id that identifies the theme in the Java code. Note that this
+   *            id is not valid on the client-side. To get the id that is used
+   *            on the client, see method <code>getJsThemeId</code>.
    * @param name a name that describes the theme. Currently not used.
    * @param instr an input stream to read the theme from.
    * @param loader a ResourceLoader instance that is able to load resources
    *            needed by this theme.
    * @throws IOException if an I/O error occurs
+   * @throws IllegalStateException if not initialized
    */
   public void registerTheme( final String id,
                              final String name,
@@ -272,8 +294,14 @@ public final class ThemeManager {
     Theme theme = loadThemeFile( name, instr );
     themes.put( id, new ThemeWrapper( theme, loader, themeCount++  ) );
   }
-
-  public void registerResources() throws IOException {
+  
+  /**
+   * Generates and registers JavaScript code that installs the registered themes
+   * on the client.
+   * 
+   * @throws IllegalStateException if not initialized
+   */
+  public void registerResources() {
     checkInitialized();
     log( "____ ThemeManager register resources" );
     Iterator iterator = themes.keySet().iterator();
@@ -283,37 +311,82 @@ public final class ThemeManager {
     }
   }
 
+  /**
+   * Determines whether a theme with the specified id has been registered.
+   * 
+   * @param themeId the id to check for
+   * @return <code>true</code> if a theme has been registered with the given
+   *         id
+   * @throws IllegalStateException if not initialized
+   */
   public boolean hasTheme( final String themeId ) {
     checkInitialized();
     return themes.containsKey( themeId );
   }
 
+  /**
+   * Returns the theme registered with the given id.
+   * 
+   * @param themeId the id of the theme to retrieve
+   * @return the theme registered with the given id or <code>null</code> if
+   *         there is no theme registered with this id
+   * @throws IllegalStateException if not initialized
+   */
   public Theme getTheme( final String themeId ) {
     checkInitialized();
-    if( !hasTheme( themeId ) ) {
-      throw new IllegalArgumentException( "No theme registered with id "
-                                          + themeId );
+    Theme result = null;
+    if( hasTheme( themeId ) ) {
+      ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
+      result = wrapper.theme;
     }
-    ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
-    return wrapper.theme;
+    return result;
   }
 
+  /**
+   * Returns a list of all registered themes.
+   * 
+   * @return an array that contains the ids of all registered themes, never
+   *         <code>null</code>
+   * @throws IllegalStateException if not initialized
+   */
   public String[] getRegisteredThemeIds() {
     checkInitialized();
     String[] result = new String[ themes.size() ];
     return ( String[] )themes.keySet().toArray( result );
   }
 
+  /**
+   * Returns the id of the default theme.
+   * 
+   * @return the id of the default theme
+   * @throws IllegalStateException if not initialized
+   */
   public String getDefaultThemeId() {
     checkInitialized();
     return PREDEFINED_THEME_ID;
   }
 
+  /**
+   * Determines whether there is a theme adapter registered for controls of the
+   * specified type.
+   * 
+   * @param controlClass the class to check for
+   * @return <code>true</code> if a theme adapter has been registered for the
+   *         given class
+   * @throws IllegalStateException if not initialized
+   */
   public boolean hasThemeAdapter( final Class controlClass ) {
     checkInitialized();
     return adapters.containsKey( controlClass );
   }
 
+  /**
+   * Returns the theme adapter to use for controls of the specified type.
+   * 
+   * @param widgetClass
+   * @return the theme adapter
+   * @throws IllegalStateException if not initialized
+   */
   public IThemeAdapter getThemeAdapter( final Class widgetClass ) {
     checkInitialized();
     IThemeAdapter result = null;
@@ -321,8 +394,8 @@ public final class ThemeManager {
       result = ( IThemeAdapter )adapters.get( widgetClass );
     } else {
       Class clazz = widgetClass;
-      while(    clazz != null 
-             && clazz != Widget.class 
+      while(    clazz != null
+             && clazz != Widget.class
              && !hasThemeAdapter( clazz ) )
       {
         clazz = clazz.getSuperclass();
@@ -340,7 +413,12 @@ public final class ThemeManager {
   }
 
   /**
-   * Returns the theme id to use on the client side.
+   * Returns the generated theme id to use on the client side which differs from
+   * the theme id that is given in the extension.
+   * 
+   * @param id the theme id as specified in the theme extension
+   * @return a generated id for use on the client
+   * @throws IllegalStateException if not initialized
    */
   public String getJsThemeId( final String id ) {
     checkInitialized();
@@ -360,6 +438,7 @@ public final class ThemeManager {
 
   /**
    * Writes a theme template file to the standard output.
+   * @param args ignored
    */
   public static void main( final String[] args ) {
     ThemeManager manager = ThemeManager.getInstance();
@@ -391,36 +470,32 @@ public final class ThemeManager {
 
   /**
    * Loads and processes all theme-relevant resources for a given class.
-   * @throws InvalidThemeFormatException
-   * @throws ParserConfigurationException
-   * @throws FactoryConfigurationError
-   * @throws IllegalAccessException
-   * @throws InstantiationException
    */
-  private void processThemeableWidget( final Class clazz )
-    throws IOException, FactoryConfigurationError,
-    ParserConfigurationException, InstantiationException,
-    IllegalAccessException
-  {
-    log( "Processing widget: " + clazz.getName() );
-    String[] variants = getPackageVariants( clazz.getPackage().getName() );
-    String className = getSimpleClassName( clazz );
-    ClassLoader loader = clazz.getClassLoader();
+  private void processThemeableWidget( final Class widgetClass ) {
+    log( "Processing widget: " + widgetClass.getName() );
+    String[] variants = getPackageVariants( widgetClass.getPackage().getName() );
+    String className = getSimpleClassName( widgetClass );
+    ClassLoader loader = widgetClass.getClassLoader();
     boolean found = false;
-    for( int i = 0; i < variants.length && !found ; i++ ) {
-      String pkgName = variants[ i ] + "." + className.toLowerCase() + "kit";
-      // TODO [rst] Is it possible to recognize whether a package exists?
-      log( "looking through package " + pkgName );
-      found |= loadThemeDef( loader, pkgName, className );
-      found |= loadAppearanceJs( loader, pkgName, className );
-      found |= loadThemeAdapter( loader, pkgName, className, clazz );
+    try {
+      for( int i = 0; i < variants.length && !found ; i++ ) {
+        String pkgName = variants[ i ] + "." + className.toLowerCase() + "kit";
+        // TODO [rst] Is it possible to recognize whether a package exists?
+        log( "looking through package " + pkgName );
+        found |= loadThemeDef( loader, pkgName, className );
+        found |= loadAppearanceJs( loader, pkgName, className );
+        found |= loadThemeAdapter( loader, pkgName, className, widgetClass );
+      }
+    } catch( final IOException e ) {
+      String message = "Failed to initialize themeable widget "
+                       + widgetClass.getName();
+      throw new ThemeManagerException( message, e );
     }
   }
 
   private boolean loadThemeDef( final ClassLoader loader,
                                 final String pkgName,
-                                final String className )
-    throws IOException, FactoryConfigurationError, ParserConfigurationException
+                                final String className ) throws IOException
   {
     boolean result = false;
     String resPkgName = pkgName.replace( '.', '/' );
@@ -437,6 +512,9 @@ public final class ThemeManager {
               throw new IllegalArgumentException( "key defined twice: "
                                                   + def.name );
             }
+            if( "mycontrol.bgimage".equals( def.name ) ) {
+              System.out.println();
+            }
             themeDefs.put( def.name, def );
             if( def.targetPath != null ) {
               imageMapping.put( def.name, def.targetPath );
@@ -444,7 +522,8 @@ public final class ThemeManager {
           }
         } );
       } catch( final SAXException e ) {
-        throw new IllegalArgumentException( "Failed to parse file " + fileName );
+        String message = "Failed to parse theme definition file " + fileName;
+        throw new IllegalArgumentException( message );
       } finally {
         inStream.close();
       }
@@ -493,7 +572,6 @@ public final class ThemeManager {
                                     final String pkgName,
                                     final String className,
                                     final Class clazz )
-    throws InstantiationException, IllegalAccessException
   {
     boolean result = false;
     IThemeAdapter themeAdapter = null;
@@ -508,51 +586,61 @@ public final class ThemeManager {
       }
     } catch( final ClassNotFoundException e ) {
       // ignore and try to load from next package name variant
+    } catch( final InstantiationException e ) {
+      String message = "Failed to instantiate theme adapter class "
+                       + adapterClassName;
+      throw new ThemeManagerException( message, e );
+    } catch( final IllegalAccessException e ) {
+      String message = "Failed to instantiate theme adapter class "
+                       + adapterClassName;
+      throw new ThemeManagerException( message, e );
     }
     return result;
   }
 
-  private Theme loadThemeFile( final String name, final InputStream instr )
+  /**
+   * Loads a theme from a <code>theme.properties</code> file.
+   * 
+   * @param name the name for the theme to create
+   * @param the input stream of the theme file to read
+   * @return the newly created theme
+   */
+  private Theme loadThemeFile( final String name, final InputStream inStr )
     throws IOException
   {
-    if( instr == null ) {
+    if( inStr == null ) {
       throw new IllegalArgumentException( "null argument" );
     }
     Theme newTheme = new Theme( name, predefinedTheme );
     Properties properties = new Properties();
-    properties.load( instr );
+    properties.load( inStr );
     Iterator iterator = properties.keySet().iterator();
     while( iterator.hasNext() ) {
       String key = ( ( String )iterator.next() ).trim();
       QxType defValue = predefinedTheme.getValue( key );
-      QxType newValue = null;
       if( defValue == null ) {
         throw new IllegalArgumentException( "Invalid key for themeing: " + key );
       }
       String value = ( String )properties.get( key );
-      if( defValue instanceof QxBorder ) {
-        newValue = new QxBorder( value );
-      } else if( defValue instanceof QxBoxDimensions ) {
-        newValue = new QxBoxDimensions( value );
-      } else if( defValue instanceof QxFont ) {
-        newValue = new QxFont( value );
-      } else if( defValue instanceof QxColor ) {
-        newValue = new QxColor( value );
-      } else if( defValue instanceof QxDimension ) {
-        newValue = new QxDimension( value );
-      } else if( defValue instanceof QxImage ) {
-        newValue = new QxImage( value );
-      }
-      newTheme.setValue( key, newValue );
-    }
-    // second loop for inheritance
-    // TODO [rst] detect inheritance loops and handle multi-step inheritance
-    iterator = themeDefs.keySet().iterator();
-    while( iterator.hasNext() ) {
-      String key = ( String )iterator.next();
-      ThemeDef def = ( ThemeDef )themeDefs.get( key );
-      if( def.inherit != null && !properties.containsKey( key ) ) {
-        newTheme.setValue( key, newTheme.getValue( def.inherit ) );
+      if( value != null && value.trim().length() > 0 ) {
+        QxType newValue;
+        if( defValue instanceof QxBorder ) {
+          newValue = new QxBorder( value );
+        } else if( defValue instanceof QxBoxDimensions ) {
+          newValue = new QxBoxDimensions( value );
+        } else if( defValue instanceof QxFont ) {
+          newValue = new QxFont( value );
+        } else if( defValue instanceof QxColor ) {
+          newValue = new QxColor( value );
+        } else if( defValue instanceof QxDimension ) {
+          newValue = new QxDimension( value );
+        } else if( defValue instanceof QxImage ) {
+          newValue = new QxImage( value );
+        } else {
+          // TODO [rst] How to handle programming errors?
+          throw new RuntimeException( "unknown type" );
+        }
+        newTheme.setValue( key, newValue );
       }
     }
     return newTheme;
@@ -561,15 +649,16 @@ public final class ThemeManager {
   /**
    * Creates and registers all JavaScript theme files and images for a given
    * theme.
+   * 
+   * @param themeId the theme id
    */
-  private void registerThemeFiles( final String id )
-    throws IOException
-  {
+  private void registerThemeFiles( final String themeId ) {
     synchronized( registeredThemeFiles ) {
-      if( !registeredThemeFiles.contains( id ) ) {
-        ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
-        String jsId = getJsThemeId( id );
-        registerWidgetImages( id );
+      if( !registeredThemeFiles.contains( themeId ) ) {
+        ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
+        String jsId = getJsThemeId( themeId );
+        registerNonThemeableWidgetImages( themeId );
+        registerThemeableWidgetImages( themeId );
         StringBuffer sb = new StringBuffer();
         sb.append( createColorTheme( wrapper.theme, jsId ) );
         sb.append( createBorderTheme( wrapper.theme, jsId ) );
@@ -579,26 +668,20 @@ public final class ThemeManager {
         sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
         sb.append( createMetaTheme( wrapper.theme, jsId ) );
         String themeCode = sb.toString();
-        log( "-- REGISTERED THEME CODE FOR " + id + " --" );
+        log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
         log( "-- END REGISTERED THEME CODE --" );
-// TODO [rst] Load only the default theme at startup
-//    boolean loadOnStartup = defaultThemeId.equals( id );
+//        TODO [rst] Load only the default theme at startup
+//        boolean loadOnStartup = defaultThemeId.equals( id );
         boolean loadOnStartup = true;
         registerJsLibrary( themeCode, jsId + ".js", loadOnStartup );
-        registeredThemeFiles.add( id );
+        registeredThemeFiles.add( themeId );
       }
     }
   }
-
-  private void registerWidgetImages( final String id )
-    throws IOException
-  {
-    ThemeWrapper wrapper = ( ThemeWrapper )themes.get( id );
-    Theme theme = wrapper.theme;
-    ResourceLoader themeLoader = wrapper.loader;
+  
+  private void registerNonThemeableWidgetImages( final String id ) {
     ClassLoader classLoader = ThemeManager.class.getClassLoader();
-
     // non-themeable images
     log( " == register non-themeable images for theme " + id );
     for( int i = 0; i < WIDGET_NOTHEME_RESOURCES.length; i++ ) {
@@ -606,7 +689,7 @@ public final class ThemeManager {
       InputStream inputStream = null;
       String res = WIDGET_RESOURCES_SRC + "/" + imagePath;
       inputStream = classLoader.getResourceAsStream( res );
-      if( inputStream  == null ) {
+      if( inputStream == null ) {
         String mesg = "Resource not found: " + res;
         throw new IllegalArgumentException( mesg );
       }
@@ -616,12 +699,22 @@ public final class ThemeManager {
         ResourceManager.getInstance().register( registerPath, inputStream );
         log( " notheme image registered @ " + registerPath );
       } finally {
-        inputStream.close();
+        try {
+          inputStream.close();
+        } catch( final IOException e ) {
+          throw new RuntimeException( e );
+        }
       }
     }
-
+  }
+  
+  private void registerThemeableWidgetImages( final String themeId ) {
+    ThemeWrapper wrapper = ( ThemeWrapper )themes.get( themeId );
+    Theme theme = wrapper.theme;
+    ResourceLoader themeLoader = wrapper.loader;
+    ClassLoader classLoader = ThemeManager.class.getClassLoader();
     // themeable images
-    log( " == register themeable images for theme " + id + ", loader: " + themeLoader );
+    log( " == register themeable images for theme " + themeId + ", loader: " + themeLoader );
     String[] keys = theme.getKeys();
     for( int i = 0; i < keys.length; i++ ) {
       String key = keys[ i ];
@@ -632,12 +725,20 @@ public final class ThemeManager {
         log( " register theme image " + key + ", " + path );
         InputStream inputStream;
         if( image.isNone() ) {
+          // use blank image
           path = BLANK_IMAGE_PATH;
           inputStream = classLoader.getResourceAsStream( path );
         } else if( !theme.definesKey( key ) || themeLoader == null ) {
+          // use default image
           inputStream = classLoader.getResourceAsStream( path );
         } else {
-          inputStream = themeLoader.getResourceAsStream( path );
+          // use custom image
+          try {
+            inputStream = themeLoader.getResourceAsStream( path );
+          } catch( final IOException e ) {
+            String message = "Failed to load resource " + path;
+            throw new ThemeManagerException( message, e );
+          }
         }
         if( inputStream == null ) {
           String pattern = "Resource ''{0}'' not found for theme ''{1}''";
@@ -646,7 +747,7 @@ public final class ThemeManager {
           throw new IllegalArgumentException( mesg );
         }
         try {
-          String jsId = getJsThemeId( id );
+          String jsId = getJsThemeId( themeId );
           // TODO [rst] implement proper path join
           String widgetDestPath = getWidgetDestPath( jsId  );
           String targetPath = ( String )imageMapping.get( key );
@@ -654,7 +755,11 @@ public final class ThemeManager {
           ResourceManager.getInstance().register( registerPath, inputStream );
           log( " theme image registered @ " + registerPath );
         } finally {
-          inputStream.close();
+          try {
+            inputStream.close();
+          } catch( final IOException e ) {
+            throw new RuntimeException( e );
+          }
         }
       }
     }
@@ -663,10 +768,14 @@ public final class ThemeManager {
   private static void registerJsLibrary( final String code,
                                          final String name,
                                          final boolean loadOnStartup )
-    throws IOException
   {
     ByteArrayInputStream resourceInputStream;
-    byte[] buffer = code.getBytes( CHARSET );
+    byte[] buffer;
+    try {
+      buffer = code.getBytes( CHARSET );
+    } catch( final UnsupportedEncodingException e ) {
+      throw new RuntimeException( e );
+    }
     resourceInputStream = new ByteArrayInputStream( buffer );
     try {
       ResourceManager.getInstance().register( name,
@@ -679,7 +788,11 @@ public final class ThemeManager {
         responseWriter.useJSLibrary( name );
       }
     } finally {
-      resourceInputStream.close();
+      try {
+        resourceInputStream.close();
+      } catch( final IOException e ) {
+        throw new RuntimeException( e );
+      }
     }
   }
 
@@ -700,12 +813,17 @@ public final class ThemeManager {
   }
 
   private static String createBorderTheme( final Theme theme, final String id )
-    throws IOException
   {
     ClassLoader classLoader = ThemeManager.class.getClassLoader();
     String resource = "org/eclipse/swt/theme/DefaultBorders.js";
     InputStream inStr = classLoader.getResourceAsStream( resource  );
-    String content = readFromInputStream( inStr, "UTF-8" );
+    String content;
+    try {
+      content = readFromInputStream( inStr, "UTF-8" );
+    } catch( final IOException e ) {
+      String message = "Unable to load file " + resource;
+      throw new ThemeManagerException( message, e );
+    }
     String defaultBorders = stripTemplate( content );
     ThemeWriter writer = new ThemeWriter( id,
                                           theme.getName(),
@@ -755,14 +873,17 @@ public final class ThemeManager {
     return writer.getGeneratedCode();
   }
 
-  private String createAppearanceTheme( final Theme theme,
-                                        final String id )
-    throws IOException
-  {
+  private String createAppearanceTheme( final Theme theme, final String id ) {
     ClassLoader classLoader = ThemeManager.class.getClassLoader();
     String resource = "org/eclipse/swt/theme/DefaultAppearances.js";
     InputStream inStr = classLoader.getResourceAsStream( resource );
-    String content = readFromInputStream( inStr, "UTF-8" );
+    String content;
+    try {
+      content = readFromInputStream( inStr, "UTF-8" );
+    } catch( final IOException e ) {
+      String message = "Unable to load file " + resource;
+      throw new ThemeManagerException( message , e );
+    }
     String template = stripTemplate( content );
     String appearances = substituteTemplate( template, theme );
     ThemeWriter writer = new ThemeWriter( id,
@@ -917,7 +1038,7 @@ public final class ThemeManager {
     }
   }
 
-  private void logRegisteredAdapters() {
+  private void logRegisteredThemeAdapters() {
     log( "=== REGISTERED ADAPTERS ===" );
     Iterator iter = adapters.keySet().iterator();
     while( iter.hasNext() ) {
