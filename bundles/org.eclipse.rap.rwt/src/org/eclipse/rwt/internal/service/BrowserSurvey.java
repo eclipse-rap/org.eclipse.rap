@@ -28,8 +28,8 @@ import org.eclipse.rwt.internal.util.*;
 public final class BrowserSurvey {
 
   /** 
-   * <p>Writes a special html page into the passed HtmlResponseWriter, in order to
-   *  determine which browser has originated the request.</p> 
+   * <p>Writes a special html page into the passed HtmlResponseWriter,
+   * in order to  determine which browser has originated the request.</p> 
    */
   static void sendBrowserSurvey() throws ServletException {
     if( LifeCycleServiceHandler.configurer.isStartupPageModifiedSince() ) {
@@ -49,7 +49,8 @@ public final class BrowserSurvey {
         }
       } catch( IOException e ) {
         String txt = "Failed to load Browser Survey HTML Page (Reason: {0})";
-        String msg = MessageFormat.format( txt, new Object[] { e.getMessage() } );
+        Object[] param = new Object[] { e.getMessage() };
+        String msg = MessageFormat.format( txt, param );
         throw new ServletException( msg, e );
       }
     }
