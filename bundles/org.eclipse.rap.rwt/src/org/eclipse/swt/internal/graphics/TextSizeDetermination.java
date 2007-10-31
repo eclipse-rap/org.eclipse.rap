@@ -68,9 +68,11 @@ public class TextSizeDetermination {
     Point result;
     if( wrapWidth <= 0 ) {
       result = doMeasurement( font, string, wrapWidth, TEXT_EXTENT );
-      // TODO [rst] This line caused errors with strings that contained more
-      //            than one line - textExtent respects new lines!
-//      result.y = getCharHeight( font );
+      // TODO [rst] Still returns wrong result for texts that contain only
+      //            whitespace ( and possibly more that one line )
+      if( result.y == 0 ) {
+        result.y = getCharHeight( font );
+      }
     } else {
       Point testSize = doMeasurement( font, string, wrapWidth, TEXT_EXTENT );
       if( testSize.x < wrapWidth ) {
