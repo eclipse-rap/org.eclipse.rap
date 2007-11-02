@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
 
 
-public class UntypedEventAdapter
+public final class UntypedEventAdapter
   implements ControlListener, 
              DisposeListener,
              SelectionListener,
@@ -285,9 +285,11 @@ public class UntypedEventAdapter
   }
   
   private static Event createEvent( final int eventType, final Object source ) {
+    Widget widget = ( Widget )source;
     Event result = new Event();
     result.type = eventType;
-    result.widget = ( Widget )source;
+    result.widget = widget;
+    result.display = widget.getDisplay();
     return result;
   }
 }

@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Item;
 
 
 
-public class SetDataEvent extends TypedEvent {
+public final class SetDataEvent extends TypedEvent {
 
   public static final int SET_DATA = SWT.SetData;
   
