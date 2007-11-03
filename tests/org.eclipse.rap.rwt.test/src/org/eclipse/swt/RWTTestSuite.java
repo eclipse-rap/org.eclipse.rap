@@ -14,8 +14,7 @@ package org.eclipse.swt;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.rwt.AdapterManager_Test;
-import org.eclipse.rwt.SessionSingleton_Test;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.BrowserLoader_Test;
 import org.eclipse.rwt.internal.engine.PhaseListenerRegistry_Test;
@@ -71,6 +70,7 @@ public class RWTTestSuite {
   public static Test suite() {
     TestSuite suite = new TestSuite( "Test for org.eclipse.rap.rwt" );
     // Former W4T Tests
+    suite.addTestSuite( NLS_Test.class );
     suite.addTestSuite( AdapterManager_Test.class );
     suite.addTestSuite( HtmlResponseWriter_Test.class );
     suite.addTestSuite( HtmlResponseWriterUtil_Test.class );

@@ -11,6 +11,9 @@
 
 package org.eclipse.rwt;
 
+import java.lang.reflect.*;
+import java.util.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,7 +40,94 @@ import org.eclipse.rwt.service.*;
  * @see HttpServletResponse
  */
 public final class RWT {
+  private static final String LOCALE = RWT.class.getName() + ".LOCALE";
 
+  /**
+   * <p>This utility class helps to provide a similar approach for compile save
+   * native language support than {@link org.eclipse.osgi.util.NLS NLS} does.
+   * We can not use the original approach though, due to the nature of
+   * server side environments, that have to deal with different languages
+   * per user session or even requests.</p>
+   *
+   * <p>
+   * Usage:
+   * <pre>
+   *  public class FooMessages {
+   *    private static final String BUNDLE_NAME = "foo.bar.messages";
+   *    
+   *    public String MyMessage;
+   *
+   *    public static FooMessages get() {
+   *      return ( FootMessages )RWT.NLS.get( BUNDLE_NAME, FooMessages.class );
+   *    }
+   *  }
+   * </pre>
+   * 
+   * BUNDLE_NAME contains the name of a properties file (without file extension)
+   * that follows the conventions of standard {@link ResourceBundle} property
+   * files. For each field (in the example 'MyMessage') there has to be a
+   * key entry in the localization property file. Use the
+   * <code>FooMessages</code> like this in the application code:
+   * 
+   * <pre>
+   *   Label label = ...;
+   *   label.setText( FooMessages.get().MyMessage );
+   * </pre>
+   * </p>
+   */
+  public static final class NLS {
+    private final static Map map = new HashMap();
+
+    /**
+     * Returns a NLS object for the given bundle and type. See
+     * class description for usage information.
+     * 
+     * @param bundleName the bundle to load.
+     * @param clazz the class of the NLS object to load.
+     */
+    public static Object get( final String bundleName, 
+                              final Class clazz )
+    {
+      Object result = null;
+      ClassLoader loader = clazz.getClassLoader();
+      ResourceBundle bundle
+        = ResourceBundle.getBundle( bundleName, getLocale(), loader );
+      synchronized( map ) {
+        result = map.get( bundle );
+        if( result == null ) {
+          try {
+            Constructor constructor = clazz.getDeclaredConstructor( null );
+            constructor.setAccessible( true );
+            result = constructor.newInstance( null );
+          } catch( final Exception ex ) {
+            throw new IllegalStateException( ex.getMessage() );
+          }
+          final Field[] fieldArray = clazz.getDeclaredFields();
+          for( int i = 0; i < fieldArray.length; i++ ) {
+            try {
+              int modifiers = fieldArray[ i ].getModifiers();
+              if(    String.class.isAssignableFrom( fieldArray[ i ].getType() )
+                  && Modifier.isPublic( modifiers ) 
+                  && !Modifier.isStatic( modifiers ) )
+              {
+                String value = bundle.getString( fieldArray[ i ].getName() );
+                if( value != null ) {
+                  fieldArray[ i ].setAccessible( true );
+                  fieldArray[ i ].set( result, value );
+                }
+              }
+            } catch( final Exception ex ) {
+              // TODO Auto-generated catch block
+              ex.printStackTrace();
+            }
+          }
+          map.put( bundle, result );
+        }
+      }
+      return result;
+    }
+  }
+  
   private static final IServiceManager serviceManager = new IServiceManager() {
     public void registerServiceHandler( final String id, 
                                         final IServiceHandler serviceHandler ) 
@@ -49,6 +139,7 @@ public final class RWT {
       ServiceManager.unregisterServiceHandler( id );
     }
   };
+
   
   /**
    * Returns the instance of the current life cycle
@@ -117,6 +208,40 @@ public final class RWT {
    */
   public static HttpServletResponse getResponse() {
     return ContextProvider.getResponse();
+  }
+
+  /**
+   * Returns the preferred <code>Locale</code> that the client will accept
+   * content in. This is eighter the <code>Locale</code> that was set in 
+   * session-scope using the {@link #setLocale(Locale)} method or the locale
+   * based on the Accept-Language header of the current request. If neighter
+   * the <code>Locale</code> was set programmatically, nor the client request
+   * provides an Accept-Language header, this method returns the default
+   * locale for the server.
+   * 
+   * @return the preferred <code>Locale</code> for the client.
+   * 
+   * @see #setLocale(Locale)
+   */
+  public static Locale getLocale() {
+    ISessionStore session = ContextProvider.getSession();
+    Locale result = ( Locale )session.getAttribute( LOCALE );
+    if( result == null ) {
+      result = ContextProvider.getRequest().getLocale();
+    }
+    return result;
+  }
+  
+  /**
+   * Sets the preferred <code>Locale</code> that the client will accept
+   * content in to current session. The value set can be retrieved with
+   * the {@link #getLocale()} method.
+   * 
+   * @see #getLocale()
+   */
+  public static void setLocale( final Locale locale ) {
+    ISessionStore session = ContextProvider.getSession();
+    session.setAttribute( LOCALE, locale );
   }
   
   private RWT() {

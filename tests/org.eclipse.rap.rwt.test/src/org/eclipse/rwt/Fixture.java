@@ -135,6 +135,7 @@ public class Fixture {
     private Map parameters = new HashMap();
     private Map headers = new HashMap();
     private Map attributes = new HashMap();
+    private Locale locale;
     
     public String getAuthType() {
       return null;
@@ -419,9 +420,13 @@ public class Fixture {
     }
     
     public Locale getLocale() {
-      return null;
+      return locale == null ? Locale.getDefault() : locale ;
     }
-    
+
+    public void setLocale( final Locale locale ) {
+      this.locale = locale;
+    }
+
     public Enumeration getLocales() {
       return null;
     }
