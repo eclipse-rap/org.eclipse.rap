@@ -345,6 +345,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     setItemCount : function( value ) {
       this._itemCount = value;
+      this._updateScrollHeight();
+      this._updateRows();
     },
 
     /////////////////////////////////

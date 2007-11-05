@@ -492,22 +492,19 @@ public class Table extends Composite {
    * @since 1.0
    */
   // TODO [rh] Consider calling RWTLifeCycle#fakeRedraw at the end of this 
-  //      methods to ensure that items are darwn when inside the visible bounds 
+  //      method to ensure that items are drawn when inside the visible bounds 
   public void setItemCount( int newCount ) {
     checkWidget();
     int count = Math.max( 0, newCount );
     if( count != itemCount ) {
       boolean isVirtual = ( style & SWT.VIRTUAL ) != 0;
       int index = count;
-      while( index < items.length ) {
+      while( index < itemCount ) {
         TableItem item = items[ index ];
         if( item != null && !item.isDisposed() ) {
           item.dispose();
         }
         index++;
-      }
-      if( index < itemCount ) {
-        error( SWT.ERROR_ITEM_NOT_REMOVED );
       }
       int length = Math.max( 4, ( count + 3 ) / 4 * 4 );
       TableItem[] newItems = new TableItem[ length ];
@@ -519,6 +516,10 @@ public class Table extends Composite {
         }
       } 
       itemCount = count;
+      adjustTopIndex();
+      if( focusIndex > itemCount - 1 ) {
+        adjustFocusIndex();
+      }
     } 
   }
 
@@ -2007,13 +2008,9 @@ public class Table extends Composite {
     if( itemCount == 0 ) {
       setTableEmpty();
     }
-    if( topIndex > itemCount - 1 ) {
-      topIndex = Math.max( 0, itemCount - 1 );
-    }
+    adjustTopIndex();
     if( index == focusIndex || focusIndex > itemCount - 1 ) {
-      // Must reset focusIndex before calling getSelectionIndex 
-      focusIndex = -1;
-      focusIndex = getSelectionIndex();
+      adjustFocusIndex();
     }
   }
 
@@ -2109,31 +2106,6 @@ public class Table extends Composite {
     } 
   }
   
-  private void setFocusIndex( final int focusIndex ) {
-    if( focusIndex >= 0 ) {
-      this.focusIndex = focusIndex;
-    }
-  }
-
-  private void removeFromSelection( final int index ) {
-    if( index >= 0 && index < itemCount ) {
-      TableItem item = _getItem( index );
-      boolean found = false;
-      for( int i = 0; !found && i < selection.length; i++ ) {
-        if( item == selection[ i ] ) {
-          int length = selection.length;
-          TableItem[] newSel = new TableItem[ length - 1 ];
-          System.arraycopy( selection, 0, newSel, 0, i );
-          if( i < length - 1 ) {
-            System.arraycopy( selection, i + 1, newSel, i, length - i - 1 );
-          }
-          selection = newSel;
-          found = true;
-        }
-      }
-    }
-  }
-
   ////////////////////////////////////
   // Helping methods - item image size
 
@@ -2166,6 +2138,43 @@ public class Table extends Composite {
                      - getHeaderHeight() 
                      - ScrollBar.SCROLL_BAR_HEIGHT;
     return clientHeight >= 0 ? clientHeight / getItemHeight() : 0;
+  }
+
+  private void setFocusIndex( final int focusIndex ) {
+    if( focusIndex >= 0 ) {
+      this.focusIndex = focusIndex;
+    }
+  }
+
+  private void removeFromSelection( final int index ) {
+    if( index >= 0 && index < itemCount ) {
+      TableItem item = _getItem( index );
+      boolean found = false;
+      for( int i = 0; !found && i < selection.length; i++ ) {
+        if( item == selection[ i ] ) {
+          int length = selection.length;
+          TableItem[] newSel = new TableItem[ length - 1 ];
+          System.arraycopy( selection, 0, newSel, 0, i );
+          if( i < length - 1 ) {
+            System.arraycopy( selection, i + 1, newSel, i, length - i - 1 );
+          }
+          selection = newSel;
+          found = true;
+        }
+      }
+    }
+  }
+
+  private void adjustTopIndex() {
+    if( topIndex > itemCount - 1 ) {
+      topIndex = Math.max( 0, itemCount - 1 );
+    }
+  }
+
+  private void adjustFocusIndex() {
+    // Must reset focusIndex before calling getSelectionIndex 
+    focusIndex = -1;
+    focusIndex = getSelectionIndex();
   }
 
   private boolean isItemVisible( final int index ) {

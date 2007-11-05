@@ -335,6 +335,22 @@ public class Table_Test extends TestCase {
     assertEquals( 1, tableAdapter.getFocusIndex() );
   }
 
+  public void testFocusIndexVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setSize( 500, 500 );
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+
+    table.setItemCount( 100 );
+    table.setSelection( 90 );
+    table.setSize( 501, 501 );
+    table.setItemCount( 10 );
+    assertEquals( -1, tableAdapter.getFocusIndex() );
+  }
+
   public void testRemoveAll() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1154,7 +1170,7 @@ public class Table_Test extends TestCase {
     table.setItemCount( 200 );
     assertEquals( 200, table.getItemCount() );
   }
-
+  
   public void testResizeWithVirtualItems() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
