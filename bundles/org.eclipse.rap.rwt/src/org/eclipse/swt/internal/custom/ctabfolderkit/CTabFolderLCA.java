@@ -189,6 +189,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );
+    writer.callStatic( "org.eclipse.swt.custom.CTabFolder.setToolTipTexts", 
+                       new String[] { "Minimize", "Maximize", "Restore" } );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
@@ -249,8 +251,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           new Integer( maximizeRect.x ), 
           new Integer( maximizeRect.y ), 
           new Integer( maximizeRect.width ), 
-          new Integer( maximizeRect.height ), 
-          "Maximize" 
+          new Integer( maximizeRect.height ) 
         };
         writer.call( "showMaxButton", args );
       } else {
@@ -262,8 +263,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           new Integer( minimizeRect.x ), 
           new Integer( minimizeRect.y ), 
           new Integer( minimizeRect.width ), 
-          new Integer( minimizeRect.height ), 
-          "Minimize" 
+          new Integer( minimizeRect.height ) 
         };
         writer.call( "showMinButton", args );
       } else {

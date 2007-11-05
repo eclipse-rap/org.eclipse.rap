@@ -31,7 +31,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     this._current = null;
     
     this._fontPool = new Object();
-    this._tooltipPool = new Array();
+    this._toolTipPool = new Array();
   },
 
   statics : {    
@@ -285,8 +285,8 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       this._widgetPool[ typePoolId ] = typePool;        
     },
 
-    // ========================================================================
-    // FONT HANDLING
+    ////////////////
+    // Font handling
 
     setFont : function( widget, name, size, bold, italic ) {
       if( widget.setFont ) { // test if font property is supported
@@ -309,8 +309,8 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       return font;
     },
 
-    // ========================================================================
-    // TOOL TIP HANDLING
+    ////////////////////
+    // ToolTip handling
 
     /**
      * Sets the toolTipText for the given widget. An empty or null toolTipText
@@ -330,13 +330,15 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * creates one otherwise.
      */
     _createToolTipPopup : function( text ) {
-      var toolTip = this._tooltipPool.pop();
+      var toolTip = this._toolTipPool.pop();
       if( !toolTip ) {
         toolTip = new qx.ui.popup.ToolTip();
         var atom = toolTip.getAtom();
         atom.setLabel( "(empty)" );
         atom.getLabelObject().setMode( "html" );
         atom.setLabel( text );
+      } else {
+        toolTip.getAtom().setLabel( text );
       }
       return toolTip;
     },
@@ -352,7 +354,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       if( toolTip ) {
         // hide tooltip as disposing a visible one might cause app to hang
         toolTip.hide();
-        this._tooltipPool.push( toolTip );
+        this._toolTipPool.push( toolTip );
       }
     }
   }

@@ -10,7 +10,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
+qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
   extend : qx.ui.layout.CanvasLayout,
 
   construct : function( canClose ) {
@@ -90,9 +90,15 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
   statics : { 
     BUTTON_SIZE : 18,
     
-    MAX_TOOLTIP : "Maximize",
     MIN_TOOLTIP : "Minimize",
-    RESTORE_TOOLTIP : "Restore"
+    MAX_TOOLTIP : "Maximize",
+    RESTORE_TOOLTIP : "Restore",
+    
+    setToolTipTexts : function( min, max, restore ) {
+      org.eclipse.swt.custom.CTabFolder.MIN_TOOLTIP = min;
+      org.eclipse.swt.custom.CTabFolder.MAX_TOOLTIP = max;
+      org.eclipse.swt.custom.CTabFolder.RESTORE_TOOLTIP = restore;
+    }
   },
 
   members : {
@@ -175,29 +181,41 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
       this._minMaxState = state;
       var minIcon = "";
       var maxIcon = "";
+      var minToolTip = "";
+      var maxToolTip = "";
+this.debug( "minMaxState: " + state );      
       switch( state ) {
         case "min":
           minIcon = "resource/widget/rap/ctabfolder/restore.gif";
           maxIcon = "resource/widget/rap/ctabfolder/maximize.gif";
+          minToolTip = org.eclipse.swt.custom.CTabFolder.RESTORE_TOOLTIP;
+          maxToolTip = org.eclipse.swt.custom.CTabFolder.MAX_TOOLTIP;
           break;
         case "max":
           minIcon = "resource/widget/rap/ctabfolder/minimize.gif";
           maxIcon = "resource/widget/rap/ctabfolder/restore.gif";
+          minToolTip = org.eclipse.swt.custom.CTabFolder.MIN_TOOLTIP;
+          maxToolTip = org.eclipse.swt.custom.CTabFolder.RESTORE_TOOLTIP;
           break;
         case "normal":
           minIcon = "resource/widget/rap/ctabfolder/minimize.gif";
           maxIcon = "resource/widget/rap/ctabfolder/maximize.gif";
+          minToolTip = org.eclipse.swt.custom.CTabFolder.MIN_TOOLTIP;
+          maxToolTip = org.eclipse.swt.custom.CTabFolder.MAX_TOOLTIP;
           break;
       }
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
       if( this._minButton != null ) {
         this._minButton.setIcon( minIcon );
+        wm.setToolTip( this._minButton, minToolTip );
       }
       if( this._maxButton != null ) {
         this._maxButton.setIcon( maxIcon );
+        wm.setToolTip( this._maxButton, maxToolTip );
       }
     },
 
-    showMaxButton : function( left, top, width, height, toolTipText ) {
+    showMaxButton : function( left, top, width, height ) {
       if( this._maxButton == null ) {
         this._maxButton = new qx.ui.toolbar.Button();
         this._maxButton.addState( "rwt_FLAT" );
@@ -205,8 +223,6 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
         this._maxButton.addEventListener( "execute", this._onMinMaxExecute, this );
         this.add( this._maxButton );
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        wm.setToolTip( this._maxButton, toolTipText );
       }
       this._maxButton.setTop( top );
       this._maxButton.setLeft( left );
@@ -216,8 +232,6 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
 
     hideMaxButton : function() {
       if( this._maxButton != null ) {
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        wm.setToolTip( this._maxButton, null );
         this._maxButton.removeEventListener( "execute", this._onMinMaxExecute, this );
         this.remove( this._maxButton );
         this._maxButton.dispose();
@@ -225,7 +239,7 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
       }
     },
 
-    showMinButton : function( left, top, width, height, toolTipText ) {
+    showMinButton : function( left, top, width, height ) {
       if( this._minButton == null ) {
         this._minButton = new qx.ui.toolbar.Button();
         this._minButton.addState( "rwt_FLAT" );
@@ -233,8 +247,6 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
         this._minButton.addEventListener( "execute", this._onMinMaxExecute, this );
         this.add( this._minButton );
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        wm.setToolTip( this._minButton, toolTipText );
       }
       this._minButton.setTop( top );
       this._minButton.setLeft( left );
@@ -244,8 +256,6 @@ qx.Class.define("org.eclipse.swt.custom.CTabFolder", {
 
     hideMinButton : function( left ) {
       if (this._minButton != null) {
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        wm.setToolTip( this._minButton, null );
         this._minButton.removeEventListener( "execute", this._onMinMaxExecute, this );
         this.remove( this._minButton );
         this._minButton.dispose();
