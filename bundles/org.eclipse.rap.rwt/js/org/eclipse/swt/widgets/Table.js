@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -172,6 +171,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
   statics : {
     CHECK_WIDTH : 21,
+    CHECK_IMAGE_WIDTH : 13,
+    CHECK_IMAGE_HEIGHT : 13,
     
     ////////////////////////////////////
     // Helper to determine modifier keys
@@ -227,8 +228,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._vertScrollBar.setValue( 0 );
       this._horzScrollBar.setValue( 0 );
       this._updateClientAreaSize();
-      this._updateRowCount();
-      this._updateRows();
     },
 
     setItemHeight : function( value ) {
@@ -378,41 +377,51 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         qx.client.Timer.once( this._resumeClicks, this, 500 );
         var item = this._items[ itemIndex ];
         if( this._multiSelect ) {
-          if( org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt ) ) {
-            if( this._isItemSelected( item ) ) {
-              this._unselectItem( item, true );
-            } else {
-              this._selectItem( item, true );
-            }
-          }
-          if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) 
-              || org.eclipse.swt.widgets.Table._isCtrlShiftOnlyPressed( evt ) ) 
-          {
-            if( org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) ) {
-              while( this._selected.length > 0 ) {
-                this._unselectItem( this._selected[ 0 ], true );
-              }
-            }
-            var focusedItemIndex = this._items.indexOf( this._focusedItem );
-            if( focusedItemIndex != -1 ) {
-              var start = Math.min( focusedItemIndex, itemIndex );
-              var end = Math.max( focusedItemIndex, itemIndex );
-              for( var i = start; i <= end; i++ ) {
-                this._selectItem( this._items[ i ], true );
-              }
-            }
-          } 
-          if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
-              || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) )
-          {
-            this._setSingleSelection( itemIndex );
-          }
+          this._onMultiSelectRowClick( evt, itemIndex, item )
         } else {
           this._setSingleSelection( itemIndex );
         }
         this.setFocusedItem( item );
         this._updateSelectionParam();
         this.createDispatchDataEvent( "itemselected", item );
+      }
+    },
+    
+    _onMultiSelectRowClick : function( evt, itemIndex, item ) {
+      if( evt.isRightButtonPressed() ) {
+        if( !this._isItemSelected( item ) ) {
+          this._setSingleSelection( itemIndex );
+        }
+      } else {
+        if( org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt ) ) {
+          if( this._isItemSelected( item ) ) {
+            this._unselectItem( item, true );
+          } else {
+            this._selectItem( item, true );
+          }
+        }
+        if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) 
+            || org.eclipse.swt.widgets.Table._isCtrlShiftOnlyPressed( evt ) ) 
+        {
+          if( org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) ) {
+            while( this._selected.length > 0 ) {
+              this._unselectItem( this._selected[ 0 ], true );
+            }
+          }
+          var focusedItemIndex = this._items.indexOf( this._focusedItem );
+          if( focusedItemIndex != -1 ) {
+            var start = Math.min( focusedItemIndex, itemIndex );
+            var end = Math.max( focusedItemIndex, itemIndex );
+            for( var i = start; i <= end; i++ ) {
+              this._selectItem( this._items[ i ], true );
+            }
+          }
+        } 
+        if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
+            || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) )
+        {
+          this._setSingleSelection( itemIndex );
+        }
       }
     },
     
@@ -478,15 +487,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var tableId = widgetManager.findIdByWidget( this );
       var req = org.eclipse.swt.Request.getInstance();
-      var selectedIds = "";
+      var selectedIndices = "";
       for( var i = 0; i < this._selected.length; i++ ) {
-        var itemId = widgetManager.findIdByWidget( this._selected[ i ] );
-        if( selectedIds != "" ) {
-          selectedIds += ",";
+        var index = this._items.indexOf( this._selected[ i ] );
+        if( selectedIndices != "" ) {
+          selectedIndices += ",";
         }
-        selectedIds += itemId;
+        selectedIndices += index.toString();
       }
-      req.addParameter( tableId + ".selection", selectedIds );
+      req.addParameter( tableId + ".selection", selectedIndices );
     },
     
     _updateCheckParam : function( item ) {
@@ -767,10 +776,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _updateRowBounds : function() {
       var top = 0;
       var left = 0 - this._horzScrollBar.getValue();
+      // TODO [rh] make themeable
+      var checkImageWidht = 0;
+      var checkImageHeight = 0;
       var checkBoxWidth = 0;
       if( this._checkBoxes != null ) {
         // TODO [rh] move to theme, needs to be in sync with TableItem#CHECK_WIDTH
         checkBoxWidth = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
+        checkImageWidht = org.eclipse.swt.widgets.Table.CHECK_IMAGE_WIDTH;
+        checkImageHeight = org.eclipse.swt.widgets.Table.CHECK_IMAGE_HEIGHT;
       }
       var width = this.getColumnsWidth() - checkBoxWidth;
       if( this._clientArea.getWidth() > width ) {
@@ -780,9 +794,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if( this._checkBoxes != null ) {
           var checkBox = this._checkBoxes[ i ];
           checkBox.setLeft( left );
-          checkBox.setTop( top + 1 );
+          checkBox.setTop( top + this._itemHeight / 2 - checkImageWidht / 2 );
           checkBox.setWidth( checkBoxWidth );
-          checkBox.setHeight( this._itemHeight );
+          checkBox.setHeight( checkImageHeight );
         }
         var row = this._rows[ i ];
         row.setTop( top );

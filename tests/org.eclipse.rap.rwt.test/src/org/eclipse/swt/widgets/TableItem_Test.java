@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.widgets;
 
+import java.util.ArrayList;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
@@ -430,6 +432,33 @@ public class TableItem_Test extends TestCase {
     // Resetting item font returns the tables' font
     item.setForeground( null );
     assertEquals( table.getForeground(), item.getForeground() );
+  }
+  
+  /* Calling a setter like setImage, setBackground, ... on a virtual item
+   * that hasn't been 'touched' yet, marks the item as cached without firing 
+   * a SetData event.
+   * This may lead to items e.g. without proper text as no SetData event gets
+   * fired when the item becomes visible. SWT (on Windows) behaves the same. */
+  public void testSetterWidthVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final java.util.List eventLog = new ArrayList();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setSize( 90, 90 );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( final Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    shell.open();
+    table.setItemCount( 1000 );
+    
+    eventLog.clear();
+    TableItem item = table.getItem( 999 );
+    item.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
+    assertEquals( 0, eventLog.size() );
   }
 
   private static int getCheckWidth( final Table table ) {

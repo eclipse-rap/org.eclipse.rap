@@ -143,7 +143,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._bufferedZIndex = this.getZIndex();
         this.setZIndex( 1e8 );
         this._table._unhookColumnMove( this );
-        this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
         this._offsetX = evt.getPageX() - this.getLeft();
         this._initialLeft = this.getLeft();
       }
@@ -186,6 +185,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._table._showResizeLine( position );
       } else if( this._inMove ) {
         this.setLeft( evt.getPageX() - this._offsetX );
+        this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
       } else {
         if( this._isResizeLocation( evt.getPageX() ) ) {
           this.getTopLevelWidget().setGlobalCursor( org.eclipse.swt.widgets.TableColumn.RESIZE_CURSOR );

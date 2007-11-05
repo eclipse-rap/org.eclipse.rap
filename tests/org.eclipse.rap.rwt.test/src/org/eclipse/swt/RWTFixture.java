@@ -21,8 +21,7 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
-import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.JsConcatenator;
@@ -160,7 +159,9 @@ public final class RWTFixture {
   public static void setUp() {
     // standard setup
     Fixture.setUp();
-
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
+                        RWTLifeCycle.class.getName() );
+    
     ThemeManager.getInstance().initialize();
     registerAdapterFactories();
     PhaseListenerRegistry.add( currentPhaseListener );
@@ -200,6 +201,7 @@ public final class RWTFixture {
 
     // standard teardown
     Fixture.tearDown();
+    System.getProperties().remove( IInitialization.PARAM_LIFE_CYCLE );
   }
 
   public static void removeUIThread() {

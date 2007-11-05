@@ -275,14 +275,14 @@ public class TableColumn extends Item {
     }
     // Extend computed width if there are wider items
     int columnIndex = parent.indexOf( this );
-    TableItem[] items = parent.getItems();
+    // dont't access virtual items, they would get resolved unintentionally
+    TableItem[] items = parent.getCachedItems();
     for( int i = 0; i < items.length; i++ ) {
-      // dont't access virtual items, they would get resolved unintentionally
-      if( items[ i ].cached ) {
-        int itemWidth = items[ i ].getCheckWidth( columnIndex ) + items[ i ].getPackWidth( columnIndex );
-        if( itemWidth > width ) {
-          width = itemWidth;
-        }
+      int itemWidth 
+        = items[ i ].getCheckWidth( columnIndex ) 
+        + items[ i ].getPackWidth( columnIndex );
+      if( itemWidth > width ) {
+        width = itemWidth;
       }
     }
     // Mimic Windows behaviour that has a minimal width 

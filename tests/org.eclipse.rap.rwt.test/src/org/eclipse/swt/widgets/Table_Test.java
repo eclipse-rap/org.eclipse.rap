@@ -361,8 +361,9 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     int number = 5;
     TableItem[] items = new TableItem[ number ];
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number; i++ ) {
       items[ i ] = new TableItem( table, 0 );
+    }
     try {
       table.remove( -number, number + 100 );
       fail( "No exception thrown for illegal index range" );
@@ -370,8 +371,9 @@ public class Table_Test extends TestCase {
     }
     table = new Table( shell, SWT.NONE );
     items = new TableItem[ number ];
-    for( int i = 0; i < number; i++ )
+    for( int i = 0; i < number; i++ ) {
       items[ i ] = new TableItem( table, 0 );
+    }
     table.remove( 2, 3 );
     assertTrue( items[ 2 ].isDisposed() );
     assertTrue( items[ 3 ].isDisposed() );
@@ -424,9 +426,7 @@ public class Table_Test extends TestCase {
     for( int i = 0; i < number; i++ )
       items[ i ] = new TableItem( table, 0 );
     assertTrue( ":a:", !items[ 2 ].isDisposed() );
-    table.remove( new int[]{
-      2
-    } );
+    table.remove( new int[]{ 2 } );
     assertTrue( ":b:", items[ 2 ].isDisposed() );
     assertEquals( number - 1, table.getItemCount() );
     assertTrue( ":c:", !items[ number - 1 ].isDisposed() );
@@ -765,7 +765,7 @@ public class Table_Test extends TestCase {
     table.setSelection( 1 );
     table.deselect( new int[] { 1, 777 } );
     assertEquals( 0, table.getSelectionCount() );
-}
+  }
 
   public void testDeselectAll() {
     Display display = new Display();
@@ -1134,25 +1134,24 @@ public class Table_Test extends TestCase {
     new TableItem( table, SWT.NONE );
     assertEquals( 2, table.getItemCount() );
     items = ItemHolder.getItems( table );
-    assertEquals( 1, items.length );
+    assertEquals( 0, items.length );
   }
-
-  public void testItemCountWhileSetDataEvent() {
-    final boolean[] eventHandled = { false };
+  
+  public void testSetItemCountWithSetDataListener() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
-    final Table table = new Table( shell, SWT.VIRTUAL );
+    shell.open();
+    Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 90, 90 );
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( final Event event ) {
-        eventHandled[ 0 ] = true;
-        assertEquals( 200, table.getItemCount() );
+        fail( "SetItemCount must not fire SetData events" );
       }
     } );
+    // Ensure that setItemCount itself does not fire setData events
     table.setItemCount( 200 );
-    assertTrue( eventHandled[ 0 ] );
     assertEquals( 200, table.getItemCount() );
   }
 

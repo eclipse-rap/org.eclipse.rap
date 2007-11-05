@@ -18,14 +18,14 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.PhaseId;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.widgets.*;
-
 
 
 public class TableLCA_Test extends TestCase {
@@ -76,8 +76,8 @@ public class TableLCA_Test extends TestCase {
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.addListener( SWT.SetData, setDataListener );
-    table.setSize( 90, 90 );
     table.setItemCount( data.length );
+    table.setSize( 90, 90 );
     shell.open();
     
     int resolvedItemCount;
@@ -101,53 +101,81 @@ public class TableLCA_Test extends TestCase {
     assertEquals( resolvedItemCount, countResolvedItems( table ) );
   }
   
-// TODO [rh]: reactivation of this test
-//  public void testCheckData() throws IOException {
-//    final Table[] table = { null };
-//    Display display = new Display();
-//    final Shell shell = new Shell( display );
-//    shell.setSize( 100, 100 );
-//    Button button = new Button( shell, SWT.PUSH );
-//    button.addSelectionListener( new SelectionAdapter() {
-//      public void widgetSelected( final SelectionEvent event ) {
-//        table[ 0 ] = new Table( shell, SWT.VIRTUAL );
-//        table[ 0 ].setSize( 90, 90 );
-//        table[ 0 ].setItemCount( 500 );
-//        assertFalse( isItemVirtual( table[ 0 ].getItem( 0 ) ) );
-//        table[ 0 ].clearAll();
-//      }
-//    } );
-//    shell.open();
-//    String displayId = DisplayUtil.getId( display );
-//    Fixture.fakeResponseWriter();
-//    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-//    String buttonId = WidgetUtil.getId( button );
-//    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId  );
-//    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-//    lifeCycle.execute();
-//    
-//    RWTFixture.fakeUIThread();
-//    assertFalse( isItemVirtual( table[ 0 ].getItem( 0 ) ) );
-//  }
-
-  private static int countResolvedItems( final Table table ) {
-    int result = 0;
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    TableItem[] items = table.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      if( !tableAdapter.isItemVirtual( items[ i ] ) ) {
-        result++;
+  public void testRedraw() throws IOException {
+    final Table[] table = { null };
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    Button button = new Button( shell, SWT.PUSH );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        table[ 0 ] = new Table( shell, SWT.VIRTUAL );
+        table[ 0 ].setItemCount( 500 );
+        table[ 0 ].setSize( 90, 90 );
+        assertFalse( isItemVirtual( table[ 0 ], 0 ) );
+        table[ 0 ].clearAll();
+        table[ 0 ].redraw();
       }
-    }
-    return result;
+    } );
+    shell.open();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeResponseWriter();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    String buttonId = WidgetUtil.getId( button );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId  );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.execute();
+    
+    RWTFixture.fakeUIThread();
+    assertFalse( isItemVirtual( table[ 0 ], 0  ) );
   }
   
-//  private static boolean isItemVirtual( final TableItem item ) {
-//    Object adapter = item.getParent().getAdapter( ITableAdapter.class );
-//    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-//    return tableAdapter.isItemVirtual( item );
-//  }
+  public void testNoUnwantedResolveItems() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    final Table table = new Table( shell, SWT.VIRTUAL );
+    table.setSize( 90, 90 );
+    table.setItemCount( 1000 );
+    shell.open();
+    
+    String displayId = DisplayUtil.getId( display );
+    String tableId = WidgetUtil.getId( table );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
+    Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "500,501,502,503" );
+    Fixture.fakeRequestParam( tableId + ".topIndex", "500" );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.addPhaseListener( new PhaseListener() {
+      private static final long serialVersionUID = 1L;
+      public void beforePhase( final PhaseEvent event ) {
+        table.redraw();
+      }
+      public void afterPhase( final PhaseEvent event ) {
+      }
+      public PhaseId getPhaseId() {
+        return PhaseId.PROCESS_ACTION;
+      }
+    } );
+    lifeCycle.execute();
+
+    assertTrue( isItemVirtual( table, 499 ) );
+    assertTrue( isItemVirtual( table, 800 ) );
+    assertTrue( isItemVirtual( table, 999 ) );
+  }
+
+  private static int countResolvedItems( final Table table ) {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.getCachedItems().length;
+  }
+  
+  private static boolean isItemVirtual( final Table table, final int index ) {
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.isItemVirtual( index );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();

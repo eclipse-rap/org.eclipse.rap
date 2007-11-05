@@ -134,26 +134,22 @@ public final class TableLCAUtil {
   static TableItem getMeasureItem( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    TableItem[] items = table.getItems();
+    TableItem[] items = tableAdapter.getCachedItems();
     TableItem result = null;
     if( table.getColumnCount() == 0 ) {
       // Find item with longest text because the imaginary only column stretches 
       // as wide as the longest item (images cannot differ in width)
       for( int i = 0; i < items.length; i++ ) {
-        if( !tableAdapter.isItemVirtual( items[ i ] ) ) {
-          if( result == null ) {
-            result = items[ i ];
-          } else {
-            result = max( result, items[ i ] );
-          }
+        if( result == null ) {
+          result = items[ i ];
+        } else {
+          result = max( result, items[ i ] );
         }
       }
     } else {
-      // Find the first non-virtual item
-      for( int i = 0; result == null && i < items.length; i++ ) {
-        if( !tableAdapter.isItemVirtual( items[ i ] ) ) {
-          result = items[ i ];
-        }
+      // Take the first item if any
+      if( items.length > 0 ) {
+        result = items[ 0 ];
       }
     }
     return result;

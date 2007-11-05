@@ -124,12 +124,13 @@ public class TableItem extends Item {
   TableItem( final Table parent, 
              final int style, 
              final int index, 
-             final boolean cached ) 
+             final boolean create ) 
   {
     super( parent, style );
     this.parent = parent;
-    this.cached = cached;
-    this.parent.createItem( this, index );
+    if( create ) {
+      this.parent.createItem( this, index );
+    }
   }
   
   /**
@@ -923,6 +924,7 @@ public class TableItem extends Item {
     grayed = false;
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       cached = false;
+      parent.redraw();
     }
   }
 
@@ -951,16 +953,6 @@ public class TableItem extends Item {
   //////////////////
   // helping methods
   
-  final boolean isVisible() {
-    boolean result = false;
-    int visibleItemCount = parent.getVisibleItemCount();
-    if( visibleItemCount > 0 ) {
-      int index = parent.indexOf( this );
-      result = index - parent.getTopIndex() <= visibleItemCount;
-    }
-    return result;
-  }
-
   private void markCached() {
     if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
       cached = true;

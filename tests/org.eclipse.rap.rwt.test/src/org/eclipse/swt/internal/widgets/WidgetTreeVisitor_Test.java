@@ -98,15 +98,13 @@ public class WidgetTreeVisitor_Test extends TestCase {
     TableItem item2 = new TableItem( table, SWT.NONE );
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     Control tableControl = new Button( table, SWT.PUSH );
-    final int[] count = {
-      0
-    };
+    final int[] count = { 0 };
     final Object[] elements = new Object[]{
       shell, table, column1, column2, item1, item2, tableControl 
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
-        assertSame( widget, elements[ count[ 0 ] ] );
+        assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
         return widget != shell;
       }

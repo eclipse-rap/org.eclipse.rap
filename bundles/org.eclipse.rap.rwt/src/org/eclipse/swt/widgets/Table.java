@@ -11,11 +11,9 @@
 
 package org.eclipse.swt.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
@@ -69,87 +67,55 @@ import org.eclipse.swt.internal.widgets.*;
  * <ul>
  *  <li>showSelection and showItem currently do a very rough proximation since
  *  getClientArea is not yet implemented properly</li>
- *  <li>Scroll are visible even though not necessary</li>
+ *  <li>Scroll bars are visible even though not necessary</li>
  *  <li>No keyboard navigation</li>
  * </ul> 
  */
 public class Table extends Composite {
   
-  private static final int GRID_WIDTH = 1;
-  private static final int CHECK_HEIGHT = 13;
-  
-  private static final TableItem[] EMPTY_ITEMS = new TableItem[ 0 ];
-
-  private final ItemHolder itemHolder;
-  private final ItemHolder columnHolder;
-  private final ITableAdapter tableAdapter;
-  private final ResizeListener resizeListener;
-  private int[] columnOrder;
-  private TableItem[] selection;
-  private boolean linesVisible;
-  private boolean headerVisible;
-  private int topIndex;
-  private int focusIndex;
-  private TableColumn sortColumn;
-  private int sortDirection;
-  private Point itemImageSize;
-  
-  
   // handle the fact that we have two item types to deal with
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
-      if( item instanceof TableItem ) {
-        itemHolder.add( item );
-      } else {
+      if( item instanceof TableColumn ) {
         columnHolder.add( item );
+      } else {
+        String msg = "Only TableColumns may be added to CompositeItemHolder";
+        throw new IllegalArgumentException( msg );
       }
     }
     public void insert( final Item item, final int index ) {
-      if( item instanceof TableItem ) {
-        itemHolder.insert( item, index );
-      } else {
+      if( item instanceof TableColumn ) {
         columnHolder.insert( item, index );
+      } else {
+        String msg = "Only TableColumns may be inserted to CompositeItemHolder";
+        throw new IllegalArgumentException( msg );
       }
     }
     public void remove( final Item item ) {
-      if( item instanceof TableItem ) {
-        itemHolder.remove( item );
-      } else {
+      if( item instanceof TableColumn ) {
         columnHolder.remove( item );
+      } else {
+        String msg 
+          = "Only TableColumns may be removed from CompositeItemHolder";
+        throw new IllegalArgumentException( msg );
       }
     }
     public Item[] getItems() {
-      TableItem[] allItems = ( TableItem[] )itemHolder.getItems();
-      TableItem[] items = filterCachedItems( allItems );
+      TableItem[] items = getCachedItems();
       Item[] columns = columnHolder.getItems();
-      Item[] result = new Item[ items.length + columns.length ];
+      Item[] result = new Item[ columns.length + items.length ];
       System.arraycopy( columns, 0, result, 0, columns.length );
       System.arraycopy( items, 0, result, columns.length, items.length );
-      return result;
-    }
-    private TableItem[] filterCachedItems( final TableItem[] items ) {
-      int count = 0;
-      for( int i = 0; i < items.length; i++ ) {
-        if( items[ i ].cached ) {
-          count++;
-        }
-      }
-      TableItem[] result = new TableItem[ count ];
-      count = 0;
-      for( int i = 0; i < items.length; i++ ) {
-        if( items[ i ].cached ) {
-          result[ count ] = items[ i ];
-          count++;
-        }
-      }
       return result;
     }
   }
   
   private final class TableAdapter implements ITableAdapter {
+    
     public int getCheckWidth() {
       return Table.this.getCheckWidth();
     }
+
     public int getFocusIndex() {
       return Table.this.focusIndex; 
     }
@@ -159,14 +125,14 @@ public class Table extends Composite {
     }
     
     public void checkData( final int index ) {
-      Table.this.checkData( Table.this.getItem( index ), index );  
+      Table.this.checkData( Table.this._getItem( index ), index );  
     }
     
     public int getDefaultColumnWidth() {
       int result = 0;
-      TableItem[] items = getItems();
+      TableItem[] items = Table.this.getCachedItems();
       for( int i = 0; i < items.length; i++ ) {
-        result = Math.max( result, items[i].getPackWidth( 0 ) );
+        result = Math.max( result, items[ i ].getPackWidth( 0 ) );
       }
       return result;
     }
@@ -177,29 +143,50 @@ public class Table extends Composite {
     }
 
     public boolean isItemVisible( final TableItem item ) {
-      return item.isVisible();
+      int index = Table.this.indexOf( item );
+      return index != -1 && Table.this.isItemVisible( index );
     }
-    public boolean isItemVirtual( final TableItem item ) {
-      return !item.cached;
+    
+    public boolean isItemVirtual( final int index ) {
+      boolean result = false;
+      if( ( style & SWT.VIRTUAL ) != 0 ) {
+        TableItem item = Table.this.items[ index ];
+        result = item == null || !item.cached;
+      }
+      return result;
+    }
+    
+    public TableItem[] getCachedItems() {
+      return Table.this.getCachedItems();
     }
   }
   
-  private static final class ResizeListener extends ControlAdapter {
+  private final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
-      Table table = ( Table )event.widget;
-      boolean visible = true;
-      int index = Math.max( 0, table.getTopIndex() );
-      int count = table.getItemCount();
-      while( visible && index < count ) {
-        TableItem item = table.getItem( index );
-        visible = item.isVisible();
-        if( visible ) {
-          table.checkData( item, index );
-        }
-        index++;
-      }
+      Table.this.checkData();
     }
   }
+  
+  private static final int GRID_WIDTH = 1;
+  private static final int CHECK_HEIGHT = 13;
+  
+  private static final TableItem[] EMPTY_ITEMS = new TableItem[ 0 ];
+
+  final private CompositeItemHolder itemHolder;
+  private final ITableAdapter tableAdapter;
+  private final ResizeListener resizeListener;
+  private int itemCount;
+  private TableItem[] items;
+  private final ItemHolder columnHolder;
+  private int[] columnOrder;
+  private TableItem[] selection;
+  private boolean linesVisible;
+  private boolean headerVisible;
+  private int topIndex;
+  private int focusIndex;
+  private TableColumn sortColumn;
+  private int sortDirection;
+  private Point itemImageSize;
   
   /**
    * Constructs a new instance of this class given its parent
@@ -241,8 +228,9 @@ public class Table extends Composite {
     focusIndex = -1;
     sortDirection = SWT.NONE;
     tableAdapter = new TableAdapter();
-    itemHolder = new ItemHolder( TableItem.class );
+    itemHolder = new CompositeItemHolder();
     columnHolder = new ItemHolder( TableColumn.class );
+    setTableEmpty();
     selection = EMPTY_ITEMS;
     if( ( this.style & SWT.VIRTUAL ) != 0 ) {
       resizeListener = new ResizeListener();
@@ -255,7 +243,7 @@ public class Table extends Composite {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = new CompositeItemHolder();
+      result = itemHolder;
     } else if( adapter == ITableAdapter.class ) {
       result = tableAdapter;
     } else {
@@ -410,11 +398,11 @@ public class Table extends Composite {
   public void setColumnOrder( final int[] order ) {
     checkWidget();
     if( order == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     int columnCount = getColumnCount();
     if( order.length != columnCount ) {
-      error( SWT.ERROR_INVALID_ARGUMENT );
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
     if( columnCount > 0 ) {
       int[] oldOrder = new int[ columnCount ];
@@ -424,10 +412,10 @@ public class Table extends Composite {
       for( int i = 0; i < order.length; i++ ) {
         int index = order[ i ];
         if( index < 0 || index >= columnCount ) {
-          error( SWT.ERROR_INVALID_RANGE );
+          SWT.error( SWT.ERROR_INVALID_RANGE );
         }
         if( seen[ index ] ) {
-          error( SWT.ERROR_INVALID_ARGUMENT );
+          SWT.error( SWT.ERROR_INVALID_ARGUMENT );
         }
         seen[ index ] = true;
         if( index != oldOrder[ i ] ) {
@@ -494,7 +482,7 @@ public class Table extends Composite {
   /**
    * Sets the number of items contained in the receiver.
    *
-   * @param itemCount the number of items
+   * @param newCount the number of items
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -503,34 +491,34 @@ public class Table extends Composite {
    *
    * @since 1.0
    */
-  public void setItemCount( final int itemCount ) {
+  // TODO [rh] Consider calling RWTLifeCycle#fakeRedraw at the end of this 
+  //      methods to ensure that items are darwn when inside the visible bounds 
+  public void setItemCount( int newCount ) {
     checkWidget();
-    int oldItemCount = itemHolder.size();
-    int newItemCount = Math.max( 0, itemCount );
-    if( newItemCount != oldItemCount ) {
+    int count = Math.max( 0, newCount );
+    if( count != itemCount ) {
       boolean isVirtual = ( style & SWT.VIRTUAL ) != 0;
-      TableItem[] items = getItems();
-      int index = newItemCount;
-      while( index < oldItemCount ) {
+      int index = count;
+      while( index < items.length ) {
         TableItem item = items[ index ];
         if( item != null && !item.isDisposed() ) {
           item.dispose();
         }
         index++;
       }
-      // TODO [rh] do not eagerly create items when VIRTUAL
-      for( int i = oldItemCount; i < newItemCount; i++ ) {
-        new TableItem( this, SWT.NONE, i, !isVirtual );
+      if( index < itemCount ) {
+        error( SWT.ERROR_ITEM_NOT_REMOVED );
       }
-      for( int i = oldItemCount; i < newItemCount; i++ ) {
-        TableItem item = ( TableItem )itemHolder.getItem( i );
-        if( item.isVisible() ) {
-          checkData( item, itemHolder.indexOf( item ) );
+      int length = Math.max( 4, ( count + 3 ) / 4 * 4 );
+      TableItem[] newItems = new TableItem[ length ];
+      System.arraycopy( items, 0, newItems, 0, Math.min( count, itemCount ) );
+      items = newItems;
+      if( !isVirtual ) {
+        for( int i = itemCount; i < count; i++ ) {
+          items[ i ] = new TableItem( this, SWT.NONE, i, true );
         }
-      }
-  //    if( itemCount == 0 ) {
-  //      setScrollWidth( null, false );
-  //    }
+      } 
+      itemCount = count;
     } 
   }
 
@@ -548,7 +536,7 @@ public class Table extends Composite {
    */
   public int getItemCount() {
     checkWidget();
-    return itemHolder.size();
+    return itemCount;
   }
 
   /**
@@ -571,7 +559,15 @@ public class Table extends Composite {
    */
   public TableItem[] getItems() {
     checkWidget();
-    return ( TableItem[] )itemHolder.getItems();
+    TableItem[] result = new TableItem[ itemCount ];
+    if( ( style & SWT.VIRTUAL ) != 0 ) {
+      for( int i = 0; i < itemCount; i++ ) {
+        result[ i ] = _getItem( i );
+      }
+    } else {
+      System.arraycopy( items, 0, result, 0, itemCount );
+    }
+    return result;
   }
 
   /**
@@ -593,13 +589,12 @@ public class Table extends Composite {
    */
   public TableItem getItem( final int index ) {
     checkWidget();
-    if( !( 0 <= index && index < itemHolder.size() ) ) {
-      error( SWT.ERROR_INVALID_RANGE );
+    if( !( 0 <= index && index < itemCount ) ) {
+      SWT.error( SWT.ERROR_INVALID_RANGE );
     }
-    return ( TableItem )itemHolder.getItem( index );
+    return _getItem( index );
   }
-  
-  
+
   /**
    * Returns the item at the given point in the receiver
    * or null if no such item exists. The point is in the
@@ -638,8 +633,8 @@ public class Table extends Composite {
         index++;
       }
       index += topIndex;
-      if( index < getItemCount() ) {
-        result = getItem( index );
+      if( index < itemCount ) {
+        result = _getItem( index );
       }
     }
     return result;
@@ -669,7 +664,13 @@ public class Table extends Composite {
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return itemHolder.indexOf( item );
+    int result = -1;
+    for( int i = 0; result == -1 && i < itemCount; i++ ) {
+      if( items[ i ] == item ) {
+        result = i;
+      }
+    }
+    return result;
   }
   
   /**
@@ -684,10 +685,9 @@ public class Table extends Composite {
    */
   public void removeAll() {
     checkWidget();
-    TableItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      if( !items[ i ].isDisposed() ) {
-        items[ i ].dispose();
+    while( itemCount > 0 ) {
+      if( items[ 0 ] != null && !items[ 0 ].isDisposed() ) {
+        items[ 0 ].dispose();
       }
     }
   }
@@ -716,13 +716,20 @@ public class Table extends Composite {
   public void remove( final int start, final int end ) {
     checkWidget();
     if( start <= end ) {
-      if( !( 0 <= start && start <= end && end < getItemCount() ) ) {
+      if( !( 0 <= start && start <= end && end < itemCount ) ) {
         error( SWT.ERROR_INVALID_RANGE );
       }
-      TableItem[] items = getItems();
+      TableItem[] itemsToRemove = new TableItem[ end - start + 1 ];
+      int count = 0;
       for( int i = start; i <= end; i++ ) {
-        if( !items[ i ].isDisposed() ) {
-          items[ i ].dispose();
+        if( items[ i ] != null && !items[ i ].isDisposed() ) {
+          itemsToRemove[ count ] = items[ i ];
+          count++;
+        }
+      }
+      for( int i = 0; i < itemsToRemove.length; i++ ) {
+        if( itemsToRemove[ i ] != null ) {
+          itemsToRemove[ i ].dispose();
         }
       }
     } 
@@ -748,11 +755,11 @@ public class Table extends Composite {
    */
   public void remove( final int index ) {
     checkWidget();
-    if( !( 0 <= index && index < getItemCount() ) ) {
-      error( SWT.ERROR_ITEM_NOT_REMOVED );
+    if( !( 0 <= index && index < itemCount ) ) {
+      SWT.error( SWT.ERROR_ITEM_NOT_REMOVED );
     }
-    TableItem item = getItem( index );
-    if( !item.isDisposed() ) {
+    TableItem item = items[ index ];
+    if( item != null && !item.isDisposed() ) {
       item.dispose();
     }
   }
@@ -782,16 +789,29 @@ public class Table extends Composite {
     if( indices == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( indices.length == 0 ) {
-      return;
-    }
-    TableItem item;
-    for( int i = 0; i < indices.length; i++ ) {
-      item = getItem( indices[ i ] );
-      if( item != null && !item.isDisposed() ) {
-        item.dispose();
+    if( indices.length > 0 ) {
+      int[] sortedIndices = new int[ indices.length ];
+      System.arraycopy( indices, 0, sortedIndices, 0, indices.length );
+      sort( sortedIndices );
+      int start = sortedIndices[ sortedIndices.length - 1 ];
+      int end = sortedIndices[ 0 ];
+      if( !( 0 <= start && start <= end && end < itemCount ) ) {
+        SWT.error( SWT.ERROR_INVALID_RANGE );
       }
-    }
+      TableItem[] itemsToRemove = new TableItem[ sortedIndices.length ];
+      for( int i = 0; i < itemsToRemove.length; i++ ) {
+        itemsToRemove[ i ] = items[ sortedIndices[ i ] ];
+      }
+      for( int i = 0; i < itemsToRemove.length; i++ ) {
+        TableItem item = itemsToRemove[ i ];
+        if( item != null && !item.isDisposed() ) {
+          item.dispose();
+        }
+      }
+      if( itemCount == 0 ) {
+        setTableEmpty();
+      }
+    } 
   }
   
   /**
@@ -817,8 +837,13 @@ public class Table extends Composite {
    */
   public void clear( final int index ) {
     checkWidget();
-    TableItem item = getItem( index );
-    item.clear();
+    if( !( 0 <= index && index < itemCount ) ) {
+      SWT.error( SWT.ERROR_INVALID_RANGE );
+    }
+    TableItem item = items[ index ];
+    if( item != null ) {
+      item.clear();
+    }
   }
   
   /**
@@ -846,23 +871,21 @@ public class Table extends Composite {
    */
   public void clear( final int start, final int end ) {
     checkWidget();
-    int itemCount = getItemCount();
-    if( start > end ) {
-      return;
-    }
-    if( !( 0 <= start && start <= end && end < itemCount ) ) {
-      error( SWT.ERROR_INVALID_RANGE );
-    }
-    if( start == 0 && end == itemCount - 1 ) {
-      clearAll();
-    } else {
-      for( int i = start; i <= end; i++ ) {
-        TableItem item = getItem( i );
-        if( item != null ) {
-          item.clear();
+    if( start <= end ) {
+      if( !( 0 <= start && start <= end && end < itemCount ) ) {
+        SWT.error( SWT.ERROR_INVALID_RANGE );
+      }
+      if( start == 0 && end == itemCount - 1 ) {
+        clearAll();
+      } else {
+        for( int i = start; i <= end; i++ ) {
+          TableItem item = items[ i ];
+          if( item != null ) {
+            item.clear();
+          }
         }
       }
-    }
+    } 
   }
   
   /**
@@ -883,9 +906,8 @@ public class Table extends Composite {
    */
   public void clearAll() {
     checkWidget();
-    int itemCount = getItemCount();
     for( int i = 0; i < itemCount; i++ ) {
-      TableItem item = getItem( i );
+      TableItem item = items[ i ];
       if( item != null ) {
         item.clear();
       }
@@ -916,24 +938,22 @@ public class Table extends Composite {
    */
   public void clear( final int[] indices ) {
     checkWidget();
-    int itemCount = getItemCount();
     if( indices == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( indices.length == 0 ) {
-      return;
-    }
-    for( int i = 0; i < indices.length; i++ ) {
-      if( !( 0 <= indices[ i ] && indices[ i ] < itemCount ) ) {
-        error( SWT.ERROR_INVALID_RANGE );
+    if( indices.length > 0 ) {
+      for( int i = 0; i < indices.length; i++ ) {
+        if( !( 0 <= indices[ i ] && indices[ i ] < itemCount ) ) {
+          SWT.error( SWT.ERROR_INVALID_RANGE );
+        }
       }
-    }
-    for( int i = 0; i < indices.length; i++ ) {
-      TableItem item = getItem( indices[ i ] );
-      if( item != null ) {
-        item.clear();
+      for( int i = 0; i < indices.length; i++ ) {
+        TableItem item = items[ indices[ i ] ];
+        if( item != null ) {
+          item.clear();
+        }
       }
-    }
+    } 
   }
   
   /////////////////////////////
@@ -990,7 +1010,7 @@ public class Table extends Composite {
     checkWidget();
     deselectAll();
     select( index );
-    if( index < itemHolder.size() ) {
+    if( index < itemCount ) {
       setFocusIndex( index );
     }
   }
@@ -1040,12 +1060,11 @@ public class Table extends Composite {
     checkWidget();
     deselectAll();
     select( start, end );
-    int count = itemHolder.size();
     if(    end >= 0
         && start <= end
         && ( ( style & SWT.SINGLE ) == 0 || start == end ) 
-        && count != 0 
-        && start < count ) 
+        && itemCount != 0 
+        && start < itemCount ) 
     {
       setFocusIndex( Math.max( 0, start ) );
     }
@@ -1071,18 +1090,10 @@ public class Table extends Composite {
    */
   public TableItem[] getSelection() {
     checkWidget();
-    // TODO [rh] handle this (remove disposed item from selection) in destroyItem 
-    // clean up internal structure: remove disposed items from selection
-    List buffer = new ArrayList();
-    for( int i = 0; i < selection.length; i++ ) {
-      if( !selection[ i ].isDisposed() ) {
-        buffer.add( selection[ i ] );
-      }
-    }
-    selection = new TableItem[ buffer.size() ];
-    buffer.toArray( selection );
-    // return a copy of the now clean internal structure
-    return ( TableItem[] )selection.clone();
+    int length = selection.length;
+    TableItem[] result = new TableItem[ length ];
+    System.arraycopy( selection, 0, result, 0, length );
+    return result;
   }
 
   /**
@@ -1234,8 +1245,8 @@ public class Table extends Composite {
   public boolean isSelected( final int index ) {
     checkWidget();
     boolean result = false;
-    if( index >= 0 && index < itemHolder.size() ) {
-      Item item = itemHolder.getItem( index );
+    if( index >= 0 && index < itemCount && items[ index ] != null ) {
+      Item item = _getItem( index );
       TableItem[] currentSelection = getSelection();
       for( int i = 0; !result && i < currentSelection.length; i++ ) {
         result = currentSelection[ i ] == item;
@@ -1260,8 +1271,8 @@ public class Table extends Composite {
    */
   public void select( final int index ) {
     checkWidget();
-    if( index >= 0 && index < itemHolder.size() ) {
-      TableItem item = ( TableItem )itemHolder.getItem( index );
+    if( index >= 0 && index < itemCount ) {
+      TableItem item = _getItem( index );
       if( ( style & SWT.SINGLE ) != 0 ) {
         selection = new TableItem[] { item };
       } else {
@@ -1307,11 +1318,10 @@ public class Table extends Composite {
         && start <= end
         && ( ( style & SWT.SINGLE ) == 0 || start == end ) ) 
     {
-      int count = itemHolder.size();
-      if( count != 0 && start < count ) {
+      if( itemCount != 0 && start < itemCount ) {
         int adjustedStart = Math.max( 0, start );
-        int adjustedEnd = Math.min( end, count - 1 );
-        if( adjustedStart == 0 && adjustedEnd == count - 1 ) {
+        int adjustedEnd = Math.min( end, itemCount - 1 );
+        if( adjustedStart == 0 && adjustedEnd == itemCount - 1 ) {
           selectAll();
         } else {
           for( int i = adjustedStart; i <= adjustedEnd; i++ ) {
@@ -1373,6 +1383,8 @@ public class Table extends Composite {
    * 
    * @since 1.0 
    */
+  // TODO [rh] revise: a VIRTUAL table would resolve all its items when 
+  //      selectAll is called. Compare how SWT handles this.
   public void selectAll() {
     checkWidget();
     if( ( style & SWT.SINGLE ) == 0 ) {
@@ -1416,7 +1428,7 @@ public class Table extends Composite {
    */
   public void deselect( final int start, final int end ) {
     checkWidget ();
-    if( start == 0 && end == itemHolder.size() - 1 ) {
+    if( start == 0 && end == itemCount - 1 ) {
       deselectAll();
     } else {
       int actualStart = Math.max( 0, start );
@@ -1487,8 +1499,11 @@ public class Table extends Composite {
    */
   public void setTopIndex( final int topIndex ) {
     checkWidget();
-    if( topIndex >= 0 && topIndex < getItemCount() ) {
+    if( this.topIndex != topIndex && topIndex >= 0 && topIndex < itemCount ) {
       this.topIndex = topIndex;
+      if( ( style & SWT.VIRTUAL ) != 0 ) {
+        redraw();
+      }
     }
   }
   
@@ -1546,8 +1561,8 @@ public class Table extends Composite {
       setTopIndex( itemIndex );
       // try to show it 2 rows above the bottom/last item
       int idealTopIndex = itemIndex - visibleItemCount + 2;
-      if( idealTopIndex >= getItemCount() ) {
-        idealTopIndex = getItemCount() - 1;
+      if( idealTopIndex >= itemCount ) {
+        idealTopIndex = itemCount - 1;
       }
       if( idealTopIndex >= 0 ) {
         setTopIndex( idealTopIndex );
@@ -1573,7 +1588,7 @@ public class Table extends Composite {
     checkWidget();
     int index = getSelectionIndex();
     if( index != -1 ) {
-      showItem( ( TableItem )itemHolder.getItem( index ) );
+      showItem( _getItem( index ) );
     }
   }
 
@@ -1924,9 +1939,10 @@ public class Table extends Composite {
   final void destroyColumn( final TableColumn column ) {
     int index = indexOf( column );
     // Remove data from TableItems
-    TableItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].removeData( index );
+    for( int i = 0; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].removeData( index );
+      }
     }
     // Reset sort column if necessary
     if( column == sortColumn ) {
@@ -1955,7 +1971,27 @@ public class Table extends Composite {
   // Create and destroy items
   
   final void createItem( final TableItem item, final int index ) {
-    itemHolder.insert( item, index );
+    int count = itemCount;
+    if( !( 0 <= index && index <= count ) ) {
+      error( SWT.ERROR_INVALID_RANGE );
+    }
+    if( count == items.length ) {
+      /*
+       * Grow the array faster when redraw is off or the table is not visible.
+       * When the table is painted, the items array is resized to be smaller to
+       * reduce memory usage.
+       */
+      boolean small = /* drawCount == 0 && */isVisible();
+      int length 
+        = small ? items.length + 4 : Math.max( 4, items.length * 3 / 2 );
+      TableItem[] newItems = new TableItem[ length ];
+      System.arraycopy( items, 0, newItems, 0, items.length );
+      items = newItems;
+    }
+    /* Insert the item */
+    System.arraycopy( items, index, items, index + 1, count - index );
+    items[ index ] = item;
+    itemCount++;
     // advance focusIndex when an item is inserted before the focused item
     if( index <= focusIndex ) {
       focusIndex++;
@@ -1965,28 +2001,38 @@ public class Table extends Composite {
   final void destroyItem( final TableItem item ) {
     int index = indexOf( item );
     removeFromSelection( index );
-    itemHolder.remove( item );
-    if( topIndex > getItemCount() - 1 ) {
-      topIndex = Math.max( 0, getItemCount() - 1 );
+    itemCount--;
+    System.arraycopy( items, index + 1, items, index, itemCount - index );
+    items[ itemCount ] = null;
+    if( itemCount == 0 ) {
+      setTableEmpty();
     }
-    if( index == focusIndex || focusIndex > getItemCount() - 1 ) {
+    if( topIndex > itemCount - 1 ) {
+      topIndex = Math.max( 0, itemCount - 1 );
+    }
+    if( index == focusIndex || focusIndex > itemCount - 1 ) {
       // Must reset focusIndex before calling getSelectionIndex 
       focusIndex = -1;
       focusIndex = getSelectionIndex();
     }
   }
-  
+
   ////////////////
   // Destroy table
   
   void releaseChildren() {
-    Item[] items = itemHolder.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].dispose();
+    // TODO [rh] optimize: only execute the necessary mimimum from destroyItem
+    //      when disposing of the table itself
+    Item[] tableItems = new TableItem[ this.items.length ];
+    System.arraycopy( this.items, 0, tableItems, 0, this.items.length );
+    for( int i = 0; i < tableItems.length; i++ ) {
+      if( tableItems[ i ] != null ) {
+        tableItems[ i ].dispose();
+      }
     }
-    Item[] columns = columnHolder.getItems();
-    for( int i = 0; i < columns.length; i++ ) {
-      columns[ i ].dispose();
+    Item[] tableColumns = columnHolder.getItems();
+    for( int i = 0; i < tableColumns.length; i++ ) {
+      tableColumns[ i ].dispose();
     }
   }
   
@@ -1997,8 +2043,55 @@ public class Table extends Composite {
     }
   }
   
-  //////////////////
-  // helping methods
+  //////////////////////////////////
+  // Helping methods - item retrival
+
+  private TableItem _getItem( final int index ) {
+    if( ( style & SWT.VIRTUAL ) != 0 && items[ index ] == null ) {
+      items[ index ] = new TableItem( this, SWT.NONE, -1, false );
+    }
+    return items[ index ];
+  }
+
+  final TableItem[] getCachedItems() {
+    TableItem[] result;
+    if( ( style & SWT.VIRTUAL ) != 0 ) {
+      int count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null && items[ i ].cached ) {
+          count++;
+        }
+      }
+      result = new TableItem[ count ];
+      count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null && items[ i ].cached ) {
+          result[ count ] = items[ i ];
+          count++;
+        }
+      }
+    } else {
+      result = new TableItem[ itemCount ];
+      System.arraycopy( items, 0, result, 0, itemCount );
+    }
+    return result;
+  }
+
+  ///////////////////////////////////////////////
+  // Helping methods - resolving of virtual items
+
+  private void checkData() {
+    boolean visible = true;
+    int index = Math.max( 0, topIndex );
+    while( visible && index < itemCount ) {
+      visible = isItemVisible( index );
+      if( visible ) {
+        TableItem item = _getItem( index );
+        checkData( item, index );
+      }
+      index++;
+    }
+  }
 
   final void checkData( final TableItem item, final int index ) {
     if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
@@ -2023,8 +2116,8 @@ public class Table extends Composite {
   }
 
   private void removeFromSelection( final int index ) {
-    if( index >= 0 && index < itemHolder.size() ) {
-      TableItem item = getItem( index );
+    if( index >= 0 && index < itemCount ) {
+      TableItem item = _getItem( index );
       boolean found = false;
       for( int i = 0; !found && i < selection.length; i++ ) {
         if( item == selection[ i ] ) {
@@ -2041,20 +2134,9 @@ public class Table extends Composite {
     }
   }
 
-  final int getVisibleItemCount() {
-    //  TODO [rh] replace this once getClientArea is working    
-    int clientHeight = getBounds().height 
-                     - getHeaderHeight() 
-                     - ScrollBar.SCROLL_BAR_HEIGHT;
-    return clientHeight >= 0 ? clientHeight / getItemHeight() : 0;
-  }
+  ////////////////////////////////////
+  // Helping methods - item image size
 
-  private static int checkStyle( final int style ) {
-    int result = style;
-    result |= SWT.H_SCROLL | SWT.V_SCROLL;
-    return checkBits( result, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );
-  }
-  
   final void updateItemImageSize( final Image image ) {
     if( image != null && itemImageSize == null ) {
       Rectangle imageBounds = image.getBounds();
@@ -2066,6 +2148,9 @@ public class Table extends Composite {
     return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
   }
 
+  ////////////////////////////
+  // Helping methods - various
+
   final int getCheckWidth() {
     int result = 0;
     if( ( Table.this.style & SWT.CHECK ) != 0 ) {
@@ -2073,5 +2158,48 @@ public class Table extends Composite {
       result = 21;
     }
     return result;
+  }
+
+  final int getVisibleItemCount() {
+    //  TODO [rh] replace this once getClientArea is working    
+    int clientHeight = getBounds().height 
+                     - getHeaderHeight() 
+                     - ScrollBar.SCROLL_BAR_HEIGHT;
+    return clientHeight >= 0 ? clientHeight / getItemHeight() : 0;
+  }
+
+  private boolean isItemVisible( final int index ) {
+    boolean result = false;
+    int visibleItemCount = getVisibleItemCount();
+    if( visibleItemCount > 0 ) {
+      result = index - topIndex <= visibleItemCount;
+    }
+    return result;
+  }
+
+  private static void sort( final int[] items ) {
+    /* Shell Sort from K&R, pg 108 */
+    int length = items.length;
+    for( int gap = length / 2; gap > 0; gap /= 2 ) {
+      for( int i = gap; i < length; i++ ) {
+        for( int j = i - gap; j >= 0; j -= gap ) {
+          if( items[ j ] <= items[ j + gap ] ) {
+            int swap = items[ j ];
+            items[ j ] = items[ j + gap ];
+            items[ j + gap ] = swap;
+          }
+        }
+      }
+    }
+  }
+
+  private void setTableEmpty() {
+    items = new TableItem[ 4 ];
+  }
+
+  private static int checkStyle( final int style ) {
+    int result = style;
+    result |= SWT.H_SCROLL | SWT.V_SCROLL;
+    return checkBits( result, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );
   }
 }

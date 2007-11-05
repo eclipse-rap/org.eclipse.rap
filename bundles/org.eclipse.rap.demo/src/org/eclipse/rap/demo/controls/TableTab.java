@@ -9,6 +9,8 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
@@ -26,6 +28,7 @@ public class TableTab extends ExampleTab {
   private Table table;
   private boolean headerVisible = true;
   private boolean linesVisible;
+  private boolean updateVirtualItemsDelayed;
   private boolean columnImages;
   private boolean columnsMoveable;
   private int columnsWidthImages = 0;
@@ -99,7 +102,22 @@ public class TableTab extends ExampleTab {
       table.addListener( SWT.SetData, new Listener() {
         public void handleEvent( final Event event ) {
           if( event.type == SWT.SetData ) {
-            updateItem( ( TableItem )event.item );
+            if( updateVirtualItemsDelayed ) {
+              final Display display = event.display;
+              Job job = new Job( "Delayed Table Item Update" ) {
+                protected IStatus run( final IProgressMonitor monitor ) {
+                  display.asyncExec( new Runnable() {
+                    public void run() {
+                      updateItem( ( TableItem )event.item );
+                    }
+                  } );
+                  return Status.OK_STATUS;
+                }
+              };
+              job.schedule( 1000 );
+            } else {
+              updateItem( ( TableItem )event.item );
+            }
           }
         }
       } );
@@ -421,23 +439,34 @@ public class TableTab extends ExampleTab {
 
   private void createChangeItemCountControl() {
     Composite composite = new Composite( styleComp, SWT.NONE );
-    composite.setLayout( new RowLayout(  SWT.HORIZONTAL ) );
-    Label label = new Label( composite, SWT.NONE );
-    label.setText( "ItemCount" );
-    final Text text = new Text( composite, SWT.BORDER );
-    Util.textSizeAdjustment( label, text );
-    text.setText( String.valueOf( getTable().getItemCount() ) );
-    Button button = new Button( composite, SWT.PUSH );
-    button.setText( "Change" );
-    button.addSelectionListener( new SelectionAdapter() {
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label lblItemCount = new Label( composite, SWT.NONE );
+    lblItemCount.setText( "ItemCount" );
+    final Text txtItemCount = new Text( composite, SWT.BORDER );
+    Util.textSizeAdjustment( lblItemCount, txtItemCount );
+    txtItemCount.setText( String.valueOf( getTable().getItemCount() ) );
+    Button btnChange = new Button( composite, SWT.PUSH );
+    btnChange.setText( "Change" );
+    btnChange.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         int itemCount = -1;
         try {
-          itemCount = Integer.parseInt( text.getText() );
+          itemCount = Integer.parseInt( txtItemCount.getText() );
         } catch( NumberFormatException e ) {
-          // ignore invalid column count
+          // ignore invalid item count
         }
         getTable().setItemCount( itemCount );
+        getTable().redraw();
+      }
+    } );
+    final Button cbDelayedUpdate = new Button( composite, SWT.CHECK );
+    GridData gridData 
+      = new GridData( SWT.LEFT, SWT.CENTER, true, false, 3, SWT.DEFAULT );
+    cbDelayedUpdate.setLayoutData( gridData );
+    cbDelayedUpdate.setText( "Update virtual items delayed" );
+    cbDelayedUpdate.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        updateVirtualItemsDelayed = cbDelayedUpdate.getSelection(); 
       }
     } );
   }

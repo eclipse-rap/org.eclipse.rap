@@ -82,7 +82,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     Table table = ( Table )widget;
     readSelection( table );
-    readTopIndex( table );
+    readTopIndex( table ); // topIndex MUST be read *before* processSetData
     processSetData( table );
   }
 
@@ -148,14 +148,14 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static void readSelection( final Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "selection" );
     if( value != null ) {
-      TableItem[] newSelection;
+      int[] newSelection;
       if( "".equals( value ) ) {
-        newSelection = new TableItem[ 0 ];
+        newSelection = new int[ 0 ];
       } else {
-        String[] selectedIds = value.split( "," );
-        newSelection = new TableItem[ selectedIds.length ];
-        for( int i = 0; i < selectedIds.length; i++ ) {
-          newSelection[ i ] = findItem( table, selectedIds[ i ] );
+        String[] selectedIndices = value.split( "," );
+        newSelection = new int[ selectedIndices.length ];
+        for( int i = 0; i < selectedIndices.length; i++ ) {
+          newSelection[ i ] = Integer.parseInt( selectedIndices[ i ] );
         }
       }
       table.setSelection( newSelection );
@@ -170,9 +170,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
   
   private static void processSetData( final Table table ) {
-    boolean setDataEvent 
-      = WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_SET_DATA );
-    if( setDataEvent ) {
+    if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_SET_DATA ) ) {
       HttpServletRequest request = ContextProvider.getRequest();
       String value = request.getParameter( JSConst.EVENT_SET_DATA_INDEX );
       String[] indices = value.split( "," );
@@ -266,17 +264,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     parentId.append( WidgetUtil.getId( table ) );
     parentId.append( "_clientArea"  );
     return parentId.toString();
-  }
-
-  private static TableItem findItem( final Table table, final String itemId ) {
-    TableItem result = null;
-    TableItem[] items = table.getItems();
-    for( int i = 0; result == null && i < items.length; i++ ) {
-      if( WidgetUtil.getId( items[ i ] ).equals( itemId ) ) {
-        result = items[ i ];
-      }
-    }
-    return result;
   }
 
   private static int getDefaultColumnWidth( final Table table ) {

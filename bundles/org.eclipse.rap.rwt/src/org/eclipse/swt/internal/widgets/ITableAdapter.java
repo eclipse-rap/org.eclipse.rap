@@ -26,6 +26,7 @@ public interface ITableAdapter {
   int getDefaultColumnWidth();
   
   boolean isItemVisible( TableItem item );
-  boolean isItemVirtual( TableItem item );
+  boolean isItemVirtual( int index );
+  TableItem[] getCachedItems();
 
 }
