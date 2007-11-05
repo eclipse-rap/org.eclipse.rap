@@ -57,7 +57,8 @@ public class LabelTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
-    createChangeLabelControl( parent );
+    createChangeTextControl( parent );
+    createChangeToolTipControl( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -119,7 +120,7 @@ public class LabelTab extends ExampleTab {
     updateLabel( varSizeLabel );
   }
 
-  private void createChangeLabelControl( final Composite parent ) {
+  private void createChangeTextControl( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );
@@ -132,6 +133,21 @@ public class LabelTab extends ExampleTab {
         varSizeLabel.setText( text.getText() );
         text.setText( "" );
         varSizeLabel.pack();
+      }
+    } );
+  }
+
+  private void createChangeToolTipControl( final Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 3, false ) );
+    Label label = new Label( composite, SWT.NONE );
+    label.setText( "Change tooltip" );
+    final Text text = new Text( composite, SWT.BORDER );
+    Button button = new Button( composite, SWT.PUSH );
+    button.setText( "Change" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        varSizeLabel.setToolTipText( text.getText() );
       }
     } );
   }
