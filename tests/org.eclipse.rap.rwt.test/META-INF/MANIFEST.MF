@@ -11,3 +11,4 @@ Require-Bundle: org.junit,
  org.eclipse.rap.rwt
 Bundle-ClassPath: .,
  lib/resource_manager_test.jar
+Export-Package: org.eclipse.swt
