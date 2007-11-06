@@ -111,7 +111,6 @@ public class TextTab extends ExampleTab {
     updateBlockingVerifyListener();
     updateNumbersOnlyVerifyListener();
     registerControl( simpleText );
-    new Label( parent, SWT.NONE );
     modifyText = createModifyText( parent, getStyle() );
     registerControl( modifyText );
   }
