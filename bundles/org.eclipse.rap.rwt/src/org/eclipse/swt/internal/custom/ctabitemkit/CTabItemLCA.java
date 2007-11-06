@@ -76,8 +76,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( item );
     boolean canClose = ( item.getStyle() & SWT.CLOSE ) != 0;
     Object[] args = new Object[] { 
-      Boolean.valueOf( canClose ),
-      "Close"
+      Boolean.valueOf( canClose )
     };
     writer.newWidget( "org.eclipse.swt.custom.CTabItem", args );
     writer.call( item.getParent(), "add", new Object[] { item } );

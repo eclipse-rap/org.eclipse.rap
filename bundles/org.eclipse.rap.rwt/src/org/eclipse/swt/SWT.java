@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt;
 
-import org.eclipse.rwt.graphics.Graphics;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 
 
@@ -1635,5 +1636,36 @@ public class SWT {
         result = "Unknown error"; //$NON-NLS-1$
     }
     return result;
-  }  
+  }
+
+  /**
+   * Returns the NLS'ed message for the given argument.
+   * 
+   * @param key the key to look up
+   * @return the message for the given key
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the key is null</li>
+   * </ul>
+   */
+  public static String getMessage( final String key ) {
+    if( key == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    String result = key;
+    ResourceBundle bundle = null;
+    try {
+      bundle 
+        = ResourceBundle.getBundle( "org.eclipse.swt.internal.SWTMessages" );
+    } catch( MissingResourceException ex ) {
+      result = key + " (no resource bundle)"; //$NON-NLS-1$
+    }
+    if( bundle != null ) {
+      try {
+        result = bundle.getString( key );
+      } catch( MissingResourceException ex2 ) {
+      }
+    }
+    return result;
+  }
 }

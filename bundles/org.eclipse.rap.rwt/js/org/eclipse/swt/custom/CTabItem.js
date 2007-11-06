@@ -12,7 +12,7 @@
 qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
   extend : qx.ui.basic.Atom,
 
-  construct : function( canClose, closeToolTipText ) {
+  construct : function( canClose ) {
     this.base( arguments );
     this.setAppearance( "c-tab-item" );
     this.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_MIDDLE );
@@ -35,7 +35,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       this._closeButton.setHeight( "80%" );
       this._closeButton.addEventListener( "click", this._onClose, this );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
-      wm.setToolTip( this._closeButton, closeToolTipText );
+      wm.setToolTip( this._closeButton, 
+                     org.eclipse.swt.custom.CTabFolder.CLOSE_TOOLTIP );
       this.add( this._closeButton );
       this._updateCloseButton();
     } else {

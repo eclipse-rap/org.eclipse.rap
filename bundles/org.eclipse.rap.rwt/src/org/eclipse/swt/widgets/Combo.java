@@ -458,7 +458,7 @@ public class Combo extends Composite {
    * </ul>
    */
   public int getVisibleItemCount () {
-    checkWidget ();
+    checkWidget();
     return visibleCount ;
   }
 

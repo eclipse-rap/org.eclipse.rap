@@ -16,6 +16,7 @@ import java.io.IOException;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -189,8 +190,15 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );
+    String[] args = new String[] { 
+      SWT.getMessage( "SWT_Minimize" ),
+      SWT.getMessage( "SWT_Maximize" ),
+      SWT.getMessage( "SWT_Restore" ),
+      SWT.getMessage( "SWT_ShowList" ),
+      SWT.getMessage( "SWT_Close" ),
+    };
     writer.callStatic( "org.eclipse.swt.custom.CTabFolder.setToolTipTexts", 
-                       new String[] { "Minimize", "Maximize", "Restore" } );
+                       args );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {
@@ -375,9 +383,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
           new Integer( chevronRect.height )
         };
         writer.call( "showChevron", args );
-        if( visibilityChanged && tabFolderAdapter.getChevronVisible() ) {
-          writer.set( "chevronToolTip", "Show List" );
-        }
       } else {
         writer.call( "hideChevron", null );
       }

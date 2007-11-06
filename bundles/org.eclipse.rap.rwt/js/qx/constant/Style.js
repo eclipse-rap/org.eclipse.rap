@@ -37,6 +37,8 @@ qx.Class.define( "qx.constant.Style", {
     BORDER_SOLID            : "solid",
     
     // Constant for Label#setMode 
-    LABEL_MODE_HTML : "html"
+    LABEL_MODE_HTML : "html",
+    // Constant for qx.ui.toolbar.Button#setShow 
+    BUTTON_SHOW_ICON : "icon"
   }
 });

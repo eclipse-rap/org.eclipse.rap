@@ -93,11 +93,15 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     MIN_TOOLTIP : "Minimize",
     MAX_TOOLTIP : "Maximize",
     RESTORE_TOOLTIP : "Restore",
+    CHEVRON_TOOLTIP : "Show List",
+    CLOSE_TOOLTIP : "Close",
     
-    setToolTipTexts : function( min, max, restore ) {
+    setToolTipTexts : function( min, max, restore, chevron, close ) {
       org.eclipse.swt.custom.CTabFolder.MIN_TOOLTIP = min;
       org.eclipse.swt.custom.CTabFolder.MAX_TOOLTIP = max;
       org.eclipse.swt.custom.CTabFolder.RESTORE_TOOLTIP = restore;
+      org.eclipse.swt.custom.CTabFolder.CHEVRON_TOOLTIP = chevron;
+      org.eclipse.swt.custom.CTabFolder.CLOSE_TOOLTIP = close;
     }
   },
 
@@ -123,19 +127,19 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     // TODO [rh] optimize usage of border objects (get, change, set)
     setSelectionBackground : function( color ) {
       var highlightBorder = new qx.ui.core.Border();
-      highlightBorder.setLeft( 2, "solid", color );
+      highlightBorder.setLeft( 2, qx.constant.Style.BORDER_SOLID, color );
       this._highlightLeft.setBorder( highlightBorder );
 
       highlightBorder = new qx.ui.core.Border();
-      highlightBorder.setRight( 2, "solid", color );
+      highlightBorder.setRight( 2, qx.constant.Style.BORDER_SOLID, color );
       this._highlightRight.setBorder( highlightBorder );
 
       highlightBorder = new qx.ui.core.Border();
-      highlightBorder.setTop( 2, "solid", color );
+      highlightBorder.setTop( 2, qx.constant.Style.BORDER_SOLID, color );
       this._highlightTop.setBorder( highlightBorder );
 
       highlightBorder = new qx.ui.core.Border();
-      highlightBorder.setTop( 2, "solid", color );
+      highlightBorder.setTop( 2, qx.constant.Style.BORDER_SOLID, color );
       this._highlightBottom.setBorder( highlightBorder );
     },
 
@@ -148,9 +152,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         // Create chevron button
         this._chevron = new qx.ui.toolbar.Button();
         this._chevron.addState( "rwt_FLAT" );
-        this._chevron.setShow( "icon" );
+        this._chevron.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
         this._chevron.setIcon( "resource/widget/rap/ctabfolder/chevron.gif" );
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        wm.setToolTip( this._chevron, 
+                       org.eclipse.swt.custom.CTabFolder.CHEVRON_TOOLTIP );
         this.add( this._chevron );
       }
       this._chevron.setTop( top );
@@ -170,20 +177,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       }
     },
 
-    setChevronToolTip : function( text ) {
-      if( this._chevron != null ) {
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        wm.setToolTip( this._chevron, text );
-      }
-    },
-
     setMinMaxState : function( state ) {
       this._minMaxState = state;
       var minIcon = "";
       var maxIcon = "";
       var minToolTip = "";
       var maxToolTip = "";
-this.debug( "minMaxState: " + state );      
       switch( state ) {
         case "min":
           minIcon = "resource/widget/rap/ctabfolder/restore.gif";
@@ -219,7 +218,7 @@ this.debug( "minMaxState: " + state );
       if( this._maxButton == null ) {
         this._maxButton = new qx.ui.toolbar.Button();
         this._maxButton.addState( "rwt_FLAT" );
-        this._maxButton.setShow( "icon" );
+        this._maxButton.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
         this._maxButton.addEventListener( "execute", this._onMinMaxExecute, this );
         this.add( this._maxButton );
@@ -232,7 +231,9 @@ this.debug( "minMaxState: " + state );
 
     hideMaxButton : function() {
       if( this._maxButton != null ) {
-        this._maxButton.removeEventListener( "execute", this._onMinMaxExecute, this );
+        this._maxButton.removeEventListener( "execute", 
+                                             this._onMinMaxExecute, 
+                                             this );
         this.remove( this._maxButton );
         this._maxButton.dispose();
         this._maxButton = null;
@@ -243,7 +244,7 @@ this.debug( "minMaxState: " + state );
       if( this._minButton == null ) {
         this._minButton = new qx.ui.toolbar.Button();
         this._minButton.addState( "rwt_FLAT" );
-        this._minButton.setShow( "icon" );
+        this._minButton.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this.setMinMaxState( this._minMaxState );  // initializes the icon according to current state
         this._minButton.addEventListener( "execute", this._onMinMaxExecute, this );
         this.add( this._minButton );
@@ -255,8 +256,10 @@ this.debug( "minMaxState: " + state );
     },
 
     hideMinButton : function( left ) {
-      if (this._minButton != null) {
-        this._minButton.removeEventListener( "execute", this._onMinMaxExecute, this );
+      if( this._minButton != null ) {
+        this._minButton.removeEventListener( "execute", 
+                                             this._onMinMaxExecute, 
+                                             this );
         this.remove( this._minButton );
         this._minButton.dispose();
         this._minButton = null;
