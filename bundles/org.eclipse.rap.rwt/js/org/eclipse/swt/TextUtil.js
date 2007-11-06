@@ -47,7 +47,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
           org.eclipse.swt.TextUtil._setModified( text, true );
         }
       }
-      org.eclipse.swt.TextUtil.updateSelection( text );
+      org.eclipse.swt.TextUtil.updateSelection( text, null );
     },
 
     /**
@@ -75,7 +75,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
                               text, 
                               500 );
       }
-      org.eclipse.swt.TextUtil.updateSelection( text );
+      org.eclipse.swt.TextUtil.updateSelection( text, null );
     },
 
     /**
@@ -186,12 +186,13 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     onMouseUp : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var text = evt.getTarget();
-        org.eclipse.swt.TextUtil.updateSelection( text );
+        org.eclipse.swt.TextUtil.updateSelection( text, null );
       }
     },
 
     updateSelection : function( text, enclosingWidget ) {
-      // TODO [rh] executing the code below for a TextArea leads to Illegal Argument
+      // TODO [rh] executing the code below for a TextArea leads to Illegal 
+      //      Argument
       if( text.classname != "qx.ui.form.TextArea" ) {
         var widget = enclosingWidget != null ? enclosingWidget : text;
         var start = text.getSelectionStart();

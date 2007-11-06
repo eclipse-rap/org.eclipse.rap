@@ -40,6 +40,7 @@ import org.eclipse.rwt.service.*;
  * @see HttpServletResponse
  */
 public final class RWT {
+  
   private static final String LOCALE = RWT.class.getName() + ".LOCALE";
 
   /**
@@ -76,6 +77,7 @@ public final class RWT {
    * </p>
    */
   public static final class NLS {
+    
     private final static Map map = new HashMap();
 
     /**
