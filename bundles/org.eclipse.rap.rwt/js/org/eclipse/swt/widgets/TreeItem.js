@@ -48,6 +48,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     // Text
     this._row.addLabel( "" );
     
+    // Virtual
+    this._materialized = true;
+    
     // Construct TreeItem
     for( var c = 0; c < tree._columns.length; c++ ) {
         this.columnAdded();
@@ -112,12 +115,22 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
       }
     },
     
+    setMaterialized : function( value ) {
+    	this._materialized = value;
+    },
+    
+    isMaterialized : function( value ) {
+    	return this._materialized;
+    },
+    
     setGrayed : function( value ) {
-      if( value ) {
-          this._checkBox.addState( "grayed" );
-      } else {
-          this._checkBox.removeState( "grayed" );
-      }
+    	if( this._checkBox != null ) {
+	      if( value ) {
+	          this._checkBox.addState( "grayed" );
+	      } else {
+	          this._checkBox.removeState( "grayed" );
+	      }
+    	}
     },
     
     setSelection : function( value, focus ) {

@@ -52,6 +52,8 @@ public class TreeItem extends Item {
   Color[] cellForegrounds, cellBackgrounds;
   Font[] cellFonts;
   int depth;
+  private int index;
+  protected boolean cached;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -214,13 +216,15 @@ public class TreeItem extends Item {
     if( parentItem != null ) {
       this.depth = parentItem.depth+1;
     }
+    int newIndex;
     if( parentItem != null ) {
-      int newIndex = index == -1 ? parentItem.getItemCount() : index;
+      newIndex = index == -1 ? parentItem.getItemCount() : index;
       ItemHolder.insertItem( parentItem, this, newIndex );
     } else {
-      int newIndex = index == -1 ? parent.getItemCount() : index;
+      newIndex = index == -1 ? parent.getItemCount() : index;
       ItemHolder.insertItem( parent, this, newIndex );
     }
+    this.index = newIndex;
     itemHolder = new ItemHolder( TreeItem.class );
     widgetFontAdapter = new IWidgetFontAdapter() {
       public Font getUserFont() {
@@ -359,6 +363,10 @@ public class TreeItem extends Item {
    * @since 1.0
    */
   public Rectangle getBounds( int columnIndex ) {
+    return getBounds( columnIndex, true );
+  }
+  
+  /* package */ Rectangle getBounds( int columnIndex, boolean checkData ) {
     checkWidget();
     Rectangle result;
     int columnCount = parent.getColumnCount();
@@ -369,12 +377,7 @@ public class TreeItem extends Item {
     } else {
       Rectangle imageBounds = getImageBounds( columnIndex );
       Point textWidth = TextSizeDetermination.stringExtent( getFont(),
-                                                            getText( 0 ) );
-      int left = imageBounds.x + ( depth+1 * INDENT_WIDTH );
-      int top = 16;
-      if( parentItem != null ) {
-        top += parentItem.getBounds( columnIndex ).y;
-      }
+                                                            getText( 0 , checkData ) );
       int width;
       if( columnIndex == 0 && columnCount == 0 ) {
         int gap = getImageGap( columnIndex );
@@ -382,7 +385,18 @@ public class TreeItem extends Item {
       } else {
         width = parent.getColumn( columnIndex ).getWidth();
       }
-      int height = Math.max( textWidth.y, imageBounds.height ) + 2;
+      // no support for bigger text/images due to qx bug
+      // int height = Math.max( textWidth.y, imageBounds.height ) + 2;
+      int height = 16;
+
+      int left = imageBounds.x + ( depth+1 * INDENT_WIDTH );
+      int top = 0;
+      if( parentItem != null ) {
+        final Rectangle parentItemBounds = parentItem.getBounds( columnIndex );
+        top += parentItemBounds.y + 16; //parentItemBounds.height;
+//      } else {
+      }
+      top += index * height; // TODO: [bm] go trough all elements to gain height?
       result = new Rectangle( left, top, width, height );
     }
     return result;
@@ -848,9 +862,27 @@ public class TreeItem extends Item {
       return getText (columnIndex, true);
   }
   
+  /**
+   * Returns the receiver's text, which will be an empty
+   * string if it has never been set.
+   *
+   * @return the receiver's text
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public String getText() {
+    checkWidget();
+    if(!isMaterialized()) {
+      parent.checkData( this, this.index );
+    }
+    return super.getText();
+  }
+  
   String getText (int columnIndex, boolean checkData) {
-    // TODO virtual flag
-//    if (checkData && !parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
+    if(checkData && !isMaterialized()) parent.checkData( this, this.index );
     int validColumnCount = Math.max (1, parent.columnHolder.size());
     if (!(0 <= columnIndex && columnIndex < validColumnCount)) return "";   //$NON-NLS-1$
     if (columnIndex == 0) return super.getText ();  /* super is intentional here */
@@ -909,7 +941,25 @@ public class TreeItem extends Item {
       } else {
           texts [columnIndex] = value;        
       }
-//      if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+      if ((parent.style & SWT.VIRTUAL) != 0) markMaterialized();
+  }
+  
+  /**
+   * Sets the receiver's text.
+   *
+   * @param text the new text
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public void setText( final String text ) {
+    super.setText( text );
+    if ((parent.style & SWT.VIRTUAL) != 0) markMaterialized();
   }
   
   /**
@@ -969,9 +1019,9 @@ public class TreeItem extends Item {
   /*
    * Returns the receiver's ideal width for the specified columnIndex.
    */
-  int getPreferredWidth (int columnIndex) {
+  int getPreferredWidth ( int columnIndex, boolean checkData ) {
     int width = 0;
-    width += TextSizeDetermination.stringExtent( parent.getFont(), getText( columnIndex ) ).x;
+    width += TextSizeDetermination.stringExtent( parent.getFont(), getText( columnIndex, checkData ) ).x;
     int orderedIndex = parent.columnHolder.size() == 0 ? 0 : ((TreeColumn)parent.columnHolder.getItem( columnIndex )).getOrderIndex ();
     if (orderedIndex == 0) {
       width += 19; // TODO find proper solution
@@ -1318,6 +1368,27 @@ public class TreeItem extends Item {
   }
 
 
+  /* package */ void markMaterialized() {
+//    Widget parentWidget;
+//    if( parentItem != null ) {
+//      parentWidget = parentItem;
+//    } else {
+//      parentWidget = parent;
+//    }
+//    if((parent.style & SWT.VIRTUAL) != 0) {
+//      ItemHolder.insertItem( parentWidget, this, index );
+//    }
+    setData("materialized", Boolean.TRUE );
+  }
+  
+  /* package */ boolean isMaterialized() {
+    boolean result = true;
+    if((parent.getStyle() & SWT.VIRTUAL) != 0) {
+      result = getData("materialized") != null;
+    }
+    return result;
+  }
+  
   /////////////////////////////////
   // Methods to dispose of the item
 
@@ -1339,5 +1410,17 @@ public class TreeItem extends Item {
 
   final void releaseWidget() {
     // do nothing
+  }
+
+  /* package */ int getInnerHeight() {
+    int innerHeight = 0;
+    for( int i = 0; i < itemHolder.size(); i++ ) {
+      TreeItem item = ( TreeItem )itemHolder.getItem( i );
+      if(item.getExpanded()) {
+        innerHeight = item.getInnerHeight();
+      }
+    }
+    innerHeight += getItemCount()*16;
+    return innerHeight;
   }
 }

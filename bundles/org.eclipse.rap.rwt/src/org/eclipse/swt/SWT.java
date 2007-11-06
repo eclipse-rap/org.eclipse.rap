@@ -260,7 +260,7 @@ public class SWT {
    * @see org.eclipse.swt.widgets.Event
    * 
    * @see org.eclipse.swt.widgets.Table
-   * <!-- @see org.eclipse.swt.widgets.Tree -->
+   * @see org.eclipse.swt.widgets.Tree
    */
   public static final int SetData = 36;
 
@@ -837,7 +837,7 @@ public class SWT {
    * Style constant to allow virtual data (value is 1&lt;&lt;28).
    * <p><b>Used By:</b><ul>
    * <li><code>Table</code></li>
-   * <!-- <li><code>Tree</code></li> -->
+   * <li><code>Tree</code></li>
    * </ul></p>
    */
   public static final int VIRTUAL = 1 << 28;

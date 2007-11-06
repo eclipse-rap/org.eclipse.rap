@@ -34,7 +34,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_HEADER_HEIGHT = "headerHeight";
   private static final String PROP_HEADER_VISIBLE = "headerVisible";
   private static final String PROP_COLUMN_ORDER = "columnOrder";
-  
+ 
   public void preserveValues( final Widget widget ) {
     Tree tree  = ( Tree )widget;
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -75,6 +75,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
     if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {
       style.append( "check|" );
     }
+    if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {
+      style.append( "virtual|" );
+    }
     writer.newWidget( "org.eclipse.swt.widgets.Tree", 
                       new Object[] { style.toString() } );
     ControlLCAUtil.writeStyleFlags( tree );
@@ -95,6 +98,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
       adapter.setJSParent( getItemJSParent( tree ) );
     }
   }
+
 
 
 
@@ -180,7 +184,18 @@ public final class TreeLCA extends AbstractWidgetLCA {
     if( left != null && top != null ) {
       ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
       adapter.setScrollLeft( Integer.valueOf( left ).intValue() );
-      adapter.setScrollTop( Integer.valueOf( top ).intValue() );
+      int oldScrollTop = adapter.getScrollTop();
+      int newScrollTop = Integer.valueOf( top ).intValue();
+      adapter.setScrollTop( newScrollTop );
+      if(oldScrollTop != newScrollTop) {
+        ProcessActionRunner.add( new Runnable() {
+
+          public void run() {
+            WidgetUtil.getLCA( tree ).doRedrawFake( tree );
+          }
+          
+        });
+      }
     }
   }
 

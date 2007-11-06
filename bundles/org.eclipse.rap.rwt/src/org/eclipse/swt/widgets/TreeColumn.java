@@ -475,7 +475,7 @@ public void pack () {
       newWidth += SORT_INDICATOR_WIDTH + MARGIN_IMAGE;
     }
 	for (int i = 0; i < availableItems.length; i++) {
-		int width = availableItems [i].getPreferredWidth (index);
+		int width = availableItems [i].getPreferredWidth (index, false);
 		/* ensure that receiver and parent were not disposed in a callback */
 		if (parent.isDisposed () || isDisposed ()) return;
 		if (!availableItems [i].isDisposed ()) {

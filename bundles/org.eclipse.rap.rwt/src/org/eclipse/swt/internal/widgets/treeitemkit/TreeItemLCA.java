@@ -40,6 +40,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public static final String PROP_GRAYED = "grayed";
   public static final String PROP_TEXTS = "texts";
   public static final String PROP_IMAGES = "images";
+  public static final String PROP_MATERIALIZED = "materialized";
 
   // Expanded/collapsed state constants, used by readData
   private static final String STATE_COLLAPSED = "collapsed";
@@ -47,22 +48,29 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   public void preserveValues( final Widget widget ) {
     TreeItem treeItem = ( TreeItem )widget;
-    ItemLCAUtil.preserve( treeItem );
+    final Tree tree = treeItem.getParent();
+    ITreeAdapter treeadapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
-    preserveFont( treeItem );
-    adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
-    adapter.preserve( TreeItemLCA.PROP_EXPANDED,
-                      Boolean.valueOf( treeItem.getExpanded() ) );
-    adapter.preserve( PROP_TEXTS, getTexts( treeItem ) );
-    adapter.preserve( PROP_IMAGES, getImages( treeItem ) );
-    boolean selection = isSelected( treeItem );
-    adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
-    adapter.preserve( PROP_BACKGROUND, treeItem.getBackground() );
-    adapter.preserve( PROP_BACKGROUNDS, getBackgrounds( treeItem ) );
-    adapter.preserve( PROP_FOREGROUND, treeItem.getForeground() );
-    adapter.preserve( PROP_FOREGROUNDS, getForegrounds( treeItem ) );
-    adapter.preserve( PROP_FONT, getFonts( treeItem ) );
-    adapter.preserve( PROP_GRAYED, Boolean.valueOf( treeItem.getGrayed() ) );
+    if(treeadapter.isMaterialized( treeItem )) {
+      ItemLCAUtil.preserve( treeItem );
+      preserveFont( treeItem );
+      adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
+      adapter.preserve( TreeItemLCA.PROP_EXPANDED,
+                        Boolean.valueOf( treeItem.getExpanded() ) );
+      adapter.preserve( PROP_TEXTS, getTexts( treeItem ) );
+      adapter.preserve( PROP_IMAGES, getImages( treeItem ) );
+      boolean selection = isSelected( treeItem );
+      adapter.preserve( PROP_SELECTION, Boolean.valueOf( selection ) );
+      adapter.preserve( PROP_BACKGROUND, treeItem.getBackground() );
+      adapter.preserve( PROP_BACKGROUNDS, getBackgrounds( treeItem ) );
+      adapter.preserve( PROP_FOREGROUND, treeItem.getForeground() );
+      adapter.preserve( PROP_FOREGROUNDS, getForegrounds( treeItem ) );
+      adapter.preserve( PROP_FONT, getFonts( treeItem ) );
+      adapter.preserve( PROP_GRAYED, Boolean.valueOf( treeItem.getGrayed() ) );
+      
+    }
+    adapter.preserve( PROP_MATERIALIZED,
+                      Boolean.valueOf( treeadapter.isMaterialized( treeItem )) );
   }
 
   public void readData( final Widget widget ) {
@@ -102,18 +110,34 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     // [bm] order is important, images needs to be written before texts
-    writeImages( treeItem );
-    writeTexts( treeItem );
-    writeFont( treeItem );
-    writeBackground( treeItem );
-    writeBackgrounds( treeItem );
-    writeForeground( treeItem );
-    writeForegrounds( treeItem );
-    writeSelection( treeItem );
-    writeExpanded( treeItem );
-    writeChecked( treeItem );
-    writeGrayed( treeItem );
-    writeShowItem( treeItem );
+    Tree tree = treeItem.getParent();
+    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    if(adapter.isMaterialized( treeItem )) {
+      writeImages( treeItem );
+      writeTexts( treeItem );
+      writeFont( treeItem );
+      writeBackground( treeItem );
+      writeBackgrounds( treeItem );
+      writeForeground( treeItem );
+      writeForegrounds( treeItem );
+      writeSelection( treeItem );
+      writeExpanded( treeItem );
+      writeChecked( treeItem );
+      writeGrayed( treeItem );
+      writeShowItem( treeItem );
+    }
+    writeMaterialized( treeItem );
+  }
+
+  private void writeMaterialized( TreeItem treeItem ) throws IOException {
+    final Tree tree = treeItem.getParent();
+    if( (tree.getStyle() & SWT.VIRTUAL) != 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( treeItem );
+      ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+        writer.set( PROP_MATERIALIZED,
+                    "materialized",
+                    Boolean.valueOf( adapter.isMaterialized( treeItem ) ));
+    }
   }
 
   public void renderDispose( final Widget widget ) throws IOException {

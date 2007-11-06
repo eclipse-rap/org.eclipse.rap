@@ -11,11 +11,17 @@
 
 package org.eclipse.swt.widgets;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
@@ -478,7 +484,7 @@ public class Tree_Test extends TestCase {
     RWTFixture.tearDown();
   }
 
-  public void test_getColumnCount() {
+  public void testGetColumnCount() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
@@ -529,7 +535,7 @@ public class Tree_Test extends TestCase {
     }
   }
 
-  public void test_getColumns() {
+  public void testGetColumns() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
@@ -613,8 +619,106 @@ public class Tree_Test extends TestCase {
 		item = new TreeItem(tree, 0);
 		tree.setSelection(new TreeItem[] { item });
 		tree.showSelection();
-	}
+  }
 
+  public void testSmokeVirtual() {
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
+    tree.addListener( SWT.SetData, new Listener() {
+
+      public void handleEvent( Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        TreeItem parentItem = item.getParentItem();
+        String text = null;
+        if( parentItem == null ) {
+          text = "node " + tree.indexOf( item );
+        } else {
+          fail( "Too much items materialized" );
+        }
+        item.setText( text );
+        item.setItemCount( 10 );
+      }
+    } );
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    tree.setItemCount( 20 );
+    assertEquals( "node 0", tree.getItem( 0 ).getText() );
+  }
+
+  public void testVirtualScroll() throws IOException {
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
+    final List log = new ArrayList();
+    tree.setSize( 100, 160 );
+    tree.addListener( SWT.SetData, new Listener() {
+
+      public void handleEvent( Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        String text = null;
+        TreeItem parentItem = item.getParentItem();
+        if( parentItem == null ) {
+          text = "node " + tree.indexOf( item );
+        } else {
+          text = parentItem.getText() + " - " + parentItem.indexOf( item );
+        }
+        item.setText( text );
+        item.setItemCount( 10 );
+        log.add( item );
+      }
+    } );
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    tree.setItemCount( 20 );
+    RWTFixture.readDataAndProcessAction( tree );
+    assertTrue( log.size() < 20 );
+    assertTrue( log.size() > 0 );
+    // scroll to bottom
+    RWTFixture.fakeNewRequest();
+    String treeId = WidgetUtil.getId( tree );
+    Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
+    Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
+    new RWTLifeCycle().execute();
+    assertEquals( 16, log.size() );
+    // open a tree node should only materialize visible items
+    log.clear();
+    // reset scroll position
+    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    adapter.setScrollTop( 0 );
+    RWTFixture.fakeUIThread();
+    tree.setSize( 100, 32 ); // only space for 2 items
+    RWTFixture.fakeNewRequest();
+    String aItemId = WidgetUtil.getId( tree.getItem( 0 ) );
+    Fixture.fakeRequestParam( aItemId + ".state", "expanded" );
+    Fixture.fakeRequestParam( "org.eclipse.swt.events.treeExpanded", aItemId );
+    new RWTLifeCycle().execute();
+    assertEquals( 2, log.size() );
+    RWTFixture.removeUIThread();
+    // scrolling should materialize the now visible subitems
+    log.clear();
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
+    Fixture.fakeRequestParam( treeId + ".scrollTop", "16" );
+    new RWTLifeCycle().execute();
+    assertEquals( 1, log.size() );
+  }
+
+  public void testMaterializeOnCode() {
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
+    tree.addListener( SWT.SetData, new Listener() {
+
+      public void handleEvent( Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        item.setText( "foo" );
+        item.setItemCount( 0 );
+      }
+    } );
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    tree.setItemCount( 1 );
+    assertEquals( "foo", tree.getItem( 0 ).getText() );
+  }
+  
   private static boolean contains( final TreeItem[] items,
                                    final TreeItem item )
   {

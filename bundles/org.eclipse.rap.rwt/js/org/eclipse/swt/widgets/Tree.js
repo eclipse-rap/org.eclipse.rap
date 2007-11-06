@@ -34,6 +34,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     
     this._headerVisible = false;
     this._columnAreaHeight = 20;
+    this._oldScrollTop = 0;
     
     this._columns = new Array();
     this._columnOrder = new Array();
@@ -62,6 +63,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     this._tree.setAppearance( "tree" );
     
     // listen for scroll events to move column area
+    this._mergeScrollEvents = qx.lang.String.contains( style, "virtual" ) ;
     this._tree.__onscroll = qx.lang.Function.bindEvent( this._onTreeScroll, this );
     this._tree.addEventListener( "changeElement", this._onTreeElementChange, this._tree );
     
@@ -150,6 +152,31 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
         var req = org.eclipse.swt.Request.getInstance();
         req.addParameter( treeId + ".scrollLeft", target.scrollLeft );
         req.addParameter( treeId + ".scrollTop", target.scrollTop );
+        if( qx.lang.String.contains( this.getRWTStyle(), "virtual" ) ) {
+        	// check if scrollTop has changed
+        	if(target.scrollTop != this._oldScrollTop) {
+        	  // send request after a little later to merge scroll events
+        	  window.clearTimeout(this._setValueTimerId);
+        	  var self = this;
+        	  this._setValueTimerId = window.setTimeout(function()
+            {
+          	  // check if we need to "redraw" by checking all items in viewpart
+	        	  var vItems = self._tree.getItems(true, false);
+	        	  var redraw = false;
+	        	  for( var index=0; index<vItems.length; index++ ) {
+	        	  	if( !vItems[ index ].isMaterialized() ) {
+	        	  		redraw = true;
+	        	  		break;
+	        	  	}
+	        	  }
+              if( redraw ) {
+                var req = org.eclipse.swt.Request.getInstance();
+                req.send();
+              }
+	          }, 250);
+        	}
+        }
+        this._oldScrollTop = target.scrollTop;
       }
     },
   
@@ -178,6 +205,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     
     _unhookColumnMove : function( column ) {
       column.removeEventListener( "changeLeft", this._onColumnChangeSize, this );
+    },
+    
+    setTreeInnerHeight : function( newHeight ) {
+    	this._tree.getContainerObject().setHeight( newHeight );
     },
     
     getItemsHeight : function() {

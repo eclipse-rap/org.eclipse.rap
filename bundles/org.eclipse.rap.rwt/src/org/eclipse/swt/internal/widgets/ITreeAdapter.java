@@ -21,4 +21,5 @@ public interface ITreeAdapter {
   public abstract void setScrollLeft( final int left );
   public int getScrollTop();
   public int getScrollLeft();
+  public boolean isMaterialized( final TreeItem item );
 }

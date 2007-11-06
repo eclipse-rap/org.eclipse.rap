@@ -18,8 +18,7 @@ import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -80,7 +79,7 @@ public class Tree extends Composite {
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
   private static final int CHECK_HEIGHT = 13; // keep in sync with appearance
   
-  private final ItemHolder itemHolder;
+  /* package*/ final ItemHolder itemHolder;
   /* package*/ final ItemHolder columnHolder;
   private TreeItem[] selection;
   private boolean linesVisible;
@@ -151,36 +150,71 @@ public class Tree extends Composite {
     public int getScrollLeft() {
       return Tree.this.scrollLeft;
     }
+    
+    public boolean isMaterialized( final TreeItem item ) {
+      return item.isMaterialized();
+    }
+
+//    public int getInnerHeight() {
+//      // faster implementation? cache?
+//      innerHeight = 0;
+//      for( int i = 0; i < itemHolder.size(); i++ ) {
+//        TreeItem item = ( TreeItem )itemHolder.getItem( i );
+//        if(item.getExpanded()) {
+//          innerHeight += item.getInnerHeight();
+//        } else {
+//          innerHeight += 16;
+//        }
+//      }
+//      innerHeight += Tree.this.getItemCount()*16;
+//      return innerHeight;
+//    }
   }
   
   private static final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
       final Tree tree = ( Tree )event.widget;
-//      boolean visible = true;
-      // TODO [fappel]: This implementation has to be changed, once that
-      //                real virtual behavior is in place
       WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
         public boolean doVisit( Widget widget ) {
           boolean result = true;
           if( widget instanceof TreeItem ) { // ignore tree
             TreeItem item = ( TreeItem )widget;
-            if( item.getParentItem() == null || item.getExpanded() ) {
-              result = false;
-              int index;
-              TreeItem parentItem = item.getParentItem();
-              if( parentItem != null ) {
-                index = parentItem.indexOf( item );
-              } else {
-                index = item.getParent().indexOf( item );
-              }
-              tree.checkData( item, index );
+            result = item.getExpanded();
+            int index;
+            TreeItem parentItem = item.getParentItem();
+            if( parentItem != null ) {
+              index = parentItem.indexOf( item );
+            } else {
+              index = tree.indexOf( item );
+            }
+            
+            if( !item.cached && tree.isItemVisible( item ) ) {
+                tree.checkData( item, index );
             }
           }
           return result;
         }
       };
       WidgetTreeVisitor.accept( tree, visitor );
+
     }
+  }
+  
+  private boolean isItemVisible(TreeItem item) {
+    boolean result = false;
+    final int itemPosition = item.getBounds(0, false).y;
+    ITreeAdapter adapter = this.treeAdapter;
+    if( itemPosition >= adapter.getScrollTop() && itemPosition <= ( adapter.getScrollTop() + this.getSize().y ) ) {
+      TreeItem parentItem = item.getParentItem();
+      if( parentItem != null ) {
+        if (parentItem.getExpanded() ) {
+          result = true;
+        }
+      } else {
+        result = true;
+      }
+    }
+    return result;
   }
   
   private static final class ExpandListener extends TreeAdapter {
@@ -189,16 +223,22 @@ public class Tree extends Composite {
       TreeItem item = ( TreeItem )event.item;
       TreeItem[] children = item.getItems();
       for( int i = 0; i < children.length; i++ ) {
-        checkChildData( tree, children[ i ] );
+        // only check visible items
+        TreeItem child = children[i];
+        if(tree.isItemVisible( child )) {
+          checkChildData( tree, child );
+        }
       }
     }
 
+    
     private void checkChildData( final Tree tree, final TreeItem item ) {
       int index;
-      if( item.getParentItem() == null ) {
+      final TreeItem parentItem = item.getParentItem();
+      if( parentItem == null ) {
         index = tree.indexOf( item );
       } else {
-        index = item.getParentItem().indexOf( item );
+        index = parentItem.indexOf( item );
       }
       tree.checkData( item, index );
     }
@@ -280,7 +320,8 @@ public class Tree extends Composite {
    */
   public void setItemCount( final int itemCount ) {
     checkWidget();
-    setItemCount( itemCount, null ); 
+    setItemCount( itemCount, null );
+    redraw();
   }
   
   void setItemCount( final int itemCount, final TreeItem parent ) {
@@ -316,11 +357,8 @@ public class Tree extends Composite {
         } else {
           child = new TreeItem( parent, SWT.NONE, i );
         }
-        checkData( child, i );
+//        checkData( child, i );
       }
-  //    if( itemCount == 0 ) {
-  //      setScrollWidth( null, false );
-  //    }
     }
   }
 
@@ -415,7 +453,8 @@ public class Tree extends Composite {
     if( item.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    return itemHolder.indexOf( item );
+    int index = itemHolder.indexOf( item );
+    return index;
   }
   
   /**
@@ -1475,7 +1514,7 @@ public class Tree extends Composite {
   final void checkData( final TreeItem item, final int index ) {
     // TODO [fappel]: This implementation may has to be changed, once that
     //                real virtual behavior is in place.
-    if( ( style & SWT.VIRTUAL ) != 0 /*&& !item.cached*/ ) {
+    if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
       if( currentItem == null ) {
         currentItem = item;
       } 
@@ -1483,7 +1522,7 @@ public class Tree extends Composite {
         if( currentItem == item || item.getParentItem() == currentItem ) {
           ProcessActionRunner.add( new Runnable() {
             public void run() {
-//              item.cached = true;
+              item.cached = true;
               SetDataEvent event = new SetDataEvent( Tree.this, item, index );
               event.processEvent();
               // widget could be disposed at this point
