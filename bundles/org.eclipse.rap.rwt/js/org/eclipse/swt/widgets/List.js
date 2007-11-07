@@ -12,7 +12,7 @@
 /**
  * This class extends qx.ui.form.List to make its API more SWT-like.
  */
-qx.Class.define("org.eclipse.swt.widgets.List", {
+qx.Class.define( "org.eclipse.swt.widgets.List", {
   extend : qx.ui.form.List,
 
   construct : function() {
@@ -32,10 +32,9 @@ qx.Class.define("org.eclipse.swt.widgets.List", {
       // Should changeSelection events passed to the server-side?
       // state == no, action == yes
       this._changeSelectionNotification = "state";
-      // qx.manager.selection.SelectionManager
-      var manager = this.getManager();
-      manager.addEventListener( "changeSelection", this._onChangeSelection, this );
-      manager.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+      this.getManager().addEventListener( "changeLeadItem", 
+                                          this._onChangeLeadItem, 
+                                          this );
       this.addEventListener( "focus", this._onFocusIn, this );
       this.addEventListener( "blur", this._onFocusOut, this );
       this.addEventListener( "click", this._onClick, this );
@@ -43,13 +42,9 @@ qx.Class.define("org.eclipse.swt.widgets.List", {
     },
     
     rap_reset : function() {
-      var manager = this.getManager();
-      manager.removeEventListener( "changeSelection", 
-                                   this._onChangeSelection, 
-                                   this );
-      manager.removeEventListener( "changeLeadItem", 
-                                   this._onChangeLeadItem, 
-                                   this );
+      this.getManager().removeEventListener( "changeLeadItem", 
+                                             this._onChangeLeadItem, 
+                                             this );
       this.removeEventListener( "focus", this._onFocusIn, this );
       this.removeEventListener( "blur", this._onFocusOut, this );
       this.removeEventListener( "click", this._onClick, this );
@@ -77,7 +72,7 @@ qx.Class.define("org.eclipse.swt.widgets.List", {
           item.setContextMenu( this.getContextMenu() );
           item.setTabIndex( -1 );
           item.setLabel( "(empty)" );
-          item.getLabelObject().setMode( "html" );
+          item.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
           item.setLabel( items[ i ] );
           this.add( item );
         }
@@ -166,19 +161,6 @@ qx.Class.define("org.eclipse.swt.widgets.List", {
       this.rap_reset();
     },
 
-    _onChangeSelection : function( evt ) {
-      this._updateSelectedItemState();
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var id = wm.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
-      req.addParameter( id + ".selection", this._getSelectionIndices() );
-      if( this._changeSelectionNotification == "action" ) {
-        this._suspendClicks();
-        req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
-        req.send();
-      }
-    },
-
     _getSelectionIndices : function() {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
@@ -210,12 +192,14 @@ qx.Class.define("org.eclipse.swt.widgets.List", {
 
     _onClick : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        if( this._changeSelectionNotification == "action" ) {
-          if( !this.__clicksSuspended ) {
-            this._suspendClicks();
+        this._updateSelectedItemState();
+        if( !this.__clicksSuspended ) {
+          this._suspendClicks();
+          var req = org.eclipse.swt.Request.getInstance();
+          req.addParameter( id + ".selection", this._getSelectionIndices() );
+          if( this._changeSelectionNotification == "action" ) {
             var wm = org.eclipse.swt.WidgetManager.getInstance();
-            var id = wm.findIdByWidget(this);
-            var req = org.eclipse.swt.Request.getInstance();
+            var id = wm.findIdByWidget( this );
             req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
             req.send();
           }

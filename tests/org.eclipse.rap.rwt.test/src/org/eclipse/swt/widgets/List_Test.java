@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
 
 
 public class List_Test extends TestCase {
@@ -238,6 +239,7 @@ public class List_Test extends TestCase {
   }
   
   public void testSelectionForSingle() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.SINGLE );
@@ -476,6 +478,22 @@ public class List_Test extends TestCase {
     list.select( 1, 1 );
     assertEquals( 1, list.getSelectionCount() );
     assertEquals( 1, list.getSelectionIndices()[ 0 ] );
+    
+    // Test setSelection with selection listener
+    list.removeAll();
+    list.add( "item0" );
+    list.add( "item1" );
+    list.add( "item2" );
+    SelectionListener listener = new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        String msg 
+          = "SelectionEvent must not be fired when selecting programmatically";
+        fail( msg );
+      }
+    };
+    list.addSelectionListener( listener );
+    list.setSelection( 1 );
+    list.removeSelectionListener( listener );
   }
   
   public void testSelectionForMulti() {
