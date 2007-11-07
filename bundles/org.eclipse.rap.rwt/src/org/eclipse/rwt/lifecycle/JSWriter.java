@@ -352,11 +352,11 @@ public final class JSWriter {
    * to obtain the preserved value and only sets the new value if it has 
    * changed since it was preserved. 
    * 
-   * @param javaProperty the key used to ontain the preserved value
+   * @param javaProperty the key used to obtain the preserved value
    * @param jsProperty the client-side attribute to change
    * @param newValue the new values
    * 
-   * @return <code>true</code> if the new value differs from the perserved
+   * @return <code>true</code> if the new value differs from the preserved
    * value (meaning that JavaScript was written); <code>false</code> otherwise
    * 
    * @throws IOException if an I/O error occurs
@@ -383,19 +383,19 @@ public final class JSWriter {
    * the new value. Uses the specified <code>javaProperty</code> as a key
    * to obtain the preserved value and only sets the new value if it has 
    * changed since it was preserved. 
-   * <p>If the widget is rendered for the first time, there is no perserved 
+   * <p>If the widget is rendered for the first time, there is no preserved 
    * value present. In this case the <code>defValue</code> is taken into 
-   * account instad of the perserved value of the <code>javaProperty</code>. 
+   * account instead of the preserved value of the <code>javaProperty</code>. 
    * Therefore, the default value must match the initial value of the attribute
    * of the client-side widget. If there is no constant initial client-side
-   * value, resort the {@lnk #set(String,String,Object}.</p>
+   * value, resort the {@link #set(String,String,Object)}.</p>
    * 
-   * @param javaProperty the key used to ontain the preserved value
+   * @param javaProperty the key used to obtain the preserved value
    * @param jsProperty the client-side attribute to change
    * @param newValue the new values
    * @param defValue the default value
    * 
-   * @return <code>true</code> if the new value differs from the perserved
+   * @return <code>true</code> if the new value differs from the preserved
    * value (meaning that JavaScript was written); <code>false</code> otherwise
    * 
    * @throws IOException if an I/O error occurs
