@@ -43,16 +43,29 @@ import org.eclipse.swt.widgets.*;
 //      this also applies for other 'SPI's.
 public final class JSWriter {
 
-
   /**
    * A reference to the current widget manager on the client side.
+   * 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
    */
   public static JSVar WIDGET_MANAGER_REF = new JSVar( "wm" );
   
   /**
    * Reference to the widget of this JSWriter instance.
+   * 
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
    */
   public static JSVar WIDGET_REF = new JSVar( "w" );
+  
+  private static final JSVar TARGET_REF = new JSVar( "t" );
 
   private static final Object[] NULL_PARAMETER = new Object[] { null };
   private static final String NEW_WIDGET_PATTERN
@@ -64,7 +77,6 @@ public final class JSWriter {
     = Pattern.compile( "\\r\\n|\\r|\\n" );
   private static final String NEWLINE_ESCAPE = "\\\\n";
 
-  private static final JSVar TARGET_REF = new JSVar( "t" );
 
   private static final String WRITER_MAP
     = JSWriter.class.getName() + "#map";
@@ -72,7 +84,7 @@ public final class JSWriter {
     = JSWriter.class.getName() + "#hasWindowManager";
   private static final String CURRENT_WIDGET_REF
     = JSWriter.class.getName() + "#currentWidgetRef";
-  private static final String FORMAT_EMPTY = "";
+  
   private static final Map setterNames = new HashMap();
   private static final Map getterNames = new HashMap();
   private static final Map resetterNames = new HashMap();
@@ -295,8 +307,7 @@ public final class JSWriter {
     for( int i = 0; i < values.length; i++ ) {
       parameters[ i ] = Boolean.valueOf( values[ i ] );
     }
-    String pattern = createSetPatternForPrimitives( values.length,
-                                                    FORMAT_EMPTY );
+    String pattern = createSetPatternForPrimitives( values.length, "" );
     writeProperty( pattern, jsProperty, parameters );
   }
 
