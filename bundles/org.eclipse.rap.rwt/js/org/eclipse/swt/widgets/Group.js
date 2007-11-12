@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,34 +17,33 @@ qx.Class.define( "org.eclipse.swt.widgets.Group", {
 
   construct : function() {
     this.base( arguments );
-    this._getLabelObject().setMode( "html" );
-    this.addEventListener( "changeBackgroundColor",
-                           this._onChangeBackgroundColor );
+    this.rap_init();
   },
 
   members : {
     rap_init : function() {
+      // Make sure that the 'labelObject' is created
+      var labelObject = this.getLegendObject().getLabelObject(); 
+      if ( labelObject == null ) {
+        this.setLegend( "(empty)" );
+        this.setLegend( "" );
+      }
+      labelObject = this.getLegendObject().getLabelObject(); 
+      labelObject.setMode( qx.constant.Style.LABEL_MODE_HTML );
       this.addEventListener( "changeBackgroundColor",
-                             this._onChangeBackgroundColor );
+                             this._onChangeBackgroundColor,
+                             this );
     },
     
     rap_reset : function() {
       this.removeEventListener( "changeBackgroundColor",
-                             this._onChangeBackgroundColor );
+                             this._onChangeBackgroundColor,
+                             this );
     },
 
     _onChangeBackgroundColor : function( evt ) {
-      var group = evt.getTarget();
       var newColor = evt.getValue();
-      group.getLegendObject().setBackgroundColor( newColor );
-    },
-    
-    _getLabelObject : function() {
-      if ( this.getLegendObject().getLabelObject() == null ) {
-        this.setLegend( "(empty)" );
-        this.setLegend( "" );
-      }
-      return this.getLegendObject().getLabelObject();
+      this.getLegendObject().setBackgroundColor( newColor );
     }
   }
 });
