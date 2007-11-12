@@ -649,9 +649,9 @@ public final class JSWriter {
   }
 
   /**
-   * Dispose is used to dispose the widget of this {@link JSWriter} on the client
-   * side. As todays browser have several memory issues this will only dispose
-   * the widget if there are no pooling informations available.
+   * Dispose is used to dispose of the widget of this {@link JSWriter} on the 
+   * client side. As todays browser have several memory issues this will only 
+   * dispose of the widget if there are no pooling informations available.
    * 
    * @throws IOException if an I/O error occurs
    * 
