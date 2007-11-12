@@ -14,7 +14,6 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Image;
@@ -572,7 +571,7 @@ public class Shell extends Decorations {
    * @see Control#setFocus
    * @see Control#setVisible
    * @see Display#getActiveShell
-   * @see Decorations#setDefaultButton (not yet)
+   * <!-- @see Decorations#setDefaultButton -->
    * @see Shell#setDefaultButton(Button)
    * @see Shell#setActive
    * <!--@see Shell#forceActive-->
