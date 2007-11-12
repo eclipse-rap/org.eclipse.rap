@@ -44,7 +44,7 @@ public final class RWT {
   private static final String LOCALE = RWT.class.getName() + ".LOCALE";
 
   /**
-   * <p>This utility class helps to provide a similar approach for compile save
+   * <p>This utility class helps to provide a similar approach for compile safe
    * native language support than {@link org.eclipse.osgi.util.NLS NLS} does.
    * We can not use the original approach though, due to the nature of
    * server side environments, that have to deal with different languages
@@ -59,7 +59,7 @@ public final class RWT {
    *    public String MyMessage;
    *
    *    public static FooMessages get() {
-   *      return ( FootMessages )RWT.NLS.get( BUNDLE_NAME, FooMessages.class );
+   *      return ( FootMessages )RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME, FooMessages.class );
    *    }
    *  }
    * </pre>
@@ -83,17 +83,45 @@ public final class RWT {
     /**
      * Returns a NLS object for the given bundle and type. See
      * class description for usage information.
+     * The resource bundles read by this method have to be ISO 8859-1 encoded.
+     * This is according to the {@link java.util.Properties Properties} file
+     * specification. 
      * 
      * @param bundleName the bundle to load.
      * @param clazz the class of the NLS object to load.
      */
-    public static Object get( final String bundleName, 
-                              final Class clazz )
+    public static Object getISO8859_1Encoded( final String bundleName, 
+                                              final Class clazz )
     {
-      Object result = null;
       ClassLoader loader = clazz.getClassLoader();
       ResourceBundle bundle
         = ResourceBundle.getBundle( bundleName, getLocale(), loader );
+      return internalGet( bundle, clazz );
+    }
+
+    /**
+     * Returns a NLS object for the given bundle and type. See
+     * class description for usage information.
+     * The resource bundles read by this method have to be UTF-8 encoded. Note
+     * that this is not according to the {@link java.util.Properties Properties} 
+     * file specification and meant for a more convenient use. 
+     * 
+     * @param bundleName the bundle to load.
+     * @param clazz the class of the NLS object to load.
+     */
+    public static Object getUTF8Encoded( final String bundleName, 
+                                         final Class clazz )
+    {
+      ClassLoader loader = clazz.getClassLoader();
+      ResourceBundle bundle
+        = Utf8ResourceBundle.getBundle( bundleName, getLocale(), loader );
+      return internalGet( bundle, clazz );
+    }
+    
+    private static Object internalGet( final ResourceBundle bundle, 
+                                       final Class clazz )
+    {
+      Object result;
       synchronized( map ) {
         result = map.get( bundle );
         if( result == null ) {

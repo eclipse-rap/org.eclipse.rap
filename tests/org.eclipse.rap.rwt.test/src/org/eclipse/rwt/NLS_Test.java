@@ -30,10 +30,25 @@ public class NLS_Test extends TestCase {
     public String MyMessage;
 
     public static TestMessages get() {
-      return ( TestMessages )RWT.NLS.get( BUNDLE_NAME, TestMessages.class );
+      return ( TestMessages )RWT.NLS.getISO8859_1Encoded( BUNDLE_NAME,
+                                                          TestMessages.class );
     }
     
     private TestMessages() {
+    }
+  }
+  
+  final static class TestMessagesUTF8 {
+    private static final String BUNDLE_NAME = "org.eclipse.rwt.messages_utf8";
+    
+    public String MyMessage;
+    
+    public static TestMessagesUTF8 get() {
+      Class clazz = TestMessagesUTF8.class;
+      return ( TestMessagesUTF8 )RWT.NLS.getUTF8Encoded( BUNDLE_NAME, clazz );
+    }
+    
+    private TestMessagesUTF8() {
     }
   }
   
@@ -73,5 +88,18 @@ public class NLS_Test extends TestCase {
     assertEquals( "Meine Nachricht", TestMessages.get().MyMessage );
     
     assertSame( TestMessages.get(), TestMessages.get() );
+  }
+  
+  public void testNLS_UTF8() {
+    assertEquals( "My Message", TestMessagesUTF8.get().MyMessage );
+    
+    TestRequest request = ( TestRequest )ContextProvider.getRequest();
+    request.setLocale( Locale.ITALIAN );
+    assertEquals( "Il mio messaggio", TestMessagesUTF8.get().MyMessage );
+    
+    RWT.setLocale( Locale.GERMAN );
+    assertEquals( "Meine Nachricht", TestMessagesUTF8.get().MyMessage );
+    
+    assertSame( TestMessagesUTF8.get(), TestMessagesUTF8.get() );
   }
 }
