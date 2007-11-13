@@ -140,10 +140,16 @@ public final class RWT {
                   && Modifier.isPublic( modifiers ) 
                   && !Modifier.isStatic( modifiers ) )
               {
-                String value = bundle.getString( fieldArray[ i ].getName() );
-                if( value != null ) {
+                try {
+                  String value = bundle.getString( fieldArray[ i ].getName() );
+                  if( value != null ) {
+                    fieldArray[ i ].setAccessible( true );
+                    fieldArray[ i ].set( result, value );
+                  }
+                } catch( final MissingResourceException mre ) {
                   fieldArray[ i ].setAccessible( true );
-                  fieldArray[ i ].set( result, value );
+                  fieldArray[ i ].set( result, "" );
+                  mre.printStackTrace();
                 }
               }
             } catch( final Exception ex ) {
