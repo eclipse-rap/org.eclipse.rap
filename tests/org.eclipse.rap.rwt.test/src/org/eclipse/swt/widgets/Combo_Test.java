@@ -175,6 +175,55 @@ public class Combo_Test extends TestCase {
     }
   }
 	
+  public void testSelection() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.select( 0 );
+    assertEquals( "test", combo.getText() );
+    combo.removeAll();
+    assertEquals( "", combo.getText() );
+    combo.add( "foo" );
+    combo.select( 0 );
+    assertEquals( "foo", combo.getText() );
+  }
+
+  public void testSelection2() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.select( 0 );
+    assertEquals( "test", combo.getText() );
+    combo.remove( 0 );
+    assertEquals( "", combo.getText() );
+    combo.add( "foo" );
+    combo.select( 0 );
+    assertEquals( "foo", combo.getText() );
+  }
+
+  public void testSetTextSelect() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test2" );
+    combo.add( "test3" );
+    combo.setText( "foo" );
+    combo.select( 1 );
+    assertEquals( "test2", combo.getText() );
+  }
+  public void testRemoveAll() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "1" );
+    combo.add( "2" );
+    combo.removeAll();
+    assertEquals( 0, combo.getItems().length );
+  }
+  
   public void testDispose() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );

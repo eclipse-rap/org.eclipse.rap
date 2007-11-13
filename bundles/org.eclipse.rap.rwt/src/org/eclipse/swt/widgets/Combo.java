@@ -132,6 +132,19 @@ public class Combo extends Composite {
   public void select( final int selectionIndex ) {
     checkWidget();
     model.setSelection( selectionIndex );
+    // update text
+    updateText();
+  }
+
+  private void updateText() {
+    if((style & SWT.READ_ONLY) == 0) {
+      final int selectionIndex = getSelectionIndex();
+      if(selectionIndex != -1) {
+        setText( getItem( selectionIndex ) );
+      } else {
+        setText( "" );
+      }
+    }
   }
 
   /**
@@ -151,6 +164,7 @@ public class Combo extends Composite {
     if( index == model.getSelectionIndex() ) {
       model.setSelection( -1 );
     }
+    updateText();
   }
 
   /**
@@ -262,6 +276,7 @@ public class Combo extends Composite {
   public void remove( final int index ) {
     checkWidget();
     model.remove( index );
+    updateText();
   }
 
   /**
@@ -283,6 +298,7 @@ public class Combo extends Composite {
   public void remove( final int start, final int end ) {
     checkWidget();
     model.remove( start, end );
+    updateText();
   }
 
   /**
@@ -304,6 +320,7 @@ public class Combo extends Composite {
   public void remove( final String string ) {
     checkWidget();
     model.remove( string );
+    updateText();
   }
 
   /**
@@ -318,6 +335,8 @@ public class Combo extends Composite {
   public void removeAll() {
     checkWidget();
     model.removeAll();
+    // clear text
+    updateText();
   }
 
   /**
