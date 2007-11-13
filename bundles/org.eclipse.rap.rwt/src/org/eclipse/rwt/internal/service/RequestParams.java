@@ -91,6 +91,4 @@ public interface RequestParams {
   static final String SCROLL_X = "scrollX";
 
   static final String UIROOT = "uiRoot";
-  
-  static final String CLOSE_REQUESTED = "org.eclipse.swt.closeRequested";
 }

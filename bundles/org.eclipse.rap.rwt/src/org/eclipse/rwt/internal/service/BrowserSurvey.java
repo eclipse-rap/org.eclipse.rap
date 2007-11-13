@@ -65,6 +65,8 @@ public final class BrowserSurvey {
     if( servletName.startsWith( "/" ) ) {
       servletName = servletName.substring( 1 );
     }
+    // TODO [fappel]: check whether servletName has to be url encoded
+    //                in case the client has switched of cookies
     replacePlaceholder( buffer, "${servlet}", servletName );
     replacePlaceholder( buffer, "${fallbackUrl}", createURL() );
     replacePlaceholder( buffer, "${adminOrStartup}", adminOrStartup() );

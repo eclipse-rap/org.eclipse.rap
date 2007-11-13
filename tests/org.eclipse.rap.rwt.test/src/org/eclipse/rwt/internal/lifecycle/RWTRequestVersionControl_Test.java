@@ -13,90 +13,25 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture.TestRequest;
-import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.RWTFixture;
 
 
 public class RWTRequestVersionControl_Test extends TestCase {
   
-  private static final Integer VERSION_0 = new Integer( 0 );
-  private static final Integer VERSION_1 = new Integer( 1 );
-  private static final String ATTR_VERSION = RWTRequestVersionControl.VERSION;
+  public void testIsValid() {
+    assertTrue( RWTRequestVersionControl.isValid() );
+    Integer nextRequestId = RWTRequestVersionControl.nextRequestId();
+    assertFalse( RWTRequestVersionControl.isValid() );
+    Fixture.fakeRequestParam( RequestParams.REQUEST_COUNTER,
+                              nextRequestId.toString() );
+    assertTrue( RWTRequestVersionControl.isValid() );
+    Fixture.fakeRequestParam( RequestParams.REQUEST_COUNTER,
+                              "4711" );
+    assertFalse( RWTRequestVersionControl.isValid() );
+  }
 
-  public void testDetermine() {
-    RWTRequestVersionControl.determine();
-    
-    ISessionStore session = ContextProvider.getSession();
-    Integer current = ( Integer )session.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_0, current );
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    current = ( Integer )stateInfo.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_0, current );
-    
-    session.setAttribute( ATTR_VERSION, VERSION_1 );
-    RWTRequestVersionControl.determine();
-    current = ( Integer )session.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_1, current );
-    current = ( Integer )stateInfo.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_1, current );
-  }
-  
-  public void testIncrease() {
-    RWTRequestVersionControl.determine();
-    
-    ISessionStore session = ContextProvider.getSession();
-    Integer current = ( Integer )session.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_0, current );
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    current = ( Integer )stateInfo.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_0, current );
-    assertFalse( RWTRequestVersionControl.hasChanged() );
-    
-    RWTRequestVersionControl.increase();
-    current = ( Integer )session.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_1, current );
-    current = ( Integer )stateInfo.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_1, current );
-    
-    assertTrue( RWTRequestVersionControl.hasChanged() );
-  }
-  
-  public void testCheck() {
-    RWTRequestVersionControl.determine();
-    TestRequest request = ( TestRequest )ContextProvider.getRequest();
-    request.addParameter( RequestParams.REQUEST_COUNTER, "0" );
-    
-    assertTrue( RWTRequestVersionControl.check() );
-    
-    RWTRequestVersionControl.increase();
-    assertFalse( RWTRequestVersionControl.check() );
-  }
-  
-  public void testStore() {
-    RWTRequestVersionControl.determine();
-
-    ISessionStore session = ContextProvider.getSession();
-    Integer current = ( Integer )session.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_0, current );
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    current = ( Integer )stateInfo.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_0, current );
-    
-    RWTRequestVersionControl.increase();
-    current = ( Integer )session.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_1, current );
-    current = ( Integer )stateInfo.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_1, current );
-
-    session.setAttribute( ATTR_VERSION, null );
-    
-    RWTRequestVersionControl.store();
-    current = ( Integer )session.getAttribute( ATTR_VERSION );
-    assertEquals( VERSION_1, current );
-  }
-  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

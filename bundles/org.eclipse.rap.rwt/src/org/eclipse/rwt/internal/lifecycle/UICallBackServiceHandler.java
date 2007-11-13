@@ -29,12 +29,14 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class UICallBackServiceHandler implements IServiceHandler {
-  
-  private static final String ACTIVATION_IDS
-    = UICallBackServiceHandler.class.getName() + "ActivationIds";
-
   public final static String HANDLER_ID
     = UICallBackServiceHandler.class.getName();
+  
+  private static final String CALL_BACK_PATTERN
+    =   "org.eclipse.swt.Request.getInstance()." 
+      + "enableUICallBack( \"{0}\",\"{1}\",\"{2}\" );";
+  private static final String ACTIVATION_IDS
+    = UICallBackServiceHandler.class.getName() + "ActivationIds";
   
   private static String jsUICallBack;
   
@@ -465,14 +467,13 @@ public class UICallBackServiceHandler implements IServiceHandler {
     if(    isUICallBackActive()
         && !UICallBackManager.getInstance().isCallBackRequestBlocked() )
     {
+      String url = ContextProvider.getRequest().getServletPath().substring( 1 );
       Object[] param = new Object[] { 
-        ContextProvider.getRequest().getServletPath().substring( 1 ),
+        ContextProvider.getResponse().encodeURL( url ),
         IServiceHandler.REQUEST_PARAM,
         HANDLER_ID
       };
-      String callBackPattern =   "org.eclipse.swt.Request.getInstance()." 
-                               + "enableUICallBack( \"{0}\",\"{1}\",\"{2}\" );";
-      result = MessageFormat.format( callBackPattern, param );
+      result = MessageFormat.format( CALL_BACK_PATTERN, param );
     }
     return result;
   }

@@ -13,66 +13,31 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.service.ISessionStore;
 
 
 public class RWTRequestVersionControl {
-  
-  static final String VERSION = RWTRequestVersionControl.class + ".Version";
-  private static final String CHANGED 
-    = RWTRequestVersionControl.class + ".Changed";
+  private static final String VERSION
+    = RWTRequestVersionControl.class + ".Version";
 
-  private RWTRequestVersionControl() {
-    // prevent instance creation
-  }
-
-  public static void determine() {
+  public static boolean isValid() {
     ISessionStore session = ContextProvider.getSession();
     Integer version = ( Integer )session.getAttribute( VERSION );
-    if( version == null ) {
-      version = new Integer( 0 );
-      session.setAttribute( VERSION, version );
-    }
-    LifeCycleServiceHandler.initializeStateInfo();
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( VERSION, version );
-  }
-
-  public static void increase() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Integer version = ( Integer )stateInfo.getAttribute( VERSION );
-    Integer newVersion = new Integer( version.intValue() + 1 );
-    stateInfo.setAttribute( VERSION, newVersion );
-    ContextProvider.getSession().setAttribute( VERSION, newVersion );
-    stateInfo.setAttribute( CHANGED, Boolean.TRUE );
-  }
-
-  public static boolean hasChanged() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Boolean result = ( Boolean )stateInfo.getAttribute( CHANGED );
-    return result != null && result.booleanValue();
-  }
-
-  public static boolean check() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Integer version = ( Integer )stateInfo.getAttribute( VERSION );
     HttpServletRequest request = ContextProvider.getRequest();
-    String versionParam = request.getParameter( RequestParams.REQUEST_COUNTER );
-    return    versionParam == null 
-           || version.equals( Integer.valueOf( versionParam ) );
+    String requestId = request.getParameter( RequestParams.REQUEST_COUNTER );
+    boolean initialRequest = version == null && requestId == null;
+    boolean inValidVersionState =    version == null && requestId != null
+                                  || version != null && requestId == null;
+    return    !inValidVersionState
+           && ( initialRequest || version.toString().equals( requestId ) );
   }
 
-  public static void store() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Integer version = ( Integer )stateInfo.getAttribute( VERSION );
+  public static Integer nextRequestId() {
     ISessionStore session = ContextProvider.getSession();
-    session.setAttribute( VERSION, version );
+    Integer result = new Integer( new Object().hashCode() );
+    session.setAttribute( VERSION, result );
+    return result;
   }
-
-  public static Integer getVersion() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return ( Integer )stateInfo.getAttribute( VERSION );
-  }
-
 }

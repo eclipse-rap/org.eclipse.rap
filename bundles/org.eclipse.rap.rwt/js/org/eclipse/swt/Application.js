@@ -42,17 +42,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
       var id = req.getUIRootId();
       req.addParameter( id + ".bounds.width", String( width ) );
       req.addParameter( id + ".bounds.height", String( height ) );
-    },
-    
-    _sendCloseRequest : function() {
-      var req = org.eclipse.swt.Request.getInstance();
-      var request = new qx.io.remote.Request( req.getUrl(), 
-                                              qx.net.Http.METHOD_GET, 
-                                              qx.util.Mime.TEXT );
-      request.setAsynchronous( false );                                        
-      request.setParameter( "org.eclipse.swt.closeRequested", 
-                            req.getUIRootId() );
-      req._sendStandalone( request );
     }
   },
 
@@ -75,17 +64,6 @@ qx.Class.define( "org.eclipse.swt.Application", {
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
       req.send();
-    },
-
-    close : function( evt ) {
-      this.base( arguments );
-      // The closeRequest must be sent here even though the application might
-      // not be actually closed (when user hits cancel in confirmation dialog)
-      // When issuing the request in terminate() it may happen that the 
-      // restartRequest reaches the server *before* the closeRequest which
-      // leads to an unwanted "multiple clients warning" page
-      org.eclipse.swt.Application._sendCloseRequest();
-      return this._exitConfirmation;
     }
   }
 });

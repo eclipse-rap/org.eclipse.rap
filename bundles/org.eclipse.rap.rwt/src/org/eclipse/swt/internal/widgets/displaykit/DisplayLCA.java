@@ -41,7 +41,15 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
-
+  private final static String PATTERN_APP_STARTUP
+    =    "var req = org.eclipse.swt.Request.getInstance();" 
+       + "req.setUrl( \"{0}\" );"
+       + "req.setUIRootId( \"{1}\" );"
+       + "var app = new org.eclipse.swt.Application();" 
+       + "qx.core.Init.getInstance().setApplication( app );";
+  private final static String PATTERN_REQUEST_COUNTER
+    =   "var req = org.eclipse.swt.Request.getInstance();"
+      + "req.setRequestCounter( \"{0,number,#}\" );";
   private static final String DISPOSE_HANDLER_REGISTRY
     = "org.eclipse.rap.disposeHandlerRegistry";
   private static final JSVar DISPOSE_HANDLER_START
@@ -127,6 +135,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     } else {
       response.setContentType( HTML.CONTENT_TEXT_JAVASCRIPT_UTF_8 );
       out.write( "org.eclipse.swt.EventUtil.suspendEventHandling();" );
+      out.write( getRequestCounter() );
       disposeWidgets();
       writeTheme( display );
       RenderVisitor visitor = new RenderVisitor();
@@ -142,6 +151,11 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       out.write( "org.eclipse.swt.EventUtil.resumeEventHandling();" );
       markInitialized( display );
     }
+  }
+
+  private String getRequestCounter() {
+    Object[] param = new Object[] { RWTRequestVersionControl.nextRequestId() };
+    return MessageFormat.format( PATTERN_REQUEST_COUNTER, param );
   }
 
   private static void writeTheme( final Display display ) throws IOException {
@@ -283,19 +297,14 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     code.append( TextSizeDetermination.writeStartupJSProbe() );
     
     // application 
-    code.append( "var req = org.eclipse.swt.Request.getInstance();" ); 
-    code.append( "req.setUrl( \"{0}\" );" );
-    code.append( "req.setUIRootId( \"{1}\" );" );
-    code.append( "req.setRequestCounter( \"{2}\" );" );
-    code.append( "var app = new org.eclipse.swt.Application();" ); 
-    code.append( "qx.core.Init.getInstance().setApplication( app );" );
-    
+    String url = ContextProvider.getRequest().getServletPath().substring( 1 );
     Object[] param = new Object[] { 
-      ContextProvider.getRequest().getServletPath().substring( 1 ),
-      displayId,
-      RWTRequestVersionControl.getVersion()
+      ContextProvider.getResponse().encodeURL( url ),
+      displayId
     };
-    return MessageFormat.format( code.toString(), param );
+    code.append( MessageFormat.format( PATTERN_APP_STARTUP, param ) );
+    
+    return code.toString();
   }
   
   private static void disposeWidgets() throws IOException {

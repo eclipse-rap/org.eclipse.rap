@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     this._parameters = {};
     // instance variables that hold the essential request parameters
     this._uiRootId = "";
-    this._requestCounter = 0;
+    this._requestCounter;
     // Number of currently running or scheduled requests, used to determine when
     // to show the wait hint (e.g. hour-glass cursor)
     this._runningRequestCount = 0;
@@ -133,7 +133,9 @@ qx.Class.define( "org.eclipse.swt.Request", {
       // set mandatory parameters; do this after regular params to override them
       // in case of conflict
       this._parameters[ "uiRoot" ] = this._uiRootId;
-      this._parameters[ "requestCounter" ] = this._requestCounter;
+      if( this._requestCounter != null ) {
+        this._parameters[ "requestCounter" ] = this._requestCounter;
+      }
 
       // create and configure request object
       var request = this._createRequest();
