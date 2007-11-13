@@ -106,11 +106,16 @@ public class RenderDispose_Test extends TestCase {
       }
     } );
     lifeCycle.execute();
-    String expected
+    String expectedStart
       =   "org.eclipse.swt.EventUtil.suspendEventHandling();"
-        + "qx.ui.core.Widget.flushGlobalQueues();"
+        + "var req = org.eclipse.swt.Request.getInstance();"
+        + "req.setRequestCounter(";
+    String expectedEnd
+      =   ");qx.ui.core.Widget.flushGlobalQueues();"
         + "org.eclipse.swt.EventUtil.resumeEventHandling();";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    String allMarkup = Fixture.getAllMarkup();
+    assertTrue( allMarkup.startsWith( expectedStart ) );
+    assertTrue( allMarkup.endsWith( expectedEnd ) );
   }
 
   protected void setUp() throws Exception {
