@@ -80,7 +80,8 @@ public class ControlsDemo implements IEntryPoint {
       new ZOrderTab( topFolder ),
       new FocusTab( topFolder ),
       new ProgressBarTab( topFolder ),
-      new ErrorHandlingTab( topFolder )
+      new ErrorHandlingTab( topFolder ),
+      new NLSTab( topFolder )
     };
     tabs[ 0 ].createContents();
     topFolder.setSelection( 0 );

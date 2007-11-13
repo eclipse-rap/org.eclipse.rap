@@ -64,6 +64,7 @@ public class TableTab extends ExampleTab {
     createBgColorButton();
     createFontChooser();
     createAddItemsButton();
+    createInsertItemButton();
     createSelectItemButton();
     createDisposeFirstColumnButton();
     createDisposeSelectionButton();
@@ -265,6 +266,21 @@ public class TableTab extends ExampleTab {
           for( int i = 0; i < count; i++ ) {
             addItem();
           }
+        }
+      }
+    } );
+  }
+
+  private void createInsertItemButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Insert On Selected Item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        int[] selectionIndices = getTable().getSelectionIndices();
+        if( selectionIndices.length > 0 ) {
+          int index = selectionIndices[ 0 ];
+          TableItem item = new TableItem( getTable(), SWT.NONE, index );
+          updateItem( item );
         }
       }
     } );

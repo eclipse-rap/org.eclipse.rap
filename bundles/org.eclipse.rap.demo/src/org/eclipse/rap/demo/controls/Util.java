@@ -14,7 +14,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-public class Util {
+public final class Util {
 
   private Util() {
   }
