@@ -136,17 +136,6 @@ public class Combo extends Composite {
     updateText();
   }
 
-  private void updateText() {
-    if((style & SWT.READ_ONLY) == 0) {
-      final int selectionIndex = getSelectionIndex();
-      if(selectionIndex != -1) {
-        setText( getItem( selectionIndex ) );
-      } else {
-        setText( "" );
-      }
-    }
-  }
-
   /**
    * Deselects the item at the given zero-relative index in the receiver's
    * list.  If the item at the index was already deselected, it remains
@@ -825,6 +814,17 @@ public class Combo extends Composite {
       return null;
     }
     return result;
+  }
+
+  private void updateText() {
+    if( ( style & SWT.READ_ONLY ) == 0 ) {
+      int selectionIndex = getSelectionIndex();
+      if( selectionIndex != -1 ) {
+        setText( getItem( selectionIndex ) );
+      } else {
+        setText( "" );
+      }
+    }
   }
 
   private Rectangle getPadding() {
