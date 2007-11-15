@@ -133,26 +133,34 @@ qx.Class.define( "org.eclipse.swt.Request", {
       // set mandatory parameters; do this after regular params to override them
       // in case of conflict
       this._parameters[ "uiRoot" ] = this._uiRootId;
-      if( this._requestCounter != null ) {
-        this._parameters[ "requestCounter" ] = this._requestCounter;
+      if( this._requestCounter == -1 ) {
+        // TODO [fappel]: This is a workaround that prevents sending a request
+        // without a valid request id. Needed for background proccessing.
+        this._inDelayedSend = false;
+        this.send();
+      } else {
+        if( this._requestCounter != null ) {
+          this._parameters[ "requestCounter" ] = this._requestCounter;
+          this._requestCounter = -1;
+        }
+  
+        // create and configure request object
+        var request = this._createRequest();
+        // copy the _parameters map which was filled during client interaction
+        // to the request
+        this._inDelayedSend = false;
+        this._copyParameters( request );
+        this._logSend();
+        this._runningRequestCount++;
+        // notify user when request takes longer than 500 ms
+        if( this._runningRequestCount === 1 ) {
+          qx.client.Timer.once( this._showWaitHint, this, 500 );
+        }
+        // queue request to be sent
+        request.send();
+        // clear the parameter list
+        this._parameters = {};
       }
-
-      // create and configure request object
-      var request = this._createRequest();
-      // copy the _parameters map which was filled during client interaction to
-      // the request
-      this._inDelayedSend = false;
-      this._copyParameters( request );
-      this._logSend();
-      this._runningRequestCount++;
-      // notify user when request takes longer than 500 ms
-      if( this._runningRequestCount === 1 ) {
-        qx.client.Timer.once( this._showWaitHint, this, 500 );
-      }
-      // queue request to be sent
-      request.send();
-      // clear the parameter list
-      this._parameters = {};
     },
     
     _copyParameters : function( request ) {
@@ -296,7 +304,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
         }
         var failedParameters = failedRequest.getParameters();
         for( var parameterName in failedParameters ) {
-          request.setParameter( parameterName, failedParameters[ parameterName ] );
+          request.setParameter( parameterName,
+                                failedParameters[ parameterName ] );
         }
         request.setData( failedRequest.getData() );
         this._restartRequest( request );

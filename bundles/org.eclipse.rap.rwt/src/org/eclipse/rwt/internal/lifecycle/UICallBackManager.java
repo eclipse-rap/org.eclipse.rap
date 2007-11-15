@@ -49,7 +49,9 @@ public class UICallBackManager
     }
 
     public void run() {
-      runnable.run();
+      if( runnable != null ) {
+        runnable.run();
+      }
     }
   }
   
