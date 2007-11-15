@@ -326,7 +326,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       }
       this._columnArea.setWidth( this.getWidth() );
       this._columnArea.setHeight( this.getColumnAreaHeight() );
-      this._tree.setWidth( this.getWidth() );
+      this._tree.setWidth( this.getWidth() - 4 );
       this._tree.setHeight( this.getHeight() - this.getColumnAreaHeight() );
       this._tree.setTop( this.getColumnAreaHeight() );
       
