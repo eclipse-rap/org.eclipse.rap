@@ -195,11 +195,11 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         this._updateSelectedItemState();
         if( !this.__clicksSuspended ) {
           this._suspendClicks();
+          var wm = org.eclipse.swt.WidgetManager.getInstance();
+          var id = wm.findIdByWidget( this );
           var req = org.eclipse.swt.Request.getInstance();
           req.addParameter( id + ".selection", this._getSelectionIndices() );
           if( this._changeSelectionNotification == "action" ) {
-            var wm = org.eclipse.swt.WidgetManager.getInstance();
-            var id = wm.findIdByWidget( this );
             req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
             req.send();
           }
