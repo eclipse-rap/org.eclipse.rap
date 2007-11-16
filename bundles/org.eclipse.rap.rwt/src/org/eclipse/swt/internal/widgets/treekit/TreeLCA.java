@@ -99,9 +99,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-
-
-
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
@@ -182,7 +179,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     String left = WidgetLCAUtil.readPropertyValue( tree, "scrollLeft" );
     String top = WidgetLCAUtil.readPropertyValue( tree, "scrollTop" );
     if( left != null && top != null ) {
-      ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+      final ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
       adapter.setScrollLeft( Integer.valueOf( left ).intValue() );
       int oldScrollTop = adapter.getScrollTop();
       int newScrollTop = Integer.valueOf( top ).intValue();
@@ -191,7 +188,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
         ProcessActionRunner.add( new Runnable() {
 
           public void run() {
-            WidgetUtil.getLCA( tree ).doRedrawFake( tree );
+            adapter.checkAllData( tree );
           }
           
         });

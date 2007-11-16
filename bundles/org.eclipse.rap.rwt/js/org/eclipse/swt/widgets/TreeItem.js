@@ -88,9 +88,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     },
     
     // TODO: [bm] needed to override the property setters to apply color to label too
-     setTextColor : function ( value ) {
+    setTextColor : function ( value ) {
       if( typeof value == "undefined" ) return;
-      this.getLabelObject().setTextColor( value );
+      // TODO: see updateItem() for reasons
+      //this.getLabelObject().setTextColor( value );
       // we have to go through each column
       for(var i=0; i<this._colLabels.length; i++) {
        this._colLabels[ i ].setTextColor( value );
@@ -268,11 +269,17 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
               this.setLabel( this._texts[ col ] );
               this.setImage( this._images[ col ] );
               if( this._backgrounds && this._backgrounds[ col ] ) {
+              	// TODO [bm] disabled due to qooxdoo bug that selection disappears
+              	// when using background color as color here has a higher priority
+              	// then color in appearance + state
+              	/*
               	this.getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
               	this.getIndentObject().setBackgroundColor( this._backgrounds[ col ] );
+                */
               }
               if( this._foregrounds && this._foregrounds[ col ] ) {
-              	this.getLabelObject().setTextColor( this._foregrounds[ col ]);
+              	// TODO: [bm] disabled for the same reason
+              	// this.getLabelObject().setTextColor( this._foregrounds[ col ]);
               }
               if( this._fonts && this._fonts[ col ] ) {
               	// TODO

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 public interface ITreeAdapter {
@@ -21,5 +22,6 @@ public interface ITreeAdapter {
   public abstract void setScrollLeft( final int left );
   public int getScrollTop();
   public int getScrollLeft();
-  public boolean isMaterialized( final TreeItem item );
+  public boolean isCached( final TreeItem item );
+  public void checkAllData( Tree tree );
 }

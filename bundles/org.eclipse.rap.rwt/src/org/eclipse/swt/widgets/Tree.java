@@ -151,52 +151,19 @@ public class Tree extends Composite {
       return Tree.this.scrollLeft;
     }
     
-    public boolean isMaterialized( final TreeItem item ) {
-      return item.isMaterialized();
+    public boolean isCached( final TreeItem item ) {
+      return item.isCached();
     }
 
-//    public int getInnerHeight() {
-//      // faster implementation? cache?
-//      innerHeight = 0;
-//      for( int i = 0; i < itemHolder.size(); i++ ) {
-//        TreeItem item = ( TreeItem )itemHolder.getItem( i );
-//        if(item.getExpanded()) {
-//          innerHeight += item.getInnerHeight();
-//        } else {
-//          innerHeight += 16;
-//        }
-//      }
-//      innerHeight += Tree.this.getItemCount()*16;
-//      return innerHeight;
-//    }
+    public void checkAllData( Tree tree ) {
+      Tree.checkAllData( tree );
+    }
+
   }
   
   private static final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
-      final Tree tree = ( Tree )event.widget;
-      WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-        public boolean doVisit( Widget widget ) {
-          boolean result = true;
-          if( widget instanceof TreeItem ) { // ignore tree
-            TreeItem item = ( TreeItem )widget;
-            result = item.getExpanded();
-            int index;
-            TreeItem parentItem = item.getParentItem();
-            if( parentItem != null ) {
-              index = parentItem.indexOf( item );
-            } else {
-              index = tree.indexOf( item );
-            }
-            
-            if( !item.cached && tree.isItemVisible( item ) ) {
-                tree.checkData( item, index );
-            }
-          }
-          return result;
-        }
-      };
-      WidgetTreeVisitor.accept( tree, visitor );
-
+      checkAllData( ( Tree )event.widget );
     }
   }
   
@@ -204,7 +171,7 @@ public class Tree extends Composite {
     boolean result = false;
     final int itemPosition = item.getBounds(0, false).y;
     ITreeAdapter adapter = this.treeAdapter;
-    if( itemPosition >= adapter.getScrollTop() && itemPosition <= ( adapter.getScrollTop() + this.getSize().y ) ) {
+    if( itemPosition >= adapter.getScrollTop() -10 && itemPosition <= ( adapter.getScrollTop() + this.getSize().y ) ) {
       TreeItem parentItem = item.getParentItem();
       if( parentItem != null ) {
         if (parentItem.getExpanded() ) {
@@ -1511,9 +1478,32 @@ public class Tree extends Composite {
   //////////////////
   // Helping methods
 
+  static void checkAllData( final Tree tree ) {
+    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+      public boolean doVisit( Widget widget ) {
+        boolean result = true;
+        if( widget instanceof TreeItem ) { // ignore tree
+          TreeItem item = ( TreeItem )widget;
+          result = item.getExpanded();
+          int index;
+          TreeItem parentItem = item.getParentItem();
+          if( parentItem != null ) {
+            index = parentItem.indexOf( item );
+          } else {
+            index = tree.indexOf( item );
+          }
+          
+          if( !item.isCached() && tree.isItemVisible( item ) ) {
+              tree.checkData( item, index );
+          }
+        }
+        return result;
+      }
+    };
+    WidgetTreeVisitor.accept( tree, visitor );
+  }
+  
   final void checkData( final TreeItem item, final int index ) {
-    // TODO [fappel]: This implementation may has to be changed, once that
-    //                real virtual behavior is in place.
     if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
       if( currentItem == null ) {
         currentItem = item;

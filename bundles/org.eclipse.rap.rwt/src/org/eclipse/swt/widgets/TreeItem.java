@@ -53,7 +53,7 @@ public class TreeItem extends Item {
   Font[] cellFonts;
   int depth;
   private int index;
-  protected boolean cached;
+  /* package */ boolean cached;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -524,8 +524,7 @@ public class TreeItem extends Item {
         && cellBackgrounds[ columnIndex ].equals( value ) )
       return;
     cellBackgrounds[ columnIndex ] = value;
-//    if( ( parent.style & SWT.VIRTUAL ) != 0 )
-//      cached = true;
+    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
   /**
@@ -559,7 +558,7 @@ public class TreeItem extends Item {
     if (cellFonts [columnIndex] == value) return;
     if (cellFonts [columnIndex] != null && cellFonts [columnIndex].equals (value)) return;
     cellFonts [columnIndex] = value;
-//    if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
   
   /**
@@ -595,7 +594,7 @@ public class TreeItem extends Item {
         && cellForegrounds[ columnIndex ].equals( value ) )
       return;
     cellForegrounds[ columnIndex ] = value;
-    // if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
   /**
@@ -621,6 +620,7 @@ public class TreeItem extends Item {
   public void setFont( final Font font ) {
     checkWidget();
     this.font = font;
+    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
   /**
@@ -681,7 +681,7 @@ public class TreeItem extends Item {
       return;
     }
     background = value;
-    // if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
   /**
@@ -761,7 +761,7 @@ public class TreeItem extends Item {
       return;
     }
     foreground = value;
-//    if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
   /**
@@ -780,6 +780,7 @@ public class TreeItem extends Item {
     if( ( parent.getStyle() & SWT.CHECK ) != 0 ) {
       this.checked = checked;
     }
+    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
   /**
@@ -820,7 +821,7 @@ public class TreeItem extends Item {
       return;
     }
     grayed = value;
-// if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
 
   /**
@@ -875,14 +876,14 @@ public class TreeItem extends Item {
    */
   public String getText() {
     checkWidget();
-    if(!isMaterialized()) {
-      parent.checkData( this, this.index );
-    }
+//    if(!isCached()) {
+//      parent.checkData( this, this.index );
+//    }
     return super.getText();
   }
   
   String getText (int columnIndex, boolean checkData) {
-    if(checkData && !isMaterialized()) parent.checkData( this, this.index );
+//    if(checkData && !isCached()) parent.checkData( this, this.index );
     int validColumnCount = Math.max (1, parent.columnHolder.size());
     if (!(0 <= columnIndex && columnIndex < validColumnCount)) return "";   //$NON-NLS-1$
     if (columnIndex == 0) return super.getText ();  /* super is intentional here */
@@ -941,7 +942,7 @@ public class TreeItem extends Item {
       } else {
           texts [columnIndex] = value;        
       }
-      if ((parent.style & SWT.VIRTUAL) != 0) markMaterialized();
+//      if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
   
   /**
@@ -959,7 +960,7 @@ public class TreeItem extends Item {
    */
   public void setText( final String text ) {
     super.setText( text );
-    if ((parent.style & SWT.VIRTUAL) != 0) markMaterialized();
+//    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
   
   /**
@@ -1009,7 +1010,7 @@ public class TreeItem extends Item {
   }
   
   Image getImage (int columnIndex, boolean checkData) {
-//      if (checkData && !parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
+//      if( checkData ) parent.checkData( this, this.index );
       int validColumnCount = Math.max (1, parent.columnHolder.size());
       if (!(0 <= columnIndex && columnIndex < validColumnCount)) return null;
       if (columnIndex == 0) return super.getImage (); /* super is intentional here */
@@ -1062,6 +1063,7 @@ public class TreeItem extends Item {
         images = new Image[ columnCount ];
       }
     }
+    if ((parent.style & SWT.VIRTUAL) != 0) cached = false;
   }
 
   /**
@@ -1173,7 +1175,7 @@ public class TreeItem extends Item {
       } else {
           images [columnIndex] = value;
       }
-//      if ((parent.style & SWT.VIRTUAL) != 0) cached = true;
+      if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
   
   /**
@@ -1368,23 +1370,10 @@ public class TreeItem extends Item {
   }
 
 
-  /* package */ void markMaterialized() {
-//    Widget parentWidget;
-//    if( parentItem != null ) {
-//      parentWidget = parentItem;
-//    } else {
-//      parentWidget = parent;
-//    }
-//    if((parent.style & SWT.VIRTUAL) != 0) {
-//      ItemHolder.insertItem( parentWidget, this, index );
-//    }
-    setData("materialized", Boolean.TRUE );
-  }
-  
-  /* package */ boolean isMaterialized() {
+  /* package */ boolean isCached() {
     boolean result = true;
     if((parent.getStyle() & SWT.VIRTUAL) != 0) {
-      result = getData("materialized") != null;
+      result = cached;
     }
     return result;
   }

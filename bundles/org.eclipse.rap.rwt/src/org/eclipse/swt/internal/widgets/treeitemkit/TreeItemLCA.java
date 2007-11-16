@@ -51,7 +51,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     final Tree tree = treeItem.getParent();
     ITreeAdapter treeadapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
-    if(treeadapter.isMaterialized( treeItem )) {
+    if(treeadapter.isCached( treeItem )) {
       ItemLCAUtil.preserve( treeItem );
       preserveFont( treeItem );
       adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
@@ -70,7 +70,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       
     }
     adapter.preserve( PROP_MATERIALIZED,
-                      Boolean.valueOf( treeadapter.isMaterialized( treeItem )) );
+                      Boolean.valueOf( treeadapter.isCached( treeItem )) );
   }
 
   public void readData( final Widget widget ) {
@@ -112,7 +112,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     // [bm] order is important, images needs to be written before texts
     Tree tree = treeItem.getParent();
     ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-    if(adapter.isMaterialized( treeItem )) {
+    if(adapter.isCached( treeItem )) {
       writeImages( treeItem );
       writeTexts( treeItem );
       writeFont( treeItem );
@@ -136,7 +136,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
         writer.set( PROP_MATERIALIZED,
                     "materialized",
-                    Boolean.valueOf( adapter.isMaterialized( treeItem ) ));
+                    Boolean.valueOf( adapter.isCached( treeItem ) ));
     }
   }
 
