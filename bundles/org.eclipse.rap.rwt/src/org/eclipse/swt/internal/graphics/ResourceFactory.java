@@ -86,7 +86,7 @@ public final class ResourceFactory {
     validateFontParams( name, height );
     int checkedStyle = checkFontStyle( style );
     Font result;
-    Integer key = new Integer( name.hashCode() ^ height ^ style );
+    Integer key = new Integer( name.hashCode() ^ ( height << 2 ) ^ style );
     synchronized( Font.class ) {
       result = ( Font )fonts.get( key );
       if( result == null ) {
