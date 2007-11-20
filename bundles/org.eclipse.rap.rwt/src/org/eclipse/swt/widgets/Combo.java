@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -55,7 +56,7 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  * @see List
  */
 // TODO [rh] SWT sends an SWT.Modify event when selection is changed or items
-//      are aded/removed
+//      are added/removed
 public class Combo extends Composite {
 
   private static final int DROP_DOWN_BUTTON_WIDTH = 14;
@@ -286,8 +287,15 @@ public class Combo extends Composite {
    */
   public void remove( final int start, final int end ) {
     checkWidget();
+    if( ( style & SWT.READ_ONLY ) == 0) {
+      String[] items = model.getItems();
+      for( int i = start; i < end; i++ ) {
+        if(text.equals( items[i] )) {
+          text = "";
+        }
+      }
+    }
     model.remove( start, end );
-    updateText();
   }
 
   /**
@@ -309,7 +317,6 @@ public class Combo extends Composite {
   public void remove( final String string ) {
     checkWidget();
     model.remove( string );
-    updateText();
   }
 
   /**
@@ -323,9 +330,8 @@ public class Combo extends Composite {
    */
   public void removeAll() {
     checkWidget();
+    text = "";
     model.removeAll();
-    // clear text
-    updateText();
   }
 
   /**

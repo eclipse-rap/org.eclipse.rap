@@ -177,7 +177,7 @@ public class Combo_Test extends TestCase {
 	
   public void testSelection() {
     Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
     combo.add( "test" );
     combo.select( 0 );
@@ -191,8 +191,19 @@ public class Combo_Test extends TestCase {
 
   public void testSelection2() {
     Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.select( 0 );
+    assertEquals( "test", combo.getText() );
+    combo.remove( 0 );
+    // XXX: [bm] normal swt windows behavior: calling removeAll clears textfield,
+    // just removing the item in question leaves the text - should we support this?
+//    assertEquals( "test", combo.getText() );
+    combo.add( "foo" );
+    combo.select( 0 );
+    assertEquals( "foo", combo.getText() );
+    combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "test" );
     combo.select( 0 );
     assertEquals( "test", combo.getText() );
@@ -201,6 +212,49 @@ public class Combo_Test extends TestCase {
     combo.add( "foo" );
     combo.select( 0 );
     assertEquals( "foo", combo.getText() );
+  }
+
+  public void testSelection3() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.setText( "foo" );
+    combo.removeAll();
+    assertEquals( "", combo.getText() );
+    combo = new Combo( shell, SWT.READ_ONLY );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.setText( "foo" );
+    combo.removeAll();
+    assertEquals( "", combo.getText() );
+    combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 1 );
+    combo.remove( 1 );
+    assertEquals( "", combo.getText() );
+    combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.select( 1 );
+    combo.setText( "foo" );
+    combo.remove( 1 );
+    assertEquals( "", combo.getText() );
+    combo.removeAll();
+    combo = new Combo( shell, SWT.NONE );
+    combo.add( "test" );
+    combo.add( "test1" );
+    combo.add( "test2" );
+    combo.add( "test3" );
+    combo.select( 1 );
+    combo.remove( 1, 3 );
+    assertEquals( "", combo.getText() );
   }
 
   public void testSetTextSelect() {
