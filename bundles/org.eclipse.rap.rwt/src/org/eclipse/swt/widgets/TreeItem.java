@@ -54,6 +54,7 @@ public class TreeItem extends Item {
   int depth;
   private int index;
   /* package */ boolean cached;
+  /* package */  int flatIndex;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -243,6 +244,7 @@ public class TreeItem extends Item {
     int columnCount = parent.columnHolder.size();
     texts = new String[ columnCount ];
     images = new Image[ columnCount ];
+    parent.updateFlatIndices();
   }
 
   public Object getAdapter( final Class adapter ) {
@@ -312,6 +314,7 @@ public class TreeItem extends Item {
     checkWidget();
     if( !expanded || getItemCount() > 0 ) {
       this.expanded = expanded;
+      parent.updateFlatIndices();
     }
   }
 
@@ -391,18 +394,13 @@ public class TreeItem extends Item {
 
       int left = imageBounds.x + ( depth+1 * INDENT_WIDTH );
       int top = 0;
-      if( parentItem != null ) {
-        final Rectangle parentItemBounds = parentItem.getBounds( columnIndex );
-        top += parentItemBounds.y + 16; //parentItemBounds.height;
-//      } else {
-      }
-      top += index * height; // TODO: [bm] go trough all elements to gain height?
+      top = flatIndex * height - parent.scrollTop;
       result = new Rectangle( left, top, width, height );
     }
     return result;
   }
 
-	private int getImageGap( final int index ) {
+  private int getImageGap( final int index ) {
     int result = 0;
     Image image = getImage( index );
     if( image != null ) {

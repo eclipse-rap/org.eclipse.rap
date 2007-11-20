@@ -8,9 +8,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -586,6 +591,50 @@ public class TreeItem_Test extends TestCase {
     assertTrue( ":1p", bounds2.width >= stringExtent.x + imageBounds.width
                        && bounds2.height >= Math.max( stringExtent.y,
                                                       imageBounds.height ) );
+  }
+  
+  public void testGetBoundsII() {
+    final Rectangle NULL_RECT = new Rectangle( 0, 0, 0, 0 );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem rootItem = new TreeItem( tree, 0 );
+    TreeItem subItem = new TreeItem( rootItem, 0 );
+    TreeItem rootItem2 = new TreeItem( tree, 0 );
+    Rectangle b1 = rootItem.getBounds();
+    Rectangle b2 = rootItem2.getBounds();
+    assertTrue( b2.y > b1.y );
+    assertEquals( NULL_RECT, subItem.getBounds() );
+    rootItem.setExpanded( true );
+    assertTrue( subItem.getBounds().y >= rootItem.getBounds().y
+                                         + rootItem.getBounds().height );
+    assertTrue( rootItem2.getBounds().y >= subItem.getBounds().y
+                                           + subItem.getBounds().height );
+  }
+
+  public void testGetBoundsIII() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem rootItem = new TreeItem( tree, 0 );
+    TreeItem rootItem2 = new TreeItem( tree, 0 );
+    TreeItem rootItem3 = new TreeItem( tree, 0 );
+    Tree.checkAllData( tree );
+    assertEquals( 0, rootItem.getBounds().y );
+    assertEquals( 16, rootItem2.getBounds().y );
+    assertEquals( 32, rootItem3.getBounds().y );
+    
+    RWTFixture.fakeNewRequest();
+    String treeId = WidgetUtil.getId( tree );
+    Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
+    Fixture.fakeRequestParam( treeId + ".scrollTop", "32" );
+    new RWTLifeCycle().execute();
+    
+    RWTFixture.fakeUIThread();
+    assertEquals( -32, rootItem.getBounds().y );
+    assertEquals( -16, rootItem2.getBounds().y );
+    assertEquals( 0, rootItem3.getBounds().y );
+    RWTFixture.removeUIThread();
   }
   
   protected void setUp() throws Exception {

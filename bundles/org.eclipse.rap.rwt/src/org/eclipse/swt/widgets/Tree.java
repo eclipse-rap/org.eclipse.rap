@@ -92,7 +92,7 @@ public class Tree extends Composite {
   private final TreeListener expandListener;
   private TreeItem currentItem;
   private ITreeAdapter treeAdapter;
-  private int scrollTop, scrollLeft;
+  /* package*/ int scrollTop, scrollLeft;
   
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
@@ -170,8 +170,7 @@ public class Tree extends Composite {
   private boolean isItemVisible(TreeItem item) {
     boolean result = false;
     final int itemPosition = item.getBounds(0, false).y;
-    ITreeAdapter adapter = this.treeAdapter;
-    if( itemPosition >= adapter.getScrollTop() -10 && itemPosition <= ( adapter.getScrollTop() + this.getSize().y ) ) {
+    if( itemPosition >= 0 && itemPosition <= this.getSize().y ) {
       TreeItem parentItem = item.getParentItem();
       if( parentItem != null ) {
         if (parentItem.getExpanded() ) {
@@ -187,28 +186,17 @@ public class Tree extends Composite {
   private static final class ExpandListener extends TreeAdapter {
     public void treeExpanded( final TreeEvent event ) {
       Tree tree = ( Tree )event.widget;
-      TreeItem item = ( TreeItem )event.item;
-      TreeItem[] children = item.getItems();
-      for( int i = 0; i < children.length; i++ ) {
-        // only check visible items
-        TreeItem child = children[i];
-        if(tree.isItemVisible( child )) {
-          checkChildData( tree, child );
-        }
-      }
+      tree.updateFlatIndices();
+//      TreeItem item = ( TreeItem )event.item;
+      // TODO: [bm] only update this subtree
+      checkAllData( tree );
     }
 
-    
-    private void checkChildData( final Tree tree, final TreeItem item ) {
-      int index;
-      final TreeItem parentItem = item.getParentItem();
-      if( parentItem == null ) {
-        index = tree.indexOf( item );
-      } else {
-        index = parentItem.indexOf( item );
-      }
-      tree.checkData( item, index );
+    public void treeCollapsed( final TreeEvent event ) {
+      Tree tree = ( Tree )event.widget;
+      tree.updateFlatIndices();
     }
+
   }
 
   /**
@@ -292,8 +280,6 @@ public class Tree extends Composite {
   }
   
   void setItemCount( final int itemCount, final TreeItem parent ) {
-    // TODO [fappel]: This implementation may has to be changed, once that
-    //                real virtual behavior is in place.
     int oldItemCount;
     if( parent == null ) {
       oldItemCount = getItemCount();
@@ -302,7 +288,6 @@ public class Tree extends Composite {
     }
     int newItemCount = Math.max( 0, itemCount );
     if( newItemCount != oldItemCount ) {
-//      boolean isVirtual = ( style & SWT.VIRTUAL ) != 0;
       TreeItem[] items;
       if( parent == null ) {
         items = getItems();
@@ -1480,6 +1465,9 @@ public class Tree extends Composite {
 
   static void checkAllData( final Tree tree ) {
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+      
+      int flatIndex = 0;
+      
       public boolean doVisit( Widget widget ) {
         boolean result = true;
         if( widget instanceof TreeItem ) { // ignore tree
@@ -1492,7 +1480,8 @@ public class Tree extends Composite {
           } else {
             index = tree.indexOf( item );
           }
-          
+          item.flatIndex = flatIndex;
+          flatIndex++;
           if( !item.isCached() && tree.isItemVisible( item ) ) {
               tree.checkData( item, index );
           }
@@ -1503,6 +1492,26 @@ public class Tree extends Composite {
     WidgetTreeVisitor.accept( tree, visitor );
   }
   
+  // TODO: performance impact - replace this with logic to only partly
+  // update the flat indices when there are changes in the visibility hierarchy
+  // like new items, removed items, expand/
+  /* package */ void updateFlatIndices() {
+    WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
+      
+      int flatIndex = 0;
+      
+      public boolean doVisit( Widget widget ) {
+        boolean result = true;
+        if( widget instanceof TreeItem ) { // ignore tree
+          TreeItem item = ( TreeItem )widget;
+          item.flatIndex = flatIndex;
+          flatIndex++;
+        }
+        return result;
+      }
+    };
+    WidgetTreeVisitor.accept( this, visitor );
+  }
   final void checkData( final TreeItem item, final int index ) {
     if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
       if( currentItem == null ) {
