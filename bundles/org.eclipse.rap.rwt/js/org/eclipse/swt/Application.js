@@ -64,6 +64,11 @@ qx.Class.define( "org.eclipse.swt.Application", {
       org.eclipse.swt.Application._appendWindowSize();
       var req = org.eclipse.swt.Request.getInstance();
       req.send();
+    },
+    
+    close : function( evt ) {
+      this.base( arguments );
+      return this._exitConfirmation;
     }
   }
 });
