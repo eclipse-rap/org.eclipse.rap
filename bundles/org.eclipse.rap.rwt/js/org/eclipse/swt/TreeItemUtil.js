@@ -30,7 +30,55 @@ qx.Class.define( "org.eclipse.swt.TreeItemUtil", {
     	
     	var w = new org.eclipse.swt.widgets.TreeItem( realParent, tree );
     	wm.add( w, widgetId, false );
+    	
+    	this.hijackTreeItemSelection( w );
+    },
+    
+    /**
+     * Hijacking to avoid selection bugs.
+     * 
+     * TODO: Remove this after next qooxdoo update
+     */
+    hijackTreeItemSelection : function( item ) {
+    	item._applySelected = function(value, old)
+		    {
+		      if (value)
+		      {
+		        this.addState("selected");
+		        this._labelObject.addState("selected");
+		      }
+		      else
+		      {
+		        this.removeState("selected");
+		        this._labelObject.removeState("selected");
+		      }
+		
+		      var vTree = this.getTree();
+		
+		      if (!vTree._fastUpdate || (old && vTree._oldItem == this))
+		      {
+		        this._iconObject.setSource(this._evalCurrentIcon());
+		
+		        if (value) {
+		          this._iconObject.addState("selected");
+		        } else {
+		          this._iconObject.removeState("selected");
+		        }
+		      }
+
+          /**
+           * Disabled due to selection bugs in qooxdoo
+		      var vManager = this.getTree().getManager();
+		
+		      if (old && vManager.getSelectedItem() == this) {
+		        vManager.deselectAll();
+		      } else if (value && vManager.getSelectedItem() != this) {
+		        //vManager.setSelectedItem(this);
+		      }
+		      */
+		    };
     }
+    
 
   }
 });
