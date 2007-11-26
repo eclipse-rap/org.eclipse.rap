@@ -86,7 +86,7 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
         widget.setUserData( "setImage", imagePath );
         widget.addEventListener( "appear",
                                  org.eclipse.swt.LabelUtil._setImageDelayed );
-      } else if( !widget._isInDOM ) {
+      } else if( !widget._isInDOM && widget.getUserData( "pooled" ) ) {
         widget.setUserData( "setImage", imagePath );
         widget.addEventListener( "insertDom",
                                  org.eclipse.swt.LabelUtil._setImageDelayed );
