@@ -8,6 +8,10 @@
       description="Text color for PUSH and TOGGLE buttons"
       default="0, 0, 0" />
 
+  <color name="button.CHECK.foreground"
+      description="Text color for with style CHECK and RADIO"
+      default="0, 0, 0" />
+
   <color name="button.background"
       description="Background color for PUSH and TOGGLE buttons"
       default="247, 247, 251" />

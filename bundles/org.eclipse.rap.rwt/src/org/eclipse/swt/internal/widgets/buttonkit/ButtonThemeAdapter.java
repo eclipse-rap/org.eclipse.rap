@@ -76,7 +76,12 @@ public class ButtonThemeAdapter implements IControlThemeAdapter {
 
   public Color getForeground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
-    QxColor color = theme.getColor( "button.foreground" );
+    QxColor color;
+    if( ( control.getStyle() & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
+      color = theme.getColor( "button.CHECK.foreground" );
+    } else {
+      color = theme.getColor( "button.foreground" );
+    }
     return QxColor.createColor( color );
   }
 
