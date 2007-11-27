@@ -3,10 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.rwt
 Bundle-Version: 1.0.1.qualifier
-Bundle-ClassPath: .
+Bundle-ClassPath: patch.jar,
+ .
+Eclipse-ExtensibleAPI: true
 Bundle-Localization: plugin
 Bundle-Vendor: %Bundle-Vendor
-Eclipse-ExtensibleAPI: true
 Import-Package: javax.servlet;version="[2.3.0,2.5.0]",
  javax.servlet.http;version="[2.3.0,2.5.0]"
 Export-Package: org.eclipse.rwt,
