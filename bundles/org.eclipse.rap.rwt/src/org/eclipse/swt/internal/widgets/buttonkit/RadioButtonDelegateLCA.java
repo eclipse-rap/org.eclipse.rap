@@ -55,12 +55,6 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     Object[] args = new Object[] { button };
     writer.callStatic( REGISTER_RADIO_BUTTON, args );
     ControlLCAUtil.writeStyleFlags( button );
-
-    // TODO [fappel]: Workaround: foreground color reset does not work with
-    //                radio button. Because of this set the color explicitly
-    //                during initialization. Seems to be some trouble with atom.
-    Object[] argsFG = new Object[] { button, button.getForeground() };
-    writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", argsFG );
   }
 
   // TODO [rh] qooxdoo radioButton cannot display images, should we ignore

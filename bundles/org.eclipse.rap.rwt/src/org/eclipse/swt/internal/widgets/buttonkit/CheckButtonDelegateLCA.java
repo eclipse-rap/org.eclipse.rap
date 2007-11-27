@@ -50,12 +50,6 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     writer.newWidget( QX_TYPE );
     ButtonLCAUtil.writeLabelMode( button );
     ControlLCAUtil.writeStyleFlags( button );
-
-    // TODO [fappel]: Workaround: foreground color reset does not work with
-    //                checkboxes. Because of this set the color explicitly
-    //                during initialization. Seems to be some trouble with atom.
-    Object[] args = new Object[] { button, button.getForeground() };
-    writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
   }
 
   // TODO [rh] qooxdoo checkBox cannot display images, should we ignore

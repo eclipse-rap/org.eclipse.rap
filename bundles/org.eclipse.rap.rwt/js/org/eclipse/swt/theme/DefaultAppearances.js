@@ -190,7 +190,8 @@ appearances = {
     style : function( states ) {
       return {
         font : "widget.font",
-        textColor : states.disabled ? "widget.graytext" : "widget.foreground",
+        textColor : states.disabled ? "widget.graytext" : "button.CHECK.foreground",
+        backgroundColor : "button.CHECK.background",
         cursor : "default",
         width : "auto",
         height : "auto",
