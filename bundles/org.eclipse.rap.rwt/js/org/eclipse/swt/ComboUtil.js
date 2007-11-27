@@ -43,25 +43,11 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
     // http://bugzilla.qooxdoo.org/show_bug.cgi?id=555
     hijackAutoCompletition : function( combo ) {
       combo.removeEventListener( "keyinput", combo._onkeyinput );
-      combo._onkeyinput = function( e ) { e.getTarget().debug( "_____ key input" ) };
+      combo._onkeyinput = function( e ) {};
       combo.addEventListener( "keyinput", combo._onkeyinput );
       
       // TODO: need to prevent clearing the input field when
       // closing list with Escape key
-      
-//      combo.removeEventListener( "keypress", combo._onkeypress );
-//      combo._onkeypress = function( e ) { e.getTarget().debug( "_____ key press" ) };
-//      combo.addEventListener( "keypress", combo._onkeypress );      
-      
-//      combo.removeEventListener( "keydown", combo._onkeydown );
-//      combo._onkeydown = function( e ) { e.getTarget().debug( "_____ key down" ) };
-//      combo.addEventListener( "keydown", combo._onkeydown );
-      
-//      combo._field.removeEventListener( "input", combo._oninput, combo );
-//      combo._oninput = org.eclipse.swt.ComboUtil._onInput;
-//      combo._field.addEventListener( "input", combo._oninput, combo );
-
-//        combo._popup.setAutoHide( true );
     },
     
     modifyText : function( evt ) {
@@ -189,7 +175,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       }
       */
     },
-    
+
     _doSetItems : function( combo, items ) {
       combo.removeAll();
       for( var i = 0; i < items.length; i++ ) {
@@ -200,8 +186,9 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         item.setFont( combo.getFont() );
         combo.add( item );
       }
+//      org.eclipse.swt.ComboUtil._updatePopupHeight( combo );
     },
-    
+
 /*
     _onAppearSetItems : function( evt ) {
       var combo = evt.getTarget();
@@ -223,8 +210,26 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       combo.setSelected( item );
     },
     
+    setVisibleItemCount : function( combo, count ) {
+      combo.setUserData( "visibleItems", count );
+//      org.eclipse.swt.ComboUtil._updatePopupHeight( combo );
+    },
+    
     setMaxPopupHeight : function( combo, maxHeight ) {
       combo.getPopup().setMaxHeight( maxHeight );
+    },
+    
+    _updatePopupHeight : function( combo ) {
+      var items = combo.getList().getChildren();
+      var count = combo.getUserData( "visibleItems" );
+      if( count == null ) {
+        count = 5;
+      }
+      if( items.length > 0 ) {
+        var itemHeight = items[ 0 ].getBoxHeight();
+        var item = items[ 0 ];
+        combo.getPopup().setMaxHeight( itemHeight * count );
+      }
     },
     
     _onChangeFont : function( evt ) {
@@ -239,6 +244,7 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
       for( var i = 0; i < items.length; i++ ) {
         items[ i ].setFont( combo.getFont() );
       }
+//      org.eclipse.swt.ComboUtil._updatePopupHeight( combo );
     },
     
     // workaround for broken property on qx ComboBox
@@ -274,21 +280,6 @@ qx.Class.define( "org.eclipse.swt.ComboUtil", {
         var req = org.eclipse.swt.Request.getInstance();
         req.addParameter( id + ".text", value );
       }
-    },
-    
-    _onInput : function( e ) {
-      // Hint for modifier
-      this._fromInput = true;
-      var value = this.getValue();
-      var compValue = this._field.getComputedValue();
-      this.debug( "_____ input, value: " + value + ", compValue: " + compValue );
-      if( value != compValue ) {
-        var vSelItem = this._list.findStringExact( compValue );
-        if( vSelItem != null ) {
-          this._list.setSelectedItem( vSelItem );
-        }
-      }
-      delete this._fromInput;
-    }    
+    }
   }
 });
