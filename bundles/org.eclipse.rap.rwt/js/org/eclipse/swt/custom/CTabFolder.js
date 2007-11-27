@@ -154,7 +154,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._chevron.addState( "rwt_FLAT" );
         this._chevron.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
-        this._chevron.setIcon( "resource/widget/rap/ctabfolder/chevron.gif" );
+        this._chevron.setIcon( "widget/ctabfolder/chevron.gif" );
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         wm.setToolTip( this._chevron, 
                        org.eclipse.swt.custom.CTabFolder.CHEVRON_TOOLTIP );
@@ -185,20 +185,20 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       var maxToolTip = "";
       switch( state ) {
         case "min":
-          minIcon = "resource/widget/rap/ctabfolder/restore.gif";
-          maxIcon = "resource/widget/rap/ctabfolder/maximize.gif";
+          minIcon = "widget/ctabfolder/restore.gif";
+          maxIcon = "widget/ctabfolder/maximize.gif";
           minToolTip = org.eclipse.swt.custom.CTabFolder.RESTORE_TOOLTIP;
           maxToolTip = org.eclipse.swt.custom.CTabFolder.MAX_TOOLTIP;
           break;
         case "max":
-          minIcon = "resource/widget/rap/ctabfolder/minimize.gif";
-          maxIcon = "resource/widget/rap/ctabfolder/restore.gif";
+          minIcon = "widget/ctabfolder/minimize.gif";
+          maxIcon = "widget/ctabfolder/restore.gif";
           minToolTip = org.eclipse.swt.custom.CTabFolder.MIN_TOOLTIP;
           maxToolTip = org.eclipse.swt.custom.CTabFolder.RESTORE_TOOLTIP;
           break;
         case "normal":
-          minIcon = "resource/widget/rap/ctabfolder/minimize.gif";
-          maxIcon = "resource/widget/rap/ctabfolder/maximize.gif";
+          minIcon = "widget/ctabfolder/minimize.gif";
+          maxIcon = "widget/ctabfolder/maximize.gif";
           minToolTip = org.eclipse.swt.custom.CTabFolder.MIN_TOOLTIP;
           maxToolTip = org.eclipse.swt.custom.CTabFolder.MAX_TOOLTIP;
           break;

@@ -21,6 +21,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDef;
 import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.swt.widgets.Widget;
 import org.xml.sax.SAXException;
@@ -32,6 +33,10 @@ import org.xml.sax.SAXException;
  */
 public final class ThemeManager {
 
+  /**
+   * Internal wrapper class to aggregate all information related to a registered
+   * theme. Used as value type for themes map.
+   */
   private static final class ThemeWrapper {
     final Theme theme;
     final ResourceLoader loader;
@@ -46,6 +51,7 @@ public final class ThemeManager {
     }
   }
 
+  /** Expected character set of JS files. */
   private static final String CHARSET = "UTF-8";
 
   private static final boolean DEBUG
@@ -74,31 +80,35 @@ public final class ThemeManager {
     "arrows/up.gif",
     "arrows/up_small.gif",
     "arrows/up_tiny.gif",
-// "colorselector/brightness-field.jpg",
-// "colorselector/brightness-handle.gif",
-// "colorselector/huesaturation-field.jpg",
-// "colorselector/huesaturation-handle.gif",
+    "ctabfolder/maximize.gif",
+    "ctabfolder/minimize.gif",
+    "ctabfolder/restore.gif",
+    "ctabfolder/close.gif",
+    "ctabfolder/close_hover.gif",
+    "ctabfolder/chevron.gif",
     "cursors/alias.gif",
     "cursors/copy.gif",
     "cursors/move.gif",
     "cursors/nodrop.gif",
-// "datechooser/lastMonth.png",
-// "datechooser/lastYear.png",
-// "datechooser/nextMonth.png",
-// "datechooser/nextYear.png",
     "menu/checkbox.gif",
     "menu/menu-blank.gif",
     "menu/radiobutton.gif",
     "splitpane/knob-horizontal.png",
     "splitpane/knob-vertical.png",
-    "table/up.png",
+    "table/check_white_on.gif",
+    "table/check_white_off.gif",
+    "table/check_gray_on.gif",
+    "table/check_gray_off.gif",
     "table/down.png",
+    "table/up.png",
     "tree/cross.gif",
     "tree/cross_minus.gif",
     "tree/cross_plus.gif",
     "tree/end.gif",
     "tree/end_minus.gif",
     "tree/end_plus.gif",
+    "tree/folder_open.gif",
+    "tree/folder_closed.gif",
     "tree/line.gif",
     "tree/minus.gif",
     "tree/only_minus.gif",
@@ -106,13 +116,6 @@ public final class ThemeManager {
     "tree/plus.gif",
     "tree/start_minus.gif",
     "tree/start_plus.gif",
-    "tree/folder_open.gif",
-    "tree/folder_closed.gif",
-    "display/bg.gif",
-    "table/check_white_on.gif",
-    "table/check_white_off.gif",
-    "table/check_gray_on.gif",
-    "table/check_gray_off.gif"
   };
 
   /** Where to load the default non-themeable images from */
@@ -121,11 +124,14 @@ public final class ThemeManager {
   private static final String BLANK_IMAGE_PATH
     = "resource/static/image/blank.gif";
 
+  /** Destination path for theme resources, contains trailing path separator. */
   private static final String THEME_RESOURCE_DEST = "resource/themes/";
 
   private static final String THEME_PREFIX = "org.eclipse.swt.theme.";
-
+  
   private static final String PREDEFINED_THEME_ID = THEME_PREFIX + "Default";
+
+  private static final String PREDEFINED_THEME_NAME = "RAP Default Theme";
 
   private static final Class[] THEMEABLE_WIDGETS = new Class[]{
     org.eclipse.swt.widgets.Button.class,
@@ -149,21 +155,30 @@ public final class ThemeManager {
     org.eclipse.swt.widgets.Widget.class
   };
 
-  private static final String PREDEFINED_THEME_NAME = "RAP Default Theme";
-
   private static ThemeManager instance;
 
   private boolean initialized;
+
   private final List customWidgets;
+  
   private final List addAppearances;
+  
   private final Map themeDefs;
+  
   private final Map themes;
+  
   private final Map adapters;
+  
   private final Map imageMapping;
+  
   private Theme predefinedTheme;
+  
   private final Set registeredThemeFiles;
 
   private int themeCount;
+
+// TODO [rst] Evaluate timestamp approach to separate different versions of resources
+//  private String timestamp;
 
   private ThemeManager() {
     // prevent instantiation from outside
@@ -175,7 +190,12 @@ public final class ThemeManager {
     adapters = new HashMap();
     imageMapping = new HashMap();
     registeredThemeFiles = new HashSet();
+//    timestamp = createTimeStamp();
   }
+
+//  private String createTimeStamp() {
+//    return new SimpleDateFormat( "yyyyMMddHHmm" ).format( new Date() );
+//  }
 
   /**
    * Returns the sole instance of the ThemeManager.
@@ -438,6 +458,7 @@ public final class ThemeManager {
 
   /**
    * Writes a theme template file to the standard output.
+   * 
    * @param args ignored
    */
   public static void main( final String[] args ) {
@@ -602,7 +623,7 @@ public final class ThemeManager {
    * Loads a theme from a <code>theme.properties</code> file.
    * 
    * @param name the name for the theme to create
-   * @param the input stream of the theme file to read
+   * @param inStr the input stream of the theme file to read
    * @return the newly created theme
    */
   private Theme loadThemeFile( final String name, final InputStream inStr )
@@ -696,8 +717,10 @@ public final class ThemeManager {
       try {
         String jsId = getJsThemeId( id );
         String registerPath = getWidgetDestPath( jsId  ) + "/" + imagePath;
-        ResourceManager.getInstance().register( registerPath, inputStream );
-        log( " notheme image registered @ " + registerPath );
+        IResourceManager resMgr = ResourceManager.getInstance();
+        resMgr.register( registerPath, inputStream );
+        String location = resMgr.getLocation( registerPath );
+        log( " notheme image registered @ " + location );
       } finally {
         try {
           inputStream.close();
@@ -752,8 +775,10 @@ public final class ThemeManager {
           String widgetDestPath = getWidgetDestPath( jsId  );
           String targetPath = ( String )imageMapping.get( key );
           String registerPath = widgetDestPath + "/" + targetPath;
-          ResourceManager.getInstance().register( registerPath, inputStream );
-          log( " theme image registered @ " + registerPath );
+          IResourceManager resMgr = ResourceManager.getInstance();
+          resMgr.register( registerPath, inputStream );
+          String location = resMgr.getLocation( registerPath );
+          log( " theme image registered @ " + location );
         } finally {
           try {
             inputStream.close();
@@ -857,7 +882,7 @@ public final class ThemeManager {
     return writer.getGeneratedCode();
   }
 
-  private static String createWidgetTheme( final Theme theme, final String id ) {
+  private String createWidgetTheme( final Theme theme, final String id ) {
     ThemeWriter writer = new ThemeWriter( id,
                                           theme.getName(),
                                           ThemeWriter.WIDGET );
@@ -865,7 +890,7 @@ public final class ThemeManager {
     return writer.getGeneratedCode();
   }
 
-  private static String createIconTheme( final Theme theme, final String id ) {
+  private String createIconTheme( final Theme theme, final String id ) {
     ThemeWriter writer = new ThemeWriter( id,
                                           theme.getName(),
                                           ThemeWriter.ICON );
@@ -909,10 +934,18 @@ public final class ThemeManager {
     return writer.getGeneratedCode();
   }
 
-  private static String getWidgetDestPath( final String id ) {
-    int start = id.lastIndexOf( '.' ) + 1;
-    int end = id.length();
-    return THEME_RESOURCE_DEST + id.substring( start, end ) + "/widgets";
+  /**
+   * Returns the clint side widget path, i.e. the path to which qooxdoo
+   * icon resources starting with "widget/" are mapped.
+   *
+   * @param jsThemeId the theme id
+   */
+  private String getWidgetDestPath( final String jsThemeId ) {
+    int start = jsThemeId.lastIndexOf( '.' ) + 1;
+    int end = jsThemeId.length();
+    String jsThemeName = jsThemeId.substring( start, end );
+//    return THEME_RESOURCE_DEST + jsThemeName + "/widgets-" + timestamp;
+    return THEME_RESOURCE_DEST + jsThemeName + "/widgets";
   }
 
   static String stripTemplate( final String input ) {

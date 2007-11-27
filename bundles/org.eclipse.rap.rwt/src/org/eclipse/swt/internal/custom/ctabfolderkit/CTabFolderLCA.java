@@ -13,9 +13,7 @@ package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionEvent;
@@ -67,31 +65,6 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   private static final Rectangle ZERO_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
 
-  // TODO [rh] establish a scheme for the location of images
-  private static final String PREFIX = "resource/widget/rap/ctabfolder/";
-  private static final String MAXIMIZE_GIF = PREFIX + "maximize.gif";
-  private static final String MINIMIZE_GIF = PREFIX + "minimize.gif";
-  private static final String RESTORE_GIF = PREFIX + "restore.gif";
-  private static final String CLOSE_GIF = PREFIX + "close.gif";
-  private static final String CLOSE_HOVER_GIF = PREFIX + "close_hover.gif";
-  private static final String CHEVRON_GIF = PREFIX + "chevron.gif";
-
-  static {
-    IResourceManager resourceManager = ResourceManager.getInstance();
-    ClassLoader bufferedLoader = resourceManager.getContextLoader();
-    resourceManager.setContextLoader( CTabFolderLCA.class.getClassLoader() );
-    try {
-      resourceManager.register( MAXIMIZE_GIF );
-      resourceManager.register( MINIMIZE_GIF );
-      resourceManager.register( RESTORE_GIF );
-      resourceManager.register( CLOSE_GIF );
-      resourceManager.register( CLOSE_HOVER_GIF );
-      resourceManager.register( CHEVRON_GIF );
-    } finally {
-      resourceManager.setContextLoader( bufferedLoader );
-    }
-  }
-
   public void preserveValues( final Widget widget ) {
     CTabFolder tabFolder = ( CTabFolder )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -103,27 +76,27 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     hasListeners = CTabFolderEvent.hasListener( tabFolder );
     adapter.preserve( PROP_FOLDER_LISTENERS,
                       Boolean.valueOf( hasListeners ) );
-    adapter.preserve( PROP_SELECTION_INDEX, 
+    adapter.preserve( PROP_SELECTION_INDEX,
                       new Integer( tabFolder.getSelectionIndex() ) );
     adapter.preserve( PROP_WIDTH, new Integer( tabFolder.getBounds().width ) );
-    adapter.preserve( PROP_MINIMIZE_VISIBLE, 
+    adapter.preserve( PROP_MINIMIZE_VISIBLE,
                       Boolean.valueOf( tabFolder.getMinimizeVisible() ) );
-    adapter.preserve( PROP_MAXIMIZE_VISIBLE, 
+    adapter.preserve( PROP_MAXIMIZE_VISIBLE,
                       Boolean.valueOf( tabFolder.getMaximizeVisible() ) );
-    adapter.preserve( PROP_MINIMIZE_RECT, 
+    adapter.preserve( PROP_MINIMIZE_RECT,
                       tabFolderAdapter.getMinimizeRect() );
-    adapter.preserve( PROP_MAXIMIZE_RECT, 
+    adapter.preserve( PROP_MAXIMIZE_RECT,
                       tabFolderAdapter.getMaximizeRect() );
-    adapter.preserve( PROP_MINIMIZED, 
+    adapter.preserve( PROP_MINIMIZED,
                       Boolean.valueOf( tabFolder.getMinimized() ) );
-    adapter.preserve( PROP_MAXIMIZED, 
+    adapter.preserve( PROP_MAXIMIZED,
                       Boolean.valueOf( tabFolder.getMaximized() ) );
-    adapter.preserve( PROP_TAB_HEIGHT, 
+    adapter.preserve( PROP_TAB_HEIGHT,
                       new Integer( tabFolder.getTabHeight() ) );
     adapter.preserve( PROP_TOP_RIGHT, tabFolder.getTopRight() );
     adapter.preserve( PROP_SELECTION_BG, tabFolder.getSelectionBackground() );
     adapter.preserve( PROP_SELECTION_FG, tabFolder.getSelectionForeground() );
-    adapter.preserve( PROP_CHEVRON_VISIBLE, 
+    adapter.preserve( PROP_CHEVRON_VISIBLE,
                       Boolean.valueOf( tabFolderAdapter.getChevronVisible() ) );
     adapter.preserve( PROP_CHEVRON_RECT, tabFolderAdapter.getChevronRect() );
   }
@@ -131,7 +104,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public void readData( final Widget widget ) {
     final CTabFolder tabFolder = ( CTabFolder )widget;
     // Standard control events and properties
-    String value 
+    String value
       = WidgetLCAUtil.readPropertyValue( tabFolder, PARAM_MINIMIZED );
     if( value != null ) {
       tabFolder.setMinimized( Boolean.valueOf( value ).booleanValue() );
@@ -143,29 +116,29 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
     // Minimized event
     if( WidgetLCAUtil.wasEventSent( tabFolder, EVENT_FOLDER_MINIMIZED ) ) {
-      CTabFolderEvent event = CTabFolderLCA.minimize( tabFolder ); 
+      CTabFolderEvent event = CTabFolderLCA.minimize( tabFolder );
       event.processEvent();
     }
     // Maximized event
     if( WidgetLCAUtil.wasEventSent( tabFolder, EVENT_FOLDER_MAXIMIZED ) ) {
-      CTabFolderEvent event = CTabFolderLCA.maximize( tabFolder ); 
+      CTabFolderEvent event = CTabFolderLCA.maximize( tabFolder );
       event.processEvent();
     }
     // Restore event
     if( WidgetLCAUtil.wasEventSent( tabFolder, EVENT_FOLDER_RESTORED ) ) {
-      CTabFolderEvent event = CTabFolderLCA.restore( tabFolder ); 
+      CTabFolderEvent event = CTabFolderLCA.restore( tabFolder );
       event.processEvent();
     }
     // TODO [rh] it's a hack: necessary because folder.setSelection changes
     //      the visibility of tabItem.control; but preserveValues stores
     //      the already changed visibility and thus no JavaScript is rendered
     // Read selected item and process selection event
-    final String selectedItemId 
+    final String selectedItemId
       = WidgetLCAUtil.readPropertyValue( tabFolder, PARAM_SELECTED_ITEM_ID );
     if( selectedItemId != null ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          CTabItem tabItem 
+          CTabItem tabItem
             = ( CTabItem )WidgetUtil.find( tabFolder, selectedItemId );
           tabFolder.setSelection( tabItem );
           ControlLCAUtil.processSelection( tabFolder, tabItem, false );
@@ -176,7 +149,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.wasEventSent( tabFolder, EVENT_SHOW_LIST ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          CTabFolderEvent event = CTabFolderLCA.showList( tabFolder ); 
+          CTabFolderEvent event = CTabFolderLCA.showList( tabFolder );
           event.processEvent();
           if( event.doit ) {
             ICTabFolderAdapter adapter = getCTabFolderAdapter( tabFolder );
@@ -190,14 +163,14 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );
-    String[] args = new String[] { 
+    String[] args = new String[] {
       SWT.getMessage( "SWT_Minimize" ),
       SWT.getMessage( "SWT_Maximize" ),
       SWT.getMessage( "SWT_Restore" ),
       SWT.getMessage( "SWT_ShowList" ),
       SWT.getMessage( "SWT_Close" ),
     };
-    writer.callStatic( "org.eclipse.swt.custom.CTabFolder.setToolTipTexts", 
+    writer.callStatic( "org.eclipse.swt.custom.CTabFolder.setToolTipTexts",
                        args );
   }
   
@@ -227,9 +200,9 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 //  public Rectangle adjustCoordinates( final Rectangle bounds ) {
 //    int border = 1;
 //    int hTabBar = 23;
-//    return new Rectangle( bounds.x - border - 10, 
-//                          bounds.y - hTabBar - border -10, 
-//                          bounds.width, 
+//    return new Rectangle( bounds.x - border - 10,
+//                          bounds.y - hTabBar - border -10,
+//                          bounds.width,
 //                          bounds.height );
 //  }
 
@@ -237,7 +210,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   //////////////////////////////////////
   // Helping methods to write properties
   
-  private static void writeTabHeight( final CTabFolder tabFolder ) 
+  private static void writeTabHeight( final CTabFolder tabFolder )
     throws IOException
   {
     Integer tabHeight = new Integer( tabFolder.getTabHeight() );
@@ -245,8 +218,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writer.set( PROP_TAB_HEIGHT, "tabHeight", tabHeight, DEFAULT_TAB_HEIGHT );
   }
 
-  private static void writeMinMaxVisible( final CTabFolder tabFolder ) 
-    throws IOException 
+  private static void writeMinMaxVisible( final CTabFolder tabFolder )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tabFolder );
     boolean minChanged = hasMinChanged( tabFolder );
@@ -255,11 +228,11 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
       if( tabFolder.getMaximizeVisible() ) {
         Rectangle maximizeRect = tabFolderAdapter.getMaximizeRect();
-        Object[] args = new Object[] { 
-          new Integer( maximizeRect.x ), 
-          new Integer( maximizeRect.y ), 
-          new Integer( maximizeRect.width ), 
-          new Integer( maximizeRect.height ) 
+        Object[] args = new Object[] {
+          new Integer( maximizeRect.x ),
+          new Integer( maximizeRect.y ),
+          new Integer( maximizeRect.width ),
+          new Integer( maximizeRect.height )
         };
         writer.call( "showMaxButton", args );
       } else {
@@ -267,11 +240,11 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       }
       if( tabFolder.getMinimizeVisible() ) {
         Rectangle minimizeRect = tabFolderAdapter.getMinimizeRect();
-        Object[] args = new Object[] { 
-          new Integer( minimizeRect.x ), 
-          new Integer( minimizeRect.y ), 
-          new Integer( minimizeRect.width ), 
-          new Integer( minimizeRect.height ) 
+        Object[] args = new Object[] {
+          new Integer( minimizeRect.x ),
+          new Integer( minimizeRect.y ),
+          new Integer( minimizeRect.width ),
+          new Integer( minimizeRect.height )
         };
         writer.call( "showMinButton", args );
       } else {
@@ -284,16 +257,16 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
     Boolean minVisible = Boolean.valueOf( tabFolder.getMinimizeVisible() );
     boolean visibilityChanged;
-    visibilityChanged = WidgetLCAUtil.hasChanged( tabFolder, 
-                                                  PROP_MINIMIZE_VISIBLE, 
-                                                  minVisible, 
+    visibilityChanged = WidgetLCAUtil.hasChanged( tabFolder,
+                                                  PROP_MINIMIZE_VISIBLE,
+                                                  minVisible,
                                                   Boolean.FALSE );
     boolean boundsChanged = false;
     if( !visibilityChanged ) {
       Rectangle newBounds = tabFolderAdapter.getMinimizeRect();
-      boundsChanged = WidgetLCAUtil.hasChanged( tabFolder, 
-                                                PROP_MINIMIZE_RECT, 
-                                                newBounds, 
+      boundsChanged = WidgetLCAUtil.hasChanged( tabFolder,
+                                                PROP_MINIMIZE_RECT,
+                                                newBounds,
                                                 ZERO_RECTANGLE );
     }
     return visibilityChanged || boundsChanged;
@@ -303,23 +276,23 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
     Boolean maxVisible = Boolean.valueOf( tabFolder.getMaximizeVisible() );
     boolean visibilityChanged;
-    visibilityChanged = WidgetLCAUtil.hasChanged( tabFolder, 
-                                                  PROP_MAXIMIZE_VISIBLE, 
-                                                  maxVisible, 
+    visibilityChanged = WidgetLCAUtil.hasChanged( tabFolder,
+                                                  PROP_MAXIMIZE_VISIBLE,
+                                                  maxVisible,
                                                   Boolean.FALSE );
     boolean boundsChanged = false;
     if( !visibilityChanged ) {
       Rectangle newBounds = tabFolderAdapter.getMaximizeRect();
-      boundsChanged = WidgetLCAUtil.hasChanged( tabFolder, 
-                                                PROP_MAXIMIZE_RECT, 
-                                                newBounds, 
+      boundsChanged = WidgetLCAUtil.hasChanged( tabFolder,
+                                                PROP_MAXIMIZE_RECT,
+                                                newBounds,
                                                 ZERO_RECTANGLE );
     }
     return visibilityChanged || boundsChanged;
   }
   
-  private static void writeMinMaxState( final CTabFolder tabFolder ) 
-    throws IOException 
+  private static void writeMinMaxState( final CTabFolder tabFolder )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tabFolder );
     String minProp = CTabFolderLCA.PARAM_MINIMIZED;
@@ -327,8 +300,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     Boolean minimized = Boolean.valueOf( tabFolder.getMinimized() );
     Boolean maximized = Boolean.valueOf( tabFolder.getMaximized() );
     Boolean defValue = Boolean.FALSE;
-    if(    WidgetLCAUtil.hasChanged( tabFolder, minProp, minimized, defValue ) 
-        || WidgetLCAUtil.hasChanged( tabFolder, maxProp, maximized, defValue ) ) 
+    if(    WidgetLCAUtil.hasChanged( tabFolder, minProp, minimized, defValue )
+        || WidgetLCAUtil.hasChanged( tabFolder, maxProp, maximized, defValue ) )
     {
       String state;
       if( !tabFolder.getMinimized() && !tabFolder.getMaximized() ) {
@@ -342,8 +315,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeListener( final CTabFolder tabFolder ) 
-    throws IOException 
+  private static void writeListener( final CTabFolder tabFolder )
+    throws IOException
   {
     boolean hasListener = CTabFolderEvent.hasListener( tabFolder );
     Boolean newValue = Boolean.valueOf( hasListener );
@@ -360,24 +333,24 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeChevron( final CTabFolder tabFolder ) 
-    throws IOException 
+  private static void writeChevron( final CTabFolder tabFolder )
+    throws IOException
   {
     ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
     Boolean visible = Boolean.valueOf( tabFolderAdapter.getChevronVisible() );
     Boolean defValue = Boolean.FALSE;
     String prop = PROP_CHEVRON_VISIBLE;
-    boolean visibilityChanged 
+    boolean visibilityChanged
       = WidgetLCAUtil.hasChanged( tabFolder, prop, visible, defValue );
     prop = PROP_CHEVRON_RECT;
     Rectangle chevronRect = tabFolderAdapter.getChevronRect();
-    boolean rectangleChanged 
+    boolean rectangleChanged
       = WidgetLCAUtil.hasChanged( tabFolder, prop, chevronRect, null );
     if( visibilityChanged || rectangleChanged ) {
       JSWriter writer = JSWriter.getWriterFor( tabFolder );
       if( visible.booleanValue() ) {
-        Object[] args = new Object[] { 
-          new Integer( chevronRect.x ), 
+        Object[] args = new Object[] {
+          new Integer( chevronRect.x ),
           new Integer( chevronRect.y ),
           new Integer( chevronRect.width ),
           new Integer( chevronRect.height )
@@ -389,16 +362,16 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeColors( final CTabFolder tabFolder ) 
-    throws IOException 
+  private static void writeColors( final CTabFolder tabFolder )
+    throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tabFolder );
     Color bg = tabFolder.getSelectionBackground();
     writer.set( PROP_SELECTION_BG, "selectionBackground", bg, null );
   }
   
-  private static ICTabFolderAdapter getCTabFolderAdapter( 
-    final CTabFolder tabFolder ) 
+  private static ICTabFolderAdapter getCTabFolderAdapter(
+    final CTabFolder tabFolder )
   {
     Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
     return ( ICTabFolderAdapter )adapter;
@@ -408,11 +381,11 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   // Event helper
   
   private static CTabFolderEvent showList( final CTabFolder tabFolder ) {
-    CTabFolderEvent result 
+    CTabFolderEvent result
       = new CTabFolderEvent( tabFolder, CTabFolderEvent.SHOW_LIST );
     Object adapter = tabFolder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
-    Rectangle chevronRect = folderAdapter.getChevronRect();    
+    Rectangle chevronRect = folderAdapter.getChevronRect();
     result.x = chevronRect.x;
     result.y = chevronRect.y;
     result.height = chevronRect.height;

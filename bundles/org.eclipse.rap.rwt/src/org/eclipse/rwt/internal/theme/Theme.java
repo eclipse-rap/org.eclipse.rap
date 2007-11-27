@@ -11,6 +11,11 @@ package org.eclipse.rwt.internal.theme;
 
 import java.util.*;
 
+/**
+ * An instance of this class represents all the information provided by an RWT
+ * theme, i.e. values from the theme properties file, derived values from the
+ * default theme, and the name given to the theme.
+ */
 public final class Theme {
 
   private final String name;
@@ -22,6 +27,7 @@ public final class Theme {
   /**
    * Creates a new theme which has no default theme. In RWT theming, only the
    * default theme itself has no default theme.
+   * 
    * @param name the name of the theme
    */
   public Theme( final String name ) {
@@ -187,11 +193,12 @@ public final class Theme {
   }
 
   public int hashCode() {
-    int result = name.hashCode();
+    int result = 17;
+    result = 37 * result + name.hashCode();
     if( defaultValues != null ) {
-      result = result * 23 + defaultValues.hashCode() * 23;
+      result = 37 * defaultValues.hashCode();
     }
-    result = result + values.hashCode() * 23;
+    result = 37 * result + values.hashCode();
     return result;
   }
 
