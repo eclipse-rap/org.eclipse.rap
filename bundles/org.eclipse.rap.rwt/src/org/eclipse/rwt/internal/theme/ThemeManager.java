@@ -324,6 +324,7 @@ public final class ThemeManager {
   public void registerResources() {
     checkInitialized();
     log( "____ ThemeManager register resources" );
+    registerJsLibrary( "org/eclipse/swt/theme/BordersBase.js" );
     Iterator iterator = themes.keySet().iterator();
     while( iterator.hasNext() ) {
       String id = ( String )iterator.next();
@@ -692,10 +693,7 @@ public final class ThemeManager {
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
         log( "-- END REGISTERED THEME CODE --" );
-//        TODO [rst] Load only the default theme at startup
-//        boolean loadOnStartup = defaultThemeId.equals( id );
-        boolean loadOnStartup = true;
-        registerJsLibrary( themeCode, jsId + ".js", loadOnStartup );
+        registerJsLibrary( themeCode, jsId.replace( '.', '/' ) + ".js" );
         registeredThemeFiles.add( themeId );
       }
     }
@@ -790,9 +788,16 @@ public final class ThemeManager {
     }
   }
 
-  private static void registerJsLibrary( final String code,
-                                         final String name,
-                                         final boolean loadOnStartup )
+  private static void registerJsLibrary( final String name ) {
+    ResourceManager.getInstance().register( name,
+                                            CHARSET,
+                                            RegisterOptions.VERSION );
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
+    responseWriter.useJSLibrary( name );
+  }
+
+  private static void registerJsLibrary( final String code, final String name )
   {
     ByteArrayInputStream resourceInputStream;
     byte[] buffer;
@@ -809,9 +814,7 @@ public final class ThemeManager {
                                               RegisterOptions.VERSION );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
       HtmlResponseWriter responseWriter = stateInfo.getResponseWriter();
-      if( loadOnStartup ) {
-        responseWriter.useJSLibrary( name );
-      }
+      responseWriter.useJSLibrary( name );
     } finally {
       try {
         resourceInputStream.close();
@@ -822,80 +825,62 @@ public final class ThemeManager {
   }
 
   private static String createColorTheme( final Theme theme, final String id ) {
-    ThemeWriter writer = new ThemeWriter( id,
-                                          theme.getName(),
-                                          ThemeWriter.COLOR );
+    QxTheme colorTheme = new QxTheme( id, theme.getName(), QxTheme.COLOR );
     String[] keys = theme.getKeys();
     Arrays.sort( keys );
     for( int i = 0; i < keys.length; i++ ) {
       Object value = theme.getValue( keys[ i ] );
       if( value instanceof QxColor ) {
         QxColor color = ( QxColor )value;
-        writer.writeColor( keys[ i ], color );
+        colorTheme.appendColor( keys[ i ], color );
       }
     }
-    return writer.getGeneratedCode();
+    return colorTheme.getJsCode();
   }
 
   private static String createBorderTheme( final Theme theme, final String id )
   {
-    ClassLoader classLoader = ThemeManager.class.getClassLoader();
-    String resource = "org/eclipse/swt/theme/DefaultBorders.js";
-    InputStream inStr = classLoader.getResourceAsStream( resource  );
-    String content;
-    try {
-      content = readFromInputStream( inStr, "UTF-8" );
-    } catch( final IOException e ) {
-      String message = "Unable to load file " + resource;
-      throw new ThemeManagerException( message, e );
-    }
-    String defaultBorders = stripTemplate( content );
-    ThemeWriter writer = new ThemeWriter( id,
-                                          theme.getName(),
-                                          ThemeWriter.BORDER );
-    writer.writeValues( defaultBorders.trim() );
+    String base = THEME_PREFIX + "BordersBase";
+    QxTheme borderTheme = new QxTheme( id,
+                                       theme.getName(),
+                                       QxTheme.BORDER,
+                                       base );
     String[] keys = theme.getKeys();
     Arrays.sort( keys );
     for( int i = 0; i < keys.length; i++ ) {
       Object value = theme.getValue( keys[ i ] );
       if( value instanceof QxBorder ) {
         QxBorder border = ( QxBorder )value;
-        writer.writeBorder( keys[ i ], border );
+        borderTheme.appendBorder( keys[ i ], border );
       }
     }
-    return writer.getGeneratedCode();
+    return borderTheme.getJsCode();
   }
 
   private static String createFontTheme( final Theme theme, final String id ) {
-    ThemeWriter writer = new ThemeWriter( id,
-                                          theme.getName(),
-                                          ThemeWriter.FONT );
+    QxTheme fontTheme = new QxTheme( id, theme.getName(), QxTheme.FONT );
     String[] keys = theme.getKeys();
     Arrays.sort( keys );
     for( int i = 0; i < keys.length; i++ ) {
       Object value = theme.getValue( keys[ i ] );
       if( value instanceof QxFont ) {
         QxFont font = ( QxFont )value;
-        writer.writeFont( keys[ i ], font );
+        fontTheme.appendFont( keys[ i ], font );
       }
     }
-    return writer.getGeneratedCode();
+    return fontTheme.getJsCode();
   }
 
   private String createWidgetTheme( final Theme theme, final String id ) {
-    ThemeWriter writer = new ThemeWriter( id,
-                                          theme.getName(),
-                                          ThemeWriter.WIDGET );
-    writer.writeUri( getWidgetDestPath( id ) );
-    return writer.getGeneratedCode();
+    QxTheme widgetTheme = new QxTheme( id, theme.getName(), QxTheme.WIDGET );
+    widgetTheme.appendUri( getWidgetDestPath( id ) );
+    return widgetTheme.getJsCode();
   }
 
   private String createIconTheme( final Theme theme, final String id ) {
-    ThemeWriter writer = new ThemeWriter( id,
-                                          theme.getName(),
-                                          ThemeWriter.ICON );
-    writer.writeUri( getWidgetDestPath( id ) );
-    return writer.getGeneratedCode();
+    QxTheme iconTheme = new QxTheme( id, theme.getName(), QxTheme.ICON );
+    iconTheme.appendUri( getWidgetDestPath( id ) );
+    return iconTheme.getJsCode();
   }
 
   private String createAppearanceTheme( final Theme theme, final String id ) {
@@ -911,27 +896,25 @@ public final class ThemeManager {
     }
     String template = stripTemplate( content );
     String appearances = substituteTemplate( template, theme );
-    ThemeWriter writer = new ThemeWriter( id,
-                                          theme.getName(),
-                                          ThemeWriter.APPEARANCE );
-    writer.writeValues( appearances );
+    QxTheme appTheme = new QxTheme( id, theme.getName(), QxTheme.APPEARANCE );
+    appTheme.appendValues( appearances );
     Iterator iterator = addAppearances.iterator();
     while( iterator.hasNext() ) {
       String addAppearance = ( String )iterator.next();
-      writer.writeValues( substituteTemplate( addAppearance, theme ) );
+      appTheme.appendValues( substituteTemplate( addAppearance, theme ) );
     }
-    return writer.getGeneratedCode();
+    return appTheme.getJsCode();
   }
 
   private static String createMetaTheme( final Theme theme, final String id ) {
-    ThemeWriter writer = new ThemeWriter( id, theme.getName(), ThemeWriter.META );
-    writer.writeTheme( "color", id + "Colors" );
-    writer.writeTheme( "border", id + "Borders" );
-    writer.writeTheme( "font", id + "Fonts" );
-    writer.writeTheme( "icon", id + "Icons" );
-    writer.writeTheme( "widget", id + "Widgets" );
-    writer.writeTheme( "appearance", id + "Appearances" );
-    return writer.getGeneratedCode();
+    QxTheme metaTheme = new QxTheme( id, theme.getName(), QxTheme.META );
+    metaTheme.appendTheme( "color", id + "Colors" );
+    metaTheme.appendTheme( "border", id + "Borders" );
+    metaTheme.appendTheme( "font", id + "Fonts" );
+    metaTheme.appendTheme( "icon", id + "Icons" );
+    metaTheme.appendTheme( "widget", id + "Widgets" );
+    metaTheme.appendTheme( "appearance", id + "Appearances" );
+    return metaTheme.getJsCode();
   }
 
   /**

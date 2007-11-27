@@ -205,7 +205,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Theme_Test.class );
     suite.addTestSuite( ThemeManager_Test.class );
     suite.addTestSuite( ThemeUtil_Test.class );
-    suite.addTestSuite( ThemeWriter_Test.class );
+    suite.addTestSuite( QxTheme_Test.class );
     suite.addTestSuite( ThemeDefinitionReader_Test.class );
     suite.addTestSuite( QxColor_Test.class );
     suite.addTestSuite( QxBorder_Test.class );

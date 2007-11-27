@@ -12,41 +12,103 @@
 package org.eclipse.rwt.internal.theme;
 
 
-public class ThemeWriter {
+/**
+ * Instances of this class represent a qooxdoo theme of a certain type. Used to
+ * assemble the Javascript code for qooxdoo themes.
+ */
+public class QxTheme {
 
   private final String id;
-  private final String name;
-  private StringBuffer code;
-  private boolean headWritten;
-  private boolean tailWritten;
-  private boolean valueWritten;
-  private int type;
 
+  private final String title;
+  
+  private final int type;
+  
+  private final String base;
+  
+  private StringBuffer code;
+  
+  private boolean headWritten;
+  
+  private boolean tailWritten;
+  
+  private boolean valueWritten;
+
+  /** Type for qooxdoo meta themes */
   public static final int META = 1;
+
+  /** Type for qooxdoo font themes */
   public static final int FONT = 2;
+  
+  /** Type for qooxdoo color themes */
   public static final int COLOR = 3;
+  
+  /** Type for qooxdoo border themes */
   public static final int BORDER = 4;
+  
+  /** Type for qooxdoo icon themes */
   public static final int ICON = 5;
+  
+  /** Type for qooxdoo widget themes */
   public static final int WIDGET = 6;
+  
+  /** Type for qooxdoo apearance themes */
   public static final int APPEARANCE = 7;
 
-  public ThemeWriter( final String id, final String name, final int type ) {
+  /**
+   * Creates a new qooxdoo theme with the given, id, name, and type.
+   * 
+   * @param id the fully qualified qx class name for the theme
+   * @param title the name of the theme
+   * @param type the type of the theme
+   */
+  public QxTheme( final String id, final String title, final int type ) {
+    this( id, title, type, null );
+  }
+  
+  /**
+   * Creates a new qooxdoo theme with the given, id, name, type, and base class.
+   * 
+   * @param id the fully qualified qx class name for the theme
+   * @param title the name of the theme
+   * @param type the type of the theme
+   * @param base the fully qualified name of the qx theme to extend
+   */
+  public QxTheme( final String id,
+                  final String title,
+                  final int type,
+                  final String base )
+  {
     this.id = id;
-    this.name = name;
+    this.title = title;
     this.type = checkType( type );
+    this.base = base;
     this.code = new StringBuffer();
     headWritten = false;
     tailWritten = false;
     valueWritten = false;
   }
 
-  public void writeValues( final String values ) {
+  /**
+   * Appends a number of key-value pairs to the generated theme. The given
+   * Javascript code is appended as is, without any checks being performed.
+   * 
+   * @param values Javascript code that adds the additional values
+   */
+  public void appendValues( final String values ) {
     beforeWriteValue();
     code.append( values );
     afterWriteValue();
   }
 
-  public void writeFont( final String key, final QxFont font ) {
+  /**
+   * Appends a key-value pair to the generated font theme. Only applicable for
+   * instances with type FONT.
+   * 
+   * @param key the key to append
+   * @param font the value for the key
+   */
+  public void appendFont( final String key, final QxFont font ) {
     if( type != FONT ) {
       throw new IllegalStateException( "Font can only be set in font themes" );
     }
@@ -74,7 +136,14 @@ public class ThemeWriter {
     afterWriteValue();
   }
 
-  public void writeColor( final String key, final QxColor color ) {
+  /**
+   * Appends a key-value pair to the generated color theme. Only applicable for
+   * instances with type COLOR.
+   * 
+   * @param key the key to append
+   * @param color the value for the key
+   */
+  public void appendColor( final String key, final QxColor color ) {
     if( type != COLOR ) {
       throw new IllegalStateException( "Color can only be set in color themes" );
     }
@@ -90,7 +159,14 @@ public class ThemeWriter {
     afterWriteValue();
   }
 
-  public void writeBorder( final String key, final QxBorder border ) {
+  /**
+   * Appends a key-value pair to the generated border theme. Only applicable for
+   * instances with type BORDER.
+   * 
+   * @param key the key to append
+   * @param border the value for the key
+   */
+  public void appendBorder( final String key, final QxBorder border ) {
     if( type != BORDER ) {
       throw new IllegalStateException( "Border can only be set in border themes" );
     }
@@ -119,7 +195,13 @@ public class ThemeWriter {
     afterWriteValue();
   }
 
-  public void writeUri( final String pathPrefix ) {
+  /**
+   * Appends the single uri entry to the generated widget or icon theme. Only
+   * applicable for instances with type WIDGET or ICON.
+   * 
+   * @param pathPrefix the prefix to map "widget/" or "icon/" to
+   */
+  public void appendUri( final String pathPrefix ) {
     if( type != WIDGET && type != ICON ) {
       throw new IllegalStateException( "Url can only be set in widget and icon themes" );
     }
@@ -130,19 +212,32 @@ public class ThemeWriter {
     afterWriteValue();
   }
 
-  public void writeTheme( final String key, final String value ) {
+  /**
+   * Appends a key-value pair to the generated theme. Only applicable for
+   * META theme writers.
+   * 
+   * @param key the key to append
+   * @param theme the value for the key
+   */
+  public void appendTheme( final String key, final String theme ) {
     if( type != META ) {
       throw new IllegalStateException( "Theme can only be set in meta themes" );
     }
     beforeWriteValue();
     code.append( "    \"" + key + "\" : " );
-    code.append( value );
+    code.append( theme );
     afterWriteValue();
   }
 
-  public String getGeneratedCode() {
+  /**
+   * Returns the Javascript code that represents this theme. Once this method
+   * has been called, no values can be appended anymore.
+   * 
+   * @return the generated theme code.
+   */
+  public String getJsCode() {
     if( !valueWritten ) {
-      throw new IllegalStateException( "No value written" );
+      throw new IllegalStateException( "No values appended" );
     }
     if( !tailWritten ) {
       writeTail();
@@ -167,11 +262,13 @@ public class ThemeWriter {
   }
 
   private void writeHead() {
-    code.append( "/* RAP theme file generated by ThemeWriter. */\n" );
+    code.append( "/* RAP theme file generated by QxTheme. */\n" );
     code.append( "qx.Theme.define( \"" + id + getNameSuffix() + "\",\n" );
     code.append( "{\n" );
-    String title = name;
     code.append( "  title : \"" + title + "\",\n" );
+    if( base != null ) {
+      code.append( "  extend : " + base + ",\n" );
+    }
     code.append( "  " + getThemeKey() + " : {\n" );
     headWritten = true;
   }

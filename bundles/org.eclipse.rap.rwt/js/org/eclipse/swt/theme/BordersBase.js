@@ -9,10 +9,11 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-// TODO [rst] This file is now read and substituted by the ThemeManager and may
-//            be renamed in the future.
-borders = {
-// BEGIN TEMPLATE (do not remove this line)
+qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
+{
+  title : "Borders Base Theme",
+
+  borders : {
 
     "black" :
     {
@@ -154,6 +155,5 @@ borders = {
       colorLeft : "widget.highlight",
       colorRight : "widget.shadow"
     }
-
-// END TEMPLATE
-};
+  }
+} );
