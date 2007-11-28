@@ -23,10 +23,16 @@ public class RWTRequestVersionControl_Test extends TestCase {
   public void testIsValid() {
     assertTrue( RWTRequestVersionControl.isValid() );
     Integer nextRequestId = RWTRequestVersionControl.nextRequestId();
+    
+    Fixture.fakeRequestParam( RequestParams.REQUEST_COUNTER,
+                              nextRequestId.toString() );
     assertFalse( RWTRequestVersionControl.isValid() );
+
+    RWTRequestVersionControl.beforeService();
     Fixture.fakeRequestParam( RequestParams.REQUEST_COUNTER,
                               nextRequestId.toString() );
     assertTrue( RWTRequestVersionControl.isValid() );
+    
     Fixture.fakeRequestParam( RequestParams.REQUEST_COUNTER,
                               "4711" );
     assertFalse( RWTRequestVersionControl.isValid() );

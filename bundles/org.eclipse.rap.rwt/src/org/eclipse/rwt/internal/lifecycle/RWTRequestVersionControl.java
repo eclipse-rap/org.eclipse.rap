@@ -13,8 +13,10 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 
 
@@ -23,21 +25,46 @@ public class RWTRequestVersionControl {
     = RWTRequestVersionControl.class + ".Version";
 
   public static boolean isValid() {
-    ISessionStore session = ContextProvider.getSession();
-    Integer version = ( Integer )session.getAttribute( VERSION );
+    Integer version = ( Integer )RWT.getServiceStore().getAttribute( VERSION );    
     HttpServletRequest request = ContextProvider.getRequest();
     String requestId = request.getParameter( RequestParams.REQUEST_COUNTER );
-    boolean initialRequest = version == null && requestId == null;
-    boolean inValidVersionState =    version == null && requestId != null
-                                  || version != null && requestId == null;
+    boolean initialRequest = requestId == null;
+    boolean inValidVersionState = version == null && requestId != null;
     return    !inValidVersionState
            && ( initialRequest || version.toString().equals( requestId ) );
   }
 
   public static Integer nextRequestId() {
+    Integer result = ( Integer )RWT.getServiceStore().getAttribute( VERSION );
+    if( result == null ) {
+      result = new Integer( 0 );
+    } else {
+      result = new Integer( result.intValue() + 1 );
+    }
     ISessionStore session = ContextProvider.getSession();
-    Integer result = new Integer( new Object().hashCode() );
     session.setAttribute( VERSION, result );
+    RWT.getServiceStore().setAttribute( VERSION, null );
     return result;
+  }
+
+  public static void beforeService() {
+    ISessionStore session = ContextProvider.getSession();
+    Integer version = ( Integer )session.getAttribute( VERSION );
+    RWT.getServiceStore().setAttribute( VERSION, version );
+  }
+
+  public static void afterService() {
+    try {
+      IServiceStore serviceStore = RWT.getServiceStore();
+      Integer version = ( Integer )serviceStore.getAttribute( VERSION );
+      if( version != null ) {
+          ISessionStore session = ContextProvider.getSession();
+          session.setAttribute( VERSION, version );
+      }
+    } catch( final RuntimeException ignore ) {
+      // TODO [fappel]: rude solution for problems with blocked threads. But
+      //                as that blocking mechanism will be replaced on the road
+      //                to 1.1 this hack will be also obsolete soon. 
+    }
   }
 }

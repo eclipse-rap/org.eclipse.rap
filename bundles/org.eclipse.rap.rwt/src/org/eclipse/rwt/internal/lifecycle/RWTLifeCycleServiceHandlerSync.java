@@ -42,13 +42,18 @@ public final class RWTLifeCycleServiceHandlerSync
 
   private void serviceInternal() throws ServletException, IOException {
     LifeCycleServiceHandler.initializeStateInfo();
-    if(    RWTRequestVersionControl.isValid()
-        || LifeCycleServiceHandler.isSessionRestart()
-        || ContextProvider.getRequest().getSession().isNew())
-    {
-      doService();
-    } else {
-      handleInvalidRequestCounter();
+    RWTRequestVersionControl.beforeService();
+    try {
+      if(    RWTRequestVersionControl.isValid()
+          || LifeCycleServiceHandler.isSessionRestart()
+          || ContextProvider.getRequest().getSession().isNew())
+      {
+        doService();
+      } else {
+        handleInvalidRequestCounter();
+      }
+    } finally {
+      RWTRequestVersionControl.afterService();
     }
   }
 
