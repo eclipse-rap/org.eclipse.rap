@@ -66,8 +66,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
   statics : {
     STATE_OVER : "over",
     
-    IMG_CLOSE : "resource/widget/rap/ctabfolder/close.gif",
-    IMG_CLOSE_HOVER : "resource/widget/rap/ctabfolder/close_hover.gif"
+    IMG_CLOSE : "widget/ctabfolder/close.gif",
+    IMG_CLOSE_HOVER : "widget/ctabfolder/close_hover.gif"
   },
 
   members : {
