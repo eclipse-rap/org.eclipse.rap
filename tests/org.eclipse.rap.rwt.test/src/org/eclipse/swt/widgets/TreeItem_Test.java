@@ -8,7 +8,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.io.IOException;
 
 import junit.framework.TestCase;
 
