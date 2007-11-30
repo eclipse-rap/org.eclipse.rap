@@ -12,7 +12,6 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 
 // TODO [bm] Javadoc
 // TODO [rh] font property (according and LCA functionality) for the following

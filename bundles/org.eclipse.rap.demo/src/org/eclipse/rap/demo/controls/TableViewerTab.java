@@ -9,7 +9,7 @@
 
 package org.eclipse.rap.demo.controls;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -188,7 +188,7 @@ public class TableViewerTab extends ExampleTab {
     persons.clear();
     persons.add( new Person( "Rögn\"íy&", "Hövl&lt;, the char tester", 1 ) );
     persons.add( new Person( "Paul", "Panther", 1 ) );
-    persons.add( new Person( "Carl", "Marx", 2 ) );
+    persons.add( new Person( "Karl", "Marx", 2 ) );
     persons.add( new Person( "Sofia", "Loren", 3 ) );
     persons.add( new Person( "King", "Cool", 4 ) );
     persons.add( new Person( "Albert", "Einstein", 5 ) );
@@ -203,6 +203,7 @@ public class TableViewerTab extends ExampleTab {
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
     createAddItemsButton();
     createSelectYoungestPersonButton();
+    createRemoveButton();
     lblSelection = new Label( styleComp, SWT.NONE );
   }
 
@@ -341,6 +342,25 @@ public class TableViewerTab extends ExampleTab {
     } );
   }
 
+  private void createRemoveButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Remove selected rows" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        IStructuredSelection selection 
+          = ( IStructuredSelection )getViewer().getSelection();
+        Iterator iter = selection.iterator();
+        while( iter.hasNext() ) {
+          Person person = ( Person )iter.next();
+          persons.remove( person );
+        }
+        getViewer().getTable().setTopIndex( 0 );
+        getViewer().setItemCount( persons.size() );
+        getViewer().refresh();
+      }
+    } );
+  }
+  
   private static int updateSortDirection( final TableColumn column ) {
     Table table = column.getParent();
     if( column == table.getSortColumn() ) {

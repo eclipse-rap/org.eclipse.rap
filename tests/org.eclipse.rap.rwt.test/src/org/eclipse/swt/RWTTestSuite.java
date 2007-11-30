@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import junit.framework.TestSuite;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.internal.branding.BrandingManager_Test;
+import org.eclipse.rwt.internal.branding.BrandingUtil_Test;
 import org.eclipse.rwt.internal.browser.BrowserLoader_Test;
 import org.eclipse.rwt.internal.engine.PhaseListenerRegistry_Test;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener_Test;
@@ -101,6 +103,8 @@ public class RWTTestSuite {
     suite.addTestSuite( RWTRequestVersionControl_Test.class );
     suite.addTestSuite( LifeCycleAdapter_Test.class );
     suite.addTestSuite( ResourceManager_Test.class );
+    suite.addTestSuite( BrandingManager_Test.class );
+    suite.addTestSuite( BrandingUtil_Test.class );
     suite.addTestSuite( PreserveWidgetsPhaseListener_Test.class );
     suite.addTestSuite( RenderDispose_Test.class );
     suite.addTestSuite( WidgetAdapter_Test.class );

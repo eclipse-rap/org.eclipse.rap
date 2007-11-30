@@ -42,7 +42,11 @@ public final class LifeCycleFactory {
     return lifeCycle;
   }
   
-  public static ILifeCycle loadLifeCycle( ) {
+  public static void destroy() {
+    globalLifeCycle = null;
+  }
+  
+  public static ILifeCycle loadLifeCycle() {
     LifeCycle result = globalLifeCycle;
     if( result == null ) {
       String lifeCycleClassName = null;

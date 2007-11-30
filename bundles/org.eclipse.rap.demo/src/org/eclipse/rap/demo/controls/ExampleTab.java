@@ -338,7 +338,7 @@ abstract class ExampleTab {
               }
             }
             String newThemeId = availableThemeIds[ index ];
-            ThemeUtil.setCurrentTheme( newThemeId );
+            ThemeUtil.setCurrentThemeId( newThemeId );
           }
         } );
         shell.pack();

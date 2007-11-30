@@ -197,11 +197,5 @@
            themeId="org.eclipse.rap.demo.alttheme"
            title="It&apos;s tea-time">
      </branding>
-     <branding
-           defaultEntrypointId="org.eclipse.rap.demo.entrypoint1"
-           id="org.eclipse.rap.demo.branding2"
-           servletName="rap"
-           title="RAP Startup Page">
-     </branding>
   </extension>
 </plugin>

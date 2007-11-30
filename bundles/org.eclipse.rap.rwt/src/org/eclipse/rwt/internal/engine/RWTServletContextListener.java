@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,12 @@ import java.util.*;
 
 import javax.servlet.*;
 
+import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.AdapterFactoryRegistry;
+import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -32,105 +34,70 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-/**
- * TODO [rh] JavaDoc
- */
-public class RWTServletContextListener implements ServletContextListener {
+public final class RWTServletContextListener implements ServletContextListener {
 
-  // TODO [rst] Align parameter names with extension point names
-  public static final String ENTRYPOINT_PARAM
-    = "org.eclipse.swt.entrypoint";
+  private static final String PREFIX = "org.eclipse.rwt.";
+  public static final String ENTRY_POINTS_PARAM
+    = PREFIX + "entryPoints";
   public static final String THEMES_PARAM
-    = "org.eclipse.swt.themes";
+    = PREFIX + "themes";
   public static final String RESOURCE_MANAGER_FACTORY_PARAM
-    = "org.eclipse.swt.resourcemanagerfactory";
-  public static final String ADAPTER_FACTORY_PARAM
-    = "org.eclipse.swt.adapterFactories";
-  public static final String PHASE_LISTENER_PARAM
-    = "org.eclipse.rap.engine.lifecycle.phaselistener";
-  public static final String RESOURCE_PARAM
-    = "org.eclipse.rap.resources";
+    = PREFIX + "resourceManagerFactory";
+  public static final String ADAPTER_FACTORIES_PARAM
+    = PREFIX + "adapterFactories";
+  public static final String PHASE_LISTENERS_PARAM
+    = PREFIX + "phaseListeners";
+  public static final String RESOURCES_PARAM
+    = PREFIX + "resources";
+  public static final String BRANDINGS_PARAM
+    = PREFIX + "brandings";
+
+  private static final String SEPARATOR = ",";
 
   private static final String REGISTERED_ENTRY_POINTS
-    = "org.eclipse.swt.registeredEntryPoints";
+    = RWTServletContextListener.class.getName() + "registeredEntryPoints";
   private static final String REGISTERED_PHASE_LISTENERS
-    = "org.eclipse.swt.registeredPhaseListeners";
+    = RWTServletContextListener.class.getName() + "registeredPhaseListeners";
   private static final String REGISTERED_RESOURCES
-    = "org.eclipse.swt.registeredResources";
+    = RWTServletContextListener.class.getName() + "registeredResources";
+  private static final String REGISTERED_BRANDINGS
+    = RWTServletContextListener.class.getName() + "registeredBrandings";
 
   ///////////////////////////////////////////
   // implementation of ServletContextListener
 
   public void contextInitialized( final ServletContextEvent evt ) {
     registerThemes( evt.getServletContext() );
+    registerBrandings( evt.getServletContext() );
     registerEntryPoints( evt.getServletContext() );
     registerResourceManagerFactory( evt.getServletContext() );
     registerAdapterFactories( evt.getServletContext() );
     registerPhaseListener( evt.getServletContext() );
     registerResources( evt.getServletContext() );
     registerUICallBackServiceHandler();
+    LifeCycleServiceHandler.configurer 
+      = new LifeCycleServiceHandlerConfigurer();
+    ResourceUtil.startJsConcatenation();
   }
 
   public void contextDestroyed( final ServletContextEvent evt ) {
     deregisterThemes( evt.getServletContext() );
+    deregisterBrandings( evt.getServletContext() );
     deregisterEntryPoints( evt.getServletContext() );
     deregisterPhaseListeners( evt.getServletContext() );
     deregisterResources( evt.getServletContext() );
     deregisterUICallBackServiceHandler();
+    LifeCycleFactory.destroy();
   }
 
   ////////////////////////////////////////////////////////////
   // helping methods - entry point registration/deregistration
 
-  private static void registerThemes( final ServletContext context ) {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    String value = context.getInitParameter( THEMES_PARAM );
-    ResourceLoader loader = new ResourceLoader() {
-      public InputStream getResourceAsStream( final String resourceName )
-        throws IOException
-      {
-        return context.getResourceAsStream( resourceName );
-      }
-    };
-    if( value != null ) {
-      String[] themes = value.split( "," );
-      for( int i = 0; i < themes.length; i++ ) {
-        String theme = themes[ i ];
-        String[] parts = theme.trim().split( "#" );
-        if( parts.length >= 2 ) {
-          String themeId = parts[ 0 ];
-          String fileName = parts[ 1 ];
-          try {
-            InputStream inStream = context.getResourceAsStream( fileName );
-            if( inStream != null ) {
-              try {
-                String themeName = "Unnamed Theme";
-                manager.registerTheme( themeId,
-                                       themeName,
-                                       inStream,
-                                       loader );
-              } finally {
-                inStream.close();
-              }
-            }
-          } catch( final Exception ex ) {
-            String text = "Failed to register custom theme ''{0}'' "
-              + "from file ''{1}''.";
-            Object[] args = new Object[] { themeId, fileName };
-            String msg = MessageFormat.format( text, args );
-            context.log( msg, ex );
-          }
-        }
-      }
-    }
-  }
-
   private static void registerEntryPoints( final ServletContext context ) {
     Set registeredEntryPoints = new HashSet();
-    String value = context.getInitParameter( ENTRYPOINT_PARAM );
+    String value = context.getInitParameter( ENTRY_POINTS_PARAM );
     if( value != null ) {
-      String[] entryPoints = value.split( "," );
+      String[] entryPoints = value.split( SEPARATOR );
       for( int i = 0; i < entryPoints.length; i++ ) {
         String entryPoint = entryPoints[ i ];
         String[] parts = entryPoint.trim().split( "#" );
@@ -154,11 +121,7 @@ public class RWTServletContextListener implements ServletContextListener {
     setRegisteredEntryPoints( context, registeredEntryPoints );
   }
 
-  private void deregisterThemes( final ServletContext servletContext ) {
-    ThemeManager.getInstance().reset();
-  }
-
-  private void deregisterEntryPoints( final ServletContext context ) {
+  private static void deregisterEntryPoints( final ServletContext context ) {
     String[] entryPoints = getRegisteredEntryPoints( context );
     if( entryPoints != null ) {
       for( int i = 0; i < entryPoints.length; i++ ) {
@@ -195,8 +158,7 @@ public class RWTServletContextListener implements ServletContextListener {
         ResourceManager.register( factory );
       } catch( final Exception ex ) {
         String text = "Failed to register resource manager factory ''{0}''.";
-        Object[] args = new Object[] { factoryName };
-        String msg = MessageFormat.format( text, args );
+        String msg = MessageFormat.format( text, new Object[] { factoryName } );
         context.log( msg, ex );
       }
     } else {
@@ -208,9 +170,9 @@ public class RWTServletContextListener implements ServletContextListener {
   // Helping methods - adapter factory registration
 
   private static void registerAdapterFactories( final ServletContext context ) {
-    String initParam = context.getInitParameter( ADAPTER_FACTORY_PARAM );
+    String initParam = context.getInitParameter( ADAPTER_FACTORIES_PARAM );
     if( initParam != null ) {
-      String[] factoryParams = initParam.split( "," );
+      String[] factoryParams = initParam.split( SEPARATOR );
       for( int i = 0; i < factoryParams.length; i++ ) {
         String[] classNames = factoryParams[ i ].trim().split( "#" );
         if( classNames.length != 2 ) {
@@ -249,9 +211,9 @@ public class RWTServletContextListener implements ServletContextListener {
 
   private static void registerPhaseListener( final ServletContext context ) {
     List phaseListeners = new ArrayList();
-    String initParam = context.getInitParameter( PHASE_LISTENER_PARAM );
+    String initParam = context.getInitParameter( PHASE_LISTENERS_PARAM );
     if( initParam != null ) {
-      String[] listenerNames = initParam.split( "," );
+      String[] listenerNames = initParam.split( SEPARATOR );
       for( int i = 0; i < listenerNames.length; i++ ) {
         String className = listenerNames[ i ].trim();
         try {
@@ -277,11 +239,11 @@ public class RWTServletContextListener implements ServletContextListener {
     context.setAttribute( REGISTERED_PHASE_LISTENERS, registeredListeners );
   }
 
-  private void deregisterPhaseListeners( final ServletContext servletContext ) {
-    PhaseListener[] listeners = getRegisteredPhaseListeners( servletContext );
+  private static void deregisterPhaseListeners( final ServletContext context ) {
+    PhaseListener[] listeners = getRegisteredPhaseListeners( context );
     if( listeners != null ) {
       for( int i = 0; i < listeners.length; i++ ) {
-        LifeCycleFactory.getLifeCycle().removePhaseListener( listeners[ i ] );
+        PhaseListenerRegistry.remove( listeners[ i ] );
       }
     }
   }
@@ -292,11 +254,14 @@ public class RWTServletContextListener implements ServletContextListener {
     return ( PhaseListener[] )ctx.getAttribute( REGISTERED_PHASE_LISTENERS );
   }
 
-  private void registerResources( final ServletContext context ) {
+  //////////////////////////////////////////
+  // Helping methods - resource registration
+  
+  private static void registerResources( final ServletContext context ) {
     List resources = new ArrayList();
-    String initParam = context.getInitParameter( RESOURCE_PARAM );
+    String initParam = context.getInitParameter( RESOURCES_PARAM );
     if( initParam != null ) {
-      String[] resourceClassNames = initParam.split( "," );
+      String[] resourceClassNames = initParam.split( SEPARATOR );
       for( int i = 0; i < resourceClassNames.length; i++ ) {
         String className = resourceClassNames[ i ].trim();
         try {
@@ -319,10 +284,69 @@ public class RWTServletContextListener implements ServletContextListener {
     context.setAttribute( REGISTERED_RESOURCES, registeredResources );
   }
 
-  private void deregisterResources( final ServletContext context ) {
+  private static void deregisterResources( final ServletContext context ) {
     ResourceRegistry.clear();
   }
 
+  ///////////////////////////////////////
+  // Helping methods - theme registration
+  
+  private static void registerThemes( final ServletContext context ) {
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.initialize();
+    String value = context.getInitParameter( THEMES_PARAM );
+    ResourceLoader loader = new ResourceLoader() {
+      public InputStream getResourceAsStream( final String resourceName )
+        throws IOException
+      {
+        // IMPORTANT: use ClassLoader#getResourceAsStream instead of 
+        // Class#getResourceAsStream to retrieve resource (see respective 
+        // JavaDoc)
+        return getClass().getClassLoader().getResourceAsStream( resourceName );
+      }
+    };
+    if( value != null ) {
+      String[] themes = value.split( SEPARATOR );
+      for( int i = 0; i < themes.length; i++ ) {
+        String[] parts = themes[ i ].trim().split( "#" );
+        if( parts.length >= 2 ) {
+          String themeId = parts[ 0 ];
+          String fileName = parts[ 1 ];
+          try {
+            InputStream inStream = loader.getResourceAsStream( fileName );
+            if( inStream != null ) {
+              try {
+                String themeName = "Unnamed Theme: " + themeId;
+                manager.registerTheme( themeId, themeName, inStream, loader );
+              } finally {
+                inStream.close();
+              }
+            } else {
+              String text = "Theme file ''{0}'' could not be found.";
+              Object[] args = new Object[] { fileName };
+              String msg = MessageFormat.format( text, args );
+              context.log( msg );
+            }
+          } catch( final IOException ex ) {
+            String text 
+              = "Failed to register custom theme ''{0}'' "
+              + "from resource ''{1}''.";
+            Object[] args = new Object[] { themeId, fileName };
+            String msg = MessageFormat.format( text, args );
+            context.log( msg, ex );
+          }
+        }
+      }
+    }
+  }
+
+  private static void deregisterThemes( final ServletContext servletContext ) {
+    ThemeManager.getInstance().reset();
+  }
+
+  ////////////////////////////////////////////////
+  // Helping methods - UI callback service handler
+  
   private static void registerUICallBackServiceHandler() {
     ServiceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID,
                                            new UICallBackServiceHandler() );
@@ -331,5 +355,50 @@ public class RWTServletContextListener implements ServletContextListener {
   private static void deregisterUICallBackServiceHandler() {
     String id = UICallBackServiceHandler.HANDLER_ID;
     ServiceManager.unregisterServiceHandler( id );
+  }
+
+  //////////////////////////////////////////
+  // Helping methods - branding registration
+  
+  private static void registerBrandings( final ServletContext servletContext ) {
+    String value = servletContext.getInitParameter( BRANDINGS_PARAM );
+    if( value != null ) {
+      List registeredBrandings = new ArrayList(); 
+      String[] brandings = value.split( SEPARATOR );
+      for( int i = 0; i < brandings.length; i++ ) {
+        String className = brandings[ i ].trim();
+        try {
+          Object newInstance = Class.forName( className ).newInstance();
+          AbstractBranding branding = ( AbstractBranding )newInstance;
+          BrandingManager.register( branding );
+          registeredBrandings.add( branding );
+        } catch( Exception e ) {
+          String text = "Failed to register branding ''{0}''.";
+          String msg = MessageFormat.format( text, new Object[] { className } );
+          servletContext.log( msg, e );
+        }
+      }
+      setRegisteredBrandings( servletContext, registeredBrandings );
+    }
+  }
+  
+  private static void setRegisteredBrandings( final ServletContext context, 
+                                              final List brandings ) 
+  {
+    AbstractBranding[] registeredBrandings = new AbstractBranding[ brandings.size() ];
+    brandings.toArray( registeredBrandings );
+    context.setAttribute( REGISTERED_BRANDINGS, registeredBrandings );
+    
+  }
+  
+  private static void deregisterBrandings( final ServletContext servletContext ) 
+  {
+    AbstractBranding[] brandings 
+      = ( AbstractBranding[] )servletContext.getAttribute( REGISTERED_BRANDINGS );
+    if( brandings != null ) {
+      for( int i = 0; i < brandings.length; i++ ) {
+        BrandingManager.deregister( brandings[ i ] );
+      }
+    }
   }
 }

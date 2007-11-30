@@ -11,7 +11,6 @@
 
 package org.eclipse.swt.graphics;
 
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.IColor;
 
 /**

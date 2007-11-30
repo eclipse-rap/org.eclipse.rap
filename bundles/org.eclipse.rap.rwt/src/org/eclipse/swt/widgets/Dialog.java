@@ -9,7 +9,6 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 
 /**
  * This class is the abstract superclass of the classes

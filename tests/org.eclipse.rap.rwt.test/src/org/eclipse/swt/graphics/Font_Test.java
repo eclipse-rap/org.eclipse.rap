@@ -36,6 +36,10 @@ public class Font_Test extends TestCase {
     sameFont = Graphics.getFont( new FontData( "roman", 1, SWT.NORMAL ) );
     assertSame( font, sameFont );
     assertSame( font.getFontData()[ 0 ], font.getFontData()[ 0 ] );
+
+    Font arial13Normal = Graphics.getFont( "arial", 13, SWT.NORMAL );
+    Font arial12Bold = Graphics.getFont( "arial", 12, SWT.BOLD );
+    assertNotSame( arial13Normal, arial12Bold );
   }
 
   public void testGetFontData() {

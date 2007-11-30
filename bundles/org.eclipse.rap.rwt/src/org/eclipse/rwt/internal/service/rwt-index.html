@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+  <head>
+    <title>${title}</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    ${headers}
+  </head>
+
+  <body background="resource/widget/rap/display/bg.gif">
+
+    <!-- body of branding -->
+    ${body}
+    <!-- end body of branding --> 
+
+    <!-- rap runtime javascript libraries -->
+    ${libraries}
+    <!-- end rap runtime javascript libraries -->
+
+    <!-- validation and retrievment of startup conditions -->
+    <script type="text/javascript">
+      var org_eclipse_rap_width = 1024;
+      var org_eclipse_rap_height = 768;
+
+      function discoverAjax() {
+        var result;
+        if( window.ActiveXObject ) {
+          result = false;
+          var requestObject = null;
+          try {
+            requestObject = new ActiveXObject( "Msxml2.XMLHTTP" );
+          } catch ( e ) {
+            try {
+              requestObject = new ActiveXObject( "Microsoft.XMLHTTP" );
+            } catch( e ) {
+            }
+          }
+          result = requestObject != null;
+        } else if( window.XMLHttpRequest ) {
+          result = true;
+        }
+        return result;
+      }
+  
+      function discoverSize() {
+        if( document.layers || ( document.getElementById && !document.all ) ) {
+          org_eclipse_rap_width = window.innerWidth;
+          org_eclipse_rap_height = window.innerHeight;
+        } else if( document.all ) {
+          org_eclipse_rap_width = document.body.clientWidth;
+          org_eclipse_rap_height = document.body.clientHeight;
+        }  
+      }
+      
+      function appendInitParameters() {
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( "w4t_survey", "true" );
+        req.addParameter( "w4t_scriptEnabled", "true" );
+        req.addParameter( "w4t_ajaxEnabled", "true" );
+        req.addParameter( "startup", "${startup}" );
+        req.addParameter( "w4t_width", org_eclipse_rap_width );
+        req.addParameter( "w4t_height", org_eclipse_rap_height );
+      }
+
+      if( discoverAjax() ) {
+        discoverSize();
+        // append application init parameters
+        appendInitParameters();
+        // rap runtime application
+        ${appScript}
+        ${exitConfirmation}
+        // end rap runtime application
+      } else {
+        // write unsupported browser or security message
+        document.write( "<p>Your browser or settings are not supported. " );
+        document.write( "Please use one of those: IE 6 or higher, " );
+        document.write( "Firefox 1.5 or higher or Opera 10 or higher. " );
+        document.write( "Ensure that javascript is enabled and " );
+        document.write( "XMLHttpRequests are allowed.</p>" );
+      }
+    </script>
+  </body>
+</html>

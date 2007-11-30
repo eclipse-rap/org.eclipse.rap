@@ -11,9 +11,7 @@
 
 package org.eclipse.rwt.lifecycle;
 
-import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -37,8 +35,8 @@ public final class UICallBack {
    * @param runnable The runnable that contains the critical code that 
    *                 needs to have access to a request context.
    *        
-   * @see SessionSingletonBase
-   * @see ContextProvider
+   * @see org.eclipse.rwt.SessionSingletonBase
+   * @see org.eclipse.rwt.internal.service.ContextProvider
    */
   public static void runNonUIThreadWithFakeContext( final Display display,
                                                     final Runnable runnable )

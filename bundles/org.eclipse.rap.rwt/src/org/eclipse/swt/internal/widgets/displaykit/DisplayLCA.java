@@ -319,10 +319,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       
       Set disposeHandler = getAlreadyRegisteredHandlers();
       String key = lca.getTypePoolId( toDispose );
-      if( !( key == null ) && !disposeHandler.contains( key ) ) {
+      if( key != null && !disposeHandler.contains( key ) ) {
         JSWriter writer = JSWriter.getWriterFor( toDispose );
         Object[] params = new Object[] { 
-          key == null ? null : new Integer( key.hashCode() ), 
+          new Integer( key.hashCode() ), 
           DISPOSE_HANDLER_START
         };
         writer.startCall( JSWriter.WIDGET_MANAGER_REF,

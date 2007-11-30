@@ -204,7 +204,7 @@ public final class Theme {
 
   private void checkName( final String name ) {
     if( name == null ) {
-      throw new NullPointerException( "null argument" );
+      throw new NullPointerException( "name" );
     }
     if( name.length() == 0 ) {
       throw new IllegalArgumentException( "empty argument" );

@@ -11,7 +11,6 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 
 /**
  * Instances of this class are graphics which have been prepared

@@ -16,10 +16,6 @@ import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
-/**
- * TODO [rh] JavaDoc
- * <p></p>
- */
 public final class ResourceManager {
   
   private static IResourceManagerFactory factory;

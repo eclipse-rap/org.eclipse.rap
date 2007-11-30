@@ -22,12 +22,10 @@ import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 
-/**
- * TODO [rh] JavaDoc
- */
 public final class EntryPointManager {
 
   public static final String DEFAULT = "default";
+  
   private static final String CURRENT_ENTRY_POINT
     = EntryPointManager.class.getName() + ".CurrentEntryPointName";
 

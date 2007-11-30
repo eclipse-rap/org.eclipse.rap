@@ -61,12 +61,12 @@ public class PhaseListenerRegistry_Test extends TestCase {
     Fixture.removeContext();
   }
   
-  public void testAddAndGetAndClear() {
+  public void testAddAndRemoveAndGetAndClear() {
     PhaseListener phaseListener = new PhaseListener() {
       private static final long serialVersionUID = 1L;
-      public void afterPhase( PhaseEvent event ) {
+      public void afterPhase( final PhaseEvent event ) {
       }
-      public void beforePhase( PhaseEvent event ) {
+      public void beforePhase( final PhaseEvent event ) {
       }
       public PhaseId getPhaseId() {
         return null;
@@ -77,6 +77,10 @@ public class PhaseListenerRegistry_Test extends TestCase {
     assertEquals( phaseListener, PhaseListenerRegistry.get()[ 0 ] );
     // clear
     PhaseListenerRegistry.clear();
+    assertEquals( 0, PhaseListenerRegistry.get().length );
+    // remove
+    PhaseListenerRegistry.add( phaseListener );
+    PhaseListenerRegistry.remove( phaseListener );
     assertEquals( 0, PhaseListenerRegistry.get().length );
   }
   

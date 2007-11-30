@@ -11,8 +11,6 @@
 
 package org.eclipse.rwt.internal.theme;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -20,24 +18,24 @@ import org.eclipse.rwt.service.ISessionStore;
 /**
  * Used to switch between themes at runtime.
  */
-public class ThemeUtil {
+public final class ThemeUtil {
 
   private static final String THEME_URL_PARM = "theme";
   private static final String CURR_THEME_ATTR
     = "org.eclipse.rap.theme.current";
 
   public static String[] getAvailableThemeIds() {
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    return themeMgr.getRegisteredThemeIds();
+    return ThemeManager.getInstance().getRegisteredThemeIds();
   }
 
   public static String getCurrentThemeId() {
-    // 1) try URL parameter
-    HttpServletRequest request = ContextProvider.getRequest();
-    String result = request.getParameter( THEME_URL_PARM );
     ThemeManager manager = ThemeManager.getInstance();
     ISessionStore session = ContextProvider.getSession();
+    // 1) try URL parameter
+    String result = ContextProvider.getRequest().getParameter( THEME_URL_PARM );
     if( result != null && manager.hasTheme( result ) ) {
+      // TODO [rh] a method named get... should be constant, i.e. shouldn't 
+      //      have side-effects like altering session attributes 
       session.setAttribute( CURR_THEME_ATTR, result );
     }
     // 2) try session attribute
@@ -51,14 +49,18 @@ public class ThemeUtil {
     return result;
   }
 
-  public static void setCurrentTheme( final String themeId ) {
-    ISessionStore session = ContextProvider.getSession();
-    session.setAttribute( CURR_THEME_ATTR, themeId );
+  public static void setCurrentThemeId( final String themeId ) {
+    // TODO [rh] consider throwing exception if themeId does not exist.
+    //      currently leads to exceptions in theme adapters that are difficult
+    //      to assign to the actual reason
+    ContextProvider.getSession().setAttribute( CURR_THEME_ATTR, themeId );
   }
 
   public static Theme getTheme() {
-    String themeName = getCurrentThemeId();
-    ThemeManager themeMgr = ThemeManager.getInstance();
-    return themeMgr.getTheme( themeName );
+    return ThemeManager.getInstance().getTheme( getCurrentThemeId() );
+  }
+  
+  private ThemeUtil() {
+    // prevent instantiation
   }
 }

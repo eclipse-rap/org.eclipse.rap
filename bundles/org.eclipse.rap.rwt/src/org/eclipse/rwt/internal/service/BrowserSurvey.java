@@ -56,18 +56,33 @@ public final class BrowserSurvey {
     }
   }
 
+  public static String getSerlvetName() {
+    String result = ContextProvider.getRequest().getServletPath();
+    if( result.startsWith( "/" ) ) {
+      result = result.substring( 1 );
+    }
+    return result;
+  }
+
+  public static void replacePlaceholder( final StringBuffer buffer, 
+                                         final String placeHolder, 
+                                         final String replacement ) 
+  {
+    int index;
+    index = buffer.indexOf( placeHolder );
+    while( index != -1 ) {
+      buffer.replace( index, index + placeHolder.length(), replacement );
+      index = buffer.indexOf( placeHolder );
+    }
+  }
+  
   private static void renderScript() throws IOException {
     ContextProvider.getResponse().setContentType( HTML.CONTENT_TEXT_HTML );
     StringBuffer buffer = new StringBuffer();
     load( buffer );
-    LifeCycleServiceHandler.configurer.registerResources();
-    String servletName = ContextProvider.getRequest().getServletPath();
-    if( servletName.startsWith( "/" ) ) {
-      servletName = servletName.substring( 1 );
-    }
     // TODO [fappel]: check whether servletName has to be url encoded
     //                in case the client has switched of cookies
-    replacePlaceholder( buffer, "${servlet}", servletName );
+    replacePlaceholder( buffer, "${servlet}", getSerlvetName() );
     replacePlaceholder( buffer, "${fallbackUrl}", createURL() );
     replacePlaceholder( buffer, "${adminOrStartup}", adminOrStartup() );
     replacePlaceholder( buffer, "${entrypoint}", getEntryPoint() );
@@ -89,18 +104,6 @@ public final class BrowserSurvey {
     code.append( "', '_self' );");
     writer.append( HTMLUtil.createJavaScriptInline( code.toString() ) );
     writer.append( HTML.END_AJAX_RESPONSE );
-  }
-
-  public static void replacePlaceholder( final StringBuffer buffer, 
-                                         final String placeHolder, 
-                                         final String replacement ) 
-  {
-    int index;
-    index = buffer.indexOf( placeHolder );
-    while( index != -1 ) {
-      buffer.replace( index, index + placeHolder.length(), replacement );
-      index = buffer.indexOf( placeHolder );
-    }
   }
 
   // helping methods

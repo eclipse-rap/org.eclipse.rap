@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
-import org.eclipse.rwt.internal.AdapterManager;
 
 
 
@@ -31,9 +30,7 @@ import org.eclipse.rwt.internal.AdapterManager;
  * </p>
  *
  * @since 1.0
- * @see AdapterFactory
- * @see AdapterManager
- * <!-- @see W4TContext#getAdapterManager() -->
+ * @see org.eclipse.rwt.AdapterFactory
  */
 public interface Adaptable {
 

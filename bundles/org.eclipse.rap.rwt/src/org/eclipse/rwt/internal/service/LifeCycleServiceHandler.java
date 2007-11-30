@@ -76,8 +76,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
       }
       return result;
     }
-    public void registerResources() throws IOException {
-    }
     public boolean isStartupPageModifiedSince() {
       return true;
     }
@@ -89,7 +87,6 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
   public interface ILifeCycleServiceHandlerConfigurer {
     InputStream getTemplateOfStartupPage() throws IOException;
     boolean isStartupPageModifiedSince();
-    void registerResources() throws IOException;
     LifeCycleServiceHandlerSync getSynchronizationHandler();
   }
     

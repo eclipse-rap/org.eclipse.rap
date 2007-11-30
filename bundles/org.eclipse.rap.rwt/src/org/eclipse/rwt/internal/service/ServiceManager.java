@@ -34,7 +34,7 @@ import org.w3c.dom.*;
 //      IServiceHandler
 // TODO [rh] access to customHandlers Map is unsynchronized and may cause
 //      trouble in case of unproper use
-public class ServiceManager {
+public final class ServiceManager {
   
   private static final String SERVICEHANDLER_XML = "servicehandler.xml";
 

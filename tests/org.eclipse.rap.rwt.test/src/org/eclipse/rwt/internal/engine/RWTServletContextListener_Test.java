@@ -17,13 +17,14 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
+import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
@@ -36,15 +37,17 @@ import org.eclipse.swt.widgets.*;
 public class RWTServletContextListener_Test extends TestCase {
   
   private static final String ENTRYPOINT 
-    = RWTServletContextListener.ENTRYPOINT_PARAM;
+    = RWTServletContextListener.ENTRY_POINTS_PARAM;
   private static final String RESOURCE_MANAGER_FACTORY
     = RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM;
   private static final String ADAPTER_FACTORY
-    = RWTServletContextListener.ADAPTER_FACTORY_PARAM;
+    = RWTServletContextListener.ADAPTER_FACTORIES_PARAM;
   private static final String PHASE_LISTENER_PARAM 
-    = RWTServletContextListener.PHASE_LISTENER_PARAM;
+    = RWTServletContextListener.PHASE_LISTENERS_PARAM;
   private static final String RESOURCE_PARAM 
-    = RWTServletContextListener.RESOURCE_PARAM;
+    = RWTServletContextListener.RESOURCES_PARAM;
+  private static final String BRANDING_PARAM
+    = RWTServletContextListener.BRANDINGS_PARAM;
 
   private static String phaseListenerLog = "";
 
@@ -93,6 +96,9 @@ public class RWTServletContextListener_Test extends TestCase {
     }
   }
   
+  public static class TestBranding extends AbstractBranding {
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     savedLifeCycle = System.getProperty( IInitialization.PARAM_LIFE_CYCLE );
@@ -242,15 +248,17 @@ public class RWTServletContextListener_Test extends TestCase {
     lifeCycle.execute();
     assertTrue( phaseListenerLog.length() > 0 );
     
-    // Ensure that phase listeners are removed when context is destroyed
+    // Ensure that phase listeners are removed from the registry when context 
+    // is destroyed
     listener = new RWTServletContextListener();
     listener.contextDestroyed( new ServletContextEvent( servletContext ) );
-    phaseListenerLog = "";
-    ThemeManager.getInstance().initialize();
-    lifeCycle.execute();
-// TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
-//    ThemeManager.getInstance().deregisterAll();
-    assertEquals( "", phaseListenerLog );
+    PhaseListener[] phaseListeners = PhaseListenerRegistry.get();
+    for( int i = 0; i < phaseListeners.length; i++ ) {
+      if( phaseListeners[ i ] instanceof TestPhaseListener ) {
+        fail( "Failed to remove phase listener when context was destroyed" );
+      }
+    }
+    // clean up
     deregisterResourceManager();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
@@ -291,6 +299,28 @@ public class RWTServletContextListener_Test extends TestCase {
 
     deregisterResourceManager();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
+  }
+  
+  public void testBrandingInitialization() {
+    ContextProvider.disposeContext();
+    RWTServletContextListener listener = new RWTServletContextListener();
+    TestServletContext servletContext = new TestServletContext();
+    servletContext.setInitParameter( BRANDING_PARAM,
+                                     TestBranding.class.getName() );
+    // simulate context initialization
+    listener.contextInitialized( new ServletContextEvent( servletContext ) );
+    assertEquals( 1, BrandingManager.getAll().length );
+    assertEquals( TestBranding.class, 
+                  BrandingManager.getAll()[ 0 ].getClass() );
+    // simulate context de-initialization
+    TestResponse response = new TestResponse();
+    TestRequest request = new TestRequest();
+    request.setSession( new TestSession() );
+    Fixture.fakeContextProvider( response, request );
+    listener.contextDestroyed( new ServletContextEvent( servletContext ) );
+    assertEquals( 0, BrandingManager.getAll().length );
+    // clean up
+    deregisterResourceManager();
   }
 
   private void deregisterResourceManager() {

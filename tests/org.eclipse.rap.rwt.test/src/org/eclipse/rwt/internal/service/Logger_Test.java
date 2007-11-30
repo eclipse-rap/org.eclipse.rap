@@ -76,8 +76,6 @@ public class Logger_Test extends TestCase {
       public boolean isStartupPageModifiedSince() {
         return true;
       }
-      public void registerResources() throws IOException {
-      }
     };
   }
   

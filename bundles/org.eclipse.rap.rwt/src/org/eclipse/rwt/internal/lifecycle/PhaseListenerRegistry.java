@@ -36,6 +36,11 @@ public final class PhaseListenerRegistry {
     phaseListeners.add( listener );
   }
   
+  public static void remove( final PhaseListener listener ) {
+    ParamCheck.notNull( listener, "listener" );
+    phaseListeners.remove( listener );
+  }
+
   public static PhaseListener[] get() {
     PhaseListener[] result = new PhaseListener[ phaseListeners.size() ];
     phaseListeners.toArray( result );

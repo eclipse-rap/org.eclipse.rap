@@ -14,7 +14,7 @@ package org.eclipse.rwt.internal.service;
   * W4T framework.</p>
   */
 // TODO [rh] prefix all request parameters with 'w4t'
-// TODO [w4t] extract constans that are common to rwt and w4t, then move back
+// TODO [w4t] extract constants that are common to rwt and w4t, then move back
 public interface RequestParams {
  
   /** <p>Request parameter <em>value</em> used to mark event parameters as 

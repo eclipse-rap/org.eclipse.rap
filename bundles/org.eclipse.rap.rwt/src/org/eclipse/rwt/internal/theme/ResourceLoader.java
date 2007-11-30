@@ -17,6 +17,5 @@ import java.io.InputStream;
 
 public interface ResourceLoader {
 
-  abstract InputStream getResourceAsStream( String resourceName )
-    throws IOException;
+  InputStream getResourceAsStream( String resourceName ) throws IOException;
 }

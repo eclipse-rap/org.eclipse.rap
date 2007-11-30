@@ -12,7 +12,9 @@
 package org.eclipse.rwt.internal.theme;
 
 
-public class ThemeManagerException extends RuntimeException {
+public final class ThemeManagerException extends RuntimeException {
+
+  private static final long serialVersionUID = 1L;
 
   public ThemeManagerException( final String message, final Throwable cause ) {
     super( message, cause );

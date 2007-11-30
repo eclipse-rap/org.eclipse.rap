@@ -16,7 +16,6 @@ import java.util.*;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.*;
-import org.eclipse.rwt.resources.IResourceManager;
 
 
 
@@ -280,10 +279,12 @@ public class HtmlResponseWriter extends Writer {
    * will cause a &lt;script&gt;-tag referencing the library to be rendered at
    * the adequate place.</p>
    * <p>Prior to calling this methid, the given <code>libraryName</code> must
-   * be registered with the {@link IResourceManager IResourceManager} using one 
-   * of these two register-methods: 
-   * {@link IResourceManager#register(String, String) register(String, String)},
-   * {@link IResourceManager#register(String, String, org.eclipse.rwt.resources.IResourceManager.RegisterOptions)
+   * be registered with the {@link org.eclipse.rwt.resources.IResourceManager 
+   * IResourceManager} using one of these two register-methods: 
+   * {@link org.eclipse.rwt.resources.IResourceManager#register(String, String) 
+   * register(String, String)}, 
+   * {@link org.eclipse.rwt.resources.IResourceManager#register(String, String, 
+   * org.eclipse.rwt.resources.IResourceManager.RegisterOptions)
    * register(String, String, RegisterOptions)}</p>
    * <p>Calling this method for an already registered <code>libraryName</code>
    * has no effect.</p>

@@ -11,10 +11,9 @@
 
 package org.eclipse.swt.browser;
 
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Widget;
 
 
 /**
@@ -80,7 +79,7 @@ public class Browser extends Composite {
    *    <li>ERROR_NO_HANDLES if a handle could not be obtained for browser creation</li>
    * </ul>
    * 
-   * @see Widget#getStyle
+   * @see org.eclipse.swt.Widget#getStyle
    */
   public Browser( final Composite parent, final int style ) {
     super( parent, style );

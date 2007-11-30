@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.eclipse.rwt.resources.IResourceManager;
  * <p>Utility class used by <code>org.eclipse.rap.engine.util.ResourceManager</code> 
  * to read (including optional compression) and write resources.</p>
  */
-final class ResourceUtil {
+public final class ResourceUtil {
   
   private static final String ONE_LINE_COMMENT = "//";
   private static final String MULTI_LINE_COMMENT_START = "/*";
@@ -88,7 +88,7 @@ final class ResourceUtil {
     }
   }
   
-  static void startJsConcatenation() {
+  public static void startJsConcatenation() {
     jsConcatenationBuffer = new ByteArrayOutputStream();
   }
  

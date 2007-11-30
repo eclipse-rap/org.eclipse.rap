@@ -113,8 +113,6 @@ public class WrappedRequest_Test extends TestCase {
       public boolean isStartupPageModifiedSince() {
         return true;
       }
-      public void registerResources() throws IOException {
-      }
     };
 
     String p1 = "p1";

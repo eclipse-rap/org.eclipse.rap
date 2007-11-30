@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
-import org.eclipse.rwt.internal.AdapterManager;
 
 
 /** 
@@ -21,9 +20,8 @@ import org.eclipse.rwt.internal.AdapterManager;
  * <p>AdapterFactories are registered with an global adapter manager.</p>
  * 
  * @since 1.0
- * @see AdapterManager
- * @see Adaptable
- * <!-- @see W4TContext#getAdapterManager() --> */
+ * @see org.eclipse.rwt.Adaptable
+ */
 public interface AdapterFactory {
     
   /**

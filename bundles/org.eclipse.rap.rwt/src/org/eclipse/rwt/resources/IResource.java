@@ -11,7 +11,6 @@
 
 package org.eclipse.rwt.resources;
 
-import org.eclipse.rwt.internal.util.HTML;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 /**
