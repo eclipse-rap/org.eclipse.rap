@@ -41,16 +41,6 @@ public class QxTheme_Test extends TestCase {
     assertTrue( code.endsWith( "} );\n" ) );
   }
   
-  public void testNoValuesAppended() throws Exception {
-    QxTheme theme = new QxTheme( "my.theme.Foo", "Foo Theme", QxTheme.COLOR );
-    try {
-      theme.getJsCode();
-      fail( "ISE expected" );
-    } catch( final IllegalStateException e ) {
-      // expected
-    }
-  }
-  
   public void testTailAlreadyWritten() throws Exception {
     QxTheme theme = new QxTheme( "my.theme.Foo", "Foo Theme", QxTheme.COLOR );
     theme.appendColor( "foo", new QxColor( "#f00" ) );

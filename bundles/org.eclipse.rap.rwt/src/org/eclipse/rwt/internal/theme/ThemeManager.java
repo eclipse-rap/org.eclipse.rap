@@ -325,13 +325,15 @@ public final class ThemeManager {
     checkInitialized();
     log( "____ ThemeManager register resources" );
     registerJsLibrary( "org/eclipse/swt/theme/BordersBase.js" );
+    registerJsLibrary( "org/eclipse/swt/theme/AppearancesBase.js" );
+    registerJsLibrary( "org/eclipse/swt/theme/Dimensions.js" );
     Iterator iterator = themes.keySet().iterator();
     while( iterator.hasNext() ) {
       String id = ( String )iterator.next();
       registerThemeFiles( id );
     }
   }
-
+  
   /**
    * Determines whether a theme with the specified id has been registered.
    * 
@@ -689,6 +691,7 @@ public final class ThemeManager {
         sb.append( createWidgetTheme( wrapper.theme, jsId ) );
         sb.append( createAppearanceTheme( wrapper.theme, jsId ) );
         sb.append( createMetaTheme( wrapper.theme, jsId ) );
+        sb.append( createDimensionValues( wrapper.theme, jsId ) );
         String themeCode = sb.toString();
         log( "-- REGISTERED THEME CODE FOR " + themeId + " --" );
         log( themeCode );
@@ -884,24 +887,14 @@ public final class ThemeManager {
   }
 
   private String createAppearanceTheme( final Theme theme, final String id ) {
-    ClassLoader classLoader = ThemeManager.class.getClassLoader();
-    String resource = "org/eclipse/swt/theme/DefaultAppearances.js";
-    InputStream inStr = classLoader.getResourceAsStream( resource );
-    String content;
-    try {
-      content = readFromInputStream( inStr, "UTF-8" );
-    } catch( final IOException e ) {
-      String message = "Unable to load file " + resource;
-      throw new ThemeManagerException( message , e );
-    }
-    String template = stripTemplate( content );
-    String appearances = substituteTemplate( template, theme );
-    QxTheme appTheme = new QxTheme( id, theme.getName(), QxTheme.APPEARANCE );
-    appTheme.appendValues( appearances );
+    QxTheme appTheme = new QxTheme( id,
+                                    theme.getName(),
+                                    QxTheme.APPEARANCE,
+                                    "org.eclipse.swt.theme.AppearancesBase" );
     Iterator iterator = addAppearances.iterator();
     while( iterator.hasNext() ) {
       String addAppearance = ( String )iterator.next();
-      appTheme.appendValues( substituteTemplate( addAppearance, theme ) );
+      appTheme.appendValues( substituteMacros( addAppearance, theme ) );
     }
     return appTheme.getJsCode();
   }
@@ -916,11 +909,35 @@ public final class ThemeManager {
     metaTheme.appendTheme( "appearance", id + "Appearances" );
     return metaTheme.getJsCode();
   }
+  
+  private static String createDimensionValues( final Theme theme,
+                                               final String jsId )
+  {
+    StringBuffer sb = new StringBuffer();
+    String[] keys = theme.getKeys();
+    Arrays.sort( keys );
+    sb.append( "dim = org.eclipse.swt.theme.Dimensions.getInstance()\n" );
+    for( int i = 0; i < keys.length; i++ ) {
+      Object value = theme.getValue( keys[ i ] );
+      String key = keys[ i ];
+      if( value instanceof QxDimension ) {
+        QxDimension dim = ( QxDimension )value;
+        String val = String.valueOf( dim.value );
+        sb.append( "dim.set( \"" + key + "\", \"" + jsId + "\", " + val + " );\n" );
+      } else if( value instanceof QxBoxDimensions ) {
+        QxBoxDimensions boxdim = ( QxBoxDimensions )value;
+        String val = String.valueOf( boxdim.toJsArray() );
+        sb.append( "dim.set( \"" + key + "\", \"" + jsId + "\", " + val + " );\n" );
+      }
+    }
+    sb.append( "delete dim;\n" );
+    return sb.toString();
+  }
 
   /**
-   * Returns the clint side widget path, i.e. the path to which qooxdoo
-   * icon resources starting with "widget/" are mapped.
-   *
+   * Returns the clint side widget path, i.e. the path to which qooxdoo icon
+   * resources starting with "widget/" are mapped.
+   * 
    * @param jsThemeId the theme id
    */
   private String getWidgetDestPath( final String jsThemeId ) {
@@ -948,8 +965,16 @@ public final class ThemeManager {
     return input.substring( beginIndex, endIndex );
   }
 
-  static String substituteTemplate( final String template,
-                                    final Theme theme )
+  /**
+   * Replaces all THEME_VALUE() macros in a given template with the actual
+   * values from the specified theme.
+   * 
+   * @param template the template string that contains the macros to replace
+   * @param theme the theme to get the values from
+   * @return the template string with all macros replaced
+   */
+  static String substituteMacros( final String template,
+                                  final Theme theme )
   {
     Matcher matcher = PATTERN_REPLACE.matcher( template );
     StringBuffer sb = new StringBuffer();

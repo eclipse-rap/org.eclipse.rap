@@ -9,10 +9,11 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-// TODO [rst] This file is now read and substituted by the ThemeManager and may
-//            be renamed in the future.
-appearances = {
-// BEGIN TEMPLATE (do not remove this line)
+qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
+{
+  title : "Appearances Base Theme",
+
+  appearances : {
 
   "empty" : {
   },
@@ -261,8 +262,7 @@ appearances = {
         result.padding = [ 3, 4, 3, 4 ];
       }
       
-      result.spacing = THEME_VALUE( "button.spacing" );
-
+      result.spacing = org.eclipse.swt.theme.Dimensions.getInstance().get( "button.spacing" );
       return result;
     }
   },
@@ -404,9 +404,10 @@ appearances = {
   "window-captionbar" :
   {
     style : function( states ) {
+      var dimensions = org.eclipse.swt.theme.Dimensions.getInstance();
       var result = {
-        margin : THEME_VALUE( "shell.title.margin" ),
-        padding : THEME_VALUE( "shell.title.padding" ),
+        margin : dimensions.get( "shell.title.margin" ),
+        padding : dimensions.get( "shell.title.padding" ),
         verticalChildrenAlign : "middle"
       };
       if( states.active ) {
@@ -419,8 +420,8 @@ appearances = {
         result.backgroundImage = "widget/window/caption_inactive.gif";
       }
       if( states.rwt_TITLE ) {
-        result.minHeight = THEME_VALUE( "shell.title.height" );
-        result.maxHeight = THEME_VALUE( "shell.title.height" );
+        result.minHeight = dimensions.get( "shell.title.height" );
+        result.maxHeight = dimensions.get( "shell.title.height" );
       } else {
         result.minHeight = 0;
         result.maxHeight = 0;
@@ -462,7 +463,7 @@ appearances = {
   {
     style : function( states ) {
       var result = {
-        margin : THEME_VALUE( "shell.button.margin" )
+        margin : org.eclipse.swt.theme.Dimensions.getInstance().get( "shell.button.margin" )
       };
       return result;
     }
@@ -618,7 +619,7 @@ appearances = {
         backgroundColor : "menu.background",
         overflow : "hidden",
         border : "menu.border",
-        padding : THEME_VALUE( "menu.padding" )
+        padding : org.eclipse.swt.theme.Dimensions.getInstance().get( "menu.padding" )
       };
     }
   },
@@ -785,7 +786,7 @@ appearances = {
       return {
         border : states.rwt_BORDER ? "text.BORDER.border" : "text.border",
         font : "widget.font",
-        padding : THEME_VALUE( "text.SINGLE.padding" ),
+        padding : org.eclipse.swt.theme.Dimensions.getInstance().get( "text.SINGLE.padding" ),
         textColor : states.disabled ? "widget.graytext" : "undefined",
         backgroundColor : "list.background"
       };
@@ -1184,11 +1185,12 @@ appearances = {
     include : "atom",
 
     style : function( states ) {
+      var dimensions = org.eclipse.swt.theme.Dimensions.getInstance();
       return {
         top : 0,
         left : 0,
-        padding : THEME_VALUE( "group.label.padding" ),
-        margin : THEME_VALUE( "group.label.margin" ),
+        padding : dimensions.get( "group.label.padding" ),
+        margin : dimensions.get( "group.label.margin" ),
         font : "group.label.font",
         backgroundColor : "widget.background"
 // TODO [rst] Group label is not grayed out in SWT - check other toolkits
@@ -1205,7 +1207,7 @@ appearances = {
         left : 0,
         right : 0,
         bottom : 0,
-        margin : THEME_VALUE( "group.margin" ),
+        margin : org.eclipse.swt.theme.Dimensions.getInstance().get( "group.margin" ),
         border : "group.frame.border"
       };
     }
@@ -1235,7 +1237,7 @@ appearances = {
         left : 0,
         right : 0,
         bottom : 0,
-        padding : THEME_VALUE( "text.SINGLE.padding" ),
+        padding : org.eclipse.swt.theme.Dimensions.getInstance().get( "text.SINGLE.padding" ),
         textColor : states.disabled ? "widget.graytext" : "undefined"
       };
     }
@@ -1612,5 +1614,6 @@ appearances = {
       };
     }
   }
-  // END TEMPLATE
-};
+}
+
+} );

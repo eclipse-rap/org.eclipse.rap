@@ -236,9 +236,6 @@ public class QxTheme {
    * @return the generated theme code.
    */
   public String getJsCode() {
-    if( !valueWritten ) {
-      throw new IllegalStateException( "No values appended" );
-    }
     if( !tailWritten ) {
       writeTail();
     }
