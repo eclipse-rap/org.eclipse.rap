@@ -120,7 +120,10 @@ public class TableViewerTab extends ExampleTab {
     }
   }
   
-  private static final class PersonComparator extends ViewerComparator {
+  private static final class PersonComparator 
+    extends ViewerComparator 
+    implements Comparator 
+  {
     private final boolean ascending;
     private final String property;
     PersonComparator( final String property, final boolean ascending ) {
@@ -131,6 +134,13 @@ public class TableViewerTab extends ExampleTab {
                         final Object object1, 
                         final Object object2 ) 
     {
+      return compare( object1, object2 );
+    }
+    public boolean isSorterProperty( final Object elem, final String property ) 
+    {
+      return true;
+    }
+    public int compare( final Object object1, final Object object2 ) {
       Person person1 = ( Person )object1;
       Person person2 = ( Person )object2;
       int result = 0;
@@ -145,10 +155,6 @@ public class TableViewerTab extends ExampleTab {
         result = result * ( -1 );
       }
       return result;
-    }
-    public boolean isSorterProperty( final Object elem, final String property ) 
-    {
-      return true;
     }
   }
   
@@ -255,7 +261,7 @@ public class TableViewerTab extends ExampleTab {
     registerControl( viewer.getControl() );
   }
 
-  private String[] initColumnProperties( final TableViewer viewer ) {
+  private static String[] initColumnProperties( final TableViewer viewer ) {
     Table table = viewer.getTable();
     TableColumn firstNameColumn = new TableColumn( table, SWT.NONE );
     firstNameColumn.setText( "First Name" );
@@ -264,8 +270,7 @@ public class TableViewerTab extends ExampleTab {
     firstNameColumn.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
-        boolean ascending = sortDirection == SWT.DOWN;
-        viewer.setComparator( new PersonComparator( FIRST_NAME, ascending ) );
+        sort( viewer, FIRST_NAME, sortDirection == SWT.DOWN );
       }
     } );
     TableColumn lastNameColumn = new TableColumn( table, SWT.NONE );
@@ -275,8 +280,7 @@ public class TableViewerTab extends ExampleTab {
     lastNameColumn.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
-        boolean ascending = sortDirection == SWT.DOWN;
-        viewer.setComparator( new PersonComparator( LAST_NAME, ascending ) );
+        sort( viewer, LAST_NAME, sortDirection == SWT.DOWN );
       }
     } );
     TableColumn ageColumn = new TableColumn( table, SWT.NONE );
@@ -286,8 +290,7 @@ public class TableViewerTab extends ExampleTab {
     ageColumn.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
-        boolean ascending = sortDirection == SWT.DOWN;
-        viewer.setComparator( new PersonComparator( AGE, ascending ) );
+        sort( viewer, AGE, sortDirection == SWT.DOWN );
       }
     } );
     return new String[] {
@@ -376,6 +379,19 @@ public class TableViewerTab extends ExampleTab {
     return table.getSortDirection();
   }
   
+  private static void sort( final TableViewer viewer, 
+                            final String property, 
+                            final boolean ascending ) 
+  {
+    if( ( viewer.getControl().getStyle() & SWT.VIRTUAL ) != 0 ) {
+      List input = ( List )viewer.getInput();
+      Collections.sort( input, new PersonComparator( property, ascending ) );
+      viewer.refresh();
+    } else {
+      viewer.setComparator( new PersonComparator( property, ascending ) );
+    }
+  }
+
   private TableViewer getViewer() {
     return viewer;
   }
