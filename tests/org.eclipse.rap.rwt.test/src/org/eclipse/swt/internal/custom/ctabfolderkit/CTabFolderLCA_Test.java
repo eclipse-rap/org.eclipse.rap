@@ -131,8 +131,6 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.valueOf( folder.getMaximizeVisible() ), maxVisible );
     Object tabHeight = adapter.getPreserved( CTabFolderLCA.PROP_TAB_HEIGHT );
     assertEquals( new Integer( folder.getTabHeight() ), tabHeight );
-    Object topRight = adapter.getPreserved( CTabFolderLCA.PROP_TOP_RIGHT );
-    assertSame( topRight, folder.getTopRight() );
     Object minimized = adapter.getPreserved( CTabFolderLCA.PROP_MINIMIZED );
     assertEquals( Boolean.valueOf( folder.getMinimized() ), minimized );
     Object maximized = adapter.getPreserved( CTabFolderLCA.PROP_MAXIMIZED );

@@ -1421,6 +1421,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   // ------------------------------------------------------------------------
   // CTabFolder
 
+
   "c-tab-item" : {
     include: "atom",
       
@@ -1429,26 +1430,21 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       border_top.setRight( 1, "solid", "#c0c0c0" );
 
       var border_top_checked = new qx.ui.core.Border();
-      border_top_checked.setTop( 1, "solid", null );
-//        border_top_checked.setLeft( 1, "outset", null );
       border_top_checked.setRight( 1, "solid", "#c0c0c0" );
 
       var border_bottom = new qx.ui.core.Border();
-      border_bottom.setTop( 1, "solid", "#c0c0c0" );
-      border_bottom.setLeft( 1, "solid", "#c0c0c0" );
       border_bottom.setRight( 1, "solid", "#c0c0c0" );
 
       var border_bottom_checked = new qx.ui.core.Border();
-      border_bottom_checked.setLeft( 1, "solid", "#c0c0c0" );
       border_bottom_checked.setRight( 1, "solid", "#c0c0c0" );
 
       var result = {
         paddingLeft : 4
       };
-      if( states.checked ) {
+      if( states.selected ) {
         if( states.barTop ) {
           result.border = border_top_checked;
-        } else {  // bar at bottom
+        } else {
           result.border = border_bottom_checked;
         }
       } else {
@@ -1468,7 +1464,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     
     style : function( states ) {
       return {
-        backgroundColor : states.over ? "#00008B" : "undefined"
+        source : states.over 
+          ? "widget/ctabfolder/close_hover.gif" 
+          : "widget/ctabfolder/close.gif"
       }
     }
   },

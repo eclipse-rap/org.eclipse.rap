@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.widgets.*;
 
 
@@ -141,6 +142,30 @@ public class CTabItem_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
+  }
+  
+  public void testShowClose() {
+    CTabFolder folder;
+    CTabItem item;
+    ICTabFolderAdapter adapter;
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    // Test with folder that was created with SWT.CLOSE
+    folder = new CTabFolder( shell, SWT.CLOSE );
+    adapter 
+      = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
+    item = new CTabItem( folder, SWT.NONE );
+    assertTrue( adapter.showItemClose( item ) );
+    item = new CTabItem( folder, SWT.CLOSE );
+    assertTrue( adapter.showItemClose( item ) );
+    // Test with folder that was created without SWT.CLOSE
+    folder = new CTabFolder( shell, SWT.NONE );
+    adapter 
+      = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
+    item = new CTabItem( folder, SWT.NONE );
+    assertFalse( adapter.showItemClose( item ) );
+    item = new CTabItem( folder, SWT.CLOSE );
+    assertTrue( adapter.showItemClose( item ) );
   }
   
   protected void setUp() throws Exception {

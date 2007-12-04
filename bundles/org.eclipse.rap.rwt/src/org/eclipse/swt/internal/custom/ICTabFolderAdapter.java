@@ -26,5 +26,6 @@ public interface ICTabFolderAdapter {
   void showListMenu();
   
   boolean showItemImage( CTabItem item );
+  boolean showItemClose( CTabItem item );
   String getShortenedItemText( CTabItem item );
 }

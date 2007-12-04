@@ -39,7 +39,7 @@ import org.eclipse.swt.internal.widgets.groupkit.GroupThemeAdapter;
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  * <hr/>
- * Note: The styles SHADOW_XXX are not yet implemented in RWT.
+ * Note: The styles <code>SHADOW_XXX</code> are not yet implemented in RWT.
  */
 public class Group extends Composite {
 
@@ -156,6 +156,9 @@ public class Group extends Composite {
                               width + trimmings.width + 2 * border,
                               height + trimmings.height + 2* border );
   }
+  
+  //////////////////
+  // Helping methods
 
   String getNameText() {
     return getText();

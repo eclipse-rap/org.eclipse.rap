@@ -181,7 +181,7 @@ public class CTabFolder extends Composite {
     borderBottom = onBottom ? 0 : borderLeft;
     highlight_header = ( style & SWT.FLAT ) != 0 ? 1 : 3;
     highlight_margin = ( style & SWT.FLAT ) != 0 ? 0 : 2;
-    //set up default colors
+    // set up default colors
     Display display = getDisplay();
     selectionForeground = display.getSystemColor( SELECTION_FOREGROUND );
     selectionBackground = display.getSystemColor( SELECTION_BACKGROUND );
@@ -2100,6 +2100,10 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
     public boolean showItemImage( final CTabItem item ) {
       return item.showImage();
+    }
+
+    public boolean showItemClose( final CTabItem item ) {
+      return item.parent.showClose || item.showClose;
     }
     
     public String getShortenedItemText( final CTabItem item ) {

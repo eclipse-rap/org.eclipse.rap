@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -13,21 +12,19 @@
 qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
   extend : qx.ui.layout.CanvasLayout,
 
-  construct : function( canClose ) {
+  construct : function() {
     this.base( arguments );
     this.setTabIndex( 1 );
     this.setHideFocus( true );
-    //
-    this._canClose = canClose;
     this._hasFolderListener = false;
     this._hasSelectionListener = false;
+    this._tabPosition = "top";
     this._tabHeight = 20;
     //
     var borderColor = "#c0c0c0";
     var border = new qx.ui.core.Border( 1, "solid", borderColor );
     this.setBorder( border );
     //
-    this._topRight = null;
     this._chevron = null;
     this._chevronMenu = null;
     // Minimize/maximize buttons, initially non-existing
@@ -68,12 +65,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this._separator = new qx.ui.basic.Atom();
     this._separator.setBorder( border );
     this._separator.setLeft( 0 );
-    this._separator.setTop( this._tabHeight );
+//    this._separator.setTop( this._tabHeight );
     this._separator.setHeight( 1 );
     this.add( this._separator );
     // Add resize listeners to update selection border (this._highlightXXX)
-    this.addEventListener( "changeWidth", this._onChangeWidth, this );
-    this.addEventListener( "changeHeight", this._onChangeHeight, this );
+    this.addEventListener( "changeWidth", this._updateHighlightBorders, this );
+    this.addEventListener( "changeHeight", this._updateHighlightBorders, this );
     // Add keypress listener to select items with left/right keys
     this.addEventListener( "keypress", this._onKeyPress, this );
   },
@@ -82,8 +79,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     // use hideMin/MaxButton to dispose of toolTips
     this.hideMinButton();
     this.hideMaxButton();
-    this.removeEventListener( "changeWidth", this._onChangeWidth, this );
-    this.removeEventListener( "changeHeight", this._onChangeHeight, this );
+    this.removeEventListener( "changeWidth", this._updateHighlightBorders, this );
+    this.removeEventListener( "changeHeight", this._updateHighlightBorders, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
   },
 
@@ -106,11 +103,26 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
   },
 
   members : {
+    /* valid values; "top", "bottom" */
+    setTabPosition : function( tabPosition ) {
+      this._tabPosition = tabPosition;
+      // update tab items
+      var children = this.getChildren();
+      for( var i = 0; i < children.length; i++ ) {
+      	if( children[ i ].classname === "org.eclipse.swt.custom.CTabItem" ) {
+      	  children[ i ].setTabPosition( tabPosition );
+      	}
+      }
+      this._updateHighlightBorders();
+    },
+    
+    getTabPosition : function() {
+      return this._tabPosition;
+    },
+    
     setTabHeight : function( tabHeight ) {
       this._tabHeight = tabHeight;
       this._separator.setTop( this._tabHeight );
-      var top = this._separator.getTop() + this._separator.getHeight();
-      this._highlightTop.setTop( top );
       var buttonTop = this._getButtonTop();
       if( this._minButton != null ) {
         this._minButton.setTop( buttonTop );
@@ -121,7 +133,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       if( this._chevron != null ) {
         this._chevron.setTop( buttonTop );
       }
-      this._onChangeHeight();
+      this._updateHighlightBorders();
     },
 
     // TODO [rh] optimize usage of border objects (get, change, set)
@@ -234,6 +246,8 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._maxButton.removeEventListener( "execute", 
                                              this._onMinMaxExecute, 
                                              this );
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        wm.setToolTip( this._maxButton, null );
         this.remove( this._maxButton );
         this._maxButton.dispose();
         this._maxButton = null;
@@ -260,14 +274,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._minButton.removeEventListener( "execute", 
                                              this._onMinMaxExecute, 
                                              this );
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        wm.setToolTip( this._minButton, null );
         this.remove( this._minButton );
         this._minButton.dispose();
         this._minButton = null;
       }
-    },
-
-    setTopRight : function( topRight ) {
-      this._topRight = topRight;
     },
 
     setHasFolderListener : function( hasFolderListener ) {
@@ -278,21 +290,31 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       this._hasSelectionListener = value;
     },
 
-    _onChangeWidth : function( evt ) {
+    _updateHighlightBorders : function() {
+      var separatorHeight = this._separator.getHeight();
+      // ex _onChangeWidth
       this._separator.setWidth( this.getWidth() - 2 );
       this._highlightRight.setLeft( this.getWidth() - 2 - this._highlightRight.getWidth() );
       this._highlightTop.setWidth( this.getWidth() - 2 );
       this._highlightBottom.setWidth( this.getWidth() - 2 );
-    },
-
-    _onChangeHeight : function( evt ) {
-      var top = this._separator.getTop() + this._separator.getHeight() + 2;
-      var height = this.getHeight() - top - 4;
+      // ex _onChangeHeight
+      var top;
+      if( this._tabPosition === "top" ) {
+        this._separator.setTop( this._tabHeight );
+        this._highlightBottom.setTop( this.getHeight() - 4 );
+        this._highlightTop.setTop( this._tabHeight + separatorHeight );
+        top = this._tabHeight + separatorHeight + 2;
+      } else { // tabPosition == "bottom"
+        this._separator.setTop( this.getHeight() - ( this._tabHeight + 1 ) );
+        this._highlightBottom.setTop( this.getHeight() - ( this._tabHeight + separatorHeight + 2 ) );
+        this._highlightTop.setTop( 0 );
+        top = 2;
+      }
+      var height = this.getHeight() - ( this._tabHeight + separatorHeight + 4 );
       this._highlightLeft.setTop( top );
       this._highlightLeft.setHeight( height );
       this._highlightRight.setTop( top );
       this._highlightRight.setHeight( height );
-      this._highlightBottom.setTop( this.getHeight() - 4 );
     },
 
     _onChevronExecute : function( evt ) {

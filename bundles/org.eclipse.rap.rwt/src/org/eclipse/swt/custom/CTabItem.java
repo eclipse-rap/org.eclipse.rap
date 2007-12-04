@@ -43,8 +43,8 @@ public class CTabItem extends Item {
   
   static final String ELLIPSIS = "..."; 
   
-  private final CTabFolder parent;
   private final IWidgetFontAdapter widgetFontAdapter;
+  final CTabFolder parent;
   private Control control;
   private String toolTipText;
   private Font font;

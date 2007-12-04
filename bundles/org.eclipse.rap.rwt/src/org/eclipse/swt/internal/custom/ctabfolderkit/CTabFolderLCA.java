@@ -51,17 +51,17 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public static final String PROP_MINIMIZE_RECT = "minimizeRect";
   public static final String PROP_MAXIMIZE_RECT = "maximizeRect";
   public static final String PROP_FOLDER_LISTENERS = "folderListeners";
-  public static final String PROP_TOP_RIGHT = "topRight";
-  public static final String PROP_TOP_RIGHT_ALIGNMENT = "topRightAlignment";
   public static final String PROP_TAB_HEIGHT = "tabHeight";
   public static final String PROP_WIDTH = "width";
   public static final String PROP_CHEVRON_VISIBLE = "chevronVisible";
   public static final String PROP_CHEVRON_RECT = "chevronRect";
   public static final String PROP_SELECTION_BG = "selectionBg";
   public static final String PROP_SELECTION_FG = "selectionFg";
+  private static final String PROP_TAB_POSITION = "tabPosition";
   
   // Keep in sync with value in CTabFolder.js
   private static final Integer DEFAULT_TAB_HEIGHT = new Integer( 20 );
+  private static final Integer DEFAULT_TAB_POSITION = new Integer( SWT.TOP );
 
   private static final Rectangle ZERO_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
 
@@ -93,7 +93,8 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( tabFolder.getMaximized() ) );
     adapter.preserve( PROP_TAB_HEIGHT,
                       new Integer( tabFolder.getTabHeight() ) );
-    adapter.preserve( PROP_TOP_RIGHT, tabFolder.getTopRight() );
+    adapter.preserve( PROP_TAB_POSITION, 
+                      new Integer( tabFolder.getTabPosition() ) );
     adapter.preserve( PROP_SELECTION_BG, tabFolder.getSelectionBackground() );
     adapter.preserve( PROP_SELECTION_FG, tabFolder.getSelectionForeground() );
     adapter.preserve( PROP_CHEVRON_VISIBLE,
@@ -177,6 +178,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public void renderChanges( final Widget widget ) throws IOException {
     CTabFolder tabFolder = ( CTabFolder )widget;
     ControlLCAUtil.writeChanges( tabFolder );
+    writeTabPosition( tabFolder );
     writeTabHeight( tabFolder );
     writeMinMaxVisible( tabFolder );
     writeMinMaxState( tabFolder );
@@ -210,6 +212,19 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   //////////////////////////////////////
   // Helping methods to write properties
   
+  private static void writeTabPosition( final CTabFolder tabFolder ) 
+    throws IOException 
+  {
+    Integer newValue = new Integer( tabFolder.getTabPosition() );
+    Integer defValue = DEFAULT_TAB_POSITION;
+    String prop = PROP_TAB_POSITION;
+    if( WidgetLCAUtil.hasChanged( tabFolder, prop, newValue, defValue ) ) {
+      JSWriter writer = JSWriter.getWriterFor( tabFolder );
+      String tabPosition = newValue.intValue() == SWT.TOP ? "top" : "bottom";
+      writer.set( "tabPosition", tabPosition );
+    }
+  }
+
   private static void writeTabHeight( final CTabFolder tabFolder )
     throws IOException
   {

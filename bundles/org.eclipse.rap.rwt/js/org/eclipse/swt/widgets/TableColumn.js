@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials

@@ -27,6 +27,7 @@ public class ShellTab extends ExampleTab {
   private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
 
   private java.util.List shells;
+  private int shellCounter;
   private final ShellAdapter confirmCloseListener;
   private Image shellImage;
   private Button createInvisibleButton;
@@ -70,28 +71,39 @@ public class ShellTab extends ExampleTab {
 //    customBgColorButton = createPropertyButton( "Custom background" );
   }
 
-  protected void createExampleControls( final Composite top ) {
-    top.setLayout( new RowLayout( SWT.VERTICAL ) );
+  protected void createExampleControls( final Composite parent ) {
+    parent.setLayout( new RowLayout( SWT.VERTICAL ) );
     if( shellImage == null ) {
       ClassLoader classLoader = getClass().getClassLoader();
       shellImage = Graphics.getImage( ICON_IMAGE_PATH, classLoader );
     }
-    Button openShellButton = new Button( top, SWT.PUSH );
+    Button openShellButton = new Button( parent, SWT.PUSH );
     openShellButton.setText( "Open Shell" );
     openShellButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         createShell();
       }} );
 
-    Button showAllButton = new Button( top, SWT.PUSH );
+    Button bringFirstToTopButton = new Button( parent, SWT.PUSH );
+    bringFirstToTopButton.setText( "Bring first Shell to top" );
+    bringFirstToTopButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        Shell[] shells = getShells();
+        if( shells.length > 0 ) {
+          shells[ 0 ].open();
+        }
+      }  
+    } );
+    
+    Button showAllButton = new Button( parent, SWT.PUSH );
     showAllButton.setText( "Show All Shells" );
     showAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         setShellsVisible( true );
       }
     } );
-
-    Button hideAllButton = new Button( top, SWT.PUSH );
+    
+    Button hideAllButton = new Button( parent, SWT.PUSH );
     hideAllButton.setText( "Hide All Shells" );
     hideAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -99,7 +111,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
 
-    Button MaximizeAllButton = new Button( top, SWT.PUSH );
+    Button MaximizeAllButton = new Button( parent, SWT.PUSH );
     MaximizeAllButton.setText( "Maximize All Shells" );
     MaximizeAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -107,7 +119,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
 
-    Button minimizeAllButton = new Button( top, SWT.PUSH );
+    Button minimizeAllButton = new Button( parent, SWT.PUSH );
     minimizeAllButton.setText( "Minimize All Shells" );
     minimizeAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -115,7 +127,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
 
-    Button restoreAllButton = new Button( top, SWT.PUSH );
+    Button restoreAllButton = new Button( parent, SWT.PUSH );
     restoreAllButton.setText( "Restore All Shells" );
     restoreAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -124,7 +136,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
 
-    Button enableAllButton = new Button( top, SWT.PUSH );
+    Button enableAllButton = new Button( parent, SWT.PUSH );
     enableAllButton.setText( "Enable All Shells" );
     enableAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -132,7 +144,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
 
-    Button disableAllButton = new Button( top, SWT.PUSH );
+    Button disableAllButton = new Button( parent, SWT.PUSH );
     disableAllButton.setText( "Disable All Shells" );
     disableAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -140,7 +152,7 @@ public class ShellTab extends ExampleTab {
       }
     } );
 
-    Button closeAllButton = new Button( top, SWT.PUSH );
+    Button closeAllButton = new Button( parent, SWT.PUSH );
     closeAllButton.setText( "Close All Shells" );
     closeAllButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -149,12 +161,11 @@ public class ShellTab extends ExampleTab {
   }
 
   private void createShell() {
-    final int style = getStyle();
-    final Shell shell;
+    Shell shell;
     if( createAsDialogButton.getSelection() ) {
-      shell = new Shell( getShell(), style );
+      shell = new Shell( getShell(), getStyle() );
     } else {
-      shell = new Shell( getShell().getDisplay(), style );
+      shell = new Shell( getShell().getDisplay(), getStyle() );
     }
 //    if( customBgColorButton.getSelection() ) {
 //      shell.setBackground( BG_COLOR_BROWN );
@@ -165,8 +176,8 @@ public class ShellTab extends ExampleTab {
     } else {
       createShellContents2( shell );
     }
-    int count = shells.size() + 1;
-    shell.setText( "Test Shell " + count );
+    shellCounter++;
+    shell.setText( "Test Shell " + shellCounter );
     shell.setImage( shellImage );
     if( confirmCloseButton.getSelection() ) {
       shell.addShellListener( confirmCloseListener );
@@ -309,73 +320,62 @@ public class ShellTab extends ExampleTab {
 
   private Point getNextShellLocation() {
     Point result = getShell().getLocation();
-    int count = shells.size() % 12;
+    int count = getShells().length % 12;
     result.x += 50 + count * 10;
     result.y += 50 + count * 10;
     return result ;
   }
 
   private void closeShells() {
-    Iterator iter = shells.iterator();
-    while( iter.hasNext() ) {
-      Shell shell = ( Shell )iter.next();
-      if( shell.isDisposed() ) {
-        iter.remove();
-      } else {
-        shell.removeShellListener( confirmCloseListener );
-        shell.close();
-        shell.dispose();
-      }
+    Shell[] shells2 = getShells();
+    for( int i = 0; i < shells2.length; i++ ) {
+      shells2[ i ].removeShellListener( confirmCloseListener );
+      shells2[ i ].close();
+      shells2[ i ].dispose();
     }
-    shells.clear();
   }
 
   private void setShellsVisible( final boolean visible ) {
-    Iterator iter = shells.iterator();
-    while( iter.hasNext() ) {
-      Shell shell = ( Shell )iter.next();
-      if( shell.isDisposed() ) {
-        iter.remove();
-      } else {
-        shell.setVisible( visible );
-      }
+    Shell[] shells = getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      shells[ i ].setVisible( visible );
     }
   }
 
   private void setShellsEnabled( final boolean enabled ) {
-    Iterator iter = shells.iterator();
-    while( iter.hasNext() ) {
-      Shell shell = ( Shell )iter.next();
-      if( shell.isDisposed() ) {
-        iter.remove();
-      } else {
-        shell.setEnabled( enabled );
-      }
+    Shell[] shells = getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      shells[ i ].setEnabled( enabled );
     }
   }
 
   private void setShellsMinimized( final boolean minimized ) {
-    Iterator iter = shells.iterator();
-    while( iter.hasNext() ) {
-      Shell shell = ( Shell )iter.next();
-      if( shell.isDisposed() ) {
-        iter.remove();
-      } else {
-        shell.setMinimized( minimized );
-      }
+    Shell[] shells = getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      shells[ i ].setMinimized( minimized );
     }
   }
 
   private void setShellsMaximized( final boolean maximized ) {
+    Shell[] shells = getShells();
+    for( int i = 0; i < shells.length; i++ ) {
+      shells[ i ].setMaximized( maximized );
+    }
+  }
+  
+  private Shell[] getShells() {
+    // remove eventually disposed of shells (may happen when shells without
+    // ShellListeners are created and close by user interaction)
+    Shell[] result;
     Iterator iter = shells.iterator();
     while( iter.hasNext() ) {
       Shell shell = ( Shell )iter.next();
       if( shell.isDisposed() ) {
         iter.remove();
-      } else {
-        shell.setMaximized( maximized );
       }
     }
+    result = new Shell[ shells.size() ];
+    shells.toArray( result );
+    return result;
   }
-
 }

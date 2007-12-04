@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -12,7 +11,7 @@
 qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
   extend : qx.ui.basic.Atom,
 
-  construct : function( canClose ) {
+  construct : function( parent, canClose ) {
     this.base( arguments );
     this.setAppearance( "c-tab-item" );
     this.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_MIDDLE );
@@ -28,8 +27,10 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this._unselectedCloseVisible = true;
     this._selectionBackground = null;
     this._selectionForeground = null;
+    this.setTabPosition( parent.getTabPosition() );
     if( canClose ) {
       this._closeButton = new qx.ui.basic.Image();
+      this._closeButton.setAppearance( "c-tab-close-button" );
       this._closeButton.setWidth( 20 );
       // TODO [rh] center image vertically in tab item
       this._closeButton.setHeight( "80%" );
@@ -42,7 +43,6 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     } else {
       this._closeButton = null;
     }
-    this._control = null;
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
     this.addEventListener( "click", this._onClick, this );
@@ -65,26 +65,29 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
 
   statics : {
     STATE_OVER : "over",
+    STATE_SELECTED : "selected",
     
     IMG_CLOSE : "widget/ctabfolder/close.gif",
     IMG_CLOSE_HOVER : "widget/ctabfolder/close_hover.gif"
   },
 
   members : {
-
-    setControl : function( control ) {
-      this._control = control;
+    setTabPosition : function( tabPosition ) {
+      if( tabPosition === "top" ) {
+        this.addState( "barTop" );
+      } else {
+        this.removeState( "barTop" );
+      }
     },
 
     setSelected : function( selected ) {
       this._selected = selected;
       if( selected ) {
-        this.addState( "checked" );
+        this.addState( org.eclipse.swt.custom.CTabItem.STATE_SELECTED );
         this.setBackgroundColor( this._selectionBackground );
         this.setTextColor( this._selectionForeground );
-      }
-      else {
-        this.removeState( "checked" );
+      } else {
+        this.removeState( org.eclipse.swt.custom.CTabItem.STATE_SELECTED );
         this.setBackgroundColor( null );
         this.setTextColor( null );
       }
@@ -97,6 +100,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
 
     setUnselectedCloseVisible : function( value ) {
       this._unselectedCloseVisible = value;
+      this._updateCloseButton();
     },
 
     setSelectionBackground : function( color ) {
@@ -113,15 +117,6 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       }
     },
 
-    _applyStateAppearance : function() {
-      this._states.firstChild = this.isFirstVisibleChild();
-      this._states.lastChild = this.isLastVisibleChild();
-      this._states.alignLeft = true;
-      this._states.barTop = true;
-      this._states.checked = this.isSelected();
-      this.base( arguments );
-    },
-
     _updateCloseButton : function() {
       if( this._closeButton != null ) {
         var visible 
@@ -129,13 +124,6 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
           || ( this._unselectedCloseVisible 
                && this.hasState( org.eclipse.swt.custom.CTabItem.STATE_OVER ) );       
         this._closeButton.setVisibility( visible );
-        if( visible ) {
-          if( this._closeButton.hasState( org.eclipse.swt.custom.CTabItem.STATE_OVER ) ) {
-            this._closeButton.setSource( org.eclipse.swt.custom.CTabItem.IMG_CLOSE_HOVER );
-          } else {
-            this._closeButton.setSource( org.eclipse.swt.custom.CTabItem.IMG_CLOSE );
-          }
-        } 
       }
     },
 
