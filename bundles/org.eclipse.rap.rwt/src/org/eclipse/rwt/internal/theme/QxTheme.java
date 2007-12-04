@@ -236,6 +236,9 @@ public class QxTheme {
    * @return the generated theme code.
    */
   public String getJsCode() {
+    if( !headWritten ) {
+      writeHead();
+    }
     if( !tailWritten ) {
       writeTail();
     }
