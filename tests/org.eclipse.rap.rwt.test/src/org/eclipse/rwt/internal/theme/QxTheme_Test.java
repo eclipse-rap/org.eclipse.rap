@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,14 @@ public class QxTheme_Test extends TestCase {
     assertTrue( code.endsWith( "} );\n" ) );
   }
   
+  public void testNoValues() throws Exception {
+    QxTheme theme = new QxTheme( "my.theme.Default", "", QxTheme.APPEARANCE );
+    String code = theme.getJsCode();
+    String defStr = "qx.Theme.define( \"my.theme.DefaultAppearances\",";
+    assertContains( defStr, code );
+    assertTrue( code.endsWith( "} );\n" ) );
+  }
+  
   public void testTailAlreadyWritten() throws Exception {
     QxTheme theme = new QxTheme( "my.theme.Foo", "Foo Theme", QxTheme.COLOR );
     theme.appendColor( "foo", new QxColor( "#f00" ) );
@@ -55,6 +63,7 @@ public class QxTheme_Test extends TestCase {
   }
   
   protected static void assertContains( final String expected, final String actual ) {
-    assertTrue( actual.indexOf( expected ) != -1 );
+    String msg = "String '" + expected + "' not contained in '" + actual + "'";
+    assertTrue( msg, actual.indexOf( expected ) != -1 );
   }
 }
