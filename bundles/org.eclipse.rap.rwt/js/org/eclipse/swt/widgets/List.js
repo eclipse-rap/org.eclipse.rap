@@ -32,9 +32,9 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       // Should changeSelection events passed to the server-side?
       // state == no, action == yes
       this._changeSelectionNotification = "state";
-      this.getManager().addEventListener( "changeLeadItem", 
-                                          this._onChangeLeadItem, 
-                                          this );
+      var selMgr = this.getManager();
+      selMgr.addEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+      selMgr.addEventListener( "changeSelection", this._onSelectionChange, this );
       this.addEventListener( "focus", this._onFocusIn, this );
       this.addEventListener( "blur", this._onFocusOut, this );
       this.addEventListener( "click", this._onClick, this );
@@ -42,9 +42,9 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
     },
     
     rap_reset : function() {
-      this.getManager().removeEventListener( "changeLeadItem", 
-                                             this._onChangeLeadItem, 
-                                             this );
+      var selMgr = this.getManager();
+      selMgr.removeEventListener( "changeLeadItem", this._onChangeLeadItem, this );
+      selMgr.removeEventListener( "changeSelection", this._onSelectionChange, this );
       this.removeEventListener( "focus", this._onFocusIn, this );
       this.removeEventListener( "blur", this._onFocusOut, this );
       this.removeEventListener( "click", this._onClick, this );
@@ -195,14 +195,16 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         this._updateSelectedItemState();
         if( !this.__clicksSuspended ) {
           this._suspendClicks();
-          var wm = org.eclipse.swt.WidgetManager.getInstance();
-          var id = wm.findIdByWidget( this );
-          var req = org.eclipse.swt.Request.getInstance();
-          req.addParameter( id + ".selection", this._getSelectionIndices() );
-          if( this._changeSelectionNotification == "action" ) {
-            req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
-            req.send();
-          }
+//          TODO [rst] Replaced by _onSelectionChange, the stub remains here for
+//                     mouse listeners
+//          var wm = org.eclipse.swt.WidgetManager.getInstance();
+//          var id = wm.findIdByWidget( this );
+//          var req = org.eclipse.swt.Request.getInstance();
+//          req.addParameter( id + ".selection", this._getSelectionIndices() );
+//          if( this._changeSelectionNotification == "action" ) {
+//            req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
+//            req.send();
+//          }
         }
       }
     },
@@ -214,6 +216,20 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
           var id = wm.findIdByWidget( this );
           var req = org.eclipse.swt.Request.getInstance();
           req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+          req.send();
+        }
+      }
+    },
+    
+    _onSelectionChange : function( evt ) {
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+        this._updateSelectedItemState();
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var id = wm.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( id + ".selection", this._getSelectionIndices() );
+        if( this._changeSelectionNotification == "action" ) {
+          req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
           req.send();
         }
       }
