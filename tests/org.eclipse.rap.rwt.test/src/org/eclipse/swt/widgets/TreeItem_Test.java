@@ -100,7 +100,7 @@ public class TreeItem_Test extends TestCase {
     assertEquals( true, checkedItem.getChecked() );
   }
 
-  public void test_getExpanded() {
+  public void testGetExpanded() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
@@ -634,6 +634,42 @@ public class TreeItem_Test extends TestCase {
     assertEquals( -16, rootItem2.getBounds().y );
     assertEquals( 0, rootItem3.getBounds().y );
     RWTFixture.removeUIThread();
+  }
+  
+  public void testGetBoundsIV() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    
+    TreeColumn column1 = new TreeColumn(tree, SWT.NONE);
+    column1.setText( "foo" );
+    column1.setWidth( 100 );
+    
+    TreeColumn column2 = new TreeColumn(tree, SWT.NONE);
+    column2.setText( "foo" );
+    column2.setWidth( 100 );
+    
+    TreeColumn column3 = new TreeColumn(tree, SWT.NONE);
+    column3.setText( "foo" );
+    column3.setWidth( 100 );
+    
+    TreeItem rootItem = new TreeItem( tree, 0 );
+    TreeItem rootItem2 = new TreeItem( tree, 0 );
+    TreeItem rootItem3 = new TreeItem( tree, 0 );
+    TreeItem subItem = new TreeItem( rootItem, 0);
+    
+    final int rootItemWidth = rootItem.getBounds(0).width;
+    assertTrue( rootItemWidth < 100 ); // swt substracts indent
+    assertEquals( 100, rootItem2.getBounds(1).width );
+    assertEquals( 100, rootItem3.getBounds(2).width );
+    assertEquals( 0, subItem.getBounds(0).width );
+    rootItem.setExpanded( true );
+    assertTrue( subItem.getBounds(0).width < rootItemWidth );
+    
+    assertTrue( rootItem.getBounds(0).x > 0);
+    assertEquals( 100, rootItem.getBounds(1).x );
+    assertEquals( 200, rootItem.getBounds(2).x );
+    
   }
   
   protected void setUp() throws Exception {

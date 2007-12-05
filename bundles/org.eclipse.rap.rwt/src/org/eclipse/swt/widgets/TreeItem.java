@@ -383,15 +383,27 @@ public class TreeItem extends Item {
       int width;
       if( columnIndex == 0 && columnCount == 0 ) {
         int gap = getImageGap( columnIndex );
-        width = 2 + imageBounds.width + gap + textWidth.x + 2;
+        width = 2 + imageBounds.width + gap + textWidth.x;
       } else {
         width = parent.getColumn( columnIndex ).getWidth();
+        if( columnIndex == 0 ) {
+          width -= ( depth + 1 ) * INDENT_WIDTH;
+        }
       }
       // no support for bigger text/images due to qx bug
       // int height = Math.max( textWidth.y, imageBounds.height ) + 2;
       int height = 16;
 
-      int left = imageBounds.x + ( depth+1 * INDENT_WIDTH );
+      int left = 0;
+      if( columnIndex == 0 ) {
+        left = imageBounds.x + ( depth + 1 * INDENT_WIDTH );
+      } else {
+        TreeColumn[] cols = parent.getColumns();
+        for( int i = 0; i < columnIndex; i++ ) {
+          TreeColumn col = cols[ i ];
+          left += col.getWidth();
+        }
+      }
       int top = 0;
       top = flatIndex * height - parent.scrollTop;
       result = new Rectangle( left, top, width, height );
