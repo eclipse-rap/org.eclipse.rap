@@ -12,6 +12,7 @@ package org.eclipse.swt;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import org.eclipse.rwt.RWT;
 
 
 
@@ -1656,7 +1657,7 @@ public class SWT {
     ResourceBundle bundle = null;
     try {
       bundle 
-        = ResourceBundle.getBundle( "org.eclipse.swt.internal.SWTMessages" );
+        = getBundle();
     } catch( MissingResourceException ex ) {
       result = key + " (no resource bundle)"; //$NON-NLS-1$
     }
@@ -1665,6 +1666,22 @@ public class SWT {
         result = bundle.getString( key );
       } catch( MissingResourceException ex2 ) {
       }
+    }
+    return result;
+  }
+  
+  private static ResourceBundle getBundle() {
+    ResourceBundle result = null;
+    String baseName = "org.eclipse.swt.internal.SWTMessages";
+    try {
+      ClassLoader loader = SWT.class.getClassLoader();
+      result = ResourceBundle.getBundle( baseName, RWT.getLocale(), loader );
+    } catch( final RuntimeException re ) {
+      // TODO [fappel]: improve this
+      String msg =   "Warning: could not retrieve resource bundle "
+                   + "- loading system default";
+      System.out.println( msg );
+      result = ResourceBundle.getBundle( baseName );
     }
     return result;
   }
