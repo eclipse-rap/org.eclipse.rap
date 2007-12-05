@@ -785,7 +785,7 @@ public final class JSWriter {
 
   // TODO [fappel]: FontSizeCalculation causes problems with widget manager
   //                in IE. See FontSizeCalculationHandler#createFontParam.
-  //                Untill a better solution is found this hack is needed.
+  //                Until a better solution is found this hack is needed.
   private boolean currentPhaseIsRender() {
     return CurrentPhase.get() != PhaseId.PROCESS_ACTION
         && CurrentPhase.get() != PhaseId.PREPARE_UI_ROOT
