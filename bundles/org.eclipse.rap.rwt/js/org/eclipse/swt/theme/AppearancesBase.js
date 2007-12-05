@@ -670,12 +670,26 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   
   "menu-check-box" :
   {
-    include : "menu-button"
+    include : "menu-button",
+    
+    style : function(states)
+    {
+      return {
+        icon : states.checked ? "widget/menu/checkbox.gif" : "static/image/blank.gif"
+      };
+    }
   },
   
   "menu-radio-button" :
   {
-    include : "menu-button"
+    include : "menu-button",
+
+    style : function(states)
+    {
+      return {
+        icon : states.checked ? "widget/menu/radiobutton.gif" : "static/image/blank.gif"
+      };
+    }    
   },
   
   "menu-separator" :
