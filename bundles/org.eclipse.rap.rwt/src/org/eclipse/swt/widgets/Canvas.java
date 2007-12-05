@@ -11,6 +11,9 @@
 
 package org.eclipse.swt.widgets;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+
 
 
 /**
@@ -54,14 +57,16 @@ public class Canvas extends Composite {
    * Style bits are also inherited from superclasses.
    * </p>
    *
-   * @param parent a composite control which will be the parent of the new instance (cannot be null)
+   * @param parent a composite control which will be the parent of the new
+   *        instance (cannot be null)
    * @param style the style of control to construct
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
    * </ul>
    * @exception SWTException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that
+   *    created the parent</li>
    * </ul>
    *
    * @see SWT
