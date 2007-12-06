@@ -230,7 +230,7 @@ public final class LifeCycleServiceHandlerConfigurer
     HttpServletRequest request = ContextProvider.getRequest();
     String entryPoint = request.getParameter( RequestParams.STARTUP );
     if( entryPoint == null ) {
-      entryPoint = EntryPointManager.DEFAULT;
+      entryPoint = branding.getDefaultEntryPoint();
     }
     if( branding.getThemeId() != null ) {
       ThemeUtil.setCurrentThemeId( branding.getThemeId() );

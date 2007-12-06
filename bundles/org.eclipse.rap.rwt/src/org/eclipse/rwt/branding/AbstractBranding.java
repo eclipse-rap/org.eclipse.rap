@@ -15,7 +15,7 @@ import java.io.IOException;
 
 
 /**
- * This abstract class is inteded to be implemented by clients that want
+ * This abstract class is intended to be implemented by clients that want
  * to have control over various aspects of the web application such as 
  * <ul>
  * <li>the servlet name at which the application can be accessed,</li>
