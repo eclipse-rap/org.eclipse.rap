@@ -380,8 +380,9 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   public void service() throws IOException, ServletException {
-    UICallBackManager.getInstance().blockCallBackRequest();
-    if( ContextProvider.hasContext() ) {
+    if(    !UICallBackManager.getInstance().blockCallBackRequest() 
+        && ContextProvider.hasContext() )
+    {
       HttpServletResponse response = ContextProvider.getResponse();
       PrintWriter writer = response.getWriter();
       writer.print( jsUICallBack() );

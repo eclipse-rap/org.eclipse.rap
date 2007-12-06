@@ -14,8 +14,8 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.util.*;
 
 import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.service.SessionStoreEvent;
-import org.eclipse.rwt.service.SessionStoreListener;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.service.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
@@ -174,21 +174,33 @@ public class UICallBackManager
     }
   }
 
-  void blockCallBackRequest() {
+  boolean blockCallBackRequest() {
+    boolean result = false;
     synchronized( runnables ) {
+      final Thread currentThread = Thread.currentThread();
+      SessionStoreListener listener = new SessionStoreListener() {
+        public void beforeDestroy( final SessionStoreEvent event ) {
+          currentThread.interrupt();
+        }
+      };
       try {
         if( mustBlockCallBackRequest() ) {
-          locked.add( Thread.currentThread() );
+          locked.add( currentThread );
+          ISessionStore session = ContextProvider.getSession();
+          session.addSessionStoreListener( listener );
           runnables.wait();
         }
-      } catch( final InterruptedException e ) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+      } catch( final InterruptedException ie ) {
+        result = true;
       } finally {
-        locked.remove( Thread.currentThread() );
+        locked.remove( currentThread );
+        if( !result ) {
+          ContextProvider.getSession().removeSessionStoreListener( listener );
+        }
       }
       waitForUIThread = true;
     }
+    return result;
   }
 
   private boolean mustBlockCallBackRequest() {

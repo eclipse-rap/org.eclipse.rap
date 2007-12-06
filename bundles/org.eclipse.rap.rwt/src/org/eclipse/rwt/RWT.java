@@ -265,6 +265,9 @@ public final class RWT {
     if( result == null ) {
       result = ContextProvider.getRequest().getLocale();
     }
+    if( result == null ) {
+      result = Locale.getDefault();
+    }
     return result;
   }
   
