@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.branding;
 
 import java.util.HashMap;
@@ -103,10 +102,10 @@ public final class BrandingUtil {
   }
 
   private static String escapeString( final String input ) {
-    Matcher matcher = BrandingUtil.DOUBLE_QUOTE_PATTERN.matcher( input );
+    Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( input );
     String result = matcher.replaceAll( "\\\\$1" );
-    matcher = BrandingUtil.NEWLINE_PATTERN.matcher( result );
-    result = matcher.replaceAll( BrandingUtil.NEWLINE_ESCAPE );
+    matcher = NEWLINE_PATTERN.matcher( result );
+    result = matcher.replaceAll( NEWLINE_ESCAPE );
     return result;
   }
   

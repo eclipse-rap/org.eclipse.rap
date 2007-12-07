@@ -228,9 +228,13 @@ public final class LifeCycleServiceHandlerConfigurer
     AbstractBranding branding = findBranding();
     registerBrandingResources( branding );
     HttpServletRequest request = ContextProvider.getRequest();
+    // TODO: [bm][rh] move into util
     String entryPoint = request.getParameter( RequestParams.STARTUP );
     if( entryPoint == null ) {
       entryPoint = branding.getDefaultEntryPoint();
+      if( entryPoint == null || "".equals( entryPoint ) ) {
+        entryPoint = EntryPointManager.DEFAULT;
+      }
     }
     if( branding.getThemeId() != null ) {
       ThemeUtil.setCurrentThemeId( branding.getThemeId() );
