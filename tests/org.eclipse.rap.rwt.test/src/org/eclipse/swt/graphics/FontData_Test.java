@@ -12,6 +12,7 @@
 package org.eclipse.swt.graphics;
 
 import junit.framework.TestCase;
+
 import org.eclipse.swt.SWT;
 
 
@@ -51,8 +52,12 @@ public class FontData_Test extends TestCase {
     FontData fontData3 = new FontData( "roman", 1, SWT.BOLD );
     assertFalse( fontData1.hashCode() == fontData3.hashCode() );
     fontData3 = new FontData( "roman", 2, SWT.NORMAL );
-    assertFalse( fontData1.hashCode() ==fontData3.hashCode() );
+    assertFalse( fontData1.hashCode() == fontData3.hashCode() );
     fontData3 = new FontData( "arial", 1, SWT.NORMAL );
-    assertFalse( fontData1.hashCode() ==fontData3.hashCode() );
+    assertFalse( fontData1.hashCode() == fontData3.hashCode() );
+    
+    FontData arial13Normal = new FontData( "arial", 13, SWT.NORMAL );
+    FontData arial12Bold = new FontData( "arial", 12, SWT.BOLD );
+    assertFalse( arial13Normal.hashCode() == arial12Bold.hashCode() );
   }
 }

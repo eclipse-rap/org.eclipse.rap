@@ -33,7 +33,7 @@ public final class ResourceFactory {
 
   
   /////////
-  // COLORS
+  // Colors
 
   public static Color getColor( final RGB rgb ) {
     if( rgb == null ) {
@@ -73,11 +73,7 @@ public final class ResourceFactory {
   
 
   ////////
-  // FONTS
-
-  public static Font getFont( final FontData data ) {
-    return getFont( data.getName(), data.getHeight(), data.getStyle() );
-  }
+  // Fonts
 
   public static Font getFont( final String name,
                               final int height,
@@ -86,7 +82,7 @@ public final class ResourceFactory {
     validateFontParams( name, height );
     int checkedStyle = checkFontStyle( style );
     Font result;
-    Integer key = new Integer( name.hashCode() ^ ( height << 2 ) ^ style );
+    Integer key = new Integer( fontHashCode( name, height, checkedStyle ) );
     synchronized( Font.class ) {
       result = ( Font )fonts.get( key );
       if( result == null ) {
@@ -97,10 +93,17 @@ public final class ResourceFactory {
     }
     return result;
   }
+  
+  public static int fontHashCode( final String name, 
+                                  final int height, 
+                                  final int style ) 
+  {
+    return name.hashCode() ^ ( height << 2 ) ^ style;
+  }
 
   
   /////////
-  // IMAGES
+  // Images
 
   public static synchronized Image findImage( final String path ) {
     IResourceManager manager = ResourceManager.getInstance();

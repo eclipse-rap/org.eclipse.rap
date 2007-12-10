@@ -12,6 +12,7 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
  * TODO [fappel]: javadoc
@@ -206,6 +207,6 @@ public final class FontData {
    * @see #equals
    */
   public int hashCode() {
-    return name.hashCode() ^ height ^ style;
+    return ResourceFactory.fontHashCode( name, height, style );
   }
 }
