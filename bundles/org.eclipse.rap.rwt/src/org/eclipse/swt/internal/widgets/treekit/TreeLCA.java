@@ -22,7 +22,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
@@ -91,12 +90,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writeHeaderHeight( tree );
     writeHeaderVisible( tree );
     writeColumnOrder( tree );
-    Control[] children = tree.getChildren();
-    for( int i = 0; i < children.length; i++ ) {
-      WidgetAdapter adapter 
-        = ( WidgetAdapter )WidgetUtil.getAdapter( children[ i ] );
-      adapter.setJSParent( getItemJSParent( tree ) );
-    }
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -249,10 +242,4 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
   
-  private static String getItemJSParent( final Tree tree ) {
-    StringBuffer parentId = new StringBuffer();
-    parentId.append( WidgetUtil.getId( tree ) );
-    parentId.append( "_tree"  );
-    return parentId.toString();
-  }
 }
