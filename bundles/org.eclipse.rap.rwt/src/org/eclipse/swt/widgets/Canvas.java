@@ -8,11 +8,8 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 
 
 
