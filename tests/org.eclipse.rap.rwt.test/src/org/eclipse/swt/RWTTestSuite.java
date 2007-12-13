@@ -28,6 +28,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.HTMLUtil_Test;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.provisional.uitest.UITests_Test;
 import org.eclipse.rwt.service.ServiceHandler_Test;
 import org.eclipse.rwt.service.SessionStore_Test;
 import org.eclipse.rwt.widgets.ExternalBrowser_Test;
@@ -167,6 +168,7 @@ public class RWTTestSuite {
     suite.addTestSuite( Spinner_Test.class );
     suite.addTestSuite( ExternalBrowser_Test.class );
     suite.addTestSuite( ProgressBar_Test.class );
+    suite.addTestSuite( BusyIndicator_Test.class );
 
     suite.addTestSuite( Image_Test.class );
     suite.addTestSuite( Color_Test.class );
@@ -218,6 +220,7 @@ public class RWTTestSuite {
     suite.addTestSuite( QxBoxDimensions_Test.class );
     suite.addTestSuite( QxFont_Test.class );
 
+    suite.addTestSuite( UITests_Test.class );
     return suite;
   }
 }

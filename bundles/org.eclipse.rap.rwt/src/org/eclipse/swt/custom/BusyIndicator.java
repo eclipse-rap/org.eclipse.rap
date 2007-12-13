@@ -19,9 +19,9 @@ import org.eclipse.swt.widgets.Display;
  */
 public class BusyIndicator {
 
-    static int nextBusyId = 1;
-    static final String BUSYID_NAME = "SWT BusyIndicator"; //$NON-NLS-1$
-    static final String BUSY_CURSOR = "SWT BusyIndicator Cursor"; //$NON-NLS-1$
+//    static int nextBusyId = 1;
+//    static final String BUSYID_NAME = "SWT BusyIndicator"; //$NON-NLS-1$
+//    static final String BUSY_CURSOR = "SWT BusyIndicator Cursor"; //$NON-NLS-1$
 
 /**
  * Runs the given <code>Runnable</code> while providing
@@ -42,16 +42,16 @@ public class BusyIndicator {
 public static void showWhile(Display display, Runnable runnable) {
     if (runnable == null)
         SWT.error(SWT.ERROR_NULL_ARGUMENT);
-    if (display == null) {
-        display = Display.getCurrent();
-        if (display == null) {
-            runnable.run();
-            return;
-        }
-    }
+//    if (display == null) {
+//        display = Display.getCurrent();
+//        if (display == null) {
+//            runnable.run();
+//            return;
+//        }
+//    }
     
 //    Integer busyId = new Integer(nextBusyId);
-    nextBusyId++;
+//    nextBusyId++;
 //    Cursor cursor = display.getSystemCursor(SWT.CURSOR_WAIT);
 //    Shell[] shells = display.getShells();
 //    for (int i = 0; i < shells.length; i++) {
@@ -62,9 +62,9 @@ public static void showWhile(Display display, Runnable runnable) {
 //        }
 //    }
         
-    try {
+//    try {
         runnable.run();
-    } finally {
+//    } finally {
 //        shells = display.getShells();
 //        for (int i = 0; i < shells.length; i++) {
 //            Integer id = (Integer)shells[i].getData(BUSYID_NAME);
@@ -73,6 +73,6 @@ public static void showWhile(Display display, Runnable runnable) {
 //                shells[i].setData(BUSYID_NAME, null);
 //            }
 //        }
-    }
+//    }
 }
 }
