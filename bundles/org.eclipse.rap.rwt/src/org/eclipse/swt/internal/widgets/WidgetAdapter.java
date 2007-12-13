@@ -15,11 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 
 public final class WidgetAdapter implements IWidgetAdapter {
   
-  private final String id;
+  private String id;
   private boolean initialized;
   private final Map preservedValues;
   private String jsParent;
@@ -32,6 +33,10 @@ public final class WidgetAdapter implements IWidgetAdapter {
   public WidgetAdapter( final String id ) {
     this.id = id;
     preservedValues = new HashMap();
+  }
+  
+  public void overrideId( final String id ) {
+    this.id = id;
   }
   
   public String getId() {

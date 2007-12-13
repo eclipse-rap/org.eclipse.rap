@@ -247,6 +247,14 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       // parent.add( widget );
       widget.setParent( parent );
     },
+    
+    setHtmlId : function( widget, id ) {
+      // Test if 'widget' provides a setHtmlProperty method, fail silently
+      // otherwise 
+      if( widget.setHtmlProperty ) {
+        widget.setHtmlProperty( "id", id );
+      }
+    },
 
     focus : function( widgetId ) {
       var widget = this.findWidgetById( widgetId );

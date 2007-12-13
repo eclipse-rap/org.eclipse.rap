@@ -85,7 +85,7 @@ public class JSWriter_Test extends TestCase {
     display.dispose();
   }
 
-  private String getTypePoolId( final Widget widget ) throws IOException {
+  private String getTypePoolId( final Widget widget ) {
     AbstractWidgetLCA lca = WidgetUtil.getLCA( widget );
     return lca.getTypePoolId( widget );
   }
@@ -109,7 +109,7 @@ public class JSWriter_Test extends TestCase {
     display.dispose();
   }
 
-  private String getTypePoolIdHash( final Widget widget ) throws IOException {
+  private String getTypePoolIdHash( final Widget widget ) {
     String id = getTypePoolId( widget );
     return id == null ? null : String.valueOf( id.hashCode() );
   }

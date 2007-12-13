@@ -8,10 +8,10 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 import java.text.MessageFormat;
+
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -56,7 +56,7 @@ public final class WidgetUtil {
   public static String getId( final Widget widget ) {
     return getAdapter( widget ).getId();
   }
-
+  
   /**
    * Returns the {@link AbstractWidgetLCA} instance for this
    * widget.
