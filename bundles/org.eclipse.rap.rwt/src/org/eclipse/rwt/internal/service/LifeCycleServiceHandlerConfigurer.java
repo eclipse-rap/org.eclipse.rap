@@ -91,6 +91,13 @@ public final class LifeCycleServiceHandlerConfigurer
     
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
+    // TODO [rh] this is a preliminary fix for a behavior that was easily 
+    //      reproducible in IE but also happened in FF: when restarting a 
+    //      web app (hit return in location bar), the browser used a cached
+    //      version of the index.html *without* sending a request to ask
+    //      whether the cached page can be used.
+    response.addHeader( "Cache-Control", 
+                        "max-age=0, no-cache, must-revalidate" );
     long dateHeader = request.getDateHeader( "If-Modified-Since" );
     // Because browser store the date in format with seconds as smallest unit
     // add one second to avoid rounding problems...
