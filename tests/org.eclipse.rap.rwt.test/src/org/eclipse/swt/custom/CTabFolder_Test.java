@@ -15,13 +15,13 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
@@ -429,67 +429,6 @@ public class CTabFolder_Test extends TestCase {
     // Clean up
     item1.dispose();
     item2.dispose();
-  }
-
-  // TODO [rh] misplaced chevron on CTabFolder with style MULTI and
-  //      setMRUVisible( false );
-//  public void testChevronVisibilityWithMultiStyle() {
-//    Display display = new Display();
-//    Shell shell = new Shell( display, SWT.SHELL_TRIM );
-//    final CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
-//    folder.setUnselectedCloseVisible( false );
-//    folder.setMRUVisible( false );
-//    folder.setBounds( new Rectangle( 7, 25, 480, 120 ) );
-//    final Label topRight = new Label( folder, SWT.NONE );
-//    topRight.setText( "TopRight" );
-//    topRight.setSize( 100, 20 );
-//    folder.setTopRight( topRight );
-//    for( int i = 0; i < 5; i++ ) {
-//      createItem( folder );
-//    }
-//    shell.open();
-//
-//    Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
-//    ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
-//    // until here (5 items) no chevron should be shown
-//    assertEquals( false, folderAdapter.getChevronVisible() );
-//    assertEquals( 0, folderAdapter.getChevronRect().x );
-//    assertEquals( 0, folderAdapter.getChevronRect().y );
-//    assertEquals( 0, folderAdapter.getChevronRect().width );
-//    assertEquals( 0, folderAdapter.getChevronRect().height );
-//
-//    // adding the 6th item should bring up the chevron
-//    createItem( folder );
-//    assertEquals( true, folderAdapter.getChevronVisible() );
-//    assertTrue( folderAdapter.getChevronRect().x > 0 );
-//    assertTrue( folderAdapter.getChevronRect().y > 0 );
-//    assertTrue( folderAdapter.getChevronRect().width > 0 );
-//    assertTrue( folderAdapter.getChevronRect().height > 0 );
-//
-//    // selecting the 6th item (via chevron menu) should make it visible
-//    folder.setSelection( 5 );
-//    assertEquals( true, folder.getItem( 5 ).isShowing() );
-//  }
-
-  private static CTabItem createItem( final CTabFolder folder ) {
-    CTabItem item = new CTabItem( folder, SWT.CLOSE );
-    item.setText( "Tab " + ( folder.getItemCount() + 1 ) );
-    item.setToolTipText( item.getText() );
-    item.setImage( searchImage() );
-    Font systemFont = folder.getDisplay().getSystemFont();
-    FontData data = systemFont.getFontData()[ 0 ];
-    item.setFont( Graphics.getFont( data.getName(),
-                                    data.getHeight(),
-                                    SWT.BOLD ) );
-    Label label = new Label( folder, SWT.NONE );
-    label.setText( "Content for: " + item.getText() );
-    item.setControl( label );
-    return item;
-  }
-
-  private static Image searchImage() {
-    ClassLoader loader = CTabFolder_Test.class.getClassLoader();
-    return Graphics.getImage( "org/eclipse/rap/rwt/custom/search_src.gif", loader );
   }
 
   protected void setUp() throws Exception {

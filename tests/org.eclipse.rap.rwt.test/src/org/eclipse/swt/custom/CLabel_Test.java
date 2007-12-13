@@ -76,5 +76,4 @@ public class CLabel_Test extends TestCase {
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
   }
-
 }
