@@ -8,14 +8,12 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
-import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 
 public final class WidgetAdapter implements IWidgetAdapter {
