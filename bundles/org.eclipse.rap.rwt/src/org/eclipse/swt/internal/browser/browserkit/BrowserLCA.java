@@ -27,7 +27,7 @@ public class BrowserLCA extends AbstractWidgetLCA {
 
   private static final String QX_FIELD_SOURCE = "source";
 
-  private static final String TYPE_POOL_ID = BrowserLCA.class.getName();
+//  private static final String TYPE_POOL_ID = BrowserLCA.class.getName();
 
   private static final String PROP_URL = "url";
   private static final String PROP_TEXT = "text";
@@ -91,7 +91,8 @@ public class BrowserLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    return TYPE_POOL_ID;
+//    return TYPE_POOL_ID;
+    return null;
   }
 
   private static String registerHtml( final String html ) throws IOException {
