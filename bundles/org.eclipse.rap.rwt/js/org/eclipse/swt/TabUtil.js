@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -9,30 +8,39 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.swt.TabUtil", {
 
   statics : {
-    createTabItem : function( id, parent ) {
+    createTabItem : function( id, parentId, index ) {
       var tabButton = new qx.ui.pageview.tabview.Button();
       tabButton.setTabIndex( -1 );
       tabButton.setLabel( "(empty)" );
       tabButton.getLabelObject().setMode( "html" ); 
       tabButton.setLabel( "" );
       tabButton.setEnableElementFocus( false );
-      // TODO [rh] remove event listener when tabButton gets disposed of
       tabButton.addEventListener( "changeFocused", 
                                   org.eclipse.swt.TabUtil._onTabItemChangeFocus );
       tabButton.addEventListener( "click", 
                                   org.eclipse.swt.TabUtil._onTabItemClick );
-      var tabView 
-        = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( parent );
-      tabView.getBar().add( tabButton );
-      tabButton.tabView = tabView;
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var tabView = widgetManager.findWidgetById( parentId );
+      tabView.getBar().addAt( tabButton, index );
       var tabViewPage = new qx.ui.pageview.tabview.Page( tabButton );
       tabView.getPane().add( tabViewPage );
-      org.eclipse.swt.WidgetManager.getInstance().add( tabButton, id );
-      org.eclipse.swt.WidgetManager.getInstance().add( tabViewPage, id + "pg" );
+      widgetManager.add( tabButton, id );
+      widgetManager.add( tabViewPage, id + "pg" );
+    },
+    
+    releaseTabItem : function( itemId ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var tabButton = widgetManager.findWidgetById( itemId );
+      tabButton.removeEventListener( "changeFocused", 
+                                     org.eclipse.swt.TabUtil._onTabItemChangeFocus );
+      tabButton.removeEventListener( "click", 
+                                     org.eclipse.swt.TabUtil._onTabItemClick );
+      var tabPage = widgetManager.findWidgetById( itemId + "pg" );
+      widgetManager.dispose( tabPage );
     },
 
     _onTabItemChangeFocus : function( evt ) {
@@ -99,7 +107,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
         var itemId = widgetManager.findIdByWidget( tab );
         req.addParameter( "org.eclipse.swt.events.widgetSelected.item", 
                           itemId );
-        var id = widgetManager.findIdByWidget( tab.tabView );
+        var id = widgetManager.findIdByWidget( tab.getParent().getParent() );
         org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
       }
     }

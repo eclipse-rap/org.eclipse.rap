@@ -55,9 +55,11 @@ public class TabItemLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
+    TabFolder parent = tabItem.getParent();
     Object[] args = new Object[] { 
       WidgetUtil.getId( tabItem ), 
-      WidgetUtil.getId( tabItem.getParent() )
+      WidgetUtil.getId( parent ),
+      new Integer( parent.indexOf( tabItem ) )
     };
     writer.callStatic( "org.eclipse.swt.TabUtil.createTabItem", args );
     writer.addListener( QX_EVENT_CHANGE_CHECKED, JS_FUNC_TAB_SELECTED );
@@ -71,9 +73,10 @@ public class TabItemLCA extends AbstractWidgetLCA {
   }
   
   public void renderDispose( final Widget widget ) throws IOException {
-    // TODO [rh] preliminary: find out how to properly dispose of a TabItem
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.removeListener( QX_EVENT_CHANGE_CHECKED, JS_FUNC_TAB_SELECTED );
+    Object[] args = new Object[]{ WidgetUtil.getId( widget ), };
+    writer.callStatic( "org.eclipse.swt.TabUtil.releaseTabItem", args );
     writer.dispose();
   }
 

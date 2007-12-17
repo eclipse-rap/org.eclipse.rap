@@ -256,6 +256,19 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 0, folder.getItemCount() );
   }
   
+  public void testIndexedItemCreation() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    TabItem secondItem = new TabItem( folder, SWT.NONE );
+    TabItem firstItem = new TabItem( folder, SWT.NONE, 0 );
+    assertSame( firstItem, folder.getItem( 0 ) );
+    assertEquals( 0, folder.indexOf( firstItem ) );
+    assertSame( secondItem, folder.getItem( 1 ) );
+    assertEquals( 1, folder.indexOf( secondItem ) );
+  }
+  
   public void testItemDispose() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();

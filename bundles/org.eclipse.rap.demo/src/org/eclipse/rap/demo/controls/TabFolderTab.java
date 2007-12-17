@@ -51,6 +51,8 @@ public class TabFolderTab extends ExampleTab {
     }
     tabRadios[ 0 ].setSelection( true );
     createChangeContentButton( parent );
+    createInsertItemButton( parent );
+    createDisposeItemButton( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -101,6 +103,33 @@ public class TabFolderTab extends ExampleTab {
         int index = folder.indexOf( item );
         content.setText( "Alternate content for tab item " + index );
         item.setControl( content );
+      }
+    } );
+  }
+
+  private void createInsertItemButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Insert item before first item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        TabItem tabItem = new TabItem( folder, SWT.NONE, 0 );
+        tabItem.setText( "TabItem " + folder.indexOf( tabItem ) );
+        if( !onDemandContent ) {
+          createItemContent( tabItem );
+        }
+      }
+    } );
+  }
+  
+  private void createDisposeItemButton( final Composite parent ) {
+    Button button = new Button( parent, SWT.PUSH );
+    button.setText( "Dispose of selected item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        TabItem[] selection = folder.getSelection();
+        if( selection.length > 0 ) {
+          selection[ 0 ].dispose();
+        }
       }
     } );
   }
