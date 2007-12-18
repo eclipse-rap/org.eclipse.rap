@@ -24,10 +24,10 @@ import org.eclipse.swt.widgets.*;
 public final class TreeColumnLCA extends AbstractWidgetLCA {
 
   private static final String SORT_IMAGE_UP 
-    = "widget/table/up.png";
+    = "widget/tree/column/up.gif";
   private static final String SORT_IMAGE_DOWN 
-    = "widget/table/down.png";
-  
+    = "widget/tree/column/down.gif";
+
   // Property names to preserve values
   private static final String PROP_LEFT = "left";
   private static final String PROP_WIDTH = "width";

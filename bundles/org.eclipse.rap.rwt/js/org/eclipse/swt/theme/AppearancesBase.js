@@ -1017,13 +1017,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         spacing : 2,
         textColor : states.disabled ? "widget.graytext" : "undefined"
       };
-      // TODO: [bm] introduce tree colors
       if( states.mouseover && !states.disabled ) {
-        result.backgroundColor = "table.column.hover.background";
-        result.border          = "table.column.hover.border";
+        result.backgroundColor = "tree.column.hover.background";
+        result.border          = "tree.column.hover.border";
       } else {
-        result.backgroundColor = "table.column.background";
-        result.border          = "table.column.border";
+        result.backgroundColor = "tree.column.background";
+        result.border          = "tree.column.border";
       }
       if( states.moving ) {
         result.opacity = 0.6;

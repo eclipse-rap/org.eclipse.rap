@@ -26,9 +26,9 @@ import org.eclipse.swt.widgets.*;
 public final class TableColumnLCA extends AbstractWidgetLCA {
 
   private static final String SORT_IMAGE_UP 
-    = "widget/table/up.png";
+    = "widget/table/column/up.gif";
   private static final String SORT_IMAGE_DOWN 
-    = "widget/table/down.png";
+    = "widget/table/column/down.gif";
 
   // Property names to preserve values
   private static final String PROP_LEFT = "left";

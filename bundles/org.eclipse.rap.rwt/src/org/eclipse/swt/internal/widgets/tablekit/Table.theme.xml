@@ -12,6 +12,16 @@
       description = "Background color for table column headers on mouse over"
       default = "248, 248, 255" />
   
+  <image name="table.column.sort.up"
+      description="Indicator image for table sorting (up)"
+      targetPath="table/column/up.gif"
+      default="resource/widget/rap/column/up.gif"/>
+  
+  <image name="table.column.sort.down"
+      description="Indicator image for table sorting (down)"
+      targetPath="table/column/down.gif"
+      default="resource/widget/rap/column/down.gif"/>
+      
   <color name = "table.row.line"
       description = "Grid line color when linesVisible is true"
       default = "238, 238, 238" />
