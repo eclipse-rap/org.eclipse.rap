@@ -69,6 +69,8 @@ public final class SashLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    return TYPE_POOL_ID;
+//    return TYPE_POOL_ID;
+    // TODO [bm] disabled due to cursor problems
+    return null;
   }
 }
