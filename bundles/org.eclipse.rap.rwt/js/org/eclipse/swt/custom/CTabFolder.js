@@ -56,7 +56,14 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this._highlightBottom = new qx.ui.basic.Atom();
     this._highlightBottom.setBorder( highlightBorder );
     this._highlightBottom.setLeft( 0 );
-    this._highlightBottom.setHeight( 2 );
+    this._highlightBottom.setHeight( 1 );
+    
+    // fix ie style issues
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._highlightLeft );
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._highlightRight );
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._highlightTop );
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._highlightBottom );
+    
     this.add( this._highlightBottom );
     // Create horizontal line that separates the button bar from the rest of
     // the client area

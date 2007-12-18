@@ -19,9 +19,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Sash", {
     this._slider = new qx.ui.layout.CanvasLayout();
     this._slider.setAppearance( "sash-slider" );
     this._slider.setVisibility( false );
+    
     // Fix IE Styling issues
-    this._slider.setStyleProperty( "fontSize", "0" );
-    this._slider.setStyleProperty( "lineHeight", "0" );        
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._slider );
+         
     this.add( this._slider );
     this.initOrientation();
     this._bufferZIndex = null;

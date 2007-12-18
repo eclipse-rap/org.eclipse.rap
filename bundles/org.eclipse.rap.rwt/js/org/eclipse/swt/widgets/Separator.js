@@ -19,8 +19,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Separator", {
     this.base( arguments );
 
     // Fix IE Styling issues
-    this.setStyleProperty( "fontSize", "0" );
-    this.setStyleProperty( "lineHeight", "0" );
+    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this );
 
     // the actual separator line
     this._line = new qx.ui.basic.Terminator();

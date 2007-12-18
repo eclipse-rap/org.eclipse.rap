@@ -45,8 +45,6 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/WidgetManager.js";
   private static final String EVENT_UTIL_JS 
     = "org/eclipse/swt/EventUtil.js";
-  private static final String SASH_JS 
-    = "org/eclipse/swt/Sash.js";
   private static final String TAB_UTIL_JS 
     = "org/eclipse/swt/TabUtil.js";
   private static final String BUTTON_UTIL_JS 
@@ -59,12 +57,16 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/swt/MenuUtil.js";
   private static final String LINK_UTIL_JS
     = "org/eclipse/swt/LinkUtil.js";
+  private static final String WIDGET_UTIL_JS
+    = "org/eclipse/swt/WidgetUtil.js";
   private static final String CTAB_FOLDER_JS 
     = "org/eclipse/swt/custom/CTabFolder.js";
   private static final String CTAB_ITEM_JS 
     = "org/eclipse/swt/custom/CTabItem.js";
   private static final String CLABEL_UTIL_JS 
-  = "org/eclipse/swt/CLabelUtil.js";
+    = "org/eclipse/swt/CLabelUtil.js";
+  private static final String SASH_JS 
+    = "org/eclipse/swt/widgets/Sash.js";
   private static final String COOL_ITEM_JS 
     = "org/eclipse/swt/widgets/CoolItem.js";
   private static final String LIST_JS 
@@ -76,9 +78,9 @@ final class QooxdooResourcesUtil {
   private static final String TREE_ITEM_JS 
     = "org/eclipse/swt/widgets/TreeItem.js";
   private static final String TREE_ITEM_UTIL_JS 
-  = "org/eclipse/swt/TreeItemUtil.js";
+    = "org/eclipse/swt/TreeItemUtil.js";
   private static final String TREE_COLUMN_JS
-  = "org/eclipse/swt/widgets/TreeColumn.js";
+    = "org/eclipse/swt/widgets/TreeColumn.js";
   private static final String SCROLLED_COMPOSITE_JS 
     = "org/eclipse/swt/custom/ScrolledComposite.js";
   private static final String SEPARATOR_JS 
@@ -145,6 +147,7 @@ final class QooxdooResourcesUtil {
       register( REQUEST_JS );
       register( WIDGET_MANAGER_JS );
       register( EVENT_UTIL_JS );
+      register( WIDGET_UTIL_JS );
       register( SASH_JS );
       register( TAB_UTIL_JS );
       register( COMBO_UTIL_JS );
