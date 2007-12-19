@@ -56,6 +56,6 @@ plugin@org.eclipse.rap.rwt.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot
 # tooling
 feature@org.eclipse.rap.tooling=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.tooling-feature,org.eclipse.rap.tooling
 plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.help
-plugin@org.eclipse.rap.templates=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.templates
-plugin@org.eclipse.rap.launch=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.launch
-plugin@org.eclipse.rap.intro=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.intro
+plugin@org.eclipse.rap.ui.templates=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.templates
+plugin@org.eclipse.rap.ui.launch=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.launch
+plugin@org.eclipse.rap.ui.intro=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.intro
