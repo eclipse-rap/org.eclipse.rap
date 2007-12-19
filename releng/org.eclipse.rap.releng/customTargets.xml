@@ -158,7 +158,7 @@
 		<unzip src="${rap-feature}" dest="${targetLocation}" />
 		<unzip src="${rap-sdk-feature}" dest="${targetLocation}" />
 
-		<copy file="${targetLocation}/eclipse/plugins/org.eclipse.rap.w4t_1.0.0.${buildId}.jar" tofile="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_1.0.0.${buildId}.jar" />
+		<copy file="${targetLocation}/eclipse/plugins/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" tofile="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />
 		<delete>
 			<fileset dir="${targetLocation}/eclipse/plugins">
 				<include name="org.eclipse.rap.w4t_*" />
@@ -191,6 +191,21 @@
 			<include name="org.eclipse.osgi.services_*" />
 			<include name="org.eclipse.osgi_*" />
 			<include name="org.mortbay.jetty_*" />
+                        <!-- include sources -->
+                        <include name="org.eclipse.rcp.source_*/" />
+                        <include name="javax.servlet.source_*/" />
+                        <include name="org.apache.commons.logging.source_*/" />
+                        <include name="org.mortbay.jetty.source_*/" />
+                        <!-- exclude unneeded sources -->
+                        <exclude name="org.eclipse.rcp.source_*/org.eclipse.core.runtime.compatibility.auth_*" />
+                        <exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding_*" />
+                        <exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding.beanns_*" />
+                        <exclude name="org.eclipse.rcp.source_*/org.eclipse.jface.databinding_*" />
+                        <exclude name="org.eclipse.rcp.source_*/org.eclipse.help_*" />
+                        <exclude name="org.eclipse.rcp.source_*/org.eclipse.jface_*" />
+                        <exclude name="org.eclipse.rcp.source_*/org.eclipse.ui.workbench_*" />
+                        <exclude name="org.eclipse.rcp.source_*/org.eclipse.ui_*" />
+                        <exclude name="org.eclipse.rcp.source_*/org.eclipse.update.configurator_*" />
 		</fileset>
 		
 		<!-- 3.3 base -->
@@ -233,12 +248,12 @@
 		</copy>
 
 		<!-- zip target together -->
-		<zip destfile="${buildDirectory}/${buildLabel}/rap-1.0-${buildType}-incubation-target-3.2-${buildId}.zip">
+		<zip destfile="${buildDirectory}/${buildLabel}/rap-${targetVersion}-${buildType}-target-3.2-${buildId}.zip">
 			<fileset dir="${targetLocation}">
 			</fileset>
 		</zip>
 
-		<zip destfile="${buildDirectory}/${buildLabel}/rap-1.0-${buildType}-incubation-target-3.3-${buildId}.zip">
+		<zip destfile="${buildDirectory}/${buildLabel}/rap-${targetVersion}-${buildType}-target-3.3-${buildId}.zip">
 			<fileset dir="${targetLocation33}">
 			</fileset>
 		</zip>
@@ -255,9 +270,9 @@
 		<path id="cp">
 			<pathelement location="${build.tests}" />
 			<!--<pathelement location="${src.tests}" /> -->
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_1.0.0.${buildId}.jar" />
-			<!-- <pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.w4t_1.0.0.${buildId}.jar" /> -->
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_1.0.0.${buildId}.jar" />
+			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_${targetVersion}.${buildId}.jar" />
+			<!-- <pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" /> -->
+			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/resource_manager_test.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
 			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.${buildId}.jar" />
@@ -285,14 +300,16 @@
 		<path id="cp2">
 			<pathelement location="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
 			<!--<pathelement location="${src.tests}" /> -->
-			<!--<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.w4t_1.0.0.${buildId}.jar" />-->
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_1.0.0.${buildId}.jar" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_1.0.0.${buildId}.jar" />
+			<!--<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />-->
+			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />
+			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_${targetVersion}.${buildId}.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/resource_manager_test.jar" />
+			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/js.jar" />
 			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.${buildId}.jar" />
 			<pathelement path="${java.class.path}" />
 			<pathelement path="${baseLocation}/plugins/org.junit_3.8.1/junit.jar" />
+			<pathelement path="${baseLocation}/plugins/org.eclipse.rap.w4t/WEB-INF/lib/commons-fileupload-1.0.jar" />
 		</path>
 		<!-- run w4t tests -->
 		<junit printsummary="yes" haltonfailure="no" fork="no">
@@ -338,7 +355,7 @@
 		<!-- copy targets -->
 		<copy todir="${buildOuputDirectory}">
 			<fileset dir="${fBuildLocation}">
-				<include name="rap-1.0-${buildType}-incubation-target-*" />
+				<include name="rap-${targetVersion}-${buildType}-target-*" />
 			</fileset>
 		</copy>
 		<!-- copy test results -->
