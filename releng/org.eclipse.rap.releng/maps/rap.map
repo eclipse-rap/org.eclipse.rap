@@ -51,3 +51,11 @@ plugin@org.mortbay.jetty=v5_1_11,:pserver:anonymous@dev.eclipse.org:/cvsroot/too
 feature@org.eclipse.rap.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.test-feature,org.eclipse.rap.test
 plugin@org.eclipse.rap.w4t.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.w4t.test
 plugin@org.eclipse.rap.rwt.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.rwt.test
+
+
+# tooling
+feature@org.eclipse.rap.tooling=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.tooling-feature,org.eclipse.rap.tooling
+plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.help
+plugin@org.eclipse.rap.templates=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.templates
+plugin@org.eclipse.rap.launch=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.launch
+plugin@org.eclipse.rap.intro=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.intro
