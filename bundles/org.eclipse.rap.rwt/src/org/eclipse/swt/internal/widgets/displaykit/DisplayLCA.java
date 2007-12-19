@@ -41,6 +41,7 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
+  
   private final static String PATTERN_APP_STARTUP
     =    "var req = org.eclipse.swt.Request.getInstance();" 
        + "req.setUrl( \"{0}\" );"

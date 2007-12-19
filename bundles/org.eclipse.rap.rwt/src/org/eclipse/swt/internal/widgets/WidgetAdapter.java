@@ -18,7 +18,7 @@ import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 
 public final class WidgetAdapter implements IWidgetAdapter {
   
-  private String id;
+  private final String id;
   private boolean initialized;
   private final Map preservedValues;
   private String jsParent;
@@ -31,10 +31,6 @@ public final class WidgetAdapter implements IWidgetAdapter {
   public WidgetAdapter( final String id ) {
     this.id = id;
     preservedValues = new HashMap();
-  }
-  
-  public void overrideId( final String id ) {
-    this.id = id;
   }
   
   public String getId() {

@@ -26,6 +26,56 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class WidgetUtil {
   
+  /**
+   * <p><strong>Note:</strong> This constant is provisional and subject to
+   * change without further notice.</p>
+   * 
+   * By default, the widget-id returned by {@link IWidgetAdapter#getId()} is
+   * an automatically generated value that is session-wide unique. 
+   * A custom id can be assigned by using the <code>Widget#setData(String,
+   * Object)</code> method and using this constant for the <code>key</code> 
+   * argument and a string that denoes the new id as the <code>data</code>
+   * argument.
+   * 
+   * <p>The <code>id</code> must only contain characters that are valid according 
+   * to the <a href="http://www.w3.org/TR/html401/types.html#type-cdata">W3C
+   * recommendation for id and name attributes</a>.</p>
+   * 
+   * <p>It is the clients' responsibility to choose a unique id. Assigning an
+   * id that is used by another widget will lead to undeterministic behavior.
+   * </p>
+   * 
+   * <p>The following code would assign the id 'myId' to the widget:
+   * <pre>
+   *   Widget widget = new ...
+   *   widget.setData( WidgetUtil.CUSTOM_WIDGET_ID, "myId" );
+   * </pre></p>
+   * 
+   * @see Widget#setData(String,Object) 
+   * 
+   * @since 1.1
+   */
+  public static final String CUSTOM_WIDGET_ID
+    = "org.eclipse.rwt.UITests#customId";
+  
+  /**
+   * <p><strong>Note:</strong> This constant is provisional and subject to
+   * change without further notice.</p>
+   * 
+   * If a system property with this name is set to <code>true</code>, the
+   * UI testing support is activated. For all widgets that are rendered to 
+   * the client, the HTML id attribute is set.
+   *  
+   * <p>In conjunction with <code>CUSTOM_WIDGET_ID</code>, each widget can 
+   * be assigned a custom, more human-readable, identifier.</p>
+   * 
+   * @see #getId()
+   *  
+   * @since 1.1
+   */
+  public static final String ENABLE_UI_TESTS
+    = "org.eclipse.rwt.enableUITests";
+
   private WidgetUtil() {
     // prevent instantiation
   }
@@ -47,22 +97,32 @@ public final class WidgetUtil {
   }
   
   /**
-   * Returns the id of the widget that is used to identify the
-   * widget on the client.
+   * Returns the id of the given <code>widget</code> that is used to identify 
+   * the widget on the client.
    * 
-   * @param widget the widget
-   * @return the id
+   * @param widget the widget to obtain the id for
+   * @return the id for the given <code>widget</code>
    */
   public static String getId( final Widget widget ) {
-    return getAdapter( widget ).getId();
+    // TODO [rh] consider overriding the id when Widget#setData is called
+    //      - safer 1: in case someone tries to obtain id directly from addapter
+    //      - safer 2: changing the id after widget was initialized could be 
+    //        detected and prevented
+    //      - less memory: new HashMap created per widget to hold the id
+    //      - illegal id's could be rejected immediately (close to error source)
+    //      - faster (?): only "return getAdapter( widget ).getId();" in here 
+    String result = ( String )widget.getData( CUSTOM_WIDGET_ID );
+    if( result == null ) {
+      result = getAdapter( widget ).getId();
+    }
+    return result;
   }
   
   /**
-   * Returns the {@link AbstractWidgetLCA} instance for this
-   * widget.
+   * Returns the {@link AbstractWidgetLCA} instance for this widget.
    * 
-   * @param widget the widget
-   * @return the lca
+   * @param widget the widget to obtain the life cycle adapter from
+   * @return the life cycle adapter for the given <code>widget</code>
    */
   // TODO [bm] why do we return AbstractWidgetLCA instead of pulling the interesting
   // methods up to IWidgetLifeCycleAdapter and using this to talk to the outside
@@ -77,13 +137,13 @@ public final class WidgetUtil {
   }
   
   /**
-   * This is used to find a widget with a specified id within a widget tree.
-   * <!-- does anybody have a better word for tree? -->
+   * This method searches for a widget with the given <code>id</code> within 
+   * the widget hierachy starting at <code>root</code>.
+   * 
    * @param root the root widget where to start the search
-   * @param id the id of the widget
-   * @return the widget or <code>null</code> if there was no widget found with that id within
-   * the tree
-   * <!-- does anybody have a better word for tree? -->
+   * @param id the id of the widget to search for
+   * @return the widget or <code>null</code> if there was no widget found with 
+   * the given <code>id</code> within the widget hierarchy
    */
   public static Widget find( final Composite root, final String id ) {
     final Widget[] result = { null };

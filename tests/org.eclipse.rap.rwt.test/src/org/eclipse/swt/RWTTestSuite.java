@@ -28,7 +28,6 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.HTMLUtil_Test;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.provisional.uitest.UITests_Test;
 import org.eclipse.rwt.service.ServiceHandler_Test;
 import org.eclipse.rwt.service.SessionStore_Test;
 import org.eclipse.rwt.widgets.ExternalBrowser_Test;
@@ -45,8 +44,7 @@ import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA_Test;
 import org.eclipse.swt.internal.widgets.combokit.ComboLCA_Test;
 import org.eclipse.swt.internal.widgets.controlkit.ControlLCA_Test;
 import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA_Test;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFocus_Test;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA_Test;
+import org.eclipse.swt.internal.widgets.displaykit.*;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA_Test;
 import org.eclipse.swt.internal.widgets.linkkit.LinkLCA_Test;
 import org.eclipse.swt.internal.widgets.listkit.ListLCA_Test;
@@ -128,6 +126,7 @@ public class RWTTestSuite {
     suite.addTestSuite( UICallBackManager_Test.class );
     suite.addTestSuite( UICallBackServiceHandler_Test.class );
     suite.addTestSuite( DuplicateRequest_Test.class );
+    suite.addTestSuite( UITestUtil_Test.class );
 
     suite.addTestSuite( Display_Test.class );
     suite.addTestSuite( Shell_Test.class );
@@ -220,7 +219,6 @@ public class RWTTestSuite {
     suite.addTestSuite( QxBoxDimensions_Test.class );
     suite.addTestSuite( QxFont_Test.class );
 
-    suite.addTestSuite( UITests_Test.class );
     return suite;
   }
 }

@@ -8,12 +8,12 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
+import org.eclipse.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Rectangle;
@@ -42,6 +42,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
       } );
     }
     renderChanges( widget );
+    UITestUtil.writeId( widget );
     adapter.setInitialized( true );
   }
   

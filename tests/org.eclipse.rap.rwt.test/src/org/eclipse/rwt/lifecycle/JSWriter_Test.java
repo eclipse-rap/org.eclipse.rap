@@ -974,13 +974,12 @@ public class JSWriter_Test extends TestCase {
     final Text text = new Text( shell, SWT.MULTI );
     final Tree tree = new Tree( shell, SWT.SINGLE );
     for( int i = 0; i < 5; i++ ) {
-      TreeItem t1 = new TreeItem( tree, SWT.NONE );
-      t1.setText( "foo" + i );
+      TreeItem item = new TreeItem( tree, SWT.NONE );
+      item.setText( "foo" + i );
     }
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent event ) {
         text.dispose();
         tree.dispose();
       }
@@ -992,6 +991,7 @@ public class JSWriter_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     lifeCycle.execute();
+    RWTFixture.fakeUIThread();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
