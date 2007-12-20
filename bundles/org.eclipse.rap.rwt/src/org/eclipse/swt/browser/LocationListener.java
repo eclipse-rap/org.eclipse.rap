@@ -39,8 +39,6 @@ public interface LocationListener extends EventListener {
  * 
  * @param event the <code>LocationEvent</code> that specifies the location
  * to be loaded by a <code>Browser</code>
- * 
- * @since 1.0
  */ 
 public void changing(LocationEvent event);
 
@@ -58,8 +56,6 @@ public void changing(LocationEvent event);
  * 
  * @param event the <code>LocationEvent</code> that specifies  the new
  * location of a <code>Browser</code>
- * 
- * @since 1.0
  */ 
 public void changed(LocationEvent event);
 

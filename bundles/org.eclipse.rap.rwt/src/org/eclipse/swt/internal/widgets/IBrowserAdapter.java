@@ -8,11 +8,13 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 
 public interface IBrowserAdapter {
   
   String getText();
+
+  String getExecuteScript();
+  void setExecuteResult( boolean executeResult );
 }

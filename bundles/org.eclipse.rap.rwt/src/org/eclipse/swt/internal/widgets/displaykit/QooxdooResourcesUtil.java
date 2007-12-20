@@ -105,6 +105,8 @@ final class QooxdooResourcesUtil {
     = "org/eclipse/rwt/widgets/ExternalBrowser.js";
   private static final String PROGRESS_BAR_JS 
     = "org/eclipse/swt/widgets/ProgressBar.js";
+  private static final String BROWSER_JS
+    = "org/eclipse/swt/browser/Browser.js";
   private static final String FONT_SIZE_CALCULATION_JS
     = "org/eclipse/swt/FontSizeCalculation.js";
   private static final String QX_CONSTANT_CORE_JS
@@ -175,6 +177,7 @@ final class QooxdooResourcesUtil {
       register( TABLE_ROW_JS );
       register( LINK_UTIL_JS );
       register( EXTERNALBROWSER_JS );
+      register( BROWSER_JS );
       register( PROGRESS_BAR_JS );
       register( FONT_SIZE_CALCULATION_JS );
       register( CLABEL_UTIL_JS );

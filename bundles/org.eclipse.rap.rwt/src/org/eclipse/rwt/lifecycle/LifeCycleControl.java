@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycleBlockControl;

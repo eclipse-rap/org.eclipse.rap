@@ -8,9 +8,11 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.browser;
 
+import org.eclipse.rwt.lifecycle.LifeCycleControl;
+import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rwt.lifecycle.LifeCycleControl.LifeCycleLock;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Composite;
@@ -44,14 +46,27 @@ public class Browser extends Composite {
     public String getText() {
       return Browser.this.html;
     }
+    public String getExecuteScript() {
+      return Browser.this.executeScript;
+    }
+    public void setExecuteResult( final boolean result ) {
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          Browser.this.executeResult = result;
+          LifeCycleControl.resume( Browser.this.lock );      
+        }
+      } );
+    }
   }
   
   private static final String ABOUT_BLANK = "about:blank";
   
   private String url;
   private String html;
-
-  private final IBrowserAdapter browserAdapter = new BrowserAdapter();
+  public String executeScript;
+  private boolean executeResult;
+  private LifeCycleLock lock;
+  private final IBrowserAdapter browserAdapter;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -83,6 +98,7 @@ public class Browser extends Composite {
    */
   public Browser( final Composite parent, final int style ) {
     super( parent, style );
+    browserAdapter = new BrowserAdapter();
   }
   
   /**
@@ -102,8 +118,6 @@ public class Browser extends Composite {
    * </ul>
    *  
    * @see #getUrl
-   * 
-   * @since 1.0
    */
   public boolean setUrl( final String url ) {
     checkWidget();
@@ -134,8 +148,6 @@ public class Browser extends Composite {
    * </ul>
    *
    * @see #setUrl
-   * 
-   * @since 1.0
    */
   public String getUrl() {
     checkWidget();
@@ -164,8 +176,6 @@ public class Browser extends Composite {
    * </ul>
    *  
    * @see #setUrl
-   * 
-   * @since 1.0
    */
   public boolean setText( final String html ) {
     checkWidget();
@@ -183,6 +193,49 @@ public class Browser extends Composite {
       event.processEvent();
     }
     return result;
+  }
+
+  /**
+   * Execute the specified script.
+   *
+   * <p>Execute a script containing javascript commands in the context of the 
+   * current document.</p> 
+   * 
+   * <!-- Begin RAP specific -->
+   * <p><strong>Note:</strong> Use with great care. The javascript passed to 
+   * this method is executed in an <code>IFRAME</code> inside the document 
+   * that represents the client-side application.
+   * Since the execution context of an <code>IFRAME</code> is not fully 
+   * isolated from the surrounding documument it may break the client-side
+   * application.</p>
+   * <!-- End RAP specific -->
+   * 
+   * @param script the script with javascript commands
+   *  
+   * @return <code>true</code> if the operation was successful and 
+   * <code>false</code> otherwise
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the script is null</li>
+   * </ul>
+   * 
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
+   *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
+   * </ul>
+   *
+   * @since 1.1
+   */
+  public boolean execute( final String script ) {
+    checkWidget();
+    if( script == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    executeScript = script;
+    lock = new LifeCycleLock();
+    LifeCycleControl.block( lock );
+    executeScript = null;
+    return executeResult;
   }
 
   /**	 
@@ -204,8 +257,6 @@ public class Browser extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public void addLocationListener( final LocationListener listener ) {
     LocationEvent.addListener( this, listener );
@@ -225,8 +276,6 @@ public class Browser extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS when called from the wrong thread</li>
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
-   * 
-   * @since 1.0
    */
   public void removeLocationListener( final LocationListener listener ) {
     LocationEvent.removeListener( this, listener );

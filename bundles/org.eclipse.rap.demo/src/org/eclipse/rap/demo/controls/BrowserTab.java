@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rwt.widgets.ExternalBrowser;
@@ -19,12 +18,20 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-class BrowserTab extends ExampleTab {
+final class BrowserTab extends ExampleTab {
 
   private static final String DEFAULT_HTML 
-    = "<html>" 
-    + "<head></head>"
-    + "<body><p>Hello World</p></body>"
+    = "<html>\n"
+    + "<head>\n"
+    + "<script type=\"text/javascript\">\n"
+    + "  function show( msg ) {\n"
+    + "    alert( msg );\n"
+    + "}\n"
+    + "</script>\n"
+    + "</head>\n"
+    + "<body>\n" 
+    + "  <p id=\"a\">Hello World</p>\n" 
+    + "</body>\n"
     + "</html>";
   
   private Browser browser;
@@ -66,7 +73,6 @@ class BrowserTab extends ExampleTab {
     final Label lblHTML = new Label( composite, SWT.NONE );
     lblHTML.setText( "HTML" );
     lblHTML.setLayoutData( new GridData( GridData.VERTICAL_ALIGN_BEGINNING ) );
-    
     final Text txtHTML = new Text( composite, SWT.BORDER | SWT.MULTI );
     txtHTML.setText( DEFAULT_HTML );
     lblHTML.addControlListener( new ControlAdapter() {
@@ -85,6 +91,21 @@ class BrowserTab extends ExampleTab {
       }
     } );
     btnHTML.setLayoutData( new GridData( GridData.VERTICAL_ALIGN_BEGINNING ) );
+    
+    Label lblExecute = new Label( composite, SWT.NONE );
+    lblExecute.setText( "Execute" );
+    final Text txtExecute = new Text( composite, SWT.BORDER );
+    Button btnExecButton = new Button( composite, SWT.PUSH );
+    btnExecButton.setText( "Go" );
+    btnExecButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        boolean result = browser.execute( txtExecute.getText() );
+        String msg = result
+                   ? "Execution was successful."
+                   : "Execution was not successful.";
+        log( msg );
+      }
+    });
   }
 
   private void createExternalBrowserSelector( final Composite parent ) {

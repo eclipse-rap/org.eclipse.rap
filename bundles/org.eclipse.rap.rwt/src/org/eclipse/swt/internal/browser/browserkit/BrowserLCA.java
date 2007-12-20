@@ -8,12 +8,10 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.browser.browserkit;
 
 import java.io.*;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.resources.ResourceManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.browser.Browser;
@@ -21,11 +19,12 @@ import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class BrowserLCA extends AbstractWidgetLCA {
+public final class BrowserLCA extends AbstractWidgetLCA {
 
-  private static final String QX_TYPE = "qx.ui.embed.Iframe";
-
+  private static final String QX_TYPE = "org.eclipse.swt.browser.Browser";
   private static final String QX_FIELD_SOURCE = "source";
+
+  private static final String PARAM_EXECUTE_RESULT = "executeResult";
 
 //  private static final String TYPE_POOL_ID = BrowserLCA.class.getName();
 
@@ -42,24 +41,54 @@ public class BrowserLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
+    Browser browser = ( Browser )widget;
+    String value 
+      = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_RESULT );
+    if( value != null ) {
+      boolean executeResult = Boolean.valueOf( value ).booleanValue();
+      getAdapter( browser ).setExecuteResult( executeResult );
+    }
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
     JSWriter writer = JSWriter.getWriterFor( browser );
     writer.newWidget( QX_TYPE );
-    writer.set( JSConst.QX_FIELD_APPEARANCE , "browser" );
-    // TODO [rh] preliminary workaround to make Browser accessible by tab
-    writer.set( JSConst.QX_FIELD_TAB_INDEX, 1 );
-    // TODO [rh] nice-to-have: prevent popup menu from showing, disable widget
     ControlLCAUtil.writeStyleFlags( browser );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
-    // TODO [rh] though implemented in DefaultAppearanceThe, setting border does
-    //      not work
+    // TODO [rh] though implemented in DefaultAppearanceTheme, setting border 
+    //      does not work
     ControlLCAUtil.writeChanges( browser );
+    writeUrlAndText( browser );
+    writeExecute( browser );
+  }
+
+  public void renderDispose( final Widget widget ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
+  }
+
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.reset( QX_FIELD_SOURCE );
+    ControlLCAUtil.resetStyleFlags();
+  }
+
+  public String getTypePoolId( final Widget widget ) {
+    // TODO [rh] Disabled pooling. In IE7, using Browser#setText() does not 
+    //      work when widget was pooled. The previous content is displayed.
+//    return TYPE_POOL_ID;
+    return null;
+  }
+
+  private static void writeUrlAndText( final Browser browser ) 
+    throws IOException 
+  {
     JSWriter writer = JSWriter.getWriterFor( browser );
     String text = getText( browser );
     String url = browser.getUrl();
@@ -77,22 +106,13 @@ public class BrowserLCA extends AbstractWidgetLCA {
     }
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
-  }
-
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterForResetHandler();
-    writer.reset( QX_FIELD_SOURCE );
-    ControlLCAUtil.resetStyleFlags();
-  }
-
-  public String getTypePoolId( final Widget widget ) {
-//    return TYPE_POOL_ID;
-    return null;
+  private static void writeExecute( final Browser browser ) throws IOException {
+    IBrowserAdapter adapter = getAdapter( browser );
+    String executeScript = adapter.getExecuteScript();
+    if( executeScript != null ) {
+      JSWriter writer = JSWriter.getWriterFor( browser );
+      writer.call( "execute", new Object[] { executeScript } );
+    }
   }
 
   private static String registerHtml( final String html ) throws IOException {
@@ -122,5 +142,9 @@ public class BrowserLCA extends AbstractWidgetLCA {
     Object adapter = browser.getAdapter( IBrowserAdapter.class );
     IBrowserAdapter browserAdapter = ( IBrowserAdapter )adapter;
     return browserAdapter.getText();
+  }
+
+  private static IBrowserAdapter getAdapter( final Browser browser ) {
+    return ( IBrowserAdapter )browser.getAdapter( IBrowserAdapter.class );
   }
 }

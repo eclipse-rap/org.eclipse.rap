@@ -55,17 +55,9 @@ public class LocationEvent extends TypedEvent {
 	 */
 	public boolean doit = true;
 
-  /**
-   * Constructs a new instance of this class. 
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
-   * from application code.
-   * </p>
-   */
-  public LocationEvent( final Object source, 
-                        final int id, 
-                        final String location ) 
+  LocationEvent( final Object source, 
+                 final int id, 
+                 final String location ) 
   {
     super( source, id );
     this.location = location;
