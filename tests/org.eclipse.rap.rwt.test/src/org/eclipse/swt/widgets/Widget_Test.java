@@ -69,7 +69,7 @@ public class Widget_Test extends TestCase {
 
   public void testData() {
     Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
+    Shell shell = new Shell( display );
     Widget widget = new Text( shell, SWT.NONE );
     
     // Test initial state
@@ -87,6 +87,13 @@ public class Widget_Test extends TestCase {
     assertSame( singleData, widget.getData() );
     assertSame( keyedData, widget.getData( "key" ) );
     assertSame( null, widget.getData( "null-key" ) );
+    
+    // Test 'deleting' a key
+    widget.setData( "key", null );
+    assertNull( widget.getData( "key" ) );
+    
+    // Test keyed data with non-existing key
+    assertNull( widget.getData( "non-existing-key" ) );
     
     // Test keyed data with illegal arguments
     try {

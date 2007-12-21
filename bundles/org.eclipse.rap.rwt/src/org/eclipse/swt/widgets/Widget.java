@@ -11,9 +11,6 @@
 
 package org.eclipse.swt.widgets;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
@@ -67,7 +64,7 @@ public abstract class Widget implements Adaptable {
   /* Global state flags */
   static final int DISPOSED = 1 << 0;
 //  static final int CANVAS = 1 << 1;
-//  static final int KEYED_DATA = 1 << 2;
+  static final int KEYED_DATA = 1 << 2;
   static final int DISABLED = 1 << 3;
   static final int HIDDEN = 1 << 4;
   
@@ -84,7 +81,6 @@ public abstract class Widget implements Adaptable {
   int state;
   Display display;
   private Object data;
-  private Map keyedData;
   private AdapterManager adapterManager;
   private WidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
@@ -142,7 +138,7 @@ public abstract class Widget implements Adaptable {
    * </p>
    */
   public Object getAdapter( final Class adapter ) {
-    Object result = null;
+    Object result;
     if( adapter == IEventAdapter.class ) {
       // //////////////////////////////////////////////////////
       // Note: This is not implemented via the AdapterManager,
@@ -201,7 +197,7 @@ public abstract class Widget implements Adaptable {
    */
   public Object getData() {
     checkWidget();
-    return data;
+    return ( state & KEYED_DATA ) != 0 ? ( ( Object[] )data )[ 0 ] : data;
   }
   
   /**
@@ -228,7 +224,11 @@ public abstract class Widget implements Adaptable {
    */
   public void setData( final Object data ) {
     checkWidget();
-    this.data = data;
+    if( ( state & KEYED_DATA ) != 0 ) {
+      ( ( Object[] )this.data )[ 0 ] = data;
+    } else {
+      this.data = data;
+    }
   }
 
   /**
@@ -258,13 +258,17 @@ public abstract class Widget implements Adaptable {
   public Object getData( final String key ) {
     checkWidget();
     if( key == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      error( SWT.ERROR_NULL_ARGUMENT );
     }
-    Object result = null;
-    if( keyedData != null ) {
-      result = keyedData.get( key );
+    if( ( state & KEYED_DATA ) != 0 ) {
+      Object[] table = ( Object[] )data;
+      for( int i = 1; i < table.length; i += 2 ) {
+        if( key.equals( table[ i ] ) ) {
+          return table[ i + 1 ];
+        }
+      }
     }
-    return result;
+    return null;
   }
   
   /**
@@ -294,12 +298,50 @@ public abstract class Widget implements Adaptable {
   public void setData( final String key, final Object value ) {
     checkWidget();
     if( key == null ) {
-      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+      error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( keyedData == null ) {
-      keyedData = new HashMap();
+    int index = 1;
+    Object[] table = null;
+    if( ( state & KEYED_DATA ) != 0 ) {
+      table = ( Object[] )data;
+      while( index < table.length ) {
+        if( key.equals( table[ index ] ) ) {
+          break;
+        }
+        index += 2;
+      }
     }
-    keyedData.put( key, value );
+    if( value != null ) {
+      if( ( state & KEYED_DATA ) != 0 ) {
+        if( index == table.length ) {
+          Object[] newTable = new Object[ table.length + 2 ];
+          System.arraycopy( table, 0, newTable, 0, table.length );
+          data = table = newTable;
+        }
+      } else {
+        table = new Object[ 3 ];
+        table[ 0 ] = data;
+        data = table;
+        state |= KEYED_DATA;
+      }
+      table[ index ] = key;
+      table[ index + 1 ] = value;
+    } else {
+      if( ( state & KEYED_DATA ) != 0 ) {
+        if( index != table.length ) {
+          int length = table.length - 2;
+          if( length == 1 ) {
+            data = table[ 0 ];
+            state &= ~KEYED_DATA;
+          } else {
+            Object[] newTable = new Object[ length ];
+            System.arraycopy( table, 0, newTable, 0, index );
+            System.arraycopy( table, index + 2, newTable, index, length - index );
+            data = newTable;
+          }
+        }
+      }
+    }
   }
   
   /**
@@ -560,12 +602,9 @@ public abstract class Widget implements Adaptable {
       releaseParent();
       releaseWidget();
       adapterManager = null;
-      data = null;
-      // FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
-      //       running. Think about introducing a cleanUp method on 
-      //       WidgetAdapter that would be called after rendering a disposed 
-      //       of widget
-//      keyedData = null;
+			// FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
+      //       running. 
+//      data = null;
       state |= DISPOSED;
     }
   }
