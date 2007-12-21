@@ -11,9 +11,6 @@
 
 package org.eclipse.rwt.internal.branding;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.branding.AbstractBranding;
@@ -67,43 +64,37 @@ public class BrandingUtil_Test extends TestCase {
     branding.favIcon = "my/fav/icon.ico";
     markup = BrandingUtil.headerMarkup( branding );
     expected 
-      = "<link href=\"my/fav/icon.ico\" " 
+      = "<link rel=\"shortcut icon\" " 
       + "type=\"image/x-icon\" " 
-      + "rel=\"shortcut icon\" />\n";
+      + "href=\"my/fav/icon.ico\" />\n"; 
     assertEquals( expected, markup );
     // Some header without attributes
     branding.favIcon = null;
     branding.headers = new Header[] {
-      new Header( "meta", null )
+      new Header( "meta", new String[ 0 ], new String[ 0 ] )
     };
     markup = BrandingUtil.headerMarkup( branding );
     assertEquals( "<meta />\n", markup );
     // Some header with attributes
     branding.favIcon = null;
-    Map attributes = new HashMap();
-    attributes.put( "name", "value" );
     branding.headers = new Header[] {
-      new Header( "meta", attributes )
+      new Header( "meta", new String[] { "name" }, new String[] { "value" } )
     };
     markup = BrandingUtil.headerMarkup( branding );
     assertEquals( "<meta name=\"value\" />\n", markup );
     // Header with attributes that have a null-name or-value: will be ignored
     branding.favIcon = null;
-    attributes = new HashMap();
-    attributes.put( null, null );
-    attributes.put( "name", null );
-    attributes.put( null, "value" );
     branding.headers = new Header[] {
-      new Header( "meta", attributes )
+      new Header( "meta", 
+                  new String[] { null, "name", null }, 
+                  new String[] { null, null, "value" } )
     };
     markup = BrandingUtil.headerMarkup( branding );
     assertEquals( "<meta />\n", markup );
     // fav icon and header
     branding.favIcon = "my/fav/icon.ico";
-    attributes = new HashMap();
-    attributes.put( "name", "value" );
     branding.headers = new Header[] {
-      new Header( "meta", attributes )
+      new Header( "meta", new String[] { "name" }, new String[] { "value" } )
     };
     markup = BrandingUtil.headerMarkup( branding );
     expected 

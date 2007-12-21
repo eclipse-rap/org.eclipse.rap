@@ -10,13 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.branding;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.service.BrowserSurvey;
 
 
@@ -69,11 +67,17 @@ public final class BrandingUtil {
   {
     String favIcon = branding.getFavIcon();
     if( favIcon != null && !"".equals( favIcon ) ) {
-      Map attributes = new HashMap();
-      attributes.put( "rel", "shortcut icon" );
-      attributes.put( "type", "image/x-icon" );
-      attributes.put( "href", favIcon );
-      Header header = new Header( "link", attributes );
+      String[] names = new String[] { 
+        "rel", 
+        "type", 
+        "href" 
+      };
+      String[] values = new String[] { 
+        "shortcut icon", 
+        "image/x-icon", 
+        favIcon 
+      };
+      Header header = new Header( "link", names, values );
       appendHeaderMarkup( buffer, header );
       buffer.append( "\n" );
     }

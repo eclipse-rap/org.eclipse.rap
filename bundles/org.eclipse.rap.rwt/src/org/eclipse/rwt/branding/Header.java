@@ -10,6 +10,8 @@ package org.eclipse.rwt.branding;
 
 import java.util.Map;
 
+import org.eclipse.rwt.internal.util.ParamCheck;
+
 /**
  * This data structure represents an HTML tag that goes into the &lt;head&gt;
  * section of the startup page and is used by the branding facility.
@@ -53,6 +55,43 @@ public final class Header {
       this.values = new String[ size ];
       attributes.values().toArray( values );
     }
+  }
+
+  /**
+   * Constructs a new instance of this class with the given
+   * <code>tagName</code>.
+   * 
+   * @param tagName the name of the tag, must either be <code>meta</code> or
+   *          <code>link</code>
+   * @param attributeNames the attribute names for this tag. Must not be
+   *          <code>null</code>.
+   * @param attributeValues the attribute values for this tag. Must match the
+   *          attribute names given in argument <code>attributeNames</code>
+   * @throws IllegalArgumentException if <code>tagName</code> isn't either
+   *           <code>meta</code> or <code>link</code>.
+   */
+  public Header( final String tagName, 
+                 final String[] attributeNames, 
+                 final String[] attributeValues ) 
+  {
+    if( !"link".equals( tagName ) && !"meta".equals( tagName ) ) {
+      String msg 
+        = "Invalid tag name. The tag name must be either 'meta' or 'link'.";
+      throw new IllegalArgumentException( msg );
+    }
+    ParamCheck.notNull( attributeNames, "attributeNames" );
+    ParamCheck.notNull( attributeValues, "attributeValues" );
+    if( attributeNames.length != attributeValues.length ) {
+      String msg 
+        = "The arguments 'attributeNames' and 'attributeValues' must have " 
+        + "the same length.";
+      throw new IllegalArgumentException( msg );
+    }
+    this.tagName = tagName;
+    names = new String[ attributeNames.length ];
+    System.arraycopy( attributeNames, 0, names, 0, attributeNames.length );
+    values = new String[ attributeValues.length ];
+    System.arraycopy( attributeValues, 0, values, 0, attributeValues.length );
   }
 
   /**
