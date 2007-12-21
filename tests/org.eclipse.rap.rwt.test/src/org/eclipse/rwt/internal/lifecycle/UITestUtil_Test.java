@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -55,6 +56,22 @@ public class UITestUtil_Test extends TestCase {
     lifeCycle.execute();
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setHtmlId" ) == -1 );
+    // clean up
+    System.getProperties().remove( WidgetUtil.ENABLE_UI_TESTS );
+  }
+  
+  public void testGetIdAfterDispose() {
+    // set up test scenario
+    System.setProperty( WidgetUtil.ENABLE_UI_TESTS, "true" );
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    // ensure that the overridden id is available after the widget was disposed
+    // of - needed by render phase
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "customId" );
+    assertEquals( "customId", WidgetUtil.getId( shell ) );
+    shell.dispose();
+    assertEquals( "customId", WidgetUtil.getId( shell ) );
     // clean up
     System.getProperties().remove( WidgetUtil.ENABLE_UI_TESTS );
   }

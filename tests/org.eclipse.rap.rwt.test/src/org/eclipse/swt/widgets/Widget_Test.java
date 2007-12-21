@@ -15,6 +15,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.*;
 
 
@@ -29,6 +31,15 @@ public class Widget_Test extends TestCase {
   protected void tearDown() throws Exception {
     RWTFixture.removeUIThread();
     Fixture.tearDown();
+  }
+
+  public void testGetAdapter() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Widget shell = new Shell( display );
+    // ensure that Widget#getAdapter can be called after widget was disposed of
+    shell.dispose();
+    assertNotNull( shell.getAdapter( IWidgetAdapter.class ) );
   }
   
   public void testCheckWidget() throws InterruptedException {
@@ -137,5 +148,4 @@ public class Widget_Test extends TestCase {
     }
     RWTLifeCycle.setThread( bufferedThread );
   }
-  
 }

@@ -83,11 +83,11 @@ public abstract class Widget implements Adaptable {
   int style;
   int state;
   Display display;
-  private IEventAdapter eventAdapter;
   private Object data;
   private Map keyedData;
   private AdapterManager adapterManager;
   private WidgetAdapter widgetAdapter;
+  private IEventAdapter eventAdapter;
   private UntypedEventAdapter untypedAdapter; 
   
   
@@ -141,7 +141,6 @@ public abstract class Widget implements Adaptable {
    * from application code.
    * </p>
    */
-  // TODO [rh] revise: shouldn't getAdapter be guarded by checkWidget as well?
   public Object getAdapter( final Class adapter ) {
     Object result = null;
     if( adapter == IEventAdapter.class ) {
@@ -157,7 +156,7 @@ public abstract class Widget implements Adaptable {
     } else if( adapter == IWidgetAdapter.class ) {
       // TODO: [fappel] this is done for performance improvement and replaces
       //                the lookup in WidgetAdapterFactory. Since this is still
-      //                a matter of investigation WidgetAdapterFactory is not 
+      //                a matter of investigation, WidgetAdapterFactory is not 
       //                changed yet.
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
@@ -562,7 +561,11 @@ public abstract class Widget implements Adaptable {
       releaseWidget();
       adapterManager = null;
       data = null;
-      keyedData = null;
+      // FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
+      //       running. Think about introducing a cleanUp method on 
+      //       WidgetAdapter that would be called after rendering a disposed 
+      //       of widget
+//      keyedData = null;
       state |= DISPOSED;
     }
   }

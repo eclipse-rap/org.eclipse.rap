@@ -202,9 +202,9 @@ public class Browser extends Composite {
    * current document.</p> 
    * 
    * <!-- Begin RAP specific -->
-   * <p><strong>Note:</strong> Use with great care. The javascript passed to 
-   * this method is executed in an <code>IFRAME</code> inside the document 
-   * that represents the client-side application.
+   * <p><strong>Note:</strong> Care should be taken when using this method. 
+   * The given <code>script</code> is executed in an <code>IFRAME</code> 
+   * inside the document that represents the client-side application.
    * Since the execution context of an <code>IFRAME</code> is not fully 
    * isolated from the surrounding documument it may break the client-side
    * application.</p>
