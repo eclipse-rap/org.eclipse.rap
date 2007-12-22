@@ -52,6 +52,7 @@ public final class WidgetUtil {
    * </pre></p>
    * 
    * @see Widget#setData(String,Object) 
+   * @see #getId()
    * 
    * @since 1.1
    */
@@ -67,9 +68,10 @@ public final class WidgetUtil {
    * the client, the HTML id attribute is set.
    *  
    * <p>In conjunction with <code>CUSTOM_WIDGET_ID</code>, each widget can 
-   * be assigned a custom, more human-readable, identifier.</p>
+   * be assigned a custom, more human-readable, identifier that is independant
+   * if the order in which widgets are created.</p>
    * 
-   * @see #getId()
+   * @see #CUSTOM_WIDGET_ID
    *  
    * @since 1.1
    */
