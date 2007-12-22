@@ -260,15 +260,16 @@ public abstract class Widget implements Adaptable {
     if( key == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
+    Object result = null;
     if( ( state & KEYED_DATA ) != 0 ) {
       Object[] table = ( Object[] )data;
-      for( int i = 1; i < table.length; i += 2 ) {
+      for( int i = 1; result == null && i < table.length; i += 2 ) {
         if( key.equals( table[ i ] ) ) {
-          return table[ i + 1 ];
+          result = table[ i + 1 ];
         }
       }
     }
-    return null;
+    return result;
   }
   
   /**

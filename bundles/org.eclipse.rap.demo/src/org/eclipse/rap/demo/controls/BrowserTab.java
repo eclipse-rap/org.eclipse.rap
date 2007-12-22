@@ -138,16 +138,10 @@ final class BrowserTab extends ExampleTab {
     btnOpen.setText( "open( id, url, style )" );
     btnOpen.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        int style = 0;
-        if( cbLocationBar.getSelection() ) {
-          style |= ExternalBrowser.LOCATION_BAR;
-        }
-        if( cbNavigationBar.getSelection() ) {
-          style |= ExternalBrowser.NAVIGATION_BAR;
-        }
-        if( cbStatusBar.getSelection() ) {
-          style |= ExternalBrowser.STATUS;
-        }
+        boolean locationBar = cbLocationBar.getSelection();
+        boolean statusBar = cbStatusBar.getSelection();
+        boolean navigationBar = cbNavigationBar.getSelection();
+        int style = computeStyle( locationBar, statusBar, navigationBar );
         ExternalBrowser.open( txtId.getText(), txtUrl.getText(), style );
       }
     } );
@@ -157,6 +151,19 @@ final class BrowserTab extends ExampleTab {
     btnClose.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         ExternalBrowser.close( txtId.getText() );
+      }
+    } );
+    Button btnMailTo = new Button( group, SWT.PUSH );
+    btnMailTo.setText( "mailto:..." );
+    btnMailTo.setLayoutData( horizontalSpan2() );
+    btnMailTo.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        boolean locationBar = cbLocationBar.getSelection();
+        boolean statusBar = cbStatusBar.getSelection();
+        boolean navigationBar = cbNavigationBar.getSelection();
+        int style = computeStyle( locationBar, statusBar, navigationBar );
+        ExternalBrowser.open( "mailto", "mailto:someone@nowhere.org", style );
+        ExternalBrowser.close( "mailto" );
       }
     } );
   }
@@ -171,5 +178,22 @@ final class BrowserTab extends ExampleTab {
     GridData result = new GridData( SWT.FILL, SWT.CENTER, true, false );
 //    result.grabExcessHorizontalSpace = true;
     return result;
+  }
+
+  private static int computeStyle( final boolean locationBar,
+                                   final boolean statusBar,
+                                   final boolean navigationBar )
+  {
+    int style = 0;
+    if( locationBar ) {
+      style |= ExternalBrowser.LOCATION_BAR;
+    }
+    if( navigationBar ) {
+      style |= ExternalBrowser.NAVIGATION_BAR;
+    }
+    if( statusBar ) {
+      style |= ExternalBrowser.STATUS;
+    }
+    return style;
   }
 }

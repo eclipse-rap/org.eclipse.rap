@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.widgets;
 
 import java.io.IOException;
@@ -28,6 +27,48 @@ import org.eclipse.swt.widgets.Display;
  * @since 1.0
  */
 public final class ExternalBrowser {
+
+  private static final class JSExecutor implements PhaseListener {
+
+    private static final long serialVersionUID = 1L;
+
+    private final Display display;
+    private String code;
+
+    private JSExecutor( final Display display ) {
+      this.display = display;
+      this.code = "";
+    }
+    
+    private void append( final String command ) {
+      code += command;
+    }
+
+    public void beforePhase( final PhaseEvent event ) {
+      // do nothing
+    }
+
+    public void afterPhase( final PhaseEvent event ) {
+      if( display == Display.getCurrent() ) {
+        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+        HtmlResponseWriter writer = stateInfo.getResponseWriter();
+        try {
+          writer.write( code, 0, code.length() );
+        } catch( IOException e ) {
+          // TODO [rh] proper exception handling - think about adding throws
+          //      IOException to after/beforePhase as there are various places
+          //      like this
+          throw new RuntimeException( e );
+        } finally {
+          LifeCycleFactory.getLifeCycle().removePhaseListener( this );
+        }
+      }
+    }
+
+    public PhaseId getPhaseId() {
+      return PhaseId.RENDER;
+    }
+  }
 
   /**
    * Style parameter (value 1&lt;&lt;1) indicating that the address combo and
@@ -53,8 +94,12 @@ public final class ExternalBrowser {
    */
   public static final int STATUS = 1 << 3;
 
+  private static final String JS_EXECUTOR 
+    = ExternalBrowser.class.getName() + "#jsExecutor";
+
   private static final String OPEN 
-    = "org.eclipse.rwt.widgets.ExternalBrowser.open( \"{0}\", \"{1}\", \"{2}\" );";
+    = "org.eclipse.rwt.widgets.ExternalBrowser." 
+    + "open( \"{0}\", \"{1}\", \"{2}\" );";
   private static final String CLOSE
     = "org.eclipse.rwt.widgets.ExternalBrowser.close( \"{0}\" );";
 
@@ -70,9 +115,18 @@ public final class ExternalBrowser {
    * @param url the URL to display, must not be <code>null</code>
    * @param style the style display constants. Style constants should be
    *   bitwise-ORed together.
+   *   
+   * @throws SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the <code>id</code> or <code>url</code> 
+   *      is <code>null</code></li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the <code>id</code> is empty</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that 
+   *      created the receiver</li>
+   * </ul>
    */
   public static void open( final String id, final String url, final int style ) 
   {
+    checkWidget();
     if( id == null || url == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -88,8 +142,17 @@ public final class ExternalBrowser {
    * 
    * @param id if an instance of a browser with the same id is opened, 
    *   it will be close. The id must neither be <code>null</code> nor empty.
+   *   
+   * @throws SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the <code>id</code> is 
+   *      <code>null</code></li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the <code>id</code> is empty</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that 
+   *      created the receiver</li>
+   * </ul>
    */
   public static void close( final String id ) {
+    checkWidget();
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -116,8 +179,8 @@ public final class ExternalBrowser {
   
   static String escapeId( final String id ) {
     String result = id;
-    result = result.replaceAll( "_", "_0" );
-    result = result.replaceAll( ".", "_" );
+    result = result.replaceAll( "\\_", "\\_0" );
+    result = result.replaceAll( "\\.", "\\_" );
     return result;
   }
   
@@ -147,34 +210,25 @@ public final class ExternalBrowser {
   }
 
   private static void executeJS( final String code ) {
-    final Display display = Display.getCurrent();
-    LifeCycleFactory.getLifeCycle().addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-
-      public void beforePhase( final PhaseEvent event ) {
-      }
-
-      public void afterPhase( final PhaseEvent event ) {
-        if( display == Display.getCurrent() ) {
-          IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-          HtmlResponseWriter writer = stateInfo.getResponseWriter();
-          try {
-            writer.write( code, 0, code.length() );
-          } catch( IOException e ) {
-            // TODO [rh] exception handling
-            e.printStackTrace();
-          } finally {
-            LifeCycleFactory.getLifeCycle().removePhaseListener( this );
-          }
-        }
-      }
-      
-      public PhaseId getPhaseId() {
-        return PhaseId.RENDER;
-      }
-    } );
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    JSExecutor jsExecutor = ( JSExecutor )stateInfo.getAttribute( JS_EXECUTOR );
+    if( jsExecutor == null ) {
+      jsExecutor = new JSExecutor( Display.getCurrent() );
+      LifeCycleFactory.getLifeCycle().addPhaseListener( jsExecutor );
+      stateInfo.setAttribute( JS_EXECUTOR, jsExecutor );
+    }
+    jsExecutor.append( code );
   }
+
+  //////////////////
+  // Helping methods
   
+  private static void checkWidget() {
+    if( Display.getCurrent().getThread() != Thread.currentThread() ) {
+      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    }
+  }
+
   private ExternalBrowser() {
     // prevent instantiation
   }
