@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -13,6 +12,7 @@
 /**
  * This class contains static functions needed for TreeItems.
  */
+// TODO [rh] move remaining methods to TreeItem.js and delete 
 qx.Class.define( "org.eclipse.swt.TreeItemUtil", {
 
   statics : {
@@ -21,7 +21,6 @@ qx.Class.define( "org.eclipse.swt.TreeItemUtil", {
     	var wm = org.eclipse.swt.WidgetManager.getInstance();
     	
     	var realParent = null;
-    	
     	if( parent instanceof org.eclipse.swt.widgets.Tree ) {
     		realParent = parent.getTree();
     	} else {
