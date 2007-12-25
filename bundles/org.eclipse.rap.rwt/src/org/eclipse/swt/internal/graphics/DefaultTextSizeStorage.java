@@ -145,7 +145,12 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
       String msg = MessageFormat.format( txt, param );
       throw new IllegalArgumentException( msg );
     }
-    BigDecimal ten = new BigDecimal( 10 );
+    // TODO [rh] the buid server seems to compile againts JDK >= 1.5
+    //      this causes NoSuchMethodError: java.math.BigDecimal.<init>(I)V
+    //      when running with JDK 1.4. See
+    //      http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6226858
+    //      The fix is to explicitly call BigDecimal(double)
+    BigDecimal ten = new BigDecimal( 10.0 );
     BigDecimal bdStoreSize = new BigDecimal( storeSize );
     int rounding = BigDecimal.ROUND_HALF_UP;
     clearRange = bdStoreSize.divide( ten, 0, rounding ).intValue();
@@ -161,9 +166,9 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
       Entry[] entries = new Entry[ data.size() ];
       data.values().toArray( entries );
       Arrays.sort( entries, new Comparator() {
-        public int compare( Object arg0, Object arg1 ) {
-          Entry e1 = ( Entry )arg0;
-          Entry e2 = ( Entry )arg1;
+        public int compare( final Object obj1, final Object obj2 ) {
+          Entry e1 = ( Entry )obj1;
+          Entry e2 = ( Entry )obj2;
           int result = 0;
           if( e1.timeStamp > e2.timeStamp ) {
             result = 1;
@@ -185,8 +190,8 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
 
   private Point parsePoint( final String value ) {
     String[] values = value.split( "," );
-    int x = new Integer( values[ 0 ] ).intValue();
-    int y = new Integer( values[ 1 ] ).intValue();
+    int x = Integer.valueOf( values[ 0 ] ).intValue();
+    int y = Integer.valueOf( values[ 1 ] ).intValue();
     return new Point( x, y );
   }
 
