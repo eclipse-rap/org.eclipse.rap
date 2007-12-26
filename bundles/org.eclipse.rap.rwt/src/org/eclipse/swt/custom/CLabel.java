@@ -325,7 +325,7 @@ public class CLabel extends Canvas {
   public void setText( String text ) {
     checkWidget();
     if ( text == null )
-      this.text = ""; //$NON-NLS-1$
+      text = ""; //$NON-NLS-1$
     if ( !text.equals( this.text ) ) {
       this.text = text;
     }
