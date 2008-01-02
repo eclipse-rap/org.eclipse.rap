@@ -145,12 +145,7 @@ public class DefaultTextSizeStorage implements ITextSizeStorage {
       String msg = MessageFormat.format( txt, param );
       throw new IllegalArgumentException( msg );
     }
-    // TODO [rh] the buid server seems to compile againts JDK >= 1.5
-    //      this causes NoSuchMethodError: java.math.BigDecimal.<init>(I)V
-    //      when running with JDK 1.4. See
-    //      http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6226858
-    //      The fix is to explicitly call BigDecimal(double)
-    BigDecimal ten = new BigDecimal( 10.0 );
+    BigDecimal ten = new BigDecimal( 10 );
     BigDecimal bdStoreSize = new BigDecimal( storeSize );
     int rounding = BigDecimal.ROUND_HALF_UP;
     clearRange = bdStoreSize.divide( ten, 0, rounding ).intValue();
