@@ -70,13 +70,13 @@ public final class Graphics {
   }
 
   /**
-   * Returns a {@link Font} object given a font name,
-   * the height of the desired font in points, and a font
-   * style.
+   * Returns a {@link Font} object given a font name, the height of the desired
+   * font in points, and a font style.
    * 
    * @param name the name of the font (must not be null)
    * @param height the font height in points
-   * @param style a bit or combination of NORMAL, BOLD, ITALIC
+   * @param style a bit or combination of <code>NORMAL</code>,
+   *          <code>BOLD</code>, <code>ITALIC</code>
    * @return the font
    */
   public static Font getFont( final String name,
@@ -144,12 +144,12 @@ public final class Graphics {
    * @param font the font for which the result is valid
    * @param string the string to measure
    * @param wrapWidth the maximum width of the text. The text will be wrapped to
-   *            match this width. If set to 0, no wrapping will be performed.
+   *          match this width. If set to 0, no wrapping will be performed.
    * @return a point containing the extent of the string
    * @exception IllegalArgumentException
-   *                <ul>
-   *                <li>ERROR_NULL_ARGUMENT - if the string is null</li>
-   *                </ul>
+   *              <ul>
+   *              <li>ERROR_NULL_ARGUMENT - if the string is null</li>
+   *              </ul>
    */
   public static Point textExtent( final Font font,
                                   final String string,
@@ -191,6 +191,9 @@ public final class Graphics {
    * @return the height of the font
    */
   public static int getCharHeight( final Font font ) {
+    if( font == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     return TextSizeDetermination.getCharHeight( font );
   }
   
@@ -202,6 +205,9 @@ public final class Graphics {
    * @return the average character width of the font
    */
   public static float getAvgCharWidth( final Font font ) {
+    if( font == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
     return TextSizeDetermination.getAvgCharWidth( font );
   }
 

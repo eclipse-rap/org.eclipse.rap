@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.graphics;
 
 import junit.framework.TestCase;
@@ -37,6 +36,24 @@ public class Graphics_Test extends TestCase {
     try {
       Graphics.stringExtent( font , null );
       fail( "Null string should throw IAE" );
+    } catch( final IllegalArgumentException e ) {
+      // expected
+    }
+  }
+  
+  public void testGetCharHeightNull() {
+    try {
+      Graphics.getCharHeight( null );
+      fail( "Null font should throw IAE" );
+    } catch( final IllegalArgumentException e ) {
+      // expected
+    }
+  }
+  
+  public void testGetAvgCharWidthNull() {
+    try {
+      Graphics.getAvgCharWidth( null );
+      fail( "Null font should throw IAE" );
     } catch( final IllegalArgumentException e ) {
       // expected
     }
