@@ -55,7 +55,7 @@ public abstract class SessionSingletonBase {
   
   /**
    * This is used as prefix for the key under which the instance
-   * is stored as session attribute. The key exists of the prefix
+   * is stored as session attribute. The key consists of the prefix
    * and the fully qualified classname of the singleton type. 
    */
   private final static String PREFIX = "com_w4t_session_singleton_";
@@ -65,7 +65,7 @@ public abstract class SessionSingletonBase {
   private final static Map keyMap = new Hashtable();
   
   /** 
-   * returns the singleton instance of the specified type that is stored
+   * Returns the singleton instance of the specified type that is stored
    * in the current session context. If no instance exists yet, a new
    * one will be created. Therefore the specified type should have
    * an parameterless default constructor.
@@ -121,40 +121,34 @@ public abstract class SessionSingletonBase {
           result = constructor.newInstance( null );
         }
       } catch( final SecurityException ex ) {
-        String msg =   "W4 Toolkit was not able to create the session "
-                     + "singleton instance of '"
+        String msg =   "Could not created the session singleton instance of '"
                      + type.getName() 
-                     + "' due to security restrictions that probably do"
+                     + "' due to security restrictions that probably do "
                      + "not allow reflection.";
         throw new RuntimeException( msg, ex );
       } catch( final IllegalArgumentException iae ) {
-        String msg =   "W4 Toolkit was not able to create the session "
-                     + "singleton instance of '"
+        String msg =   "Could not create the session singleton instance of '"
                      + type.getName() 
                      + "'. Probably there is no parameterless constructor.";
         throw new RuntimeException( msg, iae );
       } catch( final NoSuchMethodException nsme ) {
-        String msg =   "W4 Toolkit was not able to create the session "
-                     + "singleton instance of '"
+        String msg =   "Could not create the session singleton instance of '"
                      + type.getName() 
                      + "'. Probably there is no parameterless constructor.";
         throw new RuntimeException( msg, nsme );
       } catch( final InstantiationException ise ) {
-        String msg =   "W4 Toolkit was not able to create the session "
-                     + "singleton instance of '"
+        String msg =   "Could not create the session singleton instance of '"
                      + type.getName() 
                      + "'. Unable to create an instance.";
         throw new RuntimeException( msg, ise );
       } catch( final IllegalAccessException iae ) {
-        String msg =   "W4 Toolkit was not able to create the session "
-                      + "singleton instance of '"
+        String msg =   "Could not create the session singleton instance of '"
                       + type.getName() 
                       + "'. Not allowed to access the constructor "
                       + "for unknown reasons.";
         throw new RuntimeException( msg, iae );
       } catch( final InvocationTargetException ite ) {
-        String msg =   "W4 Toolkit was not able to create the session "
-                     + "singleton instance of '"
+        String msg =   "Could not create the session singleton instance of '"
                      + type.getName() 
                      + "' because an Exception was thrown by the constructor:\n"
                      + ite.getCause().getMessage()
