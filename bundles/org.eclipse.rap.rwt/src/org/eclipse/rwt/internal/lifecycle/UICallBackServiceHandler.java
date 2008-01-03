@@ -395,7 +395,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
                                                     final boolean asUIThread )
   {
     // Don't replace local variables by method calls, since the context may
-    // changes during the methods execution.
+    // change during the methods execution.
     boolean useDifferentContext
       = ContextProvider.hasContext() && Display.getCurrent() != display;
     ServiceContext contextBuffer = null;
