@@ -165,7 +165,7 @@
 			</fileset>
 		</delete>
 
-		<!-- duplicate target for 3.2 and 3.3 -->
+		<!-- duplicate 3.4 target for 3.3 -->
 		<copydir dest="${targetLocation33}" src="${targetLocation}">
 		</copydir>
 
@@ -174,38 +174,40 @@
 		<delete file="${rap-sdk-feature}"></delete>
 		-->
 
-		<!-- 3.2 base -->
-		<fileset dir="${baseLocation}/plugins" id="32base">
+		<!-- 3.4 base -->
+		<fileset dir="${baseLocation}/plugins" id="34base">
 			<include name="org.apache.commons.logging_*" />
+			<include name="org.apache.commons.logging.source_*" />
 			<include name="org.eclipse.core.commands_*" />
+			<include name="org.eclipse.core.commands.source_*" />
 			<include name="org.eclipse.core.contenttype_*" />
+			<include name="org.eclipse.core.contenttype.source_*" />
 			<include name="org.eclipse.core.expressions_*" />
+			<include name="org.eclipse.core.expressions.source_*" />
 			<include name="org.eclipse.core.jobs_*" />
+			<include name="org.eclipse.core.jobs.source_*" />
 			<include name="org.eclipse.core.runtime_*" />
+			<include name="org.eclipse.core.runtime.source_*" />
+      <include name="org.eclipse.equinox.app_*" />
+      <include name="org.eclipse.equinox.app.source_*" />
 			<include name="org.eclipse.equinox.common_*" />
+			<include name="org.eclipse.equinox.common.source_*" />
 			<include name="org.eclipse.equinox.http.jetty_*" />
+			<include name="org.eclipse.equinox.http.jetty.source_*" />
 			<include name="org.eclipse.equinox.http.registry_*" />
+			<include name="org.eclipse.equinox.http.registry.source_*" />
 			<include name="org.eclipse.equinox.http.servlet_*" />
+			<include name="org.eclipse.equinox.http.servlet.source_*" />
 			<include name="org.eclipse.equinox.preferences_*" />
+			<include name="org.eclipse.equinox.preferences.source_*" />
 			<include name="org.eclipse.equinox.registry_*" />
+			<include name="org.eclipse.equinox.registry.source_*" />
 			<include name="org.eclipse.osgi.services_*" />
+			<include name="org.eclipse.osgi.services.source_*" />
 			<include name="org.eclipse.osgi_*" />
+			<include name="org.eclipse.osgi.source_*" />
 			<include name="org.mortbay.jetty_*" />
-            <!-- include sources -->
-            <include name="org.eclipse.rcp.source_*/" />
-            <include name="javax.servlet.source_*/" />
-            <include name="org.apache.commons.logging.source_*/" />
-            <include name="org.mortbay.jetty.source_*/" />
-            <!-- exclude unneeded sources -->
-            <exclude name="org.eclipse.rcp.source_*/org.eclipse.core.runtime.compatibility.auth_*" />
-            <exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding_*" />
-            <exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding.beanns_*" />
-            <exclude name="org.eclipse.rcp.source_*/org.eclipse.jface.databinding_*" />
-            <exclude name="org.eclipse.rcp.source_*/org.eclipse.help_*" />
-            <exclude name="org.eclipse.rcp.source_*/org.eclipse.jface_*" />
-            <exclude name="org.eclipse.rcp.source_*/org.eclipse.ui.workbench_*" />
-            <exclude name="org.eclipse.rcp.source_*/org.eclipse.ui_*" />
-            <exclude name="org.eclipse.rcp.source_*/org.eclipse.update.configurator_*" />
+      <include name="org.mortbay.jetty.source_*/" />
 		</fileset>
 		
 		<!-- 3.3 base -->
@@ -229,7 +231,7 @@
 			<!-- exclude unneeded sources -->
 			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.runtime.compatibility.auth_*" />
 			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding_*" />
-			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding.beanns_*" />
+			<exclude name="org.eclipse.rcp.source_*/org.eclipse.core.databinding.beans_*" />
 			<exclude name="org.eclipse.rcp.source_*/org.eclipse.jface.databinding_*" />
 			<exclude name="org.eclipse.rcp.source_*/org.eclipse.help_*" />
 			<exclude name="org.eclipse.rcp.source_*/org.eclipse.jface_*" />
@@ -240,19 +242,20 @@
 
 		<!-- copy all the needed plugins + source -->
 		<copy todir="${targetLocation}/eclipse/plugins">
-			<fileset refid="32base" />
+			<fileset refid="34base" />
 		</copy>
 
 		<copy todir="${targetLocation33}/eclipse/plugins">
 			<fileset refid="33base" />
 		</copy>
 
-		<!-- zip target together -->
-		<zip destfile="${buildDirectory}/${buildLabel}/rap-${targetVersion}-${buildType}-target-3.2-${buildId}.zip">
+		<!-- zip 3.4 target together -->
+		<zip destfile="${buildDirectory}/${buildLabel}/rap-${targetVersion}-${buildType}-target-3.4-${buildId}.zip">
 			<fileset dir="${targetLocation}">
 			</fileset>
 		</zip>
 
+		<!-- zip 3.3 target together -->
 		<zip destfile="${buildDirectory}/${buildLabel}/rap-${targetVersion}-${buildType}-target-3.3-${buildId}.zip">
 			<fileset dir="${targetLocation33}">
 			</fileset>

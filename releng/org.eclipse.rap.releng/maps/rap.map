@@ -28,12 +28,12 @@ feature@org.eclipse.rap.sdk=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/tec
 plugin@org.eclipse.rap.help=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.help
 
 # servlet stuff
-plugin@javax.servlet=v2_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/javax.servlet,javax.servlet
-plugin@org.apache.commons.logging=v1_0_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.apache.commons.logging
+#  plugin@javax.servlet=v2_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/javax.servlet,javax.servlet
+#  plugin@org.apache.commons.logging=v1_0_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.apache.commons.logging
 
 # equinox http stuff
-plugin@org.eclipse.equinox.http.registry=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.registry
-plugin@org.eclipse.equinox.http.servlet=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.servlet
+#  plugin@org.eclipse.equinox.http.registry=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.registry
+#  plugin@org.eclipse.equinox.http.servlet=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.servlet
 
 # databinding
 plugin@org.eclipse.rap.core.databinding=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.core.databinding
@@ -44,8 +44,8 @@ plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org
 plugin@org.eclipse.rap.ui.forms=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.ui.forms
 
 # jetty
-plugin@org.eclipse.equinox.http.jetty=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.jetty
-plugin@org.mortbay.jetty=v5_1_11,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty
+#  plugin@org.eclipse.equinox.http.jetty=R3_3,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,,org.eclipse.equinox.http.jetty
+#  plugin@org.mortbay.jetty=v5_1_11,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty,org.mortbay.jetty
 
 # tests
 feature@org.eclipse.rap.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/technology,,org.eclipse.rap/org.eclipse.rap.test-feature,org.eclipse.rap.test
