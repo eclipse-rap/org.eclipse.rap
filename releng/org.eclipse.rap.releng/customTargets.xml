@@ -278,7 +278,7 @@
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/resource_manager_test.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.${buildId}.jar" />
+			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200711021030.jar" />
 			<pathelement path="${java.class.path}" />
 			<pathelement path="${baseLocation}/plugins/org.junit_3.8.1/junit.jar" />
 		</path>
@@ -309,7 +309,7 @@
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/resource_manager_test.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/js.jar" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.${buildId}.jar" />
+			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200711021030.jar" />
 			<pathelement path="${java.class.path}" />
 			<pathelement path="${baseLocation}/plugins/org.junit_3.8.1/junit.jar" />
 			<pathelement path="${baseLocation}/plugins/org.eclipse.rap.w4t/WEB-INF/lib/commons-fileupload-1.0.jar" />
