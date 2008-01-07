@@ -1,6 +1,5 @@
-
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +27,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.addEventListener( "keydown", this._onKeydown );
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSend, this );
+
+    org.eclipse.swt.widgets.Shell._preloadIcons();
     
 ////////////////////////////////////////////////
 // TODO [fappel] experimental (rounded corners)
@@ -46,7 +47,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       "bottomLeft", 
       "bottomRight"
     ],
-
+    
+    preloadDone : false,
+    
     onClose : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var shell = evt.getData();
@@ -69,6 +72,32 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         var id = widgetManager.findIdByWidget( shell );
         var req = org.eclipse.swt.Request.getInstance();
         req.addEvent( "org.eclipse.swt.widgets.Shell_close", id );
+      }
+    },
+    
+    _preloadIcons : function() {
+      if( !org.eclipse.swt.widgets.Shell.preloadDone ) {
+        var iconsToLoad = new Array(
+          "widget/window/minimize.png",
+          "widget/window/minimize.over.png",
+          "widget/window/minimize.inactive.png",
+          "widget/window/minimize.inactive.over.png",
+          "widget/window/maximize.png",
+          "widget/window/maximize.over.png",
+          "widget/window/maximize.inactive.png",
+          "widget/window/maximize.inactive.over.png",
+          "widget/window/restore.png",
+          "widget/window/restore.over.png",
+          "widget/window/restore.inactive.png",
+          "widget/window/restore.inactive.over.png",
+          "widget/window/close.png",
+          "widget/window/close.over.png",
+          "widget/window/close.inactive.png",
+          "widget/window/close.inactive.over.png"
+        ); 
+        var preloader = new qx.io.image.PreloaderSystem( iconsToLoad );
+        preloader.start();
+        org.eclipse.swt.widgets.Shell.preloadDone = true;
       }
     }
   },
