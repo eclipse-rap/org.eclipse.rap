@@ -912,7 +912,7 @@ public final class ThemeManager {
     StringBuffer sb = new StringBuffer();
     String[] keys = theme.getKeys();
     Arrays.sort( keys );
-    sb.append( "dim = org.eclipse.swt.theme.Dimensions.getInstance()\n" );
+    sb.append( "dim = org.eclipse.swt.theme.Dimensions.getInstance();\n" );
     for( int i = 0; i < keys.length; i++ ) {
       Object value = theme.getValue( keys[ i ] );
       String key = keys[ i ];
