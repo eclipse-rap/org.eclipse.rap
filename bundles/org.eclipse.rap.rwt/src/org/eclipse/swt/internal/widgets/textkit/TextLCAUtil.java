@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
@@ -26,9 +25,6 @@ import org.eclipse.swt.widgets.Text;
 
 final class TextLCAUtil {
 
-  private static final Pattern NEWLINE_PATTERN
-    = Pattern.compile( "\\r\\n|\\r|\\n" );
-  
   static final String PROP_TEXT = "text";
   private static final String PROP_TEXT_LIMIT = "textLimit";
   private static final String PROP_SELECTION = "selection";
@@ -214,19 +210,12 @@ final class TextLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( text );
     if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) )
     {
-      writer.set( JS_PROP_VALUE, stripNewlines( newValue ) );
+      writer.set( JS_PROP_VALUE, WidgetLCAUtil.replaceNewLines( newValue, " " ) );
     }
   }
 
   static void resetText() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JS_PROP_VALUE );
-  }
-
-  /**
-   * Returns the given string with all newlines replaced with spaces.
-   */
-  static String stripNewlines( final String text ) {
-    return NEWLINE_PATTERN.matcher( text ).replaceAll( " " );
   }
 }

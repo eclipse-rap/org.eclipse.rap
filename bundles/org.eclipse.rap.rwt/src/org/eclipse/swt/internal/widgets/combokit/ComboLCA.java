@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@
 package org.eclipse.swt.internal.widgets.combokit;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
@@ -29,9 +27,6 @@ import org.eclipse.swt.widgets.*;
 public class ComboLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "qx.ui.form.ComboBox";
-
-  private static final Pattern NEWLINE_PATTERN
-    = Pattern.compile( "\\r\\n|\\r|\\n" );
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
@@ -195,8 +190,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( combo, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
       // Convert newlines into whitespaces
       for( int i = 0; i < items.length; i++ ) {
-        Matcher matcher = NEWLINE_PATTERN.matcher( items[ i ] );
-        items[ i ] = matcher.replaceAll( " " );
+        items[ i ] = WidgetLCAUtil.replaceNewLines( items[ i ], " " );
         items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
       }
       Object[] args = new Object[]{ combo, items };

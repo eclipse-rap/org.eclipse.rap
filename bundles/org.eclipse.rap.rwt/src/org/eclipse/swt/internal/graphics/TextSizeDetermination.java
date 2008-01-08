@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@ package org.eclipse.swt.internal.graphics;
 
 
 import java.math.BigDecimal;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -33,8 +31,6 @@ public class TextSizeDetermination {
     = TextSizeDetermination.class.getName() + ".CalculationItems";
   private static final ICalculationItem[] EMTY_ITEMS
     = new ICalculationItem[ 0 ];
-  private static final Pattern NEWLINE_PATTERN
-    = Pattern.compile( "\\r\\n|\\r|\\n" );
   private static final int STRING_EXTENT = 0;
   private static final int TEXT_EXTENT = 1;
 
@@ -221,12 +217,8 @@ public class TextSizeDetermination {
     // TODO [fappel]: revise this - text escape may cause inaccurate
     //                calculations
     String result = WidgetLCAUtil.escapeText( string, true );
-    Matcher matcher = NEWLINE_PATTERN.matcher( result );
-    if( expandLineDelimitors ) {
-      result = matcher.replaceAll( "<br/>" );
-    } else {
-      result = matcher.replaceAll( " " );
-    }
+    String newLineReplacement = expandLineDelimitors ? "<br/>" : " ";
+    result = WidgetLCAUtil.replaceNewLines( result, newLineReplacement );
     return result;
   }
 }

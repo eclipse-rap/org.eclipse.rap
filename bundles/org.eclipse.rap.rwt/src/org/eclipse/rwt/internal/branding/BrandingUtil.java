@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,24 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.branding;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
+import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.internal.service.*;
 
 
 public final class BrandingUtil {
-
-  private static final Pattern DOUBLE_QUOTE_PATTERN 
-    = Pattern.compile( "(\"|\\\\)" );
-  private static final Pattern NEWLINE_PATTERN 
-    = Pattern.compile( "\\r\\n|\\r|\\n" );
-  private static final String NEWLINE_ESCAPE 
-    = "\\\\n";
 
   public static void replacePlaceholder( final StringBuffer buffer, 
                                          final String placeHolder, 
@@ -116,13 +107,10 @@ public final class BrandingUtil {
   }
 
   private static String escapeString( final String input ) {
-    Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( input );
-    String result = matcher.replaceAll( "\\\\$1" );
-    matcher = NEWLINE_PATTERN.matcher( result );
-    result = matcher.replaceAll( NEWLINE_ESCAPE );
-    return result;
+    String result = CommonPatterns.escapeDoubleQuoted( input );
+    return CommonPatterns.replaceNewLines( result );
   }
-  
+
   private BrandingUtil() {
     // prevent instantiation
   }

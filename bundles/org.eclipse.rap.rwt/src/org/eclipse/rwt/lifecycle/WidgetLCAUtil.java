@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -59,8 +60,8 @@ public final class WidgetLCAUtil {
 
   private static final Pattern HTML_ESCAPE_PATTERN
     = Pattern.compile( "&|<|>|\\\"" );
-  private static final Pattern DOUBLE_QUOTE_PATTERN
-    = Pattern.compile( "\"" );
+  private static final Pattern FONT_NAME_FILTER_PATTERN
+    = Pattern.compile( "\"|\\\\" );
   
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
@@ -762,7 +763,7 @@ public final class WidgetLCAUtil {
         result = name.split( "," );
         for( int i = 0; i < result.length; i++ ) {
           result[ i ] = result[ i ].trim();
-          Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( result[ i ] );
+          Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
           result[ i ] = matcher.replaceAll( "" );
         }
         parsedFonts.put( name, result );
@@ -836,5 +837,20 @@ public final class WidgetLCAUtil {
 //      sb.insert( mnemonicPos, "<u>" );
 //    }
     return sb.toString();
+  }
+  
+  /**
+   * Replaces all newline characters in the specified input string with the
+   * given replacement string.
+   * 
+   * @param input the string to process
+   * @param replacement the string to replace line feeds with
+   * @return a new string with all line feeds replaced
+   * @since 1.1 M2
+   */
+  public static String replaceNewLines( final String input,
+                                        final String replacement )
+  {
+    return CommonPatterns.replaceNewLines( input, replacement );
   }
 }

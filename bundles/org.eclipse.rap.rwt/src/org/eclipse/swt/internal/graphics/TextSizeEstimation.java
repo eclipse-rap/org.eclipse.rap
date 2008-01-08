@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,13 @@
 
 package org.eclipse.swt.internal.graphics;
 
-import java.util.regex.Pattern;
-
+import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 
 class TextSizeEstimation {
 
-  static Pattern NEWLINE_PATTERN = Pattern.compile( "\\r\\n|\\r|\\n" );
-  
   /**
    * Estimates the size of a given text. Line breaks are not respected.
    * @param font the font to perform the estimation for
@@ -54,7 +51,7 @@ class TextSizeEstimation {
     }
     int lineCount = 0;
     int maxWidth = 0;
-    String[] lines = NEWLINE_PATTERN.split( string, -1 );
+    String[] lines = CommonPatterns.NEWLINE_PATTERN.split( string, -1 );
     for( int i = 0; i < lines.length; i++ ) {
       String line = lines[ i ];
       lineCount++;

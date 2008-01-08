@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,6 +66,8 @@ public class TextSizeDetermination_Test extends TestCase {
         TextSizeDetermination.stringExtent( font, "FirstString" );
         font = Graphics.getFont( "helvetia, ms sans serif", 12, SWT.BOLD );
         TextSizeDetermination.stringExtent( font, "SecondString" );
+        font = Graphics.getFont( "\"Bogus\" \\ Font \" Name", 12, SWT.BOLD );
+        TextSizeDetermination.stringExtent( font, "Weird \" String \\" );
       }
       public PhaseId getPhaseId() {
         return PhaseId.RENDER;
@@ -82,14 +84,17 @@ public class TextSizeDetermination_Test extends TestCase {
       " ] );",
       "org.eclipse.swt.FontSizeCalculation.measureStrings( [ [ ",
       ", \"FirstString\", [ \"arial\" ], 10, true, false, -1 ], [ ",
-      ", \"SecondString\", [ \"helvetia\", \"ms sans serif\" ], 12, true, false, -1 ] ] );"
+      ", \"SecondString\", [ \"helvetia\", \"ms sans serif\" ], 12, true, false, -1 ], [",
+      ", \"Weird &quot; String \\\\\", [ \"Bogus  Font  Name\" ], 12, true, false, -1 ] ] );"
     };
     String allMarkup = Fixture.getAllMarkup();
+    System.out.println( allMarkup );
     for( int i = 0; i < expected.length; i++ ) {
-      assertTrue( allMarkup.indexOf( expected[ i ] ) != -1 );
+      assertTrue( "Expected: " + expected[ i ],
+                  allMarkup.indexOf( expected[ i ] ) != -1 );
     }
   }
-
+  
   public void testStringExtent() {
     ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
     assertEquals( 0, items.length );

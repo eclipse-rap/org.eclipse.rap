@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,8 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.Color;
@@ -71,13 +68,7 @@ public final class JSWriter {
   private static final String NEW_WIDGET_PATTERN
     =   "var w = wm.newWidget( \"{0}\", \"{1}\", {2}, "
       + "{3,number,#}, ''{4}''{5} );";
-  private static final Pattern DOUBLE_QUOTE_PATTERN
-    = Pattern.compile( "(\"|\\\\)" );
-  private static final Pattern NEWLINE_PATTERN
-    = Pattern.compile( "\\r\\n|\\r|\\n" );
-  private static final String NEWLINE_ESCAPE = "\\\\n";
-
-
+    
   private static final String WRITER_MAP
     = JSWriter.class.getName() + "#map";
   private static final String HAS_WINDOW_MANAGER
@@ -631,6 +622,14 @@ public final class JSWriter {
     getWriter().write( " );" );
   }
 
+  /**
+   * Calls the specified Javascript function with the given arguments.
+   * 
+   * @param function the function name
+   * @param args the arguments for the function
+   * 
+   * @throws IOException if an I/O error occurs
+   */
   // TODO [rh] should we name this method 'call' and make it a static method?
   public void callStatic( final String function, final Object[] args )
     throws IOException
@@ -955,14 +954,10 @@ public final class JSWriter {
     return result;
   }
 
-  // TODO [rh] try to unite the various regex patterns
   // TODO [rh] revise how to handle newline characters (\n)
   private static String escapeString( final String input ) {
-    Matcher matcher = DOUBLE_QUOTE_PATTERN.matcher( input );
-    String result = matcher.replaceAll( "\\\\$1" );
-    matcher = NEWLINE_PATTERN.matcher( result );
-    result = matcher.replaceAll( NEWLINE_ESCAPE );
-    return result;
+    String result = CommonPatterns.escapeDoubleQuoted( input );
+    return CommonPatterns.replaceNewLines( result );
   }
 
   private static String getSetterName( final String jsProperty ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@
 package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -26,9 +24,6 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static final String QX_TYPE = "qx.ui.basic.Atom";
   static final String TYPE_POOL_ID = StandardLabelLCA.class.getName();
-
-  private static final Pattern NEWLINE_PATTERN
-    = Pattern.compile( "\\r\\n|\\r|\\n" );
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_ALIGNMENT = "alignment";
@@ -96,8 +91,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, label.getText(), "" ) ) {
       // Order is important here: escapeText, replace line breaks
       String text = WidgetLCAUtil.escapeText( label.getText(), true );
-      Matcher matcher = NEWLINE_PATTERN.matcher( text );
-      text = matcher.replaceAll( "<br/>" );
+      text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
       JSWriter writer = JSWriter.getWriterFor( label );
       Object[] args = new Object[]{ label, text };
       writer.callStatic( JS_FUNC_LABEL_UTIL_SET_TEXT, args );

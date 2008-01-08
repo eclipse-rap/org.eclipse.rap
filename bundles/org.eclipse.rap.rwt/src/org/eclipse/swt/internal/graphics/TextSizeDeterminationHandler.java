@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,7 @@ import java.io.IOException;
 
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.*;
@@ -42,7 +41,6 @@ final class TextSizeDeterminationHandler
   private ICalculationItem[] calculationItems;
   private IProbe[] probes;
   private boolean renderDone;
-
 
   static void register() {
     Display display = Display.getCurrent();
@@ -205,7 +203,7 @@ final class TextSizeDeterminationHandler
         param.append( item.hashCode() );
         param.append( ", " );
         param.append( "\"" );
-        param.append( item.getString() );
+        param.append( CommonPatterns.escapeDoubleQuoted( item.getString() ) );
         param.append( "\", " );
         param.append( createFontParam( item.getFont() ) );
         param.append( ", " );

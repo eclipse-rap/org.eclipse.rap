@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@
 package org.eclipse.swt.internal.widgets.listkit;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -29,9 +27,6 @@ public class ListLCA extends AbstractWidgetLCA {
   private static final String QX_TYPE = "org.eclipse.swt.widgets.List";
 
   private static final String TYPE_POOL_ID = null;
-
-  private static final Pattern NEWLINE_PATTERN
-    = Pattern.compile( "\\r\\n|\\r|\\n" );
 
   // Property names, used when preserving values
   private static final String PROP_SELECTION = "selection";
@@ -121,8 +116,7 @@ public class ListLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( list, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
       // Convert newlines into whitespaces
       for( int i = 0; i < items.length; i++ ) {
-        Matcher matcher = NEWLINE_PATTERN.matcher( items[ i ] );
-        items[ i ] = matcher.replaceAll( " " );
+        items[ i ] = WidgetLCAUtil.replaceNewLines( items[ i ], " " );
         items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
       }
       writer.set( "items", new Object[]{ items } );
