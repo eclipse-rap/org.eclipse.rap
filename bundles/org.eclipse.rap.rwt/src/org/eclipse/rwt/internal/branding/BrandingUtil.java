@@ -13,9 +13,11 @@ package org.eclipse.rwt.internal.branding;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.internal.service.BrowserSurvey;
+import org.eclipse.rwt.internal.service.*;
 
 
 public final class BrandingUtil {
@@ -59,6 +61,14 @@ public final class BrandingUtil {
     return result;
   }
 
+  public static AbstractBranding findBranding() {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String servletName = BrowserSurvey.getSerlvetName();
+    String entryPoint = request.getParameter( RequestParams.STARTUP );
+    AbstractBranding branding = BrandingManager.get( servletName, entryPoint );
+    return branding;
+  }
+  
   //////////////////
   // Helping methods
   

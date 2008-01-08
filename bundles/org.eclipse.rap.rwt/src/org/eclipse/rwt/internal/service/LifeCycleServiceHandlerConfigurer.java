@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.browser.Default;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -232,7 +231,7 @@ public final class LifeCycleServiceHandlerConfigurer
   private static void applyBranding( final StringBuffer content ) 
     throws IOException 
   {
-    AbstractBranding branding = findBranding();
+    AbstractBranding branding = BrandingUtil.findBranding();
     registerBrandingResources( branding );
     HttpServletRequest request = ContextProvider.getRequest();
     // TODO: [bm][rh] move into util
@@ -255,14 +254,6 @@ public final class LifeCycleServiceHandlerConfigurer
     BrandingUtil.replacePlaceholder( content, "${exitConfirmation}", script );
   }
 
-  private static AbstractBranding findBranding() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String servletName = BrowserSurvey.getSerlvetName();
-    String entryPoint = request.getParameter( RequestParams.STARTUP );
-    AbstractBranding branding = BrandingManager.get( servletName, entryPoint );
-    return branding;
-  }
-  
   private static void registerBrandingResources( final AbstractBranding branding )
     throws IOException
   {

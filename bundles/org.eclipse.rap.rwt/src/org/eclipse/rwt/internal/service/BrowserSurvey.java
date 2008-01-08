@@ -17,7 +17,10 @@ import java.text.MessageFormat;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.*;
 
 
@@ -52,6 +55,11 @@ public final class BrowserSurvey {
         Object[] param = new Object[] { e.getMessage() };
         String msg = MessageFormat.format( txt, param );
         throw new ServletException( msg, e );
+      }
+    } else {
+      AbstractBranding branding = BrandingUtil.findBranding();
+      if( branding.getThemeId() != null ) {
+        ThemeUtil.setCurrentThemeId( branding.getThemeId() );
       }
     }
   }
