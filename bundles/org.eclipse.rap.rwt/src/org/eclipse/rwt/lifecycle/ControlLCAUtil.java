@@ -601,8 +601,9 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Note that there is no corresponding readData metod to fire the focus events
-   * that are send by the JavaScript event listeners that are registered below.
+   * Note that there is no corresponding readData method to fire the focus 
+   * events that are send by the JavaScript event listeners that are registered 
+   * below.
    * FocusEvents are thrown when the focus is changed programmatically and when
    * it is change by the user.
    * Therefore the methods in Display that maintain the current focusControl
