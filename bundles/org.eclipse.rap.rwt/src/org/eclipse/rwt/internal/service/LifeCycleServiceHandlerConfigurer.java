@@ -48,7 +48,6 @@ public final class LifeCycleServiceHandlerConfigurer
     = new RWTLifeCycleServiceHandlerSync();
   private static String content;
   private static final List registeredBrandings = new ArrayList();
-  private static final Map templateBuffer = new HashMap();
   
   ////////////////////////////////////////////////////
   // ILifeCycleServiceHandlerConfigurer implementation 
@@ -66,17 +65,7 @@ public final class LifeCycleServiceHandlerConfigurer
     } finally {
       removeDummyBrowser();
     }
-    String templateString = buffer.toString();
-    byte[] template;
-    synchronized( templateBuffer ) {
-      // buffer bytes to avoid unnecessary getBytes calls
-      template = ( byte[] )templateBuffer.get( templateString );
-      if( template == null ) {
-        template = templateString.getBytes();
-        templateBuffer.put( templateString, template );
-      }
-    }
-    return new ByteArrayInputStream( template );
+    return new ByteArrayInputStream( buffer.toString().getBytes() );
   }
 
   public synchronized boolean isStartupPageModifiedSince() {
