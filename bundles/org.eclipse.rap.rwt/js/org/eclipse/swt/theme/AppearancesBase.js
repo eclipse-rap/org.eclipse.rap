@@ -1434,7 +1434,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   // ------------------------------------------------------------------------
   // CTabFolder
 
-
   "c-tab-item" : {
     include: "atom",
       
@@ -1452,6 +1451,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       border_bottom_checked.setRight( 1, "solid", "#c0c0c0" );
 
       var result = {
+        font : "widget.font",
         paddingLeft : 4
       };
       if( states.selected ) {
