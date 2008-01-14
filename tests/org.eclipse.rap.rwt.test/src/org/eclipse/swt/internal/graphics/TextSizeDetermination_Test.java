@@ -88,7 +88,6 @@ public class TextSizeDetermination_Test extends TestCase {
       ", \"Weird &quot; String \\\\\", [ \"Bogus  Font  Name\" ], 12, true, false, -1 ] ] );"
     };
     String allMarkup = Fixture.getAllMarkup();
-    System.out.println( allMarkup );
     for( int i = 0; i < expected.length; i++ ) {
       assertTrue( "Expected: " + expected[ i ],
                   allMarkup.indexOf( expected[ i ] ) != -1 );
