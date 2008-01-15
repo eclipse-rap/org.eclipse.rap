@@ -1,15 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH. All rights
  * reserved. This program and the accompanying materials are made available
  * under the terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
@@ -42,12 +42,13 @@ abstract class ExampleTab {
   private boolean visible = true;
   private boolean enabled = true;
   private Text text;
-  private StringBuffer content = new StringBuffer();
+  private final StringBuffer content = new StringBuffer();
   private SimpleFontDialog fontChooser;
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
   private final CTabItem item;
+  private final Set properties = new HashSet();
 
   public static final Color BG_COLOR_GREEN = Graphics.getColor( 154, 205, 50 );
   public static final Color BG_COLOR_BLUE = Graphics.getColor( 105, 89, 205 );
@@ -160,35 +161,6 @@ abstract class ExampleTab {
     this.defaultStyle = style;
   }
 
-  /**
-   * @deprecated Too much magic. Use
-   *             <code>createStyleButton( String fieldName, int style )</code>
-   *             instead.
-   */
-  protected Button createStyleButton( final String fieldName ) {
-    return createStyleButton( fieldName, false );
-  }
-
-  /**
-   * @deprecated Too much magic. Use
-   *             <code>createStyleButton( String fieldName, int style, boolean checked )</code>
-   *             instead.
-   */
-  protected Button createStyleButton( final String fieldName,
-                                      final boolean checked ) {
-    int style = SWT.NONE;
-    try {
-      Field field = SWT.class.getField( fieldName );
-      style = field.getInt( null );
-    } catch( NoSuchFieldException e ) {
-    } catch( IllegalAccessException e ) {
-      System.err.println( "Cannot access style flag: SWT." + fieldName );
-    }
-    Button button = createStyleButton( "SWT." + fieldName, style, checked );
-    button.setEnabled( style != SWT.NONE );
-    return button;
-  }
-
   protected Button createStyleButton( final String fieldName,
                                       final int style )
   {
@@ -218,6 +190,36 @@ abstract class ExampleTab {
     Button button = new Button( styleComp, style );
     button.setText( text );
     return button;
+  }
+
+  protected Button createPropertyCheckbox( final String text,
+                                           final String prop )
+  {
+    return createPropertyCheckbox( text, prop, false );
+  }
+
+  protected Button createPropertyCheckbox( final String text,
+                                           final String prop,
+                                           final boolean checked )
+  {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( text );
+    button.setSelection( checked );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        if( button.getSelection() ) {
+          properties.add( prop );
+        } else {
+          properties.remove( prop );
+        }
+        createNew();
+      }
+    } );
+    return button;
+  }
+
+  public final boolean hasCreateProperty( final String name ) {
+    return properties.contains( name );
   }
 
   /**
@@ -321,7 +323,7 @@ abstract class ExampleTab {
     final Button button = new Button( parent, SWT.PUSH );
     button.setText( "Theme Switcher" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         Shell shell = new Shell( parent.getShell(), SWT.DIALOG_TRIM );
         shell.setText( "Theme Switcher" );
         shell.setLayout( new GridLayout() );
@@ -329,7 +331,7 @@ abstract class ExampleTab {
         themeButton.setText( "Switch Theme" );
         themeButton.addSelectionListener( new SelectionAdapter() {
           String[] availableThemeIds = ThemeUtil.getAvailableThemeIds();
-          public void widgetSelected( SelectionEvent e ) {
+          public void widgetSelected( final SelectionEvent e ) {
             int index = 0;
             String currThemeId = ThemeUtil.getCurrentThemeId();
             for( int i = 0; i < availableThemeIds.length; i++ ) {

@@ -1,10 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH. All rights
  * reserved. This program and the accompanying materials are made available
  * under the terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -20,6 +21,12 @@ import org.eclipse.swt.widgets.*;
 
 public class ComboTab extends ExampleTab {
 
+  private static final String PROP_PRESELECT_ITEM = "preselectItem";
+
+  private static final String PROP_SELECTION_LISTENER = "selectionListener";
+
+  private static final String PROP_EMPTY = "empty";
+
   private static final String[] ITEMS = new String[] {
     "Eiffel",
     "Java",
@@ -29,9 +36,7 @@ public class ComboTab extends ExampleTab {
     "Smalltalk"
   };
 
-  private Combo emptyCombo;
-  private Combo filledCombo;
-  private Combo preselectedCombo;
+  private Combo firstCombo;
   private Combo verifyCombo;
   private Combo viewerCombo;
 
@@ -47,53 +52,63 @@ public class ComboTab extends ExampleTab {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Manipulate First Combo" );
     group.setLayout( new GridLayout() );
-    createAddButton( group, emptyCombo );
-    createRemoveAllButton( group, emptyCombo );
-    createSetVisibleItemCountButton( group, emptyCombo );
+    createAddButton( group );
+    createRemoveAllButton( group );
+    createSelectFirstItemButton( group );
+    createSetVisibleItemCountButton( group );
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
+    createPropertyCheckbox( "Create Empty Combo", PROP_EMPTY );
+    createPropertyCheckbox( "Preselect First Item", PROP_PRESELECT_ITEM );
+    createPropertyCheckbox( "Add Selection Listener", PROP_SELECTION_LISTENER );
   }
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 3, false ) );
     int style = getStyle();
-    Label lblEmptyCombo = new Label( parent, SWT.NONE );
-    lblEmptyCombo.setText( "Empty Combo" );
-    emptyCombo = new Combo( parent, style );
-    emptyCombo.setLayoutData( colSpan2() );
     Label lblFilledCombo = new Label( parent, SWT.NONE );
     lblFilledCombo.setText( "Filled Combo" );
-    filledCombo = new Combo( parent, style );
-    filledCombo.setItems( ITEMS );
+    firstCombo = new Combo( parent, style );
+    if( !hasCreateProperty( PROP_EMPTY ) ) {
+      firstCombo.setItems( ITEMS );
+    }
+    if( !hasCreateProperty( PROP_EMPTY ) && hasCreateProperty( PROP_PRESELECT_ITEM ) ) {
+      firstCombo.select( 0 );
+    }
+    if( hasCreateProperty( PROP_SELECTION_LISTENER ) ) {
+      firstCombo.addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( final SelectionEvent evt ) {
+          show( evt );
+        }
+        public void widgetDefaultSelected( final SelectionEvent evt ) {
+          show( evt );
+        }
+        private void show( final SelectionEvent evt ) {
+          Shell shell = firstCombo.getShell();
+          String msg = "Event: " + evt + "\n"
+                       + "Text: " + firstCombo.getText() + "\n"
+                       + "Selection: " + firstCombo.getSelectionIndex();
+          MessageDialog.openInformation( shell, "Selection Event", msg );
+        }
+      } );
+    }
     Button btnShowSelection = new Button( parent, SWT.PUSH );
     btnShowSelection.setText( "Show Selection" );
     btnShowSelection.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
+      public void widgetSelected( final SelectionEvent event ) {
         String selection = "(nothing)";
-        int index = filledCombo.getSelectionIndex();
+        int index = firstCombo.getSelectionIndex();
         if( index != -1 ) {
-          selection = filledCombo.getItem( index );
+          selection = firstCombo.getItem( index );
         }
         String msg = "Your Selection: " + selection;
-        Shell shell = filledCombo.getShell();
+        Shell shell = firstCombo.getShell();
         MessageDialog.openInformation( shell, "Information", msg );
       }
     } );
-    Label lblPreselectionCombo = new Label( parent, SWT.NONE );
-    lblPreselectionCombo.setText( "Filled Combo with preselection" );
-    preselectedCombo = new Combo( parent, style );
-    preselectedCombo.setLayoutData( colSpan2() );
-    preselectedCombo.setItems( ITEMS );
-    preselectedCombo.select( 1 );
-    preselectedCombo.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        int index = preselectedCombo.getSelectionIndex();
-        String message = "Selected Item: " + preselectedCombo.getItem( index );
-        Shell shell = parent.getShell();
-        MessageDialog.openInformation( shell, "Info", message );
-      }
-    } );
+
+    // -- verify listener --
     Label lblVerifyCombo = new Label( parent, SWT.NONE );
     lblVerifyCombo.setText( "Combo with VerifyListener (only 0-9 allowed)" );
     verifyCombo = new Combo( parent, style );
@@ -142,14 +157,12 @@ public class ComboTab extends ExampleTab {
     MenuItem menuItem = new MenuItem( menu, SWT.NONE );
     menuItem.setText( "MenuItem on ComboViewer" );
     viewerCombo.setMenu( menu );
-    registerControl( emptyCombo );
-    registerControl( filledCombo );
+    registerControl( firstCombo );
     registerControl( verifyCombo );
-    registerControl( preselectedCombo );
     registerControl( viewerCombo );
   }
 
-  private void createAddButton( final Composite parent, final Combo combo ) {
+  private void createAddButton( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label lblAddItem = new Label( composite, SWT.NONE );
@@ -157,16 +170,15 @@ public class ComboTab extends ExampleTab {
     final Text txtAddItem = new Text( composite, SWT.BORDER );
     txtAddItem.setText( "New Item" );
     Button btnAddItem = new Button( composite, SWT.PUSH );
-    btnAddItem.setText( "Go" );
+    btnAddItem.setText( "Add" );
     btnAddItem.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent event ) {
-        combo.add( txtAddItem.getText() );
+      public void widgetSelected( final SelectionEvent event ) {
+        firstCombo.add( txtAddItem.getText() );
       }
     } );
   }
 
-  private void createRemoveAllButton( final Composite parent, final Combo combo )
-  {
+  private void createRemoveAllButton( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 2, false ) );
     Label label = new Label( composite, SWT.NONE );
@@ -175,14 +187,24 @@ public class ComboTab extends ExampleTab {
     button.setText( "Remove" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        combo.removeAll();
+        firstCombo.removeAll();
       }
     } );
   }
 
-  private void createSetVisibleItemCountButton( final Composite parent,
-                                                final Combo combo )
-  {
+  private void createSelectFirstItemButton( final Composite parent ) {
+    Button button = new Button( parent , SWT.PUSH );
+    button.setText( "Select First Item" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        if( firstCombo.getItemCount() > 0 ) {
+          firstCombo.select( 0 );
+        }
+      }
+    } );
+  }
+
+  private void createSetVisibleItemCountButton( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );
@@ -196,7 +218,7 @@ public class ComboTab extends ExampleTab {
       public void widgetSelected( final SelectionEvent event ) {
         try {
           int vic = Integer.parseInt( text.getText() );
-          combo.setVisibleItemCount( vic );
+          firstCombo.setVisibleItemCount( vic );
         } catch( NumberFormatException e ) {
         }
       }
