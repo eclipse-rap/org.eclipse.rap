@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -26,69 +26,71 @@ import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 // TODO [rh] Should javaScript namespaces include widget and/or custom?
 //      e.g. org/eclipse/swt/widgets/TabUtil.js
 final class QooxdooResourcesUtil {
-  
+
 
   private static final String CLIENT_LIBRARY_VARIANT
     = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
-  
-  private static final String QX_JS 
+
+  private static final String QX_JS
     = "qx.js";
-  private static final String QX_DEBUG_JS 
+  private static final String QX_DEBUG_JS
     = "qx-debug.js";
-  
-  private static final String APPLICATION_JS 
+
+  private static final String APPLICATION_JS
     = "org/eclipse/swt/Application.js";
-  private static final String REQUEST_JS 
+  private static final String REQUEST_JS
     = "org/eclipse/swt/Request.js";
-  private static final String WIDGET_MANAGER_JS 
+  private static final String WIDGET_MANAGER_JS
     = "org/eclipse/swt/WidgetManager.js";
-  private static final String EVENT_UTIL_JS 
+  private static final String EVENT_UTIL_JS
     = "org/eclipse/swt/EventUtil.js";
-  private static final String TAB_UTIL_JS 
+  private static final String TAB_UTIL_JS
     = "org/eclipse/swt/TabUtil.js";
-  private static final String BUTTON_UTIL_JS 
+  private static final String BUTTON_UTIL_JS
     = "org/eclipse/swt/ButtonUtil.js";
-  private static final String COMBO_UTIL_JS 
+  private static final String COMBO_UTIL_JS
     = "org/eclipse/swt/ComboUtil.js";
-  private static final String TOOL_ITEM_JS = 
+  private static final String TOOL_ITEM_JS =
     "org/eclipse/swt/ToolItemUtil.js";
-  private static final String MENU_UTIL_JS 
+  private static final String MENU_UTIL_JS
     = "org/eclipse/swt/MenuUtil.js";
   private static final String LINK_UTIL_JS
     = "org/eclipse/swt/LinkUtil.js";
   private static final String WIDGET_UTIL_JS
     = "org/eclipse/swt/WidgetUtil.js";
-  private static final String CTAB_FOLDER_JS 
+  private static final String CTAB_FOLDER_JS
     = "org/eclipse/swt/custom/CTabFolder.js";
-  private static final String CTAB_ITEM_JS 
+  private static final String CTAB_ITEM_JS
     = "org/eclipse/swt/custom/CTabItem.js";
-  private static final String CLABEL_UTIL_JS 
+  private static final String CLABEL_UTIL_JS
     = "org/eclipse/swt/CLabelUtil.js";
-  private static final String SASH_JS 
+  private static final String SASH_JS
     = "org/eclipse/swt/widgets/Sash.js";
-  private static final String COOL_ITEM_JS 
+  private static final String COOL_ITEM_JS
     = "org/eclipse/swt/widgets/CoolItem.js";
-  private static final String LIST_JS 
+  private static final String LIST_JS
     = "org/eclipse/swt/widgets/List.js";
-  private static final String SHELL_JS 
+  private static final String SHELL_JS
     = "org/eclipse/swt/widgets/Shell.js";
-  private static final String TREE_JS 
+  private static final String TREE_JS
     = "org/eclipse/swt/widgets/Tree.js";
-  private static final String TREE_ITEM_JS 
+  private static final String TREE_ITEM_JS
     = "org/eclipse/swt/widgets/TreeItem.js";
-  private static final String TREE_ITEM_UTIL_JS 
+  private static final String TREE_ITEM_UTIL_JS
     = "org/eclipse/swt/TreeItemUtil.js";
   private static final String TREE_COLUMN_JS
     = "org/eclipse/swt/widgets/TreeColumn.js";
-  private static final String SCROLLED_COMPOSITE_JS 
+  private static final String SCROLLED_COMPOSITE_JS
     = "org/eclipse/swt/custom/ScrolledComposite.js";
-  private static final String SEPARATOR_JS 
+  private static final String SEPARATOR_JS
     = "org/eclipse/swt/widgets/Separator.js";
   private static final String LABEL_UTIL_JS
     = "org/eclipse/swt/LabelUtil.js";
+  private static final String COMBO_JS
+    = "org/eclipse/swt/widgets/Combo.js";
   private static final String GROUP_JS
-    = "org/eclipse/swt/widgets/Group.js";
+  = "org/eclipse/swt/widgets/Group.js";
   private static final String TEXT_UTIL_JS
     = "org/eclipse/swt/TextUtil.js";
   private static final String SPINNER_JS
@@ -98,12 +100,12 @@ final class QooxdooResourcesUtil {
   private static final String TABLE_COLUMN_JS
     = "org/eclipse/swt/widgets/TableColumn.js";
   private static final String TABLE_ITEM_JS
-    = "org/eclipse/swt/widgets/TableItem.js";  
+    = "org/eclipse/swt/widgets/TableItem.js";
   private static final String TABLE_ROW_JS
-    = "org/eclipse/swt/widgets/TableRow.js";  
-  private static final String EXTERNALBROWSER_JS 
+    = "org/eclipse/swt/widgets/TableRow.js";
+  private static final String EXTERNALBROWSER_JS
     = "org/eclipse/rwt/widgets/ExternalBrowser.js";
-  private static final String PROGRESS_BAR_JS 
+  private static final String PROGRESS_BAR_JS
     = "org/eclipse/swt/widgets/ProgressBar.js";
   private static final String BROWSER_JS
     = "org/eclipse/swt/browser/Browser.js";
@@ -119,14 +121,14 @@ final class QooxdooResourcesUtil {
   private QooxdooResourcesUtil() {
     // prevent intance creation
   }
-  
+
   public static void registerResources() {
     ClassLoader loader = QooxdooResourcesUtil.class.getClassLoader();
     IResourceManager manager = ResourceManager.getInstance();
     ClassLoader bufferedLoader = manager.getContextLoader();
     manager.setContextLoader( loader );
     try {
-      manager.register( "resource/static/history/historyHelper.html", 
+      manager.register( "resource/static/history/historyHelper.html",
                         HTML.CHARSET_NAME_ISO_8859_1 );
       manager.register( "resource/static/html/blank.html",
                         HTML.CHARSET_NAME_ISO_8859_1 );
@@ -168,6 +170,7 @@ final class QooxdooResourcesUtil {
       register( SCROLLED_COMPOSITE_JS );
       register( SEPARATOR_JS );
       register( LABEL_UTIL_JS );
+      register( COMBO_JS );
       register( GROUP_JS );
       register( TEXT_UTIL_JS );
       register( SPINNER_JS );
@@ -181,7 +184,7 @@ final class QooxdooResourcesUtil {
       register( PROGRESS_BAR_JS );
       register( FONT_SIZE_CALCULATION_JS );
       register( CLABEL_UTIL_JS );
-      
+
       // register contributions
       registerContributions();
     } finally {
@@ -218,12 +221,12 @@ final class QooxdooResourcesUtil {
       manager.setContextLoader( contextLoader );
     }
   }
-  
+
   private static void register( final String libraryName ) {
     IResourceManager manager = ResourceManager.getInstance();
     // TODO [rh] system property clientLibraryVariant could be used here to
     //      specify either RegisterOptions.VERSION or VERSION_AND_COMPRESS
-    manager.register( libraryName, 
+    manager.register( libraryName,
                       HTML.CHARSET_NAME_ISO_8859_1,
                       RegisterOptions.VERSION );
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();

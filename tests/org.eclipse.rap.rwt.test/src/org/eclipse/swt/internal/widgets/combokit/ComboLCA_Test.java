@@ -86,20 +86,14 @@ public class ComboLCA_Test extends TestCase {
     combo.add( "item 2" );
     comboLCA.renderChanges( combo );
     String expected;
-    expected
-      = "ComboUtil.setItems( wm.findWidgetById( \""
-      + WidgetUtil.getId( combo )
-      + "\" ), [ \"item 1\", \"item 2\" ] );";
+    expected = "w.rwt_setItems( [ \"item 1\", \"item 2\" ] );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     combo.select( 1 );
     comboLCA.renderChanges( combo );
-    expected
-      = "ComboUtil.select( wm.findWidgetById( \""
-      + WidgetUtil.getId( combo )
-      + "\" ), 1 );";
+    expected = "w.rwt_select( 1 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
@@ -138,7 +132,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( 0, combo.getSelectionIndex() );
     assertEquals( "widgetSelected", log.toString() );
   }
-  
+
   public void testSelectionAfterRemoveAll() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
@@ -147,7 +141,7 @@ public class ComboLCA_Test extends TestCase {
     combo.select( 0 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         combo.removeAll();
         combo.add( "replacement for item 1" );
         combo.select( 0 );
@@ -163,13 +157,13 @@ public class ComboLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     lifeCycle.execute();
-    
-    // Simulate button click that executes widgetSelected 
+
+    // Simulate button click that executes widgetSelected
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     lifeCycle.execute();
-    String expected = "org.eclipse.swt.ComboUtil.select";
+    String expected = "w.rwt_select( 0 )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 }

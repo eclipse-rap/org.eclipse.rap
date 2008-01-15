@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.*;
  */
 public class ComboLCA extends AbstractWidgetLCA {
 
-  private static final String QX_TYPE = "qx.ui.form.ComboBox";
+  private static final String QX_TYPE = "org.eclipse.swt.widgets.Combo";
 
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
@@ -35,18 +35,14 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final int LIST_ITEM_PADDING = 3;
 
   // Constants for ComboUtil.js
-  private static final String JS_FUNC_INITIALIZE
-    = "org.eclipse.swt.ComboUtil.initialize";
-  private static final String JS_FUNC_DEINITIALIZE
-    = "org.eclipse.swt.ComboUtil.deinitialize";
   private static final String JS_FUNC_WIDGET_SELECTED =
     "org.eclipse.swt.ComboUtil.onSelectionChanged";
-  private static final String JS_FUNC_SET_ITEMS =
-    "org.eclipse.swt.ComboUtil.setItems";
-  private static final String JS_FUNC_SELECT =
-    "org.eclipse.swt.ComboUtil.select";
-  private static final String JS_FUNC_SET_MAX_POPUP_HEIGHT =
-    "org.eclipse.swt.ComboUtil.setMaxPopupHeight";
+  private static final String JS_FUNC_SET_ITEMS = "rwt_setItems";
+  private static final String JS_FUNC_SELECT = "rwt_select";
+  private static final String JS_FUNC_SET_MAX_POPUP_HEIGHT
+    = "rwt_setMaxPopupHeight";
+  private static final String JS_FUNC_APPLY_CONTEXT_MENU
+    = "rwt_applyContextMenu";
 
   // Property names for preserve-value facility
   private static final String PROP_ITEMS = "items";
@@ -63,15 +59,14 @@ public class ComboLCA extends AbstractWidgetLCA {
                           JSListenerType.STATE_AND_ACTION );
   private static final JSListenerInfo JS_MODIFY_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_KEY_UP,
-                        "org.eclipse.swt.ComboUtil.modifyText",
-                        JSListenerType.STATE_AND_ACTION );
+                          "org.eclipse.swt.ComboUtil.modifyText",
+                          JSListenerType.STATE_AND_ACTION );
   private static final JSListenerInfo JS_BLUR_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_BLUR,
-                        "org.eclipse.swt.ComboUtil.modifyTextOnBlur",
-                        JSListenerType.ACTION );
+                          "org.eclipse.swt.ComboUtil.modifyTextOnBlur",
+                          JSListenerType.ACTION );
 
 //  private static final String TYPE_POOL_ID = ComboLCA.class.getName();
-
 
   public void preserveValues( final Widget widget ) {
     Combo combo = ( Combo )widget;
@@ -109,7 +104,6 @@ public class ComboLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( QX_TYPE );
-    writer.callStatic( JS_FUNC_INITIALIZE, new Object[] { widget } );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -126,15 +120,13 @@ public class ComboLCA extends AbstractWidgetLCA {
     // see http://bugzilla.qooxdoo.org/show_bug.cgi?id=465
     Menu menu = combo.getMenu();
     if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
-      Object[] args = new Object[] { combo };
       JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.callStatic( "org.eclipse.swt.ComboUtil.applyContextMenu", args );
+      writer.call( JS_FUNC_APPLY_CONTEXT_MENU, new Object[ 0 ] );
     }
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.callStatic( JS_FUNC_DEINITIALIZE, new Object[] { widget } );
     writer.dispose();
   }
 
@@ -142,8 +134,6 @@ public class ComboLCA extends AbstractWidgetLCA {
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterForResetHandler();
-    // TODO [rh] how to pass widget to static function in reset-handler?
-//    writer.callStatic( JS_FUNC_DEINITIALIZE, new Object[] { ??? } );
     writer.call( "removeAll", null );
   }
 
@@ -156,7 +146,7 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   ///////////////////////////////////////
   // Helping methods to read client state
-  
+
   private static void readText( final Combo combo ) {
     final String value = WidgetLCAUtil.readPropertyValue( combo, "text" );
     if( value != null ) {
@@ -183,7 +173,7 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   //////////////////////////////////////////////
   // Helping methods to write changed properties
-  
+
   private static void writeItems( final Combo combo ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( combo );
     String[] items = combo.getItems();
@@ -193,8 +183,7 @@ public class ComboLCA extends AbstractWidgetLCA {
         items[ i ] = WidgetLCAUtil.replaceNewLines( items[ i ], " " );
         items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
       }
-      Object[] args = new Object[]{ combo, items };
-      writer.callStatic( JS_FUNC_SET_ITEMS, args );
+      writer.call( JS_FUNC_SET_ITEMS, new Object[] { items } );
     }
   }
 
@@ -208,16 +197,14 @@ public class ComboLCA extends AbstractWidgetLCA {
     // -- in a subsequent request --
     // combo.removeAll();  combo.add( "b" );  combo.select( 0 );
     // When only examining selectionIndex, a change cannot be determined
-    boolean textChanged
-      =    !isEditable( combo )
-        && WidgetLCAUtil.hasChanged( combo, PROP_TEXT, combo.getText(), "" );
+    boolean textChanged = !isEditable( combo )
+                          && WidgetLCAUtil.hasChanged( combo, PROP_TEXT, combo.getText(), "" );
     if( selectionChanged || textChanged ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
-      Object[] args = new Object[]{ combo, newValue };
-      writer.callStatic( JS_FUNC_SELECT, args );
+      writer.call( JS_FUNC_SELECT, new Object[] { newValue } );
     }
   }
-  
+
   private static void writeMaxPopupHeight( final Combo combo )
     throws IOException
   {
@@ -227,8 +214,7 @@ public class ComboLCA extends AbstractWidgetLCA {
                                   newValue ) )
     {
       JSWriter writer = JSWriter.getWriterFor( combo );
-      Object[] args = new Object[]{ combo, newValue };
-      writer.callStatic( JS_FUNC_SET_MAX_POPUP_HEIGHT, args );
+      writer.call( JS_FUNC_SET_MAX_POPUP_HEIGHT, new Object[] { newValue } );
     }
   }
 
