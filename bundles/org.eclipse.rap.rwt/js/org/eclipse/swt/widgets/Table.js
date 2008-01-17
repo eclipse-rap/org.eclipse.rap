@@ -59,7 +59,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // needs to be drawn since the table bounds are grater than the number of
     // items
     this._emptyItem = new org.eclipse.swt.widgets.TableItem( this, -1 );
-    // An item osed to represent a virtual item while it is being resolved, 
+    // An item used to represent a virtual item while it is being resolved, 
     // that is a request is sent to the server to obtain the actual values
     this._virtualItem = new org.eclipse.swt.widgets.TableItem( this, -1 );
     this._virtualItem.setTexts ( [ "..." ] );
