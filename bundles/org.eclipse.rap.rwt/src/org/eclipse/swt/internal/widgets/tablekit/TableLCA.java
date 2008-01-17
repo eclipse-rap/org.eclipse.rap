@@ -114,14 +114,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeLinesVisible( table );
     writeSelectionListener( table );
     writeDefaultColumnWidth( table );
-    // Make the JavaScript client area the parent of all children of table 
-    String itemJSParent = getItemJSParent( table );
-    Control[] children = table.getChildren();
-    for( int i = 0; i < children.length; i++ ) {
-      WidgetAdapter adapter 
-        = ( WidgetAdapter )WidgetUtil.getAdapter( children[ i ] );
-      adapter.setJSParent( itemJSParent );
-    }
+    assignItemJSParent( table );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -261,11 +254,18 @@ public final class TableLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods 
   
-  private static String getItemJSParent( final Table table ) {
+  private static void assignItemJSParent( final Table table ) {
+    // Make the JavaScript client area the parent of all children of table 
     StringBuffer parentId = new StringBuffer();
     parentId.append( WidgetUtil.getId( table ) );
     parentId.append( "_clientArea"  );
-    return parentId.toString();
+    String itemJSParent = parentId.toString();
+    Control[] children = table.getChildren();
+    for( int i = 0; i < children.length; i++ ) {
+      Control child = children[ i ];
+      WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( child );
+      adapter.setJSParent( itemJSParent );
+    }
   }
 
   private static int getDefaultColumnWidth( final Table table ) {
