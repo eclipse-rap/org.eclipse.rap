@@ -21,7 +21,7 @@ public class FooEditor extends MultiPageEditorPart {
     super();
   }
 
-  public void doSave( IProgressMonitor monitor ) {
+  public void doSave( final IProgressMonitor monitor ) {
     editor.setDirty( false );
     treeeditor.setDirty( false );
   }
@@ -33,7 +33,7 @@ public class FooEditor extends MultiPageEditorPart {
     return false;
   }
 
-  public void init( IEditorSite site, IEditorInput input )
+  public void init( final IEditorSite site, final IEditorInput input )
     throws PartInitException
   {
     super.init( site, input );

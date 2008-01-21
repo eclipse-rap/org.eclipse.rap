@@ -24,7 +24,7 @@ public class BazEditor extends EditorPart {
     super();
   }
 
-  public void doSave( IProgressMonitor monitor ) {
+  public void doSave( final IProgressMonitor monitor ) {
     MessageDialog.openInformation( getSite().getShell(),
                                    "Foo Editor",
                                    "Saved :" );
@@ -33,7 +33,7 @@ public class BazEditor extends EditorPart {
   public void doSaveAs() {
   }
 
-  public void init( IEditorSite site, IEditorInput input )
+  public void init( final IEditorSite site, final IEditorInput input )
     throws PartInitException
   {
     setSite( site );
@@ -46,7 +46,7 @@ public class BazEditor extends EditorPart {
     return dirty;
   }
 
-  protected void setDirty( boolean value ) {
+  protected void setDirty( final boolean value ) {
     dirty = value;
     firePropertyChange( PROP_DIRTY );
   }
@@ -55,7 +55,7 @@ public class BazEditor extends EditorPart {
     return false;
   }
 
-  public void createPartControl( Composite parent ) {
+  public void createPartControl( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     tree = new Tree( parent, SWT.SINGLE );
     for( int i = 0; i < 4; i++ ) {
@@ -68,7 +68,7 @@ public class BazEditor extends EditorPart {
     }
     tree.addTreeListener( new TreeAdapter() {
 
-      public void treeExpanded( TreeEvent e ) {
+      public void treeExpanded( final TreeEvent e ) {
         super.treeExpanded( e );
         setDirty( true );
       }

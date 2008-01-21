@@ -15,7 +15,7 @@ import org.eclipse.ui.IPersistableElement;
 
 public class FooEditorInput implements IEditorInput {
 
-  public FooEditorInput( DemoActionBarAdvisor demoActionBarAdvisor ) {
+  public FooEditorInput( final DemoActionBarAdvisor demoActionBarAdvisor ) {
   }
 
   public boolean exists() {
@@ -38,7 +38,7 @@ public class FooEditorInput implements IEditorInput {
     return "/foo/bar/" + getName();
   }
 
-  public Object getAdapter( Class adapter ) {
+  public Object getAdapter( final Class adapter ) {
     return null;
   }
 }

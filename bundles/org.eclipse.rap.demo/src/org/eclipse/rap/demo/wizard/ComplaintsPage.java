@@ -10,62 +10,62 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 class ComplaintsPage extends WizardPage {
+
   private Button yes;
   private Button no;
 
   /**
-  * ComplaintsPage constructor
-  */
+   * ComplaintsPage constructor
+   */
   public ComplaintsPage() {
-    super("Complaints");
-    setTitle("Complaints");
+    super( "Complaints" );
+    setTitle( "Complaints" );
   }
 
   /**
-  * Creates the page controls
-  */
-public void createControl(Composite parent) {
-    Composite composite = new Composite(parent, SWT.NONE);
-    composite.setLayout(new GridLayout(1, true));
+   * Creates the page controls
+   */
+  public void createControl( Composite parent ) {
+    Composite composite = new Composite( parent, SWT.NONE );
+    composite.setLayout( new GridLayout( 1, true ) );
+    new Label( composite, SWT.LEFT ).setText( "Do you have complaints?" );
+    Composite yesNo = new Composite( composite, SWT.NONE );
+    yesNo.setLayout( new FillLayout( SWT.VERTICAL ) );
+    yes = new Button( yesNo, SWT.RADIO );
+    yes.setText( "Yes" );
+    yes.addSelectionListener( new SelectionAdapter() {
 
-    new Label(composite, SWT.LEFT).setText("Do you have complaints?");
-    Composite yesNo = new Composite(composite, SWT.NONE);
-    yesNo.setLayout(new FillLayout(SWT.VERTICAL));
-
-    yes = new Button(yesNo, SWT.RADIO);
-    yes.setText("Yes");
-    yes.addSelectionListener(new SelectionAdapter() {
-        public void widgetSelected(SelectionEvent e) {
-            setPageComplete(true);
-            setErrorMessage(null);
-        }
-    });
-
-    no = new Button(yesNo, SWT.RADIO);
-    no.setText("No");
-    no.addSelectionListener(new SelectionAdapter() {
-      public void widgetSelected(SelectionEvent e) {
-        setPageComplete(true);
-        setErrorMessage(null);
+      public void widgetSelected( SelectionEvent e ) {
+        setPageComplete( true );
+        setErrorMessage( null );
       }
-    });
-    setControl(composite);
-}
+    } );
+    no = new Button( yesNo, SWT.RADIO );
+    no.setText( "No" );
+    no.addSelectionListener( new SelectionAdapter() {
 
-public IWizardPage getNextPage() {
-  // If they have complaints, go to the normal next page
-  if (yes.getSelection()) {
-    return super.getNextPage();
+      public void widgetSelected( SelectionEvent e ) {
+        setPageComplete( true );
+        setErrorMessage( null );
+      }
+    } );
+    setControl( composite );
   }
-  // No complaints? Short-circuit the rest of the pages
-  return getWizard().getPage("Thanks");
-}
 
-public boolean canFlipToNextPage() {
-  if (yes.getSelection() || no.getSelection()) {
-    return true;
+  public IWizardPage getNextPage() {
+    // If they have complaints, go to the normal next page
+    if( yes.getSelection() ) {
+      return super.getNextPage();
+    }
+    // No complaints? Short-circuit the rest of the pages
+    return getWizard().getPage( "Thanks" );
   }
-  setErrorMessage("You need to select at least one entry");
+
+  public boolean canFlipToNextPage() {
+    if( yes.getSelection() || no.getSelection() ) {
+      return true;
+    }
+    setErrorMessage( "You need to select at least one entry" );
     return false;
   }
 }

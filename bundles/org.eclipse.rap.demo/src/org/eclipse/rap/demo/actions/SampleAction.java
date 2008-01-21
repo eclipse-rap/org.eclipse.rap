@@ -30,7 +30,7 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
    * 
    * @see IWorkbenchWindowActionDelegate#run
    */
-  public void run( IAction action ) {
+  public void run( final IAction action ) {
     MessageDialog.openInformation( window.getShell(),
                                    "RAP Demo Plug-in",
                                    "Hello, Eclipse world" );
@@ -43,7 +43,9 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
    * 
    * @see IWorkbenchWindowActionDelegate#selectionChanged
    */
-  public void selectionChanged( IAction action, ISelection selection ) {
+  public void selectionChanged( final IAction action, 
+                                final ISelection selection ) 
+  {
   }
 
   /**
@@ -61,7 +63,7 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
    * 
    * @see IWorkbenchWindowActionDelegate#init
    */
-  public void init( IWorkbenchWindow window ) {
+  public void init( final IWorkbenchWindow window ) {
     this.window = window;
   }
 }

@@ -27,7 +27,7 @@ public class BarEditor extends EditorPart {
     super();
   }
 
-  public void doSave( IProgressMonitor monitor ) {
+  public void doSave( final IProgressMonitor monitor ) {
     MessageDialog.openInformation( getSite().getShell(),
                                    "Foo Editor",
                                    "Saved :");
@@ -36,7 +36,7 @@ public class BarEditor extends EditorPart {
   public void doSaveAs() {
   }
 
-  public void init( IEditorSite site, IEditorInput input )
+  public void init( final IEditorSite site, final IEditorInput input )
     throws PartInitException
   {
     setSite( site );
@@ -48,7 +48,7 @@ public class BarEditor extends EditorPart {
     return dirty;
   }
 
-  protected void setDirty( boolean value ) {
+  protected void setDirty( final boolean value ) {
     dirty = value;
     firePropertyChange( PROP_DIRTY );
   }
@@ -57,13 +57,13 @@ public class BarEditor extends EditorPart {
     return false;
   }
 
-  public void createPartControl( Composite parent ) {
+  public void createPartControl( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     editor = new Text( parent, SWT.MULTI );
     editor.setText( "" );
     editor.addModifyListener( new ModifyListener() {
 
-      public void modifyText( ModifyEvent event ) {
+      public void modifyText( final ModifyEvent event ) {
         if( editor.getText() != "" ) {
           setDirty( true );
         } else {
