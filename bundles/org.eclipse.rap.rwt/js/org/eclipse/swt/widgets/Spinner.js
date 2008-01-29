@@ -67,7 +67,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
     // TODO [rst] workaround: setting enabled to false still leaves the buttons
     //      enabled
     _onChangeEnabled : function( evt ) {
-      var enabled = evt.getData();
+      var enabled = evt.getValue();
       this._upbutton.setEnabled( enabled && this.getValue() < this.getMax() );
       this._downbutton.setEnabled( enabled && this.getValue() > this.getMin() );
     },

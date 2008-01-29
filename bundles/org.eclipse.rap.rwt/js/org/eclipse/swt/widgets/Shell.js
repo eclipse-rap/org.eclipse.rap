@@ -49,7 +49,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     ],
     
     preloadDone : false,
-    
+
     onClose : function( evt ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var shell = evt.getData();
@@ -63,7 +63,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         var shell = evt.getData();
         org.eclipse.swt.widgets.Shell._appendCloseRequestParam( shell );
         org.eclipse.swt.Request.getInstance().send();
-      }      
+      }
     },
     
     _appendCloseRequestParam : function( shell ) {
@@ -193,7 +193,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     _onChangeActiveChild : function( evt ) {
       // Work around qooxdoo bug #254: the changeActiveChild is fired twice when
       // a widget was activated by keyboard (getData() is null in this case)
-      var widget = this._getParentControl( evt.getData() );
+      var widget = this._getParentControl( evt.getValue() );
       if( !org_eclipse_rap_rwt_EventUtil_suspend && widget != null ) {
         var widgetMgr = org.eclipse.swt.WidgetManager.getInstance();
         var id = widgetMgr.findIdByWidget( widget );
@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
 //          req.addParameter( req.getUIRootId() + ".activeShell", id );
 //        }
       }
-      var active = evt.getData();
+      var active = evt.getValue();
       if( active ) {
         this._minimizeButton.addState( "active" );
         this._maximizeButton.addState( "active" );
