@@ -18,6 +18,7 @@ import javax.servlet.http.*;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture.TestSession;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 
 
@@ -150,5 +151,14 @@ public class SessionStore_Test extends TestCase {
     } catch( final IllegalStateException iae ) {
     }
     
+    final boolean[] hasContext = { false };
+    SessionStoreImpl checkContext = new SessionStoreImpl( new TestSession() );
+    checkContext.addSessionStoreListener( new SessionStoreListener() {
+      public void beforeDestroy( final SessionStoreEvent event ) {
+        hasContext[ 0 ] = ContextProvider.hasContext();
+      }
+    } );
+    checkContext.getHttpSession().invalidate();
+    assertTrue( hasContext[ 0 ] );
   }
 }

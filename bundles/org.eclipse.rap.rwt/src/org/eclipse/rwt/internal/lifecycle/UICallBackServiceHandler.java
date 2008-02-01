@@ -438,11 +438,16 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
   
   public static ServiceContext getFakeContext( final HttpSession session ) {
-    DummyRequest request = new DummyRequest( session );
-    DummyResponse response = new DummyResponse();
     String id = SessionStoreImpl.ID_SESSION_STORE;
     ISessionStore sessionStore = ( ISessionStore )session.getAttribute( id );
-    return new ServiceContext( request, response, sessionStore );
+    return getFakeContext( sessionStore );
+  }
+
+  public static ServiceContext getFakeContext( final ISessionStore store )
+  {
+    DummyRequest request = new DummyRequest( store.getHttpSession() );
+    DummyResponse response = new DummyResponse();
+    return new ServiceContext( request, response, store );
   }
 
   private static String jsUICallBack() {

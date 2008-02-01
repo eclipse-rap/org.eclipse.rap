@@ -26,10 +26,10 @@ import junit.framework.Assert;
 
 import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.Browser;
-import org.eclipse.rwt.internal.lifecycle.HtmlResponseWriter;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.ISessionStore;
 import org.xml.sax.SAXException;
@@ -1080,5 +1080,10 @@ public class Fixture {
     HtmlResponseWriter writer = new HtmlResponseWriter();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setResponseWriter( writer );
+  }
+
+  public static void fakePhase( final PhaseId phaseId ) {
+    String key = CurrentPhase.class.getName() + "#value";
+    ContextProvider.getStateInfo().setAttribute( key, phaseId );
   }
 }

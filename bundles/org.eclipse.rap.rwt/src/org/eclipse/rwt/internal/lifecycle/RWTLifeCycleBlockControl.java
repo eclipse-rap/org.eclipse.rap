@@ -88,8 +88,13 @@ public class RWTLifeCycleBlockControl {
     
     private void bufferThrowable( final Throwable thr ) {
       try {
-        HttpSession httpSession = ContextProvider.getSession().getHttpSession();
-        httpSession.setAttribute( THROWABLE, thr );
+        ISessionStore session = ContextProvider.getSession();
+        HttpSession httpSession = session.getHttpSession();
+        try {
+          httpSession.setAttribute( THROWABLE, thr );
+        } catch( final IllegalStateException ise ) {
+          // ignore exceptions on invalidated sessions
+        }
       } catch( final RuntimeException re ) {
         thr.printStackTrace();
         throw re;
@@ -184,16 +189,26 @@ public class RWTLifeCycleBlockControl {
       try {
         ResponseHandler responseHandler = new ResponseHandler( LOCK.get() );
         RWTLifeCycleThreadPool.execute( responseHandler, lock );
+        // watchdog in case of session timeout
+        final Thread blocked = Thread.currentThread();
+        ISessionStore session = ContextProvider.getSession();
+        SessionStoreListener watchDog = new SessionStoreListener() {
+          public void beforeDestroy( final SessionStoreEvent event ) {
+            blocked.interrupt();
+          }
+        };
+        session.addSessionStoreListener( watchDog );
+        
         lock.wait();
+        session.removeSessionStoreListener( watchDog );
         // dispose the service context that is still stored
         // on the thread since it was blocked, before we could
         // add the context of the request that closed the window.
         ContextProvider.disposeContext();
         ContextProvider.setContext( getData( lock ).context );
-        RWTLifeCycle.setThread( Thread.currentThread() );             
-      } catch( final InterruptedException e ) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        RWTLifeCycle.setThread( blocked );             
+      } catch( final InterruptedException ie ) {
+        throw new AbortRequestProcessingError();
       }
     }
   }

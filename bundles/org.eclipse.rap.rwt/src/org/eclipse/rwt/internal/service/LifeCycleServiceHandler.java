@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.browser.Browser;
 import org.eclipse.rwt.internal.browser.BrowserLoader;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -221,7 +222,20 @@ public class LifeCycleServiceHandler extends AbstractServiceHandler {
     }
     Object[] attributeNames = keyBuffer.toArray();
     for( int i = 0; i < attributeNames.length; i++ ) {
-      session.removeAttribute( ( String )attributeNames[ i ] );
+      // ensure that the session store instance lives as long as the
+      // underlying session to avoid problems with request synchronization
+      String idSessionStore = SessionStoreImpl.ID_SESSION_STORE;
+      if( !idSessionStore.equals( attributeNames[ i ] ) ) {
+        session.removeAttribute( ( String )attributeNames[ i ] );
+      } else {
+        // clear attributes of session store to enable new startup
+        SessionStoreImpl sessionStore
+          = ( SessionStoreImpl )session.getAttribute( idSessionStore );
+        sessionStore.valueUnbound( null );
+        // reinitialize session store state
+        sessionStore.valueBound( null );
+        sessionStore.setAttribute( SessionSingletonBase.LOCK, new Object() );
+      }
     }
   }
   

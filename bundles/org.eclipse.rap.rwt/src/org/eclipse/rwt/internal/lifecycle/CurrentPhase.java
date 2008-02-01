@@ -45,7 +45,11 @@ public final class CurrentPhase {
   }
   
   public static PhaseId get() {
+    PhaseId result = null;
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return ( PhaseId )stateInfo.getAttribute( ATTR_CURRENT_PHASE );
+    if( stateInfo != null ) {
+      result = ( PhaseId )stateInfo.getAttribute( ATTR_CURRENT_PHASE );
+    }
+    return result;
   }
 }

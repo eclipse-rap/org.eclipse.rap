@@ -65,7 +65,6 @@ class RWTLifeCycleThreadPool {
         try {
           runnable.run();
         } catch( final RuntimeException re ) {
-          // TODO [fappel] exception handling
           re.printStackTrace();
         } finally {
           synchronized( queue ) {

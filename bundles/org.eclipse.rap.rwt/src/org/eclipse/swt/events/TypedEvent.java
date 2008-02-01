@@ -99,16 +99,22 @@ public class TypedEvent extends Event {
    * </p>
    */
   public final void processEvent() {
-    if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
-        || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
-    {
-      // TODO [fappel]: changes of the event fields in the filter handler
-      //                methods should be forwarded to this event...
-      if( !isFiltered( processFilters() ) ) {
-        super.processEvent();
+    // TODO: [fappel] In case of session invalidation there's no phase.
+    //                So no event processing should take place, this situation
+    //                may improve with the new readAndDispatch mechanism in
+    //                place.
+    if( CurrentPhase.get() != null ) {
+      if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
+          || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
+      {
+        // TODO [fappel]: changes of the event fields in the filter handler
+        //                methods should be forwarded to this event...
+        if( !isFiltered( processFilters() ) ) {
+          super.processEvent();
+        }
+      } else {
+        addToScheduledEvents( this );
       }
-    } else {
-      addToScheduledEvents( this );
     }
   }
 

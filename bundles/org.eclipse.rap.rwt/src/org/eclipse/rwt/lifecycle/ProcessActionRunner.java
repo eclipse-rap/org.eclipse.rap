@@ -25,19 +25,25 @@ public class ProcessActionRunner {
     = ProcessActionRunner.class.getName();
 
   public static void add( final Runnable runnable ) {
-    if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
-        || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
-    {
-      runnable.run();
-    } else {
-      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      List list = ( List )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );
-      if( list == null ) {
-        list = new ArrayList();
-        stateInfo.setAttribute( ATTR_RUNNABLE_LIST, list );
-      }
-      if( !list.contains( runnable ) ) {
-        list.add(  runnable );
+    // TODO: [fappel] In case of session invalidation there's no phase.
+    //                So no event processing should take place, this situation
+    //                may improve with the new readAndDispatch mechanism in
+    //                place.
+    if( CurrentPhase.get() != null ) {
+      if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
+          || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
+      {
+        runnable.run();
+      } else {
+        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+        List list = ( List )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );
+        if( list == null ) {
+          list = new ArrayList();
+          stateInfo.setAttribute( ATTR_RUNNABLE_LIST, list );
+        }
+        if( !list.contains( runnable ) ) {
+          list.add(  runnable );
+        }
       }
     }
   }

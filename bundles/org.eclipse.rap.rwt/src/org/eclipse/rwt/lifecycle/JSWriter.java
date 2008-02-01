@@ -786,7 +786,8 @@ public final class JSWriter {
   //                in IE. See FontSizeCalculationHandler#createFontParam.
   //                Until a better solution is found this hack is needed.
   private boolean currentPhaseIsRender() {
-    return CurrentPhase.get() != PhaseId.PROCESS_ACTION
+    return CurrentPhase.get() != null
+        && CurrentPhase.get() != PhaseId.PROCESS_ACTION
         && CurrentPhase.get() != PhaseId.PREPARE_UI_ROOT
         && CurrentPhase.get() != PhaseId.READ_DATA;
   }

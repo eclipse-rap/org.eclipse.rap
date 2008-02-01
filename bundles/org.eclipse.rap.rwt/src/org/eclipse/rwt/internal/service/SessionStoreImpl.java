@@ -15,6 +15,7 @@ import java.util.*;
 
 import javax.servlet.http.*;
 
+import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.*;
 
@@ -120,6 +121,26 @@ public final class SessionStoreImpl
   }
   
   public void valueUnbound( final HttpSessionBindingEvent event ) {
+    boolean fakeContext = false;
+    if( !ContextProvider.hasContext() ) {
+      fakeContext = true;
+      ServiceContext context = UICallBackServiceHandler.getFakeContext( this );
+      ContextProvider.setContext( context );
+    }
+    try {
+      doValueUnbound();
+    } finally {
+      if( fakeContext ) {
+        ContextProvider.releaseContextHolder();
+      }
+    }
+  }
+  
+  
+  //////////////////
+  // helping methods
+  
+  private void doValueUnbound() {
     aboutUnbound = true;
     Object[] lsnrs;
     synchronized( listeners ) {      
@@ -133,18 +154,35 @@ public final class SessionStoreImpl
     synchronized( attributes ) {      
       names = attributes.keySet().toArray();
     }
-    for( int i = 0; i < names.length; i++ ) {
-      String name = ( String )names[ i ];
-      fireValueUnbound( name, removeAttributeInternal( name ) );
+    
+    ///////////////////////////////////////////////////////////////
+    // we remove the attributes from the datastructure as
+    // late as possible to allow a defined shutdown of
+    // the application
+    Set removedAttributes = new HashSet();
+    try {
+      for( int i = 0; i < names.length; i++ ) {
+        String name = ( String )names[ i ];
+        Object attribute = null;
+        synchronized( attributes ) {
+          attribute = attributes.get( name );
+        }
+        removedAttributes.add( name );
+        fireValueUnbound( name, attribute );
+      }
+    } finally {
+      synchronized( attributes ) {
+        Iterator iterator = removedAttributes.iterator();
+        while( iterator.hasNext() ) {
+          attributes.remove( iterator.next() );
+        }
+      }      
     }
+    
     listeners.clear();
     bound = false;
     aboutUnbound = false;
   }
-  
-  
-  //////////////////
-  // helping methods
   
   private Object removeAttributeInternal( final String name ) {
     Object result;
@@ -170,9 +208,9 @@ public final class SessionStoreImpl
   private void fireValueBound( final String name, final Object value ) {
     if( value instanceof HttpSessionBindingListener ) {
       HttpSessionBindingListener listener
-      = ( HttpSessionBindingListener )value;
+        = ( HttpSessionBindingListener )value;
       HttpSessionBindingEvent evt 
-      = new HttpSessionBindingEvent( session, name, value );
+        = new HttpSessionBindingEvent( session, name, value );
       listener.valueBound( evt );
     }
   }
@@ -180,7 +218,7 @@ public final class SessionStoreImpl
   private void fireValueUnbound( final String name, Object removed ) {
     if( removed instanceof HttpSessionBindingListener ) {
       HttpSessionBindingListener listener
-      = ( HttpSessionBindingListener )removed;
+        = ( HttpSessionBindingListener )removed;
       HttpSessionBindingEvent evt 
         = new HttpSessionBindingEvent( session, name, removed );
       listener.valueUnbound( evt );

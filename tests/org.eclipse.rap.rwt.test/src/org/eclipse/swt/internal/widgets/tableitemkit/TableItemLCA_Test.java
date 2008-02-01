@@ -18,8 +18,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -30,6 +29,7 @@ public class TableItemLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();
+    Fixture.fakePhase( PhaseId.RENDER );
   }
 
   protected void tearDown() throws Exception {

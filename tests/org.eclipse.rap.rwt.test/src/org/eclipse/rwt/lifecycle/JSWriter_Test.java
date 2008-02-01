@@ -1053,6 +1053,7 @@ public class JSWriter_Test extends TestCase {
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.fakeResponseWriter();
+    Fixture.fakePhase( PhaseId.RENDER );
   }
 
   protected void tearDown() throws Exception {
