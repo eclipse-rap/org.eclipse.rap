@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -114,6 +114,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
+    this._virtualItem.dispose();
     this._emptyItem.dispose();
     // For performance reasons, when disposing a a Table, the server-side LCA 
     // does *not* dispose of each TableItem, instead this is done here in one 
@@ -161,6 +162,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       this._checkBoxes = null;
     }
+    this._itemImageLeft = null;
+    this._itemImageWidth = null;
+    this._itemTextLeft = null;
+    this._itemTextWidth = null;
   },
   
   events : {
@@ -348,16 +353,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._updateScrollHeight();
       this._updateRows();
     },
-
-    /////////////////////////////////
-    // React when enabled was changed
     
     _onChangeEnabled : function( evt ) {
-      for( var i = 0; i < this._rows.length; i++ ) {
-        this._updateRowState( this._rows[ i ], this._getItemFromRowIndex( i ) );
-      }
+      this._updateRows();
     },
-
+    
     ////////////////////////////
     // Listeners for client area
 
@@ -817,7 +817,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _updateRow : function( rowIndex, item ) {
       var row = this._rows[ rowIndex ];
-      if( item === undefined ) {
+      if( item === undefined || ( item != null && !item.getCached() ) ) {
         this._resolveItem( this._topIndex + rowIndex );
         row.setHtml( this._virtualItem._getMarkup() );
       } else if( item != null ) {

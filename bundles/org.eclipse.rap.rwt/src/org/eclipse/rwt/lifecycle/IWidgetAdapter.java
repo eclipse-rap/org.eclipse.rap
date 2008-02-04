@@ -8,13 +8,14 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 
 /**
  * Instances of this interface provide RWT specific operations on widgets.
  * They are used to preserve the state of a widget.
+ * 
+ * <p>This interface is not intended to be implemented by clients.</p>
  * 
  * @since 1.0
  */

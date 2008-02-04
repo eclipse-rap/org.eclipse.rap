@@ -25,6 +25,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
 
@@ -165,10 +166,69 @@ public class TableLCA_Test extends TestCase {
     assertTrue( isItemVirtual( table, 999 ) );
   }
 
+  public void testClearVirtual() throws IOException {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 100, 100 );
+    shell.setLayout( new FillLayout() );
+    final Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 100 );
+    shell.layout();
+    shell.open();
+    ITableAdapter adapter 
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    // precondition: all items are resolved (TableItem#cached == true)
+    // resolve all items and ensure
+    for( int i = 0; i < table.getItemCount(); i++ ) {
+      table.getItem( i ).getText();
+    }
+    assertFalse( adapter.isItemVirtual( table.getItemCount() - 1 ) );
+    // 
+    String displayId = DisplayUtil.getId( display );
+    final int lastItemIndex = table.getItemCount() - 1;
+    String lastItemId = WidgetUtil.getId( table.getItem( lastItemIndex ) );
+    // fake one request that would initialize the UI
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    lifeCycle.execute();
+    // run actual request
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    lifeCycle.addPhaseListener( new PhaseListener() {
+      private static final long serialVersionUID = 1L;
+      public void beforePhase( final PhaseEvent event ) {
+        table.clear( lastItemIndex );
+      }
+      public void afterPhase( final PhaseEvent event ) {
+      }
+      public PhaseId getPhaseId() {
+        return PhaseId.PROCESS_ACTION;
+      }
+    } );
+    lifeCycle.execute();
+    String markup = Fixture.getAllMarkup();
+    String expected 
+      = "var w = wm.findWidgetById( \"" 
+      + lastItemId 
+      + "\" );w.clear()";
+    assertTrue( markup.indexOf( expected ) != -1 );
+  }
+
   private static int countResolvedItems( final Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    return tableAdapter.getCachedItems().length;
+    int result = 0;
+    TableItem[] createdItems = tableAdapter.getCreatedItems();
+    for( int i = 0; i < createdItems.length; i++ ) {
+      int index = table.indexOf( createdItems[ i ] );
+      if( !tableAdapter.isItemVirtual( index ) ) {
+        result++;
+      }
+    }
+    return result;
   }
   
   private static boolean isItemVirtual( final Table table, final int index ) {

@@ -1,6 +1,5 @@
-
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +19,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   construct : function( parent, index ) {
     this.base( arguments );
     this._parent = parent;
+    this._cached = true;
     this._checked = false;
     this._grayed = false;
     this._texts = new Array();
@@ -78,6 +78,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
   },
   
   members : {
+
+    getCached : function() {
+      return this._cached;
+    },
     
     setChecked : function( value ) {
       if( this._checked != value ) {
@@ -132,7 +136,19 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
     },
     
     update : function() {
+      this._cached = true;
       this._parent.updateItem( this, true );
+    },
+    
+    clear : function() {
+      this._cached = false;
+      this._checked = false;
+      this._grayed = false;
+      this._texts = new Array();
+      this._images = new Array();
+      this._fonts = null;
+      this._backgrounds = null;
+      this._foregrounds = null;
     },
     
     /**
@@ -141,20 +157,28 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
      */
      // TODO [rh] use StringBuilder to concatenate markup
     _getMarkup : function() {
+      var parent = this._parent;
       var markup = new Array();
       var left = 0;
       var width = 0;
-      var columnCount = this._parent.getColumnCount();
+      var columnCount = parent.getColumnCount();
       if( columnCount == 0 ) {
         columnCount = 1;
       } 
       var leftOffset = 0;
-      if( this._parent.hasCheckBoxes() ) {
+      if( parent.hasCheckBoxes() ) {
         leftOffset = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
       }
       var font = "";
       var foreground = "";
       var background = "";
+      var parentForeground = "";
+      if( !qx.util.ColorUtil.isThemedColor( parent.getTextColor() ) ) {
+        parentForeground
+          = org.eclipse.swt.widgets.TableItem.FOREGROUND 
+          + parent.getTextColor()
+          + ";";
+      }
       for( var i = 0; i < columnCount; i++ ) {
         // Font
         if( this._fonts && this._fonts[ i ] ) {
@@ -164,12 +188,14 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
             + ";";
         }
         // Foreground and background color
-        if( !this._parent._isItemSelected( this ) ) { 
+        if( parent.getEnabled() && !parent._isItemSelected( this ) ) {
           if( this._foregrounds && this._foregrounds[ i ] ) {
-            foreground 
+            foreground
               = org.eclipse.swt.widgets.TableItem.FOREGROUND 
               + this._foregrounds[ i ] 
               + ";";
+          } else {
+            foreground = parentForeground;
           }
           if( this._backgrounds && this._backgrounds[ i ] ) {
             background 
@@ -180,16 +206,16 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         }
         // Draw image
         if( this._images && this._images[ i ] ) {
-          left = this._parent.getItemImageLeft( i );
-          width = this._parent.getItemImageWidth( i );
+          left = parent.getItemImageLeft( i );
+          width = parent.getItemImageWidth( i );
           markup.push( this._getImageMarkup( this._images[ i ], left, width, background ) );
         }
         // Draw text
         if( this._texts[ i ] !== undefined ) {
-          left = this._parent.getItemTextLeft( i );
-          width = this._parent.getItemTextWidth( i );
+          left = parent.getItemTextLeft( i );
+          width = parent.getItemTextWidth( i );
           var align = qx.constant.Layout.ALIGN_LEFT;
-          var column = this._parent.getColumn( i );
+          var column = parent.getColumn( i );
           if( column ) {
             align = column.getHorizontalChildrenAlign();
           }

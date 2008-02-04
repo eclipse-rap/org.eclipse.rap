@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,10 +8,10 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,72 +22,58 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
-import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.internal.widgets.ItemLCAUtil;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.widgets.*;
 
 
 public final class TableItemLCA extends AbstractWidgetLCA {
 
-  private static final String PROP_TOP = "top";
-  private static final String PROP_TEXTS = "texts";
-  private static final String PROP_IMAGES = "images";
-  private static final String PROP_CHECKED = "checked";
-  private static final String PROP_GRAYED = "grayed";
-  private static final String PROP_INDEX = "index";
-  private static final String PROP_SELECTED = "selected";
-  private static final String PROP_FOCUSED = "focused";
-  private static final String PROP_FONT = "font";
-  private static final String PROP_BACKGROUND = "background";
-  private static final String PROP_FOREGROUND = "foreground";
+  private static interface IRenderRunnable {
+    void run() throws IOException;
+  }
+
+  static final String PROP_TEXTS = "texts";
+  static final String PROP_IMAGES = "images";
+  static final String PROP_CHECKED = "checked";
+  static final String PROP_GRAYED = "grayed";
+  static final String PROP_INDEX = "index";
+  static final String PROP_SELECTED = "selected";
+  static final String PROP_FOCUSED = "focused";
+  static final String PROP_FONT = "font";
+  static final String PROP_BACKGROUND = "background";
+  static final String PROP_FOREGROUND = "foreground";
+  static final String PROP_CACHED = "cached";
 
   public void preserveValues( final Widget widget ) {
     TableItem item = ( TableItem )widget;
     Table table = item.getParent();
     int index = item.getParent().indexOf( item );
-    ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    adapter.preserve( PROP_TOP, new Integer( item.getBounds().y ) );
-    adapter.preserve( PROP_CHECKED, Boolean.valueOf( item.getChecked() ) );
-    adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
-    adapter.preserve( PROP_TEXTS, getTexts( item ) );
-    adapter.preserve( PROP_IMAGES, getImages( item ) );
-    adapter.preserve( PROP_INDEX, new Integer( index ) );
-    adapter.preserve( PROP_SELECTED, 
-                      Boolean.valueOf( isSelected( table, index ) ) );
-    adapter.preserve( PROP_FOCUSED, Boolean.valueOf( isFocused( item ) ) );
-    adapter.preserve( PROP_FONT, getFonts( item ) );
-    adapter.preserve( PROP_BACKGROUND, getBackgrounds( item ) );
-    adapter.preserve( PROP_FOREGROUND, getForegrounds( item ) );
+    // don't resolve items unintentionally
+    if( isCached( table, index ) ) {
+      ItemLCAUtil.preserve( item );
+      adapter.preserve( PROP_CHECKED, Boolean.valueOf( item.getChecked() ) );
+      adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
+      adapter.preserve( PROP_TEXTS, getTexts( item ) );
+      adapter.preserve( PROP_IMAGES, getImages( item ) );
+      adapter.preserve( PROP_INDEX, new Integer( index ) );
+      adapter.preserve( PROP_SELECTED,
+                        Boolean.valueOf( isSelected( table, index ) ) );
+      adapter.preserve( PROP_FOCUSED, Boolean.valueOf( isFocused( item ) ) );
+      adapter.preserve( PROP_FONT, getFonts( item ) );
+      adapter.preserve( PROP_BACKGROUND, getBackgrounds( item ) );
+      adapter.preserve( PROP_FOREGROUND, getForegrounds( item ) );
+    }
+    adapter.preserve( PROP_CACHED,
+                      Boolean.valueOf( isCached( table, index ) ) );
   }
 
   public void readData( final Widget widget ) {
     TableItem item = ( TableItem )widget;
-    String value = WidgetLCAUtil.readPropertyValue( widget, "checked" );
-    if( value != null ) {
-      item.setChecked( Boolean.valueOf( value ).booleanValue() );
-    }
-    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      Table parent = item.getParent();
-      int detail = getWidgetSelectedDetail();
-      int id = SelectionEvent.WIDGET_SELECTED;
-      SelectionEvent event = new SelectionEvent( parent,
-                                                 item,
-                                                 id,
-                                                 new Rectangle( 0, 0, 0, 0 ),
-                                                 "",
-                                                 true,
-                                                 detail );
-      event.processEvent();
-    }
-    String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( item, defaultSelectedParam ) ) {
-      Table parent = item.getParent();
-      int id = SelectionEvent.WIDGET_DEFAULT_SELECTED;
-      SelectionEvent event = new SelectionEvent( parent, item, id );
-      event.processEvent();
-    }
+    readChecked( item );
+    readWidgetSelected( item );
+    readWidgetDefaultSelected( item );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -100,27 +86,24 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
-    TableItem item = ( TableItem )widget;
-    boolean needUpdate = false;
-    needUpdate |= writeTexts( item );
-    needUpdate |= writeImages( item );
-    needUpdate |= writeFont( item );
-    needUpdate |= writeBackground( item );
-    needUpdate |= writeForeground( item );
-    needUpdate |= writeChecked( item );
-    needUpdate |= writeGrayed( item );
-    needUpdate |= writeSelection( item );
-    if( isVisible( item ) ) {
+    final TableItem item = ( TableItem )widget;
+    if( wasCleared( item ) ) {
+      writeClear( item );
+    } else {
       Table table = item.getParent();
-      needUpdate |= TableLCAUtil.hasItemMetricsChanged( table );
-      needUpdate |= TableLCAUtil.hasAlignmentChanged( table );
-      needUpdate |= hasIndexChanged( item );
+      if( isCached( table, table.indexOf( item ) ) ) {
+        preservingInitialized( item, new IRenderRunnable() {
+          public void run() throws IOException {
+            // items that were uncached and are now cached (materialized) are
+            // handled as if they were just created (initialized = false)
+            if( !wasCached( item ) ) {
+              setInitialized( item, false );
+            }
+            writeChanges( item );
+          }
+        } );
+      }
     }
-    if( needUpdate ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      writer.call( "update", null );
-    }
-    writeFocused( item );
   }
 
   /* (intentionally not JavaDoc'ed)
@@ -129,7 +112,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
    */
   public void renderDispose( final Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
-    // When the Table is disposed of it takes care of disposing all its items
+    // When the Table is disposed of, it takes care of disposing all its items
     if( !item.getParent().isDisposed() ) {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.call( "dispose", null );
@@ -149,6 +132,39 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   //////////////////
   // ReadData helper
 
+  private void readChecked( final TableItem item ) {
+    String value = WidgetLCAUtil.readPropertyValue( item, "checked" );
+    if( value != null ) {
+      item.setChecked( Boolean.valueOf( value ).booleanValue() );
+    }
+  }
+
+  private void readWidgetSelected( final TableItem item ) {
+    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_WIDGET_SELECTED ) ) {
+      Table parent = item.getParent();
+      int detail = getWidgetSelectedDetail();
+      int id = SelectionEvent.WIDGET_SELECTED;
+      SelectionEvent event = new SelectionEvent( parent,
+                                                 item,
+                                                 id,
+                                                 new Rectangle( 0, 0, 0, 0 ),
+                                                 "",
+                                                 true,
+                                                 detail );
+      event.processEvent();
+    }
+  }
+
+  private void readWidgetDefaultSelected( final TableItem item ) {
+    String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( item, defaultSelectedParam ) ) {
+      Table parent = item.getParent();
+      int id = SelectionEvent.WIDGET_DEFAULT_SELECTED;
+      SelectionEvent event = new SelectionEvent( parent, item, id );
+      event.processEvent();
+    }
+  }
+
   private static int getWidgetSelectedDetail() {
     int result = SWT.NONE;
     HttpServletRequest request = ContextProvider.getRequest();
@@ -161,6 +177,33 @@ public final class TableItemLCA extends AbstractWidgetLCA {
 
   ///////////////////////
   // RenderChanges helper
+
+  private static void writeChanges( final TableItem item ) throws IOException {
+    boolean needUpdate = false;
+    needUpdate |= writeTexts( item );
+    needUpdate |= writeImages( item );
+    needUpdate |= writeFont( item );
+    needUpdate |= writeBackground( item );
+    needUpdate |= writeForeground( item );
+    needUpdate |= writeChecked( item );
+    needUpdate |= writeGrayed( item );
+    needUpdate |= writeSelection( item );
+    if( isVisible( item ) ) {
+      Table table = item.getParent();
+      needUpdate |= TableLCAUtil.hasItemMetricsChanged( table );
+      needUpdate |= TableLCAUtil.hasAlignmentChanged( table );
+      needUpdate |= hasIndexChanged( item );
+    }
+    if( needUpdate ) {
+      writeUpdate( item );
+    }
+    writeFocused( item );
+  }
+
+  private static void writeClear( final TableItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    writer.call( "clear", null );
+  }
 
   private static boolean writeTexts( final TableItem item ) throws IOException {
     String[] texts = getTexts( item );
@@ -180,7 +223,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static boolean writeImages( final TableItem item ) throws IOException
   {
     Image[] images = getImages( item );
-    boolean result = WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images );
+    Image[] defValue = new Image[ images.length ];
+    boolean result 
+      = WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images, defValue );
     if( result ) {
       JSWriter writer = JSWriter.getWriterFor( item );
       String[] imagePaths = new String[ images.length ];
@@ -195,10 +240,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static boolean writeFont( final TableItem item ) throws IOException {
     Font[] fonts = getFonts( item );
     Font[] defValue = new Font[ fonts.length ];
-    for( int i = 0; i < defValue.length; i++ ) {
-      Font parentFont = item.getParent().getFont();
-      defValue[ i ] = parentFont;
-    }
+    Arrays.fill( defValue, item.getParent().getFont() );
     boolean result
       = WidgetLCAUtil.hasChanged( item, PROP_FONT, fonts, defValue );
     if( result ) {
@@ -212,28 +254,22 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static boolean writeBackground( final TableItem item ) 
-    throws IOException 
+  private static boolean writeBackground( final TableItem item )
+    throws IOException
   {
     Color[] backgrounds = getBackgrounds( item );
-    Color parentBackground = item.getParent().getBackground();
+    // default values are null 
     Color[] defValue = new Color[ getColumnCount( item ) ];
-    for( int i = 0; i < defValue.length; i++ ) {
-      defValue[ i ] = parentBackground;
-    }
     JSWriter writer = JSWriter.getWriterFor( item );
     return writer.set( PROP_BACKGROUND, "backgrounds", backgrounds, defValue );
   }
 
-  private static boolean writeForeground( final TableItem item ) 
-    throws IOException 
+  private static boolean writeForeground( final TableItem item )
+    throws IOException
   {
     Color[] foregrounds = getForegrounds( item );
-    Color parentForeground = item.getParent().getForeground();
+    // default values are null 
     Color[] defValue = new Color[ getColumnCount( item ) ];
-    for( int i = 0; i < defValue.length; i++ ) {
-      defValue[ i ] = parentForeground;
-    }
     JSWriter writer = JSWriter.getWriterFor( item );
     return writer.set( PROP_FOREGROUND, "foregrounds", foregrounds, defValue );
   }
@@ -273,6 +309,11 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.call( "focus", null );
     }
+  }
+
+  private static void writeUpdate( final TableItem item ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( item );
+    writer.call( "update", null );
   }
 
   private static String encodeHTML( final String text ) {
@@ -334,20 +375,24 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static Color[] getBackgrounds( final TableItem item ) {
+  static Color[] getBackgrounds( final TableItem item ) {
     int columnCount = getColumnCount( item );
     Color[] result = new Color[ columnCount ];
+    Color parentBackground = item.getParent().getBackground();
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getBackground( i );
+      Color itemBackground = item.getBackground( i );
+      result[ i ] = itemBackground == parentBackground ? null : itemBackground;
     }
     return result;
   }
 
-  private static Color[] getForegrounds( final TableItem item ) {
+  static Color[] getForegrounds( final TableItem item ) {
     int columnCount = getColumnCount( item );
     Color[] result = new Color[ columnCount ];
+    Color parentForeground = item.getParent().getForeground();
     for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = item.getForeground( i );
+      Color itemForeground = item.getForeground( i );
+      result[ i ] = itemForeground == parentForeground ? null : itemForeground;
     }
     return result;
   }
@@ -367,16 +412,60 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean isFocused( final TableItem item ) {
-    Table table = item.getParent();
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    int focusIndex = tableAdapter.getFocusIndex();
-    return focusIndex != -1 && item == table.getItem( focusIndex );
+    int focusIndex = getTableAdapter( item ).getFocusIndex();
+    return focusIndex != -1 && item == item.getParent().getItem( focusIndex );
   }
 
   private static boolean isVisible( final TableItem item ) {
-    Object adapter = item.getParent().getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    return tableAdapter.isItemVisible( item );
+    return getTableAdapter( item ).isItemVisible( item );
+  }
+
+  private static boolean wasCleared( final TableItem item ) {
+    Table table = item.getParent();
+    boolean cached = isCached( table, table.indexOf( item ) );
+    boolean wasCached = wasCached( item );
+    return !cached && wasCached;
+  }
+
+  private static boolean isCached( final Table table, final int index ) {
+    ITableAdapter adapter
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    return !adapter.isItemVirtual( index );
+  }
+
+  private static boolean wasCached( final TableItem item ) {
+    boolean wasCached;
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    if( adapter.isInitialized() ) {
+      Boolean preserved = ( Boolean )adapter.getPreserved( PROP_CACHED );
+      wasCached = Boolean.TRUE.equals( preserved );
+    } else {
+      wasCached = true;
+    }
+    return wasCached;
+  }
+
+  //////////////////
+  // helping methods
+
+  private static ITableAdapter getTableAdapter( final TableItem item ) {
+    return ( ITableAdapter )item.getParent().getAdapter( ITableAdapter.class );
+  }
+
+  private static void preservingInitialized( final TableItem item,
+                                             final IRenderRunnable runnable )
+    throws IOException
+  {
+    boolean initialized = WidgetUtil.getAdapter( item ).isInitialized();
+    runnable.run();
+    setInitialized( item, initialized );
+  }
+
+  private static void setInitialized( final TableItem item,
+                                      final boolean initialized )
+  {
+    WidgetAdapter adapter
+      = ( WidgetAdapter )item.getAdapter( IWidgetAdapter.class );
+    adapter.setInitialized( initialized );
   }
 }

@@ -1656,8 +1656,7 @@ public class SWT {
     String result = key;
     ResourceBundle bundle = null;
     try {
-      bundle 
-        = getBundle();
+      bundle = getBundle();
     } catch( MissingResourceException ex ) {
       result = key + " (no resource bundle)"; //$NON-NLS-1$
     }

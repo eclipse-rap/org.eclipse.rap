@@ -99,10 +99,11 @@ public final class WidgetUtil {
   }
   
   /**
-   * Returns the id of the given <code>widget</code> that is used to identify 
+   * Returns the id of the given <code>widget</code> that is used to identify
    * the widget on the client.
    * 
-   * @param widget the widget to obtain the id for
+   * @param widget the widget to obtain the id for, must not be
+   *          <code>null</code>
    * @return the id for the given <code>widget</code>
    */
   public static String getId( final Widget widget ) {

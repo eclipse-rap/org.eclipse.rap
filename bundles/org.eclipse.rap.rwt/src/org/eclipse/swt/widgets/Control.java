@@ -1355,6 +1355,7 @@ public abstract class Control extends Widget {
       }
       setFocusControl( focusControl );
     }
+    RWTLifeCycle.fakeRedraw( this, false );
   }
 
   void releaseChildren() {

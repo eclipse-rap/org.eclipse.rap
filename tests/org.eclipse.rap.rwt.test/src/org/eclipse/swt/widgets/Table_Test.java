@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.layout.FillLayout;
 
 
 public class Table_Test extends TestCase {
@@ -276,6 +277,8 @@ public class Table_Test extends TestCase {
     table.setSelection( new TableItem[] { item0, item1 } );
     item0.dispose();
     assertEquals( table.indexOf( item1 ), table.getSelectionIndex() );
+    assertEquals( 1, table.getSelectionIndices().length );
+    assertEquals( 0, table.getSelectionIndices()[ 0 ] );
     assertEquals( 2, table.getItemCount() );
     assertEquals( 1, table.getSelectionCount() );
   }
@@ -795,13 +798,62 @@ public class Table_Test extends TestCase {
     table.deselectAll();
     assertEquals( -1, table.getSelectionIndex() );
   }
+  
+  public void testIsSelectedNonVirtual() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+    new TableItem( table, SWT.NONE );
 
-  public void testClear() {
+    // initial state: no selection, isSelected returns alway false
+    assertFalse( table.isSelected( 0 ) );
+    assertFalse( table.isSelected( 1 ) );
+    // test with indices that are out of range, must always return false
+    assertFalse( table.isSelected( -3 ) );
+    assertFalse( table.isSelected( table.getItemCount() + 100 ) );
+    // select and verify that isSelected returns true
+    table.setSelection( 0 );
+    assertTrue( table.isSelected( 0 ) );
+  }
+
+  public void testIsSelectedVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    new TableColumn( table, SWT.NONE );
+    table.setItemCount( 1000 );
+    shell.open();
+    
+    // initial state: no selection, isSelected returns alway false
+    assertFalse( table.isSelected( 0 ) );
+    assertFalse( table.isSelected( 1 ) );
+    // test with indices that are out of range, must always return false
+    assertFalse( table.isSelected( -3 ) );
+    assertFalse( table.isSelected( table.getItemCount() + 100 ) );
+    // select and verify that isSelected returns true
+    table.setSelection( 0 );
+    assertTrue( table.isSelected( 0 ) );
+    // ensure that calling isSelected does not resolve a virtual item
+    ITableAdapter tableAdapter 
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    boolean selected = table.isSelected( 900 );
+    assertFalse( selected );
+    assertTrue( tableAdapter.isItemVirtual( 900 ) );
+  }
+  
+  public void testClearNonVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.CHECK );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
+    ITableAdapter tableAdapter 
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
 
     item.setText( "abc" );
     item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
@@ -812,7 +864,8 @@ public class Table_Test extends TestCase {
     assertEquals( null, item.getImage() );
     assertEquals( false, item.getChecked() );
     assertEquals( false, item.getGrayed() );
-
+    assertFalse( tableAdapter.isItemVirtual( table.indexOf( item ) ) );
+    
     // Test clear with illegal arguments
     try {
       table.clear( 2 );
@@ -822,6 +875,24 @@ public class Table_Test extends TestCase {
     }
   }
 
+  public void testClearVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
+    new TableColumn( table, SWT.NONE );
+    table.setItemCount( 100 );
+    shell.layout();
+    shell.open();
+    ITableAdapter tableAdapter 
+      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    
+    table.getItem( 0 ).getText();
+    table.clear( 0 );
+    assertTrue( tableAdapter.isItemVirtual( 0 ) );
+  }
+  
   public void testClearRange() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -1150,7 +1221,7 @@ public class Table_Test extends TestCase {
     new TableItem( table, SWT.NONE );
     assertEquals( 2, table.getItemCount() );
     items = ItemHolder.getItems( table );
-    assertEquals( 0, items.length );
+    assertEquals( 1, items.length );
   }
   
   public void testSetItemCountWithSetDataListener() {
@@ -1248,7 +1319,7 @@ public class Table_Test extends TestCase {
     assertNotNull( item );
     assertEquals( 0, table.indexOf( item ) );
   }
-
+  
   private static void clearColumns( final Table table ) {
     while( table.getColumnCount() > 0 ) {
       table.getColumn( 0 ).dispose();

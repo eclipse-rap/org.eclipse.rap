@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1291,7 +1291,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       return {
         source : "widget/arrows/down_small.gif",
-        padding       : [ 0, 3, 1 ]
+        padding : [ 0, 3, 1 ]
       };
     }
   },
@@ -1308,9 +1308,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundColor : "list.background",
         textColor : "list.foreground",
         font : "widget.font",
-        border : states.rwt_BORDER
-          ? "control.BORDER.border"
-          : "control.border"
+        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
       };
     }
   },
@@ -1322,19 +1320,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         paddingLeft : 2,
         paddingRight : 2,
         spacing : 2,
-        textColor : states.disabled ? "widget.graytext" : "undefined"
+        textColor : states.disabled ? "widget.graytext" : "widget.foreground",
+        opacity : states.moving ? 0.6 : 1.0 
       };
       if( states.mouseover && !states.disabled ) {
         result.backgroundColor = "table.column.hover.background";
-        result.border          = "table.column.hover.border";
+        result.border = "table.column.hover.border";
       } else {
         result.backgroundColor = "table.column.background";
-        result.border          = "table.column.border";
-      }
-      if( states.moving ) {
-        result.opacity = 0.6;
-      } else {
-        result.opacity = 1.0;
+        result.border = "table.column.border";
       }
       return result;
     }
@@ -1343,9 +1337,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "table-column-resizer" : {
     style : function( sates ) {
       return {
-        // TODO [rh] use same bg-color as splitpane-spltter (see there)
-        backgroundColor : "#d6d5d9",
-        width : 3
+        width : 3,
+        opacity : 0.3,
+        backgroundColor : "black"
       }
     }
   },
@@ -1353,28 +1347,23 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "table-row" : {
     style : function( states ) {
       var result = {
-        cursor : "default"          
+        cursor : "default",
+        border : states.lines ? "table.row.horizontalLine" : "undefined"
       };
-      if( states.disabled ) {
-        if( states.selected ) {
-          result.backgroundColor = "list.selection.unfocused.background";
-          result.textColor = "list.selection.foreground";
-        } else {
-          result.textColor = "widget.graytext"
-        }
+      if( states.selected ) {
+        result.textColor = states.disabled
+                         ? "widget.graytext" 
+                         : "list.selection.foreground";
+        result.backgroundColor = states.disabled 
+                               ? "list.selection.unfocused.background" 
+                               : "list.selection.background";
       } else {
-        if( states.selected ) {
-          result.backgroundColor = "list.selection.background";
-          result.textColor = "list.selection.foreground";
-        } else {
-          result.backgroundColor = null;
-          result.textColor = null;
-        }
-      }
-      if( states.lines ) {
-        result.border = "table.row.horizontalLine";
-      } else {
-        result.border = "undefined";
+        result.textColor = states.disabled 
+                         ? "widget.graytext" 
+                         : "undefined";
+        result.backgroundColor = states.disabled 
+                               ? "list.background" 
+                               : "undefined";
       }
       return result;
     }
@@ -1401,12 +1390,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  /*
-  ---------------------------------------------------------------------------
-    RAP-SPECIFIC APPEARANCES
-  ---------------------------------------------------------------------------
-  */
-  
   // ------------------------------------------------------------------------
   // Sash
   

@@ -12,7 +12,6 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 
@@ -228,7 +227,8 @@ public class Label extends Control {
                             final boolean changed )
   {
     checkWidget();
-    int width = 0, height = 0, border = getBorderWidth();
+    int width = 0;
+    int height = 0;
     if( ( style & SWT.SEPARATOR ) != 0 ) {
       int lineWidth = 2;
       if( ( style & SWT.HORIZONTAL ) != 0 ) {
@@ -251,7 +251,7 @@ public class Label extends Control {
       }
       Point extent
         = TextSizeDetermination.textExtent( getFont(), text, wrapWidth );
-      width = extent.x;
+      width = extent.x + 8;
       height = extent.y + 2;
     }
     if( wHint != SWT.DEFAULT ) {
@@ -260,6 +260,7 @@ public class Label extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
+    int border = getBorderWidth();
     width += border * 2;
     height += border * 2;
     return new Point( width, height );

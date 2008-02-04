@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
@@ -100,7 +99,7 @@ public class Table extends Composite {
       }
     }
     public Item[] getItems() {
-      TableItem[] items = getCachedItems();
+      TableItem[] items = getCreatedItems();
       Item[] columns = columnHolder.getItems();
       Item[] result = new Item[ columns.length + items.length ];
       System.arraycopy( columns, 0, result, 0, columns.length );
@@ -121,6 +120,10 @@ public class Table extends Composite {
     
     public void setFocusIndex( final int focusIndex ) {
       Table.this.setFocusIndex( focusIndex );
+    }
+    
+    public void checkData() {
+      Table.this.checkData();
     }
     
     public void checkData( final int index ) {
@@ -157,6 +160,10 @@ public class Table extends Composite {
     
     public TableItem[] getCachedItems() {
       return Table.this.getCachedItems();
+    }
+
+    public TableItem[] getCreatedItems() {
+      return Table.this.getCreatedItems();
     }
   }
   
@@ -519,7 +526,7 @@ public class Table extends Composite {
       if( focusIndex > itemCount - 1 ) {
         adjustFocusIndex();
       }
-    } 
+    }
   }
 
   /**
@@ -1247,9 +1254,8 @@ public class Table extends Composite {
     boolean result = false;
     if( index >= 0 && index < itemCount && items[ index ] != null ) {
       Item item = _getItem( index );
-      TableItem[] currentSelection = getSelection();
-      for( int i = 0; !result && i < currentSelection.length; i++ ) {
-        result = currentSelection[ i ] == item;
+      for( int i = 0; !result && i < selection.length; i++ ) {
+        result = selection[ i ] == item;
       }
     }
     return result;
@@ -2073,6 +2079,30 @@ public class Table extends Composite {
     return result;
   }
 
+  final TableItem[] getCreatedItems() {
+    TableItem[] result;
+    if( ( style & SWT.VIRTUAL ) != 0 ) {
+      int count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          count++;
+        }
+      }
+      result = new TableItem[ count ];
+      count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          result[ count ] = items[ i ];
+          count++;
+        }
+      }
+    } else {
+      result = new TableItem[ itemCount ];
+      System.arraycopy( items, 0, result, 0, itemCount );
+    }
+    return result;
+  }
+
   ///////////////////////////////////////////////
   // Helping methods - resolving of virtual items
 
@@ -2124,14 +2154,14 @@ public class Table extends Composite {
 
   final int getCheckWidth() {
     int result = 0;
-    if( ( Table.this.style & SWT.CHECK ) != 0 ) {
+    if( ( style & SWT.CHECK ) != 0 ) {
       // TODO [rh] read from theme
       result = 21;
     }
     return result;
   }
 
-  final int getVisibleItemCount() {
+  private int getVisibleItemCount() {
     //  TODO [rh] replace this once getClientArea is working    
     int clientHeight = getBounds().height 
                      - getHeaderHeight() 

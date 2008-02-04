@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import java.io.IOException;
@@ -19,7 +18,6 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -132,9 +130,10 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
   
   public void doRedrawFake( final Control control ) {
-    int evtId = ControlEvent.CONTROL_RESIZED;
-    ControlEvent evt = new ControlEvent( control, evtId );
-    evt.processEvent();
+    Table table = ( Table )control;
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    tableAdapter.checkData();
   }
 
   ////////////////////////////////////////////////////

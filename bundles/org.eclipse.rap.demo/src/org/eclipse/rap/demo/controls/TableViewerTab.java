@@ -6,7 +6,6 @@
  * Contributors: Innoopract Informationssysteme GmbH - initial API and
  * implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import java.util.*;
@@ -206,6 +205,7 @@ public class TableViewerTab extends ExampleTab {
   }
 
   protected void createStyleControls( final Composite parent ) {
+    createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
     createAddItemsButton();
     createSelectYoungestPersonButton();
@@ -237,6 +237,7 @@ public class TableViewerTab extends ExampleTab {
     }
     initPersons();
     viewer = new TableViewer( parent, getStyle() );
+    viewer.setUseHashlookup( true );
     if( ( getStyle() & SWT.VIRTUAL ) == 0 ) {
       viewer.setContentProvider( new PersonContentProvider() );
     } else {
@@ -358,8 +359,10 @@ public class TableViewerTab extends ExampleTab {
           persons.remove( person );
         }
         getViewer().getTable().setTopIndex( 0 );
-        getViewer().setItemCount( persons.size() );
-        getViewer().refresh();
+        if( ( getViewer().getTable().getStyle() & SWT.VIRTUAL ) != 0 ) {
+          getViewer().setItemCount( persons.size() );
+        }
+        getViewer().setInput( persons );
       }
     } );
   }

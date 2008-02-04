@@ -21,6 +21,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
+import org.eclipse.swt.layout.FillLayout;
 
 
 
@@ -459,6 +460,30 @@ public class TableItem_Test extends TestCase {
     TableItem item = table.getItem( 999 );
     item.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
     assertEquals( 0, eventLog.size() );
+  }
+  
+  public void testDisposeVirtual() {
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setLayout( new FillLayout() );
+    shell.setSize( 100, 100 );
+    Table table = new Table( shell, SWT.VIRTUAL | SWT.MULTI );
+    table.setItemCount( 100 );
+    shell.layout();
+    shell.open();
+    // force item to get resolved and dispose of it
+    TableItem item = table.getItem( 0 );
+    item.getText();
+    item.dispose();
+    assertEquals( 99, table.getItemCount() );
+    // select all items and dispose of them
+    table.selectAll();
+    TableItem[] selection = table.getSelection();
+    for( int i = 0; i < selection.length; i++ ) {
+      selection[ i ].dispose();
+    }
+    assertEquals( 0, table.getItemCount() );
   }
 
   private static int getCheckWidth( final Table table ) {

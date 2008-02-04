@@ -325,9 +325,6 @@ public class TableItem extends Item {
     checkWidget();
     if( background != color ) {
       background = color;
-      if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-        cached = true;
-      }
       markCached();
       parent.redraw();
     }
@@ -430,9 +427,6 @@ public class TableItem extends Item {
     checkWidget();
     if( foreground != color ) {
       foreground = color;
-      if( ( parent.style & SWT.VIRTUAL ) != 0 ) {
-        cached = true;
-      }
       markCached();
       parent.redraw();
     }
@@ -449,7 +443,7 @@ public class TableItem extends Item {
    * </ul>
    */
   public Color getForeground() {
-    checkWidget ();
+    checkWidget();
     parent.checkData( this, parent.indexOf( this ) );
     Color result;
     if( foreground == null ) {

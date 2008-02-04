@@ -232,7 +232,7 @@ public class RWTLifeCycle extends LifeCycle {
     if( set != null ) {
       Object[] controls = set.toArray();
       for( int i = 0; i < controls.length; i++ ) {
-        Control control = ( ( Control )controls[ i ] );
+        Control control = ( Control )controls[ i ];
         WidgetUtil.getLCA( control ).doRedrawFake( control );
       }
     }

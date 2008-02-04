@@ -127,7 +127,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertFalse( WidgetLCAUtil.equals( new Date[] { new Date( 3 ) }, null ) );
   }
 
-  public void testEscape() throws Exception {
+  public void testEscapeText() throws Exception {
     // Empty Parameter
     try {
       WidgetLCAUtil.escapeText( null, true );
@@ -135,6 +135,9 @@ public class WidgetLCAUtil_Test extends TestCase {
     } catch( NullPointerException e ) {
       // expected
     }
+    // Text that goes unescaped
+    assertEquals( "Test", WidgetLCAUtil.escapeText( "Test", false ) );
+    assertEquals( "Test", WidgetLCAUtil.escapeText( "Test", true ) );
     assertEquals( "", WidgetLCAUtil.escapeText( "", false ) );
     assertEquals( "", WidgetLCAUtil.escapeText( "", true ) );
     // Brackets

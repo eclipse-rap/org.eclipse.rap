@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
 import java.io.IOException;
@@ -22,6 +21,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.*;
 
 
@@ -103,7 +103,7 @@ public class TableItemLCA_Test extends TestCase {
     table.setSelection( 2 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
+      public void widgetSelected( final SelectionEvent e ) {
         table.remove( 1, 2 );
         executed[ 0 ] = true;
       }
@@ -150,5 +150,71 @@ public class TableItemLCA_Test extends TestCase {
     lca.renderDispose( itemWithTableDisposed );
     assertEquals( "", Fixture.getAllMarkup() );
     assertTrue( itemWithTableDisposed.isDisposed() );
+  }
+  
+  public void testWriteChangesForVirtualItem() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 100 );
+    // Ensure that nothing is written for an item that is virtual and whose
+    // cached was false and remains unchanged while processing the life cycle
+    TableItem item = table.getItem( 0 );
+    table.clear( 0 );
+    TableItemLCA lca = new TableItemLCA();
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( item );
+    // Ensure that nothing else than the 'checked' property gets preserved
+    lca.preserveValues( item );
+    IWidgetAdapter itemAdapter = WidgetUtil.getAdapter( item );
+    assertEquals( Boolean.FALSE, 
+                  itemAdapter.getPreserved( TableItemLCA.PROP_CACHED ) );
+    assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_TEXTS ) );
+    assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_IMAGES ) );
+    assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_CHECKED ) );
+    // ... and no markup is generated for a uncached item that was already
+    // uncached when entering the life cycle
+    lca.renderChanges( item );
+    assertEquals( "", Fixture.getAllMarkup() );
+  }
+  
+  public void testGetForegrounds() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+    // simple case: no explicit colors at all
+    Color[] foregrounds = TableItemLCA.getForegrounds( item );
+    assertEquals( null, foregrounds[ 0 ] );
+    // set foreground on table but not on item
+    table.setForeground( red );
+    foregrounds = TableItemLCA.getForegrounds( item );
+    assertEquals( null, foregrounds[ 0 ] );
+    // clear foreground on table and set on item
+    table.setForeground( null );
+    item.setForeground( red );
+    foregrounds = TableItemLCA.getForegrounds( item );
+    assertEquals( red, foregrounds[ 0 ] );
+  }
+
+  public void testGetBackground() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+    // simple case: no explicit colors at all
+    Color[] backgrounds = TableItemLCA.getBackgrounds( item );
+    assertEquals( null, backgrounds[ 0 ] );
+    // set background on table but not on item
+    table.setBackground( red );
+    backgrounds = TableItemLCA.getBackgrounds( item );
+    assertEquals( null, backgrounds[ 0 ] );
+    // clear background on table and set on item
+    table.setBackground( null );
+    item.setBackground( red );
+    backgrounds = TableItemLCA.getBackgrounds( item );
+    assertEquals( red, backgrounds[ 0 ] );
   }
 }

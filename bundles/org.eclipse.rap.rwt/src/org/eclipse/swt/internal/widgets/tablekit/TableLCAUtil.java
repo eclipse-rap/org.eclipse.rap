@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.tablekit;
 
 import java.io.IOException;
@@ -60,8 +59,8 @@ public final class TableLCAUtil {
   // Item metrics
   
   public static void preserveItemMetrics( final Table table ) {
-    IWidgetAdapter adapter1 = WidgetUtil.getAdapter( table );
-    adapter1.preserve( PROP_ITEM_METRICS, getItemMetrics( table ) );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
+    adapter.preserve( PROP_ITEM_METRICS, getItemMetrics( table ) );
   }
   
   public static boolean hasItemMetricsChanged( final Table table ) {
@@ -105,7 +104,7 @@ public final class TableLCAUtil {
     }
     TableItem measureItem = getMeasureItem( table );
     if( measureItem != null ) {
-      int checkWidth = getCheckWidth( table );
+      int checkWidth = getTableAdapter( table ).getCheckWidth();
       for( int i = 0; i < columnCount; i++ ) {
         Rectangle bounds = measureItem.getBounds( i );
         Rectangle imageBounds = measureItem.getImageBounds( i );
@@ -125,15 +124,8 @@ public final class TableLCAUtil {
     return result;
   }
 
-  private static int getCheckWidth( final Table table ) {
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    return tableAdapter.getCheckWidth();
-  }
-
   static TableItem getMeasureItem( final Table table ) {
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    ITableAdapter tableAdapter = getTableAdapter( table );
     TableItem[] items = tableAdapter.getCachedItems();
     TableItem result = null;
     if( table.getColumnCount() == 0 ) {
@@ -163,6 +155,10 @@ public final class TableLCAUtil {
       result = item2;
     }
     return result;
+  }
+
+  private static ITableAdapter getTableAdapter( final Table table ) {
+    return ( ITableAdapter )table.getAdapter( ITableAdapter.class );
   }
 
   private TableLCAUtil() {

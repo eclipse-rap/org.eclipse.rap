@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.controlkit;
 
 import java.io.IOException;
@@ -16,6 +15,9 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.browser.Mozilla1_7up;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
@@ -105,11 +107,6 @@ public class ControlLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     control.setBounds( 1, 2, 100, 200 );
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
-    // TODO [fappel]: check whether minWidth and minHeight is still needed -
-    //                causes problems on FF with caching
-    // String expected
-    //   = "w.setSpace( 1, 100, 2, 200 );"
-    //   + "w.setMinWidth( 0 );w.setMinHeight( 0 );";
     String expected = "w.setSpace( 1, 100, 2, 200 );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
@@ -140,5 +137,56 @@ public class ControlLCA_Test extends TestCase {
     markup = Fixture.getAllMarkup();
     assertEquals( -1, markup.indexOf( focusGained ) );
     assertEquals( -1, markup.indexOf( focusLost ) );
+  }
+
+  public void testRedrawAndDispose() throws IOException {
+    final StringBuffer log = new StringBuffer();
+    // Set up test scenario
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Control control = new Composite( shell, SWT.NONE ) {
+      public Object getAdapter( final Class adapter ) {
+        Object result;
+        if( adapter == ILifeCycleAdapter.class ) {
+          result = new AbstractWidgetLCA() {
+            public void preserveValues( final Widget widget ) {
+            }
+            public void renderChanges( final Widget widget ) 
+              throws IOException 
+            {
+            }
+            public void renderDispose( final Widget widget ) 
+              throws IOException 
+            {
+            }
+            public void renderInitialization( final Widget widget )
+              throws IOException
+            {
+            }
+            public void readData( final Widget widget ) {
+            }
+            public void doRedrawFake( final Control control ) {
+              log.append( "FAILED: doRedrawFake was called" );
+            }
+          };
+        } else {
+          result = super.getAdapter( adapter );
+        }
+        return result;
+      }
+    };
+    RWTFixture.markInitialized( display );
+    RWTFixture.markInitialized( shell );
+    RWTFixture.markInitialized( control );
+    // redraw & dispose: must revoke redraw 
+    control.redraw();
+    control.dispose();
+    // run life cycle that (in this case) won't call doRedrawFake
+    Fixture.fakeResponseWriter();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    lifeCycle.execute();
+    assertEquals( "", log.toString() );
   }
 }
