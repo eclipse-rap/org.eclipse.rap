@@ -12,6 +12,7 @@ package org.eclipse.rwt.lifecycle;
 
 import java.text.MessageFormat;
 
+import org.eclipse.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -114,7 +115,10 @@ public final class WidgetUtil {
     //      - less memory: new HashMap created per widget to hold the id
     //      - illegal id's could be rejected immediately (close to error source)
     //      - faster (?): only "return getAdapter( widget ).getId();" in here 
-    String result = ( String )widget.getData( CUSTOM_WIDGET_ID );
+    String result = null;
+    if( UITestUtil.isEnabled() ) {
+      result = ( String )widget.getData( CUSTOM_WIDGET_ID );
+    }
     if( result == null ) {
       result = getAdapter( widget ).getId();
     }

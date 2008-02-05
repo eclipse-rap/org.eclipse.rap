@@ -32,17 +32,17 @@ public final class UITestUtil {
     }
   }
   
+  public static boolean isEnabled() {
+    String property = System.getProperty( WidgetUtil.ENABLE_UI_TESTS );
+    return Boolean.valueOf( property ).booleanValue();
+  }
+  
   //////////////////
   // helping methods
 
   private static boolean isInitialized( final Widget widget ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     return adapter.isInitialized();
-  }
-
-  private static boolean isEnabled() {
-    String property = System.getProperty( WidgetUtil.ENABLE_UI_TESTS );
-    return Boolean.valueOf( property ).booleanValue();
   }
 
   static boolean isValidId( final String id ) {
