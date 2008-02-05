@@ -99,6 +99,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.addEventListener( "changeWidth", this._onChangeSize, this );
     this.addEventListener( "changeHeight", this._onChangeSize, this );
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
+    // Keyboard navigation
+    this._keyboardSelecionChanged = false;
     // Listen to send event of request to report current state
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSendRequest, this );
@@ -471,6 +473,75 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
 
+    _onRowKeyPress : function( evt ) {
+      var keyIdentifier = evt.getKeyIdentifier();
+      if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
+          && keyIdentifier === "Up" 
+          || keyIdentifier === "Down"
+          || keyIdentifier === "PageUp"
+          || keyIdentifier === "PageDown"
+          || keyIdentifier === "Home" 
+          || keyIdentifier === "End" ) 
+      {
+        var focusedItemIndex = this._items.indexOf( this._focusedItem );
+        var gotoIndex = this._calcGotoIndex( focusedItemIndex, keyIdentifier );
+        if(    gotoIndex != focusedItemIndex
+            && gotoIndex >= 0 
+            && gotoIndex < this._items.length ) 
+        {
+          var item = this._items[ gotoIndex ];
+          this.setFocusedItem( item );
+          this._setSingleSelection( gotoIndex );
+          // TODO [rh] setSingleSelection implicitly makes item visible when 
+          //      navigating down for one item
+          // Make just selected item visible
+          if( !this._isItemVisible( gotoIndex ) ) {
+            this.setTopIndex( gotoIndex );
+          }
+          this._keyboardSelecionChanged = true;
+        }
+      }
+    },
+    
+    _calcGotoIndex : function( currentIndex, keyIdentifier ) {
+      var result = currentIndex;
+      switch( keyIdentifier ) {
+        case "Home":
+          result = 0; 
+          break;
+        case "End":
+          result = this._items.length - 1; 
+          break;
+        case "Up":
+          result = currentIndex - 1;
+          break;
+        case "Down":
+          result = currentIndex + 1;
+          break;
+        case "PageUp":
+          result = currentIndex - this._rows.length;
+          if( result < 0 ) {
+            result = 0; 
+          }
+          break;
+        case "PageDown":
+          result = currentIndex + this._rows.length;
+          if( result > this._items.length ) {
+            result = this._items.length - 1; 
+          }
+          break;
+      }
+      return result;
+    },
+    
+    _onRowKeyUp : function( evt ) {
+      if( this._keyboardSelecionChanged ) {
+        this._keyboardSelecionChanged = false;
+        this._updateSelectionParam();
+        this.createDispatchDataEvent( "itemselected", this._focusedItem );
+      }      
+    },
+
     _toggleCheckBox : function( rowIndex ) {
       if( this._checkBoxes != null ) {
         var itemIndex = this._topIndex + rowIndex;
@@ -520,7 +591,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._updateRowCount();
       this._updateRows();
     },
-
+    
     ////////////////////////
     // Scroll bar listeners
     
@@ -740,10 +811,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
               checkBox.dispose();
             }
             var row = this._rows.shift();
-            row.removeEventListener( "click", this._onRowClick, this );
-            row.removeEventListener( "dblclick", this._onRowDblClick, this );
-            row.removeEventListener( "keydown", this._onRowKeyDown, this );
-            row.removeEventListener( "contextmenu", this._onRowContextMenu, this );
+            this._unhookRowEventListener( row );
             row.setParent( null );
             row.dispose();
           }
@@ -758,10 +826,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
                 this._checkBoxes.push( checkBox );
               }
               var newRow = new org.eclipse.swt.widgets.TableRow();
-              newRow.addEventListener( "click", this._onRowClick, this );
-              newRow.addEventListener( "dblclick", this._onRowDblClick, this );
-              newRow.addEventListener( "keydown", this._onRowKeyDown, this );
-              newRow.addEventListener( "contextmenu", this._onRowContextMenu, this );
+              this._hookRowEventListener( newRow );
               newRow.setLinesVisible( this._linesVisible );
               this._clientArea.add( newRow );
               this._rows.push( newRow );
@@ -773,6 +838,35 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         }
       }
       return result;
+    },
+    
+    _hookRowEventListener : function( row ) {
+      row.addEventListener( "click", this._onRowClick, this );
+      row.addEventListener( "dblclick", this._onRowDblClick, this );
+      row.addEventListener( "contextmenu", this._onRowContextMenu, this );
+      row.addEventListener( "keydown", this._onRowKeyDown, this );
+      // TODO [rh] reconsider attaching key event keypress- and keyup handler
+      //      to table widget itself (was only moved here in the hope to get
+      //      Safari running
+      // TODO [rh] key events in Safari not working properly 
+      //      (see http://bugzilla.qooxdoo.org/show_bug.cgi?id=785)
+      if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+        row.addEventListener( "keypress", this._onRowKeyPress, this );
+        row.addEventListener( "keyup", this._onRowKeyUp, this );
+      }
+    },
+    
+    _unhookRowEventListener : function( row ) {
+      row.removeEventListener( "click", this._onRowClick, this );
+      row.removeEventListener( "dblclick", this._onRowDblClick, this );
+      row.removeEventListener( "contextmenu", this._onRowContextMenu, this );
+      row.removeEventListener( "keydown", this._onRowKeyDown, this );
+      // TODO [rh] key events in Safari not working properly 
+      //      (see http://bugzilla.qooxdoo.org/show_bug.cgi?id=785)
+      if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+        row.removeEventListener( "keypress", this._onRowKeyPress, this );
+        row.removeEventListener( "keyup", this._onRowKeyUp, this );
+      }
     },
     
     _updateRowBounds : function() {
