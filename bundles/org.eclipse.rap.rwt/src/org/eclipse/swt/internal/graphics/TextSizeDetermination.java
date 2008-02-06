@@ -33,6 +33,7 @@ public class TextSizeDetermination {
     = new ICalculationItem[ 0 ];
   private static final int STRING_EXTENT = 0;
   private static final int TEXT_EXTENT = 1;
+  private static final int MARKUP_EXTENT = 2;
 
 
   public interface ICalculationItem {
@@ -55,23 +56,36 @@ public class TextSizeDetermination {
     }
     return result;
   }
-
+  
   public static Point textExtent( final Font font,
+                                    final String string,
+                                    final int wrapWidth ) {
+    return internalExtent( font, string, wrapWidth, TEXT_EXTENT );
+  }
+  
+  public static Point markupExtent( final Font font,
                                   final String string,
-                                  final int wrapWidth )
-  {
+                                  final int wrapWidth ) {
+    return internalExtent( font, string, wrapWidth, MARKUP_EXTENT );
+  }
+
+  private static Point internalExtent( final Font font,
+                                  final String string,
+                                  final int wrapWidth,
+                                  final int estMode ) {
     // TODO [fappel]: replace with decent implementation
     Point result;
+    int estimationMode = estMode;
     if( wrapWidth <= 0 ) {
-      result = doMeasurement( font, string, wrapWidth, TEXT_EXTENT );
+      result = doMeasurement( font, string, wrapWidth, estimationMode );
       // TODO [rst] Still returns wrong result for texts that contain only
       //            whitespace ( and possibly more that one line )
       if( result.y == 0 ) {
         result.y = getCharHeight( font );
       }
     } else {
-      Point testSize = doMeasurement( font, string, wrapWidth, TEXT_EXTENT );
-      if( testSize.x < wrapWidth ) {
+      Point testSize = doMeasurement( font, string, wrapWidth, estimationMode );
+      if( testSize.x <= wrapWidth ) {
         result = testSize;
       } else {
         result = TextSizeEstimation.textExtent( font, string, wrapWidth );
@@ -85,21 +99,28 @@ public class TextSizeDetermination {
     }
     return result;
   }
+  
 
   private static Point doMeasurement( final Font font,
                                       final String string,
                                       final int wrapWidth,
-                                      final int estimationMode )
-  {
+                                      final int estimationMode ) {
     boolean expandLineDelimitors = estimationMode == TEXT_EXTENT;
-    String toMeasure = createMeasureString( string, expandLineDelimitors );
+    String toMeasure = string;
+    if( estimationMode != MARKUP_EXTENT ) {
+      toMeasure = createMeasureString( string, expandLineDelimitors );
+    }
     Point result = TextSizeDataBase.lookup( font, toMeasure, wrapWidth );
     if( result == null ) {
       switch( estimationMode ) {
-        case TEXT_EXTENT: {
-          result = TextSizeEstimation.textExtent( font, string, wrapWidth );
+        case MARKUP_EXTENT: {
+          result = TextSizeEstimation.textExtent( font, toMeasure, wrapWidth );
         }
         break;
+        case TEXT_EXTENT: {
+          result = TextSizeEstimation.textExtent( font, string, wrapWidth );
+          break;
+        }
         case STRING_EXTENT: {
           result = TextSizeEstimation.stringExtent( font, string );
         }
@@ -185,7 +206,8 @@ public class TextSizeDetermination {
     for( int i = 0; mustAdd && i < oldItems.length; i++ ) {
       FontData oldFontData = oldItems[ i ].getFont().getFontData()[ 0 ];
       mustAdd = !(    oldItems[ i ].getString().equals( string )
-                   && oldFontData.equals( font.getFontData()[ 0 ] ) );
+                   && oldFontData.equals( font.getFontData()[ 0 ] ) 
+                   && oldItems[ i ].getWrapWidth() == wrapWidth );
     }
     if( mustAdd ) {
       ICalculationItem[] newItems = new ICalculationItem[ oldItems.length + 1 ];

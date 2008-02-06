@@ -141,6 +141,21 @@ public class TextSizeDetermination_Test extends TestCase {
     assertTrue( singleLine.y < multiLine.y );
   }
   
+  public void testMarkupExtent() throws Exception {
+    Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
+    // make sure text extent does expand line breaks
+    String markup = "First Line<ul><li>item1</li><li>item2</li></ul>";
+    Point multiLine = TextSizeDetermination.markupExtent( font, markup, 0 );
+    ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
+    boolean markupUnaltered = false;
+    for( int i = 0; i < items.length; i++ ) {
+      if( items[ i ].getString().equals( markup ) ) {
+        markupUnaltered = true;
+      }
+    }
+    assertTrue( markupUnaltered );
+  }
+  
   public void testCharHeight() {
     IProbe[] probeRequests = TextSizeProbeStore.getProbeRequests();
     assertEquals( 0, probeRequests.length );
