@@ -49,10 +49,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     if( qx.lang.String.contains( style, "check" ) ) {
       this._checkBoxes = new Array();
     }
-    // Determin multi-selection
+    // Determine multi-selection
     this._multiSelect = qx.lang.String.contains( style, "multi" );
     // Conains all item which are currently selected
     this._selected = new Array();
+    // Most recent item selected by ctrl-click or ctrl+shift-click (only 
+    // relevant for multi-selection)
+    this._selectionStart = -1;
     // Denotes the focused TableItem 
     this._focusedItem = null;
     // An item only used to draw the area where no actual items are but that
@@ -83,6 +86,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this._clientArea.setLeft( 0 );
     this._clientArea.addEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
     this._clientArea.addEventListener( "appear", this._onClientAppear, this );
+    this._clientArea.setHtmlProperty( "id", "client-area" );
     // Create horizontal scrollBar
     this._horzScrollBar = new qx.ui.basic.ScrollBar( true );
     this._horzScrollBar.setMergeEvents( true );
@@ -101,6 +105,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.addEventListener( "changeEnabled", this._onChangeEnabled, this );
     // Keyboard navigation
     this._keyboardSelecionChanged = false;
+    // TODO [rh] key events in Safari not working properly 
+    //      (see http://bugzilla.qooxdoo.org/show_bug.cgi?id=785)
+    if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+      this.addEventListener( "keypress", this._onKeyPress, this );
+      this.addEventListener( "keyup", this._onKeyUp, this );
+    }
     // Listen to send event of request to report current state
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSendRequest, this );
@@ -116,6 +126,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     this.removeEventListener( "changeWidth", this._onChangeSize, this );
     this.removeEventListener( "changeHeight", this._onChangeSize, this );
     this.removeEventListener( "changeEnabled", this._onChangeEnabled, this );
+    // TODO [rh] key events in Safari not working properly 
+    //      (see http://bugzilla.qooxdoo.org/show_bug.cgi?id=785)
+    if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+      this.removeEventListener( "keypress", this._onKeyPress, this );
+      this.removeEventListener( "keyup", this._onKeyUp, this );
+    }
     this._virtualItem.dispose();
     this._emptyItem.dispose();
     // For performance reasons, when disposing a a Table, the server-side LCA 
@@ -158,7 +174,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
       this._rows = null;
     }
-    if( this._checkBoxes != null ) {
+    if( this._checkBoxes !== null ) {
       for( var i = 0; i < this._checkBoxes.length; i++ ) {
         this._checkBoxes[ i ].dispose();
       }
@@ -279,7 +295,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _internalSetTopIndex : function( value ) {
-      if( this._topIndex != value ) {
+      if( this._topIndex !== value ) {
         this._topIndex = value;
         this._updateRows();
       }
@@ -332,19 +348,19 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
     
     hasCheckBoxes : function() {
-      return this._checkBoxes != null;
+      return this._checkBoxes !== null;
     },
     
     setFocusedItem : function( value ) {
-      if( value != this._focusedItem ) {
+      if( value !== this._focusedItem ) {
         var oldFocusedItem = this._focusedItem;
         this._focusedItem = value;
         // update previously focused item
-        if( oldFocusedItem != null ) {
+        if( oldFocusedItem !== null ) {
           this.updateItem( oldFocusedItem, false );
         }
         // update actual focused item
-        if( this._focusedItem != null ) {
+        if( this._focusedItem !== null ) {
           this.updateItem( this._focusedItem, false );
         }
       }
@@ -395,6 +411,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       if( evt.isRightButtonPressed() ) {
         if( !this._isItemSelected( item ) ) {
           this._setSingleSelection( itemIndex );
+          this._selectionStart = -1;
         }
       } else {
         if( org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt ) ) {
@@ -407,32 +424,44 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) 
             || org.eclipse.swt.widgets.Table._isCtrlShiftOnlyPressed( evt ) ) 
         {
-          if( org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) ) {
-            while( this._selected.length > 0 ) {
-              this._unselectItem( this._selected[ 0 ], true );
-            }
+          if(    org.eclipse.swt.widgets.Table._isShiftOnlyPressed( evt ) 
+              && this._selectionStart !== -1 ) 
+          {
+            this._clearSelection();
           }
-          var focusedItemIndex = this._items.indexOf( this._focusedItem );
-          if( focusedItemIndex != -1 ) {
-            var start = Math.min( focusedItemIndex, itemIndex );
-            var end = Math.max( focusedItemIndex, itemIndex );
+          var selectionStart
+            = this._selectionStart !== - 1 
+            ? this._selectionStart 
+            : this._items.indexOf( this._focusedItem );
+          if( selectionStart !== -1 ) {
+            var start = Math.min( selectionStart, itemIndex );
+            var end = Math.max( selectionStart, itemIndex );
             for( var i = start; i <= end; i++ ) {
-              this._selectItem( this._items[ i ], true );
+              if( !this._isItemSelected( this._items[ i ] ) ) {
+                this._selectItem( this._items[ i ], true );
+              }
             }
           }
         } 
-        if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
+        if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt )
             || org.eclipse.swt.widgets.Table._isMetaOnlyPressed( evt ) )
         {
           this._setSingleSelection( itemIndex );
         }
+        
+        if(    org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt ) 
+            || org.eclipse.swt.widgets.Table._isCtrlShiftOnlyPressed( evt ) ) 
+        {
+          this._selectionStart = itemIndex;
+        } else {
+          this._selectionStart = -1;
+        }
+        
       }
     },
     
     _setSingleSelection : function( value ) {
-      while( this._selected.length > 0 ) {
-        this._unselectItem( this._selected[ 0 ], true );
-      }
+      this._clearSelection();
       this._selectItem( this._items[ value ], true );
     },
     
@@ -443,7 +472,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onRowDblClick : function( evt ) {
       var rowIndex = this._rows.indexOf( evt.getTarget() );
       var item = this._getItemFromRowIndex( rowIndex );
-      if( item != null ) {
+      if( item !== null ) {
         this.createDispatchDataEvent( "itemdefaultselected", item );
       }
     },
@@ -456,7 +485,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         this._onRowClick( evt );
         var target = evt.getTarget();
         var contextMenu = this.getContextMenu();
-        if( contextMenu != null ) {
+        if( contextMenu !== null ) {
           contextMenu.setLocation( evt.getPageX(), evt.getPageY() );
           contextMenu.setOpener( this );
           contextMenu.show();
@@ -473,79 +502,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
 
-    _onRowKeyPress : function( evt ) {
-      var keyIdentifier = evt.getKeyIdentifier();
-      if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
-          && keyIdentifier === "Up" 
-          || keyIdentifier === "Down"
-          || keyIdentifier === "PageUp"
-          || keyIdentifier === "PageDown"
-          || keyIdentifier === "Home" 
-          || keyIdentifier === "End" ) 
-      {
-        var focusedItemIndex = this._items.indexOf( this._focusedItem );
-        var gotoIndex = this._calcGotoIndex( focusedItemIndex, keyIdentifier );
-        if(    gotoIndex != focusedItemIndex
-            && gotoIndex >= 0 
-            && gotoIndex < this._items.length ) 
-        {
-          var item = this._items[ gotoIndex ];
-          this.setFocusedItem( item );
-          this._setSingleSelection( gotoIndex );
-          // TODO [rh] setSingleSelection implicitly makes item visible when 
-          //      navigating down for one item
-          // Make just selected item visible
-          if( !this._isItemVisible( gotoIndex ) ) {
-            this.setTopIndex( gotoIndex );
-          }
-          this._keyboardSelecionChanged = true;
-        }
-      }
-    },
-    
-    _calcGotoIndex : function( currentIndex, keyIdentifier ) {
-      var result = currentIndex;
-      switch( keyIdentifier ) {
-        case "Home":
-          result = 0; 
-          break;
-        case "End":
-          result = this._items.length - 1; 
-          break;
-        case "Up":
-          result = currentIndex - 1;
-          break;
-        case "Down":
-          result = currentIndex + 1;
-          break;
-        case "PageUp":
-          result = currentIndex - this._rows.length;
-          if( result < 0 ) {
-            result = 0; 
-          }
-          break;
-        case "PageDown":
-          result = currentIndex + this._rows.length;
-          if( result > this._items.length ) {
-            result = this._items.length - 1; 
-          }
-          break;
-      }
-      return result;
-    },
-    
-    _onRowKeyUp : function( evt ) {
-      if( this._keyboardSelecionChanged ) {
-        this._keyboardSelecionChanged = false;
-        this._updateSelectionParam();
-        this.createDispatchDataEvent( "itemselected", this._focusedItem );
-      }      
-    },
-
     _toggleCheckBox : function( rowIndex ) {
       if( this._checkBoxes != null ) {
         var itemIndex = this._topIndex + rowIndex;
-        if( itemIndex >= 0 && itemIndex < this._itemCount && this._items[ itemIndex ] ) {
+        if(    itemIndex >= 0 
+            && itemIndex < this._itemCount 
+            && this._items[ itemIndex ] )
+        {
           var item = this._items[ itemIndex ];
           item.setChecked( !item.getChecked() );
           // Reflect changed check-state in case there is no server-side listener
@@ -592,18 +555,108 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       this._updateRows();
     },
     
+    ///////////////////////
+    // Keyboard navigation
+    
+    _onKeyPress : function( evt ) {
+      var keyIdentifier = evt.getKeyIdentifier();
+      if(    org.eclipse.swt.widgets.Table._isNoModifierPressed( evt ) 
+          && (    keyIdentifier === "Up" 
+               || keyIdentifier === "Down"
+               || keyIdentifier === "PageUp"
+               || keyIdentifier === "PageDown"
+               || keyIdentifier === "Home" 
+               || keyIdentifier === "End" ) ) 
+      {
+        var focusedItemIndex = this._items.indexOf( this._focusedItem );
+        var gotoIndex = this._calcGotoIndex( focusedItemIndex, keyIdentifier );
+        if(    gotoIndex !== focusedItemIndex
+            && gotoIndex >= 0 
+            && gotoIndex < this._itemCount ) 
+        {
+          var item = this._items[ gotoIndex ];
+          this.setFocusedItem( item );
+          this._setSingleSelection( gotoIndex );
+          // TODO [rh] setSingleSelection implicitly makes item visible when 
+          //      navigating down for one item
+          // Make just selected item visible
+          if( !this._isItemVisible( gotoIndex ) ) {
+            var topIndex;
+            // If last item was selected, try to set topIndex such that as 
+            // much items as possible are shown  
+            if( gotoIndex === this._itemCount - 1 ) {
+              // not exactly sure why but +1 tales care that the selected item 
+              // is fully visible
+              topIndex = gotoIndex - this._getFullyVisibleRowCount() + 1;
+            } else {
+              // Move topIndex the same distance as the selection was moved
+              topIndex = this._topIndex - focusedItemIndex + gotoIndex;
+            }
+            if( topIndex < 0 ) {
+              topIndex = 0;
+            }
+            this.setTopIndex( topIndex );
+          }
+          this._keyboardSelecionChanged = true;
+        }
+      }
+    },
+    
+    _calcGotoIndex : function( currentIndex, keyIdentifier ) {
+      var result = currentIndex;
+      switch( keyIdentifier ) {
+        case "Home":
+          result = 0; 
+          break;
+        case "End":
+          result = this._itemCount - 1;
+          break;
+        case "Up":
+          result = currentIndex - 1;
+          break;
+        case "Down":
+          result = currentIndex + 1;
+          break;
+        case "PageUp":
+          result = currentIndex - this._getFullyVisibleRowCount();
+          if( result < 0 ) {
+            result = 0; 
+          }
+          break;
+        case "PageDown":
+          result = currentIndex + this._getFullyVisibleRowCount();
+          if( result > this._itemCount ) {
+            result = this._itemCount - 1; 
+          }
+          break;
+      }
+      return result;
+    },
+    
+    _getFullyVisibleRowCount : function() {
+      return Math.floor( this._clientArea.getHeight() / this._itemHeight );
+    },
+    
+    _onKeyUp : function( evt ) {
+      if( this._keyboardSelecionChanged ) {
+        this._keyboardSelecionChanged = false;
+        this._updateSelectionParam();
+        this.createDispatchDataEvent( "itemselected", this._focusedItem );
+      }      
+    },
+
     ////////////////////////
     // Scroll bar listeners
     
     _onVertScrollBarChangeValue : function() {
       // Calculate new topIndex
       var newTopIndex = 0;
-      if( this._itemHeight != 0 ) {
+      if( this._itemHeight !== 0 ) {
         var scrollTop = this._clientArea.isCreated() ? this._vertScrollBar.getValue() : 0;
         newTopIndex = Math.floor( scrollTop / this._itemHeight );
       }
       // update topIndex request parameter
-      if( newTopIndex != this._topIndex ) {
+      if( newTopIndex !== this._topIndex ) {
         this._topIndexChanged = true;
       }
       // set new topIndex -> rows are updateded if necessary
@@ -631,7 +684,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var itemIndex = this._items.indexOf( item );
       var wasItemVisible = this._isItemVisible( itemIndex );
       qx.lang.Array.remove( this._items, item );
-      if( item == this._focusedItem ) {
+      if( item === this._focusedItem ) {
         this._focusedItem = null;
       }
       this._unselectItem( item, false );
@@ -648,10 +701,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         var changed = false;
         var rowIndex = this._getRowIndexFromItem( item );
         var row = null;
-        if( rowIndex != -1 ) {
+        if( rowIndex !== -1 ) {
           row = this._rows[ rowIndex ];
         }
-        if(    row != null 
+        if(    row !== null 
             && row.getTop() + row.getHeight() > this._clientArea.getHeight() ) 
         {
           this.setTopIndex( this._topIndex + 1 );
@@ -664,14 +717,29 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _unselectItem : function( item, update ) {
-      qx.lang.Array.remove( this._selected, item );
+      // remove item from array of selected items
+      var index = this._selected.indexOf( item );
+      if( index !== -1 ) {
+        this._selected.splice( index, 1 );
+      }
+      // update item if requested
       if( update ) {
         this.updateItem( item, true );
       }
     },
 
     _isItemSelected : function( item ) {
-      return qx.lang.Array.contains( this._selected, item );
+      return this._selected.indexOf( item ) !== -1;
+    },
+    
+    _clearSelection : function() {
+      while( this._selected.length > 0 ) {
+        this._unselectItem( this._selected[ 0 ], true );
+      }
+    },
+    
+    _resetSelectionStart : function() {
+      this._selectionStart = -1;
     },
 
     _isItemVisible : function( itemIndex ) {
@@ -681,7 +749,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     updateItem : function( item, contentChanged ) {
       var rowIndex = this._getRowIndexFromItem( item );
-      if( rowIndex != -1 ) {
+      if( rowIndex !== -1 ) {
         if( contentChanged ) {
           this._updateRow( rowIndex, item );  // implicitly calls _updateRowState
         } else {
@@ -753,7 +821,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _updateScrollWidth : function() {
       var width;
-      if( this.getColumnCount() == 0 ) {
+      if( this.getColumnCount() === 0 ) {
         width = this.getDefaultColumnWidth();
       } else {
         width = this.getColumnsWidth();
@@ -798,8 +866,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         //      This happens when a Table is placed on a unselected CTabItem 
         //      and then the tab item gets selected and thus the table becomes 
         //      visible
-        if( this._itemHeight != 0 && this._clientArea.getHeight() > 0 ) {
-          newRowCount = Math.ceil( this._clientArea.getHeight() / this._itemHeight );
+        var clientAreaHeight = this._clientArea.getHeight();
+        if( this._itemHeight !== 0 && clientAreaHeight > 0 ) {
+          newRowCount = Math.ceil( clientAreaHeight / this._itemHeight );
         }
         if( newRowCount != this._rows.length ) {
           // Remove trailing rows if rowCount was decreased
@@ -845,15 +914,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       row.addEventListener( "dblclick", this._onRowDblClick, this );
       row.addEventListener( "contextmenu", this._onRowContextMenu, this );
       row.addEventListener( "keydown", this._onRowKeyDown, this );
-      // TODO [rh] reconsider attaching key event keypress- and keyup handler
-      //      to table widget itself (was only moved here in the hope to get
-      //      Safari running
-      // TODO [rh] key events in Safari not working properly 
-      //      (see http://bugzilla.qooxdoo.org/show_bug.cgi?id=785)
-      if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-        row.addEventListener( "keypress", this._onRowKeyPress, this );
-        row.addEventListener( "keyup", this._onRowKeyUp, this );
-      }
     },
     
     _unhookRowEventListener : function( row ) {
@@ -861,12 +921,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       row.removeEventListener( "dblclick", this._onRowDblClick, this );
       row.removeEventListener( "contextmenu", this._onRowContextMenu, this );
       row.removeEventListener( "keydown", this._onRowKeyDown, this );
-      // TODO [rh] key events in Safari not working properly 
-      //      (see http://bugzilla.qooxdoo.org/show_bug.cgi?id=785)
-      if( !qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
-        row.removeEventListener( "keypress", this._onRowKeyPress, this );
-        row.removeEventListener( "keyup", this._onRowKeyUp, this );
-      }
     },
     
     _updateRowBounds : function() {
@@ -876,7 +930,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var checkImageWidht = 0;
       var checkImageHeight = 0;
       var checkBoxWidth = 0;
-      if( this._checkBoxes != null ) {
+      if( this._checkBoxes !== null ) {
         // TODO [rh] move to theme, needs to be in sync with TableItem#CHECK_WIDTH
         checkBoxWidth = org.eclipse.swt.widgets.Table.CHECK_WIDTH;
         checkImageWidht = org.eclipse.swt.widgets.Table.CHECK_IMAGE_WIDTH;
@@ -887,7 +941,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         width = this._clientArea.getWidth();
       }
       for( var i = 0; i < this._rows.length; i++ ) {
-        if( this._checkBoxes != null ) {
+        if( this._checkBoxes !== null ) {
           var checkBox = this._checkBoxes[ i ];
           checkBox.setLeft( left );
           checkBox.setTop( top + this._itemHeight / 2 - checkImageWidht / 2 );
@@ -911,22 +965,22 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
 
     _updateRow : function( rowIndex, item ) {
       var row = this._rows[ rowIndex ];
-      if( item === undefined || ( item != null && !item.getCached() ) ) {
+      if( item === undefined || ( item !== null && !item.getCached() ) ) {
         this._resolveItem( this._topIndex + rowIndex );
         row.setHtml( this._virtualItem._getMarkup() );
-      } else if( item != null ) {
+      } else if( item !== null ) {
         row.setHtml( item._getMarkup() );
       } else {
         row.setHtml( this._emptyItem._getMarkup() );
       }
       this._updateRowState( row, item );
-      if( this._checkBoxes != null ) {
+      if( this._checkBoxes !== null ) {
         this._updateRowCheck( rowIndex, item );
       }
     },
 
     _updateRowState : function( row, item ) {
-      if( item != null ) {
+      if( item !== undefined && item !== null ) {
         if( this._isItemSelected( item ) ) { 
           row.addState( "selected" );
         } else {
@@ -945,7 +999,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     _updateRowCheck : function( rowIndex, item ) {
       var checkBox = this._checkBoxes[ rowIndex ];
-      if( item != null ) {
+      if( item !== null ) {
         if( item.getChecked() ) {
           checkBox.addState( "checked" );
         } else {
@@ -964,7 +1018,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     _resolveItem : function( itemIndex ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
-        if( this._unresolvedItems == null ) {
+        if( this._unresolvedItems === null ) {
           this._unresolvedItems = new Array();
           qx.client.Timer.once( this._sendResolveItemsRequest, this, 30 );
         } 
@@ -987,7 +1041,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     // Show and hide the resize line used by column while resizing
 
     _showResizeLine : function( x ) {
-      if( this._resizeLine == null ) {
+      if( this._resizeLine === null ) {
         this._resizeLine = new qx.ui.basic.Terminator();
         this._resizeLine.setAppearance( "table-column-resizer" );
         this.add( this._resizeLine );
