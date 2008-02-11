@@ -224,6 +224,33 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeImage( item, item.getImage() );
     assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( null );" ) != -1 );
   }
+  
+  public void testWriteAppearance() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Label label = new Label( shell, SWT.NONE );
+    
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
+    WidgetLCAUtil.writeCustomAppearance( label );
+    assertEquals( "", Fixture.getAllMarkup() );
+    
+    Fixture.fakeResponseWriter();
+    label.setData( WidgetUtil.CUSTOM_APPEARANCE, "my_appearance" );
+    WidgetLCAUtil.writeCustomAppearance( label );
+    String expected = "w.setAppearance( \"my_appearance\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.writeCustomOrDefaultAppearance( label, "def_appearance" );
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    
+    Fixture.fakeResponseWriter();
+    label.setData( WidgetUtil.CUSTOM_APPEARANCE, null );
+    WidgetLCAUtil.writeCustomOrDefaultAppearance( label, "def_appearance" );
+    expected = "w.setAppearance( \"def_appearance\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
 
   protected void setUp() throws Exception {
     RWTFixture.setUp();
