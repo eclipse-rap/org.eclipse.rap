@@ -44,6 +44,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
   void renderInitialization( final Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
     writer.newWidget( "qx.ui.menubar.MenuBar" );
+    WidgetLCAUtil.writeCustomAppearance( menu );
   }
 
   void renderChanges( final Menu menu ) throws IOException {

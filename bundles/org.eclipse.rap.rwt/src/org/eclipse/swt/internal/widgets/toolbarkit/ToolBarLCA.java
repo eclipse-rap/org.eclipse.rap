@@ -43,6 +43,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
       writer.set( JSConst.QX_FIELD_ORIENTATION, 
                   JSConst.QX_CONST_VERTICAL_ORIENTATION );
     }
+    WidgetLCAUtil.writeCustomAppearance( widget );
     ControlLCAUtil.writeStyleFlags( toolBar );
   }
   

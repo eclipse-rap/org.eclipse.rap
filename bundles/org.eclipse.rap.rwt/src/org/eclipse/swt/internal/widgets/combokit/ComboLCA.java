@@ -104,6 +104,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( QX_TYPE );
+    WidgetLCAUtil.writeCustomAppearance( widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -259,7 +260,7 @@ public class ComboLCA extends AbstractWidgetLCA {
                              hasListener );
     }
   }
-
+  
   //////////////////
   // Helping methods
 

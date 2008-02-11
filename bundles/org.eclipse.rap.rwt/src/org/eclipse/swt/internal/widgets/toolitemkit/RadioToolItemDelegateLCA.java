@@ -74,6 +74,7 @@ final class RadioToolItemDelegateLCA extends ToolItemDelegateLCA {
       neighbour
     };
     writer.callStatic( CREATE_RADIO, args );
+    WidgetLCAUtil.writeCustomAppearance( toolItem );
     if( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );
     }

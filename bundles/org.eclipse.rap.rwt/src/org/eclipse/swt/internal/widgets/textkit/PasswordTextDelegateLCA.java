@@ -13,8 +13,7 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
 final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
@@ -42,6 +41,7 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( QX_TYPE );
+    WidgetLCAUtil.writeCustomAppearance( text );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeHijack( text );
   }

@@ -15,7 +15,8 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -53,7 +54,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TEXT, shell.getText() );
     adapter.preserve( PROP_IMAGE, shell.getImage() );
     adapter.preserve( PROP_MODE, getMode( shell ) );
-    adapter.preserve( PROP_SHELL_LISTENER, 
+    adapter.preserve( PROP_SHELL_LISTENER,
                       Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
   }
 
@@ -71,6 +72,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Shell shell = ( Shell )widget;
     writer.newWidget( QX_TYPE, null );
+    WidgetLCAUtil.writeCustomAppearance( widget );
     ControlLCAUtil.writeStyleFlags( shell );
     int style = widget.getStyle();
     if( ( style & SWT.APPLICATION_MODAL ) != 0 ) {
@@ -281,11 +283,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeCloseListener( final Shell shell ) throws IOException 
+  private static void writeCloseListener( final Shell shell ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( shell );
-    writer.updateListener( JS_CLOSE_LISTENER_INFO, 
-                           PROP_SHELL_LISTENER, 
+    writer.updateListener( JS_CLOSE_LISTENER_INFO,
+                           PROP_SHELL_LISTENER,
                            ShellEvent.hasListener( shell ) );
   }
 

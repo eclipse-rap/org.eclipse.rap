@@ -41,6 +41,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     ProgressBar progressBar = ( ProgressBar )widget;
     JSWriter writer = JSWriter.getWriterFor( progressBar );
     writer.newWidget( "org.eclipse.swt.widgets.ProgressBar" );
+    WidgetLCAUtil.writeCustomAppearance( widget );
     ControlLCAUtil.writeStyleFlags( progressBar );
     writer.set( "flag", progressBar.getStyle() );
   }

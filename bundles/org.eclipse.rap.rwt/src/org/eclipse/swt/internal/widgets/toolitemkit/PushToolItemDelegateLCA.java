@@ -48,6 +48,7 @@ final class PushToolItemDelegateLCA extends ToolItemDelegateLCA {
       Boolean.valueOf( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 )
     };
     writer.callStatic( CREATE_PUSH, args );
+    WidgetLCAUtil.writeCustomAppearance( toolItem );
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {

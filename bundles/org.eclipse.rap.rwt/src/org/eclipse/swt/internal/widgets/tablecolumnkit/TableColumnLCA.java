@@ -100,6 +100,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( column );
     Object[] args = new Object[] { column.getParent() };
     writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );
+    WidgetLCAUtil.writeCustomAppearance( widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

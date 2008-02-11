@@ -26,7 +26,10 @@ import org.eclipse.swt.widgets.Widget;
  * @since 1.0
  */
 public final class WidgetUtil {
-  
+
+  public static final String CUSTOM_APPEARANCE
+    = "org.eclipse.rwt.appearance";
+
   /**
    * <p><strong>Note:</strong> This constant is provisional and subject to
    * change without further notice.</p>

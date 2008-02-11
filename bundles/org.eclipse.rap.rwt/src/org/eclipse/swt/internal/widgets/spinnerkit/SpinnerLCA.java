@@ -62,6 +62,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     Spinner spinner = ( Spinner )widget;
     JSWriter writer = JSWriter.getWriterFor( spinner );
     writer.newWidget( QX_TYPE );
+    WidgetLCAUtil.writeCustomAppearance( widget );
     ControlLCAUtil.writeStyleFlags( spinner );
     writeReadOnly( spinner );
     writeWrap( spinner );

@@ -14,8 +14,7 @@ package org.eclipse.swt.internal.widgets.labelkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 
@@ -42,6 +41,7 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
     writer.newWidget( QX_TYPE );
+    WidgetLCAUtil.writeCustomAppearance( label );
     ControlLCAUtil.writeStyleFlags( label );
     writeStyle( label );
   }

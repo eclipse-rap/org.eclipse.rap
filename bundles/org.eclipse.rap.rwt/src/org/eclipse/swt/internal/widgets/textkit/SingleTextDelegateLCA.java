@@ -55,6 +55,7 @@ final class SingleTextDelegateLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( QX_TYPE );
+    WidgetLCAUtil.writeCustomAppearance( text );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeHijack( text );
   }

@@ -96,6 +96,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
     Object[] args = new Object[] { WidgetUtil.getId( table ), style };
     writer.newWidget( "org.eclipse.swt.widgets.Table", args );
+    WidgetLCAUtil.writeCustomAppearance( widget );
     ControlLCAUtil.writeStyleFlags( table );
     writer.set( "borderWidth", table.getBorderWidth() );
   }

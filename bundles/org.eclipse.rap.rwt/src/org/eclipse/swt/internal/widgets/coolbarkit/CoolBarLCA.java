@@ -39,8 +39,9 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     writer.newWidget( "qx.ui.layout.CanvasLayout" );
     // TODO [rh] use constant from qx.constant.Style.js
     writer.set( "overflow", "hidden" );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "coolbar" );
+    WidgetLCAUtil.writeCustomOrDefaultAppearance( widget, "coolbar" );
     ControlLCAUtil.writeStyleFlags( coolBar );
+    WidgetLCAUtil.writeCustomAppearance( coolBar );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

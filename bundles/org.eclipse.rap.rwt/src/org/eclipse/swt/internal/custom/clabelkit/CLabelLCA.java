@@ -62,8 +62,8 @@ public class CLabelLCA extends AbstractWidgetLCA {
     } else if( ( widget.getStyle() & SWT.SHADOW_OUT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_SHADOW_OUT" } );
     }
-
     ControlLCAUtil.writeStyleFlags( label );
+    WidgetLCAUtil.writeCustomAppearance( label );
     Object[] args = { label };
     writer.callStatic( "org.eclipse.swt.CLabelUtil.initialize", args  );
   }

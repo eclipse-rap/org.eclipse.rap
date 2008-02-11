@@ -15,8 +15,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.browser.Mozilla;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.lifecycle.ControlLCAUtil;
-import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
 
@@ -47,11 +46,12 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( QX_TYPE );
+    WidgetLCAUtil.writeCustomAppearance( text );
     ControlLCAUtil.writeStyleFlags( text );
     MultiTextDelegateLCA.writeNoSpellCheck( text );
 //    TODO [rst] Disabled writing of wrap state since it only works in Opera and
 //               also interferes with object pooling in IE.
-//    TextLCAUtil.writeWrap( text );
+    TextLCAUtil.writeWrap( text );
     TextLCAUtil.writeHijack( text );
   }
 
@@ -84,8 +84,8 @@ final class MultiTextDelegateLCA extends AbstractTextDelegateLCA {
   }
 
   //////////////////
-  // Helping methods 
-  
+  // Helping methods
+
   private static void writeNoSpellCheck( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     if( ContextProvider.getBrowser() instanceof Mozilla ) {

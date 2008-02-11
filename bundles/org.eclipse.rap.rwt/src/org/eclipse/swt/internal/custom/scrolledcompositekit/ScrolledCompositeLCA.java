@@ -72,6 +72,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     ScrolledComposite scrolledComposite = ( ScrolledComposite )widget;
     JSWriter writer = JSWriter.getWriterFor( scrolledComposite );
     writer.newWidget( QX_TYPE );
+    WidgetLCAUtil.writeCustomAppearance( widget );
     ControlLCAUtil.writeStyleFlags( scrolledComposite );
   }
 

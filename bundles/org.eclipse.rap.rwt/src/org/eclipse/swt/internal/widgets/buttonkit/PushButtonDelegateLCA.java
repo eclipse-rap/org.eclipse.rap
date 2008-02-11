@@ -52,6 +52,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     writer.newWidget( QX_TYPE );
     ButtonLCAUtil.writeLabelMode( button );
     ControlLCAUtil.writeStyleFlags( button );
+    WidgetLCAUtil.writeCustomAppearance( button );
     if( ( button.getStyle() & SWT.TOGGLE ) != 0 ) {
       writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_TOGGLE );
       writer.addListener( JSConst.QX_EVENT_EXECUTE,

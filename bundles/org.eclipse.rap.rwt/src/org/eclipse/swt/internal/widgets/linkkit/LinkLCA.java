@@ -78,9 +78,10 @@ public class LinkLCA extends AbstractWidgetLCA {
     Link link = ( Link )widget;
     JSWriter writer = JSWriter.getWriterFor( link );
     writer.newWidget( QX_TYPE );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );
+    WidgetLCAUtil.writeCustomOrDefaultAppearance( widget, "link" );
     Object[] args = new Object[] { widget };
     writer.callStatic( JS_FUNC_INIT, args );
+    WidgetLCAUtil.writeCustomAppearance( widget );
     ControlLCAUtil.writeStyleFlags( link );
   }
 

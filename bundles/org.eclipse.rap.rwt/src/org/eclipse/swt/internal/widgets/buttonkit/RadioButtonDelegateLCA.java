@@ -55,6 +55,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
     Object[] args = new Object[] { button };
     writer.callStatic( REGISTER_RADIO_BUTTON, args );
     ControlLCAUtil.writeStyleFlags( button );
+    WidgetLCAUtil.writeCustomAppearance( button );
   }
 
   // TODO [rh] qooxdoo radioButton cannot display images, should we ignore

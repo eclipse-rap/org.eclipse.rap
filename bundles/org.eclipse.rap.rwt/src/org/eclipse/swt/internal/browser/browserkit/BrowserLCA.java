@@ -55,6 +55,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( browser );
     writer.newWidget( QX_TYPE );
     ControlLCAUtil.writeStyleFlags( browser );
+    WidgetLCAUtil.writeCustomAppearance( browser );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

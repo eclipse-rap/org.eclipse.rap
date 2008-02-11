@@ -104,7 +104,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       treeItem.getParent()
     };
     writer.callStatic( "org.eclipse.swt.TreeItemUtil.createTreeItem", args );
-
+    WidgetLCAUtil.writeCustomAppearance( widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

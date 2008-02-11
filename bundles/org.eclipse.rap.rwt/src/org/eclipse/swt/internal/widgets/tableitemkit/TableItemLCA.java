@@ -83,6 +83,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     int index = parent.indexOf( item );
     Object[] args = new Object[] { parent, new Integer( index ) };
     writer.newWidget( "org.eclipse.swt.widgets.TableItem", args );
+    WidgetLCAUtil.writeCustomAppearance( widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

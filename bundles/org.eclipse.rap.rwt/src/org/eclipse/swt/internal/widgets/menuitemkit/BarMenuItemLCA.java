@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
@@ -43,9 +44,8 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
     MenuItemLCAUtil.newItem( menuItem, "qx.ui.menubar.Button", true );
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
     // Note: qx.ui.menubar.Button extends qx.ui.toolbar.Button
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "menubar-button" );
+    WidgetLCAUtil.writeCustomOrDefaultAppearance( menuItem, "menubar-button" );
   }
 
   // TODO [rh] qooxdoo does not handle bar menu items with images, should

@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.widgets.MenuItem;
 
 
@@ -29,6 +30,7 @@ final class SeparatorMenuItemLCA extends MenuItemDelegateLCA {
   
   void renderInitialization( final MenuItem menuItem ) throws IOException {
     MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Separator", false );
+    WidgetLCAUtil.writeCustomAppearance( menuItem );
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {

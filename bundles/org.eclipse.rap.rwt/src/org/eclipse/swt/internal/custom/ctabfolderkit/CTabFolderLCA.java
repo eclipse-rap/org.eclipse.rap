@@ -164,6 +164,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );
+    WidgetLCAUtil.writeCustomAppearance( widget );
     String[] args = new String[] {
       SWT.getMessage( "SWT_Minimize" ),
       SWT.getMessage( "SWT_Maximize" ),

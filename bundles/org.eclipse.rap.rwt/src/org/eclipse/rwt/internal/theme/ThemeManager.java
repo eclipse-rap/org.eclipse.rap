@@ -284,11 +284,13 @@ public final class ThemeManager {
    * 
    * @param id an id that identifies the theme in the Java code. Note that this
    *            id is not valid on the client-side. To get the id that is used
-   *            on the client, see method <code>getJsThemeId</code>.
-   * @param name a name that describes the theme. Currently not used.
-   * @param instr an input stream to read the theme from.
+   *            on the client, see method <code>getJsThemeId</code>
+   * @param name a name that describes the theme. Currently not used
+   * @param instr an input stream to read the theme from
+   * @param instrAppExt an input stream to read an external appearance snippet
+   *            from
    * @param loader a ResourceLoader instance that is able to load resources
-   *            needed by this theme.
+   *            needed by this theme
    * @throws IOException if an I/O error occurs
    * @throws IllegalStateException if not initialized
    */
@@ -561,6 +563,9 @@ public final class ThemeManager {
     String resPkgName = pkgName.replace( '.', '/' );
     String fileName = resPkgName + "/" + className + ".appearances.js";
     InputStream inStream = loader.getResourceAsStream( fileName );
+    if( inStream != null ) {
+      log( "Found appearance js file: " +  fileName ); 
+    }
     return loadAppearanceJs( inStream );
   }  
   
@@ -569,7 +574,6 @@ public final class ThemeManager {
   {
     boolean result = false;
     if( inStream != null ) {
-//      log( "Found appearance js file: " +  fileName );
       result = true;
       try {
         StringBuffer sb = new StringBuffer();

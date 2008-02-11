@@ -286,43 +286,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
   
-  /*
-  
-  // TODO [rst] Remove this as we don't use toolbar parts
-  
-  "toolbar-part" :
-  {
-    style : function( states ) {
-      return {
-        width : "auto"
-      };
-    }
-  },
-  
-  "toolbar-part-handle" :
-  {
-    style : function( states ) {
-      return {
-        width : 10
-      };
-    }
-  },
-
-  "toolbar-part-handle-line" :
-  {
-    style : function( states ) {
-      return {
-        top    : 2,
-        left   : 3,
-        bottom : 2,
-        width  : 4,
-        border : "thinOutset"
-      };
-    }
-  },
-  
-  */
-  
   "toolbar-separator" :
   {
     style : function( states ) {

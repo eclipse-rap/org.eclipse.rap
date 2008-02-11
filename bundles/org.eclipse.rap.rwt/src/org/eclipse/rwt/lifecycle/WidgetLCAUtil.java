@@ -677,6 +677,38 @@ public final class WidgetLCAUtil {
     // TODO [fappel]: check whether to use reset
     writer.set( JSConst.QX_FIELD_ENABLED, true );
   }
+  
+  /**
+   * Writes the custom appearance (set using
+   * <code>setData( WidgetUtil#CUSTOM_APPEARANCE, value ) )</code> for the
+   * given widget. If no custom appearance has been set, nothing happens.
+   */
+  public static void writeCustomAppearance( final Widget widget )
+    throws IOException
+  {
+    writeCustomOrDefaultAppearance( widget, null );
+  }
+
+  /**
+   * Writes the custom appearance (set using
+   * <code>setData( WidgetUtil#CUSTOM_APPEARANCE, value ) )</code> for the
+   * given widget. If no custom appearance has been set, the specified default
+   * appearance is written.
+   */
+  public static void writeCustomOrDefaultAppearance( final Widget widget,
+                                                     final String defaultAppearance )
+    throws IOException
+  {
+    String customAppearance
+      = ( String )widget.getData( WidgetUtil.CUSTOM_APPEARANCE );
+    if( customAppearance != null ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      writer.set( JSConst.QX_FIELD_APPEARANCE, customAppearance );
+    } else if( defaultAppearance != null ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      writer.set( JSConst.QX_FIELD_APPEARANCE, defaultAppearance );
+    }
+  }
 
   private static String readPropertyValue( final String widgetId,
                                            final String propertyName )
