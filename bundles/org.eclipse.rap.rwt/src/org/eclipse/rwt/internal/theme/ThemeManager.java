@@ -295,6 +295,7 @@ public final class ThemeManager {
   public void registerTheme( final String id,
                              final String name,
                              final InputStream instr,
+                             final InputStream instrAppExt,
                              final ResourceLoader loader )
     throws IOException
   {
@@ -309,6 +310,7 @@ public final class ThemeManager {
     }
     Theme theme = loadThemeFile( name, instr );
     themes.put( id, new ThemeWrapper( theme, loader, themeCount++  ) );
+    loadAppearanceJs( instrAppExt );
   }
   
   /**
@@ -556,12 +558,18 @@ public final class ThemeManager {
                                     final String className )
     throws IOException
   {
-    boolean result = false;
     String resPkgName = pkgName.replace( '.', '/' );
     String fileName = resPkgName + "/" + className + ".appearances.js";
     InputStream inStream = loader.getResourceAsStream( fileName );
+    return loadAppearanceJs( inStream );
+  }  
+  
+  private boolean loadAppearanceJs( final InputStream inStream )
+    throws IOException
+  {
+    boolean result = false;
     if( inStream != null ) {
-      log( "Found appearance js file: " +  fileName );
+//      log( "Found appearance js file: " +  fileName );
       result = true;
       try {
         StringBuffer sb = new StringBuffer();

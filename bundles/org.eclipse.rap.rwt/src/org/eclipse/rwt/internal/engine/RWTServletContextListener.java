@@ -317,7 +317,8 @@ public final class RWTServletContextListener implements ServletContextListener {
             if( inStream != null ) {
               try {
                 String themeName = "Unnamed Theme: " + themeId;
-                manager.registerTheme( themeId, themeName, inStream, loader );
+// TODO [rh]    enable definition of appearance extension file 
+                manager.registerTheme( themeId, themeName, inStream, null, loader );
               } finally {
                 inStream.close();
               }

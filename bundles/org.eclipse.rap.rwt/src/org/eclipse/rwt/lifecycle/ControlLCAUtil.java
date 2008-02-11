@@ -524,6 +524,10 @@ public class ControlLCAUtil {
     if( ( control.getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( JSConst.QX_FUNC_ADD_STATE, PARAM_STYLE_FLAT );
     }
+    Object data = control.getData( JSConst.QX_FIELD_APPEARANCE );
+    if( data != null ) {
+      writer.set( JSConst.QX_FIELD_APPEARANCE, ( String )data );
+    } 
   }
 
   /**

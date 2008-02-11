@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.compositekit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
@@ -33,9 +34,13 @@ public class CompositeLCA extends AbstractWidgetLCA {
     Composite composite = ( Composite )widget;
     JSWriter writer = JSWriter.getWriterFor( composite );
     writer.newWidget( QX_TYPE );
-    writer.set( "appearance", "composite" );
     writer.set( "overflow", "hidden" );
     writer.set( "hideFocus", true );
+    Object data = widget.getData( JSConst.QX_FIELD_APPEARANCE );
+    if( data == null ) {
+      writer.set( JSConst.QX_FIELD_APPEARANCE, "composite" );
+    } 
+
     ControlLCAUtil.writeStyleFlags( composite );
   }
 
