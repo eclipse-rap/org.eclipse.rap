@@ -52,13 +52,13 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
     writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomAppearance( label );
     ControlLCAUtil.writeStyleFlags( label );
     Boolean wrap = Boolean.valueOf( ( label.getStyle() & SWT.WRAP ) != 0 );
     Object[] args = { label };
     writer.callStatic( "org.eclipse.swt.LabelUtil.initialize", args );
     Object[] argsWrap = { label, wrap };
     writer.callStatic( "org.eclipse.swt.LabelUtil.setWrap", argsWrap );
+    WidgetLCAUtil.writeCustomAppearance( label );
   }
 
   void renderChanges( final Label label ) throws IOException {
