@@ -664,6 +664,7 @@ public final class WidgetLCAUtil {
     writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
   }
 
+  
   /**
    * Writes JavaScript code to the response that resets the property
    * <code>enabled</code> of a widget. This method is intended to be used by
@@ -679,9 +680,25 @@ public final class WidgetLCAUtil {
   }
   
   /**
+   * Replaces all newline characters in the specified input string with the
+   * given replacement string.
+   * 
+   * @param input the string to process
+   * @param replacement the string to replace line feeds with
+   * @return a new string with all line feeds replaced
+   * @since 1.1
+   */
+  public static String replaceNewLines( final String input,
+                                        final String replacement )
+  {
+    return CommonPatterns.replaceNewLines( input, replacement );
+  }
+
+  /**
    * Writes the custom appearance (set using
    * <code>setData( WidgetUtil#CUSTOM_APPEARANCE, value ) )</code> for the
    * given widget. If no custom appearance has been set, nothing happens.
+   * @since 1.1
    */
   public static void writeCustomAppearance( final Widget widget )
     throws IOException
@@ -694,9 +711,10 @@ public final class WidgetLCAUtil {
    * <code>setData( WidgetUtil#CUSTOM_APPEARANCE, value ) )</code> for the
    * given widget. If no custom appearance has been set, the specified default
    * appearance is written.
+   * @since 1.1
    */
   public static void writeCustomOrDefaultAppearance( final Widget widget,
-                                                     final String defaultAppearance )
+                                                     final String defaultApp )
     throws IOException
   {
     String customAppearance
@@ -704,9 +722,9 @@ public final class WidgetLCAUtil {
     if( customAppearance != null ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       writer.set( JSConst.QX_FIELD_APPEARANCE, customAppearance );
-    } else if( defaultAppearance != null ) {
+    } else if( defaultApp != null ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( JSConst.QX_FIELD_APPEARANCE, defaultAppearance );
+      writer.set( JSConst.QX_FIELD_APPEARANCE, defaultApp );
     }
   }
 
@@ -869,20 +887,5 @@ public final class WidgetLCAUtil {
 //      sb.insert( mnemonicPos, "<u>" );
 //    }
     return sb.toString();
-  }
-  
-  /**
-   * Replaces all newline characters in the specified input string with the
-   * given replacement string.
-   * 
-   * @param input the string to process
-   * @param replacement the string to replace line feeds with
-   * @return a new string with all line feeds replaced
-   * @since 1.1 M2
-   */
-  public static String replaceNewLines( final String input,
-                                        final String replacement )
-  {
-    return CommonPatterns.replaceNewLines( input, replacement );
   }
 }
