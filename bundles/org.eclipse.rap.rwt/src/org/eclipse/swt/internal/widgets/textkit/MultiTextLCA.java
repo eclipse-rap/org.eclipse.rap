@@ -8,20 +8,24 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.browser.Mozilla;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
-final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
+
+// TODO [rh] bring selection for multi-line text to work. Currently there
+//      occur JavaScript errors. (see readSelection, writeSelection)
+final class MultiTextLCA extends AbstractTextDelegateLCA {
+
+  private static final String QX_TYPE = "qx.ui.form.TextArea";
 
   static final String TYPE_POOL_ID
-    = PasswordTextDelegateLCA.class.getName();
-
-  private static final String QX_TYPE = "qx.ui.form.PasswordField";
+    = MultiTextLCA.class.getName();
 
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
@@ -35,7 +39,7 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
   void readData( final Text text ) {
     // order is crucial: first read text then read what part of it is selected
     TextLCAUtil.readText( text );
-    TextLCAUtil.readSelection( text );
+//    TextLCAUtil.readSelection( text );
   }
 
   void renderInitialization( final Text text ) throws IOException {
@@ -43,14 +47,19 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
     writer.newWidget( QX_TYPE );
     WidgetLCAUtil.writeCustomAppearance( text );
     ControlLCAUtil.writeStyleFlags( text );
+    MultiTextLCA.writeNoSpellCheck( text );
+//    TODO [rst] Disabled writing of wrap state since it only works in Opera and
+//               also interferes with object pooling in IE.
+    TextLCAUtil.writeWrap( text );
     TextLCAUtil.writeHijack( text );
   }
 
   void renderChanges( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
     ControlLCAUtil.writeChanges( text );
-    TextLCAUtil.writeText( text );
+    writer.set( TextLCAUtil.PROP_TEXT, "value", text.getText(), "" );
     TextLCAUtil.writeReadOnly( text );
-    TextLCAUtil.writeSelection( text );
+//    TextLCAUtil.writeSelection( text );
     TextLCAUtil.writeTextLimit( text );
     TextLCAUtil.writeVerifyAndModifyListener( text );
   }
@@ -66,11 +75,20 @@ final class PasswordTextDelegateLCA extends AbstractTextDelegateLCA {
 
   void createResetHandlerCalls( final String typePoolId ) throws IOException {
     TextLCAUtil.resetModifyListener();
-    TextLCAUtil.resetSelection();
     TextLCAUtil.resetTextLimit();
     TextLCAUtil.resetReadOnly();
     TextLCAUtil.resetText();
     ControlLCAUtil.resetChanges();
     ControlLCAUtil.resetStyleFlags();
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static void writeNoSpellCheck( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    if( ContextProvider.getBrowser() instanceof Mozilla ) {
+      writer.set( "spellCheck", false );
+    }
   }
 }

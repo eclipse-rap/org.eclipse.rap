@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
@@ -23,11 +22,11 @@ import org.eclipse.swt.widgets.Widget;
 public final class TextLCA extends AbstractWidgetLCA {
 
   private final static AbstractTextDelegateLCA SINGLE
-    = new SingleTextDelegateLCA();
+    = new SingleTextLCA();
   private final static AbstractTextDelegateLCA PASSWORD
-    = new PasswordTextDelegateLCA();
+    = new PasswordTextLCA();
   private final static AbstractTextDelegateLCA MULTI
-    = new MultiTextDelegateLCA();
+    = new MultiTextLCA();
 
   public void preserveValues( final Widget widget ) {
     getLCADelegate( widget ).preserveValues( ( Text )widget );
@@ -60,11 +59,11 @@ public final class TextLCA extends AbstractWidgetLCA {
 
   private static AbstractTextDelegateLCA getLCADelegate( final String tpId ) {
     AbstractTextDelegateLCA result;
-    if( PasswordTextDelegateLCA.TYPE_POOL_ID.equals( tpId ) ) {
+    if( PasswordTextLCA.TYPE_POOL_ID.equals( tpId ) ) {
       result = PASSWORD;
-    } else if( SingleTextDelegateLCA.TYPE_POOL_ID.equals( tpId ) ) {
+    } else if( SingleTextLCA.TYPE_POOL_ID.equals( tpId ) ) {
       result = SINGLE;
-    } else if( MultiTextDelegateLCA.TYPE_POOL_ID.equals( tpId ) ) {
+    } else if( MultiTextLCA.TYPE_POOL_ID.equals( tpId ) ) {
       result = MULTI;
     } else {
       String txt= "The typePoolId ''{0}'' is not supported.";

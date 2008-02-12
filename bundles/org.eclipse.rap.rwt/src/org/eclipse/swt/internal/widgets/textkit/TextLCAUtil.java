@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
@@ -16,11 +15,10 @@ import java.io.IOException;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
-
 
 
 final class TextLCAUtil {
@@ -28,9 +26,10 @@ final class TextLCAUtil {
   static final String PROP_TEXT = "text";
   private static final String PROP_TEXT_LIMIT = "textLimit";
   private static final String PROP_SELECTION = "selection";
+  private static final String PROP_READONLY = "readonly";
   private static final String PROP_VERIFY_MODIFY_LISTENER
     = "verifyModifyListener";
-  private static final String PROP_READONLY = "readonly";
+  private static final String PROP_SELECTION_LISTENER = "selectionListener";
 
   private static final Integer DEFAULT_TEXT_LIMIT
     = new Integer( Text.LIMIT );
@@ -50,6 +49,10 @@ final class TextLCAUtil {
   private static final JSListenerInfo JS_BLUR_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_BLUR,
                           "org.eclipse.swt.TextUtil.modifyTextOnBlur",
+                          JSListenerType.ACTION );
+  private final static JSListenerInfo JS_SELECTION_LISTENER_INFO
+    = new JSListenerInfo( JSConst.QX_EVENT_KEYDOWN,
+                          "org.eclipse.swt.TextUtil.widgetDefaultSelected",
                           JSListenerType.ACTION );
 
   private TextLCAUtil() {
@@ -208,14 +211,41 @@ final class TextLCAUtil {
   static void writeText( final Text text ) throws IOException {
     String newValue = text.getText();
     JSWriter writer = JSWriter.getWriterFor( text );
-    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) )
-    {
-      writer.set( JS_PROP_VALUE, WidgetLCAUtil.replaceNewLines( newValue, " " ) );
+    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
+      String value = WidgetLCAUtil.replaceNewLines( newValue, " " );
+      writer.set( JS_PROP_VALUE, value );
     }
   }
 
   static void resetText() throws IOException {
     JSWriter writer = JSWriter.getWriterForResetHandler();
     writer.reset( JS_PROP_VALUE );
+  }
+
+  static void preserveSelectionListener( final Text text ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+    adapter.preserve( PROP_SELECTION_LISTENER,
+                      Boolean.valueOf( hasSelectionListener( text ) ) );
+  }
+
+  static void writeSelectionListener( final Text text ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( text );
+    writer.updateListener( JS_SELECTION_LISTENER_INFO,
+                           PROP_SELECTION_LISTENER,
+                           hasSelectionListener( text ) );
+  }
+
+  static void resetSelectionListener() throws IOException {
+    JSWriter writer = JSWriter.getWriterForResetHandler();
+    writer.removeListener( JS_SELECTION_LISTENER_INFO.getEventType(),
+                           JS_SELECTION_LISTENER_INFO.getJSListener() );
+  }
+
+  private static boolean hasSelectionListener( final Text text ) {
+    // Emulate SWT (on Windows) where a default button takes precedence over
+    // a SelectionListener on a text field when both are on the same shell.
+    Button defButton = text.getShell().getDefaultButton();
+    boolean hasDefaultButton = defButton != null && defButton.isVisible();
+    return !hasDefaultButton && SelectionEvent.hasListener( text );
   }
 }
