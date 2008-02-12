@@ -94,13 +94,13 @@ public class ThemeManager_Test extends TestCase {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
     try {
-      themeManager.registerTheme( null, "foo", null, null, null );
+      themeManager.registerTheme( null, "foo", null, null );
       fail( "Null id must throw NullPointerException" );
     } catch( NullPointerException e ) {
       // expected
     }
     try {
-      themeManager.registerTheme( "", "foo", null, null, null );
+      themeManager.registerTheme( "", "foo", null, null );
       fail( "Empty id must throw IlleaglArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -215,7 +215,7 @@ public class ThemeManager_Test extends TestCase {
           return loader.getResourceAsStream( resourceName );
         }
       };
-      manager.registerTheme( themeId, themeName, inputStr, null, resLoader );
+      manager.registerTheme( themeId, themeName, inputStr, resLoader );
     } finally {
       inputStr.close();
     }

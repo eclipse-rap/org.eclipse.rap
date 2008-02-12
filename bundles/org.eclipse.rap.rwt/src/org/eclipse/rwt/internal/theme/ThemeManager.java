@@ -287,8 +287,6 @@ public final class ThemeManager {
    *            on the client, see method <code>getJsThemeId</code>
    * @param name a name that describes the theme. Currently not used
    * @param instr an input stream to read the theme from
-   * @param instrAppExt an input stream to read an external appearance snippet
-   *            from
    * @param loader a ResourceLoader instance that is able to load resources
    *            needed by this theme
    * @throws IOException if an I/O error occurs
@@ -297,7 +295,6 @@ public final class ThemeManager {
   public void registerTheme( final String id,
                              final String name,
                              final InputStream instr,
-                             final InputStream instrAppExt,
                              final ResourceLoader loader )
     throws IOException
   {
@@ -310,9 +307,8 @@ public final class ThemeManager {
       String msg = MessageFormat.format( pattern, arguments );
       throw new IllegalArgumentException( msg );
     }
-    Theme theme = loadThemeFile( name, instr );
+    Theme theme = loadThemeFile( name != null ? name : "", instr );
     themes.put( id, new ThemeWrapper( theme, loader, themeCount++  ) );
-    loadAppearanceJs( instrAppExt );
   }
   
   /**
@@ -560,20 +556,12 @@ public final class ThemeManager {
                                     final String className )
     throws IOException
   {
+    boolean result = false;
     String resPkgName = pkgName.replace( '.', '/' );
     String fileName = resPkgName + "/" + className + ".appearances.js";
     InputStream inStream = loader.getResourceAsStream( fileName );
     if( inStream != null ) {
-      log( "Found appearance js file: " +  fileName ); 
-    }
-    return loadAppearanceJs( inStream );
-  }  
-  
-  private boolean loadAppearanceJs( final InputStream inStream )
-    throws IOException
-  {
-    boolean result = false;
-    if( inStream != null ) {
+      log( "Found appearance js file: " +  fileName );
       result = true;
       try {
         StringBuffer sb = new StringBuffer();
@@ -633,7 +621,7 @@ public final class ThemeManager {
   /**
    * Loads a theme from a <code>theme.properties</code> file.
    * 
-   * @param name the name for the theme to create
+   * @param name the name for the theme to create, must not be <code>null</code>
    * @param inStr the input stream of the theme file to read
    * @return the newly created theme
    */
@@ -943,7 +931,7 @@ public final class ThemeManager {
   }
 
   /**
-   * Returns the clint side widget path, i.e. the path to which qooxdoo icon
+   * Returns the client side widget path, i.e. the path to which qooxdoo icon
    * resources starting with "widget/" are mapped.
    * 
    * @param jsThemeId the theme id

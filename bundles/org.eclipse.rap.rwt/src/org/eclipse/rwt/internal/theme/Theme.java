@@ -28,7 +28,7 @@ public final class Theme {
    * Creates a new theme which has no default theme. In RWT theming, only the
    * default theme itself has no default theme.
    * 
-   * @param name the name of the theme
+   * @param name the name of the theme, must not be <code>null</code>
    */
   public Theme( final String name ) {
     this( name, null );
@@ -38,12 +38,15 @@ public final class Theme {
    * Creates a new theme with the given default theme. The default theme
    * specifies the possible keys and their default values. <strong>Important:</strong>
    * Modifying the default theme afterwards has no effect on this theme.
-   *
-   * @param name the name of the theme
+   * 
+   * @param name the name of the theme, must not be <code>null</code>
    * @param defaultTheme the default theme
    */
   public Theme( final String name, final Theme defaultTheme ) {
     checkName( name );
+    if( name == null ) {
+      throw new NullPointerException( "name is null" );
+    }
     this.name = name;
     this.defaultValues = defaultTheme != null ? defaultTheme.values : null;
     values = new HashMap();
