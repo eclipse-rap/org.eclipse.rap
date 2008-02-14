@@ -421,8 +421,8 @@ public class Tree extends Composite {
    * </ul>
    */
   public TreeItem getParentItem () {
-  	checkWidget ();
-  	return null;
+    checkWidget ();
+    return null;
   }
   
   /**
@@ -461,18 +461,18 @@ public class Tree extends Composite {
    * @see Tree#showSelection()
    */
   public void showItem (TreeItem item) {
-  	checkWidget ();
-  	if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
-  	if (item.isDisposed ()) error(SWT.ERROR_INVALID_ARGUMENT);
-  	if (item.getParent() != this) return;
-  	
-  	TreeItem parent = item.getParentItem();
-  	while( parent != null ) {
-  		parent.setExpanded( true );
-  		parent = parent.getParentItem();
-  	}
-  	
-  	showItem = item;
+    checkWidget ();
+    if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
+    if (item.isDisposed ()) error(SWT.ERROR_INVALID_ARGUMENT);
+    if (item.getParent() != this) return;
+
+    TreeItem parent = item.getParentItem();
+    while( parent != null ) {
+      parent.setExpanded( true );
+      parent = parent.getParentItem();
+    }
+
+    showItem = item;
   }
   
   /**
@@ -489,8 +489,8 @@ public class Tree extends Composite {
    */
   public void showSelection() {
     checkWidget();
-	if (selection.length == 0) return;
-	showItem (selection [0]);
+    if (selection.length == 0) return;
+    showItem (selection [0]);
   }
   
   /////////////////////////////////////
@@ -751,6 +751,9 @@ public class Tree extends Composite {
     if ( recursive ) {
       item.clearAll( true, false );
     }
+    if((style & SWT.VIRTUAL) == 0) {
+      checkData( item, index );
+    }
   }
   
   /**
@@ -858,6 +861,9 @@ public class Tree extends Composite {
       ( ( TreeItem ) itemHolder.getItem( i ) ).clear();
       if ( recursive )
         ( ( TreeItem ) itemHolder.getItem( i ) ).clearAll( true, false );
+    }
+    if((style & SWT.VIRTUAL) != 0) {
+      checkAllData( this );
     }
   }
   

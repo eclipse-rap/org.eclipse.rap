@@ -84,7 +84,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
   members : {
 
     setBackground : function ( value ) {
-    	this._background = value;
+      this._background = value;
     },
     
     // TODO: [bm] needed to override the property setters to apply color to label too
@@ -117,21 +117,21 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     },
     
     setMaterialized : function( value ) {
-    	this._materialized = value;
+      this._materialized = value;
     },
     
     isMaterialized : function( value ) {
-    	return this._materialized;
+      return this._materialized;
     },
     
     setGrayed : function( value ) {
-    	if( this._checkBox != null ) {
-	      if( value ) {
-	          this._checkBox.addState( "grayed" );
-	      } else {
-	          this._checkBox.removeState( "grayed" );
-	      }
-    	}
+      if( this._checkBox != null ) {
+        if( value ) {
+            this._checkBox.addState( "grayed" );
+        } else {
+            this._checkBox.removeState( "grayed" );
+        }
+      }
     },
     
     setSelection : function( value, focus ) {
@@ -269,20 +269,20 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
               this.setLabel( this._texts[ col ] );
               this.setImage( this._images[ col ] );
               if( this._backgrounds && this._backgrounds[ col ] ) {
-              	// TODO [bm] disabled due to qooxdoo bug that selection disappears
-              	// when using background color as color here has a higher priority
-              	// then color in appearance + state
-              	/*
-              	this.getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
-              	this.getIndentObject().setBackgroundColor( this._backgrounds[ col ] );
+                // TODO [bm] disabled due to qooxdoo bug that selection disappears
+                // when using background color as color here has a higher priority
+                // then color in appearance + state
+                /*
+                this.getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
+                this.getIndentObject().setBackgroundColor( this._backgrounds[ col ] );
                 */
               }
               if( this._foregrounds && this._foregrounds[ col ] ) {
-              	// TODO: [bm] disabled for the same reason
-              	// this.getLabelObject().setTextColor( this._foregrounds[ col ]);
+                // TODO: [bm] disabled for the same reason
+                // this.getLabelObject().setTextColor( this._foregrounds[ col ]);
               }
               if( this._fonts && this._fonts[ col ] ) {
-              	// TODO
+                // TODO
               }
             } else {
               this._colLabels[ c -1 ].setHeight( this.getIndentObject().getHeight() );
@@ -290,13 +290,13 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
               this._colLabels[ c -1 ].setIcon( this._images[ col ] );
               // colors and fonts
               if( this._backgrounds && this._backgrounds[ col ] ) {
-              	this._colLabels[ c -1 ].getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
+                this._colLabels[ c -1 ].getLabelObject().setBackgroundColor( this._backgrounds[ col ] );
               }
               if( this._foregrounds && this._foregrounds[ col ] ) {
-              	this._colLabels[ c -1 ].setTextColor( this._foregrounds[ col ]);
+                this._colLabels[ c -1 ].setTextColor( this._foregrounds[ col ]);
               }
               if( this._fonts && this._fonts[ col ] ) {
-              	// TODO
+                // TODO
               }
             }
           }

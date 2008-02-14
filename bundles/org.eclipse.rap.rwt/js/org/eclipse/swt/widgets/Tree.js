@@ -88,16 +88,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       this._columnArea = null;
     }
     if( this._tree ) { 
-    	var el = this._tree.getElement();
-	    if( el ) {
-	      // remove inline event
-	      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-	        el.detachEvent( "onscroll", this._tree.__onscroll );
-	      } else {
-	        el.removeEventListener( "scroll", this._tree.__onscroll, false );
-	      }
-	      delete this.__onscroll;
-	    }
+      var el = this._tree.getElement();
+      if( el ) {
+        // remove inline event
+        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+          el.detachEvent( "onscroll", this._tree.__onscroll );
+        } else {
+          el.removeEventListener( "scroll", this._tree.__onscroll, false );
+        }
+        delete this.__onscroll;
+      }
       var manager = this._tree.getManager();
       if( manager ) {
         manager.removeEventListener( "changeSelection", this._onChangeSelection, this );
@@ -115,66 +115,66 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
   },
   
   members : {
-  	
-  	// delegater
-  	setBackgroundColor : function( color ) {
-  		this._tree.setBackgroundColor( color );
-  	},
-  	
-	  _onTreeElementChange : function( evt ) {
-	    var value = evt.getValue();
-	    if (value)
-	      {
-	        // Register inline event
-	        if (qx.core.Variant.isSet("qx.client", "mshtml")) {
-	          value.attachEvent("onscroll", this.__onscroll);
-	        } else {
-	          value.addEventListener("scroll", this.__onscroll, false);
-	        }
-	      }
-	  },
-	  
-	  focus : function()
+    
+    // delegater
+    setBackgroundColor : function( color ) {
+      this._tree.setBackgroundColor( color );
+    },
+    
+    _onTreeElementChange : function( evt ) {
+      var value = evt.getValue();
+      if ( value )
+        {
+          // Register inline event
+          if (qx.core.Variant.isSet( "qx.client", "mshtml" )) {
+            value.attachEvent( "onscroll", this.__onscroll );
+          } else {
+            value.addEventListener( "scroll", this.__onscroll, false );
+          }
+        }
+    },
+    
+    focus : function()
     {
       this._tree.focus();
     },
     
-	  _onTreeScroll : function( e ) {
-	    var target = e.target;
-	    if( e.target == null ) {
-	    	target = e.srcElement;
-	    }
-	    this._columnArea.setLeft( 0 - target.scrollLeft );
-	    // inform server about scroll pos
-	    if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
+    _onTreeScroll : function( e ) {
+      var target = e.target;
+      if( e.target == null ) {
+        target = e.srcElement;
+      }
+      this._columnArea.setLeft( 0 - target.scrollLeft );
+      // inform server about scroll pos
+      if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var treeId = wm.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
         req.addParameter( treeId + ".scrollLeft", target.scrollLeft );
         req.addParameter( treeId + ".scrollTop", target.scrollTop );
         if( qx.lang.String.contains( this.getRWTStyle(), "virtual" ) ) {
-        	// check if scrollTop has changed
-        	if(target.scrollTop != this._oldScrollTop) {
-        	  // send request after a little later to merge scroll events
-        	  window.clearTimeout(this._setValueTimerId);
-        	  var self = this;
-        	  this._setValueTimerId = window.setTimeout(function()
+          // check if scrollTop has changed
+          if(target.scrollTop != this._oldScrollTop) {
+            // send request after a little later to merge scroll events
+            window.clearTimeout(this._setValueTimerId);
+            var self = this;
+            this._setValueTimerId = window.setTimeout(function()
             {
-          	  // check if we need to "redraw" by checking all items in viewpart
-	        	  var vItems = self._tree.getItems(true, false);
-	        	  var redraw = false;
-	        	  for( var index=0; index<vItems.length; index++ ) {
-	        	  	if( !vItems[ index ].isMaterialized() ) {
-	        	  		redraw = true;
-	        	  		break;
-	        	  	}
-	        	  }
+              // check if we need to "redraw" by checking all items in viewpart
+             var vItems = self._tree.getItems(true, false);
+             var redraw = false;
+             for( var index=0; index<vItems.length; index++ ) {
+               if( !vItems[ index ].isMaterialized() ) {
+                 redraw = true;
+                 break;
+               }
+             }
               if( redraw ) {
                 var req = org.eclipse.swt.Request.getInstance();
                 req.send();
               }
-	          }, 250);
-        	}
+            }, 250);
+          }
         }
         this._oldScrollTop = target.scrollTop;
       }
@@ -208,15 +208,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     },
     
     setTreeInnerHeight : function( newHeight ) {
-    	this._tree.getContainerObject().setHeight( newHeight );
+      this._tree.getContainerObject().setHeight( newHeight );
     },
     
     getItemsHeight : function() {
-    	// TODO: [bm] do we really need to calc this ourselves???
-    	// TODO: [bm] review this when images are in place
-    	var visibleItems = this._tree.getItems(true, false);
-    	var itemsHeight = (visibleItems.length-1)*16;
-    	return itemsHeight;
+      // TODO: [bm] do we really need to calc this ourselves???
+      // TODO: [bm] review this when images are in place
+      var visibleItems = this._tree.getItems(true, false);
+      var itemsHeight = (visibleItems.length-1)*16;
+      return itemsHeight;
     },
     
     getColumnCount : function() {
@@ -230,9 +230,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     getColumnsWidth : function() {
       var width = 0;
       if( this._columns.length > 0 ) {
-	    for(var i=0; i<this._columns.length; i++) {
-	      width += this._columns[ i ].getWidth();
-	    }
+      for(var i=0; i<this._columns.length; i++) {
+        width += this._columns[ i ].getWidth();
+      }
       } else {
         width = this._tree.getWidth();
       }
@@ -305,15 +305,15 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
     },
     
     showItem : function( itemOrEvent ) {
-    	var item;
+      var item;
       if(!(itemOrEvent instanceof org.eclipse.swt.widgets.TreeItem )) {
-      	item = itemOrEvent.getTarget();
+        item = itemOrEvent.getTarget();
       } else {
         item = itemOrEvent;
       }
       if( !item.isCreated() ) {
-      	item.addEventListener( "appear", this.showItem, this );
-      	return;
+        item.addEventListener( "appear", this.showItem, this );
+        return;
       }
       item.scrollIntoView();
     },

@@ -421,22 +421,22 @@ public class TreeItem extends Item {
   }
   
   /**
-	 * Returns the background color at the given column index in the receiver.
-	 * 
-	 * @param columnIndex
-	 *            the column index
-	 * @return the background color
-	 * 
-	 * @exception SWTException
-	 *                <ul>
-	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
-	 *                disposed</li>
-	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-	 *                thread that created the receiver</li>
-	 *                </ul>
-	 * 
-	 * @since 1.0
-	 */
+   * Returns the background color at the given column index in the receiver.
+   * 
+   * @param columnIndex
+   *            the column index
+   * @return the background color
+   * 
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *                disposed</li>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the receiver</li>
+   *                </ul>
+   * 
+   * @since 1.0
+   */
   public Color getBackground( int columnIndex ) {
     checkWidget();
     // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
@@ -885,14 +885,14 @@ public class TreeItem extends Item {
    */
   public String getText() {
     checkWidget();
-//    if(!isCached()) {
-//      parent.checkData( this, this.index );
-//    }
+    if(!isCached()) {
+      parent.checkData( this, this.index );
+    }
     return super.getText();
   }
   
   String getText (int columnIndex, boolean checkData) {
-//    if(checkData && !isCached()) parent.checkData( this, this.index );
+    if(checkData && !isCached()) parent.checkData( this, this.index );
     int validColumnCount = Math.max (1, parent.columnHolder.size());
     if (!(0 <= columnIndex && columnIndex < validColumnCount)) return "";   //$NON-NLS-1$
     if (columnIndex == 0) return super.getText ();  /* super is intentional here */
@@ -1108,6 +1108,9 @@ public class TreeItem extends Item {
     if( recursive ) {
       item.clearAll( true, false );
     }
+    if((parent.style & SWT.VIRTUAL) == 0) {
+      parent.checkData( item, index );
+    }
   }
   
   /*
@@ -1243,11 +1246,16 @@ public class TreeItem extends Item {
     }
     /* clear the item(s) */
     for( int i = 0; i < itemHolder.size(); i++ ) {
-      ( ( TreeItem )itemHolder.getItem( i ) ).clear();
+      final TreeItem treeItem = ( ( TreeItem )itemHolder.getItem( i ) );
+      treeItem.clear();
       if( recursive ) {
-        ( ( TreeItem )itemHolder.getItem( i ) ).clearAll( true, false );
+        treeItem.clearAll( true, false );
+      }
+      if((parent.style & SWT.VIRTUAL) == 0) {
+        parent.checkData( treeItem, treeItem.index );
       }
     }
+    
   }
   ///////////////////////////////////////
   // Methods to maintain (sub-) TreeItems

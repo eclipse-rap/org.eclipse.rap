@@ -25,7 +25,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA;
 import org.eclipse.swt.widgets.*;
 
@@ -45,7 +44,8 @@ public class TreeItemLCA_Test extends TestCase {
     new TreeItemLCA().preserveValues( treeItem );
     new TreeItemLCA().preserveValues( subTreeItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
-    assertEquals( "qwert", adapter.getPreserved( Props.TEXT ) );
+    final String[] texts = ( String[] )adapter.getPreserved( TreeItemLCA.PROP_TEXTS );
+    assertEquals( "qwert", texts[0] );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( TreeItemLCA.PROP_EXPANDED ) );
   }

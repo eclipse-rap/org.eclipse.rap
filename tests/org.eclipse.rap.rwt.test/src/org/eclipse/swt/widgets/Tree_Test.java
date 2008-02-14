@@ -610,16 +610,16 @@ public class Tree_Test extends TestCase {
   }
 
   public void testShowSelection() {
-		Display display = new Display();
-		Composite shell = new Shell(display, SWT.NONE);
-		Tree tree = new Tree(shell, SWT.SINGLE);
+    Display display = new Display();
+    Composite shell = new Shell(display, SWT.NONE);
+    Tree tree = new Tree(shell, SWT.SINGLE);
 
-		TreeItem item;
+    TreeItem item;
 
-		tree.showSelection();
-		item = new TreeItem(tree, 0);
-		tree.setSelection(new TreeItem[] { item });
-		tree.showSelection();
+    tree.showSelection();
+    item = new TreeItem(tree, 0);
+    tree.setSelection(new TreeItem[] { item });
+    tree.showSelection();
   }
 
 //TODO[bm] enable test case again to materialize on code
@@ -704,6 +704,47 @@ public class Tree_Test extends TestCase {
     assertEquals( 1, log.size() );
   }
 
+  public void testClearVirtual() {
+    Display display = new Display();
+    final Shell shell = new Shell( display );
+    final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
+    tree.setSize( 100, 160 );
+    tree.addListener( SWT.SetData, new Listener() {
+
+      public void handleEvent( Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        String text = null;
+        TreeItem parentItem = item.getParentItem();
+        if( parentItem == null ) {
+          text = "node " + tree.indexOf( item );
+        } else {
+          text = parentItem.getText() + " - " + parentItem.indexOf( item );
+        }
+        item.setText( text );
+        item.setItemCount( 10 );
+      }
+    } );
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    tree.setItemCount( 1 );
+    RWTFixture.readDataAndProcessAction( tree );
+    
+    assertEquals("node 0", tree.getItem( 0 ).getText());
+    tree.clearAll( true );
+    assertEquals("node 0", tree.getItem( 0 ).getText());
+    
+    tree.clear( 0, false );
+    assertEquals("node 0", tree.getItem( 0 ).getText());
+    
+    TreeItem root = tree.getItem( 0 );
+    root.clear( 0, false );
+    assertEquals("node 0 - 0", root.getItem( 0 ).getText());
+    
+    root.clearAll( true );
+    assertEquals("node 0 - 0", root.getItem( 0 ).getText());
+    assertEquals("node 0 - 1", root.getItem( 1 ).getText());
+    
+  }
+  
 // TODO[bm] enable test case again to materialize on code
 //  public void testMaterializeOnCode() {
 //    Display display = new Display();

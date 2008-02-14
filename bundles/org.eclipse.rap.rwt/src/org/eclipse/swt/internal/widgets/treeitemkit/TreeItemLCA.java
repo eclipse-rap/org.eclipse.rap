@@ -52,7 +52,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     ITreeAdapter treeadapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     if(treeadapter.isCached( treeItem )) {
-      ItemLCAUtil.preserve( treeItem );
       preserveFont( treeItem );
       adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
       adapter.preserve( TreeItemLCA.PROP_EXPANDED,
@@ -159,15 +158,15 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   // Helping methods to write changes
 
   private void writeShowItem( final TreeItem item ) throws IOException {
-	Tree tree = item.getParent();
-	ITreeAdapter adapter = ( ITreeAdapter ) tree
-				.getAdapter( ITreeAdapter.class );
-	Item showItem = adapter.getShowItem();
-	if ( showItem != null && showItem == item ) {
-		JSWriter writer = JSWriter.getWriterFor( tree );
-		writer.call( tree, "showItem", new Object[] { showItem } );
-		adapter.clearShowItem();
-	}
+    Tree tree = item.getParent();
+    ITreeAdapter adapter = ( ITreeAdapter ) tree
+    .getAdapter( ITreeAdapter.class );
+    Item showItem = adapter.getShowItem();
+    if ( showItem != null && showItem == item ) {
+      JSWriter writer = JSWriter.getWriterFor( tree );
+      writer.call( tree, "showItem", new Object[] { showItem } );
+      adapter.clearShowItem();
+    }
   }
   
   private static void writeImages( final TreeItem item ) throws IOException {
@@ -228,66 +227,66 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean writeFont( final TreeItem item ) throws IOException {
-	  Font[] fonts = getFonts( item );
-	  Font[] defValue = new Font[ fonts.length ];
-	  for( int i = 0; i < defValue.length; i++ ) {
-		  Font parentFont = item.getParent().getFont();
-		  defValue[ i ] = parentFont;
-	  }
-	  boolean result
-	  = WidgetLCAUtil.hasChanged( item, PROP_FONT, fonts, defValue );
-	  if( result ) {
-		  String[] css = new String[ fonts.length ];
-		  for( int i = 0; i < fonts.length; i++ ) {
-			  css[ i ] = toCss( fonts[ i ] );
-		  }
-		  JSWriter writer = JSWriter.getWriterFor( item );
-		  writer.set( "fonts", new Object[] { css } );
-	  }
-	  return result;
+    Font[] fonts = getFonts( item );
+    Font[] defValue = new Font[ fonts.length ];
+    for( int i = 0; i < defValue.length; i++ ) {
+      Font parentFont = item.getParent().getFont();
+      defValue[ i ] = parentFont;
+    }
+    boolean result
+    = WidgetLCAUtil.hasChanged( item, PROP_FONT, fonts, defValue );
+    if( result ) {
+      String[] css = new String[ fonts.length ];
+      for( int i = 0; i < fonts.length; i++ ) {
+        css[ i ] = toCss( fonts[ i ] );
+      }
+      JSWriter writer = JSWriter.getWriterFor( item );
+      writer.set( "fonts", new Object[] { css } );
+    }
+    return result;
   }
 
   private static void writeBackground( final TreeItem item ) throws IOException {
-//	  IWidgetColorAdapter colorAdapter
-//	  = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
-	  JSWriter writer = JSWriter.getWriterFor( item );
-	  writer.set( PROP_BACKGROUND, "background", item.getBackground(), null );
+//    IWidgetColorAdapter colorAdapter
+//    = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+    JSWriter writer = JSWriter.getWriterFor( item );
+    writer.set( PROP_BACKGROUND, "background", item.getBackground(), null );
   }
 
   private static void writeForeground( final TreeItem item ) throws IOException {
-//	  IWidgetColorAdapter colorAdapter
-//	  = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
-//	  if( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND,
-//			  colorAdapter.getUserBackgound(), null ) ) {
-//		  WidgetLCAUtil.writeForeground( item, colorAdapter.getUserForegound() );
-//	  }
+//    IWidgetColorAdapter colorAdapter
+//    = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+//    if( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND,
+//        colorAdapter.getUserBackgound(), null ) ) {
+//        WidgetLCAUtil.writeForeground( item, colorAdapter.getUserForegound() );
+//    }
     if( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND, null )) {
       WidgetLCAUtil.writeForeground( item, item.getForeground() );
     }
   }
 
   private boolean writeBackgrounds( final TreeItem item ) throws IOException {
-	  Color[] backgrounds = getBackgrounds( item );
-	  Color itemBackground = item.getBackground();
-	  Color[] defValue = new Color[ getColumnCount( item ) ];
-	  for( int i = 0; i < defValue.length; i++ ) {
-		  defValue[ i ] = itemBackground;
-	  }
-	  JSWriter writer = JSWriter.getWriterFor( item );
-	  return writer.set( PROP_BACKGROUNDS, "backgrounds", backgrounds, defValue );
+    Color[] backgrounds = getBackgrounds( item );
+    Color itemBackground = item.getBackground();
+    Color[] defValue = new Color[ getColumnCount( item ) ];
+    for( int i = 0; i < defValue.length; i++ ) {
+      defValue[ i ] = itemBackground;
+    }
+    JSWriter writer = JSWriter.getWriterFor( item );
+    return writer.set( PROP_BACKGROUNDS, "backgrounds", backgrounds, defValue );
   }
 
   private boolean writeForegrounds( final TreeItem item ) throws IOException {
-//	    IWidgetColorAdapter colorAdapter
-//	      = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
-	  Color[] foregrounds = getForegrounds( item );
-	  Color parentForeground = item.getParent().getForeground(); //colorAdapter.getUserForegound();
-	  Color[] defValue = new Color[ getColumnCount( item ) ];
-	  for( int i = 0; i < defValue.length; i++ ) {
-		  defValue[ i ] = parentForeground;
-	  }
-	  JSWriter writer = JSWriter.getWriterFor( item );
-	  return writer.set( PROP_FOREGROUNDS, "foregrounds", foregrounds, defValue );
+//      IWidgetColorAdapter colorAdapter
+//        = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+    Color[] foregrounds = getForegrounds( item );
+    Color parentForeground = item.getParent().getForeground(); //colorAdapter.getUserForegound();
+    Color[] defValue = new Color[ getColumnCount( item ) ];
+    for( int i = 0; i < defValue.length; i++ ) {
+      defValue[ i ] = parentForeground;
+    }
+    JSWriter writer = JSWriter.getWriterFor( item );
+    return writer.set( PROP_FOREGROUNDS, "foregrounds", foregrounds, defValue );
   }
 
   private static void writeTexts( final TreeItem item ) throws IOException {
@@ -323,32 +322,32 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static Font[] getFonts( final TreeItem item ) {
-	  int columnCount = getColumnCount( item );
-	  Font[] result = new Font[ columnCount ];
-	  for( int i = 0; i < result.length; i++ ) {
-		  result[ i ] = item.getFont( i );
-	  }
-	  return result;
+    int columnCount = getColumnCount( item );
+    Font[] result = new Font[ columnCount ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = item.getFont( i );
+    }
+    return result;
   }
 
   private static Color[] getBackgrounds( final TreeItem item ) {
-	  int columnCount = getColumnCount( item );
-	  Color[] result = new Color[ columnCount ];
-	  for( int i = 0; i < result.length; i++ ) {
-		  result[ i ] = item.getBackground( i );
-	  }
-	  return result;
+    int columnCount = getColumnCount( item );
+    Color[] result = new Color[ columnCount ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = item.getBackground( i );
+    }
+    return result;
   }
 
   private static Color[] getForegrounds( final TreeItem item ) {
-	  int columnCount = getColumnCount( item );
-	  Color[] result = new Color[ columnCount ];
-	  for( int i = 0; i < result.length; i++ ) {
-		  result[ i ] = item.getForeground( i );
-	  }
-	  return result;
+    int columnCount = getColumnCount( item );
+    Color[] result = new Color[ columnCount ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = item.getForeground( i );
+    }
+    return result;
   }
-	  
+
   private static int getColumnCount( final TreeItem item ) {
     return Math.max( 1, item.getParent().getColumnCount() );
   }
@@ -377,20 +376,20 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static String toCss( final Font font ) {
-	  StringBuffer result = new StringBuffer();
-	  FontData fontData = font.getFontData()[ 0 ];
-	  if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
-		  result.append( "italic " );
-	  }
-	  if( ( fontData.getStyle() & SWT.BOLD ) != 0 ) {
-		  result.append( "bold " );
-	  }
-	  result.append( fontData.getHeight() );
-	  result.append( "px " );
-	  // TODO [rh] preliminary: low budget font-name-escaping
-	  String escapedName = fontData.getName().replaceAll( "\"", "" );
-	  result.append( escapedName );
-	  return result.toString();
+    StringBuffer result = new StringBuffer();
+    FontData fontData = font.getFontData()[ 0 ];
+    if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
+      result.append( "italic " );
+    }
+    if( ( fontData.getStyle() & SWT.BOLD ) != 0 ) {
+      result.append( "bold " );
+    }
+    result.append( fontData.getHeight() );
+    result.append( "px " );
+    // TODO [rh] preliminary: low budget font-name-escaping
+    String escapedName = fontData.getName().replaceAll( "\"", "" );
+    result.append( escapedName );
+    return result.toString();
   }
 
   /////////////////////////////////

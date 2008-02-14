@@ -159,6 +159,9 @@ public class TreeItem_Test extends TestCase {
     assertEquals( "", item.getText() );
     assertEquals( null, item.getImage() );
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getChecked() ) );
+    
+    tree = new Tree( shell, SWT.SINGLE | SWT.VIRTUAL );
+    
   }
 
   public void testClearAll() {
@@ -337,7 +340,7 @@ public class TreeItem_Test extends TestCase {
       treeItem.setImage( ( Image[] )null );
       fail( "No exception thrown for images == null" );
     } catch( IllegalArgumentException e ) {
-    	// expected
+      // expected
     }
   }
 
