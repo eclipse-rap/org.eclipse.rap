@@ -532,9 +532,6 @@ public final class ThemeManager {
               throw new IllegalArgumentException( "key defined twice: "
                                                   + def.name );
             }
-            if( "mycontrol.bgimage".equals( def.name ) ) {
-              System.out.println();
-            }
             themeDefs.put( def.name, def );
             if( def.targetPath != null ) {
               imageMapping.put( def.name, def.targetPath );
@@ -771,6 +768,9 @@ public final class ThemeManager {
           // TODO [rst] implement proper path join
           String widgetDestPath = getWidgetDestPath( jsId  );
           String targetPath = ( String )imageMapping.get( key );
+          if( targetPath == null ) {
+            targetPath = key;
+          }
           String registerPath = widgetDestPath + "/" + targetPath;
           IResourceManager resMgr = ResourceManager.getInstance();
           resMgr.register( registerPath, inputStream );
