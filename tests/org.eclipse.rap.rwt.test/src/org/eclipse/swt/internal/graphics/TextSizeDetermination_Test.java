@@ -38,7 +38,7 @@ public class TextSizeDetermination_Test extends TestCase {
 
   private static final String TEST_STRING = "test";
 
-  public void testRequestCycle() throws IOException {
+  public void testRequestCycle() {
     Display display = new Display();
     String displayId = DisplayUtil.getId( display );
 
@@ -47,11 +47,11 @@ public class TextSizeDetermination_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     ISessionStore session = ContextProvider.getSession();
     String id = LifeCycle.class.getName();
     session.setAttribute( id, lifeCycle );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
 
     // The actual test request
     Fixture.fakeResponseWriter();
@@ -73,7 +73,7 @@ public class TextSizeDetermination_Test extends TestCase {
         return PhaseId.RENDER;
       }
     } );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
 
     String probe = TextSizeProbeStore.DEFAULT_PROBE;
     String[] expected = new String[] {
@@ -145,7 +145,7 @@ public class TextSizeDetermination_Test extends TestCase {
     Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     // make sure text extent does expand line breaks
     String markup = "First Line<ul><li>item1</li><li>item2</li></ul>";
-    Point multiLine = TextSizeDetermination.markupExtent( font, markup, 0 );
+    TextSizeDetermination.markupExtent( font, markup, 0 );
     ICalculationItem[] items = TextSizeDetermination.getCalculationItems();
     boolean markupUnaltered = false;
     for( int i = 0; i < items.length; i++ ) {

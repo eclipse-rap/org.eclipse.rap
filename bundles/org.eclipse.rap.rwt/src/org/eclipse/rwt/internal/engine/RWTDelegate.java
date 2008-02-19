@@ -55,7 +55,6 @@ public class RWTDelegate extends HttpServlet {
       // TODO [fappel]: move this into a method ContextProvider#ensureSession().
       //                Ensure that there is exactly one ISessionStore per 
       //                session created
-      // TODO [w4t] changed synchronize: replaced registrySkimmer with this 
       synchronized( this ) {
         ContextProvider.getSession();
       }

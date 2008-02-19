@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -20,7 +18,8 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class UITestUtil_Test extends TestCase {
@@ -38,22 +37,21 @@ public class UITestUtil_Test extends TestCase {
     assertFalse( UITestUtil.isValidId( "A/8" ) );
   }
   
-  public void testWriteIds() throws IOException {
+  public void testWriteIds() {
     System.setProperty( WidgetUtil.ENABLE_UI_TESTS, "true" );
     Display display = new Display();
     new Shell( display, SWT.NONE );
     String displayId = DisplayUtil.getId( display );
     // Request with not yet initialized widgets
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setHtmlId" ) != -1 );
     // Request with already initialized widgets
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setHtmlId" ) == -1 );
     // clean up

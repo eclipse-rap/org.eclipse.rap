@@ -394,6 +394,11 @@ public class UICallBackServiceHandler implements IServiceHandler {
                                                     final Runnable runnable,
                                                     final boolean asUIThread )
   {
+    // TODO [rh] remove parameter 'asUIThread' after readAndDispath finalization
+    if( asUIThread ) {
+      String msg = "runNonUIThreadWithFakeContext: cannot execute in UI thread.";
+      throw new UnsupportedOperationException( msg );
+    }
     // Don't replace local variables by method calls, since the context may
     // change during the methods execution.
     boolean useDifferentContext
@@ -403,7 +408,6 @@ public class UICallBackServiceHandler implements IServiceHandler {
       contextBuffer = ContextProvider.getContext();
       ContextProvider.releaseContextHolder();
     }
-    Thread displayThreadBuffer = display.thread;
     boolean useFakeContext = !ContextProvider.hasContext();
     if( useFakeContext ) {
       IDisplayAdapter adapter = getDisplayAdapter( display );
@@ -412,22 +416,10 @@ public class UICallBackServiceHandler implements IServiceHandler {
       DummyResponse response = new DummyResponse();
       ServiceContext context = new ServiceContext( request, response, session );
       ContextProvider.setContext( context );
-      if( asUIThread ) {
-        ServiceStateInfo serviceStateInfo = new ServiceStateInfo();
-        context.setStateInfo( serviceStateInfo );
-        RWTLifeCycle.setThread( Thread.currentThread() );
-      }
-    }
-    // TODO [fappel]: improve this
-    if( asUIThread ) {
-      display.thread = Thread.currentThread();        
     }
     try {
       runnable.run();
     } finally {
-      if( asUIThread ) {
-        display.thread = displayThreadBuffer;        
-      }
       if( useFakeContext ) {
         ContextProvider.disposeContext();
       }

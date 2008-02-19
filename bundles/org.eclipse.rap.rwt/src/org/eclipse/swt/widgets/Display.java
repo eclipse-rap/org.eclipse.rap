@@ -11,6 +11,7 @@
 
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,15 +21,14 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.AdapterManagerImpl;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
-import org.eclipse.rwt.internal.lifecycle.UICallBackManager;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -111,6 +111,8 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
  * <!--@see #readAndDispatch-->
  * <!--@see #sleep-->
  * <!--@see Device#dispose-->
+ * 
+ * @since 1.0
  */
 // TODO: [doc] Update display javadoc
 public class Display extends Device implements Adaptable {
@@ -155,11 +157,12 @@ public class Display extends Device implements Adaptable {
    *
    * @return the default display
    */
-  public static Display getDefault () {
+  public static Display getDefault() {
     return getCurrent();
   }
 
   private final List shells;
+  private final Thread thread;
   private ISessionStore session;
   private Rectangle bounds;
   private Shell activeShell;
@@ -167,7 +170,6 @@ public class Display extends Device implements Adaptable {
   private Control focusControl;
   private IDisplayAdapter displayAdapter;
   private WidgetAdapter widgetAdapter;
-  public Thread thread;
 
   /**
    * Constructs a new instance of this class.
@@ -189,6 +191,7 @@ public class Display extends Device implements Adaptable {
    * @see Shell
    */
   public Display() {
+    thread = Thread.currentThread();
     session = ContextProvider.getSession();
     if( getCurrent() != null ) {
       String msg = "Currently only one display per session is supported.";
@@ -197,24 +200,6 @@ public class Display extends Device implements Adaptable {
     ContextProvider.getSession().setAttribute( DISPLAY_ID, this );
     shells = new ArrayList();
     readInitialBounds();
-  }
-
-  /**
-   * Returns a (possibly empty) array containing all shells which have
-   * not been disposed and have the receiver as their display.
-   *
-   * @return the receiver's shells
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
-   * </ul>
-   */
-  public Shell[] getShells() {
-    checkDevice();
-    Shell[] result = new Shell[ shells.size() ];
-    shells.toArray( result );
-    return result;
   }
 
   /**
@@ -266,9 +251,6 @@ public class Display extends Device implements Adaptable {
     }
   }
 
-  ///////////////////////////
-  // Systen colors and images
-
   /**
    * Maps a point from one coordinate system to another.
    * When the control is null, coordinates are mapped to
@@ -302,8 +284,6 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public Point map( final Control from, final Control to, final Point point ) {
     checkDevice();
@@ -346,8 +326,6 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public Point map( final Control from,
                     final Control to,
@@ -392,8 +370,6 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public Rectangle map( final Control from,
                         final Control to,
@@ -446,8 +422,6 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
-   *
-   * @since 1.0
    */
   public Rectangle map( final Control from,
                         final Control to,
@@ -520,6 +494,24 @@ public class Display extends Device implements Adaptable {
   // Shell management
 
   /**
+   * Returns a (possibly empty) array containing all shells which have
+   * not been disposed and have the receiver as their display.
+   *
+   * @return the receiver's shells
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   */
+  public Shell[] getShells() {
+    checkDevice();
+    Shell[] result = new Shell[ shells.size() ];
+    shells.toArray( result );
+    return result;
+  }
+
+  /**
    * Returns the currently active <code>Shell</code>, or null
    * if no shell belonging to the currently running application
    * is active.
@@ -583,9 +575,6 @@ public class Display extends Device implements Adaptable {
    * </ul>
    */
   public Thread getThread () {
-    if( thread == null ) {
-      thread = RWTLifeCycle.getThread();
-    }
     return thread;
   }
 
@@ -657,6 +646,66 @@ public class Display extends Device implements Adaptable {
         UICallBackManager.getInstance().addSync( runnable, Display.this );
       }
     } );
+  }
+
+
+  /**
+   * Reads an event from the <!-- operating system's --> event queue,
+   * dispatches it appropriately, and returns <code>true</code>
+   * if there is potentially more work to do, or <code>false</code>
+   * if the caller can sleep until another event is placed on
+   * the event queue.
+// TODO [rh] solve JavaDoc/implementation mismatch: doc says that (a)syncExec
+//      runnables are also executed - implementation doesn't
+   * <!--
+   * <p>
+   * In addition to checking the system event queue, this method also
+   * checks if any inter-thread messages (created by <code>syncExec()</code>
+   * or <code>asyncExec()</code>) are waiting to be processed, and if
+   * so handles them before returning.
+   * </p>
+   * -->
+   *
+   * @return <code>false</code> if the caller can sleep upon return from this method
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_FAILED_EXEC - if an exception occurred while running an inter-thread message</li>
+   * </ul>
+   *
+   * @see #sleep
+   * @see #wake
+   * 
+   * @since 1.1
+   */
+  public boolean readAndDispatch() {
+    return RWTLifeCycle.readAndDispatch();
+  }
+
+  /**
+   * Causes the user-interface thread to <em>sleep</em> (that is,
+   * to be put in a state where it does not consume CPU cycles)
+   * until an event is received or it is otherwise awakened.
+   *
+   * @return <code>true</code> if an event requiring dispatching was placed on the queue.
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   *
+   * @see #wake
+   * 
+   * @since 1.1
+   */
+  public void sleep() {
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    try {
+      lifeCycle.sleep();
+    } catch( IOException e ) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -797,8 +846,6 @@ public class Display extends Device implements Adaptable {
    * @see SWT#ICON_QUESTION
    * @see SWT#ICON_WARNING
    * @see SWT#ICON_WORKING
-   *
-   * @since 1.0
    */
   public Image getSystemImage( final int id ) {
     checkDevice();

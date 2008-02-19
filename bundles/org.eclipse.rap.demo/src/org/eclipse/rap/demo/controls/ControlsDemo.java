@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.*;
 
 public class ControlsDemo implements IEntryPoint {
 
-  public Display createUI() {
+  public int createUI() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.TITLE | SWT.MAX | SWT.RESIZE );
     shell.setBounds( 10, 10, 850, 600 );
@@ -33,7 +33,12 @@ public class ControlsDemo implements IEntryPoint {
     shell.setImage( image );
     shell.layout();
     shell.open();
-    return display;
+    while( !shell.isDisposed() ) {
+      if( !display.readAndDispatch() ) {
+        display.sleep();
+      }
+    }
+    return 0;
   }
 
   private void createContent( final Composite parent ) {

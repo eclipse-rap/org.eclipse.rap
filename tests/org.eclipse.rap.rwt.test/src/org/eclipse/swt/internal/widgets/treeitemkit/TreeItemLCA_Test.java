@@ -117,7 +117,7 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( false, treeItem.getExpanded() );
   }
 
-  public void testChecked() throws IOException {
+  public void testChecked() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
@@ -128,10 +128,8 @@ public class TreeItemLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( treeItemId + ".checked", "true" );
-    new RWTLifeCycle().execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( true, treeItem.getChecked() );
-    RWTFixture.removeUIThread();
   }
 
   public void testRenderChanges() throws IOException {

@@ -32,8 +32,12 @@ import org.eclipse.swt.widgets.Display;
 public class WrappedRequest_Test extends TestCase {
   
   public static final class DefaultEntryPoint implements IEntryPoint {
-    public Display createUI() {
-      return new Display();
+    public int createUI() {
+      Display display = new Display();
+      if( display.readAndDispatch() ) {
+        display.sleep();
+      }
+      return 0;
     }
   }
 

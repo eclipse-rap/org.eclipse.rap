@@ -31,6 +31,7 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
@@ -138,12 +139,6 @@ public final class RWTFixture {
     }
   }
 
-  public static class TestEntryPoint implements IEntryPoint {
-    public Display createUI() {
-      return new Display();
-    }
-  }
-
   public static final String IMAGE1 = "resources/images/image1.gif";
   public static final String IMAGE2 = "resources/images/image2.gif";
   public static final String IMAGE3 = "resources/images/image3.gif";
@@ -171,17 +166,13 @@ public final class RWTFixture {
 
     // registration of mockup resource manager
     registerResourceManager();
-
-    fakeUIThread();
-  }
-
-  public static void fakeUIThread() {
-    RWTLifeCycle.setThread( Thread.currentThread() );
   }
 
   public static void setUpWithoutResourceManager() {
     // standard setup
     Fixture.setUp();
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
+                        RWTLifeCycle.class.getName() );
     LifeCycleServiceHandler.configurer = null;
 
     // registration of adapter factories
@@ -189,8 +180,6 @@ public final class RWTFixture {
   }
 
   public static void tearDown() {
-    removeUIThread();
-
     // deregistration of mockup resource manager
     deregisterResourceManager();
 
@@ -202,13 +191,14 @@ public final class RWTFixture {
     // clear Graphics resources
     ResourceFactory.clear();
 
+    // remove all registered entry points
+    String[] entryPoints = EntryPointManager.getEntryPoints();
+    for( int i = 0; i < entryPoints.length; i++ ) {
+      EntryPointManager.deregister( entryPoints[ i ] );
+    }
     // standard teardown
     Fixture.tearDown();
     System.getProperties().remove( IInitialization.PARAM_LIFE_CYCLE );
-  }
-
-  public static void removeUIThread() {
-    RWTLifeCycle.setThread( null );
   }
 
   public static void registerAdapterFactories() {
@@ -242,13 +232,15 @@ public final class RWTFixture {
 
   public static void preserveWidgets() {
     PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
-    PhaseEvent event = new PhaseEvent( new RWTLifeCycle(), PhaseId.READ_DATA );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    PhaseEvent event = new PhaseEvent( lifeCycle, PhaseId.READ_DATA );
     listener.afterPhase( event );
   }
 
   public static void clearPreserved() {
     PreserveWidgetsPhaseListener listener = new PreserveWidgetsPhaseListener();
-    PhaseEvent event = new PhaseEvent( new RWTLifeCycle(), PhaseId.RENDER );
+    ILifeCycle lifeCycle = LifeCycleFactory.getLifeCycle();
+    PhaseEvent event = new PhaseEvent( lifeCycle, PhaseId.RENDER );
     listener.afterPhase( event );
   }
 
@@ -310,5 +302,75 @@ public final class RWTFixture {
     request.setSession( session );
     ServiceContext context = new ServiceContext( request, response );
     ContextProvider.setContext( context );
+  }
+
+  public static void executeLifeCycleFromServerThread() {
+    final RWTLifeCycle lifeCycle 
+      = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    final IUIThreadHolder threadHolder = new IUIThreadHolder() {
+      private Thread thread = Thread.currentThread();
+      
+      public void setServiceContext( ServiceContext serviceContext ) {
+      }
+      public void switchThread() throws InterruptedException {
+        synchronized( getLock() ) {
+          notifyAll();
+          wait();
+        }
+      }
+      public void updateServiceContext() {
+      }
+      public void terminateThread() {
+      }
+      public Thread getThread() {
+        return thread;
+      }
+      public Object getLock() {
+        return this;
+      }
+    };
+    ISessionStore session = ContextProvider.getSession();
+    session.setAttribute( RWTLifeCycle.UI_THREAD, threadHolder );
+    
+    final ServiceContext context = ContextProvider.getContext();
+    Thread serverThread = new Thread( new Runnable() {
+      public void run() {
+        synchronized( threadHolder.getLock() ) {          
+          ContextProvider.setContext( context );
+          try {
+            try {
+              lifeCycle.execute();
+              lifeCycle.setPhaseOrder( null );
+            } catch( IOException e ) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+          } finally {
+            ContextProvider.releaseContextHolder();
+            threadHolder.notifyAll();          
+          }
+        }
+      }
+    }, "ServerThread" );
+    
+    try {
+      synchronized( threadHolder.getLock() ) {
+        serverThread.start();
+        lifeCycle.sleep();        
+      }
+    } catch( IOException e ) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    while( Display.getCurrent().readAndDispatch() ) {
+    }
+    
+    try {
+      lifeCycle.sleep();
+    } catch( IOException e ) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 }

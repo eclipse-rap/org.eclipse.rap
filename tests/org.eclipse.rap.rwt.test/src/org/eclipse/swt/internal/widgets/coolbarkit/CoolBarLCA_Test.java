@@ -14,8 +14,7 @@ package org.eclipse.swt.internal.widgets.coolbarkit;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -221,7 +220,7 @@ public final class CoolBarLCA_Test extends TestCase {
   // Helping methods
 
   private static RWTLifeCycle createLifeCycle() {
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     return lifeCycle;
   }

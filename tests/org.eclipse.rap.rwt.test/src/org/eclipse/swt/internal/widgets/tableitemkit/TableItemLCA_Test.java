@@ -53,7 +53,7 @@ public class TableItemLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
   
-  public void testWidgetSelectedWithCheck() throws IOException {
+  public void testWidgetSelectedWithCheck() {
     final SelectionEvent[] events = new SelectionEvent[ 1 ];
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -77,9 +77,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( item2Id + ".checked", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, item2Id );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_DETAIL, "check" );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
     assertEquals( item2, events[ 0 ].item );
@@ -92,7 +90,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( item1, table.getSelection()[ 0 ] );
   }
   
-  public void testDisposeSelected() throws IOException {
+  public void testDisposeSelected() {
     final boolean[] executed = { false };
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -114,8 +112,7 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertTrue( executed[ 0 ] );
   }
   

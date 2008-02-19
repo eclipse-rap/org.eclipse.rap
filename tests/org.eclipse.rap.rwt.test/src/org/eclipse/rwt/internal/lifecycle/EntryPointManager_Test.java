@@ -8,30 +8,21 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.widgets.Display;
 
 public class EntryPointManager_Test extends TestCase {
 
   public static String log = "";
+
   public static class TestEntryPointWithLog implements IEntryPoint {
-
-    public Display createUI() {
+    public int createUI() {
       log = "isRunning";
-      return new Display();
-    }
-  }
-  public static class NullEntryPoint implements IEntryPoint {
-
-    public Display createUI() {
-      return null;
+      return 123;
     }
   }
 
@@ -106,18 +97,11 @@ public class EntryPointManager_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    try {
-      EntryPointManager.register( "null", NullEntryPoint.class );
-      EntryPointManager.createUI( "null" );
-      fail( "entry point must return a display" );
-    } catch( IllegalStateException e ) {
-      // expected
-    }
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestEntryPointWithLog.class );
-    Device display = EntryPointManager.createUI( EntryPointManager.DEFAULT );
+    int returnVal = EntryPointManager.createUI( EntryPointManager.DEFAULT );
     assertEquals( "isRunning", log );
-    assertNotNull( display );
+    assertEquals( 123, returnVal );
     
     String currentEntryPoint = EntryPointManager.getCurrentEntryPoint();
     assertEquals( EntryPointManager.DEFAULT, currentEntryPoint );

@@ -11,8 +11,6 @@
 
 package org.eclipse.swt.internal.widgets.treekit;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -50,7 +48,7 @@ public class TreeLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, hasListeners );
   }
 
-  public void testSelectionEvent() throws IOException {
+  public void testSelectionEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -76,7 +74,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", treeItemId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "itemSelected", log.toString() );
   }
   

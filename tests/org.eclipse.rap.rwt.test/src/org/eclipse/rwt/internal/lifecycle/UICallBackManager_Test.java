@@ -95,8 +95,7 @@ public class UICallBackManager_Test extends TestCase {
   public void testAddAsync() throws InterruptedException {
     final Throwable[] uiCallBackServiceHandlerThrowable = { null };
     final ServiceContext context[] = { ContextProvider.getContext() };
-    final Display[] display = new Display[ 1 ];
-    final Throwable[] lifeCycleProblem = new Throwable[ 1 ]; 
+    Display display = new Display();
     
     // test initial blocking of uiCallBack thread
     Thread uiCallBackThread
@@ -108,38 +107,22 @@ public class UICallBackManager_Test extends TestCase {
     assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     
     // test unblocking in case of background addition of runnables
-    simulateBackgroundAddition( context );
+    simulateBackgroundAddition( context, display );
     assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     assertFalse( uiCallBackThread.isAlive() );
     assertEquals( "", log );
     
     // test runnables execution during lifecycle with interlocked additions
-    Thread uiThread = new Thread( new Runnable() {
-      public void run() {
-        try {
-          ContextProvider.setContext( context[ 0 ] );
-          display[ 0 ] = new Display();
-          fakeRequestParam( display[ 0 ] );
-          RWTLifeCycle lifeCycle = new RWTLifeCycle();
-          simulateBackgroundAdditionDuringLifeCycle( context, lifeCycle );
-          lifeCycle.execute();
-        } catch( final Throwable thr ) {
-          lifeCycleProblem[ 0 ] = thr;
-        }
-      }
-    } );
-    uiThread.start();
-    uiThread.join();
-    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
-      lifeCycleProblem[ 0 ].printStackTrace();
-    }
-    assertNull( lifeCycleProblem[ 0 ] );
+    fakeRequestParam( display );
+    simulateBackgroundAdditionDuringLifeCycle( context, display );
+    RWTFixture.executeLifeCycleFromServerThread();
     assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
     
     // test runnables addition while no uiCallBack thread is not blocked
+    UICallBackManager.getInstance().notifyUIThreadEnd();
     log = "";
-    simulateBackgroundAddition( context );
+    simulateBackgroundAddition( context, display );
     uiCallBackThread 
       = simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
     if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
@@ -149,35 +132,19 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     // since no UI thread is running and
     // runnables available do not block
-    assertFalse( uiCallBackThread.isAlive() ); 
+    assertFalse( uiCallBackThread.isAlive() );
+    UICallBackManager.getInstance().notifyUIThreadStart();
     
     // test blocking of incomming uiCallBack thread while UI thread is running
-    uiThread = new Thread( new Runnable() {
-      public void run() {
-        try {
-          ContextProvider.setContext( context[ 0 ] );
-          fakeRequestParam( display[ 0 ] );
-          RWTLifeCycle lifeCycle = new RWTLifeCycle();
-          simulateUICallBackThreadLockDuringLifeCycle( 
-            context, 
-            lifeCycle,
-            uiCallBackServiceHandlerThrowable );
-          lifeCycle.execute();
-        } catch( final Throwable thr ) {
-          lifeCycleProblem[ 0 ] = thr;
-        }
-      }
-    } );
-    uiThread.start();
-    uiThread.join();
+    fakeRequestParam( display );
+    simulateUICallBackThreadLockDuringLifeCycle( 
+      context, 
+      uiCallBackServiceHandlerThrowable );
+    RWTFixture.executeLifeCycleFromServerThread();    
     if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
       uiCallBackServiceHandlerThrowable[ 0 ].printStackTrace();
     }
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
-    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
-      lifeCycleProblem[ 0 ].printStackTrace();
-    }
-    assertNull( lifeCycleProblem[ 0 ] );
     assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
   }
@@ -208,7 +175,8 @@ public class UICallBackManager_Test extends TestCase {
     return uiCallBackThread;
   }
 
-  private void simulateBackgroundAddition( final ServiceContext[] context )
+  private void simulateBackgroundAddition( final ServiceContext[] context, 
+                                           final Display display )
     throws InterruptedException
   {
     Thread backgroundThread = new Thread( new Runnable() {
@@ -219,12 +187,12 @@ public class UICallBackManager_Test extends TestCase {
           public void run() {
             log += RUN_ASYNC_EXEC;
           }
-        }, null );
+        }, display );
         instance.addAsync( new Runnable() {
           public void run() {
             log += RUN_ASYNC_EXEC;
           }
-        }, null );
+        }, display );
       }
     } );
     backgroundThread.start();
@@ -233,8 +201,9 @@ public class UICallBackManager_Test extends TestCase {
 
   private void simulateBackgroundAdditionDuringLifeCycle( 
     final ServiceContext[] context,
-    final RWTLifeCycle lifeCycle )
+    final Display display )
   {
+    final RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
 
@@ -246,7 +215,7 @@ public class UICallBackManager_Test extends TestCase {
               public void run() {
                 log += RUN_ASYNC_EXEC;
               }
-            }, null );
+            }, display );
           }
         } );
         thread.start();
@@ -256,6 +225,7 @@ public class UICallBackManager_Test extends TestCase {
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
+        lifeCycle.removePhaseListener( this );
       }
 
       public void beforePhase( final PhaseEvent event ) {
@@ -268,9 +238,10 @@ public class UICallBackManager_Test extends TestCase {
   
   private void simulateUICallBackThreadLockDuringLifeCycle( 
     final ServiceContext[] context,
-    final RWTLifeCycle lifeCycle,
     final Throwable[] uiCallBackServiceHandlerThrowable )
   {
+    final RWTLifeCycle lifeCycle
+      = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       
@@ -295,6 +266,7 @@ public class UICallBackManager_Test extends TestCase {
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
+        lifeCycle.removePhaseListener( this );
       }
       
       public void beforePhase( final PhaseEvent event ) {

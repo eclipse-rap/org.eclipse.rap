@@ -11,12 +11,12 @@
 package org.eclipse.swt.internal.widgets.controlkit;
 
 import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.browser.Mozilla1_7up;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
@@ -31,20 +31,18 @@ public class ControlLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {
     RWTFixture.setUpWithoutResourceManager();
-    RWTFixture.fakeUIThread();
     ThemeManager.getInstance().initialize();
   }
 
   protected void tearDown() throws Exception {
 // TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
 //    ThemeManager.getInstance().deregisterAll();
-    RWTFixture.removeUIThread();
     RWTFixture.tearDown();
   }
 
   public void testPreserveValues() {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+    Composite shell = new Shell( display, SWT.NONE );
     ControlListener controlListener = new ControlListener() {
       public void controlMoved( final ControlEvent event ) {
       }
@@ -139,7 +137,7 @@ public class ControlLCA_Test extends TestCase {
     assertEquals( -1, markup.indexOf( focusLost ) );
   }
 
-  public void testRedrawAndDispose() throws IOException {
+  public void testRedrawAndDispose() {
     final StringBuffer log = new StringBuffer();
     // Set up test scenario
     Display display = new Display();
@@ -185,8 +183,7 @@ public class ControlLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( "", log.toString() );
   }
 }

@@ -126,10 +126,36 @@ public class TypedEvent extends Event {
    * </p>
    */
   public static void processScheduledEvents() {
-    for( int i = 0; i < EVENT_ORDER.length; i++ ) {
-      processEventClass( EVENT_ORDER[ i ] );
+    TypedEvent[] events = getScheduledEvents();
+    for( int i = 0; i < events.length; i++ ) {
+      TypedEvent event = events[ i ];
+      if( event.allowProcessing() ) {
+        event.processEvent();
+      }
     }
     clearScheduledEventList();
+  }
+  
+  /**
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed 
+   * from application code.
+   * </p>
+   */
+  public static boolean executeNext() {
+    boolean result = false;
+    TypedEvent[] events = getScheduledEvents();
+    while( !result && events.length > 0 ) {
+      TypedEvent event = events[ 0 ];
+      getScheduledEventList().remove( event );
+      if( event.allowProcessing() ) {
+        event.processEvent();
+        result = true;
+      }
+      events = getScheduledEvents();
+    }
+    return result;
   }
   
   ////////////////////////////////////
@@ -169,15 +195,23 @@ public class TypedEvent extends Event {
   
   private static TypedEvent[] getScheduledEvents() {
     List list = getScheduledEventList();
-    TypedEvent[] result = new TypedEvent[ list.size() ];
-    list.toArray( result );
+    List sortedEvents = new ArrayList();
+    for( int i = 0; i < EVENT_ORDER.length; i++ ) {
+      for( int k = 0; k < list.size(); k++ ) {
+        Object event = list.get( k );
+        if( EVENT_ORDER[ i ].equals( event.getClass() ) ) {
+          sortedEvents.add( event );
+        }
+      }
+    }
+    TypedEvent[] result = new TypedEvent[ sortedEvents.size() ];
+    sortedEvents.toArray( result );
     return result;
   }
   
   private static List getScheduledEventList() {
-    List result;
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    result = ( List )stateInfo.getAttribute( ATTR_SCHEDULED_EVENT_LIST );
+    List result = ( List )stateInfo.getAttribute( ATTR_SCHEDULED_EVENT_LIST );
     if( result == null ) {
       result = new ArrayList();
       stateInfo.setAttribute( ATTR_SCHEDULED_EVENT_LIST, result );
@@ -187,17 +221,6 @@ public class TypedEvent extends Event {
   
   private static void clearScheduledEventList() {
     getScheduledEventList().clear();
-  }
-
-  private static void processEventClass( final Class eventClass ) {
-    TypedEvent[] scheduledEvents = getScheduledEvents();
-    for( int i = 0; i < scheduledEvents.length; i++ ) {
-      if(    eventClass.equals( scheduledEvents[ i ].getClass() ) 
-          && scheduledEvents[ i ].allowProcessing() ) 
-      {
-        scheduledEvents[ i ].processEvent();
-      }
-    }
   }
 
   ///////////////////////

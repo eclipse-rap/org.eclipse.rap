@@ -11,12 +11,10 @@
 
 package org.eclipse.swt.events;
 
-import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
@@ -34,7 +32,7 @@ public class FocusEvent_Test extends TestCase {
     RWTFixture.tearDown();
   }
   
-  public void testFocusLost() throws IOException {
+  public void testFocusLost() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -59,11 +57,11 @@ public class FocusEvent_Test extends TestCase {
     Fixture.fakeRequestParam( displayId + ".focusControl", focusControlId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusLost", 
                               focusControlId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "focusLost", log.toString() );
   }
   
-  public void testFocusGained() throws IOException {
+  public void testFocusGained() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -86,7 +84,7 @@ public class FocusEvent_Test extends TestCase {
     Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusGained", 
                               controlId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "focusGained", log.toString() );
   }
 }

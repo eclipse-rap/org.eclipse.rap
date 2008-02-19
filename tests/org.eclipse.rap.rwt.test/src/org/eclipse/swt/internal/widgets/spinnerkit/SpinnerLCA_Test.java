@@ -11,8 +11,6 @@
 
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -27,7 +25,7 @@ import org.eclipse.swt.widgets.*;
 
 public class SpinnerLCA_Test extends TestCase {
 
-  public void testReadData() throws IOException {
+  public void testReadData() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Spinner spinner = new Spinner( shell, SWT.NONE );
@@ -38,23 +36,19 @@ public class SpinnerLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "77" );
-    new RWTLifeCycle().execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 77, spinner.getSelection() );
 
     // simulate invalid client-side selection 
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "777" );
-    RWTFixture.fakeUIThread();
     spinner.setSelection( 1 );
-    new RWTLifeCycle().execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( spinner.getMaximum(), spinner.getSelection() );
-    RWTFixture.removeUIThread();
   }
   
-  public void testModifyEvent() throws IOException {
+  public void testModifyEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -67,7 +61,7 @@ public class SpinnerLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "1" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, spinnerId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "", log.toString() );
     
     log.setLength( 0 );
@@ -81,11 +75,11 @@ public class SpinnerLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( spinnerId + ".selection", "2" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, spinnerId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "modifyText", log.toString() );
   }
   
-  protected void setUp() throws Exception {
+  protected void setUp() {
     RWTFixture.setUp();
   }
 

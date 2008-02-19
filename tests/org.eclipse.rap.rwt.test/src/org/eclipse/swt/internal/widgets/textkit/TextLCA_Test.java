@@ -79,7 +79,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "", Fixture.getAllMarkup() );
   }
 
-  public void testModifyEvent() throws IOException {
+  public void testModifyEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -98,11 +98,11 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "new text" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "modifyText", log.toString() );
   }
   
-  public void testVerifyEvent() throws IOException {
+  public void testVerifyEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -123,7 +123,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "verifyText", log.toString() );
   }
   

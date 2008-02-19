@@ -20,18 +20,30 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
 import org.eclipse.rwt.internal.browser.Ie6up;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.RWTFixture;
-import org.eclipse.swt.RWTFixture.TestEntryPoint;
+import org.eclipse.swt.widgets.Display;
 
 
 
 public class AdapterFactoryRegistry_Test extends TestCase {
   
+  public static class TestEntryPoint implements IEntryPoint {
+    public int createUI() {
+      Display display = new Display();
+      if( display.readAndDispatch() ) {
+        display.sleep();
+      }
+      return 0;
+    }
+  }
+
   protected void setUp() throws Exception {
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
+                        RWTLifeCycle.class.getName() );
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6up( true, true ) );
@@ -94,7 +106,7 @@ public class AdapterFactoryRegistry_Test extends TestCase {
 
     TestAdapterFactory.log = "";
     AdapterFactoryRegistry.add( TestAdapterFactory.class, TestAdaptable.class );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     assertEquals( "", TestAdapterFactory.log );
     ThemeManager.getInstance().initialize();
     lifeCycle.execute();

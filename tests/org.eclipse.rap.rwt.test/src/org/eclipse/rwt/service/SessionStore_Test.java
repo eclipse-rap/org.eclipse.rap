@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -18,12 +18,12 @@ import javax.servlet.http.*;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture.TestSession;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rwt.internal.lifecycle.ISessionShutdownAdapter;
+import org.eclipse.rwt.internal.service.*;
 
 
 public class SessionStore_Test extends TestCase {
-  
+
   private static final String BEFORE_DESTROY = "beforeDestroy|";
   private static final String VALUE_BOUND = "valueBound";
   private static final String VALUE_UNBOUND = "valueUnbound";
@@ -38,19 +38,19 @@ public class SessionStore_Test extends TestCase {
     session.setAttribute( ATTR1, attr1 );
     assertSame( attr1, session.getAttribute( ATTR1 ) );
     assertNull( session.getAttribute( ATTR2 ) );
-    
+
     session.setAttribute( ATTR1, null );
     assertNull( session.getAttribute( ATTR1 ) );
     session.setAttribute( ATTR1, attr1 );
     session.removeAttribute( ATTR1 );
     assertNull( session.getAttribute( ATTR1 ) );
-    
+
     session.setAttribute( ATTR1, attr1 );
     Enumeration attributeNames = session.getAttributeNames();
     assertTrue( attributeNames.hasMoreElements() );
     assertSame( attributeNames.nextElement(), ATTR1 );
     assertFalse( attributeNames.hasMoreElements() );
-    
+
     final String[] log = new String[] { "" };
     final HttpSession[] sessionLog = new HttpSession[ 1 ];
     final Object[] valueLog = new Object[ 1 ];
@@ -77,7 +77,7 @@ public class SessionStore_Test extends TestCase {
     assertEquals( VALUE_UNBOUND + " " + ATTR2, log[ 0 ] );
     assertSame( httpSession, sessionLog[ 0 ] );
     assertSame( attr2, valueLog[ 0 ] );
-    
+
     session.setAttribute( ATTR2, attr2 );
     log[ 0 ] = "";
     sessionLog[ 0 ] = null;
@@ -86,7 +86,7 @@ public class SessionStore_Test extends TestCase {
     assertEquals( VALUE_UNBOUND + " " + ATTR2, log[ 0 ] );
     assertSame( httpSession, sessionLog[ 0 ] );
     assertSame( attr2, valueLog[ 0 ] );
-    
+
     session.setAttribute( ATTR2, attr2 );
     log[ 0 ] = "";
     sessionLog[ 0 ] = null;
@@ -133,14 +133,14 @@ public class SessionStore_Test extends TestCase {
       fail();
     } catch( final IllegalStateException ise ) {
     }
-    
-    
+
+
     final SessionStoreImpl checkAboutUnbound
       = new SessionStoreImpl( new TestSession() );
     checkAboutUnbound.addSessionStoreListener( new SessionStoreListener() {
       public void beforeDestroy( final SessionStoreEvent event ) {
         checkAboutUnbound.addSessionStoreListener( new SessionStoreListener() {
-          public void beforeDestroy( SessionStoreEvent event ) {
+          public void beforeDestroy( final SessionStoreEvent event ) {
           }
         } );
       }
@@ -150,7 +150,7 @@ public class SessionStore_Test extends TestCase {
       fail();
     } catch( final IllegalStateException iae ) {
     }
-    
+
     final boolean[] hasContext = { false };
     SessionStoreImpl checkContext = new SessionStoreImpl( new TestSession() );
     checkContext.addSessionStoreListener( new SessionStoreListener() {
@@ -160,5 +160,36 @@ public class SessionStore_Test extends TestCase {
     } );
     checkContext.getHttpSession().invalidate();
     assertTrue( hasContext[ 0 ] );
+  }
+
+  public void testCallback() {
+    final boolean[] interceptShutdownWasCalled = { false };
+    final Runnable[] shutdownCallback = { null };
+    final boolean[] listenerWasCalled = { false };
+    SessionStoreImpl sessionStore = new SessionStoreImpl( new TestSession() );
+    sessionStore.addSessionStoreListener( new SessionStoreListener() {
+      public void beforeDestroy( final SessionStoreEvent event ) {
+        listenerWasCalled[ 0 ] = true;
+      }
+    } );
+    sessionStore.setShutdownAdapter( new ISessionShutdownAdapter() {
+      public void setSessionStore( final ISessionStore sessionStore ) {
+      }
+      public void setShutdownCallback( final Runnable callback ) {
+        shutdownCallback[ 0 ] = callback;
+      }
+      public void interceptShutdown() {
+        interceptShutdownWasCalled[ 0 ] = true;
+      }
+      public void processShutdown() {
+      }
+    } );
+    sessionStore.valueUnbound( null );
+    assertTrue( interceptShutdownWasCalled[ 0 ] );
+    assertTrue( sessionStore.isBound() );
+    assertFalse( listenerWasCalled[ 0 ] );
+    shutdownCallback[ 0 ].run();
+    assertTrue( listenerWasCalled[ 0 ] );
+    assertFalse( sessionStore.isBound() );
   }
 }

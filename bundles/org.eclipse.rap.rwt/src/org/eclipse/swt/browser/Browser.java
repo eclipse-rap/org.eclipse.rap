@@ -10,12 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
-import org.eclipse.rwt.lifecycle.LifeCycleControl;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rwt.lifecycle.LifeCycleControl.LifeCycleLock;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.*;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 
 /**
@@ -52,8 +51,7 @@ public class Browser extends Composite {
     public void setExecuteResult( final boolean result ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          Browser.this.executeResult = result;
-          LifeCycleControl.resume( Browser.this.lock );      
+          Browser.this.executeResult = Boolean.valueOf( result );
         }
       } );
     }
@@ -64,8 +62,7 @@ public class Browser extends Composite {
   private String url;
   private String html;
   public String executeScript;
-  private boolean executeResult;
-  private LifeCycleLock lock;
+  private Boolean executeResult;
   private final IBrowserAdapter browserAdapter;
 
   /**
@@ -232,10 +229,15 @@ public class Browser extends Composite {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     executeScript = script;
-    lock = new LifeCycleLock();
-    LifeCycleControl.block( lock );
+    executeResult = null;
+    while( executeResult == null ) {
+      Display display = getDisplay();
+      if( !display.readAndDispatch() )  {
+        display.sleep();
+      }
+    }
     executeScript = null;
-    return executeResult;
+    return executeResult.booleanValue();
   }
 
   /**	 

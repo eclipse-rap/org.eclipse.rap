@@ -11,7 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import java.io.IOException;
+import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.*;
@@ -24,8 +24,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
-import junit.framework.TestCase;
-
 
 /*
  * Put in separate class becase this test does not share the same setUp/tearDown 
@@ -33,7 +31,7 @@ import junit.framework.TestCase;
  */
 public class DisplayLCAFocus_Test extends TestCase {
 
-  public void testUnchangedFocus() throws IOException {
+  public void testUnchangedFocus() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     shell.setSize( 400, 400 );
@@ -42,7 +40,7 @@ public class DisplayLCAFocus_Test extends TestCase {
     shell.layout();
     shell.open();
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     String displayId = DisplayUtil.getId( display );
     String button1Id = WidgetUtil.getId( button1 );
@@ -50,20 +48,20 @@ public class DisplayLCAFocus_Test extends TestCase {
     // Simulate initial request that constructs UI
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread();
     
     // Simulate request that is sent when button was pressed
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", button1Id );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, button1Id );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread();
     
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "focus" ) );
   }
   
   /* Test case for https://bugs.eclipse.org/bugs/show_bug.cgi?id=196911 */
-  public void testSetFocusToClientSideFocusedControl() throws IOException {
+  public void testSetFocusToClientSideFocusedControl() {
     final Shell[] childShell = { null };
     Display display = new Display();
     final Shell shell = new Shell( display, SWT.NONE );
@@ -81,7 +79,7 @@ public class DisplayLCAFocus_Test extends TestCase {
     shell.layout();
     shell.open();
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
@@ -89,14 +87,14 @@ public class DisplayLCAFocus_Test extends TestCase {
     // Simulate initial request that constructs UI
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     
     // Simulate request that is sent when button was pressed
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     
     // ensure that widgetSelected was called
     assertNotNull( childShell[ 0 ] );

@@ -67,7 +67,7 @@ public class ToolItemLCA_Test extends TestCase {
     display.dispose();
   }
 
-  public void testCheckItemSelected() throws IOException {
+  public void testCheckItemSelected() {
     final boolean[] wasEventFired = { false };
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -93,7 +93,7 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( toolItemId + ".selection", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, toolItemId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( true, wasEventFired[ 0 ] );
   }
 

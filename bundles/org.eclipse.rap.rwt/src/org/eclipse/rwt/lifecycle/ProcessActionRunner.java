@@ -48,6 +48,18 @@ public class ProcessActionRunner {
     }
   }
   
+  public static boolean executeNext() {
+    boolean result = false;
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    List list = ( List )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );
+    if( list != null && list.size() > 0 ) {
+      Runnable runnable = ( Runnable )list.remove( 0 );
+      runnable.run();
+      result = true;
+    }    
+    return result;
+  }
+  
   public static void execute() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     List list = ( List )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );

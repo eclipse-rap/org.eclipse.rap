@@ -48,6 +48,40 @@ public class JSWriter_Test extends TestCase {
       } );
     }
   }
+  
+  public static class WidgetDisposalEntryPoint implements IEntryPoint {
+    private static String dispId;
+    private static String buttonId;
+    
+    public int createUI() {
+      Display display = new Display();
+      dispId = DisplayUtil.getId( display );
+      Shell shell = new Shell( display, SWT.NONE );
+      final Text text = new Text( shell, SWT.MULTI );
+      final Tree tree = new Tree( shell, SWT.SINGLE );
+      for( int i = 0; i < 5; i++ ) {
+        TreeItem item = new TreeItem( tree, SWT.NONE );
+        item.setText( "foo" + i );
+      }
+      Button button = new Button( shell, SWT.PUSH );
+      button.addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( final SelectionEvent event ) {
+          text.dispose();
+          tree.dispose();
+        }
+      } );
+      buttonId = WidgetUtil.getId( button );
+      int count = 0;
+      while( count  < 2 ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
+        count++;
+      }
+      return 0;
+    }
+  }
+
 
   public void testUniqueWriterPerRequest() throws Exception {
     Display display = new Display();
@@ -968,35 +1002,21 @@ public class JSWriter_Test extends TestCase {
   // see bug 195735: Widget disposal causes NullPointerException
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=195735
   public void testWidgetDisposal() throws Exception {
-    Display display = new Display();
-    String displayId = DisplayUtil.getId( display );
-    Shell shell = new Shell( display, SWT.NONE );
-    final Text text = new Text( shell, SWT.MULTI );
-    final Tree tree = new Tree( shell, SWT.SINGLE );
-    for( int i = 0; i < 5; i++ ) {
-      TreeItem item = new TreeItem( tree, SWT.NONE );
-      item.setText( "foo" + i );
-    }
-    Button button = new Button( shell, SWT.PUSH );
-    button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        text.dispose();
-        tree.dispose();
-      }
-    } );
     // Run requests to initialize the 'system'
     RWTFixture.fakeNewRequest();
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    EntryPointManager.register( EntryPointManager.DEFAULT,
+                                WidgetDisposalEntryPoint.class );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.execute();
     RWTFixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    String dispId = WidgetDisposalEntryPoint.dispId;
+    Fixture.fakeRequestParam( RequestParams.UIROOT, dispId );
     lifeCycle.execute();
-    RWTFixture.fakeUIThread();
     RWTFixture.fakeNewRequest();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED,
-                              WidgetUtil.getId( button ) );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, dispId );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, dispId );
+    String buttonId = WidgetDisposalEntryPoint.buttonId;
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     lifeCycle.execute();
   }
   

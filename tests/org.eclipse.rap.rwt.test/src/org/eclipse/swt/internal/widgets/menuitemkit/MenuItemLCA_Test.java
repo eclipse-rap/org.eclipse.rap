@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.*;
 
 public class MenuItemLCA_Test extends TestCase {
 
-  public void testWidgetSelected() throws IOException {
+  public void testWidgetSelected() {
     final boolean[] wasEventFired = { false };
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -53,11 +53,11 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String menuItemId = WidgetUtil.getId( menuItem );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
-  public void testCheckItemSelected() throws IOException {
+  public void testCheckItemSelected() {
     final boolean[] wasEventFired = { false };
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
@@ -84,11 +84,11 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( menuItemId + ".selection", "true" );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( true, wasEventFired[ 0 ] );
   }
 
-  public void testRadioItemSelected() throws IOException {
+  public void testRadioItemSelected() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     Menu menuBar = new Menu( shell, SWT.BAR );
@@ -106,11 +106,9 @@ public class MenuItemLCA_Test extends TestCase {
     radioItem2Group1.setSelection( true );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( radioItem1Group1Id + ".selection", "true" );
-    new RWTLifeCycle().execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( true, radioItem1Group1.getSelection() );
     assertEquals( false, radioItem2Group1.getSelection() );
-    RWTFixture.removeUIThread();
   }
 
   public void testRadioManagerReference() throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.*;
@@ -16,7 +15,6 @@ import java.util.*;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -25,6 +23,7 @@ public class UICallBackManager
   implements SessionStoreListener
 {
 
+  // List of RunnableBase or SyncRunnable objects as added by add(A)sync 
   private List runnables = new ArrayList();
   // locked contains a reference to the callback thread that is currently 
   // blocked. 
@@ -47,7 +46,6 @@ public class UICallBackManager
       this.runnable = runnable;
       this.display = display;
     }
-
     public void run() {
       if( runnable != null ) {
         runnable.run();
@@ -109,7 +107,9 @@ public class UICallBackManager
   public void addAsync( final Runnable runnable, final Display display ) {
     synchronized( runnables ) {
       runnables.add( new RunnableBase( runnable, display ) );
-      if( Thread.currentThread() != RWTLifeCycle.getThread() ) {
+      // TODO [fappel]: This may not work properly in case asyncExcec is
+      //                called in before render of a PhaseListener
+      if( Thread.currentThread() != display.getThread() ) {
         sendUICallBack();
       }
     }
@@ -117,7 +117,7 @@ public class UICallBackManager
   
   public void addSync( final Runnable runnable, final Display display ) {
     synchronized( runnable ) {
-      if( Thread.currentThread() != RWTLifeCycle.getThread() ) {
+      if( Thread.currentThread() != display.getThread() ) {
         SyncRunnable syncRunnable = new SyncRunnable( runnable, display );
         runnables.add( syncRunnable );
         sendUICallBack();
@@ -128,18 +128,12 @@ public class UICallBackManager
     }
   }
   
-  public void notifyUIThreadStart() {
-    if( RWTLifeCycle.getThread() != Thread.currentThread() ) {
-      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
-    }
+  void notifyUIThreadStart() {
     uiThreadRunning = true;
     waitForUIThread = false;
   }
 
-  public void notifyUIThreadEnd() {
-    if( RWTLifeCycle.getThread() != Thread.currentThread() ) {
-      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
-    }
+  void notifyUIThreadEnd() {
     uiThreadRunning = false;
     synchronized( runnables ) {
       if( !runnables.isEmpty() ) {
@@ -149,9 +143,6 @@ public class UICallBackManager
   }
 
   void processRunnablesInUIThread() {
-    if( RWTLifeCycle.getThread() != Thread.currentThread() ) {
-      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
-    }
     Runnable toExecute = null;
     boolean finished = false;
     while( !finished ) {
@@ -215,6 +206,8 @@ public class UICallBackManager
   ///////////////////////////////////////
   // interface SessionStoreListener
 
+  // TODO [rh] revise this when bug #219465 is closed
+  //      see https://bugs.eclipse.org/bugs/show_bug.cgi?id=219465
   public void beforeDestroy( final SessionStoreEvent event ) {
     synchronized( runnables ) {
       if( runnables != null ) {
@@ -222,15 +215,7 @@ public class UICallBackManager
         runnables.toArray( toBeExecuted );
         for( int i = 0; i < toBeExecuted.length; i++ ) {
           RunnableBase runnable = toBeExecuted[ i ];
-          Display display = runnable.display;
-          try {
-            UICallBackServiceHandler.runNonUIThreadWithFakeContext( display, 
-                                                                    runnable, 
-                                                                    true );
-          } catch( final RuntimeException re ) {
-            // TODO Auto-generated catch block
-            re.printStackTrace();
-          }
+          runnable.run();
         }
         runnables.notifyAll();
       }

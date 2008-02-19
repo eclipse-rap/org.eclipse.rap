@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,13 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.service;
 
 import java.util.*;
 
 import javax.servlet.http.*;
 
+import org.eclipse.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.*;
@@ -30,6 +30,7 @@ public final class SessionStoreImpl
   private final HttpSession session;
   private boolean bound;
   private boolean aboutUnbound;
+  private ISessionShutdownAdapter shutdownAdapter;
 
   
   public SessionStoreImpl( final HttpSession session ) {
@@ -38,6 +39,22 @@ public final class SessionStoreImpl
     this.session.setAttribute( ID_SESSION_STORE, this );
     bound = true;
   }
+  
+  public void setShutdownAdapter( final ISessionShutdownAdapter adapter ) {
+    shutdownAdapter = adapter;
+    if( shutdownAdapter != null ) {
+      shutdownAdapter.setSessionStore( this );
+      shutdownAdapter.setShutdownCallback( new Runnable() {
+        public void run() {
+          doValueUnbound();
+        }
+      } );
+    }
+  }
+
+  
+  //////////////////////////
+  // interface ISessionStore
   
   public Object getAttribute( final String name ) {
     checkBound();
@@ -121,17 +138,21 @@ public final class SessionStoreImpl
   }
   
   public void valueUnbound( final HttpSessionBindingEvent event ) {
-    boolean fakeContext = false;
-    if( !ContextProvider.hasContext() ) {
-      fakeContext = true;
-      ServiceContext context = UICallBackServiceHandler.getFakeContext( this );
-      ContextProvider.setContext( context );
-    }
-    try {
-      doValueUnbound();
-    } finally {
-      if( fakeContext ) {
-        ContextProvider.releaseContextHolder();
+    if( shutdownAdapter != null ) {
+      shutdownAdapter.interceptShutdown();
+    } else {
+      boolean fakeContext = false;
+      if( !ContextProvider.hasContext() ) {
+        fakeContext = true;
+        ServiceContext ctx = UICallBackServiceHandler.getFakeContext( this );
+        ContextProvider.setContext( ctx );
+      }
+      try {
+        doValueUnbound();
+      } finally {
+        if( fakeContext ) {
+          ContextProvider.releaseContextHolder();
+        }
       }
     }
   }

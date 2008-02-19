@@ -11,7 +11,6 @@
 
 package org.eclipse.swt.events;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -56,7 +55,7 @@ public class TypedEvent_Test extends TestCase {
     RWTFixture.tearDown();
   }
 
-  public void testPhase() throws IOException {
+  public void testPhase() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -72,7 +71,7 @@ public class TypedEvent_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public void beforePhase( final PhaseEvent event ) {
@@ -85,7 +84,7 @@ public class TypedEvent_Test extends TestCase {
         return PhaseId.ANY;
       }
     } );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     String expected 
       = BEFORE_PREPARE_UI_ROOT
       + AFTER_PREPARE_UI_ROOT
@@ -99,9 +98,9 @@ public class TypedEvent_Test extends TestCase {
     assertEquals( expected, log.toString() );
   }
   
-  public void testMultipleEventsInOneRequest() throws IOException {
+  public void testMultipleEventsInOneRequest() {
     // Ensure that two events get fired in the order as it is specified in
-    // RWTEvent
+    // TypedEvent
     final java.util.List eventLog = new ArrayList();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -123,8 +122,7 @@ public class TypedEvent_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( ActivateEvent.class, eventLog.get( 0 ).getClass() );
     assertEquals( SelectionEvent.class, eventLog.get( 1 ).getClass() );
   }

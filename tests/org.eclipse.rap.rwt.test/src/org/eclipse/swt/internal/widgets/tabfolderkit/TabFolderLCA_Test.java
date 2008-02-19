@@ -11,7 +11,6 @@
 
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -32,7 +31,7 @@ import org.eclipse.swt.widgets.*;
 
 public class TabFolderLCA_Test extends TestCase {
 
-  public void testSelectionWithoutListener() throws IOException {
+  public void testSelectionWithoutListener() {
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -45,7 +44,7 @@ public class TabFolderLCA_Test extends TestCase {
     item1.setControl( control1 );
     shell.open();
 
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
 
     String displayId = DisplayUtil.getAdapter( display ).getId();
@@ -55,23 +54,22 @@ public class TabFolderLCA_Test extends TestCase {
     // Run life cycle once to reduce markup that is written for the actual 
     // request under test 
     RWTFixture.fakeNewRequest();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
 
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, folder.getSelectionIndex() );
     assertFalse( control0.getVisible() );
     assertTrue( control1.getVisible() );
   }
   
-  public void testSelectionWithListener() throws IOException {
+  public void testSelectionWithListener() {
     final java.util.List events = new ArrayList(); 
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -93,7 +91,7 @@ public class TabFolderLCA_Test extends TestCase {
       }
     } );
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     
     String displayId = DisplayUtil.getAdapter( display ).getId();
@@ -103,10 +101,10 @@ public class TabFolderLCA_Test extends TestCase {
     // Run life cycle once to reduce markup that is written for the actual 
     // request under test 
     RWTFixture.fakeNewRequest();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     
     events.clear();
     RWTFixture.fakeNewRequest();
@@ -114,8 +112,7 @@ public class TabFolderLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
     
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, folder.getSelectionIndex() );
     assertFalse( control0.getVisible() );
     assertTrue( control1.getVisible() );

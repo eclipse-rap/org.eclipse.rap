@@ -11,8 +11,6 @@
 
 package org.eclipse.swt.internal.widgets.shellkit;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -72,7 +70,7 @@ public class ShellLCA_Test extends TestCase {
     assertSame( label, getActiveControl( shell ) );
   }
   
-  public void testShellActivate() throws IOException {
+  public void testShellActivate() {
     final StringBuffer activateEventLog = new StringBuffer();
     ActivateListener activateListener = new ActivateListener() {
       public void activated( final ActivateEvent event ) {
@@ -114,16 +112,14 @@ public class ShellLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
     Fixture.fakeRequestParam( displayId + ".activeShell", shellToActivateId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertSame( shellToActivate, display.getActiveShell() );
 
     // Set precondition and assert it
     RWTFixture.markInitialized( activeShell );
     RWTFixture.markInitialized( shellToActivate );
-    RWTFixture.fakeUIThread();
     activeShell.setActive();
     assertSame( activeShell, display.getActiveShell() );
-    RWTFixture.removeUIThread();
     
     // Simulate shell activation with event listeners
     ActivateEvent.addListener( shellToActivate, activateListener );
@@ -134,7 +130,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, 
                               shellToActivateId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertSame( shellToActivate, display.getActiveShell() );
     String expected = "deactivated:activeShell|activated:shellToActivate|";
     assertEquals( expected, activateEventLog.toString() );
@@ -144,7 +140,7 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setActive" ) );
   }
   
-  public void testDisposeSingleShell() throws IOException { 
+  public void testDisposeSingleShell() { 
     Display display = new Display(); 
     Shell shell = new Shell( display ); 
     shell.open(); 
@@ -153,8 +149,7 @@ public class ShellLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest(); 
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId ); 
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId ); 
-    RWTLifeCycle lifeCycle = new RWTLifeCycle(); 
-    lifeCycle.execute(); 
+    RWTFixture.executeLifeCycleFromServerThread( ); 
     assertEquals( 0, display.getShells().length ); 
     assertEquals( null, display.getActiveShell() ); 
     assertEquals( true, shell.isDisposed() );

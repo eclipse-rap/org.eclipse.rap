@@ -11,8 +11,6 @@
 
 package org.eclipse.swt.internal.widgets.buttonkit;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -82,7 +80,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( "widgetActivated|", log.toString() );
   }
   
-  public void testSelectionEvent() throws IOException {
+  public void testSelectionEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -105,7 +103,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.widgetSelected",
                               buttonId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "widgetSelected", log.toString() );
   }
   

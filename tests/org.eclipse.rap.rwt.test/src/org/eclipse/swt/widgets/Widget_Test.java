@@ -11,10 +11,10 @@
 
 package org.eclipse.swt.widgets;
 
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.*;
@@ -25,11 +25,9 @@ public class Widget_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
-    RWTFixture.fakeUIThread();
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.removeUIThread();
     Fixture.tearDown();
   }
 
@@ -140,19 +138,29 @@ public class Widget_Test extends TestCase {
     assertEquals( true, widget.isDisposed() );
   }
 
-  public void testDisposeFromIllegalThread() {
+  public void testDisposeFromIllegalThread() throws InterruptedException {
     Display display = new Display();
     Shell shell = new Shell( display );
-    Widget widget = new Button( shell, SWT.NONE );
+    final Widget widget = new Button( shell, SWT.NONE );
     
-    Thread bufferedThread = RWTLifeCycle.getThread();
-    RWTLifeCycle.setThread( null );
-    try {
-      widget.dispose();
-      fail( "Must not allow to dispose of a widget from a non-UI-thread" );
-    } catch( SWTException e ) {
-      // expected
+    final AssertionFailedError[] failure = new AssertionFailedError[ 1 ];
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        try {
+          widget.dispose();
+          fail( "Must not allow to dispose of a widget from a non-UI-thread" );
+        } catch( SWTException e ) {
+          // expected
+        } catch( final AssertionFailedError afa ) {
+          failure[ 0 ] = afa;
+        }
+      }
+    } );
+    thread.start();
+    thread.join();
+    
+    if( failure[ 0 ] != null ) {
+      throw failure[ 0 ];
     }
-    RWTLifeCycle.setThread( bufferedThread );
   }
 }

@@ -11,8 +11,6 @@
 
 package org.eclipse.swt.internal.widgets.tablekit;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -31,7 +29,7 @@ import org.eclipse.swt.widgets.*;
 
 public class TableLCA_Test extends TestCase {
 
-  public void testSetDataEvent() throws IOException {
+  public void testSetDataEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -50,8 +48,8 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "1" );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
+    
     
     assertEquals( 1, ItemHolder.getItems( table ).length );
     assertEquals( "SetDataEvent", log.toString() );
@@ -102,7 +100,7 @@ public class TableLCA_Test extends TestCase {
     assertEquals( resolvedItemCount, countResolvedItems( table ) );
   }
   
-  public void testRedraw() throws IOException {
+  public void testRedraw() {
     final Table[] table = { null };
     Display display = new Display();
     final Shell shell = new Shell( display );
@@ -124,14 +122,12 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String buttonId = WidgetUtil.getId( button );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId  );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     
-    RWTFixture.fakeUIThread();
     assertFalse( isItemVirtual( table[ 0 ], 0  ) );
   }
   
-  public void testNoUnwantedResolveItems() throws IOException {
+  public void testNoUnwantedResolveItems() {
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setSize( 100, 100 );
@@ -147,7 +143,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "500,501,502,503" );
     Fixture.fakeRequestParam( tableId + ".topIndex", "500" );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public void beforePhase( final PhaseEvent event ) {
@@ -159,16 +155,16 @@ public class TableLCA_Test extends TestCase {
         return PhaseId.PROCESS_ACTION;
       }
     } );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread();
 
     assertTrue( isItemVirtual( table, 499 ) );
     assertTrue( isItemVirtual( table, 800 ) );
     assertTrue( isItemVirtual( table, 999 ) );
   }
 
-  public void testClearVirtual() throws IOException {
+  public void testClearVirtual() {
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -193,7 +189,7 @@ public class TableLCA_Test extends TestCase {
     // fake one request that would initialize the UI
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread();
     // run actual request
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -208,7 +204,7 @@ public class TableLCA_Test extends TestCase {
         return PhaseId.PROCESS_ACTION;
       }
     } );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     String expected 
       = "var w = wm.findWidgetById( \"" 

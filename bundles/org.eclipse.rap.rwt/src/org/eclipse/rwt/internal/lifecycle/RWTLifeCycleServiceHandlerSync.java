@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ import javax.servlet.ServletException;
 
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleServiceHandlerSync;
-import org.eclipse.rwt.service.IServiceHandler;
 
 /**
  * TODO [fappel]: documentation
@@ -33,11 +31,7 @@ public final class RWTLifeCycleServiceHandlerSync
     = "if( confirm( ''{0}'' ) ) '{ window.location.reload( false ) }'";
 
   public void service() throws ServletException, IOException {
-    RWTLifeCycleBlockControl.service( new IServiceHandler() {
-      public void service() throws IOException, ServletException {
-        serviceInternal();
-      }
-    } );
+    serviceInternal();
   }
 
   private void serviceInternal() throws ServletException, IOException {

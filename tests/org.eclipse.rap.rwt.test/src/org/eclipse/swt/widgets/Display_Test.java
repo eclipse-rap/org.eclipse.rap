@@ -27,11 +27,11 @@ import org.eclipse.swt.layout.FillLayout;
 public class Display_Test extends TestCase {
 
   public static final class EnsureIdEntryPoint implements IEntryPoint {
-    public Display createUI() {
+    public int createUI() {
       Display display = new Display();
       Shell shell = new Shell( display );
       WidgetUtil.getId( shell );
-      return display;
+      return 0;
     }
   }
   
@@ -47,52 +47,70 @@ public class Display_Test extends TestCase {
   }
 
   public void testGetThread() throws InterruptedException {
-    final Display[] display = { new Display() };
-    final Thread[] thread = new Thread[ 1 ];
-    final ServiceContext context[] = { ContextProvider.getContext() };
-    final RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-      public void afterPhase( PhaseEvent event ) {
-      }
-      public void beforePhase( PhaseEvent event ) {
-        thread[ 0 ] = display[ 0 ].getThread();
-      }
-      public PhaseId getPhaseId() {
-        return PhaseId.PREPARE_UI_ROOT;
-      }
-    } );
-    
+    Display first = new Display();
+    assertSame( Thread.currentThread(), first.getThread() );
+    first.dispose();
+
+    final ServiceContext context = ContextProvider.getContext();
+    final Display[] display = { null };
     Runnable runnable = new Runnable() {
       public void run() {
-        ContextProvider.setContext( context[ 0 ] );
+        ContextProvider.setContext( context );
         Fixture.fakeResponseWriter();
-        String id = "org.eclipse.swt.display";
-        ContextProvider.getSession().setAttribute( id, display[ 0 ] );
-        String displayId = DisplayUtil.getAdapter( display[ 0 ] ).getId();
-        Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-        try {
-          lifeCycle.execute();
-        } catch( IOException e ) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-          fail();
-        }
+        display[ 0 ] = new Display();
       }
     };
-    Thread thread1 = new Thread( runnable );
-    thread1.start();
-    thread1.join();
-    assertSame( thread1, thread[ 0 ] );
+    Thread thread = new Thread( runnable );
+    thread.start();
+    thread.join();
+    assertSame( thread, display[ 0 ].getThread() );
     
-    Thread thread2 = new Thread( runnable );
-    thread2.start();
-    thread2.join();
-    assertSame( thread2, thread[ 0 ] );
-    RWTFixture.tearDown();
-    assertNull( display[ 0 ].getThread() );
-    RWTFixture.setUp();
     
+//    final Display[] display = { new Display() };
+//    final Thread[] thread = new Thread[ 1 ];
+//    final ServiceContext context[] = { ContextProvider.getContext() };
+//    final RWTLifeCycle lifeCycle = new RWTLifeCycle();
+//    lifeCycle.addPhaseListener( new PhaseListener() {
+//      private static final long serialVersionUID = 1L;
+//      public void afterPhase( PhaseEvent event ) {
+//      }
+//      public void beforePhase( PhaseEvent event ) {
+//        thread[ 0 ] = display[ 0 ].getThread();
+//      }
+//      public PhaseId getPhaseId() {
+//        return PhaseId.PREPARE_UI_ROOT;
+//      }
+//    } );
+//    
+//    Runnable runnable = new Runnable() {
+//      public void run() {
+//        ContextProvider.setContext( context[ 0 ] );
+//        Fixture.fakeResponseWriter();
+//        String id = "org.eclipse.swt.display";
+//        ContextProvider.getSession().setAttribute( id, display[ 0 ] );
+//        String displayId = DisplayUtil.getAdapter( display[ 0 ] ).getId();
+//        Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+//        try {
+//          lifeCycle.execute();
+//        } catch( IOException e ) {
+//          // TODO Auto-generated catch block
+//          e.printStackTrace();
+//          fail();
+//        }
+//      }
+//    };
+//    Thread thread1 = new Thread( runnable );
+//    thread1.start();
+//    thread1.join();
+//    assertSame( thread1, thread[ 0 ] );
+//    
+//    Thread thread2 = new Thread( runnable );
+//    thread2.start();
+//    thread2.join();
+//    assertSame( thread2, thread[ 0 ] );
+//    RWTFixture.tearDown();
+//    assertNull( display[ 0 ].getThread() );
+//    RWTFixture.setUp();
   }
   
   public void testGetShells() {
@@ -248,9 +266,8 @@ public class Display_Test extends TestCase {
     Class entryPointClass = EnsureIdEntryPoint.class;
     EntryPointManager.register( EntryPointManager.DEFAULT, entryPointClass );
     RWTFixture.fakeNewRequest();
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.execute();
-    RWTFixture.fakeUIThread();
     assertEquals( "w1", DisplayUtil.getId( Display.getCurrent() ) );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }

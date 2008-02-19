@@ -9,18 +9,15 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.demo;
+package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.rwt.service.ISessionStore;
 
 
-public class DemoWorkbench implements IEntryPoint {
-
-  public int createUI() {
-    final Display display = PlatformUI.createDisplay();
-    DemoWorbenchAdvisor worbenchAdvisor = new DemoWorbenchAdvisor();
-    return PlatformUI.createAndRunWorkbench( display, worbenchAdvisor );
-  }
+public interface ISessionShutdownAdapter {
+  void setSessionStore( ISessionStore sessionStore );
+  void setShutdownCallback( Runnable shutdownCallback );
+  
+  void interceptShutdown();
+  void processShutdown();
 }

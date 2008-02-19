@@ -22,6 +22,9 @@ import org.eclipse.rwt.lifecycle.PhaseId;
  */
 interface IPhase {
 
+  interface IInterruptible extends IPhase {
+  }
+  
   abstract PhaseId getPhaseID();
   abstract PhaseId execute() throws IOException;
 }

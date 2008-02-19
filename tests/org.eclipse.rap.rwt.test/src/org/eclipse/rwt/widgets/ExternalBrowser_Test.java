@@ -32,7 +32,6 @@ public class ExternalBrowser_Test extends TestCase {
   }
 
   public void testOpen() {
-    RWTFixture.fakeUIThread();
     new Display();
     // Test illegal arguments
     try {
@@ -56,7 +55,6 @@ public class ExternalBrowser_Test extends TestCase {
   }
   
   public void testClose() {
-    RWTFixture.fakeUIThread();
     new Display();
     // Test illegal arguments
     try {
@@ -99,7 +97,6 @@ public class ExternalBrowser_Test extends TestCase {
     // set up test environment
     Display display = new Display();
     RWTFixture.fakeNewRequest();
-    RWTFixture.fakeUIThread();
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     // execute a row open/close method calls 

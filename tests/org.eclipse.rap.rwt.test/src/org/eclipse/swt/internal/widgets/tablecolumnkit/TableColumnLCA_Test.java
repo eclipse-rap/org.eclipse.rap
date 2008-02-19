@@ -11,8 +11,6 @@
 
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -37,7 +35,7 @@ public class TableColumnLCA_Test extends TestCase {
     RWTFixture.tearDown();
   }
   
-  public void testResizeEvent() throws IOException {
+  public void testResizeEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -55,30 +53,26 @@ public class TableColumnLCA_Test extends TestCase {
     } );
     String displayId = DisplayUtil.getId( display );
     String columnId = WidgetUtil.getId( column );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     //
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     // Simulate request that changes column width
-    RWTFixture.fakeUIThread();
     int newWidth = column.getWidth() + 2;
-    RWTFixture.removeUIThread();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.controlResized", 
                               columnId );
     Fixture.fakeRequestParam( columnId + ".width", String.valueOf( newWidth ) );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "controlResized", log.toString() );
     assertEquals( newWidth, column.getWidth() );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     assertTrue( adapter.isInitialized() );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setWidth( " + newWidth + " )" ) != -1 );
-    RWTFixture.removeUIThread();
   }
   
   public void testGetLeft() {

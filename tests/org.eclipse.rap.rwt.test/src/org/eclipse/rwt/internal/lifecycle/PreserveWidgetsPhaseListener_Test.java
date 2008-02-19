@@ -25,6 +25,7 @@ import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -36,10 +37,17 @@ import org.eclipse.swt.widgets.*;
 public class PreserveWidgetsPhaseListener_Test extends TestCase {
 
   public static final class TestEntryPointWithShell implements IEntryPoint {
-    public Display createUI() {
+    public int createUI() {
       Display display = new Display();
-      new Shell( display , SWT.NONE );
-      return display;
+      new Shell( display, SWT.NONE );
+      int count = 0;
+      while( count < 1 ) {
+        if( !display.readAndDispatch() ) {
+          display.sleep();
+        }
+        count++;
+      }
+      return 0;
     }
   }
   
@@ -47,14 +55,12 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    RWTFixture.fakeUIThread();
     savedLifeCycle = System.getProperty( IInitialization.PARAM_LIFE_CYCLE );
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE,
                         RWTLifeCycle.class.getName() );
   }
 
   protected void tearDown() throws Exception {
-    RWTFixture.removeUIThread();
     Fixture.tearDown();
     AdapterFactoryRegistry.clear();
     PhaseListenerRegistry.clear();
@@ -70,10 +76,13 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     Fixture.fakeBrowser( new Ie6up( true, true ) );
     Fixture.fakeResponseWriter();
     RWTFixture.registerAdapterFactories();
-    Fixture.createContext();
+    Fixture.createContextWithoutResourceManager();
     RWTServletContextListener listener = new RWTServletContextListener();
     TestServletContext servletContext = new TestServletContext();
     listener.contextInitialized( new ServletContextEvent( servletContext ) );
+    RWTFixture.deregisterResourceManager();
+    RWTFixture.registerResourceManager();
+    ThemeManager.getInstance().initialize();
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
@@ -101,7 +110,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
         return PhaseId.ANY;
       }
     } );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "copy created", log.toString() );
     // clean up
     Fixture.removeContext();
@@ -187,8 +196,7 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
     new Text( shell, SWT.NONE );
     // Execute life cycle
     RWTFixture.markInitialized( display );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     String expected = Display.class.getName()
                     + Shell.class.getName()
                     + Text.class.getName();
@@ -198,14 +206,15 @@ public class PreserveWidgetsPhaseListener_Test extends TestCase {
   public void testStartup() throws Exception {
     // Simulate startup with no startup entry point set
     // First request: (renders html skeletion that contains 'application')
-    Fixture.createContext();
+    Fixture.createContextWithoutResourceManager();
     Fixture.fakeBrowser( new Ie6( true, true ) );
     Fixture.fakeResponseWriter();
     RWTFixture.registerResourceManager();
+    ThemeManager.getInstance().initialize();
     RWTFixture.registerAdapterFactories();
     EntryPointManager.register( EntryPointManager.DEFAULT,
                                 TestEntryPointWithShell.class );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
     lifeCycle.execute();
     // Second request: first 'real' one that writes JavaScript to create display

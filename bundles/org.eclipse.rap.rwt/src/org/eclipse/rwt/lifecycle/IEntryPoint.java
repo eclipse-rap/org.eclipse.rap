@@ -8,10 +8,8 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
-import org.eclipse.swt.widgets.Display;
 
 /**
  * An implementation of {@link IEntryPoint} represents the main
@@ -28,5 +26,6 @@ public interface IEntryPoint {
    * 
    * @return the display to use
    */
-  Display createUI();
+  // TODO [rh] adjust JavaDoc
+  int createUI();
 }

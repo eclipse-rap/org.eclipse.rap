@@ -11,8 +11,6 @@
 
 package org.eclipse.swt.events;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -97,7 +95,7 @@ public class UntypedEvents_Test extends TestCase {
     widget.removeListener( SWT.DefaultSelection, listener );
   }
   
-  public void testFilter() throws IOException {
+  public void testFilter() {
     final boolean[] executed = new boolean[ 1 ];
     Display display = new Display();
     display.addFilter( SWT.Selection, new Listener() {
@@ -120,8 +118,7 @@ public class UntypedEvents_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, buttonId );
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertTrue( executed[ 0 ] );
   }
 

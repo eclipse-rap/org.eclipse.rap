@@ -55,10 +55,10 @@ public class RWTServletContextListener_Test extends TestCase {
   
   public static class TestEntryPointWithShell implements IEntryPoint {
     Composite shell;
-    public Display createUI() {
+    public int createUI() {
       Display display = new Display();
       shell = new Shell( display , SWT.NONE );
-      return display;
+      return -15;
     }
   }
   
@@ -156,9 +156,9 @@ public class RWTServletContextListener_Test extends TestCase {
     servletContext.setInitParameter( ENTRYPOINT, 
                                      TestEntryPointWithShell.class.getName() );
     listener.contextInitialized( new ServletContextEvent( servletContext ) );
-    Display display = EntryPointManager.createUI( EntryPointManager.DEFAULT );
-    assertNotNull( display );
-    display.dispose();
+    int returnVal = EntryPointManager.createUI( EntryPointManager.DEFAULT );
+    assertEquals( -15, returnVal );
+    Display.getCurrent().dispose();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
     deregisterResourceManager();
     AdapterFactoryRegistry.clear();
@@ -168,9 +168,9 @@ public class RWTServletContextListener_Test extends TestCase {
       = TestEntryPointWithShell.class.getName() + "#param1";
     servletContext.setInitParameter( ENTRYPOINT, entryPointParam );
     listener.contextInitialized( new ServletContextEvent( servletContext ) );
-    display = EntryPointManager.createUI( "param1" );
-    assertNotNull( display );
-    display.dispose();
+    returnVal = EntryPointManager.createUI( "param1" );
+    assertEquals( -15, returnVal );
+    Display.getCurrent().dispose();
     EntryPointManager.deregister( "param1" );
     deregisterResourceManager();
     AdapterFactoryRegistry.clear();
@@ -184,12 +184,12 @@ public class RWTServletContextListener_Test extends TestCase {
                        + "  \n";
     servletContext.setInitParameter( ENTRYPOINT, entryPointParam );
     listener.contextInitialized( new ServletContextEvent( servletContext ) );
-    display = EntryPointManager.createUI( EntryPointManager.DEFAULT );
-    assertNotNull( display );
-    display.dispose();
-    display = EntryPointManager.createUI( "param1" );
-    assertNotNull( display );
-    display.dispose();
+    returnVal = EntryPointManager.createUI( EntryPointManager.DEFAULT );
+    assertEquals( -15, returnVal );
+    Display.getCurrent().dispose();
+    returnVal = EntryPointManager.createUI( "param1" );
+    assertEquals( -15, returnVal );
+    Display.getCurrent().dispose();
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
     EntryPointManager.deregister( "param1" );
     deregisterResourceManager();

@@ -11,7 +11,6 @@
 
 package org.eclipse.swt.widgets;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
@@ -647,7 +645,7 @@ public class Tree_Test extends TestCase {
 //    assertEquals( "node 0", tree.getItem( 0 ).getText() );
 //  }
 
-  public void testVirtualScroll() throws IOException {
+  public void testVirtualScroll() {
     Display display = new Display();
     final Shell shell = new Shell( display );
     final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.BORDER );
@@ -679,28 +677,26 @@ public class Tree_Test extends TestCase {
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 16, log.size() );
     // open a tree node should only materialize visible items
     log.clear();
     // reset scroll position
     ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
     adapter.setScrollTop( 0 );
-    RWTFixture.fakeUIThread();
     tree.setSize( 100, 32 ); // only space for 2 items
     RWTFixture.fakeNewRequest();
     String aItemId = WidgetUtil.getId( tree.getItem( 0 ) );
     Fixture.fakeRequestParam( aItemId + ".state", "expanded" );
     Fixture.fakeRequestParam( "org.eclipse.swt.events.treeExpanded", aItemId );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 2, log.size() );
-    RWTFixture.removeUIThread();
     // scrolling should materialize the now visible subitems
     log.clear();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "16" );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, log.size() );
   }
 

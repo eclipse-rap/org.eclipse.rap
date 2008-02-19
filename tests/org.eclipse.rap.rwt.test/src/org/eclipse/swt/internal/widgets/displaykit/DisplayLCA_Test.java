@@ -19,8 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.AdapterManagerImpl;
+import org.eclipse.rwt.internal.*;
 import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -130,7 +129,7 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( new Rectangle( 0, 0, 30, 70 ), display.getBounds() );
   }
   
-  public void testRrenderChangedButDisposed() throws IOException {
+  public void testRrenderChangedButDisposed() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final Button button = new DisposeTestButton( shell, SWT.PUSH );
@@ -142,11 +141,10 @@ public class DisplayLCA_Test extends TestCase {
     
     // Run requests to initialize the 'system'
     RWTFixture.fakeNewRequest();
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     
     // Run the actual test request: the button is clicked
     // It changes its text and disposes itself 
@@ -161,7 +159,7 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button ) );
@@ -179,7 +177,7 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
 
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button2 ) );
@@ -197,13 +195,12 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
 
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( button3 ) );
     assertTrue( renderDisposeLog.contains( button3 ) );
     assertFalse( renderDisposeHandlerRegistration.isEmpty() );
-
   }
 
   public void testIsInitializedState() throws IOException {
@@ -234,19 +231,18 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, compositeInitState[ 0 ] );
   }
   
-  public void testFocusControl() throws IOException {
+  public void testFocusControl() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String controlId = WidgetUtil.getId( control );
-    
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", controlId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( control, display.getFocusControl() );
 
     // Request parameter focusControl with value 'null' is ignored
@@ -254,13 +250,14 @@ public class DisplayLCA_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", "null" );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( previousFocusControl, display.getFocusControl() );
   }
   
   protected void setUp() throws Exception {
     Fixture.setUp();
-    RWTFixture.fakeUIThread();
+    System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
+                        RWTLifeCycle.class.getName() );
     ThemeManager.getInstance().initialize();
     AdapterManager manager = AdapterManagerImpl.getInstance();
     lifeCycleAdapterFactory = new AdapterFactory() {
@@ -342,7 +339,6 @@ public class DisplayLCA_Test extends TestCase {
   protected void tearDown() throws Exception {
 // TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
 //    ThemeManager.getInstance().deregisterAll();
-    RWTFixture.removeUIThread();
     AdapterManager manager = AdapterManagerImpl.getInstance();
     manager.deregisterAdapters( lifeCycleAdapterFactory, Display.class );
     manager.deregisterAdapters( lifeCycleAdapterFactory, Widget.class );

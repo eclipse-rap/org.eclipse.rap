@@ -150,7 +150,7 @@ public class RWTDemo implements IEntryPoint {
   }
 
 
-  public Display createUI() {
+  public int createUI() {
     Display display = new Display();
     final Shell shell = new Shell( display, SWT.SHELL_TRIM );
     shell.setBounds( 10, 10, 800, 600 );
@@ -250,7 +250,12 @@ public class RWTDemo implements IEntryPoint {
     } );
     shell.setText( "SWT Demo" );
     shell.open();
-    return display;
+    while( !shell.isDisposed() ) {
+      if( !display.readAndDispatch() ) {
+        display.sleep();
+      }
+    }
+    return 0;
   }
 
   private void layoutShell( final Shell shell,

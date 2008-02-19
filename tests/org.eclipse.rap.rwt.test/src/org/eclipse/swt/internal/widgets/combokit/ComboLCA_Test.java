@@ -132,8 +132,8 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( 0, combo.getSelectionIndex() );
     assertEquals( "widgetSelected", log.toString() );
   }
-
-  public void testSelectionAfterRemoveAll() throws IOException {
+  
+  public void testSelectionAfterRemoveAll() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.READ_ONLY );
@@ -150,19 +150,19 @@ public class ComboLCA_Test extends TestCase {
 
     String buttonId = WidgetUtil.getId( button );
     String displayId = DisplayUtil.getId( display );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PreserveWidgetsPhaseListener() );
 
     // Execute life cycle once to simulate startup request
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
-
-    // Simulate button click that executes widgetSelected
+    RWTFixture.executeLifeCycleFromServerThread();
+    
+    // Simulate button click that executes widgetSelected 
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread();
     String expected = "w.rwt_select( 0 )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }

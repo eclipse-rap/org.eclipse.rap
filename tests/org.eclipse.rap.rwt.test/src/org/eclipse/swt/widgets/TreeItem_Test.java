@@ -13,7 +13,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -630,13 +629,11 @@ public class TreeItem_Test extends TestCase {
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "32" );
-    new RWTLifeCycle().execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     
-    RWTFixture.fakeUIThread();
     assertEquals( -32, rootItem.getBounds().y );
     assertEquals( -16, rootItem2.getBounds().y );
     assertEquals( 0, rootItem3.getBounds().y );
-    RWTFixture.removeUIThread();
   }
   
   public void testGetBoundsIV() {

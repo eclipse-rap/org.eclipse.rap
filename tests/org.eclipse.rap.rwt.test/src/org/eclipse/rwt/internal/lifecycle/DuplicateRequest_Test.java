@@ -11,7 +11,6 @@
 
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
@@ -29,7 +28,7 @@ import org.eclipse.swt.widgets.*;
 
 public class DuplicateRequest_Test extends TestCase {
   
-  public void testDisabledButton() throws IOException {
+  public void testDisabledButton() {
     final java.util.List events = new ArrayList(); 
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -42,8 +41,7 @@ public class DuplicateRequest_Test extends TestCase {
       }
     } );
     shell.open();
-    
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String buttonId = WidgetUtil.getId( button );
 
@@ -51,8 +49,7 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertFalse( button.getEnabled() );
     assertEquals( 1, events.size() );
 
@@ -60,12 +57,11 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
   
-  public void testInvisibleButton() throws IOException {
+  public void testInvisibleButton() {
     final java.util.List events = new ArrayList(); 
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -79,7 +75,6 @@ public class DuplicateRequest_Test extends TestCase {
     } );
     shell.open();
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String buttonId = WidgetUtil.getId( button );
     
@@ -87,8 +82,7 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertFalse( button.getVisible() );
     assertEquals( 1, events.size() );
     
@@ -96,12 +90,11 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
   
-  public void testDisposedButton() throws IOException {
+  public void testDisposedButton() {
     final java.util.List events = new ArrayList(); 
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -115,7 +108,6 @@ public class DuplicateRequest_Test extends TestCase {
     } );
     shell.open();
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String buttonId = WidgetUtil.getId( button );
     
@@ -123,8 +115,7 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertTrue( button.isDisposed() );
     assertEquals( 1, events.size() );
     
@@ -132,12 +123,11 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
   
-  public void testButtonOpensModalShell() throws IOException {
+  public void testButtonOpensModalShell() {
     final java.util.List events = new ArrayList(); 
     Display display = new Display();
     final Shell shell = new Shell( display );
@@ -153,7 +143,6 @@ public class DuplicateRequest_Test extends TestCase {
     } );
     shell.open();
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String buttonId = WidgetUtil.getId( button );
 
@@ -161,8 +150,7 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
 
     // Second request - simulates click on the button that should not be 
@@ -170,12 +158,11 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
 
-  public void testFocusOutOpensModalShell() throws IOException {
+  public void testFocusOutOpensModalShell() {
     final java.util.List events = new ArrayList(); 
     Display display = new Display();
     final Shell shell = new Shell( display );
@@ -197,7 +184,6 @@ public class DuplicateRequest_Test extends TestCase {
     } );
     shell.open();
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String buttonId = WidgetUtil.getId( button );
     
@@ -208,15 +194,14 @@ public class DuplicateRequest_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".focusControl", buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
     assertEquals( FocusEvent.class, events.get( 0 ).getClass() );
     FocusEvent event = ( FocusEvent )events.get( 0 );
     assertSame( text, event.widget );
   }
   
-  public void testCloseClosedShell() throws IOException {
+  public void testCloseClosedShell() {
     final java.util.List events = new ArrayList(); 
     Display display = new Display();
     final Shell shell = new Shell( display, SWT.SHELL_TRIM );
@@ -228,7 +213,6 @@ public class DuplicateRequest_Test extends TestCase {
     } );
     shell.open();
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String shellId = WidgetUtil.getId( shell );
     
@@ -236,8 +220,7 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
     assertTrue( shell.isDisposed() );
 
@@ -246,12 +229,11 @@ public class DuplicateRequest_Test extends TestCase {
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
   
-  public void testNestedModalShell() throws IOException {
+  public void testNestedModalShell() {
     final java.util.List events = new ArrayList(); 
     Display display = new Display();
     final Shell shell1 = new Shell( display, SWT.APPLICATION_MODAL );
@@ -268,15 +250,13 @@ public class DuplicateRequest_Test extends TestCase {
     } );
     shell2.open();
     
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String buttonId = WidgetUtil.getId( button );
     
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
   

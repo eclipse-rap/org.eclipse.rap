@@ -19,7 +19,6 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.widgets.Display;
 
 
 public final class EntryPointManager {
@@ -67,7 +66,7 @@ public final class EntryPointManager {
     }
   }
   
-  public static Display createUI( final String name ) {
+  public static int createUI( final String name ) {
     IEntryPoint entryPoint;
     Class clazz;
     synchronized( registry ) {
@@ -87,21 +86,23 @@ public final class EntryPointManager {
         throw new EntryPointInstantiationException( msg, e ) ;
       }      
     }
+    ContextProvider.getSession().setAttribute( CURRENT_ENTRY_POINT, name );
     // not synchronized to avoid lock in case of opening a blocking
     // dialog in createUI
-    Display result = entryPoint.createUI();
-    if( result == null ) {
-      String text = "The entry point ''{0}'' did not return a display.";
-      Object[] args = new Object[] { clazz.getName() };
-      String msg = MessageFormat.format( text, args );
-      throw new IllegalStateException( msg );
-    }
-    ContextProvider.getSession().setAttribute( CURRENT_ENTRY_POINT, name );
+    int result = entryPoint.createUI();
     return result;
   }
 
   public static String getCurrentEntryPoint() {
     ISessionStore session = ContextProvider.getSession();
     return ( String )session.getAttribute( CURRENT_ENTRY_POINT );
+  }
+  
+  public static String[] getEntryPoints() {
+    synchronized( registry ) {
+      String[] result = new String[ registry.keySet().size() ];
+      registry.keySet().toArray( result );
+      return result;
+    }
   }
 }

@@ -11,8 +11,6 @@
 
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -73,19 +71,19 @@ public class RenderDispose_Test extends TestCase {
   }
   */
 
-  public void testDisposeNotYetInitialized() throws IOException {
+  public void testDisposeNotYetInitialized() {
     // set up the test widget hierarchy
     Display display = new Display();
     final Composite shell = new Shell( display , SWT.NONE );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     // first rendering: html document that contains the javaScript 'application'
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    RWTFixture.executeLifeCycleFromServerThread( );
     // second rendering: initial markup that constructs the above created
     // widget hierarchy (display, shell and button)
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     // create and dispose of the button
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -105,7 +103,7 @@ public class RenderDispose_Test extends TestCase {
         return PhaseId.RENDER;
       }
     } );
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
     String expectedStart
       =   "org.eclipse.swt.EventUtil.suspendEventHandling();"
         + "var req = org.eclipse.swt.Request.getInstance();"

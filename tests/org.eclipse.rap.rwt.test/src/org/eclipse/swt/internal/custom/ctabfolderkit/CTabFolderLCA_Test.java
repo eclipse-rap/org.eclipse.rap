@@ -143,7 +143,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, hasListeners );
   }
   
-  public void testChangeSelection() throws IOException {
+  public void testChangeSelection() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.MULTI );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
@@ -165,23 +165,19 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
-    lifeCycle.execute();
+    RWTFixture.executeLifeCycleFromServerThread( );
+
     
     // The actual test request: item1 is selected, the request selects item2
-    RWTFixture.fakeUIThread();
     folder.setSelection( item1 );
-    RWTFixture.removeUIThread();
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( folderId + ".selectedItemId", item2Id );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
-    lifeCycle.execute();
-    RWTFixture.fakeUIThread();
+    RWTFixture.executeLifeCycleFromServerThread( );
     assertSame( item2, folder.getSelection() );
     assertEquals( "visible=false", item1Control.markup.toString() );
     assertEquals( "visible=true", item2Control.markup.toString() );
-    RWTFixture.removeUIThread();
   }
   
   public void testSelectionEvent() {
@@ -206,11 +202,9 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     String name = folderId + "." + CTabFolderLCA.PARAM_SELECTED_ITEM_ID;
     Fixture.fakeRequestParam( name, item2Id );
-    RWTFixture.fakeUIThread();
     RWTFixture.readDataAndProcessAction( folder );
     assertSame( item2, folder.getSelection() );
     assertEquals( "widgetSelected|", log.toString() );
-    RWTFixture.removeUIThread();
   }
   
   public void testShowListEvent() {
@@ -252,9 +246,7 @@ public class CTabFolderLCA_Test extends TestCase {
     String folderId = WidgetUtil.getId( folder );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( CTabFolderLCA.EVENT_SHOW_LIST, folderId );
-    RWTFixture.fakeUIThread();
     RWTFixture.readDataAndProcessAction( folder );
-    RWTFixture.removeUIThread();
     assertEquals( "vetoShowList|", log.toString() );
     Menu menu = getShowListMenu( folder );
     assertEquals( null, menu );
@@ -266,12 +258,10 @@ public class CTabFolderLCA_Test extends TestCase {
     folder.addCTabFolder2Listener( listener );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( CTabFolderLCA.EVENT_SHOW_LIST, folderId );
-    RWTFixture.fakeUIThread();
     RWTFixture.readDataAndProcessAction( folder );
     assertEquals( "showList|", log.toString() );
     menu = getShowListMenu( folder );
     assertEquals( 1, menu.getItemCount() );
-    RWTFixture.removeUIThread();
   }
   
   private static Menu getShowListMenu( final CTabFolder folder ) {
