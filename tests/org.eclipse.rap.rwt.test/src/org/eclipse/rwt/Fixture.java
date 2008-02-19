@@ -120,7 +120,10 @@ public class Fixture {
     public void setContextLoader( final ClassLoader classLoader ) {
       
     }
-    
+
+    public InputStream getRegisteredContent( final String name ) {
+      return null;
+    }
   }
 
   public final static class TestRequest implements HttpServletRequest {

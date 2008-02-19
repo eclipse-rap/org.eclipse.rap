@@ -133,6 +133,9 @@ public final class RWTFixture {
       loader = contextLoader;
     }
 
+    public InputStream getRegisteredContent( final String name ) {
+      return null;
+    }
   }
 
   public static class TestEntryPoint implements IEntryPoint {

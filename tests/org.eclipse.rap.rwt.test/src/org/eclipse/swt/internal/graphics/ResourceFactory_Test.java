@@ -54,17 +54,30 @@ public class ResourceFactory_Test extends TestCase {
   public void testGetImage() throws Exception {
     assertEquals( 0, ResourceFactory.imagesCount() );
     Image image1 = Graphics.getImage( RWTFixture.IMAGE_50x100,
-                                       ResourceFactory_Test.class.getClassLoader() );
+                                      ResourceFactory_Test.class.getClassLoader() );
     assertNotNull( image1 );
     assertEquals( 1, ResourceFactory.imagesCount() );
     Image image1a = Graphics.getImage( RWTFixture.IMAGE_50x100,
-                                        ResourceFactory_Test.class.getClassLoader() );
+                                       ResourceFactory_Test.class.getClassLoader() );
     assertSame( image1, image1a );
     assertEquals( 1, ResourceFactory.imagesCount() );
     Image image2 = Graphics.getImage( RWTFixture.IMAGE_100x50,
-                                       ResourceFactory_Test.class.getClassLoader() );
+                                      ResourceFactory_Test.class.getClassLoader() );
     assertNotNull( image2 );
     assertEquals( 2, ResourceFactory.imagesCount() );
+  }
+  
+  public void testGetImageData() throws Exception {
+    Image image = Graphics.getImage( RWTFixture.IMAGE1,
+                                     ResourceFactory_Test.class.getClassLoader() );
+    ImageData imageData = ResourceFactory.getImageData( image );
+    assertNotNull( imageData );
+    assertTrue( imageData.width > 0 );
+    assertTrue( imageData.height > 0 );
+    ImageData imageData2 = ResourceFactory.getImageData( image );
+    assertNotNull( imageData2 );
+    assertEquals( imageData.data.length, imageData2.data.length );
+    assertNotSame( imageData, imageData2 );
   }
 
   protected void setUp() throws Exception {

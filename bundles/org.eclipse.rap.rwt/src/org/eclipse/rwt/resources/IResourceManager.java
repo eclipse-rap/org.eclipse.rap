@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rwt.resources;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 
 // TODO javadoc - revise this regarding RAP / W4T
-/** 
+/**
  * <p>The resource manager is responsible for registering resources
  * like images, css files etc. which are available on the applications 
  * classpath. The registered files will be read out from their libraries 
@@ -322,5 +321,15 @@ public interface IResourceManager {
    * @return the classloader to use
    */
   ClassLoader getContextLoader();
+  
+  /**
+   * Returns the content of the registered resource with the given name.
+   * 
+   * @param name the name of the resource
+   * @return an input stream to the contents of the resource, or
+   *         <code>null</code> if no such resource exists
+   * @since 1.1
+   */
+  InputStream getRegisteredContent( String name );
 
 }

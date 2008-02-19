@@ -448,6 +448,17 @@ public class ResourceManagerImpl_Test extends TestCase {
       // expected
     }
   }
+  
+  public void testGetRegisteredContent() throws Exception {
+    IResourceManager manager = getManager( ResourceBase.DELIVER_FROM_DISK );
+    InputStream is = openStream( TEST_RESOURCE_2 );
+    manager.register( "myfile", is );
+    is.close();
+    InputStream content = manager.getRegisteredContent( "myfile" );
+    assertNotNull( content );
+    content.close();
+    assertNull( manager.getRegisteredContent( "not-there" ) );
+  }
 
   // ////////////////
   // helping methods

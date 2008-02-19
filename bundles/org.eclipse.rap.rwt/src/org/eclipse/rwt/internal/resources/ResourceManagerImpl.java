@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -313,6 +313,22 @@ public class ResourceManagerImpl
     return ( ClassLoader )contextLoader.get();
   }
 
+  public InputStream getRegisteredContent( final String name ) {
+    InputStream result = null;
+    String key = createKey( name );
+    String fileName = ( String )repository.get( key );
+    if( fileName != null ) {
+      // TODO [rst] Works only for non-versioned content for now
+      File file = getDiskLocation( name, null );
+      try {
+        result = new FileInputStream( file );
+      } catch( FileNotFoundException e ) {
+        // should not happen
+        throw new RuntimeException( e );
+      }
+    }
+    return result;
+  }
   
   //////////////////
   // helping methods

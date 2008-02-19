@@ -1364,6 +1364,77 @@ public class SWT {
    */
   public static final int ERROR_INVALID_FONT = 48;
 
+
+  /**
+   * Image format constant indicating an unknown image type (value is -1).
+   */
+  public static final int IMAGE_UNDEFINED = -1;
+
+  /**
+   * Image format constant indicating a Windows BMP format image (value is 0).
+   */
+  public static final int IMAGE_BMP = 0;
+
+  /**
+   * Image format constant indicating a run-length encoded 
+   * Windows BMP format image (value is 1).
+   */
+  public static final int IMAGE_BMP_RLE = 1;
+
+  /**
+   * Image format constant indicating a GIF format image (value is 2).
+   */
+  public static final int IMAGE_GIF = 2;
+
+  /**
+   * Image format constant indicating a ICO format image (value is 3).
+   */
+  public static final int IMAGE_ICO = 3;
+
+  /**
+   * Image format constant indicating a JPEG format image (value is 4).
+   */
+  public static final int IMAGE_JPEG = 4;
+
+  /**
+   * Image format constant indicating a PNG format image (value is 5).
+   */
+  public static final int IMAGE_PNG = 5;
+
+  /**
+   * Image format constant indicating a TIFF format image (value is 6).
+   */
+  public static final int IMAGE_TIFF = 6;
+
+  /**
+   * Image format constant indicating an OS/2 BMP format image (value is 7).
+   */
+  public static final int IMAGE_OS2_BMP = 7;  
+  
+  /**
+   * Image transparency constant indicating that the image
+   * contains no transparency information (value is 0).
+   */
+  public static final int TRANSPARENCY_NONE = 0x0;
+  
+  /**
+   * Image transparency constant indicating that the image
+   * contains alpha transparency information (value is 1&lt;&lt;0).
+   */
+  public static final int TRANSPARENCY_ALPHA = 1 << 0;
+  
+  /**
+   * Image transparency constant indicating that the image
+   * contains a transparency mask (value is 1&lt;&lt;1).
+   */
+  public static final int TRANSPARENCY_MASK = 1 << 1;
+  
+  /**
+   * Image transparency constant indicating that the image
+   * contains a transparent pixel (value is 1&lt;&lt;2).
+   */
+  public static final int TRANSPARENCY_PIXEL = 1 << 2;
+  
   /**
    * Throws an appropriate exception based on the passed in error code.
    *
