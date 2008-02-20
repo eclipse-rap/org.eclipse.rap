@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH. All rights
  * reserved. This program and the accompanying materials are made available
  * under the terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -14,40 +14,39 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.*;
 import org.eclipse.ui.part.ViewPart;
 
 public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
 
   private TreeViewer viewer;
-  private final class LeafStarLabelDecorator implements ILabelDecorator {
 
-    public String decorateText( final String text, final Object element ) {
-      if( text.startsWith( "Leaf" ) ) {
-        return text + "*";
-      }
-      return text;
-    }
+//  TODO [rst] Add via extension
+//  private final class LeafStarLabelDecorator extends LabelProvider
+//    implements ILabelDecorator
+//  {
+//
+//    public String decorateText( final String text, final Object element ) {
+//      if( text.startsWith( "Leaf" ) ) {
+//        return text + "*";
+//      }
+//      return text;
+//    }
+//    
+//    public Image decorateImage( final Image image, final Object element ) {
+//      return null;
+//    }
+//  }
+  
+  class ViewLabelProvider extends LabelProvider {
 
-    public void addListener( final ILabelProviderListener listener ) {
-    }
-
-    public void dispose() {
-    }
-
-    public boolean isLabelProperty( final Object element,
-                                    final String property )
-    {
-      return false;
-    }
-
-    public void removeListener( final ILabelProviderListener listener ) {
-    }
-
-    public Image decorateImage( final Image image, final Object element ) {
-      return null;
+    public Image getImage( Object element ) {
+      return PlatformUI.getWorkbench()
+        .getSharedImages()
+        .getImage( ISharedImages.IMG_OBJ_ELEMENT );
     }
   }
+  
   class TreeObject {
 
     private final String name;
@@ -83,6 +82,17 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       return getName();
     }
   }
+  
+  /**
+   * Instances of this type are decorated with an error marker
+   */
+  class BrokenTreeObject extends TreeObject {
+    
+    public BrokenTreeObject( final String name ) {
+      super( name );
+    }
+  }
+
   class TreeParent extends TreeObject {
 
     private final ArrayList children;
@@ -173,7 +183,7 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
       p1.addChild( to1 );
       p1.addChild( to2 );
       p1.addChild( to3 );
-      TreeObject to4 = new TreeObject( "Leaf 4" );
+      TreeObject to4 = new BrokenTreeObject( "Leaf 4" );
       TreeParent p2 = new TreeParent( "Parent 2" );
       p2.addChild( to4 );
       TreeParent root = new TreeParent( "Root" );
@@ -189,8 +199,11 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
   public void createPartControl( final Composite parent ) {
     viewer = new TreeViewer( parent );
     viewer.setContentProvider( new TreeViewerContentProvider() );
-    viewer.setLabelProvider( new DecoratingLabelProvider( new LabelProvider(),
-                                                          new LeafStarLabelDecorator() ) );
+    ILabelDecorator labelDecorator
+      = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
+    ILabelProvider labelProvider
+      = new DecoratingLabelProvider( new ViewLabelProvider(), labelDecorator );    
+    viewer.setLabelProvider( labelProvider );
     viewer.setInput( this );
     viewer.addDoubleClickListener( this );
     getSite().setSelectionProvider( viewer );

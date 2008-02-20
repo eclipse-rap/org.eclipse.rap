@@ -186,6 +186,22 @@
      </editor>
   </extension>
   <extension
+      point="org.eclipse.ui.decorators">
+    <decorator
+        icon="icons/error-decorator.png"
+        id="org.eclipse.rap.demo.decorator"
+        label="Demo Decorator"
+        lightweight="true"
+        location="TOP_RIGHT"
+        state="true">
+       <enablement>
+          <objectClass
+                name="org.eclipse.rap.demo.DemoTreeViewPart$BrokenTreeObject">
+          </objectClass>
+       </enablement>
+    </decorator>
+  </extension>
+  <extension
         point="org.eclipse.rap.ui.branding">
      <branding
            body="body.html"
