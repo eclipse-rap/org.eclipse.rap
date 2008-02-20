@@ -404,9 +404,17 @@ public class UICallBackServiceHandler implements IServiceHandler {
     boolean useDifferentContext
       = ContextProvider.hasContext() && Display.getCurrent() != display;
     ServiceContext contextBuffer = null;
+    // TODO [fappel]: The context handling's getting very awkward in case of
+    //                having the context mapped instead of stored it in
+    //                the ContextProvider's ThreadLocal (see ContextProvider).
+    //                Because of this the wasMapped variable is used to
+    //                use the correct way to restore the buffered context.
+    //                See whether this can be done more elegantly and supplement
+    //                the testcases...
+    boolean wasMapped = false;
     if( useDifferentContext ) {
       contextBuffer = ContextProvider.getContext();
-      ContextProvider.releaseContextHolder();
+      wasMapped = ContextProvider.releaseContextHolder();
     }
     boolean useFakeContext = !ContextProvider.hasContext();
     if( useFakeContext ) {
@@ -424,7 +432,11 @@ public class UICallBackServiceHandler implements IServiceHandler {
         ContextProvider.disposeContext();
       }
       if( useDifferentContext ) {
-        ContextProvider.setContext( contextBuffer );
+        if( wasMapped ) {
+          ContextProvider.setContext( contextBuffer, Thread.currentThread() );
+        } else {
+          ContextProvider.setContext( contextBuffer );          
+        }
       }
     }
   }

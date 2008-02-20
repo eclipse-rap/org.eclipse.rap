@@ -190,8 +190,21 @@ public class ContextProvider {
     releaseContextHolder();
   }
 
-  public static void releaseContextHolder() {
-    CONTEXT_HOLDER.set( null );
+  public static boolean releaseContextHolder() {
+    boolean result = false;
+    Object object = CONTEXT_HOLDER.get();
+    if( object != null ) {
+      CONTEXT_HOLDER.set( null );
+    } else {
+      synchronized( CONTEXT_HOLDER_FOR_BG_THREADS ) {
+        ServiceContext toRemove = getMappedContext( Thread.currentThread() );
+        if( toRemove != null ) {
+          CONTEXT_HOLDER_FOR_BG_THREADS.remove( Thread.currentThread() );
+        }
+      }
+      result = true;
+    }
+    return result;
   }
 
   /**

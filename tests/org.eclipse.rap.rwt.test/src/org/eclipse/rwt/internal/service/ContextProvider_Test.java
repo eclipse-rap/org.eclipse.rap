@@ -62,6 +62,20 @@ public class ContextProvider_Test extends TestCase {
     assertFalse( hasContext[ 0 ] );
     assertFalse( ContextProvider.hasContext() );
     
+    hasContext[ 0 ] = true;
+    final boolean[] useMapped = { false };
+    Thread thread3 = new Thread() {
+      public void run() {
+        useMapped[ 0 ] = ContextProvider.releaseContextHolder();
+        hasContext[ 0 ] = ContextProvider.hasContext();
+      }
+    };
+    ContextProvider.setContext( serviceContext, thread3 );
+    thread3.start();
+    thread3.join();
+
+    assertTrue( useMapped[ 0 ] );
+    assertFalse( hasContext[ 0 ] );
   }
   
   public void testContextCreation() {
