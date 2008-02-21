@@ -391,14 +391,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   public static void runNonUIThreadWithFakeContext( final Display display,
-                                                    final Runnable runnable,
-                                                    final boolean asUIThread )
+                                                    final Runnable runnable )
   {
-    // TODO [rh] remove parameter 'asUIThread' after readAndDispath finalization
-    if( asUIThread ) {
-      String msg = "runNonUIThreadWithFakeContext: cannot execute in UI thread.";
-      throw new UnsupportedOperationException( msg );
-    }
     // Don't replace local variables by method calls, since the context may
     // change during the methods execution.
     boolean useDifferentContext

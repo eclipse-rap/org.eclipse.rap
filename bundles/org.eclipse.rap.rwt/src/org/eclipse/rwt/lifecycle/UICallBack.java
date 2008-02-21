@@ -42,8 +42,7 @@ public final class UICallBack {
                                                     final Runnable runnable )
   {
     UICallBackServiceHandler.runNonUIThreadWithFakeContext( display,
-                                                            runnable,
-                                                            false );
+                                                            runnable );
   }
   
 
