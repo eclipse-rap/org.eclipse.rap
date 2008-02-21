@@ -12,6 +12,7 @@ package org.eclipse.rwt.internal.branding;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
@@ -19,6 +20,9 @@ import org.eclipse.rwt.internal.service.*;
 
 
 public final class BrandingUtil {
+
+  private static final String ATTR_BRANDING_ID 
+    = BrandingUtil.class.getName() + "#brandingId";
 
   public static void replacePlaceholder( final StringBuffer buffer, 
                                          final String placeHolder, 
@@ -57,7 +61,17 @@ public final class BrandingUtil {
     String servletName = BrowserSurvey.getSerlvetName();
     String entryPoint = request.getParameter( RequestParams.STARTUP );
     AbstractBranding branding = BrandingManager.get( servletName, entryPoint );
+    RWT.getSessionStore().setAttribute( ATTR_BRANDING_ID, branding.getId() );
     return branding;
+  }
+  
+  /**
+   * Return the id of the current branding. This is only available after 
+   * {@link #findBranding()} has been called.
+   * @return the id of the current branding or <code>null</code>.
+   */
+  public static String getCurrentBrandingId() {
+    return ( String ) RWT.getSessionStore().getAttribute( ATTR_BRANDING_ID );
   }
   
   //////////////////

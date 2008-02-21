@@ -36,6 +36,12 @@ public class BrandingUtil_Test extends TestCase {
     public Header[] getHeaders() {
       return headers;
     }
+    public String getServletName() {
+      return "W4TDelegate";
+    }
+    public String getId() {
+      return TestBranding.class.getName();
+    }
   }
   
   public void testReplacePlaceholder() {
@@ -116,6 +122,24 @@ public class BrandingUtil_Test extends TestCase {
     branding.exitMessage = "\"\n";
     script = BrandingUtil.exitMessageScript( branding );
     assertEquals( "app.setExitConfirmation( \"\\\"\\n\" );", script );
+  }
+  
+  public void testGetCurrentBrandingId1() {
+    BrandingUtil.findBranding();
+    String currentBrandingId =  BrandingUtil.getCurrentBrandingId();
+    assertEquals( BrandingManager.DEFAULT_BRANDING_ID, currentBrandingId );
+  }
+  
+  public void testGetCurrentBrandingId2() {
+    TestBranding branding = new TestBranding();
+    BrandingManager.register( branding );
+    try {
+      BrandingUtil.findBranding();
+      String currentBrandingId =  BrandingUtil.getCurrentBrandingId();
+      assertEquals( branding.getId(), currentBrandingId );
+    } finally {
+      BrandingManager.deregister( branding );
+    }
   }
 
   protected void setUp() throws Exception {

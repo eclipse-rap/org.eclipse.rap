@@ -27,6 +27,13 @@ public final class BrandingManager {
 
   public static final String DEFAULT_SERVLET_NAME = "rap";
   
+  /** 
+   * The id of RAP's built-in branding 
+   * (value is "org.eclipse.rap.rwt.branding.default").
+   */
+  public static final String DEFAULT_BRANDING_ID 
+    = "org.eclipse.rap.rwt.branding.default";
+  
   private static final String[] EMPTY_ENTRY_POINTS = new String[ 0 ];
   private static final Header[] EMPTY_HEADERS = new Header[ 0 ];
 
@@ -56,6 +63,9 @@ public final class BrandingManager {
     }
     public String getThemeId() {
       return null;
+    }
+    public String getId() {
+      return BrandingManager.DEFAULT_BRANDING_ID;
     }
     public String getTitle() {
       return "RAP Startup Page";

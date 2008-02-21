@@ -100,6 +100,17 @@ public abstract class AbstractBranding {
   public String getThemeId() {
     return null;
   }
+  
+  /**
+   * Returns the id of this branding extension. 
+   * <p>The default behavior is to return <code>null</code>.</p>
+   *
+   * @return the branding extension's id or <code>null</code>.
+   * @since 1.1
+   */
+  public String getId() {
+    return null;
+  }
 
   /**
    * Returns the resource name for the favorites icon or <code>null</code> to
