@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.graphics;
 
 
@@ -58,21 +57,24 @@ public class TextSizeDetermination {
   }
   
   public static Point textExtent( final Font font,
-                                    final String string,
-                                    final int wrapWidth ) {
+                                  final String string,
+                                  final int wrapWidth )
+  {
     return internalExtent( font, string, wrapWidth, TEXT_EXTENT );
   }
   
   public static Point markupExtent( final Font font,
-                                  final String string,
-                                  final int wrapWidth ) {
+                                    final String string,
+                                    final int wrapWidth )
+  {
     return internalExtent( font, string, wrapWidth, MARKUP_EXTENT );
   }
 
   private static Point internalExtent( final Font font,
-                                  final String string,
-                                  final int wrapWidth,
-                                  final int estMode ) {
+                                       final String string,
+                                       final int wrapWidth,
+                                       final int estMode )
+  {
     // TODO [fappel]: replace with decent implementation
     Point result;
     int estimationMode = estMode;
@@ -104,7 +106,8 @@ public class TextSizeDetermination {
   private static Point doMeasurement( final Font font,
                                       final String string,
                                       final int wrapWidth,
-                                      final int estimationMode ) {
+                                      final int estimationMode )
+  {
     boolean expandLineDelimitors = estimationMode == TEXT_EXTENT;
     String toMeasure = string;
     if( estimationMode != MARKUP_EXTENT ) {

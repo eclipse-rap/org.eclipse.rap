@@ -503,7 +503,7 @@ public class ResourceManagerImpl
     StringBuffer filename = new StringBuffer();
     filename.append( webAppRoot );
     filename.append( File.separator );
-    filename.append( versionedResourceName ( name, version ) );
+    filename.append( versionedResourceName( name, version ) );
     return new File( filename.toString() );
   }
   
