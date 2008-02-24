@@ -522,7 +522,7 @@ public class ResourceManagerImpl_Test extends TestCase {
       String.class, String.class
     };
     Method creator = ResourceManagerImpl.class.getMethod( "createInstance",
-                                                      paramTypes );
+                                                          paramTypes );
     Object[] params = new Object[]{
       webAppRoot, mode
     };
