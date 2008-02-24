@@ -383,14 +383,14 @@ public final class ResourceFactory {
     return result;
   }
 
-  private static int hashCode( final byte a[] ) {
+  private static int hashCode( final byte bytes[] ) {
     int result;
-    if( a == null ) {
+    if( bytes == null ) {
       result = 0;
     } else {
       result = 1;
-      for( int i = 0; i < a.length; i++ ) {
-        result = 31 * result + a[ i ];
+      for( int i = 0; i < bytes.length; i++ ) {
+        result = 31 * result + bytes[ i ];
       }
     }
     return result;
