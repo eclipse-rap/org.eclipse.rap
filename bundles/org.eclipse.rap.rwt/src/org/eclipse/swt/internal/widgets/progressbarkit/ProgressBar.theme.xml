@@ -7,20 +7,18 @@
   <color name = "progressbar.foreground"
       description = "Foreground color for progress bars"
       default = "0, 128, 192" />
-  
+
   <!--  == control.background -->
   <color name = "progressbar.background"
       description = "Background color for progress bars"
       default = "248, 248, 255" />
-  
+
   <image name="progressbar.bgimage"
       description="Background image for progress bars"
-      targetPath="progressbar/barbg.gif"
       default="none"/>
-  
+
   <image name="progressbar.fgimage"
       description="Foreground image for progress bars"
-      targetPath="progressbar/bar.gif"
       default="none"/>
 
 </theme>

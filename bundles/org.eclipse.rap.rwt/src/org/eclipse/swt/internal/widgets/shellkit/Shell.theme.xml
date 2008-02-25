@@ -66,82 +66,64 @@
 
   <image name="shell.title.active.bgimage"
       description="Background image for title bar of active Shells"
-      targetPath="window/caption_active.gif"
       default="resource/widget/rap/window/caption_active.gif"/>
 
   <image name="shell.title.inactive.bgimage"
       description="Background image for title bar of inactive Shells"
-      targetPath="window/caption_inactive.gif"
       default="resource/widget/rap/window/caption_inactive.gif"/>
 
   <!-- The button parade -->
 
   <image name="shell.minbutton.image"
       description="Image for minimize button on shells"
-      targetPath="window/minimize.png"
       default="resource/widget/rap/window/minimize.png"/>
   <image name="shell.minbutton.over.image"
       description="Image for minimize button on shells on mouse over"
-      targetPath="window/minimize.over.png"
       default="resource/widget/rap/window/minimize.over.png"/>
   <image name="shell.minbutton.inactive.image"
       description="Image for minimize button on inactive shells"
-      targetPath="window/minimize.inactive.png"
       default="resource/widget/rap/window/minimize.inactive.png"/>
   <image name="shell.minbutton.inactive.over.image"
       description="Image for minimize button on inactive shells on mouse over"
-      targetPath="window/minimize.inactive.over.png"
       default="resource/widget/rap/window/minimize.inactive.over.png"/>
 
   <image name="shell.maxbutton.image"
       description="Image for maximize button of Shells"
-      targetPath="window/maximize.png"
       default="resource/widget/rap/window/maximize.png"/>
   <image name="shell.maxbutton.over.image"
       description="Image for maximize button of Shells"
-      targetPath="window/maximize.over.png"
       default="resource/widget/rap/window/maximize.over.png"/>
   <image name="shell.maxbutton.inactive.image"
       description="Image for maximize button of Shells"
-      targetPath="window/maximize.inactive.png"
       default="resource/widget/rap/window/maximize.inactive.png"/>
   <image name="shell.maxbutton.inactive.over.image"
       description="Image for maximize button of Shells"
-      targetPath="window/maximize.inactive.over.png"
       default="resource/widget/rap/window/maximize.inactive.over.png"/>
 
   <image name="shell.restorebutton.image"
       description="Image for restore from maximized button of Shells"
-      targetPath="window/restore.png"
       default="resource/widget/rap/window/restore.png"/>
   <image name="shell.restorebutton.over.image"
       description="Image for restore from maximized button of Shells"
-      targetPath="window/restore.over.png"
       default="resource/widget/rap/window/restore.over.png"/>
   <image name="shell.restorebutton.inactive.image"
       description="Image for restore from maximized button of Shells"
-      targetPath="window/restore.inactive.png"
       default="resource/widget/rap/window/restore.inactive.png"/>
   <image name="shell.restorebutton.inactive.over.image"
       description="Image for restore from maximized button of Shells"
-      targetPath="window/restore.inactive.over.png"
       default="resource/widget/rap/window/restore.inactive.over.png"/>
 
   <image name="shell.closebutton.image"
       description="Image for close button of Shells"
-      targetPath="window/close.png"
       default="resource/widget/rap/window/close.png"/>
   <image name="shell.closebutton.over.image"
       description="Image for close button of Shells"
-      targetPath="window/close.over.png"
       default="resource/widget/rap/window/close.over.png"/>
   <image name="shell.closebutton.inactive.image"
       description="Image for close button of Shells"
-      targetPath="window/close.inactive.png"
       default="resource/widget/rap/window/close.inactive.png"/>
   <image name="shell.closebutton.inactive.over.image"
       description="Image for close button of Shells"
-      targetPath="window/close.inactive.over.png"
       default="resource/widget/rap/window/close.inactive.over.png"/>
 
 </theme>

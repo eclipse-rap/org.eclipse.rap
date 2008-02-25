@@ -376,11 +376,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( states.active ) {
         result.textColor = "shell.title.foreground";
         result.backgroundColor = "shell.title.background";
-        result.backgroundImage = "widget/window/caption_active.gif";
+        result.backgroundImage = "widget/shell.title.active.bgimage";
       } else {
         result.textColor = "shell.title.inactive.foreground";
         result.backgroundColor = "shell.title.inactive.background";
-        result.backgroundImage = "widget/window/caption_inactive.gif";
+        result.backgroundImage = "widget/shell.title.inactive.bgimage";
       }
       if( states.rwt_TITLE ) {
         result.minHeight = dimensions.get( "shell.title.height" );
@@ -439,15 +439,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       if( states.active ) {
         if( states.over && !states.pressed ) {
-          result.icon = "widget/window/minimize.over.png";
+          result.icon = "widget/shell.minbutton.over.image";
         } else {
-          result.icon = "widget/window/minimize.png";
+          result.icon = "widget/shell.minbutton.image";
         }
       } else {
         if( states.over && !states.pressed ) {
-          result.icon = "widget/window/minimize.inactive.over.png";
+          result.icon = "widget/shell.minbutton.inactive.over.image";
         } else {
-          result.icon = "widget/window/minimize.inactive.png";
+          result.icon = "widget/shell.minbutton.inactive.image";
         }
       }
       return result;
@@ -461,15 +461,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       if( states.active ) {
         if( states.over && !states.pressed ) {
-          result.icon = "widget/window/maximize.over.png";
+          result.icon = "widget/shell.maxbutton.over.image";
         } else {
-          result.icon = "widget/window/maximize.png";
+          result.icon = "widget/shell.maxbutton.image";
         }
       } else {
         if( states.over && !states.pressed ) {
-          result.icon = "widget/window/maximize.inactive.over.png";
+          result.icon = "widget/shell.maxbutton.inactive.over.image";
         } else {
-          result.icon = "widget/window/maximize.inactive.png";
+          result.icon = "widget/shell.maxbutton.inactive.image";
         }
       }
       return result;
@@ -483,15 +483,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       if( states.active ) {
         if( states.over && !states.pressed ) {
-          result.icon = "widget/window/restore.over.png";
+          result.icon = "widget/shell.restorebutton.over.image";
         } else {
-          result.icon = "widget/window/restore.png";
+          result.icon = "widget/shell.restorebutton.image";
         }
       } else {
         if( states.over && !states.pressed ) {
-          result.icon = "widget/window/restore.inactive.over.png";
+          result.icon = "widget/shell.restorebutton.inactive.over.image";
         } else {
-          result.icon = "widget/window/restore.inactive.png";
+          result.icon = "widget/shell.restorebutton.inactive.image";
         }
       }
       return result;
@@ -505,15 +505,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       if( states.active ) {
         if( states.over && !states.pressed ) {
-          result.icon = "widget/window/close.over.png";
+          result.icon = "widget/shell.closebutton.over.image";
         } else {
-          result.icon = "widget/window/close.png";
+          result.icon = "widget/shell.closebutton.image";
         }
       } else {
         if( states.over && !states.pressed ) {
-          result.icon = "widget/window/close.inactive.over.png";
+          result.icon = "widget/shell.closebutton.inactive.over.image";
         } else {
-          result.icon = "widget/window/close.inactive.png";
+          result.icon = "widget/shell.closebutton.inactive.image";
         }
       }
       return result;
@@ -1548,7 +1548,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       return {
         border : "thinInset",
-        backgroundImage : "widget/progressbar/barbg.gif",
+        backgroundImage : "widget/progressbar.bgimage",
         backgroundColor : "progressbar.background"
       }
     }
@@ -1557,7 +1557,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "progressbar-bar" : {
     style : function( states ) {
       return {
-        backgroundImage : "widget/progressbar/bar.gif",
+        backgroundImage : "widget/progressbar.fgimage",
         backgroundColor : "progressbar.foreground"
       }
       }
