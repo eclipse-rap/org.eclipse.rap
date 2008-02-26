@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,26 +13,37 @@ package org.eclipse.rwt.internal.theme;
 
 public class QxImage implements QxType {
 
-  private final boolean none;
-  private final String path;
+  private static final String NONE = "none";
 
-  public QxImage( final String value ) {
-    none = "none".equals( value );
+  public final boolean none;
+
+  public final String path;
+
+  public final ResourceLoader loader;
+
+  /**
+   * Creates a new image from the given value.
+   * 
+   * @param value the definition string to create the image from. Either
+   *            <code>none</code> or a path to an image
+   * @param loader a resource loader which is able to load the image from the
+   *            given path
+   */
+  public QxImage( final String value,
+                  final ResourceLoader loader )
+  {
+    if( value == null || loader == null ) {
+      throw new NullPointerException( "null argument" );
+    }
+    none = NONE.equals( value );
     path = none ? null : value;
-  }
-
-  public String getPath() {
-    return path;
-  }
-
-  public boolean isNone() {
-    return none;
+    this.loader = loader;
   }
 
   public String toDefaultString() {
     // returns an empty string, because the default resource path is not to be
     // displayed to the user
-    return "";
+    return none ? NONE : "";
   }
 
   public boolean equals( final Object object ) {
@@ -52,7 +63,7 @@ public class QxImage implements QxType {
 
   public String toString () {
     return "QxImage{ "
-           + ( none ? "none" : "path=" + path )
+           + ( none ? NONE : "path=" + path )
            + " }";
   }
 }

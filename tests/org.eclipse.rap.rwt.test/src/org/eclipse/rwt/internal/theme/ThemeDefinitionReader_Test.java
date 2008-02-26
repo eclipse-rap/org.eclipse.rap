@@ -16,7 +16,6 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDef;
 import org.eclipse.rwt.internal.theme.ThemeDefinitionReader.ThemeDefHandler;
 import org.eclipse.swt.widgets.Widget;
 
@@ -28,7 +27,7 @@ public class ThemeDefinitionReader_Test extends TestCase {
   public void testRead() throws Exception {
     ClassLoader loader = Widget.class.getClassLoader();
     InputStream is = loader.getResourceAsStream( WIDGET_THEME_FILE );
-    ThemeDefinitionReader reader = new ThemeDefinitionReader( is );
+    ThemeDefinitionReader reader = new ThemeDefinitionReader( is, null );
     final Map result = new HashMap();
     try {
       reader.read( new ThemeDefHandler() {

@@ -24,60 +24,61 @@ import org.xml.sax.*;
  */
 public class ThemeDefinitionReader {
 
-  private static final String ATTR_DEFAULT = "default";
-  private static final String ATTR_INHERIT = "inherit";
-  private static final String ATTR_DESCRIPTION = "description";
-  private static final String ATTR_NAME = "name";
-
-  public class ThemeDef {
-    public final String name;
-    public final String inherit;
-    public final QxType defValue;
-    public final String description;
-    public String targetPath;
-    public ThemeDef( final String name,
-                     final String inherit,
-                     final QxType defValue,
-                     final String description )
-    {
-      this.name = name;
-      this.inherit = inherit;
-      this.defValue = defValue;
-      this.description = description;
-    }
-  }
-
-  public interface ThemeDefHandler {
+  public static interface ThemeDefHandler {
     public abstract void readThemeDef( ThemeDef def );
   }
 
   private static final String NODE_ROOT = "theme";
-  private static final String TYPE_FONT = "font";
-  private static final String TYPE_COLOR = "color";
+
+  private static final String ATTR_NAME = "name";
+
+  private static final String ATTR_DESCRIPTION = "description";
+
+  private static final String ATTR_DEFAULT = "default";
+
+  private static final String ATTR_INHERIT = "inherit";
+
+  private static final String ATTR_TARGET_PATH = "targetPath";
+  
   private static final String TYPE_BOOLEAN = "boolean";
+  
   private static final String TYPE_BORDER = "border";
+  
+  private static final String TYPE_DIMENSION = "dimension";
+
   private static final String TYPE_BOXDIMENSION = "boxdim";
-  private static final String TYPE_DIMENDSION = "dimension";
+  
+  private static final String TYPE_COLOR = "color";
+  
+  private static final String TYPE_FONT = "font";
+
   private static final String TYPE_IMAGE = "image";
 
   private static final String THEME_DEF_SCHEMA = "themedef.xsd";
+
   private static final String JAXP_SCHEMA_LANGUAGE
     = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+
   private static final String W3C_XML_SCHEMA
     = "http://www.w3.org/2001/XMLSchema";
 
-  private InputStream inputStream;
+  private final InputStream inputStream;
+
+  private final ResourceLoader loader;
 
   /**
    * An instance of this class reads theme definitions from an XML resource.
+   * 
    * @param inputStream input stream from a theme definition XML
    */
-  public ThemeDefinitionReader( final InputStream inputStream )
+  public ThemeDefinitionReader( final InputStream inputStream,
+                                final ResourceLoader loader )
   {
     if( inputStream == null ) {
       throw new NullPointerException( "null argument" );
     }
     this.inputStream = inputStream;
+    this.loader = loader;
   }
 
   /**
@@ -123,11 +124,11 @@ public class ThemeDefinitionReader {
       value = new QxBorder( defaultStr );
     } else if( TYPE_BOXDIMENSION.equals( type ) ) {
       value = new QxBoxDimensions( defaultStr );
-    } else if( TYPE_DIMENDSION.equals( type ) ) {
+    } else if( TYPE_DIMENSION.equals( type ) ) {
       value = new QxDimension( defaultStr );
     } else if( TYPE_IMAGE.equals( type ) ) {
-      targetPath = getAttributeValue( node, "targetPath" );
-      value = new QxImage( defaultStr );
+      targetPath = getAttributeValue( node, ATTR_TARGET_PATH );
+      value = new QxImage( defaultStr, loader );
     } else {
       // TODO [rst] Remove when XML validation is active
       throw new IllegalArgumentException( "Illegal type: " + type );

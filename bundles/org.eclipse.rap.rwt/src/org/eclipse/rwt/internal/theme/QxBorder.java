@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,13 @@ public class QxBorder implements QxType {
 
   private static final String DARKSHADOW_LIGHTSHADOW
     = getBorderColors( "widget.darkshadow", "widget.lightshadow" );
+
   private static final String LIGHTSHADOW_DARKSHADOW
     = getBorderColors( "widget.lightshadow", "widget.darkshadow" );
+
   private static final String SHADOW_HIGHLIGHT
     = getBorderColors( "widget.shadow", "widget.highlight" );
+
   private static final String HIGHLIGHT_SHADOW
     = getBorderColors( "widget.highlight", "widget.shadow" );
 
