@@ -251,6 +251,7 @@ public class TableViewerTab extends ExampleTab {
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
       public void selectionChanged( final SelectionChangedEvent event ) {
         lblSelection.setText( "Selection: " + event.getSelection() );
+        lblSelection.getParent().layout( new Control[] { lblSelection } );
       }
     } );
     viewer.getTable().setHeaderVisible( true );
