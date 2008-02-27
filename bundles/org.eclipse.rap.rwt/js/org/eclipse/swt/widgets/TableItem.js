@@ -109,7 +109,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableItem", {
         // reset selection start index when selection changes server-side
         this._parent._resetSelectionStart();
       } else {
-        this._parent._unselectItem( this, false );
+        this._parent._deselectItem( this, false );
       }
     },
     

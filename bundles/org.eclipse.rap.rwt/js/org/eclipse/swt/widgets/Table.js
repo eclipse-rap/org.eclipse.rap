@@ -416,7 +416,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       } else {
         if( org.eclipse.swt.widgets.Table._isCtrlOnlyPressed( evt ) ) {
           if( this._isItemSelected( item ) ) {
-            this._unselectItem( item, true );
+            this._deselectItem( item, true );
           } else {
             this._selectItem( item, true );
           }
@@ -526,7 +526,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       var selectedIndices = "";
       for( var i = 0; i < this._selected.length; i++ ) {
         var index = this._items.indexOf( this._selected[ i ] );
-        if( selectedIndices != "" ) {
+        if( selectedIndices !== "" ) {
           selectedIndices += ",";
         }
         selectedIndices += index.toString();
@@ -683,11 +683,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _removeItem : function( item ) {
       var itemIndex = this._items.indexOf( item );
       var wasItemVisible = this._isItemVisible( itemIndex );
-      qx.lang.Array.remove( this._items, item );
+      this._items.splice( itemIndex, 1 );
       if( item === this._focusedItem ) {
         this._focusedItem = null;
       }
-      this._unselectItem( item, false );
+      this._deselectItem( item, false );
       this._updateScrollHeight();
       if( wasItemVisible ) {
         this._updateRows();
@@ -716,11 +716,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
       }
     },
 
-    _unselectItem : function( item, update ) {
+    _deselectItem : function( item, update ) {
       // remove item from array of selected items
-      var index = this._selected.indexOf( item );
-      if( index !== -1 ) {
-        this._selected.splice( index, 1 );
+      var itemIndex = this._selected.indexOf( item ); 
+      if( itemIndex !== -1 ) {
+        this._selected.splice( itemIndex, 1 );
       }
       // update item if requested
       if( update ) {
@@ -734,7 +734,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     _clearSelection : function() {
       while( this._selected.length > 0 ) {
-        this._unselectItem( this._selected[ 0 ], true );
+        this._deselectItem( this._selected[ 0 ], true );
       }
     },
     
