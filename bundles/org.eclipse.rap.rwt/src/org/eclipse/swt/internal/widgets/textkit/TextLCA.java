@@ -54,7 +54,10 @@ public final class TextLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    return getLCADelegate( widget ).getTypePoolId( ( Text )widget );
+//    return getLCADelegate( widget ).getTypePoolId( ( Text )widget );
+    // Disabled pooling, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=218466
+    // [Pooling] Text widgets occasionally don't accept keyboard entries
+    return null;
   }
 
   private static AbstractTextDelegateLCA getLCADelegate( final String tpId ) {
