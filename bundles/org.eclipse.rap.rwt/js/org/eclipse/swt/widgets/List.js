@@ -108,13 +108,11 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
      * itemIndices array (empty array to clear selection).
      */
     selectItems : function( itemIndices ) {
-      if( itemIndices.length == 0 ) {
-        this.getManager().deselectAll();
-      } else {
-        for( var i = 0; i < itemIndices.length; i++ ) {
-          var item = this.getChildren()[ itemIndices[ i ] ];
-          this.getManager().setItemSelected( item, true );
-        }
+      var manager = this.getManager(); 
+      manager.deselectAll();
+      for( var i = 0; i < itemIndices.length; i++ ) {
+        var item = this.getChildren()[ itemIndices[ i ] ];
+        manager.setItemSelected( item, true );
       }
     },
 

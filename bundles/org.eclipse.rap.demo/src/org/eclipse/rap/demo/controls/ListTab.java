@@ -56,6 +56,7 @@ public class ListTab extends ExampleTab {
   }
 
   private List list;
+  private ListViewer listViewer;
 
   public ListTab( final CTabFolder topFolder ) {
     super( topFolder, "List" );
@@ -72,6 +73,7 @@ public class ListTab extends ExampleTab {
     createFgColorButton();
     createBgColorButton();
     createFontChooser();
+    createSelectionButton();
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -84,10 +86,10 @@ public class ListTab extends ExampleTab {
     MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     menuItem.setText( "Context menu item" );
     list.setMenu( menu );
-    ListViewer viewer = new ListViewer( list );
-    viewer.setContentProvider( new ListContentProvider() );
-    viewer.setLabelProvider( new LabelProvider() );
-    viewer.setInput( ELEMENTS );
+    listViewer = new ListViewer( list );
+    listViewer.setContentProvider( new ListContentProvider() );
+    listViewer.setLabelProvider( new LabelProvider() );
+    listViewer.setInput( ELEMENTS );
     list.addSelectionListener( new SelectionAdapter() {
       public void widgetDefaultSelected( SelectionEvent event ) {
         String item = list.getItem( list.getSelectionIndex() );
@@ -153,6 +155,16 @@ public class ListTab extends ExampleTab {
       }
     } );
     list.setMenu( menu );
+  }
+
+  private void createSelectionButton() {
+    Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Select first" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        listViewer.setSelection( new StructuredSelection( ELEMENTS.get( 0 ) ) );
+      }
+    } );
   }
 
   private String getExampleCode() {
