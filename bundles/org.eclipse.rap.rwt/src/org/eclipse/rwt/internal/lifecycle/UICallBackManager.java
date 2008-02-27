@@ -41,10 +41,8 @@ public class UICallBackManager
   
   static class RunnableBase implements Runnable {
     final Runnable runnable;
-    private final Display display;
-    RunnableBase( final Runnable runnable, final Display display ) {
+    RunnableBase( final Runnable runnable ) {
       this.runnable = runnable;
-      this.display = display;
     }
     public void run() {
       if( runnable != null ) {
@@ -54,8 +52,8 @@ public class UICallBackManager
   }
   
   static class SyncRunnable extends RunnableBase implements Runnable {
-    SyncRunnable( final Runnable runnable, final Display display ) {
-      super( runnable, display );
+    SyncRunnable( final Runnable runnable ) {
+      super( runnable );
     }
     public void run() {
       super.run();
@@ -106,7 +104,7 @@ public class UICallBackManager
   
   public void addAsync( final Runnable runnable, final Display display ) {
     synchronized( runnables ) {
-      runnables.add( new RunnableBase( runnable, display ) );
+      runnables.add( new RunnableBase( runnable ) );
       // TODO [fappel]: This may not work properly in case asyncExcec is
       //                called in before render of a PhaseListener
       if( Thread.currentThread() != display.getThread() ) {
@@ -118,7 +116,7 @@ public class UICallBackManager
   public void addSync( final Runnable runnable, final Display display ) {
     synchronized( runnable ) {
       if( Thread.currentThread() != display.getThread() ) {
-        SyncRunnable syncRunnable = new SyncRunnable( runnable, display );
+        SyncRunnable syncRunnable = new SyncRunnable( runnable );
         runnables.add( syncRunnable );
         sendUICallBack();
         syncRunnable.block();

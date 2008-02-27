@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.graphics;
 import java.io.*;
 import org.eclipse.swt.*;
 //import org.eclipse.swt.internal.CloneableCompatibility;
-import org.eclipse.swt.graphics.Image;
+//import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 
 /**

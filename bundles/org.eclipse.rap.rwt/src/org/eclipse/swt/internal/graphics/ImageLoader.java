@@ -15,7 +15,7 @@ import java.io.*;
 import java.util.Vector;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
+//import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.Compatibility;
 import org.eclipse.swt.internal.image.FileFormat;
 

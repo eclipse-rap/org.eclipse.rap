@@ -79,7 +79,7 @@ public class UICallBackManager_Test extends TestCase {
           public void run() {
             log += RUN_SYNC_EXEC;
           }
-        }, null );
+        } );
         syncRunnable[ 0 ].block();
       }
     } );

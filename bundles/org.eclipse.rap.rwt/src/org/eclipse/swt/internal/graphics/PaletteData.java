@@ -12,7 +12,7 @@ package org.eclipse.swt.internal.graphics;
 
 
 import org.eclipse.swt.*;
-import org.eclipse.swt.graphics.Image;
+//import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 
 /**
