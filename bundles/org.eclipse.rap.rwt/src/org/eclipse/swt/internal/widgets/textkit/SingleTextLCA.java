@@ -17,8 +17,6 @@ import org.eclipse.swt.widgets.Text;
 
 final class SingleTextLCA extends AbstractTextDelegateLCA {
 
-  private static final String QX_TYPE = "qx.ui.form.TextField";
-
   static final String TYPE_POOL_ID
     = SingleTextLCA.class.getName();
 
@@ -41,10 +39,11 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
 
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( QX_TYPE );
+    writer.newWidget( "qx.ui.form.TextField" );
     WidgetLCAUtil.writeCustomAppearance( text );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeHijack( text );
+    TextLCAUtil.writeAlignment( text );
   }
 
   void renderChanges( final Text text ) throws IOException {

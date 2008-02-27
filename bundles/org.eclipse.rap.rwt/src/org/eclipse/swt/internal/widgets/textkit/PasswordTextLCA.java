@@ -20,8 +20,6 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
   static final String TYPE_POOL_ID
     = PasswordTextLCA.class.getName();
 
-  private static final String QX_TYPE = "qx.ui.form.PasswordField";
-
   void preserveValues( final Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
@@ -41,7 +39,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
 
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( QX_TYPE );
+    writer.newWidget( "qx.ui.form.PasswordField" );
     WidgetLCAUtil.writeCustomAppearance( text );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeHijack( text );

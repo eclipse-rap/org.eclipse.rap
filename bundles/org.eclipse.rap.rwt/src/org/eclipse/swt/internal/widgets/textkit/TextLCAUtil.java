@@ -39,6 +39,7 @@ final class TextLCAUtil {
   private static final String JS_PROP_MAX_LENGTH = "maxLength";
   private static final String JS_PROP_READ_ONLY = "readOnly";
   private static final String JS_PROP_VALUE = "value";
+  private static final String JS_PROP_TEXT_ALIGN = "textAlign";
   private static final String JS_LISTENER_ON_MOUSE_UP
     = "org.eclipse.swt.TextUtil.onMouseUp";
   private static final String JS_EVENT_MOUSE_UP = "mouseup";
@@ -183,6 +184,17 @@ final class TextLCAUtil {
     writer.removeListener( JS_EVENT_MOUSE_UP, JS_LISTENER_ON_MOUSE_UP );
     writer.removeListener( "appear",
                            "org.eclipse.swt.TextUtil._onAppearSetSelection" );
+  }
+  
+  static void writeAlignment( final Text text ) throws IOException {
+    int style = text.getStyle();
+    if( ( style & SWT.RIGHT ) != 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( text );
+      writer.set( JS_PROP_TEXT_ALIGN, "right" );
+    } else if( ( style & SWT.CENTER ) != 0 ) {
+      JSWriter writer = JSWriter.getWriterFor( text );
+      writer.set( JS_PROP_TEXT_ALIGN, "center" );
+    }
   }
 
   static void writeVerifyAndModifyListener( final Text text )

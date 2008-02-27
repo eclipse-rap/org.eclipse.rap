@@ -22,8 +22,6 @@ import org.eclipse.swt.widgets.Text;
 //      occur JavaScript errors. (see readSelection, writeSelection)
 final class MultiTextLCA extends AbstractTextDelegateLCA {
 
-  private static final String QX_TYPE = "qx.ui.form.TextArea";
-
   static final String TYPE_POOL_ID
     = MultiTextLCA.class.getName();
 
@@ -44,7 +42,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
 
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( QX_TYPE );
+    writer.newWidget( "qx.ui.form.TextArea" );
     WidgetLCAUtil.writeCustomAppearance( text );
     ControlLCAUtil.writeStyleFlags( text );
     MultiTextLCA.writeNoSpellCheck( text );
@@ -52,6 +50,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
 //               also interferes with object pooling in IE.
     TextLCAUtil.writeWrap( text );
     TextLCAUtil.writeHijack( text );
+    TextLCAUtil.writeAlignment( text );
   }
 
   void renderChanges( final Text text ) throws IOException {

@@ -64,6 +64,9 @@ public class TextTab extends ExampleTab {
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "PASSWORD", SWT.PASSWORD );
     createStyleButton( "READ_ONLY", SWT.READ_ONLY );
+    createStyleButton( "LEFT", SWT.LEFT );
+    createStyleButton( "CENTER", SWT.CENTER );
+    createStyleButton( "RIGHT", SWT.RIGHT );
     createVisibilityButton();
     createEnablementButton();
     final Button btnEditable = createPropertyButton( "Editable" );
