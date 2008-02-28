@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -18,7 +18,7 @@ import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbeResult;
 
 final class TextSizeDataBase {
 
-  public static Point lookup( final Font font, 
+  public static Point lookup( final Font font,
                               final String string,
                               final int wrapWidth )
   {
@@ -34,12 +34,13 @@ final class TextSizeDataBase {
 
   public static void store( final Font font,
                             final String string,
-                            int wrapWidth, 
+                            final int wrapWidth,
                             final Point calculatedTextSize )
   {
     if( !TextSizeProbeStore.getInstance().containsProbeResult( font ) ) {
       String txt = "Font ''{0}'' not probed yet.";
-      String msg = MessageFormat.format( txt, new Object[] { font.toString() } );
+      Object[] args = new Object[] { font.toString() };
+      String msg = MessageFormat.format( txt, args );
       throw new IllegalStateException( msg );
     }
     ITextSizeStorage registry = TextSizeStorageRegistry.obtain();
@@ -54,23 +55,24 @@ final class TextSizeDataBase {
       ( ( DefaultTextSizeStorage )registry ).resetStringSizes();
     }
   }
-  
-  
-  private static Integer getKey( final Font font,
-                                 final String string, 
-                                 final int wrapWidth )
+
+
+  // for test purposes only
+  static Integer getKey( final Font font,
+                         final String string,
+                         final int wrapWidth )
   {
     TextSizeProbeStore instance = TextSizeProbeStore.getInstance();
     IProbeResult probeResult = instance.getProbeResult( font );
     String probeText = probeResult.getProbe().getString();
     Point probeSize = probeResult.getSize();
-    FontData probFontData = font.getFontData()[ 0 ];
-    // TODO [fappel]: check hashcode calculation
-    int hashCode =   probeText.hashCode()
-                   ^ probeSize.hashCode()
-                   ^ probFontData.hashCode() 
-                   ^ string.hashCode()
-                   ^ wrapWidth;
+    FontData probeFontData = font.getFontData()[ 0 ];
+    int hashCode = 1;
+    hashCode = 31 * hashCode + probeText.hashCode();
+    hashCode = 31 * hashCode + probeSize.hashCode();
+    hashCode = 31 * hashCode + probeFontData.hashCode();
+    hashCode = 31 * hashCode + string.hashCode();
+    hashCode = 31 * hashCode + wrapWidth;
     return new Integer( hashCode );
   }
 }

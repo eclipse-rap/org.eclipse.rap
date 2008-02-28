@@ -12,8 +12,7 @@
 package org.eclipse.swt.internal.graphics;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import junit.framework.TestCase;
 
@@ -26,8 +25,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination.ICalculationItem;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbe;
 import org.eclipse.swt.internal.graphics.TextSizeProbeStore.IProbeResult;
@@ -340,6 +338,32 @@ public class TextSizeDetermination_Test extends TestCase {
     assertNull( storage.lookupTextSize( new Integer( 99 ) ) );
     assertEquals( new Point( 101, 101 ),
                   storage.lookupTextSize( new Integer( 101 ) ) );
+  }
+  
+  public void testTextSizeDatabaseKey() {
+    final Font font = Graphics.getFont( "name", 10, SWT.NORMAL );
+    Set takenKeys = new HashSet();
+    StringBuffer generatedText = new StringBuffer();
+    for( int i = 0; i < 100; i++ ) {
+      generatedText.append( "a" );
+      final String text = generatedText.toString();
+      IProbe probe = new IProbe() {
+        public Font getFont() {
+          return font;
+        }
+        public String getString() {
+          return text;
+        }
+        public String getJSProbeParam() {
+          return "";
+        }
+      };
+      Point size = new Point( 1, 2 );
+      TextSizeProbeStore.getInstance().createProbeResult( probe, size );
+      Integer key = TextSizeDataBase.getKey( font, text, -1 );
+      assertFalse( takenKeys.contains( key ) );
+      takenKeys.add( key );
+    }
   }
 
   protected void setUp() throws Exception {
