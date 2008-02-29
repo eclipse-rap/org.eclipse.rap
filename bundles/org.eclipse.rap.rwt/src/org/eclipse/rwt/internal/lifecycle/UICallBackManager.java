@@ -114,7 +114,7 @@ public class UICallBackManager
   }
   
   public void addSync( final Runnable runnable, final Display display ) {
-    synchronized( runnables ) {
+    synchronized( runnable ) {
       if( Thread.currentThread() != display.getThread() ) {
         SyncRunnable syncRunnable = new SyncRunnable( runnable );
         runnables.add( syncRunnable );
