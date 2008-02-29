@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Point;
  * the parent control.
  * <dl>
  * <dt><b>Styles:</b></dt>
- * <dd>HORIZONTAL, VERTICAL<!--, SMOOTH --></dd>
+ * <dd>HORIZONTAL, VERTICAL, SMOOTH</dd>
  * <dt><b>Events:</b></dt>
  * <dd>Selection</dd>
  * </dl>

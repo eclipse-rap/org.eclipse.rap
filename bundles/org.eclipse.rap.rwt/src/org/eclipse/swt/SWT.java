@@ -429,6 +429,46 @@ public class SWT {
   public static final int FILL = 4;
   
   /**
+   * ASCII character convenience constant for the escape character
+   * (value is the <code>char</code> with value 27).
+   * 
+   * @since 1.1
+   */
+  public static final char ESC = 0x1B;
+
+  /**
+   * ASCII character convenience constant for the backspace character
+   * (value is the <code>char</code> '\b').
+   * 
+   * @since 1.1
+   */
+  public static final char BS = '\b';
+
+  /**
+   * ASCII character convenience constant for the carriage return character
+   * (value is the <code>char</code> '\r').
+   * 
+   * @since 1.1
+   */
+  public static final char CR = '\r';
+
+  /**
+   * ASCII character convenience constant for the line feed character
+   * (value is the <code>char</code> '\n').
+   * 
+   * @since 1.1
+   */
+  public static final char LF = '\n';
+
+  /**
+   * ASCII character convenience constant for the tab character
+   * (value is the <code>char</code> '\t').
+   * 
+   * @since 1.1
+   */
+  public static final char TAB = '\t';
+
+  /**
    * Accelerator constant used to differentiate a key code from a
    * unicode character.
    * 
@@ -567,6 +607,18 @@ public class SWT {
    */
   public static final int FLAT = 1 << 23;
   
+  /**
+   * Style constant for smooth appearance. (value is 1&lt;&lt;16).
+   * <br>Note that this is a <em>HINT</em>.
+   * <p><b>Used By:</b><ul>
+   * <li><code>ProgressBar</code></li>
+   * <li><code>Sash</code></li>
+   * </ul></p>
+   * 
+   * @since 1.1
+   */
+  public static final int SMOOTH = 1 << 16;
+
   /**
    * Style constant for no focus from the mouse behavior (value is 1&lt;&lt;19).
    * <br>Note that this is a <em>HINT</em>.
