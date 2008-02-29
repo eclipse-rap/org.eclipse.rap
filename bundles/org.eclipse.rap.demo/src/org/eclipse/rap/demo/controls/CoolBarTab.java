@@ -61,10 +61,15 @@ public class CoolBarTab extends ExampleTab {
 
     // Register CoolBar
     registerControl( coolBar );
-
-    parent.addControlListener( new ControlAdapter() {
+    final ControlAdapter controlListener = new ControlAdapter() {
       public void controlResized( final ControlEvent e ) {
         computeSize( toolBar1, coolItem1, coolItem2 );
+      }
+    };
+    parent.addControlListener( controlListener );
+    coolBar.addDisposeListener( new DisposeListener() {
+      public void widgetDisposed( final DisposeEvent event ) {
+        parent.removeControlListener( controlListener );
       }
     } );
     computeSize( toolBar1, coolItem1, coolItem2 );

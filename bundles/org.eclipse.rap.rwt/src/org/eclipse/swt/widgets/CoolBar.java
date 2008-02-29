@@ -173,7 +173,7 @@ public class CoolBar extends Composite {
   // super.setCursor (cursor);
   // }
   protected void checkSubclass() {
-    // if (!isValidSubclass ()) error (SWT.ERROR_INVALID_SUBCLASS);
+     if (!isValidSubclass ()) error (SWT.ERROR_INVALID_SUBCLASS);
   }
 
   public Point computeSize( int wHint, int hHint, boolean changed ) {
