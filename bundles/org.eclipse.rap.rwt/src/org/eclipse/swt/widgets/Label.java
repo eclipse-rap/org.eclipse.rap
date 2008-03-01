@@ -243,8 +243,6 @@ public class Label extends Control {
       width = rect.width;
       height = rect.height;
     } else if( text.length() > 0 ) {
-      // TODO [fappel]: check if 'text.length() == 0' should be treated
-      //                specially
       int wrapWidth = 0;
       if( ( style & SWT.WRAP ) != 0 && wHint != SWT.DEFAULT ) {
         wrapWidth = wHint;
@@ -253,6 +251,8 @@ public class Label extends Control {
         = TextSizeDetermination.textExtent( getFont(), text, wrapWidth );
       width = extent.x + 8;
       height = extent.y + 2;
+    } else {
+      height = TextSizeDetermination.getCharHeight( getFont() ); 
     }
     if( wHint != SWT.DEFAULT ) {
       width = wHint;

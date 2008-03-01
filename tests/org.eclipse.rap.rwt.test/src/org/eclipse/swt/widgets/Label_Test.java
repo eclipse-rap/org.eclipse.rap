@@ -95,7 +95,7 @@ public class Label_Test extends TestCase {
     Label labelWrap = new Label( shell, SWT.WRAP );
     Label labelNoWrap = new Label( shell, SWT.NONE );
     String wrapText = "Text that wraps. Text that wraps. Text that wraps. ";
-	labelWrap.setText( wrapText );
+    labelWrap.setText( wrapText );
     labelNoWrap.setText( wrapText );
     Point extentPlain = labelNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT );
     assertTrue( extentPlain.x > 100 );
@@ -103,8 +103,17 @@ public class Label_Test extends TestCase {
     assertEquals( extentPlain.y, extentNoWrap.y );
     Point extentWrap = labelWrap.computeSize( 100, SWT.DEFAULT );
     assertTrue( extentWrap.y > extentNoWrap.y );
+    // ensure that label with empty text has zero width but has a height 
+    labelNoWrap.setText( "" );
+    extentNoWrap = labelNoWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+    assertEquals( 0, extentNoWrap.x );
+    assertTrue( extentNoWrap.y > 0 );
+    labelWrap.setText( "" );
+    extentWrap = labelWrap.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+    assertEquals( 0, extentWrap.x );
+    assertTrue( extentWrap.y > 0 );
   }
-
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
