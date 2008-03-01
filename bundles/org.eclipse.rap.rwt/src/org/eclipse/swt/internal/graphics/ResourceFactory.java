@@ -194,8 +194,11 @@ public final class ResourceFactory {
         try {
           InputStream inputStream = manager.getRegisteredContent( imagePath );
           if( inputStream != null ) {
-            result = new ImageData( inputStream );
-            inputStream.close();
+            try {
+              result = new ImageData( inputStream );
+            } finally {
+              inputStream.close();
+            }
           }
         } catch( IOException e ) {
           // failed to close input stream - should not happen
