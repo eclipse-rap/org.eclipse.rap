@@ -472,7 +472,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     _onRowDblClick : function( evt ) {
       var rowIndex = this._rows.indexOf( evt.getTarget() );
       var item = this._getItemFromRowIndex( rowIndex );
-      if( item !== null ) {
+      if( item !== null && item !== undefined ) {
         this.createDispatchDataEvent( "itemdefaultselected", item );
       }
     },
@@ -999,7 +999,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     
     _updateRowCheck : function( rowIndex, item ) {
       var checkBox = this._checkBoxes[ rowIndex ];
-      if( item !== null ) {
+      if( item !== null && item !== undefined ) {
         if( item.getChecked() ) {
           checkBox.addState( "checked" );
         } else {
