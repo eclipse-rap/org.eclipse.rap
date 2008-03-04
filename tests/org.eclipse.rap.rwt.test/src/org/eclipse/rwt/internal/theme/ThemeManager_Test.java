@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,7 @@ public class ThemeManager_Test extends TestCase {
     assertNotNull( themeAdapter );
     assertTrue( themeAdapter instanceof ShellThemeAdapter );
   }
-  
+
   public void testReset() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -64,7 +64,7 @@ public class ThemeManager_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testRegisterResources() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -73,24 +73,24 @@ public class ThemeManager_Test extends TestCase {
     assertNotNull( themeIds );
     assertTrue( themeIds.length > 0 );
   }
-  
+
   public void testStripTemplate() throws Exception {
     String content;
     String template;
     content = "Line 1\r\n// BEGIN TEMPLATE (bla)\r\nLine3\r\n";
-    template = ThemeManager.stripTemplate( content );
+    template = AppearancesUtil.stripTemplate( content );
     assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
     content = "Line 1\r// BEGIN TEMPLATE (bla)\rLine3\r";
-    template = ThemeManager.stripTemplate( content );
+    template = AppearancesUtil.stripTemplate( content );
     assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
     content = "Line 1\n// BEGIN TEMPLATE (bla)\nLine3\n";
-    template = ThemeManager.stripTemplate( content );
+    template = AppearancesUtil.stripTemplate( content );
     assertTrue( template.indexOf( "BEGIN TEMPLATE" ) == -1 );
   }
-  
+
   // === TESTS FOR REGISTERING THEME FILES ===
 
-  public void testRegisterNull() throws Exception {
+  public void testRegisterThemeNull() throws Exception {
     ThemeManager themeManager = ThemeManager.getInstance();
     themeManager.initialize();
     try {
@@ -106,7 +106,7 @@ public class ThemeManager_Test extends TestCase {
       // expected
     }
   }
-  
+
   public void testRegisterThemeFile() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -125,7 +125,7 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( theme.definesKey( "button.background" ) );
     assertTrue( theme.definesKey( "progressbar.bgimage" ) );
   }
-  
+
   public void testRegisterThemeFile_EmptyKeys() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -147,7 +147,7 @@ public class ThemeManager_Test extends TestCase {
       assertFalse( theme.definesKey( key ) );
     }
   }
-  
+
   public void testRegisterThemeFile_UndefinedKeys() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -157,10 +157,11 @@ public class ThemeManager_Test extends TestCase {
       fail( "IAE expected for undefined key" );
     } catch( final IllegalArgumentException e ) {
       // expected
-      assertTrue( e.getMessage().indexOf( "Undefined key" ) != -1 );
+      assertTrue( e.getMessage(),
+                  e.getMessage().indexOf( "Invalid key" ) != -1 );
     }
   }
-  
+
   public void testRegisterThemeFile_InvalidValues() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -173,7 +174,7 @@ public class ThemeManager_Test extends TestCase {
       assertTrue( e.getMessage().indexOf( "Illegal" ) != -1 );
     }
   }
-  
+
   public void testRegisterThemeFile_MissingImage() throws Exception {
     ThemeManager manager = ThemeManager.getInstance();
     manager.initialize();
@@ -187,24 +188,24 @@ public class ThemeManager_Test extends TestCase {
       assertTrue( e.getMessage().indexOf( "not found for theme" ) != -1 );
     }
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakeNewRequest();
   }
-  
+
   protected void tearDown() throws Exception {
     ThemeManager.getInstance().reset();
     RWTFixture.tearDown();
   }
-  
-  private void loadThemeFile( final ThemeManager manager,
-                              final String themeId,
-                              final String themeName,
-                              final String themeFile ) throws IOException
+
+  static void loadThemeFile( final ThemeManager manager,
+                             final String themeId,
+                             final String themeName,
+                             final String themeFile ) throws IOException
   {
     InputStream inputStr = null;
-    final ClassLoader loader = getClass().getClassLoader();
+    final ClassLoader loader = ThemeManager_Test.class.getClassLoader();
     try {
       inputStr = loader.getResourceAsStream( themeFile );
       assertNotNull( inputStr );

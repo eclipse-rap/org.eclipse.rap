@@ -155,6 +155,18 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       }
     },
 
+    // TODO [rst] Find a generic solution for state inheritance
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_" ) {
+        this._captionBar.addState( state );
+        this._minimizeButton.addState( state );
+        this._maximizeButton.addState( state );
+        this._restoreButton.addState( state );
+        this._closeButton.addState( state );
+      }
+    },
+
     /** Overrides qx.ui.window.Window#close() */    
     close : function() {
       if( this.hasEventListeners( "close" ) ) {

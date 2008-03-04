@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,25 +12,29 @@
 package org.eclipse.swt.internal.widgets.groupkit;
 
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
 
-public class GroupThemeAdapter extends ControlThemeAdapter {
+
+public final class GroupThemeAdapter extends ControlThemeAdapter {
 
   public Font getFont( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
-    QxFont font = theme.getFont( "group.label.font" );
+    String variant = WidgetUtil.getVariant( control );
+    QxFont font = theme.getFont( "group.label.font", variant );
     return QxFont.createFont( font );
   }
 
   public Rectangle getTrimmingSize( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
-    QxBoxDimensions margin = theme.getBoxDimensions( "group.margin" );
-    QxBoxDimensions padding = theme.getBoxDimensions( "group.padding" );
-    QxBorder frame = theme.getBorder( "group.frame.border" );
+    String variant = WidgetUtil.getVariant( control );
+    QxBoxDimensions margin = theme.getBoxDimensions( "group.margin", variant );
+    QxBoxDimensions padding = theme.getBoxDimensions( "group.padding", variant );
+    QxBorder frame = theme.getBorder( "group.frame.border", variant );
     int left = margin.left + frame.width + padding.left;
     int top = margin.top + frame.width + padding.top;
     Font font = control.getFont();

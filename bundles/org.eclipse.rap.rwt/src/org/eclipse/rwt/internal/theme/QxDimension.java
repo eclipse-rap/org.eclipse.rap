@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,18 @@ import java.util.regex.Pattern;
 
 public class QxDimension implements QxType {
 
+  public static final QxDimension ZERO = new QxDimension( 0 );
+
   private static final Pattern LENGTH_PATTERN
     = Pattern.compile( "((\\+|-)?\\d+)(em|ex|px|pt|pc|in|cm|mm|%)?" );
 
   public final int value;
 
-  public QxDimension( final String input ) {
+  private QxDimension( final int value ) {
+    this.value = value;
+  }
+
+  public static QxDimension valueOf( final String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -29,11 +35,13 @@ public class QxDimension implements QxType {
     if( parsed == null ) {
       throw new IllegalArgumentException( "Illegal dimension parameter: " + input );
     }
-    this.value = parsed.intValue();
-  }
-
-  public QxDimension( final int value ) {
-    this.value = value;
+    QxDimension result;
+    if( parsed.intValue() == 0 ) {
+      result = ZERO;
+    } else {
+      result = new QxDimension( parsed.intValue() );
+    }
+    return result;
   }
 
   public String toDefaultString() {
@@ -52,13 +60,13 @@ public class QxDimension implements QxType {
   }
 
   public int hashCode () {
-    return value;
+    return value * 47;
   }
 
   public String toString () {
-    return "QxDimension {"
+    return "QxDimension{ "
            + value
-           + "}";
+           + " }";
   }
 
   /**
@@ -81,7 +89,7 @@ public class QxDimension implements QxType {
         throw new IllegalArgumentException( "Percentages not supported: " + input );
       }
       if( unit != null && !"px".equals( unit ) ) {
-        throw new IllegalArgumentException( "Illegal unit for length: " + input );
+        throw new IllegalArgumentException( "Unit not supported: " + input );
       }
     }
     return result;

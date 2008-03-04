@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -26,13 +26,13 @@ public class WidgetUtil_Test extends TestCase {
     String shellId = WidgetUtil.getId( shell );
     String compositeId = WidgetUtil.getId( composite );
     String buttonId = WidgetUtil.getId( button );
-    
-    assertSame( composite, WidgetUtil.find( composite, compositeId ) ); 
+
+    assertSame( composite, WidgetUtil.find( composite, compositeId ) );
     assertSame( button, WidgetUtil.find( composite, buttonId ) );
     assertSame( composite, WidgetUtil.find( composite, compositeId ) );
     assertNull( WidgetUtil.find( composite, shellId ) );
   }
-  
+
   public void testId() {
     Display display = new Display();
     Widget widget = new Shell( display );
@@ -47,7 +47,24 @@ public class WidgetUtil_Test extends TestCase {
     // clean up
     System.getProperties().remove( WidgetUtil.ENABLE_UI_TESTS );
   }
-  
+
+  public void testGetVariant() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    String valid = "Foo_Bar_23_42";
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, valid );
+    assertEquals( valid, WidgetUtil.getVariant( shell ) );
+    String withSpaces = "Foo Bar 23 42 ";
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, withSpaces );
+    assertNull( WidgetUtil.getVariant( shell ) );
+    String withMinus = "Foo-Bar";
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, withMinus );
+    assertNull( WidgetUtil.getVariant( shell ) );
+    String withColon = "Foo:Bar";
+    shell.setData( WidgetUtil.CUSTOM_VARIANT, withColon );
+    assertNull( WidgetUtil.getVariant( shell ) );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

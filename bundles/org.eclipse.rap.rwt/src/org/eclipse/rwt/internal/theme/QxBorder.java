@@ -13,6 +13,20 @@ package org.eclipse.rwt.internal.theme;
 
 public class QxBorder implements QxType {
 
+  public static final QxBorder NONE = new QxBorder( 0, null, null );
+
+  private static final String[] VALID_STYLES = new String[] {
+    "groove",
+    "ridge",
+    "inset",
+    "outset",
+    "solid",
+    "dotted",
+    "dashed",
+    "double",
+    "none"
+  };
+
   // TODO [rst] Implement properties for left, right, etc.
 
   private static final String DARKSHADOW_LIGHTSHADOW
@@ -35,23 +49,20 @@ public class QxBorder implements QxType {
   //            color theme. Check for valid colors.
   public final String color;
 
-  public static final String[] VALID_STYLES = new String[] {
-    "groove",
-    "ridge",
-    "inset",
-    "outset",
-    "solid",
-    "dotted",
-    "dashed",
-    "double",
-    "none"
-  };
+  private QxBorder( final int width, final String style, final String color ) {
+    this.width = width;
+    this.style = style;
+    this.color = color;
+  }
 
-  public QxBorder( final String input ) {
+  public static QxBorder valueOf( final String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
     String[] parts = input.split( "\\s+" );
+    if( input.trim().length() == 0 ) {
+      throw new IllegalArgumentException( "Empty border definition" );
+    }
     if( parts.length > 3 ) {
       throw new IllegalArgumentException( "Illegal number of arguments for border" );
     }
@@ -60,32 +71,32 @@ public class QxBorder implements QxType {
     String color = null;
     for( int i = 0; i < parts.length; i++ ) {
       String part = parts[ i ];
-      boolean parsed = "".equals( part );
+      boolean consumed = "".equals( part );
       // parse style
-      if( !parsed && style == null ) {
+      if( !consumed && style == null ) {
         String parsedStyle = parseStyle( part );
         if( parsedStyle != null ) {
           style = parsedStyle;
-          parsed = true;
+          consumed = true;
         }
       }
       // parse width
-      if( !parsed && width == -1 ) {
+      if( !consumed && width == -1 ) {
         Integer parsedWidth = QxDimension.parseLength( part );
         if( parsedWidth != null ) {
           if( parsedWidth.intValue() < 0 ) {
             throw new IllegalArgumentException( "Negative width: " + part );
           }
           width = parsedWidth.intValue();
-          parsed = true;
+          consumed = true;
         }
       }
       // parse color
-      if( !parsed && color == null ) {
+      if( !consumed && color == null ) {
         color = part;
-        parsed = true;
+        consumed = true;
       }
-      if( !parsed ) {
+      if( !consumed ) {
         throw new IllegalArgumentException( "Illegal parameter for color: "
                                             + part );
       }
@@ -94,9 +105,19 @@ public class QxBorder implements QxType {
       style = "solid";
       width = 0;
     }
-    this.width = width == -1 ? 1 : width;
-    this.style = style == null ? "solid" : style;
-    this.color = color;
+    if( width == -1 ) {
+      width = 1;
+    }
+    if( style == null ) {
+      style = "solid";
+    }
+    QxBorder result;
+    if( width == 0 ) {
+      result = NONE;
+    } else {
+      result = new QxBorder( width, style, color );
+    }
+    return result;
   }
 
   public String getQxStyle() {
@@ -115,6 +136,11 @@ public class QxBorder implements QxType {
     return result;
   }
 
+  /**
+   * Returns the colors to pass to qx for use default widget colors for 3d
+   * borders. When a 3d border style is used and no color has been set, this
+   * method returns an array of the default widget colors for the style.
+   */
   public String getQxColors() {
     String result = null;
     if( color == null && width == 2 ) {
@@ -140,6 +166,11 @@ public class QxBorder implements QxType {
     return result;
   }
 
+  /**
+   * Returns the inner colors to pass to qx for use default widget colors for 3d
+   * borders. When a 3d border style is used and no color has been set, this
+   * method returns an array of the default widget colors for the style.
+   */
   public String getQxInnerColors() {
     String result = null;
     if( color == null && width == 2 ) {
@@ -192,7 +223,6 @@ public class QxBorder implements QxType {
   public int hashCode() {
     // TODO [rst] Adapt this method as soon as properties for left, right, etc.
     //            exist
-    // TODO [rst] Revise this
     int result = 23;
     result += 37 * result + width;
     result += 37 * result + style.hashCode();
@@ -203,15 +233,7 @@ public class QxBorder implements QxType {
   public String toString() {
     // TODO [rst] Adapt this method as soon as properties for left, right, etc.
     //            exist
-    return "QxBorder {" + width + ", " + style + ", " + color + "}";
-  }
-
-  public static boolean isValidStyle( final String string ) {
-    boolean result = false;
-    for( int i = 0; i < VALID_STYLES.length && !result; i++ ) {
-      result |= VALID_STYLES[ i ].equals( string );
-    }
-    return result;
+    return "QxBorder{ " + width + ", " + style + ", " + color + " }";
   }
 
   private static String getBorderColors( final String color1, final String color2 ) {

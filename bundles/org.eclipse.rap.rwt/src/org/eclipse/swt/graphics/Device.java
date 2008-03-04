@@ -14,12 +14,13 @@ package org.eclipse.swt.graphics;
 import org.eclipse.rwt.internal.theme.QxFont;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
  * This class is the abstract superclass of all device objects,
  * such as Display.
- * 
+ *
  * <p>This class is <em>not</em> intended to be directly used by clients.</p>
  */
 public abstract class Device {
@@ -122,7 +123,7 @@ public abstract class Device {
    */
   public Font getSystemFont() {
     checkDevice();
-    QxFont font = ThemeUtil.getTheme().getFont( "widget.font" );
+    QxFont font = ThemeUtil.getTheme().getFont( "widget.font", null );
     return QxFont.createFont( font );
   }
 //  /**

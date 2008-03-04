@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 package org.eclipse.swt.widgets;
 
 import java.io.IOException;
@@ -24,9 +25,11 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -105,18 +108,18 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
  * @see #syncExec
  * @see #asyncExec
  * @see #wake
- * 
+ *
  * <!--@see #readAndDispatch-->
  * <!--@see #sleep-->
  * <!--@see Device#dispose-->
- * 
+ *
  * @since 1.0
  */
 // TODO: [doc] Update display javadoc
 public class Display extends Device implements Adaptable {
 
   private static final String DISPLAY_ID = "org.eclipse.swt.display";
-  private static final String INVALIDATE_FOCUS 
+  private static final String INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
 
 
@@ -161,7 +164,7 @@ public class Display extends Device implements Adaptable {
 
   private final List shells;
   private final Thread thread;
-  private ISessionStore session;
+  private final ISessionStore session;
   private Rectangle bounds;
   private Shell activeShell;
   private List filters;
@@ -236,13 +239,13 @@ public class Display extends Device implements Adaptable {
   private void setFocusControl( final Control focusControl ) {
     if( this.focusControl != focusControl ) {
       if( this.focusControl != null ) {
-        FocusEvent event 
+        FocusEvent event
           = new FocusEvent( this.focusControl, FocusEvent.FOCUS_LOST );
         event.processEvent();
       }
       this.focusControl = focusControl;
       if( this.focusControl != null ) {
-        FocusEvent event 
+        FocusEvent event
           = new FocusEvent( this.focusControl, FocusEvent.FOCUS_GAINED );
         event.processEvent();
       }
@@ -459,7 +462,7 @@ public class Display extends Device implements Adaptable {
   // TODO [rh] This is preliminary!
   // TODO [rh] move to Device
   public void dispose() {
-    ContextProvider.getSession().removeAttribute( DISPLAY_ID );    
+    ContextProvider.getSession().removeAttribute( DISPLAY_ID );
   }
 
   // TODO [rh] move to Device
@@ -674,7 +677,7 @@ public class Display extends Device implements Adaptable {
    *
    * @see #sleep
    * @see #wake
-   * 
+   *
    * @since 1.1
    */
   public boolean readAndDispatch() {
@@ -694,7 +697,7 @@ public class Display extends Device implements Adaptable {
    * </ul>
    *
    * @see #wake
-   * 
+   *
    * @since 1.1
    */
   public void sleep() {
@@ -817,7 +820,7 @@ public class Display extends Device implements Adaptable {
         return super.getSystemColor( id );
     }
     Theme theme = ThemeUtil.getTheme();
-    QxColor themeColor = theme.getColor( key );
+    QxColor themeColor = theme.getColor( key, null );
     return Graphics.getColor( themeColor.red, themeColor.green, themeColor.blue );
   }
 
@@ -994,7 +997,7 @@ public class Display extends Device implements Adaptable {
     public void invalidateFocus() {
       RWT.getServiceStore().setAttribute( INVALIDATE_FOCUS, Boolean.TRUE );
     }
-    
+
     public boolean isFocusInvalidated() {
       Object value = RWT.getServiceStore().getAttribute( INVALIDATE_FOCUS );
       return value != null;

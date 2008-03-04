@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,22 +27,39 @@ public class QxFont implements QxType {
     = Pattern.compile( "(\".+?\"|'.+?'|\\S[^\\s,]+)(\\s*,)?" );
 
   public final String[] family;
+
   public final int size;
+
   public final boolean bold;
+
   public final boolean italic;
 
   private String familyAsString;
 
-  public QxFont( final String fontDef ) {
-    if( fontDef == null ) {
+  private QxFont( final String[] family,
+                  final int size,
+                  final boolean bold,
+                  final boolean italic )
+  {
+    this.family = family;
+    this.size = size;
+    this.bold = bold;
+    this.italic = italic;
+  }
+
+  public static QxFont valueOf( final String input ) {
+    if( input == null ) {
       throw new NullPointerException( "null argument" );
+    }
+    if( input.trim().length() == 0 ) {
+      throw new IllegalArgumentException( "Empty font definition" );
     }
     List family = new ArrayList();
     int size = 0;
     boolean bold = false;
     boolean italic = false;
 
-    Matcher matcher = FONT_DEF_PATTERN.matcher( fontDef );
+    Matcher matcher = FONT_DEF_PATTERN.matcher( input );
     while( matcher.find() ) {
       String part = matcher.group( 1 );
       char c = part.charAt( 0 );
@@ -68,10 +85,9 @@ public class QxFont implements QxType {
       }
     }
     // TODO [rst] Check for illegal input and throw exception
-    this.family = ( String[] )family.toArray( new String[ family.size() ] );
-    this.bold = bold;
-    this.italic = italic;
-    this.size = size;
+    String[] familyArr = ( String[] )family.toArray( new String[ family.size() ] );
+    QxFont result = new QxFont( familyArr, size, bold, italic );
+    return result ;
   }
 
   public String getFamilyAsString() {
@@ -124,20 +140,19 @@ public class QxFont implements QxType {
   }
 
   public int hashCode() {
-    // TODO [rst] revise hash calculation
     int result = 23;
     for( int i = 0; i < family.length; i++ ) {
-      result += 37 * family[ i ].hashCode();
+      result += 37 * result + family[ i ].hashCode();
     }
-    result += 37 * size;
-    result += bold ? 0 : 41;
-    result += italic ? 0 : 43;
+    result += 37 * result + size;
+    result += bold ? 0 : 37 * result + 41;
+    result += italic ? 0 : 37 * result + 43;
     return result;
   }
 
   public String toString() {
     StringBuffer result = new StringBuffer();
-    result.append( "QxFont {" );
+    result.append( "QxFont{ " );
     result.append( getFamilyAsString() );
     result.append( " " );
     result.append( size );
@@ -147,7 +162,7 @@ public class QxFont implements QxType {
     if( italic ) {
       result.append( " italic" );
     }
-    result.append( "}" );
+    result.append( " }" );
     return result.toString();
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import org.eclipse.swt.graphics.Rectangle;
 
 public class QxBoxDimensions implements QxType {
 
+  public static final QxBoxDimensions ZERO = new QxBoxDimensions( 0, 0, 0, 0 );
+
   public final int top;
 
   public final int right;
@@ -23,10 +25,10 @@ public class QxBoxDimensions implements QxType {
 
   public final int left;
 
-  public QxBoxDimensions( final int top,
-                          final int right,
-                          final int bottom,
-                          final int left )
+  private QxBoxDimensions( final int top,
+                           final int right,
+                           final int bottom,
+                           final int left )
   {
     this.top = top;
     this.right = right;
@@ -34,7 +36,7 @@ public class QxBoxDimensions implements QxType {
     this.left = left;
   }
 
-  public QxBoxDimensions( final String input ) {
+  public static QxBoxDimensions valueOf( final String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -54,10 +56,13 @@ public class QxBoxDimensions implements QxType {
     if( parts.length == 4 ) {
       left = parsePxValue( parts[ 3 ] );
     }
-    this.top = top;
-    this.bottom = bottom;
-    this.left = left;
-    this.right = right;
+    QxBoxDimensions result;
+    if( top == 0 && right == 0 && bottom == 0 && left == 0 ) {
+      result = ZERO;
+    } else {
+      result = new QxBoxDimensions( top, right, bottom, left );
+    }
+    return result;
   }
 
   /**
@@ -79,7 +84,18 @@ public class QxBoxDimensions implements QxType {
   }
 
   public String toDefaultString() {
-    return top + "px " + right + "px " + bottom + "px " + left + "px";
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( top + "px" );
+    if( right != top || bottom != top || left != top ) {
+      buffer.append( " " + right + "px" );
+    }
+    if( bottom != top || left != right ) {
+      buffer.append( " " + bottom + "px" );
+    }
+    if( left != right ) {
+      buffer.append( " " + left + "px" );
+    }
+    return buffer.toString();
   }
 
   public boolean equals( final Object object ) {
@@ -97,11 +113,16 @@ public class QxBoxDimensions implements QxType {
 }
 
   public int hashCode () {
-    return top ^ right ^ bottom ^ left;
+    int result = 911;
+    result += 23 * result + top;
+    result += 23 * result + right;
+    result += 23 * result + bottom;
+    result += 23 * result + left;
+    return result;
   }
 
   public String toString () {
-    return "QxDimensions {"
+    return "QxDimensions{ "
            + top
            + ", "
            + left
@@ -109,7 +130,7 @@ public class QxBoxDimensions implements QxType {
            + bottom
            + ", "
            + right
-           + "}";
+           + " }";
   }
 
   private static int parsePxValue( final String part ) {

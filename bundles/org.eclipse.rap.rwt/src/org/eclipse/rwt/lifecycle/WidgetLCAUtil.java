@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.lifecycle.CommonPatterns;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.*;
 /**
  * Utility class that provides a number of useful static methods to support the
  * implementation of widget life cycle adapters.
- * 
+ *
  * @see ControlLCAUtil
  * @since 1.0
  */
@@ -62,7 +62,7 @@ public final class WidgetLCAUtil {
     = Pattern.compile( "&|<|>|\\\"" );
   private static final Pattern FONT_NAME_FILTER_PATTERN
     = Pattern.compile( "\"|\\\\" );
-  
+
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
   //                improves performance - still under investigation.
@@ -79,7 +79,7 @@ public final class WidgetLCAUtil {
   /**
    * Preserves the value of the property <code>toolTipText</code> of the
    * specified widget.
-   * 
+   *
    * @param widget the widget whose toolTip property to preserve
    * @param toolTip the value to preserve
    * @see #writeToolTip(Widget, String)
@@ -95,7 +95,7 @@ public final class WidgetLCAUtil {
   /**
    * Preserves the value of the property <code>font</code> of the specified
    * widget.
-   * 
+   *
    * @param widget the widget whose font property to preserve
    * @param font the value to preserve
    * @see #writeFont(Widget, Font)
@@ -108,7 +108,7 @@ public final class WidgetLCAUtil {
   /**
    * Preserves the value of the property <code>foreground</code> of the
    * specified widget.
-   * 
+   *
    * @param widget the widget whose foreground property to preserve
    * @param foreground the value to preserve
    * @see #writeForeground(Widget, Color)
@@ -123,7 +123,7 @@ public final class WidgetLCAUtil {
   /**
    * Preserves the value of the property <code>background</code> of the
    * specified widget.
-   * 
+   *
    * @param widget the widget whose background property to preserve
    * @param background the value to preserve
    * @see #writeBackground(Widget, Color)
@@ -138,7 +138,7 @@ public final class WidgetLCAUtil {
   /**
    * Preserves the value of the property <code>enabled</code> of the specified
    * widget.
-   * 
+   *
    * @param widget the widget whose enabled property to preserve
    * @param enabled the value to preserve
    * @see #writeEnabled(Widget, boolean)
@@ -161,7 +161,7 @@ public final class WidgetLCAUtil {
    * <p>
    * If there is no preserved value, <code>null</code> is assumed.
    * </p>
-   * 
+   *
    * @param widget the widget whose property is to be compared, must not be
    *            <code>null</code>.
    * @param property the name of the property under which the preserved value
@@ -191,7 +191,7 @@ public final class WidgetLCAUtil {
    * Otherwise the decision is delegated to
    * {@link #hasChanged(Widget,String,Object)}.
    * </p>
-   * 
+   *
    * @param widget the widget whose property is to be compared, must not be
    *            <code>null</code>.
    * @param property the name of the property under which the preserved value
@@ -224,7 +224,7 @@ public final class WidgetLCAUtil {
    * Reads the value of the specified property for the specified widget from the
    * request that is currently processed. If this property is not submitted for
    * the given widget, <code>null</code> is returned.
-   * 
+   *
    * @param widget the widget whose property to read
    * @param propertyName the name of the property to read
    * @return the value read from the request or <code>null</code> if no value
@@ -247,7 +247,7 @@ public final class WidgetLCAUtil {
   /**
    * Determines whether an event with the specified name was submitted for the
    * specified widget within the current request.
-   * 
+   *
    * @param widget the widget that should receive the event
    * @param eventName the name of the event to check for
    * @return <code>true</code> if the event was sent for the widget, false
@@ -265,7 +265,7 @@ public final class WidgetLCAUtil {
    * Reads the bounds of the specified widget from the current request. If the
    * bounds of this widget was not sent with the current request, the specified
    * default is returned.
-   * 
+   *
    * @param widget the widget whose bounds to read
    * @param defValue the default bounds
    * @return the bounds as read from the request or the default bounds if no
@@ -281,7 +281,7 @@ public final class WidgetLCAUtil {
    * Reads the bounds of the widget specified by its id from the current
    * request. If the bounds of this widget was not sent with the current
    * request, the specified default is returned.
-   * 
+   *
    * @param widgetId the widget id of the widget whose bounds to read
    * @param defValue the default bounds
    * @return the bounds as read from the request or the default bounds if no
@@ -306,7 +306,7 @@ public final class WidgetLCAUtil {
    * response that updates the client-side bounds of the specified widget. For
    * instances of {@link Control}, use the method
    * {@link ControlLCAUtil#writeBounds(Control)} instead.
-   * 
+   *
    * @param widget the widget whose bounds to write
    * @param parent the parent of the widget or <code>null</code> if the widget
    *            does not have a parent
@@ -350,7 +350,7 @@ public final class WidgetLCAUtil {
    * Writes JavaScript code to the response that resets the bounds of a widget.
    * This method is intended to be used by implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetBounds() throws IOException {
@@ -367,7 +367,7 @@ public final class WidgetLCAUtil {
    * JavaScript code to the response that updates the client-side menu property
    * of the specified widget. For instances of {@link Control}, use the method
    * {@link ControlLCAUtil#writeMenu(Control)} instead.
-   * 
+   *
    * @param widget the widget whose menu property to set
    * @param menu the new value of the property
    * @throws IOException
@@ -393,7 +393,7 @@ public final class WidgetLCAUtil {
    * <code>menu</code> of a widget. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetMenu() throws IOException {
@@ -409,7 +409,7 @@ public final class WidgetLCAUtil {
    * JavaScript code to the response that updates the client-side toolTip
    * property of the specified widget. For instances of {@link Control}, use
    * the method {@link ControlLCAUtil#writeToolTip(Control)} instead.
-   * 
+   *
    * @param widget the widget whose toolTip property to set
    * @param toolTip the new value of the property
    * @throws IOException
@@ -434,7 +434,7 @@ public final class WidgetLCAUtil {
    * <code>toolTip</code> of a widget. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetToolTip() throws IOException {
@@ -453,7 +453,7 @@ public final class WidgetLCAUtil {
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side image property
    * of the specified widget.
-   * 
+   *
    * @param widget the widget whose image property to set
    * @param image the new value of the property
    * @throws IOException
@@ -469,7 +469,7 @@ public final class WidgetLCAUtil {
    * changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the specified client-side
    * property of the specified widget.
-   * 
+   *
    * @param widget the widget whose property to set
    * @param javaProperty the key of the preserved value to compare the new value
    *            with
@@ -491,7 +491,7 @@ public final class WidgetLCAUtil {
   /**
    * Writes JavaScript code to the response that sets the specified JavaScript
    * property of the specified widget to the specified image.
-   * 
+   *
    * @param widget the widget whose property to set
    * @param jsProperty the name of the JavaScript property to set
    * @param image the new value of the property
@@ -513,7 +513,7 @@ public final class WidgetLCAUtil {
    * JavaScript code to the response that updates the client-side font property
    * of the specified widget. For instances of {@link Control}, use the method
    * {@link ControlLCAUtil#writeFont(Control)} instead.
-   * 
+   *
    * @param widget the widget whose font property to set
    * @param font the new value of the property
    * @throws IOException
@@ -556,7 +556,7 @@ public final class WidgetLCAUtil {
    * <code>font</code> of a widget. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetFont() throws IOException {
@@ -571,7 +571,7 @@ public final class WidgetLCAUtil {
    * foreground property of the specified widget. For instances of
    * {@link Control}, use the method
    * {@link ControlLCAUtil#writeForeground(Control)} instead.
-   * 
+   *
    * @param widget the widget whose foreground property to set
    * @param newColor the new value of the property
    * @throws IOException
@@ -593,7 +593,7 @@ public final class WidgetLCAUtil {
    * <code>foreground</code> of a widget. This method is intended to be used
    * by implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetForeground() throws IOException {
@@ -610,7 +610,7 @@ public final class WidgetLCAUtil {
    * background property of the specified widget. For instances of
    * {@link Control}, use the method
    * {@link ControlLCAUtil#writeBackground(Control)} instead.
-   * 
+   *
    * @param widget the widget whose background property to set
    * @param newColor the new value of the property
    * @throws IOException
@@ -635,7 +635,7 @@ public final class WidgetLCAUtil {
    * <code>background</code> of a widget. This method is intended to be used
    * by implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetBackground() throws IOException {
@@ -649,7 +649,7 @@ public final class WidgetLCAUtil {
    * JavaScript code to the response that updates the client-side enabled
    * property of the specified widget. For instances of {@link Control}, use
    * the method {@link ControlLCAUtil#writeEnabled(Control)} instead.
-   * 
+   *
    * @param widget the widget whose enabled property to set
    * @param enabled the new value of the property
    * @throws IOException
@@ -664,13 +664,13 @@ public final class WidgetLCAUtil {
     writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
   }
 
-  
+
   /**
    * Writes JavaScript code to the response that resets the property
    * <code>enabled</code> of a widget. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetEnabled() throws IOException {
@@ -678,11 +678,11 @@ public final class WidgetLCAUtil {
     // TODO [fappel]: check whether to use reset
     writer.set( JSConst.QX_FIELD_ENABLED, true );
   }
-  
+
   /**
    * Replaces all newline characters in the specified input string with the
    * given replacement string.
-   * 
+   *
    * @param input the string to process
    * @param replacement the string to replace line feeds with
    * @return a new string with all line feeds replaced
@@ -725,6 +725,18 @@ public final class WidgetLCAUtil {
     } else if( defaultApp != null ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       writer.set( JSConst.QX_FIELD_APPEARANCE, defaultApp );
+    }
+    writeCustomVariant( widget );
+  }
+
+  public static void writeCustomVariant( final Widget widget )
+    throws IOException
+  {
+    String variant = WidgetUtil.getVariant( widget );
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    if( variant != null ) {
+      Object[] args = new Object[] { "variant_" + variant };
+      writer.call( JSConst.QX_FUNC_ADD_STATE, args );
     }
   }
 
@@ -818,10 +830,10 @@ public final class WidgetLCAUtil {
         }
         parsedFonts.put( name, result );
       }
-      return result;      
+      return result;
     }
   }
-  
+
   //////////////////////////////////////
   // Escaping of reserved XML characters
 
@@ -837,7 +849,7 @@ public final class WidgetLCAUtil {
    * ampersand are currently not underlined, as RAP doesn't support key events
    * yet.
    * </p>
-   * 
+   *
    * @param text the input text
    * @param mnemonics if <code>true</code>, the function is mnemonic aware,
    *            otherwise all ampersand characters are directly rendered.

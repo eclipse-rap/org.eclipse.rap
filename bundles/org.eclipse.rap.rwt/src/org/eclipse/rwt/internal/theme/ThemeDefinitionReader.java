@@ -1,10 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH. All rights
- * reserved. This program and the accompanying materials are made available
- * under the terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.theme;
@@ -39,17 +41,17 @@ public class ThemeDefinitionReader {
   private static final String ATTR_INHERIT = "inherit";
 
   private static final String ATTR_TARGET_PATH = "targetPath";
-  
+
   private static final String TYPE_BOOLEAN = "boolean";
-  
+
   private static final String TYPE_BORDER = "border";
-  
+
   private static final String TYPE_DIMENSION = "dimension";
 
   private static final String TYPE_BOXDIMENSION = "boxdim";
-  
+
   private static final String TYPE_COLOR = "color";
-  
+
   private static final String TYPE_FONT = "font";
 
   private static final String TYPE_IMAGE = "image";
@@ -68,7 +70,7 @@ public class ThemeDefinitionReader {
 
   /**
    * An instance of this class reads theme definitions from an XML resource.
-   * 
+   *
    * @param inputStream input stream from a theme definition XML
    */
   public ThemeDefinitionReader( final InputStream inputStream,
@@ -84,7 +86,7 @@ public class ThemeDefinitionReader {
   /**
    * Reads a theme definition from the specified stream. The stream is kept open
    * after reading.
-   * 
+   *
    * @param callback an implementation of the ThemeDefHandler interface that
    *            handles parsing events
    * @throws IOException if a I/O error occurs
@@ -115,20 +117,20 @@ public class ThemeDefinitionReader {
     QxType value;
     String targetPath = null;
     if( TYPE_FONT.equals( type ) ) {
-      value = new QxFont( defaultStr );
+      value = QxFont.valueOf( defaultStr );
     } else if( TYPE_COLOR.equals( type ) ) {
-      value = new QxColor( defaultStr );
+      value = QxColor.valueOf( defaultStr );
     } else if( TYPE_BOOLEAN.equals( type ) ) {
-      value = new QxBoolean( defaultStr );
+      value = QxBoolean.valueOf( defaultStr );
     } else if( TYPE_BORDER.equals( type ) ) {
-      value = new QxBorder( defaultStr );
+      value = QxBorder.valueOf( defaultStr );
     } else if( TYPE_BOXDIMENSION.equals( type ) ) {
-      value = new QxBoxDimensions( defaultStr );
+      value = QxBoxDimensions.valueOf( defaultStr );
     } else if( TYPE_DIMENSION.equals( type ) ) {
-      value = new QxDimension( defaultStr );
+      value = QxDimension.valueOf( defaultStr );
     } else if( TYPE_IMAGE.equals( type ) ) {
       targetPath = getAttributeValue( node, ATTR_TARGET_PATH );
-      value = new QxImage( defaultStr, loader );
+      value = QxImage.valueOf( defaultStr, loader );
     } else {
       // TODO [rst] Remove when XML validation is active
       throw new IllegalArgumentException( "Illegal type: " + type );

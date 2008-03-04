@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,45 +16,50 @@ import junit.framework.TestCase;
 
 public class QxBoolean_Test extends TestCase {
 
-  public void testConstructor() throws Exception {
-    QxBoolean qxBoolean;
+  public void testIllegalArguments() throws Exception {
     try {
-      qxBoolean = new QxBoolean( null );
+      QxBoolean.valueOf( null );
+      fail( "Must throw NPE" );
+    } catch( NullPointerException e ) {
+      // expected
+    }
+    try {
+      QxBoolean.valueOf( "" );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
-      qxBoolean = new QxBoolean( "" );
+      QxBoolean.valueOf( "foo" );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     try {
-      qxBoolean = new QxBoolean( "foo" );
+      QxBoolean.valueOf( "True" );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    qxBoolean = new QxBoolean( "true" );
-    assertTrue( qxBoolean.value );
-    qxBoolean = new QxBoolean( "yes" );
-    assertTrue( qxBoolean.value );
-    qxBoolean = new QxBoolean( "on" );
-    assertTrue( qxBoolean.value );
-    qxBoolean = new QxBoolean( "false" );
-    assertFalse( qxBoolean.value );
-    qxBoolean = new QxBoolean( "no" );
-    assertFalse( qxBoolean.value );
-    qxBoolean = new QxBoolean( "off" );
-    assertFalse( qxBoolean.value );
+  }
+
+  public void testCreate() throws Exception {
+    assertTrue( QxBoolean.valueOf( "true" ).value );
+    assertTrue( QxBoolean.valueOf( "yes" ).value );
+    assertTrue( QxBoolean.valueOf( "on" ).value );
+    assertFalse( QxBoolean.valueOf( "false" ).value );
+    assertFalse( QxBoolean.valueOf( "no" ).value );
+    assertFalse( QxBoolean.valueOf( "off" ).value );
+  }
+
+  public void testSame() throws Exception {
+    assertSame( QxBoolean.TRUE, QxBoolean.valueOf( "true" ) );
+    assertSame( QxBoolean.FALSE, QxBoolean.valueOf( "no" ) );
+    assertNotSame( QxBoolean.TRUE, QxBoolean.FALSE );
   }
 
   public void testDefaultString() throws Exception {
-    QxBoolean qxBoolean;
-    qxBoolean = new QxBoolean( "true" );
-    assertEquals( "true", qxBoolean.toDefaultString() );
-    qxBoolean = new QxBoolean( "false" );
-    assertEquals( "false", qxBoolean.toDefaultString() );
+    assertEquals( "true", QxBoolean.TRUE.toDefaultString() );
+    assertEquals( "false", QxBoolean.FALSE.toDefaultString() );
   }
 }
