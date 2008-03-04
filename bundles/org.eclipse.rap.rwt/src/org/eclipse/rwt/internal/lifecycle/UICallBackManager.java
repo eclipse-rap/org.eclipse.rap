@@ -114,6 +114,10 @@ public class UICallBackManager
   }
   
   public void addSync( final Runnable runnable, final Display display ) {
+    // TODO [fappel]: the synchronized block should synchronize on runnables
+    //                not runnable, but by doing so the application may run
+    //                into a deadlock. This is because the SyncRunnable blocks
+    //                the thread execution on a different lock.
     synchronized( runnable ) {
       if( Thread.currentThread() != display.getThread() ) {
         SyncRunnable syncRunnable = new SyncRunnable( runnable );
