@@ -493,7 +493,7 @@ public class Composite extends Scrollable {
     }
   }
 
-  // //////////////////
+  /////////////////////
   // setFocus override
   
   public boolean setFocus() {

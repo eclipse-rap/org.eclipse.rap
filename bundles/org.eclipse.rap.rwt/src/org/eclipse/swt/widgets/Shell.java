@@ -554,6 +554,18 @@ public class Shell extends Decorations {
     return getVisible();
   }
   
+  public void setVisible( final boolean visible ) {
+    checkWidget();
+    boolean wasVisible = getVisible();
+    super.setVisible( visible );
+    // Emulate OS behavior: in SWT, a layout is triggered during 
+    // Shell#setVisible(true)
+    if( visible && !wasVisible && !isDisposed() ) {
+      changed( getChildren() );
+      layout( true, true );
+    }
+  }
+  
   /**
    * Moves the receiver to the top of the drawing order for
    * the display on which it was created (so that all other

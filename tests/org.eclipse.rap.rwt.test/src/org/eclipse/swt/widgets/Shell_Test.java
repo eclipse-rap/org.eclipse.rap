@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 
@@ -66,7 +67,7 @@ public class Shell_Test extends TestCase {
     // Ensure that setMenuBar does not accept menus other than those constructed
     // with SWT.BAR
     try {
-      Shell shell3 = new Shell( display , SWT.NONE );
+      Shell shell3 = new Shell( display, SWT.NONE );
       Menu popupMenu = new Menu( shell3, SWT.POP_UP );
       shell3.setMenuBar( popupMenu );
       fail( "Must only accept menus with style SWT.BAR" );
@@ -77,7 +78,7 @@ public class Shell_Test extends TestCase {
 
   public void testClientArea() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Rectangle clientAreaWithoutMenuBar = shell.getClientArea();
     Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
@@ -137,15 +138,46 @@ public class Shell_Test extends TestCase {
   
   public void testOpen() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     shell.open();
     assertEquals( true, shell.getVisible() );
     assertEquals( true, shell.isVisible() );
   }
   
+  public void testLayoutOnSetVisible() {
+    // ensure that layout is trigered while opening a shell, more specifically
+    // during setVisible( true )
+    RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
+    final StringBuffer log = new StringBuffer();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    shell.setLayout( new Layout() {
+      protected Point computeSize( Composite composite,
+                                   int hint,
+                                   int hint2,
+                                   boolean flushCache )
+      {
+        return null;
+      }
+      protected void layout( Composite composite, boolean flushCache ) {
+        log.append( "layout" );
+      }
+    } );
+    shell.setVisible( true );
+    assertEquals( "layout", log.toString() );
+    // don't re-layout when shell is laready visible
+    log.setLength( 0 );
+    shell.setVisible( true );
+    assertEquals( "", log.toString() );
+    // make sure, layout is not triggered when shell gets hidden
+    log.setLength( 0 );
+    shell.setVisible( false );
+    assertEquals( "", log.toString() );
+  }
+  
   public void testDisposeChildShell() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     shell.open();
     Shell childShell = new Shell( shell );
     childShell.dispose();
@@ -154,7 +186,7 @@ public class Shell_Test extends TestCase {
   
   public void testCreateDescendantShell() {
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     Shell descendantShell = new Shell( shell );
     assertEquals( 0, shell.getChildren().length );
     assertSame( shell, descendantShell.getParent() );
