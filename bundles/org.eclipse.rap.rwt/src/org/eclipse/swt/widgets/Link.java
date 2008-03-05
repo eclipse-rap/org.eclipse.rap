@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -20,7 +20,7 @@ import org.eclipse.swt.internal.widgets.ILinkAdapter;
 
 /**
  * Instances of this class represent a selectable
- * user interface object that displays a text with 
+ * user interface object that displays a text with
  * links.
  * <p>
  * <dl>
@@ -32,7 +32,7 @@ import org.eclipse.swt.internal.widgets.ILinkAdapter;
  * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * 
+ *
  * @since 1.0
  */
 public class Link extends Control {
@@ -50,7 +50,7 @@ public class Link extends Control {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -87,7 +87,7 @@ public class Link extends Control {
    * HREF tag can be used to distinguish between them.  The string may
    * include the mnemonic character and line delimiters.
    * </p>
-   * 
+   *
    * @param string the new text
    *
    * @exception IllegalArgumentException <ul>
@@ -127,7 +127,7 @@ public class Link extends Control {
 
   ///////////////////////////////////////
   // Listener registration/deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control is selected, by sending
@@ -177,7 +177,7 @@ public class Link extends Control {
     SelectionEvent.removeListener( this, listener );
   }
 
-  public Point computeSize( int wHint, int hHint, boolean changed ) {
+  public Point computeSize( final int wHint, final int hHint, final boolean changed ) {
     checkWidget();
     int width = 0;
     int height = 0;
@@ -185,7 +185,7 @@ public class Link extends Control {
     if( ( displayText.length() > 0 ) ) {
       // TODO [rst] change to textExtent when wrap supported
       Point extent = TextSizeDetermination.stringExtent( getFont(), displayText );
-      width = extent.x + 8;
+      width = extent.x;
       height = extent.y + 2;
     }
     if( wHint != SWT.DEFAULT ) {
@@ -198,12 +198,12 @@ public class Link extends Control {
     height += border * 2;
     return new Point( width, height );
   }
-  
+
   public int getBorderWidth() {
 	// TODO: [rst] why overriding control#getBorderWidth
     return ( ( style & SWT.BORDER ) != 0 ) ? 1 : 0;
   }
-  
+
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == ILinkAdapter.class ) {
@@ -226,7 +226,7 @@ public class Link extends Control {
     }
     return result;
   }
-  
+
   boolean isTabGroup() {
     return true;
   }
@@ -254,43 +254,43 @@ public class Link extends Control {
             tagStart = index;
             state++;
           }
-        break;
+          break;
         case 1:
           if( c == 'a' )
             state++;
-        break;
+          break;
         case 2:
           switch( c ) {
             case 'h':
               state = 7;
-            break;
+              break;
             case '>':
               linkStart = index + 1;
               state++;
-            break;
+              break;
             default:
               if( Character.isWhitespace( c ) )
                 break;
               else
                 state = 13;
           }
-        break;
+          break;
         case 3:
           if( c == '<' ) {
             endtagStart = index;
             state++;
           }
-        break;
+          break;
         case 4:
           state = c == '/'
-                          ? state + 1
-                          : 3;
-        break;
+            ? state + 1
+            : 3;
+          break;
         case 5:
           state = c == 'a'
-                          ? state + 1
-                          : 3;
-        break;
+            ? state + 1
+            : 3;
+          break;
         case 6:
           if( c == '>' ) {
             mnemonics[ linkIndex ] = parseMnemonics( buffer,
@@ -302,7 +302,7 @@ public class Link extends Control {
             offsets[ linkIndex ] = new Point( offset, result.length() - 1 );
             if( ids[ linkIndex ] == null ) {
               ids[ linkIndex ] = new String( buffer, linkStart, endtagStart
-                                                                - linkStart );
+                                             - linkStart );
             }
             linkIndex++;
             start = tagStart = linkStart = endtagStart = refStart = index + 1;
@@ -310,27 +310,27 @@ public class Link extends Control {
           } else {
             state = 3;
           }
-        break;
+          break;
         case 7:
           state = c == 'r'
-                          ? state + 1
-                          : 0;
-        break;
+            ? state + 1
+            : 0;
+          break;
         case 8:
           state = c == 'e'
-                          ? state + 1
-                          : 0;
-        break;
+            ? state + 1
+            : 0;
+          break;
         case 9:
           state = c == 'f'
-                          ? state + 1
-                          : 0;
-        break;
+            ? state + 1
+            : 0;
+          break;
         case 10:
           state = c == '='
-                          ? state + 1
-                          : 0;
-        break;
+            ? state + 1
+            : 0;
+          break;
         case 11:
           if( c == '"' ) {
             state++;
@@ -338,29 +338,29 @@ public class Link extends Control {
           } else {
             state = 0;
           }
-        break;
+          break;
         case 12:
           if( c == '"' ) {
             ids[ linkIndex ] = new String( buffer, refStart, index - refStart );
             state = 2;
           }
-        break;
+          break;
         case 13:
           if( Character.isWhitespace( c ) ) {
             state = 0;
           } else if( c == '=' ) {
             state++;
           }
-        break;
+          break;
         case 14:
           state = c == '"'
-                          ? state + 1
-                          : 0;
-        break;
+            ? state + 1
+            : 0;
+          break;
         case 15:
           if( c == '"' )
             state = 2;
-        break;
+          break;
         default:
           state = 0;
         break;
@@ -389,7 +389,7 @@ public class Link extends Control {
     }
     return result.toString();
   }
-  
+
   /* verbatim copy from SWT */
   int parseMnemonics( char[] buffer, int start, int end, StringBuffer result ) {
     int mnemonic = -1, index = start;
