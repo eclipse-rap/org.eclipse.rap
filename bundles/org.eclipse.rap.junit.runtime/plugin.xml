@@ -10,4 +10,12 @@
             id="org.eclipse.rap.junitruntime.Application">
       </entrypoint>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.rap.internal.junit.runtime.EmptyPerspective"
+            id="org.eclipse.rap.junit.runtime.emptyPerspective"
+            name="EmptyPerspective">
+      </perspective>
+   </extension>
 </plugin>

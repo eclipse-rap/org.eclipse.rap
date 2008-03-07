@@ -1,58 +1,68 @@
 package org.eclipse.rap.internal.junit.runtime;
 
-import java.util.StringTokenizer;
-
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.application.WorkbenchAdvisor;
+import org.eclipse.ui.testing.ITestHarness;
+import org.eclipse.ui.testing.TestableObject;
 
 /**
  * This class controls all aspects of the application's execution and is
  * contributed through the plugin.xml.
  */
-public class Application implements IEntryPoint {
+public class Application implements IEntryPoint, ITestHarness {
 
-  public Display createUI() {
-    final Display display = PlatformUI.createDisplay();
+  private TestableObject fTestableObject;
+
+  public int createUI() {
     UICallBack.activate( Application.class.getName() );
-    RWT.getLifeCycle().addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-      public void afterPhase( final PhaseEvent event ) {
-        final String[] programArguments = getProgramArguments();
-        Job job = new Job( "RAPJUnitTestRunner" ) {
-          protected IStatus run( final IProgressMonitor monitor ) {
-            UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-              public void run() {
-                RemotePluginTestRunner.main( programArguments );
-              }
-            } );
-            return Status.OK_STATUS;
-          }
-          
-        };
-        job.schedule();
-        RWT.getLifeCycle().removePhaseListener( this );
-      }
-      public void beforePhase( final PhaseEvent event ) {
-      }
-      public PhaseId getPhaseId() {
-        return PhaseId.RENDER;
-      }
-    } );
-    
-    return display;
+
+    fTestableObject = PlatformUI.getTestableObject();
+    fTestableObject.setTestHarness( this );
+    return createAndRunWorkbench();
   }
 
-  private String[] getProgramArguments() {
-    String eclipseCommands = System.getProperty( "eclipse.commands" );
-    StringTokenizer tokenizer = new StringTokenizer( eclipseCommands, "\n" );
-    String[] arx = new String[ tokenizer.countTokens() ];
-    for( int i = 0; i < arx.length; i++ ) {
-      arx[ i ] = tokenizer.nextToken().trim();
+  private int createAndRunWorkbench() {
+    int result;
+    if( getEntryPoint() != null ) {
+      result = EntryPointManager.createUI( getEntryPoint() );
+    } else {
+      result = createAndRunEmptyWorkbench();
     }
-    return arx;
+    return result;
+  }
+
+  private int createAndRunEmptyWorkbench() {
+    Display display = PlatformUI.createDisplay();
+    WorkbenchAdvisor workbenchAdvisor = new WorkbenchAdvisor(){
+      public String getInitialWindowPerspectiveId() {
+        return "org.eclipse.rap.junit.runtime.emptyPerspective";
+      }
+    };
+    return PlatformUI.createAndRunWorkbench( display, workbenchAdvisor );
+  }
+
+  private String getEntryPoint() {
+    String parameter = RWT.getRequest().getParameter( "testentrypoint" );
+    String result = null;
+    if( !"rapjunit".equals( parameter ) && !"".equals( parameter ) ) {
+      result = parameter;
+    }
+    return result;
+  }
+
+  public void runTests() {
+    fTestableObject.testingStarting();
+    fTestableObject.runTest( new Runnable() {
+      public void run() {
+        RemotePluginTestRunner.main( Platform.getCommandLineArgs() );
+      }
+    } );
+    fTestableObject.testingFinished();
   }
 }
