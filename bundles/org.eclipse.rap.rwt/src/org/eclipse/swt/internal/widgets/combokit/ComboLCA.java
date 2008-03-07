@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.combokit;
 
 import java.io.IOException;
@@ -48,10 +47,10 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final String PROP_ITEMS = "items";
   private static final String PROP_TEXT = "text";
   private static final String PROP_SELECTION = "selection";
-  private static final String PROP_EDITABLE = "editable";
-  private static final String PROP_VERIFY_MODIFY_LISTENER
+  static final String PROP_EDITABLE = "editable";
+  static final String PROP_VERIFY_MODIFY_LISTENER
     = "verifyModifyListener";
-  private static final String PROP_MAX_POPUP_HEIGHT = "maxPopupHeight";
+  static final String PROP_MAX_POPUP_HEIGHT = "maxPopupHeight";
 
   private static final JSListenerInfo JS_LISTENER_INFO
     = new JSListenerInfo( JSConst.QX_EVENT_CHANGE_SELECTED,
@@ -268,7 +267,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     return ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );
   }
 
-  private static int getMaxPopupHeight( final Combo combo ) {
+  static int getMaxPopupHeight( final Combo combo ) {
     int visibleItemCount = combo.getVisibleItemCount();
     int charHeight = TextSizeDetermination.getCharHeight( combo.getFont() );
     int padding = 2 * LIST_ITEM_PADDING;

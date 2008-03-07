@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -24,6 +24,7 @@ import org.eclipse.rwt.internal.browser.Ie6up;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
@@ -50,9 +51,23 @@ public class DisplayLCA_Test extends TestCase {
     public DisposeTestButton( final Composite parent, final int style ) {
       super( parent, style );
     }
-    
   }
-  
+
+  public void testPreserveValues() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    new Button( shell, SWT.PUSH );
+    RWTFixture.markInitialized( display );
+    shell.setFocus();
+    shell.open();
+    RWTFixture.preserveWidgets();
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    assertEquals( shell, adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
+    Object currTheme = adapter.getPreserved( DisplayLCA.PROP_CURR_THEME );
+    assertEquals( ThemeUtil.getCurrentThemeId(), currTheme );
+    display.dispose();
+  }
+
   public void testStartup() throws IOException {
     Fixture.fakeResponseWriter();
     Fixture.fakeBrowser( new Ie6up( true, true ) );
@@ -117,7 +132,7 @@ public class DisplayLCA_Test extends TestCase {
     assertSame( button, log.get( 1 ) );
     assertSame( text, log.get( 2 ) );
   }
-  
+
   public void testReadData() {
     Display display = new Display();
     IDisplayLifeCycleAdapter lca = DisplayUtil.getLCA( display );
@@ -135,10 +150,10 @@ public class DisplayLCA_Test extends TestCase {
     final Button button = new DisposeTestButton( shell, SWT.PUSH );
     final Button button2 = new DisposeTestButton( shell, SWT.PUSH );
     final Button button3 = new DisposeTestButton( shell, SWT.CHECK );
-    
+
     String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
-    
+
     // Run requests to initialize the 'system'
     RWTFixture.fakeNewRequest();
     RWTFixture.executeLifeCycleFromServerThread( );
@@ -147,7 +162,7 @@ public class DisplayLCA_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread( );
     
     // Run the actual test request: the button is clicked
-    // It changes its text and disposes itself 
+    // It changes its text and disposes itself
     clearLogs();
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -165,7 +180,7 @@ public class DisplayLCA_Test extends TestCase {
     assertFalse( renderChangesLog.contains( button ) );
     assertTrue( renderDisposeLog.contains( button ) );
     assertFalse( renderDisposeHandlerRegistration.isEmpty() );
-    
+
     clearLogs();
     button2.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -183,7 +198,7 @@ public class DisplayLCA_Test extends TestCase {
     assertFalse( renderChangesLog.contains( button2 ) );
     assertTrue( renderDisposeLog.contains( button2 ) );
     assertFalse( renderDisposeHandlerRegistration.contains( button2 ) );
-    
+
     clearLogs();
     button3.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -209,7 +224,7 @@ public class DisplayLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final Composite composite = new Shell( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    WidgetAdapter controlAdapter 
+    WidgetAdapter controlAdapter
       = ( WidgetAdapter )WidgetUtil.getAdapter( control );
     controlAdapter.setRenderRunnable( new IRenderRunnable() {
       public void afterRender() throws IOException {
@@ -217,7 +232,7 @@ public class DisplayLCA_Test extends TestCase {
         compositeInitState[ 0 ] = Boolean.valueOf( initState );
       }
     } );
-    
+
     // Ensure that the isInitialized state is to to true *right* after a widget
     // was rendered; as opposed to being set to true after the whole widget
     // tree was rendered
@@ -253,7 +268,7 @@ public class DisplayLCA_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread();
     assertEquals( previousFocusControl, display.getFocusControl() );
   }
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
@@ -278,9 +293,9 @@ public class DisplayLCA_Test extends TestCase {
             public void readData( final Widget widget ) {
               log.add( widget );
               if( widget instanceof DisposeTestButton ) {
-                SelectionEvent event 
-                  = new SelectionEvent( widget, 
-                                        null, 
+                SelectionEvent event
+                  = new SelectionEvent( widget,
+                                        null,
                                         SelectionEvent.WIDGET_SELECTED );
                 event.processEvent();
               }
@@ -300,12 +315,12 @@ public class DisplayLCA_Test extends TestCase {
               log.add( widget );
               renderChangesLog.add( widget );
             }
-            
-            
+
+
             public String getTypePoolId( final Widget widget ) {
               return getClass().getName() + "_" + widget.getStyle();
             }
-            
+
             public void createResetHandlerCalls( final String typePoolId )
               throws IOException
             {
@@ -335,7 +350,7 @@ public class DisplayLCA_Test extends TestCase {
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
     PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
   }
-  
+
   protected void tearDown() throws Exception {
 // TODO [rst] Keeping the ThemeManager initialized speeds up TestSuite
 //    ThemeManager.getInstance().deregisterAll();

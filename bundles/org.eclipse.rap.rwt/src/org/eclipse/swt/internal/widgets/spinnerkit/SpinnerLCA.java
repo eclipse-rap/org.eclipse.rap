@@ -26,11 +26,11 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Spinner";
   private static final String TYPE_POOL_ID = SpinnerLCA.class.getName();
   private static final String PROP_SELECTION = "selection";
-  private static final String PROP_MAXIMUM = "maximum";
-  private static final String PROP_MINIMUM = "minimum";
-  private static final String PROP_INCREMENT = "increment";
-  private static final String PROP_PAGE_INCREMENT = "pageIncrement";
-  private static final String PROP_MODIFY_LISTENER = "modifyListener";
+  static final String PROP_MAXIMUM = "maximum";
+  static final String PROP_MINIMUM = "minimum";
+  static final String PROP_INCREMENT = "increment";
+  static final String PROP_PAGE_INCREMENT = "pageIncrement";
+  static final String PROP_MODIFY_LISTENER = "modifyListener";
 
   public void preserveValues( final Widget widget ) {
     Spinner spinner = ( Spinner )widget;

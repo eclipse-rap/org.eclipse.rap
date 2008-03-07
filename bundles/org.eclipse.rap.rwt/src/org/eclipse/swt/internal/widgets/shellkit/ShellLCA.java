@@ -35,10 +35,10 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
-  private static final String PROP_ACTIVE_CONTROL = "activeControl";
-  private static final String PROP_ACTIVE_SHELL = "activeShell";
-  private static final String PROP_MODE = "mode";
-  private static final String PROP_SHELL_LISTENER = "shellListener";
+  static final String PROP_ACTIVE_CONTROL = "activeControl";
+  static final String PROP_ACTIVE_SHELL = "activeShell";
+  static final String PROP_MODE = "mode";
+  static final String PROP_SHELL_LISTENER = "shellListener";
 
   private static final JSListenerInfo JS_CLOSE_LISTENER_INFO
     = new JSListenerInfo( "close",

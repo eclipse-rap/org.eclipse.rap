@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Text;
 final class TextLCAUtil {
 
   static final String PROP_TEXT = "text";
-  private static final String PROP_TEXT_LIMIT = "textLimit";
-  private static final String PROP_SELECTION = "selection";
-  private static final String PROP_READONLY = "readonly";
-  private static final String PROP_VERIFY_MODIFY_LISTENER
+  static final String PROP_TEXT_LIMIT = "textLimit";
+  static final String PROP_SELECTION = "selection";
+  static final String PROP_READONLY = "readonly";
+  static final String PROP_VERIFY_MODIFY_LISTENER
     = "verifyModifyListener";
-  private static final String PROP_SELECTION_LISTENER = "selectionListener";
+  static final String PROP_SELECTION_LISTENER = "selectionListener";
 
   private static final Integer DEFAULT_TEXT_LIMIT
     = new Integer( Text.LIMIT );
@@ -109,7 +109,7 @@ final class TextLCAUtil {
     }
     text.setSelection( selection );
   }
-  
+
   static void writeHijack( final Text text ) throws IOException {
     // TODO [rh] workaround for
     //      https://bugs.eclipse.org/bugs/show_bug.cgi?id=201080
@@ -185,7 +185,7 @@ final class TextLCAUtil {
     writer.removeListener( "appear",
                            "org.eclipse.swt.TextUtil._onAppearSetSelection" );
   }
-  
+
   static void writeAlignment( final Text text ) throws IOException {
     int style = text.getStyle();
     if( ( style & SWT.RIGHT ) != 0 ) {
@@ -219,7 +219,7 @@ final class TextLCAUtil {
     writer.removeListener( JS_MODIFY_LISTENER_INFO.getEventType(),
                            JS_MODIFY_LISTENER_INFO.getJSListener() );
   }
-  
+
   static void writeText( final Text text ) throws IOException {
     String newValue = text.getText();
     JSWriter writer = JSWriter.getWriterFor( text );

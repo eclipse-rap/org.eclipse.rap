@@ -57,7 +57,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public static final String PROP_CHEVRON_RECT = "chevronRect";
   public static final String PROP_SELECTION_BG = "selectionBg";
   public static final String PROP_SELECTION_FG = "selectionFg";
-  private static final String PROP_TAB_POSITION = "tabPosition";
+  public static final String PROP_TAB_POSITION = "tabPosition";
   
   // Keep in sync with value in CTabFolder.js
   private static final Integer DEFAULT_TAB_HEIGHT = new Integer( 20 );

@@ -31,8 +31,8 @@ final class MenuLCAUtil {
   private static final int ITEM_SPACING = 2;
   private static final int ITEM_IMAGE = 16;
 
-  private static final String PROP_WIDTH = "width";
-  private static final String PROP_MENU_LISTENER = "menuListener";
+  static final String PROP_WIDTH = "width";
+  static final String PROP_MENU_LISTENER = "menuListener";
 
   private static final String SET_MENU_LISTENER
     = "org.eclipse.swt.MenuUtil.setMenuListener";
@@ -99,7 +99,7 @@ final class MenuLCAUtil {
     writer.set( PROP_WIDTH, "width", new Integer( width ), null ); 
   }
 
-  private static int computeWidth( final Menu menu ) {
+  static int computeWidth( final Menu menu ) {
     int maxItemWidth = 0;
     MenuItem[] items = menu.getItems();
     for( int i = 0; i < items.length; i++ ) {

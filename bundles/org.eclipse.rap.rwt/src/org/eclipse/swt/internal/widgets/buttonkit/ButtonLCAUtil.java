@@ -26,11 +26,11 @@ import org.eclipse.swt.widgets.Button;
 final class ButtonLCAUtil {
 
 
-  static final String PROP_SELECTION = "selection";
   private static final String JS_PROP_HORIZONTAL_CHILDREN_ALIGN
     = "horizontalChildrenAlign";
-  private static final String PROP_ALIGNMENT = "alignment";
-  private static final String PROP_DEFAULT = "defaultButton";
+  static final String PROP_SELECTION = "selection";
+  static final String PROP_ALIGNMENT = "alignment";
+  static final String PROP_DEFAULT = "defaultButton";
   private static final String PARAM_SELECTION = "selection";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.CENTER );
 
@@ -56,7 +56,8 @@ final class ButtonLCAUtil {
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
     adapter.preserve( PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
-    adapter.preserve( PROP_DEFAULT, new Boolean( isDefaultButton( button ) ) );
+    adapter.preserve( PROP_DEFAULT, 
+                      Boolean.valueOf( isDefaultButton( button ) ) );
   }
 
   static void writeText( final Button button ) throws IOException {

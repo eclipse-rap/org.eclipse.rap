@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
@@ -28,42 +27,73 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
-
 public class ToolItemLCA_Test extends TestCase {
 
-  public void testPreserveValues() {
+  public void testCheckPreserveValues() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     ToolItem item = new ToolItem( tb, SWT.CHECK );
     RWTFixture.markInitialized( display );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    RWTFixture.preserveWidgets();
+    assertEquals( Boolean.FALSE,
+                  adapter.getPreserved( Props.SELECTION_INDICES ) );
+    RWTFixture.clearPreserved();
+    item.setSelection( true );
+    RWTFixture.preserveWidgets();
+    assertEquals( Boolean.TRUE,
+                  adapter.getPreserved( Props.SELECTION_INDICES ) );
+    testPreserveValues( display, item );
+    display.dispose();
+  }
+
+  public void testDropDownPreserveValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.FLAT );
+    ToolItem item = new ToolItem( tb, SWT.DROP_DOWN );
+    RWTFixture.markInitialized( display );
+    testPreserveValues( display, item );
+    display.dispose();
+  }
+
+  public void testPushPreserveValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.FLAT );
+    ToolItem item = new ToolItem( tb, SWT.PUSH );
+    RWTFixture.markInitialized( display );
+    testPreserveValues( display, item );
+    display.dispose();
+  }
+
+  public void testRadioPreserveValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.FLAT );
+    ToolItem item = new ToolItem( tb, SWT.RADIO );
+    RWTFixture.markInitialized( display );
+    testPreserveValues( display, item );
+    display.dispose();
+  }
+
+  public void testSeparatorPreserveValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    ToolBar tb = new ToolBar( shell, SWT.FLAT );
+    ToolItem item = new ToolItem( tb, SWT.SEPARATOR );
+    Button button = new Button( tb, SWT.PUSH );
+    RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    Boolean hasListeners;
-    hasListeners
-    = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    assertEquals( "", adapter.getPreserved( Props.TEXT ) );
-    assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
-
-    RWTFixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionAdapter() {};
-    item.addSelectionListener( selectionListener );
-
-    item.setText( "some text" );
-    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
-    item.setSelection( true );
-
+    assertEquals( null, adapter.getPreserved( Props.CONTROL ) );
+    item.setControl( button );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item );
-    hasListeners
-    = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-    assertEquals( Graphics.getImage( RWTFixture.IMAGE1 ),
-                  adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( "selection" ) );
+    assertEquals( button, adapter.getPreserved( Props.CONTROL ) );
+    RWTFixture.clearPreserved();
+    testPreserveValues( display, item );
     display.dispose();
   }
 
@@ -74,6 +104,7 @@ public class ToolItemLCA_Test extends TestCase {
     ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
     final ToolItem item = new ToolItem( toolBar, SWT.CHECK );
     item.addSelectionListener( new SelectionAdapter() {
+
       public void widgetSelected( final SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
@@ -87,7 +118,6 @@ public class ToolItemLCA_Test extends TestCase {
       }
     } );
     shell.open();
-
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String toolItemId = WidgetUtil.getId( item );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -100,7 +130,7 @@ public class ToolItemLCA_Test extends TestCase {
   public void testRenderChanges() throws IOException {
     Fixture.fakeResponseWriter();
     Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
+    Shell shell = new Shell( display, SWT.NONE );
     ToolBar tb = new ToolBar( shell, SWT.FLAT );
     final ToolItem item = new ToolItem( tb, SWT.CHECK );
     shell.open();
@@ -112,14 +142,11 @@ public class ToolItemLCA_Test extends TestCase {
     item.setText( "benny" );
     itemLCA.renderChanges( item );
     assertTrue( Fixture.getAllMarkup().endsWith( "setLabel( \"benny\" );" ) );
-
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     item.setSelection( true );
     itemLCA.renderChanges( item );
     assertTrue( Fixture.getAllMarkup().endsWith( "setChecked( true );" ) );
-
-
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
@@ -138,12 +165,11 @@ public class ToolItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( itemId + ".selection", "true" );
     WidgetUtil.getLCA( item ).readData( item );
     assertEquals( Boolean.TRUE, Boolean.valueOf( item.getSelection() ) );
-
     // XXX: is there a way to clear the request params?
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
     Fixture.fakeRequestParam( itemId + ".selection", "false" );
     WidgetUtil.getLCA( item ).readData( item );
-    assertEquals( Boolean.FALSE, Boolean.valueOf(item.getSelection() ) );
+    assertEquals( Boolean.FALSE, Boolean.valueOf( item.getSelection() ) );
   }
 
   protected void setUp() throws Exception {
@@ -154,5 +180,38 @@ public class ToolItemLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
+  }
+
+  private void testPreserveValues( final Display display, final ToolItem item )
+  {
+    RWTFixture.preserveWidgets();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
+    Boolean hasListeners;
+    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( Boolean.FALSE, hasListeners );
+    assertEquals( "", adapter.getPreserved( Props.TEXT ) );
+    assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
+    assertEquals( "", adapter.getPreserved( Props.TOOLTIP ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
+    RWTFixture.clearPreserved();
+    SelectionListener selectionListener = new SelectionAdapter() {
+    };
+    item.addSelectionListener( selectionListener );
+    item.setText( "some text" );
+    item.setImage( Graphics.getImage( RWTFixture.IMAGE1 ) );
+    item.setEnabled( false );
+    item.setToolTipText( "tooltip text" );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( item );
+    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( Boolean.TRUE, hasListeners );
+    if( ( item.getStyle() & SWT.SEPARATOR ) == 0 ) {
+      assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
+      assertEquals( Graphics.getImage( RWTFixture.IMAGE1 ),
+                    adapter.getPreserved( Props.IMAGE ) );
+    }
+    assertEquals( "tooltip text", adapter.getPreserved( Props.TOOLTIP ) );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
   }
 }

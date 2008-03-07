@@ -30,8 +30,8 @@ public class ListLCA extends AbstractWidgetLCA {
 
   // Property names, used when preserving values
   private static final String PROP_SELECTION = "selection";
-  private static final String PROP_ITEMS = "items";
-  private static final String PROP_FOCUS_INDEX = "focusIndex";
+  static final String PROP_ITEMS = "items";
+  static final String PROP_FOCUS_INDEX = "focusIndex";
 
   private static final Integer DEFAULT_SINGLE_SELECTION = new Integer( -1 );
   private static final int[] DEFAULT_MULTI_SELECTION = new int[ 0 ];

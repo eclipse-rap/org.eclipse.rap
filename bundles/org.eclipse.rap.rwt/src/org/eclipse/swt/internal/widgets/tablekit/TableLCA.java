@@ -27,14 +27,14 @@ import org.eclipse.swt.widgets.*;
 public final class TableLCA extends AbstractWidgetLCA {
 
   // Property names to preserve values
-  private static final String PROP_HEADER_HEIGHT = "headerHeight";
-  private static final String PROP_HEADER_VISIBLE = "headerVisible";
-  private static final String PROP_LINES_VISIBLE = "linesVisible";
-  private static final String PROP_ITEM_HEIGHT = "itemHeight";
-  private static final String PROP_TOP_INDEX = "topIndex";
-  private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
-  private static final String PROP_DEFAULT_COLUMN_WIDTH = "defaultColumnWidth";
-  private static final String PROP_ITEM_COUNT = "itemCount";
+  static final String PROP_HEADER_HEIGHT = "headerHeight";
+  static final String PROP_HEADER_VISIBLE = "headerVisible";
+  static final String PROP_LINES_VISIBLE = "linesVisible";
+  static final String PROP_ITEM_HEIGHT = "itemHeight";
+  static final String PROP_TOP_INDEX = "topIndex";
+  static final String PROP_SELECTION_LISTENERS = "selectionListeners";
+  static final String PROP_DEFAULT_COLUMN_WIDTH = "defaultColumnWidth";
+  static final String PROP_ITEM_COUNT = "itemCount";
 
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
   private static final Integer DEFAULT_ITEM_COUNT = new Integer( 0 );
@@ -268,7 +268,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static int getDefaultColumnWidth( final Table table ) {
+  static int getDefaultColumnWidth( final Table table ) {
     int result = 0;
     if( table.getColumnCount() == 0 ) {
       Object adapter = table.getAdapter( ITableAdapter.class );

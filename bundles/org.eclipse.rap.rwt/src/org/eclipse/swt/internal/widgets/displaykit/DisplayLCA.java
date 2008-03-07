@@ -62,8 +62,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   // Maps Java Level to the closest qooxdoo log level
   private static final Map LOG_LEVEL_MAP = new HashMap( 8 + 1, 1f );
 
-  private static final String PROP_FOCUS_CONTROL = "focusControl";
-  private static final String PROP_CURR_THEME = "currTheme";
+  static final String PROP_FOCUS_CONTROL = "focusControl";
+  static final String PROP_CURR_THEME = "currTheme";
 
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 

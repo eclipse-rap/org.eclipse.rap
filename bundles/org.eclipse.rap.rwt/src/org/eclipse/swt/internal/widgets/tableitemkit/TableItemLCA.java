@@ -224,7 +224,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   {
     Image[] images = getImages( item );
     Image[] defValue = new Image[ images.length ];
-    boolean result 
+    boolean result
       = WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images, defValue );
     if( result ) {
       JSWriter writer = JSWriter.getWriterFor( item );
@@ -258,7 +258,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     throws IOException
   {
     Color[] backgrounds = getBackgrounds( item );
-    // default values are null 
+    // default values are null
     Color[] defValue = new Color[ getColumnCount( item ) ];
     JSWriter writer = JSWriter.getWriterFor( item );
     return writer.set( PROP_BACKGROUND, "backgrounds", backgrounds, defValue );
@@ -268,7 +268,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     throws IOException
   {
     Color[] foregrounds = getForegrounds( item );
-    // default values are null 
+    // default values are null
     Color[] defValue = new Color[ getColumnCount( item ) ];
     JSWriter writer = JSWriter.getWriterFor( item );
     return writer.set( PROP_FOREGROUND, "foregrounds", foregrounds, defValue );
@@ -348,7 +348,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   //////////////////////
   // Item data accessors
 
-  private static String[] getTexts( final TableItem item ) {
+  static String[] getTexts( final TableItem item ) {
     int columnCount = getColumnCount( item );
     String[] result = new String[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
@@ -357,7 +357,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static Image[] getImages( final TableItem item ) {
+  static Image[] getImages( final TableItem item ) {
     int columnCount = getColumnCount( item );
     Image[] result = new Image[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
@@ -366,7 +366,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static Font[] getFonts( final TableItem item ) {
+  static Font[] getFonts( final TableItem item ) {
     int columnCount = getColumnCount( item );
     Font[] result = new Font[ columnCount ];
     for( int i = 0; i < result.length; i++ ) {

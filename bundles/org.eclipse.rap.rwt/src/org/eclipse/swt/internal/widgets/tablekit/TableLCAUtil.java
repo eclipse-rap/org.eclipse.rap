@@ -23,10 +23,10 @@ public final class TableLCAUtil {
 
   // Constants used by item metrics
   private static final Integer ZERO = new Integer( 0 );
-  private static final String PROP_ITEM_METRICS = "itemMetrics";
+  static final String PROP_ITEM_METRICS = "itemMetrics";
 
   // Constants used by alignment
-  private static final String PROP_ALIGNMENT = "alignment";
+  public static final String PROP_ALIGNMENT = "alignment";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
 
   ////////////////////////////
@@ -96,7 +96,7 @@ public final class TableLCAUtil {
     return WidgetLCAUtil.hasChanged( table, PROP_ITEM_METRICS, metrics );
   }
 
-  private static ItemMetrics[] getItemMetrics( final Table table ) {
+  static ItemMetrics[] getItemMetrics( final Table table ) {
     int columnCount = Math.max( 1, table.getColumnCount() );
     ItemMetrics[] result = new ItemMetrics[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
@@ -168,7 +168,7 @@ public final class TableLCAUtil {
   /////////////////
   // Inner classes
   
-  private static final class ItemMetrics {
+  static final class ItemMetrics {
     Integer imageLeft = ZERO;
     Integer imageWidth = ZERO;
     Integer textLeft = ZERO;

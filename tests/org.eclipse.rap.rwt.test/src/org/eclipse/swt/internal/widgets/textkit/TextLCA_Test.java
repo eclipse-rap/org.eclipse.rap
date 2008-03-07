@@ -4,11 +4,10 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
@@ -16,27 +15,56 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 public class TextLCA_Test extends TestCase {
 
-  public void testPreserveValues() {
+  public void testMultiPreserveValues() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
-    Text text = new Text( shell, SWT.NONE );
-    text.setText( "abc" );
-    RWTFixture.markInitialized( display );
+    Text text = new Text( shell, SWT.MULTI );
+    testPreserveValues( display, text );
+    display.dispose();
+  }
+
+  public void testPasswordPreserveValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Text text = new Text( shell, SWT.PASSWORD );
+    testPreserveValues( display, text );
+    display.dispose();
+  }
+
+  public void testSinglePreserveValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Text text = new Text( shell, SWT.SINGLE );
+    testPreserveValues( display, text );
+    //Selection_Listener
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    assertEquals( text.getText(), adapter.getPreserved( Props.TEXT ) );
+    String propSelectionLsnr = TextLCAUtil.PROP_SELECTION_LISTENER;
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( propSelectionLsnr );
+    assertEquals( Boolean.FALSE, hasListeners );
+    RWTFixture.clearPreserved();
+    SelectionListener selectionListener = new SelectionAdapter() {
+    };
+    text.addSelectionListener( selectionListener );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    hasListeners = ( Boolean )adapter.getPreserved( propSelectionLsnr );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();
     display.dispose();
   }
 
@@ -85,6 +113,7 @@ public class TextLCA_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
+
       public void modifyText( final ModifyEvent event ) {
         assertEquals( text, event.getSource() );
         log.append( "modifyText" );
@@ -93,7 +122,6 @@ public class TextLCA_Test extends TestCase {
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String textId = WidgetUtil.getId( text );
-    
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "new text" );
@@ -101,13 +129,14 @@ public class TextLCA_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "modifyText", log.toString() );
   }
-  
+
   public void testVerifyEvent() {
     final StringBuffer log = new StringBuffer();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final Text text = new Text( shell, SWT.NONE );
     text.addVerifyListener( new VerifyListener() {
+
       public void verifyText( final VerifyEvent event ) {
         assertEquals( text, event.getSource() );
         assertEquals( text, event.widget );
@@ -118,7 +147,6 @@ public class TextLCA_Test extends TestCase {
     shell.open();
     String displayId = DisplayUtil.getId( display );
     String textId = WidgetUtil.getId( text );
-    
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
@@ -126,7 +154,7 @@ public class TextLCA_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "verifyText", log.toString() );
   }
-  
+
   public void testTextLimit() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -134,13 +162,11 @@ public class TextLCA_Test extends TestCase {
     TextLCA lca = new TextLCA();
     // run LCA one to dump the here uninteresting prolog
     Fixture.fakeResponseWriter();
-    lca.renderChanges( text ); 
-    
+    lca.renderChanges( text );
     // Initially no textLimit must be rendered if the initial value is untouched
     Fixture.fakeResponseWriter();
     lca.renderChanges( text );
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setMaxLength" ) );
-    
     // Positive textLimit is written as setMaxLength( ... )
     Fixture.fakeResponseWriter();
     RWTFixture.markInitialized( text );
@@ -150,7 +176,6 @@ public class TextLCA_Test extends TestCase {
     lca.renderChanges( text );
     String expected = "setMaxLength( 12 );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    
     // Negative textLimit is tread as 'no limit'
     Fixture.fakeResponseWriter();
     RWTFixture.markInitialized( text );
@@ -161,12 +186,142 @@ public class TextLCA_Test extends TestCase {
     expected = "setMaxLength( null );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
+  }
+  private void testPreserveValues( final Display display, final Text text ) {
+    Boolean hasListeners;
+    //text
+    text.setText( "some text" );
+    RWTFixture.markInitialized( display );
+    RWTFixture.preserveWidgets();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
+    assertEquals( text.getText(), adapter.getPreserved( Props.TEXT ) );
+    RWTFixture.clearPreserved();
+    //text-limit
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    Integer textLimit
+     = ( Integer )( adapter.getPreserved( TextLCAUtil.PROP_TEXT_LIMIT ) );
+    assertEquals( Integer.MAX_VALUE, textLimit.intValue() );
+    text.setTextLimit( 30 );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    textLimit
+     = ( Integer )( adapter.getPreserved( TextLCAUtil.PROP_TEXT_LIMIT ) );
+    assertEquals( 30, textLimit.intValue() );
+    RWTFixture.clearPreserved();
+    //selection
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    Point point = new Point( 0, 0 );
+    assertEquals( point, adapter.getPreserved( TextLCAUtil.PROP_SELECTION ) );
+    RWTFixture.clearPreserved();
+    point = new Point( 3, 6 );
+    text.setSelection( point );
+    text.getSelection();
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    assertEquals( point, adapter.getPreserved( TextLCAUtil.PROP_SELECTION ) );
+    RWTFixture.clearPreserved();
+    //readonly
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    Boolean readonly
+     = ( Boolean )adapter.getPreserved( TextLCAUtil.PROP_READONLY );
+    assertEquals( Boolean.FALSE, readonly );
+    RWTFixture.clearPreserved();
+    text.setEditable( false );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    readonly = ( Boolean )adapter.getPreserved( TextLCAUtil.PROP_READONLY );
+    assertEquals( Boolean.TRUE, readonly );
+    RWTFixture.clearPreserved();
+    //verifymodify-Listeners
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    Boolean hasVerifyModifyListener
+     = ( Boolean )adapter.getPreserved( TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
+    assertEquals( Boolean.FALSE, hasVerifyModifyListener );
+    text.addVerifyListener( new VerifyListener() {
+
+      public void verifyText( final VerifyEvent event ) {
+      }
+    } );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    hasVerifyModifyListener
+     = ( Boolean )adapter.getPreserved( TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
+    assertEquals( Boolean.TRUE, hasVerifyModifyListener );
+    RWTFixture.clearPreserved();
+    //Bounds
+    Rectangle rectangle = new Rectangle( 10, 10, 200, 100 );
+    text.setBounds( rectangle );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
+    RWTFixture.clearPreserved();
+    //control_listeners
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    assertEquals( Boolean.FALSE, hasListeners );
+    RWTFixture.clearPreserved();
+    text.addControlListener( new ControlListener() {
+
+      public void controlMoved( final ControlEvent e ) {
+      }
+
+      public void controlResized( final ControlEvent e ) {
+      }
+    } );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();
+    //enabled
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
+    RWTFixture.clearPreserved();
+    text.setEnabled( false );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
+    RWTFixture.clearPreserved();
+    //menu
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    assertEquals( null, adapter.getPreserved( Props.MENU ) );
+    RWTFixture.clearPreserved();
+    Menu menu = new Menu( text );
+    MenuItem item = new MenuItem( menu, SWT.NONE );
+    item.setText( "1 Item" );
+    text.setMenu( menu );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    assertEquals( menu, adapter.getPreserved( Props.MENU ) );
+    RWTFixture.clearPreserved();
+    //visible
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
+    RWTFixture.clearPreserved();
+    text.setVisible( false );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
+    RWTFixture.clearPreserved();
+    //z-index
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( text );
+    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
+    RWTFixture.clearPreserved();
   }
 }

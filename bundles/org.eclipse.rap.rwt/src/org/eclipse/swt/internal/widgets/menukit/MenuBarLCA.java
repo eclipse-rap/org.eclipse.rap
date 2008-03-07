@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.*;
 final class MenuBarLCA extends MenuDelegateLCA {
 
   // pseudo-property that denotes the shell which uses a menu for its menu bar
-  private static final String PROP_SHELL 
+  static final String PROP_SHELL 
     = "menuBarShell";
   private static final String PROP_SHELL_MENU_BOUNDS 
     = "menuBarShellClientArea";

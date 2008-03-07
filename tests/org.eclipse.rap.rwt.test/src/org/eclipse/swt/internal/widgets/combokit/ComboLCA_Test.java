@@ -14,12 +14,17 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.internal.events.ActivateAdapter;
+import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -28,30 +33,23 @@ public class ComboLCA_Test extends TestCase {
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
 
-  protected void setUp() throws Exception {
-    RWTFixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    RWTFixture.tearDown();
-  }
-
   public void testPreserveValues() {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.DEFAULT );
     RWTFixture.markInitialized( display );
-
     // Test preserving a combo with no items and (naturally) no selection
     RWTFixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION ) );
+    Object height = adapter.getPreserved( ComboLCA.PROP_MAX_POPUP_HEIGHT );
+    assertEquals( new Integer( ComboLCA.getMaxPopupHeight( combo ) ), height );
     Boolean hasListeners;
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
     assertEquals( Boolean.FALSE, hasListeners );
-
     // Test preserving combo with items were one is selected
     RWTFixture.clearPreserved();
     combo.add( "item 1" );
@@ -60,6 +58,10 @@ public class ComboLCA_Test extends TestCase {
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     combo.addSelectionListener( selectionListener );
+    combo.addModifyListener( new ModifyListener(){
+
+      public void modifyText( final ModifyEvent event ) {
+      }} );
     RWTFixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
@@ -67,8 +69,106 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "item 1", items[ 0 ] );
     assertEquals( "item 2", items[ 1 ] );
     assertEquals( new Integer( 1 ), adapter.getPreserved( PROP_SELECTION ) );
+    height = adapter.getPreserved( ComboLCA.PROP_MAX_POPUP_HEIGHT );
+    assertEquals( new Integer( ComboLCA.getMaxPopupHeight( combo ) ), height );
+    assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
+    hasListeners
+     = ( Boolean )adapter.getPreserved( ComboLCA.PROP_VERIFY_MODIFY_LISTENER );
+    assertEquals( Boolean.TRUE, hasListeners );
+    //control_listeners
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    assertEquals( Boolean.FALSE, hasListeners );
+    RWTFixture.clearPreserved();
+    combo.addControlListener( new ControlListener (){
+
+      public void controlMoved( final ControlEvent e ) {
+      }
+
+      public void controlResized( final ControlEvent e ) {
+      }});
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();
+    //foreground background font
+    Color background = Graphics.getColor( 122, 33, 203 );
+    combo.setBackground( background );
+    Color foreground = Graphics.getColor( 211, 178, 211 );
+    combo.setForeground( foreground );
+    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    combo.setFont( font );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
+    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
+    assertEquals( font, adapter.getPreserved( Props.FONT ) );
+    RWTFixture.clearPreserved();
+    //tooltiptext
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    assertEquals( null, combo.getToolTipText() );
+    RWTFixture.clearPreserved();
+    combo.setToolTipText( "some text" );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    assertEquals( "some text", combo.getToolTipText() );
+    RWTFixture.clearPreserved();
+    //tab_index
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
+    RWTFixture.clearPreserved();
+    //activateListener
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    hasListeners = (Boolean)adapter.getPreserved( Props.ACTIVATE_LISTENER );
+    assertEquals( Boolean.FALSE, hasListeners );
+    RWTFixture.clearPreserved();
+    ActivateEvent.addListener( combo, new ActivateAdapter() {
+    } );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();
+    display.dispose();
+  }
+
+  public void testEditablePreserveValues(){
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    RWTFixture.markInitialized( display );
+    RWTFixture.preserveWidgets();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
+    assertEquals( Boolean.TRUE , adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
+    //activate_listeners   Focus_listeners
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    Boolean focusListener
+     = (Boolean)adapter.getPreserved( Props.FOCUS_LISTENER );
+    assertEquals( Boolean.FALSE, focusListener );
+    RWTFixture.clearPreserved();
+    combo.addFocusListener( new FocusListener (){
+
+      public void focusGained( final FocusEvent event ) {
+      }
+
+      public void focusLost( final FocusEvent event ) {
+      }} );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( combo );
+    Boolean hasListeners
+     = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();
+    display.dispose();
   }
 
   public void testRenderChanges() throws IOException {
@@ -165,5 +265,13 @@ public class ComboLCA_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread();
     String expected = "w.rwt_select( 0 )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  protected void setUp() throws Exception {
+    RWTFixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    RWTFixture.tearDown();
   }
 }

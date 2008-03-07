@@ -29,10 +29,10 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   // Property names used by preserve mechanism
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
-  private static final String PROP_TREE_LISTENERS = "treeListeners";
-  private static final String PROP_HEADER_HEIGHT = "headerHeight";
-  private static final String PROP_HEADER_VISIBLE = "headerVisible";
-  private static final String PROP_COLUMN_ORDER = "columnOrder";
+  static final String PROP_TREE_LISTENERS = "treeListeners";
+  static final String PROP_HEADER_HEIGHT = "headerHeight";
+  static final String PROP_HEADER_VISIBLE = "headerVisible";
+  static final String PROP_COLUMN_ORDER = "columnOrder";
  
   public void preserveValues( final Widget widget ) {
     Tree tree  = ( Tree )widget;

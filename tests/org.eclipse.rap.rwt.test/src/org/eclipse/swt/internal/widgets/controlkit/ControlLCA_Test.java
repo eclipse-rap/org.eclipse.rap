@@ -15,6 +15,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.browser.Mozilla1_7up;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -23,6 +24,9 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.events.ActivateAdapter;
+import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -42,21 +46,118 @@ public class ControlLCA_Test extends TestCase {
 
   public void testPreserveValues() {
     Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    ControlListener controlListener = new ControlListener() {
-      public void controlMoved( final ControlEvent event ) {
-      }
-      public void controlResized( final ControlEvent event ) {
-      }
-    };
-    shell.addControlListener( controlListener );
+    Composite shell = new Shell( display , SWT.NONE );
+    Button button = new Button( shell, SWT.PUSH );
+    Boolean hasListeners;
     RWTFixture.markInitialized( display );
+    //bound
+    Rectangle rectangle = new Rectangle(10, 10, 10, 10);
+    button.setBounds( rectangle );
     RWTFixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
-    assertEquals( adapter.getPreserved( Props.BOUNDS ), shell.getBounds() );
-    Boolean listeners;
-    listeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, listeners );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
+    RWTFixture.clearPreserved();
+    //z-index
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
+    RWTFixture.clearPreserved();  
+    //visible
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
+    RWTFixture.clearPreserved();    
+    button.setVisible( false );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
+    RWTFixture.clearPreserved();    
+    //enabled
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
+    RWTFixture.clearPreserved();    
+    button.setEnabled( false );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ));
+    RWTFixture.clearPreserved(); 
+    //control_listeners  
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );    
+    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    assertEquals( Boolean.FALSE, hasListeners );
+    RWTFixture.clearPreserved();    
+    button.addControlListener( new ControlListener (){
+
+      public void controlMoved( ControlEvent e ) {
+      }
+
+      public void controlResized( ControlEvent e ) {
+      }});
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();    
+    //foreground background font
+    Color background = Graphics.getColor( 122, 33, 203 );
+    button.setBackground( background );
+    Color foreground = Graphics.getColor( 211, 178, 211 );
+    button.setForeground( foreground );
+    Font font = Graphics.getFont( "font", 12, SWT.BOLD );
+    button.setFont( font );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
+    assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
+    assertEquals( font, adapter.getPreserved( Props.FONT ) );
+    RWTFixture.clearPreserved();     
+    //tab_index  
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
+    RWTFixture.clearPreserved(); 
+    //tooltiptext
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    assertEquals( null, button.getToolTipText() );
+    RWTFixture.clearPreserved();      
+    button.setToolTipText( "some text" );   
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    assertEquals( "some text", button.getToolTipText() );
+    RWTFixture.clearPreserved();     
+    //activate_listeners   Focus_listeners 
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );    
+    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
+    assertEquals( Boolean.FALSE, hasListeners );
+    RWTFixture.clearPreserved(); 
+    button.addFocusListener( new FocusListener () {
+      public void focusGained( FocusEvent event ) {
+      }
+
+      public void focusLost( FocusEvent event ) {
+      }} );
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    hasListeners = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();    
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );    
+    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
+    assertEquals( Boolean.FALSE, hasListeners );
+    RWTFixture.clearPreserved();   
+    ActivateEvent.addListener( button, new ActivateAdapter() {
+    } );    
+    RWTFixture.preserveWidgets();
+    adapter = WidgetUtil.getAdapter( button );
+    hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
+    assertEquals( Boolean.TRUE, hasListeners );
+    RWTFixture.clearPreserved();
+    display.dispose();   
   }
 
   public void testWriteVisibility() throws IOException {

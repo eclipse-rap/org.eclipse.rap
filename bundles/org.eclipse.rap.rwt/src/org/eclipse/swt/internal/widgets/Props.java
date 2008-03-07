@@ -28,6 +28,8 @@ public final class Props {
 
   // Button properties
   public static final String SELECTION_LISTENERS = "selectionListeners";
+  public static final String ACTIVATE_LISTENER = "activateListener";
+  public static final String FOCUS_LISTENER = "focusListener";
   
   // Text properties
   public static final String TEXT = "text";
@@ -41,6 +43,11 @@ public final class Props {
   public static final String LOCKED = "locked";
   public static final String CONTROL = "control";
   
+  public static final String TOOLTIP = "toolTip";
+  
+  public static final String BACKGROUND = "background";
+  public static final String FOREGROUND = "foreground";
+  public static final String FONT = "font";
   private Props() {
     // prevent instantiation
   }

@@ -37,8 +37,8 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     = "verticalBar.selection";
 
   // Property names for preserve value mechanism
-  private static final String PROP_BOUNDS = "clientArea";
-  private static final String PROP_OVERFLOW = "overflow";
+  static final String PROP_BOUNDS = "clientArea";
+  static final String PROP_OVERFLOW = "overflow";
   private static final String PROP_H_BAR_SELECTION = "hBarSelection";
   private static final String PROP_V_BAR_SELECTION = "vBarSelection";
 

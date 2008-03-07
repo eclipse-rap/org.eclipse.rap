@@ -29,14 +29,14 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     = "widget/tree/column/down.gif";
 
   // Property names to preserve values
-  private static final String PROP_LEFT = "left";
-  private static final String PROP_WIDTH = "width";
-  private static final String PROP_Z_INDEX = "zIndex";
-  private static final String PROP_SORT_IMAGE = "sortImage";
-  private static final String PROP_RESIZABLE = "resizable";
-  private static final String PROP_MOVEABLE = "moveable";
-  private static final String PROP_ALIGNMENT = "alignment";
-  private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
+  static final String PROP_LEFT = "left";
+  static final String PROP_WIDTH = "width";
+  static final String PROP_Z_INDEX = "zIndex";
+  static final String PROP_SORT_IMAGE = "sortImage";
+  static final String PROP_RESIZABLE = "resizable";
+  static final String PROP_MOVEABLE = "moveable";
+  static final String PROP_ALIGNMENT = "alignment";
+  static final String PROP_SELECTION_LISTENERS = "selectionListeners";
   
   private static final Integer DEFAULT_LEFT = new Integer( 0 );
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
@@ -245,11 +245,11 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     return result;
   }
   
-  private static int getZIndex( final TreeColumn column ) {
+  static int getZIndex( final TreeColumn column ) {
     return ControlLCAUtil.getZIndex( column.getParent() ) + 1;
   }
 
-  private static String getSortImage( final TreeColumn column ) {
+  static String getSortImage( final TreeColumn column ) {
     String result = "";
     Tree tree = column.getParent();
     if( tree.getSortColumn() == column ) {

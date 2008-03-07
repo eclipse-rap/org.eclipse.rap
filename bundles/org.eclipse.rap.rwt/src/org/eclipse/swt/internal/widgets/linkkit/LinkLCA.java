@@ -48,7 +48,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     = JS_LINK_UTIL + ".setSelectionListener";
 
   private static final String PROP_TEXT = "text";
-  private static final String PROP_SEL_LISTENER = "selectionListener";
+  static final String PROP_SEL_LISTENER = "selectionListener";
 
   public void preserveValues( final Widget widget ) {
     Link link = ( Link )widget;
