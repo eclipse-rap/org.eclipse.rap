@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
 
 public class Control_Test extends TestCase {
 
@@ -200,7 +201,7 @@ public class Control_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
-    Control control = new Button( shell, SWT.PUSH );
+    Control control = new Button( composite, SWT.PUSH );
 
     // Initially the system font is set
     assertSame( display.getSystemFont(), control.getFont() );
@@ -217,6 +218,130 @@ public class Control_Test extends TestCase {
     assertSame( labelFont, label.getFont() );
     label.setFont( null );
     assertSame( display.getSystemFont(), label.getFont() );
+  }
+
+  public void testForeground() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Composite comp = new Composite( shell, SWT.NONE );
+    Control control = new Label( comp, SWT.PUSH );
+
+    // Initially the system widget foreground color is set
+    assertSame( display.getSystemColor( SWT.COLOR_WIDGET_FOREGROUND ),
+                control.getForeground() );
+
+    // Setting a parents' color must not affect the children's color
+    comp.setForeground( display.getSystemColor( SWT.COLOR_RED ) );
+    assertNotSame( display.getSystemColor( SWT.COLOR_RED ),
+                   control.getForeground() );
+
+    // setting the foreground changes the state persistently
+    control.setForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
+    assertSame( display.getSystemColor( SWT.COLOR_BLUE ),
+                control.getForeground() );
+
+    // (re)setting the foreground to null assigns the system color again
+    control.setForeground( null );
+    assertSame( display.getSystemColor( SWT.COLOR_WIDGET_FOREGROUND ),
+                control.getForeground() );
+  }
+
+  public void testBackground() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Composite comp = new Composite( shell, SWT.NONE );
+    Control control = new Label( comp, SWT.PUSH );
+
+    // Initially the system widget background color is set
+    assertSame( display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND ),
+                control.getBackground() );
+
+    // Setting a parents' color must not affect the children's color
+    comp.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
+    assertNotSame( display.getSystemColor( SWT.COLOR_RED ),
+                   control.getBackground() );
+
+    // setting the background changes the state persistently
+    control.setBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
+    assertSame( display.getSystemColor( SWT.COLOR_BLUE ),
+                control.getBackground() );
+
+    // (re)setting the background to null assigns the system color again
+    control.setBackground( null );
+    assertSame( display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND ),
+                control.getBackground() );
+  }
+
+  public void testBackgroundMode() throws Exception {
+    Display display = new Display();
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+    Color blue = display.getSystemColor( SWT.COLOR_BLUE );
+    Color widgetBg = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
+//    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Shell shell = new Shell( display );
+    Composite comp = new Composite( shell, SWT.NONE );
+    Control control = new Label( comp, SWT.NONE );
+
+    // no inheritance by default
+    comp.setBackground( red );
+    assertEquals( widgetBg, control.getBackground() );
+
+    // inherited background
+    comp.setBackgroundMode( SWT.INHERIT_DEFAULT );
+    assertEquals( red, control.getBackground() );
+
+    // newly created control also inherits background mode
+    Control control2 = new Label( comp, SWT.NONE );
+    assertEquals( red, control2.getBackground() );
+
+//    // no inheritance when bg image is set
+//    label.setBackgroundImage( image );
+//    assertEquals( widgetBg, control1.getBackground() );
+
+//    // inherited background again
+//    label.setBackgroundImage( null );
+//    assertEquals( red, control.getBackground() );
+
+    // no inheritance when bg color is set
+    control.setBackground( blue );
+    assertEquals( blue, control.getBackground() );
+  }
+
+  public void testBackgroundModeMultiLevel() throws Exception {
+    Display display = new Display();
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+    Color blue = display.getSystemColor( SWT.COLOR_BLUE );
+    Shell shell = new Shell( display );
+    Composite comp = new Composite( shell, SWT.NONE );
+    Label label = new Label( comp, SWT.NONE );
+
+    // label inherits background from shell
+    shell.setBackground( red );
+    shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
+    comp.setBackgroundMode( SWT.INHERIT_DEFAULT );
+    assertEquals( red, label.getBackground() );
+
+    // label inherits background from comp
+    comp.setBackground( blue );
+    assertEquals( blue, label.getBackground() );
+  }
+
+  public void testBackgroundTransparency() throws Exception {
+    Display display = new Display();
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+    Shell shell = new Shell( display );
+    Composite comp = new Composite( shell, SWT.NONE );
+    comp.setBackgroundMode( SWT.INHERIT_DEFAULT );
+    Control control = new Label( comp, SWT.NONE );
+    IControlAdapter adapter
+      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+
+    assertNull( adapter.getUserBackground() );
+    assertTrue( adapter.getBackgroundTransparency() );
+
+    control.setBackground( red );
+    assertEquals( red, adapter.getUserBackground() );
+    assertFalse( adapter.getBackgroundTransparency() );
   }
 
   public void testEnabled() {

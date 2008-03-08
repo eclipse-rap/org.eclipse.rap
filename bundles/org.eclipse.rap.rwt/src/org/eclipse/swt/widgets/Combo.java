@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,6 +98,10 @@ public class Combo extends Composite {
     model = new ListModel( true );
   }
 
+  void initState() {
+    state &= ~( /* CANVAS | */THEME_BACKGROUND );
+  }
+
   //////////////////////////////////////
   // Methods to manipulate the selection
 
@@ -173,7 +177,7 @@ public class Combo extends Composite {
   public void deselectAll() {
     checkWidget();
     model.deselectAll();
-  }
+    }
 
 //  /**
 //   * Sets the selection in the receiver's text field to an empty

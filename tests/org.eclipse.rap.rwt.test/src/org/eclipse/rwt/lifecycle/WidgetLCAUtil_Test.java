@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -20,6 +20,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -53,16 +54,16 @@ public class WidgetLCAUtil_Test extends TestCase {
     hasChanged = WidgetLCAUtil.hasChanged( text, Props.TEXT, text.getText(), "" );
     assertEquals( true, hasChanged );
   }
-  
+
   public void testHasChangedWidthArrays() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.MULTI );
-    
+
     boolean hasChanged;
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", new String[] { "a" } );
     assertEquals( true, hasChanged );
-    
+
     list.setItems( new String[] { "a" } );
     RWTFixture.markInitialized( display );
     RWTFixture.preserveWidgets();
@@ -76,7 +77,7 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     list.setItems( new String[] { "a" } );
     RWTFixture.preserveWidgets();
-    hasChanged 
+    hasChanged
       = WidgetLCAUtil.hasChanged( list, "items", new String[] { "a", "b" } );
     assertEquals( true, hasChanged );
 
@@ -84,7 +85,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     RWTFixture.preserveWidgets();
     hasChanged = WidgetLCAUtil.hasChanged( list, "items", null );
     assertEquals( true, hasChanged );
-    
+
     list.setItems( new String[] { "a", "b", "c" } );
     list.setSelection( new int[] { 0, 1, 2 } );
     RWTFixture.preserveWidgets();
@@ -97,32 +98,32 @@ public class WidgetLCAUtil_Test extends TestCase {
     hasChanged = WidgetLCAUtil.hasChanged( list, "selection", new int[] { 0, 1, 2 } );
     assertEquals( false, hasChanged );
   }
-  
+
   public void testEquals() {
     assertTrue( WidgetLCAUtil.equals( null, null ) );
     assertFalse( WidgetLCAUtil.equals( null, "1" ) );
     assertFalse( WidgetLCAUtil.equals( "1", null ) );
     assertFalse( WidgetLCAUtil.equals( "1", "2" ) );
     assertTrue( WidgetLCAUtil.equals( "1", "1" ) );
-    assertTrue( WidgetLCAUtil.equals( new String[] { "1" }, 
+    assertTrue( WidgetLCAUtil.equals( new String[] { "1" },
                                    new String[] { "1" } ) );
-    assertTrue( WidgetLCAUtil.equals( new int[] { 1 }, 
+    assertTrue( WidgetLCAUtil.equals( new int[] { 1 },
                                    new int[] { 1 } ) );
-    assertTrue( WidgetLCAUtil.equals( new boolean[] { true }, 
+    assertTrue( WidgetLCAUtil.equals( new boolean[] { true },
                                    new boolean[] { true } ) );
-    assertTrue( WidgetLCAUtil.equals( new long[] { 232 }, 
+    assertTrue( WidgetLCAUtil.equals( new long[] { 232 },
                                    new long[] { 232 } ) );
-    assertTrue( WidgetLCAUtil.equals( new float[] { 232 }, 
+    assertTrue( WidgetLCAUtil.equals( new float[] { 232 },
                                    new float[] { 232 } ) );
-    assertTrue( WidgetLCAUtil.equals( new double[] { 345 }, 
+    assertTrue( WidgetLCAUtil.equals( new double[] { 345 },
                                    new double[] { 345 } ) );
-    assertTrue( WidgetLCAUtil.equals( new Date[] { new Date( 1 ) }, 
+    assertTrue( WidgetLCAUtil.equals( new Date[] { new Date( 1 ) },
                                    new Date[] { new Date( 1 ) } ) );
-    assertFalse( WidgetLCAUtil.equals( new double[] { 345 }, 
+    assertFalse( WidgetLCAUtil.equals( new double[] { 345 },
                                     new float[] { 345 } ) );
-    assertFalse( WidgetLCAUtil.equals( new int[] { 345 }, 
+    assertFalse( WidgetLCAUtil.equals( new int[] { 345 },
                                     new float[] { 345 } ) );
-    assertFalse( WidgetLCAUtil.equals( new int[] { 345 }, 
+    assertFalse( WidgetLCAUtil.equals( new int[] { 345 },
                                     new long[] { 345 } ) );
     assertFalse( WidgetLCAUtil.equals( new Date[] { new Date( 3 ) }, null ) );
   }
@@ -172,11 +173,11 @@ public class WidgetLCAUtil_Test extends TestCase {
     expected = "Test\\";
     assertEquals( expected, WidgetLCAUtil.escapeText( "Test\\", false ) );
   }
-  
+
   public void testParseFontName() {
-    // IE doesn't like quoted font names (or whatever qooxdoo makes out of them) 
-    String systemFontName 
-      = "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", " 
+    // IE doesn't like quoted font names (or whatever qooxdoo makes out of them)
+    String systemFontName
+      = "\"Segoe UI\", Corbel, Calibri, Tahoma, \"Lucida Sans Unicode\", "
       + "sans-serif";
     String[] fontNames = WidgetLCAUtil.parseFontName( systemFontName );
     assertEquals( 6, fontNames.length );
@@ -187,7 +188,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( "Lucida Sans Unicode", fontNames[ 4 ] );
     assertEquals( "sans-serif", fontNames[ 5 ] );
 
-    // Empty font names don't cause trouble (at least for the browsers 
+    // Empty font names don't cause trouble (at least for the browsers
     // currently tested - therefore don't make extra effort to eliminate them
     fontNames = WidgetLCAUtil.parseFontName( "a, , b" );
     assertEquals( 3, fontNames.length );
@@ -195,7 +196,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( "", fontNames[ 1 ] );
     assertEquals( "b", fontNames[ 2 ] );
   }
-  
+
   public void testWriteImage() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -224,31 +225,84 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeImage( item, item.getImage() );
     assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( null );" ) != -1 );
   }
-  
+
   public void testWriteAppearance() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
-    
+
     Fixture.fakeResponseWriter();
     RWTFixture.markInitialized( display );
     WidgetLCAUtil.writeCustomAppearance( label );
     assertEquals( "", Fixture.getAllMarkup() );
-    
+
     Fixture.fakeResponseWriter();
     label.setData( WidgetUtil.CUSTOM_APPEARANCE, "my_appearance" );
     WidgetLCAUtil.writeCustomAppearance( label );
     String expected = "w.setAppearance( \"my_appearance\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    
+
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.writeCustomOrDefaultAppearance( label, "def_appearance" );
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    
+
     Fixture.fakeResponseWriter();
     label.setData( WidgetUtil.CUSTOM_APPEARANCE, null );
     WidgetLCAUtil.writeCustomOrDefaultAppearance( label, "def_appearance" );
     expected = "w.setAppearance( \"def_appearance\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testWriteCustomVariant() throws IOException {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Control control = new Label( shell, SWT.NONE );
+
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
+    WidgetLCAUtil.writeCustomVariant( control );
+    assertEquals( "", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    control.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
+    WidgetLCAUtil.writeCustomVariant( control );
+    String expected = "w.addState( \"variant_my_variant\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testWriteBackground() throws Exception {
+    Display display = new Display();
+    Composite shell = new Shell( display , SWT.NONE );
+    Control control = new Label( shell, SWT.NONE );
+    Color red = display.getSystemColor( SWT.COLOR_RED );
+
+    Fixture.fakeResponseWriter();
+    RWTFixture.markInitialized( display );
+    WidgetLCAUtil.writeBackground( control, null, false );
+    assertEquals( "", Fixture.getAllMarkup() );
+    RWTFixture.markInitialized( control );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, null, false );
+    WidgetLCAUtil.writeBackground( control, null, true );
+    String expected = "w.setBackgroundColor( null );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, null, true );
+    WidgetLCAUtil.writeBackground( control, red, true );
+    assertEquals( "", Fixture.getAllMarkup() );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, red, true );
+    WidgetLCAUtil.writeBackground( control, red, false );
+    expected = "w.setBackgroundColor( \"#ff0000\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+
+    Fixture.fakeResponseWriter();
+    WidgetLCAUtil.preserveBackground( control, red, false );
+    WidgetLCAUtil.writeBackground( control, null, false );
+    expected = "w.resetBackgroundColor();";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 

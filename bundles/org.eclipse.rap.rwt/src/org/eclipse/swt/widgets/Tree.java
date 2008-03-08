@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -17,7 +17,8 @@ import java.util.List;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -77,7 +78,7 @@ public class Tree extends Composite {
 
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
   private static final int CHECK_HEIGHT = 13; // keep in sync with appearance
-  
+
   /* package*/ final ItemHolder itemHolder;
   /* package*/ final ItemHolder columnHolder;
   private TreeItem[] selection;
@@ -90,9 +91,9 @@ public class Tree extends Composite {
   private final ResizeListener resizeListener;
   private final TreeListener expandListener;
   private TreeItem currentItem;
-  private ITreeAdapter treeAdapter;
+  private final ITreeAdapter treeAdapter;
   /* package*/ int scrollTop, scrollLeft;
-  
+
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
       if( item instanceof TreeItem ) {
@@ -124,12 +125,12 @@ public class Tree extends Composite {
       return result;
     }
   }
-  
+
   private final class InternalTreeAdapter implements ITreeAdapter {
     public TreeItem getShowItem() {
       return Tree.this.showItem;
     }
-    
+
     public void clearShowItem() {
       Tree.this.showItem = null;
     }
@@ -141,7 +142,7 @@ public class Tree extends Composite {
     public void setScrollTop( int top ) {
       Tree.this.scrollTop = top;
     }
-    
+
     public int getScrollTop() {
       return Tree.this.scrollTop;
     }
@@ -149,7 +150,7 @@ public class Tree extends Composite {
     public int getScrollLeft() {
       return Tree.this.scrollLeft;
     }
-    
+
     public boolean isCached( final TreeItem item ) {
       return item.isCached();
     }
@@ -159,13 +160,13 @@ public class Tree extends Composite {
     }
 
   }
-  
+
   private static final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
       checkAllData( ( Tree )event.widget );
     }
   }
-  
+
   private boolean isItemVisible(TreeItem item) {
     boolean result = false;
     final int itemPosition = item.getBounds(0, false).y;
@@ -181,7 +182,7 @@ public class Tree extends Composite {
     }
     return result;
   }
-  
+
   private static final class ExpandListener extends TreeAdapter {
     public void treeExpanded( final TreeEvent event ) {
       Tree tree = ( Tree )event.widget;
@@ -204,7 +205,7 @@ public class Tree extends Composite {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -245,6 +246,10 @@ public class Tree extends Composite {
     }
   }
 
+  void initState() {
+    state &= ~( /* CANVAS | */ THEME_BACKGROUND );
+  }
+
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
@@ -256,10 +261,10 @@ public class Tree extends Composite {
     }
     return result;
   }
-  
+
   ///////////////////////////
-  // Methods to manage items 
-  
+  // Methods to manage items
+
   /**
    * Sets the number of root-level items contained in the receiver.
    *
@@ -277,7 +282,7 @@ public class Tree extends Composite {
     setItemCount( itemCount, null );
     redraw();
   }
-  
+
   void setItemCount( final int itemCount, final TreeItem parent ) {
     int oldItemCount;
     if( parent == null ) {
@@ -339,7 +344,7 @@ public class Tree extends Composite {
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items
@@ -353,7 +358,7 @@ public class Tree extends Composite {
     checkWidget();
     return (org.eclipse.swt.widgets.TreeItem[] )itemHolder.getItems();
   }
-  
+
   /**
    * Returns the item at the given, zero-relative index in the
    * receiver. Throws an exception if the index is out of range.
@@ -368,17 +373,17 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public TreeItem getItem( final int index ) {
     checkWidget();
     return ( TreeItem )itemHolder.getItem( index );
   }
-  
+
   /**
    * Searches the receiver's list starting at the first item
-   * (index 0) until an item is found that is equal to the 
+   * (index 0) until an item is found that is equal to the
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
@@ -393,7 +398,7 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public int indexOf( final TreeItem item ) {
@@ -407,7 +412,7 @@ public class Tree extends Composite {
     int index = itemHolder.indexOf( item );
     return index;
   }
-  
+
   /**
    * Returns the receiver's parent item, which must be a
    * <code>TreeItem</code> or null when the receiver is a
@@ -424,10 +429,10 @@ public class Tree extends Composite {
     checkWidget ();
     return null;
   }
-  
+
   /**
    * Removes all of the items from the receiver.
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -441,7 +446,7 @@ public class Tree extends Composite {
     }
     selection = EMPTY_SELECTION;
   }
-  
+
   /**
    * Shows the item.  If the item is already showing in the receiver,
    * this method simply returns.  Otherwise, the items are scrolled
@@ -461,7 +466,7 @@ public class Tree extends Composite {
    * @see Tree#showSelection()
    */
   public void showItem (TreeItem item) {
-    checkWidget ();
+    checkWidget();
     if (item == null) error (SWT.ERROR_NULL_ARGUMENT);
     if (item.isDisposed ()) error(SWT.ERROR_INVALID_ARGUMENT);
     if (item.getParent() != this) return;
@@ -474,7 +479,7 @@ public class Tree extends Composite {
 
     showItem = item;
   }
-  
+
   /**
    * Shows the selection.  If the selection is already showing in the receiver,
    * this method simply returns.  Otherwise, the items are scrolled until
@@ -492,18 +497,18 @@ public class Tree extends Composite {
     if (selection.length == 0) return;
     showItem (selection [0]);
   }
-  
+
   /////////////////////////////////////
   // Methods to get/set/clear selection
-  
+
   /**
    * Returns an array of <code>TreeItem</code>s that are currently
    * selected in the receiver. The order of the items is unspecified.
-   * An empty array indicates that no items are selected. 
+   * An empty array indicates that no items are selected.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its selection, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    * @return an array representing the selection
    *
@@ -518,7 +523,7 @@ public class Tree extends Composite {
     System.arraycopy( selection, 0, result, 0, selection.length );
     return result;
   }
-  
+
   /**
    * Returns the number of selected items contained in the receiver.
    *
@@ -533,7 +538,7 @@ public class Tree extends Composite {
     checkWidget();
     return selection.length;
   }
-  
+
   /**
    * Sets the receiver's selection to the given item.
    * The current selection is cleared before the new item is selected.
@@ -551,7 +556,7 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setSelection( final TreeItem selection ) {
@@ -626,7 +631,7 @@ public class Tree extends Composite {
       }
     }
   }
-  
+
   /**
    * Selects all of the items in the receiver.
    * <p>
@@ -654,7 +659,7 @@ public class Tree extends Composite {
       allItems.toArray( selection );
     }
   }
-  
+
   /**
    * Deselects all selected items in the receiver.
    *
@@ -670,7 +675,7 @@ public class Tree extends Composite {
 
   /**
    * Marks the receiver's lines as visible if the argument is <code>true</code>,
-   * and marks it invisible otherwise. 
+   * and marks it invisible otherwise.
    * <p>
    * If one of the receiver's ancestors is not visible or some
    * other condition makes the receiver not visible, marking
@@ -683,7 +688,7 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setLinesVisible( boolean value ) {
@@ -692,7 +697,7 @@ public class Tree extends Composite {
       return; /* no change */
     linesVisible = value;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver's lines are visible,
    * and <code>false</code> otherwise.
@@ -709,14 +714,14 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public boolean getLinesVisible() {
     checkWidget();
     return linesVisible;
   }
-  
+
   /**
    * Clears the item at the given zero-relative index in the receiver.
    * The text, icon and other attributes of the item are set to the default
@@ -734,10 +739,10 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   * 
+   *
    * @since 1.0
    */
   public void clear( int index, boolean recursive ) {
@@ -755,15 +760,15 @@ public class Tree extends Composite {
       checkData( item, index );
     }
   }
-  
+
   /**
    * Returns the item at the given point in the receiver
    * or null if no such item exists. The point is in the
    * coordinate system of the receiver.
    * <p>
    * The item that is returned represents an item that could be selected by the user.
-   * For example, if selection only occurs in items in the first column, then null is 
-   * returned if the point is outside of the item. 
+   * For example, if selection only occurs in items in the first column, then null is
+   * returned if the point is outside of the item.
    * Note that the SWT.FULL_SELECTION style hint, which specifies the selection policy,
    * determines the extent of the selection.
    * </p>
@@ -785,14 +790,14 @@ public class Tree extends Composite {
     int index = (point.y - getHeaderHeight ()  + scrollTop) / getItemHeight();
     // collect all visible items
     List visibleItems = collectVisibleItems( null );
-    
+
     if (!(0 <= index && index < visibleItems.size())) return null;    /* below the last item */
     TreeItem result = ( TreeItem )visibleItems.get( index );
     // TODO [bm] consider the x value and columns
     //if (!result.getHitBounds ().contains (point)) return null;  /* considers the x value */
     return result;
   }
-  
+
   private List collectVisibleItems( final TreeItem parent ) {
     List result = new ArrayList();
     TreeItem[] children;
@@ -810,7 +815,7 @@ public class Tree extends Composite {
     }
     return result;
   }
-  
+
   /**
    * Returns the height of the area which would be used to
    * display <em>one</em> of the items in the tree.
@@ -831,13 +836,13 @@ public class Tree extends Composite {
     }
     return result;
   }
-  
+
   /**
    * Clears all the items in the receiver. The text, icon and other
    * attributes of the items are set to their default values. If the
    * tree was created with the <code>SWT.VIRTUAL</code> style, these
    * attributes are requested again as needed.
-   * 
+   *
    * @param recursive <code>true</code> if all child items should be cleared
    * recursively, and <code>false</code> otherwise
    *
@@ -845,10 +850,10 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   * 
+   *
    * @since 1.0
    */
   public void clearAll( boolean recursive ) {
@@ -866,7 +871,7 @@ public class Tree extends Composite {
       checkAllData( this );
     }
   }
-  
+
   /**
    * Returns the number of columns contained in the receiver.
    * If no <code>TreeColumn</code>s were created by the programmer,
@@ -880,14 +885,14 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public int getColumnCount () {
       checkWidget ();
       return columnHolder.size();
   }
-  
+
   void createItem (TreeColumn column, int index) {
     columnHolder.insert( column, index );
     if( columnOrder == null ) {
@@ -899,23 +904,23 @@ public class Tree extends Composite {
       }
       int[] newColumnOrder = new int[ length + 1 ];
       System.arraycopy( columnOrder, 0, newColumnOrder, 0, index );
-      System.arraycopy( columnOrder, 
-                        index, 
-                        newColumnOrder, 
-                        index + 1, 
+      System.arraycopy( columnOrder,
+                        index,
+                        newColumnOrder,
+                        index + 1,
                         length - index );
       columnOrder = newColumnOrder;
       columnOrder[ index ] = index;
     }
-    
+
     /* allow all items to update their internal structures accordingly */
     for (int i = 0; i < itemHolder.size(); i++) {
       TreeItem child = ( TreeItem) itemHolder.getItem( i );
       child.addColumn (column);
     }
-    
+
   }
-  
+
   final void destroyColumn( final TreeColumn column ) {
     int index = indexOf( column );
     // Remove data from TreeItems
@@ -946,9 +951,9 @@ public class Tree extends Composite {
     }
     columnOrder = newColumnOrder;
   }
-  
+
   /**
-   * Returns the height of the receiver's header 
+   * Returns the height of the receiver's header
    *
    * @return the height of the header or zero if the header is not visible
    *
@@ -956,7 +961,7 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public int getHeaderHeight () {
@@ -976,10 +981,10 @@ public class Tree extends Composite {
       }
       return result;
   }
-  
+
   /**
    * Marks the receiver's header as visible if the argument is <code>true</code>,
-   * and marks it invisible otherwise. 
+   * and marks it invisible otherwise.
    * <p>
    * If one of the receiver's ancestors is not visible or some
    * other condition makes the receiver not visible, marking
@@ -992,7 +997,7 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setHeaderVisible (boolean value) {
@@ -1000,7 +1005,7 @@ public class Tree extends Composite {
       if (headerVisible == value) return;      /* no change */
       headerVisible = value;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver's header is visible,
    * and <code>false</code> otherwise.
@@ -1017,17 +1022,17 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public boolean getHeaderVisible () {
       checkWidget ();
       return headerVisible;
   }
-  
+
   /**
    * Searches the receiver's list starting at the first column
-   * (index 0) until a column is found that is equal to the 
+   * (index 0) until a column is found that is equal to the
    * argument, and returns the index of that column. If no column
    * is found, returns -1.
    *
@@ -1041,7 +1046,7 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public int indexOf (TreeColumn column) {
@@ -1057,7 +1062,7 @@ public class Tree extends Composite {
     // TODO [bm] proper implementation
     return getColumns();
   }
-  
+
   /**
    * Returns the column at the given, zero-relative index in the
    * receiver. Throws an exception if the index is out of range.
@@ -1078,13 +1083,13 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Tree#getColumnOrder()
    * @see Tree#setColumnOrder(int[])
    * @see TreeColumn#getMoveable()
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
-   * 
+   *
    * @since 1.0
    */
   public TreeColumn getColumn (int index) {
@@ -1092,7 +1097,7 @@ public class Tree extends Composite {
       if (!(0 <= index && index < columnHolder.size())) error (SWT.ERROR_INVALID_RANGE);
       return ( TreeColumn ) columnHolder.getItem( index );
   }
-  
+
   /**
    * Returns an array of <code>TreeColumn</code>s which are the
    * columns in the receiver. Columns are returned in the order
@@ -1104,7 +1109,7 @@ public class Tree extends Composite {
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver
@@ -1113,22 +1118,22 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Tree#getColumnOrder()
    * @see Tree#setColumnOrder(int[])
    * @see TreeColumn#getMoveable()
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
-   * 
+   *
    * @since 1.0
    */
   public TreeColumn[] getColumns () {
       checkWidget ();
       return ( TreeColumn[] ) columnHolder.getItems();
   }
-  
+
   /**
-   * Sets the order that the items in the receiver should 
+   * Sets the order that the items in the receiver should
    * be displayed in to the given argument which is described
    * in terms of the zero-relative ordering of when the items
    * were added.
@@ -1143,12 +1148,12 @@ public class Tree extends Composite {
    *    <li>ERROR_NULL_ARGUMENT - if the item order is null</li>
    *    <li>ERROR_INVALID_ARGUMENT - if the item order is not the same length as the number of items</li>
    * </ul>
-   * 
+   *
    * @see Tree#getColumnOrder()
    * @see TreeColumn#getMoveable()
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
-   * 
+   *
    * @since 1.0
    */
   public void setColumnOrder (int [] order) {
@@ -1189,24 +1194,24 @@ public class Tree extends Composite {
           }
         }
       }
-    } 
+    }
   }
-  
+
   /**
    * Sets the column used by the sort indicator for the receiver. A null
-   * value will clear the sort indicator.  The current sort column is cleared 
+   * value will clear the sort indicator.  The current sort column is cleared
    * before the new column is set.
    *
    * @param column the column used by the sort indicator or <code>null</code>
-   * 
+   *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the column is disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the column is disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setSortColumn (TreeColumn column) {
@@ -1222,16 +1227,16 @@ public class Tree extends Composite {
       }
   }
   /**
-   * Sets the direction of the sort indicator for the receiver. The value 
+   * Sets the direction of the sort indicator for the receiver. The value
    * can be one of <code>UP</code>, <code>DOWN</code> or <code>NONE</code>.
    *
-   * @param direction the direction of the sort indicator 
+   * @param direction the direction of the sort indicator
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setSortDirection (int direction) {
@@ -1241,21 +1246,21 @@ public class Tree extends Composite {
       if (sortColumn == null || sortColumn.isDisposed ()) return;
       sortColumn.setSortDirection (sortDirection);
   }
-  
+
   /**
    * Returns the column which shows the sort indicator for
    * the receiver. The value may be null if no column shows
    * the sort indicator.
    *
-   * @return the sort indicator 
+   * @return the sort indicator
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #setSortColumn(TreeColumn)
-   * 
+   *
    * @since 1.0
    */
   public TreeColumn getSortColumn () {
@@ -1263,8 +1268,8 @@ public class Tree extends Composite {
       return sortColumn;
   }
   /**
-   * Returns the direction of the sort indicator for the receiver. 
-   * The value will be one of <code>UP</code>, <code>DOWN</code> 
+   * Returns the direction of the sort indicator for the receiver.
+   * The value will be one of <code>UP</code>, <code>DOWN</code>
    * or <code>NONE</code>.
    *
    * @return the sort direction
@@ -1273,16 +1278,16 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #setSortDirection(int)
-   * 
+   *
    * @since 1.0
    */
   public int getSortDirection () {
       checkWidget ();
       return sortDirection;
   }
-  
+
   /**
    * Returns an array of zero-relative integers that map
    * the creation order of the receiver's items to the
@@ -1294,7 +1299,7 @@ public class Tree extends Composite {
    * </p><p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the current visual order of the receiver's items
@@ -1303,12 +1308,12 @@ public class Tree extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Tree#setColumnOrder(int[])
    * @see TreeColumn#getMoveable()
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
-   * 
+   *
    * @since 1.0
    */
   public int[] getColumnOrder () {
@@ -1324,7 +1329,7 @@ public class Tree extends Composite {
   }
   // ////////////////////////////////////
   // Listener registration/deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's selection changes, by sending
@@ -1402,7 +1407,7 @@ public class Tree extends Composite {
     checkWidget();
     TreeEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when items in the receiver are expanded or collapsed.
@@ -1427,14 +1432,14 @@ public class Tree extends Composite {
 
   ////////////////////////////////
   // Methods to cleanup on dispose
-  
+
   void releaseWidget() {
     super.releaseWidget();
     if( resizeListener != null ) {
       removeControlListener( resizeListener );
     }
   }
-  
+
   void releaseChildren() {
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -1446,7 +1451,7 @@ public class Tree extends Composite {
     }
     super.releaseChildren();
   }
-  
+
   void removeFromSelection( final TreeItem item ) {
     int index = -1;
     for( int i = 0; index == -1 && i < selection.length; i++ ) {
@@ -1464,15 +1469,15 @@ public class Tree extends Composite {
       selection = newSelection;
     }
   }
-  
+
   //////////////////
   // Helping methods
 
   static void checkAllData( final Tree tree ) {
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-      
+
       int flatIndex = 0;
-      
+
       public boolean doVisit( Widget widget ) {
         boolean result = true;
         if( widget instanceof TreeItem ) { // ignore tree
@@ -1496,15 +1501,15 @@ public class Tree extends Composite {
     };
     WidgetTreeVisitor.accept( tree, visitor );
   }
-  
+
   // TODO: performance impact - replace this with logic to only partly
   // update the flat indices when there are changes in the visibility hierarchy
   // like new items, removed items, expand/
   /* package */ void updateFlatIndices() {
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-      
+
       int flatIndex = 0;
-      
+
       public boolean doVisit( Widget widget ) {
         boolean result = true;
         if( widget instanceof TreeItem ) { // ignore tree
@@ -1521,7 +1526,7 @@ public class Tree extends Composite {
     if( ( style & SWT.VIRTUAL ) != 0 && !item.cached ) {
       if( currentItem == null ) {
         currentItem = item;
-      } 
+      }
       try {
         if( currentItem == item || item.getParentItem() == currentItem ) {
           ProcessActionRunner.add( new Runnable() {
@@ -1541,9 +1546,9 @@ public class Tree extends Composite {
           currentItem = null;
         }
       }
-    } 
+    }
   }
-  
+
   private static int checkStyle( final int style ) {
     int result = style | SWT.H_SCROLL | SWT.V_SCROLL;
     return checkBits( result, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );

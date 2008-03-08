@@ -83,6 +83,10 @@ public class Spinner extends Composite {
     super( parent, checkStyle( style ) );
   }
 
+  void initState() {
+    state &= ~( /* CANVAS | */ THEME_BACKGROUND );
+  }
+
   /**
    * Returns the number of decimal places used by the receiver.
    *

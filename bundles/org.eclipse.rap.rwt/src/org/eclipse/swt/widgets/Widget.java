@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -25,7 +25,7 @@ import org.eclipse.swt.internal.widgets.WidgetAdapter;
 
 
 /**
- * This class is the abstract superclass of all user interface objects.  
+ * This class is the abstract superclass of all user interface objects.
  * Widgets are created, disposed and issue notification to listeners
  * when events occur which affect them.
  * <dl>
@@ -48,8 +48,8 @@ import org.eclipse.swt.internal.widgets.WidgetAdapter;
  * implemented as subclasses of this class.
  * </p>
  * <p>Even though this class implements <code>Adaptable</code> this interface
- * is <em>not</em> part of the RWT public API. It is only meant to be shared 
- * within the packages provided by RWT and should never be accessed from 
+ * is <em>not</em> part of the RWT public API. It is only meant to be shared
+ * within the packages provided by RWT and should never be accessed from
  * application code.
  * </p>
  *
@@ -60,22 +60,30 @@ public abstract class Widget implements Adaptable {
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;
   static final int DEFAULT_HEIGHT = 64;
-  
+
   /* Global state flags */
   static final int DISPOSED = 1 << 0;
 //  static final int CANVAS = 1 << 1;
   static final int KEYED_DATA = 1 << 2;
   static final int DISABLED = 1 << 3;
   static final int HIDDEN = 1 << 4;
-  
+
   /* A layout was requested on this widget */
   static final int LAYOUT_NEEDED  = 1<<5;
-  
+
   /* The preferred size of a child has changed */
   static final int LAYOUT_CHANGED = 1<<6;
-  
+
   /* A layout was requested in this widget hierarchy */
   static final int LAYOUT_CHILD = 1<<7;
+
+  /* Background flags */
+
+  /* The widget is configured to adopt its parent's background */
+  static final int THEME_BACKGROUND = 1<<8;
+
+  /* The control is able to adopt its parent's background */
+  static final int PARENT_BACKGROUND = 1<<10;
 
   int style;
   int state;
@@ -84,9 +92,9 @@ public abstract class Widget implements Adaptable {
   private AdapterManager adapterManager;
   private WidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
-  private UntypedEventAdapter untypedAdapter; 
-  
-  
+  private UntypedEventAdapter untypedAdapter;
+
+
   Widget() {
     // prevent instantiation from outside this package
   }
@@ -97,7 +105,7 @@ public abstract class Widget implements Adaptable {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -130,10 +138,10 @@ public abstract class Widget implements Adaptable {
   }
 
   /**
-   * Implementation of the <code>Adaptable</code> interface. 
+   * Implementation of the <code>Adaptable</code> interface.
    * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
    * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed 
+   * within the packages provided by RWT. It should never be accessed
    * from application code.
    * </p>
    */
@@ -152,7 +160,7 @@ public abstract class Widget implements Adaptable {
     } else if( adapter == IWidgetAdapter.class ) {
       // TODO: [fappel] this is done for performance improvement and replaces
       //                the lookup in WidgetAdapterFactory. Since this is still
-      //                a matter of investigation, WidgetAdapterFactory is not 
+      //                a matter of investigation, WidgetAdapterFactory is not
       //                changed yet.
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
@@ -169,15 +177,15 @@ public abstract class Widget implements Adaptable {
     }
     return result;
   }
-  
+
   ///////////////////////////////////////////
   // Methods to get/set single and keyed data
-  
+
   /**
    * Returns the application defined widget data associated
    * with the receiver, or null if it has not been set. The
    * <em>widget data</em> is a single, unnamed field that is
-   * stored with every widget. 
+   * stored with every widget.
    * <p>
    * Applications may put arbitrary objects in this field. If
    * the object stored in the widget data needs to be notified
@@ -199,12 +207,12 @@ public abstract class Widget implements Adaptable {
     checkWidget();
     return ( state & KEYED_DATA ) != 0 ? ( ( Object[] )data )[ 0 ] : data;
   }
-  
+
   /**
    * Sets the application defined widget data associated
    * with the receiver to be the argument. The <em>widget
    * data</em> is a single, unnamed field that is stored
-   * with every widget. 
+   * with every widget.
    * <p>
    * Applications may put arbitrary objects in this field. If
    * the object stored in the widget data needs to be notified
@@ -219,7 +227,7 @@ public abstract class Widget implements Adaptable {
    *    <li>ERROR_WIDGET_DISPOSED - when the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - when called from the wrong thread</li>
    * </ul>
-   * 
+   *
    * @see #getData()
    */
   public void setData( final Object data ) {
@@ -271,7 +279,7 @@ public abstract class Widget implements Adaptable {
     }
     return result;
   }
-  
+
   /**
    * Sets the application defined property of the receiver
    * with the specified name to the given value.
@@ -344,7 +352,7 @@ public abstract class Widget implements Adaptable {
       }
     }
   }
-  
+
   /**
    * Returns the <code>Display</code> that is associated with
    * the receiver.
@@ -393,10 +401,10 @@ public abstract class Widget implements Adaptable {
     return style;
   }
 
-  
+
   ///////////////////////////////////////////////
   // Registration and deregistration of listeners
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the widget is disposed. When the widget is
@@ -442,17 +450,17 @@ public abstract class Widget implements Adaptable {
     checkWidget();
     DisposeEvent.removeListener( this, listener );
   }
-  
+
   ////////////////////////////////////////
   // Methods for untyped listener handling
-  
+
   /**
    * Adds the listener to the collection of listeners who will be notified when
    * an event of the given type occurs. When the event does occur in the widget,
    * the listener is notified by sending it the <code>handleEvent()</code>
    * message. The event type is one of the event constants defined in class
    * <code>SWT</code>.
-   * 
+   *
    * @param eventType the type of event to listen for
    * @param listener the listener which should be notified when the event occurs
    * @exception IllegalArgumentException
@@ -480,12 +488,12 @@ public abstract class Widget implements Adaptable {
     }
     untypedAdapter.addListener( this, eventType, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will be notified
    * when an event of the given type occurs. The event type is one of the event
    * constants defined in class <code>SWT</code>.
-   * 
+   *
    * @param eventType the type of event to listen for
    * @param listener the listener which should no longer be notified when the
    *          event occurs
@@ -517,7 +525,7 @@ public abstract class Widget implements Adaptable {
 
   ///////////////////////
   // toString and helpers
-  
+
   /**
    * Returns a string containing a concise, human-readable
    * description of the receiver.
@@ -546,7 +554,7 @@ public abstract class Widget implements Adaptable {
     int index = string.lastIndexOf( '.' );
     if( index != -1 ) {
       string = string.substring( index + 1, string.length() );
-    } 
+    }
     return string;
   }
 
@@ -563,10 +571,10 @@ public abstract class Widget implements Adaptable {
   String getNameText() {
     return "";
   }
-  
+
   ///////////////////////////////////
   // Methods to dispose of the widget
-  
+
   /**
    * Disposes of the operating system resources associated with
    * the receiver and all its descendents. After this method has
@@ -604,7 +612,7 @@ public abstract class Widget implements Adaptable {
       releaseWidget();
       adapterManager = null;
 			// FIXME [rh] quick fix to get UITestUtil_Test#testGetIdAfterDispose
-      //       running. 
+      //       running.
 //      data = null;
       state |= DISPOSED;
     }
@@ -624,7 +632,7 @@ public abstract class Widget implements Adaptable {
   public boolean isDisposed() {
     return ( state & DISPOSED ) != 0;
   }
-  
+
   void releaseChildren() {
     // do nothing - derived classes may override
   }
@@ -640,14 +648,14 @@ public abstract class Widget implements Adaptable {
 //  /**
 //   * Checks that this class can be subclassed.
 //   * <p>
-//   * The SWT class library is intended to be subclassed 
-//   * only at specific, controlled points (most notably, 
+//   * The SWT class library is intended to be subclassed
+//   * only at specific, controlled points (most notably,
 //   * <code>Composite</code> and <code>Canvas</code> when
 //   * implementing new widgets). This method enforces this
 //   * rule unless it is overridden.
 //   * </p><p>
 //   * <em>IMPORTANT:</em> By providing an implementation of this
-//   * method that allows a subclass of a class which does not 
+//   * method that allows a subclass of a class which does not
 //   * normally allow subclassing to be created, the implementer
 //   * agrees to be fully responsible for the fact that any such
 //   * subclass will likely fail between SWT releases and will be
@@ -691,7 +699,7 @@ public abstract class Widget implements Adaptable {
    * widget implementors to enforce the standard SWT invariants.
    * <p>
    * Currently, it is an error to invoke any method (other than
-   * <code>isDisposed()</code>) on a widget that has had its 
+   * <code>isDisposed()</code>) on a widget that has had its
    * <code>dispose()</code> method called. It is also an error
    * to call widget methods from any thread that is different
    * from the thread that created the widget.
@@ -715,13 +723,13 @@ public abstract class Widget implements Adaptable {
 //    }
 //    if ((state & DISPOSED) != 0) error (SWT.ERROR_WIDGET_DISPOSED);
   }
-  
+
   /*
    * Returns <code>true</code> when the current thread is
    * the thread that created the widget and <code>false</code>
    * otherwise.
    *
-   * @return <code>true</code> when the current thread is the thread that 
+   * @return <code>true</code> when the current thread is the thread that
    * created the widget and <code>false</code> otherwise
    */
   boolean isValidThread() {

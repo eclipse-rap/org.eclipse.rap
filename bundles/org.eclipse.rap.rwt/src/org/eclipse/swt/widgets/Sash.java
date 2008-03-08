@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -46,13 +46,13 @@ public class Sash extends Control {
 	 * style constants. The class description lists the style constants that are
 	 * applicable to the class. Style bits are also inherited from superclasses.
 	 * </p>
-	 * 
+	 *
 	 * @param parent
 	 *            a composite control which will be the parent of the new
 	 *            instance (cannot be null)
 	 * @param style
 	 *            the style of control to construct
-	 * 
+	 *
 	 * @exception IllegalArgumentException
 	 *                <ul>
 	 *                <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
@@ -64,7 +64,7 @@ public class Sash extends Control {
 	 *                <li>ERROR_INVALID_SUBCLASS - if this class is not an
 	 *                allowed subclass</li>
 	 *                </ul>
-	 * 
+	 *
 	 * @see SWT#HORIZONTAL
 	 * @see SWT#VERTICAL
 	 * @see Widget#checkSubclass
@@ -74,7 +74,11 @@ public class Sash extends Control {
     super( parent, checkStyle( style ) );
   }
 
-  public Point computeSize( final int wHint, 
+  void initState() {
+    state |= THEME_BACKGROUND;
+  }
+
+  public Point computeSize( final int wHint,
                             final int hHint,
                             final boolean changed )
   {
@@ -151,8 +155,8 @@ public class Sash extends Control {
   }
 
   //////////////////
-  // Helping methods 
-  
+  // Helping methods
+
   private static int checkStyle( final int style ) {
     int result = SWT.NONE;
     if( style > 0 ) {

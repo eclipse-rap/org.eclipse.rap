@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -18,7 +18,7 @@ import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.*;
 
 
-/** 
+/**
  * Instances of this class implement a selectable user interface
  * object that displays a list of images and strings and issues
  * notification when selected.
@@ -43,7 +43,7 @@ import org.eclipse.swt.internal.widgets.*;
  *          item.setText ("Item " + index);
  *          System.out.println (item.getText ());
  *      }
- *  }); 
+ *  });
  * </pre></code>
  * </p><p>
  * Note that although this class is a subclass of <code>Composite</code>,
@@ -61,16 +61,16 @@ import org.eclipse.swt.internal.widgets.*;
  * </p><p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
- * <p>Current state of Table implementation:</p> 
+ * <p>Current state of Table implementation:</p>
  * <ul>
  *  <li>showSelection and showItem currently do a very rough proximation since
  *  getClientArea is not yet implemented properly</li>
  *  <li>Scroll bars are visible even though not necessary</li>
  *  <li>No keyboard navigation</li>
- * </ul> 
+ * </ul>
  */
 public class Table extends Composite {
-  
+
   // handle the fact that we have two item types to deal with
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
@@ -93,7 +93,7 @@ public class Table extends Composite {
       if( item instanceof TableColumn ) {
         columnHolder.remove( item );
       } else {
-        String msg 
+        String msg
           = "Only TableColumns may be removed from CompositeItemHolder";
         throw new IllegalArgumentException( msg );
       }
@@ -107,29 +107,29 @@ public class Table extends Composite {
       return result;
     }
   }
-  
+
   private final class TableAdapter implements ITableAdapter {
-    
+
     public int getCheckWidth() {
       return Table.this.getCheckWidth();
     }
 
     public int getFocusIndex() {
-      return Table.this.focusIndex; 
+      return Table.this.focusIndex;
     }
-    
+
     public void setFocusIndex( final int focusIndex ) {
       Table.this.setFocusIndex( focusIndex );
     }
-    
+
     public void checkData() {
       Table.this.checkData();
     }
-    
+
     public void checkData( final int index ) {
-      Table.this.checkData( Table.this._getItem( index ), index );  
+      Table.this.checkData( Table.this._getItem( index ), index );
     }
-    
+
     public int getDefaultColumnWidth() {
       int result = 0;
       TableItem[] items = Table.this.getCachedItems();
@@ -138,7 +138,7 @@ public class Table extends Composite {
       }
       return result;
     }
-    
+
     public int getColumnLeft( final TableColumn column ) {
       int index = Table.this.indexOf( column );
       return Table.this.getColumn( index ).getLeft();
@@ -148,7 +148,7 @@ public class Table extends Composite {
       int index = Table.this.indexOf( item );
       return index != -1 && Table.this.isItemVisible( index );
     }
-    
+
     public boolean isItemVirtual( final int index ) {
       boolean result = false;
       if( ( style & SWT.VIRTUAL ) != 0 ) {
@@ -157,7 +157,7 @@ public class Table extends Composite {
       }
       return result;
     }
-    
+
     public TableItem[] getCachedItems() {
       return Table.this.getCachedItems();
     }
@@ -166,16 +166,16 @@ public class Table extends Composite {
       return Table.this.getCreatedItems();
     }
   }
-  
+
   private final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {
       Table.this.checkData();
     }
   }
-  
+
   private static final int GRID_WIDTH = 1;
   private static final int CHECK_HEIGHT = 13;
-  
+
   private static final TableItem[] EMPTY_ITEMS = new TableItem[ 0 ];
 
   final private CompositeItemHolder itemHolder;
@@ -193,14 +193,14 @@ public class Table extends Composite {
   private TableColumn sortColumn;
   private int sortDirection;
   private Point itemImageSize;
-  
+
   /**
    * Constructs a new instance of this class given its parent
    * and a style value describing its behavior and appearance.
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -226,8 +226,8 @@ public class Table extends Composite {
    * @see SWT#VIRTUAL
    * @see Widget#checkSubclass
    * @see Widget#getStyle
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public Table( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
@@ -245,7 +245,11 @@ public class Table extends Composite {
       resizeListener = null;
     }
   }
-  
+
+  void initState() {
+    state &= ~( /* CANVAS | */ THEME_BACKGROUND );
+  }
+
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
@@ -257,7 +261,7 @@ public class Table extends Composite {
     }
     return result;
   }
-  
+
   ///////////////////////////
   // Column handling methods
 
@@ -274,8 +278,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int getColumnCount() {
     checkWidget();
@@ -293,7 +297,7 @@ public class Table extends Composite {
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver
@@ -302,14 +306,14 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Table#getColumnOrder()
    * @see Table#setColumnOrder(int[])
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public TableColumn[] getColumns() {
     checkWidget();
@@ -336,14 +340,14 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Table#getColumnOrder()
    * @see Table#setColumnOrder(int[])
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public TableColumn getColumn( final int index ) {
     checkWidget();
@@ -352,7 +356,7 @@ public class Table extends Composite {
 
   /**
    * Searches the receiver's list starting at the first column
-   * (index 0) until a column is found that is equal to the 
+   * (index 0) until a column is found that is equal to the
    * argument, and returns the index of that column. If no column
    * is found, returns -1.
    *
@@ -366,8 +370,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int indexOf( final TableColumn tableColumn ) {
     checkWidget();
@@ -376,9 +380,9 @@ public class Table extends Composite {
     }
     return columnHolder.indexOf( tableColumn );
   }
-  
+
   /**
-   * Sets the order that the items in the receiver should 
+   * Sets the order that the items in the receiver should
    * be displayed in to the given argument which is described
    * in terms of the zero-relative ordering of when the items
    * were added.
@@ -393,12 +397,12 @@ public class Table extends Composite {
    *    <li>ERROR_NULL_ARGUMENT - if the item order is null</li>
    *    <li>ERROR_INVALID_ARGUMENT - if the item order is not the same length as the number of items</li>
    * </ul>
-   * 
+   *
    * @see Table#getColumnOrder()
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
-   * 
+   *
    * @since 1.0
    */
   public void setColumnOrder( final int[] order ) {
@@ -439,7 +443,7 @@ public class Table extends Composite {
           }
         }
       }
-    } 
+    }
   }
 
   /**
@@ -453,7 +457,7 @@ public class Table extends Composite {
    * </p><p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the current visual order of the receiver's items
@@ -462,26 +466,26 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Table#setColumnOrder(int[])
    * @see TableColumn#getMoveable()
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
-   * 
+   *
    * @since 1.0
    */
   public int[] getColumnOrder() {
     checkWidget();
     int[] result;
     if( columnHolder.size() == 0 ) {
-      result = new int[ 0 ]; 
+      result = new int[ 0 ];
     } else {
       result = new int[ columnOrder.length ];
       System.arraycopy( columnOrder, 0, result, 0, columnOrder.length );
     }
     return result;
   }
-  
+
   ////////////////////////
   // Item handling methods
 
@@ -497,8 +501,8 @@ public class Table extends Composite {
    *
    * @since 1.0
    */
-  // TODO [rh] Consider calling RWTLifeCycle#fakeRedraw at the end of this 
-  //      method to ensure that items are drawn when inside the visible bounds 
+  // TODO [rh] Consider calling RWTLifeCycle#fakeRedraw at the end of this
+  //      method to ensure that items are drawn when inside the visible bounds
   public void setItemCount( int newCount ) {
     checkWidget();
     int count = Math.max( 0, newCount );
@@ -520,7 +524,7 @@ public class Table extends Composite {
         for( int i = itemCount; i < count; i++ ) {
           items[ i ] = new TableItem( this, SWT.NONE, i, true );
         }
-      } 
+      }
       itemCount = count;
       adjustTopIndex();
       if( focusIndex > itemCount - 1 ) {
@@ -538,8 +542,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int getItemCount() {
     checkWidget();
@@ -548,11 +552,11 @@ public class Table extends Composite {
 
   /**
    * Returns a (possibly empty) array of <code>TableItem</code>s which
-   * are the items in the receiver. 
+   * are the items in the receiver.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver
@@ -561,8 +565,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public TableItem[] getItems() {
     checkWidget();
@@ -591,8 +595,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public TableItem getItem( final int index ) {
     checkWidget();
@@ -608,8 +612,8 @@ public class Table extends Composite {
    * coordinate system of the receiver.
    * <p>
    * The item that is returned represents an item that could be selected by the user.
-   * For example, if selection only occurs in items in the first column, then null is 
-   * returned if the point is outside of the item. 
+   * For example, if selection only occurs in items in the first column, then null is
+   * returned if the point is outside of the item.
    * Note that the SWT.FULL_SELECTION style hint, which specifies the selection policy,
    * determines the extent of the selection.
    * </p>
@@ -629,10 +633,10 @@ public class Table extends Composite {
     checkWidget();
     TableItem result = null;
     Rectangle clientArea = getClientArea();
-    if(    point.x >= 0 
-        && point.y >= 0 
-        && point.x <= clientArea.width 
-        && point.y <= clientArea.height ) 
+    if(    point.x >= 0
+        && point.y >= 0
+        && point.x <= clientArea.width
+        && point.y <= clientArea.height )
     {
       int itemHeight = getItemHeight();
       int index = ( point.y / itemHeight ) - 1;
@@ -649,7 +653,7 @@ public class Table extends Composite {
 
   /**
    * Searches the receiver's list starting at the first item
-   * (index 0) until an item is found that is equal to the 
+   * (index 0) until an item is found that is equal to the
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
@@ -663,8 +667,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int indexOf( final TableItem item ) {
     checkWidget();
@@ -679,16 +683,16 @@ public class Table extends Composite {
     }
     return result;
   }
-  
+
   /**
    * Removes all of the items from the receiver.
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void removeAll() {
     checkWidget();
@@ -698,11 +702,11 @@ public class Table extends Composite {
       }
     }
   }
-  
+
   /**
    * Removes the items from the receiver which are between the given
    * zero-relative start and end indices (inclusive).
-   * 
+   *
    * @param start the start of the range
    * @param end the end of the range
    * @exception IllegalArgumentException
@@ -717,8 +721,8 @@ public class Table extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void remove( final int start, final int end ) {
     checkWidget();
@@ -739,12 +743,12 @@ public class Table extends Composite {
           itemsToRemove[ i ].dispose();
         }
       }
-    } 
+    }
   }
 
   /**
    * Removes the item from the receiver at the given zero-relative index.
-   * 
+   *
    * @param index the index for the item
    * @exception IllegalArgumentException
    *              <ul>
@@ -757,8 +761,8 @@ public class Table extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void remove( final int index ) {
     checkWidget();
@@ -774,7 +778,7 @@ public class Table extends Composite {
   /**
    * Removes the items from the receiver's list at the given zero-relative
    * indices.
-   * 
+   *
    * @param indices the array of indices of the items
    * @exception IllegalArgumentException
    *              <ul>
@@ -788,8 +792,8 @@ public class Table extends Composite {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void remove( final int[] indices ) {
     checkWidget();
@@ -818,9 +822,9 @@ public class Table extends Composite {
       if( itemCount == 0 ) {
         setTableEmpty();
       }
-    } 
+    }
   }
-  
+
   /**
    * Clears the item at the given zero-relative index in the receiver.
    * The text, icon and other attributes of the item are set to the default
@@ -836,10 +840,10 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   * 
+   *
    * @since 1.0
    */
   public void clear( final int index ) {
@@ -852,7 +856,7 @@ public class Table extends Composite {
       item.clear();
     }
   }
-  
+
   /**
    * Removes the items from the receiver which are between the given
    * zero-relative start and end indices (inclusive).  The text, icon
@@ -870,10 +874,10 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   * 
+   *
    * @since 1.0
    */
   public void clear( final int start, final int end ) {
@@ -892,9 +896,9 @@ public class Table extends Composite {
           }
         }
       }
-    } 
+    }
   }
-  
+
   /**
    * Clears all the items in the receiver. The text, icon and other
    * attributes of the items are set to their default values. If the
@@ -905,10 +909,10 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   * 
+   *
    * @since 1.0
    */
   public void clearAll() {
@@ -920,7 +924,7 @@ public class Table extends Composite {
       }
     }
   }
-  
+
   /**
    * Clears the items at the given zero-relative indices in the receiver.
    * The text, icon and other attributes of the items are set to their default
@@ -937,10 +941,10 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   * 
+   *
    * @since 1.0
    */
   public void clear( final int[] indices ) {
@@ -960,12 +964,12 @@ public class Table extends Composite {
           item.clear();
         }
       }
-    } 
+    }
   }
-  
+
   /////////////////////////////
   // Selection handling methods
-  
+
   /**
    * Returns the zero-relative index of the item which is currently
    * selected in the receiver, or -1 if no item is selected.
@@ -976,8 +980,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int getSelectionIndex() {
     checkWidget();
@@ -993,12 +997,12 @@ public class Table extends Composite {
           found = true;
         }
       }
-    } 
+    }
     return result;
   }
 
   /**
-   * Selects the item at the given zero-relative index in the receiver. 
+   * Selects the item at the given zero-relative index in the receiver.
    * The current selection is first cleared, then the new item is selected.
    *
    * @param index the index of the item to select
@@ -1010,8 +1014,8 @@ public class Table extends Composite {
    *
    * @see Table#deselectAll()
    * @see Table#select(int)
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void setSelection( final int index ) {
     checkWidget();
@@ -1031,8 +1035,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int getSelectionCount() {
     checkWidget();
@@ -1049,7 +1053,7 @@ public class Table extends Composite {
    * If the receiver is single-select and there is more than one item in the
    * given range, then all indices are ignored.
    * </p>
-   * 
+   *
    * @param start the start index of the items to select
    * @param end the end index of the items to select
    *
@@ -1060,8 +1064,8 @@ public class Table extends Composite {
    *
    * @see Table#deselectAll()
    * @see Table#select(int,int)
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void setSelection( final int start, final int end ) {
     checkWidget();
@@ -1069,9 +1073,9 @@ public class Table extends Composite {
     select( start, end );
     if(    end >= 0
         && start <= end
-        && ( ( style & SWT.SINGLE ) == 0 || start == end ) 
-        && itemCount != 0 
-        && start < itemCount ) 
+        && ( ( style & SWT.SINGLE ) == 0 || start == end )
+        && itemCount != 0
+        && start < itemCount )
     {
       setFocusIndex( Math.max( 0, start ) );
     }
@@ -1084,7 +1088,7 @@ public class Table extends Composite {
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its selection, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    * @return an array representing the selection
    *
@@ -1092,8 +1096,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public TableItem[] getSelection() {
     checkWidget();
@@ -1124,8 +1128,8 @@ public class Table extends Composite {
    *
    * @see Table#deselectAll()
    * @see Table#select(int[])
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void setSelection( final int[] indices ) {
     checkWidget();
@@ -1137,9 +1141,9 @@ public class Table extends Composite {
     int length = indices.length;
     if( length != 0 && ( ( style & SWT.SINGLE ) == 0 || length <= 1 ) ) {
       setFocusIndex( indices[ 0 ] );
-    } 
+    }
   }
-  
+
   /**
    * Sets the receiver's selection to the given item.
    * The current selection is cleared before the new item is selected.
@@ -1157,7 +1161,7 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setSelection( final TableItem item ) {
@@ -1191,8 +1195,8 @@ public class Table extends Composite {
    * @see Table#deselectAll()
    * @see Table#select(int[])
    * @see Table#setSelection(int[])
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void setSelection( final TableItem[] items ) {
     checkWidget();
@@ -1205,7 +1209,7 @@ public class Table extends Composite {
     }
     setSelection( indices );
   }
-  
+
   /**
    * Returns the zero-relative indices of the items which are currently
    * selected in the receiver. The order of the indices is unspecified.
@@ -1213,7 +1217,7 @@ public class Table extends Composite {
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its selection, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    * @return the array of indices of the selected items
    *
@@ -1221,8 +1225,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int[] getSelectionIndices() {
     checkWidget();
@@ -1233,7 +1237,7 @@ public class Table extends Composite {
     }
     return result;
   }
-  
+
   /**
    * Returns <code>true</code> if the item is selected,
    * and <code>false</code> otherwise.  Indices out of
@@ -1246,8 +1250,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public boolean isSelected( final int index ) {
     checkWidget();
@@ -1260,9 +1264,9 @@ public class Table extends Composite {
     }
     return result;
   }
-  
+
   /**
-   * Selects the item at the given zero-relative index in the receiver. 
+   * Selects the item at the given zero-relative index in the receiver.
    * If the item at the index was already selected, it remains
    * selected. Indices that are out of range are ignored.
    *
@@ -1272,8 +1276,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void select( final int index ) {
     checkWidget();
@@ -1292,7 +1296,7 @@ public class Table extends Composite {
       }
     }
   }
-  
+
   /**
    * Selects the items in the range specified by the given zero-relative
    * indices in the receiver. The range of indices is inclusive.
@@ -1313,16 +1317,16 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Table#setSelection(int,int)
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void select( final int start, final int end ) {
     checkWidget();
     if(    end >= 0
         && start <= end
-        && ( ( style & SWT.SINGLE ) == 0 || start == end ) ) 
+        && ( ( style & SWT.SINGLE ) == 0 || start == end ) )
     {
       if( itemCount != 0 && start < itemCount ) {
         int adjustedStart = Math.max( 0, start );
@@ -1337,7 +1341,7 @@ public class Table extends Composite {
       }
     }
   }
-  
+
   /**
    * Selects the items at the given zero-relative indices in the receiver.
    * The current selection is not cleared before the new items are selected.
@@ -1358,10 +1362,10 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Table#setSelection(int[])
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void select( final int[] indices ) {
     checkWidget();
@@ -1373,7 +1377,7 @@ public class Table extends Composite {
       for( int i = length - 1; i >= 0; --i ) {
         select( indices[ i ] );
       }
-    } 
+    }
   }
 
   /**
@@ -1386,10 +1390,10 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
-  // TODO [rh] revise: a VIRTUAL table would resolve all its items when 
+  // TODO [rh] revise: a VIRTUAL table would resolve all its items when
   //      selectAll is called. Compare how SWT handles this.
   public void selectAll() {
     checkWidget();
@@ -1397,7 +1401,7 @@ public class Table extends Composite {
       setSelection( getItems() );
     }
   }
-  
+
   /**
    * Deselects the item at the given zero-relative index in the receiver.
    * If the item at the index was already deselected, it remains
@@ -1409,7 +1413,7 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void deselect( final int index ) {
@@ -1419,7 +1423,7 @@ public class Table extends Composite {
 
   /**
    * Deselects the items at the given zero-relative indices in the receiver.
-   * If the item at the given zero-relative index in the receiver 
+   * If the item at the given zero-relative index in the receiver
    * is selected, it is deselected.  If the item at the index
    * was not selected, it remains deselected.  The range of the
    * indices is inclusive. Indices that are out of range are ignored.
@@ -1446,7 +1450,7 @@ public class Table extends Composite {
 
   /**
    * Deselects the items at the given zero-relative indices in the receiver.
-   * If the item at the given zero-relative index in the receiver 
+   * If the item at the given zero-relative index in the receiver
    * is selected, it is deselected.  If the item at the index
    * was not selected, it remains deselected. Indices that are out
    * of range and duplicate indices are ignored.
@@ -1478,8 +1482,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void deselectAll() {
     checkWidget();
@@ -1488,7 +1492,7 @@ public class Table extends Composite {
 
   //////////////////////////////////
   // TopIndex and showItem/Selection
-  
+
   /**
    * Sets the zero-relative index of the item which is currently
    * at the top of the receiver. This index can change when items
@@ -1500,8 +1504,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void setTopIndex( final int topIndex ) {
     checkWidget();
@@ -1512,7 +1516,7 @@ public class Table extends Composite {
       }
     }
   }
-  
+
   /**
    * Returns the zero-relative index of the item which is currently
    * at the top of the receiver. This index can change when items are
@@ -1524,14 +1528,14 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int getTopIndex() {
     checkWidget();
     return topIndex;
   }
-  
+
   /**
    * Shows the item.  If the item is already showing in the receiver,
    * this method simply returns.  Otherwise, the items are scrolled until
@@ -1549,8 +1553,8 @@ public class Table extends Composite {
    * </ul>
    *
    * @see Table#showSelection()
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void showItem( final TableItem item ) {
     checkWidget();
@@ -1573,9 +1577,9 @@ public class Table extends Composite {
       if( idealTopIndex >= 0 ) {
         setTopIndex( idealTopIndex );
       }
-    } 
+    }
   }
-  
+
   /**
    * Shows the selection.  If the selection is already showing in the receiver,
    * this method simply returns.  Otherwise, the items are scrolled until
@@ -1587,8 +1591,8 @@ public class Table extends Composite {
    * </ul>
    *
    * @see Table#showItem(TableItem)
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void showSelection() {
     checkWidget();
@@ -1600,10 +1604,10 @@ public class Table extends Composite {
 
   ////////////////////
   // Visual appearance
-  
+
   /**
    * Marks the receiver's header as visible if the argument is <code>true</code>,
-   * and marks it invisible otherwise. 
+   * and marks it invisible otherwise.
    * <p>
    * If one of the receiver's ancestors is not visible or some
    * other condition makes the receiver not visible, marking
@@ -1616,14 +1620,14 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void setHeaderVisible( final boolean headerVisible ) {
     checkWidget();
     this.headerVisible = headerVisible;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver's header is visible,
    * and <code>false</code> otherwise.
@@ -1640,14 +1644,14 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public boolean getHeaderVisible() {
     checkWidget();
     return headerVisible;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver's lines are visible,
    * and <code>false</code> otherwise.
@@ -1664,17 +1668,17 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public boolean getLinesVisible() {
     checkWidget();
     return linesVisible;
   }
-  
+
   /**
    * Marks the receiver's lines as visible if the argument is <code>true</code>,
-   * and marks it invisible otherwise. 
+   * and marks it invisible otherwise.
    * <p>
    * If one of the receiver's ancestors is not visible or some
    * other condition makes the receiver not visible, marking
@@ -1687,29 +1691,29 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void setLinesVisible( final boolean linesVisible ) {
     checkWidget();
     this.linesVisible = linesVisible;
   }
-  
+
   /**
    * Sets the column used by the sort indicator for the receiver. A null
-   * value will clear the sort indicator.  The current sort column is cleared 
+   * value will clear the sort indicator.  The current sort column is cleared
    * before the new column is set.
    *
    * @param column the column used by the sort indicator or <code>null</code>
-   * 
+   *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the column is disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the column is disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setSortColumn( final TableColumn column ) {
@@ -1725,15 +1729,15 @@ public class Table extends Composite {
    * the receiver. The value may be null if no column shows
    * the sort indicator.
    *
-   * @return the sort indicator 
+   * @return the sort indicator
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #setSortColumn(TableColumn)
-   * 
+   *
    * @since 1.0
    */
   public TableColumn getSortColumn() {
@@ -1742,28 +1746,28 @@ public class Table extends Composite {
   }
 
   /**
-   * Sets the direction of the sort indicator for the receiver. The value 
+   * Sets the direction of the sort indicator for the receiver. The value
    * can be one of <code>UP</code>, <code>DOWN</code> or <code>NONE</code>.
    *
-   * @param direction the direction of the sort indicator 
+   * @param direction the direction of the sort indicator
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setSortDirection( final int direction ) {
     checkWidget();
     if( ( direction & ( SWT.UP | SWT.DOWN ) ) != 0 || direction == SWT.NONE ) {
       sortDirection = direction;
-    } 
+    }
   }
 
   /**
-   * Returns the direction of the sort indicator for the receiver. 
-   * The value will be one of <code>UP</code>, <code>DOWN</code> 
+   * Returns the direction of the sort indicator for the receiver.
+   * The value will be one of <code>UP</code>, <code>DOWN</code>
    * or <code>NONE</code>.
    *
    * @return the sort direction
@@ -1772,9 +1776,9 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #setSortDirection(int)
-   * 
+   *
    * @since 1.0
    */
   public int getSortDirection() {
@@ -1784,7 +1788,7 @@ public class Table extends Composite {
 
   ///////////////////////////////////
   // Dimensions and size calculations
-  
+
   /**
    * Returns the height of the area which would be used to
    * display <em>one</em> of the items in the receiver's.
@@ -1795,8 +1799,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int getItemHeight() {
     checkWidget();
@@ -1808,9 +1812,9 @@ public class Table extends Composite {
     }
     return result;
   }
-  
+
   /**
-   * Returns the height of the receiver's header 
+   * Returns the height of the receiver's header
    *
    * @return the height of the header or zero if the header is not visible
    *
@@ -1818,8 +1822,8 @@ public class Table extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   // TODO [rh] preliminary implementation
   public int getHeaderHeight() {
@@ -1839,27 +1843,27 @@ public class Table extends Composite {
     }
     return result;
   }
-  
+
   /**
    * Returns the width in pixels of a grid line.
    *
    * @return the width of a grid line in pixels
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public int getGridLineWidth () {
     checkWidget();
     return GRID_WIDTH;
   }
-  
+
   //////////////////
   // Selection event
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's selection changes, by sending
@@ -1886,14 +1890,14 @@ public class Table extends Composite {
    * @see SelectionListener
    * @see #removeSelectionListener
    * @see SelectionEvent
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void addSelectionListener( final SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
-  
+
   /**
    * Removes the listener from the collection of listeners who will
    * be notified when the receiver's selection changes.
@@ -1910,8 +1914,8 @@ public class Table extends Composite {
    *
    * @see SelectionListener
    * @see #addSelectionListener(SelectionListener)
-   * 
-   * @since 1.0 
+   *
+   * @since 1.0
    */
   public void removeSelectionListener( final SelectionListener listener ) {
     checkWidget();
@@ -1920,7 +1924,7 @@ public class Table extends Composite {
 
   /////////////////////////////
   // Create and destroy columns
-  
+
   final void createColumn( final TableColumn column, final int index ) {
     columnHolder.insert( column, index );
     if( columnOrder == null ) {
@@ -1932,16 +1936,16 @@ public class Table extends Composite {
       }
       int[] newColumnOrder = new int[ length + 1 ];
       System.arraycopy( columnOrder, 0, newColumnOrder, 0, index );
-      System.arraycopy( columnOrder, 
-                        index, 
-                        newColumnOrder, 
-                        index + 1, 
+      System.arraycopy( columnOrder,
+                        index,
+                        newColumnOrder,
+                        index + 1,
                         length - index );
       columnOrder = newColumnOrder;
       columnOrder[ index ] = index;
     }
   }
-  
+
   final void destroyColumn( final TableColumn column ) {
     int index = indexOf( column );
     // Remove data from TableItems
@@ -1972,10 +1976,10 @@ public class Table extends Composite {
     }
     columnOrder = newColumnOrder;
   }
-  
+
   ////////////////////////////
   // Create and destroy items
-  
+
   final void createItem( final TableItem item, final int index ) {
     int count = itemCount;
     if( !( 0 <= index && index <= count ) ) {
@@ -1988,7 +1992,7 @@ public class Table extends Composite {
        * reduce memory usage.
        */
       boolean small = /* drawCount == 0 && */isVisible();
-      int length 
+      int length
         = small ? items.length + 4 : Math.max( 4, items.length * 3 / 2 );
       TableItem[] newItems = new TableItem[ length ];
       System.arraycopy( items, 0, newItems, 0, items.length );
@@ -2003,7 +2007,7 @@ public class Table extends Composite {
       focusIndex++;
     }
   }
-  
+
   final void destroyItem( final TableItem item ) {
     int index = indexOf( item );
     removeFromSelection( index );
@@ -2021,7 +2025,7 @@ public class Table extends Composite {
 
   ////////////////
   // Destroy table
-  
+
   void releaseChildren() {
     // TODO [rh] optimize: only execute the necessary mimimum from destroyItem
     //      when disposing of the table itself
@@ -2037,14 +2041,14 @@ public class Table extends Composite {
       tableColumns[ i ].dispose();
     }
   }
-  
+
   void releaseWidget() {
     super.releaseWidget();
     if( resizeListener != null ) {
       removeControlListener( resizeListener );
     }
   }
-  
+
   //////////////////////////////////
   // Helping methods - item retrival
 
@@ -2132,9 +2136,9 @@ public class Table extends Composite {
           }
         }
       } );
-    } 
+    }
   }
-  
+
   ////////////////////////////////////
   // Helping methods - item image size
 
@@ -2144,7 +2148,7 @@ public class Table extends Composite {
       itemImageSize = new Point( imageBounds.width, imageBounds.height );
     }
   }
-  
+
   final Point getItemImageSize() {
     return itemImageSize == null ? new Point( 0, 0 ) : itemImageSize;
   }
@@ -2162,9 +2166,9 @@ public class Table extends Composite {
   }
 
   private int getVisibleItemCount() {
-    //  TODO [rh] replace this once getClientArea is working    
-    int clientHeight = getBounds().height 
-                     - getHeaderHeight() 
+    //  TODO [rh] replace this once getClientArea is working
+    int clientHeight = getBounds().height
+                     - getHeaderHeight()
                      - ScrollBar.SCROLL_BAR_HEIGHT;
     return clientHeight >= 0 ? clientHeight / getItemHeight() : 0;
   }
@@ -2201,7 +2205,7 @@ public class Table extends Composite {
   }
 
   private void adjustFocusIndex() {
-    // Must reset focusIndex before calling getSelectionIndex 
+    // Must reset focusIndex before calling getSelectionIndex
     focusIndex = -1;
     focusIndex = getSelectionIndex();
   }

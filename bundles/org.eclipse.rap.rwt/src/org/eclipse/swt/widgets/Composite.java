@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
@@ -15,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
+
 
 /**
  * Instances of this class are controls which are capable
@@ -37,7 +39,8 @@ public class Composite extends Scrollable {
   int layoutCount;
   private final ControlHolder controlHolder = new ControlHolder();
   private Control[] tabList;
-  
+  int backgroundMode;
+
   Composite( final Composite parent ) {
     // prevent instantiation from outside this package
     super( parent );
@@ -49,7 +52,7 @@ public class Composite extends Scrollable {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -73,6 +76,12 @@ public class Composite extends Scrollable {
     super( parent, style );
   }
 
+  void initState() {
+    if( ( style & ( SWT.H_SCROLL | SWT.V_SCROLL ) ) == 0 ) {
+      state |= THEME_BACKGROUND;
+    }
+  }
+
   /**
    * Returns a (possibly empty) array containing the receiver's children.
    * Children are returned in the order that they are drawn.  The topmost
@@ -81,11 +90,11 @@ public class Composite extends Scrollable {
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of children, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return an array of children
-   * 
+   *
    * @see Control#moveAbove
    * @see Control#moveBelow
    *
@@ -111,7 +120,7 @@ public class Composite extends Scrollable {
 
   //////////////////
   // Layout methods
-  
+
   /**
    * Sets the layout which is associated with the receiver to be
    * the argument which may be null.
@@ -154,7 +163,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * <!--@see #setLayoutDeferred(boolean)-->
    * @see #isLayoutDeferred()
    */
@@ -164,7 +173,7 @@ public class Composite extends Scrollable {
   }
 
   /**
-   * Returns <code>true</code> if the receiver or any ancestor 
+   * Returns <code>true</code> if the receiver or any ancestor
    * up to and including the receiver's nearest ancestor shell
    * has deferred the performing of layouts.  Otherwise, <code>false</code>
    * is returned.
@@ -175,7 +184,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * <!--@see #setLayoutDeferred(boolean)-->
    * @see #getLayoutDeferred()
    */
@@ -186,7 +195,7 @@ public class Composite extends Scrollable {
 
   /**
    * If the receiver has a layout, asks the layout to <em>lay out</em>
-   * (that is, set the size and location of) the receiver's children. 
+   * (that is, set the size and location of) the receiver's children.
    * If the receiver does not have a layout, do nothing.
    * <p>
    * This is equivalent to calling <code>layout(true)</code>.
@@ -197,7 +206,7 @@ public class Composite extends Scrollable {
    * exposed, then the parent will paint. If no child is
    * affected, the parent will not paint.
    * </p>
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
@@ -210,19 +219,19 @@ public class Composite extends Scrollable {
 
   /**
    * If the receiver has a layout, asks the layout to <em>lay out</em>
-   * (that is, set the size and location of) the receiver's children. 
+   * (that is, set the size and location of) the receiver's children.
    * If the argument is <code>true</code> the layout must not rely
    * on any information it has cached about the immediate children. If it
    * is <code>false</code> the layout may (potentially) optimize the
-   * work it is doing by assuming that none of the receiver's 
+   * work it is doing by assuming that none of the receiver's
    * children has changed state since the last layout.
    * If the receiver does not have a layout, do nothing.
    * <p>
-   * If a child is resized as a result of a call to layout, the 
+   * If a child is resized as a result of a call to layout, the
    * resize event will invoke the layout of the child.  The layout
-   * will cascade down through all child widgets in the receiver's widget 
-   * tree until a child is encountered that does not resize.  Note that 
-   * a layout due to a resize will not flush any cached information 
+   * will cascade down through all child widgets in the receiver's widget
+   * tree until a child is encountered that does not resize.  Note that
+   * a layout due to a resize will not flush any cached information
    * (same as <code>layout(false)</code>).
    * </p>
    * <p>
@@ -243,25 +252,25 @@ public class Composite extends Scrollable {
     checkWidget();
     if( layout != null ) {
       layout( changed, false );
-    } 
+    }
   }
 
   /**
    * If the receiver has a layout, asks the layout to <em>lay out</em>
-   * (that is, set the size and location of) the receiver's children. 
+   * (that is, set the size and location of) the receiver's children.
    * If the changed argument is <code>true</code> the layout must not rely
    * on any information it has cached about its children. If it
    * is <code>false</code> the layout may (potentially) optimize the
-   * work it is doing by assuming that none of the receiver's 
+   * work it is doing by assuming that none of the receiver's
    * children has changed state since the last layout.
    * If the all argument is <code>true</code> the layout will cascade down
    * through all child widgets in the receiver's widget tree, regardless of
-   * whether the child has changed size.  The changed argument is applied to 
+   * whether the child has changed size.  The changed argument is applied to
    * all layouts.  If the all argument is <code>false</code>, the layout will
-   * <em>not</em> cascade down through all child widgets in the receiver's widget 
-   * tree.  However, if a child is resized as a result of a call to layout, the 
-   * resize event will invoke the layout of the child.  Note that 
-   * a layout due to a resize will not flush any cached information 
+   * <em>not</em> cascade down through all child widgets in the receiver's widget
+   * tree.  However, if a child is resized as a result of a call to layout, the
+   * resize event will invoke the layout of the child.  Note that
+   * a layout due to a resize will not flush any cached information
    * (same as <code>layout(false)</code>).
    * </p>
    * <p>
@@ -284,15 +293,15 @@ public class Composite extends Scrollable {
     if( layout != null || all ) {
       markLayout( changed, all );
       updateLayout( true, all );
-    } 
+    }
   }
 
   /**
-   * Forces a lay out (that is, sets the size and location) of all widgets that 
-   * are in the parent hierarchy of the changed control up to and including the 
-   * receiver.  The layouts in the hierarchy must not rely on any information 
-   * cached about the changed control or any of its ancestors.  The layout may 
-   * (potentially) optimize the work it is doing by assuming that none of the 
+   * Forces a lay out (that is, sets the size and location) of all widgets that
+   * are in the parent hierarchy of the changed control up to and including the
+   * receiver.  The layouts in the hierarchy must not rely on any information
+   * cached about the changed control or any of its ancestors.  The layout may
+   * (potentially) optimize the work it is doing by assuming that none of the
    * peers of the changed control have changed state since the last layout.
    * If an ancestor does not have a layout, skip it.
    * <p>
@@ -301,11 +310,11 @@ public class Composite extends Scrollable {
    * exposed, then the parent will paint. If no child is
    * affected, the parent will not paint.
    * </p>
-   * 
+   *
    * @param changed a control that has had a state change which requires a recalculation of its size
-   * 
+   *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the changed array is null any of its controls are null or have been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the changed array is null any of its controls are null or have been disposed</li>
    *    <li>ERROR_INVALID_PARENT - if any control in changed is not in the widget tree of the receiver</li>
    * </ul>
    * @exception SWTException <ul>
@@ -439,16 +448,16 @@ public class Composite extends Scrollable {
     Rectangle trim = computeTrim( 0, 0, size.x, size.y );
     return new Point( trim.width, trim.height );
   }
-  
+
   /**
-   * Clears any data that has been cached by a Layout for all widgets that 
-   * are in the parent hierarchy of the changed control up to and including the 
+   * Clears any data that has been cached by a Layout for all widgets that
+   * are in the parent hierarchy of the changed control up to and including the
    * receiver.  If an ancestor does not have a layout, it is skipped.
-   * 
+   *
    * @param changed an array of controls that changed state and require a recalculation of size
-   * 
+   *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the changed array is null any of its controls are null or have been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the changed array is null any of its controls are null or have been disposed</li>
    *    <li>ERROR_INVALID_PARENT - if any control in changed is not in the widget tree of the receiver</li>
    * </ul>
    * @exception SWTException <ul>
@@ -493,9 +502,66 @@ public class Composite extends Scrollable {
     }
   }
 
-  /////////////////////
+  /**
+   * Returns the receiver's background drawing mode. This
+   * will be one of the following constants defined in class
+   * <code>SWT</code>:
+   * <code>INHERIT_NONE</code>, <code>INHERIT_DEFAULT</code>,
+   * <code>INHERTIT_FORCE</code>.
+   *
+   * @return the background mode
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @see SWT
+   *
+   * @since 1.1
+   */
+  public int getBackgroundMode() {
+    checkWidget();
+    return backgroundMode;
+  }
+
+  /**
+   * Sets the background drawing mode to the argument which should be one of the
+   * following constants defined in class <code>SWT</code>:
+   * <code>INHERIT_NONE</code>, <code>INHERIT_DEFAULT</code>,
+   * <code>INHERIT_FORCE</code>.
+   *
+   * @param mode the new background mode
+   * @exception SWTException
+   *                <ul>
+   *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+   *                disposed</li>
+   *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *                thread that created the receiver</li>
+   *                </ul>
+   * @see SWT
+   * @since 1.1
+   */
+  public void setBackgroundMode( final int mode ) {
+    checkWidget();
+    backgroundMode = mode;
+    Control[] children = controlHolder.getControls();
+    for( int i = 0; i < children.length; i++ ) {
+      children[ i ].updateBackgroundMode();
+    }
+  }
+
+  void updateBackgroundMode() {
+    super.updateBackgroundMode();
+    Control[] children = controlHolder.getControls();
+    for( int i = 0; i < children.length; i++ ) {
+      children[ i ].updateBackgroundMode();
+    }
+  }
+
+  // ///////////////////
   // setFocus override
-  
+
   public boolean setFocus() {
     checkWidget();
     Control[] children = getChildren();
@@ -514,13 +580,13 @@ public class Composite extends Scrollable {
     boolean result = true;
     if( focusedChild == null ) {
       result = super.setFocus();
-    } 
+    }
     return result;
   }
 
   ////////////
   // Tab Order
-  
+
   /**
    * Sets the tabbing order for the specified controls to
    * match the order that they occur in the argument list.
@@ -528,7 +594,7 @@ public class Composite extends Scrollable {
    * @param tabList the ordered list of controls representing the tab order or null
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if a widget in the tabList is null or has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if a widget in the tabList is null or has been disposed</li>
    *    <li>ERROR_INVALID_PARENT - if widget in the tabList is not in the same widget tree</li>
    * </ul>
    * @exception SWTException <ul>
@@ -557,7 +623,7 @@ public class Composite extends Scrollable {
     }
     this.tabList = newList;
   }
-  
+
   /**
    * Gets the (possibly empty) tabbing order for the control.
    *
@@ -567,7 +633,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see #setTabList
    */
   // returns only tabGroups
@@ -615,15 +681,15 @@ public class Composite extends Scrollable {
     }
     return tabList;
   }
-  
+
   boolean isTabGroup() {
     return true;
   }
-  
-  
+
+
   /////////////////////////////////////
   // Helping method used by computeSize
-  
+
   Point minimumSize( final int wHint, final int hHint, final boolean changed ) {
     Control[] children = getChildren();
     int width = 0, height = 0;
@@ -637,21 +703,21 @@ public class Composite extends Scrollable {
 
   /////////////////////////////////////////////////
   // Internal methods to maintain the child controls
-  
+
   void releaseChildren() {
     Control[] children = getChildren();
     for( int i = 0; i < children.length; i++ ) {
       children[ i ].dispose();
     }
   }
-  
+
   void removeControl( final Control control ) {
     controlHolder.remove( control );
   }
 
   ////////////////
   // Resize helper
-  
+
   void notifyResize( final Point oldSize ) {
     // TODO [rh] revise this: the SWT code (method sendResize) first calls
     //      'super' (fires resize events) and *then* does the layouting

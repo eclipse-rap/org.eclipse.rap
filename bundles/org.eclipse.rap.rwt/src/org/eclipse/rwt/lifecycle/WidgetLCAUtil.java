@@ -51,6 +51,7 @@ public final class WidgetLCAUtil {
   private static final String PROP_FONT = "font";
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
+  private static final String PROP_BACKGROUND_TRANSPARENCY = "backgroundTrans";
   private static final String PROP_ENABLED = "enabled";
 
   private static final String JS_PROP_SPACE = "space";
@@ -133,6 +134,25 @@ public final class WidgetLCAUtil {
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_BACKGROUND, background );
+  }
+
+  /**
+   * Preserves the value of the property <code>background</code> of the
+   * specified widget.
+   *
+   * @param widget the widget whose background property to preserve
+   * @param background the background color to preserve
+   * @param transparency the background transparency to preserve
+   * @see #writeBackground(Widget, Color, boolean)
+   */
+  public static void preserveBackground( final Widget widget,
+                                         final Color background,
+                                         final boolean transparency )
+  {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_BACKGROUND, background );
+    adapter.preserve( PROP_BACKGROUND_TRANSPARENCY,
+                      Boolean.valueOf( transparency ) );
   }
 
   /**
@@ -620,12 +640,45 @@ public final class WidgetLCAUtil {
                                       final Color newColor )
     throws IOException
   {
+    writeBackground( widget, newColor, false );
+  }
+
+  /**
+   * Determines whether the property <code>background</code> of the given
+   * widget has changed during the processing of the current request and if so,
+   * writes JavaScript code to the response that updates the client-side
+   * background property of the specified widget. For instances of
+   * {@link Control}, use the method
+   * {@link ControlLCAUtil#writeBackground(Control)} instead.
+   *
+   * @param widget the widget whose background property to set
+   * @param background the new background color
+   * @param transparency the new background transparency, if <code>true</code>,
+   *            the <code>background</code> parameter is ignored
+   * @throws IOException
+   * @see {@link #preserveBackground(Widget, Color, boolean)}
+   */
+  public static void writeBackground( final Widget widget,
+                                      final Color background,
+                                      final boolean transparency )
+    throws IOException
+  {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    if( WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, newColor, null ) ) {
-      if( newColor == null ) {
-        writer.reset( JSConst.QX_FIELD_BG_COLOR );
+    boolean changed = WidgetLCAUtil.hasChanged( widget,
+                                                PROP_BACKGROUND_TRANSPARENCY,
+                                                Boolean.valueOf( transparency ),
+                                                Boolean.FALSE );
+    if( !changed && !transparency ) {
+      changed
+        = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
+    }
+    if( changed ) {
+      if( transparency ) {
+        writer.set( JSConst.QX_FIELD_BG_COLOR, ( Object )null );
+      } else if( background != null ) {
+        writer.set( JSConst.QX_FIELD_BG_COLOR, background );
       } else {
-        writer.set( PROP_BACKGROUND, JSConst.QX_FIELD_BG_COLOR, newColor, null );
+        writer.reset( JSConst.QX_FIELD_BG_COLOR );
       }
     }
   }

@@ -24,10 +24,11 @@ import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
+
 /**
  * Utility class that provides a number of useful static methods to support the
  * implementation of life cycle adapters for {@link Control}s.
- * 
+ *
  * @see WidgetLCAUtil
  * @since 1.0
  */
@@ -81,7 +82,7 @@ public class ControlLCAUtil {
    * <li>whether ActivateListeners are registered</li>
    * <li>whether FocusListeners are registered</li>
    * </ul>
-   * 
+   *
    * @param control the control whose parameters to preserve
    * @see #writeChanges(Control)
    */
@@ -102,7 +103,8 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveForeground( control,
                                       controlAdapter.getUserForeground() );
     WidgetLCAUtil.preserveBackground( control,
-                                      controlAdapter.getUserBackground() );
+                                      controlAdapter.getUserBackground(),
+                                      controlAdapter.getBackgroundTransparency() );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
     adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
@@ -118,7 +120,7 @@ public class ControlLCAUtil {
    * Reads the bounds of the specified control from the current request and
    * applies it to the control. If no bounds are not submitted for the control,
    * it remains unchanged.
-   * 
+   *
    * @param control the control whose bounds to read and set
    */
   // TODO [rst] Revise: This seems to unnecessarily call getter and setter even
@@ -133,7 +135,7 @@ public class ControlLCAUtil {
    * Determines whether the bounds of the given control have changed during the
    * processing of the current request and if so, writes JavaScript code to the
    * response that updates the client-side bounds.
-   * 
+   *
    * @param control the control whose bounds to write
    * @throws IOException
    */
@@ -146,7 +148,7 @@ public class ControlLCAUtil {
    * Writes JavaScript code to the response that resets the bounds of a control.
    * This method is intended to be used by implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetBounds() throws IOException {
@@ -157,7 +159,7 @@ public class ControlLCAUtil {
    * Determines whether the z-index of the given control has changed during the
    * processing of the current request and if so, writes JavaScript code to the
    * response that updates the client-side z-index.
-   * 
+   *
    * @param control the control whose z-index to write
    * @throws IOException
    */
@@ -175,7 +177,7 @@ public class ControlLCAUtil {
    * Writes JavaScript code to the response that resets the z-index property of
    * a control. This method is intended to be used by implementations of the
    * method {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetZIndex() throws IOException {
@@ -187,7 +189,7 @@ public class ControlLCAUtil {
    * Determines whether the visibility of the given control has changed during
    * the processing of the current request and if so, writes JavaScript code to
    * the response that updates the client-side visibility.
-   * 
+   *
    * @param control the control whose visibility to write
    * @throws IOException
    */
@@ -211,7 +213,7 @@ public class ControlLCAUtil {
    * <code>visible</code> of a control. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetVisible() throws IOException {
@@ -225,7 +227,7 @@ public class ControlLCAUtil {
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side enabled
    * property.
-   * 
+   *
    * @param control the control whose enabled property to write
    * @throws IOException
    */
@@ -242,7 +244,7 @@ public class ControlLCAUtil {
    * <code>enabled</code> of a control. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetEnabled() throws IOException {
@@ -269,7 +271,7 @@ public class ControlLCAUtil {
    * <li>whether ActivateListeners are registered</li>
    * <li>whether FocusListeners are registered</li>
    * </ul>
-   * 
+   *
    * @param control the control whose properties to set
    * @throws IOException
    * @see #preserveValues(Control)
@@ -310,7 +312,7 @@ public class ControlLCAUtil {
    * </ul>
    * This method is intended to be used by implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetChanges() throws IOException {
@@ -333,7 +335,7 @@ public class ControlLCAUtil {
    * Writes JavaScript code to the response that adds client-side resize
    * listeners to a control. These listeners send notifications when the control
    * is resized.
-   * 
+   *
    * @param control the control to add a resize notification listener to
    * @throws IOException
    */
@@ -351,7 +353,7 @@ public class ControlLCAUtil {
   /**
    * Writes JavaScript code to the response that removes the client-side resize
    * notification listeners from a control.
-   * 
+   *
    * @throws IOException
    */
   public static void resetResizeNotificator()
@@ -368,7 +370,7 @@ public class ControlLCAUtil {
    * Writes JavaScript code to the response that adds client-side move listeners
    * to a control. These listeners send notifications when the control is moved.
    * @param control the control to add move notification listeners to
-   * 
+   *
    * @throws IOException
    */
   // TODO [rst] Change parameter type to Control
@@ -385,7 +387,7 @@ public class ControlLCAUtil {
   /**
    * Writes JavaScript code to the response that removes the client-side move
    * notification listeners from a control.
-   * 
+   *
    * @throws IOException
    */
   public static void resetMoveNotificator()
@@ -403,7 +405,7 @@ public class ControlLCAUtil {
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side menu
    * property.
-   * 
+   *
    * @param control the control whose menu property to write
    * @throws IOException
    */
@@ -416,7 +418,7 @@ public class ControlLCAUtil {
    * <code>menu</code> of a control. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetMenu() throws IOException {
@@ -427,7 +429,7 @@ public class ControlLCAUtil {
    * Determines whether the tool tip of the given control has changed during the
    * processing of the current request and if so, writes JavaScript code to the
    * response that updates the client-side tool tip.
-   * 
+   *
    * @param control the control whose tool tip to write
    * @throws IOException
    */
@@ -441,7 +443,7 @@ public class ControlLCAUtil {
    * Writes JavaScript code to the response that resets the tool tip of a
    * control. This method is intended to be used by implementations of the
    * method {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetToolTip() throws IOException {
@@ -453,7 +455,7 @@ public class ControlLCAUtil {
    * control has changed during the processing of the current request and if so,
    * writes JavaScript code to the response that updates the client-side
    * foreground property.
-   * 
+   *
    * @param control the control whose foreground property to write
    * @throws IOException
    */
@@ -471,7 +473,7 @@ public class ControlLCAUtil {
    * <code>foreground</code> of a control. This method is intended to be used
    * by implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetForeground() throws IOException {
@@ -483,7 +485,7 @@ public class ControlLCAUtil {
    * control has changed during the processing of the current request and if so,
    * writes JavaScript code to the response that updates the client-side
    * background property.
-   * 
+   *
    * @param control the control whose background property to write
    * @throws IOException
    */
@@ -492,7 +494,8 @@ public class ControlLCAUtil {
     IControlAdapter controlAdapter
       = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
     WidgetLCAUtil.writeBackground( control,
-                                   controlAdapter.getUserBackground() );
+                                   controlAdapter.getUserBackground(),
+                                   controlAdapter.getBackgroundTransparency() );
   }
 
   /**
@@ -500,7 +503,7 @@ public class ControlLCAUtil {
    * <code>background</code> of a control. This method is intended to be used
    * by implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetBackground() throws IOException {
@@ -515,7 +518,7 @@ public class ControlLCAUtil {
    * @param control
    * @throws IOException
    */
-  public static void writeStyleFlags( final Control control ) throws IOException 
+  public static void writeStyleFlags( final Control control ) throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( control );
     if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
@@ -533,7 +536,7 @@ public class ControlLCAUtil {
    * <code>enabled</code> of a control. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetStyleFlags() throws IOException {
@@ -546,7 +549,7 @@ public class ControlLCAUtil {
    * Determines whether the property <code>font</code> of the given control
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side font property.
-   * 
+   *
    * @param control the control whose font property to write
    * @throws IOException
    */
@@ -562,7 +565,7 @@ public class ControlLCAUtil {
    * <code>font</code> of a control. This method is intended to be used by
    * implementations of the method
    * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   * 
+   *
    * @throws IOException
    */
   public static void resetFont() throws IOException {
@@ -601,8 +604,8 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Note that there is no corresponding readData method to fire the focus 
-   * events that are send by the JavaScript event listeners that are registered 
+   * Note that there is no corresponding readData method to fire the focus
+   * events that are send by the JavaScript event listeners that are registered
    * below.
    * FocusEvents are thrown when the focus is changed programmatically and when
    * it is change by the user.

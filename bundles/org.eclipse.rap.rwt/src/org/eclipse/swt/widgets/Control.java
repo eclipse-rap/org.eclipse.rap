@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+
 
 /**
  * Control is the abstract superclass of all windowed user interface classes.
@@ -63,6 +64,10 @@ public abstract class Control extends Widget {
       return background;
     }
 
+    public boolean getBackgroundTransparency() {
+      return backgroundTransparency;
+    }
+
     public int getTabIndex() {
       return tabIndex;
     }
@@ -75,14 +80,27 @@ public abstract class Control extends Widget {
   private static final Rectangle EMPTY_RECTANGLE = new Rectangle( 0, 0, 0, 0 );
 
   private final IControlAdapter controlAdapter;
+
   final Composite parent;
+
   private Rectangle bounds = EMPTY_RECTANGLE;
+
   private Object layoutData;
+
   private String toolTipText;
+
   private Menu menu;
+
   private DisposeListener menuDisposeListener;
+
   private Color foreground;
+
   private Color background;
+
+  private final Object backgroundImage = null;
+
+  private boolean backgroundTransparency;
+
   private Font font;
 
   Control( final Composite parent ) {
@@ -109,12 +127,12 @@ public abstract class Control extends Widget {
    * @param style the style of control to construct
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
-   * </ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
-   * </ul>
+   *                </ul>
    *
    * @see SWT#BORDER
    * @see Widget#checkSubclass
@@ -125,6 +143,13 @@ public abstract class Control extends Widget {
     this.parent = parent;
     ControlHolder.addControl( parent, this );
     controlAdapter = new ControlAdapter();
+    initState();
+    checkBackground();
+    updateBackground();
+  }
+
+  void initState() {
+    // by default let states empty
   }
 
   /**
@@ -137,7 +162,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Composite getParent() {
     checkWidget();
@@ -155,7 +180,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see #getParent
    */
@@ -164,9 +189,8 @@ public abstract class Control extends Widget {
     return parent.getShell();
   }
 
-  /////////////
+  // ///////////
   // Visibility
-
   /**
    * Marks the receiver as visible if the argument is <code>true</code>,
    * and marks it invisible otherwise.
@@ -181,7 +205,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setVisible( final boolean visible ) {
     checkWidget();
@@ -198,11 +222,11 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see #getVisible
    */
-  public boolean isVisible () {
+  public boolean isVisible() {
     checkWidget();
     boolean visible = getVisible() && parent.isVisible();
     return visible;
@@ -223,16 +247,15 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public boolean getVisible() {
     checkWidget();
     return ( state & HIDDEN ) == 0;
   }
 
-  /////////////
+  // ///////////
   // Enablement
-
   /**
    * Enables the receiver if the argument is <code>true</code>,
    * and disables it otherwise. A disabled control is typically
@@ -244,7 +267,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setEnabled( final boolean enabled ) {
     checkWidget();
@@ -274,7 +297,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see #isEnabled
    */
@@ -295,7 +318,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see #getEnabled
    */
@@ -304,9 +327,8 @@ public abstract class Control extends Widget {
     return getEnabled() && parent.isEnabled();
   }
 
-  /////////
+  // ///////
   // Colors
-
   /**
    * Sets the receiver's background color to the color specified
    * by the argument, or to the default system color for the control
@@ -316,15 +338,16 @@ public abstract class Control extends Widget {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
-   * </ul>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setBackground( final Color color ) {
     checkWidget();
     background = color;
+    updateBackground();
   }
 
   /**
@@ -335,16 +358,18 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
-  public Color getBackground () {
+  public Color getBackground() {
     checkWidget();
-    // Control control = findBackgroundControl ();
-    // if (control == null) control = this;
-    Color result = background;
-    if( background == null ) {
-      IControlThemeAdapter adapter = getControlThemeAdapter();
-      result = adapter.getBackground( this );
+    Control control = findBackgroundControl();
+    if( control == null ) {
+      control = this;
+    }
+    Color result = control.background;
+    if( result == null ) {
+      IControlThemeAdapter adapter = getControlThemeAdapter( control.getClass() );
+      result = adapter.getBackground( control );
     }
     return result;
   }
@@ -358,11 +383,11 @@ public abstract class Control extends Widget {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
-   * </ul>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setForeground( final Color color ) {
     checkWidget();
@@ -377,21 +402,79 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
-  public Color getForeground () {
+  public Color getForeground() {
     checkWidget();
     Color result = foreground;
-    if( foreground == null ) {
+    if( result == null ) {
       IControlThemeAdapter adapter = getControlThemeAdapter();
       result = adapter.getForeground( this );
     }
     return result;
   }
 
-  ////////
-  // Fonts
+  void updateBackgroundMode() {
+    int oldState = state & PARENT_BACKGROUND;
+    checkBackground();
+    if( oldState != ( state & PARENT_BACKGROUND ) ) {
+      updateBackground();
+    }
+  }
 
+  /*
+   * Checks whether parent background should be applied to this control and and
+   * sets PARENT_BACKGROUND state if so.
+   */
+  // verbatim copy of SWT 3.4.0 GTK
+  private void checkBackground() {
+    Shell shell = getShell();
+    if( this == shell )
+      return;
+    state &= ~PARENT_BACKGROUND;
+    Composite composite = parent;
+    do {
+      int mode = composite.backgroundMode;
+      if( mode != 0 ) {
+        if( mode == SWT.INHERIT_DEFAULT ) {
+          Control control = this;
+          do {
+            if( ( control.state & THEME_BACKGROUND ) == 0 ) {
+              return;
+            }
+            control = control.parent;
+          } while( control != composite );
+        }
+        state |= PARENT_BACKGROUND;
+        return;
+      }
+      if( composite == shell )
+        break;
+      composite = composite.parent;
+    } while( true );
+  }
+
+  /**
+   * Applies the background according to PARENT_BACKGROUND state.
+   */
+  private void updateBackground() {
+    backgroundTransparency = background == null
+                             && backgroundImage == null
+                             && ( state & PARENT_BACKGROUND ) != 0;
+  }
+
+  Control findBackgroundControl() {
+    Control result = null;
+    if( background != null || backgroundImage != null ) {
+      result = this;
+    } else if( ( state & PARENT_BACKGROUND ) != 0 ) {
+      result = parent.findBackgroundControl();
+    }
+    return result;
+  }
+
+  // //////
+  // Fonts
   /**
    * Sets the font that the receiver will use to paint textual information
    * to the font specified by the argument, or to the default font for that
@@ -401,11 +484,11 @@ public abstract class Control extends Widget {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
-   * </ul>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setFont( final Font font ) {
     checkWidget();
@@ -420,21 +503,20 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Font getFont() {
     checkWidget();
     Font result = font;
-    if( font == null ) {
+    if( result == null ) {
       IControlThemeAdapter adapter = getControlThemeAdapter();
       result = adapter.getFont( this );
     }
     return result;
   }
 
-  /////////////////
+  // ///////////////
   // Focus handling
-
   /**
    * Causes the receiver to have the <em>keyboard focus</em>,
    * such that all keyboard events will be delivered to it.  Focus
@@ -445,7 +527,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see #forceFocus
    */
@@ -467,16 +549,16 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see #setFocus
    */
   public boolean forceFocus() {
     checkWidget();
-// if (display.focusEvent == SWT.FocusOut) return false;
+    // if (display.focusEvent == SWT.FocusOut) return false;
     Shell shell = getShell(); // was: Decorations shell = menuShell();
     shell.setSavedFocus( this );
-    if( !isEnabled() || !isVisible() /* || !isActive() */ ) {
+    if( !isEnabled() || !isVisible() /* || !isActive() */) {
       return false;
     }
     if( isFocusControl() ) {
@@ -500,7 +582,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public boolean isFocusControl() {
     checkWidget();
@@ -511,9 +593,8 @@ public abstract class Control extends Widget {
     return forceFocus();
   }
 
-  //////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////
   // Methods to manipulate, transform and query the controls' dimensions
-
   /**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent (or its display if its parent is null),
@@ -525,7 +606,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Rectangle getBounds() {
     checkWidget();
@@ -548,7 +629,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setBounds( final Rectangle bounds ) {
     checkWidget();
@@ -586,7 +667,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setBounds( final int x,
                          final int y,
@@ -608,7 +689,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setLocation( final Point location ) {
     if( location == null ) {
@@ -634,7 +715,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setLocation( final int x, final int y ) {
     setLocation( new Point( x, y ) );
@@ -651,7 +732,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Point getLocation() {
     checkWidget();
@@ -669,12 +750,12 @@ public abstract class Control extends Widget {
    * @param size the new size for the receiver
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
-   * </ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setSize( final Point size ) {
     if( size == null ) {
@@ -697,7 +778,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setSize( final int width, final int height ) {
     setSize( new Point( width, height ) );
@@ -714,7 +795,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Point getSize() {
     checkWidget();
@@ -739,7 +820,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see Layout
    * @see #getBorderWidth
@@ -777,7 +858,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see Layout
    * @see #getBorderWidth
@@ -813,7 +894,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see #computeSize(int, int, boolean)
    */
@@ -839,7 +920,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see #computeSize(int, int, boolean)
    */
@@ -856,7 +937,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public int getBorderWidth() {
     checkWidget();
@@ -876,7 +957,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Point toControl( final int x, final int y ) {
     checkWidget();
@@ -892,12 +973,12 @@ public abstract class Control extends Widget {
    * @return the translated coordinates
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
-   * </ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Point toControl( final Point point ) {
     checkWidget();
@@ -919,7 +1000,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @since 1.0
    */
@@ -938,12 +1019,12 @@ public abstract class Control extends Widget {
    * @return the translated coordinates
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the point is null</li>
-   * </ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the point is null</li>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Point toDisplay( final Point point ) {
     checkWidget();
@@ -953,9 +1034,8 @@ public abstract class Control extends Widget {
     return toDisplay( point.x, point.y );
   }
 
-  //////////////////////////
+  // ////////////////////////
   // Layout related methods
-
   /**
    * Returns layout data which is associated with the receiver.
    *
@@ -964,7 +1044,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Object getLayoutData() {
     checkWidget();
@@ -979,7 +1059,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setLayoutData( final Object layoutData ) {
     checkWidget();
@@ -994,9 +1074,8 @@ public abstract class Control extends Widget {
     /* Do nothing */
   }
 
-  //////////////////////
+  // ////////////////////
   // ToolTip operations
-
   /**
    * Sets the receiver's tool tip text to the argument, which
    * may be null indicating that no tool tip text should be shown.
@@ -1006,7 +1085,7 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setToolTipText( final String toolTipText ) {
     checkWidget();
@@ -1022,17 +1101,15 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public String getToolTipText() {
     checkWidget();
     return toolTipText;
   }
 
-
-  ///////////////////
+  // /////////////////
   // Menu operations
-
   /**
    * Sets the receiver's pop up menu to the argument.
    * All controls may optionally have a pop up
@@ -1049,14 +1126,14 @@ public abstract class Control extends Widget {
    * @param menu the new pop up menu
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_MENU_NOT_POP_UP - the menu is not a pop up menu</li>
+   *                <li>ERROR_MENU_NOT_POP_UP - the menu is not a pop up menu</li>
    *    <li>ERROR_INVALID_PARENT - if the menu is not in the same widget tree</li>
-   *    <li>ERROR_INVALID_ARGUMENT - if the menu has been disposed</li>
-   * </ul>
+   *                <li>ERROR_INVALID_ARGUMENT - if the menu has been disposed</li>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setMenu( final Menu menu ) {
     checkWidget();
@@ -1091,16 +1168,15 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public Menu getMenu() {
     checkWidget();
     return menu;
   }
 
-  //////////
+  // ////////
   // Z-Order
-
   /**
    * Moves the receiver above the specified control in the
    * drawing order. If the argument is null, then the receiver
@@ -1112,11 +1188,11 @@ public abstract class Control extends Widget {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li>
-   * </ul>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see Control#moveBelow
    * @see Composite#getChildren
@@ -1147,11 +1223,11 @@ public abstract class Control extends Widget {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_INVALID_ARGUMENT - if the control has been disposed</li>
-   * </ul>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see Control#moveAbove
    * @see Composite#getChildren
@@ -1181,9 +1257,8 @@ public abstract class Control extends Widget {
     return result;
   }
 
-  //////////////////////////////////
+  // ////////////////////////////////
   // Methods to add/remove listener
-
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the control is moved or resized, by sending
@@ -1193,12 +1268,12 @@ public abstract class Control extends Widget {
    * @param listener the listener which should be notified
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
-   * </ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see ControlListener
    * @see #removeControlListener
@@ -1214,12 +1289,12 @@ public abstract class Control extends Widget {
    * @param listener the listener which should no longer be notified
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
-   * </ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see ControlListener
    * @see #addControlListener
@@ -1237,12 +1312,12 @@ public abstract class Control extends Widget {
    * @param listener the listener which should be notified
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
-   * </ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see FocusListener
    * @see #removeFocusListener
@@ -1258,12 +1333,12 @@ public abstract class Control extends Widget {
    * @param listener the listener which should no longer be notified
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
-   * </ul>
+   *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+   *                </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    *
    * @see FocusListener
    * @see #addFocusListener
@@ -1272,11 +1347,10 @@ public abstract class Control extends Widget {
     FocusEvent.removeListener( this, listener );
   }
 
-  ///////////////
+  // /////////////
   // drawing (Note that we can't really force a redraw. This is just a
-  //         fake to for event notifications that come on OS systems
-  //         with redraws)
-
+  // fake to for event notifications that come on OS systems
+  // with redraws)
   /**
    * If the argument is <code>false</code>, causes subsequent drawing
    * operations in the receiver to be ignored. No drawing of any kind
@@ -1300,13 +1374,12 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void setRedraw( boolean redraw ) {
     checkWidget();
     RWTLifeCycle.fakeRedraw( this, redraw );
   }
-
 
   /**
    * Causes the entire bounds of the receiver to be marked
@@ -1321,16 +1394,15 @@ public abstract class Control extends Widget {
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
+   *                </ul>
    */
   public void redraw() {
     checkWidget();
     setRedraw( true );
   }
 
-  ////////////
+  // //////////
   // Disposal
-
   void releaseParent() {
     if( getParent() != null ) {
       getParent().removeControl( this );
@@ -1362,24 +1434,22 @@ public abstract class Control extends Widget {
     // do nothing
   }
 
-  ////////////
+  // //////////
   // Tab order
-
   boolean isTabGroup() {
     boolean result = false;
     Control[] tabList = parent._getTabList();
     if( tabList != null ) {
       for( int i = 0; i < tabList.length; i++ ) {
         if( tabList[ i ] == this )
-          result  = true;
+          result = true;
       }
     }
     return result;
   }
 
-  /////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////
   // Helping methods that throw move- and resize-events
-
   void notifyResize( final Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {
       new ControlEvent( this, ControlEvent.CONTROL_RESIZED ).processEvent();
@@ -1392,9 +1462,8 @@ public abstract class Control extends Widget {
     }
   }
 
-  /////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////
   // Helping method to set the focus control on display
-
   private void setFocusControl( final Control control ) {
     // focus
     Object adapter = getDisplay().getAdapter( IDisplayAdapter.class );
@@ -1404,7 +1473,7 @@ public abstract class Control extends Widget {
     Shell shell = getShell();
     shell.setActiveControl( control );
   }
-  
+
   Control[] getPath() {
     int count = 0;
     Shell shell = getShell();
@@ -1422,9 +1491,8 @@ public abstract class Control extends Widget {
     return result;
   }
 
-  ///////////////////////////////////////////////////////
+  // /////////////////////////////////////////////////////
   // Helping methods to observe the disposal of the menu
-
   private void addMenuDisposeListener() {
     if( menu != null ) {
       if( menuDisposeListener == null ) {
@@ -1446,7 +1514,11 @@ public abstract class Control extends Widget {
   }
 
   private IControlThemeAdapter getControlThemeAdapter() {
+    return getControlThemeAdapter( this.getClass() );
+  }
+
+  private IControlThemeAdapter getControlThemeAdapter( final Class controlClass ) {
     ThemeManager themeMgr = ThemeManager.getInstance();
-    return ( IControlThemeAdapter )themeMgr.getThemeAdapter( getClass() );
+    return ( IControlThemeAdapter )themeMgr.getThemeAdapter( controlClass );
   }
 }

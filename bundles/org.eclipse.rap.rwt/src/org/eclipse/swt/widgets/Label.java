@@ -73,6 +73,10 @@ public class Label extends Control {
     super( parent, checkStyle( style ) );
   }
 
+  void initState() {
+    state |= THEME_BACKGROUND;
+  }
+
   /**
    * Sets the receiver's text.
    * <p>

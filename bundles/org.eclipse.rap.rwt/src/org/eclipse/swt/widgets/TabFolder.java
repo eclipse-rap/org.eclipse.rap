@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -47,7 +47,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
 public class TabFolder extends Composite {
 
   private static final TabItem[] EMPTY_TAB_ITEMS = new TabItem[ 0 ];
-  
+
   private final ItemHolder itemHolder = new ItemHolder( TabItem.class );
   private int selectionIndex = -1;
 
@@ -57,7 +57,7 @@ public class TabFolder extends Composite {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -83,6 +83,10 @@ public class TabFolder extends Composite {
     super( parent, checkStyle( style ) );
   }
 
+  void initState() {
+    state &= ~( /* CANVAS | */ THEME_BACKGROUND );
+  }
+
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
@@ -95,14 +99,14 @@ public class TabFolder extends Composite {
 
   //////////////////
   // Item management
-  
+
   /**
    * Returns an array of <code>TabItem</code>s which are the items
-   * in the receiver. 
+   * in the receiver.
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its list of items, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    *
    * @return the items in the receiver
@@ -154,7 +158,7 @@ public class TabFolder extends Composite {
 
   /**
    * Searches the receiver's list starting at the first item
-   * (index 0) until an item is found that is equal to the 
+   * (index 0) until an item is found that is equal to the
    * argument, and returns the index of that item. If no item
    * is found, returns -1.
    *
@@ -182,7 +186,7 @@ public class TabFolder extends Composite {
 
   /////////////////////
   // Seletion handling
-  
+
   /**
    * Returns an array of <code>TabItem</code>s that are currently
    * selected in the receiver. An empty array indicates that no
@@ -190,7 +194,7 @@ public class TabFolder extends Composite {
    * <p>
    * Note: This is not the actual structure used by the receiver
    * to maintain its selection, so modifying the array will
-   * not affect the receiver. 
+   * not affect the receiver.
    * </p>
    * @return an array representing the selection
    *
@@ -233,7 +237,7 @@ public class TabFolder extends Composite {
     }
     setSelection( new TabItem[]{ item } );
   }
-  
+
   /**
    * Sets the receiver's selection to be the given array of items.
    * The current selected is first cleared, then the new items are
@@ -267,7 +271,7 @@ public class TabFolder extends Composite {
   }
 
   /**
-   * Selects the item at the given zero-relative index in the receiver. 
+   * Selects the item at the given zero-relative index in the receiver.
    * If the item at the index was already selected, it remains selected.
    * The current selection is first cleared, then the new items are
    * selected. Indices that are out of range are ignored.
@@ -284,7 +288,7 @@ public class TabFolder extends Composite {
     int count = itemHolder.size();
     if( index >= 0 && index < count ) {
       setSelection( index, false );
-    } 
+    }
   }
 
   private void setSelection( final int index, final boolean notify ) {
@@ -303,7 +307,7 @@ public class TabFolder extends Composite {
         updateSelectedItemControl();
         if( notify ) {
           TabItem item = ( TabItem )itemHolder.getItem( newIndex );
-          SelectionEvent event 
+          SelectionEvent event
             = new SelectionEvent( this, item, SelectionEvent.WIDGET_SELECTED );
           event.processEvent();
         }
@@ -329,7 +333,7 @@ public class TabFolder extends Composite {
     }
     return selectionIndex;
   }
-  
+
   ///////////////////////////////
   // Layout and size computations
 
@@ -397,7 +401,7 @@ public class TabFolder extends Composite {
 
   ///////////////////////////////////////
   // Listener registration/deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when the receiver's selection changes, by sending
@@ -448,10 +452,10 @@ public class TabFolder extends Composite {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
-  
+
   ///////////
   // Disposal
-  
+
   void releaseChildren() {
     TabItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -459,20 +463,20 @@ public class TabFolder extends Composite {
     }
     super.releaseChildren();
   }
-  
+
   ////////////////
   // Item creation
-  
+
   void createItem( final TabItem item, final int index ) {
     itemHolder.insert( item, index );
     if( getItemCount() == 1 ) {
       setSelection( 0, true );
     }
   }
-  
+
   /////////
   // Resize
-  
+
   void notifyResize( final Point oldSize ) {
     super.notifyResize( oldSize );
     updateSelectedItemControl();
@@ -491,7 +495,7 @@ public class TabFolder extends Composite {
 
   ///////////////////
   // Helping methods
-  
+
   private Point computeItemSize( final TabItem item ) {
     Point result = new Point( 0, 0 );
     String text = item.getText();
@@ -510,7 +514,7 @@ public class TabFolder extends Composite {
     }
     return result;
   }
-  
+
   private static int checkStyle( final int style ) {
     int result = checkBits( style, SWT.TOP, SWT.BOTTOM, 0, 0, 0, 0 );
     /*

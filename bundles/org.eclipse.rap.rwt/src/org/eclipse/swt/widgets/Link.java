@@ -75,6 +75,10 @@ public class Link extends Control {
     super( parent, style );
   }
 
+  void initState() {
+    state |= THEME_BACKGROUND;
+  }
+
   /**
    * Sets the receiver's text.
    * <p>

@@ -88,6 +88,14 @@ public class Text extends Scrollable {
     super( parent, checkStyle( style ) );
   }
 
+  void initState() {
+    if( ( style & SWT.READ_ONLY ) != 0 ) {
+      if( ( style & ( SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL ) ) == 0 ) {
+        state |= THEME_BACKGROUND;
+      }
+    }
+  }
+
   /**
    * Sets the contents of the receiver to the given string. If the receiver has style
    * SINGLE and the argument contains multiple lines of text, the result of this
@@ -295,7 +303,7 @@ public class Text extends Scrollable {
    */
   public void setSelection( final int start, final int end ) {
     checkWidget();
-    if( start >= 0 && end >= 0 && start <= end ) {
+    if( start >= 0 && end >= start ) {
       int validatedStart = Math.min( start, text.length() );
       int validatedEnd = Math.min( end, text.length() );
       selection.x = validatedStart;
@@ -699,7 +707,7 @@ public class Text extends Scrollable {
     return true;
   }
 
-  private String verifyText( final String text, final int start, final int end ) 
+  private String verifyText( final String text, final int start, final int end )
   {
     VerifyEvent event = new VerifyEvent( this );
     event.text = text;

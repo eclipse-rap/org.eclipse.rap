@@ -96,6 +96,12 @@ public class Button extends Control {
     super( parent, checkStyle( style ) );
   }
 
+  void initState() {
+    if( ( style & SWT.PUSH ) == 0 ) {
+      state |= THEME_BACKGROUND;
+    }
+  }
+
   ////////////////
   // Getter/setter
 

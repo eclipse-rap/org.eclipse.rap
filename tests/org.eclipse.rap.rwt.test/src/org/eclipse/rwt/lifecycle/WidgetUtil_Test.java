@@ -56,13 +56,28 @@ public class WidgetUtil_Test extends TestCase {
     assertEquals( valid, WidgetUtil.getVariant( shell ) );
     String withSpaces = "Foo Bar 23 42 ";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withSpaces );
-    assertNull( WidgetUtil.getVariant( shell ) );
+    try {
+      WidgetUtil.getVariant( shell );
+      fail( "IAE expected" );
+    } catch( RuntimeException e ) {
+      // expected
+    }
     String withMinus = "Foo-Bar";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withMinus );
-    assertNull( WidgetUtil.getVariant( shell ) );
+    try {
+      WidgetUtil.getVariant( shell );
+      fail( "IAE expected" );
+    } catch( RuntimeException e ) {
+      // expected
+    }
     String withColon = "Foo:Bar";
     shell.setData( WidgetUtil.CUSTOM_VARIANT, withColon );
-    assertNull( WidgetUtil.getVariant( shell ) );
+    try {
+      WidgetUtil.getVariant( shell );
+      fail( "IAE expected" );
+    } catch( RuntimeException e ) {
+      // expected
+    }
   }
 
   protected void setUp() throws Exception {
