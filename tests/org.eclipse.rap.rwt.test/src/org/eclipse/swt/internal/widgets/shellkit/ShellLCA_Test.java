@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import junit.framework.TestCase;
@@ -16,8 +17,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -232,7 +232,7 @@ public class ShellLCA_Test extends TestCase {
     RWTFixture.readDataAndProcessAction( display );
     assertSame( label, getActiveControl( shell ) );
   }
-  
+
   public void testShellActivate() {
     final StringBuffer activateEventLog = new StringBuffer();
     ActivateListener activateListener = new ActivateListener() {
@@ -284,7 +284,7 @@ public class ShellLCA_Test extends TestCase {
     RWTFixture.markInitialized( shellToActivate );
     activeShell.setActive();
     assertSame( activeShell, display.getActiveShell() );
-    
+
     // Simulate shell activation with event listeners
     ActivateEvent.addListener( shellToActivate, activateListener );
     ActivateEvent.addListener( activeShell, activateListener );
@@ -292,7 +292,7 @@ public class ShellLCA_Test extends TestCase {
     activeShell.addShellListener( shellListener );
     RWTFixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId  );
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, 
+    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED,
                               shellToActivateId );
     RWTFixture.executeLifeCycleFromServerThread( );
     assertSame( shellToActivate, display.getActiveShell() );
@@ -303,20 +303,39 @@ public class ShellLCA_Test extends TestCase {
     // activated Shell
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "setActive" ) );
   }
-  
-  public void testDisposeSingleShell() { 
-    Display display = new Display(); 
-    Shell shell = new Shell( display ); 
-    shell.open(); 
-    String displayId = DisplayUtil.getId( display ); 
-    String shellId = WidgetUtil.getId( shell ); 
-    RWTFixture.fakeNewRequest(); 
-    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId ); 
-    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId ); 
-    RWTFixture.executeLifeCycleFromServerThread( ); 
-    assertEquals( 0, display.getShells().length ); 
-    assertEquals( null, display.getActiveShell() ); 
+
+  public void testDisposeSingleShell() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.open();
+    String displayId = DisplayUtil.getId( display );
+    String shellId = WidgetUtil.getId( shell );
+    RWTFixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+    Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    assertEquals( 0, display.getShells().length );
+    assertEquals( null, display.getActiveShell() );
     assertEquals( true, shell.isDisposed() );
+  }
+
+  public void testAlpha() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setAlpha( 23 );
+    shell.open();
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( shell );
+    Fixture.fakeResponseWriter();
+    lca.renderInitialization( shell );
+    lca.renderChanges( shell );
+    String expected = "w.setOpacity( 0.09 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    //
+    Fixture.fakeResponseWriter();
+    shell.setAlpha( 250 );
+    lca.renderChanges( shell );
+    expected = "w.setOpacity( 0.98 );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   protected void setUp() throws Exception {

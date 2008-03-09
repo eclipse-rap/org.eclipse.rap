@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -27,20 +27,20 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
  * Instances of this class represent the "windows"
  * which the desktop or "window manager" is managing.
  * Instances that do not have a parent (that is, they
- * are built using the constructor, which takes a 
+ * are built using the constructor, which takes a
  * <code>Display</code> as the argument) are described
  * as <em>top level</em> shells. Instances that do have
  * a parent are described as <em>secondary</em> or
  * <em>dialog</em> shells.
  * <p>
- * Instances are always displayed in one of the maximized, 
+ * Instances are always displayed in one of the maximized,
  * minimized or normal states:
  * <ul>
  * <li>
  * When an instance is marked as <em>maximized</em>, the
  * window manager will typically resize it to fill the
  * entire visible area of the display, and the instance
- * is usually put in a state where it can not be resized 
+ * is usually put in a state where it can not be resized
  * (even if it has style <code>RESIZE</code>) until it is
  * no longer maximized.
  * </li><li>
@@ -98,19 +98,19 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
  * <dt><code>SHELL_TRIM</code></dt>
  * <dd>
  * the result of combining the constants which are required
- * to produce a typical application top level shell: (that 
+ * to produce a typical application top level shell: (that
  * is, <code>CLOSE | TITLE | MIN | MAX | RESIZE</code>)
  * </dd>
  * <dt><code>DIALOG_TRIM</code></dt>
  * <dd>
  * the result of combining the constants which are required
- * to produce a typical application dialog shell: (that 
+ * to produce a typical application dialog shell: (that
  * is, <code>TITLE | CLOSE | BORDER</code>)
  * </dd>
  * </dl>
  * </p>
  * <p>
- * Note: Only one of the styles APPLICATION_MODAL, MODELESS, 
+ * Note: Only one of the styles APPLICATION_MODAL, MODELESS,
  * PRIMARY_MODAL and SYSTEM_MODAL may be specified.
  * </p><p>
  * IMPORTANT: This class is not intended to be subclassed.
@@ -123,20 +123,21 @@ public class Shell extends Decorations {
   private static final int MODE_NONE = 0;
   private static final int MODE_MAXIMIZED = 1;
   private static final int MODE_MINIMIZED = 2;
-  
+
   private Control lastActive;
   private IShellAdapter shellAdapter;
   private String text = "";
   private Image image;
+  private int alpha = 0xFF;
   private Button defaultButton;
   private Button saveDefault;
   private Control savedFocus;  // TODO [rh] move to Decorations when exist
   private int mode = MODE_NONE;
-  
-  private Shell( final Display display, 
-                 final Shell parent, 
-                 final int style, 
-                 final int handle ) 
+
+  private Shell( final Display display,
+                 final Shell parent,
+                 final int style,
+                 final int handle )
   {
     super( checkParent( parent ) );
     if( display != null ) {
@@ -144,11 +145,11 @@ public class Shell extends Decorations {
     } else {
       this.display = Display.getCurrent();
     }
-    this.style = checkStyle( style ); 
+    this.style = checkStyle( style );
     state |= HIDDEN;
-    this.display.addShell( this );    
+    this.display.addShell( this );
   }
-  
+
   /**
    * Constructs a new instance of this class given only the style value
    * describing its behavior and appearance. This is equivalent to calling
@@ -161,7 +162,7 @@ public class Shell extends Decorations {
    * style constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param style the style of control to construct
    * @exception SWTException
    *                <ul>
@@ -194,7 +195,7 @@ public class Shell extends Decorations {
    * <p>
    * Note: Currently, null can be passed in for the display argument.
    * This has the effect of creating the shell on the currently active
-   * display if there is one. If there is no current display, the 
+   * display if there is one. If there is no current display, the
    * shell is created on a "default" display. <b>Passing in null as
    * the display argument is not considered to be good coding style,
    * and may not be supported in a future release of SWT.</b>
@@ -210,7 +211,7 @@ public class Shell extends Decorations {
   public Shell( final Display display ) {
     this( display, SWT.SHELL_TRIM );
   }
-  
+
   /**
    * Constructs a new instance of this class given the display
    * to create it on and a style value describing its behavior
@@ -218,7 +219,7 @@ public class Shell extends Decorations {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -226,7 +227,7 @@ public class Shell extends Decorations {
    * </p><p>
    * Note: Currently, null can be passed in for the display argument.
    * This has the effect of creating the shell on the currently active
-   * display if there is one. If there is no current display, the 
+   * display if there is one. If there is no current display, the
    * shell is created on a "default" display. <b>Passing in null as
    * the display argument is not considered to be good coding style,
    * and may not be supported in a future release of SWT.</b>
@@ -239,7 +240,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
-   * 
+   *
    * @see SWT#BORDER
    * @see SWT#CLOSE
    * @see SWT#MIN
@@ -257,14 +258,14 @@ public class Shell extends Decorations {
   public Shell( final Display display, final int style ) {
     this ( display, null, style, 0 );
   }
-  
+
   /**
    * Constructs a new instance of this class given only its
    * parent. It is created with style <code>SWT.DIALOG_TRIM</code>.
    * <p>
    * Note: Currently, null can be passed in for the parent.
    * This has the effect of creating the shell on the currently active
-   * display if there is one. If there is no current display, the 
+   * display if there is one. If there is no current display, the
    * shell is created on a "default" display. <b>Passing in null as
    * the parent is not considered to be good coding style,
    * and may not be supported in a future release of SWT.</b>
@@ -273,7 +274,7 @@ public class Shell extends Decorations {
    * @param parent a shell which will be the parent of the new instance
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the parent is disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the parent is disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
@@ -290,7 +291,7 @@ public class Shell extends Decorations {
    * <p>
    * The style value is either one of the style constants defined in
    * class <code>SWT</code> which is applicable to instances of this
-   * class, or must be built by <em>bitwise OR</em>'ing together 
+   * class, or must be built by <em>bitwise OR</em>'ing together
    * (that is, using the <code>int</code> "|" operator) two or more
    * of those <code>SWT</code> style constants. The class description
    * lists the style constants that are applicable to the class.
@@ -298,7 +299,7 @@ public class Shell extends Decorations {
    * </p><p>
    * Note: Currently, null can be passed in for the parent.
    * This has the effect of creating the shell on the currently active
-   * display if there is one. If there is no current display, the 
+   * display if there is one. If there is no current display, the
    * shell is created on a "default" display. <b>Passing in null as
    * the parent is not considered to be good coding style,
    * and may not be supported in a future release of SWT.</b>
@@ -308,13 +309,13 @@ public class Shell extends Decorations {
    * @param style the style of control to construct
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the parent is disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the parent is disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
-   * 
+   *
    * @see SWT#BORDER
    * @see SWT#CLOSE
    * @see SWT#MIN
@@ -334,13 +335,13 @@ public class Shell extends Decorations {
   public Shell( final Shell parent, final int style ) {
     this( parent != null ? parent.display : null, parent, style, 0 );
   }
-  
+
   public Shell getShell() {
     return this;
   }
 
   /**
-   * Returns an array containing all shells which are 
+   * Returns an array containing all shells which are
    * descendents of the receiver.
    * <p>
    * @return the dialog shells
@@ -378,11 +379,11 @@ public class Shell extends Decorations {
   }
 
   /**
-   * If the receiver is visible, moves it to the top of the 
-   * drawing order for the display on which it was created 
-   * (so that all other shells on that display, which are not 
-   * the receiver's children will be drawn behind it) and asks 
-   * the window manager to make the shell active 
+   * If the receiver is visible, moves it to the top of the
+   * drawing order for the display on which it was created
+   * (so that all other shells on that display, which are not
+   * the receiver's children will be drawn behind it) and asks
+   * the window manager to make the shell active
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -408,7 +409,7 @@ public class Shell extends Decorations {
 
   /////////////////////
   // Shell measurements
-  
+
   // TODO [rst] Move to class Decorations, as soon as it exists
   public Rectangle getClientArea() {
     checkWidget();
@@ -419,19 +420,19 @@ public class Shell extends Decorations {
     hTopTrim += getTitleBarHeight();
     hTopTrim += getMenuBarHeight();
     int border = getBorderWidth();
-    
+
     ///////////////////////////////////////////////
     // TODO [fappel] experimental (rounded corners)
     //int hBottomTrim = 20;
     int hBottomTrim = 0;
     ///////////////////////////////////////////////
-    
+
     return new Rectangle( padding.left,
                           hTopTrim + padding.top,
                           bounds.width - padding.left - padding.right - border * 2,
                           bounds.height -hBottomTrim - hTopTrim - padding.top - padding.bottom - border * 2 );
   }
-  
+
   // TODO [rst] Move to class Decorations, as soon as it exists
   public Rectangle computeTrim( final int x,
                                 final int y,
@@ -451,7 +452,7 @@ public class Shell extends Decorations {
                                     height + hTopTrim + padding.top + padding.bottom + border * 2 );
     return rect;
   }
-  
+
   private Rectangle getMenuBounds() {
     Rectangle result = null;
     if( getMenuBar() != null ) {
@@ -467,39 +468,39 @@ public class Shell extends Decorations {
     }
     return result;
   }
-  
+
   private int getTitleBarHeight() {
     ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getTitleBarHeight( this );
   }
-  
+
   private QxBoxDimensions getTitleBarMargin() {
     ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getTitleBarMargin( this );
   }
-  
+
   private int getMenuBarHeight() {
     ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getMenuBarHeight( this );
   }
-  
+
   // margin of the client area
   private QxBoxDimensions getPadding() {
     ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getPadding( this );
   }
-  
+
   private ShellThemeAdapter getShellThemeAdapter() {
     ThemeManager themeMgr = ThemeManager.getInstance();
     IThemeAdapter themeAdapter = themeMgr.getThemeAdapter( getClass() );
     ShellThemeAdapter adapter = ( ShellThemeAdapter )themeAdapter;
     return adapter;
   }
-  
+
   Composite findDeferredControl() {
     return layoutCount > 0 ? this : null;
   }
-  
+
   /////////////////////
   // Adaptable override
 
@@ -540,7 +541,7 @@ public class Shell extends Decorations {
       }
     }
   }
-  
+
   public boolean isEnabled() {
     checkWidget();
     return getEnabled ();
@@ -553,19 +554,19 @@ public class Shell extends Decorations {
     checkWidget();
     return getVisible();
   }
-  
+
   public void setVisible( final boolean visible ) {
     checkWidget();
     boolean wasVisible = getVisible();
     super.setVisible( visible );
-    // Emulate OS behavior: in SWT, a layout is triggered during 
+    // Emulate OS behavior: in SWT, a layout is triggered during
     // Shell#setVisible(true)
     if( visible && !wasVisible && !isDisposed() ) {
       changed( getChildren() );
       layout( true, true );
     }
   }
-  
+
   /**
    * Moves the receiver to the top of the drawing order for
    * the display on which it was created (so that all other
@@ -597,7 +598,7 @@ public class Shell extends Decorations {
       setFocus();
     }
     // fire shell activated event
-    // TODO: is there any possibility where it should not be fired on open() ?  
+    // TODO: is there any possibility where it should not be fired on open() ?
     ShellEvent shellEvent = new ShellEvent( this, ShellEvent.SHELL_ACTIVATED );
     shellEvent.processEvent();
   }
@@ -621,7 +622,7 @@ public class Shell extends Decorations {
     checkWidget();
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        ShellEvent event 
+        ShellEvent event
           = new ShellEvent( Shell.this, ShellEvent.SHELL_CLOSED );
         event.processEvent();
         if( event.doit ) {
@@ -633,11 +634,11 @@ public class Shell extends Decorations {
 
   ///////////////////////////
   // Title bar text and image
-  
+
   /**
    * Sets the receiver's text, which is the string that the
    * window manager will typically display as the receiver's
-   * <em>title</em>, to the argument, which must not be null. 
+   * <em>title</em>, to the argument, which must not be null.
    *
    * @param text the new text
    *
@@ -657,11 +658,11 @@ public class Shell extends Decorations {
     }
     this.text = text;
   }
-  
+
   /**
    * Returns the receiver's text, which is the string that the
    * window manager will typically display as the receiver's
-   * <em>title</em>. If the text has not previously been set, 
+   * <em>title</em>. If the text has not previously been set,
    * returns an empty string.
    *
    * @return the text
@@ -683,11 +684,11 @@ public class Shell extends Decorations {
    * manager when the instance is marked as iconified, and
    * may also be displayed somewhere in the trim when the
    * instance is in normal or maximized states.
-   * 
+   *
    * @param image the new image (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the image has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -699,9 +700,9 @@ public class Shell extends Decorations {
     checkWidget();
     this.image = image;
   }
-  
+
   /**
-   * Returns the receiver's image if it had previously been 
+   * Returns the receiver's image if it had previously been
    * set using <code>setImage()</code>. The image is typically
    * displayed by the window manager when the instance is
    * marked as iconified, and may also be displayed somewhere
@@ -713,7 +714,7 @@ public class Shell extends Decorations {
    * access to a window manager provided, "default" image
    * even if one exists.
    * </p>
-   * 
+   *
    * @return the image
    *
    * @exception SWTException <ul>
@@ -726,15 +727,15 @@ public class Shell extends Decorations {
     checkWidget();
     return image;
   }
-  
+
   //////////////////////////////
   // Methods for default button
-  
+
   /**
    * If the argument is not null, sets the receiver's default
    * button to the argument, and if the argument is null, sets
    * the receiver's default button to the first button which
-   * was set as the receiver's default button (called the 
+   * was set as the receiver's default button (called the
    * <em>saved default button</em>). If no default button had
    * previously been set, or the saved default button was
    * disposed, the receiver's default button will be set to
@@ -747,7 +748,7 @@ public class Shell extends Decorations {
    * @param button the new default button
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the button has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the button has been disposed</li>
    *    <li>ERROR_INVALID_PARENT - if the control is not in the same widget tree</li>
    * </ul>
    * @exception SWTException <ul>
@@ -823,9 +824,47 @@ public class Shell extends Decorations {
     return defaultButton;
   }
 
-  /////////////////////////////////////////////////
+  /**
+   * Sets the receiver's alpha value.
+   * <p>
+   * This operation requires the operating system's advanced
+   * widgets subsystem which may not be available on some
+   * platforms.
+   * </p>
+   * @param alpha the alpha value
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.1
+   */
+  public void setAlpha( final int alpha ) {
+    checkWidget();
+    this.alpha = alpha & 0xFF;
+  }
+
+  /**
+   * Returns the receiver's alpha value.
+   *
+   * @return the alpha value
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.1
+   */
+  public int getAlpha() {
+    checkWidget();
+    return alpha;
+  }
+
+  // ///////////////////////////////////////////////
   // Event listener registration and deregistration
-  
+
   /**
    * Adds the listener to the collection of listeners who will
    * be notified when operations are performed on the receiver,
@@ -872,9 +911,9 @@ public class Shell extends Decorations {
 
   ///////////
   // Disposal
-  
+
   final void releaseParent() {
-    // Do not call super.releaseParent() 
+    // Do not call super.releaseParent()
     // This method would try to remove a child-shell from its ControlHolder
     // but shells are currently not added to the ControlHolder of its parent
     display.removeShell( this );
@@ -894,12 +933,12 @@ public class Shell extends Decorations {
     if( lastActive != control ) {
       // Compute the list of controls to be activated and deactivated by finding
       // the first common parent control.
-      Control[] activate 
+      Control[] activate
         = ( control == null ) ? new Control[ 0 ] : control.getPath();
-      Control[] deactivate 
+      Control[] deactivate
         = lastActive == null ? new Control[ 0 ] : lastActive.getPath();
       lastActive = control;
-      
+
       int index = 0;
       int length = Math.min( activate.length, deactivate.length );
       while( index < length && activate[ index ] == deactivate[ index ] ) {
@@ -931,7 +970,7 @@ public class Shell extends Decorations {
   final void setSavedFocus( final Control control ) {
     savedFocus = control;
   }
-  
+
   // TODO [rh] move to Decorations as soon as exists
   final void saveFocus() {
     Control control = display.getFocusControl();
@@ -939,7 +978,7 @@ public class Shell extends Decorations {
       setSavedFocus( control );
     }
   }
-  
+
   // TODO [rh] move to Decorations as soon as exists
   final boolean restoreFocus() {
     if( savedFocus != null && savedFocus.isDisposed() ) {
@@ -951,13 +990,13 @@ public class Shell extends Decorations {
     }
     return result;
   }
-  
+
   private void bringToTop() {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setFocusControl( this );
     // When a Shell is opened client-side the widget that is currently focused
-    // loses its focus. This is unwanted in the case that the request that 
+    // loses its focus. This is unwanted in the case that the request that
     // opened the Shell sets the focus to some widget after opening the Shell.
     // The fix is to force the DisplayLCA to issue JavaScript that sets the
     // focus on the server-side focused widget.
@@ -966,7 +1005,7 @@ public class Shell extends Decorations {
 
   ////////////////
   // Tab traversal
-  
+
   private boolean traverseGroup( final boolean next ) {
     // TODO [rh] fake implementation
     boolean result = false;
@@ -975,7 +1014,7 @@ public class Shell extends Decorations {
     }
     return result;
   }
-  
+
   //////////////////////
   // minimize / maximize
 
@@ -1015,7 +1054,7 @@ public class Shell extends Decorations {
       mode &= ~MODE_MINIMIZED;
     }
   }
-  
+
   /**
    * Sets the maximized state of the receiver.
    * If the argument is <code>true</code> causes the receiver
@@ -1051,10 +1090,10 @@ public class Shell extends Decorations {
       mode &= ~MODE_MAXIMIZED;
     }
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is currently
-   * minimized, and false otherwise. 
+   * minimized, and false otherwise.
    * <p>
    *
    * @return the minimized state
@@ -1069,10 +1108,10 @@ public class Shell extends Decorations {
   public boolean getMinimized() {
     return ( this.mode & MODE_MINIMIZED ) != 0;
   }
-  
+
   /**
    * Returns <code>true</code> if the receiver is currently
-   * maximized, and false otherwise. 
+   * maximized, and false otherwise.
    * <p>
    *
    * @return the maximized state
@@ -1090,7 +1129,7 @@ public class Shell extends Decorations {
 
   ///////////////////
   // Widget overrides
-  
+
   // TODO [rh] move to class Decorations as soon as it exists
   String getNameText() {
     return getText();
@@ -1098,16 +1137,16 @@ public class Shell extends Decorations {
 
   ///////////////////
   // check... methods
-  
+
   // TODO [rh] move to class Decorations as soon as it exists
   static int Decorations_checkStyle( final int style ) {
     int result = style;
     if( ( result & SWT.NO_TRIM ) != 0 ) {
-      int trim = ( SWT.CLOSE 
-                 | SWT.TITLE 
-                 | SWT.MIN 
-                 | SWT.MAX 
-                 | SWT.RESIZE 
+      int trim = ( SWT.CLOSE
+                 | SWT.TITLE
+                 | SWT.MIN
+                 | SWT.MAX
+                 | SWT.RESIZE
                  | SWT.BORDER );
       result &= ~trim;
     }
@@ -1119,7 +1158,7 @@ public class Shell extends Decorations {
     }
     return result;
   }
-  
+
   private static int checkStyle( final int style ) {
     return Decorations_checkStyle( style );
   }

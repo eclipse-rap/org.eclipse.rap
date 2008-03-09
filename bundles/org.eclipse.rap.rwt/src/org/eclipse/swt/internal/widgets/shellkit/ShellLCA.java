@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,11 @@ import org.eclipse.swt.widgets.*;
 public final class ShellLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Shell";
-  private static final String TYPE_POOL_ID = ShellLCA.class.getName();
+//  private static final String TYPE_POOL_ID = ShellLCA.class.getName();
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
+  private static final String PROP_ALPHA = "alpha";
   static final String PROP_ACTIVE_CONTROL = "activeControl";
   static final String PROP_ACTIVE_SHELL = "activeShell";
   static final String PROP_MODE = "mode";
@@ -53,6 +54,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
     adapter.preserve( PROP_TEXT, shell.getText() );
     adapter.preserve( PROP_IMAGE, shell.getImage() );
+    adapter.preserve( PROP_ALPHA, Integer.valueOf( shell.getAlpha() ) );
     adapter.preserve( PROP_MODE, getMode( shell ) );
     adapter.preserve( PROP_SHELL_LISTENER,
                       Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
@@ -105,6 +107,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( shell );
     writeImage( shell );
     writeText( shell );
+    writeAlpha( shell );
     // Important: Order matters, writing setActive() before open() leads to
     //            strange behavior!
     writeOpen( shell );
@@ -149,6 +152,19 @@ public final class ShellLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( shell );
       text = WidgetLCAUtil.escapeText( text, false );
       writer.set( JSConst.QX_FIELD_CAPTION, text );
+    }
+  }
+
+  private void writeAlpha( final Shell shell ) throws IOException {
+    int alpha = shell.getAlpha();
+    if( WidgetLCAUtil.hasChanged( shell,
+                                  PROP_ALPHA,
+                                  Integer.valueOf( alpha ),
+                                  Integer.valueOf( 0xFF ) ) )
+    {
+      JSWriter writer = JSWriter.getWriterFor( shell );
+      float opacity = ( ( alpha & 0xFF ) * 1000 / 0xFF ) / 1000.0f;
+      writer.set( "opacity", opacity );
     }
   }
 

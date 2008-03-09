@@ -1,10 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
- * reserved. This program and the accompanying materials are made available
- * under the terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -18,15 +20,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 public class ShellTab extends ExampleTab {
 
   private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
 
-  private java.util.List shells;
+  private final java.util.List shells;
   private int shellCounter;
   private final ShellAdapter confirmCloseListener;
   private Image shellImage;
@@ -36,6 +37,8 @@ public class ShellTab extends ExampleTab {
   private Button showClientAreaButton;
   private Button confirmCloseButton;
 //  private Button customBgColorButton;
+
+  private int alpha = 255;
 
   public ShellTab( final CTabFolder topFolder ) {
     super( topFolder, "Shell" );
@@ -69,6 +72,7 @@ public class ShellTab extends ExampleTab {
     showClientAreaButton = createPropertyButton( "Show client area" );
     confirmCloseButton = createPropertyButton( "Confirm Close" );
 //    customBgColorButton = createPropertyButton( "Custom background" );
+    createAlphaControls( parent );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -92,9 +96,9 @@ public class ShellTab extends ExampleTab {
         if( shells.length > 0 ) {
           shells[ 0 ].open();
         }
-      }  
+      }
     } );
-    
+
     Button showAllButton = new Button( parent, SWT.PUSH );
     showAllButton.setText( "Show All Shells" );
     showAllButton.addSelectionListener( new SelectionAdapter() {
@@ -102,7 +106,7 @@ public class ShellTab extends ExampleTab {
         setShellsVisible( true );
       }
     } );
-    
+
     Button hideAllButton = new Button( parent, SWT.PUSH );
     hideAllButton.setText( "Hide All Shells" );
     hideAllButton.addSelectionListener( new SelectionAdapter() {
@@ -160,6 +164,26 @@ public class ShellTab extends ExampleTab {
       }} );
   }
 
+  private void createAlphaControls( final Composite parent ) {
+    Composite comp = new Composite( parent, SWT.NONE );
+    comp.setLayout( new GridLayout( 3, false ) );
+    Label label = new Label( comp, SWT.NONE );
+    label.setText( "Alpha" );
+    final Text text = new Text( comp, SWT.BORDER );
+    text.setText( "255" );
+    Button button = new Button( comp, SWT.PUSH );
+    button.setText( "set" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent e ) {
+        try {
+          alpha = Integer.parseInt( text.getText() );
+        } catch( NumberFormatException e1 ) {
+          // ignore
+        }
+      }
+    } );
+  }
+
   private void createShell() {
     Shell shell;
     if( createAsDialogButton.getSelection() ) {
@@ -178,6 +202,7 @@ public class ShellTab extends ExampleTab {
     }
     shellCounter++;
     shell.setText( "Test Shell " + shellCounter );
+    shell.setAlpha( alpha );
     shell.setImage( shellImage );
     if( confirmCloseButton.getSelection() ) {
       shell.addShellListener( confirmCloseListener );
@@ -362,7 +387,7 @@ public class ShellTab extends ExampleTab {
       shells[ i ].setMaximized( maximized );
     }
   }
-  
+
   private Shell[] getShells() {
     // remove eventually disposed of shells (may happen when shells without
     // ShellListeners are created and close by user interaction)

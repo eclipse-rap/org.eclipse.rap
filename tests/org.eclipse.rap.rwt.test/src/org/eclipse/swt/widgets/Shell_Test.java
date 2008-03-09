@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -85,7 +85,7 @@ public class Shell_Test extends TestCase {
     Rectangle clientAreaWithMenuBar = shell.getClientArea();
     assertTrue( clientAreaWithoutMenuBar.y < clientAreaWithMenuBar.y );
   }
-  
+
   public void testConstructor() {
     Display display = new Display();
     Shell shell = new Shell( ( Display )null, SWT.NONE );
@@ -96,13 +96,13 @@ public class Shell_Test extends TestCase {
 
     shell = new Shell( display, SWT.NO_TRIM | SWT.CLOSE );
     assertTrue( ( shell.getStyle() & SWT.CLOSE ) == 0 );
-    
+
     shell = new Shell( ( Shell )null );
     assertEquals( SWT.DIALOG_TRIM, shell.getStyle() );
 
     shell = new Shell( display, SWT.MIN );
     assertTrue( ( shell.getStyle() & SWT.CLOSE ) != 0 );
-    
+
     try {
       Shell disposedShell = new Shell( display, SWT.NONE );
       disposedShell.dispose();
@@ -110,9 +110,9 @@ public class Shell_Test extends TestCase {
       fail( "The constructor mut not accept a disposed shell" );
     } catch( IllegalArgumentException e ) {
       // expected
+    }
   }
-  }
-  
+
   public void testInitialValues() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -124,18 +124,28 @@ public class Shell_Test extends TestCase {
     assertEquals( null, shellAdapter.getActiveControl() );
     // Shell initially has no layout
     assertEquals( null, shell.getLayout() );
-    // Text must be an empty string 
+    // Text must be an empty string
     assertEquals( "", shell.getText() );
     // Enabled
     assertEquals( true, shell.getEnabled() );
-    // Shell is visible after open(), but not direectly after creation
+    // Shell is visible after open(), but not directly after creation
     assertEquals( false, shell.getVisible() );
     assertEquals( false, shell.isVisible() );
     // The Shell(Display) constructor must use style SHELL_TRIM
     Shell trimShell = new Shell( display );
     assertEquals( SWT.SHELL_TRIM, trimShell.getStyle() );
   }
-  
+
+  public void testAlpha() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    assertEquals( 255, shell.getAlpha() );
+    shell.setAlpha( 23 );
+    assertEquals( 23, shell.getAlpha() );
+    shell.setAlpha( 0 );
+    assertEquals( 0, shell.getAlpha() );
+  }
+
   public void testOpen() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -143,7 +153,7 @@ public class Shell_Test extends TestCase {
     assertEquals( true, shell.getVisible() );
     assertEquals( true, shell.isVisible() );
   }
-  
+
   public void testLayoutOnSetVisible() {
     // ensure that layout is trigered while opening a shell, more specifically
     // during setVisible( true )
@@ -174,7 +184,7 @@ public class Shell_Test extends TestCase {
     shell.setVisible( false );
     assertEquals( "", log.toString() );
   }
-  
+
   public void testDisposeChildShell() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -183,7 +193,7 @@ public class Shell_Test extends TestCase {
     childShell.dispose();
     assertTrue( childShell.isDisposed() );
   }
-  
+
   public void testCreateDescendantShell() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -191,7 +201,7 @@ public class Shell_Test extends TestCase {
     assertEquals( 0, shell.getChildren().length );
     assertSame( shell, descendantShell.getParent() );
   }
-  
+
   public void testFocusAfterReEnable() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -204,13 +214,13 @@ public class Shell_Test extends TestCase {
     shell.setEnabled( true );
     assertEquals( focusedControl, display.getFocusControl() );
   }
-  
+
   public void testInvalidDefaultButton() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Shell anotherShell = new Shell( display );
     Button anotherButton = new Button( anotherShell, SWT.PUSH );
-    
+
     // Setting button that belongs to different shell causes exception
     try {
       shell.setDefaultButton( anotherButton );
@@ -218,7 +228,7 @@ public class Shell_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    
+
     // Setting button that is disposed causes exception
     try {
       Button disposedButton = new Button( shell, SWT.PUSH );
@@ -228,12 +238,12 @@ public class Shell_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    
-    // Set a default button for the following tests 
+
+    // Set a default button for the following tests
     Button defaultButton = new Button( shell, SWT.PUSH );
     shell.setDefaultButton( defaultButton );
     assertSame( defaultButton, shell.getDefaultButton() );
-    
+
     // Try to set radio-button as default is ignored
     Button radio = new Button( shell, SWT.RADIO );
     shell.setDefaultButton( radio );
@@ -244,29 +254,29 @@ public class Shell_Test extends TestCase {
     shell.setDefaultButton( check );
     assertSame( defaultButton, shell.getDefaultButton() );
   }
-  
+
   public void testSaveDefaultButton() {
     Display display = new Display();
     Shell shell = new Shell( display );
     Button button1 = new Button( shell, SWT.PUSH );
     Button button2 = new Button( shell, SWT.PUSH );
-    
+
     shell.setDefaultButton( button1 );
     assertSame( button1, shell.getDefaultButton() );
     shell.setDefaultButton( null );
     assertSame( button1, shell.getDefaultButton() );
-    
+
     shell.setDefaultButton( button1 );
     shell.setDefaultButton( button2 );
     assertSame( button2, shell.getDefaultButton() );
     shell.setDefaultButton( null );
     assertSame( button2, shell.getDefaultButton() );
-    
+
     button2.dispose();
     shell.setDefaultButton( null );
     assertEquals( null, shell.getDefaultButton() );
   }
-  
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     RWTFixture.fakePhase( PhaseId.PROCESS_ACTION );
