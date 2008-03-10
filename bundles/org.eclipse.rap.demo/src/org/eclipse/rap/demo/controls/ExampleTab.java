@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH. All rights
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH. All rights
  * reserved. This program and the accompanying materials are made available
  * under the terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -19,10 +19,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+
 
 abstract class ExampleTab {
 
@@ -38,6 +38,7 @@ abstract class ExampleTab {
   private Font font;
   private int fgIndex;
   private int bgIndex;
+  private boolean showBgImage = false;
 
   private boolean visible = true;
   private boolean enabled = true;
@@ -56,6 +57,10 @@ abstract class ExampleTab {
   public static final Color FG_COLOR_RED = Graphics.getColor( 194, 0, 23 );
   public static final Color FG_COLOR_BLUE = Graphics.getColor( 28, 96, 141 );
   public static final Color FG_COLOR_ORANGE = Graphics.getColor( 249, 158, 0 );
+
+  public static Image BG_PATTERN_IMAGE
+    = Graphics.getImage( "resources/pattern.png",
+                         ExampleTab.class.getClassLoader() );
 
   public ExampleTab( final CTabFolder parent, final String title ) {
     folder = parent;
@@ -89,6 +94,7 @@ abstract class ExampleTab {
     if( bgColorChooser != null ) {
       updateBgColor();
     }
+    updateBgImage();
     if( fontChooser != null ) {
       // Control control = ( Control )controls.get( 0 );
       // font = control.getFont();
@@ -259,15 +265,15 @@ abstract class ExampleTab {
   }
 
   /**
-   * Creates a button to change the foreground color of the registered
+   * Creates a button to change the foreground color of all registered
    * controls.
    *
-   * @return the created checkbutton.
+   * @return the created button
    */
   protected Button createFgColorButton( ) {
     fgColorChooser = new ColorChooser();
     final Button button = new Button( styleComp, SWT.PUSH );
-    button.setText( "Fg Color" );
+    button.setText( "Foreground" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         fgIndex = ( fgIndex + 1 ) % MAX_COLORS;
@@ -279,19 +285,37 @@ abstract class ExampleTab {
   }
 
   /**
-   * Creates a button to change the background color of the registered
+   * Creates a button to change the background color of all registered
    * controls.
    *
-   * @return the created checkbutton.
+   * @return the created button
    */
-  protected Button createBgColorButton( ) {
+  protected Button createBgColorButton() {
     bgColorChooser = new ColorChooser();
     final Button button = new Button( styleComp, SWT.PUSH );
-    button.setText( "Bg Color" );
+    button.setText( "Background" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         bgIndex = ( bgIndex + 1 ) % MAX_COLORS;
         updateBgColor();
+      }
+    } );
+    return button;
+  }
+
+  /**
+   * Creates a checkbox that controls whether a background image is set on the
+   * registered controls.
+   *
+   * @return the created checkbox
+   */
+  protected Button createBgImageButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Background Image" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        showBgImage = button.getSelection();
+        updateBgImage();
       }
     } );
     return button;
@@ -423,6 +447,14 @@ abstract class ExampleTab {
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
       control.setBackground( bgColors[ bgIndex ] );
+    }
+  }
+
+  private void updateBgImage() {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      control.setBackgroundImage( showBgImage ? BG_PATTERN_IMAGE : null );
     }
   }
 

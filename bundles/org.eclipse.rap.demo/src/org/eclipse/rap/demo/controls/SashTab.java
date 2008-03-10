@@ -1,10 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
- * reserved. This program and the accompanying materials are made available
- * under the terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -14,6 +16,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
+
 
 public class SashTab extends ExampleTab {
 
@@ -27,6 +30,8 @@ public class SashTab extends ExampleTab {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
     createVisibilityButton();
     createEnablementButton();
+    createBgColorButton();
+    createBgImageButton();
   }
 
   protected void createExampleControls( final Composite top ) {

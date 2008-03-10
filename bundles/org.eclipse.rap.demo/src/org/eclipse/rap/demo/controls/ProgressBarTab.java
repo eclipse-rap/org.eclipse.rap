@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
- * reserved. This program and the accompanying materials are made available
- * under the terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rwt.lifecycle.UICallBack;
@@ -32,11 +35,11 @@ public class ProgressBarTab extends ExampleTab {
 
   protected void createExampleControls( final Composite parent ) {
     int style = getStyle() == 0 ? SWT.HORIZONTAL : getStyle();
-    
+
     parent.setLayout( new GridLayout() );
     final ProgressBar progressBar = new ProgressBar( parent, style );
     progressBar.setMaximum( COUNT );
-    
+
     final Button button = new Button( parent, SWT.PUSH );
     button.setText( "Start Background Process" );
     button.addSelectionListener( new SelectionAdapter() {
@@ -48,13 +51,13 @@ public class ProgressBarTab extends ExampleTab {
         Thread thread = new Thread( createRunnable( progressBar, button ) );
         thread.setDaemon( true );
         thread.start();
-        
+
       }
     } );
     button.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent evt ) {
         Point size = button.getSize();
-        int width = Math.max( ( int )( size.x + size.x * 0.25 ), 
+        int width = Math.max( ( int )( size.x + size.x * 0.25 ),
                               progressBar.getSize().x );
         int height = Math.max( size.y, progressBar.getSize().y );
         if( ( progressBar.getStyle() & SWT.HORIZONTAL ) != 0 ) {

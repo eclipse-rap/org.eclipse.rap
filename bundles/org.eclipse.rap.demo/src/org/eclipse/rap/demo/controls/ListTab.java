@@ -1,10 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH. All rights
  * reserved. This program and the accompanying materials are made available
  * under the terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -72,6 +73,7 @@ public class ListTab extends ExampleTab {
     createEnablementButton();
     createFgColorButton();
     createBgColorButton();
+    createBgImageButton();
     createFontChooser();
     createSelectionButton();
   }
@@ -79,7 +81,7 @@ public class ListTab extends ExampleTab {
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 2, true ) );
     int style = getStyle();
-    
+
     list = new List( parent, style );
     list.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     Menu menu = new Menu( list );
@@ -98,7 +100,7 @@ public class ListTab extends ExampleTab {
       }
     } );
     registerControl( list );
-    
+
     // List 2
     List list2 = new List( parent, style );
     list2.add( "Item 1" );
@@ -107,7 +109,7 @@ public class ListTab extends ExampleTab {
     list2.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     registerControl( list2 );
     createPopupMenu( parent.getShell(), list2 );
-    
+
     // Code
     int separatorStyle = SWT.SEPARATOR | SWT.HORIZONTAL | SWT.SHADOW_OUT;
     Label separator = new Label( parent, separatorStyle );

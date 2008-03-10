@@ -50,6 +50,7 @@ public class ButtonTab extends ExampleTab {
     createImageButton( parent );
     createFgColorButton();
     createBgColorButton();
+    createBgImageButton();
     createFontChooser();
     Button button = createPropertyButton( "Toggle Button", SWT.PUSH );
     button.setToolTipText( "Remote control the toggle button" );

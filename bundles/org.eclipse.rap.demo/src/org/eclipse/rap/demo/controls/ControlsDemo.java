@@ -87,7 +87,6 @@ public class ControlsDemo implements IEntryPoint {
       new ProgressBarTab( topFolder ),
       new ErrorHandlingTab( topFolder ),
       new NLSTab( topFolder ),
-      new BackgroundModeTab( topFolder ),
       new VariantsTab( topFolder )
     };
     tabs[ 0 ].createContents();
