@@ -1202,7 +1202,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : tv.getBoxDimensions( "group.label.padding" ),
         margin : tv.getBoxDimensions( "group.label.margin" ),
         font : "group.label.font",
-        backgroundColor : tv.getColor( "group.background" ),
+        backgroundColor : tv.getColor( "group.background" )
 // TODO [rst] Group label is not grayed out in SWT - check other toolkits
 //          textColor : states.disabled ? "widget.graytext" : "undefined"
       };
