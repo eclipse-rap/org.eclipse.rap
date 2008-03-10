@@ -54,7 +54,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
     adapter.preserve( PROP_TEXT, shell.getText() );
     adapter.preserve( PROP_IMAGE, shell.getImage() );
-    adapter.preserve( PROP_ALPHA, Integer.valueOf( shell.getAlpha() ) );
+    adapter.preserve( PROP_ALPHA, new Integer( shell.getAlpha() ) );
     adapter.preserve( PROP_MODE, getMode( shell ) );
     adapter.preserve( PROP_SHELL_LISTENER,
                       Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
@@ -159,8 +159,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
     int alpha = shell.getAlpha();
     if( WidgetLCAUtil.hasChanged( shell,
                                   PROP_ALPHA,
-                                  Integer.valueOf( alpha ),
-                                  Integer.valueOf( 0xFF ) ) )
+                                  new Integer( alpha ),
+                                  new Integer( 0xFF ) ) )
     {
       JSWriter writer = JSWriter.getWriterFor( shell );
       float opacity = ( ( alpha & 0xFF ) * 1000 / 0xFF ) / 1000.0f;
