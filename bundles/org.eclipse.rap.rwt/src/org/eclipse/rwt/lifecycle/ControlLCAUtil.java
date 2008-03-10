@@ -17,9 +17,9 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
@@ -58,6 +58,7 @@ public class ControlLCAUtil {
   private static final String PROP_ACTIVATE_LISTENER = "activateListener";
   private static final String PROP_FOCUS_LISTENER = "focusListener";
   private static final String PROP_TAB_INDEX = "tabIndex";
+  private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
 
   static final int MAX_STATIC_ZORDER = 300;
 
@@ -77,6 +78,7 @@ public class ControlLCAUtil {
    * <li>enabled</li>
    * <li>foreground</li>
    * <li>background</li>
+   * <li>background image</li>
    * <li>font</li>
    * <li>whether ControlListeners are registered</li>
    * <li>whether ActivateListeners are registered</li>
@@ -105,6 +107,7 @@ public class ControlLCAUtil {
     WidgetLCAUtil.preserveBackground( control,
                                       controlAdapter.getUserBackground(),
                                       controlAdapter.getBackgroundTransparency() );
+    preserveBackgroundImage( control );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
     adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
@@ -266,6 +269,7 @@ public class ControlLCAUtil {
    * <li>enabled</li>
    * <li>foreground</li>
    * <li>background</li>
+   * <li>background image</li>
    * <li>font</li>
    * <!--li>whether ControlListeners are registered</li-->
    * <li>whether ActivateListeners are registered</li>
@@ -286,6 +290,7 @@ public class ControlLCAUtil {
     writeEnabled( control );
     writeForeground( control );
     writeBackground( control );
+    writeBackgroundImage( control );
     writeFont( control );
 //    TODO [rst] missing: writeControlListener( control );
     writeActivateListener( control );
@@ -496,6 +501,47 @@ public class ControlLCAUtil {
     WidgetLCAUtil.writeBackground( control,
                                    controlAdapter.getUserBackground(),
                                    controlAdapter.getBackgroundTransparency() );
+  }
+
+  /**
+   * Preserves the value of the specified widget's background image.
+   *
+   * @param control the control whose background image property to preserve
+   * @see #writeBackgroundImage(Control)
+   */
+  public static void preserveBackgroundImage( final Control control ) {
+    IControlAdapter controlAdapter
+      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    Image image = controlAdapter.getUserBackgroundImage();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    adapter.preserve( PROP_BACKGROUND_IMAGE, image );
+  }
+
+  /**
+   * Determines whether the background image of the given control has changed
+   * during the processing of the current request and if so, writes JavaScript
+   * code to the response that updates the client-side background image
+   * property.
+   *
+   * @param control the control whose background image property to write
+   * @throws IOException
+   */
+  public static void writeBackgroundImage( final Control control )
+    throws IOException
+  {
+    IControlAdapter controlAdapter
+      = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
+    Image image = controlAdapter.getUserBackgroundImage();
+    if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND_IMAGE, image, null ) )
+    {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      if( image != null ) {
+        String imagePath = ResourceFactory.getImagePath( image );
+        writer.set( JSConst.QX_FIELD_BG_IMAGE, imagePath );
+      } else {
+        writer.reset( JSConst.QX_FIELD_BG_IMAGE );
+      }
+    }
   }
 
   /**

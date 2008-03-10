@@ -21,6 +21,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 
+
 public class Control_Test extends TestCase {
 
   protected void setUp() throws Exception {
@@ -277,7 +278,7 @@ public class Control_Test extends TestCase {
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     Color widgetBg = display.getSystemColor( SWT.COLOR_WIDGET_BACKGROUND );
-//    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
     Shell shell = new Shell( display );
     Composite comp = new Composite( shell, SWT.NONE );
     Control control = new Label( comp, SWT.NONE );
@@ -294,13 +295,13 @@ public class Control_Test extends TestCase {
     Control control2 = new Label( comp, SWT.NONE );
     assertEquals( red, control2.getBackground() );
 
-//    // no inheritance when bg image is set
-//    label.setBackgroundImage( image );
-//    assertEquals( widgetBg, control1.getBackground() );
+    // no inheritance when bg image is set
+    control.setBackgroundImage( image );
+    assertEquals( widgetBg, control.getBackground() );
 
-//    // inherited background again
-//    label.setBackgroundImage( null );
-//    assertEquals( red, control.getBackground() );
+    // inherited background again
+    control.setBackgroundImage( null );
+    assertEquals( red, control.getBackground() );
 
     // no inheritance when bg color is set
     control.setBackground( blue );
@@ -328,18 +329,44 @@ public class Control_Test extends TestCase {
 
   public void testBackgroundTransparency() throws Exception {
     Display display = new Display();
-    Color red = display.getSystemColor( SWT.COLOR_RED );
     Shell shell = new Shell( display );
     Composite comp = new Composite( shell, SWT.NONE );
-    comp.setBackgroundMode( SWT.INHERIT_DEFAULT );
+    Color blue = display.getSystemColor( SWT.COLOR_BLUE );
+    comp.setBackground( blue );
+    Image image = Graphics.getImage( RWTFixture.IMAGE1 );
+    comp.setBackgroundImage( image );
     Control control = new Label( comp, SWT.NONE );
     IControlAdapter adapter
       = ( IControlAdapter )control.getAdapter( IControlAdapter.class );
 
+    // initial state
     assertNull( adapter.getUserBackground() );
+    assertNull( adapter.getUserBackgroundImage() );
+    assertFalse( adapter.getBackgroundTransparency() );
+
+    // set background mode on parent enables transparency
+    comp.setBackgroundMode( SWT.INHERIT_DEFAULT );
+    assertSame( blue, control.getBackground() );
+    assertSame( image, control.getBackgroundImage() );
+    assertNull( adapter.getUserBackground() );
+    assertNull( adapter.getUserBackgroundImage() );
     assertTrue( adapter.getBackgroundTransparency() );
 
+    // controls created after set background mode are also transparent
+    Control control2 = new Label( comp, SWT.NONE );
+    IControlAdapter adapter2
+      = ( IControlAdapter )control2.getAdapter( IControlAdapter.class );
+    assertSame( blue, control.getBackground() );
+    assertSame( image, control.getBackgroundImage() );
+    assertNull( adapter2.getUserBackground() );
+    assertNull( adapter2.getUserBackgroundImage() );
+    assertTrue( adapter2.getBackgroundTransparency() );
+
+    // set color on control overrides transparency
+    Color red = display.getSystemColor( SWT.COLOR_RED );
     control.setBackground( red );
+    assertSame( red, control.getBackground() );
+    assertNull( control.getBackgroundImage() );
     assertEquals( red, adapter.getUserBackground() );
     assertFalse( adapter.getBackgroundTransparency() );
   }

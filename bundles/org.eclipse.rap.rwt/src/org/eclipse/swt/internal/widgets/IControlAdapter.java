@@ -11,8 +11,7 @@
 
 package org.eclipse.swt.internal.widgets;
 
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.*;
 
 
 public interface IControlAdapter {
@@ -26,6 +25,8 @@ public interface IControlAdapter {
   public abstract Color getUserForeground();
 
   public abstract Color getUserBackground();
+
+  public abstract Image getUserBackgroundImage();
 
   public abstract boolean getBackgroundTransparency();
 

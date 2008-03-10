@@ -11,6 +11,7 @@
 
 package org.eclipse.rwt.internal.theme;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,13 +93,16 @@ public class QxColor implements QxType {
             green = Integer.parseInt( input.substring( 2, 3 ), 16 ) * 17;
             blue = Integer.parseInt( input.substring( 3, 4 ), 16 ) * 17;
           } else {
-            String mesg = "Illegal number of characters in color definition: "
-                          + input;
-            throw new IllegalArgumentException( mesg );
+            String pattern = "Illegal number of characters in color definition ''{0}''";
+            Object[] arguments = new Object[] { input };
+            String message = MessageFormat.format( pattern, arguments );
+            throw new IllegalArgumentException( message );
           }
         } catch( final NumberFormatException e ) {
-          String mesg =  "Illegal number format in color definition: " + input;
-          throw new IllegalArgumentException( mesg );
+          String pattern = "Illegal number format in color definition ''{0}''";
+          Object[] arguments = new Object[] { input };
+          String message = MessageFormat.format( pattern, arguments );
+          throw new IllegalArgumentException( message );
         }
       } else if( NAMED_COLORS.containsKey( input.toLowerCase() ) ) {
         int[] values = ( int[] )NAMED_COLORS.get( input.toLowerCase() );
@@ -113,11 +117,16 @@ public class QxColor implements QxType {
             green = Integer.parseInt( parts[ 1 ] );
             blue = Integer.parseInt( parts[ 2 ] );
           } catch( final NumberFormatException e ) {
-            String mesg =  "Illegal number format in color definition: " + input;
-            throw new IllegalArgumentException( mesg );
+            String pattern = "Illegal number format in color definition ''{0}''";
+            Object[] arguments = new Object[] { input };
+            String message = MessageFormat.format( pattern, arguments );
+            throw new IllegalArgumentException( message );
           }
         } else {
-          throw new IllegalArgumentException( "Invalid color name: " + input );
+          String pattern = "Invalid color name ''{0}''";
+          Object[] arguments = new Object[] { input };
+          String message = MessageFormat.format( pattern, arguments );
+          throw new IllegalArgumentException( message );
         }
       }
       if( red == 0 && green == 0 && blue == 0 ) {

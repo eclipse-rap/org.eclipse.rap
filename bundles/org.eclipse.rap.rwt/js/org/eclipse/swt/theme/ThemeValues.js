@@ -46,7 +46,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
       var result = this.__selectVariant( key, theme.colors );
       var values = this._store.getThemeValues();
       if( values.trcolors[ result ] ) {
-        result = "\"undefined\"";
+        result = "undefined";
       }
       return result;
     },

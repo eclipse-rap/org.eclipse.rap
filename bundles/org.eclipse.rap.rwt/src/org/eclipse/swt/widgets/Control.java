@@ -64,6 +64,10 @@ public abstract class Control extends Widget {
       return background;
     }
 
+    public Image getUserBackgroundImage() {
+      return backgroundImage;
+    }
+
     public boolean getBackgroundTransparency() {
       return backgroundTransparency;
     }
@@ -97,7 +101,7 @@ public abstract class Control extends Widget {
 
   private Color background;
 
-  private final Object backgroundImage = null;
+  private Image backgroundImage = null;
 
   private boolean backgroundTransparency;
 
@@ -383,6 +387,62 @@ public abstract class Control extends Widget {
       throw new IllegalStateException( "Transparent shell background color" );
     }
     return result;
+  }
+
+  /**
+   * Sets the receiver's background image to the image specified
+   * by the argument, or to the default system color for the control
+   * if the argument is null.  The background image is tiled to fill
+   * the available space.
+   * <p>
+   * Note: This operation is a hint and may be overridden by the platform.
+   * For example, on Windows the background of a Button cannot be changed.
+   * </p>
+   * @param image the new image (or null)
+   *
+   * <!--@exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument is not a bitmap</li>
+   * </ul>-->
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.1
+   */
+  public void setBackgroundImage( final Image image ) {
+    checkWidget();
+    if( image != null ) {
+//      if( image.isDisposed() )
+//        error( SWT.ERROR_INVALID_ARGUMENT );
+//      if( image.type != SWT.BITMAP )
+//        error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    if( backgroundImage != image ) {
+      backgroundImage = image;
+    }
+  }
+
+  /**
+   * Returns the receiver's background image.
+   *
+   * @return the background image
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   *
+   * @since 1.1
+   */
+  public Image getBackgroundImage() {
+    checkWidget();
+    Control control = findBackgroundControl();
+    if( control == null ) {
+      control = this;
+    }
+    return control.backgroundImage;
   }
 
   /**

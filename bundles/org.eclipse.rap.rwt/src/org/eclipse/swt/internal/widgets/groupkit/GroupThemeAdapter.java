@@ -13,8 +13,7 @@ package org.eclipse.swt.internal.widgets.groupkit;
 
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 import org.eclipse.swt.widgets.Control;
@@ -27,6 +26,13 @@ public final class GroupThemeAdapter extends ControlThemeAdapter {
     String variant = WidgetUtil.getVariant( control );
     QxFont font = theme.getFont( "group.label.font", variant );
     return QxFont.createFont( font );
+  }
+
+  public Color getBackground( final Control control ) {
+    Theme theme = ThemeUtil.getTheme();
+    String variant = WidgetUtil.getVariant( control );
+    QxColor color = theme.getColor( "group.background", variant );
+    return QxColor.createColor( color );
   }
 
   public Rectangle getTrimmingSize( final Control control ) {

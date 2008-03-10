@@ -97,7 +97,7 @@ public final class Theme {
         throw new IllegalArgumentException( message );
       }
       QxType defValue = defaultTheme.getValue( keyName, null );
-      String value = ( String )properties.get( key );
+      String value = ( ( String )properties.get( key ) ) .trim();
       if( value != null && value.trim().length() > 0 ) {
         QxType newValue;
         if( defValue instanceof QxBorder ) {

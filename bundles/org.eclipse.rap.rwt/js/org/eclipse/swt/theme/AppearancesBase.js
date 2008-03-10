@@ -199,7 +199,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      return {
+      var result = {
         font : "widget.font",
         cursor : "default",
         width : "auto",
@@ -220,6 +220,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       } else {
         result.border = "control.border";
       }
+      return result;
     }
   },
 
@@ -1179,8 +1180,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "group-box" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        backgroundColor : "widget.background",
+        backgroundColor : tv.getColor( "group.background" ),
         border : states.rwt_BORDER
           ? "control.BORDER.border"
           : "control.border"
@@ -1200,7 +1202,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : tv.getBoxDimensions( "group.label.padding" ),
         margin : tv.getBoxDimensions( "group.label.margin" ),
         font : "group.label.font",
-        backgroundColor : "widget.background"
+        backgroundColor : tv.getColor( "group.background" ),
 // TODO [rst] Group label is not grayed out in SWT - check other toolkits
 //          textColor : states.disabled ? "widget.graytext" : "undefined"
       };
