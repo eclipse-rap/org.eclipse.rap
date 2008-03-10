@@ -12,6 +12,8 @@
 package org.eclipse.rwt.internal.theme;
 
 
+// TODO [rst] Make immutable?
+// TODO [rst] implements equals and hashcode
 public class ThemeDef {
 
   public final String name;
@@ -23,6 +25,8 @@ public class ThemeDef {
   public final String description;
 
   public String targetPath;
+
+  public boolean transparentAllowed;
 
   public ThemeDef( final String name,
                    final String inherit,

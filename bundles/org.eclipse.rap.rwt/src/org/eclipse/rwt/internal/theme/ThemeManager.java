@@ -459,15 +459,16 @@ public final class ThemeManager {
     sb.append( "#\n" );
     Iterator iterator = manager.themeDefs.keySet().iterator();
     while( iterator.hasNext() ) {
+      sb.append( "\n" );
       String key = ( String )iterator.next();
       ThemeDef def = ( ThemeDef )manager.themeDefs.get( key );
-      String value = def.defValue.toDefaultString();
-      sb.append( "\n" );
       if( def.description == null ) {
         throw new NullPointerException( "Description missing for " + key );
       }
+      String value = def.defValue.toDefaultString();
+      String note = def.transparentAllowed ? " (transparent allowed)" : "";
       sb.append( "# " + def.description.replaceAll( "\\n\\s*", "\n# " ) + "\n" );
-      sb.append( "# default: " + value + "\n" );
+      sb.append( "# default: " + value + note + "\n" );
       sb.append( "#" + def.name + ": " + value  + "\n" );
     }
     System.out.println( sb.toString() );
@@ -888,6 +889,18 @@ public final class ThemeManager {
           ThemeDef def = ( ThemeDef )themeDefs.get( stripVariant( key ) );
           String targetPath = def.targetPath != null ? def.targetPath : key;
           jsValue = "\"" + targetPath + "\"";
+        }
+      } else if( value instanceof QxColor ) {
+        QxColor color = ( QxColor )value;
+        if( color.transparent ) {
+          ThemeDef def = ( ThemeDef )themeDefs.get( stripVariant( key ) );
+          if( !def.transparentAllowed ) {
+            // TODO [rst] Move this check to Theme class
+            String message = "Transparency not allowed for key " + key;
+            throw new IllegalArgumentException( message );
+          }
+          type = "trcolor";
+          jsValue = "true";
         }
       }
       if( type != null ) {

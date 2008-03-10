@@ -198,19 +198,28 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "check-box" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         font : "widget.font",
-        textColor : states.disabled ? "widget.graytext" : "button.CHECK.foreground",
-        backgroundColor : "button.CHECK.background",
         cursor : "default",
         width : "auto",
         height : "auto",
         horizontalChildrenAlign : "center",
         verticalChildrenAlign : "middle",
         spacing : 4,
-        padding : [ 2, 3 ],
-        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
+        padding : [ 2, 3 ]
       };
+      result.backgroundColor = tv.getColor( "button.CHECK.background" );
+      if( states.disabled ) {
+        result.textColor = "widget.graytext";
+      } else {
+        result.textColor = tv.getColor( "button.CHECK.foreground" );
+      }
+      if( states.rwt_BORDER ) {
+        result.border = "control.BORDER.border";
+      } else {
+        result.border = "control.border";
+      }
     }
   },
 

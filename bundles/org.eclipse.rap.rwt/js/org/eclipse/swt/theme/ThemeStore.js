@@ -40,7 +40,8 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
           dimensions : {},
           boxdims : {},
           booleans : {},
-          images : {}
+          images : {},
+          trcolors : {}
         };
       }
       return this._values[ theme ];
@@ -60,6 +61,8 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
         values.booleans[ key ] = value;
       } else if ( type == "image" ) {
         values.images[ key ] = value;
+      } else if ( type == "trcolor" ) {
+        values.trcolors[ key ] = value;
       } else {
         this.error( "invalid type: " + type );
       }

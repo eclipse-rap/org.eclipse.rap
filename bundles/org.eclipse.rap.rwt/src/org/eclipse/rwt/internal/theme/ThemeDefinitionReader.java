@@ -20,6 +20,7 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
+
 /**
  * Reader for theme definition files. These are the "*.theme.xml" files
  * that define themeable properties of a certain widget.
@@ -41,6 +42,8 @@ public class ThemeDefinitionReader {
   private static final String ATTR_INHERIT = "inherit";
 
   private static final String ATTR_TARGET_PATH = "targetPath";
+
+  private static final String ATTR_TRANSPARENT_ALLOWED = "transparentAllowed";
 
   private static final String TYPE_BOOLEAN = "boolean";
 
@@ -116,9 +119,12 @@ public class ThemeDefinitionReader {
     String defaultStr = getAttributeValue( node, ATTR_DEFAULT );
     QxType value;
     String targetPath = null;
+    boolean transparentAllowed = false;
     if( TYPE_FONT.equals( type ) ) {
       value = QxFont.valueOf( defaultStr );
     } else if( TYPE_COLOR.equals( type ) ) {
+      String transpValue = getAttributeValue( node, ATTR_TRANSPARENT_ALLOWED );
+      transparentAllowed = Boolean.valueOf( transpValue ).booleanValue();
       value = QxColor.valueOf( defaultStr );
     } else if( TYPE_BOOLEAN.equals( type ) ) {
       value = QxBoolean.valueOf( defaultStr );
@@ -137,6 +143,7 @@ public class ThemeDefinitionReader {
     }
     ThemeDef result = new ThemeDef( name, inherit, value, description );
     result.targetPath = targetPath;
+    result.transparentAllowed = transparentAllowed ;
     return result;
   }
 

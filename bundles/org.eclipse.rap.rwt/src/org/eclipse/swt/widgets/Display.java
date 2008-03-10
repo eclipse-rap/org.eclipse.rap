@@ -23,7 +23,8 @@ import org.eclipse.rwt.internal.AdapterManagerImpl;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.QxColor;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
@@ -754,7 +755,8 @@ public class Display extends Device implements Adaptable {
    */
   public Color getSystemColor( final int id ) {
     checkDevice();
-    String key;
+    Color result = null;
+    String key = null;
     switch( id ) {
       case SWT.COLOR_WIDGET_DARK_SHADOW:
         key = "widget.darkshadow";
@@ -815,11 +817,18 @@ public class Display extends Device implements Adaptable {
         key = "shell.title.inactive.background.gradient";
       break;
       default:
-        return super.getSystemColor( id );
+        result = super.getSystemColor( id );
     }
-    Theme theme = ThemeUtil.getTheme();
-    QxColor themeColor = theme.getColor( key, null );
-    return Graphics.getColor( themeColor.red, themeColor.green, themeColor.blue );
+    if( key != null ) {
+      QxColor themeColor = ThemeUtil.getTheme().getColor( key, null );
+      result = QxColor.createColor( themeColor );
+    }
+    if( result == null ) {
+      // Should never happen as the theming must prevent transparency for system
+      // colors
+      throw new IllegalStateException( "Transparent system color" );
+    }
+    return result;
   }
 
   /**

@@ -371,6 +371,17 @@ public abstract class Control extends Widget {
       IControlThemeAdapter adapter = getControlThemeAdapter( control.getClass() );
       result = adapter.getBackground( control );
     }
+    Shell shell = control.getShell();
+    control = control.parent;
+    while( result == null && control != null ) {
+      result = control.getBackground();
+      control = control == shell ? null : control.parent;
+    }
+    if( result == null ) {
+      // Should never happen as the theming must prevent transparency for
+      // shell background colors
+      throw new IllegalStateException( "Transparent shell background color" );
+    }
     return result;
   }
 
@@ -410,6 +421,11 @@ public abstract class Control extends Widget {
     if( result == null ) {
       IControlThemeAdapter adapter = getControlThemeAdapter();
       result = adapter.getForeground( this );
+    }
+    if( result == null ) {
+      // Should never happen as the theming must prevent transparency for
+      // foreground colors
+      throw new IllegalStateException( "Transparent foreground color" );
     }
     return result;
   }

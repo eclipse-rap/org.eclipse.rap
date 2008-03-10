@@ -17,7 +17,10 @@ import java.util.Map;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Color;
 
+
 public class QxColor implements QxType {
+
+  private static final String TRANSPARENT_STR = "transparent";
 
   private static final Map NAMED_COLORS = new HashMap();
 
@@ -25,11 +28,15 @@ public class QxColor implements QxType {
 
   public static final QxColor WHITE = new QxColor( 255, 255, 255 );
 
+  public static final QxColor TRANSPARENT = new QxColor();
+
   public final int red;
 
   public final int green;
 
   public final int blue;
+
+  public final boolean transparent;
 
   static {
     // register 16 standard HTML colors
@@ -51,70 +58,81 @@ public class QxColor implements QxType {
     NAMED_COLORS.put( "aqua", new int[] { 0, 255, 255 } );
   }
 
+  private QxColor() {
+    this.red = 0;
+    this.green = 0;
+    this.blue = 0;
+    this.transparent = true;
+  }
+
   private QxColor( final int red, final int green, final int blue ) {
     this.red = red;
     this.green = green;
     this.blue = blue;
+    this.transparent = false;
   }
 
   public static QxColor valueOf( final String input ) {
+    QxColor result;
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
-    int red, green, blue;
-    if( input.startsWith( "#" ) ) {
-      try {
-        if( input.length() == 7 ) {
-          red = Integer.parseInt( input.substring( 1, 3 ), 16 );
-          green = Integer.parseInt( input.substring( 3, 5 ), 16 );
-          blue = Integer.parseInt( input.substring( 5, 7 ), 16 );
-        } else if( input.length() == 4 ) {
-          red = Integer.parseInt( input.substring( 1, 2 ), 16 ) * 17;
-          green = Integer.parseInt( input.substring( 2, 3 ), 16 ) * 17;
-          blue = Integer.parseInt( input.substring( 3, 4 ), 16 ) * 17;
-        } else {
-          String mesg = "Illegal number of characters in color definition: "
-                        + input;
-          throw new IllegalArgumentException( mesg );
-        }
-      } catch( final NumberFormatException e ) {
-        String mesg =  "Illegal number format in color definition: " + input;
-        throw new IllegalArgumentException( mesg );
-      }
-    } else if( NAMED_COLORS.containsKey( input.toLowerCase() ) ) {
-      int[] values = ( int[] )NAMED_COLORS.get( input.toLowerCase() );
-      red = values[ 0 ];
-      green = values[ 1 ];
-      blue = values[ 2 ];
+    if( TRANSPARENT_STR.equals( input ) ) {
+      result = TRANSPARENT;
     } else {
-      String[] parts = input.split( "\\s*,\\s*" );
-      if( parts.length == 3 ) {
+      int red, green, blue;
+      if( input.startsWith( "#" ) ) {
         try {
-          red = Integer.parseInt( parts[ 0 ] );
-          green = Integer.parseInt( parts[ 1 ] );
-          blue = Integer.parseInt( parts[ 2 ] );
+          if( input.length() == 7 ) {
+            red = Integer.parseInt( input.substring( 1, 3 ), 16 );
+            green = Integer.parseInt( input.substring( 3, 5 ), 16 );
+            blue = Integer.parseInt( input.substring( 5, 7 ), 16 );
+          } else if( input.length() == 4 ) {
+            red = Integer.parseInt( input.substring( 1, 2 ), 16 ) * 17;
+            green = Integer.parseInt( input.substring( 2, 3 ), 16 ) * 17;
+            blue = Integer.parseInt( input.substring( 3, 4 ), 16 ) * 17;
+          } else {
+            String mesg = "Illegal number of characters in color definition: "
+                          + input;
+            throw new IllegalArgumentException( mesg );
+          }
         } catch( final NumberFormatException e ) {
           String mesg =  "Illegal number format in color definition: " + input;
           throw new IllegalArgumentException( mesg );
         }
+      } else if( NAMED_COLORS.containsKey( input.toLowerCase() ) ) {
+        int[] values = ( int[] )NAMED_COLORS.get( input.toLowerCase() );
+        red = values[ 0 ];
+        green = values[ 1 ];
+        blue = values[ 2 ];
       } else {
-        throw new IllegalArgumentException( "Invalid color name: " + input );
+        String[] parts = input.split( "\\s*,\\s*" );
+        if( parts.length == 3 ) {
+          try {
+            red = Integer.parseInt( parts[ 0 ] );
+            green = Integer.parseInt( parts[ 1 ] );
+            blue = Integer.parseInt( parts[ 2 ] );
+          } catch( final NumberFormatException e ) {
+            String mesg =  "Illegal number format in color definition: " + input;
+            throw new IllegalArgumentException( mesg );
+          }
+        } else {
+          throw new IllegalArgumentException( "Invalid color name: " + input );
+        }
       }
-    }
-
-    QxColor result;
-    if( red == 0 && green == 0 && blue == 0 ) {
-      result = BLACK;
-    } else if( red == 255 && green == 255 && blue == 255 ) {
-      result = WHITE;
-    } else {
-      result = new QxColor( red, green, blue );
+      if( red == 0 && green == 0 && blue == 0 ) {
+        result = BLACK;
+      } else if( red == 255 && green == 255 && blue == 255 ) {
+        result = WHITE;
+      } else {
+        result = new QxColor( red, green, blue );
+      }
     }
     return result;
   }
 
   public String toDefaultString() {
-    return toHtmlString( red, green, blue );
+    return transparent ? TRANSPARENT_STR : toHtmlString( red, green, blue );
   }
 
   public boolean equals( final Object obj ) {
@@ -131,17 +149,12 @@ public class QxColor implements QxType {
   }
 
   public int hashCode() {
-    return red + green * 256 + blue * 65536;
+    return transparent ? -1 : red + green * 256 + blue * 65536;
   }
 
   public String toString() {
-    return "QxColor{ "
-           + red
-           + ", "
-           + green
-           + ", "
-           + blue
-           + " }";
+    String colors = red + ", " + green + ", " + blue;
+    return "QxColor{ " + ( transparent ? TRANSPARENT_STR : colors ) + " }";
   }
 
   public static String toHtmlString( final int red,
@@ -157,7 +170,11 @@ public class QxColor implements QxType {
   }
 
   public static Color createColor( final QxColor color ) {
-    return Graphics.getColor( color.red, color.green, color.blue );
+    Color result = null;
+    if( !color.transparent ) {
+      result = Graphics.getColor( color.red, color.green, color.blue );
+    }
+    return result;
   }
 
   private static String getHexStr( final int value ) {

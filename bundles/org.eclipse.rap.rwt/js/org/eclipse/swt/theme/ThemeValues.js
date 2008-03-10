@@ -43,7 +43,12 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeValues", {
 
     getColor : function( key ) {
       var theme = qx.theme.manager.Color.getInstance().getColorTheme();
-      return this.__selectVariant( key, theme.colors );
+      var result = this.__selectVariant( key, theme.colors );
+      var values = this._store.getThemeValues();
+      if( values.trcolors[ result ] ) {
+        result = "\"undefined\"";
+      }
+      return result;
     },
 
     getFont : function( key ) {

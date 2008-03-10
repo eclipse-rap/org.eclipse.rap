@@ -59,18 +59,24 @@ public final class ResourceFactory {
     return getColor( colorNr );
   }
 
-  public static synchronized Color getColor( final int color ) {
+  /**
+   * <strong>Note:</strong> this is not a shortcut for
+   * <code>getColor(int, int, int)</code>.
+   *
+   * @param value the integer value that represents the color internally
+   */
+  public static synchronized Color getColor( final int value ) {
     Color result;
-    Integer key = new Integer( color );
+    Integer key = new Integer( value );
     if( colors.containsKey( key ) ) {
       result = ( Color )colors.get( key );
     } else {
-      result = createColorInstance( color );
+      result = createColorInstance( value );
       colors.put( key, result );
     }
     return result;
   }
-  
+
 
   ////////
   // Fonts
@@ -93,15 +99,15 @@ public final class ResourceFactory {
     }
     return result;
   }
-  
-  public static int fontHashCode( final String name, 
-                                  final int height, 
-                                  final int style ) 
+
+  public static int fontHashCode( final String name,
+                                  final int height,
+                                  final int style )
   {
     return name.hashCode() ^ ( height << 2 ) ^ style;
   }
 
-  
+
   /////////
   // Images
 
@@ -145,7 +151,7 @@ public final class ResourceFactory {
     }
     return result;
   }
-  
+
   public static synchronized Image findImage( final ImageData imageData ) {
     if( imageData == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -224,16 +230,16 @@ public final class ResourceFactory {
   static int colorsCount() {
     return colors.size();
   }
-  
+
   static int fontsCount() {
     return fonts.size();
   }
-  
+
   static int imagesCount() {
     return images.size();
   }
 
-  
+
   //////////////////
   // Helping methods
 
@@ -338,7 +344,7 @@ public final class ResourceFactory {
   //////////////////
   // Helping methods
 
-  private static void validateFontParams( final String name, final int height ) 
+  private static void validateFontParams( final String name, final int height )
   {
     if( name == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -358,7 +364,7 @@ public final class ResourceFactory {
     }
     return result;
   }
-  
+
   private static String getImageFileExtension( final int type ) {
     String result;
     switch( type ) {
@@ -449,7 +455,7 @@ public final class ResourceFactory {
     }
     return result;
   }
-  
+
   private ResourceFactory() {
     // prevent instantiation
   }

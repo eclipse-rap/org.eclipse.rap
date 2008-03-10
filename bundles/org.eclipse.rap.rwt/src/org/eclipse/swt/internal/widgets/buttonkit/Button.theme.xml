@@ -14,18 +14,22 @@
 
   <color name="button.background"
       description="Background color for PUSH and TOGGLE buttons"
+      transparentAllowed="true"
       default="247, 247, 251" />
 
   <color name="button.CHECK.background"
       description="Background color for buttons with style CHECK and RADIO"
+      transparentAllowed="true"
       default="247, 247, 251" />
 
   <color name="button.hover.background"
       description="Hover color for buttons"
+      transparentAllowed="true"
       default="251, 251, 254" />
 
   <color name="button.FLAT.pressed.background"
       description="Background color for selected toggle buttons with FLAT style"
+      transparentAllowed="true"
       default="225, 225, 230" />
 
   <border name="button.border"
