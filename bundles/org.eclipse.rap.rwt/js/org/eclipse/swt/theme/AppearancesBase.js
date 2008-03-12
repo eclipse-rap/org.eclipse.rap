@@ -246,6 +246,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       // foreground color
       if( states.disabled ) {
         result.textColor = "widget.graytext";
+      } else if( states.over ) {
+        result.textColor = tv.getColor( "button.hover.foreground" );
       } else {
         result.textColor = tv.getColor( "button.foreground" );
       }
@@ -1416,6 +1418,22 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   // ------------------------------------------------------------------------
   // CTabFolder
 
+  "ctabfolder" : {
+    style: function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.textColor = "widget.foreground";
+      result.font = "widget.font";
+      result.backgroundColor = tv.getColor( "ctabfolder.background" );
+      if( states.rwt_BORDER ) {
+        result.border = tv.getBorder( "ctabfolder.BORDER.border" );      
+      } else {
+        result.border = tv.getBorder( "ctabfolder.border" );
+      }
+      return result;
+    }
+  },
+
   "c-tab-item" : {
     include: "atom",
       
@@ -1452,15 +1470,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-    
+  
   "c-tab-close-button" :
   {
     include : "image",
     
     style : function( states ) {
       return {
-        source : states.over 
-          ? "widget/ctabfolder/close_hover.gif" 
+        source : states.over
+          ? "widget/ctabfolder/close_hover.gif"
           : "widget/ctabfolder/close.gif"
       }
     }

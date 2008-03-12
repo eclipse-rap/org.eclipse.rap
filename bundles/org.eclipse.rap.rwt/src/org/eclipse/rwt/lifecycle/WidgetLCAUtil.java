@@ -767,7 +767,7 @@ public final class WidgetLCAUtil {
    * @since 1.1
    */
   public static void writeCustomOrDefaultAppearance( final Widget widget,
-                                                     final String defaultApp )
+                                                     final String defAppearance )
     throws IOException
   {
     String customAppearance
@@ -775,9 +775,9 @@ public final class WidgetLCAUtil {
     if( customAppearance != null ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       writer.set( JSConst.QX_FIELD_APPEARANCE, customAppearance );
-    } else if( defaultApp != null ) {
+    } else if( defAppearance != null ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( JSConst.QX_FIELD_APPEARANCE, defaultApp );
+      writer.set( JSConst.QX_FIELD_APPEARANCE, defAppearance );
     }
     writeCustomVariant( widget );
   }
