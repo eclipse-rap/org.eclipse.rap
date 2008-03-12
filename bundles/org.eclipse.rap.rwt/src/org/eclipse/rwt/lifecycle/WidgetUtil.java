@@ -30,8 +30,16 @@ public final class WidgetUtil {
   public static final String CUSTOM_APPEARANCE
     = "org.eclipse.rwt.appearance";
 
+  /**
+   * Used to mark a widget as belonging to a custom variant using
+   * <code>Widget.setData</code>. For more information on custom widget
+   * variants, see the RAP help on theming.
+   *
+   * @see Widget#setData(String,Object)
+   * @since 1.1
+   */
   public static final String CUSTOM_VARIANT
-    = "org.eclipse.rwt.themeClass";
+    = "org.eclipse.rwt.themeVariant";
 
   /**
    * <p><strong>Note:</strong> This constant is provisional and subject to
@@ -41,7 +49,7 @@ public final class WidgetUtil {
    * an automatically generated value that is session-wide unique.
    * A custom id can be assigned by using the <code>Widget#setData(String,
    * Object)</code> method and using this constant for the <code>key</code>
-   * argument and a string that denoes the new id as the <code>data</code>
+   * argument and a string that denotes the new id as the <code>data</code>
    * argument.
    *
    * <p>The <code>id</code> must only contain characters that are valid according
@@ -49,7 +57,7 @@ public final class WidgetUtil {
    * recommendation for id and name attributes</a>.</p>
    *
    * <p>It is the clients' responsibility to choose a unique id. Assigning an
-   * id that is used by another widget will lead to undeterministic behavior.
+   * id that is used by another widget will lead to indeterministic behavior.
    * </p>
    *
    * <p>The following code would assign the id 'myId' to the widget:
