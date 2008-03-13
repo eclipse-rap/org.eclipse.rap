@@ -112,6 +112,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   {
   },
   
+  // Appearance used for qooxdoo "labelObjects" which are part of Atoms etc.
   "label-graytext" :
   {
     style : function( states ) {
@@ -126,22 +127,24 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      result = {
-        font : "widget.font",
-        border : states.rwt_BORDER ? "label.BORDER.border" : "label.border"
-      };
-      if( states.disabled ) {
-        result.textColor = "widget.graytext";
-//      } else if( states.over ) {
-//        result.textColor = "widget.hover.foreground";
+      var result = {};
+      result.font = "widget.font";
+      if( states.rwt_BORDER ) {
+        result.border = tv.getBorder( "label.BORDER.border" );
       } else {
-        result.textColor = "widget.foreground";
+        result.border = tv.getBorder( "label.border" );
       }
-      result.backgroundColor = "widget.background";
+      if( states.over ) {
+        result.backgroundColor = tv.getColor( "label.hover.background" );
+        result.textColor = tv.getColor( "label.hover.foreground" );
+      } else {
+        result.backgroundColor = tv.getColor( "label.background" );
+        result.textColor = tv.getColor( "label.foreground" );
+      }
       return result;
     }
   },
-  
+
   // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
   "c-label-wrapper" :
   {

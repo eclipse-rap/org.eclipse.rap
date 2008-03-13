@@ -4,6 +4,24 @@
 
 <theme>
 
+  <color name="label.foreground"
+      description="Text color for labels"
+      default="0, 0, 0" />
+
+  <color name="label.hover.foreground"
+      description="Text color for labels on mouse over"
+      default="0, 0, 0" />
+
+  <color name="label.background"
+      description="Background color for labels"
+      transparentAllowed="true"
+      default="248, 248, 255" />
+
+  <color name="label.hover.background"
+      description="Background color for labels on mouse over"
+      transparentAllowed="true"
+      default="248, 248, 255" />
+
   <border name="label.border"
       description="Default border for labels"
       default="none"/>

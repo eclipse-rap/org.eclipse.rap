@@ -37,14 +37,14 @@ public final class LabelThemeAdapter implements IControlThemeAdapter {
   public Color getForeground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
     String variant = WidgetUtil.getVariant( control );
-    QxColor color = theme.getColor( "widget.foreground", variant );
+    QxColor color = theme.getColor( "label.foreground", variant );
     return QxColor.createColor( color );
   }
 
   public Color getBackground( final Control control ) {
     Theme theme = ThemeUtil.getTheme();
     String variant = WidgetUtil.getVariant( control );
-    QxColor color = theme.getColor( "widget.background", variant );
+    QxColor color = theme.getColor( "label.background", variant );
     return QxColor.createColor( color );
   }
 
