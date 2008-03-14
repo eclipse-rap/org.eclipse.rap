@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.HTMLUtil_Test;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.ServiceHandler_Test;
-import org.eclipse.rwt.service.SessionStore_Test;
+import org.eclipse.rwt.service.*;
 import org.eclipse.rwt.widgets.ExternalBrowser_Test;
 import org.eclipse.swt.browser.Browser_Test;
 import org.eclipse.swt.custom.*;
@@ -81,6 +80,7 @@ public class RWTTestSuite {
     suite.addTestSuite( PhaseId_Test.class );
     suite.addTestSuite( Scope_Test.class );
     suite.addTestSuite( Logger_Test.class );
+    suite.addTestSuite( SessionStore_Test.class );
     suite.addTestSuite( ServiceHandler_Test.class );
     suite.addTestSuite( SessionStore_Test.class );
     suite.addTestSuite( EngineConfig_Test.class );
@@ -219,6 +219,11 @@ public class RWTTestSuite {
     suite.addTestSuite( QxDimension_Test.class );
     suite.addTestSuite( QxBoxDimensions_Test.class );
     suite.addTestSuite( QxFont_Test.class );
+    
+    // == SettingStore ==
+    suite.addTestSuite( MemorySettingStore_Test.class );
+    suite.addTestSuite( FileSettingStore_Test.class );
+    suite.addTestSuite( SettingStoreManager_Test.class );
 
     return suite;
   }

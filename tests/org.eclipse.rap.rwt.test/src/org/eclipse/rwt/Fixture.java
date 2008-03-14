@@ -138,14 +138,19 @@ public class Fixture {
     private Map parameters = new HashMap();
     private Map headers = new HashMap();
     private Map attributes = new HashMap();
+    private Set cookies = new HashSet();
     private Locale locale;
     
     public String getAuthType() {
       return null;
     }
     
+    public void addCookie( final Cookie cookie ) {
+      cookies.add( cookie );
+    }
+    
     public Cookie[] getCookies() {
-      return null;
+      return ( Cookie[] )cookies.toArray( new Cookie[ cookies.size() ] );
     }
     
     public long getDateHeader( final String arg0 ) {
@@ -475,8 +480,14 @@ public class Fixture {
     
     private ServletOutputStream outStream;
     private String contentType;
+    private Map cookies = new HashMap();
 
     public void addCookie( final Cookie arg0 ) {
+      cookies.put( arg0.getName(), arg0 );
+    }
+    
+    public Cookie getCookie( final String cookieName ) {
+      return ( Cookie )cookies.get( cookieName );
     }
     
     public boolean containsHeader( final String arg0 ) {
@@ -872,6 +883,7 @@ public class Fixture {
   public static void clearSingletons() {
     setPrivateField( ResourceManagerImpl.class, null, "_instance", null );
     setPrivateField( LifeCycleFactory.class, null, "globalLifeCycle", null );
+    setPrivateField( SettingStoreManager.class, null, "factory", null ); 
   }
 
   public static void tearDown() {

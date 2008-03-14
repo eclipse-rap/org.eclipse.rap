@@ -166,6 +166,8 @@ public final class RWTFixture {
 
     // registration of mockup resource manager
     registerResourceManager();
+    
+    SettingStoreManager.register( new MemorySettingStoreFactory() );
   }
 
   public static void setUpWithoutResourceManager() {

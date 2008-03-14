@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,7 +175,6 @@ public final class RWT {
       ServiceManager.unregisterServiceHandler( id );
     }
   };
-
   
   /**
    * Returns the instance of the current life cycle
@@ -204,6 +203,15 @@ public final class RWT {
    */
   public static IServiceManager getServiceManager() {
     return serviceManager;
+  }
+  
+  /**
+   * Returns the setting store instance for this session.
+   * @return a {@link ISettingStore}; never <code>null</code>
+   * @since 1.1
+   */
+  public static ISettingStore getSettingStore() {
+    return SettingStoreManager.getStore();
   }
   
   /**

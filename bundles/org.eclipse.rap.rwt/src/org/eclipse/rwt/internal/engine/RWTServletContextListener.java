@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
+import org.eclipse.rwt.service.*;
 import org.eclipse.swt.internal.widgets.WidgetAdapterFactory;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -43,6 +44,8 @@ public final class RWTServletContextListener implements ServletContextListener {
     = PREFIX + "themes";
   public static final String RESOURCE_MANAGER_FACTORY_PARAM
     = PREFIX + "resourceManagerFactory";
+  public static final String SETTING_STORE_FACTORY_PARAM
+    = PREFIX + "settingStoreFactory";
   public static final String ADAPTER_FACTORIES_PARAM
     = PREFIX + "adapterFactories";
   public static final String PHASE_LISTENERS_PARAM
@@ -62,7 +65,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     = RWTServletContextListener.class.getName() + "registeredResources";
   private static final String REGISTERED_BRANDINGS
     = RWTServletContextListener.class.getName() + "registeredBrandings";
-
+  
   ///////////////////////////////////////////
   // implementation of ServletContextListener
 
@@ -71,6 +74,7 @@ public final class RWTServletContextListener implements ServletContextListener {
     registerBrandings( evt.getServletContext() );
     registerEntryPoints( evt.getServletContext() );
     registerResourceManagerFactory( evt.getServletContext() );
+    registerSettingStoreFactory( evt.getServletContext() );
     registerAdapterFactories( evt.getServletContext() );
     registerPhaseListener( evt.getServletContext() );
     registerResources( evt.getServletContext() );
@@ -165,7 +169,34 @@ public final class RWTServletContextListener implements ServletContextListener {
       ResourceManager.register( new DefaultResourceManagerFactory() );
     }
   }
-
+  
+  ///////////////////////////////////////////////////////
+  // Helping methods - setting store factory registration
+  
+  private static void registerSettingStoreFactory(
+    final ServletContext context ) 
+  {
+    if( !SettingStoreManager.hasFactory() ) {
+      String factoryName
+        = context.getInitParameter( SETTING_STORE_FACTORY_PARAM );
+      if( factoryName != null ) {
+        // TODO [ev] - verify that this works - standalone RWT deployment with Frank
+        try {
+          Class clazz = Class.forName( factoryName );
+          ISettingStoreFactory factory; 
+          factory = ( ISettingStoreFactory )clazz.newInstance();
+          SettingStoreManager.register( factory );
+        } catch( final Exception ex ) {
+          String text = "Failed to register setting store factory ''{0}''.";
+          String msg = MessageFormat.format( text, new Object[] { factoryName } );
+          context.log( msg, ex );
+        }
+      } else {
+        SettingStoreManager.register( new RWTFileSettingStoreFactory() );
+      }
+    }
+  }
+  
   /////////////////////////////////////////////////
   // Helping methods - adapter factory registration
 
