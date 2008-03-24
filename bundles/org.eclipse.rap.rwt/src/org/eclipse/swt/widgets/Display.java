@@ -712,6 +712,10 @@ public class Display extends Device implements Adaptable {
    * Notifies the client side to send an life cycle request as UI thread to
    * perform UI-updates. Note that this method may be called from any thread.
    *
+   * <p>Note that this only works as expected if the 
+   * <code>{@link org.eclipse.rwt.lifecycle.UICallBack UICallBack}</code>
+   * mechanism is activated.</p>
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
