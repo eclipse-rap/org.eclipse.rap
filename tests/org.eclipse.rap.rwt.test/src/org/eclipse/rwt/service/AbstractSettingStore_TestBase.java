@@ -20,7 +20,7 @@ import org.eclipse.swt.RWTFixture;
 /**
  * Generic test cases for all {@link ISettingStore} implementations.
  */
-public abstract class AbstractSettingStore_Test extends TestCase {
+public abstract class AbstractSettingStore_TestBase extends TestCase {
 
   private static int instanceCount = 0;
   

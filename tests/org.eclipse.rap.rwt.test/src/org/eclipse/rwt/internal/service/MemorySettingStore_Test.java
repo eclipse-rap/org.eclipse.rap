@@ -11,14 +11,14 @@
 
 package org.eclipse.rwt.internal.service;
 
-import org.eclipse.rwt.service.AbstractSettingStore_Test;
+import org.eclipse.rwt.service.AbstractSettingStore_TestBase;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 
 /**
  * Tests for the classes {@link MemorySettingStore} 
  * and {@link MemorySettingStoreFactory}.
  */
-public class MemorySettingStore_Test extends AbstractSettingStore_Test {
+public class MemorySettingStore_Test extends AbstractSettingStore_TestBase {
   
   private ISettingStoreFactory factory = new MemorySettingStoreFactory();
 

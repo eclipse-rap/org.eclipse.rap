@@ -16,7 +16,7 @@ package org.eclipse.rwt.service;
  * Tests for the classes {@link FileSettingStore} and 
  * {@link RWTFileSettingStoreFactory}.
  */
-public class FileSettingStore_Test extends AbstractSettingStore_Test {
+public class FileSettingStore_Test extends AbstractSettingStore_TestBase {
   
   private ISettingStoreFactory factory = new RWTFileSettingStoreFactory();
 
