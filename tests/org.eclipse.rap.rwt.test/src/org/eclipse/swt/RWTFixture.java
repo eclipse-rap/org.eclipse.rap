@@ -355,24 +355,14 @@ public final class RWTFixture {
       }
     }, "ServerThread" );
     
-    try {
-      synchronized( threadHolder.getLock() ) {
-        serverThread.start();
-        lifeCycle.sleep();        
-      }
-    } catch( IOException e ) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    synchronized( threadHolder.getLock() ) {
+      serverThread.start();
+      lifeCycle.sleep();        
     }
     
     while( Display.getCurrent().readAndDispatch() ) {
     }
     
-    try {
-      lifeCycle.sleep();
-    } catch( IOException e ) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    lifeCycle.sleep();
   }
 }

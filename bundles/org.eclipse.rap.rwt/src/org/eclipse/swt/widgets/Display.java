@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -701,11 +700,7 @@ public class Display extends Device implements Adaptable {
    */
   public void sleep() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
-    try {
-      lifeCycle.sleep();
-    } catch( IOException e ) {
-      e.printStackTrace();
-    }
+    lifeCycle.sleep();
   }
 
   /**

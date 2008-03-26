@@ -25,8 +25,7 @@ import org.eclipse.rwt.service.*;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 
 public class RWTLifeCycle_Test extends TestCase {
 
@@ -35,6 +34,7 @@ public class RWTLifeCycle_Test extends TestCase {
   private static final String BEFORE = "before ";
   private static final String AFTER = "after ";
   private static final String DISPLAY_CREATED = "display created";
+  private static final String EXCEPTION_IN_RENDER = "Exception in render";
 
   private static StringBuffer log = new StringBuffer();
 
@@ -124,6 +124,55 @@ public class RWTLifeCycle_Test extends TestCase {
   {
     public int createUI() {
       new Display();
+      return 0;
+    }
+  }
+  
+  public static class ExceptionInRenderEntryPoint implements IEntryPoint {
+    public static class BuggyShell extends Shell {
+      public BuggyShell( final Display display ) {
+        super( display );
+      }
+      public Object getAdapter( Class adapter ) {
+        Object result;
+        if( adapter.equals( ILifeCycleAdapter.class ) ) {
+          result = new AbstractWidgetLCA() {
+            public void preserveValues( Widget widget ) {
+            }
+            public void readData( Widget widget ) {
+            }
+            public void renderInitialization( Widget widget )
+              throws IOException
+            {
+              throw new RuntimeException( EXCEPTION_IN_RENDER );
+            }
+            public void renderChanges( Widget widget ) throws IOException {
+              throw new RuntimeException( EXCEPTION_IN_RENDER );
+            }
+            public void renderDispose( Widget widget ) throws IOException {
+            }
+          };
+        } else {
+          result = super.getAdapter( adapter );
+        }
+        return result;
+      }
+    }
+    
+    public int createUI() {
+      Display display = new Display();
+      Shell shell = new BuggyShell( display );
+      shell.open();
+      while( !shell.isDisposed() ) {
+        try {
+          if( !display.readAndDispatch() ) {
+            display.sleep();
+          }
+        } catch( RuntimeException e ) {
+          // continue loop
+        }
+      }
+      log.append( "regular end of createUI" );
       return 0;
     }
   }
@@ -331,7 +380,7 @@ public class RWTLifeCycle_Test extends TestCase {
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }
 
-  public void testContinueLifeCycle() throws IOException {
+  public void testContinueLifeCycle() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -382,7 +431,7 @@ public class RWTLifeCycle_Test extends TestCase {
     log.setLength( 0 );
   }
 
-  public void testCreateUIIfNecessary() throws IOException {
+  public void testCreateUIIfNecessary() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     int returnValue = RWTLifeCycle.createUI();
     assertEquals( -1, returnValue );
@@ -576,7 +625,8 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testSleep() throws Exception {
-    final RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    final RWTLifeCycle lifeCycle 
+      = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
     final ServiceContext[] uiContext = { null };
     lifeCycle.addPhaseListener( new LoggingPhaseListener() );
     lifeCycle.setPhaseOrder( new IPhase[] {
@@ -731,6 +781,25 @@ public class RWTLifeCycle_Test extends TestCase {
     assertTrue( hasContext[ 0 ] );
     assertNotNull( stateInfo[ 0 ] );
     assertEquals( "", log.toString() );
+  }
+  
+  public void testExceptionInRender() throws Exception {
+    Fixture.fakeRequestParam( RequestParams.STARTUP,
+                              EntryPointManager.DEFAULT );
+    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    Class entryPointClass = ExceptionInRenderEntryPoint.class;
+    EntryPointManager.register( EntryPointManager.DEFAULT, entryPointClass );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    try {
+      lifeCycle.execute();
+      // wait for UI thread to terminate
+      synchronized( getUIThread().getLock() ) {
+        getUIThread().join( 5000 );
+      }
+      fail( "Exception in render must be re-thrown by life cycle" );
+    } catch( Throwable e ) {
+      assertEquals( e.getMessage(), EXCEPTION_IN_RENDER );
+    }
   }
 
   // TODO [rh] bring back to life, once bug #219465 is closed

@@ -96,6 +96,13 @@ public class RWTLifeCycle extends LifeCycle {
   private static final class UIThreadTerminatedError extends ThreadDeath {
     private static final long serialVersionUID = 1L;
   }
+  
+  private static final class PhaseExecutionError extends ThreadDeath {
+    private static final long serialVersionUID = 1L;
+    public PhaseExecutionError( Throwable cause ) {
+      initCause( cause );
+    }
+  }
 
   private final class UIThreadController implements Runnable {
     public void run() {
@@ -173,13 +180,16 @@ public class RWTLifeCycle extends LifeCycle {
   //////////////////////////
   // readAndDispatch & sleep
 
-  void continueLifeCycle() throws IOException {
+  void continueLifeCycle() {
     int start = 0;
     IPhase[] phaseOrder = getPhaseOrder();
     if( phaseOrder != null ) {
       Integer currentPhase = getCurrentPhase();
       if( currentPhase != null ) {
         int phaseIndex = currentPhase.intValue();
+        // A non-null currentPhase indicates that an IInterruptible phase
+        // was executed before. In this case we now need to execute the 
+        // AfterPhase events
         afterPhaseExecution( phaseOrder[ phaseIndex ].getPhaseID() );
         start = currentPhase.intValue() + 1;
       }
@@ -188,11 +198,19 @@ public class RWTLifeCycle extends LifeCycle {
         IPhase phase = phaseOrder[ i ];
         beforePhaseExecution( phase.getPhaseID() );
         if( phase instanceof IInterruptible ) {
+          // IInterruptible phases return control to the user code, thus
+          // they don't call Phase#execute()
           IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
           stateInfo.setAttribute( CURRENT_PHASE, new Integer( i ) );
           interrupted = true;
         } else {
-          phase.execute();
+          try {
+            phase.execute();
+          } catch( Throwable e ) {
+            // Wrap exception in a ThreadDeath-derived error to break out of
+            // the application call stack
+            throw new PhaseExecutionError( e );
+          }
           afterPhaseExecution( phase.getPhaseID() );
         }
       }
@@ -248,11 +266,19 @@ public class RWTLifeCycle extends LifeCycle {
     if( !uiThread.getThread().isAlive() ) {
       session.setAttribute( UI_THREAD, null );
     }
-    
+    handleUIThreadException();
+  }
+
+  private static void handleUIThreadException()
+    throws IOException, InterruptedException
+  {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    final Throwable throwable
-      = ( Throwable )stateInfo.getAttribute( UI_THREAD_THROWABLE );
+    Throwable throwable
+    = ( Throwable )stateInfo.getAttribute( UI_THREAD_THROWABLE );
     if( throwable != null ) {
+      if( throwable instanceof PhaseExecutionError ) {
+        throwable = throwable.getCause();
+      }
       if( throwable instanceof IOException ) {
         throw ( IOException )throwable;
       } else if( throwable instanceof RuntimeException ) {
@@ -265,7 +291,7 @@ public class RWTLifeCycle extends LifeCycle {
     }
   }
 
-  public void sleep() throws IOException {
+  public void sleep() {
     continueLifeCycle();
     IUIThreadHolder uiThread = getUIThreadHolder();
     UICallBackManager.getInstance().notifyUIThreadEnd();
@@ -311,9 +337,6 @@ public class RWTLifeCycle extends LifeCycle {
     }
     return result;
   }
-
-  //////////////////
-  // helping methods
 
   PhaseId executePhase( final PhaseId current ) throws IOException {
     PhaseId next = null;
