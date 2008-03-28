@@ -97,8 +97,14 @@ public class UICallBackManager
   public void sendUICallBack() {
     synchronized( runnables ) {
       if( !uiThreadRunning || !active ) {
-        runnables.notifyAll();
+        sendImmediately();
       }
+    }
+  }
+
+  public void sendImmediately() {
+    synchronized( runnables ) {
+      runnables.notifyAll();
     }
   }
   
@@ -219,7 +225,7 @@ public class UICallBackManager
           RunnableBase runnable = toBeExecuted[ i ];
           runnable.run();
         }
-        runnables.notifyAll();
+        sendImmediately();
       }
       runnables.clear();
       runnables = null;
