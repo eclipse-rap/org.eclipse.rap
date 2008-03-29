@@ -9,6 +9,14 @@ import org.eclipse.swt.widgets.Display;
 
 public class RAPTestCase extends TestCase {
 
+  public RAPTestCase() {
+    super();
+  }
+  
+  public RAPTestCase( final String name ) {
+    super( name );
+  }
+
   /**
    * Asserts that a condition is true. If it isn't it throws an
    * AssertionFailedError with the given message.
