@@ -123,6 +123,7 @@
         </action>
      </viewContribution>
   </extension>
+  
   <extension
         point="org.eclipse.ui.actionSets">
      <actionSet
@@ -165,6 +166,7 @@
         </action>
      </actionSet>
   </extension>
+  
   <extension
         point="org.eclipse.ui.perspectiveExtensions">
      <perspectiveExtension
@@ -174,6 +176,7 @@
         </actionSet>
      </perspectiveExtension>
   </extension>
+  
   <extension
         point="org.eclipse.ui.editors">
      <editor
@@ -185,6 +188,7 @@
            name="Foo Editor">
      </editor>
   </extension>
+  
   <extension
       point="org.eclipse.ui.decorators">
     <decorator
@@ -201,6 +205,7 @@
        </enablement>
     </decorator>
   </extension>
+  
   <extension
         point="org.eclipse.rap.ui.branding">
      <branding
@@ -214,4 +219,69 @@
            title="It&apos;s tea-time">
      </branding>
   </extension>
+  
+  <extension
+        point="org.eclipse.ui.exportWizards">
+      <category
+            name="Demo Export Category"
+            id="org.eclipse.rap.democategory">
+      </category>
+      <category
+            name="Demo Export Category I"
+            id="org.eclipse.rap.democategoryI">
+      </category>
+      <wizard
+            name="Demo Export"
+            icon="icons/sample.gif"
+            category="org.eclipse.rap.democategory"
+            class="org.eclipse.rap.demo.wizard.DemoExport"
+            id="org.eclipse.rap.demo.export">
+         <description>
+            This is an example for a export wizard. 
+         </description>
+      </wizard>         
+      <wizard
+            name="Demo Export"
+            icon="icons/sample.gif"
+            category="org.eclipse.rap.democategoryI"
+            class="org.eclipse.rap.demo.wizard.DemoExport"
+            id="org.eclipse.rap.demo.exportI">
+         <description>
+            This is an example for a export wizard. 
+         </description>
+      </wizard>         
+   </extension>
+   
+   <extension
+        point="org.eclipse.ui.importWizards">
+      <category
+            name="Demo Import Category"
+            id="org.eclipse.rap.democategory">
+      </category>
+      <category
+            name="Demo Import Category I"
+            id="org.eclipse.rap.democategoryI">
+      </category>
+      <wizard
+            name="Demo Import"
+            icon="icons/sample.gif"
+            id="org.eclipse.rap.demo.import"
+            category="org.eclipse.rap.democategory"            
+            class="org.eclipse.rap.demo.wizard.DemoImport">
+         <description>
+            This is an example for a import wizard.
+         </description>
+      </wizard>
+      <wizard
+            name="Demo Import"
+            icon="icons/sample.gif"
+            id="org.eclipse.rap.demo.importI"
+            category="org.eclipse.rap.democategoryI"            
+            class="org.eclipse.rap.demo.wizard.DemoImport">
+         <description>
+            This is an example for a import wizard.
+         </description>
+      </wizard>
+   </extension>
+
 </plugin>

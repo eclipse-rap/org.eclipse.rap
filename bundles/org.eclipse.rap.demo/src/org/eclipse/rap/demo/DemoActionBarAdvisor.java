@@ -31,6 +31,8 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
 
   private IWebBrowser browser;
   private IWorkbenchAction exitAction;
+  private IWorkbenchAction importAction;
+  private IWorkbenchAction exportAction;
   private Action aboutAction;
   private Action rapWebSiteAction;
   private MenuManager showViewMenuMgr;
@@ -59,6 +61,12 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     exitAction = ActionFactory.QUIT.create( window );
     exitAction.setImageDescriptor( quitActionImage );
     register( exitAction );
+    
+    importAction = ActionFactory.IMPORT.create( window );
+    register( importAction );
+    
+    exportAction = ActionFactory.EXPORT.create( window );
+    register( exportAction );
     
     saveAction = ActionFactory.SAVE.create( window );
     register( saveAction );
@@ -161,6 +169,8 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     MenuManager helpMenu = new MenuManager( "Help",
                                             IWorkbenchActionConstants.M_HELP );
     menuBar.add( fileMenu );
+    fileMenu.add( importAction );
+    fileMenu.add( exportAction );
     fileMenu.add( exitAction );
     windowMenu.add( showViewMenuMgr );
     menuBar.add( windowMenu );
