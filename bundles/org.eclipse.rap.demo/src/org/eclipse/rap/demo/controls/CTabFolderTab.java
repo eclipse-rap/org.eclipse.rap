@@ -1,43 +1,47 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
- * reserved. This program and the accompanying materials are made available
- * under the terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import java.util.Iterator;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+
 public class CTabFolderTab extends ExampleTab {
 
-//  private static final int[] BACKGROUND_COLORS 
+//  private static final int[] BACKGROUND_COLORS
 //    = { SWT.COLOR_RED, SWT.COLOR_GREEN, SWT.COLOR_BLUE, SWT.COLOR_DARK_GRAY };
-  
+
   private CTabFolder folder;
   private boolean unselectedCloseVisible;
-  private boolean topRightControl;
+  private boolean showTopRightControl;
   private boolean minVisible;
   private boolean maxVisible;
-
+  private int selFgIndex;
+  private int selBgIndex;
+  private int tabHeight = -1;
 
   public CTabFolderTab( final CTabFolder parent ) {
     super( parent, "CTabFolder" );
   }
 
   protected void createStyleControls( final Composite parent ) {
-    createStyleButton( "FLAT", SWT.BORDER );
+    createStyleButton( "FLAT", SWT.FLAT );
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "TOP", SWT.TOP );
     createStyleButton( "BOTTOM", SWT.BOTTOM );
@@ -45,11 +49,16 @@ public class CTabFolderTab extends ExampleTab {
     createVisibilityButton();
     createEnablementButton();
     createFontChooser();
+    createFgColorButton();
+    createBgColorButton();
+    createSelectionFgColorButton();
+    createSelectionBgColorButton();
+    createBgImageButton();
     createTabHeightControl( styleComp );
     createTopRightControl( styleComp );
     for( int i = 0; i < 3; i++ ) {
       final int index = i;
-      String rbText = "Select Tab " + i;
+      String rbText = "Select " + folder.getItem( index ).getText();
       Button rbSelectTab = createPropertyButton( rbText, SWT.RADIO );
       rbSelectTab.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( final SelectionEvent event ) {
@@ -84,13 +93,15 @@ public class CTabFolderTab extends ExampleTab {
     Button btnSwitchTabPosition = createPropertyButton( text, SWT.PUSH );
     btnSwitchTabPosition.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        int tabPosition = folder.getTabPosition();
-        if( tabPosition == SWT.TOP ) {
-          tabPosition = SWT.BOTTOM;
-        } else {
-          tabPosition = SWT.TOP;
-        }
-        folder.setTabPosition( tabPosition );
+        boolean isTop = folder.getTabPosition() == SWT.TOP;
+        folder.setTabPosition( isTop ? SWT.BOTTOM : SWT.TOP );
+      }
+    } );
+    Button borderVisibleButton
+      = createPropertyButton( "Switch borderVisible", SWT.PUSH );
+    borderVisibleButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        folder.setBorderVisible( !folder.getBorderVisible() );
       }
     } );
     Button btnAddTabItem = new Button( parent, SWT.PUSH );
@@ -110,65 +121,59 @@ public class CTabFolderTab extends ExampleTab {
   }
 
   protected void createExampleControls( final Composite parent ) {
-    Display display = parent.getDisplay();
-    parent.setBackground( BG_COLOR_BROWN );
-    FillLayout layout = new FillLayout();
+    GridLayout layout = new GridLayout();
     layout.marginHeight = 5;
     layout.marginWidth = 5;
     parent.setLayout( layout );
     folder = new CTabFolder( parent, getStyle() );
+    folder.setLayoutData( new GridData( 300, 300 ) );
     for( int i = 0; i < 3; i++ ) {
       createTabItem( SWT.NONE );
     }
-    Color selectionBg = display.getSystemColor( SWT.COLOR_LIST_SELECTION );
-    folder.setSelectionBackground( selectionBg );
     folder.setSelection( 0 );
     folder.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
       }
       public void widgetDefaultSelected( final SelectionEvent event ) {
       }
-    });
+    } );
     registerControl( folder );
+    if( tabHeight >= 0 ) {
+      folder.setTabHeight( tabHeight );
+    }
     updateTopRightControl();
     updateProperties();
+    updateSelFgColor();
+    updateSelBgColor();
   }
 
   private void createTabItem( final int style ) {
-//    Display display = folder.getDisplay();
     CTabItem item = new CTabItem( folder, style );
-    item.setText( "Tab " + folder.getItemCount() );
-// TODO [rh] re-activate as soon as mis-calculations of clientArea are solved    
-//    Text content = new Text( folder, SWT.WRAP | SWT.MULTI );
-//    int colorIndex = folder.getItemCount() - 1;
-//    if( colorIndex >= BACKGROUND_COLORS.length ) {
-//      colorIndex = BACKGROUND_COLORS.length - 1;
-//    }
-//    Color color = display.getSystemColor( BACKGROUND_COLORS[ colorIndex ] );
-//    content.setBackground( color );
-//    content.setText( "" );
-//    item.setControl( content );
+    int count = folder.getItemCount();
+    item.setText( "Tab " + count );
+    if( count != 3 ) {
+      Text content = new Text( folder, SWT.WRAP | SWT.MULTI );
+      if( count % 2 != 0 ) {
+        content.setBackground( BG_COLOR_BROWN );
+        content.setForeground( FG_COLOR_BLUE );
+      }
+      content.setText( "Some Content " + count );
+      item.setControl( content );
+    }
   }
 
   private void createTabHeightControl( final Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );
-    label.setText( "TabHeight" );
-    final Text text = new Text( parent, SWT.BORDER );
-    Button button = new Button( parent, SWT.PUSH );
-    button.setText( "Change" );
-    button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        String input = text.getText().trim();
-        int tabHeight = folder.getTabHeight();
-        try {
-          tabHeight = Integer.parseInt( input );
-          text.setText( String.valueOf( tabHeight ) );
-        } catch( NumberFormatException e ) {
-          String msg = "Invalid tab height: " + input;
-          MessageDialog.openError( getShell(), "Error", msg );
-        }
+    label.setText( "Tab Height" );
+    final Spinner spinner = new Spinner( composite, SWT.BORDER );
+    spinner.setSelection( folder.getTabHeight() );
+    spinner.setMinimum( 0 );
+    spinner.setMaximum( 100 );
+    spinner.addModifyListener( new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+        tabHeight = spinner.getSelection();
         folder.setTabHeight( tabHeight );
       }
     } );
@@ -176,15 +181,39 @@ public class CTabFolderTab extends ExampleTab {
 
   private void createTopRightControl( final Composite parent ) {
     final Button button = new Button( parent, SWT.CHECK );
-    button.setText( "TopRight Control" );
+    button.setText( "Top Right Control" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        topRightControl = button.getSelection();
+        showTopRightControl = button.getSelection();
         updateTopRightControl();
       }
     } );
   }
-  
+
+  private Button createSelectionFgColorButton() {
+    final Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Selection Foreground" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        selFgIndex = ( selFgIndex + 1 ) % fgColors.length;
+        updateSelFgColor();
+      }
+    } );
+    return button;
+  }
+
+  private Button createSelectionBgColorButton() {
+    final Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Selection Background" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        selBgIndex = ( selBgIndex + 1 ) % bgColors.length;
+        updateSelBgColor();
+      }
+    } );
+    return button;
+  }
+
   private void updateProperties() {
     folder.setMinimizeVisible( minVisible );
     folder.setMaximizeVisible( maxVisible );
@@ -192,14 +221,40 @@ public class CTabFolderTab extends ExampleTab {
   }
 
   private void updateTopRightControl() {
-    if( topRightControl ) {
+    if( showTopRightControl ) {
       Label label = new Label( folder, SWT.NONE );
       label.setText( "topRight" );
       Display display = label.getDisplay();
       label.setBackground( display.getSystemColor( SWT.COLOR_DARK_CYAN ) );
       folder.setTopRight( label );
     } else {
+      Control topRight = folder.getTopRight();
+      if( topRight != null && !topRight.isDisposed() ) {
+        topRight.dispose();
+      }
       folder.setTopRight( null );
+    }
+  }
+
+  private void updateSelFgColor() {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      if( control instanceof CTabFolder ) {
+        CTabFolder folder = ( CTabFolder )control;
+        folder.setSelectionForeground( fgColors[ selFgIndex ] );
+      }
+    }
+  }
+
+  private void updateSelBgColor() {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      if( control instanceof CTabFolder ) {
+        CTabFolder folder = ( CTabFolder )control;
+        folder.setSelectionBackground( bgColors[ selBgIndex ] );
+      }
     }
   }
 }

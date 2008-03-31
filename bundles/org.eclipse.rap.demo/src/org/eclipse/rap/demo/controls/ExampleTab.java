@@ -27,14 +27,13 @@ import org.eclipse.swt.widgets.*;
 abstract class ExampleTab {
 
   private boolean contentCreated;
-  private static final int MAX_COLORS = 4;
   private final CTabFolder folder;
-  private final List controls;
+  protected final List controls;
 
   private Composite exmplComp;
   protected Composite styleComp;
-  private Color[] bgColors;
-  private Color[] fgColors;
+  protected Color[] bgColors;
+  protected Color[] fgColors;
   private Font font;
   private int fgIndex;
   private int bgIndex;
@@ -143,16 +142,18 @@ abstract class ExampleTab {
   }
 
   private void initColors() {
-    bgColors = new Color[ MAX_COLORS ];
-    fgColors = new Color[ MAX_COLORS ];
-    bgColors[ 0 ] = null;
-    bgColors[ 1 ] = BG_COLOR_GREEN;
-    bgColors[ 2 ] = BG_COLOR_BLUE;
-    bgColors[ 3 ] = BG_COLOR_BROWN;
-    fgColors[ 0 ] = null;
-    fgColors[ 1 ] = FG_COLOR_RED;
-    fgColors[ 2 ] = FG_COLOR_BLUE;
-    fgColors[ 3 ] = FG_COLOR_ORANGE;
+    bgColors = new Color[] {
+      null,
+      BG_COLOR_GREEN,
+      BG_COLOR_BLUE,
+      BG_COLOR_BROWN
+    };
+    fgColors = new Color[] {
+      null,
+      FG_COLOR_RED,
+      FG_COLOR_BLUE,
+      FG_COLOR_ORANGE
+    };
   }
 
   protected abstract void createStyleControls( final Composite parent);
@@ -270,13 +271,13 @@ abstract class ExampleTab {
    *
    * @return the created button
    */
-  protected Button createFgColorButton( ) {
+  protected Button createFgColorButton() {
     fgColorChooser = new ColorChooser();
     final Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Foreground" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        fgIndex = ( fgIndex + 1 ) % MAX_COLORS;
+        fgIndex = ( fgIndex + 1 ) % fgColors.length;
         updateFgColor();
       }
 
@@ -296,7 +297,7 @@ abstract class ExampleTab {
     button.setText( "Background" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        bgIndex = ( bgIndex + 1 ) % MAX_COLORS;
+        bgIndex = ( bgIndex + 1 ) % fgColors.length;
         updateBgColor();
       }
     } );
