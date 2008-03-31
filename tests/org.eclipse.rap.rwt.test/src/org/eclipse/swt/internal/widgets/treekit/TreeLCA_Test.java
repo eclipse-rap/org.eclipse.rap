@@ -25,6 +25,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
@@ -256,6 +257,23 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", treeItemId );
     RWTFixture.executeLifeCycleFromServerThread( );
     assertEquals( "itemSelected", log.toString() );
+  }
+  
+  public void testInvalidScrollValues() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    final Tree tree = new Tree( shell, SWT.NONE );
+    String treeId = WidgetUtil.getId( tree );
+    String displayId = DisplayUtil.getAdapter( display ).getId();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
+
+    Fixture.fakeRequestParam( treeId + ".scrollLeft", "undefined" );
+    Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
+    RWTFixture.executeLifeCycleFromServerThread( );
+    
+    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    assertEquals( 80, adapter.getScrollTop() );
+    assertEquals( 0, adapter.getScrollLeft() );
   }
 
   protected void setUp() throws Exception {

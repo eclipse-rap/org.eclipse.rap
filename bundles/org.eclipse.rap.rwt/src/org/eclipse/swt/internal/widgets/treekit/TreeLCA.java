@@ -174,9 +174,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
     String top = WidgetLCAUtil.readPropertyValue( tree, "scrollTop" );
     if( left != null && top != null ) {
       final ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-      adapter.setScrollLeft( Integer.valueOf( left ).intValue() );
-      int oldScrollTop = adapter.getScrollTop();
-      int newScrollTop = Integer.valueOf( top ).intValue();
+      
+      final int newScrollLeft = parsePosition( left );
+      final int newScrollTop = parsePosition( top );
+      
+      final int oldScrollTop = adapter.getScrollTop();
+      adapter.setScrollLeft( newScrollLeft );
       adapter.setScrollTop( newScrollTop );
       if(oldScrollTop != newScrollTop) {
         ProcessActionRunner.add( new Runnable() {
@@ -188,6 +191,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
         });
       }
     }
+  }
+
+  private static int parsePosition( final String position ) {
+    int result = 0;
+    try {
+      result = Integer.valueOf( position ).intValue();
+    } catch( NumberFormatException e ) {
+      // ignore and use default value
+    }
+    return result;
   }
 
   /////////////////////////////////////////////////////////////
