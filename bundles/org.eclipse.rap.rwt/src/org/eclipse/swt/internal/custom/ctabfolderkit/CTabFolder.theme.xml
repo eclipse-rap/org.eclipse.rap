@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- Themeable properties for CTabFolder -->
+
+<theme>
+
+  <!-- == widget.background -->
+  <color name="ctabfolder.background"
+      description = "Background color for CTabFolders"
+      transparentAllowed="true"
+      default="248, 248, 255"/>
+
+  <!-- == widget.foreground -->
+  <color name="ctabfolder.foreground"
+      description = "Foreground color for CTabFolders"
+      default="black"/>
+
+  <color name="ctabfolder.selection.background"
+      description = "Background color for selected items in CTabFolders"
+      default="217, 227, 243"/>
+
+  <color name="ctabfolder.selection.foreground"
+      description = "Foreground color for selected items in CTabFolders"
+      default="black"/>
+
+</theme>

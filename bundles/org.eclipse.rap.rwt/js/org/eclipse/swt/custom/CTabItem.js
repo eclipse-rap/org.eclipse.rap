@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,16 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
   extend : qx.ui.basic.Atom,
 
   construct : function( parent, canClose ) {
     this.base( arguments );
-    this.setAppearance( "c-tab-item" );
+    if( parent.classname != "org.eclipse.swt.custom.CTabFolder" ) {
+      this.error( "illegal parent, must be a CTabFolder" );
+    }
+    this.setAppearance( "ctab-item" );
     this.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_MIDDLE );
     this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
@@ -25,12 +29,16 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this.setLabel( "" );
     this._selected = false;
     this._unselectedCloseVisible = true;
-    this._selectionBackground = null;
-    this._selectionForeground = null;
+    this._selectionBackground = parent.getSelectionBackground();
+    this._selectionForeground = parent.getSelectionForeground();
     this.setTabPosition( parent.getTabPosition() );
+    // TODO [rst] change when a proper state inheritance concept exists
+    if( parent.hasState( "rwt_BORDER" ) ) {
+      this.addState( "rwt_BORDER" );
+    }
     if( canClose ) {
       this._closeButton = new qx.ui.basic.Image();
-      this._closeButton.setAppearance( "c-tab-close-button" );
+      this._closeButton.setAppearance( "ctab-close-button" );
       this._closeButton.setWidth( 20 );
       // TODO [rh] center image vertically in tab item
       this._closeButton.setHeight( "80%" );
@@ -84,13 +92,11 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       this._selected = selected;
       if( selected ) {
         this.addState( org.eclipse.swt.custom.CTabItem.STATE_SELECTED );
-        this.setBackgroundColor( this._selectionBackground );
-        this.setTextColor( this._selectionForeground );
       } else {
         this.removeState( org.eclipse.swt.custom.CTabItem.STATE_SELECTED );
-        this.setBackgroundColor( null );
-        this.setTextColor( null );
       }
+      this._updateSelectionForeground();
+      this._updateSelectionBackground();
       this._updateCloseButton();
     },
 
@@ -103,17 +109,31 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       this._updateCloseButton();
     },
 
+    // transparent not supported, null resets color
+    setSelectionForeground : function( color ) {
+      this._selectionForeground = color;
+      this._updateSelectionForeground();
+    },
+
+    // transparent not supported, null resets color
     setSelectionBackground : function( color ) {
       this._selectionBackground = color;
-      if( this.isSelected() ) {
-        this.setBackgroundColor( this._selectionBackground );
+      this._updateSelectionBackground();
+    },
+
+    _updateSelectionForeground : function() {
+      if( this.isSelected() && this._selectionForeground != null ) {
+        this.setTextColor( this._selectionForeground );
+      } else {
+        this.resetTextColor();
       }
     },
 
-    setSelectionForeground : function( color ) {
-      this._selectionForeground = color;
-      if( this.isSelected() ) {
-        this.setTextColor( this._selectionForeground );
+    _updateSelectionBackground : function() {
+      if( this.isSelected() && this._selectionBackground != null ) {
+        this.setBackgroundColor( this._selectionBackground );
+      } else {
+        this.resetBackgroundColor();
       }
     },
 
@@ -167,4 +187,4 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       }
     }
   }
-});
+} );

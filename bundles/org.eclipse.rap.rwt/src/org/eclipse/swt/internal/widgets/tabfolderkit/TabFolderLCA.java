@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -24,7 +24,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
   }
-  
+
   public void readData( final Widget widget ) {
   }
 
@@ -38,12 +38,12 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     }
     WidgetLCAUtil.writeCustomAppearance( widget );
     ControlLCAUtil.writeStyleFlags( tabFolder );
-    writer.addListener( "keypress", 
+    writer.addListener( "keypress",
                         "org.eclipse.swt.TabUtil.onTabFolderKeyPress" );
-    writer.addListener( "changeFocused", 
+    writer.addListener( "changeFocused",
                         "org.eclipse.swt.TabUtil.onTabFolderChangeFocused" );
   }
-  
+
   public void renderChanges( final Widget widget ) throws IOException {
     ControlLCAUtil.writeChanges( ( Control )widget );
   }
@@ -52,22 +52,24 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-  
-  public void createResetHandlerCalls( final String typePoolId ) 
-    throws IOException 
+
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException
   {
   }
-  
+
   public String getTypePoolId( final Widget widget ) {
     return null;
   }
-  
-  public Rectangle adjustCoordinates( final Rectangle newBounds ) {
+
+  public Rectangle adjustCoordinates( final Widget widget,
+                                      final Rectangle newBounds )
+  {
     int border = 1;
     int hTabBar = 23;
-    return new Rectangle( newBounds.x - border - 10, 
-                          newBounds.y - hTabBar - border -10, 
-                          newBounds.width, 
+    return new Rectangle( newBounds.x - border - 10,
+                          newBounds.y - hTabBar - border -10,
+                          newBounds.width,
                           newBounds.height );
   }
 }

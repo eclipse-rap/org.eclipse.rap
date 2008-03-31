@@ -802,7 +802,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         border : states.rwt_BORDER ? "text.BORDER.border" : "text.border",
         font : "widget.font",
         padding : tv.getBoxDimensions( "text.SINGLE.padding" ),
-        textColor : states.disabled ? "widget.graytext" : "undefined",
+        textColor : states.disabled ? "widget.graytext" : "list.foreground",
         backgroundColor : "list.background"
       };
     }
@@ -1425,56 +1425,88 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style: function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.textColor = "widget.foreground";
       result.font = "widget.font";
+      result.textColor = tv.getColor( "ctabfolder.foreground");
       result.backgroundColor = tv.getColor( "ctabfolder.background" );
-      if( states.rwt_BORDER ) {
-        result.border = tv.getBorder( "ctabfolder.BORDER.border" );      
-      } else {
-        result.border = tv.getBorder( "ctabfolder.border" );
-      }
       return result;
     }
   },
 
-  "c-tab-item" : {
-    include: "atom",
-      
+  "ctabfolder-body" : {
     style: function( states ) {
-      var border_top = new qx.ui.core.Border();
-      border_top.setRight( 1, "solid", "#c0c0c0" );
-
-      var border_top_checked = new qx.ui.core.Border();
-      border_top_checked.setRight( 1, "solid", "#c0c0c0" );
-
-      var border_bottom = new qx.ui.core.Border();
-      border_bottom.setRight( 1, "solid", "#c0c0c0" );
-
-      var border_bottom_checked = new qx.ui.core.Border();
-      border_bottom_checked.setRight( 1, "solid", "#c0c0c0" );
-
-      var result = {
-        font : "widget.font",
-        paddingLeft : 4
-      };
-      if( states.selected ) {
-        if( states.barTop ) {
-          result.border = border_top_checked;
-        } else {
-          result.border = border_bottom_checked;
-        }
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.backgroundColor = "undefined";
+      result.textColor = "undefined";
+      if( states.rwt_BORDER ) {
+        result.border = tv.getBorder( "ctabfolder.border" );
       } else {
-        if( states.barTop ) {
-          result.border = border_top;
-        } else {
-          result.border = border_bottom;
-        }
+        result.border = "undefined";
       }
       return result;
     }
   },
-  
-  "c-tab-close-button" :
+
+  "ctabfolder-frame" : {
+    style: function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      if( !states.rwt_FLAT ) {
+        var color = tv.getColor( "ctabfolder.selection.background" );
+        result.border = new qx.ui.core.Border( 2, "solid", color );
+      } else {
+        result.border = "undefined";
+      }
+      result.backgroundColor = tv.getColor( "widget.background" );
+      return result;
+    }
+  },
+
+  "ctabfolder-separator" : {
+    style: function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      var border = new qx.ui.core.Border();
+      if( states.barTop ) {
+        border.setBottom( 1, "solid", "#c0c0c0" );
+      } else {
+        border.setTop( 1, "solid", "#c0c0c0" );
+      }
+      result.border = border;
+      return result;
+    }
+  },
+
+  "ctab-item" : {
+    include: "atom",
+
+    style: function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = { };
+      result.font = "widget.font";
+      result.paddingLeft = 4;
+      result.border = new qx.ui.core.Border();
+      result.border.setRight( 1, "solid", "#c0c0c0" );
+      if( states.selected ) {
+        result.textColor = tv.getColor( "ctabfolder.selection.foreground" );
+        result.backgroundColor = tv.getColor( "ctabfolder.selection.background" );
+        if( states.barTop ) {
+          result.border.setTop( 1, "solid", "#c0c0c0" );
+        } else {
+          result.border.setBottom( 1, "solid", "#c0c0c0" );
+        }
+      } else {
+        result.textColor = "undefined";
+        result.backgroundColor = "undefined";
+      }
+      if( states.firstItem && states.rwt_BORDER ) {
+        result.border.setLeft( 1, "solid", "#c0c0c0" );
+      }
+      return result;
+    }
+  },
+
+  "ctab-close-button" :
   {
     include : "image",
     

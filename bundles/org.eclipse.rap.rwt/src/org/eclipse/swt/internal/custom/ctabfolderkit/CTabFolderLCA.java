@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class CTabFolderLCA extends AbstractWidgetLCA {
-  
+
   // Request parameter that denotes the id of the selected tab item
   public static final String PARAM_SELECTED_ITEM_ID = "selectedItemId";
   // Request parameters for min/max state
@@ -41,7 +41,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     = "org.eclipse.swt.events.ctabFolderRestored";
   public static final String EVENT_SHOW_LIST
     = "org.eclipse.swt.events.ctabFolderShowList";
-  
+
   // Property names for preserveValues
   public static final String PROP_SELECTION_INDEX = "selectionIndex";
   public static final String PROP_MAXIMIZED = "maximized";
@@ -55,10 +55,11 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
   public static final String PROP_WIDTH = "width";
   public static final String PROP_CHEVRON_VISIBLE = "chevronVisible";
   public static final String PROP_CHEVRON_RECT = "chevronRect";
-  public static final String PROP_SELECTION_BG = "selectionBg";
   public static final String PROP_SELECTION_FG = "selectionFg";
+  public static final String PROP_SELECTION_BG = "selectionBg";
   public static final String PROP_TAB_POSITION = "tabPosition";
-  
+  private static final String PROP_BORDER_VISIBLE = "borderVisible";
+
   // Keep in sync with value in CTabFolder.js
   private static final Integer DEFAULT_TAB_HEIGHT = new Integer( 20 );
   private static final Integer DEFAULT_TAB_POSITION = new Integer( SWT.TOP );
@@ -93,13 +94,17 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( tabFolder.getMaximized() ) );
     adapter.preserve( PROP_TAB_HEIGHT,
                       new Integer( tabFolder.getTabHeight() ) );
-    adapter.preserve( PROP_TAB_POSITION, 
+    adapter.preserve( PROP_TAB_POSITION,
                       new Integer( tabFolder.getTabPosition() ) );
-    adapter.preserve( PROP_SELECTION_BG, tabFolder.getSelectionBackground() );
-    adapter.preserve( PROP_SELECTION_FG, tabFolder.getSelectionForeground() );
+    adapter.preserve( PROP_SELECTION_BG,
+                      tabFolderAdapter.getUserSelectionBackground() );
+    adapter.preserve( PROP_SELECTION_FG,
+                      tabFolderAdapter.getUserSelectionForeground() );
     adapter.preserve( PROP_CHEVRON_VISIBLE,
                       Boolean.valueOf( tabFolderAdapter.getChevronVisible() ) );
     adapter.preserve( PROP_CHEVRON_RECT, tabFolderAdapter.getChevronRect() );
+    adapter.preserve( PROP_BORDER_VISIBLE,
+                      Boolean.valueOf( tabFolder.getBorderVisible() ) );
   }
 
   public void readData( final Widget widget ) {
@@ -160,11 +165,13 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       } );
     }
   }
-  
+
   public void renderInitialization( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.newWidget( "org.eclipse.swt.custom.CTabFolder" );
     WidgetLCAUtil.writeCustomAppearance( widget );
+    CTabFolder tabFolder = ( CTabFolder )widget;
+    ControlLCAUtil.writeStyleFlags( tabFolder );
     String[] args = new String[] {
       SWT.getMessage( "SWT_Minimize" ),
       SWT.getMessage( "SWT_Maximize" ),
@@ -175,7 +182,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writer.callStatic( "org.eclipse.swt.custom.CTabFolder.setToolTipTexts",
                        args );
   }
-  
+
   public void renderChanges( final Widget widget ) throws IOException {
     CTabFolder tabFolder = ( CTabFolder )widget;
     ControlLCAUtil.writeChanges( tabFolder );
@@ -186,20 +193,37 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     writeListener( tabFolder );
     writeChevron( tabFolder );
     writeColors( tabFolder );
+    writeBorderVisible( tabFolder );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
-  
+
   public void createResetHandlerCalls( final String typePoolId ) throws IOException {
   }
-  
+
   public String getTypePoolId( final Widget widget ) {
     return null;
   }
-  
+
+  public Rectangle adjustCoordinates( final Widget widget,
+                                      final Rectangle bounds )
+  {
+    Rectangle result
+      = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
+    if( widget instanceof CTabItem ) {
+      result.height += 1;
+      CTabItem item = ( CTabItem )widget;
+      CTabFolder parent = item.getParent();
+      if( parent.getTabPosition() == SWT.BOTTOM ) {
+        result.y -= 1;
+      }
+    }
+    return result;
+  }
+
 //  public Rectangle adjustCoordinates( final Rectangle bounds ) {
 //    int border = 1;
 //    int hTabBar = 23;
@@ -212,9 +236,9 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   //////////////////////////////////////
   // Helping methods to write properties
-  
-  private static void writeTabPosition( final CTabFolder tabFolder ) 
-    throws IOException 
+
+  private static void writeTabPosition( final CTabFolder tabFolder )
+    throws IOException
   {
     Integer newValue = new Integer( tabFolder.getTabPosition() );
     Integer defValue = DEFAULT_TAB_POSITION;
@@ -268,7 +292,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
       }
     }
   }
-  
+
   private static boolean hasMinChanged( final CTabFolder tabFolder ) {
     ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
     Boolean minVisible = Boolean.valueOf( tabFolder.getMinimizeVisible() );
@@ -287,7 +311,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
     return visibilityChanged || boundsChanged;
   }
-  
+
   private static boolean hasMaxChanged( final CTabFolder tabFolder ) {
     ICTabFolderAdapter tabFolderAdapter = getCTabFolderAdapter( tabFolder );
     Boolean maxVisible = Boolean.valueOf( tabFolder.getMaximizeVisible() );
@@ -306,7 +330,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     }
     return visibilityChanged || boundsChanged;
   }
-  
+
   private static void writeMinMaxState( final CTabFolder tabFolder )
     throws IOException
   {
@@ -382,10 +406,24 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
     throws IOException
   {
     JSWriter writer = JSWriter.getWriterFor( tabFolder );
-    Color bg = tabFolder.getSelectionBackground();
-    writer.set( PROP_SELECTION_BG, "selectionBackground", bg, null );
+    ICTabFolderAdapter adapter
+      = ( ICTabFolderAdapter )tabFolder.getAdapter( ICTabFolderAdapter.class );
+    Color selFg = adapter.getUserSelectionForeground();
+    writer.set( PROP_SELECTION_FG, "selectionForeground", selFg, null );
+    Color selBg = adapter.getUserSelectionBackground();
+    writer.set( PROP_SELECTION_BG, "selectionBackground", selBg, null );
   }
-  
+
+  private static void writeBorderVisible( final CTabFolder tabFolder )
+    throws IOException
+  {
+    JSWriter writer = JSWriter.getWriterFor( tabFolder );
+    writer.set( PROP_BORDER_VISIBLE,
+                "borderVisible",
+                Boolean.valueOf( tabFolder.getBorderVisible() ),
+                Boolean.valueOf( ( tabFolder.getStyle() & SWT.BORDER ) != 0 ) );
+  }
+
   private static ICTabFolderAdapter getCTabFolderAdapter(
     final CTabFolder tabFolder )
   {
@@ -395,7 +433,7 @@ public final class CTabFolderLCA extends AbstractWidgetLCA {
 
   ///////////////
   // Event helper
-  
+
   private static CTabFolderEvent showList( final CTabFolder tabFolder ) {
     CTabFolderEvent result
       = new CTabFolderEvent( tabFolder, CTabFolderEvent.SHOW_LIST );

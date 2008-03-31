@@ -347,7 +347,7 @@ public final class WidgetLCAUtil {
       // the widget realization of qooxdoo
       if( parent != null ) {
         AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
-        newBounds = parentLCA.adjustCoordinates( newBounds );
+        newBounds = parentLCA.adjustCoordinates( widget, newBounds );
       }
       JSWriter writer = JSWriter.getWriterFor( widget );
       // Note [rst] Children of ScrolledComposites must not render their x and y

@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -149,9 +150,9 @@ public class CTabFolderLCA_Test extends TestCase {
     Object tabPosition = adapter.getPreserved( CTabFolderLCA.PROP_TAB_POSITION );
     assertEquals( new Integer( folder.getTabPosition() ), tabPosition );
     Object selectionBg = adapter.getPreserved( CTabFolderLCA.PROP_SELECTION_BG );
-    assertEquals( folder.getSelectionBackground(), selectionBg );
+    assertEquals( folderAdapter.getUserSelectionBackground(), selectionBg );
     Object selectionFg = adapter.getPreserved( CTabFolderLCA.PROP_SELECTION_FG );
-    assertEquals( folder.getSelectionForeground(), selectionFg );
+    assertEquals( folderAdapter.getUserSelectionForeground(), selectionFg );
     Object chevronVisible
      = adapter.getPreserved( CTabFolderLCA.PROP_CHEVRON_VISIBLE );
     assertEquals( Boolean.valueOf( folderAdapter.getChevronVisible() ),
@@ -346,7 +347,7 @@ public class CTabFolderLCA_Test extends TestCase {
     RWTFixture.clearPreserved();
     display.dispose();
   }
-  
+
   public void testChangeSelection() {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.MULTI );
@@ -371,7 +372,7 @@ public class CTabFolderLCA_Test extends TestCase {
     PhaseListenerRegistry.add( new CurrentPhase.Listener() );
     RWTFixture.executeLifeCycleFromServerThread( );
 
-    
+
     // The actual test request: item1 is selected, the request selects item2
     folder.setSelection( item1 );
     RWTFixture.fakeNewRequest();

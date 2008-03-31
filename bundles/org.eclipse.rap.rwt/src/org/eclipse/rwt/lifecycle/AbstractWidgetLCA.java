@@ -1,13 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002-2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
@@ -25,11 +26,11 @@ import org.eclipse.swt.widgets.Widget;
 /**
  * Abstract implementation of a widget life cycle adapter.
  * All widget LCAs should inherit from this class.
- * 
+ *
  * @since 1.0
  */
 public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
-  
+
   public final void render( final Widget widget ) throws IOException {
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
     if( !adapter.isInitialized() ) {
@@ -45,15 +46,23 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
     UITestUtil.writeId( widget );
     adapter.setInitialized( true );
   }
-  
-  // TODO [rst] Javadoc
-  public Rectangle adjustCoordinates( final Rectangle bounds ) {
-    // subclasses may override
+
+  /**
+   * Translates the bounds of a widget that is enclosed in the widget handled by
+   * this LCA. The default implementation does not modify the given bounds.
+   * Subclasses may override.
+   *
+   * @param widget the enclosed widget whose bounds to adjust
+   * @param bounds the actual bounds of the enclosed widget
+   * @return the adjusted bounds
+   */
+  public Rectangle adjustCoordinates( final Widget widget,
+                                      final Rectangle bounds ) {
     return bounds;
   }
-  
+
   public abstract void preserveValues( Widget widget );
-  
+
   /**
    * Writes JavaScript code to the response that creates a new widget instance
    * and initializes it. This method is called only once for every widget,
@@ -63,7 +72,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @throws IOException
    */
   public abstract void renderInitialization( Widget widget ) throws IOException;
-  
+
   /**
    * Writes JavaScript code to the response that applies the state changes of
    * the widget to the client. Implementations must only render those properties
@@ -73,7 +82,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @throws IOException
    */
   public abstract void renderChanges( Widget widget ) throws IOException;
-  
+
   /**
    * Writes JavaScript code to the response that renders the disposal of the
    * widget.
@@ -82,7 +91,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @throws IOException
    */
   public abstract void renderDispose( Widget widget ) throws IOException;
-  
+
   /**
    * <p>
    * Writes JavaScript code to the response that resets the client-side state of
@@ -90,15 +99,15 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * code has been processed the client-side widget should be in a state that is
    * equivalent to a newly created widget.
    * </p>
-   * 
+   *
    * <p>
    * Subclasses should override this method if pooling is supported by the
    * widget type this LCA belongs to. To activate pooling override
    * {@link #getTypePoolId(Widget)}.
    * </p>
-   * 
+   *
    * @see #getTypePoolId(Widget)
-   * 
+   *
    * @param typePoolId the type pool id of the widget to reset
    * @throws IOException
    */
@@ -106,7 +115,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
     throws IOException
   {
   }
-  
+
   /**
    * Returns an id that is used to identify the type of a widget in the
    * client-side widget pool.
@@ -122,13 +131,13 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * suffix. If this method returns <code>null</code>, the widget will not be
    * stored in the widget pool and cannot be reused.
    * </p>
-   * 
+   *
    * <p>
    * Subclasses may override to activate pooling. In case pooling is activated
    * the method {@link #createResetHandlerCalls(String)} should also be
    * overridden.
    * </p>
-   *         
+   *
    * @see #createResetHandlerCalls(String)
    *
    * @param widget the widget to store in the pool
@@ -141,18 +150,18 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
 
   /**
    * <p>
-   * As a side effect to redraw calls some native widgets trigger events like 
+   * As a side effect to redraw calls some native widgets trigger events like
    * resize for example. To simulate this behaviour subclasses may override
    * this method. The method takes as parameter type <code>Control</code>,
    * since the redraw methods are only available at the <code>Control</code>
    * subclasses of <code>Widgets</code>.
    * </p>
-   * 
+   *
    * <p>
    * Note that the redraw fake takes place between the process action and
    * the render phase.
    * </p>
-   * @param control the control on which redraw was called. 
+   * @param control the control on which redraw was called.
    */
   public void doRedrawFake( final Control control ) {
   }

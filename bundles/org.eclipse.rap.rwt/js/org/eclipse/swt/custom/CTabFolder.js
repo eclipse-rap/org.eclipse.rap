@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,68 +16,35 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this.base( arguments );
     this.setTabIndex( 1 );
     this.setHideFocus( true );
+    this.setAppearance( "ctabfolder" );
+    this.setOverflow( "hidden" );
     this._hasFolderListener = false;
     this._hasSelectionListener = false;
     this._tabPosition = "top";
-    this._tabHeight = 20;
-    //
-    var borderColor = "#c0c0c0";
-    var border = new qx.ui.core.Border( 1, "solid", borderColor );
-    this.setBorder( border );
-    //
+    this._tabHeight = 0;
+    this._selectionForeground = null;
+    this._selectionBackground = null;
     this._chevron = null;
     this._chevronMenu = null;
     // Minimize/maximize buttons, initially non-existing
     this._minMaxState = "normal";  // valid states: min, max, normal
     this._maxButton = null;
     this._minButton = null;
-    // Construct highlight border lines
-    var highlightBorder = new qx.ui.core.Border();
-    highlightBorder.setLeft( 2, "solid", borderColor );
-    this._highlightLeft = new qx.ui.basic.Atom();
-    this._highlightLeft.setBorder( highlightBorder );
-    this._highlightLeft.setWidth( 2 );
-    this.add( this._highlightLeft );
-    highlightBorder = new qx.ui.core.Border();
-    highlightBorder.setRight( 2, "solid", borderColor );
-    this._highlightRight = new qx.ui.basic.Atom();
-    this._highlightRight.setBorder( highlightBorder );
-    this._highlightRight.setWidth( 2 );
-    this.add( this._highlightRight );
-    highlightBorder = new qx.ui.core.Border();
-    highlightBorder.setTop( 2, "solid", borderColor );
-    this._highlightTop = new qx.ui.basic.Atom();
-    this._highlightTop.setBorder( highlightBorder );
-    this._highlightTop.setLeft( 0 );
-    this._highlightTop.setHeight( 2 );
-    this.add( this._highlightTop );
-    highlightBorder = new qx.ui.core.Border();
-    highlightBorder.setTop( 2, "solid", borderColor );
-    this._highlightBottom = new qx.ui.basic.Atom();
-    this._highlightBottom.setBorder( highlightBorder );
-    this._highlightBottom.setLeft( 0 );
-    this._highlightBottom.setHeight( 1 );
-    
-    // fix ie style issues
-    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._highlightLeft );
-    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._highlightRight );
-    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._highlightTop );
-    org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._highlightBottom );
-    
-    this.add( this._highlightBottom );
+    this._body = new qx.ui.layout.CanvasLayout();
+    this._body.setAppearance( "ctabfolder-body" );
+    this.add( this._body );
+    this._separator = new qx.ui.layout.CanvasLayout();
+    this._separator.setAppearance( "ctabfolder-separator" );
+    this.add( this._separator );
+    this._frame = new qx.ui.layout.CanvasLayout();
+    this._frame.setAppearance( "ctabfolder-frame" );
+    this.add( this._frame );
+
     // Create horizontal line that separates the button bar from the rest of
     // the client area
-    border = new qx.ui.core.Border();
-    border.setTop( 1, "solid", borderColor );
-    this._separator = new qx.ui.basic.Atom();
-    this._separator.setBorder( border );
-    this._separator.setLeft( 0 );
-//    this._separator.setTop( this._tabHeight );
-    this._separator.setHeight( 1 );
-    this.add( this._separator );
     // Add resize listeners to update selection border (this._highlightXXX)
-    this.addEventListener( "changeWidth", this._updateHighlightBorders, this );
-    this.addEventListener( "changeHeight", this._updateHighlightBorders, this );
+    this.addEventListener( "changeWidth", this._updateLayout, this );
+    this.addEventListener( "changeHeight", this._updateLayout, this );
     // Add keypress listener to select items with left/right keys
     this.addEventListener( "keypress", this._onKeyPress, this );
   },
@@ -86,9 +53,10 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     // use hideMin/MaxButton to dispose of toolTips
     this.hideMinButton();
     this.hideMaxButton();
-    this.removeEventListener( "changeWidth", this._updateHighlightBorders, this );
-    this.removeEventListener( "changeHeight", this._updateHighlightBorders, this );
+    this.removeEventListener( "changeWidth", this._updateLayout, this );
+    this.removeEventListener( "changeHeight", this._updateLayout, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
+    this._disposeObjects( "_frame", "_separator" );
   },
 
   statics : { 
@@ -110,26 +78,49 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
   },
 
   members : {
-    /* valid values; "top", "bottom" */
+
+    addState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_"
+          || state.substr( 0, 4 ) == "rwt_" )
+      {
+        this._body.addState( state );
+        this._frame.addState( state );
+        this._mapItems( function( item ) {
+          item.addState( state );
+        } );
+      }
+    },
+
+    removeState : function( state ) {
+      this.base( arguments, state );
+      if( state.substr( 0, 8 ) == "variant_"
+          || state.substr( 0, 4 ) == "rwt_" )
+      {
+        this._body.removeState( state );
+        this._frame.removeState( state );
+        this._mapItems( function( item ) {
+          item.removeState( state );
+        } );
+      }
+    },
+
+    /* valid values: "top", "bottom" */
     setTabPosition : function( tabPosition ) {
       this._tabPosition = tabPosition;
-      // update tab items
-      var children = this.getChildren();
-      for( var i = 0; i < children.length; i++ ) {
-      	if( children[ i ].classname === "org.eclipse.swt.custom.CTabItem" ) {
-      	  children[ i ].setTabPosition( tabPosition );
-      	}
-      }
-      this._updateHighlightBorders();
+      this._mapItems( function( item ) {
+      	item.setTabPosition( tabPosition );
+      } );
+      this._updateLayout();
     },
     
+    /* returns one of: "top", "bottom" */
     getTabPosition : function() {
       return this._tabPosition;
     },
     
     setTabHeight : function( tabHeight ) {
       this._tabHeight = tabHeight;
-      this._separator.setTop( this._tabHeight );
       var buttonTop = this._getButtonTop();
       if( this._minButton != null ) {
         this._minButton.setTop( buttonTop );
@@ -140,26 +131,54 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       if( this._chevron != null ) {
         this._chevron.setTop( buttonTop );
       }
-      this._updateHighlightBorders();
+      this._updateLayout();
     },
 
-    // TODO [rh] optimize usage of border objects (get, change, set)
+    // transparent not supported, null resets color
+    setSelectionForeground : function( color ) {
+      this._selectionForeground = color;
+      this._mapItems( function( item ) {
+        item.setSelectionForeground( color );
+      } );
+    },
+
+    // transparent not supported, null resets color
     setSelectionBackground : function( color ) {
-      var highlightBorder = new qx.ui.core.Border();
-      highlightBorder.setLeft( 2, qx.constant.Style.BORDER_SOLID, color );
-      this._highlightLeft.setBorder( highlightBorder );
+      this._selectionBackground = color;
+      this._mapItems( function( item ) {
+        item.setSelectionBackground( color );
+      } );
+      if( color != null ) {
+        this._frame.setBorder( new qx.ui.core.Border( 2, "solid", color ) );
+      } else {
+        this._frame.resetBorder();
+      }
+    },
 
-      highlightBorder = new qx.ui.core.Border();
-      highlightBorder.setRight( 2, qx.constant.Style.BORDER_SOLID, color );
-      this._highlightRight.setBorder( highlightBorder );
+    setBorderVisible : function( visible ) {
+      if( visible ) {
+        this.addState( "rwt_BORDER" );
+      } else {
+        this.removeState( "rwt_BORDER" );
+      }
+      this._updateLayout();
+    },
 
-      highlightBorder = new qx.ui.core.Border();
-      highlightBorder.setTop( 2, qx.constant.Style.BORDER_SOLID, color );
-      this._highlightTop.setBorder( highlightBorder );
+    getSelectionForeground : function() {
+      return this._selectionForeground;
+    },
 
-      highlightBorder = new qx.ui.core.Border();
-      highlightBorder.setTop( 2, qx.constant.Style.BORDER_SOLID, color );
-      this._highlightBottom.setBorder( highlightBorder );
+    getSelectionBackground : function() {
+      return this._selectionBackground;
+    },
+
+    _mapItems : function( func ) {
+      var children = this.getChildren();
+      for( var i = 0; i < children.length; i++ ) {
+      	if( children[ i ].classname === "org.eclipse.swt.custom.CTabItem" ) {
+      	  func( children[ i ] );
+      	}
+      }
     },
 
     _getButtonTop : function() {
@@ -297,31 +316,34 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       this._hasSelectionListener = value;
     },
 
-    _updateHighlightBorders : function() {
-      var separatorHeight = this._separator.getHeight();
-      // ex _onChangeWidth
-      this._separator.setWidth( this.getWidth() - 2 );
-      this._highlightRight.setLeft( this.getWidth() - 2 - this._highlightRight.getWidth() );
-      this._highlightTop.setWidth( this.getWidth() - 2 );
-      this._highlightBottom.setWidth( this.getWidth() - 2 );
-      // ex _onChangeHeight
-      var top;
-      if( this._tabPosition === "top" ) {
-        this._separator.setTop( this._tabHeight );
-        this._highlightBottom.setTop( this.getHeight() - 4 );
-        this._highlightTop.setTop( this._tabHeight + separatorHeight );
-        top = this._tabHeight + separatorHeight + 2;
+    _updateLayout : function() {
+      // TODO [rst] take actual border width into account
+      var borderWidth = this.hasState( "rwt_BORDER" ) ? 1 : 0;
+      var frameWidth = this.hasState( "rwt_FLAT" ) ? 0 : 2;
+      var sepBorderWidth = 1;
+      var width = this.getWidth() - borderWidth * 2;
+      var tabHeight = this._tabHeight + 1;
+
+      this._body.setLeft( 0 );
+      this._body.setTop( 0 );
+      this._body.setWidth( this.getWidth() );
+      this._body.setHeight( this.getHeight() );
+
+      this._separator.setLeft( borderWidth );
+      this._separator.setWidth( width );
+      this._separator.setHeight( 10 );
+
+      this._frame.setLeft( borderWidth );
+      this._frame.setWidth( width );
+      this._frame.setHeight( this.getHeight() - borderWidth - sepBorderWidth - tabHeight );
+      
+      if( this._tabPosition == "top" ) {
+        this._separator.setTop( tabHeight );
+        this._frame.setTop( tabHeight + 1 );
       } else { // tabPosition == "bottom"
-        this._separator.setTop( this.getHeight() - ( this._tabHeight + 1 ) );
-        this._highlightBottom.setTop( this.getHeight() - ( this._tabHeight + separatorHeight + 2 ) );
-        this._highlightTop.setTop( 0 );
-        top = 2;
+        this._separator.setTop( this.getHeight() - tabHeight - 1 );
+        this._frame.setTop( borderWidth );
       }
-      var height = this.getHeight() - ( this._tabHeight + separatorHeight + 4 );
-      this._highlightLeft.setTop( top );
-      this._highlightLeft.setHeight( height );
-      this._highlightRight.setTop( top );
-      this._highlightRight.setHeight( height );
     },
 
     _onChevronExecute : function( evt ) {
@@ -384,16 +406,13 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     // TODO [rst] Change to respect _hasSelectionListener as soon as server-side
     // code is revised accordingly -> CTabFolderLCA.readData().
-    _notifyItemClick : function(item) {
+    _notifyItemClick : function( item ) {
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         if( !item.isSelected() ) {
           // deselect any previous selected CTabItem
-          var items = this.getChildren();
-          for( var i = 0; i < items.length; i++ ) {
-            if ( items[ i ].classname == "org.eclipse.swt.custom.CTabItem" ) {
-              items[ i ].setSelected( false );
-            }
-          }
+          this._mapItems( function( item ) {
+            item.setSelected( false );
+          } );
           item.setSelected( true );
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var req = org.eclipse.swt.Request.getInstance();
@@ -422,4 +441,4 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       }
     }
   }
-});
+} );

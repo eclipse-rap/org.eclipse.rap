@@ -35,23 +35,14 @@ public class ControlThemeAdapter implements IControlThemeAdapter {
   }
 
   public Color getForeground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxColor color = theme.getColor( "widget.foreground", variant );
-    return QxColor.createColor( color );
+    return ThemeAdapterUtil.getColor( control, "widget.foreground" );
   }
 
   public Color getBackground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxColor color = theme.getColor( "widget.background", variant );
-    return QxColor.createColor( color );
+    return ThemeAdapterUtil.getColor( control, "widget.background" );
   }
 
   public Font getFont( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxFont font = theme.getFont( "widget.font", variant );
-    return QxFont.createFont( font );
+    return ThemeAdapterUtil.getFont( control, "widget.font" );
   }
 }

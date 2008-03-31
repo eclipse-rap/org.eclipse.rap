@@ -165,6 +165,13 @@ qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
       widthRight : 1,
       colorLeft : "widget.highlight",
       colorRight : "widget.shadow"
+    },
+    
+    // -- ctabfolder --
+    
+    "ctabfolder.border" : {
+      width : 1,
+      color : "#c0c0c0"
     }
   }
 } );
