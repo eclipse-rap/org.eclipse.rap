@@ -229,6 +229,11 @@ public class LabelLCA_Test extends TestCase {
     lca.renderChanges( label );
     expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/>s<br/>t\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    // truncate zeros
+    label.setText( "te\000st" );
+    lca.renderChanges( label );
+    expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   public void testEscape() throws Exception {

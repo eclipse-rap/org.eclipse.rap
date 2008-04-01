@@ -174,6 +174,15 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( expected, WidgetLCAUtil.escapeText( "Test\\", false ) );
   }
 
+  public void testTruncateZeros() throws Exception {
+    assertEquals( ( char )0, "\000".charAt( 0 ) );
+    assertEquals( "foo ", WidgetLCAUtil.escapeText( "foo \000 bar", false ) );
+    assertEquals( "foo", WidgetLCAUtil.escapeText( "foo\000", false ) );
+    assertEquals( "", WidgetLCAUtil.escapeText( "\000foo", false ) );
+    assertEquals( "&lt;foo", WidgetLCAUtil.escapeText( "<foo\000>", false ) );
+    assertEquals( "&lt;foo", WidgetLCAUtil.escapeText( "<foo\000>", true ) );
+  }
+
   public void testParseFontName() {
     // IE doesn't like quoted font names (or whatever qooxdoo makes out of them)
     String systemFontName
