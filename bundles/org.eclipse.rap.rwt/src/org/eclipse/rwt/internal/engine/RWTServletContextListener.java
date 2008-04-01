@@ -180,7 +180,6 @@ public final class RWTServletContextListener implements ServletContextListener {
       String factoryName
         = context.getInitParameter( SETTING_STORE_FACTORY_PARAM );
       if( factoryName != null ) {
-        // TODO [ev] - verify that this works - standalone RWT deployment with Frank
         try {
           Class clazz = Class.forName( factoryName );
           ISettingStoreFactory factory; 
