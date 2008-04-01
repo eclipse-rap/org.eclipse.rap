@@ -357,7 +357,11 @@ public final class RWTFixture {
     
     synchronized( threadHolder.getLock() ) {
       serverThread.start();
-      lifeCycle.sleep();        
+      try {
+        lifeCycle.sleep();
+      } catch( ThreadDeath e ) {
+        throw new RuntimeException( e );
+      }
     }
     
     while( Display.getCurrent().readAndDispatch() ) {
