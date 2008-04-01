@@ -144,17 +144,30 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
       if( e.target == null ) {
         target = e.srcElement;
       }
-      this._columnArea.setLeft( 0 - target.scrollLeft );
+      var newScrollLeft = 0;
+      var newScrollTop = 0;
+      // reset to default if we get unexpected values
+      if( target.scrollLeft !== undefined ) {
+        newScrollLeft = target.scrollLeft;
+      } else {
+        this.setScrollLeft( newScrollLeft );
+      }
+      if( target.scrollTop !== undefined ) {
+        newScrollTop = target.scrollTop;
+      } else {
+        this.setScrollTop( newScrollTop );
+      }
+      this._columnArea.setLeft( 0 - newScrollLeft );
       // inform server about scroll pos
       if( !org_eclipse_rap_rwt_EventUtil_suspend ) {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var treeId = wm.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( treeId + ".scrollLeft", target.scrollLeft );
-        req.addParameter( treeId + ".scrollTop", target.scrollTop );
+        req.addParameter( treeId + ".scrollLeft", newScrollLeft );
+        req.addParameter( treeId + ".scrollTop", newScrollTop );
         if( qx.lang.String.contains( this.getRWTStyle(), "virtual" ) ) {
           // check if scrollTop has changed
-          if(target.scrollTop != this._oldScrollTop) {
+          if(newScrollTop != this._oldScrollTop) {
             // send request after a little later to merge scroll events
             window.clearTimeout(this._setValueTimerId);
             var self = this;
@@ -176,7 +189,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Tree", {
             }, 250);
           }
         }
-        this._oldScrollTop = target.scrollTop;
+        this._oldScrollTop = newScrollTop;
       }
     },
   
