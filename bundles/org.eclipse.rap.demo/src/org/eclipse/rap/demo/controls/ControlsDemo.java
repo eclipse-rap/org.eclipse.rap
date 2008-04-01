@@ -16,7 +16,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
@@ -45,15 +44,11 @@ public class ControlsDemo implements IEntryPoint {
 
   private void createContent( final Composite parent ) {
     parent.setLayout( new FillLayout() );
-    final CTabFolder topFolder = new CTabFolder( parent, SWT.TOP );
+    int style = SWT.TOP | SWT.FLAT | SWT.BORDER;
+    final CTabFolder topFolder = new CTabFolder( parent, style );
     topFolder.marginWidth = 5;
     topFolder.marginHeight = 5;
     ensureMinTabHeight( topFolder );
-    Display display = parent.getDisplay();
-    Color selBg = display.getSystemColor( SWT.COLOR_LIST_SELECTION );
-    Color selFg = display.getSystemColor( SWT.COLOR_LIST_SELECTION_TEXT );
-    topFolder.setSelectionBackground( selBg );
-    topFolder.setSelectionForeground( selFg );
 
     final ExampleTab[] tabs = new ExampleTab[] {
       new ButtonTab( topFolder ),
