@@ -177,7 +177,6 @@ public final class RWTFixture {
     Fixture.setUp();
     System.setProperty( IInitialization.PARAM_LIFE_CYCLE, 
                         RWTLifeCycle.class.getName() );
-    LifeCycleServiceHandler.configurer = null;
 
     // registration of adapter factories
     registerAdapterFactories();

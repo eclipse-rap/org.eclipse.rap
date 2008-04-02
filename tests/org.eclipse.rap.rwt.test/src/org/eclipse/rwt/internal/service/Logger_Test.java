@@ -31,6 +31,8 @@ import org.eclipse.swt.RWTFixture;
 public class Logger_Test extends TestCase {
 
   private static final String RESPONSE = "HELLO LOGGER";
+  
+  private ILifeCycleServiceHandlerConfigurer bufferedConfigurer;
 
   private static final class TestHandler extends Handler {
     
@@ -60,6 +62,7 @@ public class Logger_Test extends TestCase {
   protected void setUp() throws Exception {
     RWTFixture.setUp();
     Fixture.createContext( false );
+    bufferedConfigurer = LifeCycleServiceHandler.configurer;
     LifeCycleServiceHandler.configurer 
       = new ILifeCycleServiceHandlerConfigurer()
     {
@@ -83,7 +86,7 @@ public class Logger_Test extends TestCase {
     RWTFixture.tearDown();
     Fixture.removeContext();
     removeAllTestHandlers();
-    LifeCycleServiceHandler.configurer = null; 
+    LifeCycleServiceHandler.configurer = bufferedConfigurer; 
   }
   
   public void testRequestHeaderLogging() throws Exception {

@@ -101,6 +101,8 @@ public class WrappedRequest_Test extends TestCase {
   
   public void testStartupRequestWithParameter() throws Exception {
     System.setProperty( "lifecycle", RWTLifeCycle.class.getName() );
+    ILifeCycleServiceHandlerConfigurer bufferedConfigurer 
+      = LifeCycleServiceHandler.configurer;
     LifeCycleServiceHandler.configurer
      = new ILifeCycleServiceHandlerConfigurer()
     {
@@ -137,7 +139,7 @@ public class WrappedRequest_Test extends TestCase {
     ServiceManager.getHandler().service();
 
     assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );
-    LifeCycleServiceHandler.configurer = null;
+    LifeCycleServiceHandler.configurer = bufferedConfigurer;
     System.getProperties().remove( "lifecycle" );
     EntryPointManager.deregister( EntryPointManager.DEFAULT );
   }

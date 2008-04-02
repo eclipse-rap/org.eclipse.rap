@@ -72,6 +72,8 @@ public class ServiceHandler_Test extends TestCase {
     ServiceManager.getHandler().service();
     assertEquals( SERVICE_DONE, log );
     // Unregister
+    ILifeCycleServiceHandlerConfigurer bufferedConfigurer 
+      = LifeCycleServiceHandler.configurer;
     LifeCycleServiceHandler.configurer 
       = new ILifeCycleServiceHandlerConfigurer()
     {
@@ -94,6 +96,6 @@ public class ServiceHandler_Test extends TestCase {
     RWT.getServiceManager().unregisterServiceHandler( PROGRAMATIC_HANDLER_ID );
     ServiceManager.getHandler().service();
     assertEquals( "", log );
-    LifeCycleServiceHandler.configurer = null; 
+    LifeCycleServiceHandler.configurer = bufferedConfigurer; 
   }
 }
