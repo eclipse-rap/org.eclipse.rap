@@ -171,6 +171,7 @@ public class RWTTestSuite {
     suite.addTestSuite( BusyIndicator_Test.class );
 
     suite.addTestSuite( Image_Test.class );
+    suite.addTestSuite( ImageDataCache_Test.class );
     suite.addTestSuite( Color_Test.class );
     suite.addTestSuite( RGB_Test.class );
     suite.addTestSuite( Font_Test.class );

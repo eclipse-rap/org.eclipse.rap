@@ -21,7 +21,9 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.Fixture.*;
+import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.*;
+import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.browser.Ie6;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.JsConcatenator;
@@ -201,6 +203,15 @@ public final class RWTFixture {
     // standard teardown
     Fixture.tearDown();
     System.getProperties().remove( IInitialization.PARAM_LIFE_CYCLE );
+    
+    AbstractBranding[] all = BrandingManager.getAll();
+    for( int i = 0; i < all.length; i++ ) {
+      BrandingManager.deregister( all[ i ] );
+    }
+    
+    LifeCycleFactory.destroy();
+    
+    PhaseListenerRegistry.clear();
   }
 
   public static void registerAdapterFactories() {

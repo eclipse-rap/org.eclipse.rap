@@ -144,7 +144,10 @@ public class MenuLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) == -1 );
     // Simulate client-side size-change of shell: menuBar must render new size
     RWTFixture.clearPreserved();
-    PhaseListenerRegistry.add( new PreserveWidgetsPhaseListener() );
+    RWTLifeCycle lifeCycle = ( RWTLifeCycle )LifeCycleFactory.getLifeCycle();
+    PreserveWidgetsPhaseListener preserveListener
+      = new PreserveWidgetsPhaseListener();
+    lifeCycle.addPhaseListener( preserveListener );
     shell.setMenuBar( menuBar );
     String displayId = DisplayUtil.getId( display );
     String shellId = WidgetUtil.getId( shell );
@@ -161,6 +164,7 @@ public class MenuLCA_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread( );
     String expected = "wm.findWidgetById( \"" + menuId + "\" );w.setSpace";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    lifeCycle.removePhaseListener( preserveListener );
   }
 
   private void testPreserveValues( final Display display, final Menu menu ) {
