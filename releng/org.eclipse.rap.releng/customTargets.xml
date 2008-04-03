@@ -266,24 +266,28 @@
 	<!-- Steps to do to test the build results -->
 	<!-- ===================================================================== -->
 	<target name="test">
-		<!-- <property name="src.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" /> -->
+		<property name="src.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/" />
 		<property name="build.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
 		<property name="reports.tests" value="${buildDirectory}/tests" />
 		<mkdir dir="${reports.tests}" />
 		<path id="cp">
 			<pathelement location="${build.tests}" />
+			<!-- work in progress
+			<pathelement location="${src.tests}/src/servicehandler.xml" />
+			<pathelement location="${src.tests}/src/resources/w4t_fixture.xml" />
+			<pathelement location="${src.tests}/src/resources/w4t_partial.xml" />
+			-->
 			<!--<pathelement location="${src.tests}" /> -->
 			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_${targetVersion}.${buildId}.jar" />
-			<!-- <pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" /> -->
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/resource_manager_test.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200711021030.jar" />
+			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200803061910.jar" />
 			<pathelement path="${java.class.path}" />
-			<pathelement path="${baseLocation}/plugins/org.junit_3.8.1/junit.jar" />
+			<pathelement path="${baseLocation}/plugins/org.junit_3.8.2.v200711021030/junit.jar" />
 		</path>
 		<!-- run rwt tests -->
-		<junit printsummary="yes" haltonfailure="no" fork="no">
+		<junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="once">
 			<classpath refid="cp" />
 
 			<formatter type="xml" />
@@ -309,13 +313,13 @@
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/resource_manager_test.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/js.jar" />
-			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200711021030.jar" />
+			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200803061910.jar" />
 			<pathelement path="${java.class.path}" />
-			<pathelement path="${baseLocation}/plugins/org.junit_3.8.1/junit.jar" />
+			<pathelement path="${baseLocation}/plugins/org.junit_3.8.2.v200711021030/junit.jar" />
 			<pathelement path="${baseLocation}/plugins/org.eclipse.rap.w4t/WEB-INF/lib/commons-fileupload-1.0.jar" />
 		</path>
 		<!-- run w4t tests -->
-		<junit printsummary="yes" haltonfailure="no" fork="no">
+		<junit printsummary="yes" haltonfailure="no" fork="yes" forkmode="once">
 			<classpath refid="cp2" />
 
 			<formatter type="xml" />
