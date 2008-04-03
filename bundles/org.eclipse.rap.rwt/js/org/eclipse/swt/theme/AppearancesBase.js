@@ -68,14 +68,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       return {
         font : "widget.font",
-        textColor       : "black",
+        textColor : "black",
         backgroundColor : "white",
         // TODO [rst] Eliminate absolute references
-        backgroundImage    : "./resource/widget/rap/display/bg.gif"
+        backgroundImage : "./resource/widget/rap/display/bg.gif"
       };
     }
   },
-  
+
   "client-document-blocker" :
   {
     style : function( states ) {
@@ -83,12 +83,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       // (Visible) background tiles could be dramatically slow down mshtml!
       // A background image or color is always needed for mshtml to block the events successfully.
       return {
-        cursor          : "default",
+        cursor : "default",
         backgroundImage : "static/image/blank.gif"
       };
     }
   },
-  
+
   "atom" :
   {
     style : function( states ) {
@@ -104,14 +104,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
   
   // Note: This appearance applies to qooxdoo labels (as embedded in Atom,
-  // Button, etc.). For SWT Label, see apperance "label-wrapper".
-  // Any styles set for this appearance cannot be overridden by themeing of
-  // controls that include a label! This is because the "inheritance" feature
-  // does not overwrite theme property values from themes.
+  //       Button, etc.). For SWT Label, see apperance "label-wrapper".
+  //       Any styles set for this appearance cannot be overridden by themeing
+  //       of controls that include a label! This is because the "inheritance"
+  //       feature does not overwrite theme property values from themes.
   "label" :
   {
   },
-  
+
   // Appearance used for qooxdoo "labelObjects" which are part of Atoms etc.
   "label-graytext" :
   {
@@ -128,7 +128,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.font = "widget.font";
+      result.font = tv.getFont( "widget.font" );
       if( states.rwt_BORDER ) {
         result.border = tv.getBorder( "label.BORDER.border" );
       } else {
@@ -145,26 +145,27 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  // this applies to a qooxdoo qx.ui.basic.Atom that represents an RWT Label
-  "c-label-wrapper" :
+  "clabel" :
   {
     style : function( states ) {
-    	var result = { };
-      
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = { };
       result.textColor = states.disabled ? "widget.graytext" : "widget.foreground";
-      result.backgroundColor = "widget.background";
-      result.font = "widget.font";
+      result.backgroundColor = tv.getColor( "widget.background" );
+      result.font = tv.getFont( "widget.font" );
       if( states.rwt_SHADOW_IN ) {
         result.border = "thinInset";
       } else if( states.rwt_SHADOW_OUT ) {
         result.border = "thinOutset";
       } else {
-        result.border = states.rwt_BORDER ? "label.BORDER.border" : "label.border"
+        result.border = tv.getBorder( states.rwt_BORDER
+                                      ? "label.BORDER.border"
+                                      : "label.border" );
       }
       return result;
     }
   },
-  
+
   "htmlcontainer" :
   {
     include : "label"
@@ -203,7 +204,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        font : "widget.font",
+        font : tv.getFont( "widget.font" ),
         cursor : "default",
         width : "auto",
         height : "auto",
@@ -219,9 +220,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.textColor = tv.getColor( "button.CHECK.foreground" );
       }
       if( states.rwt_BORDER ) {
-        result.border = "control.BORDER.border";
+        result.border = tv.getBorder( "control.BORDER.border" );
       } else {
-        result.border = "control.border";
+        result.border = tv.getBorder( "control.border" );
       }
       return result;
     }
@@ -306,12 +307,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "toolbar" :
   {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         font : "widget.font",
         overflow : "hidden",
-        border : states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border",
+        border : tv.getBorder( states.rwt_BORDER ? "toolbar.BORDER.border" : "toolbar.border" ),
         textColor : states.disabled ? "widget.graytext" : "widget.foreground",
-        backgroundColor : "toolbar.background"
+        backgroundColor : tv.getColor( "toolbar.background" )
       };
     }
   },
@@ -341,22 +343,26 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "toolbar-button" :
   {
     style : function( states ) {
-      var result =
-      {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
         cursor : "default",
         overflow : "hidden",
         spacing : 4,
         width : "auto",
-        verticalChildrenAlign : "middle",
-        backgroundImage : states.checked && !states.over ? "static/image/dotted_white.gif" : null,
-        backgroundColor : "toolbar.background",
-        textColor : "toolbar.foreground"
+        verticalChildrenAlign : "middle"
       };
+      result.backgroundImage = states.checked && !states.over
+                               ? "static/image/dotted_white.gif"
+                               : null;
       if( states.disabled ) {
+        result.backgroundColor = tv.getColor( "toolbar.background" );
         result.textColor = "widget.graytext";
       } else if( states.over ) {
-        result.backgroundColor = "toolbar.hover.background";
-        result.textColor = "toolbar.hover.foreground";
+        result.backgroundColor = tv.getColor( "toolbar.hover.background" );
+        result.textColor = tv.getColor( "toolbar.hover.foreground" );
+      } else {
+        result.backgroundColor = tv.getColor( "toolbar.background" );
+        result.textColor = tv.getColor( "toolbar.foreground" );
       }
       if( states.pressed || states.checked || states.abandoned ) {
         result.border = "thinInset";
@@ -383,12 +389,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        textColor       : "widget.foreground",
+        textColor : "widget.foreground",
         backgroundColor : tv.getColor( "shell.background" ),
-        border          : ( states.rwt_TITLE || states.rwt_BORDER )
-                            && !states.maximized
-                              ? tv.getBorder( "shell.BORDER.border")
-                              : tv.getBorder( "shell.border" ),
+        border : tv.getBorder( ( states.rwt_TITLE || states.rwt_BORDER ) && !states.maximized
+                               ? "shell.BORDER.border"
+                               : "shell.border" ),
         minWidth  : states.rwt_TITLE ? 80 : 5,
         minHeight : states.rwt_TITLE ? 25 : 5
       };
@@ -583,7 +588,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   */
 
   // TODO [rst] necessary?
-  
+
   "resizer" :
   {
     style : function( states ) {
@@ -601,7 +606,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       };
     }
   },
-  
+
   /*
   ---------------------------------------------------------------------------
     MENU
@@ -615,10 +620,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return {
         width : "auto",
         height : "auto",
-        textColor : "menu.foreground",
-        backgroundColor : "menu.background",
+        textColor : tv.getColor( "menu.foreground" ),
+        backgroundColor : tv.getColor( "menu.background" ),
+        font : tv.getFont( "widget.font" ),
         overflow : "hidden",
-        border : "menu.border",
+        border : tv.getBorder( "menu.border" ),
         padding : tv.getBoxDimensions( "menu.padding" )
       };
     }

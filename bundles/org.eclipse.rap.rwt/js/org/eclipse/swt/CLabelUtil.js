@@ -11,15 +11,15 @@
  ******************************************************************************/
  
 /**
- * This class contains static functions needed for labels.
- * To represent an RWT Label object, the qx.ui.basic.Atom widget is used.
+ * This class contains static functions needed for CLabels.
+ * To represent an RWT CLabel object, the qx.ui.basic.Atom widget is used.
  */
 qx.Class.define( "org.eclipse.swt.CLabelUtil", {
 
   statics : {
     SHOW_BOTH : "both",
     
-    APPEARANCE : "c-label-wrapper",
+    APPEARANCE : "clabel",
     
     initialize : function( widget ) {
       widget.setVerticalChildrenAlign( qx.constant.Layout.ALIGN_MIDDLE );

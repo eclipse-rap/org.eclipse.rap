@@ -83,11 +83,10 @@ public class ImageDataCache_Test extends TestCase {
   private ImageData getImageData( final String resource ) {
     IResourceManager manager = ResourceManager.getInstance();
     InputStream inputStream = manager.getResourceAsStream( resource );
-    assertNotNull( inputStream );
+    if( inputStream == null ) {
+      throw new IllegalArgumentException( "resource could not be found" );
+    }
     ImageData[] datas = ImageDataLoader.load( inputStream );
-    assertNotNull( datas );
-    assertEquals( 1, datas.length );
-    ImageData imageData = datas[ 0 ];
-    return imageData;
+    return datas[ 0 ];
   }
 }

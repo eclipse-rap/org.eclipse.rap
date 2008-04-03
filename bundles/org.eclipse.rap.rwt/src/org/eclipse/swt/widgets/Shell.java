@@ -11,9 +11,11 @@
 
 package org.eclipse.swt.widgets;
 
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Image;
@@ -414,23 +416,16 @@ public class Shell extends Decorations {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    QxBoxDimensions padding = getPadding();
+    Rectangle padding = getPadding();
     int hTopTrim;
-    hTopTrim = getTitleBarMargin().getHeight();
+    hTopTrim = getTitleBarMargin().height;
     hTopTrim += getTitleBarHeight();
     hTopTrim += getMenuBarHeight();
     int border = getBorderWidth();
-
-    ///////////////////////////////////////////////
-    // TODO [fappel] experimental (rounded corners)
-    //int hBottomTrim = 20;
-    int hBottomTrim = 0;
-    ///////////////////////////////////////////////
-
-    return new Rectangle( padding.left,
-                          hTopTrim + padding.top,
-                          bounds.width - padding.left - padding.right - border * 2,
-                          bounds.height -hBottomTrim - hTopTrim - padding.top - padding.bottom - border * 2 );
+    return new Rectangle( padding.x,
+                          hTopTrim + padding.y,
+                          bounds.width - padding.width - border * 2,
+                          bounds.height - hTopTrim - padding.height - border * 2 );
   }
 
   // TODO [rst] Move to class Decorations, as soon as it exists
@@ -441,15 +436,15 @@ public class Shell extends Decorations {
   {
     checkWidget();
     int hTopTrim;
-    hTopTrim = getTitleBarMargin().getHeight();
+    hTopTrim = getTitleBarMargin().height;
     hTopTrim += getTitleBarHeight();
     hTopTrim += getMenuBarHeight();
-    QxBoxDimensions padding = getPadding();
+    Rectangle padding = getPadding();
     int border = getBorderWidth();
-    Rectangle rect = new Rectangle( x - padding.left - border,
-                                    y - hTopTrim - padding.top - border,
-                                    width + padding.left + padding.right + border * 2,
-                                    height + hTopTrim + padding.top + padding.bottom + border * 2 );
+    Rectangle rect = new Rectangle( x - padding.x - border,
+                                    y - hTopTrim - padding.y - border,
+                                    width + padding.width + border * 2,
+                                    height + hTopTrim + padding.height + border * 2 );
     return rect;
   }
 
@@ -459,11 +454,11 @@ public class Shell extends Decorations {
       Rectangle bounds = getBounds();
       int hTop = ( style & SWT.TITLE ) != 0 ? 1 : 0;
       hTop += getTitleBarHeight();
-      QxBoxDimensions padding = getPadding();
+      Rectangle padding = getPadding();
       int border = getBorderWidth();
-      result = new Rectangle( padding.left,
-                              hTop + padding.top,
-                              bounds.width - padding.left - padding.right - border * 2,
+      result = new Rectangle( padding.x,
+                              hTop + padding.y,
+                              bounds.width - padding.width - border * 2,
                               getMenuBarHeight() );
     }
     return result;
@@ -474,7 +469,7 @@ public class Shell extends Decorations {
     return adapter.getTitleBarHeight( this );
   }
 
-  private QxBoxDimensions getTitleBarMargin() {
+  private Rectangle getTitleBarMargin() {
     ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getTitleBarMargin( this );
   }
@@ -485,7 +480,7 @@ public class Shell extends Decorations {
   }
 
   // margin of the client area
-  private QxBoxDimensions getPadding() {
+  private Rectangle getPadding() {
     ShellThemeAdapter adapter = getShellThemeAdapter();
     return adapter.getPadding( this );
   }

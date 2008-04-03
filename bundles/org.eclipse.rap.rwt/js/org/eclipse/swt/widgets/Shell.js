@@ -78,22 +78,22 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     _preloadIcons : function() {
       if( !org.eclipse.swt.widgets.Shell.preloadDone ) {
         var iconsToLoad = new Array(
-          "widget/window/minimize.png",
-          "widget/window/minimize.over.png",
-          "widget/window/minimize.inactive.png",
-          "widget/window/minimize.inactive.over.png",
-          "widget/window/maximize.png",
-          "widget/window/maximize.over.png",
-          "widget/window/maximize.inactive.png",
-          "widget/window/maximize.inactive.over.png",
-          "widget/window/restore.png",
-          "widget/window/restore.over.png",
-          "widget/window/restore.inactive.png",
-          "widget/window/restore.inactive.over.png",
-          "widget/window/close.png",
-          "widget/window/close.over.png",
-          "widget/window/close.inactive.png",
-          "widget/window/close.inactive.over.png"
+          "widget/shell.minbutton.image",
+          "widget/shell.minbutton.over.image",
+          "widget/shell.minbutton.inactive.image",
+          "widget/shell.minbutton.inactive.over.image",
+          "widget/shell.maxbutton.image",
+          "widget/shell.maxbutton.over.image",
+          "widget/shell.maxbutton.inactive.image",
+          "widget/shell.maxbutton.inactive.over.image",
+          "widget/shell.restorebutton.image",
+          "widget/shell.restorebutton.over.image",
+          "widget/shell.restorebutton.inactive.image",
+          "widget/shell.restorebutton.inactive.over.image",
+          "widget/shell.closebutton.image",
+          "widget/shell.closebutton.over.image",
+          "widget/shell.closebutton.inactive.image",
+          "widget/shell.closebutton.inactive.over.image"
         ); 
         var preloader = new qx.io.image.PreloaderSystem( iconsToLoad );
         preloader.start();
