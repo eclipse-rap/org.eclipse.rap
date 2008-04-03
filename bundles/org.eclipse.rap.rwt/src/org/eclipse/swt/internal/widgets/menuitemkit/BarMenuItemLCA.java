@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -41,11 +41,13 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
   void readData( final MenuItem menuItem ) {
     ControlLCAUtil.processSelection( menuItem, null, false );
   }
-  
+
   void renderInitialization( final MenuItem menuItem ) throws IOException {
     MenuItemLCAUtil.newItem( menuItem, "qx.ui.menubar.Button", true );
+    JSWriter writer = JSWriter.getWriterFor( menuItem );
     // Note: qx.ui.menubar.Button extends qx.ui.toolbar.Button
-    WidgetLCAUtil.writeCustomOrDefaultAppearance( menuItem, "menubar-button" );
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "menubar-button" );
+    WidgetLCAUtil.writeCustomVariant( menuItem );
   }
 
   // TODO [rh] qooxdoo does not handle bar menu items with images, should
@@ -58,7 +60,7 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
                            SelectionEvent.hasListener( menuItem ) );
     MenuItemLCAUtil.writeEnabled( menuItem );
   }
-  
+
   void renderDispose( final MenuItem menuItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     writer.dispose();

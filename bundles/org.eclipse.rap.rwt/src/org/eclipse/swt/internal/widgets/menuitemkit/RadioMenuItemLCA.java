@@ -68,7 +68,7 @@ final class RadioMenuItemLCA extends MenuItemDelegateLCA {
       writer.callStatic( "org.eclipse.swt.MenuUtil.assignRadioManager",
                          new Object[] { firstSiblingItem, menuItem } );
     }
-    WidgetLCAUtil.writeCustomAppearance( menuItem );
+    WidgetLCAUtil.writeCustomVariant( menuItem );
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {

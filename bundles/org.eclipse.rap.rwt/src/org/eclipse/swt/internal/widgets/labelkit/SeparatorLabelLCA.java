@@ -41,7 +41,7 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
   void renderInitialization( final Label label ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( label );
     writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomAppearance( label );
+    WidgetLCAUtil.writeCustomVariant( label );
     ControlLCAUtil.writeStyleFlags( label );
     writeStyle( label );
   }

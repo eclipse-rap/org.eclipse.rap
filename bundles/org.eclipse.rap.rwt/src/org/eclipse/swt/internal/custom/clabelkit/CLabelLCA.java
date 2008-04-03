@@ -63,7 +63,7 @@ public class CLabelLCA extends AbstractWidgetLCA {
       writer.call( "addState", new Object[]{ "rwt_SHADOW_OUT" } );
     }
     ControlLCAUtil.writeStyleFlags( label );
-    WidgetLCAUtil.writeCustomAppearance( label );
+    WidgetLCAUtil.writeCustomVariant( label );
     Object[] args = { label };
     writer.callStatic( "org.eclipse.swt.CLabelUtil.initialize", args  );
   }

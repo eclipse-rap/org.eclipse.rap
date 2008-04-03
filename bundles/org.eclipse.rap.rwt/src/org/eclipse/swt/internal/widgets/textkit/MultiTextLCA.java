@@ -43,7 +43,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "qx.ui.form.TextArea" );
-    WidgetLCAUtil.writeCustomAppearance( text );
+    WidgetLCAUtil.writeCustomVariant( text );
     ControlLCAUtil.writeStyleFlags( text );
     MultiTextLCA.writeNoSpellCheck( text );
 //    TODO [rst] Disabled writing of wrap state since it only works in Opera and

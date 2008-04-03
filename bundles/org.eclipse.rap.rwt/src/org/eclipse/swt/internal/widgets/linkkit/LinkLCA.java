@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets.linkkit;
 
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
@@ -33,17 +34,17 @@ public class LinkLCA extends AbstractWidgetLCA {
   private static final String TYPE_POOL_ID = LinkLCA.class.getName();
 
   private static final String JS_LINK_UTIL = "org.eclipse.swt.LinkUtil";
-  
+
   private static final String JS_FUNC_INIT = JS_LINK_UTIL + ".init";
-  
+
   private static final String JS_FUNC_ADD_LINK = JS_LINK_UTIL + ".addLink";
-  
+
   private static final String JS_FUNC_ADD_TEXT = JS_LINK_UTIL + ".addText";
-  
+
   private static final String JS_FUNC_CLEAR = JS_LINK_UTIL + ".clear";
-  
+
   private static final String JS_FUNC_DESTROY = JS_LINK_UTIL + ".destroy";
-  
+
   private static final String JS_FUNC_SET_SELECTION_LISTENER
     = JS_LINK_UTIL + ".setSelectionListener";
 
@@ -78,10 +79,10 @@ public class LinkLCA extends AbstractWidgetLCA {
     Link link = ( Link )widget;
     JSWriter writer = JSWriter.getWriterFor( link );
     writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomOrDefaultAppearance( widget, "link" );
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "link" );
+    WidgetLCAUtil.writeCustomVariant( widget );
     Object[] args = new Object[] { widget };
     writer.callStatic( JS_FUNC_INIT, args );
-    WidgetLCAUtil.writeCustomAppearance( widget );
     ControlLCAUtil.writeStyleFlags( link );
   }
 

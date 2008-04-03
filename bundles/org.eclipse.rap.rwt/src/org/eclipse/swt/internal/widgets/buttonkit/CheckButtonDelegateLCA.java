@@ -50,7 +50,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     writer.newWidget( QX_TYPE );
     ButtonLCAUtil.writeLabelMode( button );
     ControlLCAUtil.writeStyleFlags( button );
-    WidgetLCAUtil.writeCustomAppearance( button );
+    WidgetLCAUtil.writeCustomVariant( button );
   }
 
   // TODO [rh] qooxdoo checkBox cannot display images, should we ignore

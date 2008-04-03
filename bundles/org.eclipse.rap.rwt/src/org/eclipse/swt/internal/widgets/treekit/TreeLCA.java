@@ -80,7 +80,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.newWidget( "org.eclipse.swt.widgets.Tree", 
                       new Object[] { style.toString() } );
     ControlLCAUtil.writeStyleFlags( tree );
-    WidgetLCAUtil.writeCustomAppearance( widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
   }
   
   public void renderChanges( final Widget widget ) throws IOException {

@@ -43,7 +43,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     //      [rst] It's allowed in SWT but not in qooxdoo - we have a problem here
     writer.newWidget( "qx.ui.menu.Menu" );
     writer.call( "addToDocument", null );
-    WidgetLCAUtil.writeCustomAppearance( menu );
+    WidgetLCAUtil.writeCustomVariant( menu );
     MenuItem[] menuItems = DropDownMenuLCA.findReferringMenuItems( menu );
     for( int i = 0; i < menuItems.length; i++ ) {
       writer.call( menuItems[ i ], "setMenu", new Object[] { menu } );

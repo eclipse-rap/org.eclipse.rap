@@ -36,7 +36,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     if( ( tabFolder.getStyle() & SWT.BOTTOM ) != 0 ) {
       writer.set( "placeBarOnTop", false );
     }
-    WidgetLCAUtil.writeCustomAppearance( widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
     ControlLCAUtil.writeStyleFlags( tabFolder );
     writer.addListener( "keypress",
                         "org.eclipse.swt.TabUtil.onTabFolderKeyPress" );

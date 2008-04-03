@@ -62,7 +62,7 @@ public class ListLCA extends AbstractWidgetLCA {
     writer.newWidget( QX_TYPE );
     Boolean multiSelection = Boolean.valueOf( !isSingle( list ) );
     writer.call( "init", new Object[] { multiSelection } );
-    WidgetLCAUtil.writeCustomAppearance( widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
     ControlLCAUtil.writeStyleFlags( list );
     writeOverflow( list );
   }

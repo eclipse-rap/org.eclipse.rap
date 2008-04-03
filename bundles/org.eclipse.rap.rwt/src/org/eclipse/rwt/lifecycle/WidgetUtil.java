@@ -27,9 +27,6 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class WidgetUtil {
 
-  public static final String CUSTOM_APPEARANCE
-    = "org.eclipse.rwt.appearance";
-
   /**
    * Used to mark a widget as belonging to a custom variant using
    * <code>Widget.setData</code>. For more information on custom widget

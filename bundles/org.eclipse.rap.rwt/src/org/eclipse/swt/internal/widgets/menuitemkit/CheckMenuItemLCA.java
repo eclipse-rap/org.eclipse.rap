@@ -52,7 +52,7 @@ final class CheckMenuItemLCA extends MenuItemDelegateLCA {
 
   void renderInitialization( final MenuItem menuItem ) throws IOException {
     MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.CheckBox", true );
-    WidgetLCAUtil.writeCustomAppearance( menuItem );
+    WidgetLCAUtil.writeCustomVariant( menuItem );
   }
 
   void renderChanges( final MenuItem menuItem ) throws IOException {

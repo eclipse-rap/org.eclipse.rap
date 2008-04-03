@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.widgets.compositekit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
@@ -35,7 +36,8 @@ public class CompositeLCA extends AbstractWidgetLCA {
     writer.newWidget( QX_TYPE );
     writer.set( "overflow", "hidden" );
     writer.set( "hideFocus", true );
-    WidgetLCAUtil.writeCustomOrDefaultAppearance( widget, "composite" );
+    writer.set( JSConst.QX_FIELD_APPEARANCE, "composite" );
+    WidgetLCAUtil.writeCustomVariant( widget );
     ControlLCAUtil.writeStyleFlags( composite );
   }
 
@@ -56,9 +58,9 @@ public class CompositeLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    // TODO [rh] disabled pooling, see 
+    // TODO [rh] disabled pooling, see
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=203499
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=204107 
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=204107
 //    return TYPE_POOL_ID;
     return null;
   }

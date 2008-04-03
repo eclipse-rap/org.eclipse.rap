@@ -57,7 +57,7 @@ final class CheckToolItemDelegateLCA extends ToolItemDelegateLCA {
       toolItem.getParent()
     };
     writer.callStatic( CREATE_CHECK, args );
-    WidgetLCAUtil.writeCustomAppearance( toolItem );
+    WidgetLCAUtil.writeCustomVariant( toolItem );
     writer.set( "checked", toolItem.getSelection() );
     if( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 ) {
       writer.call( "addState", new Object[]{ "rwt_FLAT" } );

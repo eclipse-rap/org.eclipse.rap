@@ -61,7 +61,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     Object[] args = new Object[] { jsOrientation( coolItem ) };
     writer.newWidget( "org.eclipse.swt.widgets.CoolItem", args );
     writer.setParent( WidgetUtil.getId( coolItem.getParent() ) );
-    WidgetLCAUtil.writeCustomAppearance( widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
     writer.set( "minWidth", 0 );
     writer.set( "minHeight", 0 );
     writer.set( "backgroundColor", coolItem.getParent().getBackground() );

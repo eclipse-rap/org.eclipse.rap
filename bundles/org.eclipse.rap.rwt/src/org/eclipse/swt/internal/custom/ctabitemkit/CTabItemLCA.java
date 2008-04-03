@@ -83,7 +83,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     };
     writer.newWidget( "org.eclipse.swt.custom.CTabItem", args );
     writer.call( parent, "add", new Object[] { item } );
-    WidgetLCAUtil.writeCustomAppearance( widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {

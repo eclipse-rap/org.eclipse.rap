@@ -62,7 +62,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
       new Integer( parent.indexOf( tabItem ) )
     };
     writer.callStatic( "org.eclipse.swt.TabUtil.createTabItem", args );
-    WidgetLCAUtil.writeCustomAppearance( widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
     writer.addListener( QX_EVENT_CHANGE_CHECKED, JS_FUNC_TAB_SELECTED );
   }
 

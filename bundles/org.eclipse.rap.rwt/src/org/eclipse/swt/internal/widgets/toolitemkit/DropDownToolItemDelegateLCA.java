@@ -69,7 +69,7 @@ final class DropDownToolItemDelegateLCA extends ToolItemDelegateLCA {
       Boolean.valueOf( ( toolItem.getParent().getStyle() & SWT.FLAT ) != 0 )
     };
     writer.callStatic( CREATE_DROP_DOWN, args );
-    WidgetLCAUtil.writeCustomAppearance( toolItem );
+    WidgetLCAUtil.writeCustomVariant( toolItem );
   }
 
   void renderChanges( final ToolItem toolItem ) throws IOException {

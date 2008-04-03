@@ -48,7 +48,7 @@ public final class SashLCA extends AbstractWidgetLCA {
       ? JSConst.QX_CONST_HORIZONTAL_ORIENTATION
       : JSConst.QX_CONST_VERTICAL_ORIENTATION;
     writer.set( JSConst.QX_FIELD_ORIENTATION, orientation );
-    WidgetLCAUtil.writeCustomAppearance( widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
     ControlLCAUtil.writeStyleFlags( sash );
   }
 

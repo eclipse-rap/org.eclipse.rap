@@ -36,7 +36,7 @@ public class GroupLCA extends AbstractWidgetLCA {
     Group group = ( Group )widget;
     JSWriter writer = JSWriter.getWriterFor( group );
     writer.newWidget( QX_TYPE );
-    WidgetLCAUtil.writeCustomAppearance( widget );
+    WidgetLCAUtil.writeCustomVariant( widget );
     ControlLCAUtil.writeStyleFlags( group );
   }
 

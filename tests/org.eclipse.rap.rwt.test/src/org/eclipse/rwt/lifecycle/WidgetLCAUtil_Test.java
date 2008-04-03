@@ -235,30 +235,20 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( null );" ) != -1 );
   }
 
-  public void testWriteAppearance() throws IOException {
+  public void testWriteVariant() throws IOException {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
     RWTFixture.markInitialized( display );
-    WidgetLCAUtil.writeCustomAppearance( label );
+    WidgetLCAUtil.writeCustomVariant( label );
     assertEquals( "", Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    label.setData( WidgetUtil.CUSTOM_APPEARANCE, "my_appearance" );
-    WidgetLCAUtil.writeCustomAppearance( label );
-    String expected = "w.setAppearance( \"my_appearance\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-
-    Fixture.fakeResponseWriter();
-    WidgetLCAUtil.writeCustomOrDefaultAppearance( label, "def_appearance" );
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-
-    Fixture.fakeResponseWriter();
-    label.setData( WidgetUtil.CUSTOM_APPEARANCE, null );
-    WidgetLCAUtil.writeCustomOrDefaultAppearance( label, "def_appearance" );
-    expected = "w.setAppearance( \"def_appearance\" );";
+    label.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
+    WidgetLCAUtil.writeCustomVariant( label );
+    String expected = "w.addState( \"variant_my_variant\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 

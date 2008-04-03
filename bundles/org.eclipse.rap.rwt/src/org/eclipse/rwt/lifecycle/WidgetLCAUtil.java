@@ -747,48 +747,13 @@ public final class WidgetLCAUtil {
     return CommonPatterns.replaceNewLines( input, replacement );
   }
 
-  /**
-   * Writes the custom appearance (set using
-   * <code>setData( WidgetUtil#CUSTOM_APPEARANCE, value ) )</code> for the
-   * given widget. If no custom appearance has been set, nothing happens.
-   * @since 1.1
-   */
-  public static void writeCustomAppearance( final Widget widget )
-    throws IOException
-  {
-    writeCustomOrDefaultAppearance( widget, null );
-  }
-
-  /**
-   * Writes the custom appearance (set using
-   * <code>setData( WidgetUtil#CUSTOM_APPEARANCE, value ) )</code> for the
-   * given widget. If no custom appearance has been set, the specified default
-   * appearance is written.
-   * @since 1.1
-   */
-  public static void writeCustomOrDefaultAppearance( final Widget widget,
-                                                     final String defAppearance )
-    throws IOException
-  {
-    String customAppearance
-      = ( String )widget.getData( WidgetUtil.CUSTOM_APPEARANCE );
-    if( customAppearance != null ) {
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( JSConst.QX_FIELD_APPEARANCE, customAppearance );
-    } else if( defAppearance != null ) {
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( JSConst.QX_FIELD_APPEARANCE, defAppearance );
-    }
-    writeCustomVariant( widget );
-  }
-
   public static void writeCustomVariant( final Widget widget )
     throws IOException
   {
     String variant = WidgetUtil.getVariant( widget );
-    JSWriter writer = JSWriter.getWriterFor( widget );
     if( variant != null ) {
       Object[] args = new Object[] { "variant_" + variant };
+      JSWriter writer = JSWriter.getWriterFor( widget );
       writer.call( JSConst.QX_FUNC_ADD_STATE, args );
     }
   }

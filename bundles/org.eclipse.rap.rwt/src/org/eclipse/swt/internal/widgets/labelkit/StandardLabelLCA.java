@@ -58,7 +58,7 @@ public class StandardLabelLCA extends AbstractLabelLCADelegate {
     writer.callStatic( "org.eclipse.swt.LabelUtil.initialize", args );
     Object[] argsWrap = { label, wrap };
     writer.callStatic( "org.eclipse.swt.LabelUtil.setWrap", argsWrap );
-    WidgetLCAUtil.writeCustomAppearance( label );
+    WidgetLCAUtil.writeCustomVariant( label );
   }
 
   void renderChanges( final Label label ) throws IOException {

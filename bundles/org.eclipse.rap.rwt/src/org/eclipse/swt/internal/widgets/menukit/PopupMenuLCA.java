@@ -41,7 +41,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( menu );
     writer.newWidget( "qx.ui.menu.Menu" );
     writer.call( "addToDocument", null );
-    WidgetLCAUtil.writeCustomAppearance( menu );
+    WidgetLCAUtil.writeCustomVariant( menu );
   }
 
   void renderChanges( final Menu menu ) throws IOException {

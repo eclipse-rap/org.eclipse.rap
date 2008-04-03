@@ -40,7 +40,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
   void renderInitialization( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.newWidget( "qx.ui.form.TextField" );
-    WidgetLCAUtil.writeCustomAppearance( text );
+    WidgetLCAUtil.writeCustomVariant( text );
     ControlLCAUtil.writeStyleFlags( text );
     TextLCAUtil.writeHijack( text );
     TextLCAUtil.writeAlignment( text );
