@@ -11,8 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.labelkit;
 
-import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -23,35 +22,24 @@ import org.eclipse.swt.widgets.Control;
 public final class LabelThemeAdapter implements IControlThemeAdapter {
 
   public int getBorderWidth( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxBorder border;
+    String key;
     if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
-      border = theme.getBorder( "label.BORDER.border", variant );
+      key = "label.BORDER.border";
     } else {
-      border = theme.getBorder( "label.border", variant );
+      key = "label.border";
     }
-    return border.width;
+    return ThemeAdapterUtil.getBorderWidth( control, key );
   }
 
   public Color getForeground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxColor color = theme.getColor( "label.foreground", variant );
-    return QxColor.createColor( color );
+    return ThemeAdapterUtil.getColor( control, "label.foreground" );
   }
 
   public Color getBackground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxColor color = theme.getColor( "label.background", variant );
-    return QxColor.createColor( color );
+    return ThemeAdapterUtil.getColor( control, "label.background" );
   }
 
   public Font getFont( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxFont font = theme.getFont( "widget.font", variant );
-    return QxFont.createFont( font );
+    return ThemeAdapterUtil.getFont( control, "widget.font" );
   }
 }

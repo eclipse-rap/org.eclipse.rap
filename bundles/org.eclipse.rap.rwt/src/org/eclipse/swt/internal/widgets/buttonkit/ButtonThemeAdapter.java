@@ -11,8 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.buttonkit;
 
-import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -30,26 +29,22 @@ public final class ButtonThemeAdapter implements IControlThemeAdapter {
   static final int CHECK_HEIGHT = 13;
 
   public int getBorderWidth( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxBorder qxBorder;
+    String key;
     if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
-      qxBorder = theme.getBorder( "button.BORDER.border", variant );
+      key = "button.BORDER.border";
     } else if( ( control.getStyle() & SWT.FLAT ) != 0 ) {
-      qxBorder = theme.getBorder( "button.FLAT.border", variant );
+      key = "button.FLAT.border";
     } else {
-      qxBorder = theme.getBorder( "button.border", variant );
+      key = "button.border";
     }
-    // TODO [rst] Ensure that borders have the same size for all four sides
-    return qxBorder.width;
+    return ThemeAdapterUtil.getBorderWidth( control, key );
   }
 
   public Point getSize( final Button button ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( button );
     int width = 0, height = 0;
-    QxBoxDimensions padding = theme.getBoxDimensions( "button.padding", variant );
-    QxDimension spacing = theme.getDimension( "button.spacing", variant );
+    Rectangle padding
+      = ThemeAdapterUtil.getBoxDimensions( button, "button.padding" );
+    int spacing = ThemeAdapterUtil.getDimension( button, "button.spacing" );
     int style = button.getStyle();
     Image image = button.getImage();
     String text = button.getText();
@@ -58,7 +53,7 @@ public final class ButtonThemeAdapter implements IControlThemeAdapter {
       width = bounds.width;
       height = bounds.height;
       if( text.length() > 0 ) {
-        width += spacing.value;
+        width += spacing;
       }
     }
     if( text.length() > 0 ) {
@@ -74,45 +69,39 @@ public final class ButtonThemeAdapter implements IControlThemeAdapter {
       height += 4;
     }
     if( ( style & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
-      width += padding.left + padding.right;
-      height += padding.top + padding.bottom;
+      width += padding.width;
+      height += padding.height;
     }
     return new Point( width, height );
   }
 
   public Color getForeground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxColor color;
+    String key;
     if( ( control.getStyle() & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-      color = theme.getColor( "button.CHECK.foreground", variant );
+      key = "button.CHECK.foreground";
     } else {
-      color = theme.getColor( "button.foreground", variant );
+      key = "button.foreground";
     }
-    return QxColor.createColor( color );
+    return ThemeAdapterUtil.getColor( control, key );
   }
 
   public Color getBackground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxColor color;
+    String key;
     if( ( control.getStyle() & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
-      color = theme.getColor( "button.CHECK.background", variant );
+      key = "button.CHECK.background";
     } else {
-      color = theme.getColor( "button.background", variant );
+      key = "button.background";
     }
-    return QxColor.createColor( color );
+    return ThemeAdapterUtil.getColor( control, key );
   }
 
   public Font getFont( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxFont font;
+    String key;
     if( ( control.getStyle() & ( SWT.PUSH | SWT.TOGGLE ) ) != 0 ) {
-      font = theme.getFont( "button.font", variant );
+      key = "button.font";
     } else {
-      font = theme.getFont( "widget.font", variant );
+      key = "widget.font";
     }
-    return QxFont.createFont( font );
+    return ThemeAdapterUtil.getFont( control, key );
   }
 }

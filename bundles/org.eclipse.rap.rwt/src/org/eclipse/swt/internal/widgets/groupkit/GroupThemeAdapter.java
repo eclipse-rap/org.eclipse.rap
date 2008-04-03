@@ -11,8 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.groupkit;
 
-import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
 import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
@@ -22,31 +21,23 @@ import org.eclipse.swt.widgets.Control;
 public final class GroupThemeAdapter extends ControlThemeAdapter {
 
   public Font getFont( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxFont font = theme.getFont( "group.label.font", variant );
-    return QxFont.createFont( font );
+    return ThemeAdapterUtil.getFont( control, "group.label.font" );
   }
 
   public Color getBackground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxColor color = theme.getColor( "group.background", variant );
-    return QxColor.createColor( color );
+    return ThemeAdapterUtil.getColor( control, "group.background" );
   }
 
   public Rectangle getTrimmingSize( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxBoxDimensions margin = theme.getBoxDimensions( "group.margin", variant );
-    QxBoxDimensions padding = theme.getBoxDimensions( "group.padding", variant );
-    QxBorder frame = theme.getBorder( "group.frame.border", variant );
-    int left = margin.left + frame.width + padding.left;
-    int top = margin.top + frame.width + padding.top;
+    Rectangle margin = ThemeAdapterUtil.getBoxDimensions( control, "group.margin" );
+    Rectangle padding = ThemeAdapterUtil.getBoxDimensions( control, "group.padding" );
+    int frameWidth = ThemeAdapterUtil.getBorderWidth( control, "group.frame.border" );
+    int left = margin.x + padding.x + frameWidth;
+    int top = margin.y + padding.y + frameWidth;
     Font font = control.getFont();
     top = Math.max( top, TextSizeDetermination.getCharHeight( font ) );
-    int right = margin.right + frame.width + padding.right;
-    int bottom = margin.bottom + frame.width + padding.bottom;
-    return new Rectangle( left, top, left + right, top + bottom );
+    int width = margin.width + padding.width + frameWidth * 2;
+    int height = margin.height + padding.height + frameWidth * 2;
+    return new Rectangle( left, top, width, height );
   }
 }

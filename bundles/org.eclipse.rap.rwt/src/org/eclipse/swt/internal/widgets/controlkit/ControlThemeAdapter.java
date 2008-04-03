@@ -11,8 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.controlkit;
 
-import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -23,15 +22,13 @@ import org.eclipse.swt.widgets.Control;
 public class ControlThemeAdapter implements IControlThemeAdapter {
 
   public int getBorderWidth( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxBorder result;
+    String key;
     if( ( control.getStyle() & SWT.BORDER ) != 0 ) {
-      result = theme.getBorder( "control.BORDER.border", variant );
+      key = "control.BORDER.border";
     } else {
-      result = theme.getBorder( "control.border", variant );
+      key = "control.border";
     }
-    return result.width;
+    return ThemeAdapterUtil.getBorderWidth( control, key );
   }
 
   public Color getForeground( final Control control ) {

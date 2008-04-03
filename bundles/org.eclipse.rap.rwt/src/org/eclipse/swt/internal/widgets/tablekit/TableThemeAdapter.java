@@ -11,8 +11,7 @@
 
 package org.eclipse.swt.internal.widgets.tablekit;
 
-import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.internal.theme.ThemeAdapterUtil;
 import org.eclipse.rwt.theme.IControlThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -27,29 +26,18 @@ public final class TableThemeAdapter implements IControlThemeAdapter {
   }
 
   public Color getForeground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxColor color = theme.getColor( "list.foreground", variant );
-    return QxColor.createColor( color );
+    return ThemeAdapterUtil.getColor( control, "list.foreground" );
   }
 
   public Color getBackground( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxColor color = theme.getColor( "list.background", variant );
-    return QxColor.createColor( color );
+    return ThemeAdapterUtil.getColor( control, "list.background" );
   }
 
   public Font getFont( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    QxFont font = theme.getFont( "widget.font", variant );
-    return QxFont.createFont( font );
+    return ThemeAdapterUtil.getFont( control, "widget.font" );
   }
 
   public int getCheckBoxWidth( final Control control ) {
-    Theme theme = ThemeUtil.getTheme();
-    String variant = WidgetUtil.getVariant( control );
-    return theme.getDimension( "table.checkbox.width", variant ).value;
+    return ThemeAdapterUtil.getDimension( control, "table.checkbox.width" );
   }
 }

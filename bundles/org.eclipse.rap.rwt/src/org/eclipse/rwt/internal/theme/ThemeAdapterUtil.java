@@ -33,6 +33,7 @@ public class ThemeAdapterUtil {
   }
 
   public static int getBorderWidth( final Widget widget, final String key ) {
+    // TODO [rst] Ensure borders always have the same size for all four edges
     Theme theme = ThemeUtil.getTheme();
     String variant = WidgetUtil.getVariant( widget );
     QxBorder border = theme.getBorder( key, variant );
@@ -52,10 +53,6 @@ public class ThemeAdapterUtil {
     Theme theme = ThemeUtil.getTheme();
     String variant = WidgetUtil.getVariant( widget );
     QxBoxDimensions boxdim = theme.getBoxDimensions( key, variant );
-    Rectangle result = new Rectangle( boxdim.left,
-                                      boxdim.top,
-                                      boxdim.left + boxdim.right,
-                                      boxdim.top + boxdim.bottom );
-    return result;
+    return QxBoxDimensions.createRectangle( boxdim );
   }
 }
