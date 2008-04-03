@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -17,13 +17,13 @@ import org.eclipse.swt.graphics.Image;
 
 
 public class ImageDataCache {
-  
+
   /** Maximum size of image data that is being cached */
   private static final int MAX_DATA_SIZE = 1024;
-  
+
   /** Maximum number of elements to hold in the image data cache */
   private static final int MAX_FILL_SIZE = 100;
-  
+
   private final Map cache;
 
   public ImageDataCache() {
@@ -32,7 +32,7 @@ public class ImageDataCache {
 
   /**
    * Retrieves a copy of the cached image data for the given image.
-   * 
+   *
    * @param image the image whose image data are to be retrieved
    * @return a secure copy of the cached image data, or <code>null</code> if
    *         no image data have been cached for the given image
@@ -50,7 +50,7 @@ public class ImageDataCache {
 
   /**
    * Stores the given image data for the given image in the cache.
-   * 
+   *
    * @param image the image whose image data to store
    * @param imageData the image data to be stored
    */
@@ -66,7 +66,7 @@ public class ImageDataCache {
           // TODO [rst] Implement replacement strategy (LRU or LFU)
 //          cache.remove( key );
         }
-        cache.put( image, imageData );
+        cache.put( image, imageData.clone() );
       }
     }
   }

@@ -92,7 +92,7 @@ public class RWTTestSuite {
     suite.addTestSuite( ConfigurationReader_Test.class );
     suite.addTestSuite( HTMLUtil_Test.class );
     suite.addTestSuite( ContextProvider_Test.class );
-    
+
     // RWT Tests
     suite.addTestSuite( EntryPointManager_Test.class );
     suite.addTestSuite( RWTServletContextListener_Test.class );
@@ -171,6 +171,7 @@ public class RWTTestSuite {
     suite.addTestSuite( BusyIndicator_Test.class );
 
     suite.addTestSuite( Image_Test.class );
+    suite.addTestSuite( ImageData_Test.class );
     suite.addTestSuite( ImageDataCache_Test.class );
     suite.addTestSuite( Color_Test.class );
     suite.addTestSuite( RGB_Test.class );
@@ -220,7 +221,8 @@ public class RWTTestSuite {
     suite.addTestSuite( QxDimension_Test.class );
     suite.addTestSuite( QxBoxDimensions_Test.class );
     suite.addTestSuite( QxFont_Test.class );
-    
+    suite.addTestSuite( QxImage_Test.class );
+
     // == SettingStore ==
     suite.addTestSuite( MemorySettingStore_Test.class );
     suite.addTestSuite( FileSettingStore_Test.class );
