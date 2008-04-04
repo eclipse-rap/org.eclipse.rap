@@ -236,7 +236,7 @@ abstract class ExampleTab {
    */
   protected Button createVisibilityButton( ) {
     final Button button = new Button( styleComp, SWT.CHECK );
-    button.setText( "Visble" );
+    button.setText( "Visible" );
     button.setSelection( visible );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
