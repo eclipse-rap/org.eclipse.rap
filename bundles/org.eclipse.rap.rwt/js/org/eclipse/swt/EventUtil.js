@@ -120,8 +120,6 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
         // from now on, redirect mouse event to this widget 
         this.setCapture( true );
         org.eclipse.swt.EventUtil._capturingWidget = this;
-this.debug( "DOWN - this: " + this );      
-this.debug( "DOWN - target:" + evt.getOriginalTarget() );      
         // Convert left/middle/right button name to 1/2/3
         var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
         // Collect request parameters and send
@@ -157,7 +155,6 @@ this.debug( "DOWN - target:" + evt.getOriginalTarget() );
     },
     
     mouseUp : function( evt ) {
-this.debug( "UP - or not" );        
       if(    !org_eclipse_rap_rwt_EventUtil_suspend
           && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) ) 
       {
@@ -165,7 +162,6 @@ this.debug( "UP - or not" );
         this.setCapture( false );
         org.eclipse.swt.EventUtil._capturingWidget = null;
         var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-this.debug( "UP" );        
         var id = widgetManager.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
         var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
