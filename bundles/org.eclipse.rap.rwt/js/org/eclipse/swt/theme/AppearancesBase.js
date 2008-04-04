@@ -1488,8 +1488,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
     style: function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = { };
-      result.font = "widget.font";
+      var result = {};
       result.paddingLeft = 4;
       result.border = new qx.ui.core.Border();
       result.border.setRight( 1, "solid", "#c0c0c0" );
@@ -1512,6 +1511,22 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
+  "ctabfolder-button" :
+  {
+    include : "image",
+    style : function( states ) {
+      var result = { };
+      if( states.over ) {
+        result.backgroundColor = "white";
+        result.border = "black";
+      } else {
+        result.backgroundColor = "undefined";
+        result.border = "undefined";
+      }
+      return result;
+    }
+  },
+
   "ctab-close-button" :
   {
     include : "image",
@@ -1524,7 +1539,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }
     }
   },
-  
+
   // ------------------------------------------------------------------------
   // Composite
   
