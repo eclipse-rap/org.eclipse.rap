@@ -36,6 +36,7 @@ public class SeparatorLabelLCA extends AbstractLabelLCADelegate {
   }
 
   void readData( final Label label ) {
+    ControlLCAUtil.processMouseEvents( label );
   }
 
   void renderInitialization( final Label label ) throws IOException {

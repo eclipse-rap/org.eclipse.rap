@@ -56,6 +56,7 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     if( value != null ) {
       spinner.setSelection( Integer.parseInt( value ) );
     }
+    ControlLCAUtil.processMouseEvents( spinner );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

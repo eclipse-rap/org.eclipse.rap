@@ -394,7 +394,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
           && this._suspendClicksOnRow != row ) 
       {
         this._suspendClicksOnRow = row;
-        qx.client.Timer.once( this._resumeClicks, this, 500 );
+        qx.client.Timer.once( this._resumeClicks, 
+                              this,
+                              org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
         var item = this._items[ itemIndex ];
         if( this._multiSelect ) {
           this._onMultiSelectRowClick( evt, itemIndex, item )

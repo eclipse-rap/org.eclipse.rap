@@ -38,6 +38,7 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
     // order is crucial: first read text then read what part of it is selected
     TextLCAUtil.readText( text );
 //    TextLCAUtil.readSelection( text );
+    ControlLCAUtil.processMouseEvents( text );
   }
 
   void renderInitialization( final Text text ) throws IOException {

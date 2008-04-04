@@ -68,6 +68,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
     processActiveShell( shell );
     processActivate( shell );
+    ControlLCAUtil.processMouseEvents( shell );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

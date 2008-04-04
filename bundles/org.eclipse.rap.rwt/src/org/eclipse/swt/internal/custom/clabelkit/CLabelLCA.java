@@ -39,17 +39,8 @@ public class CLabelLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_ALIGNMENT, new Integer( label.getAlignment() ) );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
-    CLabel label = ( CLabel )widget;
-    ControlLCAUtil.writeChanges( label );
-    writeText( label );
-    writeImage( label );
-    writeAlignment( label );
-  }
-
-  public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+  public void readData( final Widget widget ) {
+    ControlLCAUtil.processMouseEvents( ( CLabel )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -68,7 +59,17 @@ public class CLabelLCA extends AbstractWidgetLCA {
     writer.callStatic( "org.eclipse.swt.CLabelUtil.initialize", args  );
   }
 
-  public void readData( final Widget widget ) {
+  public void renderChanges( final Widget widget ) throws IOException {
+    CLabel label = ( CLabel )widget;
+    ControlLCAUtil.writeChanges( label );
+    writeText( label );
+    writeImage( label );
+    writeAlignment( label );
+  }
+
+  public void renderDispose( final Widget widget ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( widget );
+    writer.dispose();
   }
 
   public void createResetHandlerCalls( final String typePoolId )

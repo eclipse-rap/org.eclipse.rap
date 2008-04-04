@@ -14,8 +14,7 @@ package org.eclipse.swt.internal.widgets.groupkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 public class GroupLCA extends AbstractWidgetLCA {
 
@@ -30,6 +29,7 @@ public class GroupLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
+    ControlLCAUtil.processMouseEvents( ( Group )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

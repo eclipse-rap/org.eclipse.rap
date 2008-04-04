@@ -46,6 +46,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
   void readData( final Button button ) {
     ButtonLCAUtil.readSelection( button );
     ControlLCAUtil.processSelection( button, null, true );
+    ControlLCAUtil.processMouseEvents( button );
   }
 
   void renderInitialization( final Button button ) throws IOException {

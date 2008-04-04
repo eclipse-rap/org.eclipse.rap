@@ -21,8 +21,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 /**
  * Life-cycle adapter for the Link widget
@@ -65,14 +64,14 @@ public class LinkLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
       HttpServletRequest request = ContextProvider.getRequest();
       String indexStr
-        = request.getParameter( JSConst.EVENT_WIDGET_SELECTED + ".index" );
+        = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_INDEX );
       int index = Integer.parseInt( indexStr );
-      SelectionEvent event = new SelectionEvent( widget,
-                                                 null,
-                                                 SelectionEvent.WIDGET_SELECTED );
+      SelectionEvent event 
+        = new SelectionEvent( widget, null, SelectionEvent.WIDGET_SELECTED );
       event.text = getIdText( ( Link )widget, index );
       event.processEvent();
     }
+    ControlLCAUtil.processMouseEvents( ( Link )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

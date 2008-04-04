@@ -239,7 +239,9 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
      */
     _suspendClicks : function() {
       this.__clicksSuspended = true;
-      qx.client.Timer.once( this._enableClicks, this, 500 );
+      qx.client.Timer.once( this._enableClicks, 
+                            this, 
+                            org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
     },
 
     _enableClicks : function() {

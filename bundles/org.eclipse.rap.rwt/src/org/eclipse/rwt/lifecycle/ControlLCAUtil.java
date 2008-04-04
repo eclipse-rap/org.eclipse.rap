@@ -13,7 +13,10 @@ package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
@@ -48,6 +51,15 @@ public class ControlLCAUtil {
     = new JSListenerInfo( "focusout",
                           "org.eclipse.swt.EventUtil.focusLost",
                           JSListenerType.ACTION );
+  
+  private static final JSListenerInfo MOUSE_DOWN_LISTENER_INFO
+    = new JSListenerInfo( "mousedown",
+                          "org.eclipse.swt.EventUtil.mouseDown",
+                          JSListenerType.ACTION );
+  private static final JSListenerInfo MOUSE_UP_LISTENER_INFO
+    = new JSListenerInfo( "mouseup",
+                          "org.eclipse.swt.EventUtil.mouseUp",
+                          JSListenerType.ACTION );
 
   private static final String JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
     = "addActivateListenerWidget";
@@ -57,10 +69,12 @@ public class ControlLCAUtil {
   // Property names to preserve widget property values
   private static final String PROP_ACTIVATE_LISTENER = "activateListener";
   private static final String PROP_FOCUS_LISTENER = "focusListener";
+  private static final String PROP_MOUSE_LISTENER = "mouseListener";
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
 
   static final int MAX_STATIC_ZORDER = 300;
+
 
   private ControlLCAUtil() {
     // prevent instance creation
@@ -82,6 +96,7 @@ public class ControlLCAUtil {
    * <li>font</li>
    * <li>whether ControlListeners are registered</li>
    * <li>whether ActivateListeners are registered</li>
+   * <li>whether MouseListeners are registered</li>
    * <li>whether FocusListeners are registered</li>
    * </ul>
    *
@@ -113,6 +128,8 @@ public class ControlLCAUtil {
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     adapter.preserve( PROP_ACTIVATE_LISTENER,
                       Boolean.valueOf( ActivateEvent.hasListener( control ) ) );
+    adapter.preserve( PROP_MOUSE_LISTENER,
+                      Boolean.valueOf( MouseEvent.hasListener( control ) ) );
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
       adapter.preserve( PROP_FOCUS_LISTENER,
                         Boolean.valueOf( FocusEvent.hasListener( control ) ) );
@@ -273,6 +290,7 @@ public class ControlLCAUtil {
    * <li>font</li>
    * <!--li>whether ControlListeners are registered</li-->
    * <li>whether ActivateListeners are registered</li>
+   * <li>whether MouseListeners are registered</li>
    * <li>whether FocusListeners are registered</li>
    * </ul>
    *
@@ -295,6 +313,7 @@ public class ControlLCAUtil {
 //    TODO [rst] missing: writeControlListener( control );
     writeActivateListener( control );
     writeFocusListener( control );
+    writeMouseListener( control );
   }
 
   /**
@@ -576,12 +595,9 @@ public class ControlLCAUtil {
   }
 
   /**
-   * Writes JavaScript code to the response that resets the style flags
-   * TODO
-   * property
-   * <code>enabled</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
+   * Writes JavaScript code to the response that resets the style flags.
+   * <p>This method is intended to be used by implementations of the method
+   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.</p>
    *
    * @throws IOException
    */
@@ -680,6 +696,19 @@ public class ControlLCAUtil {
                            FOCUS_GAINED_LISTENER_INFO.getJSListener() );
     writer.removeListener( FOCUS_LOST_LISTENER_INFO.getEventType(),
                            FOCUS_LOST_LISTENER_INFO.getJSListener() );
+  }
+  
+  private static void writeMouseListener( final Control control ) 
+    throws IOException 
+  {
+    boolean hasListener = MouseEvent.hasListener( control );
+    JSWriter writer = JSWriter.getWriterFor( control );
+    writer.updateListener( MOUSE_UP_LISTENER_INFO,
+                           PROP_MOUSE_LISTENER,
+                           hasListener );
+    writer.updateListener( MOUSE_DOWN_LISTENER_INFO,
+                           PROP_MOUSE_LISTENER,
+                           hasListener );
   }
 
   //////////
@@ -788,7 +817,7 @@ public class ControlLCAUtil {
   }
 
   /////////////////////
-  // SELECTION LISTENER
+  // Selection Listener
 
   public static void processSelection( final Widget widget,
                                        final Item item,
@@ -833,5 +862,59 @@ public class ControlLCAUtil {
                                null,
                                true,
                                SWT.NONE );
+  }
+  
+  public static void processMouseEvents( final Control control ) {
+    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_DOWN ) ) {
+      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
+      event.button
+        = readIntParam( control, JSConst.EVENT_MOUSE_DOWN_BUTTON );
+      Point point = readXYParams( control,
+                                  JSConst.EVENT_MOUSE_DOWN_X, 
+                                  JSConst.EVENT_MOUSE_DOWN_Y );
+      event.x = point.x; 
+      event.y = point.y; 
+      event.processEvent();
+    }
+    String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
+    if( WidgetLCAUtil.wasEventSent( control, eventId ) ) {
+      MouseEvent event
+        = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
+      event.button
+        = readIntParam( control, JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON );
+      Point point = readXYParams( control, 
+                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_X, 
+                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y );
+      event.x = point.x; 
+      event.y = point.y; 
+      event.processEvent();
+    }
+    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
+      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_UP );
+      event.button = readIntParam( control, JSConst.EVENT_MOUSE_UP_BUTTON );
+      Point point = readXYParams( control,
+                                  JSConst.EVENT_MOUSE_UP_X, 
+                                  JSConst.EVENT_MOUSE_UP_Y );
+      event.x = point.x; 
+      event.y = point.y; 
+      event.processEvent();
+    }
+  }
+
+  private static int readIntParam( final Control control, 
+                                   final String paramName ) 
+  {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String value = request.getParameter( paramName );
+    return Integer.parseInt( value );
+  }
+
+  private static Point readXYParams( final Control control, 
+                                     final String paramNameX,
+                                     final String paramNameY ) 
+  {
+    int x = readIntParam( control, paramNameX );
+    int y = readIntParam( control, paramNameY );
+    return control.getDisplay().map( null, control, x, y );
   }
 }

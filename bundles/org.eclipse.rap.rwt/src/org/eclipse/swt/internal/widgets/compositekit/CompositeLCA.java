@@ -28,6 +28,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
+    ControlLCAUtil.processMouseEvents( ( Control )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

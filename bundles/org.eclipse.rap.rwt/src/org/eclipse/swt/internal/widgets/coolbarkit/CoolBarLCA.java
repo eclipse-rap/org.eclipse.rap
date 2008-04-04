@@ -15,8 +15,7 @@ import java.io.IOException;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 public class CoolBarLCA extends AbstractWidgetLCA {
@@ -29,7 +28,8 @@ public class CoolBarLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
-    // TODO [rh] implementation missing
+    Control coolBar = ( Control )widget;
+    ControlLCAUtil.processMouseEvents( coolBar );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

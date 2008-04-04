@@ -14,8 +14,7 @@ package org.eclipse.swt.internal.widgets.progressbarkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 public class ProgressBarLCA extends AbstractWidgetLCA {
@@ -35,6 +34,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final Widget widget ) {
+    ControlLCAUtil.processMouseEvents( ( ProgressBar )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

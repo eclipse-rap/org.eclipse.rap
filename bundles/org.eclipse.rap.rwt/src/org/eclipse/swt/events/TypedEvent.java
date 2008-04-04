@@ -49,6 +49,7 @@ public class TypedEvent extends Event {
     ActivateEvent.class,
     DisposeEvent.class,
     SetDataEvent.class,
+    MouseEvent.class,
     VerifyEvent.class,
     ModifyEvent.class,
     TreeEvent.class,
@@ -81,7 +82,7 @@ public class TypedEvent extends Event {
    */
   public TypedEvent( final Object source, final int id ) {
     super( source, id );
-    this.widget = (Widget) source;
+    this.widget = ( Widget )source;
   }
   
   public Object getSource() {

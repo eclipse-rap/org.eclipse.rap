@@ -91,6 +91,15 @@ public class UntypedEventAdapter_Test extends TestCase {
     adapter.addListener( SWT.SetData, listener );
     adapter.update( new SetDataEvent( widget, null, 0 ) );
     assertEquals( SWT.SetData, eventType );
+    adapter.addListener( SWT.MouseDown, listener );
+    adapter.mouseDown( new MouseEvent( widget, 0 ) );
+    assertEquals( SWT.MouseDown, eventType );
+    adapter.addListener( SWT.MouseUp, listener );
+    adapter.mouseUp( new MouseEvent( widget, 0 ) );
+    assertEquals( SWT.MouseUp, eventType );
+    adapter.addListener( SWT.MouseDoubleClick, listener );
+    adapter.mouseDoubleClick( new MouseEvent( widget, 0 ) );
+    assertEquals( SWT.MouseDoubleClick, eventType );
   }
 
   public void testAdditionAndRemovalOfListener() throws Exception {

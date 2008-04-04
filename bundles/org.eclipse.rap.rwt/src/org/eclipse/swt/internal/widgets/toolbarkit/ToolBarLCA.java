@@ -17,8 +17,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 public class ToolBarLCA extends AbstractWidgetLCA {
@@ -33,6 +32,7 @@ public class ToolBarLCA extends AbstractWidgetLCA {
   }
 
   public void readData( final  Widget widget ) {
+    ControlLCAUtil.processMouseEvents( ( Control )widget );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

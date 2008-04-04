@@ -14,9 +14,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 
-/**
- * @author georg
- */
 public class Button_Test extends TestCase {
 
   public void testImage() {

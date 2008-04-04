@@ -46,6 +46,51 @@ public class SWT {
   public static final int None = 0;
 
   /**
+   * The mouse down event type (value is 3).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Control#addMouseListener
+   * @see org.eclipse.swt.events.MouseListener#mouseDown
+   * @see org.eclipse.swt.events.MouseEvent
+   * 
+   * @since 1.1
+   */
+  public static final int MouseDown = 3;
+  
+  /**
+   * The mouse up event type (value is 4).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Control#addMouseListener
+   * @see org.eclipse.swt.events.MouseListener#mouseUp
+   * @see org.eclipse.swt.events.MouseEvent
+   * 
+   * @since 1.1
+   */
+  public static final int MouseUp = 4;
+  
+  /**
+   * The mouse double click event type (value is 8).
+   * 
+   * @see org.eclipse.swt.widgets.Widget#addListener
+   * @see org.eclipse.swt.widgets.Display#addFilter
+   * @see org.eclipse.swt.widgets.Event
+   * 
+   * @see org.eclipse.swt.widgets.Control#addMouseListener
+   * @see org.eclipse.swt.events.MouseListener#mouseDoubleClick
+   * @see org.eclipse.swt.events.MouseEvent
+   * 
+   * @since 1.1
+   */
+  public static final int MouseDoubleClick = 8; 
+  
+  /**
    * The move event type (value is 10).
    *
    * @see org.eclipse.swt.widgets.Widget#addListener
@@ -575,9 +620,11 @@ public class SWT {
 
   /**
    * Style constant for arrow button behavior (value is 1&lt;&lt;2).
+   * <!-- 
    * <p><b>Used By:</b><ul>
    * <li><code>Button</code></li>
    * </ul></p>
+   * -->
    */
   public static final int ARROW = 1 << 2;
 

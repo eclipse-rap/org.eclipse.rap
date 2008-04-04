@@ -52,14 +52,41 @@ public final class JSConst {
     = "org.eclipse.swt.events.menuHidden";
   public static final String EVENT_SET_DATA
     = "org.eclipse.swt.events.setData";
+  public static final String EVENT_MOUSE_UP
+    = "org.eclipse.swt.events.mouseUp";
+  public static final String EVENT_MOUSE_DOWN
+    = "org.eclipse.swt.events.mouseDown";
+  public static final String EVENT_MOUSE_DOUBLE_CLICK
+    = "org.eclipse.swt.events.mouseDoubleClick";
+
 
   // Parameter names that specify further event details
   public static final String EVENT_WIDGET_SELECTED_DETAIL
     = "org.eclipse.swt.events.widgetSelected.detail";
   public static final String EVENT_WIDGET_SELECTED_ITEM
     = "org.eclipse.swt.events.widgetSelected.item";
+  public static final String EVENT_WIDGET_SELECTED_INDEX
+    = "org.eclipse.swt.events.widgetSelected.index";
   public static final String EVENT_SET_DATA_INDEX
     = "org.eclipse.swt.events.setData.index";
+  public static final String EVENT_MOUSE_UP_BUTTON
+    = "org.eclipse.swt.events.mouseUp.button";
+  public static final String EVENT_MOUSE_UP_X
+    = "org.eclipse.swt.events.mouseUp.x";
+  public static final String EVENT_MOUSE_UP_Y
+    = "org.eclipse.swt.events.mouseUp.y";
+  public static final String EVENT_MOUSE_DOWN_BUTTON
+    = "org.eclipse.swt.events.mouseDown.button";
+  public static final String EVENT_MOUSE_DOWN_X
+    = "org.eclipse.swt.events.mouseDown.x";
+  public static final String EVENT_MOUSE_DOWN_Y
+    = "org.eclipse.swt.events.mouseDown.y";
+  public static final String EVENT_MOUSE_DOUBLE_CLICK_BUTTON
+    = "org.eclipse.swt.events.mouseDoubleClick.button";
+  public static final String EVENT_MOUSE_DOUBLE_CLICK_X
+    = "org.eclipse.swt.events.mouseDoubleClick.x";
+  public static final String EVENT_MOUSE_DOUBLE_CLICK_Y
+    = "org.eclipse.swt.events.mouseDoubleClick.y";
 
   /**
    * <p>Indicates that a shell was closed on the client side. The parameter

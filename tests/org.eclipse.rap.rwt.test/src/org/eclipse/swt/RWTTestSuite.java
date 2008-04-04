@@ -115,6 +115,7 @@ public class RWTTestSuite {
     suite.addTestSuite( WidgetLCAUtil_Test.class );
     suite.addTestSuite( ControlLCAUtil_Test.class );
     suite.addTestSuite( SelectionEvent_Test.class );
+    suite.addTestSuite( MouseEvent_Test.class );
     suite.addTestSuite( ControlEvent_Test.class );
     suite.addTestSuite( DisposeEvent_Test.class );
     suite.addTestSuite( ShellEvent_Test.class );

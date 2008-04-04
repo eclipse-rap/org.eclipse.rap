@@ -121,5 +121,4 @@ public class UntypedEvents_Test extends TestCase {
     RWTFixture.executeLifeCycleFromServerThread( );
     assertTrue( executed[ 0 ] );
   }
-
 }

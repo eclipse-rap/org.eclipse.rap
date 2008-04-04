@@ -62,6 +62,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     readScrollPosition( tree );
     processWidgetSelectedEvent( tree );
     processWidgetDefaultSelectedEvent( tree );
+    ControlLCAUtil.processMouseEvents( tree );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

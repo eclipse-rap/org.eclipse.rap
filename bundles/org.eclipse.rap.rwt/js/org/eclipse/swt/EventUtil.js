@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
@@ -13,7 +12,7 @@
 /**
  * This class contains static listener functions for common events.
  */
-qx.Class.define("org.eclipse.swt.EventUtil", {
+qx.Class.define( "org.eclipse.swt.EventUtil", {
 
   statics : {
     suspendEventHandling : function() {
@@ -22,6 +21,15 @@ qx.Class.define("org.eclipse.swt.EventUtil", {
 
     resumeEventHandling : function() {
       org_eclipse_rap_rwt_EventUtil_suspend = false;
+    },
+    
+    DOUBLE_CLICK_TIME : 500,
+    
+    _capturingWidget : null,
+    _lastMouseDown : {
+      widget : null,
+      button : 0,
+      time : 0
     },
 
     widgetSelected : function( evt ) {
@@ -103,6 +111,120 @@ qx.Class.define("org.eclipse.swt.EventUtil", {
         req.addEvent( "org.eclipse.swt.events.focusLost", id );
         req.send();
       }
+    },
+    
+    mouseDown : function( evt ) {
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend 
+          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) ) 
+      {
+        // from now on, redirect mouse event to this widget 
+        this.setCapture( true );
+        org.eclipse.swt.EventUtil._capturingWidget = this;
+this.debug( "DOWN - this: " + this );      
+this.debug( "DOWN - target:" + evt.getOriginalTarget() );      
+        // Convert left/middle/right button name to 1/2/3
+        var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
+        // Collect request parameters and send
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( "org.eclipse.swt.events.mouseDown.button", button );
+        req.addParameter( "org.eclipse.swt.events.mouseDown.x", evt.getPageX() );
+        req.addParameter( "org.eclipse.swt.events.mouseDown.y", evt.getPageY() );
+        req.addEvent( "org.eclipse.swt.events.mouseDown", id );
+        // Store relevant data of current event to detect double-clicks
+        if( org.eclipse.swt.EventUtil._isDoubleClick( this, button ) ) {
+          org.eclipse.swt.EventUtil._clearLastMouseDown();    
+          req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.button",
+                            button );
+          req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.x", 
+                            evt.getPageX() );
+          req.addParameter( "org.eclipse.swt.events.mouseDoubleClick.y",
+                            evt.getPageY() );
+          req.addEvent( "org.eclipse.swt.events.mouseDoubleClick", id );
+        } else {
+          var lastMouseDown = org.eclipse.swt.EventUtil._lastMouseDown; 
+          lastMouseDown.widget = this;
+          lastMouseDown.button = button;
+          lastMouseDown.time = new Date();
+          qx.client.Timer.once( org.eclipse.swt.EventUtil._clearLastMouseDown, 
+                                this,
+                                org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME );
+        }
+        // Send request
+        req.send();
+      }
+    },
+    
+    mouseUp : function( evt ) {
+this.debug( "UP - or not" );        
+      if(    !org_eclipse_rap_rwt_EventUtil_suspend
+          && org.eclipse.swt.EventUtil._isRelevantMouseEvent( this, evt ) ) 
+      {
+        // release mouse event capturing 
+        this.setCapture( false );
+        org.eclipse.swt.EventUtil._capturingWidget = null;
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+this.debug( "UP" );        
+        var id = widgetManager.findIdByWidget( this );
+        var req = org.eclipse.swt.Request.getInstance();
+        var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
+        req.addParameter( "org.eclipse.swt.events.mouseUp.button", button );
+        req.addParameter( "org.eclipse.swt.events.mouseUp.x", evt.getPageX() );
+        req.addParameter( "org.eclipse.swt.events.mouseUp.y", evt.getPageY() );
+        req.addEvent( "org.eclipse.swt.events.mouseUp", id );
+        req.send();
+      }
+    },
+    
+    /**
+     * Determines whether the event is relevant (i.e. should be sent) for the
+     * given widget.
+     * In case a Control that is contained in widget was clicked, the widget
+     * must not be notified. On the other hand, when an item (e.g. TreeItem)
+     * was clicked, the widget (Tree in this case) must be notified.
+     * If the widget itself was clicked, it must be notified.
+     * @param widget - the listening widget
+     * @param evt - the mouse event
+     */
+    _isRelevantMouseEvent : function( widget, evt ) {
+      var result = true;
+      if(    widget !== org.eclipse.swt.EventUtil._capturingWidget
+          && widget !== evt.getOriginalTarget() ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        result = !widgetManager.isControl( evt.getOriginalTarget() );
+      }
+      return result;
+    },
+    
+    _clearLastMouseDown : function() {
+      var lastMouseDown = org.eclipse.swt.EventUtil._lastMouseDown;
+      lastMouseDown.widget = null;
+      lastMouseDown.button = 0;
+      lastMouseDown.time = 0;
+    },
+    
+    _isDoubleClick : function( widget, button ) {
+      var lastMouseDown = org.eclipse.swt.EventUtil._lastMouseDown;
+      return    lastMouseDown.widget === widget
+             && button === 1
+             && lastMouseDown.button === 1;
+    },
+
+    _determineMouseButton : function( evt ) {
+      var result = 0;
+      switch( evt.getButton() ) {
+        case qx.event.type.MouseEvent.C_BUTTON_LEFT : 
+          result = 1;
+          break;
+        case qx.event.type.MouseEvent.C_BUTTON_MIDDLE:
+          result = 2;
+          break;
+        case qx.event.type.MouseEvent.C_BUTTON_RIGHT:
+          result = 3;
+          break;
+      }
+      return result;
     }
   }
 });

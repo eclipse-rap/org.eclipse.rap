@@ -98,6 +98,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.wasEventSent( combo, JSConst.EVENT_WIDGET_SELECTED ) ) {
       ControlLCAUtil.processSelection( combo, null, true );
     }
+    ControlLCAUtil.processMouseEvents( combo );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

@@ -82,6 +82,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     readSelection( table );
     readTopIndex( table ); // topIndex MUST be read *before* processSetData
     processSetData( table );
+    ControlLCAUtil.processMouseEvents( table );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {

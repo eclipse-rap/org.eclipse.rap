@@ -29,7 +29,8 @@ public final class UntypedEventAdapter
              MenuListener, 
              ModifyListener,
              SetDataListener,
-             VerifyListener
+             VerifyListener,
+             MouseListener
 {
   private ArrayList listeners = new ArrayList();
 
@@ -131,9 +132,9 @@ public final class UntypedEventAdapter
   
   public void verifyText( final VerifyEvent evt ) {
     Event event = createEvent( SWT.Verify, evt.getSource() );
-    dispatchEvent( SWT.Verify, event );
     evt.doit = event.doit;
     evt.text = event.text;
+    dispatchEvent( SWT.Verify, event );
   }
   
   public void update( final SetDataEvent evt ) {
@@ -141,6 +142,30 @@ public final class UntypedEventAdapter
     event.item = evt.item;
     event.index = evt.index;
     dispatchEvent( SWT.SetData, event );
+  }
+  
+  public void mouseDown( final MouseEvent evt ) {
+    Event event = createEvent( SWT.MouseDown, evt.getSource() );
+    event.button = evt.button;
+    event.x = evt.x;
+    event.y = evt.y;
+    dispatchEvent( SWT.MouseDown, event );
+  }
+  
+  public void mouseUp( final MouseEvent evt ) {
+    Event event = createEvent( SWT.MouseUp, evt.getSource() );
+    event.button = evt.button;
+    event.x = evt.x;
+    event.y = evt.y;
+    dispatchEvent( SWT.MouseUp, event );
+  }
+  
+  public void mouseDoubleClick( final MouseEvent evt ) {
+    Event event = createEvent( SWT.MouseDoubleClick, evt.getSource() );
+    event.button = evt.button;
+    event.x = evt.x;
+    event.y = evt.y;
+    dispatchEvent( SWT.MouseDoubleClick, event );
   }
   
   public void addListener( final Widget widget, 
@@ -185,6 +210,11 @@ public final class UntypedEventAdapter
       break;
       case SWT.SetData:
         SetDataEvent.addListener( widget, this );
+      break;
+      case SWT.MouseDown:
+      case SWT.MouseUp:
+      case SWT.MouseDoubleClick:
+        MouseEvent.addListener( widget, this );
       break;
       default:
         String txt = "The untyped event ''{0}'' is not supported.";

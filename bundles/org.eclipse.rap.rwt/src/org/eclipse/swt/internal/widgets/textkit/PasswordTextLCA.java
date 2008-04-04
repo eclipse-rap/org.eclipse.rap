@@ -35,6 +35,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.readText( text );
     TextLCAUtil.readSelection( text );
     ControlLCAUtil.processSelection( text, null, false );
+    ControlLCAUtil.processMouseEvents( text );
   }
 
   void renderInitialization( final Text text ) throws IOException {
