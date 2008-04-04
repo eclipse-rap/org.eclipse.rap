@@ -207,7 +207,9 @@
 			<include name="org.eclipse.osgi_*" />
 			<include name="org.eclipse.osgi.source_*" />
 			<include name="org.mortbay.jetty_*" />
-      <include name="org.mortbay.jetty.source_*/" />
+			<include name="org.mortbay.jetty.source_*/" />
+			<include name="org.junit_3*" />
+			<include name="org.junit.source_3*/" />
 		</fileset>
 		
 		<!-- 3.3 base -->
@@ -223,6 +225,8 @@
 			<include name="org.eclipse.equinox.registry_*" />
 			<include name="org.eclipse.osgi.services_*" />
 			<include name="org.eclipse.osgi_*" />
+			<include name="org.junit_3*" />
+			<include name="org.junit.source_3*/" />
 			<!-- include sources -->
 			<include name="org.eclipse.rcp.source_*/" />
 			<include name="javax.servlet.source_*/" />
