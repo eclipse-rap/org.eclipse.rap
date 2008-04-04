@@ -58,7 +58,7 @@
 
   <boxdim name="shell.padding"
       description="Padding around the shell client area"
-      default="2"/>
+      default="0"/>
 
   <boxdim name="shell.button.margin"
       description="Margin for the min/max/close buttons on shells"
