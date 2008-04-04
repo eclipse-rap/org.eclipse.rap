@@ -132,8 +132,8 @@ public final class UntypedEventAdapter
   
   public void verifyText( final VerifyEvent evt ) {
     Event event = createEvent( SWT.Verify, evt.getSource() );
-    evt.doit = event.doit;
-    evt.text = event.text;
+    event.doit = evt.doit;
+    event.text = evt.text;
     dispatchEvent( SWT.Verify, event );
   }
   
