@@ -212,7 +212,6 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     },
 
     _mouseDownParams : function( widget, evt ) {
-widget.debug( "DOWN" );      
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       var req = org.eclipse.swt.Request.getInstance();
       var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
@@ -223,7 +222,6 @@ widget.debug( "DOWN" );
     },
 
     _mouseUpParams : function( widget, evt ) {
-widget.debug( "UP" );      
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       var button = org.eclipse.swt.EventUtil._determineMouseButton( evt );
       var req = org.eclipse.swt.Request.getInstance();
@@ -234,7 +232,6 @@ widget.debug( "UP" );
     },
     
     _mouseDoubleClickParams : function( widget, evt ) {
-widget.debug( "DOUBLE_CLICK" );      
       var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( widget );
       var req = org.eclipse.swt.Request.getInstance();
       req.addEvent( "org.eclipse.swt.events.mouseDoubleClick", id );
