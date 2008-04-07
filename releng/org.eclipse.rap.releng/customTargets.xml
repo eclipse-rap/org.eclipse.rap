@@ -210,6 +210,7 @@
 			<include name="org.mortbay.jetty.source_*/" />
 			<include name="org.junit_3*" />
 			<include name="org.junit.source_3*/" />
+			<include name="org.eclipse.jdt.junit.runtime*" />
 		</fileset>
 		
 		<!-- 3.3 base -->
@@ -227,6 +228,7 @@
 			<include name="org.eclipse.osgi_*" />
 			<include name="org.junit_3*" />
 			<include name="org.junit.source_3*/" />
+			<include name="org.eclipse.jdt.junit.runtime*" />
 			<!-- include sources -->
 			<include name="org.eclipse.rcp.source_*/" />
 			<include name="javax.servlet.source_*/" />
