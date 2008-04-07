@@ -176,7 +176,7 @@ qx.Theme.define( "org.eclipse.swt.theme.BordersBase",
     
     "ctabfolder.button.border" : {
       width : 1,
-      color : "#606880"
+      color : "#c0c0c0"
     }
   }
 } );
