@@ -1518,7 +1518,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = { };
       if( states.over ) {
         result.backgroundColor = "white";
-        result.border = "black";
+        result.border = "ctabfolder.button.border";
       } else {
         result.backgroundColor = "undefined";
         result.border = "undefined";
