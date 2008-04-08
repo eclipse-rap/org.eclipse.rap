@@ -97,7 +97,7 @@ public class Button extends Control {
   }
 
   void initState() {
-    if( ( style & SWT.PUSH ) == 0 ) {
+    if( ( style & ( SWT.PUSH | SWT.TOGGLE ) ) == 0 ) {
       state |= THEME_BACKGROUND;
     }
   }
