@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
@@ -17,22 +17,23 @@ import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 
 public final class WidgetAdapter implements IWidgetAdapter {
-  
+
   private final String id;
   private boolean initialized;
   private final Map preservedValues;
   private String jsParent;
   private IRenderRunnable renderRunnable;
+  private String variant;
 
   public WidgetAdapter() {
     this( IdGenerator.getInstance().newId() );
   }
-  
+
   public WidgetAdapter( final String id ) {
     this.id = id;
     preservedValues = new HashMap();
   }
-  
+
   public String getId() {
     return id;
   }
@@ -48,7 +49,7 @@ public final class WidgetAdapter implements IWidgetAdapter {
   public void preserve( final String propertyName, final Object value ) {
     preservedValues.put( propertyName, value );
   }
-  
+
   public Object getPreserved( final String propertyName ) {
     return preservedValues.get( propertyName );
   }
@@ -78,5 +79,13 @@ public final class WidgetAdapter implements IWidgetAdapter {
 
   public void clearRenderRunnable() {
     renderRunnable = null;
+  }
+
+  public String getVariant() {
+    return variant;
+  }
+
+  public void setVariant( final String variant ) {
+    this.variant = variant;
   }
 }

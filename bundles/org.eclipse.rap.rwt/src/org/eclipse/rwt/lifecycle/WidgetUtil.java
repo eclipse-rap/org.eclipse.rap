@@ -13,6 +13,7 @@ package org.eclipse.rwt.lifecycle;
 import java.text.MessageFormat;
 
 import org.eclipse.rwt.internal.lifecycle.UITestUtil;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.widgets.Composite;
@@ -146,16 +147,19 @@ public final class WidgetUtil {
    */
   public static String getVariant( final Widget widget ) {
     String result = null;
+    WidgetAdapter widgetAdapter = ( WidgetAdapter )getAdapter( widget );
     Object data = widget.getData( WidgetUtil.CUSTOM_VARIANT );
     if( data instanceof String ) {
-      String variant = ( String )data;
-      if( validateVariantString( variant ) ) {
-        result = variant;
-      } else {
-        String pattern = "Illegal character in widget variant ''{0}''";
-        Object[] arguments = new Object[] { variant };
-        String message = MessageFormat.format( pattern, arguments );
-        throw new IllegalArgumentException( message );
+      result = ( String )data;
+      if( !result.equals( widgetAdapter.getVariant() ) ) {
+        if( validateVariantString( result ) ) {
+          widgetAdapter.setVariant( result );
+        } else {
+          String pattern = "Illegal character in widget variant ''{0}''";
+          Object[] arguments = new Object[] { result };
+          String message = MessageFormat.format( pattern, arguments );
+          throw new IllegalArgumentException( message );
+        }
       }
     }
     return result;
