@@ -69,8 +69,8 @@ public final class EntryPointManager {
   public static int createUI( final String name ) {
     IEntryPoint entryPoint;
     Class clazz;
+    ParamCheck.notNull( name, "name" );
     synchronized( registry ) {
-      ParamCheck.notNull( name, "name" );
       if( !registry.containsKey( name ) ) {
         String text = "An entry point named ''{0}'' does not exist.";
         String msg = MessageFormat.format( text, new Object[] { name } );
