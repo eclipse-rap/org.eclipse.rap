@@ -35,12 +35,11 @@ public class TreeItem extends Item {
 
   private static final int IMAGE_TEXT_GAP = 2;
   private static final int INDENT_WIDTH = 16;
-  
+
   private final TreeItem parentItem;
   private final Tree parent;
   private final ItemHolder itemHolder;
-  private final IWidgetFontAdapter widgetFontAdapter;
-  private final IWidgetColorAdapter widgetColorAdapter;
+  private final ITreeItemAdapter treeItemAdapter;
   private Font font;
   private boolean expanded;
   private boolean checked;
@@ -102,7 +101,7 @@ public class TreeItem extends Item {
    * style constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param parent a tree control which will be the parent of the new instance
    *            (cannot be null)
    * @param style the style of control to construct
@@ -127,7 +126,7 @@ public class TreeItem extends Item {
   public TreeItem( Tree parent, int style, int index ) {
     this( parent, null, style, index );
   }
-  
+
   /**
    * Constructs a new instance of this class given its parent
    * (which must be a <code>Tree</code> or a <code>TreeItem</code>)
@@ -226,20 +225,32 @@ public class TreeItem extends Item {
     }
     this.index = newIndex;
     itemHolder = new ItemHolder( TreeItem.class );
-    widgetFontAdapter = new IWidgetFontAdapter() {
-      public Font getUserFont() {
-        return font;
-      }
-    };
-    widgetColorAdapter = new IWidgetColorAdapter() {
-      public Color getUserForegound() {
-        return foreground;
-      }
+    treeItemAdapter = new ITreeItemAdapter() {
+
       public Color getUserBackgound() {
         return background;
       }
+
+      public Color getUserForegound() {
+        return foreground;
+      }
+
+      public Font getUserFont() {
+        return font;
+      }
+
+      public Color[] getCellBackgrounds() {
+        return cellBackgrounds;
+      }
+
+      public Color[] getCellForegrounds() {
+        return cellForegrounds;
+      }
+
+      public Font[] getCellFonts() {
+        return cellFonts;
+      }
     };
-    
     int columnCount = parent.columnHolder.size();
     texts = new String[ columnCount ];
     images = new Image[ columnCount ];
@@ -251,9 +262,11 @@ public class TreeItem extends Item {
     if( adapter == IItemHolderAdapter.class ) {
       result = itemHolder;
     } else if( adapter == IWidgetFontAdapter.class ) {
-      result = widgetFontAdapter;
+      result = treeItemAdapter;
     } else if( adapter == IWidgetColorAdapter.class ) {
-      result = widgetColorAdapter;
+      result = treeItemAdapter;
+    } else if( adapter == ITreeItemAdapter.class ) {
+      result = treeItemAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -349,7 +362,7 @@ public class TreeItem extends Item {
     checkWidget();
     return getBounds( 0 );
   }
-  
+
   /**
    * Returns a rectangle describing the receiver's size and location
    * relative to its parent at a column in the tree.
@@ -361,13 +374,13 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public Rectangle getBounds( int columnIndex ) {
     return getBounds( columnIndex, true );
   }
-  
+
   /* package */ Rectangle getBounds( int columnIndex, boolean checkData ) {
     checkWidget();
     Rectangle result;
@@ -419,14 +432,14 @@ public class TreeItem extends Item {
     }
     return result;
   }
-  
+
   /**
    * Returns the background color at the given column index in the receiver.
-   * 
+   *
    * @param columnIndex
    *            the column index
    * @return the background color
-   * 
+   *
    * @exception SWTException
    *                <ul>
    *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
@@ -434,7 +447,7 @@ public class TreeItem extends Item {
    *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *                thread that created the receiver</li>
    *                </ul>
-   * 
+   *
    * @since 1.0
    */
   public Color getBackground( int columnIndex ) {
@@ -447,7 +460,7 @@ public class TreeItem extends Item {
       return getBackground();
     return cellBackgrounds[ columnIndex ];
   }
-  
+
   /**
    * Returns the font that the receiver will use to paint textual information
    * for the specified cell in this item.
@@ -466,7 +479,7 @@ public class TreeItem extends Item {
     checkWidget ();
     return getFont (columnIndex, true);
   }
-  
+
   Font getFont (int columnIndex, boolean checkData) {
 //    if (checkData && !parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
     int validColumnCount = Math.max (1, parent.columnHolder.size());
@@ -474,9 +487,9 @@ public class TreeItem extends Item {
     if (cellFonts == null || cellFonts [columnIndex] == null) return getFont (checkData);
     return cellFonts [columnIndex];
   }
-  
+
   /**
-   * 
+   *
    * Returns the foreground color at the given column index in the receiver.
    *
    * @param columnIndex the column index
@@ -486,7 +499,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public Color getForeground( int columnIndex ) {
@@ -499,9 +512,9 @@ public class TreeItem extends Item {
       return getForeground();
     return cellForegrounds[ columnIndex ];
   }
-  
+
   /**
-   * Sets the background color at the given column index in the receiver 
+   * Sets the background color at the given column index in the receiver
    * to the color specified by the argument, or to the default system color for the item
    * if the argument is null.
    *
@@ -509,15 +522,15 @@ public class TreeItem extends Item {
    * @param value the new color (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
-   * 
+   *
    */
   public void setBackground (int columnIndex, Color value) {
     checkWidget();
@@ -538,21 +551,21 @@ public class TreeItem extends Item {
 
   /**
    * Sets the font that the receiver will use to paint textual information
-   * for the specified cell in this item to the font specified by the 
-   * argument, or to the default font for that kind of control if the 
+   * for the specified cell in this item to the font specified by the
+   * argument, or to the default font for that kind of control if the
    * argument is null.
    *
    * @param columnIndex the column index
    * @param value the new font (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setFont (int columnIndex, Font value) {
@@ -569,9 +582,9 @@ public class TreeItem extends Item {
     cellFonts [columnIndex] = value;
     if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
-  
+
   /**
-   * Sets the foreground color at the given column index in the receiver 
+   * Sets the foreground color at the given column index in the receiver
    * to the color specified by the argument, or to the default system color for the item
    * if the argument is null.
    *
@@ -579,15 +592,15 @@ public class TreeItem extends Item {
    * @param value the new color (or null)
    *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li> 
+   *    <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
-   * 
+   *
    */
   public void setForeground( int columnIndex, Color value ) {
     checkWidget();
@@ -610,7 +623,7 @@ public class TreeItem extends Item {
    * Sets the font that the receiver will use to paint textual information for
    * this item to the font specified by the argument, or to the default font for
    * that kind of control if the argument is null.
-   * 
+   *
    * @param font the new font (or null)
    * @exception IllegalArgumentException
    *                <ul>
@@ -662,7 +675,7 @@ public class TreeItem extends Item {
       return font;
     return parent.getFont();
   }
-  
+
   /**
    * Sets the receiver's background color to the color specified
    * by the argument, or to the default system color for the item
@@ -864,14 +877,14 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public String getText (int columnIndex) {
       checkWidget ();
       return getText (columnIndex, true);
   }
-  
+
   /**
    * Returns the receiver's text, which will be an empty
    * string if it has never been set.
@@ -890,7 +903,7 @@ public class TreeItem extends Item {
     }
     return super.getText();
   }
-  
+
   String getText (int columnIndex, boolean checkData) {
     if(checkData && !isCached()) parent.checkData( this, this.index );
     int validColumnCount = Math.max (1, parent.columnHolder.size());
@@ -899,10 +912,10 @@ public class TreeItem extends Item {
     if (texts [columnIndex] == null) return ""; //$NON-NLS-1$
     return texts [columnIndex];
   }
-  
+
   /**
-   * Sets the text for multiple columns in the tree. 
-   * 
+   * Sets the text for multiple columns in the tree.
+   *
    * @param value the array of new strings
    *
    * @exception IllegalArgumentException <ul>
@@ -912,7 +925,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setText (String[] value) {
@@ -923,7 +936,7 @@ public class TreeItem extends Item {
           if (value [i] != null) setText (i, value [i]);
       }
   }
-  
+
   /**
    * Sets the receiver's text at a column
    *
@@ -937,7 +950,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setText (int columnIndex, String value) {
@@ -949,11 +962,11 @@ public class TreeItem extends Item {
       if (columnIndex == 0) {
           super.setText (value);
       } else {
-          texts [columnIndex] = value;        
+          texts [columnIndex] = value;
       }
 //      if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
-  
+
   /**
    * Sets the receiver's text.
    *
@@ -971,7 +984,7 @@ public class TreeItem extends Item {
     super.setText( text );
 //    if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
-  
+
   /**
    * Returns the image stored at the given column index in the receiver,
    * or null if the image has not been set or if the column does not exist.
@@ -983,14 +996,14 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public Image getImage (int columnIndex) {
       checkWidget ();
       return getImage (columnIndex, true);
   }
-  
+
   /**
    * Returns a rectangle describing the size and location
    * relative to its parent of an image at a column in the
@@ -1017,7 +1030,7 @@ public class TreeItem extends Item {
     }
     return result;
   }
-  
+
   Image getImage (int columnIndex, boolean checkData) {
 //      if( checkData ) parent.checkData( this, this.index );
       int validColumnCount = Math.max (1, parent.columnHolder.size());
@@ -1025,7 +1038,7 @@ public class TreeItem extends Item {
       if (columnIndex == 0) return super.getImage (); /* super is intentional here */
       return images [columnIndex];
   }
-  
+
   /*
    * Returns the receiver's ideal width for the specified columnIndex.
    */
@@ -1036,7 +1049,7 @@ public class TreeItem extends Item {
     if (orderedIndex == 0) {
       width += 19; // TODO find proper solution
       width += 3; //Tree.MARGIN_IMAGE;
-  
+
       //Image image = getImage (columnIndex, false);
       Image image = getImage ();
       if (image != null) {
@@ -1046,7 +1059,7 @@ public class TreeItem extends Item {
     }
     return width;
   }
-  
+
   void clear() {
     // TODO: [bm] revisit when columns are available
     checked = grayed = false;
@@ -1092,10 +1105,10 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see SWT#VIRTUAL
    * @see SWT#SetData
-   * 
+   *
    * @since 1.0
    */
   public void clear( int index, boolean recursive ) {
@@ -1112,7 +1125,7 @@ public class TreeItem extends Item {
       parent.checkData( item, index );
     }
   }
-  
+
   /*
    * Updates internal structures in the receiver and its child items to handle the creation of a new column.
    */
@@ -1134,7 +1147,7 @@ public class TreeItem extends Item {
         texts[ 1 ] = text;
         text = ""; //$NON-NLS-1$
       }
-      
+
       if( columnCount == 2 ) {
         images = new Image[ 2 ];
       } else {
@@ -1156,7 +1169,7 @@ public class TreeItem extends Item {
       child.addColumn( column );
     }
   }
-  
+
   /**
    * Sets the receiver's image at a column.
    *
@@ -1170,7 +1183,7 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setImage (int columnIndex, Image value) {
@@ -1189,10 +1202,10 @@ public class TreeItem extends Item {
       }
       if((parent.style & SWT.VIRTUAL) != 0) cached = true;
   }
-  
+
   /**
-   * Sets the image for multiple columns in the tree. 
-   * 
+   * Sets the image for multiple columns in the tree.
+   *
    * @param value the array of new images
    *
    * @exception IllegalArgumentException <ul>
@@ -1203,19 +1216,19 @@ public class TreeItem extends Item {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.0
    */
   public void setImage (Image[] value) {
       checkWidget ();
       if (value == null) error (SWT.ERROR_NULL_ARGUMENT);
-      
+
       // TODO make a smarter implementation of this
       for (int i = 0; i < value.length; i++) {
           if (value [i] != null) setImage (i, value [i]);
       }
   }
-  
+
   /**
    * Clears all the items in the receiver. The text, icon and other
    * attributes of the items are set to their default values. If the
@@ -1255,7 +1268,7 @@ public class TreeItem extends Item {
         parent.checkData( treeItem, treeItem.index );
       }
     }
-    
+
   }
   ///////////////////////////////////////
   // Methods to maintain (sub-) TreeItems
@@ -1367,10 +1380,10 @@ public class TreeItem extends Item {
       items[ i ].dispose();
     }
   }
-  
+
   /**
    * Sets the number of child items contained in the receiver.
-   * 
+   *
    * @param count the number of items
    * @exception SWTException
    *                <ul>
@@ -1394,7 +1407,7 @@ public class TreeItem extends Item {
     }
     return result;
   }
-  
+
   /////////////////////////////////
   // Methods to dispose of the item
 

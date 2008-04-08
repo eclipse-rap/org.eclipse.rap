@@ -601,10 +601,13 @@ public final class WidgetLCAUtil {
                                       final Color newColor )
     throws IOException
   {
-    JSWriter writer = JSWriter.getWriterFor( widget );
     if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
-      Object[] args = new Object[] { widget, newColor };
-      writer.call( JSWriter.WIDGET_MANAGER_REF, "setForeground", args );
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      if( newColor != null ) {
+        writer.set( JSConst.QX_FIELD_COLOR, newColor );
+      } else {
+        writer.reset( JSConst.QX_FIELD_COLOR );
+      }
     }
   }
 

@@ -34,7 +34,8 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     this._toolTipPool = new Array();
   },
 
-  statics : {    
+  statics : {
+
     _onAppearFocus : function( evt ) {
       var widget = this;
       widget.focus();
@@ -42,21 +43,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         "appear", 
         org.eclipse.swt.WidgetManager._onAppearFocus, 
         widget );
-    },
-
-    _onAppearSetForeground : function( evt ) {
-      var color = String( this );
-      if( color == null ) {
-        evt.getTarget().resetTextColor();
-      } else {
-        // 'this' references the color string but for some reason must be 
-        // explicitly converted to a string
-        evt.getTarget().setTextColor( color );
-      }
-      evt.getTarget().removeEventListener( 
-        "appear", 
-        org.eclipse.swt.WidgetManager._onAppearSetForeground, 
-        this );
     }
   },
 
@@ -265,22 +251,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
                                  org.eclipse.swt.WidgetManager._onAppearFocus, 
                                  widget );
       }
-    },
-
-    setForeground : function( widget, color ) {
-// TODO [rst] It seems that this workaround is not necessary anymore
-//      if ( widget.isMaterialized() ) {  // TODO [rh] isMaterialized or isCreated?
-        if( color == null ) {
-          widget.resetTextColor();
-        } else {
-          widget.setTextColor( color );
-        }
-//      } else {
-//        widget.addEventListener( 
-//          "appear",
-//          org.eclipse.swt.WidgetManager._onAppearSetForeground,
-//          color );
-//      }
     },
 
     /**

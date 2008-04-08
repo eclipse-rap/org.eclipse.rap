@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
- * reserved. This program and the accompanying materials are made available
- * under the terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
+
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
 import java.io.IOException;
@@ -24,7 +27,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
 import org.eclipse.swt.widgets.*;
+
 
 public class TreeItemLCA_Test extends TestCase {
 
@@ -53,24 +58,20 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( image, images[ 0 ] );
     Object selection = adapter.getPreserved( TreeItemLCA.PROP_SELECTION );
     assertEquals( Boolean.FALSE, selection );
+    ITreeItemAdapter itemAdapter
+      = ( ITreeItemAdapter )treeItem.getAdapter( ITreeItemAdapter.class );
     Object background = adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND );
-    assertEquals( treeItem.getBackground(), background );
+    assertEquals( itemAdapter.getUserBackgound(), background );
     Object foreground = adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND );
-    assertEquals( treeItem.getForeground(), foreground );
+    assertEquals( itemAdapter.getUserForegound(), foreground );
     Font[] fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_FONT );
-    assertEquals( treeItem.getFont( 0 ), fonts[ 0 ] );
-    assertEquals( treeItem.getFont( 1 ), fonts[ 1 ] );
-    assertEquals( treeItem.getFont( 2 ), fonts[ 2 ] );
+    assertNull( fonts );
     Color[] backgrounds
-     = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_BACKGROUNDS );
-    assertEquals( treeItem.getBackground( 0 ), backgrounds[ 0 ] );
-    assertEquals( treeItem.getBackground( 1 ), backgrounds[ 1 ] );
-    assertEquals( treeItem.getBackground( 2 ), backgrounds[ 2 ] );
+      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
+    assertNull( backgrounds );
     Color[] foregrounds
-     = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_FOREGROUNDS );
-    assertEquals( treeItem.getForeground( 0 ), foregrounds[ 0 ] );
-    assertEquals( treeItem.getForeground( 1 ), foregrounds[ 1 ] );
-    assertEquals( treeItem.getForeground( 2 ), foregrounds[ 2 ] );
+      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
+    assertNull( foregrounds );
     Object materialized = adapter.getPreserved( TreeItemLCA.PROP_MATERIALIZED );
     assertEquals( Boolean.TRUE, materialized );
     RWTFixture.clearPreserved();
@@ -119,15 +120,15 @@ public class TreeItemLCA_Test extends TestCase {
                   adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND ) );
     assertEquals( foreground,
                   adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND ) );
-    fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_FONT );
+    fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FONTS );
     assertEquals( font1, fonts[ 0 ] );
     assertEquals( font2, fonts[ 1 ] );
     assertEquals( font3, fonts[ 2 ] );
-    backgrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_BACKGROUNDS );
+    backgrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
     assertEquals( background1, backgrounds[ 0 ] );
     assertEquals( background2, backgrounds[ 1 ] );
     assertEquals( background3, backgrounds[ 2 ] );
-    foregrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_FOREGROUNDS );
+    foregrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
     assertEquals( foreground1, foregrounds[ 0 ] );
     assertEquals( foreground2, foregrounds[ 1 ] );
     assertEquals( foreground3, foregrounds[ 2 ] );
@@ -270,14 +271,30 @@ public class TreeItemLCA_Test extends TestCase {
     treeItem.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
     tiLCA.renderChanges( treeItem );
     String expected;
-    expected = "setBackground( \"#ff0000\" );";
+    expected = "w.setBackgroundColor( \"#ff0000\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
     Fixture.fakeResponseWriter();
     RWTFixture.clearPreserved();
     RWTFixture.preserveWidgets();
     treeItem.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
     tiLCA.renderChanges( treeItem );
-    expected = "wm.setForeground( w, \"#00ff00\" );";
+    expected = "w.setTextColor( \"#00ff00\" );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testTextEscape() throws Exception {
+    Fixture.fakeResponseWriter();
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
+    col1.setText( "<x>&Col1" );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    item1.setText( "<x>&Item1" );
+    shell.open();
+    TreeItemLCA lca = new TreeItemLCA();
+    lca.renderChanges( item1 );
+    String expected = "w.setTexts( [ \"&lt;x&gt;&amp;Item1\" ] );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 

@@ -1,6 +1,5 @@
-
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007-2008 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,12 +61,10 @@ qx.Class.define( "org.eclipse.swt.widgets.TreeItem", {
     //this.addEventListener( "changeBackgroundColor", this._onChangeBackgroundColor, this );
     parentItem.add( this );
     
-
     this.getLabelObject().setMode( "html" );
     
     // TODO [bm] need to set the color to prevent inheritance of colors
     this.setBackgroundColor( "transparent" );
-    
   },
   
   destruct : function() {

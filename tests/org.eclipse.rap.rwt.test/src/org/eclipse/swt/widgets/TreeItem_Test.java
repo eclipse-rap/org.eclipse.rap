@@ -1,13 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2002-2006 Innoopract Informationssysteme GmbH. All rights
- * reserved. This program and the accompanying materials are made available
- * under the terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * Contributors: Innoopract Informationssysteme GmbH - initial API and
- * implementation
+ * Copyright (c) 2002-2008 Innoopract Informationssysteme GmbH.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.widgets;
 
+package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
@@ -18,6 +20,8 @@ import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.TextSizeDetermination;
+import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
+
 
 public class TreeItem_Test extends TestCase {
 
@@ -104,7 +108,7 @@ public class TreeItem_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    
+
     assertEquals(false, treeItem.getExpanded());
     // there must be at least one subitem before you can set the treeitem expanded
     new TreeItem(treeItem, 0);
@@ -113,7 +117,7 @@ public class TreeItem_Test extends TestCase {
     treeItem.setExpanded(false);
     assertEquals(false, treeItem.getExpanded());
   }
-  
+
   public void testBackgroundColor() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -158,9 +162,9 @@ public class TreeItem_Test extends TestCase {
     assertEquals( "", item.getText() );
     assertEquals( null, item.getImage() );
     assertEquals( Boolean.FALSE, Boolean.valueOf( item.getChecked() ) );
-    
+
     tree = new Tree( shell, SWT.SINGLE | SWT.VIRTUAL );
-    
+
   }
 
   public void testClearAll() {
@@ -507,7 +511,7 @@ public class TreeItem_Test extends TestCase {
     treeItem.setBackground( null );
     assertEquals( tree.getBackground(), treeItem.getBackground( 0 ) );
   }
-  
+
   public void testGetBounds() {
     final Rectangle NULL_RECT = new Rectangle( 0, 0, 0, 0 );
     Display display = new Display();
@@ -521,13 +525,13 @@ public class TreeItem_Test extends TestCase {
     assertTrue( treeItem.getBounds().height > 0 );
     assertTrue( treeItem.getBounds().width > 0 );
   }
-  
+
   public void testGetBoundsI() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, 0 );
-    
+
     // no columns - plain style
     Image image = Graphics.getImage( RWTFixture.IMAGE1 );
     Rectangle imageBounds = image.getBounds();
@@ -593,7 +597,7 @@ public class TreeItem_Test extends TestCase {
                        && bounds2.height >= Math.max( stringExtent.y,
                                                       imageBounds.height ) );
   }
-  
+
   public void testGetBoundsII() {
     final Rectangle NULL_RECT = new Rectangle( 0, 0, 0, 0 );
     Display display = new Display();
@@ -624,40 +628,40 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, rootItem.getBounds().y );
     assertEquals( 16, rootItem2.getBounds().y );
     assertEquals( 32, rootItem3.getBounds().y );
-    
+
     RWTFixture.fakeNewRequest();
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "0" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "32" );
     RWTFixture.executeLifeCycleFromServerThread( );
-    
+
     assertEquals( -32, rootItem.getBounds().y );
     assertEquals( -16, rootItem2.getBounds().y );
     assertEquals( 0, rootItem3.getBounds().y );
   }
-  
+
   public void testGetBoundsIV() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
-    
+
     TreeColumn column1 = new TreeColumn(tree, SWT.NONE);
     column1.setText( "foo" );
     column1.setWidth( 100 );
-    
+
     TreeColumn column2 = new TreeColumn(tree, SWT.NONE);
     column2.setText( "foo" );
     column2.setWidth( 100 );
-    
+
     TreeColumn column3 = new TreeColumn(tree, SWT.NONE);
     column3.setText( "foo" );
     column3.setWidth( 100 );
-    
+
     TreeItem rootItem = new TreeItem( tree, 0 );
     TreeItem rootItem2 = new TreeItem( tree, 0 );
     TreeItem rootItem3 = new TreeItem( tree, 0 );
     TreeItem subItem = new TreeItem( rootItem, 0);
-    
+
     final int rootItemWidth = rootItem.getBounds(0).width;
     assertTrue( rootItemWidth < 100 ); // swt substracts indent
     assertEquals( 100, rootItem2.getBounds(1).width );
@@ -665,18 +669,58 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, subItem.getBounds(0).width );
     rootItem.setExpanded( true );
     assertTrue( subItem.getBounds(0).width < rootItemWidth );
-    
+
     assertTrue( rootItem.getBounds(0).x > 0);
     assertEquals( 100, rootItem.getBounds(1).x );
     assertEquals( 200, rootItem.getBounds(2).x );
-    
+
   }
-  
+
+  public void testTreeItemAdapter() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.SINGLE );
+    int columnCount = 3;
+    createColumns( tree, columnCount );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    ITreeItemAdapter adapter
+      = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
+    assertNull( adapter.getCellBackgrounds() );
+    assertNull( adapter.getCellForegrounds() );
+    assertNull( adapter.getCellFonts() );
+    Color bgColor = display.getSystemColor( SWT.COLOR_YELLOW );
+    Color fgColor = display.getSystemColor( SWT.COLOR_BLUE );
+    Font font = Graphics.getFont( "Helvetica", 12, SWT.NORMAL );
+    item.setBackground( 0, bgColor );
+    item.setForeground( 0, fgColor );
+    item.setFont( 1, font );
+    assertEquals( columnCount, adapter.getCellBackgrounds().length );
+    assertEquals( columnCount, adapter.getCellForegrounds().length );
+    assertEquals( columnCount, adapter.getCellFonts().length );
+    assertEquals( bgColor, adapter.getCellBackgrounds()[ 0 ] );
+    assertEquals( fgColor, adapter.getCellForegrounds()[ 0 ] );
+    assertEquals( font , adapter.getCellFonts()[ 1 ] );
+    assertNull( adapter.getCellBackgrounds()[ 1 ] );
+    assertNull( adapter.getCellForegrounds()[ 1 ] );
+    assertNull( adapter.getCellFonts()[ 0 ] );
+  }
+
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }
 
   protected void tearDown() throws Exception {
     RWTFixture.tearDown();
+  }
+
+  private TreeColumn[] createColumns( final Tree tree, final int count ) {
+    TreeColumn[] result = new TreeColumn[ count ];
+    for( int i = 0; i < count; i++ ) {
+      TreeColumn column = new TreeColumn( tree, SWT.NONE );
+      column.setText( i % 2 == 1 ? "foo" : "bar" );
+      column.setWidth( 100 );
+      result[ i ] = column;
+    }
+    return result;
   }
 }
