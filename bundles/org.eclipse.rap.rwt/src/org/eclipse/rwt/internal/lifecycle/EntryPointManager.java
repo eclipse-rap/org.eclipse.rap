@@ -77,15 +77,17 @@ public final class EntryPointManager {
         throw new IllegalArgumentException( msg );
       }
       clazz = ( Class )registry.get( name );
-      try {
-        entryPoint = ( IEntryPoint )clazz.newInstance();
-      } catch( Exception e ) {
-        String text = "Failed to instantiate ''{0}''.";
-        Object[] args = new Object[] { clazz.getName() };
-        String msg = MessageFormat.format( text, args );
-        throw new EntryPointInstantiationException( msg, e ) ;
-      }      
     }
+    // no synchronization during instance creation to avoid lock in case
+    // of expensive constructor operations
+    try {
+      entryPoint = ( IEntryPoint )clazz.newInstance();
+    } catch( Exception e ) {
+      String text = "Failed to instantiate ''{0}''.";
+      Object[] args = new Object[] { clazz.getName() };
+      String msg = MessageFormat.format( text, args );
+      throw new EntryPointInstantiationException( msg, e ) ;
+    }      
     ContextProvider.getSession().setAttribute( CURRENT_ENTRY_POINT, name );
     // not synchronized to avoid lock in case of opening a blocking
     // dialog in createUI
