@@ -250,6 +250,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       // foreground color
       if( states.disabled ) {
         result.textColor = "widget.graytext";
+      } else if( states.rwt_FLAT && ( states.pressed || states.checked ) ) {
+        result.textColor = tv.getColor( "button.FLAT.pressed.foreground" );
       } else if( states.over ) {
         result.textColor = tv.getColor( "button.hover.foreground" );
       } else {
@@ -1545,9 +1547,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   
   "composite" : {
     style : function( states ) {
-      return {
-        border : states.rwt_BORDER ? "control.BORDER.border" : "control.border"
-      }
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.backgroundColor = tv.getColor( "widget.background" );
+      result.border = tv.getBorder( states.rwt_BORDER
+                                    ? "control.BORDER.border"
+                                    : "control.border" );
+      return result;
     }
   },
     

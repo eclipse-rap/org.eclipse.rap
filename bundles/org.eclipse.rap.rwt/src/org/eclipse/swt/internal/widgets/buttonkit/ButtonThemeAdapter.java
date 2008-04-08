@@ -76,9 +76,15 @@ public final class ButtonThemeAdapter implements IControlThemeAdapter {
   }
 
   public Color getForeground( final Control control ) {
+    int style = control.getStyle();
+    Button button = ( Button )control;
     String key;
-    if( ( control.getStyle() & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
+    if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
       key = "button.CHECK.foreground";
+    } else if( ( style & ( SWT.FLAT & SWT.TOGGLE ) ) != 1
+               && button.getSelection() )
+    {
+      key = "button.FLAT.pressed.foreground";
     } else {
       key = "button.foreground";
     }
@@ -86,9 +92,15 @@ public final class ButtonThemeAdapter implements IControlThemeAdapter {
   }
 
   public Color getBackground( final Control control ) {
+    int style = control.getStyle();
+    Button button = ( Button )control;
     String key;
     if( ( control.getStyle() & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
       key = "button.CHECK.background";
+    } else if( ( style & ( SWT.FLAT & SWT.TOGGLE ) ) != 1
+               && button.getSelection() )
+    {
+      key = "button.FLAT.pressed.background";
     } else {
       key = "button.background";
     }
