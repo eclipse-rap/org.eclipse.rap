@@ -36,6 +36,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
   private Action aboutAction;
   private Action rapWebSiteAction;
   private MenuManager showViewMenuMgr;
+  private IWorkbenchAction preferencesAction;
   private Action wizardAction;
   private Action browserAction;
   public IWorkbenchAction saveAction;
@@ -73,6 +74,9 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     
     saveAllAction = ActionFactory.SAVE_ALL.create( window );
     register( saveAllAction );
+    
+    preferencesAction = ActionFactory.PREFERENCES.create( window );
+    register( preferencesAction );
     
     newEditorAction = new Action() {
 
@@ -173,6 +177,7 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
     fileMenu.add( exportAction );
     fileMenu.add( exitAction );
     windowMenu.add( showViewMenuMgr );
+    windowMenu.add( preferencesAction );
     menuBar.add( windowMenu );
     menuBar.add( helpMenu );
     helpMenu.add( rapWebSiteAction );
@@ -182,7 +187,6 @@ public class DemoActionBarAdvisor extends ActionBarAdvisor {
 
   protected void fillCoolBar( final ICoolBarManager coolBar ) {
     createToolBar( coolBar, "main" );
-    createToolBar( coolBar, "test" );
     createToolBar( coolBar, "editor" );
   }
 

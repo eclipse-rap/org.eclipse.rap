@@ -9,12 +9,13 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rap.demo;
+package org.eclipse.rap.demo.presentation;
 
+import org.eclipse.rap.demo.presentation.DemoPresentationWorkbenchWindowAdvisor;
 import org.eclipse.ui.application.*;
 
 
-public class DemoWorbenchAdvisor extends WorkbenchAdvisor {
+public class DemoPresentationWorkbenchAdvisor extends WorkbenchAdvisor {
 
   public String getInitialWindowPerspectiveId() {
     return "org.eclipse.rap.demo.perspective";
@@ -23,6 +24,6 @@ public class DemoWorbenchAdvisor extends WorkbenchAdvisor {
   public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
     final IWorkbenchWindowConfigurer windowConfigurer )
   {
-    return new DemoWorkbenchWindowAdvisor( windowConfigurer );
+    return new DemoPresentationWorkbenchWindowAdvisor( windowConfigurer );
   }
 }

@@ -11,16 +11,46 @@
 
 package org.eclipse.rap.demo;
 
+import java.io.IOException;
+
+import org.eclipse.rap.demo.presentation.DemoPresentationWorkbenchAdvisor;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.application.WorkbenchAdvisor;
+import org.eclipse.ui.internal.util.PrefUtil;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 
 public class DemoWorkbench implements IEntryPoint {
 
+  private static final String DEMO_PRESENTATION
+    = "org.eclipse.rap.demo.presentation";
+
   public int createUI() {
-    final Display display = PlatformUI.createDisplay();
-    DemoWorbenchAdvisor worbenchAdvisor = new DemoWorbenchAdvisor();
+    ScopedPreferenceStore prefStore
+      = ( ScopedPreferenceStore )PrefUtil.getAPIPreferenceStore();
+    String keyPresentationId 
+      = IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID;
+    String presentationId = prefStore.getString( keyPresentationId );
+//    if( "".equals( presentationId ) ) {
+//      presentationId = DEMO_PRESENTATION;
+//      prefStore.setValue( keyPresentationId, presentationId );
+//      try {
+//        prefStore.save();
+//      } catch( IOException e ) {
+//        // TODO Auto-generated catch block
+//        e.printStackTrace();
+//      }
+//    }
+    
+    WorkbenchAdvisor worbenchAdvisor = new DemoWorkbenchAdvisor();
+    if( DEMO_PRESENTATION.equals( presentationId ) ) {
+      worbenchAdvisor = new DemoPresentationWorkbenchAdvisor();
+    }
+
+    Display display = PlatformUI.createDisplay();
     return PlatformUI.createAndRunWorkbench( display, worbenchAdvisor );
   }
 }

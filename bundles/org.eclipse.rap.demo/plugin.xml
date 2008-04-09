@@ -176,7 +176,6 @@
         </actionSet>
      </perspectiveExtension>
   </extension>
-  
   <extension
         point="org.eclipse.ui.editors">
      <editor
@@ -218,6 +217,15 @@
            themeId="org.eclipse.rap.demo.alttheme"
            title="It&apos;s tea-time">
      </branding>
+  </extension>
+  
+  <extension
+        point="org.eclipse.ui.presentationFactories">
+     <factory
+           class="org.eclipse.rap.demo.presentation.PresentationFactory"
+           id="org.eclipse.rap.demo.presentation"
+           name="demoPresentation">
+     </factory>
   </extension>
   
   <extension
@@ -282,6 +290,22 @@
             This is an example for a import wizard.
          </description>
       </wizard>
+   </extension>
+   
+   <extension point="org.eclipse.ui.preferencePages">
+      <page
+         id="org.eclipse.ui.demo.PreferencePage"
+         name="Demo Preference Page"
+         class="org.eclipse.rap.demo.presentation.DemoPreferencePage">
+           <keywordReference id="org.eclipse.ui.demo.preferenceKeywords"/>
+      </page>
+      <page
+         id="org.eclipse.ui.demo.preferencePageI"
+         name="Demo Preference Page I"
+         category="org.eclipse.ui.demo.PreferencePage"
+         class="org.eclipse.rap.demo.presentation.DemoPreferencePage">
+           <keywordReference id="org.eclipse.ui.demo.preferenceKeywordsI"/>
+      </page>
    </extension>
 
 </plugin>
