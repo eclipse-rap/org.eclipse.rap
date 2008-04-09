@@ -8,16 +8,12 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo.presentation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
-
 import org.eclipse.jface.dialogs.PopupDialog;
-import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
@@ -25,7 +21,6 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dnd.DragUtil;
 import org.eclipse.ui.presentations.*;
 
