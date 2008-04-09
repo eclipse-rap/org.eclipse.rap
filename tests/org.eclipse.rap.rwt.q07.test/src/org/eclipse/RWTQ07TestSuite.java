@@ -52,7 +52,7 @@ import org.eclipse.swt.widgets.Tree_Test;
 public class RWTQ07TestSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite( "Test for org.eclipse.rap.rwt" );
+    TestSuite suite = new TestSuite( "Test for org.eclipse.rap.rwt.q07" );
     
     // TODO [fappel]: Note that the following tests belong semantically to the 
     //                RWT core tests, but there is still some refactoring

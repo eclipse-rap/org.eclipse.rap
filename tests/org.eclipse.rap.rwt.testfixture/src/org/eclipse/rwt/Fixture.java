@@ -25,7 +25,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Assert;
 
 import org.eclipse.rwt.internal.*;
-import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.browser.Browser;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
