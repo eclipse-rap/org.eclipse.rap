@@ -1,14 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.rap.rwt.test
 Bundle-Version: 1.1.0.qualifier
-Bundle-Localization: plugin
-Bundle-Vendor: %Bundle-Vendor
-Import-Package: javax.servlet;version="[2.3.0,2.5.0]",
- javax.servlet.http;version="[2.3.0,2.5.0]"
-Require-Bundle: org.junit,
- org.eclipse.rap.rwt
+Fragment-Host: org.eclipse.rap.rwt;bundle-version="1.1.0"
 Bundle-ClassPath: .,
  lib/resource_manager_test.jar
-Export-Package: org.eclipse.swt
+Require-Bundle: org.junit
+Bundle-Localization: fragment

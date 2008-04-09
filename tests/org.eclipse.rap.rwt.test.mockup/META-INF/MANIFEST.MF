@@ -5,3 +5,4 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.rap.rwt.test.mockup
 Bundle-Version: 1.1.0.qualifier
 Fragment-Host: org.eclipse.rap.rwt;bundle-version="1.1.0"
+Bundle-Localization: fragment

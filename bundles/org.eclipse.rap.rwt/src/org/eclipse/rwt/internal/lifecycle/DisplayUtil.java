@@ -16,7 +16,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -59,10 +59,10 @@ public class DisplayUtil {
   }
   
   public static void writeAppScript( final String id ) throws IOException {
-    DisplayLCA.writeAppScript( id );
+    DisplayLCAFacade.writeAppScript( id );
   }
   
   public static void writeLibraries() throws IOException {
-    DisplayLCA.writeLibraries();
+    DisplayLCAFacade.writeLibraries();
   }
 }

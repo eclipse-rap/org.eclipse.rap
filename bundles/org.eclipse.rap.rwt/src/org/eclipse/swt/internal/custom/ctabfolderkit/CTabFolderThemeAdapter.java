@@ -19,19 +19,21 @@ import org.eclipse.swt.widgets.Control;
 
 public class CTabFolderThemeAdapter extends ControlThemeAdapter {
 
-  public Color getBackground( Control control ) {
+  public Color getBackground( final Control control ) {
     return ThemeAdapterUtil.getColor( control, "ctabfolder.background" );
   }
 
-  public Color getForeground( Control control ) {
+  public Color getForeground( final Control control ) {
     return ThemeAdapterUtil.getColor( control, "ctabfolder.foreground" );
   }
 
-  public Color getSelectedBackground( Control control ) {
-    return ThemeAdapterUtil.getColor( control, "ctabfolder.selection.background" );
+  public Color getSelectedBackground( final Control control ) {
+    return ThemeAdapterUtil.getColor( control,
+                                      "ctabfolder.selection.background" );
   }
 
-  public Color getSelectedForeground( Control control ) {
-    return ThemeAdapterUtil.getColor( control, "ctabfolder.selection.foreground" );
+  public Color getSelectedForeground( final Control control ) {
+    return ThemeAdapterUtil.getColor( control,
+                                      "ctabfolder.selection.foreground" );
   }
 }

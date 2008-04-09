@@ -22,7 +22,6 @@ import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.internal.graphics.IColor;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.widgets.*;
 
 
@@ -64,7 +63,6 @@ public final class JSWriter {
   
   private static final JSVar TARGET_REF = new JSVar( "t" );
 
-  private static final Object[] NULL_PARAMETER = new Object[] { null };
   private static final String NEW_WIDGET_PATTERN
     =   "var w = wm.newWidget( \"{0}\", \"{1}\", {2}, "
       + "{3,number,#}, ''{4}''{5} );";
@@ -662,11 +660,6 @@ public final class JSWriter {
     String widgetId = WidgetUtil.getId( widget );
     if( widget instanceof Control ) {
       ControlLCAUtil.resetActivateListener( ( Control )widget );
-    }
-    // TODO [rh] why can't setDefaultButton( null ) not be written in ButtonLCA?
-    if( widget instanceof Button && ButtonLCA.isDefault( ( Button )widget ) ) {
-      Button button = ( Button )widget;
-      call( button.getShell(), "setDefaultButton", NULL_PARAMETER );
     }
     call( WIDGET_MANAGER_REF, "dispose", new Object[] { widgetId } );
   }

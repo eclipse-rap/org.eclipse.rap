@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetLifeCycleAdapter;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
@@ -59,7 +59,7 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
 
   private static synchronized ILifeCycleAdapter getDisplayLCA() {
     if( displayAdapter == null ) {
-      displayAdapter = new DisplayLCA();
+      displayAdapter = DisplayLCAFacade.getDisplayLCA();
     }
     return displayAdapter;
   }
