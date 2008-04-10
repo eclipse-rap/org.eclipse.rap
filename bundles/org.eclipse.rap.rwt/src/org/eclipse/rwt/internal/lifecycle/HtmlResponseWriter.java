@@ -685,7 +685,7 @@ public class HtmlResponseWriter extends Writer {
    * </pre></p>
    * @throws IOException if an I/O error occurs
    */
-  public void closeElementIfStarted() throws IOException {
+  public void closeElementIfStarted() {
     if( elementStarted != null ) {
       if(    ContextProvider.getBrowser().isXHTMLCapable() 
           && HtmlResponseWriterUtil.isEmptyTag( elementStarted ) )

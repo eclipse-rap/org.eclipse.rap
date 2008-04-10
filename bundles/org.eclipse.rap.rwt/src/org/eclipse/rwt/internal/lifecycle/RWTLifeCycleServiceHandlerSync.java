@@ -21,7 +21,7 @@ import org.eclipse.rwt.internal.service.LifeCycleServiceHandler.LifeCycleService
 /**
  * TODO [fappel]: documentation
  */
-public final class RWTLifeCycleServiceHandlerSync
+public class RWTLifeCycleServiceHandlerSync
   extends LifeCycleServiceHandlerSync
 {
   private static final String MSG
@@ -31,10 +31,12 @@ public final class RWTLifeCycleServiceHandlerSync
     = "if( confirm( ''{0}'' ) ) '{ window.location.reload( false ) }'";
 
   public void service() throws ServletException, IOException {
-    serviceInternal();
+    synchronized( ContextProvider.getSession() ) {
+      serviceInternal();
+    }
   }
 
-  private void serviceInternal() throws ServletException, IOException {
+  void serviceInternal() throws ServletException, IOException {
     LifeCycleServiceHandler.initializeStateInfo();
     RWTRequestVersionControl.beforeService();
     try {
