@@ -283,11 +283,11 @@
 			<pathelement location="${src.tests}/src/resources/w4t_fixture.xml" />
 			<pathelement location="${src.tests}/src/resources/w4t_partial.xml" />
 			-->
-			<!--<pathelement location="${src.tests}" /> -->
 			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_${targetVersion}.${buildId}.jar" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/lib/resource_manager_test.jar" />
-			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
+			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
+			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
+			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
+			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
 			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/javax.servlet_2.4.0.v200803061910.jar" />
 			<pathelement path="${java.class.path}" />
 			<pathelement path="${baseLocation}/plugins/org.junit_3.8.2.v200711021030/junit.jar" />
@@ -300,20 +300,13 @@
 
 			<batchtest fork="no" todir="${reports.tests}">
 				<fileset dir="${build.tests}">
-					<include name="**/*Test*.class" />
-					<exclude name="**/RWTFixture.class" />
-					<exclude name="**/RWTTestSuite.class" />
-					<exclude name="**/*$*.class" />
-					<exclude name="**/TestAdaptable.class" />
-					<exclude name="**/TestAdapterFactory.class" />
+					<include name="**/*_Test.class" />
 				</fileset>
 
 			</batchtest>
 		</junit>
 		<path id="cp2">
 			<pathelement location="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />
-			<!--<pathelement location="${src.tests}" /> -->
-			<!--<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />-->
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/org.eclipse.rap.w4t_${targetVersion}.${buildId}.jar" />
 			<pathelement path="${buildDirectory}/${buildLabel}/target/eclipse/plugins/org.eclipse.rap.rwt_${targetVersion}.${buildId}.jar" />
 			<pathelement path="${buildDirectory}/plugins/org.eclipse.rap.w4t.test/@dot" />

@@ -15,6 +15,10 @@
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
 			<property name="type" value="feature" />
+			<property name="id" value="org.eclipse.rap.pretest" />
+		</ant>
+		<ant antfile="${genericTargets}" target="${target}">
+			<property name="type" value="feature" />
 			<property name="id" value="org.eclipse.rap.test" />
 		</ant>
 		<ant antfile="${genericTargets}" target="${target}">
@@ -32,6 +36,8 @@
 	<!-- ===================================================================== -->
 	<target name="assemble.org.eclipse.rap">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+	<target name="assemble.org.eclipse.rap.pretest">
 	</target>
 	<target name="assemble.org.eclipse.rap.test">
 	</target>
