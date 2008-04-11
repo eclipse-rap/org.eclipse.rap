@@ -7,13 +7,11 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -21,6 +19,7 @@ import org.eclipse.swt.widgets.*;
 public final class CompositeTab extends ExampleTab {
 
   private Composite composite;
+  private boolean addMouseListener;
   private int backgroundMode;
 
   public CompositeTab( final CTabFolder topFolder ) {
@@ -34,13 +33,35 @@ public final class CompositeTab extends ExampleTab {
     createBgColorButton();
     createBgImageButton();
     createBackgroundModeControls( parent );
+    Button cbAddMouseListener = new Button( parent, SWT.CHECK );
+    cbAddMouseListener.setText( "Attach MouseListener" );
+    cbAddMouseListener.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        addMouseListener = !addMouseListener;
+        createNew();
+      }
+    } );
+    cbAddMouseListener.setSelection( addMouseListener );
   }
 
   protected void createExampleControls( final Composite parent ) {
     parent.setLayout( new FillLayout() );
     parent.setBackgroundMode( backgroundMode );
-    int style = getStyle();
-    composite = new Composite( parent, style );
+    composite = new Composite( parent, getStyle() );
+    if( addMouseListener ) {
+      MouseListener listener = new MouseListener(  ) {
+        public void mouseDoubleClick( MouseEvent e ) {
+          log( "mouseDoubleClick: " + e );
+        }
+        public void mouseDown( MouseEvent e ) {
+          log( "mouseDown: " + e );
+        }
+        public void mouseUp( MouseEvent e ) {
+          log( "mouseUp: " + e );
+        }
+      };
+      composite.addMouseListener( listener );
+    }
     composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
     registerControl( composite );
     Label label = new Label( composite, SWT.NONE );
@@ -80,7 +101,7 @@ public final class CompositeTab extends ExampleTab {
     defaultButton.setText( "SWT.INHERIT_DEFAULT" );
     final Button forceButton = new Button( group, SWT.RADIO );
     forceButton.setText( "SWT.INHERIT_FORCE" );
-    SelectionAdapter selectionAdapter = new SelectionAdapter() {
+    SelectionListener selectionAdapter = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
         if( defaultButton.getSelection() ) {
           backgroundMode = SWT.INHERIT_DEFAULT;
