@@ -253,11 +253,13 @@ public class Button extends Control {
   /**
    * Returns a value which describes the position of the
    * text or image in the receiver. The value will be one of
-   * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code><!--
+   * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code>
+   * <!--
    * unless the receiver is an <code>ARROW</code> button, in
    * which case, the alignment will indicate the direction of
    * the arrow (one of <code>LEFT</code>, <code>RIGHT</code>,
-   * <code>UP</code> or <code>DOWN</code>)-->.
+   * <code>UP</code> or <code>DOWN</code>)
+   * -->.
    *
    * @return the alignment
    *
@@ -299,11 +301,13 @@ public class Button extends Control {
   /**
    * Controls how text, images and arrows will be displayed
    * in the receiver. The argument should be one of
-   * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code><!--
+   * <code>LEFT</code>, <code>RIGHT</code> or <code>CENTER</code>
+   * <!--
    * unless the receiver is an <code>ARROW</code> button, in
    * which case, the argument indicates the direction of
    * the arrow (one of <code>LEFT</code>, <code>RIGHT</code>,
-   * <code>UP</code> or <code>DOWN</code>)-->.
+   * <code>UP</code> or <code>DOWN</code>)
+   * -->.
    *
    * @param alignment the new alignment
    *

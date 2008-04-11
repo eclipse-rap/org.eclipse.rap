@@ -64,6 +64,34 @@ public class Label_Test extends TestCase {
     assertTrue( ( label.getStyle() & SWT.SHADOW_OUT ) != 0 );
     assertFalse( ( label.getStyle() & SWT.SHADOW_IN ) != 0 );
   }
+  
+  public void testAlignment() {
+    Display display = new Display();
+    Shell shell = new Shell( display , SWT.NONE );
+    Label label;
+
+    label = new Label( shell, SWT.NONE );
+    label.setAlignment( SWT.LEFT );
+    assertEquals( SWT.LEFT, label.getAlignment() );
+    label.setAlignment( SWT.RIGHT );
+    assertEquals( SWT.RIGHT, label.getAlignment() );
+    label.setAlignment( SWT.CENTER );
+    assertEquals( SWT.CENTER, label.getAlignment() );
+
+    label = new Label( shell, SWT.SEPARATOR );
+    assertEquals( 0, label.getAlignment() );
+    label.setAlignment( SWT.RIGHT );
+    assertEquals( 0, label.getAlignment() );
+
+    label = new Label( shell, SWT.NONE );
+    assertEquals( SWT.LEFT, label.getAlignment() );
+    label = new Label( shell, SWT.LEFT );
+    assertEquals( SWT.LEFT, label.getAlignment() );
+    label = new Label( shell, SWT.RIGHT );
+    assertEquals( SWT.RIGHT, label.getAlignment() );
+    label = new Label( shell, SWT.CENTER );
+    assertEquals( SWT.CENTER, label.getAlignment() );
+  }
 
   public void testSeparatorLabel() {
     Display display = new Display();

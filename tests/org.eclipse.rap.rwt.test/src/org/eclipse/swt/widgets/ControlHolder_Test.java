@@ -46,7 +46,8 @@ public class ControlHolder_Test extends TestCase {
     controlHolder.remove( control );
     try {
       controlHolder.remove( control );
-      String msg = "Only controls that are contained in the item list must be removed.";
+      String msg
+        = "Only controls that are contained in the item list must be removed.";
       fail( msg );
     } catch( final IllegalArgumentException iae ) {
       // expected
@@ -61,7 +62,7 @@ public class ControlHolder_Test extends TestCase {
 
   public void testControlHolderAccessors() {
     final Display outerDisplay = new Display();
-    Composite shell = new Shell( outerDisplay , SWT.NONE );
+    Composite shell = new Shell( outerDisplay, SWT.NONE );
     Control[] controls = ControlHolder.getControls( shell );
     assertEquals( 0, controls.length );
     Button control = new Button( shell, SWT.PUSH );
@@ -85,20 +86,19 @@ public class ControlHolder_Test extends TestCase {
     }
   }
 
-  // TODO: Test add with index
   public void testAddAtIndex() throws Exception {
     Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
-    Button b1 = new Button( shell, SWT.PUSH );
-    Button b2 = new Button( shell, SWT.PUSH );
-    Button b3 = new Button( shell, SWT.PUSH );
+    Composite shell = new Shell( display, SWT.NONE );
+    Button button1 = new Button( shell, SWT.PUSH );
+    Button button2 = new Button( shell, SWT.PUSH );
+    Button button3 = new Button( shell, SWT.PUSH );
     ControlHolder controlHolder = new ControlHolder();
-    controlHolder.add( b1 );
-    controlHolder.add( b2, 0 );
-    controlHolder.add( b3, 2 );
-    assertEquals( 1, controlHolder.indexOf( b1 ) );
-    assertEquals( 0, controlHolder.indexOf( b2 ) );
-    assertEquals( 2, controlHolder.indexOf( b3 ) );
+    controlHolder.add( button1 );
+    controlHolder.add( button2, 0 );
+    controlHolder.add( button3, 2 );
+    assertEquals( 1, controlHolder.indexOf( button1 ) );
+    assertEquals( 0, controlHolder.indexOf( button2 ) );
+    assertEquals( 2, controlHolder.indexOf( button3 ) );
   }
 
   protected void setUp() throws Exception {

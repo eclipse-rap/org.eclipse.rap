@@ -328,6 +328,22 @@ public class Combo_Test extends TestCase {
     assertTrue( "Expected exception not thrown", exceptionThrown );
   }
   
+  public void testVisibleItemCount() {
+	  Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( "1" );
+    combo.add( "2" );  
+    combo.add( "3" );
+    int visibleItemCount = combo.getVisibleItemCount();
+    combo.setVisibleItemCount( -2 );
+    assertEquals( visibleItemCount, combo.getVisibleItemCount() );
+    combo.setVisibleItemCount( 2 );
+    assertEquals( 2, combo.getVisibleItemCount() );
+    combo.setVisibleItemCount( 3 );
+    assertEquals( 3, combo.getVisibleItemCount() );
+  }
+  
   protected void setUp() throws Exception {
     RWTFixture.setUp();
   }

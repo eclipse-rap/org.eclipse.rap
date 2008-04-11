@@ -16,6 +16,9 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.RWTFixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 
 public class Composite_Test extends TestCase {
 
@@ -59,5 +62,33 @@ public class Composite_Test extends TestCase {
     assertEquals( 2, group.getTabList().length );
     assertSame( text2, group.getTabList()[ 0 ] );
     assertSame( text1, group.getTabList()[ 1 ] );
+  }
+  
+  public void testLayout() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    GridLayout gridLayout = new GridLayout();
+    shell.setLayout( gridLayout );
+    assertSame( gridLayout, shell.getLayout() );
+    RowLayout rowLayout = new RowLayout();
+    shell.setLayout( rowLayout );
+    assertSame( rowLayout, shell.getLayout() );
+  }
+  
+  public void testBackgroundMode() {
+    Display display = new Display();
+    Composite shell = new Shell( display, SWT.NONE );
+    Button button = new Button( shell, SWT.PUSH );
+    IControlAdapter adapter 
+      = ( IControlAdapter )button.getAdapter( IControlAdapter.class );
+    shell.setBackgroundMode( SWT.INHERIT_NONE );
+    assertEquals( SWT.INHERIT_NONE, shell.getBackgroundMode() );
+    assertFalse( adapter.getBackgroundTransparency() );
+    shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
+    assertEquals( SWT.INHERIT_DEFAULT, shell.getBackgroundMode() );
+    assertFalse( adapter.getBackgroundTransparency() );
+    shell.setBackgroundMode( SWT.INHERIT_FORCE );
+    assertEquals( SWT.INHERIT_FORCE, shell.getBackgroundMode() );
+    assertTrue( adapter.getBackgroundTransparency() );
   }
 }
