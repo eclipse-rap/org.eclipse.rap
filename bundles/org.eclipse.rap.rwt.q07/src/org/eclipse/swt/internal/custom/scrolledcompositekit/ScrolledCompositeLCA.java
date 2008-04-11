@@ -25,8 +25,8 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static final String QX_TYPE
     = "org.eclipse.swt.custom.ScrolledComposite";
 
-  private static final String TYPE_POOL_ID
-    = ScrolledCompositeLCA.class.getName();
+//  private static final String TYPE_POOL_ID
+//    = ScrolledCompositeLCA.class.getName();
 
   private static final Integer ZERO = new Integer( 0 );
 
@@ -92,7 +92,9 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void createResetHandlerCalls( final String typePoolId ) throws IOException {
+  public void createResetHandlerCalls( final String typePoolId )
+    throws IOException 
+  {
     ControlLCAUtil.resetChanges();
     resetClipBounds();
     resetScrollBars();
@@ -101,7 +103,9 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    return TYPE_POOL_ID;
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=226651
+//  return TYPE_POOL_ID;
+  return null;
   }
 
 

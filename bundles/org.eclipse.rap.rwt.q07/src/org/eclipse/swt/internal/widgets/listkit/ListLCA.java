@@ -26,8 +26,6 @@ public class ListLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.List";
 
-  private static final String TYPE_POOL_ID = null;
-
   // Property names, used when preserving values
   private static final String PROP_SELECTION = "selection";
   static final String PROP_ITEMS = "items";
@@ -91,7 +89,7 @@ public class ListLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    return TYPE_POOL_ID;
+    return null;
   }
 
 

@@ -24,7 +24,8 @@ import org.eclipse.swt.widgets.Widget;
 public final class SpinnerLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Spinner";
-  private static final String TYPE_POOL_ID = SpinnerLCA.class.getName();
+//  private static final String TYPE_POOL_ID = SpinnerLCA.class.getName();
+  
   private static final String PROP_SELECTION = "selection";
   static final String PROP_MAXIMUM = "maximum";
   static final String PROP_MINIMUM = "minimum";
@@ -90,7 +91,9 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    return TYPE_POOL_ID;
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=226651
+//  return TYPE_POOL_ID;
+    return null;
   }
 
   //////////////////////////////////////

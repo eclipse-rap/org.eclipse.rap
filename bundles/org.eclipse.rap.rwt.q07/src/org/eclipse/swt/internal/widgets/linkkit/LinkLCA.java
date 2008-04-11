@@ -30,7 +30,7 @@ public class LinkLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "qx.ui.layout.HorizontalBoxLayout";
 
-  private static final String TYPE_POOL_ID = LinkLCA.class.getName();
+//  private static final String TYPE_POOL_ID = LinkLCA.class.getName();
 
   private static final String JS_LINK_UTIL = "org.eclipse.swt.LinkUtil";
 
@@ -109,7 +109,9 @@ public class LinkLCA extends AbstractWidgetLCA {
   }
 
   public String getTypePoolId( final Widget widget ) {
-    return TYPE_POOL_ID;
+    // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=226651
+//    return TYPE_POOL_ID;
+    return null;
   }
 
   private void writeSelectionListener( final Link link ) throws IOException {
