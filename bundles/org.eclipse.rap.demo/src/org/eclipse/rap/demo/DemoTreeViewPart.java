@@ -16,10 +16,12 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.*;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.properties.*;
 
 public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
 
   private TreeViewer viewer;
+  private IPropertySheetPage propertyPage;
 
 //  TODO [rst] Add via extension
 //  private final class LeafStarLabelDecorator extends LabelProvider
@@ -47,9 +49,10 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
     }
   }
   
-  class TreeObject {
-
-    private final String name;
+  class TreeObject implements IPropertySource {
+    private static final String PROP_ID_LOCATION = "location";
+    private static final String PROP_ID_NAME = "name";
+    private String name;
     private String location;
     private TreeParent parent;
 
@@ -80,6 +83,53 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
 
     public String toString() {
       return getName();
+    }
+
+    public Object getEditableValue() {
+      return null;
+    }
+
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+      return new IPropertyDescriptor[] {
+        new PropertyDescriptor( PROP_ID_NAME, "Name" ),
+        new PropertyDescriptor( PROP_ID_LOCATION, "Location" ),
+      };
+    }
+
+    public Object getPropertyValue( final Object id ) {
+      Object result = null;
+      if( PROP_ID_NAME.equals( id ) ) {
+        result = name;
+      } else if( PROP_ID_LOCATION.equals( id ) ) {
+        result = location;
+      }
+      return result;
+    }
+
+    public boolean isPropertySet( final Object id ) {
+      boolean result = false;
+      if( PROP_ID_NAME.equals( id ) ) {
+        result = name != null && !"".equals( name );
+      } else if( PROP_ID_LOCATION.equals( id ) ) {
+        result = location != null && !"".equals( location );
+      }
+      return result;
+    }
+
+    public void resetPropertyValue( final Object id ) {
+      if( PROP_ID_NAME.equals( id ) ) {
+        name = "";
+      } else if( PROP_ID_LOCATION.equals( id ) ) {
+        location = "";
+      }
+    }
+
+    public void setPropertyValue( final Object id, final Object value ) {
+      if( PROP_ID_NAME.equals( id ) ) {
+        name = ( String )value;
+      } else if( PROP_ID_LOCATION.equals( id ) ) {
+        location = ( String )value;
+      }
     }
   }
   
@@ -207,6 +257,17 @@ public class DemoTreeViewPart extends ViewPart implements IDoubleClickListener {
     viewer.setInput( this );
     viewer.addDoubleClickListener( this );
     getSite().setSelectionProvider( viewer );
+  }
+  
+  public Object getAdapter( final Class adapter ) {
+    Object result = super.getAdapter( adapter );
+    if( adapter == IPropertySheetPage.class ) {
+      if( propertyPage == null ) {
+        propertyPage = new PropertySheetPage();
+      }
+      result = propertyPage;
+    }
+    return result;
   }
 
   public void setFocus() {

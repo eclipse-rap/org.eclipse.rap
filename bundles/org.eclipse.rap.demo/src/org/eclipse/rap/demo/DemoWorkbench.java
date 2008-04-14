@@ -11,8 +11,6 @@
 
 package org.eclipse.rap.demo;
 
-import java.io.IOException;
-
 import org.eclipse.rap.demo.presentation.DemoPresentationWorkbenchAdvisor;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.widgets.Display;
@@ -27,7 +25,7 @@ public class DemoWorkbench implements IEntryPoint {
 
   private static final String DEMO_PRESENTATION
     = "org.eclipse.rap.demo.presentation";
-
+  
   public int createUI() {
     ScopedPreferenceStore prefStore
       = ( ScopedPreferenceStore )PrefUtil.getAPIPreferenceStore();

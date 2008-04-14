@@ -9,13 +9,20 @@
 package org.eclipse.rap.demo.editor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 public class FooEditor extends MultiPageEditorPart {
 
   private BarEditor editor;
   private BazEditor treeeditor;
+  private IContentOutlinePage outlinePage;
 
   public FooEditor() {
     super();
@@ -31,6 +38,61 @@ public class FooEditor extends MultiPageEditorPart {
 
   public boolean isSaveAsAllowed() {
     return false;
+  }
+  
+  public Object getAdapter( final Class adapter ) {
+    Object result = super.getAdapter( adapter );
+    if( adapter == IContentOutlinePage.class ) {
+      if( outlinePage == null ) {
+        outlinePage = new IContentOutlinePage() {
+          private Tree tree;
+          public void createControl( final Composite parent ) {
+            tree = new Tree( parent, SWT.SINGLE );
+            for( int i = 0; i < 4; i++ ) {
+              TreeItem item = new TreeItem( tree, SWT.NONE );
+              item.setText( "Node_" + ( i + 1 ) );
+              if( i < 3 ) {
+                TreeItem subitem = new TreeItem( item, SWT.NONE );
+                subitem.setText( "Subnode_" + ( i + 1 ) );
+              }
+            }
+          }
+  
+          public void dispose() {
+          }
+  
+          public Control getControl() {
+            return tree;
+          }
+  
+          public void setActionBars( final IActionBars actionBars ) {
+          }
+  
+          public void setFocus() {
+          }
+  
+          public void addSelectionChangedListener(
+            final ISelectionChangedListener listener )
+          {
+          }
+  
+          public ISelection getSelection() {
+            return null;
+          }
+  
+          public void removeSelectionChangedListener(
+            final ISelectionChangedListener listener )
+          {
+          }
+  
+          public void setSelection( final ISelection selection ) {
+          }
+          
+        };
+      }
+      result = outlinePage;
+    }
+    return result;
   }
 
   public void init( final IEditorSite site, final IEditorInput input )
