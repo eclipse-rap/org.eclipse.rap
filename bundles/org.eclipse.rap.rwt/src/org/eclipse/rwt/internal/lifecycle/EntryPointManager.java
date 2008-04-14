@@ -89,10 +89,7 @@ public final class EntryPointManager {
       throw new EntryPointInstantiationException( msg, e ) ;
     }      
     ContextProvider.getSession().setAttribute( CURRENT_ENTRY_POINT, name );
-    // not synchronized to avoid lock in case of opening a blocking
-    // dialog in createUI
-    int result = entryPoint.createUI();
-    return result;
+    return entryPoint.createUI();
   }
 
   public static String getCurrentEntryPoint() {
