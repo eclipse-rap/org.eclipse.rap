@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.databinding.nestedselection;
 
+import java.beans.PropertyChangeListener;
 import java.util.Date;
 
 /**
@@ -52,5 +53,13 @@ public class SimpleOrder {
   public SimpleOrder( int i, Date date ) {
     this.orderNumber = i;
     this.date = date;
+  }
+  
+  public void addPropertyChangeListener( final PropertyChangeListener lsnr ) {
+    // avoid log messages
+  }
+  
+  public void removePropertyChangeListener( final PropertyChangeListener lsnr ){
+    // avoid log messages
   }
 }
