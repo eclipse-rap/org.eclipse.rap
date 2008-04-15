@@ -95,7 +95,7 @@ public class ToolBarManager extends ContributionManager implements
 		this.toolBar = toolbar;
 	}
 
-	// RAP: [bm] 
+	// RAP [bm]: 
 	/**
 	 * Creates and returns this manager's tool bar control. Does not create a
 	 * new control if one already exists.
@@ -112,7 +112,7 @@ public class ToolBarManager extends ContributionManager implements
 			toolBar.setMenu(getContextMenuControl());
 			update(true);
 			
-			// RAP: [bm] 
+			// RAP [bm]: 
 //			toolBar.getAccessible().addAccessibleListener(getAccessibleListener());
 		}
 
@@ -126,7 +126,7 @@ public class ToolBarManager extends ContributionManager implements
 	 * 
 	 * @since 3.1
 	 */
-	// RAP: [bm] 
+	// RAP [bm]: 
 //	private AccessibleListener getAccessibleListener() {
 //		return new AccessibleAdapter() {
 //			public void getName(AccessibleEvent e) {

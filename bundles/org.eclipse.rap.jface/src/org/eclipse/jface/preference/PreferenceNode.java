@@ -166,7 +166,8 @@ public class PreferenceNode implements IPreferenceNode {
      */
     public void disposeResources() {
         if (image != null) {
-            image.dispose();
+        	// RAP [bm]: Image#dispose
+//            image.dispose();
             image = null;
         }
         if (page != null) {

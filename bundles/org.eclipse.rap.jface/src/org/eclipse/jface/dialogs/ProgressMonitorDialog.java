@@ -20,7 +20,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -131,15 +130,17 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 */
 	private int nestingDepth;
 
-	/**
-	 * The cursor used in the cancel button;
-	 */
-	protected Cursor arrowCursor;
-
-	/**
-	 * The cursor used in the shell;
-	 */
-	private Cursor waitCursor;
+	// RAP [bm]: 
+//	/**
+//	 * The cursor used in the cancel button;
+//	 */
+//	protected Cursor arrowCursor;
+//
+//	/**
+//	 * The cursor used in the shell;
+//	 */
+//	private Cursor waitCursor;
+	// RAPEND: [bm] 
 
 	/**
 	 * Flag indicating whether to open or merely create the dialog before run.
@@ -233,7 +234,8 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 			}
 			subTaskLabel.setText(shortenText(fSubTask, subTaskLabel));
 			if (!forked) {
-				subTaskLabel.update();
+				System.err.println("needed?"); //$NON-NLS-1$
+//				subTaskLabel.update();
 			}
 		}
 
@@ -276,7 +278,8 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * Clear blocked state from the receiver.
 	 */
 	protected void updateForClearBlocked() {
-		progressIndicator.showNormal();
+		// RAP [bm]: 
+//		progressIndicator.showNormal();
 		setMessage(task, true);
 		imageLabel.setImage(getImage());
 		
@@ -289,7 +292,8 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 *            IStatus that gives the details
 	 */
 	protected void updateForSetBlocked(IStatus reason) {
-		progressIndicator.showPaused();
+		// RAP [bm]: 
+//		progressIndicator.showPaused();
 		setMessage(reason.getMessage(), true);
 		imageLabel.setImage(getImage());
 		
@@ -368,21 +372,24 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 * @since 3.0
 	 */
 	protected void clearCursors() {
-		if (cancel != null && !cancel.isDisposed()) {
-			cancel.setCursor(null);
-		}
-		Shell shell = getShell();
-		if (shell != null && !shell.isDisposed()) {
-			shell.setCursor(null);
-		}
-		if (arrowCursor != null) {
-			arrowCursor.dispose();
-		}
-		if (waitCursor != null) {
-			waitCursor.dispose();
-		}
-		arrowCursor = null;
-		waitCursor = null;
+		// RAP [bm]: 
+//		if (cancel != null && !cancel.isDisposed()) {
+//			cancel.setCursor(null);
+//		}
+//		Shell shell = getShell();
+//		if (shell != null && !shell.isDisposed()) {
+//			shell.setCursor(null);
+//		}
+//		if (arrowCursor != null) {
+//			arrowCursor.dispose();
+//		}
+//		if (waitCursor != null) {
+//			waitCursor.dispose();
+//		}
+//		arrowCursor = null;
+//		waitCursor = null;
+		// RAPEND: [bm] 
+
 	}
 
 	/*
@@ -391,10 +398,12 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	protected void configureShell(final Shell shell) {
 		super.configureShell(shell);
 		shell.setText(JFaceResources.getString("ProgressMonitorDialog.title")); //$NON-NLS-1$
-		if (waitCursor == null) {
-			waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
-		}
-		shell.setCursor(waitCursor);
+		// RAP [bm]: 
+//		if (waitCursor == null) {
+//			waitCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
+//		}
+//		shell.setCursor(waitCursor);
+		// RAPEND: [bm] 
 		// Add a listener to set the message properly when the dialog becomes
 		// visible
 		shell.addListener(SWT.Show, new Listener() {
@@ -427,11 +436,14 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 	 */
 	protected void createCancelButton(Composite parent) {
 		cancel = createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, true);
-		if (arrowCursor == null) {
-			arrowCursor = new Cursor(cancel.getDisplay(), SWT.CURSOR_ARROW);
-		}
-		cancel.setCursor(arrowCursor);
+				IDialogConstants.get().CANCEL_LABEL, true);
+		// RAP [bm]: 
+//		if (arrowCursor == null) {
+//			arrowCursor = new Cursor(cancel.getDisplay(), SWT.CURSOR_ARROW);
+//		}
+//		cancel.setCursor(arrowCursor);
+		// RAPEND: [bm] 
+
 		setOperationCancelButtonEnabled(enableCancelButton);
 	}
 
@@ -658,7 +670,8 @@ public class ProgressMonitorDialog extends IconAndMessageDialog implements
 		if (messageLabel == null || messageLabel.isDisposed()) {
 			return;
 		}
-		messageLabel.update();
+		System.err.println("needed?"); //$NON-NLS-1$
+//		messageLabel.update();
 	}
 
 	/*

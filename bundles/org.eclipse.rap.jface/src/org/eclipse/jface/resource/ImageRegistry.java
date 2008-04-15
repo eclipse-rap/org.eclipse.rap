@@ -97,7 +97,7 @@ public class ImageRegistry {
             if (original == toDispose) {
                 refCount--;
                 if (refCount == 0) {
-                	// RAP: [bm] Image#dispose
+                	// RAP [bm]: Image#dispose
 //                    original.dispose();
                     original = null;
                 }
@@ -110,7 +110,7 @@ public class ImageRegistry {
          * @see org.eclipse.jface.resource.ImageDescriptor#getImageData()
          */
         public ImageData getImageData() {
-        	// RAP: [bm] 
+        	// RAP [bm]: 
 //            return original.getImageData();
         	return ResourceFactory.getImageData(original);
             // RAPEND: [bm] 

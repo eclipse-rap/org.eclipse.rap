@@ -322,7 +322,7 @@ public class TreeViewer extends AbstractTreeViewer {
 		((TreeItem) node).setExpanded(expand);
 		if (contentProviderIsLazy) {
 			// force repaints to happen
-			// RAP: [bm] Control#update
+			// RAP [bm]: Control#update
 //			getControl().update();
 		}
 	}

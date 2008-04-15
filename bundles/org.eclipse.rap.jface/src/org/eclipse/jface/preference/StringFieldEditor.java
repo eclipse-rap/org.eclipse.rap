@@ -10,17 +10,16 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -232,7 +231,7 @@ public class StringFieldEditor extends FieldEditor {
         GridData gd = new GridData();
         gd.horizontalSpan = numColumns - 1;
         if (widthInChars != UNLIMITED) {
-        	// RAP: [bm] 
+        	// RAP [bm]: 
 //            GC gc = new GC(textField);
 //            try {
 //                Point extent = gc.textExtent("X");//$NON-NLS-1$
@@ -335,23 +334,43 @@ public class StringFieldEditor extends FieldEditor {
             textField.setFont(parent.getFont());
             switch (validateStrategy) {
             case VALIDATE_ON_KEY_STROKE:
-                textField.addKeyListener(new KeyAdapter() {
+            	// RAP [bm]: 
+//                textField.addKeyListener(new KeyAdapter() {
+//
+//                    /* (non-Javadoc)
+//                     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+//                     */
+//                    public void keyReleased(KeyEvent e) {
+//                        valueChanged();
+//                    }
+//                });
+            	textField.addModifyListener(new ModifyListener() {
 
-                    /* (non-Javadoc)
-                     * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-                     */
-                    public void keyReleased(KeyEvent e) {
+					public void modifyText(ModifyEvent event) {
                         valueChanged();
-                    }
-                });
+					}
+            		
+            	});
+            	// RAPEND: [bm] 
 
                 break;
             case VALIDATE_ON_FOCUS_LOST:
-                textField.addKeyListener(new KeyAdapter() {
-                    public void keyPressed(KeyEvent e) {
-                        clearErrorMessage();
-                    }
+            	// RAPEND: [bm] 
+//                textField.addKeyListener(new KeyAdapter() {
+//                    public void keyPressed(KeyEvent e) {
+//                        clearErrorMessage();
+//                    }
+//                });
+                textField.addModifyListener(new ModifyListener() {
+                	
+                	public void modifyText(ModifyEvent event) {
+                		clearErrorMessage();
+                	}
+                	
                 });
+                
+                // RAPEND: [bm] 
+
                 textField.addFocusListener(new FocusAdapter() {
                     public void focusGained(FocusEvent e) {
                         refreshValidState();

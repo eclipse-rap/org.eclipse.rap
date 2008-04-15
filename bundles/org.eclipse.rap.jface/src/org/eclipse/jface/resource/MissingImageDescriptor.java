@@ -33,7 +33,7 @@ class MissingImageDescriptor extends ImageDescriptor {
     /* (non-Javadoc)
      * Method declared on ImageDesciptor.
      */
-    // RAP: [bm] lowered visibility, see Imagedescriptor
+    // RAP [bm]: lowered visibility, see Imagedescriptor
     protected ImageData getImageData() {
         return DEFAULT_IMAGE_DATA;
     }

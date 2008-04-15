@@ -144,7 +144,7 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 	/*
 	 * (non-Javadoc) Method declared on ImageDesciptor.
 	 */
-	// RAP: [bm] made private to void publishing ImageData
+	// RAP [bm]: made private to void publishing ImageData
 	protected ImageData getImageData() {
 		Point size = getSize();		
 		

@@ -25,7 +25,7 @@ final class ArrayFontDescriptor extends FontDescriptor {
     private FontData[] data;
     private Font originalFont = null;
     
-    // RAP: [bm] 
+    // RAP [bm]: 
     /**
      * Creates a font descriptor for a font with the given name, height,
      * and style. These arguments are passed directly to the constructor
@@ -73,7 +73,7 @@ final class ArrayFontDescriptor extends FontDescriptor {
         // if this is the same device.
         if (originalFont != null) {         
             // If we're allocating on the same device as the original font, return the original.
-        	// RAP: [bm] 
+        	// RAP [bm]: 
 //            if (originalFont.getDevice() == device) {
 //                return originalFont;
 //            }
@@ -81,7 +81,7 @@ final class ArrayFontDescriptor extends FontDescriptor {
         	// RAPEND: [bm] 
         }
         
-        // RAP: [bm] 
+        // RAP [bm]: 
 //        return new Font(device, data);
         return Graphics.getFont(data[0]);
         // RAPEND: [bm] 
@@ -145,7 +145,7 @@ final class ArrayFontDescriptor extends FontDescriptor {
         if (previouslyCreatedFont == originalFont) {
             return;
         }
-        // RAP: [bm] Font#dispose
+        // RAP [bm]: Font#dispose
 //        previouslyCreatedFont.dispose();
     }
 

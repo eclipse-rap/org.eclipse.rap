@@ -14,10 +14,7 @@ package org.eclipse.jface.dialogs;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.LayoutConstants;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.accessibility.AccessibleAdapter;
-//import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -77,9 +74,10 @@ public abstract class IconAndMessageDialog extends Dialog {
 		Image image = getImage();
 		if (image != null) {
 			imageLabel = new Label(composite, SWT.NULL);
-			image.setBackground(imageLabel.getBackground());
+			// RAP [bm]: Image#setBackground
+//			image.setBackground(imageLabel.getBackground());
 			imageLabel.setImage(image);
-			// RAP: [bm] 
+			// RAP [bm]: 
 //			addAccessibleListeners(imageLabel, image);
 			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.BEGINNING)
 					.applyTo(imageLabel);
@@ -99,7 +97,7 @@ public abstract class IconAndMessageDialog extends Dialog {
 		return composite;
 	}
 
-	// RAP: [bm] 
+	// RAP [bm]: 
 //	private String getAccessibleMessageFor(Image image) {
 //		if (image.equals(getErrorImage())) {
 //			return JFaceResources.getString("error");//$NON-NLS-1$
@@ -120,7 +118,7 @@ public abstract class IconAndMessageDialog extends Dialog {
 //		return null;
 //	}
 
-	// RAP: [bm] 
+	// RAP [bm]: 
 //	/**
 //	 * Add an accessible listener to the label if it can be inferred from the
 //	 * image.

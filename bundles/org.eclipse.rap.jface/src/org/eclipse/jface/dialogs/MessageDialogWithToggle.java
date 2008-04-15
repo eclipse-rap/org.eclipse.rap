@@ -96,7 +96,7 @@ public class MessageDialogWithToggle extends MessageDialog {
             IPreferenceStore store, String key) {
         MessageDialogWithToggle dialog = new MessageDialogWithToggle(parent,
                 title, null, // accept the default window icon
-                message, ERROR, new String[] { IDialogConstants.OK_LABEL }, 0, // ok
+                message, ERROR, new String[] { IDialogConstants.get().OK_LABEL }, 0, // ok
                 // is
                 // the
                 // default
@@ -139,7 +139,7 @@ public class MessageDialogWithToggle extends MessageDialog {
         MessageDialogWithToggle dialog = new MessageDialogWithToggle(parent,
                 title, null, // accept the default window icon
                 message, INFORMATION,
-                new String[] { IDialogConstants.OK_LABEL }, 0, // ok is the
+                new String[] { IDialogConstants.get().OK_LABEL }, 0, // ok is the
                 // default
                 toggleMessage, toggleState);
         dialog.prefStore = store;
@@ -178,8 +178,8 @@ public class MessageDialogWithToggle extends MessageDialog {
             boolean toggleState, IPreferenceStore store, String key) {
         MessageDialogWithToggle dialog = new MessageDialogWithToggle(parent,
                 title, null, // accept the default window icon
-                message, QUESTION, new String[] { IDialogConstants.OK_LABEL,
-                        IDialogConstants.CANCEL_LABEL }, 0, // OK is the default
+                message, QUESTION, new String[] { IDialogConstants.get().OK_LABEL,
+                        IDialogConstants.get().CANCEL_LABEL }, 0, // OK is the default
                 toggleMessage, toggleState);
         dialog.prefStore = store;
         dialog.prefKey = key;
@@ -217,7 +217,7 @@ public class MessageDialogWithToggle extends MessageDialog {
             boolean toggleState, IPreferenceStore store, String key) {
         MessageDialogWithToggle dialog = new MessageDialogWithToggle(parent,
                 title, null, // accept the default window icon
-                message, WARNING, new String[] { IDialogConstants.OK_LABEL },
+                message, WARNING, new String[] { IDialogConstants.get().OK_LABEL },
                 0, // ok is the default
                 toggleMessage, toggleState);
         dialog.prefStore = store;
@@ -256,9 +256,9 @@ public class MessageDialogWithToggle extends MessageDialog {
             boolean toggleState, IPreferenceStore store, String key) {
         MessageDialogWithToggle dialog = new MessageDialogWithToggle(parent,
                 title, null, // accept the default window icon
-                message, QUESTION, new String[] { IDialogConstants.YES_LABEL,
-                        IDialogConstants.NO_LABEL,
-                        IDialogConstants.CANCEL_LABEL }, 0, // YES is the
+                message, QUESTION, new String[] { IDialogConstants.get().YES_LABEL,
+                        IDialogConstants.get().NO_LABEL,
+                        IDialogConstants.get().CANCEL_LABEL }, 0, // YES is the
                 // default
                 toggleMessage, toggleState);
         dialog.prefStore = store;
@@ -298,8 +298,8 @@ public class MessageDialogWithToggle extends MessageDialog {
             boolean toggleState, IPreferenceStore store, String key) {
         MessageDialogWithToggle dialog = new MessageDialogWithToggle(parent,
                 title, null, // accept the default window icon
-                message, QUESTION, new String[] { IDialogConstants.YES_LABEL,
-                        IDialogConstants.NO_LABEL }, 0, // yes is the default
+                message, QUESTION, new String[] { IDialogConstants.get().YES_LABEL,
+                        IDialogConstants.get().NO_LABEL }, 0, // yes is the default
                 toggleMessage, toggleState);
         dialog.prefStore = store;
         dialog.prefKey = key;
@@ -621,83 +621,83 @@ public class MessageDialogWithToggle extends MessageDialog {
      */
     private int mapButtonLabelToButtonID(String buttonLabel, int defaultId) {
     	// Not pretty but does the job...
-    	if (IDialogConstants.OK_LABEL.equals(buttonLabel)) {
+    	if (IDialogConstants.get().OK_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.OK_ID;
 		}
     	
-	    if (IDialogConstants.YES_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().YES_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.YES_ID;
 		}
 	    
-	    if (IDialogConstants.NO_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().NO_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.NO_ID;
 		}
 	    
-	    if (IDialogConstants.CANCEL_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().CANCEL_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.CANCEL_ID;
 		}
 	    
-	    if (IDialogConstants.YES_TO_ALL_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().YES_TO_ALL_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.YES_TO_ALL_ID;
 		}
 	    
-	    if (IDialogConstants.SKIP_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().SKIP_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.SKIP_ID;
 		}
 	    
-	    if (IDialogConstants.STOP_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().STOP_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.STOP_ID;
 		}
 	    
-	    if (IDialogConstants.ABORT_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().ABORT_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.ABORT_ID;
 		}
 	    
-	    if (IDialogConstants.RETRY_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().RETRY_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.RETRY_ID;
 		}
 	    
-	    if (IDialogConstants.IGNORE_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().IGNORE_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.IGNORE_ID;
 		}
 	    
-	    if (IDialogConstants.PROCEED_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().PROCEED_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.PROCEED_ID;
 		}
 	    
-	    if (IDialogConstants.OPEN_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().OPEN_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.OPEN_ID;
 		}
 	    
-	    if (IDialogConstants.CLOSE_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().CLOSE_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.CLOSE_ID;
 		}
 	    
-	    if (IDialogConstants.BACK_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().BACK_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.BACK_ID;
 		}
 	    
-	    if (IDialogConstants.NEXT_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().NEXT_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.NEXT_ID;
 		}
 	    
-	    if (IDialogConstants.FINISH_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().FINISH_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.FINISH_ID;
 		}
 	    
-	    if (IDialogConstants.HELP_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().HELP_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.HELP_ID;
 		}
 	    
-	    if (IDialogConstants.NO_TO_ALL_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().NO_TO_ALL_LABEL.equals(buttonLabel)) {
 			return IDialogConstants.NO_TO_ALL_ID;
 		}
 	    
-	    if (IDialogConstants.SHOW_DETAILS_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().SHOW_DETAILS_LABEL.equals(buttonLabel)) {
 	    	return IDialogConstants.DETAILS_ID;
 	    }
 	    
-	    if (IDialogConstants.HIDE_DETAILS_LABEL.equals(buttonLabel)) {
+	    if (IDialogConstants.get().HIDE_DETAILS_LABEL.equals(buttonLabel)) {
 	    	return IDialogConstants.DETAILS_ID;
 	    }
         

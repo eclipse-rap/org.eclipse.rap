@@ -56,7 +56,7 @@ class SafeRunnableDialog extends ErrorDialog {
 		super(null, JFaceResources.getString("error"), status.getMessage(), //$NON-NLS-1$
 				status, IStatus.ERROR);
 
-		// RAP: [bm] SWT.MODELESS
+		// RAP [bm]: SWT.MODELESS
 //		setShellStyle(SWT.DIALOG_TRIM | SWT.MODELESS | SWT.RESIZE | SWT.MIN | SWT.MAX
 //				| getDefaultOrientation());
 		setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MIN | SWT.MAX

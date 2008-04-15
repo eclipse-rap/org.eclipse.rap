@@ -36,11 +36,8 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.events.HelpEvent;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -48,7 +45,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Shell;
@@ -105,9 +101,11 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	// The progress monitor
 	private ProgressMonitorPart progressMonitorPart;
 
-	private Cursor waitCursor;
-
-	private Cursor arrowCursor;
+	// RAP [bm]: 
+//	private Cursor waitCursor;
+//
+//	private Cursor arrowCursor;
+	// RAPEND: [bm] 
 
 	private MessageDialog windowClosingDialog;
 
@@ -315,13 +313,16 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 			}
 			boolean needsProgressMonitor = wizard.needsProgressMonitor();
 			cancelButton.removeSelectionListener(cancelListener);
+			// RAP [bm]: 
 			// Set the busy cursor to all shells.
-			Display d = getShell().getDisplay();
-			waitCursor = new Cursor(d, SWT.CURSOR_WAIT);
-			setDisplayCursor(waitCursor);
-			// Set the arrow cursor to the cancel component.
-			arrowCursor = new Cursor(d, SWT.CURSOR_ARROW);
-			cancelButton.setCursor(arrowCursor);
+//			Display d = getShell().getDisplay();
+//			waitCursor = new Cursor(d, SWT.CURSOR_WAIT);
+//			setDisplayCursor(waitCursor);
+//			// Set the arrow cursor to the cancel component.
+//			arrowCursor = new Cursor(d, SWT.CURSOR_ARROW);
+//			cancelButton.setCursor(arrowCursor);
+			// RAPEND: [bm] 
+
 			// Deactivate shell
 			savedState = saveUIState(needsProgressMonitor && enableCancelButton);
 			if (focusControl != null) {
@@ -435,14 +436,17 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		// Register help listener on the shell
-		newShell.addHelpListener(new HelpListener() {
-			public void helpRequested(HelpEvent event) {
-				// call perform help on the current page
-				if (currentPage != null) {
-					currentPage.performHelp();
-				}
-			}
-		});
+		// RAP [bm]: 
+//		newShell.addHelpListener(new HelpListener() {
+//			public void helpRequested(HelpEvent event) {
+//				// call perform help on the current page
+//				if (currentPage != null) {
+//					currentPage.performHelp();
+//				}
+//			}
+//		});
+		// RAPEND: [bm] 
+
 	}
 
 	/**
@@ -460,13 +464,13 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 		((GridLayout) parent.getLayout()).makeColumnsEqualWidth = false;
 		if (wizard.isHelpAvailable()) {
 			helpButton = createButton(parent, IDialogConstants.HELP_ID,
-					IDialogConstants.HELP_LABEL, false);
+					IDialogConstants.get().HELP_LABEL, false);
 		}
 		if (wizard.needsPreviousAndNextButtons()) {
 			createPreviousAndNextButtons(parent);
 		}
 		finishButton = createButton(parent, IDialogConstants.FINISH_ID,
-				IDialogConstants.FINISH_LABEL, true);
+				IDialogConstants.get().FINISH_LABEL, true);
 		cancelButton = createCancelButton(parent);
 	}
 
@@ -502,7 +506,7 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 		// increment the number of columns in the button bar
 		((GridLayout) parent.getLayout()).numColumns++;
 		Button button = new Button(parent, SWT.PUSH);
-		button.setText(IDialogConstants.CANCEL_LABEL);
+		button.setText(IDialogConstants.get().CANCEL_LABEL);
 		setButtonLayoutData(button);
 		button.setFont(parent.getFont());
 		button.setData(new Integer(IDialogConstants.CANCEL_ID));
@@ -706,9 +710,9 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 		composite.setLayoutData(data);
 		composite.setFont(parent.getFont());
 		backButton = createButton(composite, IDialogConstants.BACK_ID,
-				IDialogConstants.BACK_LABEL, false);
+				IDialogConstants.get().BACK_LABEL, false);
 		nextButton = createButton(composite, IDialogConstants.NEXT_ID,
-				IDialogConstants.NEXT_LABEL, false);
+				IDialogConstants.get().NEXT_LABEL, false);
 		return composite;
 	}
 
@@ -723,7 +727,7 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 				null,
 				JFaceResources.getString("WizardClosingDialog.message"), //$NON-NLS-1$
 				MessageDialog.QUESTION,
-				new String[] { IDialogConstants.OK_LABEL }, 0);
+				new String[] { IDialogConstants.get().OK_LABEL }, 0);
 		return result;
 	}
 
@@ -802,7 +806,8 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	 */
 	protected void helpPressed() {
 		if (currentPage != null) {
-			currentPage.performHelp();
+			// RAP [bm]: Help
+//			currentPage.performHelp();
 		}
 	}
 
@@ -996,19 +1001,21 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 		return savedState;
 	}
 
-	/**
-	 * Sets the given cursor for all shells currently active for this window's
-	 * display.
-	 * 
-	 * @param c
-	 *            the cursor
-	 */
-	private void setDisplayCursor(Cursor c) {
-		Shell[] shells = getShell().getDisplay().getShells();
-		for (int i = 0; i < shells.length; i++) {
-			shells[i].setCursor(c);
-		}
-	}
+	// RAP [bm]: 
+
+//	/**
+//	 * Sets the given cursor for all shells currently active for this window's
+//	 * display.
+//	 * 
+//	 * @param c
+//	 *            the cursor
+//	 */
+//	private void setDisplayCursor(Cursor c) {
+//		Shell[] shells = getShell().getDisplay().getShells();
+//		for (int i = 0; i < shells.length; i++) {
+//			shells[i].setCursor(c);
+//		}
+//	}
 
 	/**
 	 * Sets the minimum page size used for the pages.
@@ -1209,12 +1216,15 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 			Map state = (Map) savedState;
 			restoreUIState(state);
 			cancelButton.addSelectionListener(cancelListener);
-			setDisplayCursor(null);
-			cancelButton.setCursor(null);
-			waitCursor.dispose();
-			waitCursor = null;
-			arrowCursor.dispose();
-			arrowCursor = null;
+			// RAP [bm]: 
+//			setDisplayCursor(null);
+//			cancelButton.setCursor(null);
+//			waitCursor.dispose();
+//			waitCursor = null;
+//			arrowCursor.dispose();
+//			arrowCursor = null;
+			// RAPEND: [bm] 
+
 			Control focusControl = (Control) state.get(FOCUS_CONTROL);
 			if (focusControl != null && !focusControl.isDisposed()) {
 				focusControl.setFocus();

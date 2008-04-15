@@ -135,9 +135,9 @@ public class InputDialog extends Dialog {
     protected void createButtonsForButtonBar(Composite parent) {
         // create OK and Cancel buttons by default
         okButton = createButton(parent, IDialogConstants.OK_ID,
-                IDialogConstants.OK_LABEL, true);
+                IDialogConstants.get().OK_LABEL, true);
         createButton(parent, IDialogConstants.CANCEL_ID,
-                IDialogConstants.CANCEL_LABEL, false);
+                IDialogConstants.get().CANCEL_LABEL, false);
         //do this here because setting the text will set enablement on the ok
         // button
         text.setFocus();
@@ -269,7 +269,7 @@ public class InputDialog extends Dialog {
     		boolean hasError = errorMessage != null && (StringConverter.removeWhiteSpaces(errorMessage)).length() > 0;
     		errorMessageText.setEnabled(hasError);
     		errorMessageText.setVisible(hasError);
-    		// RAP: [bm] Control#update
+    		// RAP [bm]: Control#update
 //    		errorMessageText.getParent().update();
     		// RAPEND: [bm] 
 

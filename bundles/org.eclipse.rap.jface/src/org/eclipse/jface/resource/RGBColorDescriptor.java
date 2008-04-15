@@ -76,7 +76,7 @@ class RGBColorDescriptor extends ColorDescriptor {
     public Color createColor(Device device) {
         // If this descriptor is wrapping an existing color, then we can return the original color
         // if this is the same device.
-    	// RAP: [bm] always same "device"
+    	// RAP [bm]: always same "device"
 //        if (originalColor != null) {
 //            // If we're allocating on the same device as the original color, return the original.
 //            if (originalColor.getDevice() == device) {
@@ -97,7 +97,7 @@ class RGBColorDescriptor extends ColorDescriptor {
             return;
         }
         
-        // RAP: [bm] Color#dispose
+        // RAP [bm]: Color#dispose
 //        toDestroy.dispose();
     }
 

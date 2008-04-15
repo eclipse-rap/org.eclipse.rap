@@ -76,7 +76,7 @@ import org.eclipse.swt.widgets.ToolItem;
 	/** the start time of the task */
 	protected long fStartTime;
 
-	// RAP: [bm] 
+	// RAP [bm]: 
 //	private Cursor fStopButtonCursor;
 
 	/** the message text */
@@ -292,7 +292,7 @@ import org.eclipse.swt.widgets.ToolItem;
 				setCanceled(true);
 			}
 		});
-    	// RAP: [bm] Image#dispose
+    	// RAP [bm]: Image#dispose
 //		fCancelButton.addDisposeListener(new DisposeListener() {
 //			public void widgetDisposed(DisposeEvent e) {
 //				Image i = fCancelButton.getImage();
@@ -316,7 +316,7 @@ import org.eclipse.swt.widgets.ToolItem;
 		fProgressBar.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.GRAB_VERTICAL));
 
-		// RAP: [bm] 
+		// RAP [bm]: 
 //		fStopButtonCursor = new Cursor(getDisplay(), SWT.CURSOR_ARROW);
 	}
 
@@ -391,7 +391,7 @@ import org.eclipse.swt.widgets.ToolItem;
 	 * @private
 	 */
 	protected void handleDispose() {
-		// RAP: [bm] 
+		// RAP [bm]: 
 //		if (fStopButtonCursor != null) {
 //			fStopButtonCursor.dispose();
 //			fStopButtonCursor = null;
@@ -567,7 +567,7 @@ import org.eclipse.swt.widgets.ToolItem;
 		if (fToolBar != null && !fToolBar.isDisposed()) {
 			fToolBar.setVisible(true);
 			fToolBar.setEnabled(true);
-			// RAP: [bm] 
+			// RAP [bm]: 
 //			fToolBar.setCursor(fStopButtonCursor);
 			fCancelButtonIsVisible = true;
 		}

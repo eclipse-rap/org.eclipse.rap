@@ -1,4 +1,4 @@
-// RAP: [bm] DND
+// RAP [bm]: DND
 ///*******************************************************************************
 // * Copyright (c) 2000, 2005 IBM Corporation and others.
 // * All rights reserved. This program and the accompanying materials

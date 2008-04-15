@@ -130,7 +130,7 @@ public class ColorRegistry extends ResourceRegistry {
      * @since 3.1
      */
     private Color createColor(RGB rgb) {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        return new Color(display, rgb);
     	return Graphics.getColor(rgb);
     	// RAPEND: [bm] 
@@ -142,7 +142,7 @@ public class ColorRegistry extends ResourceRegistry {
      * @param iterator over <code>Collection</code> of <code>Color</code>
      */
     private void disposeColors(Iterator iterator) {
-    	// RAP: [bm] Color#dispose
+    	// RAP [bm]: Color#dispose
 //        while (iterator.hasNext()) {
 //            Object next = iterator.next();
 //            ((Color) next).dispose();

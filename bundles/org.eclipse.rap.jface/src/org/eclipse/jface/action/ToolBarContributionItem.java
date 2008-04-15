@@ -211,7 +211,7 @@ public class ToolBarContributionItem extends ContributionItem implements IToolBa
             // ToolBarManager.createControl can actually return a pre-existing control.
             // Only add the listener if the toolbar was newly created (bug 62097).
             if (oldToolBar != toolBar) {
-            	// RAP: [bm] MenuDetect
+            	// RAP [bm]: MenuDetect
 //	            toolBar.addListener(SWT.MenuDetect, new Listener() {
 //	
 //	                public void handleEvent(Event event) {

@@ -56,7 +56,7 @@ class ImageDataImageDescriptor extends ImageDescriptor {
         // if this is the same device.
         if (originalImage != null) {
             // If we're allocating on the same device as the original font, return the original.
-        	// RAP: [bm] 
+        	// RAP [bm]: 
 //            if (originalImage.getDevice() == device) {
 //                return originalImage;
 //            }

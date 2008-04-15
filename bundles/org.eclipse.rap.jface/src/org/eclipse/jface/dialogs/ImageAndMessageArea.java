@@ -15,6 +15,7 @@ import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.events.PaintEvent;
 //import org.eclipse.swt.events.PaintListener;
@@ -81,7 +82,11 @@ public class ImageAndMessageArea extends Composite {
 		setFont(JFaceResources.getDialogFont());
 
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		int lineHeight = ((Text) messageField.getControl()).getLineHeight();
+		// RAP [bm]: Text#getLineHeight
+//		int lineHeight = ((Text) messageField.getControl()).getLineHeight();
+		int lineHeight = Graphics.getCharHeight(messageField.getControl().getFont());
+		// RAPEND: [bm] 
+
 		if ((style & SWT.WRAP) > 0)
 			gd.heightHint = 2 * lineHeight;
 		else
@@ -89,16 +94,17 @@ public class ImageAndMessageArea extends Composite {
 
 		messageField.getLayoutControl().setLayoutData(gd);
 
-		addPaintListener(new PaintListener() {
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.swt.events.PaintListener#paintControl(org.eclipse.swt.events.PaintEvent)
-			 */
-			public void paintControl(PaintEvent e) {
-				onPaint(e);
-			}
-		});
+		// RAP [bm]: 
+//		addPaintListener(new PaintListener() {
+//			/*
+//			 * (non-Javadoc)
+//			 * 
+//			 * @see org.eclipse.swt.events.PaintListener#paintControl(org.eclipse.swt.events.PaintEvent)
+//			 */
+//			public void paintControl(PaintEvent e) {
+//				onPaint(e);
+//			}
+//		});
 
 		// sets the layout and size to account for the BORDER_MARGIN between
 		// the border drawn around the container and the decorated field.
@@ -179,17 +185,18 @@ public class ImageAndMessageArea extends Composite {
 	/**
 	 * Draws the message area composite with rounded corners.
 	 */
-	private void onPaint(PaintEvent e) {
-		Rectangle carea = getClientArea();
-		e.gc.setForeground(getForeground());
-
-		// draws the polyline to be rounded in a 2 pixel squared area
-		e.gc.drawPolyline(new int[] { carea.x, carea.y + carea.height - 1,
-				carea.x, carea.y + 2, carea.x + 2, carea.y,
-				carea.x + carea.width - 3, carea.y, carea.x + carea.width - 1,
-				carea.y + 2, carea.x + carea.width - 1,
-				carea.y + carea.height - 1 });
-	}
+	// RAP [bm]: 
+//	private void onPaint(PaintEvent e) {
+//		Rectangle carea = getClientArea();
+//		e.gc.setForeground(getForeground());
+//
+//		// draws the polyline to be rounded in a 2 pixel squared area
+//		e.gc.drawPolyline(new int[] { carea.x, carea.y + carea.height - 1,
+//				carea.x, carea.y + 2, carea.x + 2, carea.y,
+//				carea.x + carea.width - 3, carea.y, carea.x + carea.width - 1,
+//				carea.y + 2, carea.x + carea.width - 1,
+//				carea.y + carea.height - 1 });
+//	}
 
 	/*
 	 * (non-Javadoc)

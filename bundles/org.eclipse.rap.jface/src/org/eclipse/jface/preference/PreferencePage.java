@@ -32,7 +32,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 
 /**
@@ -627,9 +626,9 @@ public abstract class PreferencePage extends DialogPage implements
     /* (non-Javadoc)
      * @see org.eclipse.jface.dialogs.IDialogPage#performHelp()
      */
-    public void performHelp() {
-        getControl().notifyListeners(SWT.Help, new Event());
-    }
+//    public void performHelp() {
+//        getControl().notifyListeners(SWT.Help, new Event());
+//    }
 
 	/**
 	 * Apply the data to the receiver. By default do nothing.

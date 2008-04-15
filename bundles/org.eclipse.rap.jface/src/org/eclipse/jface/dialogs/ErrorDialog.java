@@ -92,7 +92,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	/**
 	 * The current clipboard. To be disposed when closing the dialog.
 	 */
-	// RAP: [bm] 
+	// RAP [bm]: 
 //	private Clipboard clipboard;
 
 	private boolean shouldIncludeTopLevelErrorInDetails = false;
@@ -171,7 +171,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 */
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and Details buttons
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.get().OK_LABEL,
 				true);
 		createDetailsButton(parent);
 	}
@@ -214,7 +214,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	protected void createDetailsButton(Composite parent) {
 		if (shouldShowDetailsButton()) {
 			detailsButton = createButton(parent, IDialogConstants.DETAILS_ID,
-					IDialogConstants.SHOW_DETAILS_LABEL, false);
+					IDialogConstants.get().SHOW_DETAILS_LABEL, false);
 		}
 	}
 
@@ -527,10 +527,10 @@ public class ErrorDialog extends IconAndMessageDialog {
 		if (listCreated) {
 			list.dispose();
 			listCreated = false;
-			detailsButton.setText(IDialogConstants.SHOW_DETAILS_LABEL);
+			detailsButton.setText(IDialogConstants.get().SHOW_DETAILS_LABEL);
 		} else {
 			list = createDropDownList((Composite) getContents());
-			detailsButton.setText(IDialogConstants.HIDE_DETAILS_LABEL);
+			detailsButton.setText(IDialogConstants.get().HIDE_DETAILS_LABEL);
 			getContents().getShell().layout();
 		}
 		Point newSize = getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -547,7 +547,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * @param buffer
 	 * @param nesting
 	 */
-	// RAP: [bm] 
+	// RAP [bm]: 
 //	private void populateCopyBuffer(IStatus buildingStatus,
 //			StringBuffer buffer, int nesting) {
 //		if (!buildingStatus.matches(displayMask)) {
@@ -588,7 +588,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * Copy the contents of the statuses to the clipboard.
 	 */
 	private void copyToClipboard() {
-	// RAP: [bm] 
+	// RAP [bm]: 
 //		if (clipboard != null) {
 //			clipboard.dispose();
 //		}
@@ -605,7 +605,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * @see org.eclipse.jface.window.Window#close()
 	 */
 	public boolean close() {
-		// RAP: [bm] 
+		// RAP [bm]: 
 //		if (clipboard != null) {
 //			clipboard.dispose();
 //		}

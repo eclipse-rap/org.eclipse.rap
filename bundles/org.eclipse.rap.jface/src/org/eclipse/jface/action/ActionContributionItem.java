@@ -219,7 +219,7 @@ public class ActionContributionItem extends ContributionItem {
 			b.addListener(SWT.Dispose, getButtonListener());
 			// Don't hook a dispose listener on the parent
 			b.addListener(SWT.Selection, getButtonListener());
-			// RAP: [bm] HelpListener
+			// RAP [bm]: HelpListener
 //			if (action.getHelpListener() != null) {
 //				b.addHelpListener(action.getHelpListener());
 //			}
@@ -276,7 +276,7 @@ public class ActionContributionItem extends ContributionItem {
 			mi.setData(this);
 			mi.addListener(SWT.Dispose, getMenuItemListener());
 			mi.addListener(SWT.Selection, getMenuItemListener());
-			// RAP: [bm] HelpListener
+			// RAP [bm]: HelpListener
 //			if (action.getHelpListener() != null) {
 //				mi.addHelpListener(action.getHelpListener());
 //			}
@@ -910,7 +910,7 @@ public class ActionContributionItem extends ContributionItem {
 						text = getParent().getOverrides().getText(this);
 					}
 
-					// RAP: [bm] MenuItem#setAccelerator
+					// RAP [bm]: MenuItem#setAccelerator
 //					mi.setAccelerator(accelerator);
 
 					if (text == null) {
@@ -1029,7 +1029,7 @@ public class ActionContributionItem extends ContributionItem {
 				if (image == null) {
 					image = action.getImageDescriptor();
 				}
-				// RAP: [bm] 
+				// RAP [bm]: 
 //				ImageDescriptor disabledImage = action
 //						.getDisabledImageDescriptor();
 				// RAPEND: [bm] 
@@ -1045,7 +1045,7 @@ public class ActionContributionItem extends ContributionItem {
 
 				// performance: more efficient in SWT to set disabled and hot
 				// image before regular image
-				// RAP: [bm] ToolItem#setDisabledImage
+				// RAP [bm]: ToolItem#setDisabledImage
 //				((ToolItem) widget)
 //						.setDisabledImage(disabledImage == null ? null
 //								: localManager
@@ -1093,7 +1093,7 @@ public class ActionContributionItem extends ContributionItem {
 
 			// performance: more efficient in SWT to set disabled and hot image
 			// before regular image
-			// RAP: [bm] 
+			// RAP [bm]: 
 //			((ToolItem) widget).setDisabledImage(disabledImage == null ? null
 //					: localManager.createImageWithDefault(disabledImage));
 //			((ToolItem) widget).setHotImage(hoverImage == null ? null
@@ -1171,12 +1171,12 @@ public class ActionContributionItem extends ContributionItem {
 			return null;
 		}
 
-		// RAP: [bm] 
+		// RAP [bm]: 
 //		GC gc = new GC(item.getParent());
 
 		int maxWidth = item.getImage().getBounds().width * 4;
 
-		// RAP: [bm] 
+		// RAP [bm]: 
 //		if (gc.textExtent(textValue).x < maxWidth) {
 //			gc.dispose();
 //			return textValue;
@@ -1190,7 +1190,7 @@ public class ActionContributionItem extends ContributionItem {
 		for (int i = textValue.length(); i > 0; i--) {
 			String test = textValue.substring(0, i);
 			test = test + ellipsis;
-			// RAP: [bm] 
+			// RAP [bm]: 
 //			if (gc.textExtent(test).x < maxWidth) {
 //				gc.dispose();
 //				return test;
@@ -1202,7 +1202,7 @@ public class ActionContributionItem extends ContributionItem {
 
 		}
 		
-		// RAP: [bm] 
+		// RAP [bm]: 
 //		gc.dispose();
 		
 		// If for some reason we fall through abort
@@ -1320,7 +1320,7 @@ public class ActionContributionItem extends ContributionItem {
 			final MenuItem realItem = items[i];
 			final MenuItem proxyItem = new MenuItem(proxy, realItem.getStyle());
 			proxyItem.setData(realItem);
-			// RAP: [bm] MenuItem#setAccelerator
+			// RAP [bm]: MenuItem#setAccelerator
 //			proxyItem.setAccelerator(realItem.getAccelerator());
 			proxyItem.setEnabled(realItem.getEnabled());
 			proxyItem.setImage(realItem.getImage());
@@ -1329,7 +1329,7 @@ public class ActionContributionItem extends ContributionItem {
 
 			// pass through any events
 			proxyItem.addListener(SWT.Selection, passThrough);
-			// RAP: [bm] 
+			// RAP [bm]: 
 //			proxyItem.addListener(SWT.Arm, passThrough);
 //			proxyItem.addListener(SWT.Help, passThrough);
 
@@ -1347,7 +1347,7 @@ public class ActionContributionItem extends ContributionItem {
 						}
 					}
 				});
-				// RAP: [bm] 
+				// RAP [bm]: 
 //				subMenu.addListener(SWT.Help, passThrough);
 				subMenu.addListener(SWT.Hide, passThrough);
 			}

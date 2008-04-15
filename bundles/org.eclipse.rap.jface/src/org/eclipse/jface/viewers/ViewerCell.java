@@ -171,7 +171,7 @@ public class ViewerCell {
 
 	}
 
-	// RAP: [bm] StyledText
+	// RAP [bm]: StyledText
 //	/**
 //	 * Set the style ranges to be applied on the text label
 //	 * Note: Requires {@link StyledCellLabelProvider} with owner draw enabled.
@@ -184,7 +184,7 @@ public class ViewerCell {
 //		row.setStyleRanges(columnIndex, styleRanges);
 //	}
 	
-	// RAP: [bm] StyledText
+	// RAP [bm]: StyledText
 //	/**
 //	 * Returns the style ranges to be applied on the text label or <code>null</code> if no
 //	 * style ranges have been set.

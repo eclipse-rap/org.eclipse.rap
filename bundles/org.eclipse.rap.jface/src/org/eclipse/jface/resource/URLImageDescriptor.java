@@ -49,7 +49,7 @@ class URLImageDescriptor extends ImageDescriptor {
      * Method declared on ImageDesciptor.
      * Returns null if the image data cannot be read.
      */
-    // RAP: [bm] lowered visibility, see ImageDescriptor
+    // RAP [bm]: lowered visibility, see ImageDescriptor
     protected ImageData getImageData() {
         ImageData result = null;
         InputStream in = getStream();

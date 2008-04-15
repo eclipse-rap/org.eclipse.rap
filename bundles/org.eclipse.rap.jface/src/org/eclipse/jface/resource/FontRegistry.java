@@ -84,7 +84,7 @@ public class FontRegistry extends ResourceRegistry {
          * Dispose any of the fonts created for this record.
          */
         void dispose() {
-        	// RAP: [bm] Font#dispose
+        	// RAP [bm]: Font#dispose
 //            baseFont.dispose();
 //            if (boldFont != null) {
 //				boldFont.dispose();
@@ -114,7 +114,7 @@ public class FontRegistry extends ResourceRegistry {
 			}
 
             FontData[] boldData = getModifiedFontData(SWT.BOLD);
-            // RAP: [bm] 
+            // RAP [bm]: 
 //            boldFont = new Font(Display.getCurrent(), boldData);
             boldFont = Graphics.getFont(boldData[0]);
             // RAPEND: [bm] 
@@ -154,7 +154,7 @@ public class FontRegistry extends ResourceRegistry {
 			}
 
             FontData[] italicData = getModifiedFontData(SWT.ITALIC);
-            // RAP: [bm] 
+            // RAP [bm]: 
 //            italicFont = new Font(Display.getCurrent(), italicData);
             italicFont = Graphics.getFont(italicData[0]);
             // RAPEND: [bm] 
@@ -310,7 +310,7 @@ public class FontRegistry extends ResourceRegistry {
 
     private void readResourceBundle(String location) {
 
-    	// RAP: [bm] ui has nothing to do with the server os 
+    	// RAP [bm]: ui has nothing to do with the server os 
 //        String osname = System.getProperty("os.name").trim(); //$NON-NLS-1$
 //        String wsname = SWT.getPlatform();
 //        osname = StringConverter.removeWhiteSpaces(osname).toLowerCase();
@@ -374,7 +374,7 @@ public class FontRegistry extends ResourceRegistry {
 		}
 	}
 
-	// RAP: [bm] 
+	// RAP [bm]: 
 //    /**
 //	 * Find the first valid fontData in the provided list. If none are valid
 //	 * return the first one regardless. If the list is empty return null. Return
@@ -416,7 +416,7 @@ public class FontRegistry extends ResourceRegistry {
 //        return null;
 //    }
 
-	// RAP: [bm] 
+	// RAP [bm]: 
 //    /**
 //     * Find the first valid fontData in the provided list. 
 //     * If none are valid return the first one regardless.
@@ -452,7 +452,7 @@ public class FontRegistry extends ResourceRegistry {
      */
     public FontData [] filterData(FontData [] fonts, Display display) {
     	ArrayList good = new ArrayList(fonts.length);
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //    	for (int i = 0; i < fonts.length; i++) {
 //            FontData fd = fonts[i];
 //
@@ -505,7 +505,7 @@ public class FontRegistry extends ResourceRegistry {
         //Do not fire the update from creation as it is not a property change
         put(symbolicName, validData, false);
         
-        // RAP: [bm] 
+        // RAP [bm]: 
 //        Font newFont = new Font(display, validData);
         Font newFont = Graphics.getFont(validData[0]);
         // RAPEND: [bm] 
@@ -518,7 +518,7 @@ public class FontRegistry extends ResourceRegistry {
      * This method creates a font that must be disposed.
      */
     Font calculateDefaultFont() {
-    	// RAP: [bm] just return our default font
+    	// RAP [bm]: just return our default font
     	return Display.getCurrent().getSystemFont();
 //        Display current = Display.getCurrent();
 //        if (current == null) {
@@ -569,7 +569,7 @@ public class FontRegistry extends ResourceRegistry {
             record = createFont(JFaceResources.DEFAULT_FONT, defaultFont
                     .getFontData());
             
-            // RAP: [bm] Font#dispose
+            // RAP [bm]: Font#dispose
 //            defaultFont.dispose();
             // RAPEND: [bm] 
 
@@ -711,7 +711,7 @@ public class FontRegistry extends ResourceRegistry {
      * @param iterator over Collection of Font
      */
     private void disposeFonts(Iterator iterator) {
-    	// RAP: [bm] Font#dispose
+    	// RAP [bm]: Font#dispose
 //        while (iterator.hasNext()) {
 //            Object next = iterator.next();
 //            ((Font) next).dispose();
@@ -727,7 +727,7 @@ public class FontRegistry extends ResourceRegistry {
     	System.out.println("DISPOSE EXEC"); //$NON-NLS-1$
     }
     
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    /**
 //     * Checks whether the given font is in the list of fixed fonts.
 //     */

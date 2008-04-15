@@ -360,7 +360,7 @@ public abstract class Window implements IShellProvider {
 		if (defaultImages != null && defaultImages.length > 0) {
 			ArrayList nonDisposedImages = new ArrayList(defaultImages.length);
 			for (int i = 0; i < defaultImages.length; ++i) {
-				// RAP: [bm] Image#isDisposed
+				// RAP [bm]: Image#isDisposed
 //				if (defaultImages[i] != null && !defaultImages[i].isDisposed()) {
 				if (defaultImages[i] != null) {
 					nonDisposedImages.add(defaultImages[i]);
@@ -372,7 +372,7 @@ public abstract class Window implements IShellProvider {
 			} else {
 				Image[] array = new Image[nonDisposedImages.size()];
 				nonDisposedImages.toArray(array);
-				// RAP: [bm] Shell#setImages
+				// RAP [bm]: Shell#setImages
 //				newShell.setImages(array);
 			}
 		}
@@ -537,7 +537,7 @@ public abstract class Window implements IShellProvider {
 				: defaultImages[0];
 	}
 
-	// RAP: [bm] Decorations#setImages
+	// RAP [bm]: Decorations#setImages
 	/**
 	 * Returns the array of default images to use for newly opened windows. It
 	 * is expected that the array will contain the same icon rendered at
@@ -568,7 +568,7 @@ public abstract class Window implements IShellProvider {
 	protected Point getInitialLocation(Point initialSize) {
 		Composite parent = shell.getParent();
 
-		// RAP: [bm] Monitor
+		// RAP [bm]: Monitor
 //		Monitor monitor = shell.getDisplay().getPrimaryMonitor();
 //		if (parent != null) {
 //			monitor = parent.getMonitor();
@@ -611,7 +611,7 @@ public abstract class Window implements IShellProvider {
      * @since 3.1
      */
     private static Shell getModalChild(Shell[] toSearch) {
-    	// RAP: [bm] SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL
+    	// RAP [bm]: SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL
 //        int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL;
     	int modal = SWT.APPLICATION_MODAL;
         // RAPEND: [bm] 
@@ -644,7 +644,7 @@ public abstract class Window implements IShellProvider {
 	protected Shell getParentShell() {
         Shell parent = parentShell.getShell();
   
-        // RAP: [bm] SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL
+        // RAP [bm]: SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL
 //        int modal = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL;
         int modal = SWT.APPLICATION_MODAL;
         // RAPEND: [bm] 
@@ -843,7 +843,7 @@ public abstract class Window implements IShellProvider {
 				exceptionHandler.handleException(e);
 			}
 		}
-		// RAP: [bm] Display#update
+		// RAP [bm]: Display#update
 //		display.update();
 	}
 
@@ -872,7 +872,7 @@ public abstract class Window implements IShellProvider {
 		defaultImages = image == null ? null : new Image[] { image };
 	}
 
-	// RAP: [bm] Decorations#setImages
+	// RAP [bm]: Decorations#setImages
 	/**
 	 * Sets the array of default images to use for newly opened windows. It is
 	 * expected that the array will contain the same icon rendered at different
@@ -930,7 +930,7 @@ public abstract class Window implements IShellProvider {
 	 *            point to find (display coordinates)
 	 * @return the montor closest to the given point
 	 */
-	// RAP: [bm] Monitor
+	// RAP [bm]: Monitor
 //	private static Monitor getClosestMonitor(Display toSearch, Point toFind) {
 //		int closest = Integer.MAX_VALUE;
 //
@@ -975,7 +975,7 @@ public abstract class Window implements IShellProvider {
 		Rectangle result = new Rectangle(preferredSize.x, preferredSize.y,
 				preferredSize.width, preferredSize.height);
 
-		// RAP: [bm] Monitor 
+		// RAP [bm]: Monitor 
 //		Monitor mon = getClosestMonitor(getShell().getDisplay(), Geometry
 //				.centerPoint(result));
 //
@@ -1068,7 +1068,7 @@ public abstract class Window implements IShellProvider {
         defaultModalParent = provider;
     }
     
-	// RAP: [bm] SWT.RIGHT_TO_LEFT, LEFT_TO_RIGHT
+	// RAP [bm]: SWT.RIGHT_TO_LEFT, LEFT_TO_RIGHT
 	/**
 	 * Gets the default orientation for windows. If it is not
 	 * set the default value will be unspecified (SWT#NONE).
@@ -1085,7 +1085,7 @@ public abstract class Window implements IShellProvider {
 	}
 
 	
-	// RAP: [bm] SWT.RIGHT_TO_LEFT, LEFT_TO_RIGHT
+	// RAP [bm]: SWT.RIGHT_TO_LEFT, LEFT_TO_RIGHT
 	/**
 	 * Sets the default orientation of windows.
 	 * <!-- @param defaultOrientation one of 

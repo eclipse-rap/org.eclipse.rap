@@ -10,13 +10,9 @@
  *******************************************************************************/
 package org.eclipse.jface.layout;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
+import org.eclipse.jface.internal.DialogUtil;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Contains various layout constants
@@ -33,19 +29,31 @@ public final class LayoutConstants {
 			return;
 		}
 		
-		GC gc = new GC(Display.getCurrent());
-		gc.setFont(JFaceResources.getDialogFont());
-		FontMetrics fontMetrics = gc.getFontMetrics();
+		// RAP [bm]: methods inlined to prevent opening non-existent API
+//		GC gc = new GC(Display.getCurrent());
+//		gc.setFont(JFaceResources.getDialogFont());
+//		FontMetrics fontMetrics = gc.getFontMetrics();
 
-		dialogMargins = new Point(Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.HORIZONTAL_MARGIN),
-				Dialog.convertVerticalDLUsToPixels(fontMetrics, IDialogConstants.VERTICAL_MARGIN));
 
-		dialogSpacing = new Point(Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.HORIZONTAL_SPACING),
-				Dialog.convertVerticalDLUsToPixels(fontMetrics, IDialogConstants.VERTICAL_SPACING));
 
-		minButtonSize  = new Point(Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.BUTTON_WIDTH), 0);
+//		dialogMargins = new Point(Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.get().HORIZONTAL_MARGIN),
+//				Dialog.convertVerticalDLUsToPixels(fontMetrics, IDialogConstants.get().VERTICAL_MARGIN));
+//
+//		dialogSpacing = new Point(Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.get().HORIZONTAL_SPACING),
+//				Dialog.convertVerticalDLUsToPixels(fontMetrics, IDialogConstants.get().VERTICAL_SPACING));
+//
+//		minButtonSize  = new Point(Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.get().BUTTON_WIDTH), 0);
+//		gc.dispose();
+
+		dialogMargins = new Point(DialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN),
+				DialogUtil.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN));
+
+		dialogSpacing = new Point(DialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING),
+				DialogUtil.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING));
+
+		minButtonSize  = new Point(DialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH), 0);
 		
-		gc.dispose();
+		// RAPEND: [bm] 
 	}
 	
 	/**

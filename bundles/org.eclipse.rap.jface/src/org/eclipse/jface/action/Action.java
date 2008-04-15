@@ -217,7 +217,7 @@ public abstract class Action extends AbstractAction implements IAction {
 	/**
 	 * An action's help listener, or <code>null</code> if none.
 	 */
-	// RAP: [bm] HelpListener
+	// RAP [bm]: HelpListener
 //	private HelpListener helpListener;
 
 	/**
@@ -361,7 +361,7 @@ public abstract class Action extends AbstractAction implements IAction {
 	/*
 	 * (non-Javadoc) Method declared on IAction.
 	 */
-	// RAP: [bm] HelpListener
+	// RAP [bm]: HelpListener
 //	public HelpListener getHelpListener() {
 //		return helpListener;
 //	}
@@ -583,7 +583,7 @@ public abstract class Action extends AbstractAction implements IAction {
 	/*
 	 * (non-Javadoc) Method declared on IAction.
 	 */
-	// RAP: [bm] HelpListener
+	// RAP [bm]: HelpListener
 //	public void setHelpListener(HelpListener listener) {
 //		helpListener = listener;
 //	}

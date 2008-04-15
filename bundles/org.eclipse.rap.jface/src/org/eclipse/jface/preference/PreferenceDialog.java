@@ -50,8 +50,6 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.HelpEvent;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
@@ -237,10 +235,11 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 			cancelPressed();
 			return;
 		}
-		case IDialogConstants.HELP_ID: {
-			helpPressed();
-			return;
-		}
+		// RAP [bm]: 
+//		case IDialogConstants.HELP_ID: {
+//			helpPressed();
+//			return;
+//		}
 		}
 	}
 
@@ -350,9 +349,9 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 */
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and Cancel buttons by default
-		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.get().OK_LABEL, true);
 		getShell().setDefaultButton(okButton);
-		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.get().CANCEL_LABEL, false);
 	}
 
 	/*
@@ -473,9 +472,12 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 			 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
 			 */
 			public void handleEvent(Event event) {
-				if (event.detail == SWT.DRAG) {
-					return;
-				}
+				// RAP [bm]: DRAG not supported
+//				if (event.detail == SWT.DRAG) {
+//					return;
+//				}
+				// RAPEND: [bm] 
+
 				int shift = event.x - sash.getBounds().x;
 				GridData data = (GridData) rightControl.getLayoutData();
 				int newWidthHint = data.widthHint + shift;
@@ -717,14 +719,15 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 			}
 		});
 		//Register help listener on the tree to use context sensitive help
-		viewer.getControl().addHelpListener(new HelpListener() {
-			public void helpRequested(HelpEvent event) {
-				// call perform help on the current page
-				if (currentPage != null) {
-					currentPage.performHelp();
-				}
-			}
-		});
+		// RAP [bm]: HelpListener
+//		viewer.getControl().addHelpListener(new HelpListener() {
+//			public void helpRequested(HelpEvent event) {
+//				// call perform help on the current page
+//				if (currentPage != null) {
+//					currentPage.performHelp();
+//				}
+//			}
+//		});
 	}
 
 	/**
@@ -863,11 +866,12 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * <code>performHelp</code> on the currently active page.
 	 * </p>
 	 */
-	protected void helpPressed() {
-		if (currentPage != null) {
-			currentPage.performHelp();
-		}
-	}
+	// RAP [bm]: 
+//	protected void helpPressed() {
+//		if (currentPage != null) {
+//			currentPage.performHelp();
+//		}
+//	}
 
 	/**
 	 * Returns whether the current page is valid.

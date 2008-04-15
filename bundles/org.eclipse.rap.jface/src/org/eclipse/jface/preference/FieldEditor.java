@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.internal.DialogUtil;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -200,10 +200,14 @@ public abstract class FieldEditor {
      * @return the number of pixels
      */
     protected int convertHorizontalDLUsToPixels(Control control, int dlus) {
-        GC gc = new GC(control);
-        gc.setFont(control.getFont());
-        int averageWidth = gc.getFontMetrics().getAverageCharWidth();
-        gc.dispose();
+    	// RAP [bm]: 
+//        GC gc = new GC(control);
+//        gc.setFont(control.getFont());
+//        int averageWidth = gc.getFontMetrics().getAverageCharWidth();
+//        gc.dispose();
+    	int averageWidth = (int) Graphics.getAvgCharWidth(control.getFont());
+    	// RAPEND: [bm] 
+
 
         double horizontalDialogUnitSize = averageWidth * 0.25;
 
@@ -222,10 +226,13 @@ public abstract class FieldEditor {
      * @return the number of pixels
      */
     protected int convertVerticalDLUsToPixels(Control control, int dlus) {
-        GC gc = new GC(control);
-        gc.setFont(control.getFont());
-        int height = gc.getFontMetrics().getHeight();
-        gc.dispose();
+    	// RAP [bm]: 
+//        GC gc = new GC(control);
+//        gc.setFont(control.getFont());
+//        int height = gc.getFontMetrics().getHeight();
+//        gc.dispose();
+    	int height = Graphics.getCharHeight(control.getFont());
+    	// RAPEND: [bm] 
 
         double verticalDialogUnitSize = height * 0.125;
 
@@ -687,15 +694,20 @@ public abstract class FieldEditor {
 
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 
+        // RAP [bm]: 
         // Compute and store a font metric
-        GC gc = new GC(button);
-        gc.setFont(button.getFont());
-        FontMetrics fontMetrics = gc.getFontMetrics();
-        gc.dispose();
+//        GC gc = new GC(button);
+//        gc.setFont(button.getFont());
+//        FontMetrics fontMetrics = gc.getFontMetrics();
+//        gc.dispose();
 
-        int widthHint = org.eclipse.jface.dialogs.Dialog
-                .convertVerticalDLUsToPixels(fontMetrics,
-                        IDialogConstants.BUTTON_WIDTH);
+//        int widthHint = org.eclipse.jface.dialogs.Dialog
+//                .convertVerticalDLUsToPixels(fontMetrics,
+//                        IDialogConstants.BUTTON_WIDTH);
+        int widthHint = DialogUtil
+				.convertVerticalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+        // RAPEND: [bm] 
+
         data.widthHint = Math.max(widthHint, button.computeSize(SWT.DEFAULT,
                 SWT.DEFAULT, true).x);
         button.setLayoutData(data);

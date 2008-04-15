@@ -256,7 +256,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.StructuredViewer.ColorAndFontManager#applyFontsAndColors(org.eclipse.swt.custom.TableTreeItem)
 		 */
-		// RAP: [bm] 
+		// RAP [bm]: 
 //		public void applyFontsAndColors(TableTreeItem control) {
 //			
 //			if(colorProvider == null){
@@ -394,7 +394,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 		 * required.
 		 * @param control
 		 */
-		// RAP: [bm] 
+		// RAP [bm]: 
 //		public void applyFontsAndColors(TableTreeItem control) {
 //			if(usedDecorators){
 //				//If there is no provider only apply set values
@@ -496,7 +496,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 		postSelectionChangedListeners.add(listener);
 	}
 
-	// RAP: [bm] DND
+	// RAP [bm]: DND
 //	/**
 //	 * Adds support for dragging items out of this viewer via a user
 //	 * drag-and-drop operation.
@@ -520,7 +520,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 //		dragSource.addDragListener(listener);
 //	}
 
-	// RAP: [bm] DND
+	// RAP [bm]: DND
 //	/**
 //	 * Adds support for dropping items into this viewer via a user drag-and-drop
 //	 * operation.

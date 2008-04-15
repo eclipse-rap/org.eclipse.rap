@@ -47,7 +47,7 @@ public abstract class ViewerRow implements Cloneable {
 	 */
 	public static final int BELOW = 2;
 	
-	// RAP: [bm] 
+	// RAP [bm]: 
 //	private static final String KEY_TEXT_LAYOUT = Policy.JFACE + "styled_label_key_"; //$NON-NLS-1$
 
 	/**
@@ -343,7 +343,7 @@ public abstract class ViewerRow implements Cloneable {
 		return null;
 	}
 	
-	// RAP: [bm] StyledText
+	// RAP [bm]: StyledText
 //	/**
 //	 * Set the style ranges to be applied on the text label at the column index
 //	 * Note: Requires {@link StyledCellLabelProvider} with owner draw enabled.
@@ -357,7 +357,7 @@ public abstract class ViewerRow implements Cloneable {
 //		getItem().setData(KEY_TEXT_LAYOUT + columnIndex, styleRanges);
 //	}
 	
-	// RAP: [bm] StyledText
+	// RAP [bm]: StyledText
 //	/**
 //	 * Returns the style ranges to be applied on the text label at the column index or <code>null</code> if no
 //	 * style ranges have been set.

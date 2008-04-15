@@ -50,7 +50,7 @@ public class ComboViewer extends AbstractListViewer {
      * @see #ComboViewer(CCombo)
      * @since 3.3
      */
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    private CCombo ccombo;
 
     /**
@@ -89,7 +89,7 @@ public class ComboViewer extends AbstractListViewer {
         hookControl(list);
     }
     
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    /**
 //     * Creates a combo viewer on the given CCombo control.
 //     * The viewer has no input, no content provider, a default label provider, 
@@ -106,7 +106,7 @@ public class ComboViewer extends AbstractListViewer {
 
     
     protected void listAdd(String string, int index) {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            ccombo.add(string, index);
 //        } else {
@@ -115,7 +115,7 @@ public class ComboViewer extends AbstractListViewer {
     }
 
     protected void listSetItem(int index, String string) {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            ccombo.setItem(index, string);
 //        } else {
@@ -124,7 +124,7 @@ public class ComboViewer extends AbstractListViewer {
     }
 
     protected int[] listGetSelectionIndices() {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            return new int[] { ccombo.getSelectionIndex() };
 //        } else {
@@ -133,7 +133,7 @@ public class ComboViewer extends AbstractListViewer {
     }
 
     protected int listGetItemCount() {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            return ccombo.getItemCount();
 //        } else {
@@ -142,7 +142,7 @@ public class ComboViewer extends AbstractListViewer {
     }
 
     protected void listSetItems(String[] labels) {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            ccombo.setItems(labels);
 //        } else {
@@ -151,7 +151,7 @@ public class ComboViewer extends AbstractListViewer {
     }
 
     protected void listRemoveAll() {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            ccombo.removeAll();
 //        } else {
@@ -160,7 +160,7 @@ public class ComboViewer extends AbstractListViewer {
     }
 
     protected void listRemove(int index) {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            ccombo.remove(index);
 //        } else {
@@ -172,7 +172,7 @@ public class ComboViewer extends AbstractListViewer {
      * Method declared on Viewer.
      */
     public Control getControl() {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            return ccombo;
 //        } else {
@@ -180,7 +180,7 @@ public class ComboViewer extends AbstractListViewer {
 //        }
     }
 
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    /**
 //	 * Returns this list viewer's list control. If the viewer was not created on
 //	 * a CCombo control, some kind of unchecked exception is thrown.
@@ -216,7 +216,7 @@ public class ComboViewer extends AbstractListViewer {
      * @see org.eclipse.jface.viewers.AbstractListViewer#listSetSelection(int[])
      */
     protected void listSetSelection(int[] ixs) {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            for (int idx = 0; idx < ixs.length; idx++) {
 //                ccombo.select(ixs[idx]);
@@ -232,7 +232,7 @@ public class ComboViewer extends AbstractListViewer {
      * @see org.eclipse.jface.viewers.AbstractListViewer#listDeselectAll()
      */
     protected void listDeselectAll() {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        if (combo == null) {
 //            ccombo.deselectAll();
 //            ccombo.clearSelection();

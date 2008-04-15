@@ -203,7 +203,7 @@ public class OpenStrategy {
      * single-click/double-click strategies.
      */
     private void addListener(Control c) {
-    	// RAP: [bm] 
+    	// RAP [bm]: 
 //        c.addListener(SWT.MouseEnter, eventHandler);
 //        c.addListener(SWT.MouseExit, eventHandler);
 //        c.addListener(SWT.MouseMove, eventHandler);
@@ -311,7 +311,7 @@ public class OpenStrategy {
                 }
 
                 switch (e.type) {
-                // RAP: [bm] 
+                // RAP [bm]: 
 //                case SWT.MouseEnter:
 //                case SWT.MouseExit:
 //                    mouseUpEvent = null;
@@ -361,7 +361,7 @@ public class OpenStrategy {
                     break;
                 case SWT.MouseUp:
                     mouseMoveEvent = null;
-                    // RAP: [bm] 
+                    // RAP [bm]: 
 //                    if ((e.button != 1) || ((e.stateMask & ~SWT.BUTTON1) != 0)) {
 //						return;
 //					}
@@ -379,7 +379,7 @@ public class OpenStrategy {
                         expandOccurred = false;
                     }
                     break;
-                // RAP: [bm] 
+                // RAP [bm]: 
 //                case SWT.KeyDown:
 //                    mouseMoveEvent = null;
 //                    mouseUpEvent = null;
@@ -414,7 +414,7 @@ public class OpenStrategy {
                     display.asyncExec(new Runnable() {
                         public void run() {
                             if (arrowKeyDown) {
-                            	// RAP: [bm] Display#timerExec
+                            	// RAP [bm]: Display#timerExec
 //                                display.timerExec(TIME, new Runnable() {
 //
 //                                    public void run() {
@@ -473,7 +473,7 @@ public class OpenStrategy {
 						table.setSelection(new TableItem[] { item });
 					}
                     selEvent.item = item;
-                    // RAP: [bm] 
+                    // RAP [bm]: 
 //                } else if (w instanceof TableTree) {
 //                    TableTree table = (TableTree) w;
 //                    TableTreeItem item = table.getItem(new Point(e.x, e.y));

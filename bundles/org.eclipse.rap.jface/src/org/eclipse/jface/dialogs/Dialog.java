@@ -22,6 +22,7 @@ import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.window.SameShellProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -210,7 +211,7 @@ public abstract class Dialog extends Window {
 	/**
 	 * Font metrics to use for determining pixel sizes.
 	 */
-	// RAP: [bm] 
+	// RAP [bm]: 
 //	private FontMetrics fontMetrics;
 	
 	/**
@@ -223,109 +224,119 @@ public abstract class Dialog extends Window {
 	 */
 	private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 8;
 
-	/**
-	 * Returns the number of pixels corresponding to the height of the given
-	 * number of characters.
-	 * <p>
-	 * The required <code>FontMetrics</code> parameter may be created in the
-	 * following way: <code>
-	 * 	GC gc = new GC(control);
-	 *	gc.setFont(control.getFont());
-	 *	fontMetrics = gc.getFontMetrics();
-	 *	gc.dispose();
-	 * </code>
-	 * </p>
-	 * 
-	 * @param fontMetrics
-	 *            used in performing the conversion
-	 * @param chars
-	 *            the number of characters
-	 * @return the number of pixels
-	 * @since 2.0
-	 */
-	public static int convertHeightInCharsToPixels(FontMetrics fontMetrics,
-			int chars) {
-		return fontMetrics.getHeight() * chars;
-	}
+	// RAP [bm]: see also DialogUtil
+//	/**
+//	 * Returns the number of pixels corresponding to the height of the given
+//	 * number of characters.
+//	 * <p>
+//	 * The required <code>FontMetrics</code> parameter may be created in the
+//	 * following way: <code>
+//	 * 	GC gc = new GC(control);
+//	 *	gc.setFont(control.getFont());
+//	 *	fontMetrics = gc.getFontMetrics();
+//	 *	gc.dispose();
+//	 * </code>
+//	 * </p>
+//	 * 
+//	 * @param fontMetrics
+//	 *            used in performing the conversion
+//	 * @param chars
+//	 *            the number of characters
+//	 * @return the number of pixels
+//	 * @since 2.0
+//	 */
+//	public static int convertHeightInCharsToPixels(FontMetrics fontMetrics,
+//			int chars) {
+//		return fontMetrics.getHeight() * chars;
+//	}
+	// RAPEND: [bm] 
 
-	/**
-	 * Returns the number of pixels corresponding to the given number of
-	 * horizontal dialog units.
-	 * <p>
-	 * The required <code>FontMetrics</code> parameter may be created in the
-	 * following way: <code>
-	 * 	GC gc = new GC(control);
-	 *	gc.setFont(control.getFont());
-	 *	fontMetrics = gc.getFontMetrics();
-	 *	gc.dispose();
-	 * </code>
-	 * </p>
-	 * 
-	 * @param fontMetrics
-	 *            used in performing the conversion
-	 * @param dlus
-	 *            the number of horizontal dialog units
-	 * @return the number of pixels
-	 * @since 2.0
-	 */
-	public static int convertHorizontalDLUsToPixels(FontMetrics fontMetrics,
-			int dlus) {
-		// round to the nearest pixel
-		return (fontMetrics.getAverageCharWidth() * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2)
-				/ HORIZONTAL_DIALOG_UNIT_PER_CHAR;
-	}
+	
+	// RAP [bm]: see also DialogUtil
+//	/**
+//	 * Returns the number of pixels corresponding to the given number of
+//	 * horizontal dialog units.
+//	 * <p>
+//	 * The required <code>FontMetrics</code> parameter may be created in the
+//	 * following way: <code>
+//	 * 	GC gc = new GC(control);
+//	 *	gc.setFont(control.getFont());
+//	 *	fontMetrics = gc.getFontMetrics();
+//	 *	gc.dispose();
+//	 * </code>
+//	 * </p>
+//	 * 
+//	 * @param fontMetrics
+//	 *            used in performing the conversion
+//	 * @param dlus
+//	 *            the number of horizontal dialog units
+//	 * @return the number of pixels
+//	 * @since 2.0
+//	 */
+//	public static int convertHorizontalDLUsToPixels(FontMetrics fontMetrics,
+//			int dlus) {
+//		// round to the nearest pixel
+//		return (fontMetrics.getAverageCharWidth() * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2)
+//				/ HORIZONTAL_DIALOG_UNIT_PER_CHAR;
+//	}
+	// RAPEND: [bm] 
 
-	/**
-	 * Returns the number of pixels corresponding to the given number of
-	 * vertical dialog units.
-	 * <p>
-	 * The required <code>FontMetrics</code> parameter may be created in the
-	 * following way: <code>
-	 * 	GC gc = new GC(control);
-	 *	gc.setFont(control.getFont());
-	 *	fontMetrics = gc.getFontMetrics();
-	 *	gc.dispose();
-	 * </code>
-	 * </p>
-	 * 
-	 * @param fontMetrics
-	 *            used in performing the conversion
-	 * @param dlus
-	 *            the number of vertical dialog units
-	 * @return the number of pixels
-	 * @since 2.0
-	 */
-	public static int convertVerticalDLUsToPixels(FontMetrics fontMetrics,
-			int dlus) {
-		// round to the nearest pixel
-		return (fontMetrics.getHeight() * dlus + VERTICAL_DIALOG_UNITS_PER_CHAR / 2)
-				/ VERTICAL_DIALOG_UNITS_PER_CHAR;
-	}
+	// RAP [bm]: see also DialogUtil
+//	/**
+//	 * Returns the number of pixels corresponding to the given number of
+//	 * vertical dialog units.
+//	 * <p>
+//	 * The required <code>FontMetrics</code> parameter may be created in the
+//	 * following way: <code>
+//	 * 	GC gc = new GC(control);
+//	 *	gc.setFont(control.getFont());
+//	 *	fontMetrics = gc.getFontMetrics();
+//	 *	gc.dispose();
+//	 * </code>
+//	 * </p>
+//	 * 
+//	 * @param fontMetrics
+//	 *            used in performing the conversion
+//	 * @param dlus
+//	 *            the number of vertical dialog units
+//	 * @return the number of pixels
+//	 * @since 2.0
+//	 */
+//	public static int convertVerticalDLUsToPixels(FontMetrics fontMetrics,
+//			int dlus) {
+//		// round to the nearest pixel
+//		return (fontMetrics.getHeight() * dlus + VERTICAL_DIALOG_UNITS_PER_CHAR / 2)
+//				/ VERTICAL_DIALOG_UNITS_PER_CHAR;
+//	}
+	// RAPEND: [bm] 
 
-	/**
-	 * Returns the number of pixels corresponding to the width of the given
-	 * number of characters.
-	 * <p>
-	 * The required <code>FontMetrics</code> parameter may be created in the
-	 * following way: <code>
-	 * 	GC gc = new GC(control);
-	 *	gc.setFont(control.getFont());
-	 *	fontMetrics = gc.getFontMetrics();
-	 *	gc.dispose();
-	 * </code>
-	 * </p>
-	 * 
-	 * @param fontMetrics
-	 *            used in performing the conversion
-	 * @param chars
-	 *            the number of characters
-	 * @return the number of pixels
-	 * @since 2.0
-	 */
-	public static int convertWidthInCharsToPixels(FontMetrics fontMetrics,
-			int chars) {
-		return fontMetrics.getAverageCharWidth() * chars;
-	}
+	// RAP [bm]: see also DialogUtil
+//	/**
+//	 * Returns the number of pixels corresponding to the width of the given
+//	 * number of characters.
+//	 * <p>
+//	 * The required <code>FontMetrics</code> parameter may be created in the
+//	 * following way: <code>
+//	 * 	GC gc = new GC(control);
+//	 *	gc.setFont(control.getFont());
+//	 *	fontMetrics = gc.getFontMetrics();
+//	 *	gc.dispose();
+//	 * </code>
+//	 * </p>
+//	 * 
+//	 * @param fontMetrics
+//	 *            used in performing the conversion
+//	 * @param chars
+//	 *            the number of characters
+//	 * @return the number of pixels
+//	 * @since 2.0
+//	 */
+//	public static int convertWidthInCharsToPixels(FontMetrics fontMetrics,
+//			int chars) {
+//		return fontMetrics.getAverageCharWidth() * chars;
+//	}
+	// RAPEND: [bm] 
+
 
 	/**
 	 * Shortens the given text <code>textValue</code> so that its width in
@@ -347,11 +358,16 @@ public abstract class Dialog extends Window {
 		if (textValue == null) {
 			return null;
 		}
-		GC gc = new GC(control);
+		// RAP [bm]: GC
+//		GC gc = new GC(control);
+//		int maxExtent = gc.textExtent(textValue).x;
+		int maxExtent = Graphics.textExtent(control.getFont(), textValue, 0).x;
+		// RAPEND: [bm] 
+
 		int maxWidth = control.getBounds().width - 5;
-		int maxExtent = gc.textExtent(textValue).x;
 		if (maxExtent < maxWidth) {
-			gc.dispose();
+			// RAP [bm]: GC
+//			gc.dispose();
 			return textValue;
 		}
 		int length = textValue.length();
@@ -363,15 +379,21 @@ public abstract class Dialog extends Window {
 			String s1 = textValue.substring(0, start);
 			String s2 = textValue.substring(end, length);
 			String s = s1 + ELLIPSIS + s2;
-			int l = gc.textExtent(s).x;
+			// RAP [bm]: GC
+//			int l = gc.textExtent(s).x;
+			int l = Graphics.textExtent(control.getFont(), s, 0).x;
+			// RAPEND: [bm] 
+
 			if (l < maxWidth) {
-				gc.dispose();
+				// RAP [bm]: GC
+//				gc.dispose();
 				return s;
 			}
 			start--;
 			end++;
 		}
-		gc.dispose();
+		// RAP [bm]: GC 
+//		gc.dispose();
 		return textValue;
 	}
 
@@ -466,7 +488,7 @@ public abstract class Dialog extends Window {
 	 * 
 	 * @param buttonId
 	 *            the id of the button that was pressed (see
-	 *            <code>IDialogConstants.*_ID</code> constants)
+	 *            <code>IDialogConstants.get().*_ID</code> constants)
 	 */
 	protected void buttonPressed(int buttonId) {
 		if (IDialogConstants.OK_ID == buttonId) {
@@ -506,10 +528,14 @@ public abstract class Dialog extends Window {
 	 */
 	protected int convertHeightInCharsToPixels(int chars) {
 		// test for failure to initialize for backward compatibility
-		if (fontMetrics == null) {
-			return 0;
-		}
-		return convertHeightInCharsToPixels(fontMetrics, chars);
+		// RAP [bm]: 
+//		if (fontMetrics == null) {
+//			return 0;
+//		}
+//		return convertHeightInCharsToPixels(fontMetrics, chars);
+		Font dialogFont = JFaceResources.getDialogFont();
+		return Graphics.getCharHeight(dialogFont) * chars;
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -529,10 +555,14 @@ public abstract class Dialog extends Window {
 	 */
 	protected int convertHorizontalDLUsToPixels(int dlus) {
 		// test for failure to initialize for backward compatibility
-		if (fontMetrics == null) {
-			return 0;
-		}
-		return convertHorizontalDLUsToPixels(fontMetrics, dlus);
+		// RAP [bm]: 
+//		if (fontMetrics == null) {
+//			return 0;
+//		}
+//		return convertHorizontalDLUsToPixels(fontMetrics, dlus);
+		Font dialogFont = JFaceResources.getDialogFont();
+		return (int) ((Graphics.getAvgCharWidth(dialogFont)* dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2)	/ HORIZONTAL_DIALOG_UNIT_PER_CHAR);
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -552,10 +582,15 @@ public abstract class Dialog extends Window {
 	 */
 	protected int convertVerticalDLUsToPixels(int dlus) {
 		// test for failure to initialize for backward compatibility
-		if (fontMetrics == null) {
-			return 0;
-		}
-		return convertVerticalDLUsToPixels(fontMetrics, dlus);
+		// RAP [bm]: FontMetrics
+//		if (fontMetrics == null) {
+//			return 0;
+//		}
+//		return convertVerticalDLUsToPixels(fontMetrics, dlus);
+		Font dialogFont = JFaceResources.getDialogFont();
+		return (Graphics.getCharHeight(dialogFont) * dlus + VERTICAL_DIALOG_UNITS_PER_CHAR / 2)
+		/ VERTICAL_DIALOG_UNITS_PER_CHAR;
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -575,10 +610,14 @@ public abstract class Dialog extends Window {
 	 */
 	protected int convertWidthInCharsToPixels(int chars) {
 		// test for failure to initialize for backward compatibility
-		if (fontMetrics == null) {
-			return 0;
-		}
-		return convertWidthInCharsToPixels(fontMetrics, chars);
+		// RAP [bm]: FontMetrics 
+//		if (fontMetrics == null) {
+//			return 0;
+//		}
+//		return convertWidthInCharsToPixels(fontMetrics, chars);
+		Font dialogFont = JFaceResources.getDialogFont();
+		return (int) (Graphics.getAvgCharWidth(dialogFont) * chars); 
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -588,9 +627,9 @@ public abstract class Dialog extends Window {
 	 * a standard push button, registers it for selection events including
 	 * button presses, and registers default buttons with its shell. The button
 	 * id is stored as the button's client data. If the button id is
-	 * <code>IDialogConstants.CANCEL_ID</code>, the new button will be
+	 * <code>IDialogConstants.get().CANCEL_ID</code>, the new button will be
 	 * accessible from <code>getCancelButton()</code>. If the button id is
-	 * <code>IDialogConstants.OK_ID</code>, the new button will be accesible
+	 * <code>IDialogConstants.get().OK_ID</code>, the new button will be accesible
 	 * from <code>getOKButton()</code>. Note that the parent's layout is
 	 * assumed to be a <code>GridLayout</code> and the number of columns in
 	 * this layout is incremented. Subclasses may override.
@@ -599,7 +638,7 @@ public abstract class Dialog extends Window {
 	 * @param parent
 	 *            the parent composite
 	 * @param id
-	 *            the id of the button (see <code>IDialogConstants.*_ID</code>
+	 *            the id of the button (see <code>IDialogConstants.get().*_ID</code>
 	 *            constants for standard dialog button ids)
 	 * @param label
 	 *            the label from the button
@@ -689,10 +728,10 @@ public abstract class Dialog extends Window {
 	 */
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and Cancel buttons by default
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.get().OK_LABEL,
 				true);
 		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
+				IDialogConstants.get().CANCEL_LABEL, false);
 	}
 
 	/*
@@ -840,7 +879,7 @@ public abstract class Dialog extends Window {
 
 	/**
 	 * Returns the button created when <code>createButton</code> is called
-	 * with an ID of <code>IDialogConstants.CANCEL_ID</code>. If
+	 * with an ID of <code>IDialogConstants.get().CANCEL_ID</code>. If
 	 * <code>createButton</code> was never called with this parameter, or if
 	 * <code>createButton</code> is overridden, <code>getCancelButton</code>
 	 * will return <code>null</code>.
@@ -849,7 +888,7 @@ public abstract class Dialog extends Window {
 	 * 
 	 * @see #createButton(Composite, int, String, boolean)
 	 * @since 2.0
-	 * @deprecated Use <code>getButton(IDialogConstants.CANCEL_ID)</code>
+	 * @deprecated Use <code>getButton(IDialogConstants.get().CANCEL_ID)</code>
 	 *             instead. This method will be removed soon.
 	 */
 	protected Button getCancelButton() {
@@ -893,7 +932,7 @@ public abstract class Dialog extends Window {
 
 	/**
 	 * Returns the button created when <code>createButton</code> is called
-	 * with an ID of <code>IDialogConstants.OK_ID</code>. If
+	 * with an ID of <code>IDialogConstants.get().OK_ID</code>. If
 	 * <code>createButton</code> was never called with this parameter, or if
 	 * <code>createButton</code> is overridden, <code>getOKButton</code>
 	 * will return <code>null</code>.
@@ -902,7 +941,7 @@ public abstract class Dialog extends Window {
 	 * 
 	 * @see #createButton(Composite, int, String, boolean)
 	 * @since 2.0
-	 * @deprecated Use <code>getButton(IDialogConstants.OK_ID)</code> instead.
+	 * @deprecated Use <code>getButton(IDialogConstants.get().OK_ID)</code> instead.
 	 *             This method will be removed soon.
 	 */
 	protected Button getOKButton() {
@@ -922,10 +961,12 @@ public abstract class Dialog extends Window {
 	 */
 	protected void initializeDialogUnits(Control control) {
 		// Compute and store a font metric
-		GC gc = new GC(control);
-		gc.setFont(JFaceResources.getDialogFont());
-		fontMetrics = gc.getFontMetrics();
-		gc.dispose();
+		// RAP [bm]: GC
+//		GC gc = new GC(control);
+//		gc.setFont(JFaceResources.getDialogFont());
+//		fontMetrics = gc.getFontMetrics();
+//		gc.dispose();
+		// RAPEND: [bm] 
 	}
 
 	/**

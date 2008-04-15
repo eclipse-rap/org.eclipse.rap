@@ -58,7 +58,7 @@ public abstract class Viewer implements IInputSelectionProvider {
      *
      * @see #handleHelpRequest
      */
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    private ListenerList helpListeners = new ListenerList();
 
     /**
@@ -81,13 +81,13 @@ public abstract class Viewer implements IInputSelectionProvider {
     /**
      * Remembers whether we've hooked the help listener on the control or not.
      */
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    private boolean helpHooked = false;
 
     /**
      * Help listener for the control, created lazily when client's first help listener is added.
      */
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    private HelpListener helpListener = null;
 
     /**
@@ -102,7 +102,7 @@ public abstract class Viewer implements IInputSelectionProvider {
     protected Viewer() {
     }
 
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    /**
 //     * Adds a listener for help requests in this viewer.
 //     * Has no effect if an identical listener is already registered.
@@ -136,7 +136,7 @@ public abstract class Viewer implements IInputSelectionProvider {
         selectionChangedListeners.add(listener);
     }
 
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    /**
 //     * Notifies any help listeners that help has been requested.
 //     * Only listeners registered at the time this method is called are notified.
@@ -217,7 +217,7 @@ public abstract class Viewer implements IInputSelectionProvider {
      */
     public abstract ISelection getSelection();
 
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    /**
 //     * Handles a help request from the underlying SWT control.
 //     * The default behavior is to fire a help request,
@@ -254,7 +254,7 @@ public abstract class Viewer implements IInputSelectionProvider {
      */
     public abstract void refresh();
 
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    /**
 //     * Removes the given help listener from this viewer.
 //     * Has no affect if an identical listener is not registered.

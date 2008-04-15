@@ -371,7 +371,7 @@ public class TreeViewerRow extends ViewerRow {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ViewerRow#getTextBounds(int)
 	 */
-	// RAP: [bm] Tree#getTextBounds
+	// RAP [bm]: Tree#getTextBounds
 //	public Rectangle getTextBounds(int index) {
 //		return item.getTextBounds(index);
 //	}

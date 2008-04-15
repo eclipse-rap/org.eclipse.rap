@@ -152,7 +152,7 @@ public interface IAction {
      */
     public void addPropertyChangeListener(IPropertyChangeListener listener);
 
-    // RAP: [bm] MenuItem#getAccelerator
+    // RAP [bm]: MenuItem#getAccelerator
     /**
      * Returns the accelerator keycode for this action.
      * The result is the bit-wise OR of zero or more modifier masks
@@ -197,7 +197,7 @@ public interface IAction {
      *
      * @return a help listener for this action
      */
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    public HelpListener getHelpListener();
 
     /**
@@ -411,7 +411,7 @@ public interface IAction {
      *
      * @param listener a help listener for this action
      */
-    // RAP: [bm] 
+    // RAP [bm]: 
 //    public void setHelpListener(HelpListener listener);
 
     /**

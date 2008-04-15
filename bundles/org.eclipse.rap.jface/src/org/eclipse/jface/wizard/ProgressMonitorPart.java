@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.jface.wizard;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.core.runtime.Assert;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -176,10 +175,13 @@ public class ProgressMonitorPart extends Composite implements
         fLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         if (progressIndicatorHeight == SWT.DEFAULT) {
-            GC gc = new GC(fLabel);
-            FontMetrics fm = gc.getFontMetrics();
-            gc.dispose();
-            progressIndicatorHeight = fm.getHeight();
+        	// RAP [bm]: 
+//            GC gc = new GC(fLabel);
+//            FontMetrics fm = gc.getFontMetrics();
+//            gc.dispose();
+//            progressIndicatorHeight = fm.getHeight();
+        	progressIndicatorHeight = Graphics.getCharHeight(fLabel.getFont());
+        	// RAPEND: [bm] 
         }
 
         fProgressIndicator = new ProgressIndicator(this);
@@ -265,7 +267,8 @@ public class ProgressMonitorPart extends Composite implements
 		}
 
         //Force an update as we are in the UI Thread
-        fLabel.update();
+        System.err.println("update - needed?"); //$NON-NLS-1$
+//        fLabel.update();
     }
 
     /**

@@ -89,7 +89,7 @@ class FileImageDescriptor extends ImageDescriptor {
 	 *      {@link ImageDescriptor#createImage(boolean, Device)} as of version
 	 *      3.4 so that the SWT OS optimised loading can be used.
 	 */
-	// RAP: [bm] lowered visibility, see ImageDescriptor
+	// RAP [bm]: lowered visibility, see ImageDescriptor
 	protected ImageData getImageData() {
 		InputStream in = getStream();
 		ImageData result = null;
@@ -175,7 +175,7 @@ class FileImageDescriptor extends ImageDescriptor {
 		if (path == null)
 			return createDefaultImage(returnMissingImageOnError, device);
 		try {			
-			// RAP: [bm] 
+			// RAP [bm]: 
 //			return new Image(device, path);
 //			return Graphics.getImage(path);
 			path = location.getPackage().getName().replace( '.', '/' );
@@ -197,7 +197,7 @@ class FileImageDescriptor extends ImageDescriptor {
 			Device device) {
 		try {
 			if (returnMissingImageOnError)
-				// RAP: [bm] 
+				// RAP [bm]: 
 				// TODO: [bm] review if this is ok,
 //				return new Image(device, DEFAULT_IMAGE_DATA);
 				return ResourceFactory.findImage(DEFAULT_IMAGE_DATA);

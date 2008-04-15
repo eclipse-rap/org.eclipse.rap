@@ -86,7 +86,7 @@ public class StatusLineContributionItem extends ContributionItem {
 		label = new CLabel(statusLine, SWT.SHADOW_NONE);
 
 		if (widthHint < 0) {
-			// RAP: [bm] GC
+			// RAP [bm]: GC
 //			GC gc = new GC(statusLine);
 //			gc.setFont(statusLine.getFont());
 //			FontMetrics fm = gc.getFontMetrics();

@@ -105,7 +105,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
         return new ImageDataImageDescriptor(img);
     }
     
-    // RAP: [bm] javadoc
+    // RAP [bm]: javadoc
     /**
      * Creates an ImageDescriptor based on the given original descriptor, but with additional
      * SWT flags.
@@ -175,7 +175,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
      * @see org.eclipse.jface.resource.DeviceResourceDescriptor#destroyResource(Object)
      */
     public void destroyResource(Object previouslyCreatedObject) {
-    	// RAP: [bm] Image#dispose
+    	// RAP [bm]: Image#dispose
 //        ((Image)previouslyCreatedObject).dispose();
     }
     
@@ -287,7 +287,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
          */
 
         try {
-        	// RAP: [bm] 
+        	// RAP [bm]: 
         	// TODO: [bm] transperency is ignored at the moment
 //            if (data.transparentPixel >= 0) {
 //            	ImageData maskData = data.getTransparencyMask();
@@ -300,7 +300,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
         } catch (SWTException exception) {
             if (returnMissingImageOnError) {
                 try {
-                	// RAP: [bm] 
+                	// RAP [bm]: 
 //                    return new Image(device, DEFAULT_IMAGE_DATA);
                 	return ResourceFactory.findImage(DEFAULT_IMAGE_DATA);
                 	// RAPEND: [bm] 
@@ -327,7 +327,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
      *
      * @return a new image data or <code>null</code>
      */
-    // RAP: [bm] made protected (was public) to avoid publishing ImageData 
+    // RAP [bm]: made protected (was public) to avoid publishing ImageData 
     protected abstract ImageData getImageData();
 
     /**

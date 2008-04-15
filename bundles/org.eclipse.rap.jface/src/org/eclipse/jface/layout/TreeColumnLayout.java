@@ -54,7 +54,7 @@ public class TreeColumnLayout extends AbstractColumnLayout {
 			tree.getDisplay().asyncExec(new Runnable() {
 
 				public void run() {
-					// RAP: [bm] Control#update
+					// RAP [bm]: Control#update
 //					tree.update();
 					tree.getParent().layout();
 				}

@@ -204,7 +204,7 @@ public abstract class AbstractColumnLayout extends Layout {
 
 		inupdateMode = true;
 		setColumnWidths(scrollable, widths);
-		// RAP: [bm] Control#update
+		// RAP [bm]: Control#update
 //		scrollable.update();
 		inupdateMode = false;
 

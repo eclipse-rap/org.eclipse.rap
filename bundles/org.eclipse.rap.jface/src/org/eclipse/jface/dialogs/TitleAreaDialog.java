@@ -16,6 +16,7 @@ package org.eclipse.jface.dialogs;
 
 import org.eclipse.jface.resource.JFaceColors;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -193,7 +194,8 @@ public class TitleAreaDialog extends TrayDialog {
 		parent.addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(DisposeEvent e) {
 				if (titleAreaColor != null) {
-					titleAreaColor.dispose();
+					// RAP [bm]: Color#dispose
+//					titleAreaColor.dispose();
 				}
 			}
 		});
@@ -202,7 +204,10 @@ public class TitleAreaDialog extends TrayDialog {
 		Color background;
 		Color foreground;
 		if (titleAreaRGB != null) {
-			titleAreaColor = new Color(display, titleAreaRGB);
+			// RAP [bm]: 
+//			titleAreaColor = new Color(display, titleAreaRGB);
+			titleAreaColor = Graphics.getColor(titleAreaRGB);
+			// RAPEND: [bm] 
 			background = titleAreaColor;
 			foreground = null;
 		} else {

@@ -487,7 +487,7 @@ public final class LegacyActionTools {
 		keyCodes.put("DELETE", new Integer(127)); //$NON-NLS-1$
 
 		keyCodes.put("SPACE", new Integer(' ')); //$NON-NLS-1$
-		// RAP: [bm] key constants
+		// RAP [bm]: key constants
 //		keyCodes.put("ARROW_UP", new Integer(SWT.ARROW_UP)); //$NON-NLS-1$
 //		keyCodes.put("ARROW_DOWN", new Integer(SWT.ARROW_DOWN)); //$NON-NLS-1$
 //		keyCodes.put("ARROW_LEFT", new Integer(SWT.ARROW_LEFT)); //$NON-NLS-1$
@@ -528,7 +528,7 @@ public final class LegacyActionTools {
 
 		keyStrings.put(new Integer(' '), JFaceResources.getString("Space")); //$NON-NLS-1$
 
-		// RAP: [bm] key constants
+		// RAP [bm]: key constants
 //		keyStrings.put(new Integer(SWT.ARROW_UP), JFaceResources
 //				.getString("Arrow_Up")); //$NON-NLS-1$
 //		keyStrings.put(new Integer(SWT.ARROW_DOWN), JFaceResources
@@ -589,7 +589,7 @@ public final class LegacyActionTools {
 				.put(
 						JFaceResources.getString("Space").toUpperCase(), new Integer(' ')); //$NON-NLS-1$
 
-		// RAP: [bm] key constants
+		// RAP [bm]: key constants
 
 //		localizedKeyCodes
 //				.put(

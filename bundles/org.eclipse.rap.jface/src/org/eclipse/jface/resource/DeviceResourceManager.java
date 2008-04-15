@@ -79,7 +79,7 @@ public final class DeviceResourceManager extends AbstractResourceManager {
     public void dispose() {
         super.dispose();
         if (missingImage != null) {
-        	// RAP: [bm] Image#dispose
+        	// RAP [bm]: Image#dispose
 //            missingImage.dispose();
         	// RAPEND: [bm] 
             missingImage = null;
