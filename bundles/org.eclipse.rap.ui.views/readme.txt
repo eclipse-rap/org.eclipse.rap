@@ -1,0 +1,1 @@
+org.eclipse.ui.views base version: v20080408-0800
