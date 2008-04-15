@@ -74,6 +74,51 @@ public class MouseEvent_Test extends TestCase {
     event.processEvent();
     assertEquals( "", log );
   }
+  
+  public void testAddRemoveUntypedListener() {
+    final java.util.List log = new ArrayList();
+    Display display = new Display();
+    Control control = new Shell( display, SWT.NONE );
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
+        log.add( event );
+      }
+    };
+    // MouseDown
+    control.addListener( SWT.MouseDown, listener );
+    MouseEvent event;
+    event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
+    event.processEvent();
+    Event firedEvent = ( Event )log.get( 0 );
+    assertEquals( SWT.MouseDown, firedEvent.type );
+    log.clear();
+    control.removeListener( SWT.MouseDown, listener );
+    event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
+    event.processEvent();
+    assertEquals( 0, log.size() );
+    // MouseUp
+    control.addListener( SWT.MouseUp, listener );
+    event = new MouseEvent( control, MouseEvent.MOUSE_UP );
+    event.processEvent();
+    firedEvent = ( Event )log.get( 0 );
+    assertEquals( SWT.MouseUp, firedEvent.type );
+    log.clear();
+    control.removeListener( SWT.MouseUp, listener );
+    event = new MouseEvent( control, MouseEvent.MOUSE_UP );
+    event.processEvent();
+    assertEquals( 0, log.size() );
+    // MouseDoubleCLick
+    control.addListener( SWT.MouseDoubleClick, listener );
+    event = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
+    event.processEvent();
+    firedEvent = ( Event )log.get( 0 );
+    assertEquals( SWT.MouseDoubleClick, firedEvent.type );
+    log.clear();
+    control.removeListener( SWT.MouseDoubleClick, listener );
+    event = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
+    event.processEvent();
+    assertEquals( 0, log.size() );
+  }
 
   public void testTypedMouseEventOrder() {
     final java.util.List events = new ArrayList();

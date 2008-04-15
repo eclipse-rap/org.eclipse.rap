@@ -267,6 +267,11 @@ public final class UntypedEventAdapter
       case SWT.SetData:
         SetDataEvent.removeListener( widget, this );
       break;
+      case SWT.MouseDown:
+      case SWT.MouseUp:
+      case SWT.MouseDoubleClick:
+        MouseEvent.removeListener( widget, this );
+      break;
       default:
         String txt = "The untyped event ''{0}'' is not supported.";
         Object[] param = new Object[] { new Integer( eventType ) };
