@@ -25,36 +25,33 @@ import org.eclipse.swt.widgets.*;
  * used in data binding applications.
  */
 public class Snippet000HelloWorld extends Group {
-
-  public Snippet000HelloWorld( Composite parent, int style ) {
-    super( parent, style );
-    createPartControl();
-  }
-  private ViewModel viewModel = new ViewModel();
+  private final ViewModel viewModel = new ViewModel();
   private Text name;
   private Label labelName;
+  
   // The data model class. This is normally a persistent class of some sort.
-  // 
+  //
   // In this example, we only push changes from the GUI to the model, so we
   // don't worry about implementing JavaBeans bound properties. If we need
   // our GUI to automatically reflect changes in the Person object, the
   // Person object would need to implement the JavaBeans property change
   // listener methods.
   static class Person extends ModelObject {
-
+    
     // A property...
     String name = "HelloWorld";
-
+    
     public String getName() {
       return name;
     }
-
-    public void setName( String name ) {
+    
+    public void setName( final String name ) {
       String oldValue = this.name;
       this.name = name;
       firePropertyChange( "name", oldValue, this.name );
     }
   }
+
   // The View's model--the root of our Model graph for this particular GUI.
   //
   // Typically each View class has a corresponding ViewModel class.
@@ -62,26 +59,32 @@ public class Snippet000HelloWorld extends Group {
   // DAO. Since this snippet doesn't have any persistent objects to
   // retrieve, this ViewModel just instantiates a model object to edit.
   static class ViewModel {
-
+    
     // The model to bind
-    private Person person = new Person();
-
+    private final Person person = new Person();
+    
     public Person getPerson() {
       return person;
     }
+  }
+
+  
+  public Snippet000HelloWorld( final Composite parent, final int style ) {
+    super( parent, style );
+    createPartControl();
   }
 
   public void createPartControl() {
     FormLayout formLayout = new FormLayout();
     formLayout.marginHeight = DatabindingSnippetsView.GROUP_MARGIN_HEIGHT;
     formLayout.marginWidth = DatabindingSnippetsView.GROUP_MARGIN_WIDTH;
-    this.setLayout( formLayout );
-    this.setText( "Hello World Snippet 0001 - Binding Example" );
+    setLayout( formLayout );
+    setText( "Hello World Snippet 0001 - Binding Example" );
     // Info Label
     Label info1 = new Label( this, SWT.NONE );
-    info1.setText( "This Textbox is linked to the Model (Person/Name). "
-                   + "If you type in a text, "
-                   + "it automatically updates the name property of the model" );
+    info1.setText(   "This Textbox is linked to the Model (Person/Name). "
+                   + "If you type in a text, it automatically updates "
+                   + "the name property of the model" );
     FormData data = new FormData( DatabindingSnippetsView.UNDEFINDED,
                                   SWT.DEFAULT );
     data.top = new FormAttachment( 0, DatabindingSnippetsView.TOP_MARGIN );
@@ -107,32 +110,21 @@ public class Snippet000HelloWorld extends Group {
     data.left = new FormAttachment( 0, 0 );
     labelName.setLayoutData( data );
     labelName.setText( "not changed yet..." );
-    try {
-      // Bind it
-      // Initiating the realm once sets the default session Realm
-      if( Realm.getDefault() == null ) {
-        SWTObservables.getRealm( Display.getCurrent() );
-      }
-      DataBindingContext bindingContext = new DataBindingContext();
-      Person person = viewModel.getPerson();
-      bindingContext.bindValue( SWTObservables.observeText( name, SWT.Modify ),
-                                BeansObservables.observeValue( person, "name" ),
-                                null,
-                                null );
-// final IObservableValue someValue = BeansObservables.observeValue(person,
-// "name");
-// new ControlUpdater(labelName) {
-// protected void updateControl() {
-// labelName.setText(someValue.getValue().toString());
-// }
-// };
-      bindingContext.bindValue( SWTObservables.observeText( labelName ),
-                                BeansObservables.observeValue( person, "name" ),
-                                null,
-                                null );
-    } catch( RuntimeException e ) {
-      e.printStackTrace();
-    }
-    // Print the results
+    
+    Realm realm = SWTObservables.getRealm( Display.getCurrent() );
+    DataBindingContext bindingContext = new DataBindingContext( realm );
+    Person person = viewModel.getPerson();
+    bindingContext.bindValue( SWTObservables.observeText( name, SWT.Modify ),
+                              BeansObservables.observeValue( realm,
+                                                             person,
+                                                             "name" ),
+                              null,
+                              null );
+    bindingContext.bindValue( SWTObservables.observeText( labelName ),
+                              BeansObservables.observeValue( realm,
+                                                             person,
+                                                             "name" ),
+                              null,
+                              null );
   }
 }

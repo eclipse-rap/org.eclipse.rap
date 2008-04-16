@@ -11,6 +11,15 @@ import org.eclipse.ui.*;
 
 public class DataBindingPerspective implements IPerspectiveFactory {
 
+  private static final String DEMO_PERSPECTIVE_PLANNING
+    = "org.eclipse.rap.demo.perspective.planning";
+  private static final String RAP_DEMO_PERSPECTIVE
+    = "org.eclipse.rap.demo.perspective";
+  private static final String TEST_MASTER_DETAIL_VIEW
+    = "org.eclipse.rap.demo.databinding.nestedselection.TestMasterDetailView";
+  private static final String DATABINDING_SNIPPETS_VIEW
+    = "org.eclipse.rap.demo.databinding.DatabindingSnippetsView";
+
   public void createInitialLayout( final IPageLayout layout ) {
     String editorArea = layout.getEditorArea();
     layout.setEditorAreaVisible( false );
@@ -18,12 +27,12 @@ public class DataBindingPerspective implements IPerspectiveFactory {
                                                  IPageLayout.LEFT,
                                                  0.25f,
                                                  editorArea );
-    topLeft.addView( "org.eclipse.rap.demo.databinding.DatabindingSnippetsView" );
-    topLeft.addView( "org.eclipse.rap.demo.databinding.nestedselection.TestMasterDetailView" );
+    topLeft.addView( DATABINDING_SNIPPETS_VIEW );
+    topLeft.addView( TEST_MASTER_DETAIL_VIEW );
     // add shortcuts to show view menu
-    layout.addShowViewShortcut( "org.eclipse.rap.demo.databinding.DatabindingSnippetsView" );
+    layout.addShowViewShortcut( DATABINDING_SNIPPETS_VIEW );
     // add shortcut for other perspective
-    layout.addPerspectiveShortcut( "org.eclipse.rap.demo.perspective" );
-    layout.addPerspectiveShortcut( "org.eclipse.rap.demo.perspective.planning" );
+    layout.addPerspectiveShortcut( RAP_DEMO_PERSPECTIVE );
+    layout.addPerspectiveShortcut( DEMO_PERSPECTIVE_PLANNING );
   }
 }

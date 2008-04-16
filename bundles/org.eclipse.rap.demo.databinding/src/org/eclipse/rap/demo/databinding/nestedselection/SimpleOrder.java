@@ -28,7 +28,7 @@ public class SimpleOrder {
   /**
    * @param date The date to set.
    */
-  public void setDate( Date date ) {
+  public void setDate( final Date date ) {
     this.date = date;
   }
 
@@ -42,23 +42,23 @@ public class SimpleOrder {
   /**
    * @param orderNumber The orderNumber to set.
    */
-  public void setOrderNumber( int orderNumber ) {
+  public void setOrderNumber( final int orderNumber ) {
     this.orderNumber = orderNumber;
   }
 
   /**
-   * @param i
+   * @param orderNumber
    * @param date
    */
-  public SimpleOrder( int i, Date date ) {
-    this.orderNumber = i;
+  public SimpleOrder( final int orderNumber, final Date date ) {
+    this.orderNumber = orderNumber;
     this.date = date;
   }
-  
+
   public void addPropertyChangeListener( final PropertyChangeListener lsnr ) {
     // avoid log messages
   }
-  
+
   public void removePropertyChangeListener( final PropertyChangeListener lsnr ){
     // avoid log messages
   }

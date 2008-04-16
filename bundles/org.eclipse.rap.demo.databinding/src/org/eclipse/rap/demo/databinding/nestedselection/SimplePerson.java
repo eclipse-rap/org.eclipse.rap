@@ -16,9 +16,12 @@ public class SimplePerson extends ModelObject {
   private String address = "";
   private String city = "";
   private String state = "";
-  private List orders = new LinkedList();
+  private final List orders = new LinkedList();
 
-  public SimplePerson( String name, String address, String city, String state )
+  public SimplePerson( final String name,
+                       final String address,
+                       final String city,
+                       final String state )
   {
     this.name = name;
     this.address = address;
@@ -43,7 +46,7 @@ public class SimplePerson extends ModelObject {
   /**
    * @param address The address to set.
    */
-  public void setAddress( String address ) {
+  public void setAddress( final String address ) {
     String old = this.address;
     this.address = address;
     firePropertyChange( "address", old, address );
@@ -59,7 +62,7 @@ public class SimplePerson extends ModelObject {
   /**
    * @param city The city to set.
    */
-  public void setCity( String city ) {
+  public void setCity( final String city ) {
     String old = this.city;
     firePropertyChange( "city", old, this.city = city );
   }
@@ -74,7 +77,7 @@ public class SimplePerson extends ModelObject {
   /**
    * @param name The name to set.
    */
-  public void setName( String name ) {
+  public void setName( final String name ) {
     firePropertyChange( "name", this.name, this.name = name );
   }
 
@@ -88,7 +91,7 @@ public class SimplePerson extends ModelObject {
   /**
    * @param state The state to set.
    */
-  public void setState( String state ) {
+  public void setState( final String state ) {
     firePropertyChange( "state", this.state, this.state = state ); //$NON-NLS-1$
   }
 

@@ -18,6 +18,7 @@ import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.observable.Observables;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.map.IObservableMap;
+import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.viewers.ObservableMapLabelProvider;
@@ -35,23 +36,132 @@ import org.eclipse.swt.widgets.*;
  */
 public class Snippet001NestedSelectionWithCombo extends Group {
 
-  private ViewModel viewModel = new ViewModel();
+  private final ViewModel viewModel = new ViewModel();
+  
+  // Minimal JavaBeans support
+  public static abstract class AbstractModelObject {
+    private final PropertyChangeSupport propertyChangeSupport
+      = new PropertyChangeSupport( this );
 
-  public Snippet001NestedSelectionWithCombo( Composite parent, int style ) {
+    public void addPropertyChangeListener( final PropertyChangeListener lsnr ) {
+      propertyChangeSupport.addPropertyChangeListener( lsnr );
+    }
+
+    public void addPropertyChangeListener( final String propertyName,
+                                           final PropertyChangeListener lsnr )
+    {
+      propertyChangeSupport.addPropertyChangeListener( propertyName, lsnr );
+    }
+
+    public void removePropertyChangeListener( final PropertyChangeListener lsnr )
+    {
+      propertyChangeSupport.removePropertyChangeListener( lsnr );
+    }
+
+    public void removePropertyChangeListener( final String propertyName,
+                                              final PropertyChangeListener lsnr )
+    {
+      propertyChangeSupport.removePropertyChangeListener( propertyName,
+                                                          lsnr );
+    }
+
+    protected void firePropertyChange( final String propertyName,
+                                       final Object oldValue,
+                                       final Object newValue )
+    {
+      propertyChangeSupport.firePropertyChange( propertyName,
+                                                oldValue,
+                                                newValue );
+    }
+  }
+  
+  // The data model class. This is normally a persistent class of some sort.
+  //
+  // This example implements full JavaBeans bound properties so that changes
+  // to instances of this class will automatically be propogated to the UI.
+  public static class Person extends AbstractModelObject {
+
+    // Constructor
+    public Person( final String name, final String city ) {
+      this.name = name;
+      this.city = city;
+    }
+    // Some JavaBean bound properties...
+    String name;
+    String city;
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName( final String name ) {
+      String oldValue = this.name;
+      this.name = name;
+      firePropertyChange( "name", oldValue, name );
+    }
+
+    public String getCity() {
+      return city;
+    }
+
+    public void setCity( final String city ) {
+      String oldValue = this.city;
+      this.city = city;
+      firePropertyChange( "city", oldValue, city );
+    }
+  }
+  
+  // The View's model--the root of our GUI's Model graph
+  //
+  // Typically each View class has a corresponding ViewModel class.
+  // The ViewModel is responsible for getting the objects to edit from the
+  // DAO. Since this snippet doesn't have any persistent objects to
+  // retrieve, this ViewModel just instantiates some objects to edit.
+  //
+  // This ViewModel also implements JavaBean bound properties.
+  static class ViewModel extends AbstractModelObject {
+
+    // The model to bind
+    private final ArrayList people = new ArrayList();
+    {
+      people.add( new Person( "Wile E. Coyote", "Tucson" ) );
+      people.add( new Person( "Road Runner", "Lost Horse" ) );
+      people.add( new Person( "Bugs Bunny", "Forrest" ) );
+    }
+    // Choice of cities for the Combo
+    private final ArrayList cities = new ArrayList();
+    {
+      cities.add( "Tucson" );
+      cities.add( "AcmeTown" );
+      cities.add( "Lost Horse" );
+      cities.add( "Forrest" );
+      cities.add( "Lost Mine" );
+    }
+
+    public ArrayList getPeople() {
+      return people;
+    }
+
+    public ArrayList getCities() {
+      return cities;
+    }
+  }
+
+  
+  public Snippet001NestedSelectionWithCombo( final Composite parent, final int style ) {
     super( parent, style );
     createPartControl();
   }
 
   public void createPartControl() {
-    // Initiating the realm once sets the default session Realm
-    if( Realm.getDefault() == null ) {
-      SWTObservables.getRealm( Display.getCurrent() );
-    }
+    // Initiating the realm
+    Realm realm = SWTObservables.getRealm( Display.getCurrent() );
+
     FormLayout formLayout = new FormLayout();
     formLayout.marginHeight = DatabindingSnippetsView.GROUP_MARGIN_HEIGHT;
     formLayout.marginWidth = DatabindingSnippetsView.GROUP_MARGIN_WIDTH;
-    this.setLayout( formLayout );
-    this.setText( "Nested Selection Snippet 001 - Binding Example" );
+    setLayout( formLayout );
+    setText( "Nested Selection Snippet 001 - Binding Example" );
     // Info Label
     Label info1 = new Label( this, SWT.NONE );
     info1.setText( "This snippet demonstrates the databinding"
@@ -75,10 +185,16 @@ public class Snippet001NestedSelectionWithCombo extends Group {
     data.left = new FormAttachment( 0, 0 );
     peopleList.setLayoutData( data );
     ListViewer peopleListViewer = new ListViewer( peopleList );
-    IObservableMap attributeMap = BeansObservables.observeMap( Observables.staticObservableSet( new HashSet( viewModel.getPeople() ) ),
-                                                               Person.class,
-                                                               "name" );
-    peopleListViewer.setLabelProvider( new ObservableMapLabelProvider( attributeMap ) );
+    IObservableSet staticObservableSet
+      = Observables.staticObservableSet(realm,
+                                        new HashSet( viewModel.getPeople() ) );
+    IObservableMap attributeMap
+      = BeansObservables.observeMap( staticObservableSet,
+                                     Person.class,
+                                     "name" );
+    ObservableMapLabelProvider omlProvider
+      = new ObservableMapLabelProvider( attributeMap );
+    peopleListViewer.setLabelProvider( omlProvider );
     peopleListViewer.setContentProvider( new ArrayContentProvider() );
     peopleListViewer.setInput( viewModel.getPeople() );
     Text name = new Text( this, SWT.BORDER );
@@ -92,10 +208,12 @@ public class Snippet001NestedSelectionWithCombo extends Group {
     data.top = new FormAttachment( name, DatabindingSnippetsView.TOP_MARGIN );
     data.left = new FormAttachment( 0, 0 );
     city.setLayoutData( data );
-    DataBindingContext dbc = new DataBindingContext();
-    IObservableValue selectedPerson = ViewersObservables.observeSingleSelection( peopleListViewer );
+
+    DataBindingContext dbc = new DataBindingContext( realm );
+    IObservableValue selectedPerson
+      = ViewersObservables.observeSingleSelection( peopleListViewer );
     dbc.bindValue( SWTObservables.observeText( name, SWT.Modify ),
-                   BeansObservables.observeDetailValue( Realm.getDefault(),
+                   BeansObservables.observeDetailValue( realm,
                                                         selectedPerson,
                                                         "name",
                                                         String.class ),
@@ -104,119 +222,14 @@ public class Snippet001NestedSelectionWithCombo extends Group {
     ComboViewer cityViewer = new ComboViewer( city );
     cityViewer.setContentProvider( new ArrayContentProvider() );
     cityViewer.setInput( viewModel.getCities() );
-    IObservableValue citySelection = ViewersObservables.observeSingleSelection( cityViewer );
+    IObservableValue citySelection
+      = ViewersObservables.observeSingleSelection( cityViewer );
     dbc.bindValue( citySelection,
-                   BeansObservables.observeDetailValue( Realm.getDefault(),
+                   BeansObservables.observeDetailValue( realm,
                                                         selectedPerson,
                                                         "city",
                                                         String.class ),
                    null,
                    null );
-  }
-  // Minimal JavaBeans support
-  public static abstract class AbstractModelObject {
-
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport( this );
-
-    public void addPropertyChangeListener( PropertyChangeListener listener ) {
-      propertyChangeSupport.addPropertyChangeListener( listener );
-    }
-
-    public void addPropertyChangeListener( String propertyName,
-                                           PropertyChangeListener listener )
-    {
-      propertyChangeSupport.addPropertyChangeListener( propertyName, listener );
-    }
-
-    public void removePropertyChangeListener( PropertyChangeListener listener )
-    {
-      propertyChangeSupport.removePropertyChangeListener( listener );
-    }
-
-    public void removePropertyChangeListener( String propertyName,
-                                              PropertyChangeListener listener )
-    {
-      propertyChangeSupport.removePropertyChangeListener( propertyName,
-                                                          listener );
-    }
-
-    protected void firePropertyChange( String propertyName,
-                                       Object oldValue,
-                                       Object newValue )
-    {
-      propertyChangeSupport.firePropertyChange( propertyName,
-                                                oldValue,
-                                                newValue );
-    }
-  }
-  // The data model class. This is normally a persistent class of some sort.
-  // 
-  // This example implements full JavaBeans bound properties so that changes
-  // to instances of this class will automatically be propogated to the UI.
-  public static class Person extends AbstractModelObject {
-
-    // Constructor
-    public Person( String name, String city ) {
-      this.name = name;
-      this.city = city;
-    }
-    // Some JavaBean bound properties...
-    String name;
-    String city;
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName( String name ) {
-      String oldValue = this.name;
-      this.name = name;
-      firePropertyChange( "name", oldValue, name );
-    }
-
-    public String getCity() {
-      return city;
-    }
-
-    public void setCity( String city ) {
-      String oldValue = this.city;
-      this.city = city;
-      firePropertyChange( "city", oldValue, city );
-    }
-  }
-  // The View's model--the root of our GUI's Model graph
-  //
-  // Typically each View class has a corresponding ViewModel class.
-  // The ViewModel is responsible for getting the objects to edit from the
-  // DAO. Since this snippet doesn't have any persistent objects to
-  // retrieve, this ViewModel just instantiates some objects to edit.
-  // 
-  // This ViewModel also implements JavaBean bound properties.
-  static class ViewModel extends AbstractModelObject {
-
-    // The model to bind
-    private ArrayList people = new ArrayList();
-    {
-      people.add( new Person( "Wile E. Coyote", "Tucson" ) );
-      people.add( new Person( "Road Runner", "Lost Horse" ) );
-      people.add( new Person( "Bugs Bunny", "Forrest" ) );
-    }
-    // Choice of cities for the Combo
-    private ArrayList cities = new ArrayList();
-    {
-      cities.add( "Tucson" );
-      cities.add( "AcmeTown" );
-      cities.add( "Lost Horse" );
-      cities.add( "Forrest" );
-      cities.add( "Lost Mine" );
-    }
-
-    public ArrayList getPeople() {
-      return people;
-    }
-
-    public ArrayList getCities() {
-      return cities;
-    }
   }
 }

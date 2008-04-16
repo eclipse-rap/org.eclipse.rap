@@ -31,7 +31,7 @@ public class DatabindingSnippetsView extends ViewPart {
   public static final int STD_TEXT_WIDTH = 95;
   public static final int STD_TEXT_WIDTH_LARGE = 200;
 
-  public void createPartControl( Composite parent ) {
+  public void createPartControl( final Composite parent ) {
     FormLayout formLayout = new FormLayout();
     formLayout.marginHeight = GROUP_MARGIN_HEIGHT;
     formLayout.marginWidth = GROUP_MARGIN_WIDTH;
@@ -42,13 +42,15 @@ public class DatabindingSnippetsView extends ViewPart {
     data.top = new FormAttachment( 0, TOP_MARGIN );
     data.left = new FormAttachment( 0, GROUP_MARGIN_WIDTH );
     snippet000.setLayoutData( data );
-    Snippet001NestedSelectionWithCombo snippet001 = new Snippet001NestedSelectionWithCombo( parent,
+    Snippet001NestedSelectionWithCombo snippet001
+      = new Snippet001NestedSelectionWithCombo( parent,
                                                                                             SWT.NONE );
     data = new FormData( GROUP_WIDTH, SWT.DEFAULT );
     data.top = new FormAttachment( snippet000, TOP_MARGIN );
     data.left = new FormAttachment( 0, GROUP_MARGIN_WIDTH );
     snippet001.setLayoutData( data );
-    Snippet004DataBindingContextErrorLabel snippet004 = new Snippet004DataBindingContextErrorLabel( parent,
+    Snippet004DataBindingContextErrorLabel snippet004
+      = new Snippet004DataBindingContextErrorLabel( parent,
                                                                                                     SWT.NONE );
     data = new FormData( GROUP_WIDTH, SWT.DEFAULT );
     data.top = new FormAttachment( snippet001, TOP_MARGIN );

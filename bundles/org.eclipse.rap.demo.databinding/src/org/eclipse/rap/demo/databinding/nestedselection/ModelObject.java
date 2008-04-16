@@ -10,73 +10,76 @@ package org.eclipse.rap.demo.databinding.nestedselection;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ModelObject {
 
-  private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport( this );
+  private final PropertyChangeSupport propertyChangeSupport
+    = new PropertyChangeSupport( this );
   private String id;
 
-  public void addPropertyChangeListener( PropertyChangeListener listener ) {
+  public void addPropertyChangeListener( final PropertyChangeListener listener )
+  {
     propertyChangeSupport.addPropertyChangeListener( listener );
   }
 
-  public void addPropertyChangeListener( String propertyName,
-                                         PropertyChangeListener listener )
+  public void addPropertyChangeListener( final String propertyName,
+                                         final PropertyChangeListener listener )
   {
     propertyChangeSupport.addPropertyChangeListener( propertyName, listener );
   }
 
-  public void removePropertyChangeListener( PropertyChangeListener listener ) {
+  public void removePropertyChangeListener( final PropertyChangeListener listener )
+  {
     propertyChangeSupport.removePropertyChangeListener( listener );
   }
 
-  public void removePropertyChangeListener( String propertyName,
-                                            PropertyChangeListener listener )
+  public void removePropertyChangeListener( final String propertyName,
+                                            final PropertyChangeListener listener )
   {
     propertyChangeSupport.removePropertyChangeListener( propertyName, listener );
   }
 
-  protected void firePropertyChange( String propertyName,
-                                     Object oldValue,
-                                     Object newValue )
+  protected void firePropertyChange( final String propertyName,
+                                     final Object oldValue,
+                                     final Object newValue )
   {
     propertyChangeSupport.firePropertyChange( propertyName, oldValue, newValue );
   }
 
-  protected void firePropertyChange( String propertyName,
-                                     int oldValue,
-                                     int newValue )
+  protected void firePropertyChange( final String propertyName,
+                                     final int oldValue,
+                                     final int newValue )
   {
     propertyChangeSupport.firePropertyChange( propertyName, oldValue, newValue );
   }
 
-  protected void firePropertyChange( String propertyName,
-                                     boolean oldValue,
-                                     boolean newValue )
+  protected void firePropertyChange( final String propertyName,
+                                     final boolean oldValue,
+                                     final boolean newValue )
   {
     propertyChangeSupport.firePropertyChange( propertyName, oldValue, newValue );
   }
 
-  public void setId( String string ) {
+  public void setId( final String string ) {
     Object oldValue = id;
     id = string;
     firePropertyChange( "id", oldValue, id );
   }
 
-  protected Object[] append( Object[] array, Object object ) {
+  protected Object[] append( final Object[] array, final Object object ) {
     List newList = new ArrayList( Arrays.asList( array ) );
     newList.add( object );
-    return newList.toArray( ( Object[] )Array.newInstance( array.getClass()
-      .getComponentType(), newList.size() ) );
+    Class compType = array.getClass().getComponentType();
+    int size = newList.size();
+    return newList.toArray( ( Object[] )Array.newInstance( compType, size ) );
   }
 
-  protected Object[] remove( Object[] array, Object object ) {
+  protected Object[] remove( final Object[] array, final Object object ) {
     List newList = new ArrayList( Arrays.asList( array ) );
     newList.remove( object );
-    return newList.toArray( ( Object[] )Array.newInstance( array.getClass()
-      .getComponentType(), newList.size() ) );
+    Class compType = array.getClass().getComponentType();
+    int size = newList.size();
+    return newList.toArray( ( Object[] )Array.newInstance( compType, size ) );
   }
 }

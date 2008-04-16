@@ -22,6 +22,7 @@ import org.eclipse.core.databinding.validation.ValidationStatus;
 import org.eclipse.core.internal.databinding.conversion.ObjectToStringConverter;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.databinding.swt.ISWTObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.viewers.*;
 import org.eclipse.jface.viewers.TableViewer;
@@ -35,32 +36,6 @@ import org.eclipse.ui.part.ViewPart;
  * @since 1.0
  */
 public class TestMasterDetailView extends ViewPart {
-
-  public TestMasterDetailView() {
-    super();
-    // Initiating the realm once sets the default session Realm
-    if( Realm.getDefault() == null ) {
-      SWTObservables.getRealm( Display.getCurrent() );
-    }
-  }
-  /**
-   * @since 1.0
-   */
-  private static final class CustomUpdateValueStrategy
-    extends UpdateValueStrategy
-  {
-
-    protected IStatus doSet( IObservableValue observableValue, Object value ) {
-      IStatus result = super.doSet( observableValue, value );
-      if( result.isOK() ) {
-        Object changed = observableValue;
-        if( changed instanceof IObserving ) {
-          changed = ( ( IObserving )changed ).getObserved();
-        }
-      }
-      return result;
-    }
-  }
   private Group bindingGroup;
   private Table personsTable = null;
   private Label label1 = null;
@@ -73,6 +48,28 @@ public class TestMasterDetailView extends ViewPart {
   private Text state = null;
   private Table ordersTable = null;
   private Text validationStatus;
+  private final SimpleModel model = new SimpleModel();
+
+  /**
+   * @since 1.0
+   */
+  private static final class CustomUpdateValueStrategy
+    extends UpdateValueStrategy
+  {
+
+    protected IStatus doSet( final IObservableValue observableValue,
+                             final Object value )
+    {
+      IStatus result = super.doSet( observableValue, value );
+      if( result.isOK() ) {
+        Object changed = observableValue;
+        if( changed instanceof IObserving ) {
+          changed = ( ( IObserving )changed ).getObserved();
+        }
+      }
+      return result;
+    }
+  }
 
   /**
    * This method initializes table
@@ -114,49 +111,50 @@ public class TestMasterDetailView extends ViewPart {
     data.left = new FormAttachment( 0, 0 );
     ordersTable.setLayoutData( data );
   }
-  SimpleModel model = new SimpleModel();
 
-  private void bind( Control parent ) {
-    // Realm realm = SWTObservables.getRealm(parent.getDisplay());
-    Realm realm = Realm.getDefault();
+  private void bind( final Control parent ) {
+    Realm realm = SWTObservables.getRealm( parent.getDisplay() );
     TableViewer peopleViewer = new TableViewer( personsTable );
-    ObservableListContentProvider peopleViewerContent = new ObservableListContentProvider();
+    ObservableListContentProvider peopleViewerContent
+      = new ObservableListContentProvider();
     peopleViewer.setContentProvider( peopleViewerContent );
-    IObservableMap[] attributeMaps = BeansObservables.observeMaps( peopleViewerContent.getKnownElements(),
-                                                                   SimplePerson.class,
-                                                                   new String[]{
-                                                                     "name",
-                                                                     "state"
-                                                                   } );
-    peopleViewer.setLabelProvider( new ObservableMapLabelProvider( attributeMaps ) );
+    
+    String[] attrSimplePerson = new String[]{
+      "name",
+      "state"
+    };
+    IObservableMap[] attributeMaps 
+      = BeansObservables.observeMaps( peopleViewerContent.getKnownElements(),
+                                      SimplePerson.class,
+                                      attrSimplePerson );
+    ObservableMapLabelProvider omlProvider
+      = new ObservableMapLabelProvider( attributeMaps );
+    peopleViewer.setLabelProvider( omlProvider );
     peopleViewer.setInput( new WritableList( realm,
                                              model.getPersonList(),
                                              SimpleModel.class ) );
-    IObservableValue selectedPerson = ViewersObservables.observeSingleSelection( peopleViewer );
+    IObservableValue selectedPerson
+      = ViewersObservables.observeSingleSelection( peopleViewer );
     DataBindingContext dbc = new DataBindingContext( realm ) {
-
-      protected UpdateValueStrategy createTargetToModelUpdateValueStrategy( IObservableValue fromValue,
-                                                                            IObservableValue toValue )
+      protected UpdateValueStrategy
+        createTargetToModelUpdateValueStrategy( IObservableValue fromValue,
+                                                IObservableValue toValue )
       {
         return new CustomUpdateValueStrategy();
       }
     };
     IConverter upperCaseConverter = new IConverter() {
-
       public Object convert( Object fromObject ) {
         return ( ( String )fromObject ).toUpperCase();
       }
-
       public Object getFromType() {
         return String.class;
       }
-
       public Object getToType() {
         return String.class;
       }
     };
     IValidator vowelValidator = new IValidator() {
-
       public IStatus validate( Object value ) {
         String s = ( String )value;
         if( !s.matches( "[aeiouAEIOU]*" ) ) {
@@ -165,18 +163,30 @@ public class TestMasterDetailView extends ViewPart {
         return Status.OK_STATUS;
       }
     };
-    Binding b = dbc.bindValue( SWTObservables.observeText( name, SWT.Modify ),
-                               BeansObservables.observeDetailValue( realm,
-                                                                    selectedPerson,
-                                                                    "name",
-                                                                    String.class ),
-                               new CustomUpdateValueStrategy().setConverter( upperCaseConverter )
-                                 .setAfterGetValidator( vowelValidator ),
-                               null );
+    
+    IObservableValue modelObservableValue 
+      = BeansObservables.observeDetailValue( realm,
+                                             selectedPerson,
+                                             "name",
+                                             String.class );
+    ISWTObservableValue targetObservableValue
+      = SWTObservables.observeText( name, SWT.Modify );
+    CustomUpdateValueStrategy customUpdateValueStrategy
+      = new CustomUpdateValueStrategy();
+    customUpdateValueStrategy.setConverter( upperCaseConverter );
+    UpdateValueStrategy targetToModel 
+      = customUpdateValueStrategy.setAfterGetValidator( vowelValidator );
+    Binding binding = dbc.bindValue( targetObservableValue,
+                                     modelObservableValue,
+                                     targetToModel,
+                                     null );
+    
+    UpdateValueStrategy updateValueStrategy = new UpdateValueStrategy();
+    updateValueStrategy.setConverter( new ObjectToStringConverter() );
     dbc.bindValue( SWTObservables.observeText( validationStatus, SWT.NONE ),
-                   b.getValidationStatus(),
+                   binding.getValidationStatus(),
                    null,
-                   new UpdateValueStrategy().setConverter( new ObjectToStringConverter() ) );
+                   updateValueStrategy );
     dbc.bindValue( SWTObservables.observeText( address, SWT.Modify ),
                    BeansObservables.observeDetailValue( realm,
                                                         selectedPerson,
@@ -199,33 +209,41 @@ public class TestMasterDetailView extends ViewPart {
                    null,
                    null );
     TableViewer ordersViewer = new TableViewer( ordersTable );
-    ObservableListContentProvider ordersViewerContent = new ObservableListContentProvider();
+    ObservableListContentProvider ordersViewerContent
+      = new ObservableListContentProvider();
     ordersViewer.setContentProvider( ordersViewerContent );
-    ordersViewer.setLabelProvider( new ObservableMapLabelProvider( BeansObservables.observeMaps( ordersViewerContent.getKnownElements(),
-                                                                                                 SimpleOrder.class,
-                                                                                                 new String[]{
-                                                                                                   "orderNumber",
-                                                                                                   "date"
-                                                                                                 } ) ) );
-    IObservableList orders = BeansObservables.observeDetailList( realm,
-                                                                 selectedPerson,
-                                                                 "orders",
-                                                                 SimpleOrder.class );
+    String[] propertyNames = new String[]{
+      "orderNumber",
+      "date"
+    };
+    IObservableMap[] observeMaps
+      = BeansObservables.observeMaps( ordersViewerContent.getKnownElements(),
+                                      SimpleOrder.class,
+                                      propertyNames );
+    ObservableMapLabelProvider observableMapLabelProvider
+      = new ObservableMapLabelProvider( observeMaps );
+    ordersViewer.setLabelProvider( observableMapLabelProvider );
+    IObservableList orders
+      = BeansObservables.observeDetailList( realm,
+                                            selectedPerson,
+                                            "orders",
+                                            SimpleOrder.class );
     ordersViewer.setInput( orders );
   }
 
-  public void createPartControl( Composite parent ) {
+  public void createPartControl( final Composite parent ) {
     FormLayout formLayout = new FormLayout();
     formLayout.marginHeight = DatabindingSnippetsView.GROUP_MARGIN_HEIGHT;
     formLayout.marginWidth = DatabindingSnippetsView.GROUP_MARGIN_WIDTH;
     parent.setLayout( new FormLayout() );
     bindingGroup = new Group( parent, SWT.NONE );
-    bindingGroup.setText( "Adaptation of the Databinding TestMasterDetailView Example" );
+    bindingGroup.setText(   "Adaptation of the Databinding "
+                          + "TestMasterDetailView Example" );
     FormData data = new FormData( DatabindingSnippetsView.GROUP_WIDTH,
                                   SWT.DEFAULT );
     data.top = new FormAttachment( 0, DatabindingSnippetsView.TOP_MARGIN );
-    data.left = new FormAttachment( 0,
-                                    DatabindingSnippetsView.GROUP_MARGIN_WIDTH );
+    data.left
+      = new FormAttachment( 0, DatabindingSnippetsView.GROUP_MARGIN_WIDTH );
     bindingGroup.setLayoutData( data );
     FormLayout formLayoutGroup = new FormLayout();
     formLayoutGroup.marginHeight = DatabindingSnippetsView.GROUP_MARGIN_HEIGHT;
@@ -259,12 +277,14 @@ public class TestMasterDetailView extends ViewPart {
     label3 = new Label( bindingGroup, SWT.NONE );
     label3.setText( "City" );
     data = new FormData( DatabindingSnippetsView.STD_LABEL_WIDTH, SWT.DEFAULT );
-    data.top = new FormAttachment( address, DatabindingSnippetsView.TOP_MARGIN );
+    data.top
+      = new FormAttachment( address, DatabindingSnippetsView.TOP_MARGIN );
     data.left = new FormAttachment( 0, 0 );
     label3.setLayoutData( data );
     city = new Text( bindingGroup, SWT.BORDER );
     data = new FormData( DatabindingSnippetsView.STD_LABEL_WIDTH, SWT.DEFAULT );
-    data.top = new FormAttachment( address, DatabindingSnippetsView.TOP_MARGIN );
+    data.top
+      = new FormAttachment( address, DatabindingSnippetsView.TOP_MARGIN );
     data.left = new FormAttachment( label3, 0 );
     city.setLayoutData( data );
     label4 = new Label( bindingGroup, SWT.NONE );
