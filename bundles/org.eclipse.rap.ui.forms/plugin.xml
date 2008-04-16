@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.rap.ui.resources">
+      <resource
+            class="org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkResource">
+      </resource>
+      <resource
+            class="org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkResource">
+      </resource>
+   </extension>
+   <extension
+         point="org.eclipse.rap.ui.themeableWidgets">
+      <widget
+            class="org.eclipse.ui.forms.widgets.Hyperlink"
+            id="org.eclipse.ui.forms.widgets.Hyperlink"
+            name="Hyperlink">
+      </widget>
+   </extension>
+
+</plugin>
