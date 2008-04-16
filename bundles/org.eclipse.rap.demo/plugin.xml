@@ -299,13 +299,6 @@
          class="org.eclipse.rap.demo.presentation.DemoPreferencePage">
            <keywordReference id="org.eclipse.ui.demo.preferenceKeywords"/>
       </page>
-      <page
-         id="org.eclipse.ui.demo.preferencePageI"
-         name="Demo Preference Page I"
-         category="org.eclipse.ui.demo.PreferencePage"
-         class="org.eclipse.rap.demo.presentation.DemoPreferencePage">
-           <keywordReference id="org.eclipse.ui.demo.preferenceKeywordsI"/>
-      </page>
    </extension>
 
 </plugin>

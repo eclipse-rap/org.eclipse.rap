@@ -11,37 +11,39 @@
 
 package org.eclipse.rap.demo.presentation;
 
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.jface.preference.ComboFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.ui.*;
+import org.eclipse.ui.internal.IWorkbenchConstants;
+import org.eclipse.ui.internal.util.PrefUtil;
 
 
-public class DemoPreferencePage extends PreferencePage
+public class DemoPreferencePage
+  extends FieldEditorPreferencePage
   implements IWorkbenchPreferencePage
 {
+  private static final String LABEL_PRESENTATION = "Presentation";
 
   public DemoPreferencePage() {
-  }
-
-  public DemoPreferencePage( final String title ) {
-    super( title );
-  }
-
-  public DemoPreferencePage( final String title,
-                             final ImageDescriptor image )
-  {
-    super( title, image );
-  }
-
-  protected Control createContents( final Composite parent ) {
-    Label label = new Label( parent, SWT.NONE );
-    label.setText( "Here should be the content of the Preference Page..." );
-    return label;
+    super( GRID );
+    setPreferenceStore( PrefUtil.getAPIPreferenceStore() );
   }
 
   public void init( final IWorkbench workbench ) {
+  }
+
+  protected void createFieldEditors() {
+    String presentationFactoryId
+      = IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID;
+    String[][] namesAndIds = new String[][] {
+      { "Default Presentation", IWorkbenchConstants.DEFAULT_PRESENTATION_ID },
+      { "Demo Presentation", "org.eclipse.rap.demo.presentation" }
+    };
+    ComboFieldEditor comboEditor
+      = new ComboFieldEditor( presentationFactoryId,
+                              LABEL_PRESENTATION,
+                              namesAndIds,
+                              getFieldEditorParent() );
+    addField( comboEditor );
   }
 }

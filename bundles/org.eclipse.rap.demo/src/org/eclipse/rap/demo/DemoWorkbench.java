@@ -32,17 +32,7 @@ public class DemoWorkbench implements IEntryPoint {
     String keyPresentationId 
       = IWorkbenchPreferenceConstants.PRESENTATION_FACTORY_ID;
     String presentationId = prefStore.getString( keyPresentationId );
-//    if( "".equals( presentationId ) ) {
-//      presentationId = DEMO_PRESENTATION;
-//      prefStore.setValue( keyPresentationId, presentationId );
-//      try {
-//        prefStore.save();
-//      } catch( IOException e ) {
-//        // TODO Auto-generated catch block
-//        e.printStackTrace();
-//      }
-//    }
-    
+
     WorkbenchAdvisor worbenchAdvisor = new DemoWorkbenchAdvisor();
     if( DEMO_PRESENTATION.equals( presentationId ) ) {
       worbenchAdvisor = new DemoPresentationWorkbenchAdvisor();
