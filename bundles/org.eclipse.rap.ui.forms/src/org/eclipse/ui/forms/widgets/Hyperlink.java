@@ -55,6 +55,7 @@ public class Hyperlink extends AbstractHyperlink {
 		super(parent, style);
 // RAP [rh] missing accessibility support
 //		initAccessible();
+		text = ""; //$NON-NLS-1$
 	}
 
   // RAP [rh] getAdapter implementation
