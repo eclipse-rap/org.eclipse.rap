@@ -8,14 +8,12 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
 import java.text.MessageFormat;
 
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rwt.lifecycle.ControlLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 

@@ -25,7 +25,7 @@ public final class SashLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.widgets.Sash";
 
-  private static final String TYPE_POOL_ID = SashLCA.class.getName();
+//  private static final String TYPE_POOL_ID = SashLCA.class.getName();
 
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
