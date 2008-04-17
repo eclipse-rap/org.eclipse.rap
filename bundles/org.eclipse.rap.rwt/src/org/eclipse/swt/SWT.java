@@ -1841,6 +1841,19 @@ public class SWT {
   }
 
   /**
+   * Returns the SWT platform name.
+   * Examples: "win32", "motif", "gtk", "photon", "carbon", "rap"
+   *
+   * @return the SWT platform name
+   * 
+   * @since 1.1
+   */
+   // TODO [bm]: Improve to support different fragments
+  public static String getPlatform () {
+  	return "rap";
+  }
+  
+  /**
    * Returns the NLS'ed message for the given argument.
    *
    * @param key the key to look up
