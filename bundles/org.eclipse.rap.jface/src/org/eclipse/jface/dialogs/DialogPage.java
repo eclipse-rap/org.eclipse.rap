@@ -13,6 +13,7 @@ package org.eclipse.jface.dialogs;
 import org.eclipse.jface.internal.DialogUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -133,7 +134,8 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
 //			return 0;
 //		}
 //        return Dialog.convertHeightInCharsToPixels(fontMetrics, chars);
-    	return DialogUtil.convertHeightInCharsToPixels(chars);
+    	Font dialogFont = JFaceResources.getDialogFont();
+      return Graphics.getCharHeight( dialogFont ) * chars;
     	// RAPEND: [bm] 
     }
 
@@ -212,7 +214,9 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
 //			return 0;
 //		}
 //        return Dialog.convertWidthInCharsToPixels(fontMetrics, chars);
-    	return DialogUtil.convertWidthInCharsToPixels(chars);
+    	Font dialogFont = JFaceResources.getDialogFont();
+      float avgCharWidth = Graphics.getAvgCharWidth( dialogFont );
+      return ( int )( avgCharWidth * chars );
     	// RAPEND: [bm] 
     }
 
