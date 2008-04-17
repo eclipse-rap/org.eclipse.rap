@@ -33,7 +33,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * The property page shows the first page of the wizard. It is therefore
  * required, that the wizard consists of exactly one page.
  * 
- * @since 3.4
+ * @since 1.1
  */
 public abstract class WizardPropertyPage extends PropertyPage {
 	

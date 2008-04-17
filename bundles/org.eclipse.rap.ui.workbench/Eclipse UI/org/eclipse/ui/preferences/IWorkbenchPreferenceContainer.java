@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.jobs.Job;
 /**
  * IWorkbenchPreferenceContainer is the class that specifies
  * the workbench specific preferences support.
- * @since 3.1
+ * @since 1.0
  *
  */
 public interface IWorkbenchPreferenceContainer {

@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Shell;
  * The ViewSettingsDialog is an abstract class that
  * provides some common functionality for view preferences.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public class ViewSettingsDialog extends Dialog {
 	
