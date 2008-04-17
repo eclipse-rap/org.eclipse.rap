@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Text;
  * message area with a non editable text that can take focus for use by screen
  * readers.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public class DialogMessageArea extends Object {
     private Text messageText;

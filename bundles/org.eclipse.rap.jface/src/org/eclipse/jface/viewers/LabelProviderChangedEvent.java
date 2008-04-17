@@ -21,7 +21,7 @@ public class LabelProviderChangedEvent extends EventObject {
 
     /**
      * Generated serial version UID for this class.
-     * @since 3.1
+     * @since 1.0
      */
     private static final long serialVersionUID = 3258410612479309878L;
     

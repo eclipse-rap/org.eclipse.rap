@@ -15,7 +15,7 @@ package org.eclipse.jface.viewers;
  * Filter that accepts everything. Available as a singleton since having
  * more than one instance would be wasteful.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public final class AcceptAllFilter implements IFilter {
 

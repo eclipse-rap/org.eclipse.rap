@@ -19,7 +19,7 @@
 // * allows you to define your own look-up for use in the classes.
 // * </p>
 // * 
-// * @since 3.1
+// * @since 1.0
 // */
 //public final class KeyLookupFactory {
 //

@@ -273,7 +273,7 @@ public abstract class Window implements IShellProvider {
      * 
      * @param shellProvider object that will return the current parent shell. Not null.
      * 
-     * @since 3.1
+     * @since 1.0
      */
     protected Window(IShellProvider shellProvider) {
         Assert.isNotNull(shellProvider);
@@ -397,7 +397,7 @@ public abstract class Window implements IShellProvider {
 	 * </p>
 	 * 
 	 * @return a newly created Layout or null if no layout should be attached.
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected Layout getLayout() {
 		GridLayout layout = new GridLayout();
@@ -409,7 +409,7 @@ public abstract class Window implements IShellProvider {
 	/**
 	 * Constrain the shell size to be no larger than the display bounds.
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	protected void constrainShellSize() {
 		// limit the shell size to the display size
@@ -547,7 +547,7 @@ public abstract class Window implements IShellProvider {
 	 * 
 	 * @return the array of images to be used when a new window is opened
 	 * @see #setDefaultImages
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public static Image[] getDefaultImages() {
 		return (defaultImages == null ? new Image[0] : defaultImages);
@@ -608,7 +608,7 @@ public abstract class Window implements IShellProvider {
      * @param toSearch shells to search for modal children
      * @return the most specific modal child, or null if none
      * 
-     * @since 3.1
+     * @since 1.0
      */
     private static Shell getModalChild(Shell[] toSearch) {
     	// RAP [bm]: SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL
@@ -882,7 +882,7 @@ public abstract class Window implements IShellProvider {
 	 * 
 	 * @param images
 	 *            the array of images to be used when this window is opened
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public static void setDefaultImages(Image[] images) {
 		Image[] newArray = new Image[images.length];
@@ -898,7 +898,7 @@ public abstract class Window implements IShellProvider {
      * @param newParentShell
      *            The new parent shell; this value may be <code>null</code> if
      *            there is to be no parent.
-     * @since 3.1
+     * @since 1.0
      */
     protected void setParentShell(final Shell newParentShell) {
         Assert.isTrue((shell == null), "There must not be an existing shell."); //$NON-NLS-1$
@@ -969,7 +969,7 @@ public abstract class Window implements IShellProvider {
 	 * @return a rectangle as close as possible to preferredSize that does not
 	 *         extend outside the monitor
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected Rectangle getConstrainedShellBounds(Rectangle preferredSize) {
 		Rectangle result = new Rectangle(preferredSize.x, preferredSize.y,
@@ -1062,7 +1062,7 @@ public abstract class Window implements IShellProvider {
      * 
      * @param provider shell provider that will be used to locate the parent shell
      * whenever a Window is created with a null parent
-     * @since 3.1
+     * @since 1.0
      */
     public static void setDefaultModalParent(IShellProvider provider) {
         defaultModalParent = provider;
@@ -1078,7 +1078,7 @@ public abstract class Window implements IShellProvider {
 	 * <!-- @see SWT#RIGHT_TO_LEFT -->
 	 * <!-- @see SWT#LEFT_TO_RIGHT -->
 	 * @see SWT#NONE
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static int getDefaultOrientation() {
 		return orientation;
@@ -1094,7 +1094,7 @@ public abstract class Window implements IShellProvider {
 	 * <!-- @see SWT#RIGHT_TO_LEFT -->
 	 * <!-- @see SWT#LEFT_TO_RIGHT -->
 	 * @see SWT#NONE
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static void setDefaultOrientation(int defaultOrientation) {
 		orientation = defaultOrientation;

@@ -19,7 +19,7 @@
 ///**
 // * Abstract base class for Cell-Editors presented as combo boxes
 // *
-// * @since 3.4
+// * @since 1.1
 // *
 // */
 //abstract class AbstractComboBoxCellEditor extends CellEditor {

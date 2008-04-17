@@ -22,7 +22,7 @@ package org.eclipse.jface.viewers;
  * This class and all of its methods may be overridden or extended.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  * @see org.eclipse.jface.viewers.TreeNode
  */
 public class TreeNodeContentProvider implements ITreeContentProvider {

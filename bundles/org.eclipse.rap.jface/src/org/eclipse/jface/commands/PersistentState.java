@@ -23,7 +23,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * Clients may extend this class.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public abstract class PersistentState extends State {
 

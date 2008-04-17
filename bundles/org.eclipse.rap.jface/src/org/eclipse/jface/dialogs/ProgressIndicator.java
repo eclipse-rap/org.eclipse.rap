@@ -56,7 +56,7 @@ public class ProgressIndicator extends Composite {
      *            The widgets parent
      * @param style the SWT style constants for progress monitors created 
      * 	by the receiver.
-     * @since 3.4
+     * @since 1.1
      */
     public ProgressIndicator(Composite parent, int style) {
     	super(parent, SWT.NULL);
@@ -145,7 +145,7 @@ public class ProgressIndicator extends Composite {
 
 //    /**
 //	 * Show the receiver as showing an error.
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	public void showError() {
 //		determinateProgressBar.setState(SWT.ERROR);
@@ -154,7 +154,7 @@ public class ProgressIndicator extends Composite {
 //	
 //	/**
 //	 * Show the receiver as being paused.
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	public void showPaused() {
 //		determinateProgressBar.setState(SWT.PAUSED);
@@ -163,7 +163,7 @@ public class ProgressIndicator extends Composite {
 //
 //	/**
 //	 * Reset the progress bar to it's normal style.
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	public void showNormal() {
 //		determinateProgressBar.setState(SWT.NORMAL);

@@ -43,7 +43,7 @@
 //
 //    /**
 //     * Creates a new checkbox cell editor with no control
-//     * @since 2.1
+//     * @since 1.0
 //     */
 //    public CheckboxCellEditor() {
 //        setStyle(defaultStyle);
@@ -67,7 +67,7 @@
 //     *
 //     * @param parent the parent control
 //     * @param style the style bits
-//     * @since 2.1
+//     * @since 1.0
 //     */
 //    public CheckboxCellEditor(Composite parent, int style) {
 //        super(parent, style);

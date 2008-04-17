@@ -98,7 +98,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
     /**
      * Indicates this item is visible in its manager; <code>true</code> 
      * by default.
-     * @since 3.3
+     * @since 1.0
      */
     protected boolean visible = true;
 
@@ -145,7 +145,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      * @param text the text for the menu, or <code>null</code> if none
      * @param image the image for the menu, or <code>null</code> if none
      * @param id the menu id, or <code>null</code> if it is to have no id
-     * @since 3.4
+     * @since 1.1
      */
     public MenuManager(String text, ImageDescriptor image, String id) {
         this.menuText = text;
@@ -186,7 +186,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      *
      * @param parent the parent decorations
      * @return the menu control
-     * @since 2.1
+     * @since 1.0
      */
     public Menu createMenuBar(Decorations parent) {
         if (!menuExist()) {
@@ -399,7 +399,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
 	 * Returns the image for this menu as an image descriptor.
 	 * 
 	 * @return the image, or <code>null</code> if this menu has no image
-	 * @since 3.4
+	 * @since 1.1
 	 */
     public ImageDescriptor getImageDescriptor() {
     	return image;
@@ -440,7 +440,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      * Returns the parent contribution manager of this manger.
      * 
      * @return the parent contribution manager
-     * @since 2.0
+     * @since 1.0
      */
     public IContributionManager getParent() {
         return parent;
@@ -568,7 +568,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      * The <code>MenuManager</code> implementation of this <code>ContributionManager</code> method
      * also propagates the dirty flag up the parent chain.
      * 
-     * @since 3.1
+     * @since 1.0
      */
     public void markDirty() {
         super.markDirty();
@@ -613,7 +613,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      * Sets the overrides for this contribution manager
      * 
      * @param newOverrides the overrides for the items of this manager
-     * @since 2.0
+     * @since 1.0
      */
     public void setOverrides(IContributionManagerOverrides newOverrides) {
         overrides = newOverrides;
@@ -648,7 +648,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
 	 * 
 	 * @param definitionId
 	 *            the command definition id
-	 * @since 3.4
+	 * @since 1.1
 	 */
     public void setActionDefinitionId(String definitionId) {
     	this.definitionId = definitionId; 
@@ -675,7 +675,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
 	 * Get all the items from the implementation's widget.
 	 * 
 	 * @return the menu items
-	 * @since 3.4
+	 * @since 1.1
 	 */
     protected Item[] getMenuItems() {
     	if (menu != null) {
@@ -690,7 +690,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
 	 * @param index
 	 *            of the item
 	 * @return the menu item
-	 * @since 3.4
+	 * @since 1.1
 	 */
     protected Item getMenuItem(int index) {
     	if (menu !=null) {
@@ -703,7 +703,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
      * Get the menu item count for the implementation's widget.
      * 
      * @return the number of items
-     * @since 3.4
+     * @since 1.1
      */
     protected int getMenuItemCount() {
     	if (menu != null) {
@@ -724,7 +724,7 @@ public class MenuManager extends ContributionManager implements IMenuManager {
 	 * @param index
 	 *            The position the <code>fill()</code> method should start
 	 *            inserting at.
-	 * @since 3.4
+	 * @since 1.1
 	 */
     protected void doItemFill(IContributionItem ci, int index) {
         ci.fill(menu, index);

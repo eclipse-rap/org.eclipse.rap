@@ -18,7 +18,7 @@ import java.util.Comparator;
  * A viewer sorter that is provided extra context in the form of the path of the
  * parent element of the elements being sorted.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class TreePathViewerSorter extends ViewerSorter {
 

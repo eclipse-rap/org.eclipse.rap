@@ -27,7 +27,7 @@
 // * Default implementation of ToolTip that provides an iconofied label with font
 // * and color controls by subclass.
 // * 
-// * @since 3.3
+// * @since 1.0
 // */
 //public class DefaultToolTip extends ToolTip {
 //	private String text;

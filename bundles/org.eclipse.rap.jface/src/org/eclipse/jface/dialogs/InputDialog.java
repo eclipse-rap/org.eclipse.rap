@@ -256,7 +256,7 @@ public class InputDialog extends Dialog {
      * 
      * @param errorMessage
      *            the error message, or <code>null</code> to clear
-     * @since 3.0
+     * @since 1.0
      */
     public void setErrorMessage(String errorMessage) {
     	this.errorMessage = errorMessage;
@@ -289,7 +289,7 @@ public class InputDialog extends Dialog {
 	 * @return the integer style bits that should be used when creating the
 	 *         input text
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected int getInputTextStyle() {
 		return SWT.SINGLE | SWT.BORDER;

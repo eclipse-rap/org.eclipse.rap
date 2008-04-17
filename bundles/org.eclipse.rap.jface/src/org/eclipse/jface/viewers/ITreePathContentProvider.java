@@ -16,7 +16,7 @@ package org.eclipse.jface.viewers;
  * provides content based on the path of elements in the tree viewer..
  * 
  * @see AbstractTreeViewer
- * @since 3.2
+ * @since 1.0
  */
 public interface ITreePathContentProvider extends IStructuredContentProvider {
 

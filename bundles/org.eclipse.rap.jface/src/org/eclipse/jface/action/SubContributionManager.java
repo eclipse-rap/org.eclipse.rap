@@ -91,7 +91,7 @@ public abstract class SubContributionManager implements IContributionManager {
      * This must leave no trace of this sub contribution manager
      * in the parent manager.  Subclasses may extend.
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public void disposeManager() {
         Iterator it = mapItemToWrapper.values().iterator();

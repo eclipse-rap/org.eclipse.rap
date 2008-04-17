@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IStatus;
  * 
  * @see org.eclipse.jface.util.Policy#getLog()
  * @see org.eclipse.jface.util.Policy#setLog(ILogger)
- * @since 3.1
+ * @since 1.0
  */
 public interface ILogger {
 	

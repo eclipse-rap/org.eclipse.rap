@@ -112,7 +112,7 @@ public class CheckboxTableViewer extends TableViewer implements ICheckable {
      * @param parent the parent control
      * @param style SWT style bits
      * 
-     * @since 2.0
+     * @since 1.0
      * @return CheckboxTableViewer
      */
     public static CheckboxTableViewer newCheckList(Composite parent, int style) {

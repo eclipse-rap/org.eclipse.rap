@@ -23,7 +23,7 @@ import java.util.TreeSet;
  * A static class providing utility methods to all of JFace.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public final class Util {
 
@@ -464,7 +464,7 @@ public final class Util {
 	 * @param find the string to find.
 	 * @param replacement the string to replace.
 	 * @return The new string.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final String replaceAll(String src, String find, String replacement) {
 		final int len = src.length();

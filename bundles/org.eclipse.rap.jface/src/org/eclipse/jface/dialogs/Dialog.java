@@ -95,7 +95,7 @@ public abstract class Dialog extends Window {
 	 * Image registry key for info message image (value
 	 * <code>"dialog_messasge_info_image"</code>).
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public static final String DLG_IMG_MESSAGE_INFO = "dialog_messasge_info_image"; //$NON-NLS-1$
 
@@ -103,7 +103,7 @@ public abstract class Dialog extends Window {
 	 * Image registry key for info message image (value
 	 * <code>"dialog_messasge_warning_image"</code>).
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public static final String DLG_IMG_MESSAGE_WARNING = "dialog_messasge_warning_image"; //$NON-NLS-1$
 
@@ -111,7 +111,7 @@ public abstract class Dialog extends Window {
 	 * Image registry key for info message image (value
 	 * <code>"dialog_message_error_image"</code>).
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public static final String DLG_IMG_MESSAGE_ERROR = "dialog_message_error_image"; //$NON-NLS-1$
 
@@ -119,42 +119,42 @@ public abstract class Dialog extends Window {
 	 * Image registry key for help image (value
 	 * <code>"dialog_help_image"</code>).
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public static final String DLG_IMG_HELP = "dialog_help_image"; //$NON-NLS-1$
 
 	/**
 	 * The ellipsis is the string that is used to represent shortened text.
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public static final String ELLIPSIS = "..."; //$NON-NLS-1$
 
 	/**
 	 * The dialog settings key name for stored dialog x location.
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	private static final String DIALOG_ORIGIN_X = "DIALOG_X_ORIGIN"; //$NON-NLS-1$
 
 	/**
 	 * The dialog settings key name for stored dialog y location.
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	private static final String DIALOG_ORIGIN_Y = "DIALOG_Y_ORIGIN"; //$NON-NLS-1$
 
 	/**
 	 * The dialog settings key name for stored dialog width.
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	private static final String DIALOG_WIDTH = "DIALOG_WIDTH"; //$NON-NLS-1$
 
 	/**
 	 * The dialog settings key name for stored dialog height.
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	private static final String DIALOG_HEIGHT = "DIALOG_HEIGHT"; //$NON-NLS-1$
 	
@@ -162,7 +162,7 @@ public abstract class Dialog extends Window {
 	 * The dialog settings key name for the font used when the dialog
 	 * height and width was stored.
 	 *
-	 *@since 3.2
+	 *@since 1.0
 	 */
 	private static final String DIALOG_FONT_DATA = "DIALOG_FONT_NAME"; //$NON-NLS-1$
 	
@@ -170,7 +170,7 @@ public abstract class Dialog extends Window {
 	 * A value that can be used for stored dialog width or height that
 	 * indicates that the default bounds should be used.
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public static final int DIALOG_DEFAULT_BOUNDS = -1;
 
@@ -179,17 +179,17 @@ public abstract class Dialog extends Window {
 	 * dialog bounds.  These constants represent bit masks that can be used
 	 * together.
 	 *
-	 *@since 3.2
+	 *@since 1.0
 	 */
 	
 	/**
 	 * Persist the last location of the dialog.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public static final int DIALOG_PERSISTLOCATION = 0x0001;
 	/**
 	 * Persist the last known size of the dialog.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public static final int DIALOG_PERSISTSIZE = 0x0002;
 	
@@ -243,7 +243,7 @@ public abstract class Dialog extends Window {
 //	 * @param chars
 //	 *            the number of characters
 //	 * @return the number of pixels
-//	 * @since 2.0
+//	 * @since 1.0
 //	 */
 //	public static int convertHeightInCharsToPixels(FontMetrics fontMetrics,
 //			int chars) {
@@ -271,7 +271,7 @@ public abstract class Dialog extends Window {
 //	 * @param dlus
 //	 *            the number of horizontal dialog units
 //	 * @return the number of pixels
-//	 * @since 2.0
+//	 * @since 1.0
 //	 */
 //	public static int convertHorizontalDLUsToPixels(FontMetrics fontMetrics,
 //			int dlus) {
@@ -300,7 +300,7 @@ public abstract class Dialog extends Window {
 //	 * @param dlus
 //	 *            the number of vertical dialog units
 //	 * @return the number of pixels
-//	 * @since 2.0
+//	 * @since 1.0
 //	 */
 //	public static int convertVerticalDLUsToPixels(FontMetrics fontMetrics,
 //			int dlus) {
@@ -329,7 +329,7 @@ public abstract class Dialog extends Window {
 //	 * @param chars
 //	 *            the number of characters
 //	 * @return the number of pixels
-//	 * @since 2.0
+//	 * @since 1.0
 //	 */
 //	public static int convertWidthInCharsToPixels(FontMetrics fontMetrics,
 //			int chars) {
@@ -352,7 +352,7 @@ public abstract class Dialog extends Window {
 	 * @return the string to display, or <code>null</code> if null was passed
 	 *         in
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public static String shortenText(String textValue, Control control) {
 		if (textValue == null) {
@@ -461,7 +461,7 @@ public abstract class Dialog extends Window {
 	 * @param parentShell
 	 *            object that returns the current parent shell
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected Dialog(IShellProvider parentShell) {
 		super(parentShell);
@@ -858,7 +858,7 @@ public abstract class Dialog extends Window {
 	 * @return the button for the ID or <code>null</code>
 	 * 
 	 * @see #createButton(Composite, int, String, boolean)
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	protected Button getButton(int id) {
 		return (Button) buttons.get(new Integer(id));
@@ -887,7 +887,7 @@ public abstract class Dialog extends Window {
 	 * @return the cancel button or <code>null</code>
 	 * 
 	 * @see #createButton(Composite, int, String, boolean)
-	 * @since 2.0
+	 * @since 1.0
 	 * @deprecated Use <code>getButton(IDialogConstants.get().CANCEL_ID)</code>
 	 *             instead. This method will be removed soon.
 	 */
@@ -940,7 +940,7 @@ public abstract class Dialog extends Window {
 	 * @return the OK button or <code>null</code>
 	 * 
 	 * @see #createButton(Composite, int, String, boolean)
-	 * @since 2.0
+	 * @since 1.0
 	 * @deprecated Use <code>getButton(IDialogConstants.get().OK_ID)</code> instead.
 	 *             This method will be removed soon.
 	 */
@@ -1161,7 +1161,7 @@ public abstract class Dialog extends Window {
 	 *         and/or size, or <code>null</code> if the dialog's bounds should
 	 *         never be stored.
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 * @see Dialog#getDialogBoundsStrategy()
 	 */
 	protected IDialogSettings getDialogBoundsSettings() {
@@ -1177,7 +1177,7 @@ public abstract class Dialog extends Window {
 	 * @return the constant describing the strategy for persisting the dialog
 	 *         bounds.
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 * @see Dialog#DIALOG_PERSISTLOCATION
 	 * @see Dialog#DIALOG_PERSISTSIZE
 	 * @see Dialog#getDialogBoundsSettings()
@@ -1194,7 +1194,7 @@ public abstract class Dialog extends Window {
 	 * @param shell
 	 *            The shell whose bounds are to be stored
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	private void saveDialogBounds(Shell shell) {		
 		IDialogSettings settings = getDialogBoundsSettings();
@@ -1230,7 +1230,7 @@ public abstract class Dialog extends Window {
 	 * 
 	 * @return the initial size of the shell
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 * @see #getDialogBoundsSettings()
 	 * @see #getDialogBoundsStrategy()
 	 */
@@ -1290,7 +1290,7 @@ public abstract class Dialog extends Window {
 	 *            <code>getInitialSize</code>.
 	 * @return the initial location of the shell
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 * @see #getDialogBoundsSettings()
 	 * @see #getDialogBoundsStrategy()
 	 */
@@ -1341,7 +1341,7 @@ public abstract class Dialog extends Window {
 	 * resizable and should have the default style bits for
 	 * resizable dialogs
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected boolean isResizable() {
 		return false;

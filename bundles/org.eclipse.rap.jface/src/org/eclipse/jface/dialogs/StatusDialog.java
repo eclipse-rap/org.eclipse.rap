@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Shell;
  * WARNING, INFO or OK. The OK button is enabled or disabled depending on the
  * status.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public abstract class StatusDialog extends TrayDialog {
 

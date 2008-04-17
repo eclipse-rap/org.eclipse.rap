@@ -25,7 +25,7 @@
 // * A field editor for an integer type preference. This class may be used as is,
 // * or subclassed as required.
 // * 
-// * @since 3.0
+// * @since 1.0
 // */
 //public class ScaleFieldEditor extends FieldEditor {
 //

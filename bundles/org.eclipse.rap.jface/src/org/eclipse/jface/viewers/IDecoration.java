@@ -55,7 +55,7 @@ public interface IDecoration{
 	 * will be constructed by first painting the underlay, then the replacement
 	 * image, and then the regular quadrant images.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final int REPLACE = 5;
 	
@@ -64,7 +64,7 @@ public interface IDecoration{
 	 * {@link IDecorationContext}. To enable image replacement, set to
 	 * {@link Boolean#TRUE}.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 * @see IDecorationContext
 	 */
 	public static final String ENABLE_REPLACE = "org.eclipse.jface.viewers.IDecoration.disableReplace"; //$NON-NLS-1$
@@ -107,7 +107,7 @@ public interface IDecoration{
 	 * Set the foreground color for this decoration.
 	 * @param color the color to be set for the foreground
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public void setForegroundColor(Color color);
 	
@@ -115,7 +115,7 @@ public interface IDecoration{
 	 * Set the background color for this decoration.
 	 * @param color the color to be set for the background
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public void setBackgroundColor(Color color);
 	
@@ -123,7 +123,7 @@ public interface IDecoration{
 	 * Set the font for this decoration.
 	 * @param font the font to use in this decoration
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public void setFont(Font font);
 
@@ -132,7 +132,7 @@ public interface IDecoration{
 	 * will be applied.
 	 * @return the decoration context
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public IDecorationContext getDecorationContext();
 }

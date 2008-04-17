@@ -23,7 +23,7 @@ import org.eclipse.jface.util.Util;
  * {@link org.eclipse.jface.viewers.ITreeContentProvider#getParent(Object)} and
  * {@link org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(Object)}
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class TreeNode {
 

@@ -352,7 +352,7 @@ public class JFaceResources {
 	 * <p>
 	 * 
 	 * @return the <code>ColorRegistry</code>.
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public static ColorRegistry getColorRegistry() {
       return ColorRegistryStore.getInstance().getColorRegistry();
@@ -365,7 +365,7 @@ public class JFaceResources {
 	/**
 	 * Returns the global resource manager for the given display
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 * 
 	 * @param toQuery
 	 *            display to query
@@ -401,7 +401,7 @@ public class JFaceResources {
 	 * Returns the ResourceManager for the current display. May only be called
 	 * from a UI thread.
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 * 
 	 * @return the global ResourceManager for the current display
 	 */
@@ -431,7 +431,7 @@ public class JFaceResources {
 	 * </pre>
 	 * 
 	 * @return the font
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static FontDescriptor getDefaultFontDescriptor() {
 		return getFontRegistry().defaultFontDescriptor();
@@ -459,7 +459,7 @@ public class JFaceResources {
 	 * </pre>
 	 * 
 	 * @return the font
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static FontDescriptor getDialogFontDescriptor() {
 		return getFontRegistry().getDescriptor(DIALOG_FONT);
@@ -496,7 +496,7 @@ public class JFaceResources {
 	 * @param symbolicName
 	 *            the symbolic font name
 	 * @return the font descriptor (never null)
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static FontDescriptor getFontDescriptor(String symbolicName) {
 		return getFontRegistry().getDescriptor(symbolicName);
@@ -547,7 +547,7 @@ public class JFaceResources {
 	 * </pre>
 	 * 
 	 * @return the font descriptor (never null)
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static FontDescriptor getHeaderFontDescriptor() {
 		return getFontRegistry().getDescriptor(HEADER_FONT);
@@ -655,7 +655,7 @@ public class JFaceResources {
 	 * </pre>
 	 * 
 	 * @return the font descriptor (never null)
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static FontDescriptor getTextFontDescriptor() {
 		return getFontRegistry().getDescriptor(TEXT_FONT);

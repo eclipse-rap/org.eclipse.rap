@@ -20,13 +20,13 @@ import org.eclipse.swt.graphics.Device;
  * 
  * @see org.eclipse.jface.resource.ResourceManager
  * 
- * @since 3.1
+ * @since 1.0
  */
 public abstract class DeviceResourceDescriptor {
     /**
      * Creates the resource described by this descriptor
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param device the Device on which to allocate the resource
      * @return the newly allocated resource (not null)
@@ -38,7 +38,7 @@ public abstract class DeviceResourceDescriptor {
      * Undoes everything that was done by a previous call to create(...), given
      * the object that was returned by create(...).
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param previouslyCreatedObject an object that was returned by an equal 
      * descriptor in a previous call to createResource(...).

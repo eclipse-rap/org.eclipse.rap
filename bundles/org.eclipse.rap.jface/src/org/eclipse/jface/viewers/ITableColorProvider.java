@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.Color;
 /**
  * Interface to provide color representation for a given cell within
  * the row for an element in a table.
- * @since 3.1
+ * @since 1.0
  */
 public interface ITableColorProvider {
 

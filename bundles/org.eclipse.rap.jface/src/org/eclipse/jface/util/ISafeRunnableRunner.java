@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.ISafeRunnable;
  * @see SafeRunnable#getRunner()
  * @see SafeRunnable#setRunner(ISafeRunnableRunner)
  * @see SafeRunnable#run(ISafeRunnable)
- * @since 3.1
+ * @since 1.0
  */
 public interface ISafeRunnableRunner {
 	

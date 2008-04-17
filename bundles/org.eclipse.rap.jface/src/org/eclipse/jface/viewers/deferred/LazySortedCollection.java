@@ -36,7 +36,7 @@ import org.eclipse.core.runtime.Assert;
  * or right subtrees.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public class LazySortedCollection {
     private final int MIN_CAPACITY = 8;
@@ -122,7 +122,7 @@ public class LazySortedCollection {
         /**
          * Redirects this edge to a new node
          * @param newNode
-         * @since 3.1
+         * @since 1.0
          */
         private void setTarget(int newNode) {            
             if (direction == DIR_LEFT) {
@@ -251,7 +251,7 @@ public class LazySortedCollection {
      *                then a new subtree will be created for elementToAdd
      * @param elementToAdd index of the element to add to the subtree. If -1, this method
      *                 is a NOP.
-     * @since 3.1
+     * @since 1.0
      */
     private final int addUnsorted(int subTree, int elementToAdd) {
         if (elementToAdd == -1) {
@@ -326,7 +326,7 @@ public class LazySortedCollection {
      * 
      * @param subTree parent tree
      * @param toMove child (unsorted) subtree
-     * @since 3.1
+     * @since 1.0
      */
     private final int partition(int subTree, int toMove) {
         int result = nextUnsorted[toMove];
@@ -353,7 +353,7 @@ public class LazySortedCollection {
      * @param subTree
      * @return the replacement node (this may be different from subTree if the subtree
      * was replaced during the removal)
-     * @since 3.1
+     * @since 1.0
      */
     private final int partition(int subTree, FastProgressReporter mon) throws InterruptedException {
         if (subTree == -1) {
@@ -443,7 +443,7 @@ public class LazySortedCollection {
      * 
      * @param value
      * @return the index of the newly created node
-     * @since 3.1
+     * @since 1.0
      */
     private final int createNode(Object value) {
         int result = -1;
@@ -488,7 +488,7 @@ public class LazySortedCollection {
      * 
      * @param value
      * @return the current tree index
-     * @since 3.1
+     * @since 1.0
      */
     private int getObjectIndex(Object value) {
         // If we don't have a map of values onto tree indices, build the map now.
@@ -524,7 +524,7 @@ public class LazySortedCollection {
      * 
      * @param nodeToReplace
      * @param replacementNode
-     * @since 3.1
+     * @since 1.0
      */
     private void replaceNode(int nodeToReplace, int replacementNode) {
         int parent = parentTree[nodeToReplace];
@@ -565,7 +565,7 @@ public class LazySortedCollection {
      * Recomputes the tree size for the given node.
      * 
      * @param node
-     * @since 3.1
+     * @since 1.0
      */
     private void recomputeTreeSize(int node) {
         if (node == -1) {
@@ -581,7 +581,7 @@ public class LazySortedCollection {
      * 
      * @param toRecompute
      * @param whereToStop
-     * @since 3.1
+     * @since 1.0
      */
     private void forceRecomputeTreeSize(int toRecompute, int whereToStop) {
         while (toRecompute != -1 && toRecompute != whereToStop) {
@@ -594,7 +594,7 @@ public class LazySortedCollection {
     /**
      * Destroy the node at the given index in the tree
      * @param nodeToDestroy
-     * @since 3.1
+     * @since 1.0
      */
     private void destroyNode(int nodeToDestroy) {
         // If we're maintaining a map of values onto tree indices, remove this entry from
@@ -625,7 +625,7 @@ public class LazySortedCollection {
     /**
      * Frees up memory by clearing the list of nodes that have been freed up through removals.
      * 
-     * @since 3.1
+     * @since 1.0
      */
     private final void pack() {
         
@@ -969,7 +969,7 @@ public class LazySortedCollection {
      * Prunes the given subtree (and all child nodes, sorted or unsorted).
      * 
      * @param subTree
-     * @since 3.1
+     * @since 1.0
      */
     private final void removeSubTree(int subTree) {
         if (subTree == -1) {
@@ -1002,7 +1002,7 @@ public class LazySortedCollection {
      * 
      * @param subTree
      * @return the replacement node
-     * @since 3.1
+     * @since 1.0
      */
     private final int lazyRemoveNode(int subTree) {
         int left = leftSubTree[subTree];
@@ -1033,7 +1033,7 @@ public class LazySortedCollection {
      * 
      * @param subTree
      * @return the index of the new root
-     * @since 3.1
+     * @since 1.0
      */
     private final int removeNode(int subTree) {
         int left = leftSubTree[subTree];
@@ -1371,7 +1371,7 @@ public class LazySortedCollection {
      * @param resultIdx index in the result array where we will begin filling in children
      * @param node
      * @return the number of children added to the array
-     * @since 3.1
+     * @since 1.0
      */
     private final int getChildren(Object[] result, int resultIdx, int node, boolean sorted, FastProgressReporter mon) throws InterruptedException {
         if (node == -1) {

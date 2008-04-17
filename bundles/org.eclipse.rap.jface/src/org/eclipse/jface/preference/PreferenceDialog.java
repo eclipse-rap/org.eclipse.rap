@@ -457,7 +457,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * @param rightControl
 	 * @return Sash
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected Sash createSash(final Composite composite, final Control rightControl) {
 		final Sash sash = new Sash(composite, SWT.VERTICAL);
@@ -556,7 +556,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * the pages.
 	 * @return PageLayout
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected Layout getPageLayout() {
 		return new PageLayout();
@@ -643,7 +643,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * @param parent
 	 *            the SWT parent for the tree area controls.
 	 * @return the new <code>Control</code>.
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected Control createTreeAreaContents(Composite parent) {
 		// Build the tree an put it into the composite.
@@ -660,7 +660,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * @param parent
 	 *            the parent <code>Composite</code>.
 	 * @return the <code>TreeViewer</code>.
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected TreeViewer createTreeViewer(Composite parent) {
 		final TreeViewer viewer = new TreeViewer(parent, SWT.NONE);
@@ -674,7 +674,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * Add the listeners to the tree viewer.
 	 * @param viewer
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected void addListeners(final TreeViewer viewer) {
 		viewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
@@ -803,7 +803,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 
 	/**
 	 * @return the <code>TreeViewer</code> for this dialog.
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public TreeViewer getTreeViewer() {
 		return treeViewer;
@@ -890,7 +890,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	/**
 	 * @param control
 	 *            the <code>Control</code> to lay out.
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected void layoutTreeAreaControl(Control control) {
 		GridData gd = new GridData(GridData.FILL_VERTICAL);
@@ -1082,7 +1082,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 *            the message, or <code>null</code> to clear the message
 	 * @param newType
 	 *            the message type
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public void setMessage(String newMessage, int newType) {
 		messageArea.updateText(newMessage, newType);
@@ -1145,7 +1145,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * 
 	 * @param pageId
 	 *            The identifier for the page
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public void setSelectedNode(String pageId) {
 		setSelectedNodePreference(pageId);
@@ -1298,7 +1298,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * Create the page for the node.
 	 * @param node
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected void createPage(IPreferenceNode node) {
 		node.createPage();
@@ -1309,7 +1309,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * @param node
 	 * @return IPreferencePage
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected IPreferencePage getPage(IPreferenceNode node) {
 		return node.getPage();
@@ -1399,7 +1399,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * 
 	 * @param dialogFont
 	 *            the <code>Font</code> to use.
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected void updateTreeFont(Font dialogFont) {
 		getTreeViewer().getControl().setFont(dialogFont);
@@ -1408,7 +1408,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	/**
 	 * Returns the currentPage.
 	 * @return IPreferencePage
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected IPreferencePage getCurrentPage() {
 		return currentPage;
@@ -1418,7 +1418,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * Sets the current page.
 	 * @param currentPage
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected void setCurrentPage(IPreferencePage currentPage) {
 		this.currentPage = currentPage;
@@ -1428,7 +1428,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * Set the treeViewer.
 	 * @param treeViewer
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected void setTreeViewer(TreeViewer treeViewer) {
 		this.treeViewer = treeViewer;
@@ -1439,7 +1439,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 *
 	 * @return Composite.
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected Composite getPageContainer() {
 		return this.pageContainer;
@@ -1449,7 +1449,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * Set the composite that is showing the page.
 	 * @param pageContainer Composite
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected void setPageContainer(Composite pageContainer) {
 		this.pageContainer = pageContainer;
@@ -1460,7 +1460,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	 * @param page - the preference page to be shown
 	 * @param parent - the composite to parent the page
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected void createPageControl(IPreferencePage page, Composite parent) {
 		page.createControl(parent);
@@ -1469,7 +1469,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	/**
 	 * @see org.eclipse.jface.dialogs.IPageChangeProvider#getSelectedPage()
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public Object getSelectedPage() {
 			return getCurrentPage();
@@ -1477,7 +1477,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	
 	/**
 	 * @see org.eclipse.jface.dialogs.IPageChangeProvider#addPageChangedListener(org.eclipse.jface.dialogs.IPageChangedListener)
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public void addPageChangedListener(IPageChangedListener listener) {
 		pageChangedListeners.add(listener);
@@ -1485,7 +1485,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
 	
 	/**
 	 * @see org.eclipse.jface.dialogs.IPageChangeProvider#removePageChangedListener(org.eclipse.jface.dialogs.IPageChangedListener)
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public void removePageChangedListener(IPageChangedListener listener) {
 		pageChangedListeners.remove(listener);
@@ -1501,7 +1501,7 @@ public class PreferenceDialog extends TrayDialog implements IPreferencePageConta
      *
      * @see IPageChangedListener#pageChanged
      * 
-     * @since 3.1
+     * @since 1.0
      */
     protected void firePageChanged(final PageChangedEvent event) {
         Object[] listeners = pageChangedListeners.getListeners();

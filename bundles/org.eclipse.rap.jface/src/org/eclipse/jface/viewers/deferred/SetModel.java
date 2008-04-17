@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.Assert;
  * elements are added or removed from the set. All notifications are sent
  * synchronously.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public class SetModel extends AbstractConcurrentModel {
     

@@ -187,7 +187,7 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 	 * <strong>NOTE</strong> This value is not currently in use in the 
 	 * default implementation.
 	 * @return int
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	protected int getTransparentPixel() {
 		return 0;
@@ -205,7 +205,7 @@ public abstract class CompositeImageDescriptor extends ImageDescriptor {
 
 	/**
 	 * @param imageData The imageData to set.
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	protected void setImageData(ImageData imageData) {
 		this.imageData = imageData;

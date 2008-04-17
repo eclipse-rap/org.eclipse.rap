@@ -31,7 +31,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * Clients may instantiate this class, but must not extend.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  * @see INamedHandleStateIds
  */
 public class TextState extends PersistentState {

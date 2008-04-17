@@ -37,7 +37,7 @@ import org.eclipse.swt.graphics.RGB;
  * ResourceManager to convert the descriptors into real Images/Fonts/etc.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public abstract class ResourceManager {
     
@@ -50,7 +50,7 @@ public abstract class ResourceManager {
     /**
      * Returns the Device for which this ResourceManager will create resources 
      * 
-     * @since 3.1
+     * @since 1.0
      *
      * @return the Device associated with this ResourceManager
      */
@@ -78,7 +78,7 @@ public abstract class ResourceManager {
      * the descriptor. For example, when given an ImageDescriptor, the return
      * value of this method will always be an Image.</p>
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor descriptor for the resource to allocate
      * @return the newly allocated resource (not null)
@@ -92,7 +92,7 @@ public abstract class ResourceManager {
      * created multiple times, this may decrement a reference count rather than 
      * disposing the actual resource.  
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor identifier for the resource
      */
@@ -134,7 +134,7 @@ public abstract class ResourceManager {
      * @throws DeviceResourceException if the resource does not exist yet and cannot
      * be created for any reason.
      * 
-     * @since 3.3
+     * @since 1.0
      */
     public final Object get(DeviceResourceDescriptor descriptor) {
     	Object result = find(descriptor);
@@ -158,7 +158,7 @@ public abstract class ResourceManager {
      * as doing so with the global manager effectively leaks the resource.
      * </p>
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor descriptor for the image to create
      * @return the Image described by this descriptor (possibly shared by other equivalent
@@ -177,7 +177,7 @@ public abstract class ResourceManager {
      * be disposed by {@link #destroyImage(ImageDescriptor)}, and never by calling 
      * Image#dispose(). 
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor descriptor for the image to create
      * @return the Image described by this descriptor (possibly shared by other equivalent
@@ -209,7 +209,7 @@ public abstract class ResourceManager {
      * Returns the default image that will be returned in the event that the intended
      * image is missing.
      * 
-     * @since 3.1
+     * @since 1.0
      *
      * @return a default image that will be returned in the event that the intended
      * image is missing.
@@ -219,7 +219,7 @@ public abstract class ResourceManager {
     /**
      * Undoes everything that was done by {@link #createImage(ImageDescriptor)}.
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor identifier for the image to dispose
      */
@@ -233,7 +233,7 @@ public abstract class ResourceManager {
      * or by an eventual call to {@link #dispose()}. Color#dispose() must
      * never been called directly on the returned color.
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor descriptor for the color to create
      * @return the Color described by the given ColorDescriptor (not null)
@@ -249,7 +249,7 @@ public abstract class ResourceManager {
      * or by an eventual call to {@link #dispose()}. Color#dispose() must
      * never been called directly on the returned color.
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor descriptor for the color to create
      * @return the Color described by the given ColorDescriptor (not null)
@@ -262,7 +262,7 @@ public abstract class ResourceManager {
     /**
      * Undoes everything that was done by a call to {@link #createColor(RGB)}.
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor RGB value of the color to dispose
      */
@@ -274,7 +274,7 @@ public abstract class ResourceManager {
      * Undoes everything that was done by a call to {@link #createColor(ColorDescriptor)}.
      * 
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor identifier for the color to dispose
      */
@@ -288,7 +288,7 @@ public abstract class ResourceManager {
      * or by an eventual call to {@link #dispose()}.  The method Font#dispose()
      * must never be called directly on the returned font.
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor description of the font to create
      * @return the Font described by the given descriptor
@@ -301,7 +301,7 @@ public abstract class ResourceManager {
     /**
      * Undoes everything that was done by a previous call to {@link #createFont(FontDescriptor)}.
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor description of the font to destroy
      */
@@ -346,7 +346,7 @@ public abstract class ResourceManager {
      * Returns a previously allocated resource associated with the given descriptor, or
      * null if none exists yet. 
      * 
-     * @since 3.1
+     * @since 1.0
      *
      * @param descriptor descriptor to find
      * @return a previously allocated resource for the given descriptor or null if none.

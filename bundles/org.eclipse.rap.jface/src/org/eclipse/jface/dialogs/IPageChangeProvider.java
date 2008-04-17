@@ -14,7 +14,7 @@ package org.eclipse.jface.dialogs;
  * Minimal interface to a page change provider. Used for dialogs which can
  * switch between multiple pages.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IPageChangeProvider {
 	/**

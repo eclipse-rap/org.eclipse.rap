@@ -576,7 +576,7 @@ public class CheckboxTreeViewer extends TreeViewer implements ICheckable {
      * is used instead.
      * @see #setSubtreeChecked(Object, boolean) 
      *  
-     *  @since 3.2
+     *  @since 1.0
      */
 	public void setAllChecked(boolean state) {
 		setAllChecked(state,  getTree().getItems());

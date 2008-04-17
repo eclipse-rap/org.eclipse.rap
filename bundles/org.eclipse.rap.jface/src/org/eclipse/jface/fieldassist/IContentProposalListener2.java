@@ -14,7 +14,7 @@ package org.eclipse.jface.fieldassist;
  * This interface is used to listen to additional notifications from a
  * {@link ContentProposalAdapter}.
  * 
- * @since 3.3
+ * @since 1.0
  */
 public interface IContentProposalListener2 {
 	/**

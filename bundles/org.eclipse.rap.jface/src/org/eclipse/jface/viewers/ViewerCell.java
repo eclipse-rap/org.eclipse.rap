@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Widget;
 /**
  * The ViewerCell is the JFace representation of a cell entry in a ViewerRow.
  *
- * @since 3.3
+ * @since 1.0
  *
  */
 public class ViewerCell {
@@ -178,7 +178,7 @@ public class ViewerCell {
 //	 * 
 //	 * @param styleRanges the styled ranges
 //	 * 
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	public void setStyleRanges(StyleRange[] styleRanges) {
 //		row.setStyleRanges(columnIndex, styleRanges);
@@ -191,7 +191,7 @@ public class ViewerCell {
 //	 * 
 //	 * @return styleRanges the styled ranges
 //	 * 
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	public StyleRange[] getStyleRanges() {
 //		return row.getStyleRanges(columnIndex);
@@ -242,7 +242,7 @@ public class ViewerCell {
 	 * columns are reordered
 	 *
 	 * @return the current index (as shown in the UI)
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public int getVisualIndex() {
 		return row.getVisualIndex(getColumnIndex());
@@ -325,7 +325,7 @@ public class ViewerCell {
 	 * @return The bounds of the of the text area. May return <code>null</code>
 	 *         if the underlying widget implementation doesn't provide this
 	 *         information
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public Rectangle getTextBounds() {
 		return row.getTextBounds(columnIndex);
@@ -337,7 +337,7 @@ public class ViewerCell {
 	 * @return The bounds of the of the image area. May return <code>null</code>
 	 *         if the underlying widget implementation doesn't provide this
 	 *         information
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public Rectangle getImageBounds() {
 		return row.getImageBounds(columnIndex);
@@ -348,7 +348,7 @@ public class ViewerCell {
 	 * 
 	 * @return the foreground of the cell or <code>null</code> for the default foreground
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public Color getForeground() {
 		return row.getForeground(columnIndex);
@@ -359,7 +359,7 @@ public class ViewerCell {
 	 * 
 	 * @return the background of the cell or <code>null</code> for the default background
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public Color getBackground() {
 		return row.getBackground(columnIndex);
@@ -370,7 +370,7 @@ public class ViewerCell {
 	 * 
 	 * @return the font of the cell or <code>null</code> for the default font
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public Font getFont() {
 		return row.getFont(columnIndex);

@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Display;
  * The Policy class handles settings for behaviour, debug flags and logging
  * within JFace.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public class Policy {
 
@@ -86,7 +86,7 @@ public class Policy {
 	 * @param logger
 	 *            the logger to use, or <code>null</code> to use the default
 	 *            logger
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static void setLog(ILogger logger) {
 		log = logger;
@@ -99,7 +99,7 @@ public class Policy {
 	 * </p>
 	 * 
 	 * @return the logger
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static ILogger getLog() {
 		if (log == null) {
@@ -114,7 +114,7 @@ public class Policy {
 	 * @param status
 	 *            the handler to use, or <code>null</code> to use the default
 	 *            one
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static void setStatusHandler(StatusHandler status) {
 		statusHandler = status;
@@ -124,7 +124,7 @@ public class Policy {
 	 * Returns the status handler used by JFace to handle statuses.
 	 * 
 	 * @return the status handler
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static StatusHandler getStatusHandler() {
 		if (statusHandler == null) {
@@ -197,7 +197,7 @@ public class Policy {
 	 * Return the comparator used by JFace to sort strings.
 	 * 
 	 * @return the comparator used by JFace to sort strings
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public static Comparator getComparator() {
 		if (viewerComparator == null) {
@@ -211,7 +211,7 @@ public class Policy {
 	 * 
 	 * @param comparator
 	 *            comparator used by JFace to sort strings
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public static void setComparator(Comparator comparator) {
 		org.eclipse.core.runtime.Assert.isTrue(viewerComparator == null);
@@ -224,7 +224,7 @@ public class Policy {
 	 * 
 	 * @param factory
 	 *            the AnimatorFactory to use.
-	 * @since 3.2
+	 * @since 1.0
 	 * @deprecated this is no longer in use as of 3.3
 	 */
 	public static void setAnimatorFactory(AnimatorFactory factory) {
@@ -236,7 +236,7 @@ public class Policy {
 	 * instances.
 	 * 
 	 * @return the animator factory used to create control animator instances.
-	 * @since 3.2
+	 * @since 1.0
 	 * @deprecated this is no longer in use as of 3.3
 	 */
 	public static AnimatorFactory getAnimatorFactory() {
@@ -249,7 +249,7 @@ public class Policy {
 	 * Set the error support provider for error dialogs.
 	 * 
 	 * @param provider
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static void setErrorSupportProvider(ErrorSupportProvider provider) {
 		errorSupportProvider = provider;
@@ -260,7 +260,7 @@ public class Policy {
 	 * 
 	 * @return ErrorSupportProvider or <code>null</code> if this has not been
 	 *         set
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static ErrorSupportProvider getErrorSupportProvider() {
 		return errorSupportProvider;

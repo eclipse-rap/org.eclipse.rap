@@ -60,7 +60,7 @@ import org.eclipse.swt.SWT;
  * efficient.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public final class BindingManager extends HandleObjectManager implements
 		IContextManagerListener, ISchemeListener {
@@ -454,7 +454,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 *         scheme is active; <code>1</code> if the second scheme is the
 	 *         youngest; and <code>-1</code> if the first scheme is the
 	 *         youngest.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	private final int compareSchemes(final String schemeId1,
 			final String schemeId2) {
@@ -697,7 +697,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 *            The triggers on which to count strokes; must not be
 	 *            <code>null</code>.
 	 * @return The value of the strokes in the triggers.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	private final int countStrokes(final Trigger[] triggers) {
 		int strokeCount = triggers.length;
@@ -1021,7 +1021,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @return A map of trigger (<code>TriggerSequence</code>) to bindings (
 	 *         <code>Collection</code> containing <code>Binding</code>).
 	 *         This map may be empty, but it is never <code>null</code>.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	private final Map getActiveBindingsDisregardingContextByParameterizedCommand() {
 		if (bindings == null) {
@@ -1120,7 +1120,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @return The array of active triggers (<code>TriggerSequence</code>)
 	 *         for a particular command identifier. This value is guaranteed to
 	 *         never be <code>null</code>, but it may be empty.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public final TriggerSequence[] getActiveBindingsDisregardingContextFor(
 			final ParameterizedCommand parameterizedCommand) {
@@ -1201,7 +1201,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 *            should be retrieved; must not be <code>null</code>.
 	 * @return The active bindings for the given command; this value may be
 	 *         <code>null</code> if there are no active bindings.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	private final Binding[] getActiveBindingsFor1(final ParameterizedCommand command) {
 		final TriggerSequence[] triggers = getActiveBindingsFor(command);
@@ -1256,7 +1256,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @return The trigger sequence for the best binding; may be
 	 *         <code>null</code> if no bindings are active for the given
 	 *         command.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public final TriggerSequence getBestActiveBindingFor(final String commandId) {
 		return getBestActiveBindingFor(new ParameterizedCommand(commandManager.getCommand(commandId), null));
@@ -1374,7 +1374,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 * @return The formatted string for the best binding; may be
 	 *         <code>null</code> if no bindings are active for the given
 	 *         command.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public final String getBestActiveBindingFormattedFor(final String commandId) {
 		final TriggerSequence binding = getBestActiveBindingFor(commandId);
@@ -1774,7 +1774,7 @@ public final class BindingManager extends HandleObjectManager implements
 	 * 
 	 * @param binding
 	 *            The binding to be removed; must not be <code>null</code>.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public final void removeBinding(final Binding binding) {
 		if (bindings == null || bindings.length < 1) {

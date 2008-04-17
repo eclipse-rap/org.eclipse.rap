@@ -14,7 +14,7 @@ package org.eclipse.jface.dialogs;
  * Minimal interface to a message provider. Used for dialog pages which can
  * provide a message with an icon.
  * 
- * @since 2.0
+ * @since 1.0
  */
 public interface IMessageProvider {
     /**

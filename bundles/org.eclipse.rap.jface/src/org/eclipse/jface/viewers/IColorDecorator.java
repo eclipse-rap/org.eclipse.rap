@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Color;
  * that also has an IColorProvider the IColorDecorator will take precedence.
  * @see IColorProvider
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IColorDecorator {
 	

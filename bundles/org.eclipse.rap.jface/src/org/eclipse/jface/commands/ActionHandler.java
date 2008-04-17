@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Event;
  * <code>IHandler</code>.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public final class ActionHandler extends AbstractHandler {
 
@@ -69,7 +69,7 @@ public final class ActionHandler extends AbstractHandler {
 	 * When a listener is attached to this handler, then this registers a
 	 * listener with the underlying action.
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	private final void attachListener() {
 		if (propertyChangeListener == null) {
@@ -131,7 +131,7 @@ public final class ActionHandler extends AbstractHandler {
 	 * Returns the action associated with this handler
 	 * 
 	 * @return the action associated with this handler (not null)
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public final IAction getAction() {
 		return action;

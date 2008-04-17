@@ -31,7 +31,7 @@
 // * <code>IKeyFormatter</code> directly.
 // * </p>
 // * 
-// * @since 3.1
+// * @since 1.0
 // */
 //public abstract class AbstractKeyFormatter implements IKeyFormatter {
 //

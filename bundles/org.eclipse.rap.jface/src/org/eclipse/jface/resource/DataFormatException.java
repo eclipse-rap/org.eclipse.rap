@@ -20,7 +20,7 @@ public class DataFormatException extends IllegalArgumentException {
     
     /**
      * Generated serial version UID for this class.
-     * @since 3.1
+     * @since 1.0
      */
     private static final long serialVersionUID = 3544955467404031538L;
 

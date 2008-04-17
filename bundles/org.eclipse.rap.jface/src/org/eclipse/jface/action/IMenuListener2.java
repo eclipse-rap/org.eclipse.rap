@@ -14,7 +14,7 @@ package org.eclipse.jface.action;
  * A menu listener that gets informed when a menu is about to hide.
  *
  * @see MenuManager#addMenuListener
- * @since 3.2
+ * @since 1.0
  */
 public interface IMenuListener2 extends IMenuListener {
     /**

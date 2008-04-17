@@ -143,7 +143,7 @@ public abstract class IconAndMessageDialog extends Dialog {
 	 * 
 	 * @return the style for the message label
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected int getMessageLabelStyle() {
 		return SWT.WRAP;
@@ -173,7 +173,7 @@ public abstract class IconAndMessageDialog extends Dialog {
 	 * </p>
 	 * 
 	 * @return the image to display beside the message
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	protected abstract Image getImage();
 
@@ -197,7 +197,7 @@ public abstract class IconAndMessageDialog extends Dialog {
 	 * Get the number of columns in the layout of the Shell of the dialog.
 	 * 
 	 * @return int
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	int getColumnCount() {
 		return 2;

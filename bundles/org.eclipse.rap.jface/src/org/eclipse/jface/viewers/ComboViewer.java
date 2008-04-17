@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Control;
  * </p>
  * 
  * @see org.eclipse.jface.viewers.ListViewer
- * @since 3.0 (made non-final in 3.4)
+ * @since 1.0 (made non-final in 3.4)
  */
 public class ComboViewer extends AbstractListViewer {
 
@@ -48,7 +48,7 @@ public class ComboViewer extends AbstractListViewer {
      * <code>null</code>.
      * 
      * @see #ComboViewer(CCombo)
-     * @since 3.3
+     * @since 1.0
      */
     // RAP [bm]: 
 //    private CCombo ccombo;
@@ -96,7 +96,7 @@ public class ComboViewer extends AbstractListViewer {
 //     * no sorter, and no filters.
 //     *
 //     * @param list the CCombo control
-//     * @since 3.3
+//     * @since 1.0
 //     */
 //    public ComboViewer(CCombo list) {
 //        this.ccombo = list;
@@ -186,7 +186,7 @@ public class ComboViewer extends AbstractListViewer {
 //	 * a CCombo control, some kind of unchecked exception is thrown.
 //	 * 
 //	 * @return the list control
-//     * @since 3.3
+//     * @since 1.0
 //	 */
 //    public CCombo getCCombo() {
 //        Assert.isNotNull(ccombo);

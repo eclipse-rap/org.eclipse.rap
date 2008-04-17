@@ -19,7 +19,7 @@ package org.eclipse.jface.viewers.deferred;
  * This class can be used with any widget that can be wrapped in the 
  * <code>AbstractVirtualTable</code> interface.  
  * 
- * @since 3.1
+ * @since 1.0
  */
 /* package */ final class ConcurrentTableUpdator {
 	/**

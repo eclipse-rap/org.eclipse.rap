@@ -25,7 +25,7 @@ package org.eclipse.jface.viewers;
  * </p>
  * 
  * @see IDelayedLabelDecorator
- * @since 3.0
+ * @since 1.0
  */
 public interface IViewerLabelProvider extends IBaseLabelProvider {
 

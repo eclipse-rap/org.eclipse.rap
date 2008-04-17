@@ -166,7 +166,7 @@
 //	 * Creates a new cell editor with no control The cell editor has no cell
 //	 * validator.
 //	 *
-//	 * @since 2.1
+//	 * @since 1.0
 //	 */
 //	protected CellEditor() {
 //	}
@@ -190,7 +190,7 @@
 //	 *            the parent control
 //	 * @param style
 //	 *            the style bits
-//	 * @since 2.1
+//	 * @since 1.0
 //	 */
 //	protected CellEditor(Composite parent, int style) {
 //		this.style = style;
@@ -247,7 +247,7 @@
 //	 *
 //	 * @param parent
 //	 *            the parent control
-//	 * @since 2.1
+//	 * @since 1.0
 //	 */
 //	public void create(Composite parent) {
 //		Assert.isTrue(control == null);
@@ -396,7 +396,7 @@
 //	 *
 //	 * @param style
 //	 *            the SWT style bits for this cell editor
-//	 * @since 2.1
+//	 * @since 1.0
 //	 */
 //	public void setStyle(int style) {
 //		this.style = style;
@@ -406,7 +406,7 @@
 //	 * Returns the style bits for this cell editor.
 //	 *
 //	 * @return the style for this cell editor
-//	 * @since 2.1
+//	 * @since 1.0
 //	 */
 //	public int getStyle() {
 //		return style;
@@ -574,7 +574,7 @@
 //	/**
 //	 * Marks this cell editor as dirty.
 //	 *
-//	 * @since 2.1
+//	 * @since 1.0
 //	 */
 //	protected void markDirty() {
 //		dirty = true;
@@ -889,7 +889,7 @@
 //	 *
 //	 * @param activationEvent
 //	 *            the editor activation event
-//	 * @since 3.3
+//	 * @since 1.0
 //	 */
 //	public void activate(ColumnViewerEditorActivationEvent activationEvent) {
 //		activate();
@@ -902,7 +902,7 @@
 //	 *
 //	 * @return <code>true</code> to indicate that a focus listener has to be
 //	 *         attached
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	protected boolean dependsOnExternalFocusListener() {
 //		return true;

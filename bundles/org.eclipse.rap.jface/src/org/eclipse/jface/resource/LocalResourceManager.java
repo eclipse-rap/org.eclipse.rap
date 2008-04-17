@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Control;
  * A nested registry can be used to manage the resources for, say, a dialog
  * box.
  * </p>
- * @since 3.1
+ * @since 1.0
  */
 public final class LocalResourceManager extends AbstractResourceManager {
 

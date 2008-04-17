@@ -17,7 +17,7 @@ package org.eclipse.jface.dialogs;
  * @see IPageChangeProvider
  * @see PageChangedEvent
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IPageChangedListener {
 	/**

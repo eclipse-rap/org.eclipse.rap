@@ -47,7 +47,7 @@ public class DialogUtil {
 	 * @param chars
 	 *            the number of characters
 	 * @return the number of pixels
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public static int convertHeightInCharsToPixels(int chars) {
 		
@@ -71,7 +71,7 @@ public class DialogUtil {
 	 * @param dlus
 	 *            the number of horizontal dialog units
 	 * @return the number of pixels
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public static int convertHorizontalDLUsToPixels(int dlus) {
 		// round to the nearest pixel
@@ -95,7 +95,7 @@ public class DialogUtil {
 	 * @param dlus
 	 *            the number of vertical dialog units
 	 * @return the number of pixels
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public static int convertVerticalDLUsToPixels(int dlus) {
 		// round to the nearest pixel
@@ -119,7 +119,7 @@ public class DialogUtil {
 	 * @param chars
 	 *            the number of characters
 	 * @return the number of pixels
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public static int convertWidthInCharsToPixels(int chars) {
 		return (int) (Graphics.getAvgCharWidth(dialogFont)* chars);

@@ -17,7 +17,7 @@ package org.eclipse.jface.viewers;
  * TableColumnViewerLabelProvider is the mapping from the table based providers
  * to the ViewerLabelProvider.
  * 
- * @since 3.3
+ * @since 1.0
  * @see ITableLabelProvider
  * @see ITableColorProvider
  * @see ITableFontProvider

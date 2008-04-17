@@ -29,7 +29,7 @@
 // * <b>This class is intended to be subclassed by implementors.</b>
 // * </p>
 // * 
-// * @since 3.3
+// * @since 1.0
 // * 
 // */
 //public abstract class OwnerDrawLabelProvider extends CellLabelProvider {
@@ -149,7 +149,7 @@
 //	 *            <code>true</code> if owner draw should be enabled for the
 //	 *            given viewer and column, <code>false</code> otherwise.
 //	 * 
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	final protected void initialize(ColumnViewer viewer, ViewerColumn column,
 //			boolean enableOwnerDraw) {
@@ -243,7 +243,7 @@
 //	 *            <code>true</code> if owner draw should be enabled,
 //	 *            <code>false</code> otherwise
 //	 * 
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	protected void setOwnerDrawEnabled(ColumnViewer viewer,
 //			ViewerColumn column, boolean enabled) {

@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.RGB;
  * Color on demand. This object will be compared so hashCode(...) and equals(...) must 
  * return meaningful values.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public abstract class ColorDescriptor extends DeviceResourceDescriptor {
     
@@ -31,7 +31,7 @@ public abstract class ColorDescriptor extends DeviceResourceDescriptor {
      * 
      * @deprecated use {@link ColorDescriptor#createFrom(Color)}
      * 
-     * @since 3.1
+     * @since 1.0
      *
      * @param toCreate Color to convert into a ColorDescriptor.
      * @param originalDevice this must be the same Device that was passed into the
@@ -49,7 +49,7 @@ public abstract class ColorDescriptor extends DeviceResourceDescriptor {
      * the original colour while the color descriptor is still in use may cause 
      * SWT to throw a graphic disposed exception.
      * 
-     * @since 3.1
+     * @since 1.0
      *
      * @param toCreate Color to generate a ColorDescriptor from
      * @return a newly created ColorDescriptor
@@ -60,7 +60,7 @@ public abstract class ColorDescriptor extends DeviceResourceDescriptor {
     
     /**
      * Returns a color descriptor for the given RGB values
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param toCreate RGB values to create
      * @return a new ColorDescriptor
@@ -81,7 +81,7 @@ public abstract class ColorDescriptor extends DeviceResourceDescriptor {
     /**
      * Undoes whatever was done by createColor. 
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param toDestroy a Color that was previously allocated by an equal ColorDescriptor
      */

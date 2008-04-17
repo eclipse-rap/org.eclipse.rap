@@ -86,7 +86,7 @@
 // *		});
 // *		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE, dragAdapter.getTransfers(), dragAdapter);
 // * </pre></code>
-// * @since 3.0
+// * @since 1.0
 // */
 //public class DelegatingDragAdapter implements DragSourceListener {
 //    private List listeners = new ArrayList();

@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Widget;
  * Don't assign the layout directly the {@link Tree}</b>
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  */
 public class TreeColumnLayout extends AbstractColumnLayout {
 	private boolean addListener = true;

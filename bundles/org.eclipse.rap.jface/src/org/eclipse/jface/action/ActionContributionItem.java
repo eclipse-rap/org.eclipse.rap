@@ -47,7 +47,7 @@ public class ActionContributionItem extends ContributionItem {
 	 * present. If this mode bit is not set, text is only shown on tool items if
 	 * there is no image present.
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public static int MODE_FORCE_TEXT = 1;
 
@@ -423,7 +423,7 @@ public class ActionContributionItem extends ContributionItem {
 	 * 
 	 * @return the presentation mode settings
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public int getMode() {
 		return mode;
@@ -679,7 +679,7 @@ public class ActionContributionItem extends ContributionItem {
 	 * <code>false</code> otherwise.
 	 * 
 	 * @return if this item is allowed to be enabled
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	protected boolean isEnabledAllowed() {
 		if (getParent() == null) {
@@ -706,7 +706,7 @@ public class ActionContributionItem extends ContributionItem {
 	 * @param mode
 	 *            the presentation mode settings
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public void setMode(int mode) {
 		this.mode = mode;
@@ -1222,7 +1222,7 @@ public class ActionContributionItem extends ContributionItem {
 	 * actions.
 	 * 
 	 * @return the appropriate listener
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	private Listener getMenuCreatorListener() {
 		if (menuCreatorListener == null) {
@@ -1255,7 +1255,7 @@ public class ActionContributionItem extends ContributionItem {
 	 * 
 	 * @param proxy
 	 *            the proxy menu
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	private void handleShowProxy(Menu proxy) {
 		proxy.removeListener(SWT.Show, getMenuCreatorListener());
@@ -1279,7 +1279,7 @@ public class ActionContributionItem extends ContributionItem {
 	 *            the real menu to copy from
 	 * @param proxy
 	 *            the proxy menu to populate
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	private void copyMenu(Menu realMenu, Menu proxy) {
 		if (realMenu.isDisposed() || proxy.isDisposed()) {
@@ -1359,7 +1359,7 @@ public class ActionContributionItem extends ContributionItem {
 	 * 
 	 * @param proxy
 	 *            the proxy menu
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	private void handleHideProxy(final Menu proxy) {
 		proxy.removeListener(SWT.Hide, getMenuCreatorListener());
@@ -1392,7 +1392,7 @@ public class ActionContributionItem extends ContributionItem {
 	 * </p>
 	 * 
 	 * @return the widget, or <code>null</code> depending on the lifecycle.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public Widget getWidget() {
 		return widget;

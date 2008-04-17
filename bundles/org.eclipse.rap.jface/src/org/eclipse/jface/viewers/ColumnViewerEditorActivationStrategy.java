@@ -22,7 +22,7 @@
 // * an editor activation. Implementors can extend and overwrite to implement
 // * custom editing behavior
 // *
-// * @since 3.3
+// * @since 1.0
 // */
 //public class ColumnViewerEditorActivationStrategy {
 //	private ColumnViewer viewer;

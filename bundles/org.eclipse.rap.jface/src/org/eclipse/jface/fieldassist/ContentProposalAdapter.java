@@ -52,7 +52,7 @@ import org.eclipse.swt.widgets.Text;
  * <p>
  * This class is not intended to be subclassed.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class ContentProposalAdapter {
 
@@ -1633,7 +1633,7 @@ public class ContentProposalAdapter {
 	 *            not be <code>null</code>. If the listener has not already
 	 *            been registered, this method has no effect.
 	 * 
-	 * @since 3.3
+	 * @since 1.0
 	 * @see org.eclipse.jface.fieldassist.IContentProposalListener
 	 */
 	public void removeContentProposalListener(IContentProposalListener listener) {
@@ -1651,7 +1651,7 @@ public class ContentProposalAdapter {
 	 *            an instance which is already registered with this instance,
 	 *            this method has no effect.
 	 * 
-	 * @since 3.3
+	 * @since 1.0
 	 * @see org.eclipse.jface.fieldassist.IContentProposalListener2
 	 */
 	public void addContentProposalListener(IContentProposalListener2 listener) {
@@ -1668,7 +1668,7 @@ public class ContentProposalAdapter {
 	 *            Must not be <code>null</code>. If the listener has not
 	 *            already been registered, this method has no effect.
 	 * 
-	 * @since 3.3
+	 * @since 1.0
 	 * @see org.eclipse.jface.fieldassist.IContentProposalListener2
 	 */
 	public void removeContentProposalListener(IContentProposalListener2 listener) {
@@ -1900,7 +1900,7 @@ public class ContentProposalAdapter {
 	 * open. This method is used by subclasses to explicitly close the popup
 	 * based on additional logic.
 	 * 
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	protected void closeProposalPopup() {
 		if (popup != null) {
@@ -2109,7 +2109,7 @@ public class ContentProposalAdapter {
 	 * 
 	 * @return <code>true</code> if the proposal popup or its secondary info
 	 *         popup has the focus
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public boolean hasProposalPopupFocus() {
 		return popup != null && popup.hasFocus();

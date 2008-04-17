@@ -24,7 +24,7 @@ import org.eclipse.jface.action.ToolBarContributionItem;
  * consulting with the Platform/UI team.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class ToolBarContributionItem2 extends ToolBarContributionItem implements
 		IToolBarContributionItem {

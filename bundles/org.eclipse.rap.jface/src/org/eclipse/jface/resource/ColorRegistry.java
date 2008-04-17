@@ -42,13 +42,13 @@ import org.eclipse.swt.widgets.Display;
  * Clients may instantiate this class (it was not designed to be subclassed).
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  */
 public class ColorRegistry extends ResourceRegistry {
 
 	/**
 	 * Default color value.  This is cyan (very unappetizing). 
-	 * @since 3.4
+	 * @since 1.1
 	 */
     private static final ColorDescriptor DEFAULT_COLOR = new RGBColorDescriptor(new RGB(0, 255, 255));
 
@@ -111,7 +111,7 @@ public class ColorRegistry extends ResourceRegistry {
      * @param cleanOnDisplayDisposal
 	 *            whether all fonts allocated by this <code>ColorRegistry</code>
 	 *            should be disposed when the display is disposed
-     * @since 3.1
+     * @since 1.0
      */
     public ColorRegistry(Display display, boolean cleanOnDisplayDisposal) {
         Assert.isNotNull(display);
@@ -127,7 +127,7 @@ public class ColorRegistry extends ResourceRegistry {
      * @param rgb the <code>RGB</code> data for the color.
      * @return the new <code>Color</code> object.
      * 
-     * @since 3.1
+     * @since 1.0
      */
     private Color createColor(RGB rgb) {
     	// RAP [bm]: 
@@ -205,7 +205,7 @@ public class ColorRegistry extends ResourceRegistry {
 	 * is returned. Users that wish to ensure a reasonable default value should
 	 * use {@link #getColorDescriptor(String, ColorDescriptor)} instead.
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 * 
 	 * @param symbolicName
 	 * @return the color descriptor associated with the given symbolic color
@@ -224,7 +224,7 @@ public class ColorRegistry extends ResourceRegistry {
 	 * @param defaultValue
 	 * @return the color descriptor associated with the given symbolic color
 	 *         name or the default
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public ColorDescriptor getColorDescriptor(String symbolicName,
 			ColorDescriptor defaultValue) {

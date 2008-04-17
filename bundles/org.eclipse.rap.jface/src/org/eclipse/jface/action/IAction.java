@@ -49,7 +49,7 @@ public interface IAction {
      * to a check box, or if <code>setMenuCreator</code> is called, then the
      * style will change to a drop down menu.
      * 
-     * @since 2.1
+     * @since 1.0
      */
     public static int AS_UNSPECIFIED = 0x00;
 
@@ -75,7 +75,7 @@ public interface IAction {
      * Action style constant (value <code>8</code>) indicating action is 
      * a radio button.
      * 
-     * @since 2.1
+     * @since 1.0
      */
     public static int AS_RADIO_BUTTON = 0x08;
 
@@ -127,7 +127,7 @@ public interface IAction {
      * action succeeded in the absence of notification to the contrary. 
      * </p>
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public static final String RESULT = "result"; //$NON-NLS-1$
     
@@ -140,7 +140,7 @@ public interface IAction {
      * This is used to support backward compatibility of actions within the
      * commands framework.
      * 
-     * @since 3.1
+     * @since 1.0
      */
 	public static final String HANDLED = IHandlerAttributes.ATTRIBUTE_HANDLED;
 
@@ -168,7 +168,7 @@ public interface IAction {
      * 
      * @return the action definition id of this action, or
      * <code>null</code> if none
-     * @since 2.0
+     * @since 1.0
      */
     public String getActionDefinitionId();
 
@@ -307,7 +307,7 @@ public interface IAction {
 	 * 
 	 * @return <code>true</code> if all of the action's behaviour is
 	 *         available; <code>false</code> otherwise.
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public boolean isHandled();
 
@@ -335,7 +335,7 @@ public interface IAction {
      * simply calls <code>run()</code> for backwards compatibility.
      * 
      * @param event the SWT event which triggered this action being run 
-     * @since 2.0
+     * @since 1.0
      */
     public void runWithEvent(Event event);
 
@@ -343,7 +343,7 @@ public interface IAction {
      * Sets the action definition id of this action.
      * 
      * @param id the action definition id
-     * @since 2.0
+     * @since 1.0
      */
     public void setActionDefinitionId(String id);
 

@@ -633,7 +633,7 @@ public abstract class PreferencePage extends DialogPage implements
 	/**
 	 * Apply the data to the receiver. By default do nothing.
 	 * @param data
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public void applyData(Object data) {
 		

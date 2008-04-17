@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Widget;
  * Concrete subclasses of {@link ColumnViewer} should implement a matching
  * concrete subclass of {@link ViewerColumn}.
  * 
- * @since 3.3
+ * @since 1.0
  * 
  */
 public abstract class ViewerColumn {
@@ -174,7 +174,7 @@ public abstract class ViewerColumn {
 	 * 
 	 * @return Returns the viewer.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public ColumnViewer getViewer() {
 		return viewer;

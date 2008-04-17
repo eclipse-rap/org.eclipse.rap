@@ -14,7 +14,7 @@
 //package org.eclipse.jface.viewers;
 //
 ///**
-// * @since 3.3
+// * @since 1.0
 // *
 // */
 //public abstract class FocusCellHighlighter {
@@ -59,7 +59,7 @@
 //	 * @param oldCell
 //	 *            the old focus cell or <code>null</code> if no cell has been
 //	 *            focused before
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	protected void focusCellChanged(ViewerCell newCell, ViewerCell oldCell) {
 //		focusCellChanged(newCell);

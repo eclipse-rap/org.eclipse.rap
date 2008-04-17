@@ -37,7 +37,7 @@ public final class JFacePreferences {
 	 * qualified name. For example in 'Foo.txt - myproject/bar', the qualifier
 	 * is '- myproject/bar'.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final String QUALIFIER_COLOR = "QUALIFIER_COLOR"; //$NON-NLS-1$
 
@@ -45,7 +45,7 @@ public final class JFacePreferences {
 	 * Identifier for the color used to show label decorations For example in
 	 * 'Foo.txt [1.16]', the decoration is '[1.16]'.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final String DECORATIONS_COLOR = "DECORATIONS_COLOR"; //$NON-NLS-1$
 
@@ -53,7 +53,7 @@ public final class JFacePreferences {
 	 * Identifier for the color used to counter informations For example in
 	 * 'Foo.txt (2 matches)', the counter information is '(2 matches)'.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final String COUNTER_COLOR = "COUNTER_COLOR"; //$NON-NLS-1$
 
@@ -62,7 +62,7 @@ public final class JFacePreferences {
 	 * Identifier for the color used for the background of content assist
 	 * popup dialogs.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final String CONTENT_ASSIST_BACKGROUND_COLOR = "CONTENT_ASSIST_BACKGROUND_COLOR"; //$NON-NLS-1$
 
@@ -70,7 +70,7 @@ public final class JFacePreferences {
 	 * Identifier for the color used for the foreground of content assist
 	 * popup dialogs.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final String CONTENT_ASSIST_FOREGROUND_COLOR = "CONTENT_ASSIST_FOREGROUND_COLOR"; //$NON-NLS-1$
 
@@ -79,7 +79,7 @@ public final class JFacePreferences {
 	 * Identifier for the color used for the background of content assist
 	 * secondary information popups.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final String CONTENT_ASSIST_INFO_BACKGROUND_COLOR = "CONTENT_ASSIST_INFO_BACKGROUND_COLOR"; //$NON-NLS-1$
 
@@ -87,7 +87,7 @@ public final class JFacePreferences {
 	 * Identifier for the color used for the background of content assist
 	 * secondary information popups.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final String CONTENT_ASSIST_INFO_FOREGROUND_COLOR = "CONTENT_ASSIST_INFO_FOREGROUND_COLOR"; //$NON-NLS-1$
 

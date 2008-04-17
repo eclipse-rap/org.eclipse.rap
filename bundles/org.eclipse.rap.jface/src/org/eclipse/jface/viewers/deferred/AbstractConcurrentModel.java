@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.ListenerList;
  * Abstract base class for all IConcurrentModel implementations. Clients should
  * subclass this class instead of implementing IConcurrentModel directly. 
  * 
- * @since 3.1
+ * @since 1.0
  */
 public abstract class AbstractConcurrentModel implements
         IConcurrentModel {

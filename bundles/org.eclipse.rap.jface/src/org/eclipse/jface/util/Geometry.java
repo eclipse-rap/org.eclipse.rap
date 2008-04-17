@@ -19,14 +19,14 @@ import org.eclipse.swt.widgets.Control;
  * Contains static methods for performing simple geometric operations
  * on the SWT geometry classes.
  *
- * @since 3.0
+ * @since 1.0
  */
 public class Geometry {
 
     /**
      * Prevent this class from being instantiated.
      * 
-     * @since 3.0
+     * @since 1.0
      */
     private Geometry() {
     	//This is not instantiated
@@ -41,7 +41,7 @@ public class Geometry {
      * @param p2 second endpoint
      * @return the square of the distance between the two points
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public static int distanceSquared(Point p1, Point p2) {
         int term1 = p1.x - p2.x;
@@ -54,7 +54,7 @@ public class Geometry {
      *  
      * @param p point representing the 2d vector whose magnitude is being computed
      * @return the magnitude of the given 2d vector
-     * @since 3.0
+     * @since 1.0
      */
     public static double magnitude(Point p) {
         return Math.sqrt(magnitudeSquared(p));
@@ -66,7 +66,7 @@ public class Geometry {
      * 
      * @param p the point whose magnitude is being computed
      * @return the square of the magnitude of the given vector
-     * @since 3.0
+     * @since 1.0
      */
     public static int magnitudeSquared(Point p) {
         return p.x * p.x + p.y * p.y;
@@ -78,7 +78,7 @@ public class Geometry {
      * @param p1 the first vector
      * @param p2 the second vector
      * @return the dot product of the two vectors
-     * @since 3.0
+     * @since 1.0
      */
     public static int dotProduct(Point p1, Point p2) {
         return p1.x * p2.x + p1.y * p2.y;
@@ -92,7 +92,7 @@ public class Geometry {
      * @param p2 a Point
      * @return a new point whose coordinates are the minimum of the coordinates of the
      * given points
-     * @since 3.0
+     * @since 1.0
      */
     public static Point min(Point p1, Point p2) {
         return new Point(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y));
@@ -104,7 +104,7 @@ public class Geometry {
      * @param p1 a Point
      * @param p2 a Point
      * @return point a new point whose coordinates are the maximum of the coordinates
-     * @since 3.0
+     * @since 1.0
      */
     public static Point max(Point p1, Point p2) {
         return new Point(Math.max(p1.x, p2.x), Math.max(p1.y, p2.y));
@@ -119,7 +119,7 @@ public class Geometry {
      * @param distance magnitude of the vector
      * @param direction one of SWT.TOP, SWT.BOTTOM, SWT.LEFT, or SWT.RIGHT
      * @return a point representing a vector in the given direction with the given magnitude
-     * @since 3.0
+     * @since 1.0
      */
     public static Point getDirectionVector(int distance, int direction) {
         switch (direction) {
@@ -141,7 +141,7 @@ public class Geometry {
      * 
      * @param rect rectangle being computed
      * @return a Point at the center of the given rectangle.
-     * @since 3.0
+     * @since 1.0
      */
     public static Point centerPoint(Rectangle rect) {
         return new Point(rect.x + rect.width / 2, rect.y + rect.height / 2);
@@ -162,7 +162,7 @@ public class Geometry {
      * 
      * @param result object that will be modified
      * @param toCopy object that will be copied
-     * @since 3.1
+     * @since 1.0
      */
     public static void set(Point result, Point toCopy) {
     	result.x = toCopy.x;
@@ -174,7 +174,7 @@ public class Geometry {
      * 
      * @param result object that will be modified
      * @param toCopy object that will be copied
-     * @since 3.1
+     * @since 1.0
      */
     public static void set(Rectangle result, Rectangle toCopy) {
     	result.x = toCopy.x;
@@ -205,7 +205,7 @@ public class Geometry {
      * @param rect1 first rectangle
      * @param rect2 rectangle to subtract
      * @return the difference between the two rectangles (computed as rect1 - rect2)
-     * @since 3.3
+     * @since 1.0
      */
     public static Rectangle subtract(Rectangle rect1, Rectangle rect2) {
     	return new Rectangle(rect1.x - rect2.x, rect1.y - rect2.y, rect1.width - rect2.width, rect1.height - rect2.height);
@@ -219,7 +219,7 @@ public class Geometry {
      * @param rect2 second rectangle to add
      * @return a new rectangle whose x, y, height, and width attributes are the sum of the corresponding attributes from
      *         the arguments.
-     * @since 3.3
+     * @since 1.0
      */
     public static Rectangle add(Rectangle rect1, Rectangle rect2) {
     	return new Rectangle(rect1.x + rect2.x, rect1.y + rect2.y, 
@@ -233,7 +233,7 @@ public class Geometry {
      * @param point1 the first point (not null)
      * @param point2 the second point (not null)
      * @return a new point whose coordinates are the sum of the given points
-     * @since 3.0
+     * @since 1.0
      */
     public static Point add(Point point1, Point point2) {
         return new Point(point1.x + point2.x, point1.y + point2.y);
@@ -242,7 +242,7 @@ public class Geometry {
     /**
      * Divides both coordinates of the given point by the given scalar. 
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param toDivide point to divide
      * @param scalar denominator
@@ -260,7 +260,7 @@ public class Geometry {
      * @param point1 initial point
      * @param point2 vector to subtract
      * @return the difference (point1 - point2)
-     * @since 3.0
+     * @since 1.0
      */
     public static Point subtract(Point point1, Point point2) {
         return new Point(point1.x - point2.x, point1.y - point2.y);
@@ -270,7 +270,7 @@ public class Geometry {
      * Swaps the X and Y coordinates of the given point.
      * 
      * @param toFlip modifies this point
-     * @since 3.1
+     * @since 1.0
      */
     public static void flipXY(Point toFlip) {
     	int temp = toFlip.x;
@@ -282,7 +282,7 @@ public class Geometry {
      * Swaps the X and Y coordinates of the given rectangle, along with the height and width.
      * 
      * @param toFlip modifies this rectangle
-     * @since 3.1
+     * @since 1.0
      */
     public static void flipXY(Rectangle toFlip) {
     	int temp = toFlip.x;
@@ -300,7 +300,7 @@ public class Geometry {
      * @param toMeasure rectangle to measure
      * @param width returns the width if true, and the height if false
      * @return the width or height of the given rectangle
-     * @since 3.0
+     * @since 1.0
      */
     public static int getDimension(Rectangle toMeasure, boolean width) {
         if (width) {
@@ -315,7 +315,7 @@ public class Geometry {
      * @param toMeasure point being measured
      * @param width if true, returns x. Otherwise, returns y.
      * @return the x or y coordinate
-     * @since 3.1
+     * @since 1.0
      */
     public static int getCoordinate(Point toMeasure, boolean width) {
     	return width ? toMeasure.x : toMeasure.y;
@@ -327,7 +327,7 @@ public class Geometry {
      * @param toMeasure rectangle being measured
      * @param width if true, returns x. Otherwise, returns y.
      * @return the x or y coordinate
-     * @since 3.1
+     * @since 1.0
      */
     public static int getCoordinate(Rectangle toMeasure, boolean width) {
     	return width ? toMeasure.x : toMeasure.y;
@@ -339,7 +339,7 @@ public class Geometry {
      * @param toSet rectangle to modify
      * @param width if true, the width is modified. If false, the height is modified.
      * @param newCoordinate new value of the width or height
-     * @since 3.1
+     * @since 1.0
      */
     public static void setDimension(Rectangle toSet, boolean width, int newCoordinate) {
     	if (width) {
@@ -355,7 +355,7 @@ public class Geometry {
      * @param toSet rectangle to modify
      * @param width if true, the x coordinate is modified. If false, the y coordinate is modified.
      * @param newCoordinate new value of the x or y coordinates
-     * @since 3.1
+     * @since 1.0
      */
     public static void setCoordinate(Rectangle toSet, boolean width, int newCoordinate) {
     	if (width) {
@@ -371,7 +371,7 @@ public class Geometry {
      * @param toSet point to modify
      * @param width if true, the x coordinate is modified. If false, the y coordinate is modified.
      * @param newCoordinate new value of the x or y coordinates
-     * @since 3.1
+     * @since 1.0
      */
     public static void setCoordinate(Point toSet, boolean width, int newCoordinate) {
     	if (width) {
@@ -389,7 +389,7 @@ public class Geometry {
      * @param testPoint a point to test
      * @param edgeOfInterest side of the rectangle to test against
      * @return the distance of the given point from the given edge of the rectangle
-     * @since 3.0
+     * @since 1.0
      */
     public static int getDistanceFromEdge(Rectangle rectangle, Point testPoint,
             int edgeOfInterest) {
@@ -419,7 +419,7 @@ public class Geometry {
      * @param orientation the side to extrude.  One of SWT.LEFT, SWT.RIGHT, SWT.TOP, or SWT.BOTTOM. The 
      * resulting rectangle will always share this side with the original rectangle.
      * @return a rectangle formed by extruding the given side of the rectangle by the given distance.
-     * @since 3.0
+     * @since 1.0
      */
     public static Rectangle getExtrudedEdge(Rectangle toExtrude, int size,
             int orientation) {
@@ -452,7 +452,7 @@ public class Geometry {
      * 
      * @param swtDirectionConstant one of SWT.LEFT, SWT.RIGHT, SWT.TOP, or SWT.BOTTOM
      * @return one of SWT.LEFT, SWT.RIGHT, SWT.TOP, or SWT.BOTTOM
-     * @since 3.0
+     * @since 1.0
      */
     public static int getOppositeSide(int swtDirectionConstant) {
         switch (swtDirectionConstant) {
@@ -474,7 +474,7 @@ public class Geometry {
      * 
      * @param horizontal if true, returns SWT.HORIZONTAL. If false, returns SWT.VERTICAL 
      * @return SWT.HORIZONTAL or SWT.VERTICAL.
-     * @since 3.0
+     * @since 1.0
      */
     public static int getSwtHorizontalOrVerticalConstant(boolean horizontal) {
         if (horizontal) {
@@ -490,7 +490,7 @@ public class Geometry {
      * 
      * @param swtSideConstant one of SWT.TOP, SWT.BOTTOM, SWT.LEFT, or SWT.RIGHT
      * @return true iff the given side is horizontal.
-     * @since 3.0
+     * @since 1.0
      */
     public static boolean isHorizontal(int swtSideConstant) {
         return !(swtSideConstant == SWT.LEFT || swtSideConstant == SWT.RIGHT);
@@ -501,7 +501,7 @@ public class Geometry {
      * 
      * @param rect rectangle to move (will be modified)
      * @param delta direction vector to move the rectangle by
-     * @since 3.0
+     * @since 1.0
      */
     public static void moveRectangle(Rectangle rect, Point delta) {
         rect.x += delta.x;
@@ -515,7 +515,7 @@ public class Geometry {
      *  
      * @param rect normalized rectangle to modify
      * @param differenceRect difference rectangle to be added to rect
-     * @since 3.3
+     * @since 1.0
      */
     public static void expand(Rectangle rect, Rectangle differenceRect) {
     	rect.x += differenceRect.x;
@@ -546,7 +546,7 @@ public class Geometry {
      * 
      * @return a difference rectangle that, when added to another rectangle, will cause each
      * side to expand by the given number of units
-     * @since 3.3
+     * @since 1.0
      */
     public static Rectangle createDiffRectangle(int left, int right, int top, int bottom) {
     	return new Rectangle(-left, -top, left + right, top + bottom);
@@ -562,7 +562,7 @@ public class Geometry {
      * @param right distance to move the right edge outward (negative values move the edge inward) 
      * @param top distance to move the top edge outward (negative values move the edge inward)
      * @param bottom distance to move the bottom edge outward (negative values move the edge inward)
-     * @since 3.1
+     * @since 1.0
      */
     public static void expand(Rectangle rect, int left, int right, int top, int bottom) {
         rect.x -= left;
@@ -578,7 +578,7 @@ public class Geometry {
      * rectangle. 
      * 
      * @param rect rectangle to modify
-     * @since 3.0
+     * @since 1.0
      */
     public static void normalize(Rectangle rect) {
         if (rect.width < 0) {
@@ -599,7 +599,7 @@ public class Geometry {
      * @param coordinateSystem local coordinate system being converted to
      * @param toConvert rectangle to convert
      * @return a rectangle in control coordinates
-     * @since 3.0
+     * @since 1.0
      */
     public static Rectangle toControl(Control coordinateSystem,
             Rectangle toConvert) {
@@ -614,7 +614,7 @@ public class Geometry {
      * @param coordinateSystem local coordinate system being converted from
      * @param toConvert rectangle to convert
      * @return a rectangle in display coordinates
-     * @since 3.0
+     * @since 1.0
      */
     public static Rectangle toDisplay(Control coordinateSystem,
             Rectangle toConvert) {
@@ -635,7 +635,7 @@ public class Geometry {
      * @param toTest point whose relative position to the rectangle is being computed
      * @return one of SWT.LEFT | SWT.TOP, SWT.TOP, SWT.RIGHT | SWT.TOP, SWT.LEFT, 0,
      * SWT.RIGHT, SWT.LEFT | SWT.BOTTOM, SWT.BOTTOM, SWT.RIGHT | SWT.BOTTOM
-     * @since 3.0
+     * @since 1.0
      */
     public static int getRelativePosition(Rectangle boundary, Point toTest) {
         int result = 0;
@@ -664,7 +664,7 @@ public class Geometry {
      * @return the distance between the given point and the nearest edge of the rectangle.
      * Returns positive values for points inside the rectangle and negative values for points
      * outside the rectangle.
-     * @since 3.1
+     * @since 1.0
      */
     public static int getDistanceFrom(Rectangle boundary, Point toTest) {
         int side = getClosestSide(boundary, toTest);
@@ -679,7 +679,7 @@ public class Geometry {
      * @param toTest point to compare
      * @return one of SWT.LEFT, SWT.RIGHT, SWT.TOP, or SWT.BOTTOM
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public static int getClosestSide(Rectangle boundary, Point toTest) {
         int[] sides = new int[] { SWT.LEFT, SWT.RIGHT, SWT.TOP, SWT.BOTTOM };
@@ -706,7 +706,7 @@ public class Geometry {
      * 
      * @param toCopy rectangle to copy
      * @return a copy of the given rectangle
-     * @since 3.0
+     * @since 1.0
      */
     public static Rectangle copy(Rectangle toCopy) {
         return new Rectangle(toCopy.x, toCopy.y, toCopy.width, toCopy.height);
@@ -717,7 +717,7 @@ public class Geometry {
      * 
      * @param rectangle rectangle whose size is being computed
      * @return the size of the given rectangle
-     * @since 3.0
+     * @since 1.0
      */
     public static Point getSize(Rectangle rectangle) {
         return new Point(rectangle.width, rectangle.height);
@@ -728,7 +728,7 @@ public class Geometry {
      * 
      * @param rectangle rectangle to modify
      * @param newSize new size of the rectangle
-     * @since 3.0
+     * @since 1.0
      */
     public static void setSize(Rectangle rectangle, Point newSize) {
         rectangle.width = newSize.x;
@@ -743,7 +743,7 @@ public class Geometry {
      * @param rectangle rectangle to modify
      * @param newLocation new location of the rectangle
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public static void setLocation(Rectangle rectangle, Point newLocation) {
         rectangle.x = newLocation.x;
@@ -758,7 +758,7 @@ public class Geometry {
      * @param toQuery rectangle to query
      * @return a Point containing the x,y position of the rectangle
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public static Point getLocation(Rectangle toQuery) {
         return new Point(toQuery.x, toQuery.y);
@@ -772,7 +772,7 @@ public class Geometry {
      * @param size the size of the new rectangle, where (x,y) -> (width, height)
      * @return a new Rectangle with the given position and size
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public static Rectangle createRectangle(Point position, Point size) {
         return new Rectangle(position.x, position.y, size.x, size.y);

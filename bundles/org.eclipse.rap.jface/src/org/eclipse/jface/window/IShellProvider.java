@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
  * an IShellProvider in its constructor, and the object that implements IShellProvider
  * can dynamically choose where child shells should be opened.  
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IShellProvider {
     /**

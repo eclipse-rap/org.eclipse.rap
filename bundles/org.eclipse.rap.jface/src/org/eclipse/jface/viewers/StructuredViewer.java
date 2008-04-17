@@ -117,7 +117,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * IViewerLabelProvider for color and font updates.
 	 * Initialize it to have no color or font providing
 	 * initially.
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	private ColorAndFontCollector colorAndFontCollector = new ColorAndFontCollector();
 	
@@ -756,7 +756,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 *            the element
 	 * @return the corresponding widgets
 	 * 
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	protected final Widget[] findItems(Object element) {
 		Widget result = doFindInputItem(element);
@@ -1022,7 +1022,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * 
 	 * @return a viewer comparator, or <code>null</code> if none
      *
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public ViewerComparator getComparator(){
 		return sorter;
@@ -1218,7 +1218,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 *            <code>false</code> to only update labels as needed, assuming
 	 *            that labels for existing elements are unchanged.
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	protected void internalRefresh(Object element, boolean updateLabels) {
 		internalRefresh(element);
@@ -1297,7 +1297,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * @param capacity the initial capacity of the hashtable
 	 * @return a new hashtable
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	CustomHashtable newHashtable(int capacity) {
 		return new CustomHashtable(capacity, getComparer());
@@ -1349,7 +1349,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * @param reveal
 	 *            <code>true</code> if the selection should be made visible,
 	 *            <code>false</code> if scrolling should be avoided
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	void preservingSelection(Runnable updateCode, boolean reveal) {
 
@@ -1404,7 +1404,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 *            <code>false</code> to only update labels as needed, assuming
 	 *            that labels for existing elements are unchanged.
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public void refresh(boolean updateLabels) {
 		refresh(getRoot(), updateLabels);
@@ -1447,7 +1447,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 *            <code>false</code> to only update labels as needed, assuming
 	 *            that labels for existing elements are unchanged.
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public void refresh(final Object element, final boolean updateLabels) {
 		preservingSelection(new Runnable() {
@@ -1538,7 +1538,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * 
 	 * @param filters
 	 *            an array of viewer filters
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public void setFilters(ViewerFilter[] filters) {
 		if (filters.length == 0) {
@@ -1711,7 +1711,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * 
 	 * @param comparator a viewer comparator, or <code>null</code> if none
      *
-     * @since 3.2
+     * @since 1.0
 	 */
 	public void setComparator(ViewerComparator comparator){
 		if (this.sorter != comparator){
@@ -1768,7 +1768,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * Hook for testing.
 	 * @param element
 	 * @return Widget[]
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public Widget[] testFindItems(Object element) {
 		return findItems(element);
@@ -1817,7 +1817,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * @param element
 	 *            the element
 	 * @param item the item to unmap
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	protected void unmapElement(Object element, Widget item) {
 		// double-check that the element actually maps to the given item before
@@ -2190,7 +2190,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	/**
 	 * Get the ColorAndFontCollector for the receiver.
 	 * @return ColorAndFontCollector 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected ColorAndFontCollector getColorAndFontCollector() {
 		return colorAndFontCollector;

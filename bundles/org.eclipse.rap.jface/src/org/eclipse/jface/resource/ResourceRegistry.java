@@ -19,7 +19,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 /**
  * Abstract base class for various JFace registries.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public abstract class ResourceRegistry extends EventManager {
 

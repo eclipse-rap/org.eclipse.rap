@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Assert;
  * Event object describing an <code>IDialogPage</code> in the midst of changing.
  * 
  * @see IPageChangingListener
- * @since 3.3
+ * @since 1.0
  */
 public class PageChangingEvent extends EventObject {
 

@@ -19,7 +19,7 @@ package org.eclipse.jface.viewers;
  *
  * @see ISelectionProvider
  * 
- * @since 3.0
+ * @since 1.0
  */
 public interface IPostSelectionProvider extends ISelectionProvider {
 

@@ -34,7 +34,7 @@ public class ColumnPixelData extends ColumnLayoutData {
 	 * specify the desired width for the content of the column, rather
 	 * than adding a fudge factor to the specified width.
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public boolean addTrim = false;
 	
@@ -70,7 +70,7 @@ public class ColumnPixelData extends ColumnLayoutData {
 	 *            <code>true</code> to allocate extra width to the column to
 	 *            account for trim taken by the column itself,
 	 *            <code>false</code> to use the given width exactly
-	 * @since 3.1
+	 * @since 1.0
 	 */
     public ColumnPixelData(int widthInPixels, boolean resizable, boolean addTrim) {
         super(resizable);

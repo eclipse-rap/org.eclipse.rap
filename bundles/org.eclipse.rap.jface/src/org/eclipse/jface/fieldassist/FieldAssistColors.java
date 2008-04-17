@@ -37,7 +37,7 @@
 // * create their own color resources. In these cases, the client should manage
 // * the lifecycle of any created resource.
 // * 
-// * @since 3.2
+// * @since 1.0
 // * @deprecated As of 3.3, this class is no longer necessary.
 // */
 //public class FieldAssistColors {

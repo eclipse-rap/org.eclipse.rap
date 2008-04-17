@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Menu;
  * This class may be instantiated; it may also be subclassed.
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  */
 public class CoolBarManager extends ContributionManager implements
         ICoolBarManager {

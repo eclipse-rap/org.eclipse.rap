@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IStatus;
  * @see org.eclipse.jface.util.Policy#getStatusHandler()
  * @see org.eclipse.jface.util.Policy#setStatusHandler(StatusHandler)
  * 
- * @since 3.4
+ * @since 1.1
  */
 abstract public class StatusHandler {
     

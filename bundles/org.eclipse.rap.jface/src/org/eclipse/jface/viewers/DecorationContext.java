@@ -19,7 +19,7 @@ import java.util.Map;
  * <p>
  * This class is not intended to be subclassed.
  * </p>
- * @since 3.2
+ * @since 1.0
  */
 public class DecorationContext implements IDecorationContext {
 	

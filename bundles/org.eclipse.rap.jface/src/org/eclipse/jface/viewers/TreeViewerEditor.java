@@ -26,7 +26,7 @@
 ///**
 // * This is an editor implementation for {@link Tree}
 // *
-// * @since 3.3
+// * @since 1.0
 // */
 //public class TreeViewerEditor extends ColumnViewerEditor {
 //	/**

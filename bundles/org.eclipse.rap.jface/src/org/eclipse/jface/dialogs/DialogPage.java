@@ -460,7 +460,7 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
      *            the message, or <code>null</code> to clear the message
      * @param newType
      *            the message type
-     * @since 2.0
+     * @since 1.0
      */
     public void setMessage(String newMessage, int newType) {
         message = newMessage;

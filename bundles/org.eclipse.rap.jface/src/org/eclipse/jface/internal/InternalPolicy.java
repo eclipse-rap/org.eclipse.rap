@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Internal class used for non-API debug flags.
  * 
- * @since 3.3
+ * @since 1.0
  */
 public class InternalPolicy {
 
@@ -23,7 +23,7 @@ public class InternalPolicy {
 	 * (NON-API) A flag to indicate whether reentrant viewer calls should always be
 	 * logged. If false, only the first reentrant call will cause a log entry.
 	 * 
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static boolean DEBUG_LOG_REENTRANT_VIEWER_CALLS = false;
 

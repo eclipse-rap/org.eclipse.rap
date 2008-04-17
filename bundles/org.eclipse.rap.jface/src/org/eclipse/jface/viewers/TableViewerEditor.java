@@ -26,7 +26,7 @@
 ///**
 // * This is an editor-implementation for {@link Table}
 // *
-// * @since 3.3
+// * @since 1.0
 // *
 // */
 //public final class TableViewerEditor extends ColumnViewerEditor {

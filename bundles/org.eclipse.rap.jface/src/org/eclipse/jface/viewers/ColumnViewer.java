@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Widget;
  * <strong> This class is not intended to be subclassed outside of the JFace
  * viewers framework.</strong>
  *
- * @since 3.3
+ * @since 1.0
  *
  */
 public abstract class ColumnViewer extends StructuredViewer {
@@ -118,7 +118,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * @return the cell or <code>null</code> if no cell is found at the given
 	 *         point
 	 *         
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public ViewerCell getCell(Point point) {
 		ViewerRow row = getViewerRow(point);
@@ -391,7 +391,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * Cancels a currently active cell editor if one is active. All changes
 	 * already done in the cell editor are lost.
 	 *
-	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+	 * @since 1.0 (in subclasses, added in 3.3 to abstract class)
 	 */
 	// RAP [bm]: 
 //	public void cancelEditing() {
@@ -403,7 +403,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	/**
 	 * Apply the value of the active cell editor if one is active.
 	 *
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	// RAP [bm]: 
 //	protected void applyEditorValue() {
@@ -420,7 +420,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 //	 *            the model element
 //	 * @param column
 //	 *            the column index
-//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 * @since 1.0 (in subclasses, added in 3.3 to abstract class)
 //	 */
 //	public void editElement(Object element, int column) {
 //		if (viewerEditor != null) {
@@ -458,7 +458,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 //	 * </p>
 //	 *
 //	 * @return CellEditor[]
-//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 * @since 1.0 (in subclasses, added in 3.3 to abstract class)
 //	 * @see ViewerColumn#setEditingSupport(EditingSupport)
 //	 * @see EditingSupport
 //	 */
@@ -478,7 +478,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 //	 * </p>
 //	 *
 //	 * @return the cell modifier, or <code>null</code>
-//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 * @since 1.0 (in subclasses, added in 3.3 to abstract class)
 //	 * @see ViewerColumn#setEditingSupport(EditingSupport)
 //	 * @see EditingSupport
 //	 */
@@ -500,7 +500,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 //	* </p>
 //	*
 //	* @return the list of column properties
-//	* @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	* @since 1.0 (in subclasses, added in 3.3 to abstract class)
 //	* @see ViewerColumn#setEditingSupport(EditingSupport)
 //	* @see EditingSupport
 	public Object[] getColumnProperties() {
@@ -519,7 +519,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 //	 *
 //	 * @return <code>true</code> if there is an active cell editor, and
 //	 *         <code>false</code> otherwise
-//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 * @since 1.0 (in subclasses, added in 3.3 to abstract class)
 //	 * @see ViewerColumn#setEditingSupport(EditingSupport)
 //	 * @see EditingSupport
 //	 */
@@ -572,7 +572,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 *
 	 * @param editors
 	 *            the list of cell editors
-	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+	 * @since 1.0 (in subclasses, added in 3.3 to abstract class)
 	 * @see ViewerColumn#setEditingSupport(EditingSupport)
 	 * @see EditingSupport
 	 */
@@ -594,7 +594,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 //	 *
 //	 * @param modifier
 //	 *            the cell modifier
-//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 * @since 1.0 (in subclasses, added in 3.3 to abstract class)
 //	 * @see ViewerColumn#setEditingSupport(EditingSupport)
 //	 * @see EditingSupport
 //	 */
@@ -610,7 +610,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 *
 	 * @param columnProperties
  	 *            the list of column properties
-	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+	 * @since 1.0 (in subclasses, added in 3.3 to abstract class)
 	 */
 //	*
 //	* <p>
@@ -621,7 +621,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 //	*
 //	* @param columnProperties
 //	*            the list of column properties
-//	* @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	* @since 1.0 (in subclasses, added in 3.3 to abstract class)
 //	* @see ViewerColumn#setEditingSupport(EditingSupport)
 //	* @see EditingSupport
 	public void setColumnProperties(String[] columnProperties) {
@@ -637,7 +637,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 *
 	 * @return the number of columns
 	 *
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	protected abstract int doGetColumnCount();
 
@@ -650,7 +650,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * @return the label provider associated with the column or
 	 *         <code>null</code> if no column with this index is known
 	 *
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public CellLabelProvider getLabelProvider(int columnIndex) {
 		ViewerColumn column = getViewerColumn(columnIndex);
@@ -752,7 +752,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * 
 	 * @return <code>true</code> if the viewer is busy.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected boolean checkBusy() {
 		if (isBusy()) {
@@ -794,7 +794,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * @param busy
 	 *            the new value of the busy flag
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected void setBusy(boolean busy) {
 		this.busy = busy;
@@ -816,7 +816,7 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * 
 	 * @return Returns whether this viewer is busy.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public boolean isBusy() {
 		return busy;

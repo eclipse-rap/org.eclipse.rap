@@ -40,7 +40,7 @@
 // * font decoration.
 // * </p>
 // * 
-// * @since 3.4
+// * @since 1.1
 // */
 //public class DecoratingStyledCellLabelProvider extends
 //		DelegatingStyledCellLabelProvider {

@@ -95,7 +95,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * Cool bar manager, or <code>null</code> if none (default).
      * 
      * @see #addCoolBar
-     * @since 3.0
+     * @since 1.0
      */
     private ICoolBarManager coolBarManager = null;
 
@@ -279,7 +279,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * This method must be called before this window's shell is created.
      * 
      * @param style the cool bar style
-     * @since 3.0
+     * @since 1.0
      */
     protected void addCoolBar(int style) {
         if ((getShell() == null) && (toolBarManager == null)
@@ -347,7 +347,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * Creates the trim widgets around the content area.
      * 
      * @param shell the shell
-     * @since 3.0
+     * @since 1.0
      */
     protected void createTrimWidgets(Shell shell) {
         if (menuBarManager != null) {
@@ -380,7 +380,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * 
      * @return <code>true</code> to show the top separator, <code>false</code>
      *   to not show it
-     * @since 3.0
+     * @since 1.0
      */
     protected boolean showTopSeperator() {
         return !"carbon".equals(SWT.getPlatform()); //$NON-NLS-1$
@@ -444,7 +444,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
 	 * @param style swt style bits used to create the Toolbar
      *  
      * @return a tool bar manager
-     * @since 3.2
+     * @since 1.0
      * @see #createToolBarManager(int)
      */
     protected IToolBarManager createToolBarManager2(int style) {
@@ -460,7 +460,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * @param style swt style bits used to create the Coolbar
      * 
      * @return a cool bar manager
-     * @since 3.0
+     * @since 1.0
      * @see CoolBarManager#CoolBarManager(int)
      * @see CoolBar for style bits
      */
@@ -479,7 +479,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
 	 * @param style swt style bits used to create the Coolbar
      * 
      * @return a cool bar manager
-     * @since 3.2
+     * @since 1.0
      * @see #createCoolBarManager(int)
      */
     protected ICoolBarManager createCoolBarManager2(int style) {
@@ -514,7 +514,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * @param composite the parent used for the control
      * 
      * @return an instance of <code>CoolBar</code>
-     * @since 3.0
+     * @since 1.0
      */
     protected Control createCoolBarControl(Composite composite) {
         if (coolBarManager != null) {
@@ -602,7 +602,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
 	 * @return the tool bar manager, or <code>null</code> if
      *   this window does not have a tool bar
      * @see #addToolBar(int)
-	 * @since 3.2
+	 * @since 1.0
      */
     public IToolBarManager getToolBarManager2() {
         return toolBarManager;
@@ -614,7 +614,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * @return the cool bar manager, or <code>null</code> if
      *   this window does not have a cool bar
      * @see #addCoolBar(int)
-     * @since 3.0
+     * @since 1.0
      */
     public CoolBarManager getCoolBarManager() {
     	if (coolBarManager instanceof CoolBarManager) {
@@ -629,7 +629,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
 	 * @return the cool bar manager, or <code>null</code> if
      *   this window does not have a cool bar
      * @see #addCoolBar(int)
-     * @since 3.2
+     * @since 1.0
      */
     public ICoolBarManager getCoolBarManager2() {
         return coolBarManager;
@@ -661,7 +661,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * </p>
      * 
      * @return an instance of <code>CoolBar</code>
-     * @since 3.0
+     * @since 1.0
      */
     protected Control getCoolBarControl() {
         if (coolBarManager != null) {
@@ -843,7 +843,7 @@ public class ApplicationWindow extends Window implements IRunnableContext {
      * cool bar control.
      * 
      * @return boolean true if children exist, false otherwise
-     * @since 3.0
+     * @since 1.0
      */
     protected boolean coolBarChildrenExist() {
         Control coolControl = getCoolBarControl();

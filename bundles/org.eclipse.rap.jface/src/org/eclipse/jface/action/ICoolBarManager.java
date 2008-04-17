@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.CoolBar;
  * </p>
  * 
  * @see ToolBarContributionItem
- * @since 3.0
+ * @since 1.0
  */
 public interface ICoolBarManager extends IContributionManager {
 

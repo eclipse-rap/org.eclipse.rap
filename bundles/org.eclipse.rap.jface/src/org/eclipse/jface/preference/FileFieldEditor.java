@@ -76,7 +76,7 @@
 //     *  to perform on the fly checking, or {@link StringButtonFieldEditor#VALIDATE_ON_FOCUS_LOST}
 //     *  (the default) to perform validation only after the text has been typed in
 //     * @param parent the parent of the field editor's control.
-//     * @since 3.4
+//     * @since 1.1
 //     * @see StringButtonFieldEditor#VALIDATE_ON_KEY_STROKE
 //     * @see StringButtonFieldEditor#VALIDATE_ON_FOCUS_LOST
 //     */

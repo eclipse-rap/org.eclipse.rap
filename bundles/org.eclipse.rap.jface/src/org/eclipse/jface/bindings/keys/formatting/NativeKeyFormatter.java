@@ -29,7 +29,7 @@
 // * platform and locale.
 // * </p>
 // * 
-// * @since 3.1
+// * @since 1.0
 // */
 //public final class NativeKeyFormatter extends AbstractKeyFormatter {
 //

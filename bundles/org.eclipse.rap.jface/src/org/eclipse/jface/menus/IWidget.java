@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * Clients may implement, but must not extend.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface IWidget {
 

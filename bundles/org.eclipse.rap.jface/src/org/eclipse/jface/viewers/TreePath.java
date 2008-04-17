@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Assert;
  * Clients may instantiate this class. Not intended to be subclassed.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public final class TreePath {
 	

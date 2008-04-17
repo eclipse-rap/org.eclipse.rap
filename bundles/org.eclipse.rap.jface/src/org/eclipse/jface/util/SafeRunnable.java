@@ -85,7 +85,7 @@ public abstract class SafeRunnable implements ISafeRunnable {
 	 * 
 	 * @return true if errors should be ignored
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public static boolean getIgnoreErrors() {
 		return ignoreErrors;
@@ -106,7 +106,7 @@ public abstract class SafeRunnable implements ISafeRunnable {
 	 * 
 	 * @return the safe runnable runner
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static ISafeRunnableRunner getRunner() {
 		if (runner == null) {
@@ -119,7 +119,7 @@ public abstract class SafeRunnable implements ISafeRunnable {
 	 * Creates the default safe runnable runner.
 	 * 
 	 * @return the default safe runnable runner
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	private static ISafeRunnableRunner createDefaultRunner() {
 		return new ISafeRunnableRunner() {
@@ -156,7 +156,7 @@ public abstract class SafeRunnable implements ISafeRunnable {
 	 * @param runner
 	 *            the runner to set, or <code>null</code> to reset to the
 	 *            default runner
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static void setRunner(ISafeRunnableRunner runner) {
 		SafeRunnable.runner = runner;
@@ -169,7 +169,7 @@ public abstract class SafeRunnable implements ISafeRunnable {
 	 * 
 	 * @param runnable
 	 *            the runnable to run
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static void run(ISafeRunnable runnable) {
 		getRunner().run(runnable);

@@ -18,7 +18,7 @@ import java.util.HashMap;
  * additional object allocations for Integers. However, the current implementation
  * simply delegates to the Java HashMap class. 
  * 
- * @since 3.1
+ * @since 1.0
  */
 /* package */ class IntHashMap {
     private HashMap map; 

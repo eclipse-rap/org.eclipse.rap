@@ -30,7 +30,7 @@
 // * This is the base for all editor implementations of Viewers. ColumnViewer
 // * implementors have to subclass this class and implement the missing methods
 // *
-// * @since 3.3
+// * @since 1.0
 // * @see TableViewerEditor
 // * @see TreeViewerEditor
 // */

@@ -67,7 +67,7 @@ public abstract class ViewerFilter {
      * @param parentPath the path of the parent element
      * @param elements the elements to filter
      * @return the filtered elements
-     * @since 3.2
+     * @since 1.0
      */
     public Object[] filter(Viewer viewer, TreePath parentPath, Object[] elements) {
         return filter(viewer, parentPath.getLastSegment(), elements);

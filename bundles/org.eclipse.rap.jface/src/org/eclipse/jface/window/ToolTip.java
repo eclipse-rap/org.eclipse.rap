@@ -34,7 +34,7 @@
 ///**
 // * This class gives implementors to provide customized tooltips for any control.
 // *
-// * @since 3.3
+// * @since 1.0
 // */
 //public abstract class ToolTip {
 //	private Control control;

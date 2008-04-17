@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.TreeColumn;
  * ViewerColumn implementation for TreeViewer to enable column-specific label
  * providers and editing support.
  * 
- * @since 3.3
+ * @since 1.0
  * 
  */
 public final class TreeViewerColumn extends ViewerColumn {

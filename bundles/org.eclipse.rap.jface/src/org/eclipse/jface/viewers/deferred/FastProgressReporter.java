@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * is designed to make isCanceled() run as efficiently as possible. Currently package-visible
  * because the implementation is incomplete.
  * 
- * @since 3.1
+ * @since 1.0
  */
 final class FastProgressReporter {
     private IProgressMonitor monitor;
@@ -56,7 +56,7 @@ final class FastProgressReporter {
 //     * same argument.
 //     * 
 //     * @param totalWork
-//     * @since 3.1
+//     * @since 1.0
 //     */
 //    public void beginTask(int totalWork) {
 //        

@@ -53,7 +53,7 @@
 // * 
 // * @deprecated Will be removed before 3.4 M6. Use {@link StyledCellLabelProvider} instead.
 // * 
-// * @since 3.4
+// * @since 1.1
 // */
 //public abstract class SimpleStyledCellLabelProvider extends
 //		OwnerDrawLabelProvider {

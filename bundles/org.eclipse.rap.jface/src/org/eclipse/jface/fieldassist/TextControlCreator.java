@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Text;
  * An IControlCreator for SWT Text controls. This is a convenience class
  * for creating text controls to be supplied to a decorated field.
  * 
- * @since 3.2
+ * @since 1.0
 * @deprecated As of 3.3, clients should use ControlDecoration instead
 *             of DecoratedField.
 * 

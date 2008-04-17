@@ -30,7 +30,7 @@
 // * combines the function of each <code>TransferDragSourceListener</code>, while 
 // * allowing them to be implemented as if they were the only <code>DragSourceListener</code>.
 // * </p>
-// * @since 3.0
+// * @since 1.0
 // */
 //public interface TransferDragSourceListener extends DragSourceListener {
 //    /**

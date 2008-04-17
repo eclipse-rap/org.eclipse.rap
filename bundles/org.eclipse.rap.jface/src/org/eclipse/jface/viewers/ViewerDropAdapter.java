@@ -429,7 +429,7 @@
 //     * @param value <code>true</code> if selection feedback is desired, and
 //     *   <code>false</code> if not
 //     *   
-//     * @since 3.2
+//     * @since 1.0
 //     */
 //    public void setSelectionFeedbackEnabled(boolean value) {
 //        selectFeedbackEnabled = value;
@@ -440,7 +440,7 @@
 //     *
 //     * @param value <code>true</code> if scrolling and expanding is desired, and
 //     *   <code>false</code> if not
-//     * @since 2.0
+//     * @since 1.0
 //     */
 //    public void setScrollExpandEnabled(boolean value) {
 //    	expandEnabled = value;
@@ -452,7 +452,7 @@
 //     *
 //     * @param value <code>true</code> if expanding is desired, and
 //     *   <code>false</code> if not
-//     * @since 3.4
+//     * @since 1.1
 //     */
 //    public void setExpandEnabled(boolean value) {
 //        expandEnabled = value;
@@ -463,7 +463,7 @@
 //     *
 //     * @param value <code>true</code> if scrolling is desired, and
 //     *   <code>false</code> if not
-//     * @since 3.4
+//     * @since 1.1
 //     */
 //    public void setScrollEnabled(boolean value) {
 //        scrollEnabled = value;

@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Control;
  * consulting with the Platform/UI team.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface ICoolBarManager2 extends ICoolBarManager {
 
@@ -38,7 +38,7 @@ public interface ICoolBarManager2 extends ICoolBarManager {
      * @param parent
      *            the parent control
      * @return the control
-	 * @since 3.2
+	 * @since 1.0
      */
     public Control createControl2(Composite parent);
 
@@ -53,7 +53,7 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * </p>
      *  
      * @return the bar control, or <code>null</code> if none
-	 * @since 3.2
+	 * @since 1.0
      */
     public Control getControl2();
 
@@ -76,7 +76,7 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * consulting with the Platform/UI team.
 	 * </p>
      * 
-	 * @since 3.2
+	 * @since 1.0
      */
     public void refresh();
     
@@ -90,7 +90,7 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * consulting with the Platform/UI team.
 	 * </p>
      * 
-     * @since 3.2 
+     * @since 1.0 
      */
     public void dispose();
 
@@ -105,7 +105,7 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * consulting with the Platform/UI team.
 	 * </p>
      * 
-	 * @since 3.2     
+	 * @since 1.0     
 	 */
     public void resetItemOrder();
 
@@ -121,7 +121,7 @@ public interface ICoolBarManager2 extends ICoolBarManager {
 	 * </p>
      * 
      * @param newItems the items with which to replace the current items
-     * @since 3.2
+     * @since 1.0
 	 */
     public void setItems(IContributionItem[] newItems);
 

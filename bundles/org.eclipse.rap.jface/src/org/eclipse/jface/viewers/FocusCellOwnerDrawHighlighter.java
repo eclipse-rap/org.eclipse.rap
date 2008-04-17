@@ -31,7 +31,7 @@
 // * This class can be subclassed to configure how the coloring of the selected
 // * cell.
 // * 
-// * @since 3.3
+// * @since 1.0
 // * 
 // */
 //public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
@@ -153,7 +153,7 @@
 //	 *            the cell which is colored
 //	 * @return the color or <code>null</code> to use the same used when
 //	 *         control has focus
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	protected Color getSelectedCellForegroundColorNoFocus(ViewerCell cell) {
 //		return null;
@@ -167,7 +167,7 @@
 //	 *            the cell which is colored
 //	 * @return the color or <code>null</code> to use the same used when
 //	 *         control has focus
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	protected Color getSelectedCellBackgroundColorNoFocus(ViewerCell cell) {
 //		return null;
@@ -179,7 +179,7 @@
 //	 * @param cell
 //	 *            the cell which is highlighted
 //	 * @return <code>true</code> if only the text area should be highlighted
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	protected boolean onlyTextHighlighting(ViewerCell cell) {
 //		return false;

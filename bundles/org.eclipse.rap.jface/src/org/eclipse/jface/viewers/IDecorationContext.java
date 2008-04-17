@@ -19,7 +19,7 @@ package org.eclipse.jface.viewers;
  * 
  * @see LabelDecorator
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface IDecorationContext {
 	

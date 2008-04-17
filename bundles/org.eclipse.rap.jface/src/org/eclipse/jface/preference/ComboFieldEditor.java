@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Control;
  * A field editor for a combo box that allows the drop-down selection of one of
  * a list of items.
  * 
- * @since 3.3
+ * @since 1.0
  */
 public class ComboFieldEditor extends FieldEditor {
 

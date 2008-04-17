@@ -52,7 +52,7 @@ public class ToolBarManager extends ContributionManager implements
 	/**
 	 * The menu manager to the context menu associated with the toolbar.
 	 * 
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	private MenuManager contextMenuManager = null;
 
@@ -124,7 +124,7 @@ public class ToolBarManager extends ContributionManager implements
 	 * 
 	 * @return AccessibleListener
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	// RAP [bm]: 
 //	private AccessibleListener getAccessibleListener() {
@@ -419,7 +419,7 @@ public class ToolBarManager extends ContributionManager implements
 	 * Returns the context menu manager for this tool bar manager.
 	 * 
 	 * @return the context menu manager, or <code>null</code> if none
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public MenuManager getContextMenuManager() {
 		return contextMenuManager;
@@ -432,7 +432,7 @@ public class ToolBarManager extends ContributionManager implements
 	 * 
 	 * @param contextMenuManager
 	 *            the context menu manager, or <code>null</code> if none
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public void setContextMenuManager(MenuManager contextMenuManager) {
 		this.contextMenuManager = contextMenuManager;

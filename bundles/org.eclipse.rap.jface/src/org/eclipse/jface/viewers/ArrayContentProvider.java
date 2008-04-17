@@ -20,7 +20,7 @@ import java.util.Collection;
  * This class is not intended to be subclassed outside the viewer framework.
  * </p> 
  * 
- * @since 2.1
+ * @since 1.0
  */
 public class ArrayContentProvider implements IStructuredContentProvider {
 

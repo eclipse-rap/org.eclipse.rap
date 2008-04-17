@@ -22,7 +22,7 @@
 // * convenience class for easily creating a {@link ContentProposalAdapter} for
 // * combo fields.
 // * 
-// * @since 3.2
+// * @since 1.0
 // */
 //public class ComboContentAdapter implements IControlContentAdapter,
 //		IControlContentAdapter2 {
@@ -129,7 +129,7 @@
 //	 * 
 //	 * @see org.eclipse.jface.fieldassist.IControlContentAdapter2#getSelection(org.eclipse.swt.widgets.Control)
 //	 * 
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	public Point getSelection(Control control) {
 //		return ((Combo) control).getSelection();
@@ -141,7 +141,7 @@
 //	 * @see org.eclipse.jface.fieldassist.IControlContentAdapter2#setSelection(org.eclipse.swt.widgets.Control,
 //	 *      org.eclipse.swt.graphics.Point)
 //	 * 
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	public void setSelection(Control control, Point range) {
 //		((Combo) control).setSelection(range);

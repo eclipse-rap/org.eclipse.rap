@@ -57,7 +57,7 @@ public class TitleAreaDialog extends TrayDialog {
 	/**
 	 * Message type constant used to display an info icon with the message.
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 * @deprecated
 	 */
 	public final static String INFO_MESSAGE = "INFO_MESSAGE"; //$NON-NLS-1$
@@ -65,7 +65,7 @@ public class TitleAreaDialog extends TrayDialog {
 	/**
 	 * Message type constant used to display a warning icon with the message.
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 * @deprecated
 	 */
 	public final static String WARNING_MESSAGE = "WARNING_MESSAGE"; //$NON-NLS-1$
@@ -493,7 +493,7 @@ public class TitleAreaDialog extends TrayDialog {
 	 *            the message, or <code>null</code> to clear the message
 	 * @param newType
 	 *            the message type
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public void setMessage(String newMessage, int newType) {
 		Image newImage = null;

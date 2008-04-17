@@ -1325,7 +1325,7 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	 * 
 	 * @param page
 	 *            the wizard page to use to resize the dialog
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	protected void updateSize(IWizardPage page) {
 		if (page == null || page.getControl() == null) {
@@ -1458,7 +1458,7 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	 * 
 	 * @see IPageChangedListener#pageChanged
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected void firePageChanged(final PageChangedEvent event) {
 		Object[] listeners = pageChangedListeners.getListeners();
@@ -1479,7 +1479,7 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	 * 
 	 * @param listener
 	 *            a page changing listener
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public void addPageChangingListener(IPageChangingListener listener) {
 		pageChangingListeners.add(listener);
@@ -1491,7 +1491,7 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	 * 
 	 * @param listener
 	 *            a page changing listener
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public void removePageChangingListener(IPageChangingListener listener) {
 		pageChangingListeners.remove(listener);
@@ -1506,7 +1506,7 @@ public class WizardDialog extends TitleAreaDialog implements IWizardContainer2,
 	 *            a selection changing event
 	 * 
 	 * @see IPageChangingListener#handlePageChanging(PageChangingEvent)
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	protected void firePageChanging(final PageChangingEvent event) {
 		Object[] listeners = pageChangingListeners.getListeners();

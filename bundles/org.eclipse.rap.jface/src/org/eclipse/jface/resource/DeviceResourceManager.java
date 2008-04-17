@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @see LocalResourceManager
  * 
- * @since 3.1
+ * @since 1.0
  */
 public final class DeviceResourceManager extends AbstractResourceManager {
     

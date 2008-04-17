@@ -27,7 +27,7 @@
 // * The ColumnViewerTooltipSupport is the class that provides tool tips for
 // * ColumnViewers.
 // *
-// * @since 3.3
+// * @since 1.0
 // *
 // */
 //public class ColumnViewerToolTipSupport extends DefaultToolTip {

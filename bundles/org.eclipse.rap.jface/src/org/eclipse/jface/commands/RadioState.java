@@ -35,7 +35,7 @@ import org.eclipse.jface.menus.IMenuStateIds;
  * Clients may instantiate or extend this interface.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class RadioState extends ToggleState {
 

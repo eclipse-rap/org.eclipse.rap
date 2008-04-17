@@ -133,7 +133,7 @@ public class ImageRegistry {
      * 
      * @param manager the resource manager used to allocate images
      * 
-     * @since 3.1
+     * @since 1.0
      */
     public ImageRegistry(ResourceManager manager) {
         Assert.isNotNull(manager);
@@ -225,7 +225,7 @@ public class ImageRegistry {
      *
      * @param key the key
      * @return the descriptor, or <code>null</code> if none
-     * @since 2.1
+     * @since 1.0
      */
     public ImageDescriptor getDescriptor(String key) {
         Entry entry = getEntry(key);
@@ -335,7 +335,7 @@ public class ImageRegistry {
      * Disposes this image registry, disposing any images
      * that were allocated for it, and clearing its entries.
      * 
-     * @since 3.1
+     * @since 1.0
      */
     public void dispose() {
         manager.cancelDisposeExec(disposeRunnable);

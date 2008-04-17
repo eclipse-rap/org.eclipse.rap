@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.Font;
  * Interface to provide font representation for a given element.
  * @see org.eclipse.jface.viewers.IFontDecorator
  * 
- * @since 3.0
+ * @since 1.0
  */
 public interface IFontProvider {
 

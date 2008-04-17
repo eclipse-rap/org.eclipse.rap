@@ -23,7 +23,7 @@ import org.eclipse.swt.SWT;
  * <code>null</code>.
  * </p>
  * 
- * @since 2.1
+ * @since 1.0
  */
 public class StatusLineLayoutData {
     /**

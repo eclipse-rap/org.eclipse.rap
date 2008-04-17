@@ -24,7 +24,7 @@
 // * This concept is needed to provide features like editor activation with the
 // * keyboard
 // *
-// * @since 3.3
+// * @since 1.0
 // *
 // */
 //public class TreeViewerFocusCellManager extends SWTFocusCellManager {

@@ -15,7 +15,7 @@ import org.osgi.framework.*;
 /**
  * JFaceActivator is the activator class for the JFace plug-in when it is being used
  * within a full Eclipse install.
- * @since 3.3
+ * @since 1.0
  *
  */
 public class JFaceActivator implements BundleActivator {

@@ -29,7 +29,7 @@
 // *
 // * This class is not intended to be subclassed.
 // * 
-// * @since 3.2
+// * @since 1.0
 // */
 //public class LocalSelectionTransfer extends ByteArrayTransfer {
 //

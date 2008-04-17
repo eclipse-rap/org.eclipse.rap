@@ -85,7 +85,7 @@ public class ModalContext {
 		/**
 		 * The thread that forked this modal context thread.
 		 * 
-		 * @since 3.1
+		 * @since 1.0
 		 */
 		private Thread callingThread;
 
@@ -445,7 +445,7 @@ public class ModalContext {
 	 *            while running an operation, <code>false</code> if
 	 *            Display.readAndDispatch() should not be called from
 	 *            ModalContext.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public static void setAllowReadAndDispatch(boolean allowReadAndDispatch) {
 		// use a separate thread if and only if it is OK to spin the event loop

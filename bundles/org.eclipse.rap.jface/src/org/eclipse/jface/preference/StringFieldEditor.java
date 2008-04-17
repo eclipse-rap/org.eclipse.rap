@@ -63,7 +63,7 @@ public class StringFieldEditor extends FieldEditor {
 
     /**
      * Old text value.
-     * @since 3.4 this field is protected.
+     * @since 1.1 this field is protected.
      */
     protected String oldValue;
 
@@ -117,7 +117,7 @@ public class StringFieldEditor extends FieldEditor {
      *  on the fly checking (the default), or <code>VALIDATE_ON_FOCUS_LOST</code> to
      *  perform validation only after the text has been typed in
      * @param parent the parent of the field editor's control
-     * @since 2.0
+     * @since 1.0
      */
     public StringFieldEditor(String name, String labelText, int width,
             int strategy, Composite parent) {

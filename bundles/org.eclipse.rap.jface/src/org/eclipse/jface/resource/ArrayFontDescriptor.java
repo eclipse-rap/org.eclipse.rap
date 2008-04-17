@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.FontData;
 /**
  * Describes a Font using an array of FontData
  * 
- * @since 3.1
+ * @since 1.0
  */
 final class ArrayFontDescriptor extends FontDescriptor {
 
@@ -36,7 +36,7 @@ final class ArrayFontDescriptor extends FontDescriptor {
      * <!--@see org.eclipse.swt.graphics.Font#Font(org.eclipse.swt.graphics.Device, org.eclipse.swt.graphics.FontData)-->
      * @see org.eclipse.rwt.graphics.Graphics#getFont(org.eclipse.swt.graphics.FontData)
      * 
-     * @since 3.1
+     * @since 1.0
      */
     public ArrayFontDescriptor(FontData[] data) {
         this.data = data;
@@ -48,7 +48,7 @@ final class ArrayFontDescriptor extends FontDescriptor {
      * @param originalFont font to be described
      * 
      * @see FontDescriptor#createFrom(org.eclipse.swt.graphics.Font)
-     * @since 3.1
+     * @since 1.0
      */
     public ArrayFontDescriptor(Font originalFont) {
         this(originalFont.getFontData());

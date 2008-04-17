@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @see org.eclipse.jface.dialogs.DialogTray
  * @see org.eclipse.jface.window.Window#getLayout()
- * @since 3.2
+ * @since 1.0
  */
 public abstract class TrayDialog extends Dialog {
 
@@ -375,7 +375,7 @@ public abstract class TrayDialog extends Dialog {
 	 * 
 	 * @return <code>true</code> if dialogs that support help
 	 * control should show it by default, <code>false</code> otherwise.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public static boolean isDialogHelpAvailable() {
 		return dialogHelpAvailable;
@@ -388,7 +388,7 @@ public abstract class TrayDialog extends Dialog {
 	 * 
 	 * @param helpAvailable <code>true</code> to show the help
 	 * control, <code>false</code> otherwise.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public static void setDialogHelpAvailable(boolean helpAvailable) {
 		dialogHelpAvailable = helpAvailable;

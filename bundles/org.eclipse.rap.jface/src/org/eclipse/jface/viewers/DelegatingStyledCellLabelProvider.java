@@ -32,7 +32,7 @@
 // * provide foreground and background color and a default font.
 // * </p>
 // * 
-// * @since 3.4
+// * @since 1.1
 // */
 //public class DelegatingStyledCellLabelProvider extends StyledCellLabelProvider {
 //

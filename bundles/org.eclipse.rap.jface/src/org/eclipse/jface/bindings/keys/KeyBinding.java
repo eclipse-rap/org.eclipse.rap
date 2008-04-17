@@ -21,7 +21,7 @@
 // * triggering of a command. This object is immutable.
 // * </p>
 // * 
-// * @since 3.1
+// * @since 1.0
 // */
 //public final class KeyBinding extends Binding {
 //

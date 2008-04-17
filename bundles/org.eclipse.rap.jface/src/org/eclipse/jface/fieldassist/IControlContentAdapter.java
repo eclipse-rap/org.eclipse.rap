@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Control;
  * {@link ContentProposalAdapter}, in order to specify how to retrieve and set
  * the contents of the control being adapted.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface IControlContentAdapter {
 	/**

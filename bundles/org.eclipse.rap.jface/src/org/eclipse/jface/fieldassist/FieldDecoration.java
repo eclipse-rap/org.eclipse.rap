@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @see FieldDecorationRegistry
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class FieldDecoration {
 

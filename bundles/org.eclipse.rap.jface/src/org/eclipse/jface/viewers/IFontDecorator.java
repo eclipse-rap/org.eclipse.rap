@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Font;
  * an IFontProvider the IFontDecorator will take precedence.
  * @see IFontProvider
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IFontDecorator {
 	

@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Control;
  * This interface is used by a {@link ContentProposalAdapter} in order to
  * retrieve and set the selection range in a control.
  * 
- * @since 3.4
+ * @since 1.1
  */
 public interface IControlContentAdapter2 {
 	/**

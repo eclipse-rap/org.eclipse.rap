@@ -20,7 +20,7 @@
 ///**
 // * This event is passed on when a cell-editor is going to be activated
 // * 
-// * @since 3.3
+// * @since 1.0
 // * 
 // */
 //public class ColumnViewerEditorActivationEvent extends EventObject {

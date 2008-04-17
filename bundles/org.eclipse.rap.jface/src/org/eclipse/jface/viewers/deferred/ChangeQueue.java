@@ -20,28 +20,28 @@ import java.util.LinkedList;
 final class ChangeQueue {
 	/**
 	 * Represents the addition of an item
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static final int ADD = 0;
 	/**
 	 * Represents the removal of an item
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static final int REMOVE = 1;
 	/**
 	 * Represents a reset of all the items
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static final int SET = 2;
 	/**
 	 * Represents an update of an item
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static final int UPDATE = 3;
 	
 	/**
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	public static final class Change {
 		private int type;
@@ -53,7 +53,7 @@ final class ChangeQueue {
 		 * @param type one of <code>ADD</code>, <code>REMOVE</code>, <code>SET</code>, or <code>UPDATE</code>.
 		 * @param elements the elements affected by the change.
 		 * 
-		 * @since 3.1
+		 * @since 1.0
 		 */
 		public Change(int type, Object[] elements) {
 			this.type = type;
@@ -64,7 +64,7 @@ final class ChangeQueue {
 		 * Get the type of change.
 		 * @return one of <code>ADD</code>, <code>REMOVE</code>, <code>SET</code>, or <code>UPDATE</code>.
 		 * 
-		 * @since 3.1
+		 * @since 1.0
 		 */
 		public int getType() {
 			return type;
@@ -74,7 +74,7 @@ final class ChangeQueue {
 		 * Return the elements associated with the change.
 		 * @return the elements affected by the change.
 		 * 
-		 * @since 3.1
+		 * @since 1.0
 		 */
 		public Object[] getElements() {
 			return elements;

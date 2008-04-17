@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Image;
  * {@link ILabelProvider}, {@link IColorProvider} and {@link IFontProvider} to
  * be mapped to a ColumnLabelProvider.
  * 
- * @since 3.3
+ * @since 1.0
  * 
  */
 class WrappedViewerLabelProvider extends ColumnLabelProvider {

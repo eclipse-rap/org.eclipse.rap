@@ -27,7 +27,7 @@ import org.eclipse.swt.SWT;
  * Clients may neither instantiate this class nor extend.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public final class LegacyActionTools {
 
@@ -295,7 +295,7 @@ public final class LegacyActionTools {
 	 *            the key code to be translated
 	 * @return the string representation of the key code
 	 * @see SWT
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public static final String findKeyString(final int keyCode) {
 		if (keyStrings == null) {

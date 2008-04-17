@@ -290,7 +290,7 @@ public abstract class ContentViewer extends Viewer {
 	/**
 	 * @param oldProvider
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	void internalDisposeLabelProvider(IBaseLabelProvider oldProvider) {
 		oldProvider.dispose();

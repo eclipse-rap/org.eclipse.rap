@@ -23,7 +23,7 @@
 // * A utility class for converting SWT events into key strokes.
 // * </p>
 // * 
-// * @since 3.1
+// * @since 1.0
 // */
 //public final class SWTKeySupport {
 //

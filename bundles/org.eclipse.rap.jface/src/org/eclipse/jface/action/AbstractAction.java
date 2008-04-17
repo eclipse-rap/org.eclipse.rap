@@ -25,7 +25,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
  * Clients may neither instantiate nor extend this class.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public abstract class AbstractAction extends EventManager implements IAction {
 

@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Text;
  * convenience class for easily creating a {@link ContentProposalAdapter} for
  * text fields.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class TextContentAdapter implements IControlContentAdapter,
 		IControlContentAdapter2 {
@@ -116,7 +116,7 @@ public class TextContentAdapter implements IControlContentAdapter,
 	 * 
 	 * @see org.eclipse.jface.fieldassist.IControlContentAdapter2#getSelection(org.eclipse.swt.widgets.Control)
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public Point getSelection(Control control) {
 		return ((Text) control).getSelection();
@@ -128,7 +128,7 @@ public class TextContentAdapter implements IControlContentAdapter,
 	 * @see org.eclipse.jface.fieldassist.IControlContentAdapter2#setSelection(org.eclipse.swt.widgets.Control,
 	 *      org.eclipse.swt.graphics.Point)
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public void setSelection(Control control, Point range) {
 		((Text) control).setSelection(range);

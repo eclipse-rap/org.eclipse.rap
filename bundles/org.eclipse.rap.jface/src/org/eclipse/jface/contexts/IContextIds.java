@@ -20,7 +20,7 @@ package org.eclipse.jface.contexts;
  * This interface should not be implemented or extended by clients.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IContextIds {
 

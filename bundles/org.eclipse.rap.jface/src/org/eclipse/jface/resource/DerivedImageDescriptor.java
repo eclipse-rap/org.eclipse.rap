@@ -23,7 +23,7 @@
 // * An image descriptor which creates images based on another ImageDescriptor, but with
 // * additional SWT flags. Note that this is only intended for compatibility. 
 // * 
-// * @since 3.1
+// * @since 1.0
 // */
 //final class DerivedImageDescriptor extends ImageDescriptor {
 //

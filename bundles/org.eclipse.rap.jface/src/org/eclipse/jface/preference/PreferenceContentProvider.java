@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * Provides a tree model for <code>PreferenceManager</code> content.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public class PreferenceContentProvider implements ITreeContentProvider {
 
@@ -103,7 +103,7 @@ public class PreferenceContentProvider implements ITreeContentProvider {
 	 * Set the manager for the preferences.
 	 * @param manager The manager to set.
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected void setManager(PreferenceManager manager) {
 		this.manager = manager;

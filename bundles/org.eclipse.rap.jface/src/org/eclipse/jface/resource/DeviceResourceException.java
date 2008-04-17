@@ -14,7 +14,7 @@ package org.eclipse.jface.resource;
 /**
  * Thrown when allocation of an SWT device resource fails
  * 
- * @since 3.1
+ * @since 1.0
  */
 public class DeviceResourceException extends RuntimeException {
     
@@ -53,7 +53,7 @@ public class DeviceResourceException extends RuntimeException {
      * cause is nonexistent or unknown. 
      * 
      * @return the cause or <code>null</code>
-     * @since 3.1
+     * @since 1.0
      */
     public Throwable getCause() {
         return cause;

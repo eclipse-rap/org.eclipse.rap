@@ -189,7 +189,7 @@ import java.util.NoSuchElementException;
      * 
      * @return the element comparer or <code>null</code>
      * 
-     * @since 3.2
+     * @since 1.0
      */
     public IElementComparer getComparer() {
     	return comparer;

@@ -17,7 +17,7 @@ package org.eclipse.jface.viewers;
  * if the decorator is ready. Interested parties should register an
  * ILabelProviderListener with a delayed label decorator in order to be informed
  * when the decoration is ready.
- * @since 3.0
+ * @since 1.0
  */
 public interface IDelayedLabelDecorator extends ILabelDecorator {
 

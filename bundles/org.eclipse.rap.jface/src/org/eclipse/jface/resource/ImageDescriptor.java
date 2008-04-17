@@ -83,7 +83,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
      * Creates and returns a new image descriptor given ImageData
      * describing the image.
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param data contents of the image
      * @return newly created image descriptor
@@ -96,7 +96,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
      * Creates and returns a new image descriptor for the given image. Note 
      * that disposing the original Image will cause the descriptor to become invalid.
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param img image to create
      * @return a newly created image descriptor
@@ -122,7 +122,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
      * @return an ImageDescriptor that creates new images by transforming the given image descriptor
      * 
      * <!-- @see Image#Image(Device, Image, int) -->
-     * @since 3.1 
+     * @since 1.0 
      *
      */
     // RAP [bm]: 
@@ -138,7 +138,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
      * cause the descriptor to become invalid.
      * 
      * @deprecated use {@link ImageDescriptor#createFromImage(Image)}
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param img image to create
      * @param theDevice the device that was used to create the Image
@@ -245,7 +245,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
 	 *            the device on which to create the image
 	 * @return a new image or <code>null</code> if the image could not be
 	 *         created
-	 * @since 2.0
+	 * @since 1.0
 	 */
     public Image createImage(Device device) {
         return createImage(true, device);
@@ -270,7 +270,7 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
 	 *            the device on which to create the image
 	 * @return a new image or <code>null</code> if the image could not be
 	 *         created
-	 * @since 2.0
+	 * @since 1.0
 	 */
     public Image createImage(boolean returnMissingImageOnError, Device device) {
 

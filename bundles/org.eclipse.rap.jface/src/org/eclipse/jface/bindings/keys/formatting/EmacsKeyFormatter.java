@@ -26,7 +26,7 @@
 // * to represent the modifier keys.
 // * </p>
 // * 
-// * @since 3.1
+// * @since 1.0
 // */
 //public final class EmacsKeyFormatter extends AbstractKeyFormatter {
 //

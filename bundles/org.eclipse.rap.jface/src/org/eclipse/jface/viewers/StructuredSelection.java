@@ -90,7 +90,7 @@ public class StructuredSelection implements IStructuredSelection {
 	 *            list of selected elements
 	 * @param comparer
 	 *            the comparer, or null
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public StructuredSelection(List elements, IElementComparer comparer) {
         Assert.isNotNull(elements);

@@ -94,7 +94,7 @@ public interface IContributionManager {
      * Returns the overrides for the items of this manager.
      * 
      * @return the overrides for the items of this manager
-     * @since 2.0 
+     * @since 1.0 
      */
     public IContributionManagerOverrides getOverrides();
 

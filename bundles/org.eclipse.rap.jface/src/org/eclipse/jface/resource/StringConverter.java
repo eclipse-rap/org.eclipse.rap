@@ -320,7 +320,7 @@ public class StringConverter {
      * 
      * @param value the font list string 
      * @return the value as a font list
-     * @since 3.0
+     * @since 1.0
      */
     public static FontData[] asFontDataArray(String value) {
         String[] strings = getArrayFromList(value, FONT_SEPARATOR);
@@ -693,7 +693,7 @@ public class StringConverter {
      * 
      * @param value The font data.
      * @return The string representation of the font data arra.
-     * @since 3.0
+     * @since 1.0
      */
     public static String asString(FontData[] value) {
         StringBuffer buffer = new StringBuffer();

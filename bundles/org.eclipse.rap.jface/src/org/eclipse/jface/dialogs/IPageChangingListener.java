@@ -18,7 +18,7 @@ package org.eclipse.jface.dialogs;
  * during validation of page controls.
  * 
  * @see PageChangingEvent
- * @since 3.3
+ * @since 1.0
  */
 public interface IPageChangingListener {
 	

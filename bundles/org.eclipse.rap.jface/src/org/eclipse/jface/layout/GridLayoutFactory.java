@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Composite;
  * to a child control and it will not recurse into nested composites. 
  * </p>
  *
- * @since 3.2
+ * @since 1.0
  */
 public final class GridLayoutFactory {
 	
@@ -228,7 +228,7 @@ public final class GridLayoutFactory {
 	 * @see #spacing(Point)
 	 * @see #spacing(int, int)
 	 * 
-	 * @since 3.3
+	 * @since 1.0
 	 */
     public GridLayoutFactory extendedMargins(int left, int right, int top, int bottom) {
         l.marginLeft = left;
@@ -263,7 +263,7 @@ public final class GridLayoutFactory {
 	 * @see #spacing(Point)
 	 * @see #spacing(int, int)
 	 * 
-	 * @since 3.3
+	 * @since 1.0
 	 */
     public GridLayoutFactory extendedMargins(Rectangle differenceRect) {
         l.marginLeft = -differenceRect.x;

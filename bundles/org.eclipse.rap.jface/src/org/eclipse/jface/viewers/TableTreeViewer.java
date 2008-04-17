@@ -75,7 +75,7 @@
 //	 * Copied from original TableEditorImpl and moved here since refactoring
 //	 * completely wiped out the original implementation in 3.3
 //	 * 
-//	 * @since 3.1
+//	 * @since 1.0
 //	 */
 //	class TableTreeEditorImpl {
 //

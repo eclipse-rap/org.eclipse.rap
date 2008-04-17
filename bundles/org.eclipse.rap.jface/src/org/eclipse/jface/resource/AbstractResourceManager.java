@@ -21,7 +21,7 @@ import java.util.Map;
  * is referenced and delegates to the abstract method deallocate(...) the last time a reference is
  * removed.
  * 
- * @since 3.1
+ * @since 1.0
  */
 abstract class AbstractResourceManager extends ResourceManager {
 
@@ -46,7 +46,7 @@ abstract class AbstractResourceManager extends ResourceManager {
      * Called the first time a resource is requested. Should allocate and return a resource
      * of the correct type. 
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param descriptor identifier for the resource to allocate
      * @return the newly allocated resource
@@ -58,7 +58,7 @@ abstract class AbstractResourceManager extends ResourceManager {
      * Called the last time a resource is dereferenced. Should release any resources reserved by
      * allocate(...).
      * 
-     * @since 3.1 
+     * @since 1.0 
      *
      * @param resource resource being deallocated
      * @param descriptor identifier for the resource
@@ -124,7 +124,7 @@ abstract class AbstractResourceManager extends ResourceManager {
      * Deallocates any resources allocated by this registry that have not yet been
      * deallocated.
      * 
-     * @since 3.1 
+     * @since 1.0 
      */
     public void dispose() {
         super.dispose();

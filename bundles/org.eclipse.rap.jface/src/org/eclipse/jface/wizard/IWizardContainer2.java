@@ -23,7 +23,7 @@ package org.eclipse.jface.wizard;
  * </p>
  * 
  * @see org.eclipse.jface.wizard.IWizardContainer
- * @since 3.0
+ * @since 1.0
  */
 public interface IWizardContainer2 extends IWizardContainer {
 

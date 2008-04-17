@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Assert;
  * items from a parent manager so that visibility of the entire set can be changed as a
  * unit.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public class SubCoolBarManager extends SubContributionManager implements
         ICoolBarManager {

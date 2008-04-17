@@ -154,7 +154,7 @@ public abstract class ContributionManager implements IContributionManager {
 	 * @return <code>true</code> if the addition should be allowed;
 	 *         <code>false</code> otherwise. The default implementation allows
 	 *         all items.
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected boolean allowItem(IContributionItem itemToAdd) {
 		return true;
@@ -210,7 +210,7 @@ public abstract class ContributionManager implements IContributionManager {
 	 * Return the number of contributions in this manager.
 	 * 
 	 * @return the number of contributions in this manager
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public int getSize() {
 		return contributions.size();
@@ -222,7 +222,7 @@ public abstract class ContributionManager implements IContributionManager {
 	 * overrides. If there is no overrides it lazily creates one which overrides
 	 * no item state.
 	 * 
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public IContributionManagerOverrides getOverrides() {
 		if (overrides == null) {
@@ -286,7 +286,7 @@ public abstract class ContributionManager implements IContributionManager {
 	 * @param item
 	 *            The contribution item
 	 * @return the index, or -1 if the item is not found
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected int indexOf(IContributionItem item) {
 		return contributions.indexOf(item);
@@ -491,7 +491,7 @@ public abstract class ContributionManager implements IContributionManager {
 	 *            {@link org.eclipse.jface.action.ContributionManager#remove(java.lang.String) remove}
 	 *            if that is what you want to do.
 	 * @return <code>true</code> if the given identifier can be; <code>
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	public boolean replaceItem(final String identifier,
 			final IContributionItem replacementItem) {
@@ -546,7 +546,7 @@ public abstract class ContributionManager implements IContributionManager {
 	 * 
 	 * @param newOverrides
 	 *            the overrides for the items of this manager
-	 * @since 2.0
+	 * @since 1.0
 	 */
 	public void setOverrides(IContributionManagerOverrides newOverrides) {
 		overrides = newOverrides;
@@ -557,7 +557,7 @@ public abstract class ContributionManager implements IContributionManager {
 	 * 
 	 * @param items
 	 *            the contribution items in the specified order
-	 * @since 3.0
+	 * @since 1.0
 	 */
 	protected void internalSetItems(IContributionItem[] items) {
 		contributions.clear();

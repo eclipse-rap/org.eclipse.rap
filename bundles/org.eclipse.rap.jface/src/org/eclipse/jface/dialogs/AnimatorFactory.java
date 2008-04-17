@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Control;
  * {@link org.eclipse.jface.util.Policy#setAnimatorFactory(AnimatorFactory)} 
  * a new type of animator factory can be plugged into JFace.
  * 
- * @since 3.2
+ * @since 1.0
  * @deprecated as of 3.3, this class is no longer used.
  */
 public class AnimatorFactory {
@@ -31,7 +31,7 @@ public class AnimatorFactory {
 	 * 
 	 * @param control the SWT Control to de displayed 
 	 * @return the ControlAnimator.
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public ControlAnimator createAnimator(Control control) {
 		return new ControlAnimator(control);

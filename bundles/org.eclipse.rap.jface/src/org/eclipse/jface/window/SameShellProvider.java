@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
  * control. This will always return the correct shell for the control, even if
  * the control is reparented.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public class SameShellProvider implements IShellProvider {
 

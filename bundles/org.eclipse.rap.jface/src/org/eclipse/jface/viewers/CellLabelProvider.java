@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Point;
  * 
  * <p><b>This class is intended to be subclassed</b></p>
  * 
- * @since 3.3
+ * @since 1.0
  * @see ColumnLabelProvider as a concrete implementation
  */
 public abstract class CellLabelProvider extends BaseLabelProvider {
@@ -228,7 +228,7 @@ public abstract class CellLabelProvider extends BaseLabelProvider {
 	 *            the column, or <code>null</code> if a column is not
 	 *            available.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected void initialize(ColumnViewer viewer, ViewerColumn column) {
 	}
@@ -244,7 +244,7 @@ public abstract class CellLabelProvider extends BaseLabelProvider {
 	 *            the column, or <code>null</code> if a column is not
 	 *            available.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public void dispose(ColumnViewer viewer, ViewerColumn column) {
 		dispose();

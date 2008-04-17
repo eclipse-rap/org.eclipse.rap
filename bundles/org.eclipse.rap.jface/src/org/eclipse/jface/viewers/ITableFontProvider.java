@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.Font;
 /**
  * The ITableFontProvider is a font provider that provides fonts to 
  * individual cells within tables.
- * @since 3.1
+ * @since 1.0
  */
 public interface ITableFontProvider {
 	

@@ -16,7 +16,7 @@ package org.eclipse.jface.operation;
  * runnable of the thread that will execute it, allowing the runnable to transfer
  * thread-local state from the calling thread before control passes to the new thread.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IThreadListener {
 	/**

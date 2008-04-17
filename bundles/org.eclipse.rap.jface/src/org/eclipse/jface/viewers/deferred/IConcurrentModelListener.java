@@ -14,7 +14,7 @@ package org.eclipse.jface.viewers.deferred;
  * Interface for objects that can listen to changes in an IConcurrentModel.
  * Elements in an IConcurrentModel are unordered.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IConcurrentModelListener {
 	

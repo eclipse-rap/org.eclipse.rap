@@ -47,7 +47,7 @@
 // * <p><strong>NOTE:</strong> This API is experimental and may be deleted or
 // * changed before 3.4 is released.</p>
 // * 
-// * @since 3.4
+// * @since 1.1
 // */
 //public abstract class StyledCellLabelProvider extends OwnerDrawLabelProvider {
 //

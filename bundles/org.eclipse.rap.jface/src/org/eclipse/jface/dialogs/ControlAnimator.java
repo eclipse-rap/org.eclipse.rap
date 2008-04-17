@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Control;
  * subclasses of this class. <p>
  * Instances of this class can be created using an AnimatorFactory.
  * 
- * @since 3.2
+ * @since 1.0
  */
 
 

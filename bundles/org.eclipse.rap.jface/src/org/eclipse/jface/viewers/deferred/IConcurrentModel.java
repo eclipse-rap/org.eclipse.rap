@@ -28,7 +28,7 @@ package org.eclipse.jface.viewers.deferred;
  * <code>AbstractConcurrentModel</code> instead.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IConcurrentModel {
 

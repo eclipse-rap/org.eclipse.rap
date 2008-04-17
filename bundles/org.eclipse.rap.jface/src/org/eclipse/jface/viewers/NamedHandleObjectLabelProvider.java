@@ -18,7 +18,7 @@ import org.eclipse.core.commands.common.NotDefinedException;
  * A label provider for instances of <code>NamedHandlerObject</code>, which
  * exposes the name as the label.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public final class NamedHandleObjectLabelProvider extends LabelProvider {
 	

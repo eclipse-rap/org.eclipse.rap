@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Control;
  * decorated. Clients are expected to implement this interface in order to
  * create a particular kind of control for decoration.
  * 
- * @since 3.2
+ * @since 1.0
  * @deprecated As of 3.3, clients should use ControlDecoration instead
  *             of {@link DecoratedField}.
  * 

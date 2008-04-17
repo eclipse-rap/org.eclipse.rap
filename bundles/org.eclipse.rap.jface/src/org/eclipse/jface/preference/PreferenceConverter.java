@@ -122,7 +122,7 @@ public class PreferenceConverter {
      * @param value the identifier for the font
      * @return FontData[]
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public static FontData[] basicGetFontData(String value) {
         if (IPreferenceStore.STRING_DEFAULT_DEFAULT.equals(value)) {
@@ -490,7 +490,7 @@ public class PreferenceConverter {
      * 
      * @param fontData the array of FontData objects
      * @return the stored representation of the FontData objects
-     * @since 3.0
+     * @since 1.0
      */
     public static String getStoredRepresentation(FontData[] fontData) {
         StringBuffer buffer = new StringBuffer();

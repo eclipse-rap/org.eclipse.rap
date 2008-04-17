@@ -406,7 +406,7 @@ public class TreeViewer extends AbstractTreeViewer {
 	 *            the element, or tree path
 	 * @param count
 	 *
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public void setChildCount(final Object elementOrTreePath, final int count) {
 		if (checkBusy())
@@ -448,7 +448,7 @@ public class TreeViewer extends AbstractTreeViewer {
 	 * @see ILazyTreeContentProvider
 	 * @see ILazyTreePathContentProvider
 	 *
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	public void replace(final Object parentElementOrTreePath, final int index,
 			final Object element) {
@@ -844,7 +844,7 @@ public class TreeViewer extends AbstractTreeViewer {
 	 *
 	 * @param parentOrTreePath the parent element, the input element, or a tree path to the parent element
 	 * @param index child index
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public void remove(final Object parentOrTreePath, final int index) {
 		if (checkBusy())
@@ -942,7 +942,7 @@ public class TreeViewer extends AbstractTreeViewer {
 	 *            the element, or tree path
 	 * @param hasChildren
 	 *
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public void setHasChildren(final Object elementOrTreePath, final boolean hasChildren) {
 		if (checkBusy())

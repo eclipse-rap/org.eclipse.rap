@@ -97,7 +97,7 @@
 // *		});		
 // *		viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, dropAdapter.getTransfers(), dropAdapter);
 // * </pre></code>
-// * @since 3.0
+// * @since 1.0
 // */
 //public class DelegatingDropAdapter implements DropTargetListener {
 //    private List listeners = new ArrayList();

@@ -46,7 +46,7 @@ public interface IContributionItem {
      * IContributionManager before the contribution lifecycle
      * has ended.
      * 
-     * @since 2.1
+     * @since 1.0
      */
     public void dispose();
 
@@ -85,7 +85,7 @@ public interface IContributionItem {
      * @param parent the parent cool bar
      * @param index the index where the controls are inserted,
      *   or <code>-1</code> to insert at the end
-     * @since 3.0
+     * @since 1.0
      */
     public void fill(CoolBar parent, int index);
 
@@ -157,7 +157,7 @@ public interface IContributionItem {
      * Saves any state information of the control(s) owned by this contribution item.
      * The contribution manager calls this method before disposing of the controls.
      * 
-     * @since 3.0
+     * @since 1.0
      */
     public void saveWidgetState();
 
@@ -165,7 +165,7 @@ public interface IContributionItem {
      * Sets the parent manager of this item
      * 
      * @param parent the parent contribution manager
-     * @since 2.0
+     * @since 1.0
      */
     public void setParent(IContributionManager parent);
 
@@ -189,7 +189,7 @@ public interface IContributionItem {
      * for the the given property. 
      * 
      * @param id the id of the changed property
-     * @since 2.0
+     * @since 1.0
      */
     public void update(String id);
 }

@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Control;
  * <code>BackgroundContentProvider</code> with non-JFace viewers.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 abstract class AbstractVirtualTable {
     /**

@@ -15,7 +15,7 @@
 // * Parties interested in activation and deactivation of editors extend this
 // * class and implement any or all of the methods
 // * 
-// * @since 3.3
+// * @since 1.0
 // * 
 // */
 //public abstract class ColumnViewerEditorActivationListener {

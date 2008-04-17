@@ -35,7 +35,7 @@
 // * This class may be instantiated; it is not intended to be subclassed.
 // * </p>
 // * 
-// * @since 3.4
+// * @since 1.1
 // */
 //public class StyledString {
 //

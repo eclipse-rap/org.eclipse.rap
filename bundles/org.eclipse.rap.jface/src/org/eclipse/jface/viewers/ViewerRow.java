@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Widget;
  * Table or Tree. Implementors of {@link ColumnViewer} have to provide a
  * concrete implementation for the underlying widget
  * 
- * @since 3.3
+ * @since 1.0
  * 
  */
 public abstract class ViewerRow implements Cloneable {
@@ -289,7 +289,7 @@ public abstract class ViewerRow implements Cloneable {
 	 * @param creationIndex
 	 *            the original index
 	 * @return the current index (as shown in the UI)
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected int getVisualIndex(int creationIndex) {
 		return creationIndex;
@@ -307,7 +307,7 @@ public abstract class ViewerRow implements Cloneable {
 	 * @param visualIndex
 	 *            the current index (as shown in the UI)
 	 * @return the original index
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected int getCreationIndex(int visualIndex) {
 		return visualIndex;
@@ -322,7 +322,7 @@ public abstract class ViewerRow implements Cloneable {
 	 * @return the bounds of the of the text area. May return <code>null</code>
 	 *         if the underlying widget implementation doesn't provide this
 	 *         information
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public Rectangle getTextBounds(int index) {
 		return null;
@@ -337,7 +337,7 @@ public abstract class ViewerRow implements Cloneable {
 	 * @return the bounds of the of the image area. May return <code>null</code>
 	 *         if the underlying widget implementation doesn't provide this
 	 *         information
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public Rectangle getImageBounds(int index) {
 		return null;
@@ -351,7 +351,7 @@ public abstract class ViewerRow implements Cloneable {
 //	 * @param columnIndex the index of the column
 //	 * @param styleRanges the styled ranges
 //	 * 
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	public void setStyleRanges(int columnIndex, StyleRange[] styleRanges) {
 //		getItem().setData(KEY_TEXT_LAYOUT + columnIndex, styleRanges);
@@ -365,7 +365,7 @@ public abstract class ViewerRow implements Cloneable {
 //	 * @param columnIndex the index of the column
 //	 * @return styleRanges the styled ranges
 //	 * 
-//	 * @since 3.4
+//	 * @since 1.1
 //	 */
 //	public StyleRange[] getStyleRanges(int columnIndex) {
 //		return (StyleRange[]) getItem().getData(KEY_TEXT_LAYOUT + columnIndex);

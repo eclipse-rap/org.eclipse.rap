@@ -16,7 +16,7 @@ package org.eclipse.jface.fieldassist;
  * used to describe the content to the user, and an optional description that
  * further elaborates the meaning of the proposal.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface IContentProposal {
 	/**

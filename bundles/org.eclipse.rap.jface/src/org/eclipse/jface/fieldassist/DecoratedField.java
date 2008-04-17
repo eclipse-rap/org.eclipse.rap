@@ -55,7 +55,7 @@ import org.eclipse.swt.widgets.Shell;
  * <p>
  * This class is not intended to be subclassed.
  * 
- * @since 3.2
+ * @since 1.0
  * @deprecated As of 3.3, clients should use ControlDecoration instead.
  * 				As this is not yet available in RAP you can still use this
  * 				one to achieve at least some of the functionality.

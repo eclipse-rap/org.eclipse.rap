@@ -66,7 +66,7 @@
 // * This class is intended to be instantiated and used by clients. It is not
 // * intended to be subclassed by clients.
 // * 
-// * @since 3.3
+// * @since 1.0
 // * 
 // * @see FieldDecoration
 // * @see FieldDecorationRegistry

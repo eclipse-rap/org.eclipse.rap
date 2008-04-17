@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Control;
  * </p>
  * 
  * @see org.eclipse.jface.dialogs.TrayDialog
- * @since 3.2
+ * @since 1.0
  */
 public abstract class DialogTray {
 

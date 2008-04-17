@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.ToolItem;
  * as the dialog menu, separator styles, and fonts, is kept private so that all
  * popup dialogs will have a similar appearance.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class PopupDialog extends Window {
 
@@ -100,7 +100,7 @@ public class PopupDialog extends Window {
 	 * The dialog settings key name for remembering if the bounds persisted
 	 * prior to 3.4 have been migrated to the 3.4 settings.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 * @deprecated This is marked deprecated at its introduction to discourage
 	 *             future dependency
 	 */
@@ -278,14 +278,14 @@ public class PopupDialog extends Window {
 	/**
 	 * Image registry key for menu image.
 	 * 
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static final String POPUP_IMG_MENU = "popup_menu_image"; //$NON-NLS-1$
 
 	/**
 	 * Image registry key for disabled menu image.
 	 * 
-	 * @since 3.3
+	 * @since 1.0
 	 */
 	public static final String POPUP_IMG_MENU_DISABLED = "popup_menu_image_diabled"; //$NON-NLS-1$
 
@@ -377,7 +377,7 @@ public class PopupDialog extends Window {
 	/**
 	 * Flag specifying whether to use new 3.4 API instead of the old one.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	private boolean isUsing34API = true;
 
@@ -477,7 +477,7 @@ public class PopupDialog extends Window {
 	 * 
 	 * @see PopupDialog#getDialogSettings()
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public PopupDialog(Shell parent, int shellStyle, boolean takeFocusOnOpen,
 			boolean persistSize, boolean persistLocation,
@@ -532,7 +532,7 @@ public class PopupDialog extends Window {
 	 * 
 	 * @see PopupDialog#getDialogSettings()
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	private PopupDialog(Shell parent, int shellStyle, boolean takeFocusOnOpen,
 			boolean persistSize, boolean persistLocation,
@@ -1078,7 +1078,7 @@ public class PopupDialog extends Window {
 	 *         <code>false</code> if it will not.
 	 * 
 	 * @see #getPersistSize()
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected boolean getPersistLocation() {
 		return persistLocation;
@@ -1094,7 +1094,7 @@ public class PopupDialog extends Window {
 	 *         <code>false</code> if it will not.
 	 * 
 	 * @see #getPersistLocation()
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected boolean getPersistSize() {
 		return persistSize;
@@ -1277,7 +1277,7 @@ public class PopupDialog extends Window {
 	 * @return the initial size of the shell
 	 * 
 	 * @see #getPersistSize()
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected Point getDefaultSize() {
 		return super.getInitialSize();
@@ -1297,7 +1297,7 @@ public class PopupDialog extends Window {
 	 * @return the initial location of the shell
 	 * 
 	 * @see #getPersistLocation()
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected Point getDefaultLocation(Point initialSize) {
 		return super.getInitialLocation(initialSize);
@@ -1373,7 +1373,7 @@ public class PopupDialog extends Window {
 	 * 
 	 * @return the foreground color to be used. Should not be <code>null</code>.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 * 
 	 * @see #getForegroundColorExclusions()
 	 */
@@ -1387,7 +1387,7 @@ public class PopupDialog extends Window {
 	 * 
 	 * @return the background color to be used. Should not be <code>null</code>.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 * 
 	 * @see #getBackgroundColorExclusions()
 	 */

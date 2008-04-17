@@ -15,7 +15,7 @@ package org.eclipse.jface.viewers;
  * tree viewers created using the SWT.VIRTUAL flag that only wish to return
  * their contents as they are queried.
  * 
- * @since 3.3
+ * @since 1.0
  */
 public interface ILazyTreePathContentProvider extends IContentProvider {
 	/**

@@ -19,13 +19,13 @@ package org.eclipse.jface.action;
  * the framework.
  * </p>
  * 
- * @since 2.0
+ * @since 1.0
  */
 public interface IContributionManagerOverrides {
     /**
      * Id for the enabled property. Value is <code>"enabled"</code>.
      * 
-     * @since 2.0
+     * @since 1.0
      */
     public final static String P_ENABLED = "enabled"; //$NON-NLS-1$
 
@@ -38,7 +38,7 @@ public interface IContributionManagerOverrides {
      * 				<li><code>Boolean.FALSE</code> if the item should be disabled</li>
      * 				<li><code>null</code> if the item may determine its own enablement</li>
      * 			</ul>
-     * @since 2.0 
+     * @since 1.0 
      */
     public Boolean getEnabled(IContributionItem item);
 

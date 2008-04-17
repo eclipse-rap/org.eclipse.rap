@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Widget;
  * table/tree control you want the layouts applied to.</b>
  * </p>
  *
- * @since 3.4
+ * @since 1.1
  */
 public abstract class AbstractColumnLayout extends Layout {
 	private static int COLUMN_TRIM;
@@ -308,7 +308,7 @@ public abstract class AbstractColumnLayout extends Layout {
 	 * assign N+COLUMN_TRIM for the column width.
 	 *
 	 * @return the trim used by the columns
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected int getColumnTrim() {
 		return COLUMN_TRIM;

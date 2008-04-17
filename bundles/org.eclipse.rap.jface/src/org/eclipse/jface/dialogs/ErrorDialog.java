@@ -209,7 +209,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * 
 	 * @param parent
 	 *            the parent composite
-	 * @since 3.2
+	 * @since 1.0
 	 */
 	protected void createDetailsButton(Composite parent) {
 		if (shouldShowDetailsButton()) {
@@ -621,7 +621,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * of the dialog. Invoking the method before the content area has been set
 	 * or after the dialog has been disposed will have no effect.
 	 * 
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected final void showDetailsArea() {
 		if (!listCreated) {
@@ -640,7 +640,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * override.
 	 * 
 	 * @return whether the Details button should be included
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected boolean shouldShowDetailsButton() {
 		return status.isMultiStatus() || status.getException() != null;
@@ -653,7 +653,7 @@ public class ErrorDialog extends IconAndMessageDialog {
 	 * 
 	 * @param status
 	 *            the status to be displayed in the details list
-	 * @since 3.1
+	 * @since 1.0
 	 */
 	protected final void setStatus(IStatus status) {
 		if (this.status != status) {

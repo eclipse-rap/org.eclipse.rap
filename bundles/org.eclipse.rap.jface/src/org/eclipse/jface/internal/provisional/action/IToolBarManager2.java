@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * consulting with the Platform/UI team.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface IToolBarManager2 extends IToolBarManager {
 

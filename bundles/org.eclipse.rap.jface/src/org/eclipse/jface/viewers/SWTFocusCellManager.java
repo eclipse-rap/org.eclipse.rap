@@ -26,7 +26,7 @@
 // * SWT-Controls {@link org.eclipse.swt.widgets.Table} and
 // * {@link org.eclipse.swt.widgets.Tree}.
 // *
-// * @since 3.3
+// * @since 1.0
 // *
 // */
 //abstract class SWTFocusCellManager {
