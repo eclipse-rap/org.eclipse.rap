@@ -18,7 +18,8 @@ import org.eclipse.swt.graphics.Font;
  * Only used in RAP to avoid breaking API in Dialog class.
  * @since 1.1
  */
-public class DialogUtil {
+// RAP [rh] Substitues for methods in class Dialog
+public final class DialogUtil {
 	
 	private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
 	private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 8;
