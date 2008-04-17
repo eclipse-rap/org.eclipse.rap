@@ -29,7 +29,7 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
  * The PreferenceLinkArea is the link area used to open a specific preference
  * page.
  * 
- * @since 3.1
+ * @since 1.1
  */
 public class PreferenceLinkArea extends Object {
 
@@ -63,7 +63,7 @@ public class PreferenceLinkArea extends Object {
         String result;
         if (node == null) {
 			result = NLS.bind(
-                    WorkbenchMessages.PreferenceNode_NotFound, pageId);
+                    WorkbenchMessages.get().PreferenceNode_NotFound, pageId);
 		} else {
             result = MessageFormat.format(message, new String[] { node
                     .getLabelText() });

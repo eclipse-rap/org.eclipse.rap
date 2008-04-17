@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * A class to select elements out of a list of elements.
  * 
- * @since 2.0
+ * @since .1
  */
 public class ElementListSelectionDialog extends
         AbstractElementListSelectionDialog {

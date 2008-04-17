@@ -110,7 +110,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 
 			if (isPredefined) {
 				toString = NLS.bind(
-						WorkbenchMessages.ContentTypes_lockedFormat, toString);
+						WorkbenchMessages.get().ContentTypes_lockedFormat, toString);
 			}
 
 			return toString;
@@ -315,7 +315,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 		PreferenceLinkArea contentTypeArea = new PreferenceLinkArea(
 				composite,
 				SWT.NONE,
-				"org.eclipse.ui.preferencePages.FileEditors", WorkbenchMessages.ContentTypes_FileEditorsRelatedLink,//$NON-NLS-1$
+				"org.eclipse.ui.preferencePages.FileEditors", WorkbenchMessages.get().ContentTypes_FileEditorsRelatedLink,//$NON-NLS-1$
 				(IWorkbenchPreferenceContainer) getContainer(), null);
 
 		GridData data = new GridData(GridData.FILL_HORIZONTAL
@@ -344,7 +344,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 
 		Label label = new Label(composite, SWT.NONE);
 		label.setFont(parent.getFont());
-		label.setText(WorkbenchMessages.ContentTypes_characterSetLabel);
+		label.setText(WorkbenchMessages.get().ContentTypes_characterSetLabel);
 		charsetField = new Text(composite, SWT.SINGLE | SWT.BORDER);
 		charsetField.setFont(parent.getFont());
 		charsetField.setEnabled(false);
@@ -353,7 +353,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 		setButton = new Button(composite, SWT.PUSH);
 		setButton.setFont(parent.getFont());
 		setButton
-				.setText(WorkbenchMessages.ContentTypes_characterSetUpdateLabel);
+				.setText(WorkbenchMessages.get().ContentTypes_characterSetUpdateLabel);
 		setButton.setEnabled(false);
 		setButtonLayoutData(setButton);
 		setButton.addSelectionListener(new SelectionAdapter() {
@@ -402,7 +402,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 	private void createFileAssociations(final Composite composite) {
 		{
 			Label label = new Label(composite, SWT.NONE);
-			label.setText(WorkbenchMessages.ContentTypes_fileAssociationsLabel);
+			label.setText(WorkbenchMessages.get().ContentTypes_fileAssociationsLabel);
 			GridData data = new GridData();
 			data.horizontalSpan = 2;
 			label.setLayoutData(data);
@@ -452,7 +452,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 			addButton = new Button(buttonArea, SWT.PUSH);
 			addButton.setFont(composite.getFont());
 			addButton
-					.setText(WorkbenchMessages.ContentTypes_fileAssociationsAddLabel);
+					.setText(WorkbenchMessages.get().ContentTypes_fileAssociationsAddLabel);
 			addButton.setEnabled(false);
 			setButtonLayoutData(addButton);
 			addButton.addSelectionListener(new SelectionAdapter() {
@@ -466,11 +466,11 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 					IContentType selectedContentType = getSelectedContentType();
 					FileExtensionDialog dialog = new FileExtensionDialog(
 							shell,
-							WorkbenchMessages.ContentTypes_addDialog_title,
+							WorkbenchMessages.get().ContentTypes_addDialog_title,
 							IWorkbenchHelpContextIds.FILE_EXTENSION_DIALOG,
-							WorkbenchMessages.ContentTypes_addDialog_messageHeader,
-							WorkbenchMessages.ContentTypes_addDialog_message,
-							WorkbenchMessages.ContentTypes_addDialog_label);
+							WorkbenchMessages.get().ContentTypes_addDialog_messageHeader,
+							WorkbenchMessages.get().ContentTypes_addDialog_message,
+							WorkbenchMessages.get().ContentTypes_addDialog_label);
 					if (dialog.open() == Window.OK) {
 						String name = dialog.getName();
 						String extension = dialog.getExtension();
@@ -500,7 +500,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 			editButton = new Button(buttonArea, SWT.PUSH);
 			editButton.setFont(composite.getFont());
 			editButton
-					.setText(WorkbenchMessages.ContentTypes_fileAssociationsEditLabel);
+					.setText(WorkbenchMessages.get().ContentTypes_fileAssociationsEditLabel);
 			editButton.setEnabled(false);
 			setButtonLayoutData(editButton);
 			editButton.addSelectionListener(new SelectionAdapter() {
@@ -510,11 +510,11 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 					Spec spec = getSelectedSpecs()[0];
 					FileExtensionDialog dialog = new FileExtensionDialog(
 							shell,
-							WorkbenchMessages.ContentTypes_editDialog_title,
+							WorkbenchMessages.get().ContentTypes_editDialog_title,
 							IWorkbenchHelpContextIds.FILE_EXTENSION_DIALOG,
-							WorkbenchMessages.ContentTypes_editDialog_messageHeader,
-							WorkbenchMessages.ContentTypes_editDialog_message,
-							WorkbenchMessages.ContentTypes_editDialog_label);
+							WorkbenchMessages.get().ContentTypes_editDialog_messageHeader,
+							WorkbenchMessages.get().ContentTypes_editDialog_message,
+							WorkbenchMessages.get().ContentTypes_editDialog_label);
 					if (spec.name == null) {
 						dialog.setInitialValue("*." + spec.ext); //$NON-NLS-1$
 					} else {
@@ -559,7 +559,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 			removeButton = new Button(buttonArea, SWT.PUSH);
 			removeButton.setEnabled(false);
 			removeButton
-					.setText(WorkbenchMessages.ContentTypes_fileAssociationsRemoveLabel);
+					.setText(WorkbenchMessages.get().ContentTypes_fileAssociationsRemoveLabel);
 			setButtonLayoutData(removeButton);
 			removeButton.addSelectionListener(new SelectionAdapter() {
 				/*
@@ -572,7 +572,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 					Spec[] specs = getSelectedSpecs();
 					MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID,
 							0, new IStatus[0],
-							WorkbenchMessages.ContentTypes_errorDialogMessage,
+							WorkbenchMessages.get().ContentTypes_errorDialogMessage,
 							null);
 					for (int i = 0; i < specs.length; i++) {
 						Spec spec = specs[i];
@@ -616,7 +616,7 @@ public class ContentTypesPreferencePage extends PreferencePage implements
 		{
 			Label label = new Label(composite, SWT.NONE);
 			label.setFont(composite.getFont());
-			label.setText(WorkbenchMessages.ContentTypes_contentTypesLabel);
+			label.setText(WorkbenchMessages.get().ContentTypes_contentTypesLabel);
 			GridData data = new GridData();
 			data.horizontalSpan = 2;
 			label.setLayoutData(data);

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -219,7 +219,7 @@ class NewWizardNewPage implements ISelectionChangedListener {
      * @since 3.0
      */
     public void activate() {
-        page.setDescription(WorkbenchMessages.NewWizardNewPage_description);
+        page.setDescription(WorkbenchMessages.get().NewWizardNewPage_description);
     }
 
     /**
@@ -240,7 +240,7 @@ class NewWizardNewPage implements ISelectionChangedListener {
         GridData data = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
         outerContainer.setLayoutData(data);
         wizardLabel.setFont(wizardFont);
-        wizardLabel.setText(WorkbenchMessages.NewWizardNewPage_wizardsLabel);    
+        wizardLabel.setText(WorkbenchMessages.get().NewWizardNewPage_wizardsLabel);    
 
         Composite innerContainer = new Composite(outerContainer, SWT.NONE);
         layout = new GridLayout(2, false);
@@ -378,7 +378,7 @@ class NewWizardNewPage implements ISelectionChangedListener {
             GridData data = new GridData();
             showAllCheck.setLayoutData(data);
             showAllCheck.setFont(parent.getFont());
-            showAllCheck.setText(WorkbenchMessages.NewWizardNewPage_showAll); 
+            showAllCheck.setText(WorkbenchMessages.get().NewWizardNewPage_showAll); 
             showAllCheck.setSelection(false);
 
             // flipping tabs updates the selected node
@@ -469,9 +469,10 @@ class NewWizardNewPage implements ISelectionChangedListener {
              * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
              */
             public void widgetDisposed(DisposeEvent e) {
-                for (Iterator i = imageTable.values().iterator(); i.hasNext();) {
-                    ((Image) i.next()).dispose();
-                }
+// RAP [rh] Image#dispose() missing              
+//                for (Iterator i = imageTable.values().iterator(); i.hasNext();) {
+//                    ((Image) i.next()).dispose();
+//                }
                 imageTable.clear();
             }
         });

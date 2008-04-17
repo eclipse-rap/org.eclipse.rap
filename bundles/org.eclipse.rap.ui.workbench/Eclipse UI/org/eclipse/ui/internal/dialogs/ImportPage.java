@@ -60,7 +60,7 @@ public class ImportPage extends ImportExportPage {
 		IWizardCategory root = WorkbenchPlugin.getDefault()
 			.getImportWizardRegistry().getRootCategory();
 		importTree = new CategorizedWizardSelectionTree(
-				root, WorkbenchMessages.ImportWizard_selectSource);
+				root, WorkbenchMessages.get().ImportWizard_selectSource);
 		Composite importComp = importTree.createControl(parent);
 		importTree.getViewer().addSelectionChangedListener(new ISelectionChangedListener(){
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -95,7 +95,7 @@ public class ImportPage extends ImportExportPage {
 	}
 	
 	protected void updateMessage(){
-		setMessage(WorkbenchMessages.ImportExportPage_chooseImportSource);
+		setMessage(WorkbenchMessages.get().ImportExportPage_chooseImportSource);
 		super.updateMessage();
 	}
 }

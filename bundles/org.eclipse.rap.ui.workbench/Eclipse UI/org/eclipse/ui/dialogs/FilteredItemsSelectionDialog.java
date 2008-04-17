@@ -109,7 +109,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
  * Shows a list of items to the user with a text entry field for a string
  * pattern used to filter the list of items.
  * 
- * @since 3.3
+ * @since 1.1
  */
 public abstract class FilteredItemsSelectionDialog extends
 		SelectionStatusDialog {
@@ -222,7 +222,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		contentProvider = new ContentProvider();
 		refreshCacheJob = new RefreshCacheJob();
 		itemsListSeparator = new ItemsListSeparator(
-				WorkbenchMessages.FilteredItemsSelectionDialog_separatorLabel);
+				WorkbenchMessages.get().FilteredItemsSelectionDialog_separatorLabel);
 		selectionMode = NONE;
 	}
 
@@ -367,7 +367,7 @@ public abstract class FilteredItemsSelectionDialog extends
 										IStatus.ERROR,
 										PlatformUI.PLUGIN_ID,
 										IStatus.ERROR,
-										WorkbenchMessages.FilteredItemsSelectionDialog_restoreError,
+										WorkbenchMessages.get().FilteredItemsSelectionDialog_restoreError,
 										e));
 			}
 		}
@@ -417,7 +417,7 @@ public abstract class FilteredItemsSelectionDialog extends
 									IStatus.ERROR,
 									PlatformUI.PLUGIN_ID,
 									IStatus.ERROR,
-									WorkbenchMessages.FilteredItemsSelectionDialog_storeError,
+									WorkbenchMessages.get().FilteredItemsSelectionDialog_storeError,
 									e));
 		}
 	}
@@ -440,7 +440,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		Label headerLabel = new Label(header, SWT.NONE);
 		headerLabel.setText((getMessage() != null && getMessage().trim()
 				.length() > 0) ? getMessage()
-				: WorkbenchMessages.FilteredItemsSelectionDialog_patternLabel);
+				: WorkbenchMessages.get().FilteredItemsSelectionDialog_patternLabel);
 // RAP [rh] Traverse events missing		
 //		headerLabel.addTraverseListener(new TraverseListener() {
 //			public void keyTraversed(TraverseEvent e) {
@@ -476,7 +476,7 @@ public abstract class FilteredItemsSelectionDialog extends
 
 		Label listLabel = new Label(labels, SWT.NONE);
 		listLabel
-				.setText(WorkbenchMessages.FilteredItemsSelectionDialog_listLabel);
+				.setText(WorkbenchMessages.get().FilteredItemsSelectionDialog_listLabel);
 
 // RAP [rh] Traverse events missing
 //		listLabel.addTraverseListener(new TraverseListener() {
@@ -515,7 +515,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		toolItem.setImage(WorkbenchImages
 				.getImage(IWorkbenchGraphicConstants.IMG_LCL_VIEW_MENU));
 		toolItem
-				.setToolTipText(WorkbenchMessages.FilteredItemsSelectionDialog_menu);
+				.setToolTipText(WorkbenchMessages.get().FilteredItemsSelectionDialog_menu);
 		toolItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				showViewMenu();
@@ -585,7 +585,7 @@ public abstract class FilteredItemsSelectionDialog extends
 
 				if (selectedElements.size() > 0) {
 					removeHistoryItemAction
-							.setText(WorkbenchMessages.FilteredItemsSelectionDialog_removeItemsFromHistoryAction);
+							.setText(WorkbenchMessages.get().FilteredItemsSelectionDialog_removeItemsFromHistoryAction);
 
 					manager.add(removeHistoryActionContributionItem);
 
@@ -813,7 +813,7 @@ public abstract class FilteredItemsSelectionDialog extends
 			details
 					.setInput(NLS
 							.bind(
-									WorkbenchMessages.FilteredItemsSelectionDialog_nItemsSelected,
+									WorkbenchMessages.get().FilteredItemsSelectionDialog_nItemsSelected,
 									new Integer(selection.size())));
 			break;
 		}
@@ -1305,7 +1305,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		 */
 		public ToggleStatusLineAction() {
 			super(
-					WorkbenchMessages.FilteredItemsSelectionDialog_toggleStatusAction,
+					WorkbenchMessages.get().FilteredItemsSelectionDialog_toggleStatusAction,
 					IAction.AS_CHECK_BOX);
 		}
 
@@ -1353,7 +1353,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		public RefreshJob() {
 			super(FilteredItemsSelectionDialog.this.getParentShell()
 					.getDisplay(),
-					WorkbenchMessages.FilteredItemsSelectionDialog_refreshJob);
+					WorkbenchMessages.get().FilteredItemsSelectionDialog_refreshJob);
 			setSystem(true);
 		}
 
@@ -1394,7 +1394,7 @@ public abstract class FilteredItemsSelectionDialog extends
 			super(
 					FilteredItemsSelectionDialog.this.getParentShell()
 							.getDisplay(),
-					WorkbenchMessages.FilteredItemsSelectionDialog_progressRefreshJob);
+					WorkbenchMessages.get().FilteredItemsSelectionDialog_progressRefreshJob);
 			setSystem(true);
 		}
 
@@ -1453,7 +1453,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		 */
 		public RefreshCacheJob() {
 			super(
-					WorkbenchMessages.FilteredItemsSelectionDialog_cacheRefreshJob);
+					WorkbenchMessages.get().FilteredItemsSelectionDialog_cacheRefreshJob);
 			setSystem(true);
 		}
 
@@ -1511,7 +1511,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		 */
 		public RemoveHistoryItemAction() {
 			super(
-					WorkbenchMessages.FilteredItemsSelectionDialog_removeItemsFromHistoryAction);
+					WorkbenchMessages.get().FilteredItemsSelectionDialog_removeItemsFromHistoryAction);
 		}
 
 		/*
@@ -1981,7 +1981,7 @@ public abstract class FilteredItemsSelectionDialog extends
 				message = subName == null ? name
 						: NLS
 								.bind(
-										WorkbenchMessages.FilteredItemsSelectionDialog_subtaskProgressMessage,
+										WorkbenchMessages.get().FilteredItemsSelectionDialog_subtaskProgressMessage,
 										new Object[] { name, subName });
 			}
 			if (totalWork == 0)
@@ -1989,7 +1989,7 @@ public abstract class FilteredItemsSelectionDialog extends
 
 			return NLS
 					.bind(
-							WorkbenchMessages.FilteredItemsSelectionDialog_taskProgressMessage,
+							WorkbenchMessages.get().FilteredItemsSelectionDialog_taskProgressMessage,
 							new Object[] {
 									message,
 									new Integer(
@@ -2013,7 +2013,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		 * Creates new instance of receiver.
 		 */
 		public FilterHistoryJob() {
-			super(WorkbenchMessages.FilteredItemsSelectionDialog_jobLabel);
+			super(WorkbenchMessages.get().FilteredItemsSelectionDialog_jobLabel);
 			setSystem(true);
 		}
 
@@ -2066,7 +2066,7 @@ public abstract class FilteredItemsSelectionDialog extends
 		 * Creates new instance of FilterJob
 		 */
 		public FilterJob() {
-			super(WorkbenchMessages.FilteredItemsSelectionDialog_jobLabel);
+			super(WorkbenchMessages.get().FilteredItemsSelectionDialog_jobLabel);
 			setSystem(true);
 		}
 
@@ -2097,7 +2097,7 @@ public abstract class FilteredItemsSelectionDialog extends
 						IStatus.ERROR,
 						PlatformUI.PLUGIN_ID,
 						IStatus.ERROR,
-						WorkbenchMessages.FilteredItemsSelectionDialog_jobError,
+						WorkbenchMessages.get().FilteredItemsSelectionDialog_jobError,
 						e);
 			}
 			return Status.OK_STATUS;
@@ -2146,7 +2146,7 @@ public abstract class FilteredItemsSelectionDialog extends
 				int length = lastCompletedResult.size() / 500;
 				monitor
 						.beginTask(
-								WorkbenchMessages.FilteredItemsSelectionDialog_cacheSearchJob_taskName,
+								WorkbenchMessages.get().FilteredItemsSelectionDialog_cacheSearchJob_taskName,
 								length);
 
 				for (int pos = 0; pos < lastCompletedResult.size(); pos++) {
@@ -2170,7 +2170,7 @@ public abstract class FilteredItemsSelectionDialog extends
 				if (monitor != null) {
 					monitor
 							.beginTask(
-									WorkbenchMessages.FilteredItemsSelectionDialog_searchJob_taskName,
+									WorkbenchMessages.get().FilteredItemsSelectionDialog_searchJob_taskName,
 									100);
 					subMonitor = new SubProgressMonitor(monitor, 95);
 
@@ -2929,7 +2929,7 @@ public abstract class FilteredItemsSelectionDialog extends
 
 				monitor
 						.beginTask(
-								WorkbenchMessages.FilteredItemsSelectionDialog_cacheRefreshJob,
+								WorkbenchMessages.get().FilteredItemsSelectionDialog_cacheRefreshJob,
 								totalWork);
 			}
 
@@ -2960,7 +2960,7 @@ public abstract class FilteredItemsSelectionDialog extends
 					subMonitor = new SubProgressMonitor(monitor, 100);
 					subMonitor
 							.beginTask(
-									WorkbenchMessages.FilteredItemsSelectionDialog_cacheRefreshJob_checkDuplicates,
+									WorkbenchMessages.get().FilteredItemsSelectionDialog_cacheRefreshJob_checkDuplicates,
 									5);
 				}
 				HashMap helperMap = new HashMap();
@@ -3006,7 +3006,7 @@ public abstract class FilteredItemsSelectionDialog extends
 			if (monitor != null) {
 				monitor
 						.beginTask(
-								WorkbenchMessages.FilteredItemsSelectionDialog_cacheRefreshJob_getFilteredElements,
+								WorkbenchMessages.get().FilteredItemsSelectionDialog_cacheRefreshJob_getFilteredElements,
 								ticks);
 				if (filters != null) {
 					ticks /= (filters.size() + 2);

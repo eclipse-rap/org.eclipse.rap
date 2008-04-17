@@ -48,7 +48,7 @@ public class WorkingSetNewWizard extends Wizard implements IWorkingSetNewWizard 
         super();
         Assert.isTrue(descriptors != null && descriptors.length > 0);
         this.descriptors= descriptors;
-        setWindowTitle(WorkbenchMessages.WorkingSetNewWizard_title);
+        setWindowTitle(WorkbenchMessages.get().WorkingSetNewWizard_title);
     }
 
     /**

@@ -42,7 +42,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
  * elements are sorted alphabetically. Optionally, the elements can be filtered
  * and duplicate entries can be hidden (folding).
  * 
- * @since 2.0
+ * @since 1.1
  */
 public class FilteredList extends Composite {
 	/**
@@ -563,7 +563,7 @@ public class FilteredList extends Composite {
 		 *            The number of items to update per running.
 		 */
 		public TableUpdateJob(Table table, int count) {
-			super(WorkbenchMessages.FilteredList_UpdateJobName);
+			super(WorkbenchMessages.get().FilteredList_UpdateJobName);
 			setSystem(true);
 			fTable = table;
 			fCount = count;

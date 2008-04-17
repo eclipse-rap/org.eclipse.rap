@@ -45,7 +45,7 @@ import org.eclipse.ui.internal.registry.EditorRegistry;
 /**
  * This class is used to allow the user to select a dialog from the set of
  * internal and external editors.
- * @since 3.3
+ * @since 1.1
  * 
  */
 
@@ -67,7 +67,7 @@ public final class EditorSelectionDialog extends Dialog {
 //RAP [rh] unused code due to changes becauase of external editors not supported
 //	private static final String STORE_ID_INTERNAL_EXTERNAL = "EditorSelectionDialog.STORE_ID_INTERNAL_EXTERNAL";//$NON-NLS-1$
 
-	private String message = WorkbenchMessages.EditorSelection_chooseAnEditor;
+	private String message = WorkbenchMessages.get().EditorSelection_chooseAnEditor;
 
 	// collection of IEditorDescriptor
 	private IEditorDescriptor[] externalEditors;
@@ -141,7 +141,7 @@ public final class EditorSelectionDialog extends Dialog {
 	 */
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
-		shell.setText(WorkbenchMessages.EditorSelection_title);
+		shell.setText(WorkbenchMessages.get().EditorSelection_title);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
 				IWorkbenchHelpContextIds.EDITOR_SELECTION_DIALOG);
 	}

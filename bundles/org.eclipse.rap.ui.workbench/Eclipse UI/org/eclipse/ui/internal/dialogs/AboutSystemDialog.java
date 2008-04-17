@@ -70,7 +70,7 @@ public final class AboutSystemDialog extends ProductInfoDialog {
      */
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(WorkbenchMessages.SystemSummary_title);
+        newShell.setText(WorkbenchMessages.get().SystemSummary_title);
         PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
 				IWorkbenchHelpContextIds.SYSTEM_SUMMARY_DIALOG);
     }
@@ -81,11 +81,11 @@ public final class AboutSystemDialog extends ProductInfoDialog {
     protected void createButtonsForButtonBar(Composite parent) {
         parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        Button button = createButton(parent, BROWSE_ERROR_LOG_BUTTON, WorkbenchMessages.AboutSystemDialog_browseErrorLogName, false);
+        Button button = createButton(parent, BROWSE_ERROR_LOG_BUTTON, WorkbenchMessages.get().AboutSystemDialog_browseErrorLogName, false);
         String filename = Platform.getLogFileLocation().toOSString();
         button.setEnabled(new File(filename).exists());
 
-        createButton(parent, COPY_TO_CLIPBOARD_BUTTON, WorkbenchMessages.AboutSystemDialog_copyToClipboardName, false);
+        createButton(parent, COPY_TO_CLIPBOARD_BUTTON, WorkbenchMessages.get().AboutSystemDialog_copyToClipboardName, false);
 
         new Label(parent, SWT.NONE).setLayoutData(new GridData(
                 GridData.FILL_HORIZONTAL));
@@ -162,8 +162,8 @@ public final class AboutSystemDialog extends ProductInfoDialog {
         	openLink("file:///" + filename); //$NON-NLS-1$
         	return;
         }
-        MessageDialog.openInformation(getShell(), WorkbenchMessages.AboutSystemDialog_noLogTitle, 
-                NLS.bind(WorkbenchMessages.AboutSystemDialog_noLogMessage,  filename ));
+        MessageDialog.openInformation(getShell(), WorkbenchMessages.get().AboutSystemDialog_noLogTitle, 
+                NLS.bind(WorkbenchMessages.get().AboutSystemDialog_noLogMessage,  filename ));
     }
     
     /**

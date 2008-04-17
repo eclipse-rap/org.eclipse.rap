@@ -79,10 +79,10 @@ public class AboutFeaturesDialog extends ProductInfoDialog {
     private Map cachedImages = new HashMap();
 
     private String columnTitles[] = {
-            WorkbenchMessages.AboutFeaturesDialog_provider,
-            WorkbenchMessages.AboutFeaturesDialog_featureName, 
-            WorkbenchMessages.AboutFeaturesDialog_version, 
-            WorkbenchMessages.AboutFeaturesDialog_featureId, 
+            WorkbenchMessages.get().AboutFeaturesDialog_provider,
+            WorkbenchMessages.get().AboutFeaturesDialog_featureName, 
+            WorkbenchMessages.get().AboutFeaturesDialog_version, 
+            WorkbenchMessages.get().AboutFeaturesDialog_featureId, 
     };
 
     private String productName;
@@ -135,8 +135,8 @@ public class AboutFeaturesDialog extends ProductInfoDialog {
 
         AboutBundleGroupData info = (AboutBundleGroupData) items[0].getData();
         if (info == null || !openBrowser(info.getLicenseUrl())) {
-            MessageDialog.openInformation(getShell(), WorkbenchMessages.AboutFeaturesDialog_noInfoTitle, 
-                    WorkbenchMessages.AboutFeaturesDialog_noInformation);
+            MessageDialog.openInformation(getShell(), WorkbenchMessages.get().AboutFeaturesDialog_noInfoTitle, 
+                    WorkbenchMessages.get().AboutFeaturesDialog_noInformation);
         }
     }
 
@@ -156,8 +156,8 @@ public class AboutFeaturesDialog extends ProductInfoDialog {
                 .getBundles();
 
         AboutPluginsDialog d = new AboutPluginsDialog(getShell(), productName,
-                bundles, WorkbenchMessages.AboutFeaturesDialog_pluginInfoTitle, 
-                NLS.bind(WorkbenchMessages.AboutFeaturesDialog_pluginInfoMessage, bundleGroup.getIdentifier()),
+                bundles, WorkbenchMessages.get().AboutFeaturesDialog_pluginInfoTitle, 
+                NLS.bind(WorkbenchMessages.get().AboutFeaturesDialog_pluginInfoMessage, bundleGroup.getIdentifier()),
                 IWorkbenchHelpContextIds.ABOUT_FEATURES_PLUGINS_DIALOG);
         d.open();
     }
@@ -185,7 +185,7 @@ public class AboutFeaturesDialog extends ProductInfoDialog {
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         if (productName != null) {
-			newShell.setText(NLS.bind(WorkbenchMessages.AboutFeaturesDialog_shellTitle,productName));
+			newShell.setText(NLS.bind(WorkbenchMessages.get().AboutFeaturesDialog_shellTitle,productName));
 		}
 
         PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
@@ -203,8 +203,8 @@ public class AboutFeaturesDialog extends ProductInfoDialog {
     protected void createButtonsForButtonBar(Composite parent) {
         parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        moreButton = createButton(parent, MORE_ID, WorkbenchMessages.AboutFeaturesDialog_moreInfo, false);
-        pluginsButton = createButton(parent, PLUGINS_ID, WorkbenchMessages.AboutFeaturesDialog_pluginsInfo, false); 
+        moreButton = createButton(parent, MORE_ID, WorkbenchMessages.get().AboutFeaturesDialog_moreInfo, false);
+        pluginsButton = createButton(parent, PLUGINS_ID, WorkbenchMessages.get().AboutFeaturesDialog_pluginsInfo, false); 
         Label l = new Label(parent, SWT.NONE);
         l.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         GridLayout layout = (GridLayout) parent.getLayout();
@@ -419,7 +419,7 @@ public class AboutFeaturesDialog extends ProductInfoDialog {
 		}
 
         if (getItem() == null) {
-			text.setText(WorkbenchMessages.AboutFeaturesDialog_noInformation);
+			text.setText(WorkbenchMessages.get().AboutFeaturesDialog_noInformation);
 		} else {
             text.setText(getItem().getText());
             text.setCursor(null);

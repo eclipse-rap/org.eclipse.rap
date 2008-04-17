@@ -95,17 +95,17 @@ public abstract class FilteredPreferenceDialog extends PreferenceDialog implemen
 		protected void addFilter(ViewerFilter filter) {
 			viewerFilter = filter;
 			getViewer().addFilter(filter);
-			setInitialText(WorkbenchMessages.FilteredTree_FilterMessage);
+			setInitialText(WorkbenchMessages.get().FilteredTree_FilterMessage);
 			
 			if(filterText != null){
-				setFilterText(WorkbenchMessages.FilteredTree_FilterMessage);
+				setFilterText(WorkbenchMessages.get().FilteredTree_FilterMessage);
 				textChanged();
 			}
 			
 			cachedTitle = getShell().getText();
 			getShell().setText(
 					NLS.bind(
-							WorkbenchMessages.FilteredTree_FilteredDialogTitle, 
+							WorkbenchMessages.get().FilteredTree_FilteredDialogTitle, 
 					cachedTitle));
 		}
 
@@ -406,11 +406,11 @@ public abstract class FilteredPreferenceDialog extends PreferenceDialog implemen
 			} catch (BackingStoreException e) {
 				String msg = e.getMessage();
 				if (msg == null) {
-					msg = WorkbenchMessages.FilteredPreferenceDialog_PreferenceSaveFailed;
+					msg = WorkbenchMessages.get().FilteredPreferenceDialog_PreferenceSaveFailed;
 				}
 				StatusUtil
 						.handleStatus(
-								WorkbenchMessages.PreferencesExportDialog_ErrorDialogTitle
+								WorkbenchMessages.get().PreferencesExportDialog_ErrorDialogTitle
 										+ ": " + msg, e, StatusManager.SHOW, //$NON-NLS-1$
 								getShell());
 			}

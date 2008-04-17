@@ -46,7 +46,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 /**
  * A class to select elements out of a tree structure.
  * 
- * @since 2.0
+ * @since 1.1
  */
 public class CheckedTreeSelectionDialog extends SelectionStatusDialog {
     private CheckboxTreeViewer fViewer;
@@ -59,7 +59,7 @@ public class CheckedTreeSelectionDialog extends SelectionStatusDialog {
 
     private ViewerComparator fComparator;
 
-    private String fEmptyListMessage = WorkbenchMessages.CheckedTreeSelectionDialog_nothing_available; 
+    private String fEmptyListMessage = WorkbenchMessages.get().CheckedTreeSelectionDialog_nothing_available; 
 
     private IStatus fCurrStatus = new Status(IStatus.OK, PlatformUI.PLUGIN_ID,
             0, "", null); //$NON-NLS-1$
@@ -146,7 +146,6 @@ public class CheckedTreeSelectionDialog extends SelectionStatusDialog {
      * Sets the comparator used by the tree viewer.
      * 
      * @param comparator
-     * @since 3.3
      */
     public void setComparator(ViewerComparator comparator){
     	fComparator = comparator;
@@ -357,7 +356,7 @@ public class CheckedTreeSelectionDialog extends SelectionStatusDialog {
         data.grabExcessHorizontalSpace = true;
         composite.setData(data);
         Button selectButton = createButton(buttonComposite,
-                IDialogConstants.SELECT_ALL_ID, WorkbenchMessages.CheckedTreeSelectionDialog_select_all,
+                IDialogConstants.SELECT_ALL_ID, WorkbenchMessages.get().CheckedTreeSelectionDialog_select_all,
                 false);
         SelectionListener listener = new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -374,7 +373,7 @@ public class CheckedTreeSelectionDialog extends SelectionStatusDialog {
         };
         selectButton.addSelectionListener(listener);
         Button deselectButton = createButton(buttonComposite,
-                IDialogConstants.DESELECT_ALL_ID, WorkbenchMessages.CheckedTreeSelectionDialog_deselect_all,
+                IDialogConstants.DESELECT_ALL_ID, WorkbenchMessages.get().CheckedTreeSelectionDialog_deselect_all,
                 false);
         listener = new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {

@@ -39,6 +39,7 @@ import org.eclipse.ui.IWorkbenchPropertyPage;
  * </p>
  * 
  * @see IWorkbenchPropertyPage
+ * @since 1.0
  */
 public abstract class PropertyPage extends PreferencePage implements
         IWorkbenchPropertyPage {

@@ -33,7 +33,7 @@ import org.eclipse.ui.internal.MessageLine;
  * an error, warning or ok. The OK button is enabled or disabled depending
  * on the status.
  * 
- * @since 2.0
+ * @since 1.1
  */
 public abstract class SelectionStatusDialog extends SelectionDialog {
 

@@ -183,7 +183,7 @@ public abstract class ImportExportPage extends WorkbenchWizardSelectionPage{
 	 */
 	protected ImportExportPage(IWorkbench aWorkbench, IStructuredSelection currentSelection){
 		super("importExportPage", aWorkbench, currentSelection, null, null);	//$NON-NLS-1$
-		setTitle(WorkbenchMessages.Select);
+		setTitle(WorkbenchMessages.get().Select);
 	}
 	
 	/*

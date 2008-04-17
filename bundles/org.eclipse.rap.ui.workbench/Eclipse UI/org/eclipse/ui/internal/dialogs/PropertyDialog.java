@@ -66,13 +66,13 @@ public class PropertyDialog extends FilteredPreferenceDialog {
 		String name = getName(element);
 		if (!pages.hasNext()) {
 			MessageDialog.openInformation(shell,
-					WorkbenchMessages.PropertyDialog_messageTitle, NLS.bind(
-							WorkbenchMessages.PropertyDialog_noPropertyMessage,
+					WorkbenchMessages.get().PropertyDialog_messageTitle, NLS.bind(
+							WorkbenchMessages.get().PropertyDialog_noPropertyMessage,
 							name));
 			return null;
 		}
 		title = NLS
-				.bind(WorkbenchMessages.PropertyDialog_propertyMessage, name);
+				.bind(WorkbenchMessages.get().PropertyDialog_propertyMessage, name);
 		PropertyDialog propertyDialog = new PropertyDialog(shell, pageManager,
 				new StructuredSelection(element));
 

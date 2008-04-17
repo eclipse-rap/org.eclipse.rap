@@ -57,7 +57,7 @@ import com.ibm.icu.text.Collator;
  * <strong>Please note that this API is experimental and may change before 3.4
  * ships.</strong>
  * 
- * @since 3.4
+ * @since 1.1
  * 
  */
 public class WorkingSetConfigurationBlock {
@@ -156,11 +156,11 @@ public class WorkingSetConfigurationBlock {
 		dialogSettings = settings;
 		selectionHistory = loadSelectionHistory(settings, workingSetIds);
 		
-		this.addButtonLabel = addButtonLabel == null ? WorkbenchMessages.WorkingSetGroup_EnableWorkingSet_button
+		this.addButtonLabel = addButtonLabel == null ? WorkbenchMessages.get().WorkingSetGroup_EnableWorkingSet_button
 				: addButtonLabel;
-		this.comboLabel = comboLabel == null ? WorkbenchMessages.WorkingSetConfigurationBlock_WorkingSetText_name
+		this.comboLabel = comboLabel == null ? WorkbenchMessages.get().WorkingSetConfigurationBlock_WorkingSetText_name
 				: comboLabel;
-		this.selectLabel = selectLabel == null ? WorkbenchMessages.WorkingSetConfigurationBlock_SelectWorkingSet_button
+		this.selectLabel = selectLabel == null ? WorkbenchMessages.get().WorkingSetConfigurationBlock_SelectWorkingSet_button
 				: selectLabel;
 	}
 	
@@ -300,7 +300,7 @@ public class WorkingSetConfigurationBlock {
 						parent.getShell(), workingSetTypeIds,
 						selectedWorkingSets, false);
 				dialog
-						.setMessage(WorkbenchMessages.WorkingSetGroup_WorkingSetSelection_message);
+						.setMessage(WorkbenchMessages.get().WorkingSetGroup_WorkingSetSelection_message);
 
 				if (dialog.open() == Window.OK) {
 					IWorkingSet[] result = dialog.getSelection();

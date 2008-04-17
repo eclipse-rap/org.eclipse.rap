@@ -71,7 +71,7 @@ public class ImportWizard extends Wizard {
      */
     public void addPages() {
         addPage(new SelectionPage(this.workbench, this.selection,
-                getAvailableImportWizards(), WorkbenchMessages.ImportWizard_selectSource)); 
+                getAvailableImportWizards(), WorkbenchMessages.get().ImportWizard_selectSource)); 
     }
 
     /**
@@ -102,7 +102,7 @@ public class ImportWizard extends Wizard {
         this.workbench = aWorkbench;
         this.selection = currentSelection;
 
-        setWindowTitle(WorkbenchMessages.ImportWizard_title); 
+        setWindowTitle(WorkbenchMessages.get().ImportWizard_title); 
         setDefaultPageImageDescriptor(WorkbenchImages
                 .getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_IMPORT_WIZ));
         setNeedsProgressMonitor(true);

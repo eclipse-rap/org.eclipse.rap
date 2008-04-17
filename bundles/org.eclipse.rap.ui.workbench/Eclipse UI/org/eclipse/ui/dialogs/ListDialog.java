@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Table;
  * <code>IStructuredContentProvider</code> to provide the elements and
  * <code>ILabelProvider</code> to provide their labels.
  * 
- * @since 2.1
+ * @since 1.0
  */
 public class ListDialog extends SelectionDialog {
     private IStructuredContentProvider fContentProvider;

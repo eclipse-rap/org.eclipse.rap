@@ -25,7 +25,7 @@ import org.eclipse.ui.IWorkingSet;
  * This interface is not intended to be implemented by clients.
  * </p>
  * @see org.eclipse.ui.IWorkingSetManager
- * @since 2.1
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IWorkingSetEditWizard extends IWizard {

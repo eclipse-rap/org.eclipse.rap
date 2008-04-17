@@ -12,7 +12,7 @@ package org.eclipse.ui.internal.dialogs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,8 +22,8 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+//import org.eclipse.swt.events.DisposeEvent;
+//import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -93,9 +93,10 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 
     private List elements = new ArrayList();
 
-    private HashMap imageCache = new HashMap(11);
-
-    private HashMap disabledImageCache = new HashMap(11);
+// RAP [rh] imageCaches are unused    
+//    private HashMap imageCache = new HashMap(11);
+//
+//    private HashMap disabledImageCache = new HashMap(11);
 
     private boolean reverse = false;
 
@@ -133,7 +134,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
     public WorkbenchEditorsDialog(IWorkbenchWindow window) {
         super(window.getShell());
         this.window = window;
-        setTitle(WorkbenchMessages.WorkbenchEditorsDialog_title); 
+        setTitle(WorkbenchMessages.get().WorkbenchEditorsDialog_title); 
 
         IDialogSettings s = getDialogSettings();
         if (s.get(ALLPERSP) == null) {
@@ -178,10 +179,10 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
         // OK button will be used later (in createDialogArea) to activate
         // the selected editor.
         createButton(parent, IDialogConstants.CANCEL_ID,
-                IDialogConstants.CANCEL_LABEL, false);
+                IDialogConstants.get().CANCEL_LABEL, false);
         Button button = getButton(IDialogConstants.CANCEL_ID);
         if (button != null) {
-			button.setText(WorkbenchMessages.WorkbenchEditorsDialog_close);
+			button.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_close);
 		}
 
     }
@@ -222,7 +223,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 
         //Label over the table
         Label l = new Label(dialogArea, SWT.NONE);
-        l.setText(WorkbenchMessages.WorkbenchEditorsDialog_label); 
+        l.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_label); 
         l.setFont(font);
         l.setLayoutData(new CellData().align(SWT.FILL, SWT.CENTER));
         //Table showing the editors name, full path and perspective
@@ -261,12 +262,12 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
         //Name column
         TableColumn tc = new TableColumn(editorsTable, SWT.NONE);
         tc.setResizable(true);
-        tc.setText(WorkbenchMessages.WorkbenchEditorsDialog_name);
+        tc.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_name);
         tc.addSelectionListener(headerListener);
         //Full path column
         tc = new TableColumn(editorsTable, SWT.NONE);
         tc.setResizable(true);
-        tc.setText(WorkbenchMessages.WorkbenchEditorsDialog_path); 
+        tc.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_path); 
         tc.addSelectionListener(headerListener);
 
         // A composite for selection option buttons
@@ -279,7 +280,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 
         //Select clean editors button
         selectClean = new Button(selectionButtons, SWT.PUSH);
-        selectClean.setText(WorkbenchMessages.WorkbenchEditorsDialog_selectClean); 
+        selectClean.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_selectClean); 
         selectClean.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 editorsTable.setSelection(selectClean(editorsTable.getItems()));
@@ -291,7 +292,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 
         //Invert selection button
         invertSelection = new Button(selectionButtons, SWT.PUSH);
-        invertSelection.setText(WorkbenchMessages.WorkbenchEditorsDialog_invertSelection); 
+        invertSelection.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_invertSelection); 
         invertSelection.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 editorsTable.setSelection(invertedSelection(editorsTable
@@ -304,7 +305,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 
         //Select all button
         allSelection = new Button(selectionButtons, SWT.PUSH);
-        allSelection.setText(WorkbenchMessages.WorkbenchEditorsDialog_allSelection); 
+        allSelection.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_allSelection); 
         allSelection.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 editorsTable.setSelection(editorsTable.getItems());
@@ -323,12 +324,12 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
         actionButtons.setLayout(actLayout);
 
         // Activate selected editor button
-        createButton(actionButtons, IDialogConstants.OK_ID, WorkbenchMessages.WorkbenchEditorsDialog_activate, 
+        createButton(actionButtons, IDialogConstants.OK_ID, WorkbenchMessages.get().WorkbenchEditorsDialog_activate, 
                 true);
 
         //Close selected editors button
         closeSelected = new Button(actionButtons, SWT.PUSH);
-        closeSelected.setText(WorkbenchMessages.WorkbenchEditorsDialog_closeSelected);
+        closeSelected.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_closeSelected);
         closeSelected.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 closeItems(editorsTable.getSelection());
@@ -339,7 +340,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 
         //Save selected editors button
         saveSelected = new Button(actionButtons, SWT.PUSH);
-        saveSelected.setText(WorkbenchMessages.WorkbenchEditorsDialog_saveSelected); 
+        saveSelected.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_saveSelected); 
         saveSelected.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 saveItems(editorsTable.getSelection());
@@ -350,7 +351,7 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
 
         //Show only active perspective button
         final Button showAllPerspButton = new Button(dialogArea, SWT.CHECK);
-        showAllPerspButton.setText(WorkbenchMessages.WorkbenchEditorsDialog_showAllPersp);
+        showAllPerspButton.setText(WorkbenchMessages.get().WorkbenchEditorsDialog_showAllPersp);
         showAllPerspButton.setSelection(showAllPersp);
         showAllPerspButton.setFont(font);
         setButtonLayoutData(showAllPerspButton);
@@ -373,20 +374,21 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
                 okPressed();
             }
         });
-        editorsTable.addDisposeListener(new DisposeListener() {
-            public void widgetDisposed(DisposeEvent e) {
-                for (Iterator images = imageCache.values().iterator(); images
-                        .hasNext();) {
-                    Image i = (Image) images.next();
-                    i.dispose();
-                }
-                for (Iterator images = disabledImageCache.values().iterator(); images
-                        .hasNext();) {
-                    Image i = (Image) images.next();
-                    i.dispose();
-                }
-            }
-        });
+// RAP [rh] disposeListener unnecessary as it only disposes images        
+//        editorsTable.addDisposeListener(new DisposeListener() {
+//            public void widgetDisposed(DisposeEvent e) {
+//                for (Iterator images = imageCache.values().iterator(); images
+//                        .hasNext();) {
+//                    Image i = (Image) images.next();
+//                    i.dispose();
+//                }
+//                for (Iterator images = disabledImageCache.values().iterator(); images
+//                        .hasNext();) {
+//                    Image i = (Image) images.next();
+//                    i.dispose();
+//                }
+//            }
+//        });
         editorsTable.setFocus();
         applyDialogFont(dialogArea);
         return dialogArea;
@@ -505,7 +507,15 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
      */
     private void updateItem(TableItem item, Adapter editor) {
         item.setData(editor);
-        item.setText(editor.getText());
+// RAP [rh] workaround for missing TableItem#setText(String[])        
+//        item.setText(editor.getText());
+        String[] strings = editor.getText();
+        for( int i = 0; i < strings.length; i++ ) {
+          String string = strings[ i ];
+          if( string != null )
+            item.setText( i, string );
+        }
+// RAP [rh] end workaround         
         Image images[] = editor.getImage();
         for (int i = 0; i < images.length; i++) {
             if (images[i] != null) {
@@ -734,17 +744,18 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
                         // image = registry.getDefaultEditor().getImageDescriptor();
                     }
                 }
-                if (image != null) {
-                    images[0] = (Image) disabledImageCache.get(image);
-                    if (images[0] == null) {
-                        Image enabled = image.createImage();
-                        Image disabled = new Image(editorsTable.getDisplay(),
-                                enabled, SWT.IMAGE_DISABLE);
-                        enabled.dispose();
-                        disabledImageCache.put(image, disabled);
-                        images[0] = disabled;
-                    }
-                }
+// RAP [rh] missing support to create disabled images on the fly                
+//                if (image != null) {
+//                    images[0] = (Image) disabledImageCache.get(image);
+//                    if (images[0] == null) {
+//                        Image enabled = image.createImage();
+//                        Image disabled = new Image(editorsTable.getDisplay(),
+//                                enabled, SWT.IMAGE_DISABLE);
+//                        enabled.dispose();
+//                        disabledImageCache.put(image, disabled);
+//                        images[0] = disabled;
+//                    }
+//                }
             }
             return images;
         }

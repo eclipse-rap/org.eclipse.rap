@@ -108,8 +108,8 @@ public class SimpleWorkingSetSelectionDialog extends AbstractWorkingSetDialog {
 			boolean canEdit) {
 		super(shell, workingSetTypeIds, canEdit);
 		this.initialSelection = selectedWorkingSets;
-		setTitle(WorkbenchMessages.WorkingSetSelectionDialog_title_multiSelect);
-		setMessage(WorkbenchMessages.WorkingSetSelectionDialog_message_multiSelect);
+		setTitle(WorkbenchMessages.get().WorkingSetSelectionDialog_title_multiSelect);
+		setMessage(WorkbenchMessages.get().WorkingSetSelectionDialog_message_multiSelect);
 	}
 
 	protected Control createDialogArea(Composite parent) {

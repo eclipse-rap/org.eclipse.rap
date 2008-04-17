@@ -69,7 +69,7 @@ public class WorkingSetTypePage extends WizardPage {
 	 */
 	public WorkingSetTypePage(WorkingSetDescriptor[] descriptors) {
 		super(
-				"workingSetTypeSelectionPage", WorkbenchMessages.WorkingSetTypePage_description, WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_WORKINGSET_WIZ)); //$NON-NLS-1$ 
+				"workingSetTypeSelectionPage", WorkbenchMessages.get().WorkingSetTypePage_description, WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_WORKINGSET_WIZ)); //$NON-NLS-1$ 
 		this.descriptors = descriptors;
 	}
 
@@ -97,7 +97,7 @@ public class WorkingSetTypePage extends WizardPage {
         PlatformUI.getWorkbench().getHelpSystem().setHelp(composite,
 				IWorkbenchHelpContextIds.WORKING_SET_TYPE_PAGE);
         Label typesLabel = new Label(composite, SWT.NONE);
-        typesLabel.setText(WorkbenchMessages.WorkingSetTypePage_typesLabel);
+        typesLabel.setText(WorkbenchMessages.get().WorkingSetTypePage_typesLabel);
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         typesLabel.setLayoutData(data);
         typesLabel.setFont(font);

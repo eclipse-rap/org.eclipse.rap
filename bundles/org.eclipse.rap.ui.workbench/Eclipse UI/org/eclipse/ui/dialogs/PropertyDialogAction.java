@@ -82,13 +82,12 @@ public class PropertyDialogAction extends SelectionProviderAction {
      * @param provider
      *            the selection provider whose elements the property dialog will
      *            describe
-     * @since 3.1
      */
     public PropertyDialogAction(IShellProvider shell, ISelectionProvider provider) {
-        super(provider, WorkbenchMessages.PropertyDialog_text); 
+        super(provider, WorkbenchMessages.get().PropertyDialog_text); 
         Assert.isNotNull(shell);
         this.shellProvider = shell;
-        setToolTipText(WorkbenchMessages.PropertyDialog_toolTip); 
+        setToolTipText(WorkbenchMessages.get().PropertyDialog_toolTip); 
         PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
                 IWorkbenchHelpContextIds.PROPERTY_DIALOG_ACTION);
     }

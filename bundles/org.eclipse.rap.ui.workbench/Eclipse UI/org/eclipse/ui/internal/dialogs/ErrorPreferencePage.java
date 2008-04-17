@@ -35,7 +35,7 @@ public class ErrorPreferencePage extends EmptyPreferencePage {
         text.setForeground(JFaceColors.getErrorText(text.getDisplay()));
         text.setBackground(text.getDisplay().getSystemColor(
                 SWT.COLOR_WIDGET_BACKGROUND));
-        text.setText(WorkbenchMessages.ErrorPreferencePage_errorMessage); 
+        text.setText(WorkbenchMessages.get().ErrorPreferencePage_errorMessage); 
         return text;
     }
 }

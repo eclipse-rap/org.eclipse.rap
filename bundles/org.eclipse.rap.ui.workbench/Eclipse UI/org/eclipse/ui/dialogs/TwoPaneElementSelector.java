@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.TableItem;
  * A list selection dialog with two panes. Duplicated entries will be folded
  * together and are displayed in the lower pane (qualifier).
  * 
- * @since 2.0
+ * @since 1.1
  */
 public class TwoPaneElementSelector extends AbstractElementListSelectionDialog {
     private String fUpperListLabel;

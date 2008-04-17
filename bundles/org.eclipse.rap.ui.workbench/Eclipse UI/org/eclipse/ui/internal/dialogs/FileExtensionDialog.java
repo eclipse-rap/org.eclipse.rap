@@ -62,11 +62,11 @@ public class FileExtensionDialog extends TitleAreaDialog {
      * @param parentShell the parent shell
      */
     public FileExtensionDialog(Shell parentShell) {
-		this(parentShell, WorkbenchMessages.FileExtension_shellTitle,
+		this(parentShell, WorkbenchMessages.get().FileExtension_shellTitle,
 				IWorkbenchHelpContextIds.FILE_EXTENSION_DIALOG,
-				WorkbenchMessages.FileExtension_dialogTitle,
-				WorkbenchMessages.FileExtension_fileTypeMessage,
-				WorkbenchMessages.FileExtension_fileTypeLabel);
+				WorkbenchMessages.get().FileExtension_dialogTitle,
+				WorkbenchMessages.get().FileExtension_fileTypeMessage,
+				WorkbenchMessages.get().FileExtension_fileTypeLabel);
 	}
     
     /**
@@ -166,7 +166,7 @@ public class FileExtensionDialog extends TitleAreaDialog {
         int index = filename.lastIndexOf('.');
         if (index == filename.length() - 1) {
             if (index == 0 || (index == 1 && filename.charAt(0) == '*')) {
-                setErrorMessage(WorkbenchMessages.FileExtension_extensionEmptyMessage); 
+                setErrorMessage(WorkbenchMessages.get().FileExtension_extensionEmptyMessage); 
                 return false;
             }
         }
@@ -178,15 +178,15 @@ public class FileExtensionDialog extends TitleAreaDialog {
         index = filename.indexOf('*');
         if (index > -1) {
             if (filename.length() == 1) {
-                setErrorMessage(WorkbenchMessages.FileExtension_extensionEmptyMessage); 
+                setErrorMessage(WorkbenchMessages.get().FileExtension_extensionEmptyMessage); 
                 return false;
             }
             if (index != 0 || filename.charAt(1) != '.') {
-                setErrorMessage(WorkbenchMessages.FileExtension_fileNameInvalidMessage);
+                setErrorMessage(WorkbenchMessages.get().FileExtension_fileNameInvalidMessage);
                 return false;
             }
             if (filename.length() > index && filename.indexOf('*', index + 1) != -1) {
-            	setErrorMessage(WorkbenchMessages.FileExtension_fileNameInvalidMessage); 
+            	setErrorMessage(WorkbenchMessages.get().FileExtension_fileNameInvalidMessage); 
             	return false;
             }
         }

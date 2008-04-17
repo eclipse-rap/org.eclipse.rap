@@ -223,7 +223,7 @@ class PreferencePageHistory {
 			public boolean isEnabled() {
 				boolean enabled = historyIndex > 0;
 				if (enabled) {
-					setToolTipText(NLS.bind(WorkbenchMessages.NavigationHistoryAction_backward_toolTipName,getHistoryEntry(historyIndex - 1).getLabel() ));
+					setToolTipText(NLS.bind(WorkbenchMessages.get().NavigationHistoryAction_backward_toolTipName,getHistoryEntry(historyIndex - 1).getLabel() ));
 				} 
 				return enabled;
 			}
@@ -237,7 +237,7 @@ class PreferencePageHistory {
 				}
 			}
 		};
-		backward.setText(WorkbenchMessages.NavigationHistoryAction_backward_text); 
+		backward.setText(WorkbenchMessages.get().NavigationHistoryAction_backward_text); 
 		backward
 				.setActionDefinitionId("org.eclipse.ui.navigate.backwardHistory"); //$NON-NLS-1$
 		backward.setImageDescriptor(WorkbenchPlugin.getDefault()
@@ -257,7 +257,7 @@ class PreferencePageHistory {
 			public boolean isEnabled() {
 				boolean enabled = historyIndex < history.size() - 1;
 				if (enabled) {
-					setToolTipText(NLS.bind(WorkbenchMessages.NavigationHistoryAction_forward_toolTipName, getHistoryEntry(historyIndex + 1).getLabel() ));
+					setToolTipText(NLS.bind(WorkbenchMessages.get().NavigationHistoryAction_forward_toolTipName, getHistoryEntry(historyIndex + 1).getLabel() ));
 				} 
 				return enabled;
 			}
@@ -272,7 +272,7 @@ class PreferencePageHistory {
 				}
 			}
 		};
-		forward.setText(WorkbenchMessages.NavigationHistoryAction_forward_text); 
+		forward.setText(WorkbenchMessages.get().NavigationHistoryAction_forward_text); 
 		forward.setActionDefinitionId("org.eclipse.ui.navigate.forwardHistory"); //$NON-NLS-1$
 		forward.setImageDescriptor(WorkbenchPlugin.getDefault()
 				.getSharedImages().getImageDescriptor(

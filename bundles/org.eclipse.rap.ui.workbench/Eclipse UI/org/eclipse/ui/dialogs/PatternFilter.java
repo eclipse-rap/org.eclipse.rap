@@ -32,7 +32,7 @@ import com.ibm.icu.text.BreakIterator;
  * structure to be realized.
  *  
  * @see org.eclipse.ui.dialogs.FilteredTree  
- * @since 3.2
+ * @since 1.0
  */
 public class PatternFilter extends ViewerFilter {
 	/*

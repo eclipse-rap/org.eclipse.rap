@@ -20,8 +20,6 @@ import org.eclipse.ui.internal.misc.StringMatcher;
  * provided for each of the methods above, that clients can override if they
  * wish.
  * </p>
- * 
- * @since 3.3
  */
 public class SearchPattern {
 

@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 /**
  * Used in selection dialogs to validate selections
  * 
- * @since 2.0
+ * @since 1.1
  */
 public interface ISelectionStatusValidator {
 

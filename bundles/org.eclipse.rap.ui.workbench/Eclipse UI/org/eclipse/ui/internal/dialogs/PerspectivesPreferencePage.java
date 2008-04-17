@@ -95,17 +95,17 @@ public class PerspectivesPreferencePage extends PreferencePage implements
 	private Button openFastButton;
     
 	// labels
-	private final String OVM_TITLE = WorkbenchMessages.OpenViewMode_title;
+	private final String OVM_TITLE = WorkbenchMessages.get().OpenViewMode_title;
 
-	private final String OVM_EMBED = WorkbenchMessages.OpenViewMode_embed;
+	private final String OVM_EMBED = WorkbenchMessages.get().OpenViewMode_embed;
 
-	private final String OVM_FAST = WorkbenchMessages.OpenViewMode_fast; 
+	private final String OVM_FAST = WorkbenchMessages.get().OpenViewMode_fast; 
 
-	private final String OPM_TITLE = WorkbenchMessages.OpenPerspectiveMode_optionsTitle; 
+	private final String OPM_TITLE = WorkbenchMessages.get().OpenPerspectiveMode_optionsTitle; 
 
-	private final String OPM_SAME_WINDOW = WorkbenchMessages.OpenPerspectiveMode_sameWindow; 
+	private final String OPM_SAME_WINDOW = WorkbenchMessages.get().OpenPerspectiveMode_sameWindow; 
 
-	private final String OPM_NEW_WINDOW = WorkbenchMessages.OpenPerspectiveMode_newWindow; 
+	private final String OPM_NEW_WINDOW = WorkbenchMessages.get().OpenPerspectiveMode_newWindow; 
 
 	/**
 	 * <code>Comparator</code> to compare two perspective descriptors
@@ -274,7 +274,7 @@ public class PerspectivesPreferencePage extends PreferencePage implements
 
 		// Add the label
 		Label label = new Label(perspectivesComponent, SWT.LEFT);
-		label.setText(WorkbenchMessages.PerspectivesPreference_available); 
+		label.setText(WorkbenchMessages.get().PerspectivesPreference_available); 
 		GridData data = new GridData();
 		data.horizontalSpan = 2;
 		label.setLayoutData(data);
@@ -311,8 +311,8 @@ public class PerspectivesPreferencePage extends PreferencePage implements
 		buttonBar.setLayoutData(data);
 		
 		//Add note label
-		String NOTE_LABEL = WorkbenchMessages.Preference_note;
-		String REVERT_NOTE = WorkbenchMessages.RevertPerspective_note; 
+		String NOTE_LABEL = WorkbenchMessages.get().Preference_note;
+		String REVERT_NOTE = WorkbenchMessages.get().RevertPerspective_note; 
 		Composite noteComposite = createNoteComposite(font, parent,
                 NOTE_LABEL, REVERT_NOTE);
         GridData noteData = new GridData();
@@ -387,14 +387,14 @@ public class PerspectivesPreferencePage extends PreferencePage implements
 		composite.setFont(parent.getFont());
 
 		// Add the buttons to the button bar.
-		setDefaultButton = createVerticalButton(composite, WorkbenchMessages.PerspectivesPreference_MakeDefault, false); 
-		setDefaultButton.setToolTipText(WorkbenchMessages.PerspectivesPreference_MakeDefaultTip); 
+		setDefaultButton = createVerticalButton(composite, WorkbenchMessages.get().PerspectivesPreference_MakeDefault, false); 
+		setDefaultButton.setToolTipText(WorkbenchMessages.get().PerspectivesPreference_MakeDefaultTip); 
 
-		revertButton = createVerticalButton(composite, WorkbenchMessages.PerspectivesPreference_Reset, false); 
-		revertButton.setToolTipText(WorkbenchMessages.PerspectivesPreference_ResetTip); 
+		revertButton = createVerticalButton(composite, WorkbenchMessages.get().PerspectivesPreference_Reset, false); 
+		revertButton.setToolTipText(WorkbenchMessages.get().PerspectivesPreference_ResetTip); 
 
-		deleteButton = createVerticalButton(composite, WorkbenchMessages.PerspectivesPreference_Delete, false); 
-		deleteButton.setToolTipText(WorkbenchMessages.PerspectivesPreference_DeleteTip); 
+		deleteButton = createVerticalButton(composite, WorkbenchMessages.get().PerspectivesPreference_Delete, false); 
+		deleteButton.setToolTipText(WorkbenchMessages.get().PerspectivesPreference_DeleteTip); 
 		updateButtons();
 
 		return composite;
@@ -505,8 +505,8 @@ public class PerspectivesPreferencePage extends PreferencePage implements
 						if (!MessageDialog
 								.openQuestion(
 										getShell(),
-										WorkbenchMessages.PerspectivesPreference_perspectiveopen_title,
-										NLS.bind(WorkbenchMessages.PerspectivesPreference_perspectiveopen_message, desc.getLabel()))) {
+										WorkbenchMessages.get().PerspectivesPreference_perspectiveopen_title,
+										NLS.bind(WorkbenchMessages.get().PerspectivesPreference_perspectiveopen_message, desc.getLabel()))) {
 							return true;
 						}
 				}
@@ -617,7 +617,7 @@ public class PerspectivesPreferencePage extends PreferencePage implements
         }
         String label=persp.getLabel();
         if (persp.getId().equals(defaultPerspectiveId)){
-			label = NLS.bind(WorkbenchMessages.PerspectivesPreference_defaultLabel, label ); 
+			label = NLS.bind(WorkbenchMessages.get().PerspectivesPreference_defaultLabel, label ); 
     	    
 		}
         item.setText(label);

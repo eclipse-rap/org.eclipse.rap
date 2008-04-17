@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Assert;
  * Quick sort to sort key-value pairs. The keys and arrays are specified
  * in separate arrays.
  * 
- * @since 2.0
+ * @since 1.1
  */
 /* package */class TwoArrayQuickSorter {
 

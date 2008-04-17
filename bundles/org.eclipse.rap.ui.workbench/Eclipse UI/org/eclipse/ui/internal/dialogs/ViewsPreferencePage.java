@@ -101,25 +101,25 @@ public class ViewsPreferencePage extends PreferencePage implements
 
 	private Button perspTopRightButton;
 
-	static final String EDITORS_TITLE = WorkbenchMessages.ViewsPreference_editors;
+	static final String EDITORS_TITLE = WorkbenchMessages.get().ViewsPreference_editors;
 
-	private static final String EDITORS_TOP_TITLE = WorkbenchMessages.ViewsPreference_editors_top;
+	private static final String EDITORS_TOP_TITLE = WorkbenchMessages.get().ViewsPreference_editors_top;
 
-	private static final String EDITORS_BOTTOM_TITLE = WorkbenchMessages.ViewsPreference_editors_bottom;
+	private static final String EDITORS_BOTTOM_TITLE = WorkbenchMessages.get().ViewsPreference_editors_bottom;
 
-	private static final String VIEWS_TITLE = WorkbenchMessages.ViewsPreference_views;
+	private static final String VIEWS_TITLE = WorkbenchMessages.get().ViewsPreference_views;
 
-	private static final String VIEWS_TOP_TITLE = WorkbenchMessages.ViewsPreference_views_top;
+	private static final String VIEWS_TOP_TITLE = WorkbenchMessages.get().ViewsPreference_views_top;
 
-	private static final String VIEWS_BOTTOM_TITLE = WorkbenchMessages.ViewsPreference_views_bottom;
+	private static final String VIEWS_BOTTOM_TITLE = WorkbenchMessages.get().ViewsPreference_views_bottom;
 
-	private static final String PERSP_TITLE = WorkbenchMessages.ViewsPreference_perspectiveBar;
+	private static final String PERSP_TITLE = WorkbenchMessages.get().ViewsPreference_perspectiveBar;
 
-	private static final String PERSP_LEFT_TITLE = WorkbenchMessages.ViewsPreference_perspectiveBar_left;
+	private static final String PERSP_LEFT_TITLE = WorkbenchMessages.get().ViewsPreference_perspectiveBar_left;
 
-	private static final String PERSP_TOP_LEFT_TITLE = WorkbenchMessages.ViewsPreference_perspectiveBar_topLeft;
+	private static final String PERSP_TOP_LEFT_TITLE = WorkbenchMessages.get().ViewsPreference_perspectiveBar_topLeft;
 
-	private static final String PERSP_TOP_RIGHT_TITLE = WorkbenchMessages.ViewsPreference_perspectiveBar_topRight;
+	private static final String PERSP_TOP_RIGHT_TITLE = WorkbenchMessages.get().ViewsPreference_perspectiveBar_topRight;
 
 	// These constants aren't my favourite idea, but to get this preference done
 	// for M9... A better solution might be to have the presentation factory set
@@ -248,13 +248,13 @@ public class ViewsPreferencePage extends PreferencePage implements
 
 		useColoredLabels = createCheckButton(
 				composite,
-				WorkbenchMessages.ViewsPreference_useColoredLabels,
+				WorkbenchMessages.get().ViewsPreference_useColoredLabels,
 				apiStore
 						.getBoolean(IWorkbenchPreferenceConstants.USE_COLORED_LABELS));
 	}
 
 	private void createThemeCombo(Composite composite) {
-		new Label(composite, SWT.NONE).setText(WorkbenchMessages.ViewsPreference_currentTheme);
+		new Label(composite, SWT.NONE).setText(WorkbenchMessages.get().ViewsPreference_currentTheme);
 		themeCombo = new Combo(composite, SWT.READ_ONLY);
 		themeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		themeCombo.addSelectionListener(new SelectionAdapter() {
@@ -275,7 +275,7 @@ public class ViewsPreferencePage extends PreferencePage implements
 	 */
 	private void createThemeDescriptionText(Composite parent) {
 		new Label(parent, SWT.NONE)
-				.setText(WorkbenchMessages.ViewsPreference_currentThemeDescription);
+				.setText(WorkbenchMessages.get().ViewsPreference_currentThemeDescription);
 
 		themeDescriptionText = new Text(parent, SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.READ_ONLY | SWT.BORDER | SWT.WRAP);
@@ -337,7 +337,7 @@ public class ViewsPreferencePage extends PreferencePage implements
 			}
 		}
 			
-		overridePresButton = createCheckButton(parent, WorkbenchMessages.ViewsPreference_override, override);
+		overridePresButton = createCheckButton(parent, WorkbenchMessages.get().ViewsPreference_override, override);
 		overridePresButton.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
 				updateOverrideState(overridePresButton.getSelection());
@@ -363,7 +363,7 @@ public class ViewsPreferencePage extends PreferencePage implements
 	}
 
 	private void createPresentationCombo(Composite parent) {
-		new Label(parent, SWT.NONE).setText(WorkbenchMessages.ViewsPreference_currentPresentation);
+		new Label(parent, SWT.NONE).setText(WorkbenchMessages.get().ViewsPreference_currentPresentation);
 
 		presentationCombo = new Combo(parent, SWT.READ_ONLY);
 		presentationCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -604,7 +604,7 @@ public class ViewsPreferencePage extends PreferencePage implements
 			} else {
 				presentationCombo
 					.add(NLS.bind(
-						WorkbenchMessages.ViewsPreference_currentPresentationFormat,
+						WorkbenchMessages.get().ViewsPreference_currentPresentationFormat,
 						name));
 			}
 		}
@@ -846,7 +846,7 @@ public class ViewsPreferencePage extends PreferencePage implements
 				.getTheme(IThemeManager.DEFAULT_THEME).getLabel();
 		if (currentTheme.getId().equals(IThemeManager.DEFAULT_THEME)) {
 			defaultThemeString = NLS.bind(
-					WorkbenchMessages.ViewsPreference_currentThemeFormat,
+					WorkbenchMessages.get().ViewsPreference_currentThemeFormat,
 					new Object[] { defaultThemeString });
 		}
 		themeCombo.add(defaultThemeString);
@@ -857,7 +857,7 @@ public class ViewsPreferencePage extends PreferencePage implements
 			themeString = descs[i].getName();
 			if (descs[i].getId().equals(currentTheme.getId())) {
 				themeString = NLS.bind(
-						WorkbenchMessages.ViewsPreference_currentThemeFormat,
+						WorkbenchMessages.get().ViewsPreference_currentThemeFormat,
 						new Object[] { themeString });
 			}
 			if (themeToSelect.equals(descs[i].getId())) {
@@ -877,7 +877,7 @@ public class ViewsPreferencePage extends PreferencePage implements
 
 		showTextOnPerspectiveBar = createCheckButton(
 				composite,
-				WorkbenchMessages.WorkbenchPreference_showTextOnPerspectiveBar,
+				WorkbenchMessages.get().WorkbenchPreference_showTextOnPerspectiveBar,
 				apiStore
 						.getBoolean(IWorkbenchPreferenceConstants.SHOW_TEXT_ON_PERSPECTIVE_BAR));
 	}
@@ -891,7 +891,7 @@ public class ViewsPreferencePage extends PreferencePage implements
 
 		showTraditionalStyleTabs = createCheckButton(
 				composite,
-				WorkbenchMessages.ViewsPreference_traditionalTabs,
+				WorkbenchMessages.get().ViewsPreference_traditionalTabs,
 				apiStore
 						.getBoolean(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS));
 	}
@@ -901,7 +901,7 @@ public class ViewsPreferencePage extends PreferencePage implements
 
 		enableAnimations = createCheckButton(
 				composite,
-				WorkbenchMessages.ViewsPreference_enableAnimations,
+				WorkbenchMessages.get().ViewsPreference_enableAnimations,
 				apiStore
 						.getBoolean(IWorkbenchPreferenceConstants.ENABLE_ANIMATIONS));
 	}
@@ -1088,18 +1088,18 @@ public class ViewsPreferencePage extends PreferencePage implements
 		if (restart && !restartPosted) {
 			if (getContainer() instanceof IWorkbenchPreferenceContainer) {
 				IWorkbenchPreferenceContainer container = (IWorkbenchPreferenceContainer) getContainer();
-				UIJob job = new UIJob(WorkbenchMessages.ViewsPreference_restartRequestJobName) {
+				UIJob job = new UIJob(WorkbenchMessages.get().ViewsPreference_restartRequestJobName) {
 					public IStatus runInUIThread(IProgressMonitor monitor) {
 						// make sure they really want to do this
 						int really = new MessageDialog(
 								null,
-								WorkbenchMessages.ViewsPreference_presentationConfirm_title,
+								WorkbenchMessages.get().ViewsPreference_presentationConfirm_title,
 								null,
-								WorkbenchMessages.ViewsPreference_presentationConfirm_message,
+								WorkbenchMessages.get().ViewsPreference_presentationConfirm_message,
 								MessageDialog.QUESTION,
 								new String[] {
-										WorkbenchMessages.ViewsPreference_presentationConfirm_yes,
-										WorkbenchMessages.ViewsPreference_presentationConfirm_no },
+										WorkbenchMessages.get().ViewsPreference_presentationConfirm_yes,
+										WorkbenchMessages.get().ViewsPreference_presentationConfirm_no },
 								1).open();
 						if (really == Window.OK) {
 							PlatformUI.getWorkbench().restart();

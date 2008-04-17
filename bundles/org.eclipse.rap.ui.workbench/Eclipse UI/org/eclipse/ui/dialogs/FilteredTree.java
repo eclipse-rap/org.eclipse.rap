@@ -60,7 +60,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
  * of the text widget are used to drive a PatternFilter that is on the viewer.
  * 
  * @see org.eclipse.ui.dialogs.PatternFilter
- * @since 3.2
+ * @since 1.0
  */
 public class FilteredTree extends Composite {
 
@@ -108,8 +108,6 @@ public class FilteredTree extends Composite {
 
 	/**
 	 * The parent composite of the filtered tree.
-	 * 
-	 * @since 3.3
 	 */
 	protected Composite parent;
 
@@ -123,9 +121,6 @@ public class FilteredTree extends Composite {
 	 */
 	protected boolean showFilterControls;
 
-	/**
-	 * @since 3.3
-	 */
 	protected Composite treeComposite;
 
 	/**
@@ -187,8 +182,6 @@ public class FilteredTree extends Composite {
 	 * @param parent
 	 *            the parent <code>Composite</code>
 	 * @see #init(int, PatternFilter)
-	 * 
-	 * @since 3.3
 	 */
 	protected FilteredTree(Composite parent) {
 		super(parent, SWT.NONE);
@@ -202,8 +195,6 @@ public class FilteredTree extends Composite {
 	 *            the style bits for the <code>Tree</code>
 	 * @param filter
 	 *            the filter to be used
-	 * 
-	 * @since 3.3
 	 */
 	protected void init(int treeStyle, PatternFilter filter) {
 		patternFilter = filter;
@@ -211,7 +202,7 @@ public class FilteredTree extends Composite {
 				IWorkbenchPreferenceConstants.SHOW_FILTERED_TEXTS);
 		createControl(parent, treeStyle);
 		createRefreshJob();
-		setInitialText(WorkbenchMessages.FilteredTree_FilterMessage);
+		setInitialText(WorkbenchMessages.get().FilteredTree_FilterMessage);
 		setFont(parent.getFont());
 	}
 
@@ -312,8 +303,6 @@ public class FilteredTree extends Composite {
 	 * @param style
 	 *            SWT style bits used to create the tree viewer
 	 * @return the tree viewer
-	 * 
-	 * @since 3.3
 	 */
 	protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
 		return new NotifyingTreeViewer(parent, style);
@@ -351,8 +340,6 @@ public class FilteredTree extends Composite {
 	 * Subclasses may override.
 	 * 
 	 * @return a workbench job that can be scheduled to refresh the tree
-	 * 
-	 * @since 3.4
 	 */
 	protected WorkbenchJob doCreateRefreshJob() {
 		return new WorkbenchJob("Refresh Filter") {//$NON-NLS-1$
@@ -676,8 +663,6 @@ public class FilteredTree extends Composite {
 	 * @param parent
 	 *            the parent composite
 	 * @return the text widget
-	 * 
-	 * @since 3.3
 	 */
 	protected Text doCreateFilterText(Composite parent) {
 // RAP [r] SWT.SEARCH, SWT.CANCEL not implemented for Text widget	  
@@ -743,7 +728,7 @@ public class FilteredTree extends Composite {
 			};
 
 			clearTextAction
-					.setToolTipText(WorkbenchMessages.FilteredTree_ClearToolTip);
+					.setToolTipText(WorkbenchMessages.get().FilteredTree_ClearToolTip);
 			clearTextAction.setImageDescriptor(JFaceResources
 					.getImageRegistry().getDescriptor(CLEAR_ICON));
 			clearTextAction.setDisabledImageDescriptor(JFaceResources
@@ -890,9 +875,6 @@ public class FilteredTree extends Composite {
 	/**
 	 * Custom tree viewer subclass that clears the caches in patternFilter on
 	 * any change to the tree. See bug 187200.
-	 * 
-	 * @since 3.3
-	 * 
 	 */
 	class NotifyingTreeViewer extends TreeViewer {
 

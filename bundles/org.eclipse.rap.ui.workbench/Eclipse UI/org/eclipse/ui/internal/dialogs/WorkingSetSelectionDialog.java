@@ -102,11 +102,11 @@ public class WorkingSetSelectionDialog extends AbstractWorkingSetDialog {
         labelProvider = new WorkingSetLabelProvider();
         multiSelect = multi;
         if (multiSelect) {
-            setTitle(WorkbenchMessages.WorkingSetSelectionDialog_title_multiSelect); 
-            setMessage(WorkbenchMessages.WorkingSetSelectionDialog_message_multiSelect);
+            setTitle(WorkbenchMessages.get().WorkingSetSelectionDialog_title_multiSelect); 
+            setMessage(WorkbenchMessages.get().WorkingSetSelectionDialog_message_multiSelect);
         } else {
-            setTitle(WorkbenchMessages.WorkingSetSelectionDialog_title); 
-            setMessage(WorkbenchMessages.WorkingSetSelectionDialog_message);
+            setTitle(WorkbenchMessages.get().WorkingSetSelectionDialog_title); 
+            setMessage(WorkbenchMessages.get().WorkingSetSelectionDialog_message);
         }
             			
     }
@@ -167,17 +167,17 @@ public class WorkingSetSelectionDialog extends AbstractWorkingSetDialog {
 		};
 		
 		buttonWindowSet = new Button(composite, SWT.RADIO);
-		buttonWindowSet.setText(WorkbenchMessages.WindowWorkingSets);
+		buttonWindowSet.setText(WorkbenchMessages.get().WindowWorkingSets);
 		buttonWindowSet.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		buttonWindowSet.addSelectionListener(listener);
 
 		buttonNoSet = new Button(composite, SWT.RADIO);
-		buttonNoSet.setText(WorkbenchMessages.NoWorkingSet);
+		buttonNoSet.setText(WorkbenchMessages.get().NoWorkingSet);
 		buttonNoSet.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		buttonNoSet.addSelectionListener(listener);
 
 		buttonSelectedSets = new Button(composite, SWT.RADIO);
-		buttonSelectedSets.setText(WorkbenchMessages.SelectedWorkingSets);
+		buttonSelectedSets.setText(WorkbenchMessages.get().SelectedWorkingSets);
 		buttonSelectedSets.addSelectionListener(listener);
 
 		switch (getInitialRadioSelection()) {
@@ -363,7 +363,7 @@ public class WorkingSetSelectionDialog extends AbstractWorkingSetDialog {
 					aggregate = workingSetManager
 							.createAggregateWorkingSet(
 									setId,
-									WorkbenchMessages.WorkbenchPage_workingSet_multi_label,
+									WorkbenchMessages.get().WorkbenchPage_workingSet_multi_label,
 									typedResult);
 					workingSetManager.addWorkingSet(aggregate);
 				}

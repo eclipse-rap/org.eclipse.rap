@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkingSet;
  * org.eclipse.jface.wizard.WizardPage.
  * </p>
  *
- * @since 2.0
+ * @since 1.1
  */
 public interface IWorkingSetPage extends IWizardPage {
     /**

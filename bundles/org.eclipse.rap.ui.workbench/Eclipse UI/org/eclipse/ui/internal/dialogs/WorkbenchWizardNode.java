@@ -142,7 +142,7 @@ public abstract class WorkbenchWizardNode implements IWizardNode,
                                         IStatus.ERROR,
                                         contribution != null ? contribution.getPluginId() : WorkbenchPlugin.PI_WORKBENCH,
                                         IStatus.OK,
-                                        WorkbenchMessages.WorkbenchWizard_errorMessage,
+                                        WorkbenchMessages.get().WorkbenchWizard_errorMessage,
                                         e);
                             }
 
@@ -156,7 +156,7 @@ public abstract class WorkbenchWizardNode implements IWizardNode,
                                             IStatus.ERROR,
                                             contribution != null ? contribution.getPluginId() : WorkbenchPlugin.PI_WORKBENCH,
                                             IStatus.OK,
-                                            WorkbenchMessages.WorkbenchWizard_errorMessage,
+                                            WorkbenchMessages.get().WorkbenchWizard_errorMessage,
                                             e);
                                 }
                             }
@@ -166,11 +166,11 @@ public abstract class WorkbenchWizardNode implements IWizardNode,
 
         if (statuses[0] != null) {
             parentWizardPage
-					.setErrorMessage(WorkbenchMessages.WorkbenchWizard_errorMessage);
+					.setErrorMessage(WorkbenchMessages.get().WorkbenchWizard_errorMessage);
 			StatusAdapter statusAdapter = new StatusAdapter(statuses[0]);
 			statusAdapter.addAdapter(Shell.class, parentWizardPage.getShell());
 			statusAdapter.setProperty(StatusAdapter.TITLE_PROPERTY,
-					WorkbenchMessages.WorkbenchWizard_errorTitle);
+					WorkbenchMessages.get().WorkbenchWizard_errorTitle);
 			StatusManager.getManager()
 					.handle(statusAdapter, StatusManager.SHOW);
 			return null;

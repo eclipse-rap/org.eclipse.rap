@@ -48,7 +48,7 @@ public abstract class WorkbenchWizardSelectionPage extends WizardSelectionPage {
         this.currentResourceSelection = currentSelection;
         this.workbench = aWorkbench;
         this.triggerPointId = triggerPointId;
-        setTitle(WorkbenchMessages.Select);
+        setTitle(WorkbenchMessages.get().Select);
     }
 
     /**

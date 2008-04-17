@@ -12,7 +12,7 @@
 package org.eclipse.ui.internal.dialogs;
 
 import java.util.HashMap;
-import java.util.Iterator;
+//import java.util.Iterator;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -61,9 +61,10 @@ public class ViewLabelProvider extends LabelProvider implements IColorProvider {
      */
     public void dispose() {
         if (images != null) {
-            for (Iterator i = images.values().iterator(); i.hasNext();) {
-                ((Image) i.next()).dispose();
-            }
+// RAP [rh] Image#dispose() missing          
+//            for (Iterator i = images.values().iterator(); i.hasNext();) {
+//                ((Image) i.next()).dispose();
+//            }
             images = null;
         }
         super.dispose();
@@ -91,7 +92,7 @@ public class ViewLabelProvider extends LabelProvider implements IColorProvider {
      * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
      */
     public String getText(Object element) {
-        String label = WorkbenchMessages.ViewLabel_unknown;
+        String label = WorkbenchMessages.get().ViewLabel_unknown;
         if (element instanceof IViewCategory) {
 			label = ((IViewCategory) element).getLabel();
 		} else if (element instanceof IViewDescriptor) {

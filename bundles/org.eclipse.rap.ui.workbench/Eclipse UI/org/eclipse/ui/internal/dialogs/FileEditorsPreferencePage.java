@@ -130,8 +130,8 @@ public class FileEditorsPreferencePage extends PreferencePage implements
                 MessageDialog
                         .openInformation(
                                 getControl().getShell(),
-                                WorkbenchMessages.FileEditorPreference_existsTitle,
-                                WorkbenchMessages.FileEditorPreference_existsMessage);
+                                WorkbenchMessages.get().FileEditorPreference_existsTitle,
+                                WorkbenchMessages.get().FileEditorPreference_existsMessage);
                 return;
             }
 
@@ -172,7 +172,7 @@ public class FileEditorsPreferencePage extends PreferencePage implements
         //layout the contents
 
         PreferenceLinkArea contentTypeArea = new PreferenceLinkArea(pageComponent, SWT.NONE,
-                "org.eclipse.ui.preferencePages.ContentTypes", WorkbenchMessages.FileEditorPreference_contentTypesRelatedLink,//$NON-NLS-1$
+                "org.eclipse.ui.preferencePages.ContentTypes", WorkbenchMessages.get().FileEditorPreference_contentTypesRelatedLink,//$NON-NLS-1$
                 (IWorkbenchPreferenceContainer) getContainer(),null);
         
         data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
@@ -180,7 +180,7 @@ public class FileEditorsPreferencePage extends PreferencePage implements
 
         //layout the top table & its buttons
         Label label = new Label(pageComponent, SWT.LEFT);
-        label.setText(WorkbenchMessages.FileEditorPreference_fileTypes); 
+        label.setText(WorkbenchMessages.get().FileEditorPreference_fileTypes); 
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.horizontalSpan = 2;
@@ -209,13 +209,13 @@ public class FileEditorsPreferencePage extends PreferencePage implements
         groupComponent.setLayoutData(data);
 
         addResourceTypeButton = new Button(groupComponent, SWT.PUSH);
-        addResourceTypeButton.setText(WorkbenchMessages.FileEditorPreference_add); 
+        addResourceTypeButton.setText(WorkbenchMessages.get().FileEditorPreference_add); 
         addResourceTypeButton.addListener(SWT.Selection, this);
         addResourceTypeButton.setLayoutData(data);
         setButtonLayoutData(addResourceTypeButton);
 
         removeResourceTypeButton = new Button(groupComponent, SWT.PUSH);
-        removeResourceTypeButton.setText(WorkbenchMessages.FileEditorPreference_remove);
+        removeResourceTypeButton.setText(WorkbenchMessages.get().FileEditorPreference_remove);
         removeResourceTypeButton.addListener(SWT.Selection, this);
         setButtonLayoutData(removeResourceTypeButton);
 
@@ -228,7 +228,7 @@ public class FileEditorsPreferencePage extends PreferencePage implements
 
         // layout the bottom table & its buttons
         editorLabel = new Label(pageComponent, SWT.LEFT);
-        editorLabel.setText(WorkbenchMessages.FileEditorPreference_associatedEditors);
+        editorLabel.setText(WorkbenchMessages.get().FileEditorPreference_associatedEditors);
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.horizontalSpan = 2;
@@ -252,18 +252,18 @@ public class FileEditorsPreferencePage extends PreferencePage implements
         groupComponent.setLayoutData(data);
 
         addEditorButton = new Button(groupComponent, SWT.PUSH);
-        addEditorButton.setText(WorkbenchMessages.FileEditorPreference_addEditor);
+        addEditorButton.setText(WorkbenchMessages.get().FileEditorPreference_addEditor);
         addEditorButton.addListener(SWT.Selection, this);
         addEditorButton.setLayoutData(data);
         setButtonLayoutData(addEditorButton);
 
         removeEditorButton = new Button(groupComponent, SWT.PUSH);
-        removeEditorButton.setText(WorkbenchMessages.FileEditorPreference_removeEditor); 
+        removeEditorButton.setText(WorkbenchMessages.get().FileEditorPreference_removeEditor); 
         removeEditorButton.addListener(SWT.Selection, this);
         setButtonLayoutData(removeEditorButton);
 
         defaultEditorButton = new Button(groupComponent, SWT.PUSH);
-        defaultEditorButton.setText(WorkbenchMessages.FileEditorPreference_default);
+        defaultEditorButton.setText(WorkbenchMessages.get().FileEditorPreference_default);
         defaultEditorButton.addListener(SWT.Selection, this);
         setButtonLayoutData(defaultEditorButton);
 
@@ -324,7 +324,7 @@ public class FileEditorsPreferencePage extends PreferencePage implements
                 String defaultString = null;
                 if (resourceType != null) {
                     if (resourceType.getDefaultEditor() == editor && resourceType.isDeclaredDefaultEditor(editor)) {
-						defaultString = WorkbenchMessages.FileEditorPreference_defaultLabel;
+						defaultString = WorkbenchMessages.get().FileEditorPreference_defaultLabel;
 					}
                 }
 
@@ -379,7 +379,7 @@ public class FileEditorsPreferencePage extends PreferencePage implements
 	 */
 	private void setLockedItemText(TableItem item, String baseLabel) {
 		item.setText(NLS
-				.bind(WorkbenchMessages.FileEditorPreference_isLocked,
+				.bind(WorkbenchMessages.get().FileEditorPreference_isLocked,
 						baseLabel, ((IContentType) item
 								.getData(DATA_FROM_CONTENT_TYPE)).getName()));
 	}
@@ -514,7 +514,7 @@ public class FileEditorsPreferencePage extends PreferencePage implements
                 .getShell());
         dialog.setEditorsToFilter(getAssociatedEditors());
         dialog
-                .setMessage(NLS.bind(WorkbenchMessages.Choose_the_editor_for_file,getSelectedResourceType().getLabel() ));
+                .setMessage(NLS.bind(WorkbenchMessages.get().Choose_the_editor_for_file,getSelectedResourceType().getLabel() ));
         if (dialog.open() == Window.OK) {
             EditorDescriptor editor = (EditorDescriptor) dialog
                     .getSelectedEditor();
@@ -526,7 +526,7 @@ public class FileEditorsPreferencePage extends PreferencePage implements
                 if (isEmpty) {
 					item
                             .setText(editor.getLabel()
-                                    + " " + WorkbenchMessages.FileEditorPreference_defaultLabel); //$NON-NLS-1$
+                                    + " " + WorkbenchMessages.get().FileEditorPreference_defaultLabel); //$NON-NLS-1$
 				} else {
 					item.setText(editor.getLabel());
 				}
@@ -547,11 +547,11 @@ public class FileEditorsPreferencePage extends PreferencePage implements
      */
     public void promptForResourceType() {
         FileExtensionDialog dialog = new FileExtensionDialog(getControl()
-				.getShell(), WorkbenchMessages.FileExtension_shellTitle,
+				.getShell(), WorkbenchMessages.get().FileExtension_shellTitle,
 				IWorkbenchHelpContextIds.FILE_EXTENSION_DIALOG,
-				WorkbenchMessages.FileExtension_dialogTitle,
-				WorkbenchMessages.FileExtension_fileTypeMessage,
-				WorkbenchMessages.FileExtension_fileTypeLabel);
+				WorkbenchMessages.get().FileExtension_dialogTitle,
+				WorkbenchMessages.get().FileExtension_fileTypeMessage,
+				WorkbenchMessages.get().FileExtension_fileTypeLabel);
         if (dialog.open() == Window.OK) {
             String name = dialog.getName();
             String extension = dialog.getExtension();
@@ -579,7 +579,7 @@ public class FileEditorsPreferencePage extends PreferencePage implements
 				item
                         .setText(((EditorDescriptor) (item.getData(DATA_EDITOR)))
                                 .getLabel()
-                                + " " + WorkbenchMessages.FileEditorPreference_defaultLabel); //$NON-NLS-1$
+                                + " " + WorkbenchMessages.get().FileEditorPreference_defaultLabel); //$NON-NLS-1$
 			}
 			if (!isEditorRemovable(item)) {
 				setLockedItemText(item, item.getText());
@@ -627,7 +627,7 @@ public class FileEditorsPreferencePage extends PreferencePage implements
 			}
             item
                     .setText(editor.getLabel()
-                            + " " + WorkbenchMessages.FileEditorPreference_defaultLabel); //$NON-NLS-1$
+                            + " " + WorkbenchMessages.get().FileEditorPreference_defaultLabel); //$NON-NLS-1$
             item.setImage(getImage(editor));
             if (!isEditorRemovable(item)) {
 				setLockedItemText(item, item.getText());

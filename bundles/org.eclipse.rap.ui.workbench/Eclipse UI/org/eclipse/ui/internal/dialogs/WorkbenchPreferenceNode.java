@@ -49,7 +49,7 @@ public class WorkbenchPreferenceNode extends WorkbenchPreferenceExtensionNode {
 		} catch (CoreException e) {
 			// Just inform the user about the error. The details are
 			// written to the log by now.
-			IStatus errStatus = StatusUtil.newStatus(e.getStatus(), WorkbenchMessages.PreferenceNode_errorMessage); 
+			IStatus errStatus = StatusUtil.newStatus(e.getStatus(), WorkbenchMessages.get().PreferenceNode_errorMessage); 
 			StatusManager.getManager().handle(errStatus, StatusManager.SHOW);
 			page = new ErrorPreferencePage();
 		}

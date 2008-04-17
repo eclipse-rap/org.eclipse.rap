@@ -30,7 +30,7 @@ import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceDialog;
  * The PreferencesUtil class is the class that opens a properties or preference
  * dialog on a set of ids.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public final class PreferencesUtil {
 
@@ -88,7 +88,6 @@ public final class PreferencesUtil {
 	 *            the data is <code>null</code> nothing will be called.
 	 * 
 	 * @return a preference dialog.
-	 * @since 3.1
 	 * @see PreferenceDialog#PreferenceDialog(Shell, PreferenceManager)
 	 */
 	public static final PreferenceDialog createPreferenceDialogOn(Shell shell,
@@ -128,7 +127,6 @@ public final class PreferencesUtil {
 	 * 
 	 * @return A preference dialog showing properties for the selection or
 	 *         <code>null</code> if it could not be created.
-	 * @since 3.1
 	 */
 	public static final PreferenceDialog createPropertyDialogOn(Shell shell,
 			final IAdaptable element, String propertyPageId,
@@ -154,7 +152,6 @@ public final class PreferencesUtil {
 	 * @param element
 	 *            an adapter element of a property page
 	 * @return true for having at least one contributor; false otherwise
-	 * @since 3.4
 	 */
 	public static boolean hasPropertiesContributors(Object element) {
 		if (element == null || !(element instanceof IAdaptable))
@@ -168,7 +165,6 @@ public final class PreferencesUtil {
 	 * Return all of the properties page contributors for an element.
 	 * @param element
 	 * @return {@link IPreferenceNode}[]
-	 * @since 3.4
 	 */
 	public static IPreferenceNode[] propertiesContributorsFor(Object element) {
 		PropertyPageManager pageManager = new PropertyPageManager();

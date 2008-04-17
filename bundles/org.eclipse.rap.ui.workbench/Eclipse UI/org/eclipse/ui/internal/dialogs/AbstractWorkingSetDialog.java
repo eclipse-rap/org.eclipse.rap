@@ -118,7 +118,7 @@ public abstract class AbstractWorkingSetDialog extends SelectionDialog
 		buttonComposite.setLayoutData(data);
 
 		newButton = createButton(buttonComposite, ID_NEW,
-				WorkbenchMessages.WorkingSetSelectionDialog_newButton_label,
+				WorkbenchMessages.get().WorkingSetSelectionDialog_newButton_label,
 				false);
 		newButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -130,7 +130,7 @@ public abstract class AbstractWorkingSetDialog extends SelectionDialog
 			detailsButton = createButton(
 					buttonComposite,
 					ID_DETAILS,
-					WorkbenchMessages.WorkingSetSelectionDialog_detailsButton_label,
+					WorkbenchMessages.get().WorkingSetSelectionDialog_detailsButton_label,
 					false);
 			detailsButton.setEnabled(false);
 			detailsButton.addSelectionListener(new SelectionAdapter() {
@@ -142,7 +142,7 @@ public abstract class AbstractWorkingSetDialog extends SelectionDialog
 			removeButton = createButton(
 					buttonComposite,
 					ID_REMOVE,
-					WorkbenchMessages.WorkingSetSelectionDialog_removeButton_label,
+					WorkbenchMessages.get().WorkingSetSelectionDialog_removeButton_label,
 					false);
 			removeButton.setEnabled(false);
 			removeButton.addSelectionListener(new SelectionAdapter() {
@@ -172,7 +172,7 @@ public abstract class AbstractWorkingSetDialog extends SelectionDialog
 		selectAllButton = createButton(
 				buttonComposite,
 				ID_SELECTALL,
-				WorkbenchMessages.SelectionDialog_selectLabel,
+				WorkbenchMessages.get().SelectionDialog_selectLabel,
 				false);
 		selectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -183,7 +183,7 @@ public abstract class AbstractWorkingSetDialog extends SelectionDialog
 		deselectAllButton = createButton(
 				buttonComposite,
 				ID_DESELECTALL,
-				WorkbenchMessages.SelectionDialog_deselectLabel,
+				WorkbenchMessages.get().SelectionDialog_deselectLabel,
 				false);
 		deselectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {

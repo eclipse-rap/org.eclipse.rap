@@ -31,6 +31,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * <p>
  * Clients may subclass this dialog to inherit its selection facilities.
  * </p>
+ * @since 1.0
  */
 public abstract class SelectionDialog extends TrayDialog {
 	// the final collection of selected elements, or null if this dialog was
@@ -52,9 +53,12 @@ public abstract class SelectionDialog extends TrayDialog {
 	// dialog settings for storing bounds (since 3.2)
 	private IDialogSettings dialogBoundsSettings = null;
 
-	static String SELECT_ALL_TITLE = WorkbenchMessages.SelectionDialog_selectLabel;
-
-	static String DESELECT_ALL_TITLE = WorkbenchMessages.SelectionDialog_deselectLabel;
+// RAP [rh]	removed static form String decl that contains NLS message
+//	static String SELECT_ALL_TITLE = WorkbenchMessages.SelectionDialog_selectLabel;
+//
+//	static String DESELECT_ALL_TITLE = WorkbenchMessages.SelectionDialog_deselectLabel;
+	final String SELECT_ALL_TITLE = WorkbenchMessages.get().SelectionDialog_selectLabel;
+	final String DESELECT_ALL_TITLE = WorkbenchMessages.get().SelectionDialog_deselectLabel;
 
 	/**
 	 * Creates a dialog instance. Note that the dialog will have no visual
@@ -220,7 +224,6 @@ public abstract class SelectionDialog extends TrayDialog {
 	 * 
 	 * @param newResult -
 	 *            the new values
-	 * @since 2.0
 	 */
 	protected void setSelectionResult(Object[] newResult) {
 		result = newResult;
@@ -251,8 +254,6 @@ public abstract class SelectionDialog extends TrayDialog {
 	 *            Specified using {@link Dialog#DIALOG_PERSISTLOCATION}
 	 *            and {@link Dialog#DIALOG_PERSISTSIZE}.
 	 * 
-	 * @since 3.2
-	 * 
 	 * @see Dialog#getDialogBoundsStrategy()
 	 * @see Dialog#getDialogBoundsSettings()
 	 */
@@ -271,8 +272,6 @@ public abstract class SelectionDialog extends TrayDialog {
 	 *         size, or <code>null</code> if the dialog's bounds should not be
 	 *         stored.
 	 * 
-	 * @since 3.2
-	 * 
 	 * @see Dialog#getDialogBoundsStrategy()
 	 * @see #setDialogBoundsSettings(IDialogSettings, int)
 	 */
@@ -288,7 +287,6 @@ public abstract class SelectionDialog extends TrayDialog {
 	 * @return the constant describing the strategy for persisting the dialog
 	 *         bounds.
 	 * 
-	 * @since 3.2
 	 * @see Dialog#DIALOG_PERSISTLOCATION
 	 * @see Dialog#DIALOG_PERSISTSIZE
 	 * @see Dialog#getDialogBoundsSettings()
@@ -298,9 +296,6 @@ public abstract class SelectionDialog extends TrayDialog {
 		return dialogBoundsStrategy;
 	}
 	
-    /**
-	 * @since 3.4
-	 */
     protected boolean isResizable() {
     	return true;
     }

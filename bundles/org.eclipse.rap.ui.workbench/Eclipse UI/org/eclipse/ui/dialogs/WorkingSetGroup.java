@@ -27,7 +27,7 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
  * <strong>Please note that this API is experimental and may change before 3.4
  * ships.</strong>
  * 
- * @since 3.4
+ * @since 1,1
  */
 public final class WorkingSetGroup {
 
@@ -50,7 +50,7 @@ public final class WorkingSetGroup {
 		Group workingSetGroup = new Group(composite, SWT.NONE);
 		workingSetGroup.setFont(composite.getFont());
 		workingSetGroup
-				.setText(WorkbenchMessages.WorkingSetGroup_WorkingSets_group);
+				.setText(WorkbenchMessages.get().WorkingSetGroup_WorkingSets_group);
 		workingSetGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true,
 				false));
 		workingSetGroup.setLayout(new GridLayout(1, false));

@@ -153,8 +153,8 @@ public class CustomizePerspectiveDialog extends TrayDialog {
     private final static int TAB_HEIGHT_IN_DLUS = 230;
 
     private final String shortcutMenuColumnHeaders[] = {
-            WorkbenchMessages.ActionSetSelection_menuColumnHeader,
-            WorkbenchMessages.ActionSetSelection_descriptionColumnHeader };
+            WorkbenchMessages.get()ActionSetSelection_menuColumnHeader,
+            WorkbenchMessages.get()ActionSetSelection_descriptionColumnHeader };
 
     private int[] shortcutMenuColumnWidths = { 125, 300 };
 
@@ -339,13 +339,13 @@ public class CustomizePerspectiveDialog extends TrayDialog {
             if (type == MENUITEM) {
                 if (children.size() > 0) {
                     if (parent.id.equals("Root")) { //$NON-NLS-1$
-                        return NLS.bind(WorkbenchMessages.ActionSetSelection_menubarLocation, text );
+                        return NLS.bind(WorkbenchMessages.get()ActionSetSelection_menubarLocation, text );
                     }
                 }
                 return text;
             } 
             if (children.size() > 0) {
-				return NLS.bind(WorkbenchMessages.ActionSetSelection_toolbarLocation, text );
+				return NLS.bind(WorkbenchMessages.get()ActionSetSelection_toolbarLocation, text );
 			} 
             
             return text;
@@ -1028,7 +1028,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         super.configureShell(shell);
         String title=perspective.getDesc().getLabel();
         
-        title = NLS.bind(WorkbenchMessages.ActionSetSelection_customize,title);
+        title = NLS.bind(WorkbenchMessages.get()ActionSetSelection_customize,title);
         shell.setText(title);
         window.getWorkbench().getHelpSystem().setHelp(shell,
 				IWorkbenchHelpContextIds.ACTION_SET_SELECTION_DIALOG);
@@ -1066,7 +1066,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         // Select... label
         Label label = new Label(actionSetsComposite, SWT.WRAP);
         label
-                .setText(NLS.bind(WorkbenchMessages.ActionSetSelection_selectActionSetsLabel,perspective.getDesc().getLabel() ));
+                .setText(NLS.bind(WorkbenchMessages.get()ActionSetSelection_selectActionSetsLabel,perspective.getDesc().getLabel() ));
         data = new GridData(SWT.FILL, SWT.CENTER, true, false);
         label.setLayoutData(data);
 
@@ -1088,7 +1088,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         actionSetGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         label = new Label(actionSetGroup, SWT.WRAP);
-        label.setText(WorkbenchMessages.ActionSetSelection_availableActionSets);
+        label.setText(WorkbenchMessages.get()ActionSetSelection_availableActionSets);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         
         actionSetsViewer = CheckboxTableViewer.newCheckList(actionSetGroup,
@@ -1124,7 +1124,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         menubarGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         label = new Label(menubarGroup, SWT.WRAP);
-        label.setText(WorkbenchMessages.ActionSetSelection_menubarActions); 
+        label.setText(WorkbenchMessages.get()ActionSetSelection_menubarActions); 
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         actionSetMenuViewer = new TreeViewer(menubarGroup);
@@ -1148,7 +1148,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         toolbarGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         label = new Label(toolbarGroup, SWT.WRAP);
-        label.setText(WorkbenchMessages.ActionSetSelection_toolbarActions);
+        label.setText(WorkbenchMessages.get()ActionSetSelection_toolbarActions);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         actionSetToolbarViewer = new TreeViewer(toolbarGroup);
@@ -1169,7 +1169,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
 
         // Use F2... label
         label = new Label(actionSetsComposite, SWT.WRAP);
-        label.setText(WorkbenchMessages.ActionSetSelection_selectActionSetsHelp);
+        label.setText(WorkbenchMessages.get().ActionSetSelection_selectActionSetsHelp);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         return actionSetsComposite;
@@ -1203,7 +1203,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         // Shortcuts tab
         if (showShortcutTab()) {
             TabItem item1 = new TabItem(tabFolder, SWT.NONE);
-            item1.setText(WorkbenchMessages.ActionSetSelection_menuTab);
+            item1.setText(WorkbenchMessages.get().ActionSetSelection_menuTab);
             item1.setControl(createMenusPage(tabFolder));
             addShortcutListeners();
             ArrayList children = rootMenu.getChildren();
@@ -1216,7 +1216,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
 
         // Commands tab
         TabItem item = new TabItem(tabFolder, SWT.NONE);
-        item.setText(WorkbenchMessages.ActionSetSelection_actionSetsTab); 
+        item.setText(WorkbenchMessages.get().ActionSetSelection_actionSetsTab); 
         item.setControl(createActionSetsPage(tabFolder));
         applyDialogFont(tabFolder);
         addActionSetsListeners();
@@ -1238,7 +1238,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
 
         // Select... label
         Label label = new Label(menusComposite, SWT.WRAP);
-        label.setText(NLS.bind(WorkbenchMessages.ActionSetSelection_selectMenusLabel,  perspective.getDesc().getLabel() )); 
+        label.setText(NLS.bind(WorkbenchMessages.get().ActionSetSelection_selectMenusLabel,  perspective.getDesc().getLabel() )); 
         data = new GridData(SWT.FILL, SWT.CENTER, true, false);
         label.setLayoutData(data);
 
@@ -1258,7 +1258,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         menusGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         label = new Label(menusGroup, SWT.WRAP);
-        label.setText(WorkbenchMessages.ActionSetSelection_availableMenus); 
+        label.setText(WorkbenchMessages.get().ActionSetSelection_availableMenus); 
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         menusCombo = new Combo(menusGroup, SWT.READ_ONLY);
@@ -1266,7 +1266,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
 
         // Categories Tree
         label = new Label(menusGroup, SWT.WRAP);
-        label.setText(WorkbenchMessages.ActionSetSelection_availableCategories);
+        label.setText(WorkbenchMessages.get().ActionSetSelection_availableCategories);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         menuCategoriesViewer = new CheckboxTreeViewer(menusGroup);
@@ -1284,7 +1284,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         menuItemsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         label = new Label(menuItemsGroup, SWT.WRAP);
-        label.setText(WorkbenchMessages.ActionSetSelection_menuItems);
+        label.setText(WorkbenchMessages.get().ActionSetSelection_menuItems);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         menuItemsViewer = CheckboxTableViewer.newCheckList(menuItemsGroup,
@@ -1321,7 +1321,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
             if (element != null) {
                 String desc = element.description;
                 if (desc == null || desc.equals("")) { //$NON-NLS-1$
-                    desc = WorkbenchMessages.ActionSetSelection_noDesc;
+                    desc = WorkbenchMessages.get().ActionSetSelection_noDesc;
                 }
                 actionSetMenuViewerTooltip.setText(desc);
                 // Passing 0,0 because tooltip is always opened on current cursor position
@@ -1408,7 +1408,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
             if (element != null) {
                 String desc = element.description;
                 if (desc == null || desc.equals("")) { //$NON-NLS-1$
-                    desc = WorkbenchMessages.ActionSetSelection_noDesc; 
+                    desc = WorkbenchMessages.get().ActionSetSelection_noDesc; 
                 }
                 actionSetToolbarViewerTooltip.setText(desc);
                 // Passing 0,0 because tooltip is always opened on current cursor position
@@ -1427,7 +1427,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
             if (element != null) {
                 String desc = element.getDescription();
                 if (desc == null || desc.equals("")) { //$NON-NLS-1$
-                    desc = WorkbenchMessages.ActionSetSelection_noDesc; 
+                    desc = WorkbenchMessages.get().ActionSetSelection_noDesc; 
                 }
                 actionSetsViewerTooltip.setText(desc);
                 // Passing 0,0 because tooltip is always opened on current cursor position
@@ -1588,7 +1588,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
 
         if (window.containsSubmenu(WorkbenchWindow.NEW_WIZARD_SUBMENU)) {
             ShortcutMenu wizardMenu = new ShortcutMenu(rootMenu,
-                    ShortcutMenu.ID_WIZARD, WorkbenchMessages.ActionSetDialogInput_wizardCategory); 
+                    ShortcutMenu.ID_WIZARD, WorkbenchMessages.get().ActionSetDialogInput_wizardCategory); 
             
             IWizardCategory wizardCollection = WorkbenchPlugin.getDefault().getNewWizardRegistry().getRootCategory();
 
@@ -1607,7 +1607,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
             ShortcutMenu perspMenu = new ShortcutMenu(
                     rootMenu,
                     ShortcutMenu.ID_PERSP,
-                    WorkbenchMessages.ActionSetDialogInput_perspectiveCategory);
+                    WorkbenchMessages.get().ActionSetDialogInput_perspectiveCategory);
             IPerspectiveRegistry perspReg = WorkbenchPlugin.getDefault()
                     .getPerspectiveRegistry();
             IPerspectiveDescriptor[] persps = perspReg.getPerspectives();
@@ -1629,7 +1629,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
 
         if (window.containsSubmenu(WorkbenchWindow.SHOW_VIEW_SUBMENU)) {
             ShortcutMenu viewMenu = new ShortcutMenu(rootMenu,
-                    ShortcutMenu.ID_VIEW, WorkbenchMessages.ActionSetDialogInput_viewCategory); 
+                    ShortcutMenu.ID_VIEW, WorkbenchMessages.get().ActionSetDialogInput_viewCategory); 
             IViewRegistry viewReg = WorkbenchPlugin.getDefault()
                     .getViewRegistry();
             IViewCategory [] categories = viewReg.getCategories();

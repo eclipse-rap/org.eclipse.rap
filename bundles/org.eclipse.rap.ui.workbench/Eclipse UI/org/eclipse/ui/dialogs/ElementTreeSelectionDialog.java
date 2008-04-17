@@ -50,7 +50,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 /**
  * A class to select elements out of a tree structure.
  * 
- * @since 2.0
+ * @since 1.1
  */
 public class ElementTreeSelectionDialog extends SelectionStatusDialog {
 
@@ -68,7 +68,7 @@ public class ElementTreeSelectionDialog extends SelectionStatusDialog {
 
     private boolean fDoubleClickSelects = true;
 
-    private String fEmptyListMessage = WorkbenchMessages.ElementTreeSelectionDialog_nothing_available;
+    private String fEmptyListMessage = WorkbenchMessages.get().ElementTreeSelectionDialog_nothing_available;
 
     private IStatus fCurrStatus = new Status(IStatus.OK, PlatformUI.PLUGIN_ID,
             IStatus.OK, "", null); //$NON-NLS-1$
@@ -145,7 +145,6 @@ public class ElementTreeSelectionDialog extends SelectionStatusDialog {
     /**
      * Sets the comparator used by the tree viewer.
      * @param comparator
-     * @since 3.3
      */
     public void setComparator(ViewerComparator comparator){
     	fComparator = comparator;
@@ -351,7 +350,6 @@ public class ElementTreeSelectionDialog extends SelectionStatusDialog {
      * @param parent the parent composite
      * @param style the {@link SWT} style bits
      * @return the tree viewer
-     * @since 3.4
 	 */
 	protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
 		return new TreeViewer(new Tree(parent, style));

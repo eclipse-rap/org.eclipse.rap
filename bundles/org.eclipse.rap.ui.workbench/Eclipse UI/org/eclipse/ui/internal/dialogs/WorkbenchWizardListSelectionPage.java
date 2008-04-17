@@ -70,7 +70,7 @@ public abstract class WorkbenchWizardListSelectionPage extends
             AdaptableList wizardElements, String message, String triggerPointId) {
         super(
                 "singleWizardSelectionPage", aWorkbench, currentSelection, wizardElements, triggerPointId); //$NON-NLS-1$
-        setDescription(WorkbenchMessages.WizardList_description);
+        setDescription(WorkbenchMessages.get().WizardList_description);
         this.message = message;
     }
 

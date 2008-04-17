@@ -94,7 +94,7 @@ public class AboutDialog extends ProductInfoDialog {
 			productName = product.getName();
 		}
         if (productName == null) {
-			productName = WorkbenchMessages.AboutDialog_defaultProductName;
+			productName = WorkbenchMessages.get().AboutDialog_defaultProductName;
 		}
 
         // create a descriptive object for each BundleGroup
@@ -160,7 +160,7 @@ public class AboutDialog extends ProductInfoDialog {
      */
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(NLS.bind(WorkbenchMessages.AboutDialog_shellTitle,productName ));
+        newShell.setText(NLS.bind(WorkbenchMessages.get().AboutDialog_shellTitle,productName ));
         PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
 				IWorkbenchHelpContextIds.ABOUT_DIALOG);
     }
@@ -179,11 +179,11 @@ public class AboutDialog extends ProductInfoDialog {
         // bug 64232: the feature details button should only be created if there
         // are features to show
         if (bundleGroupInfos != null && bundleGroupInfos.length > 0) {
-			createButton(parent, FEATURES_ID, WorkbenchMessages.AboutDialog_featureInfo, false);
+			createButton(parent, FEATURES_ID, WorkbenchMessages.get().AboutDialog_featureInfo, false);
 		} 
 
-        createButton(parent, PLUGINS_ID, WorkbenchMessages.AboutDialog_pluginInfo, false);
-        createButton(parent, INFO_ID, WorkbenchMessages.AboutDialog_systemInfo, false); 
+        createButton(parent, PLUGINS_ID, WorkbenchMessages.get().AboutDialog_pluginInfo, false);
+        createButton(parent, INFO_ID, WorkbenchMessages.get().AboutDialog_systemInfo, false); 
 
         Label l = new Label(parent, SWT.NONE);
         l.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -472,7 +472,7 @@ public class AboutDialog extends ProductInfoDialog {
         button
 				.setToolTipText(NLS
 						.bind(
-								WorkbenchMessages.AboutDialog_concatenationOfProviderNameAndFeatureName,
+								WorkbenchMessages.get().AboutDialog_concatenationOfProviderNameAndFeatureName,
 								new Object[] { info.getProviderName(),
 										info.getName() }));
         

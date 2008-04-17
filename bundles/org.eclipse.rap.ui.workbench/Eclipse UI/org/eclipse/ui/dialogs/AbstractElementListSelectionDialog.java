@@ -36,7 +36,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * An abstract class to select elements out of a list of elements.
  * 
- * @since 2.0
+ * @since 1.1
  */
 public abstract class AbstractElementListSelectionDialog extends
         SelectionStatusDialog {

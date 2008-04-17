@@ -198,11 +198,11 @@ public class AboutPluginsDialog extends ProductInfoDialog {
     private String helpContextId;
 
     private String columnTitles[] = {
-    		WorkbenchMessages.AboutPluginsDialog_signed,
-            WorkbenchMessages.AboutPluginsDialog_provider,
-            WorkbenchMessages.AboutPluginsDialog_pluginName,
-            WorkbenchMessages.AboutPluginsDialog_version, 
-            WorkbenchMessages.AboutPluginsDialog_pluginId,
+    		WorkbenchMessages.get().AboutPluginsDialog_signed,
+            WorkbenchMessages.get().AboutPluginsDialog_provider,
+            WorkbenchMessages.get().AboutPluginsDialog_pluginName,
+            WorkbenchMessages.get().AboutPluginsDialog_version, 
+            WorkbenchMessages.get().AboutPluginsDialog_pluginId,
             
     };
 
@@ -281,12 +281,12 @@ public class AboutPluginsDialog extends ProductInfoDialog {
 		DialogTray existingTray = getTray();
 		if (existingTray instanceof BundleSigningTray) {
 			// hide
-			getButton(SIGNING_ID).setText(WorkbenchMessages.AboutPluginsDialog_signingInfo_show); 
+			getButton(SIGNING_ID).setText(WorkbenchMessages.get().AboutPluginsDialog_signingInfo_show); 
 			closeTray();
 		}
 		else {
 			//show
-			getButton(SIGNING_ID).setText(WorkbenchMessages.AboutPluginsDialog_signingInfo_hide);
+			getButton(SIGNING_ID).setText(WorkbenchMessages.get().AboutPluginsDialog_signingInfo_hide);
 			if (existingTray != null)
 				closeTray();
 			AboutBundleData bundleInfo = (AboutBundleData) ((IStructuredSelection) vendorInfo
@@ -307,7 +307,7 @@ public class AboutPluginsDialog extends ProductInfoDialog {
         //signImage = new Image( this.getParentShell().getDisplay(), AboutPluginsDialog.class.getResourceAsStream("Signed.gif")); //$NON-NLS-1$
         
         if (title == null && productName != null) {
-			title = NLS.bind(WorkbenchMessages.AboutPluginsDialog_shellTitle, productName);
+			title = NLS.bind(WorkbenchMessages.get().AboutPluginsDialog_shellTitle, productName);
 		}
 
         if (title != null) {
@@ -329,10 +329,10 @@ public class AboutPluginsDialog extends ProductInfoDialog {
     protected void createButtonsForButtonBar(Composite parent) {
         parent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        moreInfo = createButton(parent, MORE_ID, WorkbenchMessages.AboutPluginsDialog_moreInfo, false); 
+        moreInfo = createButton(parent, MORE_ID, WorkbenchMessages.get().AboutPluginsDialog_moreInfo, false); 
         moreInfo.setEnabled(false);
         
-        signingInfo = createButton(parent, SIGNING_ID, WorkbenchMessages.AboutPluginsDialog_signingInfo_show, false);
+        signingInfo = createButton(parent, SIGNING_ID, WorkbenchMessages.get().AboutPluginsDialog_signingInfo_show, false);
         signingInfo.setEnabled(false);
 
         Label l = new Label(parent, SWT.NONE);
@@ -500,10 +500,10 @@ public class AboutPluginsDialog extends ProductInfoDialog {
         
         if (!openBrowser(getMoreInfoURL(bundleInfo, true))) {
 			String message = NLS.bind(
-					WorkbenchMessages.AboutPluginsDialog_unableToOpenFile,
+					WorkbenchMessages.get().AboutPluginsDialog_unableToOpenFile,
 					PLUGININFO, bundleInfo.getId());
 			StatusUtil.handleStatus(
-					WorkbenchMessages.AboutPluginsDialog_errorTitle
+					WorkbenchMessages.get().AboutPluginsDialog_errorTitle
 							+ ": " + message, StatusManager.SHOW, getShell()); //$NON-NLS-1$
 		}
     }
