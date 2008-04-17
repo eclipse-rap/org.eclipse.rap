@@ -22,7 +22,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class TitleAreaDialogTest extends TestCase {
 
-	static ImageDescriptor descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.ui.tests", "icons/anything.gif");
+	static ImageDescriptor descriptor = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.rap.ui.tests", "icons/anything.gif");
 
 	// Test setting the title image before creating the dialog.
 	public void testSetTitleImageEarly() {

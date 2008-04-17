@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public class ResourceManagerTest extends TestCase {
     private DeviceResourceManager globalResourceManager;
     
     private static ImageDescriptor getImage(String path) {
-        return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.ui.tests", path);
+        return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.rap.ui.tests", path);
     }
     
     private static final class TestDescriptor extends DeviceResourceDescriptor {
@@ -129,7 +129,11 @@ public class ResourceManagerTest extends TestCase {
                 };
         
         // Let the tests know how many duplicates are in the array
-        numDupes = 11;
+        // RAP [bm]: less duplicates - see above
+//        numDupes = 11;
+        numDupes = 8;
+        // RAPEND: [bm] 
+
     }
     
     /* (non-Javadoc)

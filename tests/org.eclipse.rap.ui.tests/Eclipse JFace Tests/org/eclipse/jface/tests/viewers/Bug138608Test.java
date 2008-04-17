@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -54,7 +53,7 @@ public class Bug138608Test extends ViewerTestCase {
 
 	protected StructuredViewer createViewer(Composite parent) {
 		final TreeViewer viewer = new TreeViewer(parent);
-		viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+//		viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 		contentProvider = new TreeContentProvider();
 		LabelProvider labelProvider = new LabelProvider();
 		viewer.setContentProvider(contentProvider);

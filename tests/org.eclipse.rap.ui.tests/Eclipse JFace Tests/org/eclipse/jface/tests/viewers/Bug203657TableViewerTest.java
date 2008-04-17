@@ -14,12 +14,9 @@ package org.eclipse.jface.tests.viewers;
 import java.lang.reflect.Field;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
-//import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
-//import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -42,22 +39,23 @@ public class Bug203657TableViewerTest extends ViewerTestCase {
 	protected StructuredViewer createViewer(Composite parent) {
 		final TableViewer tableViewer = new TableViewer(parent, SWT.FULL_SELECTION);
 		tableViewer.setContentProvider(new ArrayContentProvider());
+		// RAP [bm]: 
 //		tableViewer.setCellEditors(new CellEditor[] { new TextCellEditor(
 //				tableViewer.getTable()) });
-		tableViewer.setColumnProperties(new String[] { "0" });
-		tableViewer.setCellModifier(new ICellModifier() {
-			public boolean canModify(Object element, String property) {
-				return true;
-			}
-
-			public Object getValue(Object element, String property) {
-				return "";
-			}
-
-			public void modify(Object element, String property, Object value) {
-			}
-
-		});
+//		tableViewer.setColumnProperties(new String[] { "0" });
+//		tableViewer.setCellModifier(new ICellModifier() {
+//			public boolean canModify(Object element, String property) {
+//				return true;
+//			}
+//
+//			public Object getValue(Object element, String property) {
+//				return "";
+//			}
+//
+//			public void modify(Object element, String property, Object value) {
+//			}
+//
+//		});
 
 	    new TableColumn(tableViewer.getTable(), SWT.NONE).setWidth(200);
 

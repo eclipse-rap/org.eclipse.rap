@@ -41,8 +41,11 @@ public class ProgressIndicatorStyleTest extends TestCase {
 	 * Test the indicator styles.
 	 */
 	public void testProgressIndicator() {
-		style = SWT.SMOOTH;
-		verifyIndicator();
+		// RAP [bm]: SMOOTH not supported
+//		style = SWT.SMOOTH;
+//		verifyIndicator();
+		// RAPEND: [bm] 
+
 
 		style = SWT.VERTICAL;
 		verifyIndicator();		
@@ -58,8 +61,7 @@ public class ProgressIndicatorStyleTest extends TestCase {
 	private void verifyIndicator() {
 //		Shell shell = new Shell();
 	    Shell shell = new Shell( SWT.NONE );
-//		progress = new ProgressIndicator(shell, style);
-		progress = new ProgressIndicator(shell);
+		progress = new ProgressIndicator(shell, style);
 		progress.setSize(175,175);
 		shell.setSize(200,200);
 		shell.open();

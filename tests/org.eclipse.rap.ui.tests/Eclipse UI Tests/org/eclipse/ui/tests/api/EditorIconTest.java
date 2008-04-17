@@ -39,7 +39,7 @@ public class EditorIconTest extends UITestCase {
         try {
 	        i1 = fWorkbench.getEditorRegistry().getDefaultEditor(
 	                "foo.icontest1").getImageDescriptor().createImage();
-	        i2 = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.ui",
+	        i2 = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.rap.ui",
 	                "icons/full/obj16/font.gif").createImage();
 	        ImageTests.assertEquals(i1, i2);
         }
