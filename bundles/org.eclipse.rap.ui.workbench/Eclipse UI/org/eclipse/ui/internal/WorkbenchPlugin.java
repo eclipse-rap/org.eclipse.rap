@@ -12,11 +12,8 @@
 package org.eclipse.ui.internal;
 
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -32,8 +29,6 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IPerspectiveRegistry;
@@ -101,29 +96,54 @@ import com.ibm.icu.text.MessageFormat;
  */
 public class WorkbenchPlugin extends AbstractUIPlugin {
 	
-	/**
-	 * Splash shell constant.
-	 */
-	private static final String DATA_SPLASH_SHELL = "org.eclipse.ui.workbench.splashShell"; //$NON-NLS-1$
+	  private final static class DecoratorManagerStore extends
+			SessionSingletonBase {
+		private final DecoratorManager decoratorManager;
 
-	/**
-	 * The OSGi splash property.
-	 * 
-	 * @sicne 3.4
-	 */
-	private static final String PROP_SPLASH_HANDLE = "org.eclipse.equinox.launcher.splash.handle"; //$NON-NLS-1$
+		private DecoratorManagerStore() {
+			decoratorManager = new DecoratorManager();
+		}
+
+		public static DecoratorManagerStore getInstance() {
+			Class clazz = DecoratorManagerStore.class;
+			return (DecoratorManagerStore) getInstance(clazz);
+		}
+
+		public DecoratorManager getDecoratorManager() {
+			return decoratorManager;
+		}
+	}
+	  
+	// RAP [bm]:
+// /**
+// * Splash shell constant.
+// */
+//	private static final String DATA_SPLASH_SHELL = "org.eclipse.ui.workbench.splashShell"; //$NON-NLS-1$
+
+	// RAP [bm]: 
+//	/**
+//	 * The OSGi splash property.
+//	 * 
+//	 * @sicne 3.4
+//	 */
+//	private static final String PROP_SPLASH_HANDLE = "org.eclipse.equinox.launcher.splash.handle"; //$NON-NLS-1$
 	
-	private static final String LEFT_TO_RIGHT = "ltr"; //$NON-NLS-1$
-	private static final String RIGHT_TO_LEFT = "rtl";//$NON-NLS-1$
-	private static final String ORIENTATION_COMMAND_LINE = "-dir";//$NON-NLS-1$
-	private static final String ORIENTATION_PROPERTY = "eclipse.orientation";//$NON-NLS-1$
-	private static final String NL_USER_PROPERTY = "osgi.nl.user"; //$NON-NLS-1$
+	// RAP [bm]: 
+//	private static final String LEFT_TO_RIGHT = "ltr"; //$NON-NLS-1$
+//	private static final String RIGHT_TO_LEFT = "rtl";//$NON-NLS-1$
+//	private static final String ORIENTATION_COMMAND_LINE = "-dir";//$NON-NLS-1$
+//	private static final String ORIENTATION_PROPERTY = "eclipse.orientation";//$NON-NLS-1$
+//	private static final String NL_USER_PROPERTY = "osgi.nl.user"; //$NON-NLS-1$
+	// RAPEND: [bm] 
    
     // Default instance of the receiver
     private static WorkbenchPlugin inst;
 
     // Manager that maps resources to descriptors of editors to use
-    private EditorRegistry editorRegistry;
+    
+    // RAP [bm]: session scoped registry used
+//    private EditorRegistry editorRegistry;
+    // RAPEND: [bm] 
 
     // Manager for the DecoratorManager
     private DecoratorManager decoratorManager;
@@ -280,7 +300,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
             throw core;
         } catch (Exception e) {
             throw new CoreException(new Status(IStatus.ERROR, PI_WORKBENCH,
-                    IStatus.ERROR, WorkbenchMessages.WorkbenchPlugin_extension,e));
+                    IStatus.ERROR, WorkbenchMessages.get().WorkbenchPlugin_extension,e));
         }
     }
     
@@ -451,10 +471,14 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      */
 
     public IEditorRegistry getEditorRegistry() {
-        if (editorRegistry == null) {
-            editorRegistry = new EditorRegistry();
-        }
-        return editorRegistry;
+      // RAP [bm]: 
+//        if (editorRegistry == null) {
+//            editorRegistry = new EditorRegistry();
+//        }
+//        return editorRegistry;
+      return EditorRegistry.getInstance();
+      // RAPEND: [bm] 
+
     }
 
     /**
@@ -955,20 +979,22 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 */
 	private int checkCommandLineLocale() {
 		
-		//Check if the user property is set. If not do not
-		//rely on the vm.
-		if(System.getProperty(NL_USER_PROPERTY) == null) {
-			return SWT.NONE;
-		}
-		
-		Locale locale = Locale.getDefault();
-		String lang = locale.getLanguage();
+		// RAP [bm]: 
+//		//Check if the user property is set. If not do not
+//		//rely on the vm.
+//		if(System.getProperty(NL_USER_PROPERTY) == null) {
+//			return SWT.NONE;
+//		}
+//		
+//		Locale locale = Locale.getDefault();
+//		String lang = locale.getLanguage();
+//
+//		if ("iw".equals(lang) || "he".equals(lang) || "ar".equals(lang) ||  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//				"fa".equals(lang) || "ur".equals(lang)) { //$NON-NLS-1$ //$NON-NLS-2$ 
+//			return SWT.RIGHT_TO_LEFT;
+//		}
+		// RAPEND: [bm] 
 
-		if ("iw".equals(lang) || "he".equals(lang) || "ar".equals(lang) ||  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				"fa".equals(lang) || "ur".equals(lang)) { //$NON-NLS-1$ //$NON-NLS-2$ 
-			return SWT.RIGHT_TO_LEFT;
-		}
-			
 		return SWT.NONE;
 	}
 
@@ -982,13 +1008,16 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * @see SWT#LEFT_TO_RIGHT
 	 */
 	private int getSystemPropertyOrientation() {
-		String orientation = System.getProperty(ORIENTATION_PROPERTY);
-		if(RIGHT_TO_LEFT.equals(orientation)) {
-			return SWT.RIGHT_TO_LEFT;
-		}
-		if(LEFT_TO_RIGHT.equals(orientation)) {
-			return SWT.LEFT_TO_RIGHT;
-		}
+		// RAP [bm]: 
+//		String orientation = System.getProperty(ORIENTATION_PROPERTY);
+//		if(RIGHT_TO_LEFT.equals(orientation)) {
+//			return SWT.RIGHT_TO_LEFT;
+//		}
+//		if(LEFT_TO_RIGHT.equals(orientation)) {
+//			return SWT.LEFT_TO_RIGHT;
+//		}
+		// RAPEND: [bm] 
+
 		return SWT.NONE;
 	}
 
@@ -1003,20 +1032,22 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 */
 	private int getCommandLineOrientation(String[] commandLineArgs) {
 		//Do not process the last one as it will never have a parameter
-		for (int i = 0; i < commandLineArgs.length - 1; i++) {
-			if(commandLineArgs[i].equalsIgnoreCase(ORIENTATION_COMMAND_LINE)){
-				String orientation = commandLineArgs[i+1];
-				if(orientation.equals(RIGHT_TO_LEFT)){
-					System.setProperty(ORIENTATION_PROPERTY,RIGHT_TO_LEFT);
-					return SWT.RIGHT_TO_LEFT;
-				}
-				if(orientation.equals(LEFT_TO_RIGHT)){
-					System.setProperty(ORIENTATION_PROPERTY,LEFT_TO_RIGHT);
-					return SWT.LEFT_TO_RIGHT;
-				}
-			}
-		}
-		
+		// RAP [bm]: 
+//		for (int i = 0; i < commandLineArgs.length - 1; i++) {
+//			if(commandLineArgs[i].equalsIgnoreCase(ORIENTATION_COMMAND_LINE)){
+//				String orientation = commandLineArgs[i+1];
+//				if(orientation.equals(RIGHT_TO_LEFT)){
+//					System.setProperty(ORIENTATION_PROPERTY,RIGHT_TO_LEFT);
+//					return SWT.RIGHT_TO_LEFT;
+//				}
+//				if(orientation.equals(LEFT_TO_RIGHT)){
+//					System.setProperty(ORIENTATION_PROPERTY,LEFT_TO_RIGHT);
+//					return SWT.LEFT_TO_RIGHT;
+//				}
+//			}
+//		}
+		// RAPEND: [bm] 
+
 		return SWT.NONE;
 	}
 
@@ -1242,80 +1273,85 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * @since 3.4
 	 */
 	public static boolean isSplashHandleSpecified() {
-		return System.getProperty(PROP_SPLASH_HANDLE) != null;
+		// RAP [bm]: 
+//		return System.getProperty(PROP_SPLASH_HANDLE) != null;
+		return false;
+		// RAPEND: [bm] 
 	}
 	
-	/**
-	 * Get the splash shell for this workbench instance, if any. This will find
-	 * the splash created by the launcher (native) code and wrap it in a SWT
-	 * shell. This may have the side effect of setting data on the provided
-	 * {@link Display}.
-	 * 
-	 * @param display
-	 *            the display to parent the shell on
-	 * 
-	 * @return the splash shell or <code>null</code>
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws NumberFormatException
-	 * @see Display#setData(String, Object)
-	 * @since 3.4
-	 */
-	public static Shell getSplashShell(Display display)
-			throws NumberFormatException, IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
-		Shell splashShell = (Shell) display.getData(DATA_SPLASH_SHELL); 
-		if (splashShell != null)
-			return splashShell;
-		
-		String splashHandle = System.getProperty(PROP_SPLASH_HANDLE);
-		if (splashHandle == null) {
-			return null;
-		}
+	// RAP [bm]: 
+//	/**
+//	 * Get the splash shell for this workbench instance, if any. This will find
+//	 * the splash created by the launcher (native) code and wrap it in a SWT
+//	 * shell. This may have the side effect of setting data on the provided
+//	 * {@link Display}.
+//	 * 
+//	 * @param display
+//	 *            the display to parent the shell on
+//	 * 
+//	 * @return the splash shell or <code>null</code>
+//	 * @throws InvocationTargetException
+//	 * @throws IllegalAccessException
+//	 * @throws IllegalArgumentException
+//	 * @throws NumberFormatException
+//	 * @see Display#setData(String, Object)
+//	 * @since 3.4
+//	 */
+//	public static Shell getSplashShell(Display display)
+//			throws NumberFormatException, IllegalArgumentException,
+//			IllegalAccessException, InvocationTargetException {
+//		Shell splashShell = (Shell) display.getData(DATA_SPLASH_SHELL); 
+//		if (splashShell != null)
+//			return splashShell;
+//		
+//		String splashHandle = System.getProperty(PROP_SPLASH_HANDLE);
+//		if (splashHandle == null) {
+//			return null;
+//		}
+//	
+//		// look for the 32 bit internal_new shell method
+//		try {
+//			Method method = Shell.class.getMethod(
+//					"internal_new", new Class[] { Display.class, int.class }); //$NON-NLS-1$
+//			// we're on a 32 bit platform so invoke it with splash
+//			// handle as an int
+//			splashShell = (Shell) method.invoke(null, new Object[] { display,
+//					new Integer(splashHandle) });
+//		} catch (NoSuchMethodException e) {
+//			// look for the 64 bit internal_new shell method
+//			try {
+//				Method method = Shell.class
+//						.getMethod(
+//								"internal_new", new Class[] { Display.class, long.class }); //$NON-NLS-1$
+//
+//				// we're on a 64 bit platform so invoke it with a long
+//				splashShell = (Shell) method.invoke(null, new Object[] {
+//						display, new Long(splashHandle) });
+//			} catch (NoSuchMethodException e2) {
+//				// cant find either method - don't do anything.
+//			}
+//		}
+//
+//		display.setData(DATA_SPLASH_SHELL, splashShell);
+//		return splashShell;
+//	}
 	
-		// look for the 32 bit internal_new shell method
-		try {
-			Method method = Shell.class.getMethod(
-					"internal_new", new Class[] { Display.class, int.class }); //$NON-NLS-1$
-			// we're on a 32 bit platform so invoke it with splash
-			// handle as an int
-			splashShell = (Shell) method.invoke(null, new Object[] { display,
-					new Integer(splashHandle) });
-		} catch (NoSuchMethodException e) {
-			// look for the 64 bit internal_new shell method
-			try {
-				Method method = Shell.class
-						.getMethod(
-								"internal_new", new Class[] { Display.class, long.class }); //$NON-NLS-1$
-
-				// we're on a 64 bit platform so invoke it with a long
-				splashShell = (Shell) method.invoke(null, new Object[] {
-						display, new Long(splashHandle) });
-			} catch (NoSuchMethodException e2) {
-				// cant find either method - don't do anything.
-			}
-		}
-
-		display.setData(DATA_SPLASH_SHELL, splashShell);
-		return splashShell;
-	}
-	
-	/**
-	 * Removes any splash shell data set on the provided display and disposes
-	 * the shell if necessary.
-	 * 
-	 * @param display
-	 *            the display to parent the shell on
-	 * @since 3.4
-	 */
-	public static void unsetSplashShell(Display display) {
-		Shell splashShell = (Shell) display.getData(DATA_SPLASH_SHELL);
-		if (splashShell != null) {
-			if (!splashShell.isDisposed())
-				splashShell.dispose();
-			display.setData(DATA_SPLASH_SHELL, null);
-		}
-
-	}
+	// RAP [bm]: 
+//	/**
+//	 * Removes any splash shell data set on the provided display and disposes
+//	 * the shell if necessary.
+//	 * 
+//	 * @param display
+//	 *            the display to parent the shell on
+//	 * @since 3.4
+//	 */
+//	public static void unsetSplashShell(Display display) {
+//		Shell splashShell = (Shell) display.getData(DATA_SPLASH_SHELL);
+//		if (splashShell != null) {
+//			if (!splashShell.isDisposed())
+//				splashShell.dispose();
+//			display.setData(DATA_SPLASH_SHELL, null);
+//		}
+//
+//	}
 }

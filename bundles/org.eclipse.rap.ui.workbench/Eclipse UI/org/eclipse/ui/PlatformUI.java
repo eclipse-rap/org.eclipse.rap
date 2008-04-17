@@ -11,6 +11,7 @@
 package org.eclipse.ui;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.internal.Workbench;
@@ -36,7 +37,13 @@ public final class PlatformUI {
     /**
      * Identifies the workbench plug-in.
      */
-    public static final String PLUGIN_ID = "org.eclipse.ui"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.eclipse.rap.ui";  //$NON-NLS-1$
+	
+	// RAP [bm]: 
+	/**
+	 * Identifies the namespace for extension points (RAP only)
+	 */
+	public static final String PLUGIN_EXTENSION_NAME_SPACE = "org.eclipse.ui";  //$NON-NLS-1$
 
     /**
      * Return code (value 0) indicating that the workbench terminated normally.
@@ -89,7 +96,7 @@ public final class PlatformUI {
     public static IWorkbench getWorkbench() {
         if (Workbench.getInstance() == null) {
             // app forgot to call createAndRunWorkbench beforehand
-            throw new IllegalStateException(WorkbenchMessages.PlatformUI_NoWorkbench); 
+            throw new IllegalStateException(WorkbenchMessages.get().PlatformUI_NoWorkbench); 
         }
         return Workbench.getInstance();
     }
@@ -110,8 +117,14 @@ public final class PlatformUI {
 	 * @since 3.0
 	 */
     public static boolean isWorkbenchRunning() {
-        return Workbench.getInstance() != null
-                && Workbench.getInstance().isRunning();
+    	// RAP [fappel]: should only called by UI-Threads. May cause trouble 
+    	//                during bundle startup -> hasContext check. Think about
+    	//                a better solution
+//    	return Workbench.getInstance() != null
+//    	&& Workbench.getInstance().isRunning();
+        return    ContextProvider.hasContext()
+               && Workbench.getInstance() != null
+               && Workbench.getInstance().isRunning();
     }
 
     /**
