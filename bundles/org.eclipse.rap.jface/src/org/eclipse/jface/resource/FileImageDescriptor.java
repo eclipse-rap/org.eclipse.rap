@@ -177,9 +177,7 @@ class FileImageDescriptor extends ImageDescriptor {
 		try {			
 			// RAP [bm]: 
 //			return new Image(device, path);
-//			return Graphics.getImage(path);
-			path = location.getPackage().getName().replace( '.', '/' );
-		      return Graphics.getImage( path + "/" + name, getStream() ); //$NON-NLS-1$
+			return Graphics.getImage(path, getStream());
 			// RAPEND: [bm] 
 		} catch (SWTException exception) {
 			Policy.logException(exception);
@@ -198,7 +196,6 @@ class FileImageDescriptor extends ImageDescriptor {
 		try {
 			if (returnMissingImageOnError)
 				// RAP [bm]: 
-				// TODO: [bm] review if this is ok,
 //				return new Image(device, DEFAULT_IMAGE_DATA);
 				return ResourceFactory.findImage(DEFAULT_IMAGE_DATA);
 				// RAPEND: [bm] 

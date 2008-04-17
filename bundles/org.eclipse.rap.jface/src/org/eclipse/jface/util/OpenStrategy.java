@@ -12,20 +12,12 @@ package org.eclipse.jface.util;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.custom.TableTree;
-//import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.swt.widgets.Widget;
 
 /**
  * Implementation of single-click and double-click strategies.
@@ -85,7 +77,8 @@ public class OpenStrategy {
     public static final int ACTIVE_DESKTOP = SINGLE_CLICK | SELECT_ON_HOVER;
 
     // Time used in FILE_EXPLORER and ACTIVE_DESKTOP
-    private static final int TIME = 500;
+    // RAP [bm]: not used
+//    private static final int TIME = 500;
 
     /* SINGLE_CLICK or DOUBLE_CLICK;
      * In case of SINGLE_CLICK, the bits SELECT_ON_HOVER and ARROW_KEYS_OPEN
@@ -270,23 +263,24 @@ public class OpenStrategy {
     //Initialize event handler.
     private void initializeHandler(final Display display) {
         eventHandler = new Listener() {
-            boolean timerStarted = false;
+        	
+        	// RAP [bm]: 
+//        	boolean timerStarted = false;
+//            Event mouseMoveEvent = null;
+//            long startTime = System.currentTimeMillis();
+//            SelectionEvent defaultSelectionPendent = null;
+        	// RAPEND: [bm] 
 
             Event mouseUpEvent = null;
-
-            Event mouseMoveEvent = null;
 
             SelectionEvent selectionPendent = null;
 
             boolean enterKeyDown = false;
 
-            SelectionEvent defaultSelectionPendent = null;
-
             boolean arrowKeyDown = false;
 
             final int[] count = new int[1];
 
-            long startTime = System.currentTimeMillis();
 
             boolean collapseOccurred = false;
 
@@ -302,9 +296,11 @@ public class OpenStrategy {
                         if (enterKeyDown) {
                             fireOpenEvent(event);
                             enterKeyDown = false;
-                            defaultSelectionPendent = null;
+                            // RAP [bm]: 
+//                            defaultSelectionPendent = null;
                         } else {
-                            defaultSelectionPendent = event;
+                        	// RAP [bm]: 
+//                            defaultSelectionPendent = event;
                         }
                     }
                     return;
@@ -360,7 +356,8 @@ public class OpenStrategy {
                     collapseOccurred = true;
                     break;
                 case SWT.MouseUp:
-                    mouseMoveEvent = null;
+                	// RAP [bm]: 
+//                    mouseMoveEvent = null;
                     // RAP [bm]: 
 //                    if ((e.button != 1) || ((e.stateMask & ~SWT.BUTTON1) != 0)) {
 //						return;
@@ -399,7 +396,8 @@ public class OpenStrategy {
                 case SWT.Selection:
                     SelectionEvent event = new SelectionEvent(e);
                     fireSelectionEvent(event);
-                    mouseMoveEvent = null;
+                    // RAP [bm]: 
+//                    mouseMoveEvent = null;
                     if (mouseUpEvent != null) {
 						mouseSelectItem(event);
 					} else {
@@ -414,7 +412,7 @@ public class OpenStrategy {
                     display.asyncExec(new Runnable() {
                         public void run() {
                             if (arrowKeyDown) {
-                            	// RAP [bm]: Display#timerExec
+                            	// RAP [bm]: Display#timerExec and client-side workarounds
 //                                display.timerExec(TIME, new Runnable() {
 //
 //                                    public void run() {
@@ -445,35 +443,35 @@ public class OpenStrategy {
                 selectionPendent = null;
             }
 
-            void setSelection(Event e) {
-                if (e == null) {
-					return;
-				}
-                Widget w = e.widget;
-                if (w.isDisposed()) {
-					return;
-				}
-
-                SelectionEvent selEvent = new SelectionEvent(e);
-
-                /*ISSUE: May have to create a interface with method:
-                 setSelection(Point p) so that user's custom widgets 
-                 can use this class. If we keep this option. */
-                if (w instanceof Tree) {
-                    Tree tree = (Tree) w;
-                    TreeItem item = tree.getItem(new Point(e.x, e.y));
-                    if (item != null) {
-						tree.setSelection(new TreeItem[] { item });
-					}
-                    selEvent.item = item;
-                } else if (w instanceof Table) {
-                    Table table = (Table) w;
-                    TableItem item = table.getItem(new Point(e.x, e.y));
-                    if (item != null) {
-						table.setSelection(new TableItem[] { item });
-					}
-                    selEvent.item = item;
-                    // RAP [bm]: 
+            // RAP [bm]: 
+//            void setSelection(Event e) {
+//                if (e == null) {
+//					return;
+//				}
+//                Widget w = e.widget;
+//                if (w.isDisposed()) {
+//					return;
+//				}
+//
+//                SelectionEvent selEvent = new SelectionEvent(e);
+//
+//                /*ISSUE: May have to create a interface with method:
+//                 setSelection(Point p) so that user's custom widgets 
+//                 can use this class. If we keep this option. */
+//                if (w instanceof Tree) {
+//                    Tree tree = (Tree) w;
+//                    TreeItem item = tree.getItem(new Point(e.x, e.y));
+//                    if (item != null) {
+//						tree.setSelection(new TreeItem[] { item });
+//					}
+//                    selEvent.item = item;
+//                } else if (w instanceof Table) {
+//                    Table table = (Table) w;
+//                    TableItem item = table.getItem(new Point(e.x, e.y));
+//                    if (item != null) {
+//						table.setSelection(new TableItem[] { item });
+//					}
+//                    selEvent.item = item;
 //                } else if (w instanceof TableTree) {
 //                    TableTree table = (TableTree) w;
 //                    TableTreeItem item = table.getItem(new Point(e.x, e.y));
@@ -481,16 +479,15 @@ public class OpenStrategy {
 //						table.setSelection(new TableTreeItem[] { item });
 //					}
 //                    selEvent.item = item;
-                    // RAPEND: [bm] 
-                } else {
-                    return;
-                }
-                if (selEvent.item == null) {
-					return;
-				}
-                fireSelectionEvent(selEvent);
-                firePostSelectionEvent(selEvent);
-            }
+//                } else {
+//                    return;
+//                }
+//                if (selEvent.item == null) {
+//					return;
+//				}
+//                fireSelectionEvent(selEvent);
+//                firePostSelectionEvent(selEvent);
+//            }
         };
     }
 }

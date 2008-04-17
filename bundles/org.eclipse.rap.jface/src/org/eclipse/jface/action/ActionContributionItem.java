@@ -12,12 +12,6 @@ package org.eclipse.jface.action;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.NotEnabledException;
-import org.eclipse.jface.action.ExternalActionManager.IBindingManagerCallback;
-import org.eclipse.jface.bindings.Trigger;
-import org.eclipse.jface.bindings.TriggerSequence;
-import org.eclipse.jface.bindings.keys.IKeyLookup;
-import org.eclipse.jface.bindings.keys.KeyLookupFactory;
-import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -27,7 +21,6 @@ import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -861,37 +854,39 @@ public class ActionContributionItem extends ContributionItem {
 					 */
 					final String commandId = updatedAction
 							.getActionDefinitionId();
-					if (("gtk".equals(SWT.getPlatform())) && (callback instanceof IBindingManagerCallback) //$NON-NLS-1$
-							&& (commandId != null)) {
-						final IBindingManagerCallback bindingManagerCallback = (IBindingManagerCallback) callback;
-						final IKeyLookup lookup = KeyLookupFactory.getDefault();
-						final TriggerSequence[] triggerSequences = bindingManagerCallback
-								.getActiveBindingsFor(commandId);
-						for (int i = 0; i < triggerSequences.length; i++) {
-							final TriggerSequence triggerSequence = triggerSequences[i];
-							final Trigger[] triggers = triggerSequence
-									.getTriggers();
-							if (triggers.length == 1) {
-								final Trigger trigger = triggers[0];
-								if (trigger instanceof KeyStroke) {
-									final KeyStroke currentKeyStroke = (KeyStroke) trigger;
-									final int currentNaturalKey = currentKeyStroke
-											.getNaturalKey();
-									if ((currentKeyStroke.getModifierKeys() == (lookup
-											.getCtrl() | lookup.getShift()))
-											&& ((currentNaturalKey >= '0' && currentNaturalKey <= '9')
-													|| (currentNaturalKey >= 'A' && currentNaturalKey <= 'F') || (currentNaturalKey == 'U'))) {
-										accelerator = currentKeyStroke
-												.getModifierKeys()
-												| currentNaturalKey;
-										acceleratorText = triggerSequence
-												.format();
-										break;
-									}
-								}
-							}
-						}
-					}
+					// RAP [bm]: 
+//					if (("gtk".equals(SWT.getPlatform())) && (callback instanceof IBindingManagerCallback) //$NON-NLS-1$
+//							&& (commandId != null)) {
+//						final IBindingManagerCallback bindingManagerCallback = (IBindingManagerCallback) callback;
+//						final IKeyLookup lookup = KeyLookupFactory.getDefault();
+//						final TriggerSequence[] triggerSequences = bindingManagerCallback
+//								.getActiveBindingsFor(commandId);
+//						for (int i = 0; i < triggerSequences.length; i++) {
+//							final TriggerSequence triggerSequence = triggerSequences[i];
+//							final Trigger[] triggers = triggerSequence
+//									.getTriggers();
+//							if (triggers.length == 1) {
+//								final Trigger trigger = triggers[0];
+//								if (trigger instanceof KeyStroke) {
+//									final KeyStroke currentKeyStroke = (KeyStroke) trigger;
+//									final int currentNaturalKey = currentKeyStroke
+//											.getNaturalKey();
+//									if ((currentKeyStroke.getModifierKeys() == (lookup
+//											.getCtrl() | lookup.getShift()))
+//											&& ((currentNaturalKey >= '0' && currentNaturalKey <= '9')
+//													|| (currentNaturalKey >= 'A' && currentNaturalKey <= 'F') || (currentNaturalKey == 'U'))) {
+//										accelerator = currentKeyStroke
+//												.getModifierKeys()
+//												| currentNaturalKey;
+//										acceleratorText = triggerSequence
+//												.format();
+//										break;
+//									}
+//								}
+//							}
+//						}
+//					}
+					// RAPEND: [bm] 
 
 					if (accelerator == 0) {
 						if ((callback != null) && (commandId != null)) {
@@ -1293,8 +1288,11 @@ public class ActionContributionItem extends ContributionItem {
 		
 		// we notify the real menu so it can populate itself if it was
 		// listening for SWT.Show
-		realMenu.notifyListeners(SWT.Show, null);
+		// RAP [bm]: not sure if this could be interesting for wb?
+//		realMenu.notifyListeners(SWT.Show, null);
+		// RAPEND: [bm] 
 
+		
 		final Listener passThrough = new Listener() {
 			public void handleEvent(Event event) {
 				if (!event.widget.isDisposed()) {
@@ -1309,7 +1307,9 @@ public class ActionContributionItem extends ContributionItem {
 											.getSelection());
 						}
 						event.widget = realItem;
-						realItem.notifyListeners(event.type, event);
+						// RAP [bm]: not sure if this could be interesting for wb?
+//						realItem.notifyListeners(event.type, event);
+						// RAPEND: [bm] 
 					}
 				}
 			}
@@ -1371,7 +1371,10 @@ public class ActionContributionItem extends ContributionItem {
 					parentItem.setMenu(holdMenu);
 				}
 				if (holdMenu != null && !holdMenu.isDisposed()) {
-					holdMenu.notifyListeners(SWT.Hide, null);
+					// RAP [bm]: interesting for wb?
+//					holdMenu.notifyListeners(SWT.Hide, null);
+					// RAPEND: [bm] 
+
 				}
 				holdMenu = null;
 			}

@@ -15,9 +15,7 @@ package org.eclipse.jface.viewers;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -100,27 +98,30 @@ public class ListViewer extends AbstractListViewer {
      * Method defined on StructuredViewer.
      */
     public void reveal(Object element) {
-        Assert.isNotNull(element);
-        int index = getElementIndex(element);
-        if (index == -1) {
-			return;
-		}
-        // algorithm patterned after List.showSelection()
-        int count = list.getItemCount();
-        if (count == 0) {
-			return;
-		}
-        int height = list.getItemHeight();
-        Rectangle rect = list.getClientArea();
-        int topIndex = list.getTopIndex();
-        int visibleCount = Math.max(rect.height / height, 1);
-        int bottomIndex = Math.min(topIndex + visibleCount, count) - 1;
-        if ((topIndex <= index) && (index <= bottomIndex)) {
-			return;
-		}
-        int newTop = Math.min(Math.max(index - (visibleCount / 2), 0),
-                count - 1);
-        list.setTopIndex(newTop);
+    	// RAP [bm]: List#setTopIndex
+//        Assert.isNotNull(element);
+//        int index = getElementIndex(element);
+//        if (index == -1) {
+//			return;
+//		}
+//        // algorithm patterned after List.showSelection()
+//        int count = list.getItemCount();
+//        if (count == 0) {
+//			return;
+//		}
+//        int height = list.getItemHeight();
+//        Rectangle rect = list.getClientArea();
+//        int topIndex = list.getTopIndex();
+//        int visibleCount = Math.max(rect.height / height, 1);
+//        int bottomIndex = Math.min(topIndex + visibleCount, count) - 1;
+//        if ((topIndex <= index) && (index <= bottomIndex)) {
+//			return;
+//		}
+//        int newTop = Math.min(Math.max(index - (visibleCount / 2), 0),
+//                count - 1);
+//        list.setTopIndex(newTop);
+        // RAPEND: [bm] 
+
     }
 
     /* (non-Javadoc)
@@ -190,14 +191,17 @@ public class ListViewer extends AbstractListViewer {
      * @see org.eclipse.jface.viewers.AbstractListViewer#listShowSelection()
      */
     protected void listShowSelection() {
-        list.showSelection();
+    	// RAP [bm]: List#showSelection
+//        list.showSelection();
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.AbstractListViewer#listGetTopIndex()
      */
     protected int listGetTopIndex() {
-    	return list.getTopIndex();
+    	// RAP [bm]: List#getTopIndex
+//    	return list.getTopIndex();
+    	return 0;
     }
     
     /*
@@ -205,7 +209,8 @@ public class ListViewer extends AbstractListViewer {
      * @see org.eclipse.jface.viewers.AbstractListViewer#listSetTopIndex(int)
      */
     protected void listSetTopIndex(int index) {
-    	list.setTopIndex(index);
+    	// RAP [bm]: List#setTopIndex
+//    	list.setTopIndex(index);
     }
 
 	/* (non-Javadoc)

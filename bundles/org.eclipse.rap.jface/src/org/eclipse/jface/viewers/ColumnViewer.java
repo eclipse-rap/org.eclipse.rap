@@ -18,8 +18,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.internal.InternalPolicy;
 import org.eclipse.jface.util.Policy;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
@@ -38,9 +36,10 @@ import org.eclipse.swt.widgets.Widget;
  *
  */
 public abstract class ColumnViewer extends StructuredViewer {
-	private CellEditor[] cellEditors;
-
-	private ICellModifier cellModifier;
+	// RAP [bm]: 
+//	private CellEditor[] cellEditors;
+//	private ICellModifier cellModifier;
+	// RAPEND: [bm] 
 
 	private String[] columnProperties;
 
@@ -49,7 +48,8 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 */
 	private ViewerCell cell = new ViewerCell(null, 0, null);
 
-	private ColumnViewerEditor viewerEditor;
+	// RAP [bm]: 
+//	private ColumnViewerEditor viewerEditor;
 
 	private boolean busy;
 	private boolean logWhenBusy = true; // initially true, set to false
@@ -65,9 +65,10 @@ public abstract class ColumnViewer extends StructuredViewer {
 
 	protected void hookControl(Control control) {
 		super.hookControl(control);
+		// RAP [bm]: CellEditors
 //		viewerEditor = createViewerEditor();
 //		hookEditingSupport(control);
-		System.err.println("hookControl"); //$NON-NLS-1$
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -81,21 +82,21 @@ public abstract class ColumnViewer extends StructuredViewer {
 		// who are not hooked this way others may already overwrite and provide
 		// their
 		// own impl
-		if (viewerEditor != null) {
-			control.addMouseListener(new MouseAdapter() {
-				public void mouseDown(MouseEvent e) {
-					// Workaround for bug 185817
+		// RAP [bm]: 
+//		if (viewerEditor != null) {
+//			control.addMouseListener(new MouseAdapter() {
+//				public void mouseDown(MouseEvent e) {
+//					// Workaround for bug 185817
 //					if (e.count != 2) {
-						handleMouseDown(e);
+//						handleMouseDown(e);
 //					}
-						System.err.println("mouse event count"); //$NON-NLS-1$
-				}
-
-				public void mouseDoubleClick(MouseEvent e) {
-					handleMouseDown(e);
-				}
-			});
-		}
+//				}
+//
+//				public void mouseDoubleClick(MouseEvent e) {
+//					handleMouseDown(e);
+//				}
+//			});
+//		}
 	}
 
 	/**
@@ -105,7 +106,8 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * @return the editor, or <code>null</code> if this viewer does not
 	 *         support editing cell contents.
 	 */
-	protected abstract ColumnViewerEditor createViewerEditor();
+	// RAP [bm]: 
+//	protected abstract ColumnViewerEditor createViewerEditor();
 
 	/**
 	 * Returns the viewer cell at the given widget-relative coordinates, or
@@ -192,9 +194,10 @@ public abstract class ColumnViewer extends StructuredViewer {
 			setupEditingSupport(columnIndex, viewer);
 		}
 
-		if (viewer.getEditingSupport() == null && getCellModifier() != null) {
-			setupEditingSupport(columnIndex, viewer);
-		}
+		// RAP [bm]: 
+//		if (viewer.getEditingSupport() == null && getCellModifier() != null) {
+//			setupEditingSupport(columnIndex, viewer);
+//		}
 
 		return viewer;
 	}
@@ -207,75 +210,76 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * @param viewer
 	 */
 	private void setupEditingSupport(final int columnIndex, ViewerColumn viewer) {
-		if (getCellModifier() != null) {
-			viewer.setEditingSupport(new EditingSupport(this) {
-
-				/*
-				 * (non-Javadoc)
-				 *
-				 * @see org.eclipse.jface.viewers.EditingSupport#canEdit(java.lang.Object)
-				 */
-				public boolean canEdit(Object element) {
-					Object[] properties = getColumnProperties();
-
-					if (columnIndex < properties.length) {
-						return getCellModifier().canModify(element,
-								(String) getColumnProperties()[columnIndex]);
-					}
-
-					return false;
-				}
-
-				/*
-				 * (non-Javadoc)
-				 *
-				 * @see org.eclipse.jface.viewers.EditingSupport#getCellEditor(java.lang.Object)
-				 */
-				public CellEditor getCellEditor(Object element) {
-					CellEditor[] editors = getCellEditors();
-					if (columnIndex < editors.length) {
-						return getCellEditors()[columnIndex];
-					}
-					return null;
-				}
-
-				/*
-				 * (non-Javadoc)
-				 *
-				 * @see org.eclipse.jface.viewers.EditingSupport#getValue(java.lang.Object)
-				 */
-				public Object getValue(Object element) {
-					Object[] properties = getColumnProperties();
-
-					if (columnIndex < properties.length) {
-						return getCellModifier().getValue(element,
-								(String) getColumnProperties()[columnIndex]);
-					}
-
-					return null;
-				}
-
-				/*
-				 * (non-Javadoc)
-				 *
-				 * @see org.eclipse.jface.viewers.EditingSupport#setValue(java.lang.Object,
-				 *      java.lang.Object)
-				 */
-				public void setValue(Object element, Object value) {
-					Object[] properties = getColumnProperties();
-
-					if (columnIndex < properties.length) {
-						getCellModifier().modify(findItem(element),
-								(String) getColumnProperties()[columnIndex],
-								value);
-					}
-				}
-
-				boolean isLegacySupport() {
-					return true;
-				}
-			});
-		}
+		// RAP [bm]: 
+//		if (getCellModifier() != null) {
+//			viewer.setEditingSupport(new EditingSupport(this) {
+//
+//				/*
+//				 * (non-Javadoc)
+//				 *
+//				 * @see org.eclipse.jface.viewers.EditingSupport#canEdit(java.lang.Object)
+//				 */
+//				public boolean canEdit(Object element) {
+//					Object[] properties = getColumnProperties();
+//
+//					if (columnIndex < properties.length) {
+//						return getCellModifier().canModify(element,
+//								(String) getColumnProperties()[columnIndex]);
+//					}
+//
+//					return false;
+//				}
+//
+//				/*
+//				 * (non-Javadoc)
+//				 *
+//				 * @see org.eclipse.jface.viewers.EditingSupport#getCellEditor(java.lang.Object)
+//				 */
+//				public CellEditor getCellEditor(Object element) {
+//					CellEditor[] editors = getCellEditors();
+//					if (columnIndex < editors.length) {
+//						return getCellEditors()[columnIndex];
+//					}
+//					return null;
+//				}
+//
+//				/*
+//				 * (non-Javadoc)
+//				 *
+//				 * @see org.eclipse.jface.viewers.EditingSupport#getValue(java.lang.Object)
+//				 */
+//				public Object getValue(Object element) {
+//					Object[] properties = getColumnProperties();
+//
+//					if (columnIndex < properties.length) {
+//						return getCellModifier().getValue(element,
+//								(String) getColumnProperties()[columnIndex]);
+//					}
+//
+//					return null;
+//				}
+//
+//				/*
+//				 * (non-Javadoc)
+//				 *
+//				 * @see org.eclipse.jface.viewers.EditingSupport#setValue(java.lang.Object,
+//				 *      java.lang.Object)
+//				 */
+//				public void setValue(Object element, Object value) {
+//					Object[] properties = getColumnProperties();
+//
+//					if (columnIndex < properties.length) {
+//						getCellModifier().modify(findItem(element),
+//								(String) getColumnProperties()[columnIndex],
+//								value);
+//					}
+//				}
+//
+//				boolean isLegacySupport() {
+//					return true;
+//				}
+//			});
+//		}
 	}
 
 	/**
@@ -389,143 +393,151 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 *
 	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
 	 */
-	public void cancelEditing() {
-		if (viewerEditor != null) {
-			viewerEditor.cancelEditing();
-		}
-	}
+	// RAP [bm]: 
+//	public void cancelEditing() {
+//		if (viewerEditor != null) {
+//			viewerEditor.cancelEditing();
+//		}
+//	}
 
 	/**
 	 * Apply the value of the active cell editor if one is active.
 	 *
 	 * @since 3.3
 	 */
-	protected void applyEditorValue() {
-		if (viewerEditor != null) {
-			viewerEditor.applyEditorValue();
-		}
-	}
+	// RAP [bm]: 
+//	protected void applyEditorValue() {
+//		if (viewerEditor != null) {
+//			viewerEditor.applyEditorValue();
+//		}
+//	}
 
-	/**
-	 * Starts editing the given element at the given column index.
-	 *
-	 * @param element
-	 *            the model element
-	 * @param column
-	 *            the column index
-	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
-	 */
-	public void editElement(Object element, int column) {
-		if (viewerEditor != null) {
-			try {
-				getControl().setRedraw(false);
-				// Set the selection at first because in Tree's
-				// the element might not be materialized
-				setSelection(new StructuredSelection(element), true);
+	// RAP [bm]: 
+//	/**
+//	 * Starts editing the given element at the given column index.
+//	 *
+//	 * @param element
+//	 *            the model element
+//	 * @param column
+//	 *            the column index
+//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 */
+//	public void editElement(Object element, int column) {
+//		if (viewerEditor != null) {
+//			try {
+//				getControl().setRedraw(false);
+//				// Set the selection at first because in Tree's
+//				// the element might not be materialized
+//				setSelection(new StructuredSelection(element), true);
+//
+//				Widget item = findItem(element);
+//				if (item != null) {
+//					ViewerRow row = getViewerRowFromItem(item);
+//					if (row != null) {
+//						ViewerCell cell = row.getCell(column);
+//						if (cell != null) {
+//							triggerEditorActivationEvent(new ColumnViewerEditorActivationEvent(
+//									cell));
+//						}
+//					}
+//				}
+//			} finally {
+//				getControl().setRedraw(true);
+//			}
+//		}
+//	}
 
-				Widget item = findItem(element);
-				if (item != null) {
-					ViewerRow row = getViewerRowFromItem(item);
-					if (row != null) {
-						ViewerCell cell = row.getCell(column);
-						if (cell != null) {
-							triggerEditorActivationEvent(new ColumnViewerEditorActivationEvent(
-									cell));
-						}
-					}
-				}
-			} finally {
-				getControl().setRedraw(true);
-			}
-		}
-	}
+	// RAP [bm]: 
+//	/**
+//	 * Return the CellEditors for the receiver, or <code>null</code> if no
+//	 * cell editors are set.
+//	 * <p>
+//	 * Since 3.3, an alternative API is available, see
+//	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
+//	 * flexible way of editing values in a column viewer.
+//	 * </p>
+//	 *
+//	 * @return CellEditor[]
+//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 * @see ViewerColumn#setEditingSupport(EditingSupport)
+//	 * @see EditingSupport
+//	 */
+//	public CellEditor[] getCellEditors() {
+//		return cellEditors;
+//	}
 
-	/**
-	 * Return the CellEditors for the receiver, or <code>null</code> if no
-	 * cell editors are set.
-	 * <p>
-	 * Since 3.3, an alternative API is available, see
-	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
-	 * flexible way of editing values in a column viewer.
-	 * </p>
-	 *
-	 * @return CellEditor[]
-	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
-	 * @see ViewerColumn#setEditingSupport(EditingSupport)
-	 * @see EditingSupport
-	 */
-	public CellEditor[] getCellEditors() {
-		return cellEditors;
-	}
-
-	/**
-	 * Returns the cell modifier of this viewer, or <code>null</code> if none
-	 * has been set.
-	 *
-	 * <p>
-	 * Since 3.3, an alternative API is available, see
-	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
-	 * flexible way of editing values in a column viewer.
-	 * </p>
-	 *
-	 * @return the cell modifier, or <code>null</code>
-	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
-	 * @see ViewerColumn#setEditingSupport(EditingSupport)
-	 * @see EditingSupport
-	 */
-	public ICellModifier getCellModifier() {
-		return cellModifier;
-	}
+	// RAP [bm]: 
+//	/**
+//	 * Returns the cell modifier of this viewer, or <code>null</code> if none
+//	 * has been set.
+//	 *
+//	 * <p>
+//	 * Since 3.3, an alternative API is available, see
+//	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
+//	 * flexible way of editing values in a column viewer.
+//	 * </p>
+//	 *
+//	 * @return the cell modifier, or <code>null</code>
+//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 * @see ViewerColumn#setEditingSupport(EditingSupport)
+//	 * @see EditingSupport
+//	 */
+//	public ICellModifier getCellModifier() {
+//		return cellModifier;
+//	}
 
 	/**
 	 * Returns the column properties of this table viewer. The properties must
 	 * correspond with the columns of the table control. They are used to
 	 * identify the column in a cell modifier.
 	 *
-	 * <p>
-	 * Since 3.3, an alternative API is available, see
-	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
-	 * flexible way of editing values in a column viewer.
-	 * </p>
-	 *
 	 * @return the list of column properties
-	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
-	 * @see ViewerColumn#setEditingSupport(EditingSupport)
-	 * @see EditingSupport
 	 */
+//	* <p>
+//	* Since 3.3, an alternative API is available, see
+//	* {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
+//	* flexible way of editing values in a column viewer.
+//	* </p>
+//	*
+//	* @return the list of column properties
+//	* @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	* @see ViewerColumn#setEditingSupport(EditingSupport)
+//	* @see EditingSupport
 	public Object[] getColumnProperties() {
 		return columnProperties;
 	}
 
-	/**
-	 * Returns whether there is an active cell editor.
-	 *
-	 * <p>
-	 * Since 3.3, an alternative API is available, see
-	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
-	 * flexible way of editing values in a column viewer.
-	 * </p>
-	 *
-	 * @return <code>true</code> if there is an active cell editor, and
-	 *         <code>false</code> otherwise
-	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
-	 * @see ViewerColumn#setEditingSupport(EditingSupport)
-	 * @see EditingSupport
-	 */
-	public boolean isCellEditorActive() {
-		if (viewerEditor != null) {
-			return viewerEditor.isCellEditorActive();
-		}
-		return false;
-	}
+	// RAP [bm]: 
+//	/**
+//	 * Returns whether there is an active cell editor.
+//	 *
+//	 * <p>
+//	 * Since 3.3, an alternative API is available, see
+//	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
+//	 * flexible way of editing values in a column viewer.
+//	 * </p>
+//	 *
+//	 * @return <code>true</code> if there is an active cell editor, and
+//	 *         <code>false</code> otherwise
+//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 * @see ViewerColumn#setEditingSupport(EditingSupport)
+//	 * @see EditingSupport
+//	 */
+//	public boolean isCellEditorActive() {
+//		if (viewerEditor != null) {
+//			return viewerEditor.isCellEditorActive();
+//		}
+//		return false;
+//	}
 
 	public void refresh(Object element) {
 		if (checkBusy())
 			return;
 
-		if (isCellEditorActive()) {
-			cancelEditing();
-		}
+		// RAP [bm]: 
+//		if (isCellEditorActive()) {
+//			cancelEditing();
+//		}
 
 		super.refresh(element);
 	}
@@ -534,9 +546,10 @@ public abstract class ColumnViewer extends StructuredViewer {
 		if (checkBusy())
 			return;
 
-		if (isCellEditorActive()) {
-			cancelEditing();
-		}
+		// RAP [bm]: 
+//		if (isCellEditorActive()) {
+//			cancelEditing();
+//		}
 
 		super.refresh(element, updateLabels);
 	}
@@ -563,29 +576,31 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * @see ViewerColumn#setEditingSupport(EditingSupport)
 	 * @see EditingSupport
 	 */
-	public void setCellEditors(CellEditor[] editors) {
-		this.cellEditors = editors;
-	}
+	// RAP [bm]: 
+//	public void setCellEditors(CellEditor[] editors) {
+//		this.cellEditors = editors;
+//	}
 
-	/**
-	 * Sets the cell modifier for this column viewer. This method does nothing
-	 * if editing is not supported by this viewer.
-	 *
-	 * <p>
-	 * Since 3.3, an alternative API is available, see
-	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
-	 * flexible way of editing values in a column viewer.
-	 * </p>
-	 *
-	 * @param modifier
-	 *            the cell modifier
-	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
-	 * @see ViewerColumn#setEditingSupport(EditingSupport)
-	 * @see EditingSupport
-	 */
-	public void setCellModifier(ICellModifier modifier) {
-		this.cellModifier = modifier;
-	}
+	// RAP [bm]: 
+//	/**
+//	 * Sets the cell modifier for this column viewer. This method does nothing
+//	 * if editing is not supported by this viewer.
+//	 *
+//	 * <p>
+//	 * Since 3.3, an alternative API is available, see
+//	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
+//	 * flexible way of editing values in a column viewer.
+//	 * </p>
+//	 *
+//	 * @param modifier
+//	 *            the cell modifier
+//	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	 * @see ViewerColumn#setEditingSupport(EditingSupport)
+//	 * @see EditingSupport
+//	 */
+//	public void setCellModifier(ICellModifier modifier) {
+//		this.cellModifier = modifier;
+//	}
 
 	/**
 	 * Sets the column properties of this column viewer. The properties must
@@ -593,18 +608,22 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * column in a cell modifier. If editing is not supported by this viewer the
 	 * call simply has no effect.
 	 *
-	 * <p>
-	 * Since 3.3, an alternative API is available, see
-	 * {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
-	 * flexible way of editing values in a column viewer.
-	 * </p>
-	 *
 	 * @param columnProperties
-	 *            the list of column properties
+ 	 *            the list of column properties
 	 * @since 3.1 (in subclasses, added in 3.3 to abstract class)
-	 * @see ViewerColumn#setEditingSupport(EditingSupport)
-	 * @see EditingSupport
 	 */
+//	*
+//	* <p>
+//	* Since 3.3, an alternative API is available, see
+//	* {@link ViewerColumn#setEditingSupport(EditingSupport)} for a more
+//	* flexible way of editing values in a column viewer.
+//	* </p>
+//	*
+//	* @param columnProperties
+//	*            the list of column properties
+//	* @since 3.1 (in subclasses, added in 3.3 to abstract class)
+//	* @see ViewerColumn#setEditingSupport(EditingSupport)
+//	* @see EditingSupport
 	public void setColumnProperties(String[] columnProperties) {
 		this.columnProperties = columnProperties;
 	}
@@ -641,14 +660,15 @@ public abstract class ColumnViewer extends StructuredViewer {
 		return null;
 	}
 
-	private void handleMouseDown(MouseEvent e) {
-		ViewerCell cell = getCell(new Point(e.x, e.y));
-
-		if (cell != null) {
-			triggerEditorActivationEvent(new ColumnViewerEditorActivationEvent(
-					cell, e));
-		}
-	}
+	// RAP [bm]: 
+//	private void handleMouseDown(MouseEvent e) {
+//		ViewerCell cell = getCell(new Point(e.x, e.y));
+//
+//		if (cell != null) {
+//			triggerEditorActivationEvent(new ColumnViewerEditorActivationEvent(
+//					cell, e));
+//		}
+//	}
 
 	/**
 	 * Invoking this method fires an editor activation event which tries to
@@ -659,26 +679,29 @@ public abstract class ColumnViewer extends StructuredViewer {
 	 * @param event
 	 *            the activation event
 	 */
-	protected void triggerEditorActivationEvent(
-			ColumnViewerEditorActivationEvent event) {
-		viewerEditor.handleEditorActivationEvent(event);
-	}
+	// RAP [bm]: 
+//	protected void triggerEditorActivationEvent(
+//			ColumnViewerEditorActivationEvent event) {
+//		viewerEditor.handleEditorActivationEvent(event);
+//	}
 
 	/**
 	 * @param columnViewerEditor
 	 *            the new column viewer editor
 	 */
-	public void setColumnViewerEditor(ColumnViewerEditor columnViewerEditor) {
-		Assert.isNotNull(viewerEditor);
-		this.viewerEditor = columnViewerEditor;
-	}
+	// RAP [bm]: 
+//	public void setColumnViewerEditor(ColumnViewerEditor columnViewerEditor) {
+//		Assert.isNotNull(viewerEditor);
+//		this.viewerEditor = columnViewerEditor;
+//	}
 
 	/**
 	 * @return the currently attached viewer editor
 	 */
-	public ColumnViewerEditor getColumnViewerEditor() {
-		return viewerEditor;
-	}
+	// RAP [bm]: 
+//	public ColumnViewerEditor getColumnViewerEditor() {
+//		return viewerEditor;
+//	}
 
 	protected Object[] getRawChildren(Object parent) {
 		boolean oldBusy = isBusy();
@@ -691,24 +714,25 @@ public abstract class ColumnViewer extends StructuredViewer {
 	}
 
 	void clearLegacyEditingSetup() {
-		if (getCellEditors() != null) {
-			int count = doGetColumnCount();
-			
-			for( int i = 0; i < count || i == 0; i++ ) {
-				Widget owner = getColumnViewerOwner(i);
-				if( owner != null && ! owner.isDisposed() ) {
-					ViewerColumn column = (ViewerColumn) owner.getData(ViewerColumn.COLUMN_VIEWER_KEY);
-					if( column != null ) {
-						EditingSupport e = column.getEditingSupport();
-						// Ensure that only EditingSupports are wiped that are setup
-						// for Legacy reasons
-						if (e != null && e.isLegacySupport()) {
-							column.setEditingSupport(null);
-						}
-					}
-				}
-			}
-		}
+		// RAP [bm]: 
+//		if (getCellEditors() != null) {
+//			int count = doGetColumnCount();
+//			
+//			for( int i = 0; i < count || i == 0; i++ ) {
+//				Widget owner = getColumnViewerOwner(i);
+//				if( owner != null && ! owner.isDisposed() ) {
+//					ViewerColumn column = (ViewerColumn) owner.getData(ViewerColumn.COLUMN_VIEWER_KEY);
+//					if( column != null ) {
+//						EditingSupport e = column.getEditingSupport();
+//						// Ensure that only EditingSupports are wiped that are setup
+//						// for Legacy reasons
+//						if (e != null && e.isLegacySupport()) {
+//							column.setEditingSupport(null);
+//						}
+//					}
+//				}
+//			}
+//		}
 	}
 
 	/**

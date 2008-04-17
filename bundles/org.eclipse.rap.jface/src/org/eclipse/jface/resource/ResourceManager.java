@@ -107,7 +107,7 @@ public abstract class ResourceManager {
      * <p>The resources returned from this method are reference counted and may be shared 
      * internally with other resource managers. They should never be disposed outside of the 
      * ResourceManager framework, or it will cause exceptions in other code that shares
-     * them. For example, never call {@link org.eclipse.swt.graphics.Resource#dispose()} 
+     * them. For example, never call org.eclipse.swt.graphics.Resource#dispose() 
      * on anything returned from this method.</p>
      * 
      * <p>
@@ -149,7 +149,7 @@ public abstract class ResourceManager {
     /**
      * <p>Creates an image, given an image descriptor. Images allocated in this manner must
      * be disposed by {@link #destroyImage(ImageDescriptor)}, and never by calling 
-     * {@link Image#dispose()}.</p>
+     * Image#dispose().</p>
      * 
      * <p>
      * If the image is intended to remain allocated for the lifetime of the ResourceManager,
@@ -230,7 +230,7 @@ public abstract class ResourceManager {
     /**
      * Allocates a color, given a color descriptor. Any color allocated in this
      * manner must be disposed by calling {@link #destroyColor(ColorDescriptor)}, 
-     * or by an eventual call to {@link #dispose()}. {@link Color#dispose()} must
+     * or by an eventual call to {@link #dispose()}. Color#dispose() must
      * never been called directly on the returned color.
      * 
      * @since 3.1 
@@ -246,7 +246,7 @@ public abstract class ResourceManager {
     /**
      * Allocates a color, given its RGB value. Any color allocated in this
      * manner must be disposed by calling {@link #destroyColor(RGB)}, 
-     * or by an eventual call to {@link #dispose()}. {@link Color#dispose()} must
+     * or by an eventual call to {@link #dispose()}. Color#dispose() must
      * never been called directly on the returned color.
      * 
      * @since 3.1 
@@ -285,7 +285,7 @@ public abstract class ResourceManager {
     /**
      * Returns the Font described by the given FontDescriptor. Any Font
      * allocated in this manner must be deallocated by calling disposeFont(...),
-     * or by an eventual call to {@link #dispose()}.  The method {@link Font#dispose()}
+     * or by an eventual call to {@link #dispose()}.  The method Font#dispose()
      * must never be called directly on the returned font.
      * 
      * @since 3.1 

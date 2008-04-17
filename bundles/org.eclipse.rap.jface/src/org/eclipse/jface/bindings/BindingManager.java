@@ -38,9 +38,6 @@ import org.eclipse.core.commands.util.Tracing;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.bindings.keys.IKeyLookup;
-import org.eclipse.jface.bindings.keys.KeyLookupFactory;
-import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.contexts.IContextIds;
 import org.eclipse.jface.internal.InternalPolicy;
 import org.eclipse.jface.util.Policy;
@@ -705,26 +702,27 @@ public final class BindingManager extends HandleObjectManager implements
 	private final int countStrokes(final Trigger[] triggers) {
 		int strokeCount = triggers.length;
 		for (int i = 0; i < triggers.length; i++) {
-			final Trigger trigger = triggers[i];
-			if (trigger instanceof KeyStroke) {
-				final KeyStroke keyStroke = (KeyStroke) trigger;
-				final int modifierKeys = keyStroke.getModifierKeys();
-				final IKeyLookup lookup = KeyLookupFactory.getDefault();
-				if ((modifierKeys & lookup.getAlt()) != 0) {
-					strokeCount += 8;
-				}
-				if ((modifierKeys & lookup.getCtrl()) != 0) {
-					strokeCount += 2;
-				}
-				if ((modifierKeys & lookup.getShift()) != 0) {
-					strokeCount += 4;
-				}
-				if ((modifierKeys & lookup.getCommand()) != 0) {
-					strokeCount += 2;
-				}
-			} else {
+			// RAP [bm]: KeyEvents
+//			final Trigger trigger = triggers[i];
+//			if (trigger instanceof KeyStroke) {
+//				final KeyStroke keyStroke = (KeyStroke) trigger;
+//				final int modifierKeys = keyStroke.getModifierKeys();
+//				final IKeyLookup lookup = KeyLookupFactory.getDefault();
+//				if ((modifierKeys & lookup.getAlt()) != 0) {
+//					strokeCount += 8;
+//				}
+//				if ((modifierKeys & lookup.getCtrl()) != 0) {
+//					strokeCount += 2;
+//				}
+//				if ((modifierKeys & lookup.getShift()) != 0) {
+//					strokeCount += 4;
+//				}
+//				if ((modifierKeys & lookup.getCommand()) != 0) {
+//					strokeCount += 2;
+//				}
+//			} else {
 				strokeCount += 99;
-			}
+//			}
 		}
 
 		return strokeCount;

@@ -598,7 +598,8 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 	 *            the last position
 	 */
 	public void insert(Object element, int position) {
-		applyEditorValue();
+		// RAP [bm]: 
+//		applyEditorValue();
 		if (getComparator() != null || hasFilters()) {
 			add(element);
 			return;
@@ -627,7 +628,8 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 	 *      boolean)
 	 */
 	protected void internalRefresh(Object element, boolean updateLabels) {
-		applyEditorValue();
+		// RAP [bm]: 
+//		applyEditorValue();
 		if (element == null || equals(element, getRoot())) {
 			if (virtualManager == null) {
 				internalRefreshAll(updateLabels);

@@ -33,7 +33,8 @@ public abstract class ViewerColumn {
 
 	static String COLUMN_VIEWER_KEY = Policy.JFACE + ".columnViewer";//$NON-NLS-1$
 
-	private EditingSupport editingSupport;
+	// RAP [bm]: 
+//	private EditingSupport editingSupport;
 
 	private ILabelProviderListener listener;
 
@@ -110,25 +111,27 @@ public abstract class ViewerColumn {
 		}
 	}
 
-	/**
-	 * Return the editing support for the receiver.
-	 * 
-	 * @return {@link EditingSupport}
-	 */
-	/* package */EditingSupport getEditingSupport() {
-		return editingSupport;
-	}
+	// RAP [bm]: 
+//	/**
+//	 * Return the editing support for the receiver.
+//	 * 
+//	 * @return {@link EditingSupport}
+//	 */
+//	/* package */EditingSupport getEditingSupport() {
+//		return editingSupport;
+//	}
 
-	/**
-	 * Set the editing support. Subclasses may extend but must call the super
-	 * implementation.
-	 * 
-	 * @param editingSupport
-	 *            The {@link EditingSupport} to set.
-	 */
-	public void setEditingSupport(EditingSupport editingSupport) {
-		this.editingSupport = editingSupport;
-	}
+	// RAP [bm]: 
+//	/**
+//	 * Set the editing support. Subclasses may extend but must call the super
+//	 * implementation.
+//	 * 
+//	 * @param editingSupport
+//	 *            The {@link EditingSupport} to set.
+//	 */
+//	public void setEditingSupport(EditingSupport editingSupport) {
+//		this.editingSupport = editingSupport;
+//	}
 
 	/**
 	 * Refresh the cell for the given columnIndex. <strong>NOTE:</strong>the
@@ -155,7 +158,8 @@ public abstract class ViewerColumn {
 		if (disposeLabelProvider) {
 			cellLabelProvider.dispose(viewer, this);
 		}
-		editingSupport = null;
+		// RAP [bm]: 
+//		editingSupport = null;
 		listener = null;
 		viewer = null;
 	}

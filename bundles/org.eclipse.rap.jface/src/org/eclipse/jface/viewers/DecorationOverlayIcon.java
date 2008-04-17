@@ -14,7 +14,10 @@ import java.util.Arrays;
 
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.graphics.ImageData;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 /**
  * A <code>DecorationOverlayIcon</code> is an image descriptor that can be used
@@ -109,11 +112,20 @@ public class DecorationOverlayIcon extends CompositeImageDescriptor {
             if (overlay == null) {
 				continue;
 			}
-            ImageData overlayData = overlay.getImageData();
+            // RAP [bm]: 
+//            ImageData overlayData = overlay.getImageData();
+            ImageData overlayData = ResourceFactory.getImageData(overlay.createImage());
+            // RAPEND: [bm] 
+
             //Use the missing descriptor if it is not there.
             if (overlayData == null) {
-				overlayData = ImageDescriptor.getMissingImageDescriptor()
-                        .getImageData();
+            	// RAP [bm]: 
+//				overlayData = ImageDescriptor.getMissingImageDescriptor()
+//                        .getImageData();
+				overlayData = ResourceFactory.getImageData(ImageDescriptor.getMissingImageDescriptor()
+                        .createImage());
+				// RAPEND: [bm] 
+
 			}
             switch (i) {
             case IDecoration.TOP_LEFT:
@@ -165,13 +177,28 @@ public class DecorationOverlayIcon extends CompositeImageDescriptor {
     	if (overlays.length > IDecoration.UNDERLAY) {
 	        ImageDescriptor underlay = overlays[IDecoration.UNDERLAY];
 	        if (underlay != null) {
-				drawImage(underlay.getImageData(), 0, 0);
+	        	// RAP [bm]: 
+//				drawImage(underlay.getImageData(), 0, 0);
+				ImageData imageData = ResourceFactory.getImageData(underlay.createImage());
+				drawImage(imageData, 0, 0);
+				// RAPEND: [bm] 
+
 			}
     	}
     	if (overlays.length > IDecoration.REPLACE && overlays[IDecoration.REPLACE] != null) {
-    		drawImage(overlays[IDecoration.REPLACE].getImageData(), 0, 0);
+    		// RAP [bm]: 
+//    		drawImage(overlays[IDecoration.REPLACE].getImageData(), 0, 0);
+    		ImageData imageData = ResourceFactory.getImageData(overlays[IDecoration.REPLACE].createImage());
+			drawImage(imageData, 0, 0);
+    		// RAPEND: [bm] 
+
     	} else {
-    		drawImage(base.getImageData(), 0, 0);
+    		// RAP [bm]: 
+//    		drawImage(base.getImageData(), 0, 0);
+    		ImageData imageData = ResourceFactory.getImageData(base);
+    		drawImage(imageData, 0, 0);
+    		// RAPEND: [bm] 
+
     	}
         drawOverlays(overlays);
     }
@@ -187,7 +214,11 @@ public class DecorationOverlayIcon extends CompositeImageDescriptor {
      * @see org.eclipse.jface.resource.CompositeImageDescriptor#getTransparentPixel()
      */
     protected int getTransparentPixel() {
-    	return base.getImageData().transparentPixel;
+    	// RAP [bm]: 
+//    	return base.getImageData().transparentPixel();
+    	return ResourceFactory.getImageData(base).transparentPixel;
+    	// RAPEND: [bm] 
+
     }
 
 }

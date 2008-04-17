@@ -15,8 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageData;
 
 /**
@@ -103,4 +106,24 @@ class URLImageDescriptor extends ImageDescriptor {
     public String toString() {
         return "URLImageDescriptor(" + url + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
+
+  public Image createImage( boolean returnMissingImageOnError, Device device ) {
+    String path = url.toString();
+    String schema = "bundleentry://"; //$NON-NLS-1$
+    int pos = path.indexOf( schema );
+    if( pos != -1 ) {
+      path = path.substring( pos + schema.length() );
+    }
+    schema = "bundleresource://"; //$NON-NLS-1$
+    pos = path.indexOf( schema );
+    if( pos != -1 ) {
+      path = path.substring( pos + schema.length() );
+    }
+    schema = "platform:/"; //$NON-NLS-1$
+    pos = path.indexOf( schema );
+    if( pos != -1 ) {
+      path = path.substring( pos + schema.length() );
+    }
+    return Graphics.getImage( path, getStream() );
+  }
 }

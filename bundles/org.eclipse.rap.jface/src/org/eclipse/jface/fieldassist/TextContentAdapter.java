@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
@@ -70,7 +71,11 @@ public class TextContentAdapter implements IControlContentAdapter,
 	 * @see org.eclipse.jface.fieldassist.IControlContentAdapter#getCursorPosition(org.eclipse.swt.widgets.Control)
 	 */
 	public int getCursorPosition(Control control) {
-		return ((Text) control).getCaretPosition();
+		// RAP [bm]: Text#getCarePosition
+//		return ((Text) control).getCaretPosition();
+		return ((Text) control).getSelection().x;
+		// RAPEND: [bm] 
+
 	}
 
 	/*
@@ -80,11 +85,20 @@ public class TextContentAdapter implements IControlContentAdapter,
 	 */
 	public Rectangle getInsertionBounds(Control control) {
 		Text text = (Text) control;
-		Point caretOrigin = text.getCaretLocation();
+		
+		// RAP [bm]: Text#getCarePosition
+//		Point caretOrigin = text.getCaretLocation();
+		Point caretOrigin = text.getSelection();
+		// RAPEND: [bm] 
+
 		// We fudge the y pixels due to problems with getCaretLocation
 		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=52520
+		// RAP [bm]: 
+//		return new Rectangle(caretOrigin.x + text.getClientArea().x,
+//				caretOrigin.y + text.getClientArea().y + 3, 1, text.getLineHeight());
+		int lineHeight = Graphics.getCharHeight(text.getFont());
 		return new Rectangle(caretOrigin.x + text.getClientArea().x,
-				caretOrigin.y + text.getClientArea().y + 3, 1, text.getLineHeight());
+				caretOrigin.y + text.getClientArea().y + 3, 1, lineHeight);
 	}
 
 	/*

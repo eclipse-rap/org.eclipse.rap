@@ -11,6 +11,7 @@
 package org.eclipse.jface.fieldassist;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -18,13 +19,8 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -34,6 +30,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+// RAP [bm]: Last sentence rap-specific
 /**
  * DecoratedField manages image decorations around a control. It allows clients
  * to specify an image decoration and a position for the decoration relative to
@@ -59,14 +56,18 @@ import org.eclipse.swt.widgets.Shell;
  * This class is not intended to be subclassed.
  * 
  * @since 3.2
- * @deprecated As of 3.3, clients should use {@link ControlDecoration} instead.
+ * @deprecated As of 3.3, clients should use ControlDecoration instead.
+ * 				As this is not yet available in RAP you can still use this
+ * 				one to achieve at least some of the functionality.
+ * 
  */
 public class DecoratedField {
 
 	/**
 	 * Cached platform flags for dealing with platform-specific issues.
 	 */
-	private static boolean CARBON = "carbon".equals(SWT.getPlatform()); //$NON-NLS-1$
+	// RAP [bm]: 
+//	private static boolean CARBON = "carbon".equals(SWT.getPlatform()); //$NON-NLS-1$
 
 	/**
 	 * Constants describing the array indices used to hold the decorations in
@@ -189,7 +190,8 @@ public class DecoratedField {
 		/**
 		 * The region used to manage the shell shape
 		 */
-		Region region;
+		// RAP [bm]: Region
+//		Region region;
 
 		/**
 		 * Boolean indicating whether the last computed polygon location had an
@@ -208,14 +210,17 @@ public class DecoratedField {
 					.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 			hoverShell.setForeground(display
 					.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-			hoverShell.addPaintListener(new PaintListener() {
-				public void paintControl(PaintEvent pe) {
-					pe.gc.drawString(text, hm, hm);
-					if (!CARBON) {
-						pe.gc.drawPolygon(getPolygon(true));
-					}
-				}
-			});
+			// RAP [bm]: 
+//			hoverShell.addPaintListener(new PaintListener() {
+//				public void paintControl(PaintEvent pe) {
+//					pe.gc.drawString(text, hm, hm);
+//					if (!CARBON) {
+//						pe.gc.drawPolygon(getPolygon(true));
+//					}
+//				}
+//			});
+			// RAPEND: [bm] 
+
 			hoverShell.addMouseListener(new MouseAdapter() {
 				public void mouseDown(MouseEvent e) {
 					hideHover();
@@ -249,9 +254,12 @@ public class DecoratedField {
 			if (!hoverShell.isDisposed()) {
 				hoverShell.dispose();
 			}
-			if (region != null) {
-				region.dispose();
-			}
+			// RAP [bm]: Region
+//			if (region != null) {
+//				region.dispose();
+//			}
+			// RAPEND: [bm] 
+
 		}
 
 		/*
@@ -313,9 +321,13 @@ public class DecoratedField {
 		 * Compute the extent of the hover for the current text.
 		 */
 		Point getExtent() {
-			GC gc = new GC(hoverShell);
-			Point e = gc.textExtent(text);
-			gc.dispose();
+			// RAP [bm]: 
+//			GC gc = new GC(hoverShell);
+//			Point e = gc.textExtent(text);
+//			gc.dispose();
+			Point e = Graphics.textExtent(hoverShell.getFont(), text, 0);
+			// RAPEND: [bm] 
+
 			e.x += hm * 2;
 			e.y += hm * 2;
 			return e;
@@ -325,13 +337,15 @@ public class DecoratedField {
 		 * Compute a new shape for the hover shell.
 		 */
 		void setNewShape() {
-			Region oldRegion = region;
-			region = new Region();
-			region.add(getPolygon(false));
-			hoverShell.setRegion(region);
-			if (oldRegion != null) {
-				oldRegion.dispose();
-			}
+			// RAP [bm]: Region
+//			Region oldRegion = region;
+//			region = new Region();
+//			region.add(getPolygon(false));
+//			hoverShell.setRegion(region);
+//			if (oldRegion != null) {
+//				oldRegion.dispose();
+//			}
+			// RAPEND: [bm] 
 
 		}
 	}
@@ -405,23 +419,26 @@ public class DecoratedField {
 		if (decDatas[i] == null) {
 			formData = createFormDataForIndex(i, decoration.getImage());
 			label = new Label(form, SWT.HORIZONTAL | SWT.VERTICAL | SWT.CENTER);
-			label.addMouseTrackListener(new MouseTrackListener() {
-				public void mouseHover(MouseEvent event) {
-					FieldDecorationData decData = (FieldDecorationData) event.widget
-							.getData();
-					String desc = decData.decoration.getDescription();
-					if (desc != null) {
-						showHoverText(desc, label);
-					}
-				}
+			// RAP [bm]: 
+//			label.addMouseTrackListener(new MouseTrackListener() {
+//				public void mouseHover(MouseEvent event) {
+//					FieldDecorationData decData = (FieldDecorationData) event.widget
+//							.getData();
+//					String desc = decData.decoration.getDescription();
+//					if (desc != null) {
+//						showHoverText(desc, label);
+//					}
+//				}
+//
+//				public void mouseEnter(MouseEvent event) {
+//				}
+//
+//				public void mouseExit(MouseEvent event) {
+//					hideHover();
+//				}
+//			});
+			// RAPEND: [bm] 
 
-				public void mouseEnter(MouseEvent event) {
-				}
-
-				public void mouseExit(MouseEvent event) {
-					hideHover();
-				}
-			});
 			decDatas[i] = new FieldDecorationData(decoration, label, formData,
 					showOnFocus);
 		} else {
@@ -431,6 +448,10 @@ public class DecoratedField {
 			decDatas[i].showOnFocus = showOnFocus;
 		}
 		label.setImage(decDatas[i].decoration.getImage());
+		// RAP [fappel]: (mis-)use images toolTipText for the decorations' description
+		showHoverText( decDatas[i].decoration.getDescription(), label );
+		// RAPEND: [bm] 
+
 		label.setData(decDatas[i]);
 		label.setLayoutData(formData);
 		label.setVisible(!showOnFocus);
@@ -825,6 +846,9 @@ public class DecoratedField {
 			hideHover();
 			return;
 		}
+		// RAP [fappel]: (mis-)use images toolTipText for the decorations' description
+		hoverNear.setToolTipText( text );
+		// RAPEND: [bm] 
 
 		if (hover == null) {
 			hover = new Hover(hoverNear.getShell());

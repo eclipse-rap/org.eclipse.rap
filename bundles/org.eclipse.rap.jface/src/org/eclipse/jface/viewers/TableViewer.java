@@ -123,9 +123,10 @@ public class TableViewer extends AbstractTableViewer {
 		return table;
 	}
 
-	protected ColumnViewerEditor createViewerEditor() {
-		return new TableViewerEditor(this,null,new ColumnViewerEditorActivationStrategy(this),ColumnViewerEditor.DEFAULT);
-	}
+	// RAP [bm]: 
+//	protected ColumnViewerEditor createViewerEditor() {
+//		return new TableViewerEditor(this,null,new ColumnViewerEditorActivationStrategy(this),ColumnViewerEditor.DEFAULT);
+//	}
 
 	/**
 	 * <p>
@@ -328,9 +329,10 @@ public class TableViewer extends AbstractTableViewer {
 		if (checkBusy())
 			return;
 
-		if( isCellEditorActive() ) {
-			cancelEditing();
-		}
+		// RAP [bm]: 
+//		if( isCellEditorActive() ) {
+//			cancelEditing();
+//		}
 
 		preservingSelection(new Runnable() {
 			public void run() {

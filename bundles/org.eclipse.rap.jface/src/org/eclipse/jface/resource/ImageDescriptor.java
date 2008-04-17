@@ -125,9 +125,10 @@ public abstract class ImageDescriptor extends DeviceResourceDescriptor {
      * @since 3.1 
      *
      */
-    public static ImageDescriptor createWithFlags(ImageDescriptor originalImage, int swtFlags) {
-        return new DerivedImageDescriptor(originalImage, swtFlags);
-    }
+    // RAP [bm]: 
+//    public static ImageDescriptor createWithFlags(ImageDescriptor originalImage, int swtFlags) {
+//        return new DerivedImageDescriptor(originalImage, swtFlags);
+//    }
 
     /**
      * Creates and returns a new image descriptor for the given image. This

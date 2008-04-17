@@ -2985,9 +2985,10 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 	 *
 	 * @since 3.3
 	 */
-	protected ColumnViewerEditor createViewerEditor() {
-		return null;
-	}
+	// RAP [bm]: 
+//	protected ColumnViewerEditor createViewerEditor() {
+//		return null;
+//	}
 
 	/**
 	 * Returns the number of columns of this viewer.

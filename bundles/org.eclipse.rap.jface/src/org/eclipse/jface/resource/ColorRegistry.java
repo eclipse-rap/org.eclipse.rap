@@ -257,7 +257,8 @@ public class ColorRegistry extends ResourceRegistry {
      * Hook a dispose listener on the SWT display.
      */
     private void hookDisplayDispose() {
-        display.disposeExec(displayRunnable);
+    	// RAP [bm]: disposeExec and not needed here as we don't create color objects
+//        display.disposeExec(displayRunnable);
     }
 
     /**

@@ -27,6 +27,8 @@ import org.eclipse.jface.internal.JFaceActivator;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -60,7 +62,21 @@ public class JFaceResources {
 	 * Map of Display onto DeviceResourceManager. Holds all the resources for
 	 * the associated display.
 	 */
-	private static final Map registries = new HashMap();
+//	private static final Map registries = new HashMap();
+  private final static class Registries
+    extends SessionSingletonBase
+  {
+	private final Map registries = new HashMap();
+    private Registries() {
+    }
+    public static Registries getInstance() {
+      Class clazz = Registries.class;
+      return ( Registries )getInstance( clazz );
+    }
+    public Map  getMap() {
+      return registries;
+    }
+  }
 
 	/**
 	 * The symbolic font name for the banner font (value
@@ -71,14 +87,45 @@ public class JFaceResources {
 	/**
 	 * The JFace resource bundle; eagerly initialized.
 	 */
-	private static final ResourceBundle bundle = ResourceBundle
-			.getBundle("org.eclipse.jface.messages"); //$NON-NLS-1$
+//	private static final ResourceBundle bundle = ResourceBundle
+//			.getBundle("org.eclipse.jface.messages"); //$NON-NLS-1$
 
 	/**
 	 * The JFace color registry; <code>null</code> until lazily initialized or
 	 * explicitly set.
 	 */
-	private static ColorRegistry colorRegistry;
+//	private static ColorRegistry colorRegistry;
+  private final static class ColorRegistryStore extends SessionSingletonBase {
+    private final ColorRegistry colorRegistry;
+    private ColorRegistryStore() {
+      colorRegistry = new ColorRegistry();
+      initializeDefaultColors();
+    }
+    public static ColorRegistryStore getInstance() {
+      Class clazz = ColorRegistryStore.class;
+      return ( ColorRegistryStore )getInstance( clazz );
+    }
+    public ColorRegistry getColorRegistry() {
+      return colorRegistry;
+    }
+    /*
+	 * Initialize any JFace colors that may not be initialized via a client.
+	 */
+	private void initializeDefaultColors() {
+		// TODO This is temporary.
+		// These should be initialized by the workbench theme, but not yet.
+		// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=133731
+		Display display = Display.getCurrent();
+		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_BACKGROUND_COLOR,
+				display.getSystemColor(SWT.COLOR_LIST_BACKGROUND).getRGB());
+		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_FOREGROUND_COLOR,
+				display.getSystemColor(SWT.COLOR_LIST_FOREGROUND).getRGB());
+		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_INFO_BACKGROUND_COLOR,
+				display.getSystemColor(SWT.COLOR_INFO_BACKGROUND).getRGB());
+		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_INFO_FOREGROUND_COLOR,
+				display.getSystemColor(SWT.COLOR_INFO_FOREGROUND).getRGB());
+	}
+  }
 
 	/**
 	 * The symbolic font name for the standard font (value
@@ -96,7 +143,28 @@ public class JFaceResources {
 	 * The JFace font registry; <code>null</code> until lazily initialized or
 	 * explicitly set.
 	 */
-	private static FontRegistry fontRegistry = null;
+//	private static FontRegistry fontRegistry = null;
+  private final static class FontRegistryStore extends SessionSingletonBase {
+    private FontRegistry fontRegistry;
+    private FontRegistryStore() {
+    }
+    public static FontRegistryStore getInstance() {
+      Class clazz = FontRegistryStore.class;
+      return ( FontRegistryStore )getInstance( clazz );
+    }
+    public FontRegistry getFontRegistry() {
+      if( fontRegistry == null ) {
+        fontRegistry 
+          = new FontRegistry( "org.eclipse.jface.resource.jfacefonts" ); //$NON-NLS-1$
+      }
+      return fontRegistry;
+    }
+    public void setFontRegistry( final FontRegistry fontRegistry ) {
+      Assert.isTrue( this.fontRegistry == null,
+                     "Font registry can only be set once." ); //$NON-NLS-1$
+      this.fontRegistry = fontRegistry;
+    }
+  }
 
 	/**
 	 * The symbolic font name for the header font (value
@@ -107,7 +175,101 @@ public class JFaceResources {
 	/**
 	 * The JFace image registry; <code>null</code> until lazily initialized.
 	 */
-	private static ImageRegistry imageRegistry = null;
+//	private static ImageRegistry imageRegistry = null;
+  private final static class ImageRegistryStore extends SessionSingletonBase {
+    private final ImageRegistry imageRegistry;
+    private ImageRegistryStore() {
+      imageRegistry = new ImageRegistry();
+      initializeDefaultImages();
+    }
+    public static ImageRegistryStore getInstance() {
+      Class clazz = ImageRegistryStore.class;
+      return ( ImageRegistryStore )getInstance( clazz );
+    }
+    public ImageRegistry getImageRegistry() {
+      return imageRegistry;
+    }
+    
+	/**
+	 * Initialize default images in JFace's image registry.
+	 * 
+	 */
+	private void initializeDefaultImages() {
+
+		Object bundle = null;
+		try {
+			bundle = JFaceActivator.getBundle();
+		} catch (NoClassDefFoundError exception) {
+			// Test to see if OSGI is present
+		}
+		declareImage(bundle, Wizard.DEFAULT_IMAGE, ICONS_PATH + "page.gif", //$NON-NLS-1$
+				Wizard.class, "images/page.gif"); //$NON-NLS-1$
+
+		// register default images for dialogs
+		declareImage(bundle, Dialog.DLG_IMG_MESSAGE_INFO, ICONS_PATH
+				+ "message_info.gif", Dialog.class, "images/message_info.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+		declareImage(bundle, Dialog.DLG_IMG_MESSAGE_WARNING, ICONS_PATH
+				+ "message_warning.gif", Dialog.class, //$NON-NLS-1$
+				"images/message_warning.gif"); //$NON-NLS-1$
+		declareImage(bundle, Dialog.DLG_IMG_MESSAGE_ERROR, ICONS_PATH
+				+ "message_error.gif", Dialog.class, "images/message_error.gif");//$NON-NLS-1$ //$NON-NLS-2$
+		declareImage(bundle, Dialog.DLG_IMG_HELP,
+				ICONS_PATH + "help.gif", Dialog.class, "images/help.gif");//$NON-NLS-1$ //$NON-NLS-2$
+		declareImage(
+				bundle,
+				TitleAreaDialog.DLG_IMG_TITLE_BANNER,
+				ICONS_PATH + "title_banner.png", TitleAreaDialog.class, "images/title_banner.gif");//$NON-NLS-1$ //$NON-NLS-2$
+		declareImage(
+				bundle,
+				PreferenceDialog.PREF_DLG_TITLE_IMG,
+				ICONS_PATH + "pref_dialog_title.gif", PreferenceDialog.class, "images/pref_dialog_title.gif");//$NON-NLS-1$ //$NON-NLS-2$
+		declareImage(bundle, PopupDialog.POPUP_IMG_MENU, ICONS_PATH
+				+ "popup_menu.gif", PopupDialog.class, "images/popup_menu.gif");//$NON-NLS-1$ //$NON-NLS-2$
+		declareImage(
+				bundle,
+				PopupDialog.POPUP_IMG_MENU_DISABLED,
+				ICONS_PATH + "popup_menu_disabled.gif", PopupDialog.class, "images/popup_menu_disabled.gif");//$NON-NLS-1$ //$NON-NLS-2$
+	}
+	
+	/**
+	 * Declares a JFace image given the path of the image file (relative to the
+	 * JFace plug-in). This is a helper method that creates the image descriptor
+	 * and passes it to the main <code>declareImage</code> method.
+	 * 
+	 * @param bundle
+	 *            the {@link Bundle} or <code>null</code> of the Bundle cannot
+	 *            be found
+	 * @param key
+	 *            the symbolic name of the image
+	 * @param path
+	 *            the path of the image file relative to the base of the
+	 *            workbench plug-ins install directory
+	 * @param fallback
+	 *            the {@link Class} where the fallback implementation of the
+	 *            image is relative to
+	 * @param fallbackPath
+	 *            the path relative to the fallback {@link Class}
+	 * 
+	 */
+	private final void declareImage(Object bundle, String key,
+			String path, Class fallback, String fallbackPath) {
+
+		ImageDescriptor descriptor = null;
+
+		if (bundle != null) {
+			URL url = FileLocator.find((Bundle) bundle, new Path(path), null);
+			if (url != null)
+				descriptor = ImageDescriptor.createFromURL(url);
+		}
+
+		// If we failed then load from the backup file
+		if (descriptor == null)
+			descriptor = ImageDescriptor.createFromFile(fallback, fallbackPath);
+
+		imageRegistry.put(key, descriptor);
+
+	}
+  }
 
 	/**
 	 * The symbolic font name for the text font (value
@@ -170,7 +332,19 @@ public class JFaceResources {
 	 * @return the resource bundle
 	 */
 	public static ResourceBundle getBundle() {
-		return bundle;
+	  ResourceBundle result = null;
+	  String baseName = "org.eclipse.jface.messages"; //$NON-NLS-1$
+      try {
+        ClassLoader loader = JFaceResources.class.getClassLoader();
+        result = ResourceBundle.getBundle( baseName, RWT.getLocale(), loader );
+      } catch( final RuntimeException re ) {
+        // TODO [fappel]: improve this
+        String msg =   "Warning: could not retrieve resource bundle " //$NON-NLS-1$
+                     + "- loading system default"; //$NON-NLS-1$
+        System.out.println( msg );
+        result = ResourceBundle.getBundle( baseName );
+      }
+      return result;
 	}
 
 	/**
@@ -181,11 +355,11 @@ public class JFaceResources {
 	 * @since 3.0
 	 */
 	public static ColorRegistry getColorRegistry() {
-		if (colorRegistry == null) {
-			colorRegistry = new ColorRegistry();
-			initializeDefaultColors();
-		}
-		return colorRegistry;
+      return ColorRegistryStore.getInstance().getColorRegistry();
+//		if (colorRegistry == null) {
+//			colorRegistry = new ColorRegistry();
+//		}
+//		return colorRegistry;
 	}
 
 	/**
@@ -198,6 +372,8 @@ public class JFaceResources {
 	 * @return the global resource manager for the given display
 	 */
 	public static ResourceManager getResources(final Display toQuery) {
+        Map registries = Registries.getInstance().getMap();
+      
 		ResourceManager reg = (ResourceManager) registries.get(toQuery);
 
 		if (reg == null) {
@@ -339,11 +515,14 @@ public class JFaceResources {
 	 * @return the JFace font registry
 	 */
 	public static FontRegistry getFontRegistry() {
-		if (fontRegistry == null) {
-			fontRegistry = new FontRegistry(
-					"org.eclipse.jface.resource.jfacefonts"); //$NON-NLS-1$
-		}
-		return fontRegistry;
+		// RAP [fappel]: 
+		return FontRegistryStore.getInstance().getFontRegistry();
+//		if (fontRegistry == null) {
+//			fontRegistry = new FontRegistry(
+//					"org.eclipse.jface.resource.jfacefonts"); //$NON-NLS-1$
+//		}
+//		return fontRegistry;
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -387,7 +566,10 @@ public class JFaceResources {
 	 * @return the image, or <code>null</code> if none
 	 */
 	public static Image getImage(String key) {
-		return getImageRegistry().get(key);
+		// RAP [fappel]: 
+		return ImageRegistryStore.getInstance().getImageRegistry().get( key );
+//		return getImageRegistry().get(key);
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -400,91 +582,15 @@ public class JFaceResources {
 	 * @return the JFace image registry
 	 */
 	public static ImageRegistry getImageRegistry() {
-		if (imageRegistry == null) {
-			imageRegistry = new ImageRegistry(
-					getResources(Display.getCurrent()));
-			initializeDefaultImages();
-		}
-		return imageRegistry;
-	}
-
-	/**
-	 * Initialize default images in JFace's image registry.
-	 * 
-	 */
-	private static void initializeDefaultImages() {
-
-		Object bundle = null;
-		try {
-			bundle = JFaceActivator.getBundle();
-		} catch (NoClassDefFoundError exception) {
-			// Test to see if OSGI is present
-		}
-		declareImage(bundle, Wizard.DEFAULT_IMAGE, ICONS_PATH + "page.gif", //$NON-NLS-1$
-				Wizard.class, "images/page.gif"); //$NON-NLS-1$
-
-		// register default images for dialogs
-		declareImage(bundle, Dialog.DLG_IMG_MESSAGE_INFO, ICONS_PATH
-				+ "message_info.gif", Dialog.class, "images/message_info.gif"); //$NON-NLS-1$ //$NON-NLS-2$
-		declareImage(bundle, Dialog.DLG_IMG_MESSAGE_WARNING, ICONS_PATH
-				+ "message_warning.gif", Dialog.class, //$NON-NLS-1$
-				"images/message_warning.gif"); //$NON-NLS-1$
-		declareImage(bundle, Dialog.DLG_IMG_MESSAGE_ERROR, ICONS_PATH
-				+ "message_error.gif", Dialog.class, "images/message_error.gif");//$NON-NLS-1$ //$NON-NLS-2$
-		declareImage(bundle, Dialog.DLG_IMG_HELP,
-				ICONS_PATH + "help.gif", Dialog.class, "images/help.gif");//$NON-NLS-1$ //$NON-NLS-2$
-		declareImage(
-				bundle,
-				TitleAreaDialog.DLG_IMG_TITLE_BANNER,
-				ICONS_PATH + "title_banner.png", TitleAreaDialog.class, "images/title_banner.gif");//$NON-NLS-1$ //$NON-NLS-2$
-		declareImage(
-				bundle,
-				PreferenceDialog.PREF_DLG_TITLE_IMG,
-				ICONS_PATH + "pref_dialog_title.gif", PreferenceDialog.class, "images/pref_dialog_title.gif");//$NON-NLS-1$ //$NON-NLS-2$
-		declareImage(bundle, PopupDialog.POPUP_IMG_MENU, ICONS_PATH
-				+ "popup_menu.gif", PopupDialog.class, "images/popup_menu.gif");//$NON-NLS-1$ //$NON-NLS-2$
-		declareImage(
-				bundle,
-				PopupDialog.POPUP_IMG_MENU_DISABLED,
-				ICONS_PATH + "popup_menu_disabled.gif", PopupDialog.class, "images/popup_menu_disabled.gif");//$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	/**
-	 * Declares a JFace image given the path of the image file (relative to the
-	 * JFace plug-in). This is a helper method that creates the image descriptor
-	 * and passes it to the main <code>declareImage</code> method.
-	 * 
-	 * @param bundle
-	 *            the {@link Bundle} or <code>null</code> of the Bundle cannot
-	 *            be found
-	 * @param key
-	 *            the symbolic name of the image
-	 * @param path
-	 *            the path of the image file relative to the base of the
-	 *            workbench plug-ins install directory
-	 * @param fallback
-	 *            the {@link Class} where the fallback implementation of the
-	 *            image is relative to
-	 * @param fallbackPath
-	 *            the path relative to the fallback {@link Class}
-	 * 
-	 */
-	private static final void declareImage(Object bundle, String key,
-			String path, Class fallback, String fallbackPath) {
-
-		ImageDescriptor descriptor = null;
-
-		if (bundle != null) {
-			URL url = FileLocator.find((Bundle) bundle, new Path(path), null);
-			if (url != null)
-				descriptor = ImageDescriptor.createFromURL(url);
-		}
-
-		// If we failed then load from the backup file
-		if (descriptor == null)
-			descriptor = ImageDescriptor.createFromFile(fallback, fallbackPath);
-
-		imageRegistry.put(key, descriptor);
+		// RAP [fappel]: 
+		return ImageRegistryStore.getInstance().getImageRegistry();
+//		if (imageRegistry == null) {
+//			imageRegistry = new ImageRegistry(
+//					getResources(Display.getCurrent()));
+//			initializeDefaultImages();
+//		}
+//		return imageRegistry;
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -498,7 +604,11 @@ public class JFaceResources {
 	 */
 	public static String getString(String key) {
 		try {
-			return bundle.getString(key);
+		// RAP [bm]: 
+//			return bundle.getString(key);
+			return getBundle().getString(key);
+		  // RAPEND: [bm] 
+
 		} catch (MissingResourceException e) {
 			return key;
 		}
@@ -575,9 +685,10 @@ public class JFaceResources {
 	 *            a font registry
 	 */
 	public static void setFontRegistry(FontRegistry registry) {
-		Assert.isTrue(fontRegistry == null,
-				"Font registry can only be set once."); //$NON-NLS-1$
-		fontRegistry = registry;
+      FontRegistryStore.getInstance().setFontRegistry( registry );
+//		Assert.isTrue(fontRegistry == null,
+//				"Font registry can only be set once."); //$NON-NLS-1$
+//		fontRegistry = registry;
 	}
 
 	/*
@@ -587,21 +698,4 @@ public class JFaceResources {
 		// no-op
 	}
 
-	/*
-	 * Initialize any JFace colors that may not be initialized via a client.
-	 */
-	private static void initializeDefaultColors() {
-		// TODO This is temporary.
-		// These should be initialized by the workbench theme, but not yet.
-		// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=133731
-		Display display = Display.getCurrent();
-		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_BACKGROUND_COLOR,
-				display.getSystemColor(SWT.COLOR_LIST_BACKGROUND).getRGB());
-		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_FOREGROUND_COLOR,
-				display.getSystemColor(SWT.COLOR_LIST_FOREGROUND).getRGB());
-		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_INFO_BACKGROUND_COLOR,
-				display.getSystemColor(SWT.COLOR_INFO_BACKGROUND).getRGB());
-		colorRegistry.put(JFacePreferences.CONTENT_ASSIST_INFO_FOREGROUND_COLOR,
-				display.getSystemColor(SWT.COLOR_INFO_FOREGROUND).getRGB());
-	}
 }

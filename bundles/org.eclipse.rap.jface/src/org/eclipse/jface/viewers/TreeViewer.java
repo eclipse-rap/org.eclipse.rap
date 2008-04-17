@@ -286,11 +286,10 @@ public class TreeViewer extends AbstractTreeViewer {
 		}
 	}
 
-	protected ColumnViewerEditor createViewerEditor() {
+	// RAP [bm]: 
+//	protected ColumnViewerEditor createViewerEditor() {
 //		return new TreeViewerEditor(this,null,new ColumnViewerEditorActivationStrategy(this),ColumnViewerEditor.DEFAULT);
-		System.err.println("viewereditor"); //$NON-NLS-1$
-		return null;
-	}
+//	}
 
 	/*
 	 * (non-Javadoc) Method declared in AbstractTreeViewer.
@@ -1101,29 +1100,30 @@ public class TreeViewer extends AbstractTreeViewer {
 		super.setSelection(selection, reveal);
 	}
 
-	public void editElement(Object element, int column) {
-		if( element instanceof TreePath ) {
-			try {
-				getControl().setRedraw(false);
-				setSelection(new TreeSelection((TreePath) element));
-				TreeItem[] items = tree.getSelection();
-
-				if( items.length == 1 ) {
-					ViewerRow row = getViewerRowFromItem(items[0]);
-
-					if (row != null) {
-						ViewerCell cell = row.getCell(column);
-						if (cell != null) {
-							triggerEditorActivationEvent(new ColumnViewerEditorActivationEvent(cell));
-						}
-					}
-				}
-			} finally {
-				getControl().setRedraw(true);
-			}
-		} else {
-			super.editElement(element, column);
-		}
-	}
+	// RAP [bm]: 
+//	public void editElement(Object element, int column) {
+//		if( element instanceof TreePath ) {
+//			try {
+//				getControl().setRedraw(false);
+//				setSelection(new TreeSelection((TreePath) element));
+//				TreeItem[] items = tree.getSelection();
+//
+//				if( items.length == 1 ) {
+//					ViewerRow row = getViewerRowFromItem(items[0]);
+//
+//					if (row != null) {
+//						ViewerCell cell = row.getCell(column);
+//						if (cell != null) {
+//							triggerEditorActivationEvent(new ColumnViewerEditorActivationEvent(cell));
+//						}
+//					}
+//				}
+//			} finally {
+//				getControl().setRedraw(true);
+//			}
+//		} else {
+//			super.editElement(element, column);
+//		}
+//	}
 
 }

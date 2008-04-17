@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -85,7 +86,8 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
     /**
      * Creates a new FontDescriptor given an OS-specific font name, height, and style.
      * 
-     * @see Font#Font(org.eclipse.swt.graphics.Device, java.lang.String, int, int)
+     * <!-- @see Font#Font(org.eclipse.swt.graphics.Device, java.lang.String, int, int) -->
+     * @see Graphics#getFont( java.lang.String, int, int)
      *
      * @param name os-specific font name
      * @param height height (pixels)
@@ -138,7 +140,8 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
 	 */
 	public static FontData copy(FontData next) {
 		FontData result = new FontData(next.getName(), next.getHeight(), next.getStyle());
-		result.setLocale(next.getLocale());
+		// RAP [bm]: 
+//		result.setLocale(next.getLocale());
 		return result;
 	}
 
@@ -153,24 +156,25 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
      * 
      * @since 3.3
      */
-    public final FontDescriptor setStyle(int style) {
-    	FontData[] data = getFontData();
-    	
-    	for (int i = 0; i < data.length; i++) {
-			FontData next = data[i];
-			
-			next.setStyle(style);
-		}
-
-    	// Optimization: avoid holding onto extra instances by returning the reciever if
-    	// if it is exactly the same as the result
-    	FontDescriptor result = new ArrayFontDescriptor(data);
-    	if (result.equals(this)) {
-    		return this;
-    	}
-    	
-    	return result;
-    }
+	// RAP [bm]: 
+//    public final FontDescriptor setStyle(int style) {
+//    	FontData[] data = getFontData();
+//    	
+//    	for (int i = 0; i < data.length; i++) {
+//			FontData next = data[i];
+//			
+//			next.setStyle(style);
+//		}
+//
+//    	// Optimization: avoid holding onto extra instances by returning the reciever if
+//    	// if it is exactly the same as the result
+//    	FontDescriptor result = new ArrayFontDescriptor(data);
+//    	if (result.equals(this)) {
+//    		return this;
+//    	}
+//    	
+//    	return result;
+//    }
     
     /**
      * <p>Returns a FontDescriptor that is equivalent to the reciever, but
@@ -182,24 +186,25 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
      * @return a new FontDescriptor with the given additional style bits
      * @since 3.3
      */
-    public final FontDescriptor withStyle(int style) {
-    	FontData[] data = getFontData();
-    	
-    	for (int i = 0; i < data.length; i++) {
-			FontData next = data[i];
-			
-			next.setStyle(next.getStyle() | style);
-		}
-    	
-    	// Optimization: avoid allocating extra instances by returning the reciever if
-    	// if it is exactly the same as the result
-    	FontDescriptor result = new ArrayFontDescriptor(data);
-    	if (result.equals(this)) {
-    		return this;
-    	}
-    	
-    	return result;    	
-    }
+    // RAP [bm]: 
+//    public final FontDescriptor withStyle(int style) {
+//    	FontData[] data = getFontData();
+//    	
+//    	for (int i = 0; i < data.length; i++) {
+//			FontData next = data[i];
+//			
+//			next.setStyle(next.getStyle() | style);
+//		}
+//    	
+//    	// Optimization: avoid allocating extra instances by returning the reciever if
+//    	// if it is exactly the same as the result
+//    	FontDescriptor result = new ArrayFontDescriptor(data);
+//    	if (result.equals(this)) {
+//    		return this;
+//    	}
+//    	
+//    	return result;    	
+//    }
     
     /**
      * <p>Returns a new FontDescriptor that is equivalent to the reciever, but
@@ -211,24 +216,25 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
      * @return a new FontDescriptor with the height, in points
      * @since 3.3
      */
-    public final FontDescriptor setHeight(int height) {
-    	FontData[] data = getFontData();
-    	
-    	for (int i = 0; i < data.length; i++) {
-			FontData next = data[i];
-			
-			next.setHeight(height);
-		}
-    	
-    	// Optimization: avoid holding onto extra instances by returning the reciever if
-    	// if it is exactly the same as the result
-    	FontDescriptor result = new ArrayFontDescriptor(data);
-    	if (result.equals(this)) {
-    		return this;
-    	}
-    	
-    	return result;    	
-    }
+    // RAP [bm]: 
+//    public final FontDescriptor setHeight(int height) {
+//    	FontData[] data = getFontData();
+//    	
+//    	for (int i = 0; i < data.length; i++) {
+//			FontData next = data[i];
+//			
+//			next.setHeight(height);
+//		}
+//    	
+//    	// Optimization: avoid holding onto extra instances by returning the reciever if
+//    	// if it is exactly the same as the result
+//    	FontDescriptor result = new ArrayFontDescriptor(data);
+//    	if (result.equals(this)) {
+//    		return this;
+//    	}
+//    	
+//    	return result;    	
+//    }
 
     /**
      * <p>Returns a FontDescriptor that is equivalent to the reciever, but whose height
@@ -242,20 +248,21 @@ public abstract class FontDescriptor extends DeviceResourceDescriptor {
      * of points. 
      * @since 3.3
      */
-    public final FontDescriptor increaseHeight(int heightDelta) {
-    	if (heightDelta == 0) {
-    		return this;
-    	}
-    	FontData[] data = getFontData();
-    	
-    	for (int i = 0; i < data.length; i++) {
-			FontData next = data[i];
-			
-			next.setHeight(next.getHeight() + heightDelta);
-		}
-    	
-    	return new ArrayFontDescriptor(data);    	
-    }
+    // RAP [bm]: 
+//    public final FontDescriptor increaseHeight(int heightDelta) {
+//    	if (heightDelta == 0) {
+//    		return this;
+//    	}
+//    	FontData[] data = getFontData();
+//    	
+//    	for (int i = 0; i < data.length; i++) {
+//			FontData next = data[i];
+//			
+//			next.setHeight(next.getHeight() + heightDelta);
+//		}
+//    	
+//    	return new ArrayFontDescriptor(data);    	
+//    }
     
     /**
      * Creates the Font described by this descriptor. 

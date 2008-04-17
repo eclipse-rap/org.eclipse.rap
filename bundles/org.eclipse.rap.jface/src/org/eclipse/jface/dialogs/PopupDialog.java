@@ -14,12 +14,8 @@ package org.eclipse.jface.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
@@ -32,8 +28,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -45,7 +39,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-//import org.eclipse.swt.widgets.Tracker;
 
 /**
  * A lightweight, transient dialog that is popped up to show contextual or
@@ -125,123 +118,133 @@ public class PopupDialog extends Window {
 	 */
 	private static final String DIALOG_USE_PERSISTED_LOCATION = "DIALOG_USE_PERSISTED_LOCATION"; //$NON-NLS-1$
 
-	/**
-	 * Move action for the dialog.
-	 */
-	private class MoveAction extends Action {
-
-		MoveAction() {
-			super(JFaceResources.getString("PopupDialog.move"), //$NON-NLS-1$
-					IAction.AS_PUSH_BUTTON);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.action.IAction#run()
-		 */
-		public void run() {
-			performTrackerAction(SWT.NONE);
-		}
-
-	}
-
-	/**
-	 * Resize action for the dialog.
-	 */
-	private class ResizeAction extends Action {
-
-		ResizeAction() {
-			super(JFaceResources.getString("PopupDialog.resize"), //$NON-NLS-1$
-					IAction.AS_PUSH_BUTTON);
-		}
-
-		/*
-		 * @see org.eclipse.jface.action.Action#run()
-		 */
-		public void run() {
-			performTrackerAction(SWT.RESIZE);
-		}
-	}
-
-	/**
-	 * 
-	 * Remember bounds action for the dialog.
-	 */
-	private class PersistBoundsAction extends Action {
-
-		PersistBoundsAction() {
-			super(JFaceResources.getString("PopupDialog.persistBounds"), //$NON-NLS-1$
-					IAction.AS_CHECK_BOX);
-			setChecked(persistLocation && persistSize);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.action.IAction#run()
-		 */
-		public void run() {
-			persistSize = isChecked();
-			persistLocation = persistSize;
-		}
-	}
-
-	/**
-	 * 
-	 * Remember bounds action for the dialog.
-	 */
-	private class PersistSizeAction extends Action {
-
-		PersistSizeAction() {
-			super(JFaceResources.getString("PopupDialog.persistSize"), //$NON-NLS-1$
-					IAction.AS_CHECK_BOX);
-			setChecked(persistSize);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.action.IAction#run()
-		 */
-		public void run() {
-			persistSize = isChecked();
-		}
-	}
-
-	/**
-	 * 
-	 * Remember location action for the dialog.
-	 */
-	private class PersistLocationAction extends Action {
-
-		PersistLocationAction() {
-			super(JFaceResources.getString("PopupDialog.persistLocation"), //$NON-NLS-1$
-					IAction.AS_CHECK_BOX);
-			setChecked(persistLocation);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.action.IAction#run()
-		 */
-		public void run() {
-			persistLocation = isChecked();
-		}
-	}
+	// RAP [bm]: 
+//	/**
+//	 * Move action for the dialog.
+//	 */
+//	private class MoveAction extends Action {
+//
+//		MoveAction() {
+//			super(JFaceResources.getString("PopupDialog.move"), //$NON-NLS-1$
+//					IAction.AS_PUSH_BUTTON);
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.jface.action.IAction#run()
+//		 */
+//		public void run() {
+//			performTrackerAction(SWT.NONE);
+//		}
+//
+//	}
+//
+//	/**
+//	 * Resize action for the dialog.
+//	 */
+//	private class ResizeAction extends Action {
+//
+//		ResizeAction() {
+//			super(JFaceResources.getString("PopupDialog.resize"), //$NON-NLS-1$
+//					IAction.AS_PUSH_BUTTON);
+//		}
+//
+//		/*
+//		 * @see org.eclipse.jface.action.Action#run()
+//		 */
+//		public void run() {
+//			performTrackerAction(SWT.RESIZE);
+//		}
+//	}
+	
+//
+//	/**
+//	 * 
+//	 * Remember bounds action for the dialog.
+//	 */
+//	private class PersistBoundsAction extends Action {
+//
+//		PersistBoundsAction() {
+//			super(JFaceResources.getString("PopupDialog.persistBounds"), //$NON-NLS-1$
+//					IAction.AS_CHECK_BOX);
+//			setChecked(persistLocation && persistSize);
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.jface.action.IAction#run()
+//		 */
+//		public void run() {
+//			persistSize = isChecked();
+//			persistLocation = persistSize;
+//		}
+//	}
+//
+//	/**
+//	 * 
+//	 * Remember bounds action for the dialog.
+//	 */
+//	private class PersistSizeAction extends Action {
+//
+//		PersistSizeAction() {
+//			super(JFaceResources.getString("PopupDialog.persistSize"), //$NON-NLS-1$
+//					IAction.AS_CHECK_BOX);
+//			setChecked(persistSize);
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.jface.action.IAction#run()
+//		 */
+//		public void run() {
+//			persistSize = isChecked();
+//		}
+//	}
+//
+//	/**
+//	 * 
+//	 * Remember location action for the dialog.
+//	 */
+//	private class PersistLocationAction extends Action {
+//
+//		PersistLocationAction() {
+//			super(JFaceResources.getString("PopupDialog.persistLocation"), //$NON-NLS-1$
+//					IAction.AS_CHECK_BOX);
+//			setChecked(persistLocation);
+//		}
+//
+//		/*
+//		 * (non-Javadoc)
+//		 * 
+//		 * @see org.eclipse.jface.action.IAction#run()
+//		 */
+//		public void run() {
+//			persistLocation = isChecked();
+//		}
+//	}
+	// RAPEND: [bm] 
 
 	/**
 	 * Shell style appropriate for a simple hover popup that cannot get focus.
 	 * 
 	 */
-	public final static int HOVER_SHELLSTYLE = SWT.NO_FOCUS | SWT.ON_TOP
-			| SWT.TOOL;
+	// RAP [bm]: 
+//	public final static int HOVER_SHELLSTYLE = SWT.NO_FOCUS | SWT.ON_TOP
+//			| SWT.TOOL;
+	public final static int HOVER_SHELLSTYLE = SWT.NO_FOCUS | SWT.ON_TOP | SWT.NO_TRIM;
+	// RAPEND: [bm] 
 
+	
 	/**
 	 * Shell style appropriate for an info popup that can get focus.
 	 */
-	public final static int INFOPOPUP_SHELLSTYLE = SWT.TOOL;
+	// RAP [bm]: 
+//	public final static int INFOPOPUP_SHELLSTYLE = SWT.TOOL;
+	public final static int INFOPOPUP_SHELLSTYLE = SWT.NO_TRIM;
+	// RAPEND: [bm] 
 
 	/**
 	 * Shell style appropriate for a resizable info popup that can get focus.
@@ -323,13 +326,13 @@ public class PopupDialog extends Window {
 	 * Font to be used for the info area text. Computed based on the dialog's
 	 * font.
 	 */
-	private Font infoFont;
+//	private Font infoFont;
 
 	/**
 	 * Font to be used for the title area text. Computed based on the dialog's
 	 * font.
 	 */
-	private Font titleFont;
+//	private Font titleFont;
 
 	/**
 	 * Flags indicating whether we are listening for shell deactivate events,
@@ -824,13 +827,16 @@ public class PopupDialog extends Window {
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true,
 				false).span(showDialogMenu ? 1 : 2, 1).applyTo(titleLabel);
 
-		Font font = titleLabel.getFont();
-		FontData[] fontDatas = font.getFontData();
-		for (int i = 0; i < fontDatas.length; i++) {
-			fontDatas[i].setStyle(SWT.BOLD);
-		}
-		titleFont = new Font(titleLabel.getDisplay(), fontDatas);
-		titleLabel.setFont(titleFont);
+		// RAP [bm]: 
+//		Font font = titleLabel.getFont();
+//		FontData[] fontDatas = font.getFontData();
+//		for (int i = 0; i < fontDatas.length; i++) {
+//			fontDatas[i].setStyle(SWT.BOLD);
+//		}
+//		titleFont = new Font(titleLabel.getDisplay(), fontDatas);
+//		titleLabel.setFont(titleFont);
+		// RAPEND: [bm] 
+
 
 		if (titleText != null) {
 			titleLabel.setText(titleText);
@@ -860,13 +866,16 @@ public class PopupDialog extends Window {
 		// Status label
 		infoLabel = new Label(parent, SWT.RIGHT);
 		infoLabel.setText(infoText);
-		Font font = infoLabel.getFont();
-		FontData[] fontDatas = font.getFontData();
-		for (int i = 0; i < fontDatas.length; i++) {
-			fontDatas[i].setHeight(fontDatas[i].getHeight() * 9 / 10);
-		}
-		infoFont = new Font(infoLabel.getDisplay(), fontDatas);
-		infoLabel.setFont(infoFont);
+		// RAP [bm]: 
+//		Font font = infoLabel.getFont();
+//		FontData[] fontDatas = font.getFontData();
+//		for (int i = 0; i < fontDatas.length; i++) {
+//			fontDatas[i].setHeight(fontDatas[i].getHeight() * 9 / 10);
+//		}
+//		infoFont = new Font(infoLabel.getDisplay(), fontDatas);
+//		infoLabel.setFont(infoFont);
+		// RAPEND: [bm] 
+
 		GridDataFactory.fillDefaults().grab(true, false).align(SWT.FILL,
 				SWT.BEGINNING).applyTo(infoLabel);
 		infoLabel.setForeground(parent.getDisplay().getSystemColor(
@@ -882,8 +891,12 @@ public class PopupDialog extends Window {
 	 * @return The Control representing the horizontal separator.
 	 */
 	private Control createHorizontalSeparator(Composite parent) {
-		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL
-				| SWT.LINE_DOT);
+		// RAP [bm]: 
+//		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL
+//				| SWT.LINE_DOT);
+		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+		// RAPEND: [bm] 
+
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true,
 				false).applyTo(separator);
 		return separator;
@@ -903,8 +916,12 @@ public class PopupDialog extends Window {
 		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).applyTo(
 				toolBar);
 		viewMenuButton.setImage(JFaceResources.getImage(POPUP_IMG_MENU));
-		viewMenuButton.setDisabledImage(JFaceResources
-				.getImage(POPUP_IMG_MENU_DISABLED));
+		
+		// RAP [bm]: 
+//		viewMenuButton.setDisabledImage(JFaceResources
+//				.getImage(POPUP_IMG_MENU_DISABLED));
+		// RAPEND: [bm] 
+
 		viewMenuButton.setToolTipText(JFaceResources
 				.getString("PopupDialog.menuTooltip")); //$NON-NLS-1$
 		viewMenuButton.addSelectionListener(new SelectionAdapter() {
@@ -927,18 +944,21 @@ public class PopupDialog extends Window {
 	 *            The dialog's menu.
 	 */
 	protected void fillDialogMenu(IMenuManager dialogMenu) {
-		dialogMenu.add(new GroupMarker("SystemMenuStart")); //$NON-NLS-1$
-		dialogMenu.add(new MoveAction());
-		dialogMenu.add(new ResizeAction());
-		if (showPersistActions) {
-			if (isUsing34API) {
-				dialogMenu.add(new PersistLocationAction());
-				dialogMenu.add(new PersistSizeAction());
-			} else {
-				dialogMenu.add(new PersistBoundsAction());
-			}
-		}
-		dialogMenu.add(new Separator("SystemMenuEnd")); //$NON-NLS-1$
+		// RAP [bm]: 
+//		dialogMenu.add(new GroupMarker("SystemMenuStart")); //$NON-NLS-1$
+//		dialogMenu.add(new MoveAction());
+//		dialogMenu.add(new ResizeAction());
+//		if (showPersistActions) {
+//			if (isUsing34API) {
+//				dialogMenu.add(new PersistLocationAction());
+//				dialogMenu.add(new PersistSizeAction());
+//			} else {
+//				dialogMenu.add(new PersistBoundsAction());
+//			}
+//		}
+//		dialogMenu.add(new Separator("SystemMenuEnd")); //$NON-NLS-1$
+		// RAPEND: [bm] 
+
 	}
 
 	/**
@@ -947,28 +967,30 @@ public class PopupDialog extends Window {
 	 * @param style
 	 *            The track style (resize or move).
 	 */
-	private void performTrackerAction(int style) {
-		Shell shell = getShell();
-		if (shell == null || shell.isDisposed()) {
-			return;
-		}
-
-		Tracker tracker = new Tracker(shell.getDisplay(), style);
-		tracker.setStippled(true);
-		Rectangle[] r = new Rectangle[] { shell.getBounds() };
-		tracker.setRectangles(r);
-
-		// Ignore any deactivate events caused by opening the tracker.
-		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=120656
-		boolean oldListenToDeactivate = listenToDeactivate;
-		listenToDeactivate = false;
-		if (tracker.open()) {
-			if (shell != null && !shell.isDisposed()) {
-				shell.setBounds(tracker.getRectangles()[0]);
-			}
-		}
-		listenToDeactivate = oldListenToDeactivate;
-	}
+	// RAP [bm]: Tracker
+//	private void performTrackerAction(int style) {
+//		Shell shell = getShell();
+//		if (shell == null || shell.isDisposed()) {
+//			return;
+//		}
+//
+//		Tracker tracker = new Tracker(shell.getDisplay(), style);
+//		tracker.setStippled(true);
+//		Rectangle[] r = new Rectangle[] { shell.getBounds() };
+//		tracker.setRectangles(r);
+//
+//		// Ignore any deactivate events caused by opening the tracker.
+//		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=120656
+//		boolean oldListenToDeactivate = listenToDeactivate;
+//		listenToDeactivate = false;
+//		if (tracker.open()) {
+//			if (shell != null && !shell.isDisposed()) {
+//				shell.setBounds(tracker.getRectangles()[0]);
+//			}
+//		}
+//		listenToDeactivate = oldListenToDeactivate;
+//	}
+// RAPEND: [bm] 
 
 	/**
 	 * Show the dialog's menu. This message has no effect if the receiver was
@@ -1580,13 +1602,16 @@ public class PopupDialog extends Window {
 	 * 
 	 */
 	private void handleDispose() {
-		if (infoFont != null && !infoFont.isDisposed()) {
-			infoFont.dispose();
-		}
-		infoFont = null;
-		if (titleFont != null && !titleFont.isDisposed()) {
-			titleFont.dispose();
-		}
-		titleFont = null;
+		// RAP [bm]: 
+//		if (infoFont != null && !infoFont.isDisposed()) {
+//			infoFont.dispose();
+//		}
+//		infoFont = null;
+//		if (titleFont != null && !titleFont.isDisposed()) {
+//			titleFont.dispose();
+//		}
+//		titleFont = null;
+		// RAPEND: [bm] 
+
 	}
 }

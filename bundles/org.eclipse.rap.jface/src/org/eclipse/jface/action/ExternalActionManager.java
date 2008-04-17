@@ -35,11 +35,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.bindings.BindingManager;
 import org.eclipse.jface.bindings.BindingManagerEvent;
 import org.eclipse.jface.bindings.IBindingManagerListener;
-import org.eclipse.jface.bindings.Trigger;
 import org.eclipse.jface.bindings.TriggerSequence;
-import org.eclipse.jface.bindings.keys.KeySequence;
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.SWTKeySupport;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -288,20 +284,23 @@ public final class ExternalActionManager {
 		 * @see org.eclipse.jface.action.ExternalActionManager.ICallback#getAccelerator(String)
 		 */
 		public final Integer getAccelerator(final String commandId) {
-			final TriggerSequence triggerSequence = bindingManager
-					.getBestActiveBindingFor(commandId);
-			if (triggerSequence != null) {
-				final Trigger[] triggers = triggerSequence.getTriggers();
-				if (triggers.length == 1) {
-					final Trigger trigger = triggers[0];
-					if (trigger instanceof KeyStroke) {
-						final KeyStroke keyStroke = (KeyStroke) trigger;
-						final int accelerator = SWTKeySupport
-								.convertKeyStrokeToAccelerator(keyStroke);
-						return new Integer(accelerator);
-					}
-				}
-			}
+
+			// RAP [bm]: KeyEvents 
+//			final TriggerSequence triggerSequence = bindingManager
+//					.getBestActiveBindingFor(commandId);
+//			if (triggerSequence != null) {
+//				final Trigger[] triggers = triggerSequence.getTriggers();
+//				if (triggers.length == 1) {
+//					final Trigger trigger = triggers[0];
+//					if (trigger instanceof KeyStroke) {
+//						final KeyStroke keyStroke = (KeyStroke) trigger;
+//						final int accelerator = SWTKeySupport
+//								.convertKeyStrokeToAccelerator(keyStroke);
+//						return new Integer(accelerator);
+//					}
+//				}
+//			}
+			// RAPEND: [bm] 
 
 			return null;
 		}
@@ -340,11 +339,15 @@ public final class ExternalActionManager {
 		 * @see org.eclipse.jface.action.ExternalActionManager.ICallback#isAcceleratorInUse(int)
 		 */
 		public final boolean isAcceleratorInUse(final int accelerator) {
-			final KeySequence keySequence = KeySequence
-					.getInstance(SWTKeySupport
-							.convertAcceleratorToKeyStroke(accelerator));
-			return bindingManager.isPerfectMatch(keySequence)
-					|| bindingManager.isPartialMatch(keySequence);
+			// RAP [bm]: KeyEvents
+//			final KeySequence keySequence = KeySequence
+//					.getInstance(SWTKeySupport
+//							.convertAcceleratorToKeyStroke(accelerator));
+//			return bindingManager.isPerfectMatch(keySequence)
+//					|| bindingManager.isPartialMatch(keySequence);
+			// RAPEND: [bm] 
+
+			return false;
 		}
 
 		/**
