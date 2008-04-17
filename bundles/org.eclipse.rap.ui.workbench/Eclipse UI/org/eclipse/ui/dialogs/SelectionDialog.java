@@ -81,10 +81,10 @@ public abstract class SelectionDialog extends TrayDialog {
 	 * (non-Javadoc) Method declared on Dialog.
 	 */
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.get().OK_LABEL,
 				true);
 		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
+				IDialogConstants.get().CANCEL_LABEL, false);
 	}
 
 	/**

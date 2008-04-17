@@ -20,9 +20,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.dialogs.Dialog;
+//import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.internal.DialogUtil;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -30,8 +31,8 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
+//import org.eclipse.swt.graphics.FontMetrics;
+//import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -466,13 +467,16 @@ public class WorkingSetConfigurationBlock {
 	private GridData setButtonLayoutData(Button button) {
 		button.setFont(JFaceResources.getDialogFont());
 
-		GC gc = new GC(button);
-		gc.setFont(button.getFont());
-		FontMetrics fontMetrics = gc.getFontMetrics();
-		gc.dispose();
+// RAP [rh] changes due to different text size determination
+//		GC gc = new GC(button);
+//		gc.setFont(button.getFont());
+//		FontMetrics fontMetrics = gc.getFontMetrics();
+//		gc.dispose();
 		
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-        int widthHint = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.BUTTON_WIDTH);
+ // RAP [rh] changes due to different text size determination
+  //        int widthHint = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.BUTTON_WIDTH);
+        int widthHint = DialogUtil.convertHorizontalDLUsToPixels( button.getFont(), IDialogConstants.BUTTON_WIDTH );
         Point minSize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
         data.widthHint = Math.max(widthHint, minSize.x);
         button.setLayoutData(data);

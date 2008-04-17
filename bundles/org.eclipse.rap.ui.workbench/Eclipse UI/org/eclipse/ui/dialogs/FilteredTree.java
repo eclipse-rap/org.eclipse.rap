@@ -21,24 +21,25 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IContentProvider;
-import org.eclipse.jface.viewers.ISelection;
+//import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osgi.util.NLS;
+//import org.eclipse.osgi.util.NLS;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.accessibility.AccessibleAdapter;
-import org.eclipse.swt.accessibility.AccessibleEvent;
+//import org.eclipse.swt.accessibility.AccessibleAdapter;
+//import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
+//import org.eclipse.swt.events.KeyAdapter;
+//import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
+//import org.eclipse.swt.events.SelectionAdapter;
+//import org.eclipse.swt.events.SelectionEvent;
+//import org.eclipse.swt.events.TraverseEvent;
+//import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
@@ -318,22 +319,23 @@ public class FilteredTree extends Composite {
 		return new NotifyingTreeViewer(parent, style);
 	}
 
-	/**
-	 * Return the first item in the tree that matches the filter pattern.
-	 * 
-	 * @param items
-	 * @return the first matching TreeItem
-	 */
-	private TreeItem getFirstMatchingItem(TreeItem[] items) {
-		for (int i = 0; i < items.length; i++) {
-			if (patternFilter.isLeafMatch(treeViewer, items[i].getData())
-					&& patternFilter.isElementSelectable(items[i].getData())) {
-				return items[i];
-			}
-			return getFirstMatchingItem(items[i].getItems());
-		}
-		return null;
-	}
+// RAP [rh] unused code; was used by traverse-listener
+//	/**
+//	 * Return the first item in the tree that matches the filter pattern.
+//	 * 
+//	 * @param items
+//	 * @return the first matching TreeItem
+//	 */
+//	private TreeItem getFirstMatchingItem(TreeItem[] items) {
+//		for (int i = 0; i < items.length; i++) {
+//			if (patternFilter.isLeafMatch(treeViewer, items[i].getData())
+//					&& patternFilter.isElementSelectable(items[i].getData())) {
+//				return items[i];
+//			}
+//			return getFirstMatchingItem(items[i].getItems());
+//		}
+//		return null;
+//	}
 
 	/**
 	 * Create the refresh job for the receiver.
@@ -403,8 +405,12 @@ public class FilteredTree extends Composite {
 						 */
 						TreeItem[] items = getViewer().getTree().getItems();
 						int treeHeight = getViewer().getTree().getBounds().height;
-						int numVisibleItems = treeHeight
-								/ getViewer().getTree().getItemHeight();
+// RAP [rh] Tree#getItemHeight missing						
+//						int numVisibleItems = treeHeight
+//								/ getViewer().getTree().getItemHeight();
+            Font treeFont = getViewer().getTree().getFont();
+            int charHeight = Graphics.getCharHeight( treeFont );
+            int numVisibleItems = treeHeight / charHeight + 2;
 						long stopTime = SOFT_MAX_EXPAND_TIME
 								+ System.currentTimeMillis();
 						boolean cancel = false;
@@ -428,11 +434,12 @@ public class FilteredTree extends Composite {
 					}
 				} finally {
 					// done updating the tree - set redraw back to true
-					TreeItem[] items = getViewer().getTree().getItems();
-					if (items.length > 0
-							&& getViewer().getTree().getSelectionCount() == 0) {
-						treeViewer.getTree().setTopItem(items[0]);
-					}
+// RAP [rh] Tree#setTopItem missing				  
+//					TreeItem[] items = getViewer().getTree().getItems();
+//					if (items.length > 0
+//							&& getViewer().getTree().getSelectionCount() == 0) {
+//						treeViewer.getTree().setTopItem(items[0]);
+//					}
 					redrawFalseControl.setRedraw(true);
 				}
 				return Status.OK_STATUS;
@@ -497,58 +504,59 @@ public class FilteredTree extends Composite {
 	 */
 	protected void createFilterText(Composite parent) {
 		filterText = doCreateFilterText(parent);
-		filterText.getAccessible().addAccessibleListener(
-				new AccessibleAdapter() {
-					/*
-					 * (non-Javadoc)
-					 * 
-					 * @see org.eclipse.swt.accessibility.AccessibleListener#getName(org.eclipse.swt.accessibility.AccessibleEvent)
-					 */
-					public void getName(AccessibleEvent e) {
-						String filterTextString = filterText.getText();
-						if (filterTextString.length() == 0
-								|| filterTextString.equals(initialText)) {
-							e.result = initialText;
-						} else {
-							e.result = NLS
-									.bind(
-											WorkbenchMessages.FilteredTree_AccessibleListenerFiltered,
-											new String[] {
-													filterTextString,
-													String
-															.valueOf(getFilteredItemsCount()) });
-						}
-					}
-
-					/**
-					 * Return the number of filtered items
-					 * @return int
-					 */
-					private int getFilteredItemsCount() {
-						int total = 0;
-						TreeItem[] items = getViewer().getTree().getItems();
-						for (int i = 0; i < items.length; i++) {
-							total += itemCount(items[i]);
-							
-						}
-						return total;
-					}
-
-					/**
-					 * Return the count of treeItem and it's children to infinite depth.
-					 * @param treeItem
-					 * @return int
-					 */
-					private int itemCount(TreeItem treeItem) {
-						int count = 1;
-						TreeItem[] children = treeItem.getItems();
-						for (int i = 0; i < children.length; i++) {
-							count += itemCount(children[i]);
-							
-						}
-						return count;
-					}
-				});
+// RAP [rh] Accessibility API missing		
+//		filterText.getAccessible().addAccessibleListener(
+//				new AccessibleAdapter() {
+//					/*
+//					 * (non-Javadoc)
+//					 * 
+//					 * @see org.eclipse.swt.accessibility.AccessibleListener#getName(org.eclipse.swt.accessibility.AccessibleEvent)
+//					 */
+//					public void getName(AccessibleEvent e) {
+//						String filterTextString = filterText.getText();
+//						if (filterTextString.length() == 0
+//								|| filterTextString.equals(initialText)) {
+//							e.result = initialText;
+//						} else {
+//							e.result = NLS
+//									.bind(
+//											WorkbenchMessages.FilteredTree_AccessibleListenerFiltered,
+//											new String[] {
+//													filterTextString,
+//													String
+//															.valueOf(getFilteredItemsCount()) });
+//						}
+//					}
+//
+//					/**
+//					 * Return the number of filtered items
+//					 * @return int
+//					 */
+//					private int getFilteredItemsCount() {
+//						int total = 0;
+//						TreeItem[] items = getViewer().getTree().getItems();
+//						for (int i = 0; i < items.length; i++) {
+//							total += itemCount(items[i]);
+//							
+//						}
+//						return total;
+//					}
+//
+//					/**
+//					 * Return the count of treeItem and it's children to infinite depth.
+//					 * @param treeItem
+//					 * @return int
+//					 */
+//					private int itemCount(TreeItem treeItem) {
+//						int count = 1;
+//						TreeItem[] children = treeItem.getItems();
+//						for (int i = 0; i < children.length; i++) {
+//							count += itemCount(children[i]);
+//							
+//						}
+//						return count;
+//					}
+//				});
 
 		filterText.addFocusListener(new FocusAdapter() {
 			/*
@@ -575,51 +583,53 @@ public class FilteredTree extends Composite {
 			}
 		});
 
-		filterText.addKeyListener(new KeyAdapter() {
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-			 */
-			public void keyPressed(KeyEvent e) {
-				// on a CR we want to transfer focus to the list
-				boolean hasItems = getViewer().getTree().getItemCount() > 0;
-				if (hasItems && e.keyCode == SWT.ARROW_DOWN) {
-					treeViewer.getTree().setFocus();
-				} else if (e.character == SWT.CR) {
-					return;
-				}
-			}
-		});
+// RAP [rh] missing key yevents		
+//		filterText.addKeyListener(new KeyAdapter() {
+//			/*
+//			 * (non-Javadoc)
+//			 * 
+//			 * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+//			 */
+//			public void keyPressed(KeyEvent e) {
+//				// on a CR we want to transfer focus to the list
+//				boolean hasItems = getViewer().getTree().getItemCount() > 0;
+//				if (hasItems && e.keyCode == SWT.ARROW_DOWN) {
+//					treeViewer.getTree().setFocus();
+//				} else if (e.character == SWT.CR) {
+//					return;
+//				}
+//			}
+//		});
 
 		// enter key set focus to tree
-		filterText.addTraverseListener(new TraverseListener() {
-			public void keyTraversed(TraverseEvent e) {
-				if (e.detail == SWT.TRAVERSE_RETURN) {
-					e.doit = false;
-					if (getViewer().getTree().getItemCount() == 0) {
-						Display.getCurrent().beep();
-					} else {
-						// if the initial filter text hasn't changed, do not try
-						// to match
-						boolean hasFocus = getViewer().getTree().setFocus();
-						boolean textChanged = !getInitialText().equals(
-								filterText.getText().trim());
-						if (hasFocus && textChanged
-								&& filterText.getText().trim().length() > 0) {
-							TreeItem item = getFirstMatchingItem(getViewer()
-									.getTree().getItems());
-							if (item != null) {
-								getViewer().getTree().setSelection(
-										new TreeItem[] { item });
-								ISelection sel = getViewer().getSelection();
-								getViewer().setSelection(sel, true);
-							}
-						}
-					}
-				}
-			}
-		});
+// RAP [rh] Traverse events not supported		
+//		filterText.addTraverseListener(new TraverseListener() {
+//			public void keyTraversed(TraverseEvent e) {
+//				if (e.detail == SWT.TRAVERSE_RETURN) {
+//					e.doit = false;
+//					if (getViewer().getTree().getItemCount() == 0) {
+//						Display.getCurrent().beep();
+//					} else {
+//						// if the initial filter text hasn't changed, do not try
+//						// to match
+//						boolean hasFocus = getViewer().getTree().setFocus();
+//						boolean textChanged = !getInitialText().equals(
+//								filterText.getText().trim());
+//						if (hasFocus && textChanged
+//								&& filterText.getText().trim().length() > 0) {
+//							TreeItem item = getFirstMatchingItem(getViewer()
+//									.getTree().getItems());
+//							if (item != null) {
+//								getViewer().getTree().setSelection(
+//										new TreeItem[] { item });
+//								ISelection sel = getViewer().getSelection();
+//								getViewer().setSelection(sel, true);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		});
 
 		filterText.addModifyListener(new ModifyListener() {
 			/*
@@ -635,25 +645,27 @@ public class FilteredTree extends Composite {
 		// if we're using a field with built in cancel we need to listen for
 		// default selection changes (which tell us the cancel button has been
 		// pressed)
-		if ((filterText.getStyle() & SWT.CANCEL) != 0) {
-			filterText.addSelectionListener(new SelectionAdapter() {
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-				 */
-				public void widgetDefaultSelected(SelectionEvent e) {
-					if (e.detail == SWT.CANCEL)
-						clearText();
-				}
-			});
-		}
+// RAP [rh] Text(SWT.CANCEL) not supported		
+//		if ((filterText.getStyle() & SWT.CANCEL) != 0) {
+//			filterText.addSelectionListener(new SelectionAdapter() {
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+//				 */
+//				public void widgetDefaultSelected(SelectionEvent e) {
+//					if (e.detail == SWT.CANCEL)
+//						clearText();
+//				}
+//			});
+//		}
 
 		GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
 		// if the text widget supported cancel then it will have it's own
 		// integrated button. We can take all of the space.
-		if ((filterText.getStyle() & SWT.CANCEL) != 0)
-			gridData.horizontalSpan = 2;
+// RAP [rh] Text(SWT.CANCEL) not supported
+//		if ((filterText.getStyle() & SWT.CANCEL) != 0)
+//			gridData.horizontalSpan = 2;
 		filterText.setLayoutData(gridData);
 	}
 
@@ -668,8 +680,9 @@ public class FilteredTree extends Composite {
 	 * @since 3.3
 	 */
 	protected Text doCreateFilterText(Composite parent) {
-		return new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.SEARCH
-				| SWT.CANCEL);
+// RAP [r] SWT.SEARCH, SWT.CANCEL not implemented for Text widget	  
+		return new Text(parent, SWT.SINGLE | SWT.BORDER /* | SWT.SEARCH
+				| SWT.CANCEL */ );
 	}
 
 	private String previousFilterText;
@@ -713,7 +726,8 @@ public class FilteredTree extends Composite {
 	private void createClearText(Composite parent) {
 		// only create the button if the text widget doesn't support one
 		// natively
-		if ((filterText.getStyle() & SWT.CANCEL) == 0) {
+// RAP [rh] Text(SWT.CANCEL) not supported	  
+//		if ((filterText.getStyle() & SWT.CANCEL) == 0) {
 			filterToolBar = new ToolBarManager(SWT.FLAT | SWT.HORIZONTAL);
 			filterToolBar.createControl(parent);
 
@@ -736,7 +750,7 @@ public class FilteredTree extends Composite {
 					.getImageRegistry().getDescriptor(DCLEAR_ICON));
 
 			filterToolBar.add(clearTextAction);
-		}
+//		}
 	}
 
 	/**

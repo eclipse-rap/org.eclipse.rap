@@ -79,11 +79,11 @@ public class YesNoCancelListSelectionDialog extends ListSelectionDialog {
      */
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.YES_ID,
-                IDialogConstants.YES_LABEL, true);
-        createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL,
+                IDialogConstants.get().YES_LABEL, true);
+        createButton(parent, IDialogConstants.NO_ID, IDialogConstants.get().NO_LABEL,
                 false);
         createButton(parent, IDialogConstants.CANCEL_ID,
-                IDialogConstants.CANCEL_LABEL, false);
+                IDialogConstants.get().CANCEL_LABEL, false);
     }
 
     /**

@@ -11,7 +11,7 @@
 package org.eclipse.ui.dialogs;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -61,9 +61,10 @@ public class FileEditorMappingLabelProvider extends LabelProvider implements
      */
     public void dispose() {
         super.dispose();
-        for (Iterator e = imagesToDispose.iterator(); e.hasNext();) {
-            ((Image) e.next()).dispose();
-        }
+// RAP [rh] Image#dispose() not implemented        
+//        for (Iterator e = imagesToDispose.iterator(); e.hasNext();) {
+//            ((Image) e.next()).dispose();
+//        }
         imagesToDispose.clear();
     }
 

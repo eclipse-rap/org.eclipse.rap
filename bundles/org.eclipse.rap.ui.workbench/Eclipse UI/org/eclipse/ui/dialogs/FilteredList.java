@@ -22,16 +22,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.accessibility.Accessible;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.SelectionListener;
+//import org.eclipse.swt.SWTException;
+//import org.eclipse.swt.accessibility.Accessible;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
+//import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.internal.WorkbenchMessages;
@@ -352,7 +350,11 @@ public class FilteredList extends Composite {
 			// accept selections, set the selection immediately.
 			if (fUpdateJob == null) {
 				fList.setSelection(selection);
-				fList.notifyListeners(SWT.Selection, new Event());
+// RAP [rh] Widget#notifyListeners missing				
+//				fList.notifyListeners(SWT.Selection, new Event());
+				SelectionEvent event
+				  = new SelectionEvent( fList, null, SelectionEvent.WIDGET_SELECTED );
+				event.processEvent();
 			} else {
 				// There is an update job doing the population of the list, so
 				// it should update the selection.
@@ -587,7 +589,11 @@ public IStatus runInUIThread(IProgressMonitor monitor) {
             }
             // table empty -> no selection
             if (fCount == 0) {
-                fTable.notifyListeners(SWT.Selection, new Event());
+// RAP [rh] Widget#notifyListeners missing        
+//                fTable.notifyListeners(SWT.Selection, new Event());
+                SelectionEvent event
+                  = new SelectionEvent( fTable ,null, SelectionEvent.WIDGET_SELECTED );
+                event.processEvent();
                 return Status.OK_STATUS;
             }
             // How many we are going to do this time.
@@ -622,7 +628,11 @@ public IStatus runInUIThread(IProgressMonitor monitor) {
                     		// job started.  Force a selection notification, since the
                     		// items represented by the selection have changed.
 							// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=119456
-                    		fTable.notifyListeners(SWT.Selection, new Event());
+// RAP [rh] Widget#notifyListeners missing                    	  
+//                    		fTable.notifyListeners(SWT.Selection, new Event());
+                    	  SelectionEvent event
+                    	    = new SelectionEvent( fTable, null, SelectionEvent.WIDGET_SELECTED );
+                    	  event.processEvent();
                     	}
                     }
                 } else {
@@ -669,7 +679,11 @@ public IStatus runInUIThread(IProgressMonitor monitor) {
 				return;
 			}
 			fTable.setSelection(indices);
-			fTable.notifyListeners(SWT.Selection, new Event());
+// RAP [rh] Widget#notifyListeners missing			
+//			fTable.notifyListeners(SWT.Selection, new Event());
+			SelectionEvent event
+			  = new SelectionEvent( fTable, null, SelectionEvent.WIDGET_SELECTED );
+			event.processEvent();
 		}
 	}
 
@@ -756,24 +770,25 @@ public IStatus runInUIThread(IProgressMonitor monitor) {
 		this.fLabelProvider = labelProvider;
 	}
 	
-	/**
-	 * Returns the accessible object for the receiver.
-	 * If this is the first time this object is requested,
-	 * then the object is created and returned.
-	 *
-	 * @return the accessible object
-	 *
-	 * @exception SWTException <ul>
-	 *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-	 * </ul>
-	 * 
-	 * @see Accessible#addAccessibleListener
-	 * @see Accessible#addAccessibleControlListener
-	 * 
-	 * @since 3.3
-	 */
-	public Accessible getAccessible() {
-		return fList.getAccessible();
-	}
+// RAP [rh] Accessibility API not supported
+//	/**
+//	 * Returns the accessible object for the receiver.
+//	 * If this is the first time this object is requested,
+//	 * then the object is created and returned.
+//	 *
+//	 * @return the accessible object
+//	 *
+//	 * @exception SWTException <ul>
+//	 *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+//	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+//	 * </ul>
+//	 * 
+//	 * @see Accessible#addAccessibleListener
+//	 * @see Accessible#addAccessibleControlListener
+//	 * 
+//	 * @since 3.3
+//	 */
+//	public Accessible getAccessible() {
+//		return fList.getAccessible();
+//	}
 }

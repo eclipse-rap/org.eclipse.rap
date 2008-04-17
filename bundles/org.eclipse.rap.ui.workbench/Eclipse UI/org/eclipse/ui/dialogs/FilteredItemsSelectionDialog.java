@@ -45,52 +45,37 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.LegacyActionTools;
+//import org.eclipse.jface.action.LegacyActionTools;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.viewers.ContentViewer;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.IContentProvider;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IFontProvider;
-import org.eclipse.jface.viewers.ILabelDecorator;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ILazyContentProvider;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.StyledCellLabelProvider;
-import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.*;
+//import org.eclipse.jface.viewers.StyledCellLabelProvider;
+//import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+//import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.accessibility.AccessibleAdapter;
-import org.eclipse.swt.accessibility.AccessibleEvent;
+//import org.eclipse.swt.accessibility.AccessibleAdapter;
+//import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
+//import org.eclipse.swt.events.KeyAdapter;
+//import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
+//import org.eclipse.swt.events.TraverseEvent;
+//import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.GC;
+//import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -99,7 +84,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
+//import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -262,11 +247,12 @@ public abstract class FilteredItemsSelectionDialog extends
 		contentProvider.addFilter(filter);
 	}
 
+// RAP [rh] JavaDoc: IStyledLabelProvider not supported
 	/**
-	 * Sets a new label provider for items in the list. If the label provider
+	 * Sets a new label provider for items in the list. <!-- If the label provider
 	 * also implements
 	 * {@link org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider}, the
-	 * style text labels provided by it will be used.
+	 * style text labels provided by it will be used. -->
 	 * 
 	 * @param listLabelProvider
 	 *            the label provider for items in the list
@@ -455,14 +441,15 @@ public abstract class FilteredItemsSelectionDialog extends
 		headerLabel.setText((getMessage() != null && getMessage().trim()
 				.length() > 0) ? getMessage()
 				: WorkbenchMessages.FilteredItemsSelectionDialog_patternLabel);
-		headerLabel.addTraverseListener(new TraverseListener() {
-			public void keyTraversed(TraverseEvent e) {
-				if (e.detail == SWT.TRAVERSE_MNEMONIC && e.doit) {
-					e.detail = SWT.TRAVERSE_NONE;
-					pattern.setFocus();
-				}
-			}
-		});
+// RAP [rh] Traverse events missing		
+//		headerLabel.addTraverseListener(new TraverseListener() {
+//			public void keyTraversed(TraverseEvent e) {
+//				if (e.detail == SWT.TRAVERSE_MNEMONIC && e.doit) {
+//					e.detail = SWT.TRAVERSE_NONE;
+//					pattern.setFocus();
+//				}
+//			}
+//		});
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		headerLabel.setLayoutData(gd);
@@ -491,14 +478,15 @@ public abstract class FilteredItemsSelectionDialog extends
 		listLabel
 				.setText(WorkbenchMessages.FilteredItemsSelectionDialog_listLabel);
 
-		listLabel.addTraverseListener(new TraverseListener() {
-			public void keyTraversed(TraverseEvent e) {
-				if (e.detail == SWT.TRAVERSE_MNEMONIC && e.doit) {
-					e.detail = SWT.TRAVERSE_NONE;
-					list.getTable().setFocus();
-				}
-			}
-		});
+// RAP [rh] Traverse events missing
+//		listLabel.addTraverseListener(new TraverseListener() {
+//			public void keyTraversed(TraverseEvent e) {
+//				if (e.detail == SWT.TRAVERSE_MNEMONIC && e.doit) {
+//					e.detail = SWT.TRAVERSE_NONE;
+//					list.getTable().setFocus();
+//				}
+//			}
+//		});
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		listLabel.setLayoutData(gd);
@@ -636,29 +624,35 @@ public abstract class FilteredItemsSelectionDialog extends
 		layout.marginHeight = 0;
 		content.setLayout(layout);
 
-		final Label headerLabel = createHeader(content);
+// RAP [rh] wor around "unused variable" compile error		
+//		final Label headerLabel = createHeader(content);
+		createHeader(content);
 
 		pattern = new Text(content, SWT.SINGLE | SWT.BORDER);
-		pattern.getAccessible().addAccessibleListener(new AccessibleAdapter() {
-			public void getName(AccessibleEvent e) {
-				e.result = LegacyActionTools.removeMnemonics(headerLabel
-						.getText());
-			}
-		});
+// RAP [rh] Accessibility API missing		
+//		pattern.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+//			public void getName(AccessibleEvent e) {
+//				e.result = LegacyActionTools.removeMnemonics(headerLabel
+//						.getText());
+//			}
+//		});
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		pattern.setLayoutData(gd);
 
-		final Label listLabel = createLabels(content);
+// RAP [rh] wor around "unused variable" compile error    
+//		final Label listLabel = createLabels(content);
+      createLabels(content);
 
 		list = new TableViewer(content, (multi ? SWT.MULTI : SWT.SINGLE)
 				| SWT.BORDER | SWT.V_SCROLL | SWT.VIRTUAL);
-		list.getTable().getAccessible().addAccessibleListener(
-				new AccessibleAdapter() {
-					public void getName(AccessibleEvent e) {
-						e.result = LegacyActionTools.removeMnemonics(listLabel
-								.getText());
-					}
-				});
+// RAP [rh] Accessibility API missing
+//		list.getTable().getAccessible().addAccessibleListener(
+//				new AccessibleAdapter() {
+//					public void getName(AccessibleEvent e) {
+//						e.result = LegacyActionTools.removeMnemonics(listLabel
+//								.getText());
+//					}
+//				});
 		list.setContentProvider(contentProvider);
 		list.setLabelProvider(getItemsListLabelProvider());
 		list.setInput(new Object[0]);
@@ -674,15 +668,16 @@ public abstract class FilteredItemsSelectionDialog extends
 			}
 		});
 
-		pattern.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == SWT.ARROW_DOWN) {
-					if (list.getTable().getItemCount() > 0) {
-						list.getTable().setFocus();
-					}
-				}
-			}
-		});
+// RAP [rh] Key events missing		
+//		pattern.addKeyListener(new KeyAdapter() {
+//			public void keyPressed(KeyEvent e) {
+//				if (e.keyCode == SWT.ARROW_DOWN) {
+//					if (list.getTable().getItemCount() > 0) {
+//						list.getTable().setFocus();
+//					}
+//				}
+//			}
+//		});
 
 		list.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -698,64 +693,65 @@ public abstract class FilteredItemsSelectionDialog extends
 			}
 		});
 
-		list.getTable().addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {
-
-				if (e.keyCode == SWT.DEL) {
-
-					List selectedElements = ((StructuredSelection) list
-							.getSelection()).toList();
-
-					Object item = null;
-					boolean isSelectedHistory = true;
-
-					for (Iterator it = selectedElements.iterator(); it
-							.hasNext();) {
-						item = it.next();
-						if (item instanceof ItemsListSeparator
-								|| !isHistoryElement(item)) {
-							isSelectedHistory = false;
-							break;
-						}
-					}
-					if (isSelectedHistory)
-						removeSelectedItems(selectedElements);
-
-				}
-
-				if (e.keyCode == SWT.ARROW_UP && (e.stateMask & SWT.SHIFT) != 0
-						&& (e.stateMask & SWT.CTRL) != 0) {
-					StructuredSelection selection = (StructuredSelection) list
-							.getSelection();
-
-					if (selection.size() == 1) {
-						Object element = selection.getFirstElement();
-						if (element.equals(list.getElementAt(0))) {
-							pattern.setFocus();
-						}
-						if (list.getElementAt(list.getTable()
-								.getSelectionIndex() - 1) instanceof ItemsListSeparator)
-							list.getTable().setSelection(
-									list.getTable().getSelectionIndex() - 1);
-						list.getTable().notifyListeners(SWT.Selection,
-								new Event());
-
-					}
-				}
-
-				if (e.keyCode == SWT.ARROW_DOWN
-						&& (e.stateMask & SWT.SHIFT) != 0
-						&& (e.stateMask & SWT.CTRL) != 0) {
-
-					if (list
-							.getElementAt(list.getTable().getSelectionIndex() + 1) instanceof ItemsListSeparator)
-						list.getTable().setSelection(
-								list.getTable().getSelectionIndex() + 1);
-					list.getTable().notifyListeners(SWT.Selection, new Event());
-				}
-
-			}
-		});
+// RAP [rh] missing key events
+//		list.getTable().addKeyListener(new KeyAdapter() {
+//			public void keyPressed(KeyEvent e) {
+//
+//				if (e.keyCode == SWT.DEL) {
+//
+//					List selectedElements = ((StructuredSelection) list
+//							.getSelection()).toList();
+//
+//					Object item = null;
+//					boolean isSelectedHistory = true;
+//
+//					for (Iterator it = selectedElements.iterator(); it
+//							.hasNext();) {
+//						item = it.next();
+//						if (item instanceof ItemsListSeparator
+//								|| !isHistoryElement(item)) {
+//							isSelectedHistory = false;
+//							break;
+//						}
+//					}
+//					if (isSelectedHistory)
+//						removeSelectedItems(selectedElements);
+//
+//				}
+//
+//				if (e.keyCode == SWT.ARROW_UP && (e.stateMask & SWT.SHIFT) != 0
+//						&& (e.stateMask & SWT.CTRL) != 0) {
+//					StructuredSelection selection = (StructuredSelection) list
+//							.getSelection();
+//
+//					if (selection.size() == 1) {
+//						Object element = selection.getFirstElement();
+//						if (element.equals(list.getElementAt(0))) {
+//							pattern.setFocus();
+//						}
+//						if (list.getElementAt(list.getTable()
+//								.getSelectionIndex() - 1) instanceof ItemsListSeparator)
+//							list.getTable().setSelection(
+//									list.getTable().getSelectionIndex() - 1);
+//						list.getTable().notifyListeners(SWT.Selection,
+//								new Event());
+//
+//					}
+//				}
+//
+//				if (e.keyCode == SWT.ARROW_DOWN
+//						&& (e.stateMask & SWT.SHIFT) != 0
+//						&& (e.stateMask & SWT.CTRL) != 0) {
+//
+//					if (list
+//							.getElementAt(list.getTable().getSelectionIndex() + 1) instanceof ItemsListSeparator)
+//						list.getTable().setSelection(
+//								list.getTable().getSelectionIndex() + 1);
+//					list.getTable().notifyListeners(SWT.Selection, new Event());
+//				}
+//
+//			}
+//		});
 
 		createExtendedContentArea(content);
 
@@ -939,7 +935,11 @@ public abstract class FilteredItemsSelectionDialog extends
 				} else {
 					refreshWithLastSelection = true;
 					list.getTable().setSelection(0);
-					list.getTable().notifyListeners(SWT.Selection, new Event());
+// RAP [rh] Widget#notifyListeners missing					
+//					list.getTable().notifyListeners(SWT.Selection, new Event());
+					SelectionEvent event
+					  = new SelectionEvent( list.getTable(), null, SelectionEvent.WIDGET_SELECTED );
+					event.processEvent();
 				}
 			} else {
 				list.setSelection(StructuredSelection.EMPTY);
@@ -1526,7 +1526,9 @@ public abstract class FilteredItemsSelectionDialog extends
 		}
 	}
 
-	private class ItemsListLabelProvider extends StyledCellLabelProvider
+// RAP [rh] StyledCellLabelProvider not supported	
+//	private class ItemsListLabelProvider extends StyledCellLabelProvider
+	private class ItemsListLabelProvider extends CellLabelProvider
 			implements ILabelProviderListener {
 		private ILabelProvider provider;
 
@@ -1549,7 +1551,8 @@ public abstract class FilteredItemsSelectionDialog extends
 			this.provider = provider;
 			this.selectionDecorator = selectionDecorator;
 
-			setOwnerDrawEnabled(provider instanceof IStyledLabelProvider);
+// RAP [rh] IStyledLabelProvider not supported
+//			setOwnerDrawEnabled(provider instanceof IStyledLabelProvider);
 
 			provider.addListener(this);
 
@@ -1604,7 +1607,8 @@ public abstract class FilteredItemsSelectionDialog extends
 				provider.addListener(this);
 			}
 
-			setOwnerDrawEnabled(provider instanceof IStyledLabelProvider);
+// RAP [rh] IStyledLabelProvider not supported
+//			setOwnerDrawEnabled(provider instanceof IStyledLabelProvider);
 		}
 
 		/**
@@ -1654,40 +1658,43 @@ public abstract class FilteredItemsSelectionDialog extends
 			return str;
 		}
 
-		private StyledString getStyledText(Object element,
-				IStyledLabelProvider provider) {
-			StyledString string = provider.getStyledText(element);
-
-			if (selectionDecorator != null && isSelected(element)) {
-				String decorated = selectionDecorator.decorateText(string
-						.getString(), element);
-				return new StyledString(decorated);
-				// no need to add colors when element is selected
-			}
-			return string;
-		}
+// RAP [rh] IStyledLabelProvider not supported		
+//		private StyledString getStyledText(Object element,
+//				IStyledLabelProvider provider) {
+//			StyledString string = provider.getStyledText(element);
+//
+//			if (selectionDecorator != null && isSelected(element)) {
+//				String decorated = selectionDecorator.decorateText(string
+//						.getString(), element);
+//				return new StyledString(decorated);
+//				// no need to add colors when element is selected
+//			}
+//			return string;
+//		}
 
 		public void update(ViewerCell cell) {
 			Object element = cell.getElement();
 
-			if (!(element instanceof ItemsListSeparator)
-					&& provider instanceof IStyledLabelProvider) {
-				IStyledLabelProvider styledLabelProvider = (IStyledLabelProvider) provider;
-				StyledString styledString = getStyledText(element,
-						styledLabelProvider);
-
-				cell.setText(styledString.getString());
-				cell.setStyleRanges(styledString.getStyleRanges());
-				cell.setImage(styledLabelProvider.getImage(element));
-			} else {
+// RAP [rh] IStyledLabelProvider not supported
+//			if (!(element instanceof ItemsListSeparator)
+//					&& provider instanceof IStyledLabelProvider) {
+//				IStyledLabelProvider styledLabelProvider = (IStyledLabelProvider) provider;
+//				StyledString styledString = getStyledText(element,
+//						styledLabelProvider);
+//
+//				cell.setText(styledString.getString());
+//				cell.setStyleRanges(styledString.getStyleRanges());
+//				cell.setImage(styledLabelProvider.getImage(element));
+//			} else {
 				cell.setText(getText(element));
 				cell.setImage(getImage(element));
-			}
+//			}
 			cell.setFont(getFont(element));
 			cell.setForeground(getForeground(element));
 			cell.setBackground(getBackground(element));
 
-			super.update(cell);
+// RAP [rh] Obsolete becase of changed inheritance
+//			super.update(cell);
 		}
 
 		private String getSeparatorLabel(String separatorLabel) {
@@ -1700,13 +1707,18 @@ public abstract class FilteredItemsSelectionDialog extends
 
 			int width = rect.width - borderWidth - imageWidth;
 
-			GC gc = new GC(list.getTable());
-			gc.setFont(list.getTable().getFont());
+//RAP [rh] Changes due to different text size calculation			
+//			GC gc = new GC(list.getTable());
+//			gc.setFont(list.getTable().getFont());
+//
+//			int fSeparatorWidth = gc.getAdvanceWidth('-');
+//			int fMessageLength = gc.textExtent(separatorLabel).x;
+//
+//			gc.dispose();
 
-			int fSeparatorWidth = gc.getAdvanceWidth('-');
-			int fMessageLength = gc.textExtent(separatorLabel).x;
-
-			gc.dispose();
+			Font font = list.getTable().getFont();
+			int fSeparatorWidth = Graphics.stringExtent( font, "-" ).x; //$NON-NLS-1$
+			int fMessageLength = Graphics.stringExtent( font, separatorLabel ).x;
 
 			StringBuffer dashes = new StringBuffer();
 			int chars = (((width - fMessageLength) / fSeparatorWidth) / 2) - 2;

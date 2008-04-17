@@ -173,18 +173,20 @@ public abstract class SelectionStatusDialog extends SelectionDialog {
         composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         composite.setFont(font);
 
-        if (!fStatusLineAboveButtons && isHelpAvailable()) {
-        	createHelpControl(composite);
-        }
+// RAP [rh] Help not supported
+//        if (!fStatusLineAboveButtons && isHelpAvailable()) {
+//        	createHelpControl(composite);
+//        }
         fStatusLine = new MessageLine(composite);
         fStatusLine.setAlignment(SWT.LEFT);
         GridData statusData = new GridData(GridData.FILL_HORIZONTAL);
         fStatusLine.setErrorStatus(null);
         fStatusLine.setFont(font);
-        if (fStatusLineAboveButtons && isHelpAvailable()) {
-        	statusData.horizontalSpan = 2;
-        	createHelpControl(composite);
-        }
+// RAP [rh] Help not supported        
+//        if (fStatusLineAboveButtons && isHelpAvailable()) {
+//        	statusData.horizontalSpan = 2;
+//        	createHelpControl(composite);
+//        }
         fStatusLine.setLayoutData(statusData);
 
 		/*

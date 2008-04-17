@@ -96,7 +96,7 @@ public class ListDialog extends SelectionDialog {
     protected void createButtonsForButtonBar(Composite parent) {
         if (!fAddCancelButton) {
 			createButton(parent, IDialogConstants.OK_ID,
-                    IDialogConstants.OK_LABEL, true);
+                    IDialogConstants.get().OK_LABEL, true);
 		} else {
 			super.createButtonsForButtonBar(parent);
 		}

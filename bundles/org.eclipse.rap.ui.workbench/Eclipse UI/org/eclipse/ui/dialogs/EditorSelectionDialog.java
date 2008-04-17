@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Cursor;
+//import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
+//import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
@@ -52,17 +52,20 @@ import org.eclipse.ui.internal.registry.EditorRegistry;
 public final class EditorSelectionDialog extends Dialog {
 	private EditorDescriptor selectedEditor;
 
-	private Button externalButton;
+// RAP [rh] external editors not supported: therefore externalButton, 
+//     internalButton and browseExternalEditorsButton are unnecessary 
+//	private Button externalButton;
 
 	private Table editorTable;
 
-	private Button browseExternalEditorsButton;
+//	private Button browseExternalEditorsButton;
 
-	private Button internalButton;
+//	private Button internalButton;
 
 	private Button okButton;
 
-	private static final String STORE_ID_INTERNAL_EXTERNAL = "EditorSelectionDialog.STORE_ID_INTERNAL_EXTERNAL";//$NON-NLS-1$
+//RAP [rh] unused code due to changes becauase of external editors not supported
+//	private static final String STORE_ID_INTERNAL_EXTERNAL = "EditorSelectionDialog.STORE_ID_INTERNAL_EXTERNAL";//$NON-NLS-1$
 
 	private String message = WorkbenchMessages.EditorSelection_chooseAnEditor;
 
@@ -79,16 +82,18 @@ public final class EditorSelectionDialog extends Dialog {
 
 	private DialogListener listener = new DialogListener();
 
-	private static final String[] Executable_Filters;
+// RAP [rh] external editors not supported
+//	private static final String[] Executable_Filters;
 
 	private static final int TABLE_WIDTH = 200;
-	static {
-		if (SWT.getPlatform().equals("win32")) {//$NON-NLS-1$
-			Executable_Filters = new String[] { "*.exe", "*.bat", "*.*" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		} else {
-			Executable_Filters = new String[] { "*" }; //$NON-NLS-1$
-		}
-	}
+//RAP [rh] external editors not supported
+//	static {
+//		if (SWT.getPlatform().equals("win32")) {//$NON-NLS-1$
+//			Executable_Filters = new String[] { "*.exe", "*.bat", "*.*" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//		} else {
+//			Executable_Filters = new String[] { "*" }; //$NON-NLS-1$
+//		}
+//	}
 
 	/**
 	 * Create an instance of this class.
@@ -115,15 +120,17 @@ public final class EditorSelectionDialog extends Dialog {
 	 */
 	public boolean close() {
 		if (internalEditorImages != null) {
-			for (int i = 0; i < internalEditorImages.length; i++) {
-				internalEditorImages[i].dispose();
-			}
+// RAP [rh] Image#dispose() missing		  
+//			for (int i = 0; i < internalEditorImages.length; i++) {
+//				internalEditorImages[i].dispose();
+//			}
 			internalEditorImages = null;
 		}
 		if (externalEditorImages != null) {
-			for (int i = 0; i < externalEditorImages.length; i++) {
-				externalEditorImages[i].dispose();
-			}
+// RAP [rh] Image#dispose() missing
+//			for (int i = 0; i < externalEditorImages.length; i++) {
+//				externalEditorImages[i].dispose();
+//			}
 			externalEditorImages = null;
 		}
 		return super.close();
@@ -163,21 +170,22 @@ public final class EditorSelectionDialog extends Dialog {
 		textLabel.setLayoutData(data);
 		textLabel.setFont(font);
 
-		internalButton = new Button(contents, SWT.RADIO | SWT.LEFT);
-		internalButton.setText(WorkbenchMessages.EditorSelection_internal);
-		internalButton.addListener(SWT.Selection, listener);
-		data = new GridData();
-		data.horizontalSpan = 1;
-		internalButton.setLayoutData(data);
-		internalButton.setFont(font);
-
-		externalButton = new Button(contents, SWT.RADIO | SWT.LEFT);
-		externalButton.setText(WorkbenchMessages.EditorSelection_external);
-		externalButton.addListener(SWT.Selection, listener);
-		data = new GridData();
-		data.horizontalSpan = 1;
-		externalButton.setLayoutData(data);
-		externalButton.setFont(font);
+// RAP [rh] external editors not supported
+//		internalButton = new Button(contents, SWT.RADIO | SWT.LEFT);
+//		internalButton.setText(WorkbenchMessages.EditorSelection_internal);
+//		internalButton.addListener(SWT.Selection, listener);
+//		data = new GridData();
+//		data.horizontalSpan = 1;
+//		internalButton.setLayoutData(data);
+//		internalButton.setFont(font);
+//
+//		externalButton = new Button(contents, SWT.RADIO | SWT.LEFT);
+//		externalButton.setText(WorkbenchMessages.EditorSelection_external);
+//		externalButton.addListener(SWT.Selection, listener);
+//		data = new GridData();
+//		data.horizontalSpan = 1;
+//		externalButton.setLayoutData(data);
+//		externalButton.setFont(font);
 
 		editorTable = new Table(contents, SWT.SINGLE | SWT.BORDER);
 		editorTable.addListener(SWT.Selection, listener);
@@ -194,16 +202,17 @@ public final class EditorSelectionDialog extends Dialog {
 		editorTable.setFont(font);
 		data.heightHint = editorTable.getItemHeight() * 12;
 
-		browseExternalEditorsButton = new Button(contents, SWT.PUSH);
-		browseExternalEditorsButton
-				.setText(WorkbenchMessages.EditorSelection_browse);
-		browseExternalEditorsButton.addListener(SWT.Selection, listener);
-		data = new GridData();
-		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, browseExternalEditorsButton
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
-		browseExternalEditorsButton.setLayoutData(data);
-		browseExternalEditorsButton.setFont(font);
+// RAP [rh] external editors not supported
+//		browseExternalEditorsButton = new Button(contents, SWT.PUSH);
+//		browseExternalEditorsButton
+//				.setText(WorkbenchMessages.EditorSelection_browse);
+//		browseExternalEditorsButton.addListener(SWT.Selection, listener);
+//		data = new GridData();
+//		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+//		data.widthHint = Math.max(widthHint, browseExternalEditorsButton
+//				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+//		browseExternalEditorsButton.setLayoutData(data);
+//		browseExternalEditorsButton.setFont(font);
 
 		restoreWidgetValues(); // Place buttons to the appropriate state
 
@@ -216,16 +225,21 @@ public final class EditorSelectionDialog extends Dialog {
 
 	protected void fillEditorTable() {
 		editorTable.removeAll();
-		editorTable.update();
+// RAP [rh] Control#update() missing		
+//		editorTable.update();
+		editorTable.redraw();
 		IEditorDescriptor[] editors;
 		Image[] images;
-		if (internalButton.getSelection()) {
-			editors = getInternalEditors();
-			images = internalEditorImages;
-		} else {
-			editors = getExternalEditors();
-			images = externalEditorImages;
-		}
+// RAP [rh] external editors not supported
+//		if (internalButton.getSelection()) {
+//			editors = getInternalEditors();
+//			images = internalEditorImages;
+//		} else {
+//			editors = getExternalEditors();
+//			images = externalEditorImages;
+//		}
+    editors = getInternalEditors();
+    images = internalEditorImages;
 
 		// 1FWHIEX: ITPUI:WINNT - Need to call setRedraw
 		editorTable.setRedraw(false);
@@ -268,8 +282,9 @@ public final class EditorSelectionDialog extends Dialog {
 					shell = topShell;
 				}
 			}
-			Cursor busy = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
-			shell.setCursor(busy);
+// RAP [rh] missing Cursor API			
+//			Cursor busy = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
+//			shell.setCursor(busy);
 			// Get the external editors available
 			EditorRegistry reg = (EditorRegistry) WorkbenchPlugin.getDefault()
 					.getEditorRegistry();
@@ -277,8 +292,9 @@ public final class EditorSelectionDialog extends Dialog {
 			externalEditors = filterEditors(externalEditors);
 			externalEditorImages = getImages(externalEditors);
 			// Clean up
-			shell.setCursor(null);
-			busy.dispose();
+// RAP [rh] missing Cursor API			
+//			shell.setCursor(null);
+//			busy.dispose();
 		}
 		return externalEditors;
 	}
@@ -351,44 +367,45 @@ public final class EditorSelectionDialog extends Dialog {
 		return selectedEditor;
 	}
 
-	protected void promptForExternalEditor() {
-		FileDialog dialog = new FileDialog(getShell(), SWT.OPEN
-				| SWT.PRIMARY_MODAL);
-		dialog.setFilterExtensions(Executable_Filters);
-		String result = dialog.open();
-		if (result != null) {
-			EditorDescriptor editor = EditorDescriptor.createForProgram(result);
-			// pretend we had obtained it from the list of os registered editors
-			TableItem ti = new TableItem(editorTable, SWT.NULL);
-			ti.setData(editor);
-			ti.setText(editor.getLabel());
-			Image image = editor.getImageDescriptor().createImage();
-			ti.setImage(image);
-
-			// need to pass an array to setSelection -- 1FSKYVO: SWT:ALL -
-			// inconsistent setSelection api on Table
-			editorTable.setSelection(new TableItem[] { ti });
-			editorTable.showSelection();
-			editorTable.setFocus();
-			selectedEditor = editor;
-
-			/*
-			 * add to our collection of cached external editors in case the user
-			 * flips back and forth between internal/external
-			 */
-			IEditorDescriptor[] newEditors = new IEditorDescriptor[externalEditors.length + 1];
-			System.arraycopy(externalEditors, 0, newEditors, 0,
-					externalEditors.length);
-			newEditors[newEditors.length - 1] = editor;
-			externalEditors = newEditors;
-
-			Image[] newImages = new Image[externalEditorImages.length + 1];
-			System.arraycopy(externalEditorImages, 0, newImages, 0,
-					externalEditorImages.length);
-			newImages[newImages.length - 1] = image;
-			externalEditorImages = newImages;
-		}
-	}
+// RAP [rh] external editors not supported	
+//	protected void promptForExternalEditor() {
+//		FileDialog dialog = new FileDialog(getShell(), SWT.OPEN
+//				| SWT.PRIMARY_MODAL);
+//		dialog.setFilterExtensions(Executable_Filters);
+//		String result = dialog.open();
+//		if (result != null) {
+//			EditorDescriptor editor = EditorDescriptor.createForProgram(result);
+//			// pretend we had obtained it from the list of os registered editors
+//			TableItem ti = new TableItem(editorTable, SWT.NULL);
+//			ti.setData(editor);
+//			ti.setText(editor.getLabel());
+//			Image image = editor.getImageDescriptor().createImage();
+//			ti.setImage(image);
+//
+//			// need to pass an array to setSelection -- 1FSKYVO: SWT:ALL -
+//			// inconsistent setSelection api on Table
+//			editorTable.setSelection(new TableItem[] { ti });
+//			editorTable.showSelection();
+//			editorTable.setFocus();
+//			selectedEditor = editor;
+//
+//			/*
+//			 * add to our collection of cached external editors in case the user
+//			 * flips back and forth between internal/external
+//			 */
+//			IEditorDescriptor[] newEditors = new IEditorDescriptor[externalEditors.length + 1];
+//			System.arraycopy(externalEditors, 0, newEditors, 0,
+//					externalEditors.length);
+//			newEditors[newEditors.length - 1] = editor;
+//			externalEditors = newEditors;
+//
+//			Image[] newImages = new Image[externalEditorImages.length + 1];
+//			System.arraycopy(externalEditorImages, 0, newImages, 0,
+//					externalEditorImages.length);
+//			newImages[newImages.length - 1] = image;
+//			externalEditorImages = newImages;
+//		}
+//	}
 
 	/**
 	 * Handle a double click event on the list
@@ -402,10 +419,11 @@ public final class EditorSelectionDialog extends Dialog {
 	 * held last time this wizard was used to completion
 	 */
 	protected void restoreWidgetValues() {
-		IDialogSettings settings = getDialogSettings();
-		boolean wasExternal = settings.getBoolean(STORE_ID_INTERNAL_EXTERNAL);
-		internalButton.setSelection(!wasExternal);
-		externalButton.setSelection(wasExternal);
+// RAP [rh] external editors not supported	  
+//		IDialogSettings settings = getDialogSettings();
+//		boolean wasExternal = settings.getBoolean(STORE_ID_INTERNAL_EXTERNAL);
+//		internalButton.setSelection(!wasExternal);
+//		externalButton.setSelection(wasExternal);
 	}
 
 	/**
@@ -413,10 +431,11 @@ public final class EditorSelectionDialog extends Dialog {
 	 * they will persist into the next invocation of this wizard page
 	 */
 	protected void saveWidgetValues() {
-		IDialogSettings settings = getDialogSettings();
-		// record whether use was viewing internal or external editors
-		settings
-				.put(STORE_ID_INTERNAL_EXTERNAL, !internalButton.getSelection());
+// RAP [rh] external editors not supported	  
+//		IDialogSettings settings = getDialogSettings();
+//		// record whether use was viewing internal or external editors
+//		settings
+//				.put(STORE_ID_INTERNAL_EXTERNAL, !internalButton.getSelection());
 	}
 
 	/**
@@ -443,16 +462,17 @@ public final class EditorSelectionDialog extends Dialog {
 	 * Update enabled state.
 	 */
 	protected void updateEnableState() {
-		boolean enableExternal = externalButton.getSelection();
-		browseExternalEditorsButton.setEnabled(enableExternal);
+// RAP [rh] external editors not supported	  
+//		boolean enableExternal = externalButton.getSelection();
+//		browseExternalEditorsButton.setEnabled(enableExternal);
 		updateOkButton();
 	}
 
 	protected void createButtonsForButtonBar(Composite parent) {
 		okButton = createButton(parent, IDialogConstants.OK_ID,
-				IDialogConstants.OK_LABEL, true);
+				IDialogConstants.get().OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
+				IDialogConstants.get().CANCEL_LABEL, false);
 		// initially there is no selection so OK button should not be enabled
 		okButton.setEnabled(false);
 
@@ -487,11 +507,12 @@ public final class EditorSelectionDialog extends Dialog {
 				handleDoubleClickEvent();
 				return;
 			}
-			if (event.widget == externalButton) {
-				fillEditorTable();
-			} else if (event.widget == browseExternalEditorsButton) {
-				promptForExternalEditor();
-			} else if (event.widget == editorTable) {
+// RAP [rh] external editors not supported				
+//			if (event.widget == externalButton) {
+//				fillEditorTable();
+//			} else if (event.widget == browseExternalEditorsButton) {
+//				promptForExternalEditor();
+/*			} else */ if (event.widget == editorTable) {
 				if (editorTable.getSelectionIndex() != -1) {
 					selectedEditor = (EditorDescriptor) editorTable
 							.getSelection()[0].getData();

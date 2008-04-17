@@ -19,8 +19,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
+//import org.eclipse.swt.events.KeyEvent;
+//import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -399,16 +399,17 @@ public abstract class AbstractElementListSelectionDialog extends
         };
         text.addListener(SWT.Modify, listener);
 
-        text.addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
-                if (e.keyCode == SWT.ARROW_DOWN) {
-					fFilteredList.setFocus();
-				}
-            }
-
-            public void keyReleased(KeyEvent e) {
-            }
-        });
+// RAP [rh] missing Key events        
+//        text.addKeyListener(new KeyListener() {
+//            public void keyPressed(KeyEvent e) {
+//                if (e.keyCode == SWT.ARROW_DOWN) {
+//					fFilteredList.setFocus();
+//				}
+//            }
+//
+//            public void keyReleased(KeyEvent e) {
+//            }
+//        });
 
         fFilterText = text;
 
