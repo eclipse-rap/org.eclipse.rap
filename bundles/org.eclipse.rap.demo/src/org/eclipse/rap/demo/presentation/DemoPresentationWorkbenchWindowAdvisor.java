@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.action.*;
+import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.rap.demo.DemoActionBarAdvisor;
 import org.eclipse.rwt.graphics.Graphics;
@@ -273,6 +274,67 @@ public class DemoPresentationWorkbenchWindowAdvisor
         
         public void run() {
           final Shell shell = window.getShell();
+          final PopupDialog popupDialog = new PopupDialog( shell,
+                           SWT.RESIZE | SWT.ON_TOP,
+                           false,
+                           false,
+                           false,
+                           false,
+                           null,
+                           null )
+          {
+            protected Control createDialogArea( final Composite parent ) {
+              final Composite popup = new Composite( parent, SWT.NONE );
+              popup.setBackgroundMode( SWT.INHERIT_FORCE );
+              popup.setLayout( new FormLayout() );
+              popup.setBackground( Graphics.getColor( 9, 34, 60 ) );
+              
+              Label roundedCornerLeft = new Label( popup, SWT.NONE );
+              roundedCornerLeft.setImage( Images.IMG_BANNER_ROUNDED_LEFT );
+              roundedCornerLeft.pack();
+              FormData fdRoundedCornerLeft = new FormData();
+              roundedCornerLeft.setLayoutData( fdRoundedCornerLeft );
+              fdRoundedCornerLeft.top = new FormAttachment( 100, -5 );
+              fdRoundedCornerLeft.left = new FormAttachment( 0, 0 );
+              
+              Label roundedCornerRight = new Label( popup, SWT.NONE );
+              roundedCornerRight.setImage( Images.IMG_BANNER_ROUNDED_RIGHT );
+              roundedCornerRight.pack();
+              FormData fdRoundedCornerRight = new FormData();
+              roundedCornerRight.setLayoutData( fdRoundedCornerRight );
+              fdRoundedCornerRight.top = new FormAttachment( 100, -5 );
+              fdRoundedCornerRight.left = new FormAttachment( 100, -5 );
+              
+              final Composite content = new Composite( popup, SWT.NONE );
+              FormData fdContent = new FormData();
+              content.setLayoutData( fdContent );
+              fdContent.top = new FormAttachment( 0, 5 );
+              fdContent.left = new FormAttachment( 0, 14 );
+              
+              content.setLayout( new FillLayout( SWT.VERTICAL ) );
+              IContributionItem[] menuItems = menuManager.getItems();
+              for( int j = 0; j < menuItems.length; j++ ) {
+                IContributionItem contributionItem = menuItems[ j ];
+                if( contributionItem instanceof ActionContributionItem ) {
+                  ActionContributionItem actionItem
+                    = ( ActionContributionItem )contributionItem;
+                  Action action = ( Action )actionItem.getAction();
+                  new ActionBarButton( action, content ) {
+                    public void run() {
+                      close();
+                      super.run();
+                    }
+                  };
+                }
+                
+System.out.println( contributionItem );
+              }
+              content.pack();
+
+              return popup;
+            }
+          };
+          
           final Composite popup = new Composite( shell, SWT.NONE );
           popup.setBackgroundMode( SWT.INHERIT_FORCE );
           popup.setLayout( new FormLayout() );
@@ -299,7 +361,7 @@ public class DemoPresentationWorkbenchWindowAdvisor
           FormData fdContent = new FormData();
           content.setLayoutData( fdContent );
           fdContent.top = new FormAttachment( 0, 5 );
-          fdContent.left = new FormAttachment( 0, 5 );
+          fdContent.left = new FormAttachment( 0, 14 );
           
           content.setLayout( new FillLayout( SWT.VERTICAL ) );
           IContributionItem[] menuItems = menuManager.getItems();
@@ -309,15 +371,10 @@ public class DemoPresentationWorkbenchWindowAdvisor
               ActionContributionItem actionItem
                 = ( ActionContributionItem )contributionItem;
               Action action = ( Action )actionItem.getAction();
-              new ActionBarButton( action, content ) {
-                public void run() {
-                  popup.dispose();
-                  super.run();
-                }
-              };
+              new ActionBarButton( action, content );
             }
             
-            System.out.println( contributionItem );
+System.out.println( contributionItem );
           }
           content.pack();
           
@@ -336,6 +393,31 @@ public class DemoPresentationWorkbenchWindowAdvisor
           } );
           popup.moveAbove( null );
           
+          popupDialog.open();
+          Listener closeListener = new Listener() {
+            public void handleEvent( Event event ) {
+              if( popupDialog.getShell() != null ) {
+                popupDialog.getShell().removeListener( SWT.Close, this );
+                popupDialog.getShell().removeListener( SWT.Deactivate, this );
+                popupDialog.getShell().removeListener( SWT.Dispose, this );
+                popupDialog.close();
+              }
+              if( !popup.isDisposed() ) {
+                popup.dispose();
+              }
+            }
+          };
+          popupDialog.getShell().addListener( SWT.Deactivate, closeListener );
+          popupDialog.getShell().addListener( SWT.Close, closeListener );
+          popupDialog.getShell().addListener( SWT.Dispose, closeListener );
+//          content.addListener( SWT.Dispose, closeListener );
+//          Shell controlShell = content.getShell();
+//          controlShell.addListener( SWT.Move, closeListener );
+
+          popupDialog.getShell().setAlpha( 0 );
+          popupDialog.getShell().setActive();
+          popupDialog.getShell().setBounds( popUpBounds );
+
 //          shell.addMouseListener( new MouseAdapter() {
 //            public void mouseUp( final MouseEvent e ) {
 //              
@@ -369,59 +451,9 @@ public class DemoPresentationWorkbenchWindowAdvisor
       System.out.println( "menuitems: " + menuManager.getMenuText() );
     }
     ActionBar.create( actions, menuBar );
-    
-//    fdCoolBar.right = new FormAttachment( 100, -100 );
   }
 
-//  private void fakeBannerButtons( final Composite banner ) {
-//    Composite composite = new Composite( banner, SWT.NONE );
-//    composite.setBackgroundMode( SWT.INHERIT_FORCE );
-//    composite.setLayout( new RowLayout() );
-//    FormData fdComposite = new FormData();
-//    composite.setLayoutData( fdComposite );
-//    fdComposite.top = new FormAttachment( 0, 8 );
-//    fdComposite.left = new FormAttachment( 0, 200 );
-//    fdComposite.bottom = new FormAttachment( 0, 36 );
-//    
-//    for( int i = 0; i < 3; i++ ) {
-//      Button button = new Button( composite, SWT.PUSH | SWT.FLAT );
-//      button.setForeground( Graphics.getColor( 255, 255, 255 ) );
-//      button.setText( "click me " + i  );
-//      button.pack();
-//      
-//      Label label = new Label( composite, SWT.SEPARATOR | SWT.VERTICAL );
-//      label.setForeground( Graphics.getColor( 255, 255, 255 ) );
-//    }
-//  }
-
   private void createPageComposite( final Shell shell ) {
-//    Composite contentTop = new Composite( shell, SWT.NONE );
-//    FormData fdContentTop = new FormData();
-//    contentTop.setLayoutData( fdContentTop );
-//    fdContentTop.top = new FormAttachment( 0, 98 );
-//    fdContentTop.left = new FormAttachment( 0, 50 );
-//    fdContentTop.right = new FormAttachment( 100, -50 );
-//    fdContentTop.bottom = new FormAttachment( 0, 103 );
-//    contentTop.setBackground( Graphics.getColor( 255, 255, 255 ) );
-//    
-//    Label roundedCornerLeft = new Label( shell, SWT.NONE );
-//    roundedCornerLeft.setImage( IMAGE_CONTENT_ROUNDED_LEFT );
-//    roundedCornerLeft.pack();
-//    FormData fdRoundedCornerLeft = new FormData();
-//    roundedCornerLeft.setLayoutData( fdRoundedCornerLeft );
-//    fdRoundedCornerLeft.top = new FormAttachment( 0, 98 );
-//    fdRoundedCornerLeft.left = new FormAttachment( 0, 50 );
-//    roundedCornerLeft.moveAbove( contentTop );
-//    
-//    Label roundedCornerRight = new Label( shell, SWT.NONE );
-//    roundedCornerRight.setImage( IMAGE_CONTENT_ROUNDED_RIGHT );
-//    roundedCornerRight.pack();
-//    FormData fdRoundedCornerRight = new FormData();
-//    roundedCornerRight.setLayoutData( fdRoundedCornerRight );
-//    fdRoundedCornerRight.top = new FormAttachment( 0, 98 );
-//    fdRoundedCornerRight.left = new FormAttachment( 100, -55 );
-//    roundedCornerRight.moveAbove( contentTop );
-    
     Composite content = new Composite( shell, SWT.NONE );
     content.setBackground( COLOR_SHELL_BG );
     FormData fdContent = new FormData();
