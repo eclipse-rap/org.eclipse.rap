@@ -15,18 +15,14 @@ package org.eclipse.ui.preferences;
 import java.io.IOException;
 
 import org.eclipse.core.commands.common.EventManager;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.util.*;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.ui.internal.WorkbenchMessages;
-import org.osgi.service.prefs.BackingStoreException;
+import org.eclipse.ui.internal.preferences.SessionScope;
 
 /**
  * The ScopedPreferenceStore is an IPreferenceStore that uses the scopes

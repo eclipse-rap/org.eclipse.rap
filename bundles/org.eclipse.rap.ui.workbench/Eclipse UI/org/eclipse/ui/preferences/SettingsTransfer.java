@@ -19,7 +19,7 @@ import org.eclipse.ui.internal.preferences.SettingsTransferRegistryReader;
 /**
  * The SettingsTransfer is the abstract superclass of settings transfers
  * used when switching workspaces.
- * @since 1.0
+ * @since 1.1
  *
  */
 public abstract class SettingsTransfer {

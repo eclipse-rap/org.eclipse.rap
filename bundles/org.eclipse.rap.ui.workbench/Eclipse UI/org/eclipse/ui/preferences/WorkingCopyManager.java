@@ -11,9 +11,7 @@
 
 package org.eclipse.ui.preferences;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ui.internal.preferences.WorkingCopyPreferences;
@@ -25,7 +23,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * <p>
  * This class is not intended to be sub-classed by clients.
  * </p>
- * @since 1.0
+ * @since 1.1
  */
 public class WorkingCopyManager implements IWorkingCopyManager{
 
