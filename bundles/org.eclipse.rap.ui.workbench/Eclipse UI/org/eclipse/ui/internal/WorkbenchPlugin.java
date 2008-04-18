@@ -27,6 +27,7 @@ import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.window.Window;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.ui.IEditorRegistry;
@@ -37,6 +38,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
+import org.eclipse.ui.internal.branding.BrandingExtension;
 import org.eclipse.ui.internal.decorators.DecoratorManager;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceManager;
 import org.eclipse.ui.internal.intro.IIntroRegistry;
@@ -51,6 +53,8 @@ import org.eclipse.ui.internal.registry.PerspectiveRegistry;
 import org.eclipse.ui.internal.registry.PreferencePageRegistryReader;
 import org.eclipse.ui.internal.registry.ViewRegistry;
 import org.eclipse.ui.internal.registry.WorkingSetRegistry;
+import org.eclipse.ui.internal.servlet.EntryPointExtension;
+import org.eclipse.ui.internal.servlet.HttpServiceTracker;
 import org.eclipse.ui.internal.themes.IThemeRegistry;
 import org.eclipse.ui.internal.themes.ThemeRegistry;
 import org.eclipse.ui.internal.themes.ThemeRegistryReader;
@@ -67,7 +71,6 @@ import org.eclipse.ui.wizards.IWizardRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -93,10 +96,14 @@ import com.ibm.icu.text.MessageFormat;
  *      When the Application
  *      calls createExecutableExtension to create an executable
  *      instance of our workbench class.
+ *      
+ * @since 1.0
  */
 public class WorkbenchPlugin extends AbstractUIPlugin {
 	
-	  private final static class DecoratorManagerStore extends
+	// TODO [bm]: turn into real session scoped manager
+	// RAP [rs]:
+	private final static class DecoratorManagerStore extends
 			SessionSingletonBase {
 		private final DecoratorManager decoratorManager;
 
@@ -113,7 +120,30 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 			return decoratorManager;
 		}
 	}
-	  
+	// RAPEND]
+	
+	private final static class PerspectiveRegistryStore extends SessionSingletonBase {
+		private final PerspectiveRegistry perspectiveRegistry;
+		
+		private PerspectiveRegistryStore() {
+			perspectiveRegistry = new PerspectiveRegistry();
+			StartupThreading.runWithoutExceptions(new StartupRunnable() {
+				public void runWithException() throws Throwable {
+					perspectiveRegistry.load();
+				}
+			});
+		}
+		
+		public static PerspectiveRegistryStore getInstance() {
+			Class clazz = PerspectiveRegistryStore.class;
+			return (PerspectiveRegistryStore) getInstance(clazz);
+		}
+		
+		public PerspectiveRegistry getPerspectiveRegistry() {
+			return perspectiveRegistry;
+		}
+	}
+	
 	// RAP [bm]:
 // /**
 // * Splash shell constant.
@@ -141,7 +171,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 
     // Manager that maps resources to descriptors of editors to use
     
-    // RAP [bm]: session scoped registry used
+    // RAP [bm]: replaced with session scoped one
 //    private EditorRegistry editorRegistry;
     // RAPEND: [bm] 
 
@@ -184,7 +214,9 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     // Other data.
     private WorkbenchPreferenceManager preferenceManager;
 
-    private ViewRegistry viewRegistry;
+    // RAP [bm]: replaced with session scoped one
+//    private ViewRegistry viewRegistry;
+    // RAPEND: [bm] 
 
     private PerspectiveRegistry perspRegistry;
 
@@ -195,7 +227,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     /**
      * Information describing the product (formerly called "primary plugin"); lazily
      * initialized.
-     * @since 3.0
+     * @since 1.1
      */
     private ProductInfo productInfo = null;
 
@@ -203,7 +235,10 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     
     private WorkbenchOperationSupport operationSupport;
 	private BundleListener bundleListener;
-        
+	
+	// RAP [bm]: 
+	private HttpServiceTracker httpServiceTracker;
+	// RAPEND: [bm] 
     
     /**
      * Create an instance of the WorkbenchPlugin. The workbench plugin is
@@ -217,10 +252,11 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 
     /**
      * Unload all members.  This can be used to run a second instance of a workbench.
-     * @since 3.0 
      */
     void reset() {
-        editorRegistry = null;
+    	// RAP [bm]: 
+//        editorRegistry = null;
+        // RAPEND: [bm] 
 
         if (decoratorManager != null) {
             decoratorManager.dispose();
@@ -237,10 +273,14 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         workingSetRegistry = null;
 
         preferenceManager = null;
-        if (viewRegistry != null) {
-            viewRegistry.dispose();
-            viewRegistry = null;
-        }
+
+        // RAP [bm]: 
+//        if (viewRegistry != null) {
+//            viewRegistry.dispose();
+//            viewRegistry = null;
+//        }
+        // RAPEND: [bm] 
+
         if (perspRegistry != null) {
             perspRegistry.dispose();
             perspRegistry = null;
@@ -314,7 +354,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * @param extensionName
 	 *            the name of the extension to test for
 	 * @return whether or not the extension is declared
-	 * @since 3.3
 	 */
 	public static boolean hasExecutableExtension(IConfigurationElement element,
 			String extensionName) {
@@ -350,7 +389,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * @return whether or not the bundle expressed by the above criteria is
 	 *         active. If the bundle cannot be determined then the state of the
 	 *         bundle that declared the element is returned.
-	 * @since 3.3
 	 */
 	public static boolean isBundleLoadedForExecutableExtension(
 			IConfigurationElement element, String extensionName) {
@@ -378,7 +416,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * @return the bundle referenced by the extension. If that bundle cannot be
 	 *         determined the bundle that declared the element is returned. Note
 	 *         that this may be <code>null</code>.
-	 * @since 3.3
 	 */
 	public static Bundle getBundleForExecutableExtension(IConfigurationElement element, String extensionName) {
 		// this code is derived heavily from
@@ -471,13 +508,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      */
 
     public IEditorRegistry getEditorRegistry() {
-      // RAP [bm]: 
+    	// RAP [bm]: 
 //        if (editorRegistry == null) {
 //            editorRegistry = new EditorRegistry();
 //        }
 //        return editorRegistry;
-      return EditorRegistry.getInstance();
-      // RAPEND: [bm] 
+    	// RAPEND: [bm] 
+        return EditorRegistry.getInstance();
 
     }
 
@@ -485,13 +522,14 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Answer the element factory for an id, or <code>null</code. if not found.
      * @param targetID
      * @return IElementFactory
+     * @since 1.1
      */
     public IElementFactory getElementFactory(String targetID) {
 
         // Get the extension point registry.
         IExtensionPoint extensionPoint;
         extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(
-                PI_WORKBENCH, IWorkbenchRegistryConstants.PL_ELEMENT_FACTORY);
+                PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_ELEMENT_FACTORY);
 
         if (extensionPoint == null) {
             WorkbenchPlugin
@@ -534,11 +572,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * @param targetID The id of the presentation factory to use.
      * @return AbstractPresentationFactory or <code>null</code>
      * if not factory matches that id.
+     * @since 1.1
      */
     public AbstractPresentationFactory getPresentationFactory(String targetID) {
         Object o = createExtension(
-                IWorkbenchRegistryConstants.PL_PRESENTATION_FACTORIES,
-                "factory", targetID); //$NON-NLS-1$
+		        IWorkbenchRegistryConstants.PL_PRESENTATION_FACTORIES,
+		        "factory", targetID); //$NON-NLS-1$
+
         if (o instanceof AbstractPresentationFactory) {
             return (AbstractPresentationFactory) o;
         }
@@ -559,8 +599,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      */
     private Object createExtension(String extensionPointId, String elementName,
             String targetID) {
+    	// RAP [bm]: 
+//        IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
+//                .getExtensionPoint(PI_WORKBENCH, extensionPointId);
         IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-                .getExtensionPoint(PI_WORKBENCH, extensionPointId);
+        .getExtensionPoint(PI_WORKBENCH, extensionPointId);
+        // RAPEND: [bm] 
+
         if (extensionPoint == null) {
             WorkbenchPlugin
                     .log("Unable to find extension. Extension point: " + extensionPointId + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -605,28 +650,31 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * @return IPerspectiveRegistry. The registry for the receiver.
      */
     public IPerspectiveRegistry getPerspectiveRegistry() {
-        if (perspRegistry == null) {
-            perspRegistry = new PerspectiveRegistry();
-            // the load methods can touch on WorkbenchImages if an image is
-			// missing so we need to wrap the call in
-			// a startup block for the case where a custom descriptor exists on
-			// startup that does not have an image
-			// associated with it. See bug 196352.
-			StartupThreading.runWithoutExceptions(new StartupRunnable() {
-				public void runWithException() throws Throwable {
-					perspRegistry.load();
-				}
-			});
-            
-        }
-        return perspRegistry;
+    	// RAP [bm]: session scoped way
+//        if (perspRegistry == null) {
+//            perspRegistry = new PerspectiveRegistry();
+//            // the load methods can touch on WorkbenchImages if an image is
+//			// missing so we need to wrap the call in
+//			// a startup block for the case where a custom descriptor exists on
+//			// startup that does not have an image
+//			// associated with it. See bug 196352.
+//			StartupThreading.runWithoutExceptions(new StartupRunnable() {
+//				public void runWithException() throws Throwable {
+//					perspRegistry.load();
+//				}
+//			});
+//            
+//        }
+//        return perspRegistry;
+    	return PerspectiveRegistryStore.getInstance().getPerspectiveRegistry();
+    	// RAPEND: [bm] 
     }
 
     /**
      * Returns the working set manager
      * 
      * @return the working set manager
-     * @since 2.0
+     * @since 1.1
      */
     public IWorkingSetManager getWorkingSetManager() {
         if (workingSetManager == null) {
@@ -640,7 +688,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns the working set registry
      * 
      * @return the working set registry
-     * @since 2.0
+     * @since 1.1
      */
     public WorkingSetRegistry getWorkingSetRegistry() {
         if (workingSetRegistry == null) {
@@ -654,7 +702,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns the introduction registry.
      *
      * @return the introduction registry.
-     * @since 3.0
+     * @since 1.1
      */
     public IIntroRegistry getIntroRegistry() {
         if (introRegistry == null) {
@@ -667,7 +715,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * Returns the operation support.
 	 * 
 	 * @return the workbench operation support.
-	 * @since 3.1
+	 * @since 1.1
 	 */
     public IWorkbenchOperationSupport getOperationSupport() {
         if (operationSupport == null) {
@@ -681,6 +729,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Get the preference manager.
      * @return PreferenceManager the preference manager for
      * the receiver.
+     * @since 1.1
      */
     public PreferenceManager getPreferenceManager() {
         if (preferenceManager == null) {
@@ -714,6 +763,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns the theme registry for the workbench.
      * 
      * @return the theme registry
+     * @since 1.1
      */
     public IThemeRegistry getThemeRegistry() {
         if (themeRegistry == null) {
@@ -731,10 +781,13 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * receiver.
      */
     public IViewRegistry getViewRegistry() {
-        if (viewRegistry == null) {
-            viewRegistry = new ViewRegistry();
-        }
-        return viewRegistry;
+    	// RAP [bm]: 
+//        if (viewRegistry == null) {
+//            viewRegistry = new ViewRegistry();
+//        }
+//        return viewRegistry;
+        // RAPEND: [bm] 
+    	return ViewRegistry.getInstance();
     }
 
     /**
@@ -890,14 +943,31 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Get the decorator manager for the receiver
      * @return DecoratorManager the decorator manager
      * for the receiver.
+     * @since 1.1
      */
     public DecoratorManager getDecoratorManager() {
-        if (this.decoratorManager == null) {
-            this.decoratorManager = new DecoratorManager();
-        }
-        return decoratorManager;
+    	// RAP [rs]: 
+//        if (this.decoratorManager == null) {
+//            this.decoratorManager = new DecoratorManager();
+//        }
+//        return decoratorManager;
+    	return DecoratorManagerStore.getInstance().getDecoratorManager();
+    	// RAPEND: [rs] 
     }
 
+    // TODO [bm]: move to internal util
+    // RAP [bm]: 
+    /**
+     * Get the http service tracker to register new servlets or resources (RAP only)
+     * 
+     * @return ServiceTracker the http server tracker 
+     */
+    public HttpServiceTracker getHttpServiceTracker() {
+      return httpServiceTracker;
+    }
+    // RAPEND: [bm] 
+
+    
     /*
      *  (non-Javadoc)
      * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
@@ -907,6 +977,17 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         super.start(context);
         bundleContext = context;
         
+        // RAP [bm]: 
+        // initialise the servlet names -> ensure that the http registry
+        // bundle was loaded befort the service tracker gets opened.
+        String id = "org.eclipse.equinox.http.registry";
+        Bundle httpRegistry = Platform.getBundle( id );
+        httpRegistry.start( Bundle.START_ACTIVATION_POLICY );
+        httpServiceTracker = new HttpServiceTracker(context);
+        BrandingExtension.read();
+        httpServiceTracker.open();
+        // RAPEND: [bm] 
+
         JFaceUtil.initializeJFace();
 		
 		 Window.setDefaultOrientation(getDefaultOrientation());
@@ -914,22 +995,31 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
         // The UI plugin needs to be initialized so that it can install the callback in PrefUtil,
         // which needs to be done as early as possible, before the workbench
         // accesses any API preferences.
-        Bundle uiBundle = Platform.getBundle(PlatformUI.PLUGIN_ID);
-        try {
-            // Attempt to load the activator of the ui bundle.  This will force lazy start
-            // of the ui bundle.  Using the bundle activator class here because it is a
-            // class that needs to be loaded anyway so it should not cause extra classes
-            // to be loaded.s
-        	if(uiBundle != null)
-        		uiBundle.start(Bundle.START_TRANSIENT);
-        } catch (BundleException e) {
-            WorkbenchPlugin.log("Unable to load UI activator", e); //$NON-NLS-1$
-        }
+		
+		// RAP [bm]: 
+//        Bundle uiBundle = Platform.getBundle(PlatformUI.PLUGIN_ID);
+//        try {
+//            // Attempt to load the activator of the ui bundle.  This will force lazy start
+//            // of the ui bundle.  Using the bundle activator class here because it is a
+//            // class that needs to be loaded anyway so it should not cause extra classes
+//            // to be loaded.s
+//        	if(uiBundle != null)
+//        		uiBundle.start(Bundle.START_TRANSIENT);
+//        } catch (BundleException e) {
+//            WorkbenchPlugin.log("Unable to load UI activator", e); //$NON-NLS-1$
+//        }
+		 // RAPEND: [bm] 
+
 		/*
 		 * DO NOT RUN ANY OTHER CODE AFTER THIS LINE.  If you do, then you are
 		 * likely to cause a deadlock in class loader code.  Please see Bug 86450
 		 * for more information.
 		 */
+
+        // RAP [fappel]: fixes of memory consumption problems
+//        JobManagerAdapter.getInstance();
+        System.err.println("JobManager missing");
+        // RAPEND
 
     }
 
@@ -941,6 +1031,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * @see SWT#NONE
 	 * @see SWT#RIGHT_TO_LEFT
 	 * @see SWT#LEFT_TO_RIGHT
+	 * @since 1.1
 	 */
     private int getDefaultOrientation() {
 		
@@ -958,28 +1049,31 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 			return orientation;
 		}
 
-		return checkCommandLineLocale(); //Use the default value if there is nothing specified
+		// RAP [bm]: 
+//		return checkCommandLineLocale(); //Use the default value if there is nothing specified
+		return SWT.NONE;
+		// RAPEND: [bm] 
+
 	}
 	
-	/**
-	 * Check to see if the command line parameter for -nl
-	 * has been set. If so imply the orientation from this 
-	 * specified Locale. If it is a bidirectional Locale
-	 * return SWT#RIGHT_TO_LEFT.
-	 * If it has not been set or has been set to 
-	 * a unidirectional Locale then return SWT#NONE.
-	 * 
-	 * Locale is determined differently by different JDKs 
-	 * and may not be consistent with the users expectations.
-	 * 
-
-	 * @return int
-	 * @see SWT#NONE
-	 * @see SWT#RIGHT_TO_LEFT
-	 */
-	private int checkCommandLineLocale() {
-		
-		// RAP [bm]: 
+    // RAP [bm]: 
+//	/**
+//	 * Check to see if the command line parameter for -nl
+//	 * has been set. If so imply the orientation from this 
+//	 * specified Locale. If it is a bidirectional Locale
+//	 * return SWT#RIGHT_TO_LEFT.
+//	 * If it has not been set or has been set to 
+//	 * a unidirectional Locale then return SWT#NONE.
+//	 * 
+//	 * Locale is determined differently by different JDKs 
+//	 * and may not be consistent with the users expectations.
+//	 * 
+//
+//	 * @return int
+//	 * @see SWT#NONE
+//	 * @see SWT#RIGHT_TO_LEFT
+//	 */
+//	private int checkCommandLineLocale() {
 //		//Check if the user property is set. If not do not
 //		//rely on the vm.
 //		if(System.getProperty(NL_USER_PROPERTY) == null) {
@@ -993,10 +1087,10 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //				"fa".equals(lang) || "ur".equals(lang)) { //$NON-NLS-1$ //$NON-NLS-2$ 
 //			return SWT.RIGHT_TO_LEFT;
 //		}
-		// RAPEND: [bm] 
-
-		return SWT.NONE;
-	}
+//
+//		return SWT.NONE;
+//	}
+// RAPEND: [bm] 
 
 	/**
 	 * Check to see if the orientation was set in the
@@ -1006,6 +1100,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * @see SWT#NONE
 	 * @see SWT#RIGHT_TO_LEFT
 	 * @see SWT#LEFT_TO_RIGHT
+	 * @since 1.0
 	 */
 	private int getSystemPropertyOrientation() {
 		// RAP [bm]: 
@@ -1029,6 +1124,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * @see SWT#NONE
 	 * @see SWT#RIGHT_TO_LEFT
 	 * @see SWT#LEFT_TO_RIGHT
+	 * @since 1.1
 	 */
 	private int getCommandLineOrientation(String[] commandLineArgs) {
 		//Do not process the last one as it will never have a parameter
@@ -1055,7 +1151,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Return an array of all bundles contained in this workbench.
      * 
      * @return an array of bundles in the workbench or an empty array if none
-     * @since 3.0
      */
     public Bundle[] getBundles() {
         return bundleContext == null ? new Bundle[0] : bundleContext
@@ -1066,7 +1161,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns the bundle context associated with the workbench plug-in.
      * 
      * @return the bundle context
-     * @since 3.1
      */
     public BundleContext getBundleContext() {
     	return bundleContext;
@@ -1083,7 +1177,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      *
      * @return the application name, or <code>null</code>
      * @see org.eclipse.swt.widgets.Display#setAppName
-     * @since 3.0
+     * @since 1.1
      */
     public String getAppName() {
         return getProductInfo().getAppName();
@@ -1093,7 +1187,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns the name of the product.
      * 
      * @return the product name, or <code>null</code> if none
-     * @since 3.0
+     * @since 1.1
      */
     public String getProductName() {
         return getProductInfo().getProductName();
@@ -1104,7 +1198,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * 
      * @return an array of the image descriptors for the window image, or
      *         <code>null</code> if none
-     * @since 3.0
      */
     public ImageDescriptor[] getWindowImages() {
         return getProductInfo().getWindowImages();
@@ -1114,6 +1207,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Returns an instance that describes this plugin's product (formerly "primary
      * plugin").
      * @return ProductInfo the product info for the receiver
+     * @since 1.1
      */
     private ProductInfo getProductInfo() {
         if (productInfo == null) {
@@ -1130,6 +1224,14 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
     		context.removeBundleListener(bundleListener);
     		bundleListener = null;
     	}
+    	
+    	// RAP [bm]: 
+        httpServiceTracker.close();
+        httpServiceTracker = null;
+        EntryPointExtension.unbindAll();
+        // RAPEND: [bm] 
+
+
     	// TODO normally super.stop(*) would be the last statement in this
     	// method
         super.stop(context);
@@ -1144,7 +1246,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Return the new wizard registry.
      * 
      * @return the new wizard registry
-     * @since 3.1
+     * @since 1.1
      */
     public IWizardRegistry getNewWizardRegistry() {
     	return NewWizardRegistry.getInstance();
@@ -1154,7 +1256,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Return the import wizard registry.
      * 
      * @return the import wizard registry
-     * @since 3.1
+     * @since 1.1
      */
     public IWizardRegistry getImportWizardRegistry() {
     	return ImportWizardRegistry.getInstance();
@@ -1164,7 +1266,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * Return the export wizard registry.
      * 
      * @return the export wizard registry
-     * @since 3.1
+     * @since 1.1
      */
     public IWizardRegistry getExportWizardRegistry() {
     	return ExportWizardRegistry.getInstance();
@@ -1181,7 +1283,6 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
      * @return path to a location in the file system where this plug-in can
      * persist data between sessions, or <code>null</code> if no such
      * location is available.
-     * @since 3.1
      */
     public IPath getDataLocation() {
         try {
@@ -1270,7 +1371,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 	 * Return whether or not the OSGi framework has specified the handle of a splash shell.
 	 * 
 	 * @return whether or not the OSGi framework has specified the handle of a splash shell
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static boolean isSplashHandleSpecified() {
 		// RAP [bm]: 

@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -45,7 +44,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.SafeRunnable;
-import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
@@ -66,6 +64,7 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.editorsupport.ComponentSupport;
 import org.eclipse.ui.internal.misc.ExternalProgramImageDescriptor;
 import org.eclipse.ui.internal.misc.ProgramImageDescriptor;
+import org.eclipse.ui.internal.util.SessionSingletonEventManager;
 import org.eclipse.ui.internal.util.Util;
 
 import com.ibm.icu.text.Collator;
@@ -73,8 +72,11 @@ import com.ibm.icu.text.Collator;
 /**
  * Provides access to the collection of defined editors for resource types.
  */
-public class EditorRegistry extends EventManager implements IEditorRegistry,
-		IExtensionChangeHandler {
+// RAP [bm]: 
+//public class EditorRegistry extends EventManager implements IEditorRegistry, IExtensionChangeHandler {
+public class EditorRegistry extends SessionSingletonEventManager implements IEditorRegistry, IExtensionChangeHandler {
+// RAPEND: [bm] 
+
 	
 	private final static IEditorDescriptor [] EMPTY = new IEditorDescriptor[0];
 	
@@ -157,13 +159,26 @@ public class EditorRegistry extends EventManager implements IEditorRegistry,
      * Return an instance of the receiver. Adds listeners into the extension
      * registry for dynamic UI purposes.
      */
-    public EditorRegistry() {
+	// RAP [bm]: see getInstance
+//    public EditorRegistry() {
+	private EditorRegistry() {
+	// RAPEND: [bm] 
         super();
         initializeFromStorage();
         IExtensionTracker tracker = PlatformUI.getWorkbench().getExtensionTracker();
         tracker.registerHandler(this, ExtensionTracker.createExtensionPointFilter(getExtensionPointFilter()));
 		relatedRegistry = new RelatedRegistry();
     }
+
+    // RAP [bm]: 
+    /**
+     * Returns a session scoped EditorRegistry
+     * @return
+     */
+    public static EditorRegistry getInstance() {
+        return ( EditorRegistry )getInstance( EditorRegistry.class );  
+    }
+    // RAPEND: [bm] 
 
     /**
      * Add an editor for the given extensions with the specified (possibly null)
@@ -526,7 +541,7 @@ public class EditorRegistry extends EventManager implements IEditorRegistry,
         // there will always be a system external editor descriptor
         EditorDescriptor editor = new EditorDescriptor();
         editor.setID(IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
-        editor.setName(WorkbenchMessages.SystemEditorDescription_name); 
+        editor.setName(WorkbenchMessages.get().SystemEditorDescription_name); 
         editor.setOpenMode(EditorDescriptor.OPEN_EXTERNAL);
         // @issue we need a real icon for this editor?
         map.put(IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID, editor);
@@ -535,7 +550,7 @@ public class EditorRegistry extends EventManager implements IEditorRegistry,
         if (ComponentSupport.inPlaceEditorSupported()) {
             editor = new EditorDescriptor();
             editor.setID(IEditorRegistry.SYSTEM_INPLACE_EDITOR_ID);
-            editor.setName(WorkbenchMessages.SystemInPlaceDescription_name);
+            editor.setName(WorkbenchMessages.get().SystemInPlaceDescription_name);
             editor.setOpenMode(EditorDescriptor.OPEN_INPLACE);
             // @issue we need a real icon for this editor?
             map.put(IEditorRegistry.SYSTEM_INPLACE_EDITOR_ID, editor);
@@ -685,13 +700,18 @@ public class EditorRegistry extends EventManager implements IEditorRegistry,
                 } else { //This is either from a program or a user defined
                     // editor
                     ImageDescriptor descriptor;
-                    if (editor.getProgram() == null) {
-						descriptor = new ProgramImageDescriptor(editor
-                                .getFileName(), 0);
-					} else {
-						descriptor = new ExternalProgramImageDescriptor(editor
-                                .getProgram());
-					}
+                    // RAP [bm]: no external programs
+//                    if (editor.getProgram() == null) {
+//						descriptor = new ProgramImageDescriptor(editor
+//                                .getFileName(), 0);
+//					} else {
+//						descriptor = new ExternalProgramImageDescriptor(editor
+//                                .getProgram());
+//					}
+                    descriptor = new ProgramImageDescriptor(editor
+                          .getFileName(), 0);
+                    // RAPEND: [bm] 
+
                     editor.setImageDescriptor(descriptor);
                     editorTable.put(editor.getId(), editor);
                 }
@@ -707,8 +727,8 @@ public class EditorRegistry extends EventManager implements IEditorRegistry,
             //Ignore this as the workbench may not yet have saved any state
             return false;
         } catch (WorkbenchException e) {
-            ErrorDialog.openError((Shell) null, WorkbenchMessages.EditorRegistry_errorTitle,
-                    WorkbenchMessages.EditorRegistry_errorMessage, 
+            ErrorDialog.openError((Shell) null, WorkbenchMessages.get().EditorRegistry_errorTitle,
+                    WorkbenchMessages.get().EditorRegistry_errorMessage, 
                     e.getStatus());
             return false;
         }
@@ -892,12 +912,12 @@ public class EditorRegistry extends EventManager implements IEditorRegistry,
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            MessageDialog.openError((Shell) null, WorkbenchMessages.EditorRegistry_errorTitle,
-                    WorkbenchMessages.EditorRegistry_errorMessage);
+            MessageDialog.openError((Shell) null, WorkbenchMessages.get().EditorRegistry_errorTitle,
+                    WorkbenchMessages.get().EditorRegistry_errorMessage);
             return false;
         } catch (WorkbenchException e) {
-            ErrorDialog.openError((Shell) null, WorkbenchMessages.EditorRegistry_errorTitle,
-                    WorkbenchMessages.EditorRegistry_errorMessage,
+            ErrorDialog.openError((Shell) null, WorkbenchMessages.get().EditorRegistry_errorTitle,
+                    WorkbenchMessages.get().EditorRegistry_errorMessage,
                     e.getStatus());
             return false;
         }
@@ -1226,11 +1246,13 @@ public class EditorRegistry extends EventManager implements IEditorRegistry,
      * @see org.eclipse.ui.IEditorRegistry#isSystemExternalEditorAvailable(String)
      */
     public boolean isSystemExternalEditorAvailable(String filename) {
-        int nDot = filename.lastIndexOf('.');
-        if (nDot >= 0) {
-            String strName = filename.substring(nDot);
-            return Program.findProgram(strName) != null;
-        }
+    	// RAP [bm]: no external programs
+//        int nDot = filename.lastIndexOf('.');
+//        if (nDot >= 0) {
+//            String strName = filename.substring(nDot);
+//            return Program.findProgram(strName) != null;
+//        }
+    	// RAPEND: [bm] 
         return false;
     }
 
@@ -1241,17 +1263,19 @@ public class EditorRegistry extends EventManager implements IEditorRegistry,
      */
     public ImageDescriptor getSystemExternalEditorImageDescriptor(
             String filename) {
-        Program externalProgram = null;
-        int extensionIndex = filename.lastIndexOf('.');
-        if (extensionIndex >= 0) {
-            externalProgram = Program.findProgram(filename
-                    .substring(extensionIndex));
-        }
-        if (externalProgram == null) {
-            return null;
-        } 
-        
-        return new ExternalProgramImageDescriptor(externalProgram);
+    	// RAP [bm]: no external editors
+//        Program externalProgram = null;
+//        int extensionIndex = filename.lastIndexOf('.');
+//        if (extensionIndex >= 0) {
+//            externalProgram = Program.findProgram(filename
+//                    .substring(extensionIndex));
+//        }
+//        if (externalProgram == null) {
+//            return null;
+//        } 
+//        
+//        return new ExternalProgramImageDescriptor(externalProgram);
+    	return null;
     }
     
     /**

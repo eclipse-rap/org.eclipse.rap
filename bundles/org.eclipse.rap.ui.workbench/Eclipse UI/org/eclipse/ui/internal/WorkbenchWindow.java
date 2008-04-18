@@ -914,8 +914,10 @@ public class WorkbenchWindow extends ApplicationWindow implements
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 
-		detachedWindowShells = new ShellPool(shell, SWT.TOOL | SWT.TITLE
-				| SWT.MAX | SWT.RESIZE | getDefaultOrientation());
+		// RAP [bm]: detached windows
+//		detachedWindowShells = new ShellPool(shell, SWT.TOOL | SWT.TITLE
+//				| SWT.MAX | SWT.RESIZE | getDefaultOrientation());
+		// RAPEND: [bm] 
 
 		String title = getWindowConfigurer().basicGetTitle();
 		if (title != null) {
@@ -934,9 +936,11 @@ public class WorkbenchWindow extends ApplicationWindow implements
 		trackShellResize(shell);
 	}
 
-	/* package */ShellPool getDetachedWindowPool() {
-		return detachedWindowShells;
-	}
+	// RAP [bm]: detached windows
+//	/* package */ShellPool getDetachedWindowPool() {
+//		return detachedWindowShells;
+//	}
+	// RAPEND: [bm] 
 
 	/*
 	 * (non-Javadoc)

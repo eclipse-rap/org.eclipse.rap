@@ -2399,6 +2399,8 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 			}
 
 		} catch (final Exception e) {
+			// RAP [bm]: DELETE!!
+			e.printStackTrace();
 			if (!display.isDisposed()) {
 				handler.handleException(e);
 			} else {

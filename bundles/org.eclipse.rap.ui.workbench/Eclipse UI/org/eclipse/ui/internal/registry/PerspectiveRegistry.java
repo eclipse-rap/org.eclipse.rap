@@ -39,6 +39,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveRegistry;
@@ -62,8 +63,13 @@ import org.eclipse.ui.statushandlers.StatusManager;
 /**
  * Perspective registry.
  */
-public class PerspectiveRegistry implements IPerspectiveRegistry,
+// RAP [bm]: 
+//public class PerspectiveRegistry implements IPerspectiveRegistry,
+//		IExtensionChangeHandler
+public class PerspectiveRegistry extends SessionSingletonBase implements IPerspectiveRegistry,
 		IExtensionChangeHandler {
+// RAPEND: [bm] 
+
 	private String defaultPerspID;
 
 	private static final String EXT = "_persp.xml"; //$NON-NLS-1$
@@ -94,7 +100,7 @@ public class PerspectiveRegistry implements IPerspectiveRegistry,
 				.addPropertyChangeListener(preferenceListener);
 
 	}
-
+	
 	/**
 	 * Initialize the preference change listener.
 	 */
@@ -511,7 +517,7 @@ public class PerspectiveRegistry implements IPerspectiveRegistry,
 	 * @param status
 	 */
 	private void unableToLoadPerspective(IStatus status) {
-		String msg = WorkbenchMessages.Perspective_errorLoadingState;
+		String msg = WorkbenchMessages.get().Perspective_errorLoadingState;
 		if (status == null) {
 			IStatus errStatus = new Status(IStatus.ERROR, WorkbenchPlugin.PI_WORKBENCH, msg); 
 	    	StatusManager.getManager().handle(errStatus, StatusManager.SHOW);

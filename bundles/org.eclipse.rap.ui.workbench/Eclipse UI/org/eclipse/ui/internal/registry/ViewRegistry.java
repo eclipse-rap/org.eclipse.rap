@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.dynamichelpers.ExtensionTracker;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
+import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
@@ -43,7 +44,11 @@ import com.ibm.icu.text.MessageFormat;
 /**
  * The central manager for view descriptors.
  */
-public class ViewRegistry implements IViewRegistry, IExtensionChangeHandler {
+// RAP [bm]: session scoped registry
+//public class ViewRegistry implements IViewRegistry, IExtensionChangeHandler {
+public class ViewRegistry extends SessionSingletonBase implements IViewRegistry, IExtensionChangeHandler {
+// RAPEND: [bm] 
+
 	
     /**
 	 * @since 3.4
@@ -442,4 +447,15 @@ public class ViewRegistry implements IViewRegistry, IExtensionChangeHandler {
     		}			
         }
 	}
+    
+    // RAP [bm]: 
+    /**
+     * Returns a session scoped instance of the ViewRegistry
+     * @return
+     */
+    public static ViewRegistry getInstance() {
+	     return ( ViewRegistry )getInstance( ViewRegistry.class );
+	}
+    // RAPEND: [bm] 
+
 }
