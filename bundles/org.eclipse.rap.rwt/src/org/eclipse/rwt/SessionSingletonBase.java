@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.service.ISessionStore;
 
 
 
@@ -59,10 +60,13 @@ public abstract class SessionSingletonBase {
    * and the fully qualified classname of the singleton type. 
    */
   private final static String PREFIX = "com_w4t_session_singleton_";
+  private static final String LOCK_POSTFIX = "#typeLock";
   
   private final static Class[] EMPTY_PARAMS = new Class[ 0 ];
   
-  private final static Map keyMap = new Hashtable();
+  private final static Map instanceKeyMap = new Hashtable();
+  private final static Map lockKeyMap = new Hashtable();
+
   
   /** 
    * Returns the singleton instance of the specified type that is stored
@@ -80,14 +84,14 @@ public abstract class SessionSingletonBase {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Object result = null;
     if( stateInfo != null ) {
-      result = stateInfo.getAttribute( getKey( type ) );
+      result = stateInfo.getAttribute( getInstanceKey( type ) );
     }
     if( result == null ) {
-      synchronized( ContextProvider.getSession().getAttribute( LOCK ) ) {
+      synchronized( getInstanceLock( type ) ) {
         result = getInstanceInternal( type );
       }
       if( stateInfo != null ) {
-        stateInfo.setAttribute( getKey( type ), result );
+        stateInfo.setAttribute( getInstanceKey( type ), result );
       }
     }
     return result;
@@ -97,20 +101,49 @@ public abstract class SessionSingletonBase {
   //////////////////
   // helping methods
   
-  private static String getKey( final Class type ) {
+  private static Object getInstanceLock( final Class type ) {
+    // create a lock per session instance to avoid deadlocks
+    ISessionStore session = ContextProvider.getSession();
+    Object result = null;
+    synchronized( session.getAttribute( LOCK ) ) {
+      result = session.getAttribute( getLockKey( type ) );
+      if( result == null ) {
+        result = new Object();
+        session.setAttribute( getLockKey( type ), result );
+      }
+    }
+    return result;
+  }
+  
+  private static String getInstanceKey( final Class type ) {
     // Note [fappel]: Since this code is performance critical, don't change
     //                anything without checking it against a profiler.
     String name = type.getName();
-    String result = ( String )keyMap.get( name );
+    String result = ( String )instanceKeyMap.get( name );
     if( result == null ) {
       StringBuffer key = new StringBuffer( PREFIX );
-      keyMap.put( name, key.append( name ).toString() );
+      key.append( name );
+      instanceKeyMap.put( name, key.toString() );
+    }
+    return result;
+  }
+  
+  private static String getLockKey( final Class type ) {
+    // Note [fappel]: Since this code is performance critical, don't change
+    //                anything without checking it against a profiler.
+    String name = type.getName();
+    String result = ( String )lockKeyMap.get( name );
+    if( result == null ) {
+      StringBuffer key = new StringBuffer( PREFIX );
+      key.append( name );
+      key.append( LOCK_POSTFIX );
+      lockKeyMap.put( name, key.toString() );
     }
     return result;
   }
   
   private static Object getInstanceInternal( final Class type ) {
-    Object result = getAttribute( getKey( type ) ); 
+    Object result = getAttribute( getInstanceKey( type ) ); 
     if( result == null ) {
       try {
         Constructor constructor = type.getDeclaredConstructor( EMPTY_PARAMS );
@@ -155,7 +188,7 @@ public abstract class SessionSingletonBase {
                      + ".";
         throw new RuntimeException( msg, ite );
       }
-      setAttribute( getKey( type ), result );
+      setAttribute( getInstanceKey( type ), result );
     }
     return result;
   }
