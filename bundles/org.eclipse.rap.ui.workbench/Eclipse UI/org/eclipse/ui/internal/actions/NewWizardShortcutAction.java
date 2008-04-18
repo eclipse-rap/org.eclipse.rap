@@ -86,8 +86,8 @@ public class NewWizardShortcutAction extends Action implements
         try {
             wizard = (INewWizard) wizardElement.createWizard();
         } catch (CoreException e) {
-            ErrorDialog.openError(window.getShell(), WorkbenchMessages.NewWizardShortcutAction_errorTitle,
-                    WorkbenchMessages.NewWizardShortcutAction_errorMessage,
+            ErrorDialog.openError(window.getShell(), WorkbenchMessages.get().NewWizardShortcutAction_errorTitle,
+                    WorkbenchMessages.get().NewWizardShortcutAction_errorMessage,
                     e.getStatus());
             return;
         }

@@ -18,8 +18,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.bindings.keys.IKeyLookup;
-import org.eclipse.jface.bindings.keys.KeyLookupFactory;
+//import org.eclipse.jface.bindings.keys.IKeyLookup;
+//import org.eclipse.jface.bindings.keys.KeyLookupFactory;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
@@ -38,7 +38,7 @@ public class SelectWorkingSetsAction extends AbstractWorkingSetPulldownDelegate 
 	private class ManageWorkingSetsAction extends Action {
 
 		ManageWorkingSetsAction() {
-			super(WorkbenchMessages.Edit);
+			super(WorkbenchMessages.get().Edit);
 		}
 
 		public void run() {
@@ -62,14 +62,15 @@ public class SelectWorkingSetsAction extends AbstractWorkingSetPulldownDelegate 
 					.getWorkingSets()));
 
 			if (isChecked()) {
-				// if the primary modifier key is down then clear the list
-				// first. this makes the selection exclusive rather than
-				// additive.
-				boolean modified = (event.stateMask & KeyLookupFactory
-						.getDefault().formalModifierLookup(IKeyLookup.M1_NAME)) != 0;
-				
-				if (modified) 
-					newList.clear();
+// RAP [rh] missing key events			  
+//				// if the primary modifier key is down then clear the list
+//				// first. this makes the selection exclusive rather than
+//				// additive.
+//				boolean modified = (event.stateMask & KeyLookupFactory
+//						.getDefault().formalModifierLookup(IKeyLookup.M1_NAME)) != 0;
+//				
+//				if (modified) 
+//					newList.clear();
 				newList.add(set);
 			} else {
 				newList.remove(set);
@@ -137,8 +138,8 @@ class ConfigureWindowWorkingSetsDialog extends SimpleWorkingSetSelectionDialog {
 	protected ConfigureWindowWorkingSetsDialog(IWorkbenchWindow window) {
 		super(window.getShell(), null, window.getActivePage().getWorkingSets(), true);
 		this.window = window;
-		setTitle(WorkbenchMessages.WorkingSetSelectionDialog_title_multiSelect);
-		setMessage(WorkbenchMessages.WorkingSetSelectionDialog_message_multiSelect);
+		setTitle(WorkbenchMessages.get().WorkingSetSelectionDialog_title_multiSelect);
+		setMessage(WorkbenchMessages.get().WorkingSetSelectionDialog_message_multiSelect);
 	}
 	
 	protected void okPressed() {

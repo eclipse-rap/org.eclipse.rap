@@ -34,7 +34,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.SWT;
+//import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionDelegate2;
@@ -61,7 +61,7 @@ public class ModifyWorkingSetDelegate extends
 		 * Create a new instance of this action.
 		 */
 		public NewWorkingSetAction() {
-			super(WorkbenchMessages.NewWorkingSet);
+			super(WorkbenchMessages.get().NewWorkingSet);
 		}
 
 		public void run() {
@@ -165,8 +165,9 @@ public class ModifyWorkingSetDelegate extends
 	 * @see org.eclipse.ui.IActionDelegate2#runWithEvent(org.eclipse.jface.action.IAction, org.eclipse.swt.widgets.Event)
 	 */
 	public void runWithEvent(IAction action, Event event) {
-		if (event.type == SWT.KeyDown || event.type == SWT.KeyUp)
-			run(action);
+// RAP [rh] missing key events	  
+//		if (event.type == SWT.KeyDown || event.type == SWT.KeyUp)
+//			run(action);
 	}
 
 	/*
@@ -226,7 +227,7 @@ public class ModifyWorkingSetDelegate extends
 		ISelection selection = getSelection();
 		if (!(selection instanceof IStructuredSelection)) {
 			if(!add) {
-				IAction emptyAction = new Action(WorkbenchMessages.NoApplicableWorkingSets) {};
+				IAction emptyAction = new Action(WorkbenchMessages.get().NoApplicableWorkingSets) {};
 				emptyAction.setEnabled(false);
 				menuItems.add(emptyAction);
 			}
@@ -294,7 +295,7 @@ public class ModifyWorkingSetDelegate extends
 		}
 		if (menuItems.isEmpty() && !add) {
 			IAction emptyAction = new Action(
-					WorkbenchMessages.NoApplicableWorkingSets) {
+					WorkbenchMessages.get().NoApplicableWorkingSets) {
 			};
 			emptyAction.setEnabled(false);
 			menuItems.add(emptyAction);

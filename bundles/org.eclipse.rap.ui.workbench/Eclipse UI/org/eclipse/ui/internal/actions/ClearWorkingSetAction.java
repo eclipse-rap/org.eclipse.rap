@@ -32,9 +32,9 @@ public class ClearWorkingSetAction extends Action {
      * @param actionGroup the action group this action is created in
      */
     public ClearWorkingSetAction(WorkingSetFilterActionGroup actionGroup) {
-        super(WorkbenchMessages.ClearWorkingSetAction_text);
+        super(WorkbenchMessages.get().ClearWorkingSetAction_text);
         Assert.isNotNull(actionGroup);
-        setToolTipText(WorkbenchMessages.ClearWorkingSetAction_toolTip);
+        setToolTipText(WorkbenchMessages.get().ClearWorkingSetAction_toolTip);
         setEnabled(actionGroup.getWorkingSet() != null);
         PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 				IWorkbenchHelpContextIds.CLEAR_WORKING_SET_ACTION);

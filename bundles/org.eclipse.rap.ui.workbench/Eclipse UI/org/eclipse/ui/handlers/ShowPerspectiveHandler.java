@@ -88,7 +88,7 @@ public final class ShowPerspectiveHandler extends AbstractHandler {
 			workbench.openWorkbenchWindow(perspectiveId, input);
 		} catch (WorkbenchException e) {
 			ErrorDialog.openError(activeWorkbenchWindow.getShell(),
-					WorkbenchMessages.ChangeToPerspectiveMenu_errorTitle, e
+					WorkbenchMessages.get().ChangeToPerspectiveMenu_errorTitle, e
 							.getMessage(), e.getStatus());
 		}
 	}

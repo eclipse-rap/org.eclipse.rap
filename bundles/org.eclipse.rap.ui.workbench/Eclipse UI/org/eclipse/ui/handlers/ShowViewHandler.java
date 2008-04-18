@@ -109,7 +109,7 @@ public final class ShowViewHandler extends AbstractHandler {
                 openView(descriptors[i].getId(), window);
 			} catch (PartInitException e) {
 				StatusUtil.handleStatus(e.getStatus(),
-						WorkbenchMessages.ShowView_errorTitle
+						WorkbenchMessages.get().ShowView_errorTitle
 								+ ": " + e.getMessage(), //$NON-NLS-1$
 						StatusManager.SHOW);
 			}

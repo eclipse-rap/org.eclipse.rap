@@ -43,9 +43,9 @@ public class EditWorkingSetAction extends Action {
      */
     public EditWorkingSetAction(WorkingSetFilterActionGroup actionGroup,
             Shell shell) {
-        super(WorkbenchMessages.EditWorkingSetAction_text);
+        super(WorkbenchMessages.get().EditWorkingSetAction_text);
         Assert.isNotNull(actionGroup);
-        setToolTipText(WorkbenchMessages.EditWorkingSetAction_toolTip); 
+        setToolTipText(WorkbenchMessages.get().EditWorkingSetAction_toolTip); 
 
         this.shell = shell;
         this.actionGroup = actionGroup;
@@ -70,8 +70,8 @@ public class EditWorkingSetAction extends Action {
         IWorkingSetEditWizard wizard = manager
                 .createWorkingSetEditWizard(workingSet);
         if (wizard == null) {
-            String title = WorkbenchMessages.EditWorkingSetAction_error_nowizard_title; 
-            String message = WorkbenchMessages.EditWorkingSetAction_error_nowizard_message;
+            String title = WorkbenchMessages.get().EditWorkingSetAction_error_nowizard_title; 
+            String message = WorkbenchMessages.get().EditWorkingSetAction_error_nowizard_message;
             MessageDialog.openError(shell, title, message);
             return;
         }
