@@ -49,7 +49,9 @@ public class DefaultWorkbenchBrowserSupport extends
 
 	protected IWebBrowser doCreateBrowser(int style, String browserId,
 			String name, String tooltip) throws PartInitException {
-		return new DefaultWebBrowser(this, browserId);
+// RAP [rh] RAP specific DefaultWebBrowser implementation
+//	  return new DefaultWebBrowser(this, browserId);
+		return new DefaultWebBrowser(this, browserId,style);
 	}
 
 	/*

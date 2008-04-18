@@ -12,12 +12,12 @@
 package org.eclipse.ui.internal.util;
 
 import java.util.Hashtable;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.Map;
 
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
+//import org.eclipse.swt.graphics.Color;
+//import org.eclipse.swt.graphics.Font;
+//import org.eclipse.swt.graphics.Image;
 
 /**
  * SWTResourceUtil is a class that holds onto Colors, Fonts and Images and
@@ -50,21 +50,24 @@ public class SWTResourceUtil {
      */
     public static final void shutdown() {
         if (imageTable != null) {
-            for (Iterator i = imageTable.values().iterator(); i.hasNext();) {
-                ((Image) i.next()).dispose();
-            }
+// RAP [rh] missing Image#dispose()          
+//            for (Iterator i = imageTable.values().iterator(); i.hasNext();) {
+//                ((Image) i.next()).dispose();
+//            }
             imageTable = null;
         }
         if (colorTable != null) {
-            for (Iterator i = colorTable.values().iterator(); i.hasNext();) {
-                ((Color) i.next()).dispose();
-            }
+// RAP [rh] missing Color#dispose()          
+//            for (Iterator i = colorTable.values().iterator(); i.hasNext();) {
+//                ((Color) i.next()).dispose();
+//            }
             colorTable = null;
         }
         if (fontTable != null) {
-            for (Iterator i = fontTable.values().iterator(); i.hasNext();) {
-                ((Font) i.next()).dispose();
-            }
+// RAP [rh] missing Font#dispose()          
+//            for (Iterator i = fontTable.values().iterator(); i.hasNext();) {
+//                ((Font) i.next()).dispose();
+//            }
             fontTable = null;
         }
     }

@@ -20,9 +20,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.Dialog;
+//import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.internal.RAPDialogUtil;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -30,12 +31,12 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.accessibility.AccessibleAdapter;
-import org.eclipse.swt.accessibility.AccessibleEvent;
+//import org.eclipse.swt.accessibility.AccessibleAdapter;
+//import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.GC;
+//import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -283,10 +284,12 @@ public class ViewsPreferencePage extends PreferencePage implements
 				true, true);
 		// give a height hint that'll show at least two lines (and let the
 		// scroll bars draw nicely if necessary)
-		GC gc = new GC(parent);
-		layoutData.heightHint = Dialog.convertHeightInCharsToPixels(gc
-				.getFontMetrics(), 2);
-		gc.dispose();
+// RAP [rh] Changes due to different methods to convert char height to pixels		
+//		GC gc = new GC(parent);
+//		layoutData.heightHint = Dialog.convertHeightInCharsToPixels(gc
+//				.getFontMetrics(), 2);
+//		gc.dispose();
+		RAPDialogUtil.convertHeightInCharsToPixels( parent.getFont(), 2 );		
 		themeDescriptionText.setLayoutData(layoutData);
 
 		refreshThemeDescriptionText();
@@ -414,12 +417,13 @@ public class ViewsPreferencePage extends PreferencePage implements
 		editorTopButton = new Button(editorTabGroup, SWT.RADIO);
 		editorTopButton.setText(EDITORS_TOP_TITLE);
 		editorTopButton.setSelection(editorAlignment == SWT.TOP);
-		editorTopButton.getAccessible().addAccessibleListener(
-				new AccessibleAdapter() {
-					public void getName(AccessibleEvent e) {
-						e.result = EDITORS_TITLE;
-					}
-				});
+// RAP [rh] Accessibility API missing		
+//		editorTopButton.getAccessible().addAccessibleListener(
+//				new AccessibleAdapter() {
+//					public void getName(AccessibleEvent e) {
+//						e.result = EDITORS_TITLE;
+//					}
+//				});
 
 		editorBottomButton = new Button(editorTabGroup, SWT.RADIO);
 		editorBottomButton.setText(EDITORS_BOTTOM_TITLE);

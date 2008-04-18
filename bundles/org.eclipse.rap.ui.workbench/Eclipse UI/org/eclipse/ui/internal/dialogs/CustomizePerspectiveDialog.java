@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.Iterator;
+//import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -50,26 +50,26 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.DefaultToolTip;
-import org.eclipse.jface.window.ToolTip;
+//import org.eclipse.jface.window.DefaultToolTip;
+//import org.eclipse.jface.window.ToolTip;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
+//import org.eclipse.swt.events.KeyEvent;
+//import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
+//import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
+//import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
@@ -118,11 +118,12 @@ import org.eclipse.ui.wizards.IWizardCategory;
  */
 // @issue need to break this not to show menu specific page
 public class CustomizePerspectiveDialog extends TrayDialog {
-	private DefaultToolTip actionSetMenuViewerTooltip;
+// RAP [rh]  JFace DetailtToolTip not implemented
+//	private DefaultToolTip actionSetMenuViewerTooltip;
 	
-	private DefaultToolTip actionSetToolbarViewerTooltip;
+//	private DefaultToolTip actionSetToolbarViewerTooltip;
 	
-	private DefaultToolTip actionSetsViewerTooltip;
+//	private DefaultToolTip actionSetsViewerTooltip;
 	
     private Perspective perspective;
 
@@ -153,8 +154,8 @@ public class CustomizePerspectiveDialog extends TrayDialog {
     private final static int TAB_HEIGHT_IN_DLUS = 230;
 
     private final String shortcutMenuColumnHeaders[] = {
-            WorkbenchMessages.get()ActionSetSelection_menuColumnHeader,
-            WorkbenchMessages.get()ActionSetSelection_descriptionColumnHeader };
+            WorkbenchMessages.get().ActionSetSelection_menuColumnHeader,
+            WorkbenchMessages.get().ActionSetSelection_descriptionColumnHeader };
 
     private int[] shortcutMenuColumnWidths = { 125, 300 };
 
@@ -339,13 +340,13 @@ public class CustomizePerspectiveDialog extends TrayDialog {
             if (type == MENUITEM) {
                 if (children.size() > 0) {
                     if (parent.id.equals("Root")) { //$NON-NLS-1$
-                        return NLS.bind(WorkbenchMessages.get()ActionSetSelection_menubarLocation, text );
+                        return NLS.bind(WorkbenchMessages.get().ActionSetSelection_menubarLocation, text );
                     }
                 }
                 return text;
             } 
             if (children.size() > 0) {
-				return NLS.bind(WorkbenchMessages.get()ActionSetSelection_toolbarLocation, text );
+				return NLS.bind(WorkbenchMessages.get().ActionSetSelection_toolbarLocation, text );
 			} 
             
             return text;
@@ -527,9 +528,10 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         }
 
         public final void dispose() {
-            for (Iterator i = imageTable.values().iterator(); i.hasNext();) {
-                ((Image) i.next()).dispose();
-            }
+// RAP [rh] missing Image#dispose()          
+//            for (Iterator i = imageTable.values().iterator(); i.hasNext();) {
+//                ((Image) i.next()).dispose();
+//            }
             imageTable = null;
         }
 
@@ -814,9 +816,10 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         private Map imageTable = new Hashtable();
 
         public void dispose() {
-            for (Iterator i = imageTable.values().iterator(); i.hasNext();) {
-                ((Image) i.next()).dispose();
-            }
+// RAP [rh] missing Image#dispose()          
+//            for (Iterator i = imageTable.values().iterator(); i.hasNext();) {
+//                ((Image) i.next()).dispose();
+//            }
             imageTable = null;
         }
 
@@ -903,30 +906,31 @@ public class CustomizePerspectiveDialog extends TrayDialog {
                         handleActionSetSelected(event);
                     }
                 });
-        actionSetsViewer.getControl().addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
-                handleActionSetViewerKeyPressed(e);
-            }
-
-            public void keyReleased(KeyEvent e) {
-            }
-        });
-        actionSetMenuViewer.getControl().addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
-                handleActionSetMenuViewerKeyPressed(e);
-            }
-
-            public void keyReleased(KeyEvent e) {
-            }
-        });
-        actionSetToolbarViewer.getControl().addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
-                handleActionSetToolbarViewerKeyPressed(e);
-            }
-
-            public void keyReleased(KeyEvent e) {
-            }
-        });
+// RAP [rh] missing key events        
+//        actionSetsViewer.getControl().addKeyListener(new KeyListener() {
+//            public void keyPressed(KeyEvent e) {
+//                handleActionSetViewerKeyPressed(e);
+//            }
+//
+//            public void keyReleased(KeyEvent e) {
+//            }
+//        });
+//        actionSetMenuViewer.getControl().addKeyListener(new KeyListener() {
+//            public void keyPressed(KeyEvent e) {
+//                handleActionSetMenuViewerKeyPressed(e);
+//            }
+//
+//            public void keyReleased(KeyEvent e) {
+//            }
+//        });
+//        actionSetToolbarViewer.getControl().addKeyListener(new KeyListener() {
+//            public void keyPressed(KeyEvent e) {
+//                handleActionSetToolbarViewerKeyPressed(e);
+//            }
+//
+//            public void keyReleased(KeyEvent e) {
+//            }
+//        });
     }
 
     /**
@@ -1028,7 +1032,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         super.configureShell(shell);
         String title=perspective.getDesc().getLabel();
         
-        title = NLS.bind(WorkbenchMessages.get()ActionSetSelection_customize,title);
+        title = NLS.bind(WorkbenchMessages.get().ActionSetSelection_customize,title);
         shell.setText(title);
         window.getWorkbench().getHelpSystem().setHelp(shell,
 				IWorkbenchHelpContextIds.ACTION_SET_SELECTION_DIALOG);
@@ -1066,7 +1070,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         // Select... label
         Label label = new Label(actionSetsComposite, SWT.WRAP);
         label
-                .setText(NLS.bind(WorkbenchMessages.get()ActionSetSelection_selectActionSetsLabel,perspective.getDesc().getLabel() ));
+                .setText(NLS.bind(WorkbenchMessages.get().ActionSetSelection_selectActionSetsLabel,perspective.getDesc().getLabel() ));
         data = new GridData(SWT.FILL, SWT.CENTER, true, false);
         label.setLayoutData(data);
 
@@ -1088,7 +1092,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         actionSetGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         label = new Label(actionSetGroup, SWT.WRAP);
-        label.setText(WorkbenchMessages.get()ActionSetSelection_availableActionSets);
+        label.setText(WorkbenchMessages.get().ActionSetSelection_availableActionSets);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         
         actionSetsViewer = CheckboxTableViewer.newCheckList(actionSetGroup,
@@ -1097,13 +1101,14 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         actionSetsViewer.setLabelProvider(new WorkbenchLabelProvider());
         actionSetsViewer.setContentProvider(new ArrayContentProvider());
         actionSetsViewer.setComparator(new ActionSetComparator());
-        actionSetsViewerTooltip = new DefaultToolTip(actionSetsViewer.getControl(),ToolTip.RECREATE,true){
-
-			public Point getLocation(Point tipSize, Event event) {
-				return getShell().getDisplay().getCursorLocation();
-			}
-        	
-        };
+ // RAP [rh] JFace DefaultToolTip not implemented
+//        actionSetsViewerTooltip = new DefaultToolTip(actionSetsViewer.getControl(),ToolTip.RECREATE,true){
+//
+//			public Point getLocation(Point tipSize, Event event) {
+//				return getShell().getDisplay().getCursorLocation();
+//			}
+//        	
+//        };
 
         // Menu and toolbar composite
         Composite actionGroup = new Composite(sashComposite, SWT.NONE);
@@ -1124,7 +1129,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         menubarGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         label = new Label(menubarGroup, SWT.WRAP);
-        label.setText(WorkbenchMessages.get()ActionSetSelection_menubarActions); 
+        label.setText(WorkbenchMessages.get().ActionSetSelection_menubarActions); 
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         actionSetMenuViewer = new TreeViewer(menubarGroup);
@@ -1132,13 +1137,14 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         actionSetMenuViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         actionSetMenuViewer.setLabelProvider(new ActionSetLabelProvider());
         actionSetMenuViewer.setContentProvider(new TreeContentProvider());
-        actionSetMenuViewerTooltip = new DefaultToolTip(actionSetMenuViewer.getControl(),ToolTip.RECREATE, true) {
-
-			public Point getLocation(Point tipSize, Event event) {
-				return getShell().getDisplay().getCursorLocation();
-			}
-        	
-        };
+// RAP [rh] JFace DefaultToolTip not implemented        
+//        actionSetMenuViewerTooltip = new DefaultToolTip(actionSetMenuViewer.getControl(),ToolTip.RECREATE, true) {
+//
+//			public Point getLocation(Point tipSize, Event event) {
+//				return getShell().getDisplay().getCursorLocation();
+//			}
+//        	
+//        };
 
         Composite toolbarGroup = new Composite(actionGroup, SWT.NONE);
         layout = new GridLayout();
@@ -1148,7 +1154,7 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         toolbarGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         label = new Label(toolbarGroup, SWT.WRAP);
-        label.setText(WorkbenchMessages.get()ActionSetSelection_toolbarActions);
+        label.setText(WorkbenchMessages.get().ActionSetSelection_toolbarActions);
         label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         actionSetToolbarViewer = new TreeViewer(toolbarGroup);
@@ -1157,13 +1163,14 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         actionSetToolbarViewer
                 .setLabelProvider(new ActionSetLabelProvider());
         actionSetToolbarViewer.setContentProvider(new TreeContentProvider());
-        actionSetToolbarViewerTooltip = new DefaultToolTip(actionSetToolbarViewer.getControl(),ToolTip.RECREATE,true){
-
-			public Point getLocation(Point tipSize, Event event) {
-				return getShell().getDisplay().getCursorLocation();
-			}
-        	
-        };
+// RAP [rh] JFAce DefaultToolTip not implemented         
+//        actionSetToolbarViewerTooltip = new DefaultToolTip(actionSetToolbarViewer.getControl(),ToolTip.RECREATE,true){
+//
+//			public Point getLocation(Point tipSize, Event event) {
+//				return getShell().getDisplay().getCursorLocation();
+//			}
+//        	
+//        };
 
         sashComposite.setWeights(new int[] { 30, 70 });
 
@@ -1311,24 +1318,25 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         return menusComposite;
     }
 
-    void handleActionSetMenuViewerKeyPressed(KeyEvent event) {
-        // popup the description for the selected action set menu item
-        if (event.keyCode == SWT.F2 && event.stateMask == 0) {
-            IStructuredSelection sel = (IStructuredSelection) actionSetMenuViewer
-                    .getSelection();
-            ActionSetDisplayItem element = (ActionSetDisplayItem) sel
-                    .getFirstElement();
-            if (element != null) {
-                String desc = element.description;
-                if (desc == null || desc.equals("")) { //$NON-NLS-1$
-                    desc = WorkbenchMessages.get().ActionSetSelection_noDesc;
-                }
-                actionSetMenuViewerTooltip.setText(desc);
-                // Passing 0,0 because tooltip is always opened on current cursor position
-                actionSetMenuViewerTooltip.show(new Point(0,0));
-            }
-        }
-    }
+// RAP [rh] missing key events    
+//    void handleActionSetMenuViewerKeyPressed(KeyEvent event) {
+//        // popup the description for the selected action set menu item
+//        if (event.keyCode == SWT.F2 && event.stateMask == 0) {
+//            IStructuredSelection sel = (IStructuredSelection) actionSetMenuViewer
+//                    .getSelection();
+//            ActionSetDisplayItem element = (ActionSetDisplayItem) sel
+//                    .getFirstElement();
+//            if (element != null) {
+//                String desc = element.description;
+//                if (desc == null || desc.equals("")) { //$NON-NLS-1$
+//                    desc = WorkbenchMessages.get().ActionSetSelection_noDesc;
+//                }
+//                actionSetMenuViewerTooltip.setText(desc);
+//                // Passing 0,0 because tooltip is always opened on current cursor position
+//                actionSetMenuViewerTooltip.show(new Point(0,0));
+//            }
+//        }
+//    }
 
     void handleActionSetSelected(SelectionChangedEvent event) {
         IStructuredSelection sel = (IStructuredSelection) event.getSelection();
@@ -1398,43 +1406,44 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         selectedActionSet = element;
     }
 
-    void handleActionSetToolbarViewerKeyPressed(KeyEvent event) {
-        // popup the description for the selected action set toolbar item
-        if (event.keyCode == SWT.F2 && event.stateMask == 0) {
-            IStructuredSelection sel = (IStructuredSelection) actionSetToolbarViewer
-                    .getSelection();
-            ActionSetDisplayItem element = (ActionSetDisplayItem) sel
-                    .getFirstElement();
-            if (element != null) {
-                String desc = element.description;
-                if (desc == null || desc.equals("")) { //$NON-NLS-1$
-                    desc = WorkbenchMessages.get().ActionSetSelection_noDesc; 
-                }
-                actionSetToolbarViewerTooltip.setText(desc);
-                // Passing 0,0 because tooltip is always opened on current cursor position
-                actionSetToolbarViewerTooltip.show(new Point(0,0));
-            }
-        }
-    }
-
-    void handleActionSetViewerKeyPressed(KeyEvent event) {
-        // popup the description for the selected action set
-        if (event.keyCode == SWT.F2 && event.stateMask == 0) {
-            IStructuredSelection sel = (IStructuredSelection) actionSetsViewer
-                    .getSelection();
-            ActionSetDescriptor element = (ActionSetDescriptor) sel
-                    .getFirstElement();
-            if (element != null) {
-                String desc = element.getDescription();
-                if (desc == null || desc.equals("")) { //$NON-NLS-1$
-                    desc = WorkbenchMessages.get().ActionSetSelection_noDesc; 
-                }
-                actionSetsViewerTooltip.setText(desc);
-                // Passing 0,0 because tooltip is always opened on current cursor position
-                actionSetsViewerTooltip.show(new Point(0,0));
-            }
-        }
-    }
+// RAP [rh] missing key events    
+//    void handleActionSetToolbarViewerKeyPressed(KeyEvent event) {
+//        // popup the description for the selected action set toolbar item
+//        if (event.keyCode == SWT.F2 && event.stateMask == 0) {
+//            IStructuredSelection sel = (IStructuredSelection) actionSetToolbarViewer
+//                    .getSelection();
+//            ActionSetDisplayItem element = (ActionSetDisplayItem) sel
+//                    .getFirstElement();
+//            if (element != null) {
+//                String desc = element.description;
+//                if (desc == null || desc.equals("")) { //$NON-NLS-1$
+//                    desc = WorkbenchMessages.get().ActionSetSelection_noDesc; 
+//                }
+//                actionSetToolbarViewerTooltip.setText(desc);
+//                // Passing 0,0 because tooltip is always opened on current cursor position
+//                actionSetToolbarViewerTooltip.show(new Point(0,0));
+//            }
+//        }
+//    }
+//
+//    void handleActionSetViewerKeyPressed(KeyEvent event) {
+//        // popup the description for the selected action set
+//        if (event.keyCode == SWT.F2 && event.stateMask == 0) {
+//            IStructuredSelection sel = (IStructuredSelection) actionSetsViewer
+//                    .getSelection();
+//            ActionSetDescriptor element = (ActionSetDescriptor) sel
+//                    .getFirstElement();
+//            if (element != null) {
+//                String desc = element.getDescription();
+//                if (desc == null || desc.equals("")) { //$NON-NLS-1$
+//                    desc = WorkbenchMessages.get().ActionSetSelection_noDesc; 
+//                }
+//                actionSetsViewerTooltip.setText(desc);
+//                // Passing 0,0 because tooltip is always opened on current cursor position
+//                actionSetsViewerTooltip.show(new Point(0,0));
+//            }
+//        }
+//    }
 
     void handleMenuCategoryChecked(CheckStateChangedEvent event) {
         ShortcutMenu checkedCategory = (ShortcutMenu) event.getElement();
