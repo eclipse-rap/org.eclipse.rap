@@ -121,7 +121,6 @@ import org.eclipse.ui.commands.IWorkbenchCommandSupport;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.contexts.IWorkbenchContextSupport;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.actions.CommandAction;
 import org.eclipse.ui.internal.activities.ws.WorkbenchActivitySupport;
@@ -3257,9 +3256,11 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 	 * 
 	 * @see org.eclipse.ui.IWorkbench#getHelpSystem()
 	 */
-	public IWorkbenchHelpSystem getHelpSystem() {
-		return WorkbenchHelpSystem.getInstance();
-	}
+	// RAP [bm]: 
+//	public IWorkbenchHelpSystem getHelpSystem() {
+//		return WorkbenchHelpSystem.getInstance();
+//	}
+	// RAPEND: [bm] 
 
 	/*
 	 * (non-Javadoc)
