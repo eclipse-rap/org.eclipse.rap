@@ -13,7 +13,7 @@ package org.eclipse.jface.preference;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.internal.DialogUtil;
+import org.eclipse.jface.internal.RAPDialogUtil;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -704,7 +704,7 @@ public abstract class FieldEditor {
 //        int widthHint = org.eclipse.jface.dialogs.Dialog
 //                .convertVerticalDLUsToPixels(fontMetrics,
 //                        IDialogConstants.BUTTON_WIDTH);
-        int widthHint = DialogUtil
+        int widthHint = RAPDialogUtil
 				.convertVerticalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
         // RAPEND: [bm] 
 

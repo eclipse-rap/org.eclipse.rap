@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Font;
  * @since 1.1
  */
 // RAP [rh] Substitues for methods in class Dialog
-public final class DialogUtil {
+public final class RAPDialogUtil {
 	
 	private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
 	private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 8;
@@ -71,5 +71,28 @@ public final class DialogUtil {
 	  // round to the nearest pixel
 	  int charHeight = Graphics.getCharHeight( font );
     return ( charHeight * dlus + VERTICAL_DIALOG_UNITS_PER_CHAR / 2 ) / VERTICAL_DIALOG_UNITS_PER_CHAR;
+	}
+	
+  /**
+   * Substitute for Dialog#convertHeightInCharsToPixels( FontMetrics, int ).
+   * 
+   * @param font the font 
+   * @param chars the number of chars
+   * @return the number of pixels
+   */
+	public static int convertHeightInCharsToPixels( Font font, int chars ) {
+    return Graphics.getCharHeight( font ) * chars;
+	}
+	
+  /**
+   * Substitute for Dialog#convertWidthInCharsToPixels( FontMetrics, int ).
+   * 
+   * @param font the font 
+   * @param chars the number of chars
+   * @return the number of pixels
+   */
+	public static int convertWidthInCharsToPixels( Font font, int chars ) {
+    float avgCharWidth = Graphics.getAvgCharWidth( font );
+    return ( int )( avgCharWidth * chars );
 	}
 }

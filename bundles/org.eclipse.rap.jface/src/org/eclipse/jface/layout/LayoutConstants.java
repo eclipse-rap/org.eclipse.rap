@@ -11,7 +11,7 @@
 package org.eclipse.jface.layout;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.internal.DialogUtil;
+import org.eclipse.jface.internal.RAPDialogUtil;
 import org.eclipse.swt.graphics.Point;
 
 /**
@@ -45,13 +45,13 @@ public final class LayoutConstants {
 //		minButtonSize  = new Point(Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.get().BUTTON_WIDTH), 0);
 //		gc.dispose();
 
-		dialogMargins = new Point(DialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN),
-				DialogUtil.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN));
+		dialogMargins = new Point(RAPDialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN),
+				RAPDialogUtil.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN));
 
-		dialogSpacing = new Point(DialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING),
-				DialogUtil.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING));
+		dialogSpacing = new Point(RAPDialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING),
+				RAPDialogUtil.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING));
 
-		minButtonSize  = new Point(DialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH), 0);
+		minButtonSize  = new Point(RAPDialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH), 0);
 		
 		// RAPEND: [bm] 
 	}

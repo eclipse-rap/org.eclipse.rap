@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
-import org.eclipse.jface.internal.DialogUtil;
+import org.eclipse.jface.internal.RAPDialogUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -134,9 +133,8 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
 //			return 0;
 //		}
 //        return Dialog.convertHeightInCharsToPixels(fontMetrics, chars);
-    	Font dialogFont = JFaceResources.getDialogFont();
-      return Graphics.getCharHeight( dialogFont ) * chars;
-    	// RAPEND: [bm] 
+      Font font = JFaceResources.getDialogFont();
+      return RAPDialogUtil.convertHeightInCharsToPixels( font, chars );      
     }
 
     /**
@@ -161,7 +159,7 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
 //			return 0;
 //		}
 //        return Dialog.convertHorizontalDLUsToPixels(fontMetrics, dlus);
-    	return DialogUtil.convertHorizontalDLUsToPixels(dlus);
+    	return RAPDialogUtil.convertHorizontalDLUsToPixels(dlus);
     	// RAPEND: [bm] 
     }
 
@@ -187,7 +185,7 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
 //			return 0;
 //		}
 //        return Dialog.convertVerticalDLUsToPixels(fontMetrics, dlus);
-    	return DialogUtil.convertVerticalDLUsToPixels(dlus);
+    	return RAPDialogUtil.convertVerticalDLUsToPixels(dlus);
     	// RAPEND: [bm] 
 
     }
@@ -214,10 +212,8 @@ public abstract class DialogPage implements IDialogPage, IMessageProvider {
 //			return 0;
 //		}
 //        return Dialog.convertWidthInCharsToPixels(fontMetrics, chars);
-    	Font dialogFont = JFaceResources.getDialogFont();
-      float avgCharWidth = Graphics.getAvgCharWidth( dialogFont );
-      return ( int )( avgCharWidth * chars );
-    	// RAPEND: [bm] 
+      Font font = JFaceResources.getDialogFont();
+      return RAPDialogUtil.convertWidthInCharsToPixels( font, chars );
     }
 
     /**

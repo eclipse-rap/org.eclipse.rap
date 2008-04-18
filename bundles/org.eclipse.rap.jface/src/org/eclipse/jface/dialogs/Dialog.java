@@ -224,7 +224,7 @@ public abstract class Dialog extends Window {
 	 */
 	private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 8;
 
-	// RAP [bm]: see also DialogUtil
+	// RAP [bm]: see also RAPDialogUtil
 //	/**
 //	 * Returns the number of pixels corresponding to the height of the given
 //	 * number of characters.
@@ -252,7 +252,7 @@ public abstract class Dialog extends Window {
 	// RAPEND: [bm] 
 
 	
-	// RAP [bm]: see also DialogUtil
+	// RAP [bm]: see also RAPDialogUtil
 //	/**
 //	 * Returns the number of pixels corresponding to the given number of
 //	 * horizontal dialog units.
@@ -281,7 +281,7 @@ public abstract class Dialog extends Window {
 //	}
 	// RAPEND: [bm] 
 
-	// RAP [bm]: see also DialogUtil
+	// RAP [bm]: see also RAPDialogUtil
 //	/**
 //	 * Returns the number of pixels corresponding to the given number of
 //	 * vertical dialog units.
@@ -310,7 +310,7 @@ public abstract class Dialog extends Window {
 //	}
 	// RAPEND: [bm] 
 
-	// RAP [bm]: see also DialogUtil
+	// RAP [bm]: see also RAPDialogUtil
 //	/**
 //	 * Returns the number of pixels corresponding to the width of the given
 //	 * number of characters.
