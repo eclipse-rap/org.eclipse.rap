@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.rap.ui">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.rap.ui" id="settingstores" name="Setting Stores"/>
+      </appInfo>
+      <documentation>
+         This extension point allows developers to contribute additional &lt;code&gt;ISettingStore&lt;/code&gt; instances.
+&lt;p&gt;
+An &lt;code&gt;ISettingStore&lt;/code&gt; provides persistent storage for settings (key value pairs of Strings), which are then available beyond the scope of a single session. An &lt;code&gt;ISettingStoreFactory&lt;/code&gt; is responsible for creating a particular kind of &lt;code&gt;ISettingStore&lt;/code&gt;.
+&lt;p&gt;
+Developers that want to implement their own setting store must provide a setting store factory and register it with the framework using this extension point.
+&lt;p&gt;
+Note that at runtime only &lt;b&gt;one&lt;/b&gt; (out of all available) factories will be used to create new &lt;code&gt;ISettingStore&lt;/code&gt; instances. Which factory is used can be controlled in two ways:
+&lt;ul&gt;
+&lt;li&gt;In a normal RAP deployment you can specify the factory to be used by placing the following property in the OSGi config.ini file: &lt;code&gt;org.eclipse.rwt.settingStoreFactory=&lt;i&gt;id&lt;/i&gt;&lt;/code&gt; where &lt;i&gt;id&lt;/i&gt; identifies a particular factory element. Example:
+&lt;pre&gt;
+org.eclipse.rwt.settingStoreFactory=file
+&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;In an RWT-only deployment you can specify the factory to be used by placing the following snippet in the web.xml file:&lt;br&gt;
+&lt;pre&gt;
+&lt;init-param&gt;
+  &lt;param-name&gt;org.eclipse.rwt.settingStoreFactory&lt;/param-name&gt;
+  &lt;param-value&gt;org.eclipse.rwt.service.RWTFileSettingStoreFactory&lt;/param-value&gt;   
+&lt;/init-param&gt;
+&lt;/pre&gt;
+&lt;li&gt;If nothing is specified, the class &lt;code&gt;WorkbenchFileSettingStoreFactory&lt;/code&gt; will be used in a regular RAP deployment. In an RWT only deployment the class &lt;code&gt;RWTFileSettingStoreFactory&lt;/code&gt; will be used instead.&lt;/li&gt;
+&lt;/ul&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="factory"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  an optional identifier of the extension instance
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name of the extension instance
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="factory">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="id"/>
+         </appInfo>
+         <documentation>
+            This element is used to define setting store factories. If more than one of these elements exist with the same &lt;code&gt;id&lt;/code&gt;, only the last declared element (in order of reading the registry) is considered valid.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the unique identifier of this factory
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified name of the class implementing the &lt;code&gt;org.eclipse.rwt.service.ISettingStoreFactory&lt;/code&gt; interface.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.rwt.service.ISettingStoreFactory"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         RAP 1.1
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;pre&gt;
+  &lt;extension
+         point=&quot;org.eclipse.rap.ui.settingstores&quot;&gt;
+      &lt;factory
+            class=&quot;org.eclipse.ui.internal.preferences.WorkbenchFileSettingStoreFactory&quot;
+            id=&quot;file&quot;&gt;
+      &lt;/factory&gt;
+      &lt;factory
+            class=&quot;org.eclipse.rwt.service.RWTFileSettingStoreFactory&quot;
+            id=&quot;rwtfile&quot;&gt;
+      &lt;/factory&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         To obtain a setting store use &lt;code&gt;RWT.getSettingStore()&lt;/code&gt;. This will use the configured &lt;code&gt;org.eclipse.rwt.service.ISettingStoreFactory&lt;/code&gt; to generate and return an appropriate &lt;code&gt;org.eclipse.rwt.service.ISettingStore&lt;/code&gt; instance for this session.
+&lt;p&gt;
+Developers wishing to provide their own setting store must implement &lt;code&gt;ISettingStore&lt;/code&gt; and &lt;code&gt;ISettingStoreFactory&lt;/code&gt; and contribute their factory using this extension point.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         RAP provides the following default implementations:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;WorkbenchFileSettingStoreFactory&lt;/code&gt;, &lt;code&gt;RWTFileSettingStoreFactory&lt;/code&gt; and &lt;code&gt;FileSettingStore&lt;/code&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2008 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
+All rights reserved. This program and the accompanying materials are made
+available under the terms of the Eclipse Public License v1.0 which accompanies
+this distribution, and is available at &lt;a 
+href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+      </documentation>
+   </annotation>
+
+</schema>

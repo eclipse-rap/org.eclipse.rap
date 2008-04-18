@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.rap.ui">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.rap.ui" id="themeableWidgets" name="RWT Themeable Widgets"/>
+      </appInfo>
+      <documentation>
+         This extension point is used to register custom RWT widgets which also support theming.
+To support theming, a widget provides a couple of files that are relevant for the theming. These files must conform to a naming convention. Once a custom widget is registered with this extension point, the theme-relevant files are found by their names. Thus, only the custom widget class must be registered.
+&lt;p&gt;
+The custom widget must provide the theme-relevant files in a package with is named after the schema &lt;code&gt;&amp;lt;package&amp;gt;.internal.&amp;lt;widget&amp;gt;kit&lt;/code&gt; where &lt;code&gt;&amp;lt;package&amp;gt;&lt;/code&gt; is the package name and &lt;code&gt;&amp;lt;widget&amp;gt;&lt;/code&gt; is the lower case class name of the custom control. This is the same package that also contains the lifecycle adapter (LCA).
+&lt;p&gt;
+Theming relevant files include:
+&lt;ul&gt;
+  &lt;li&gt;A theme definiton file with the name &lt;code&gt;&amp;lt;Widget&amp;gt;.theme.xml&lt;/code&gt;. This file defines new theming keys.&lt;/li&gt;
+  &lt;li&gt;A theme adapter class that implements &lt;code&gt;IControlThemeAdapter&lt;/code&gt; and is named &lt;code&gt;&amp;lt;Widget&amp;gt;ThemeAdapter&lt;/code&gt;. The theme adapter provides the control with the current values of theming-dependent properties.&lt;/li&gt;
+  &lt;li&gt;An appearance fragment file with the name &lt;code&gt;&amp;lt;Widget&amp;gt;.appearances.js&lt;/code&gt;. This file defines new qooxdoo appearances.&lt;/li&gt;
+&lt;/ul&gt;
+None of these files are mandatory, files which are found are respected, but files which are missing do not hurt.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="widget" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="widget">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="parameter"/>
+         </appInfo>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a unique name that identifies this themeable widget
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  an optional name for the themable widget
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  the name of a class that implements the custom widget
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.swt.widgets.Control:"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         RAP 1.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of a themeable widget extension definition: 
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension
+         point=&quot;org.eclipse.rap.ui.themeableWidgets&quot;&gt;
+      &lt;widget
+            id=&quot;my.custom.datepicker&quot;
+            class=&quot;my.custom.controls.DatePicker&quot;&gt;
+      &lt;/widget&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2007 Innoopract Informationssysteme GmbH.&lt;br&gt;
+All rights reserved. This program and the accompanying materials are made
+available under the terms of the Eclipse Public License v1.0 which accompanies
+this distribution, and is available at &lt;a 
+href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+      </documentation>
+   </annotation>
+
+</schema>

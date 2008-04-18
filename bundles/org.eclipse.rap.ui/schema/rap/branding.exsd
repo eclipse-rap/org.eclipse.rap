@@ -1,0 +1,311 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.rap.ui">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.rap.ui" id="branding" name="Branding"/>
+      </appInfo>
+      <documentation>
+         The branding extension points allows you to have a RCP-like branding functionality but with additional aspects regarding web applications. You can specify values for the used servlet name or the favicon. Additionally you&apos;re able to group entrypoints together to one branding which helps you to brand external entrypoints.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="branding"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="branding">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="title"/>
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="additionalHeaders" minOccurs="0" maxOccurs="1"/>
+            <element ref="associatedEntrypoints" minOccurs="0" maxOccurs="1"/>
+         </sequence>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The identifier of the branding with which it should be associated.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="servletName" type="string">
+            <annotation>
+               <documentation>
+                  The name of the servlet on which the application should be available. Defining this attribute will cause your application to be available at http://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/&amp;lt;servletName&amp;gt;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="defaultEntrypointId" type="string">
+            <annotation>
+               <documentation>
+                  To not have an application-wide entrypoint you can define a default entrypoint per branding. Having an URI like http://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/&amp;lt;servletName&amp;gt; will automatically start the server with the entrypoint you defined here.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="themeId" type="string">
+            <annotation>
+               <documentation>
+                  To have the right look &amp;amp; feel for your application you can define the theme which should be used here.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="title" type="string">
+            <annotation>
+               <documentation>
+                  The title attribute is responsible for the title of the RAP application. This will show up in the browser window or as title of the tab in the browser.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="favicon" type="string">
+            <annotation>
+               <documentation>
+                  If you have a logo or something for your web application you put its path here so it can be displayed as icon in the browser near the adressbar or in the favourites. Be sure you specify a file in the .ico format as most browsers don&apos;t accept other image types as favicons.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="body" type="string">
+            <annotation>
+               <documentation>
+                  You can define any valid html file to be used as body of the RAP startup page. You can put whatever you want in it as long as it does not break the page.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="exitConfirmation" type="string">
+            <annotation>
+               <documentation>
+                  The attribute &quot;exitConfirmation&quot; gives you the ability to set a message which will be shown when the user tries to close your application. This can happen when the browser is closed or the user just navigates to another URI.
+&lt;p&gt;
+&lt;b&gt;NOTE:&lt;/b&gt;
+This will only work in browsers of the Mozilla family and Internet Explorer.
+&lt;/p&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="additionalHeaders">
+      <annotation>
+         <documentation>
+            Any additional header which should be added to the page.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <choice>
+               <element ref="meta"/>
+               <element ref="link"/>
+            </choice>
+         </sequence>
+      </complexType>
+   </element>
+
+   <element name="meta">
+      <annotation>
+         <documentation>
+            Meta elements are elements used to provide structured metadata about a web page like author, keywords, description.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="attribute"/>
+         </sequence>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  The name attribute of the meta tag.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="content" type="string">
+            <annotation>
+               <documentation>
+                  The content attribute of the meta tag.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="attribute">
+      <annotation>
+         <documentation>
+            Attributes are used to provide additional informations for HTML tags.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of the attribute.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string">
+            <annotation>
+               <documentation>
+                  The value of the attribute.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="link">
+      <annotation>
+         <documentation>
+            Link elements are elements used link the webpage with external resources like CSS style sheets.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="attribute"/>
+         </sequence>
+         <attribute name="rel" type="string">
+            <annotation>
+               <documentation>
+                  The rel attribute of the meta tag.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="associatedEntrypoints">
+      <annotation>
+         <documentation>
+            Defines all entrypoints which are allowed the started with this branding (or servletName). If there are now entrypoints defined in this branding every entrypoint is allowed to be started.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="entrypoint"/>
+         </sequence>
+      </complexType>
+   </element>
+
+   <element name="entrypoint">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="id"/>
+         </appInfo>
+         <documentation>
+            An element which references to an existing entrypoint defined by &lt;code&gt;org.eclipse.rap.ui.entrypoint&lt;/code&gt;.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  The id of the referenced entrypoint extension.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         RAP 1.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         &lt;pre&gt;
+&lt;extension
+    point=&quot;org.eclipse.rap.ui.branding&quot;&gt;
+  &lt;branding
+    id=&quot;org.eclipse.rap.demo.teabranding&quot;
+    servletName=&quot;tea&quot;
+    defaultEntrypointId=&quot;org.eclipse.rap.demo.anentrypoint&quot;
+    themeId=&quot;org.eclipse.rap.demo.alttheme&quot;
+    title=&quot;It&amp;apos;s tea-time&quot;
+    favicon=&quot;icons/favicon2.ico&quot;
+    body=&quot;body.html&quot;
+    exitConfirmation=&quot;Do you really want to leave the party?&quot;&gt;
+  &lt;/branding&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         There is no API available for branding.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2007 Innoopract Informationssysteme GmbH and others.&lt;br&gt;
+All rights reserved. This program and the accompanying materials are made
+available under the terms of the Eclipse Public License v1.0 which accompanies
+this distribution, and is available at &lt;a 
+href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+      </documentation>
+   </annotation>
+
+</schema>
