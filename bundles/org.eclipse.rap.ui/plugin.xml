@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
+<?eclipse version="3.2"?>
 <plugin>
    
     
@@ -14,51 +14,51 @@
    <extension-point id="themeableWidgets" name="%ExtPoint.rap.themeableWidgets" schema="schema/rap/themeableWidgets.exsd"/>
         
 <!-- Workbench extension points -->
-   <extension-point id="acceleratorConfigurations" name="%ExtPoint.acceleratorConfigurations" schema="schema/acceleratorConfigurations.exsd"/>
-   <extension-point id="acceleratorScopes" name="%ExtPoint.acceleratorScopes" schema="schema/acceleratorScopes.exsd"/>
-   <extension-point id="acceleratorSets" name="%ExtPoint.acceleratorSets" schema="schema/acceleratorSets.exsd"/>
-   <extension-point id="actionDefinitions" name="%ExtPoint.actionDefinitions" schema="schema/actionDefinitions.exsd"/>
-   <extension-point id="activities" name="%ExtPoint.activities" schema="schema/activities.exsd"/>
-   <extension-point id="activitySupport" name="%ExtPoint.activitySupport" schema="schema/activitySupport.exsd"/>
-   <extension-point id="actionSetPartAssociations" name="%ExtPoint.actionSetPartAssociations" schema="schema/actionSetPartAssociations.exsd"/>
-   <extension-point id="actionSets" name="%ExtPoint.actionSets" schema="schema/actionSets.exsd"/>
-   <extension-point id="bindings" name="%ExtPoint.bindings" schema="schema/bindings.exsd"/>
-   <extension-point id="commands" name="%ExtPoint.commands" schema="schema/commands.exsd"/>
-   <extension-point id="commandImages" name="%ExtPoint.commandImages" schema="schema/commandImages.exsd"/>
-   <extension-point id="contexts" name="%ExtPoint.contexts" schema="schema/contexts.exsd"/>
-   <extension-point id="handlers" name="%ExtPoint.handlers" schema="schema/handlers.exsd"/>
-   <extension-point id="decorators" name="%ExtPoint.decorators" schema="schema/decorators.exsd"/>
-   <extension-point id="dropActions" name="%ExtPoint.dropActions" schema="schema/dropActions.exsd"/>
-   <extension-point id="editorActions" name="%ExtPoint.editorActions" schema="schema/editorActions.exsd"/>
-   <extension-point id="editors" name="%ExtPoint.editors" schema="schema/editors.exsd"/>
-   <extension-point id="elementFactories" name="%ExtPoint.elementFactories" schema="schema/elementFactories.exsd"/>
-   <extension-point id="encodings" name="%ExtPoint.encodings" schema="schema/encodings.exsd"/>
-   <extension-point id="exportWizards" name="%ExtPoint.exportWizards" schema="schema/exportWizards.exsd"/>
-   <extension-point id="fontDefinitions" name="%ExtPoint.fontDefinitions" schema="schema/fontDefinitions.exsd"/>
-   <extension-point id="helpSupport" name="%ExtPoint.helpSupport" schema="schema/helpSupport.exsd"/>
-   <extension-point id="importWizards" name="%ExtPoint.importWizards" schema="schema/importWizards.exsd"/>
-   <extension-point id="intro" name="%ExtPoint.intro" schema="schema/intro.exsd"/>
-   <extension-point id="keywords" name="%ExtPoint.keywords" schema="schema/keywords.exsd"/>
-   <extension-point id="menus" name="%ExtPoint.menus" schema="schema/menus.exsd"/>
-   <extension-point id="newWizards" name="%ExtPoint.newWizards" schema="schema/newWizards.exsd"/>
-   <extension-point id="perspectiveExtensions" name="%ExtPoint.perspectiveExtensions" schema="schema/perspectiveExtensions.exsd"/>
-   <extension-point id="perspectives" name="%ExtPoint.perspectives" schema="schema/perspectives.exsd"/>
-   <extension-point id="popupMenus" name="%ExtPoint.popupMenus" schema="schema/popupMenus.exsd"/>
-   <extension-point id="preferencePages" name="%ExtPoint.preferencePages" schema="schema/preferencePages.exsd"/>
-   <extension-point id="preferenceTransfer" name="%ExtPoint.preferenceTransfer" schema="schema/preferenceTransfer.exsd"/>
-   <extension-point id="presentationFactories" name="%ExtPoint.presentationFactories" schema="schema/presentationFactories.exsd"/>
-   <extension-point id="propertyPages" name="%ExtPoint.propertyPages" schema="schema/propertyPages.exsd"/>
-   <extension-point id="services" name="%ExtPoint.services" schema="schema/services.exsd"/>
-   <extension-point id="splashHandlers" name="%ExtPoint.splashHandlers" schema="schema/splashHandlers.exsd"/>
-   <extension-point id="startup" name="%ExtPoint.startup" schema="schema/startup.exsd"/>
-   <extension-point id="statusHandlers" name="%ExtPoint.statusHandlers" schema="schema/statusHandlers.exsd"/>
-   <extension-point id="systemSummarySections" name="%ExtPoint.systemSummarySections" schema="schema/systemSummarySections.exsd"/>
-   <extension-point id="themes" name="%ExtPoint.themes" schema="schema/themes.exsd"/>
-   <extension-point id="viewActions" name="%ExtPoint.viewActions" schema="schema/viewActions.exsd"/>
-   <extension-point id="views" name="%ExtPoint.views" schema="schema/views.exsd"/>
-   <extension-point id="workingSets" name="%ExtPoint.workingSets" schema="schema/workingSets.exsd"/>
-   <extension-point id="browserSupport" name="%ExtPoint.browserSupport" schema="schema/browserSupport.exsd"/>
-   <extension-point id="internalTweaklets" name="%ExtPoint.tweaklets" schema="schema/internalTweaklets.exsd"/>
+   <extension-point id="org.eclipse.ui.acceleratorConfigurations" name="%ExtPoint.acceleratorConfigurations" schema="schema/acceleratorConfigurations.exsd"/>
+   <extension-point id="org.eclipse.ui.acceleratorScopes" name="%ExtPoint.acceleratorScopes" schema="schema/acceleratorScopes.exsd"/>
+   <extension-point id="org.eclipse.ui.acceleratorSets" name="%ExtPoint.acceleratorSets" schema="schema/acceleratorSets.exsd"/>
+   <extension-point id="org.eclipse.ui.actionDefinitions" name="%ExtPoint.actionDefinitions" schema="schema/actionDefinitions.exsd"/>
+   <extension-point id="org.eclipse.ui.activities" name="%ExtPoint.activities" schema="schema/activities.exsd"/>
+   <extension-point id="org.eclipse.ui.activitySupport" name="%ExtPoint.activitySupport" schema="schema/activitySupport.exsd"/>
+   <extension-point id="org.eclipse.ui.actionSetPartAssociations" name="%ExtPoint.actionSetPartAssociations" schema="schema/actionSetPartAssociations.exsd"/>
+   <extension-point id="org.eclipse.ui.actionSets" name="%ExtPoint.actionSets" schema="schema/actionSets.exsd"/>
+   <extension-point id="org.eclipse.ui.bindings" name="%ExtPoint.bindings" schema="schema/bindings.exsd"/>
+   <extension-point id="org.eclipse.ui.commands" name="%ExtPoint.commands" schema="schema/commands.exsd"/>
+   <extension-point id="org.eclipse.ui.commandImages" name="%ExtPoint.commandImages" schema="schema/commandImages.exsd"/>
+   <extension-point id="org.eclipse.ui.contexts" name="%ExtPoint.contexts" schema="schema/contexts.exsd"/>
+   <extension-point id="org.eclipse.ui.handlers" name="%ExtPoint.handlers" schema="schema/handlers.exsd"/>
+   <extension-point id="org.eclipse.ui.decorators" name="%ExtPoint.decorators" schema="schema/decorators.exsd"/>
+   <extension-point id="org.eclipse.ui.dropActions" name="%ExtPoint.dropActions" schema="schema/dropActions.exsd"/>
+   <extension-point id="org.eclipse.ui.editorActions" name="%ExtPoint.editorActions" schema="schema/editorActions.exsd"/>
+   <extension-point id="org.eclipse.ui.editors" name="%ExtPoint.editors" schema="schema/editors.exsd"/>
+   <extension-point id="org.eclipse.ui.elementFactories" name="%ExtPoint.elementFactories" schema="schema/elementFactories.exsd"/>
+   <extension-point id="org.eclipse.ui.encodings" name="%ExtPoint.encodings" schema="schema/encodings.exsd"/>
+   <extension-point id="org.eclipse.ui.exportWizards" name="%ExtPoint.exportWizards" schema="schema/exportWizards.exsd"/>
+   <extension-point id="org.eclipse.ui.fontDefinitions" name="%ExtPoint.fontDefinitions" schema="schema/fontDefinitions.exsd"/>
+   <extension-point id="org.eclipse.ui.helpSupport" name="%ExtPoint.helpSupport" schema="schema/helpSupport.exsd"/>
+   <extension-point id="org.eclipse.ui.importWizards" name="%ExtPoint.importWizards" schema="schema/importWizards.exsd"/>
+   <extension-point id="org.eclipse.ui.intro" name="%ExtPoint.intro" schema="schema/intro.exsd"/>
+   <extension-point id="org.eclipse.ui.keywords" name="%ExtPoint.keywords" schema="schema/keywords.exsd"/>
+   <extension-point id="org.eclipse.ui.menus" name="%ExtPoint.menus" schema="schema/menus.exsd"/>
+   <extension-point id="org.eclipse.ui.newWizards" name="%ExtPoint.newWizards" schema="schema/newWizards.exsd"/>
+   <extension-point id="org.eclipse.ui.perspectiveExtensions" name="%ExtPoint.perspectiveExtensions" schema="schema/perspectiveExtensions.exsd"/>
+   <extension-point id="org.eclipse.ui.perspectives" name="%ExtPoint.perspectives" schema="schema/perspectives.exsd"/>
+   <extension-point id="org.eclipse.ui.popupMenus" name="%ExtPoint.popupMenus" schema="schema/popupMenus.exsd"/>
+   <extension-point id="org.eclipse.ui.preferencePages" name="%ExtPoint.preferencePages" schema="schema/preferencePages.exsd"/>
+   <extension-point id="org.eclipse.ui.preferenceTransfer" name="%ExtPoint.preferenceTransfer" schema="schema/preferenceTransfer.exsd"/>
+   <extension-point id="org.eclipse.ui.presentationFactories" name="%ExtPoint.presentationFactories" schema="schema/presentationFactories.exsd"/>
+   <extension-point id="org.eclipse.ui.propertyPages" name="%ExtPoint.propertyPages" schema="schema/propertyPages.exsd"/>
+   <extension-point id="org.eclipse.ui.services" name="%ExtPoint.services" schema="schema/services.exsd"/>
+   <extension-point id="org.eclipse.ui.splashHandlers" name="%ExtPoint.splashHandlers" schema="schema/splashHandlers.exsd"/>
+   <extension-point id="org.eclipse.ui.startup" name="%ExtPoint.startup" schema="schema/startup.exsd"/>
+   <extension-point id="org.eclipse.ui.statusHandlers" name="%ExtPoint.statusHandlers" schema="schema/statusHandlers.exsd"/>
+   <extension-point id="org.eclipse.ui.systemSummarySections" name="%ExtPoint.systemSummarySections" schema="schema/systemSummarySections.exsd"/>
+   <extension-point id="org.eclipse.ui.themes" name="%ExtPoint.themes" schema="schema/themes.exsd"/>
+   <extension-point id="org.eclipse.ui.viewActions" name="%ExtPoint.viewActions" schema="schema/viewActions.exsd"/>
+   <extension-point id="org.eclipse.ui.views" name="%ExtPoint.views" schema="schema/views.exsd"/>
+   <extension-point id="org.eclipse.ui.workingSets" name="%ExtPoint.workingSets" schema="schema/workingSets.exsd"/>
+   <extension-point id="org.eclipse.ui.browserSupport" name="%ExtPoint.browserSupport" schema="schema/browserSupport.exsd"/>
+   <extension-point id="org.eclipse.ui.internalTweaklets" name="%ExtPoint.tweaklets" schema="schema/internalTweaklets.exsd"/>
    
    <extension
          point="org.eclipse.ui.contexts">
