@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ISelection;
  * This class encapsulates a selection and an input element.
  * Clients may subclass this class to add more information to the context.
  * </p>
+ * @since 1.0
  */
 public class ActionContext {
 

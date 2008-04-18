@@ -27,7 +27,7 @@ import org.eclipse.ui.IActionBars;
  * Clients should subclass this class and extend or override the appropriate fill methods.
  * </p>
  * 
- * @since 2.0
+ * @since 1.0
  */
 public abstract class ActionGroup {
 

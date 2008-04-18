@@ -42,7 +42,7 @@ import org.eclipse.ui.internal.util.Util;
 /**
  * Adds working set filter actions (set / clear / edit)
  * 
- * @since 2.1 
+ * @since 1.1
  */
 public class WorkingSetFilterActionGroup extends ActionGroup {
     private static final String TAG_WORKING_SET_NAME = "workingSetName"; //$NON-NLS-1$

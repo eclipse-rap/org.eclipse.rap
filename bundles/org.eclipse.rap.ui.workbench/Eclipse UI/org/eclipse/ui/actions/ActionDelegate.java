@@ -23,6 +23,7 @@ import org.eclipse.ui.IActionDelegate2;
  * methods to do the action's work, and may reimplement
  * <code>selectionChanged</code> to react to selection changes in the workbench.
  * </p>
+ * @since 1.0
  */
 public abstract class ActionDelegate implements IActionDelegate2 {
     /**

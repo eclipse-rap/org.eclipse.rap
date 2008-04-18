@@ -58,13 +58,13 @@ public class OpenInNewWindowAction extends Action implements
      * @param input the input for the new window's page
      */
     public OpenInNewWindowAction(IWorkbenchWindow window, IAdaptable input) {
-        super(WorkbenchMessages.OpenInNewWindowAction_text);
+        super(WorkbenchMessages.get().OpenInNewWindowAction_text);
         if (window == null) {
             throw new IllegalArgumentException();
         }
         this.workbenchWindow = window;
         // @issue missing action id
-        setToolTipText(WorkbenchMessages.OpenInNewWindowAction_toolTip); 
+        setToolTipText(WorkbenchMessages.get().OpenInNewWindowAction_toolTip); 
         pageInput = input;
         window.getWorkbench().getHelpSystem().setHelp(this,
 				IWorkbenchHelpContextIds.OPEN_NEW_WINDOW_ACTION);
@@ -106,7 +106,7 @@ public class OpenInNewWindowAction extends Action implements
                     pageInput);
         } catch (WorkbenchException e) {			
 			StatusUtil.handleStatus(e.getStatus(),
-					WorkbenchMessages.OpenInNewWindowAction_errorTitle
+					WorkbenchMessages.get().OpenInNewWindowAction_errorTitle
 							+ ": " + e.getMessage(), //$NON-NLS-1$
 					StatusManager.SHOW);
         }

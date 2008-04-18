@@ -17,7 +17,7 @@ import org.eclipse.core.commands.common.CommandException;
  * Indicates that an action has no command mapping. The declaration can be
  * updated to include a definitionId.
  * 
- * @since 3.3
+ * @since 1.1
  */
 public class CommandNotMappedException extends CommandException {
 

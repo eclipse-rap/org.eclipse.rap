@@ -50,7 +50,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * <b>Note:</b> Clients may instantiate.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  */
 public final class ContributedAction extends CommandAction {
 	private IEvaluationContext appContext;

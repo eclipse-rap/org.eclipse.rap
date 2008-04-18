@@ -36,7 +36,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * resources; the current name was retained for historical reasons.
  * </p>
  * 
- * @since 2.0
+ * @since 1.1
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ImportResourcesAction extends BaseSelectionListenerAction
@@ -58,7 +58,7 @@ public class ImportResourcesAction extends BaseSelectionListenerAction
      * @param window the window
      */
     public ImportResourcesAction(IWorkbenchWindow window) {
-        super(WorkbenchMessages.ImportResourcesAction_text);
+        super(WorkbenchMessages.get().ImportResourcesAction_text);
         if (window == null) {
             throw new IllegalArgumentException();
         }

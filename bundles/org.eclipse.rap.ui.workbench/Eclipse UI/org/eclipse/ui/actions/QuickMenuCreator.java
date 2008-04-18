@@ -16,8 +16,9 @@ import java.util.List;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.GC;
+//import org.eclipse.swt.custom.StyledText;
+//import org.eclipse.swt.graphics.GC;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
@@ -32,7 +33,7 @@ import org.eclipse.swt.widgets.TreeItem;
  * Abstract class that is capable of creating a context menu under the mouse
  * pointer.
  * 
- * @since 3.3
+ * @since 1.1
  */
 public abstract class QuickMenuCreator {
 
@@ -84,14 +85,18 @@ public abstract class QuickMenuCreator {
 	 * @return the optimal placement
 	 */
 	private Point computeMenuLocation(Control focus) {
-		Point cursorLocation = focus.getDisplay().getCursorLocation();
+// RAP [rh] Display#getCursorLocation missing	  
+//		Point cursorLocation = focus.getDisplay().getCursorLocation();
+		Point cursorLocation = focus.getDisplay().map( focus, null, focus.getLocation() );
 		Rectangle clientArea = null;
 		Point result = null;
-		if (focus instanceof StyledText) {
-			StyledText styledText = (StyledText) focus;
-			clientArea = styledText.getClientArea();
-			result = computeMenuLocation(styledText);
-		} else if (focus instanceof Tree) {
+// RAP [rh] StyledText missing
+//		if (focus instanceof StyledText) {
+//			StyledText styledText = (StyledText) focus;
+//			clientArea = styledText.getClientArea();
+//			result = computeMenuLocation(styledText);
+//		} else 
+	  if (focus instanceof Tree) {
 			Tree tree = (Tree) focus;
 			clientArea = tree.getClientArea();
 			result = computeMenuLocation(tree);
@@ -116,25 +121,26 @@ public abstract class QuickMenuCreator {
 		return focus.toDisplay(result);
 	}
 
-	/**
-	 * Hook to compute the menu location if the focus widget is a styled text
-	 * widget.
-	 * 
-	 * @param text
-	 *            the styled text widget that has the focus
-	 * 
-	 * @return a widget relative position of the menu to pop up or
-	 *         <code>null</code> if now position inside the widget can be
-	 *         computed
-	 */
-	private Point computeMenuLocation(StyledText text) {
-		Point result = text.getLocationAtOffset(text.getCaretOffset());
-		result.y += text.getLineHeight();
-		if (!text.getClientArea().contains(result)) {
-			return null;
-		}
-		return result;
-	}
+// RAP [rh] StyledText missing	
+//	/**
+//	 * Hook to compute the menu location if the focus widget is a styled text
+//	 * widget.
+//	 * 
+//	 * @param text
+//	 *            the styled text widget that has the focus
+//	 * 
+//	 * @return a widget relative position of the menu to pop up or
+//	 *         <code>null</code> if now position inside the widget can be
+//	 *         computed
+//	 */
+//	private Point computeMenuLocation(StyledText text) {
+//		Point result = text.getLocationAtOffset(text.getCaretOffset());
+//		result.y += text.getLineHeight();
+//		if (!text.getClientArea().contains(result)) {
+//			return null;
+//		}
+//		return result;
+//	}
 
 	/**
 	 * Hook to compute the menu location if the focus widget is a tree widget.
@@ -167,7 +173,9 @@ public abstract class QuickMenuCreator {
 			for (int i = 0; i < rectangles.length; i++) {
 				rectangles[i] = items[i].getBounds();
 			}
-			Point cursorLocation = tree.getDisplay().getCursorLocation();
+// RAP [rh] Display#getCursorLocation missing			
+//			Point cursorLocation = tree.getDisplay().getCursorLocation();
+			Point cursorLocation = tree.getDisplay().map( tree, null, tree.getLocation() );
 			Point result = findBestLocation(getIncludedPositions(rectangles,
 					clientArea), tree.toControl(cursorLocation));
 			if (result != null) {
@@ -212,7 +220,9 @@ public abstract class QuickMenuCreator {
 				rectangles[i] = items[i].getBounds(0);
 			}
 			Rectangle iBounds = items[0].getImageBounds(0);
-			Point cursorLocation = table.getDisplay().getCursorLocation();
+// RAP [rh] Display#getCursorLocation missing			
+//			Point cursorLocation = table.getDisplay().getCursorLocation();
+			Point cursorLocation = table.getDisplay().map( table, null, table.getLocation() );
 			Point result = findBestLocation(getIncludedPositions(rectangles,
 					clientArea), table.toControl(cursorLocation));
 			if (result != null) {
@@ -265,15 +275,17 @@ public abstract class QuickMenuCreator {
 	}
 
 	private int getAvarageCharWith(Control control) {
-		GC gc = null;
-		try {
-			gc = new GC(control);
-			return gc.getFontMetrics().getAverageCharWidth();
-		} finally {
-			if (gc != null) {
-				gc.dispose();
-			}
-		}
+// RAP [rh] FontMetrics#getAverageCharWidth  
+//		GC gc = null;
+//		try {
+//			gc = new GC(control);
+//			return gc.getFontMetrics().getAverageCharWidth();
+//		} finally {
+//			if (gc != null) {
+//				gc.dispose();
+//			}
+//		}
+	  return ( int )Graphics.getAvgCharWidth( control.getFont() );
 	}
 
 	/**

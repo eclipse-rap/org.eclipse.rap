@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.MenuItem;
  * A compound contribution is a contribution item consisting of a
  * dynamic list of contribution items.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public abstract class CompoundContributionItem extends ContributionItem {
 

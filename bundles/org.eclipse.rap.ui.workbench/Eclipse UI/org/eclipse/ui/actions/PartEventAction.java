@@ -40,6 +40,8 @@ import org.eclipse.ui.IWorkbenchPart;
  * Although this method implements the <code>IPartListener</code> interface,
  * it does NOT register itself. 
  * </p>
+ * 
+ * @since 1.0
  */
 public abstract class PartEventAction extends Action implements IPartListener {
 

@@ -36,6 +36,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
  *   <li><code>selectionChanged(ISelection)</code></li> 
  * </ul>
  * </p>
+ * @since 1.0
  */
 public abstract class SelectionProviderAction extends Action implements
         ISelectionChangedListener {

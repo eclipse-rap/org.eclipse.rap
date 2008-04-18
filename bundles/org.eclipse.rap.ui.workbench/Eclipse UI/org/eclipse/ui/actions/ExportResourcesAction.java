@@ -35,7 +35,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * resources; the current name was retained for historical reasons.
  * </p>
  * 
- * @since 2.0
+ * @since 1.1
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ExportResourcesAction extends BaseSelectionListenerAction
@@ -57,7 +57,7 @@ public class ExportResourcesAction extends BaseSelectionListenerAction
      * @param window the window
      */
     public ExportResourcesAction(IWorkbenchWindow window) {
-        this(window, WorkbenchMessages.ExportResourcesAction_text);
+        this(window, WorkbenchMessages.get().ExportResourcesAction_text);
     }
 
     /**

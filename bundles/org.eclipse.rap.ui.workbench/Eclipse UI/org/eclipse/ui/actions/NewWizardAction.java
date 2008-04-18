@@ -46,6 +46,7 @@ import org.eclipse.ui.internal.util.Util;
  * action an opportunity to deregister its listeners and to perform any other
  * cleanup.
  * </p>
+ * @since 1.1
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class NewWizardAction extends Action implements
@@ -84,7 +85,7 @@ public class NewWizardAction extends Action implements
      * @param window
      */
     public NewWizardAction(IWorkbenchWindow window) {
-        super(WorkbenchMessages.NewWizardAction_text);
+        super(WorkbenchMessages.get().NewWizardAction_text);
         if (window == null) {
             throw new IllegalArgumentException();
         }
@@ -96,7 +97,7 @@ public class NewWizardAction extends Action implements
                 .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
         setDisabledImageDescriptor(images
                 .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD_DISABLED));
-        setToolTipText(WorkbenchMessages.NewWizardAction_toolTip); 
+        setToolTipText(WorkbenchMessages.get().NewWizardAction_toolTip); 
         PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
 				IWorkbenchHelpContextIds.NEW_ACTION);
     }

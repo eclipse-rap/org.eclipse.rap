@@ -14,8 +14,8 @@ import org.eclipse.core.commands.IHandlerAttributes;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.events.HelpEvent;
-import org.eclipse.swt.events.HelpListener;
+//import org.eclipse.swt.events.HelpEvent;
+//import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
@@ -41,16 +41,17 @@ import org.eclipse.ui.internal.PartSite;
  * This class may be instantiated. It is not intented to be subclassed.
  * </p>
  *
- * @since 2.0 
+ * @since 1.0 
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class RetargetAction extends PartEventAction implements
         ActionFactory.IWorkbenchAction {
 
-    /**
-     * The help listener assigned to this action, or <code>null</code> if none.
-     */
-    private HelpListener localHelpListener;
+// RAP [rh] missing help events  
+//    /**
+//     * The help listener assigned to this action, or <code>null</code> if none.
+//     */
+//    private HelpListener localHelpListener;
 
     private boolean enableAccelerator = true;
 
@@ -80,29 +81,29 @@ public class RetargetAction extends PartEventAction implements
      * @param style one of <code>AS_PUSH_BUTTON</code>, <code>AS_CHECK_BOX</code>,
      * 		<code>AS_DROP_DOWN_MENU</code>, <code>AS_RADIO_BUTTON</code>, and
      * 		<code>AS_UNSPECIFIED</code>
-     * @since 3.0
      */
     public RetargetAction(String actionID, String text, int style) {
         super(text, style);
         setId(actionID);
         setEnabled(false);
-        super.setHelpListener(new HelpListener() {
-            public void helpRequested(HelpEvent e) {
-                HelpListener listener = null;
-                if (handler != null) {
-                    // if we have a handler, see if it has a help listener
-                    listener = handler.getHelpListener();
-                    if (listener == null) {
-						// use our own help listener
-                        listener = localHelpListener;
-					}
-                }
-                if (listener != null) {
-					// pass on the event
-                    listener.helpRequested(e);
-				}
-            }
-        });
+// RAP [rh] missing help events        
+//        super.setHelpListener(new HelpListener() {
+//            public void helpRequested(HelpEvent e) {
+//                HelpListener listener = null;
+//                if (handler != null) {
+//                    // if we have a handler, see if it has a help listener
+//                    listener = handler.getHelpListener();
+//                    if (listener == null) {
+//						// use our own help listener
+//                        listener = localHelpListener;
+//					}
+//                }
+//                if (listener != null) {
+//					// pass on the event
+//                    listener.helpRequested(e);
+//				}
+//            }
+//        });
     }
 
     /**
@@ -295,21 +296,20 @@ public class RetargetAction extends PartEventAction implements
 		}
     }
 
-    /** 
-     * The <code>RetargetAction</code> implementation of this method declared on
-     * <code>IAction</code> stores the help listener in a local field. The
-     * supplied listener is only used if there is no hanlder.
-     */
-    public void setHelpListener(HelpListener listener) {
-        localHelpListener = listener;
-    }
+// RAP [rh] missing help events
+//    /** 
+//     * The <code>RetargetAction</code> implementation of this method declared on
+//     * <code>IAction</code> stores the help listener in a local field. The
+//     * supplied listener is only used if there is no hanlder.
+//     */
+//    public void setHelpListener(HelpListener listener) {
+//        localHelpListener = listener;
+//    }
 
 	/**
 	 * Returns a string representation of this action.
 	 * 
 	 * @return A string representation of this action.
-	 * 
-	 * @since 3.2 
 	 */
 	public final String toString() {
 		final StringBuffer buffer = new StringBuffer();

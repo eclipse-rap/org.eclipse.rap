@@ -39,7 +39,7 @@ import org.eclipse.ui.internal.actions.PinEditorContributionItem;
  * contribution item factories.
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  */
 public abstract class ContributionItemFactory {
 

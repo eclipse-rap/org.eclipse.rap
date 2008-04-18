@@ -43,7 +43,7 @@ import org.eclipse.ui.wizards.IWizardDescriptor;
  * New Wizard actions for the current perspective's new wizard shortcuts,
  * including an Other... action to open the new wizard dialog.
  * 
- * @since 3.1
+ * @since 1.1
  */
 public class BaseNewWizardMenu extends CompoundContributionItem {
     /*
@@ -201,7 +201,7 @@ public class BaseNewWizardMenu extends CompoundContributionItem {
                 && workbenchWindow.getActivePage().getPerspective() != null) {
             addItems(list);
         } else {
-            String text = WorkbenchMessages.Workbench_noApplicableItems;
+            String text = WorkbenchMessages.get().Workbench_noApplicableItems;
             Action dummyAction = new Action(text) {
                 // dummy inner class; no methods
             };
@@ -231,8 +231,6 @@ public class BaseNewWizardMenu extends CompoundContributionItem {
 
     /**
      * Registers listeners.
-     * 
-     * @since 3.1
      */
     private void registerListeners() {
         Platform.getExtensionRegistry().addRegistryChangeListener(
@@ -257,8 +255,6 @@ public class BaseNewWizardMenu extends CompoundContributionItem {
 
     /**
      * Unregisters listeners.
-     * 
-     * @since 3.1
      */
     private void unregisterListeners() {
         Platform.getExtensionRegistry().removeRegistryChangeListener(

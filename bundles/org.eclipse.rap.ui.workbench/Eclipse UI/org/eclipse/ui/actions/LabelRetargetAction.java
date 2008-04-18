@@ -23,7 +23,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
  * This class may be instantiated. It is not intented to be subclassed.
  * </p>
  *
- * @since 2.0 
+ * @since 1.0 
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class LabelRetargetAction extends RetargetAction {

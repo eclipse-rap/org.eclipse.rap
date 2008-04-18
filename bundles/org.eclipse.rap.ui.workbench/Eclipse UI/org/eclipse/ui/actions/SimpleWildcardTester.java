@@ -14,6 +14,7 @@ package org.eclipse.ui.actions;
  * Implements an algorithm for very simple pattern matching in a string.
  * There is only one feature: "*" may be used at the start or the end of the
  * pattern to represent "one or more characters".
+ * @since 1.0
  */
 public final class SimpleWildcardTester {
     /**

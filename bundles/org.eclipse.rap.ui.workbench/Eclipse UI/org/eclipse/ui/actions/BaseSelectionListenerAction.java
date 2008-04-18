@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Event;
  *   <li><code>selectionChanged(ISelectionChangedEvent)</code> - passing the selection change event</li>
  * </ul>
  * </p>
- * @since 3.0
+ * @since 1.0
  */
 public abstract class BaseSelectionListenerAction extends Action implements
         ISelectionChangedListener {

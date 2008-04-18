@@ -22,7 +22,7 @@ import org.eclipse.ui.internal.util.Util;
 /**
  * Opens a perspective.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public final class OpenPerspectiveAction extends Action implements
         IPluginContribution {

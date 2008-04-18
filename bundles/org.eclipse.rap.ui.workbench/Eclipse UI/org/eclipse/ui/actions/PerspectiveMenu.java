@@ -66,13 +66,11 @@ import com.ibm.icu.text.Collator;
  * This class is abstract.  Subclasses must implement the <code>run</code> method,
  * which performs a specialized action for the selected perspective.
  * </p>
+ * @since 1.0
  */
 public abstract class PerspectiveMenu extends ContributionItem {
-    /**
-     * @since 3.4
-	 * 
-	 */
-	protected static final String SHOW_PERSP_ID = "org.eclipse.ui.perspectives.showPerspective"; //$NON-NLS-1$
+
+  protected static final String SHOW_PERSP_ID = "org.eclipse.ui.perspectives.showPerspective"; //$NON-NLS-1$
 
 	private IPerspectiveRegistry reg;
 
@@ -101,26 +99,20 @@ public abstract class PerspectiveMenu extends ContributionItem {
 
     /**
      * The translatable message to show when there are no perspectives.
-     * 
-     * @since 3.1
      */
-    private static final String NO_TARGETS_MSG = WorkbenchMessages.Workbench_showInNoPerspectives;
+    private static final String NO_TARGETS_MSG = WorkbenchMessages.get().Workbench_showInNoPerspectives;
 
     /**
      * The map of perspective identifiers (String) to actions
      * (OpenPerspectiveAction). This map may be empty, but it is never
      * <code>null</code>.
-     * 
-     * @since 3.1
      */
     private Map actions = new HashMap();
 
     /**
      * The action for that allows the user to choose any perspective to open.
-     * 
-     * @since 3.1
      */
-    private Action openOtherAction = new Action(WorkbenchMessages.PerspectiveMenu_otherItem) {
+    private Action openOtherAction = new Action(WorkbenchMessages.get().PerspectiveMenu_otherItem) {
         public final void runWithEvent(final Event event) {
             runOther(new SelectionEvent(event));
         }
@@ -176,7 +168,6 @@ public abstract class PerspectiveMenu extends ContributionItem {
      * @param manager
      *            The menu manager that should receive the menu items; must not
      *            be <code>null</code>.
-     * @since 3.1
      */
     private final void fillMenu(final MenuManager manager) {
         // Clear out the manager so that we have a blank slate.
@@ -230,7 +221,6 @@ public abstract class PerspectiveMenu extends ContributionItem {
      *            be retrieved.
      * @return The action for the given identifier; or <code>null</code> if
      *         there is no perspective with the given identifier.
-     * @since 3.1
      */
     private final IAction getAction(final String id) {
         IAction action = (IAction) actions.get(id);

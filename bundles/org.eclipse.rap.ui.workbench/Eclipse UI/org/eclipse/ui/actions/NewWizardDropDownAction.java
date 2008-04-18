@@ -31,7 +31,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  *
- * @since 3.1
+ * @since 1.1
  */
 public class NewWizardDropDownAction extends Action implements
         ActionFactory.IWorkbenchAction {
@@ -126,7 +126,7 @@ public class NewWizardDropDownAction extends Action implements
     public NewWizardDropDownAction(IWorkbenchWindow window,
             ActionFactory.IWorkbenchAction showDlgAction, 
             IContributionItem newWizardMenu) {
-        super(WorkbenchMessages.NewWizardDropDown_text);
+        super(WorkbenchMessages.get().NewWizardDropDown_text);
         if (window == null) {
             throw new IllegalArgumentException();
         }
