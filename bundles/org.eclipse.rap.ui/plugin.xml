@@ -2155,4 +2155,17 @@
          </variable>
       </sourceProvider>
    </extension>
+   
+   <!--
+     NOTE: HttpContext was added to org.eclipse.rap.ui to avoid starting
+           the workbench bundle before the context is established. The latter
+           uses the context already on startup
+   -->
+   <extension
+        point="org.eclipse.equinox.http.registry.httpcontexts">
+     <httpcontext
+           class="org.eclipse.ui.internal.RAPHttpContext"
+           id="org.eclipse.rap.httpcontext">
+     </httpcontext>
+  </extension>
 </plugin>
