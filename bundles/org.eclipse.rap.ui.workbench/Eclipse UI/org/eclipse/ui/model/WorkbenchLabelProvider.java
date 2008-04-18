@@ -17,12 +17,13 @@ import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
+//import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
@@ -205,7 +206,9 @@ public class WorkbenchLabelProvider extends LabelProvider implements
 
         Font font = (Font) SWTResourceUtil.getFontTable().get(descriptor);
         if (font == null) {
-            font = new Font(Display.getCurrent(), descriptor);
+// RAP [rh] missing Font constructor          
+//            font = new Font(Display.getCurrent(), descriptor);
+            font = Graphics.getFont( descriptor );
             SWTResourceUtil.getFontTable().put(descriptor, font);
         }
         return font;
@@ -224,7 +227,9 @@ public class WorkbenchLabelProvider extends LabelProvider implements
 
         Color color = (Color) SWTResourceUtil.getColorTable().get(descriptor);
         if (color == null) {
-            color = new Color(Display.getCurrent(), descriptor);
+// RAP [rh] missing Color constructor          
+//            color = new Color(Display.getCurrent(), descriptor);
+            color = Graphics.getColor( descriptor );
             SWTResourceUtil.getColorTable().put(descriptor, color);
         }
         return color;

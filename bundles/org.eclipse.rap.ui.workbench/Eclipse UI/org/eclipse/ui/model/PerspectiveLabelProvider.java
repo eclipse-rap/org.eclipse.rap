@@ -11,7 +11,7 @@
 package org.eclipse.ui.model;
 
 import java.util.HashMap;
-import java.util.Iterator;
+//import java.util.Iterator;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -92,9 +92,10 @@ public final class PerspectiveLabelProvider extends LabelProvider implements
      * @see org.eclipse.jface.viewers.ILabelProvider
      */
     public final void dispose() {
-        for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
-            ((Image) i.next()).dispose();
-        }
+// RAP [rh] Image#dispose() missing      
+//        for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
+//            ((Image) i.next()).dispose();
+//        }
         imageCache.clear();
     }
 
@@ -109,12 +110,12 @@ public final class PerspectiveLabelProvider extends LabelProvider implements
                 String def = PlatformUI.getWorkbench().getPerspectiveRegistry()
                         .getDefaultPerspective();
                 if (desc.getId().equals(def)) {
-                    label = NLS.bind(WorkbenchMessages.PerspectivesPreference_defaultLabel, label );
+                    label = NLS.bind(WorkbenchMessages.get().PerspectivesPreference_defaultLabel, label );
                 }
             }
             return label;
         }
-        return WorkbenchMessages.PerspectiveLabelProvider_unknown;
+        return WorkbenchMessages.get().PerspectiveLabelProvider_unknown;
     }
 
     /**
