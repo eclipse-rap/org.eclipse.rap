@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.NodeChangeEvent;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
-import org.eclipse.ui.keys.IBindingService;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -92,8 +91,10 @@ public class UIPreferenceInitializer extends AbstractPreferenceInitializer {
 		node.putBoolean(IWorkbenchPreferenceConstants.SHOW_INTRO, true);
 
 		// Default to the standard key configuration.
-		node.put(IWorkbenchPreferenceConstants.KEY_CONFIGURATION_ID,
-				IBindingService.DEFAULT_DEFAULT_ACTIVE_SCHEME_ID);
+		// RAP [bm]: Bindings
+//		node.put(IWorkbenchPreferenceConstants.KEY_CONFIGURATION_ID,
+//				IBindingService.DEFAULT_DEFAULT_ACTIVE_SCHEME_ID);
+		// RAPEND: [bm] 
 
 		// Preference for showing system jobs in the jobs view
 		node.putBoolean(IWorkbenchPreferenceConstants.SHOW_SYSTEM_JOBS, false);

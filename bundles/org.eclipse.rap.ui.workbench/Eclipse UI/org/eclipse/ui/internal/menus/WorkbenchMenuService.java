@@ -62,14 +62,11 @@ import org.eclipse.ui.internal.expressions.AlwaysEnabledExpression;
 import org.eclipse.ui.internal.handlers.HandlerPersistence;
 import org.eclipse.ui.internal.handlers.HandlerProxy;
 import org.eclipse.ui.internal.handlers.HandlerService;
-import org.eclipse.ui.internal.keys.BindingPersistence;
-import org.eclipse.ui.internal.keys.BindingService;
 import org.eclipse.ui.internal.layout.LayoutUtil;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.services.IRestrictionService;
 import org.eclipse.ui.internal.services.RestrictionListener;
 import org.eclipse.ui.internal.util.Util;
-import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.menus.AbstractContributionFactory;
 import org.eclipse.ui.services.IEvaluationReference;
 import org.eclipse.ui.services.IEvaluationService;
@@ -83,16 +80,12 @@ import org.eclipse.ui.services.IServiceLocator;
  * This class is only intended for internal use within the
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
- * 
- * @since 3.2
  */
 public final class WorkbenchMenuService extends InternalMenuService {
 
 	/**
 	 * A combined property and activity listener that updates the visibility of
 	 * contribution items in the new menu system.
-	 * 
-	 * @since 3.3
 	 */
 	private final class ContributionItemUpdater implements
 			IPropertyChangeListener, IIdentifierListener {
@@ -968,8 +961,10 @@ public final class WorkbenchMenuService extends InternalMenuService {
 		CommandService cmdSvc = (CommandService) serviceLocator.getService(ICommandService.class);
 		CommandPersistence cmdPersistence = cmdSvc.getCommandPersistence();
 		
-		BindingService bindingSvc = (BindingService) serviceLocator.getService(IBindingService.class);
-		BindingPersistence bindingPersistence = bindingSvc.getBindingPersistence();
+		// RAP [bm]: 
+//		BindingService bindingSvc = (BindingService) serviceLocator.getService(IBindingService.class);
+//		BindingPersistence bindingPersistence = bindingSvc.getBindingPersistence();
+		// RAPEND: [bm] 
 
 		boolean needsUpdate = false;
 		
@@ -984,10 +979,12 @@ public final class WorkbenchMenuService extends InternalMenuService {
 				handlerPersistence.reRead();
 				needsUpdate = true;
 			}
-			if (bindingPersistence.bindingsNeedUpdating(event)) {
-				bindingPersistence.reRead();
-				needsUpdate = true;
-			}
+			// RAP [bm]: 
+//			if (bindingPersistence.bindingsNeedUpdating(event)) {
+//				bindingPersistence.reRead();
+//				needsUpdate = true;
+//			}
+			// RAPEND: [bm] 
 			if (menuPersistence.menusNeedUpdating(event)) {
 				handleMenuChanges(event);
 				needsUpdate = true;
@@ -999,10 +996,12 @@ public final class WorkbenchMenuService extends InternalMenuService {
 				handleMenuChanges(event);
 				needsUpdate = true;
 			}
-			if (bindingPersistence.bindingsNeedUpdating(event)) {
-				bindingPersistence.reRead();
-				needsUpdate = true;
-			}
+			// RAP [bm]: 
+//			if (bindingPersistence.bindingsNeedUpdating(event)) {
+//				bindingPersistence.reRead();
+//				needsUpdate = true;
+//			}
+			// RAPEND: [bm] 
 			if (handlerPersistence.handlersNeedUpdating(event)) {
 				final IExtensionDelta[] handlerDeltas = event.getExtensionDeltas(
 						PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_HANDLERS);

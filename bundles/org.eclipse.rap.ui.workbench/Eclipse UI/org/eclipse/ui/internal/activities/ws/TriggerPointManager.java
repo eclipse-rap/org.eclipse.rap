@@ -27,8 +27,6 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 
 /**
  * Workbench implementation of the trigger point manager.
- * 
- * @since 3.1
  */
 public class TriggerPointManager implements ITriggerPointManager, IExtensionChangeHandler {
 
@@ -150,7 +148,11 @@ public class TriggerPointManager implements ITriggerPointManager, IExtensionChan
     }
 
     private IExtensionPoint getExtensionPointFilter() {
-        return Platform.getExtensionRegistry().getExtensionPoint(
-                PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
+    	// RAP [bm]: 
+//        return Platform.getExtensionRegistry().getExtensionPoint(
+//                PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
+    	return Platform.getExtensionRegistry().getExtensionPoint(
+    			PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
+    	// RAPEND: [bm] 
     }
 }

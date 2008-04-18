@@ -23,13 +23,10 @@ import org.eclipse.core.commands.CommandManager;
 import org.eclipse.core.commands.contexts.ContextManager;
 import org.eclipse.core.commands.contexts.ContextManagerEvent;
 import org.eclipse.core.commands.contexts.IContextManagerListener;
-import org.eclipse.jface.bindings.Binding;
 import org.eclipse.jface.bindings.BindingManager;
 import org.eclipse.jface.bindings.BindingManagerEvent;
 import org.eclipse.jface.bindings.IBindingManagerListener;
 import org.eclipse.jface.bindings.Scheme;
-import org.eclipse.jface.bindings.TriggerSequence;
-import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.ui.commands.CommandManagerEvent;
 import org.eclipse.ui.commands.ICategory;
 import org.eclipse.ui.commands.ICommand;
@@ -43,8 +40,6 @@ import org.eclipse.ui.keys.KeySequence;
 
 /**
  * Provides support for the old <code>ICommandManager</code> interface.
- * 
- * @since 3.1
  */
 public final class CommandManagerLegacyWrapper implements ICommandManager,
 		org.eclipse.core.commands.ICommandManagerListener,
@@ -87,16 +82,12 @@ public final class CommandManagerLegacyWrapper implements ICommandManager,
 	 * The JFace binding machine that provides binding support for this
 	 * workbench mutable command manager. This value will never be
 	 * <code>null</code>.
-	 * 
-	 * @since 3.1
 	 */
 	private final BindingManager bindingManager;
 
 	/**
 	 * The command manager that provides functionality for this workbench
 	 * command manager. This value will never be <code>null</code>.
-	 * 
-	 * @since 3.1
 	 */
 	private final CommandManager commandManager;
 
@@ -105,8 +96,6 @@ public final class CommandManagerLegacyWrapper implements ICommandManager,
 	/**
 	 * The context manager that provides functionality for this workbench
 	 * command manager. This value will never be <code>null</code>.
-	 * 
-	 * @since 3.1
 	 */
 	private final ContextManager contextManager;
 
@@ -317,65 +306,76 @@ public final class CommandManagerLegacyWrapper implements ICommandManager,
 	}
 
 	public Map getPartialMatches(KeySequence keySequence) {
-		try {
-			final org.eclipse.jface.bindings.keys.KeySequence sequence = org.eclipse.jface.bindings.keys.KeySequence
-					.getInstance(keySequence.toString());
-			final Map partialMatches = bindingManager
-					.getPartialMatches(sequence);
-			final Map returnValue = new HashMap();
-			final Iterator matchItr = partialMatches.entrySet().iterator();
-			while (matchItr.hasNext()) {
-				final Map.Entry entry = (Map.Entry) matchItr.next();
-				final TriggerSequence trigger = (TriggerSequence) entry
-						.getKey();
-				if (trigger instanceof org.eclipse.jface.bindings.keys.KeySequence) {
-					final org.eclipse.jface.bindings.keys.KeySequence triggerKey = (org.eclipse.jface.bindings.keys.KeySequence) trigger;
-					returnValue.put(KeySequence.getInstance(triggerKey
-							.toString()), entry.getValue());
-				}
-			}
-			return returnValue;
-		} catch (final ParseException e) {
-			return new HashMap();
-		} catch (final org.eclipse.ui.keys.ParseException e) {
-			return new HashMap();
-		}
+		// RAP [bm]: 
+//		try {
+//			final org.eclipse.jface.bindings.keys.KeySequence sequence = org.eclipse.jface.bindings.keys.KeySequence
+//					.getInstance(keySequence.toString());
+//			final Map partialMatches = bindingManager
+//					.getPartialMatches(sequence);
+//			final Map returnValue = new HashMap();
+//			final Iterator matchItr = partialMatches.entrySet().iterator();
+//			while (matchItr.hasNext()) {
+//				final Map.Entry entry = (Map.Entry) matchItr.next();
+//				final TriggerSequence trigger = (TriggerSequence) entry
+//						.getKey();
+//				if (trigger instanceof org.eclipse.jface.bindings.keys.KeySequence) {
+//					final org.eclipse.jface.bindings.keys.KeySequence triggerKey = (org.eclipse.jface.bindings.keys.KeySequence) trigger;
+//					returnValue.put(KeySequence.getInstance(triggerKey
+//							.toString()), entry.getValue());
+//				}
+//			}
+//			return returnValue;
+//		} catch (final ParseException e) {
+//			return new HashMap();
+//		} catch (final org.eclipse.ui.keys.ParseException e) {
+//			return new HashMap();
+//		}
+		return new HashMap();
+		// RAPEND: [bm] 
 	}
 
 	public String getPerfectMatch(KeySequence keySequence) {
-		try {
-			final org.eclipse.jface.bindings.keys.KeySequence sequence = org.eclipse.jface.bindings.keys.KeySequence
-					.getInstance(keySequence.toString());
-			final Binding binding = bindingManager.getPerfectMatch(sequence);
-			if (binding == null) {
-				return null;
-			}
-
-			return binding.getParameterizedCommand().getId();
-
-		} catch (final ParseException e) {
-			return null;
-		}
+		// RAP [bm]: 
+//		try {
+//			final org.eclipse.jface.bindings.keys.KeySequence sequence = org.eclipse.jface.bindings.keys.KeySequence
+//					.getInstance(keySequence.toString());
+//			final Binding binding = bindingManager.getPerfectMatch(sequence);
+//			if (binding == null) {
+//				return null;
+//			}
+//
+//			return binding.getParameterizedCommand().getId();
+//
+//		} catch (final ParseException e) {
+//			return null;
+//		}
+		return null;
+		// RAPEND: [bm] 
 	}
 
 	public boolean isPartialMatch(KeySequence keySequence) {
-		try {
-			final org.eclipse.jface.bindings.keys.KeySequence sequence = org.eclipse.jface.bindings.keys.KeySequence
-					.getInstance(keySequence.toString());
-			return bindingManager.isPartialMatch(sequence);
-		} catch (final ParseException e) {
-			return false;
-		}
+		// RAP [bm]: 
+//		try {
+//			final org.eclipse.jface.bindings.keys.KeySequence sequence = org.eclipse.jface.bindings.keys.KeySequence
+//					.getInstance(keySequence.toString());
+//			return bindingManager.isPartialMatch(sequence);
+//		} catch (final ParseException e) {
+//			return false;
+//		}
+		return false;
+		// RAPEND: [bm] 
 	}
 
 	public boolean isPerfectMatch(KeySequence keySequence) {
-		try {
-			final org.eclipse.jface.bindings.keys.KeySequence sequence = org.eclipse.jface.bindings.keys.KeySequence
-					.getInstance(keySequence.toString());
-			return bindingManager.isPerfectMatch(sequence);
-		} catch (final ParseException e) {
-			return false;
-		}
+		// RAP [bm]: 
+//		try {
+//			final org.eclipse.jface.bindings.keys.KeySequence sequence = org.eclipse.jface.bindings.keys.KeySequence
+//					.getInstance(keySequence.toString());
+//			return bindingManager.isPerfectMatch(sequence);
+//		} catch (final ParseException e) {
+//			return false;
+//		}
+		return false;
 	}
 
 	public void removeCommandManagerListener(

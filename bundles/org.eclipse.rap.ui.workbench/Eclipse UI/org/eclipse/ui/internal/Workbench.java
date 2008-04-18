@@ -150,8 +150,10 @@ import org.eclipse.ui.internal.registry.UIExtensionTracker;
 import org.eclipse.ui.internal.services.ActionSetSourceProvider;
 import org.eclipse.ui.internal.services.EvaluationService;
 import org.eclipse.ui.internal.services.IRestrictionService;
+import org.eclipse.ui.internal.services.IServiceLocatorCreator;
 import org.eclipse.ui.internal.services.MenuSourceProvider;
 import org.eclipse.ui.internal.services.ServiceLocator;
+import org.eclipse.ui.internal.services.ServiceLocatorCreator;
 import org.eclipse.ui.internal.services.SourceProviderService;
 import org.eclipse.ui.internal.testing.WorkbenchTestable;
 import org.eclipse.ui.internal.themes.ColorDefinition;
@@ -369,10 +371,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 	 * The service locator maintained by the workbench. These services are
 	 * initialized during workbench during the <code>init</code> method.
 	 */
-	// RAP [bm]: 
-//	private final ServiceLocator serviceLocator;
-	private final ServiceLocator serviceLocator = new ServiceLocator();
-	// RAPEND: [bm] 
+	private final ServiceLocator serviceLocator;
 
 	/**
 	 * A count of how many plug-ins were loaded while restoring the workbench
@@ -439,7 +438,15 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 //		serviceLocator.registerService(IServiceLocatorCreator.class, slc);
 //		serviceLocator.registerService(IWorkbench.class, this);
 //	}
-	private Workbench() {}
+	private Workbench() {
+		extensionEventHandler = new ExtensionEventHandler(this);
+		Platform.getExtensionRegistry().addRegistryChangeListener(
+				extensionEventHandler);
+		IServiceLocatorCreator slc = new ServiceLocatorCreator();
+		serviceLocator = (ServiceLocator) slc.createServiceLocator(null, null);
+		serviceLocator.registerService(IServiceLocatorCreator.class, slc);
+		serviceLocator.registerService(IWorkbench.class, this);
+	}
 	// RAPEND: [bm] 
 
 	/**

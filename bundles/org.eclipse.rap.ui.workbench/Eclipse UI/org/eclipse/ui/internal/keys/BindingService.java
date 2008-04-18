@@ -14,19 +14,12 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.eclipse.core.commands.ParameterizedCommand;
-import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.bindings.Binding;
 import org.eclipse.jface.bindings.BindingManager;
 import org.eclipse.jface.bindings.Scheme;
 import org.eclipse.jface.bindings.TriggerSequence;
-import org.eclipse.jface.bindings.keys.SWTKeySupport;
-import org.eclipse.jface.bindings.keys.formatting.KeyFormatterFactory;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.internal.Workbench;
-import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.keys.IBindingService;
 
 /**
@@ -36,8 +29,6 @@ import org.eclipse.ui.keys.IBindingService;
  * currently active bindings, as well as the current state of the binding
  * architecture.
  * </p>
- * 
- * @since 3.1
  */
 public final class BindingService implements IBindingService {
 
@@ -47,16 +38,18 @@ public final class BindingService implements IBindingService {
 	 */
 	private final BindingManager bindingManager;
 
-	/**
-	 * The persistence class responsible for bindings.
-	 */
-	private final BindingPersistence bindingPersistence;
-
-	/**
-	 * The key binding support for the contexts. In the workbench, key bindings
-	 * are intimately tied to the context mechanism.
-	 */
-	private WorkbenchKeyboard keyboard;
+	// RAP [bm]: 
+//	/**
+//	 * The persistence class responsible for bindings.
+//	 */
+//	private final BindingPersistence bindingPersistence;
+//	
+//	/**
+//	 * The key binding support for the contexts. In the workbench, key bindings
+//	 * are intimately tied to the context mechanism.
+//	 */
+//	private WorkbenchKeyboard keyboard;
+	// RAPEND: [bm] 
 
 	/**
 	 * Constructs a new instance of <code>BindingService</code> using a JFace
@@ -82,19 +75,22 @@ public final class BindingService implements IBindingService {
 					"Cannot create a binding service with a null command service"); //$NON-NLS-1$
 		}
 		this.bindingManager = bindingManager;
-		this.bindingPersistence = new BindingPersistence(bindingManager,
-				commandService);
 
 		// Hook up the key binding support.
-		keyboard = new WorkbenchKeyboard(workbench);
-		final Display display = workbench.getDisplay();
-		final Listener listener = keyboard.getKeyDownFilter();
-		display.addFilter(SWT.KeyDown, listener);
-		display.addFilter(SWT.Traverse, listener);
+		// RAP [bm]: 
+//		this.bindingPersistence = new BindingPersistence(bindingManager,
+//				commandService);
+//		keyboard = new WorkbenchKeyboard(workbench);
+//		final Display display = workbench.getDisplay();
+//		final Listener listener = keyboard.getKeyDownFilter();
+//		display.addFilter(SWT.KeyDown, listener);
+//		display.addFilter(SWT.Traverse, listener);
+//		
+//		// Initialize the key formatter.
+//		KeyFormatterFactory.setDefault(SWTKeySupport
+//				.getKeyFormatterForPlatform());
+		// RAPEND: [bm] 
 
-		// Initialize the key formatter.
-		KeyFormatterFactory.setDefault(SWTKeySupport
-				.getKeyFormatterForPlatform());
 	}
 
 	/**
@@ -116,9 +112,11 @@ public final class BindingService implements IBindingService {
 	}
 	
 	public final void dispose() {
-		bindingPersistence.dispose();
+	// RAP [bm]: 
+//		bindingPersistence.dispose();
+	// RAPEND: [bm] 
 	}
-
+	
 	public final TriggerSequence[] getActiveBindingsFor(
 			final ParameterizedCommand parameterizedCommand) {
 		return bindingManager.getActiveBindingsFor(parameterizedCommand);
@@ -151,28 +149,31 @@ public final class BindingService implements IBindingService {
 		return bindingManager.getBindings();
 	}
 
-	public final TriggerSequence getBuffer() {
-		return keyboard.getBuffer();
-	}
-
-	public final String getDefaultSchemeId() {
-		return BindingPersistence.getDefaultSchemeId();
-	}
+	// RAP [bm]: 
+//	public final TriggerSequence getBuffer() {
+//		return keyboard.getBuffer();
+//	}
+//
+//	public final String getDefaultSchemeId() {
+//		return BindingPersistence.getDefaultSchemeId();
+//	}
+	// RAPEND: [bm] 
 
 	public final Scheme[] getDefinedSchemes() {
 		return bindingManager.getDefinedSchemes();
 	}
 
-	/**
-	 * Returns the key binding architecture for the workbench. This method is
-	 * internal, and is only intended for testing. This must not be used by
-	 * clients.
-	 * 
-	 * @return The key binding support; never <code>null</code>.
-	 */
-	public final WorkbenchKeyboard getKeyboard() {
-		return keyboard;
-	}
+	// RAP [bm]: Bindings
+//	/**
+//	 * Returns the key binding architecture for the workbench. This method is
+//	 * internal, and is only intended for testing. This must not be used by
+//	 * clients.
+//	 * 
+//	 * @return The key binding support; never <code>null</code>.
+//	 */
+//	public final WorkbenchKeyboard getKeyboard() {
+//		return keyboard;
+//	}
 
 	public final String getLocale() {
 		return bindingManager.getLocale();
@@ -194,9 +195,10 @@ public final class BindingService implements IBindingService {
 		return bindingManager.getScheme(schemeId);
 	}
 
-	public final boolean isKeyFilterEnabled() {
-		return keyboard.getKeyDownFilter().isEnabled();
-	}
+	// RAP [bm]: 
+//	public final boolean isKeyFilterEnabled() {
+//		return keyboard.getKeyDownFilter().isEnabled();
+//	}
 
 	public final boolean isPartialMatch(final TriggerSequence sequence) {
 		return bindingManager.isPartialMatch(sequence);
@@ -206,13 +208,16 @@ public final class BindingService implements IBindingService {
 		return bindingManager.isPerfectMatch(sequence);
 	}
 
-	public final void openKeyAssistDialog() {
-		keyboard.openMultiKeyAssistShell();
-	}
+	// RAP [bm]: Bindings
+//	public final void openKeyAssistDialog() {
+//		keyboard.openMultiKeyAssistShell();
+//	}
 
 	public final void readRegistryAndPreferences(
 			final ICommandService commandService) {
-		bindingPersistence.read();
+		// RAP [bm]: Bindings
+//		bindingPersistence.read();
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -228,25 +233,29 @@ public final class BindingService implements IBindingService {
 
 	public final void savePreferences(final Scheme activeScheme,
 			final Binding[] bindings) throws IOException {
-		BindingPersistence.write(activeScheme, bindings);
-		try {
-			bindingManager.setActiveScheme(activeScheme);
-		} catch (final NotDefinedException e) {
-			WorkbenchPlugin.log("The active scheme is not currently defined.",  //$NON-NLS-1$
-					WorkbenchPlugin.getStatus(e));
-		}
+		// RAP [bm]: 
+//		BindingPersistence.write(activeScheme, bindings);
+//		try {
+//			bindingManager.setActiveScheme(activeScheme);
+//		} catch (final NotDefinedException e) {
+//			WorkbenchPlugin.log("The active scheme is not currently defined.",  //$NON-NLS-1$
+//					WorkbenchPlugin.getStatus(e));
+//		}
+		// RAPEND: [bm] 
 		bindingManager.setBindings(bindings);
 	}
 
-	public final void setKeyFilterEnabled(final boolean enabled) {
-		keyboard.getKeyDownFilter().setEnabled(enabled);
-	}
+	// RAP [bm]: 
+//	public final void setKeyFilterEnabled(final boolean enabled) {
+//		keyboard.getKeyDownFilter().setEnabled(enabled);
+//	}
 
-	/**
-	 * @return Returns the bindingPersistence.
-	 */
-	public BindingPersistence getBindingPersistence() {
-		return bindingPersistence;
-	}
+	// RAP [bm]: 
+//	/**
+//	 * @return Returns the bindingPersistence.
+//	 */
+//	public BindingPersistence getBindingPersistence() {
+//		return bindingPersistence;
+//	}
 	
 }

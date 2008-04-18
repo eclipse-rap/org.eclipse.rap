@@ -30,8 +30,6 @@ import org.eclipse.ui.internal.handlers.LegacyHandlerWrapper;
 
 /**
  * Provides command support in terms of the workbench.
- * 
- * @since 3.0
  */
 public class WorkbenchCommandSupport implements IWorkbenchCommandSupport {
 
@@ -84,9 +82,12 @@ public class WorkbenchCommandSupport implements IWorkbenchCommandSupport {
 				bindingManager, commandManager, contextManager);
 
 		// Initialize the old key formatter settings.
-		org.eclipse.ui.keys.KeyFormatterFactory
-				.setDefault(org.eclipse.ui.keys.SWTKeySupport
-						.getKeyFormatterForPlatform());
+		// RAP [bm]: 
+//		org.eclipse.ui.keys.KeyFormatterFactory
+//				.setDefault(org.eclipse.ui.keys.SWTKeySupport
+//						.getKeyFormatterForPlatform());
+		// RAPEND: [bm] 
+
 	}
 
 	public final void addHandlerSubmission(
