@@ -81,8 +81,6 @@ public class SWTObservables extends SessionSingletonBase {
 	 * @return an observable which delays notification of value change events
 	 *         from <code>observable</code> until <code>delay</code>
 	 *         milliseconds have passed since the last change event.
-	 * 
-	 * @since 1.2
 	 */
 // RAP [fappel]: Display#timerExec not supported
 //	public static ISWTObservableValue observeDelayedValue(int delay, ISWTObservableValue observable) {

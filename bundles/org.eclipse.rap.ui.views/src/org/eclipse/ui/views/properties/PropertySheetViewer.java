@@ -35,6 +35,7 @@ import org.eclipse.ui.internal.views.properties.PropertiesMessages;
  * <code>IPropertySheetEntry</code> s by using instances of
  * <code>PropertySheetCategory</code>.
  *  
+ * @since 1.0
  */
 /* package */
 class PropertySheetViewer extends Viewer {
@@ -1025,7 +1026,6 @@ class PropertySheetViewer extends Viewer {
 	 * </p>
 	 * @param sorter the sorter to set (<code>null</code> will reset to the
 	 * default sorter)
-     * @since 1.0
 	 */
 	public void setSorter(PropertySheetSorter sorter) {
 		if (null == sorter) {

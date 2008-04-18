@@ -55,6 +55,7 @@ import org.eclipse.ui.part.PageBookView;
  * Sheet view is needed for a workbench window. This class is not intended
  * to be instantiated or subclassed by clients.
  * </p>
+ * @since 1.0
  *
  * @see IPropertySheetPage
  * @see PropertySheetPage
@@ -223,7 +224,6 @@ public class PropertySheet extends PageBookView implements ISelectionListener {
 	 * <code>PageBookView</code> method handles the <code>ISaveablePart</code>
 	 * adapter case by calling <code>getSaveablePart()</code>.
 	 * 
-	 * @since 1.0
 	 */
 	protected Object getViewAdapter(Class key) {
 		if (ISaveablePart.class.equals(key)) {
@@ -238,7 +238,6 @@ public class PropertySheet extends PageBookView implements ISelectionListener {
 	 * <code>null</code> otherwise.
 	 * 
 	 * @return an <code>ISaveablePart</code> or <code>null</code>
-	 * @since 1.0
 	 */
 	protected ISaveablePart getSaveablePart() {
 		IWorkbenchPart part = getCurrentContributingPart();

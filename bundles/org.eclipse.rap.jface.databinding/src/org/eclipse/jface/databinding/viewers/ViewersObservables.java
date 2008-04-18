@@ -17,19 +17,8 @@ import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.set.IObservableSet;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-import org.eclipse.jface.internal.databinding.viewers.CheckableCheckedElementsObservableSet;
-import org.eclipse.jface.internal.databinding.viewers.CheckboxViewerCheckedElementsObservableSet;
-import org.eclipse.jface.internal.databinding.viewers.SelectionProviderMultipleSelectionObservableList;
-import org.eclipse.jface.internal.databinding.viewers.SelectionProviderSingleSelectionObservableValue;
-import org.eclipse.jface.internal.databinding.viewers.ViewerInputObservableValue;
-import org.eclipse.jface.internal.databinding.viewers.ViewerMultipleSelectionObservableList;
-import org.eclipse.jface.internal.databinding.viewers.ViewerSingleSelectionObservableValue;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckable;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.internal.databinding.viewers.*;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -76,8 +65,6 @@ public class ViewersObservables {
 	 * @param selectionProvider
 	 * @return the observable value tracking the (multi) selection of the given
 	 *         selection provider
-	 * 
-	 * @since 1.2
 	 */
 	public static IObservableList observeMultiSelection(
 			ISelectionProvider selectionProvider) {
@@ -100,7 +87,6 @@ public class ViewersObservables {
 	 *            the viewer
 	 * @return the observable value tracking the (single) selection of the given
 	 *         viewer
-	 * @since 1.2
 	 */
 	public static IViewerObservableValue observeSingleSelection(Viewer viewer) {
 		return new ViewerSingleSelectionObservableValue(
@@ -125,7 +111,6 @@ public class ViewersObservables {
 	 * @return the observable value tracking the (multi) selection of the given
 	 *         selection provider
 	 * 
-	 * @since 1.2
 	 */
 	public static IViewerObservableList observeMultiSelection(
 			Viewer viewer) {
@@ -143,7 +128,6 @@ public class ViewersObservables {
 	 * @param viewer
 	 *            the viewer to observe
 	 * @return an observable value tracking the input of the given viewer
-	 * @since 1.2
 	 */
 	public static IObservableValue observeInput(Viewer viewer) {
 		return new ViewerInputObservableValue(SWTObservables.getRealm(viewer
@@ -160,7 +144,6 @@ public class ViewersObservables {
 	 *            element type of the returned set
 	 * @return an observable set tracking the checked elements of the given
 	 *         checkable.
-	 * @since 1.2
 	 */
 	public static IObservableSet observeCheckedElements(ICheckable checkable,
 			Object elementType) {
@@ -187,7 +170,6 @@ public class ViewersObservables {
 	 *            element type of the returned set
 	 * @return an observable set that tracks the checked elements of the given
 	 *         viewer.
-	 * @since 1.2
 	 */
 	public static IViewerObservableSet observeCheckedElements(
 			CheckboxTableViewer viewer, Object elementType) {
@@ -207,7 +189,6 @@ public class ViewersObservables {
 	 *            element type of the returned set
 	 * @return an observable set that tracks the checked elements of the given
 	 *         viewer.
-	 * @since 1.2
 	 */
 	public static IViewerObservableSet observeCheckedElements(
 			CheckboxTreeViewer viewer, Object elementType) {

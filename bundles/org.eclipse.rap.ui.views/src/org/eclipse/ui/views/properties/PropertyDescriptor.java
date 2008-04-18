@@ -224,7 +224,6 @@ public class PropertyDescriptor implements IPropertyDescriptor {
      * Returns whether a label provider has been set on the receiver.
      * @return whether a label provider has been set on the receiver.
      * @see #setLabelProvider
-     * @since 1.0
      */
     public boolean isLabelProviderSet() {
         return labelProvider != null;

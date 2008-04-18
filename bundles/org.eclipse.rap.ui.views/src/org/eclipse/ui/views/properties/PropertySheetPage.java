@@ -46,6 +46,7 @@ import org.eclipse.ui.part.Page;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  *
+ * @since 1.0
  * @see IPropertySource
  * @noextend This class is not intended to be subclassed by clients.
  */
@@ -87,7 +88,6 @@ public class PropertySheetPage extends Page implements IPropertySheetPage, IAdap
 	 * Part listener which cleans up this page when the source part is closed.
 	 * This is hooked only when there is a source part.
 	 *  
-	 * @since 1.0
 	 */
 	private class PartListener implements IPartListener {
 		public void partActivated(IWorkbenchPart part) {
@@ -234,8 +234,6 @@ public class PropertySheetPage extends Page implements IPropertySheetPage, IAdap
     /**
      * The <code>PropertySheetPage</code> implementation of this <code>IAdaptable</code> method
      * handles the <code>ISaveablePart</code> adapter by delegating to the source part.
-     * 
-     * @since 1.0
      */
     public Object getAdapter(Class adapter) {
 		if (ISaveablePart.class.equals(adapter)) {
@@ -250,7 +248,6 @@ public class PropertySheetPage extends Page implements IPropertySheetPage, IAdap
 	 * <code>null</code> otherwise.
 	 * 
 	 * @return an <code>ISaveablePart</code> or <code>null</code>
-	 * @since 3.2
 	 */
 	protected ISaveablePart getSaveablePart() {
 		if (sourcePart instanceof ISaveablePart) {
@@ -535,7 +532,6 @@ public class PropertySheetPage extends Page implements IPropertySheetPage, IAdap
 	 * </p>
 	 * @param sorter the sorter to set (<code>null</code> will reset to the
 	 * default sorter)
-     * @since 3.1
 	 */
 	protected void setSorter(PropertySheetSorter sorter) {
 		this.sorter = sorter;

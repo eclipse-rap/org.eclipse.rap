@@ -62,7 +62,6 @@ public interface IPropertySource2 extends IPropertySource {
      *         specified property
      * @see IPropertySource2#isPropertyResettable(Object)
      * @see #resetPropertyValue(Object)
-     * @since 1.0
      */
     public boolean isPropertySet(Object id);
 }
