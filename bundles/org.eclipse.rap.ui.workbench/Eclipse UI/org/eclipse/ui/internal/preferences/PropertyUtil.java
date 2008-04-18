@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public class PropertyUtil {
     private PropertyUtil() {
@@ -44,7 +44,6 @@ public class PropertyUtil {
      * 
      * @param destination
      * @param source
-     * @since 3.1
      */
     public static void copy(IPropertyMap destination, IPropertyMap source) {
        Set keys = source.keySet();
@@ -66,7 +65,6 @@ public class PropertyUtil {
      * 
      * @param sources
      * @return
-     * @since 3.1
      */
     public static IPropertyMap union(IPropertyMap[] sources) {
         PropertyMapUnion result = new PropertyMapUnion();

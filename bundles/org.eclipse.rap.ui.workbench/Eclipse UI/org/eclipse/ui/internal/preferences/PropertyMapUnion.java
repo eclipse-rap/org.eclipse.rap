@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.preferences;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.ui.internal.util.Util;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public class PropertyMapUnion implements IPropertyMap {
 

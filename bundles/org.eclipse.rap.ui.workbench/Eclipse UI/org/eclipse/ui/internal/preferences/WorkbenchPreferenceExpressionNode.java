@@ -21,7 +21,7 @@ import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
 
 /**
- * @since 3.4
+ * @since 1.1
  * @author Jan Diederich
  */
 public class WorkbenchPreferenceExpressionNode extends PreferenceNode 

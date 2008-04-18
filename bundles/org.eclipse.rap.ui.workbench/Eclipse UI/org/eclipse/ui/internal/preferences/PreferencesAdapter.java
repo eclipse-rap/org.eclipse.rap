@@ -16,7 +16,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.Preferences;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public final class PreferencesAdapter extends PropertyMapAdapter {
     private Preferences store;

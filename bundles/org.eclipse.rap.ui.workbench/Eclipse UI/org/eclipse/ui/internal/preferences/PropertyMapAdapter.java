@@ -13,7 +13,7 @@ package org.eclipse.ui.internal.preferences;
 import java.util.ArrayList;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public abstract class PropertyMapAdapter implements IDynamicPropertyMap {
 
@@ -54,8 +54,6 @@ public abstract class PropertyMapAdapter implements IDynamicPropertyMap {
 
     /**
      * Detaches all listeners which have been registered with other objects
-     * 
-     * @since 3.1
      */
     public void dispose() {
         if (listeners != null) {

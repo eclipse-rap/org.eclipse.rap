@@ -14,14 +14,12 @@
 
 package org.eclipse.ui.internal.preferences;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.registry.KeywordRegistry;
@@ -32,11 +30,15 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * The WorkbenchPreferenceExtensionNode is the abstract class for all property
  * and page nodes in the workbench.
  * 
- * @since 3.1
+ * @since 1.1
  */
 public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferenceExpressionNode 
     implements IComparableContribution {
 	
+  // RAP [fappel]: key to save page on the session to allow multiple sessions
+  private static final String ID_PAGE
+    = WorkbenchPreferenceExtensionNode.class.getName() + "#Page"; //$NON-NLS-1$
+  
 	private static final String TAG_KEYWORD_REFERENCE = "keywordReference"; //$NON-NLS-1$
 
 	private Collection keywordReferences;
@@ -132,7 +134,8 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
 	 */
 	public void disposeResources() {
         if (image != null) {
-            image.dispose();
+// RAP [fappel]: Resource disposal not available in RAP
+//            image.dispose();
             image = null;
         }
         super.disposeResources();
@@ -230,6 +233,15 @@ public abstract class WorkbenchPreferenceExtensionNode extends WorkbenchPreferen
     {
         priority = pri;
     }
-
+    
+    // RAP [fappel]: override to allow multiple sessions 
+    public void setPage( final IPreferencePage newPage ) {
+      RWT.getSessionStore().setAttribute( ID_PAGE, newPage );
+    }
+    
+    // RAP [fappel]: override to allow multiple sessions 
+    public IPreferencePage getPage() {
+      return ( IPreferencePage )RWT.getSessionStore().getAttribute( ID_PAGE );
+    }
 
 }

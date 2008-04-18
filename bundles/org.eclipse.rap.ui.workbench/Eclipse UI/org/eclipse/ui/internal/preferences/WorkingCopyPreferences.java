@@ -11,11 +11,7 @@
 
 package org.eclipse.ui.internal.preferences;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -32,7 +28,7 @@ import org.osgi.service.prefs.Preferences;
  * Note: Preference change listeners registered on this node will only receive 
  * events from this node and not events based on the original backing node.
  * </p>
- * @since 3.1
+ * @since 1.1
  */
 public class WorkingCopyPreferences extends EventManager implements
 		IEclipsePreferences {

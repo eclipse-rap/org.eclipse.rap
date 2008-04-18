@@ -11,7 +11,7 @@
 package org.eclipse.ui.internal.preferences;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public abstract class AbstractPropertyListener implements IPropertyMapListener {
 

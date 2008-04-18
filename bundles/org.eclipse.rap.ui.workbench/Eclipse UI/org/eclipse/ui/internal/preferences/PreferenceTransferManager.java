@@ -16,7 +16,7 @@ import org.eclipse.ui.internal.registry.PreferenceTransferRegistryReader;
 /**
  * Manages preference transfer support for the workbench
  *
- * @since 3.1
+ * @since 1.1
  */
 public class PreferenceTransferManager {
 

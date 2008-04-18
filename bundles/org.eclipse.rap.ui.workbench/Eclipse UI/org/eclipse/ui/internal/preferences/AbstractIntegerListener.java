@@ -11,7 +11,7 @@
 package org.eclipse.ui.internal.preferences;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public abstract class AbstractIntegerListener extends AbstractPropertyListener {
 
@@ -45,7 +45,6 @@ public abstract class AbstractIntegerListener extends AbstractPropertyListener {
 
     /**
      * @param b
-     * @since 3.1
      */
     protected abstract void handleValue(int b);
    

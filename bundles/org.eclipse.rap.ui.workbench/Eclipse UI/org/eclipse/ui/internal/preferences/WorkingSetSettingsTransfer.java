@@ -14,21 +14,16 @@ package org.eclipse.ui.internal.preferences;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.AbstractWorkingSetManager;
-import org.eclipse.ui.internal.WorkbenchMessages;
-import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.WorkingSetManager;
+import org.eclipse.ui.internal.*;
 
 /**
  * The WorkingSetSettingsTransfer is the settings transfer for the workbench
  * working sets.
  * 
- * @since 3.3
+ * @since 1.1
  * 
  */
 public class WorkingSetSettingsTransfer extends WorkbenchSettingsTransfer {
@@ -39,7 +34,7 @@ public class WorkingSetSettingsTransfer extends WorkbenchSettingsTransfer {
 	 * @see org.eclipse.ui.preferences.SettingsTransfer#getName()
 	 */
 	public String getName() {
-		return WorkbenchMessages.WorkingSets_Name;
+		return WorkbenchMessages.get().WorkingSets_Name;
 	}
 
 	/*
@@ -65,10 +60,10 @@ public class WorkingSetSettingsTransfer extends WorkbenchSettingsTransfer {
 				((AbstractWorkingSetManager) manager).saveState(stateFile);
 			else
 				return new Status(IStatus.ERROR, WorkbenchPlugin.PI_WORKBENCH,
-						WorkbenchMessages.WorkingSets_CannotSave);
+						WorkbenchMessages.get().WorkingSets_CannotSave);
 		} catch (IOException e) {
 			new Status(IStatus.ERROR, WorkbenchPlugin.PI_WORKBENCH,
-					WorkbenchMessages.ProblemSavingWorkingSetState_message, e);
+					WorkbenchMessages.get().ProblemSavingWorkingSetState_message, e);
 		}
 		return Status.OK_STATUS;
 

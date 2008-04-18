@@ -17,7 +17,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.themes.IThemeManager;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public class ThemeManagerAdapter extends PropertyMapAdapter {
 

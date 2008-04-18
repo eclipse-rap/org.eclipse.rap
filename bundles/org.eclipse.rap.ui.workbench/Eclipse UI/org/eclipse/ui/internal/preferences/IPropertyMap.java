@@ -18,7 +18,7 @@ import java.util.Set;
  * xml nodes, property providers, and others). This interface is intended to provide
  * interoperability between these various classes. 
  * 
- * @since 3.1
+ * @since 1.1
  */
 public interface IPropertyMap {
     
@@ -29,7 +29,6 @@ public interface IPropertyMap {
      * @return the set of valid keys for this map
      * @throws UnsupportedOperationException if this type of property map
      * cannot compute the set of valid keys
-     * @since 3.1
      */
     public Set keySet();
     
@@ -42,7 +41,6 @@ public interface IPropertyMap {
      * @param propertyType type of the expected return value
      * @return an object of the given propertyType or null if the property
      * does not exist or has the wrong type
-     * @since 3.1
      */
     public Object getValue(String propertyId, Class propertyType);
     
@@ -54,7 +52,6 @@ public interface IPropertyMap {
      * 
      * @param propertyId
      * @return true iff the given property existed in every child map
-     * @since 3.1
      */
     public boolean isCommonProperty(String propertyId);
     
@@ -63,7 +60,6 @@ public interface IPropertyMap {
      * 
      * @param propertyId
      * @return true iff the given property exists in this map
-     * @since 3.1
      */
     public boolean propertyExists(String propertyId);
       
@@ -75,7 +71,6 @@ public interface IPropertyMap {
      * @param newValue
      * @throws UnsupportedOperationException if this type of property map
      * is read-only
-     * @since 3.1
      */
     public void setValue(String propertyId, Object newValue);
 }

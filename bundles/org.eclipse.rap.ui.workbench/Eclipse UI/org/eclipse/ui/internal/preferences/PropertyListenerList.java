@@ -10,17 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.preferences;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public final class PropertyListenerList {
     private Map listeners;
@@ -118,7 +111,6 @@ public final class PropertyListenerList {
      * 
      * @param propertyId
      * @param newListener
-     * @since 3.1
      */
     private void addInternal(String propertyId, IPropertyMapListener newListener) {
         if (listeners == null) {

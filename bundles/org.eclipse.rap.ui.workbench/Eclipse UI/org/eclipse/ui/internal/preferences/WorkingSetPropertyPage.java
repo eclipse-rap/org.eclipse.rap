@@ -11,9 +11,7 @@
 package org.eclipse.ui.internal.preferences;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.jface.wizard.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -26,7 +24,7 @@ import org.eclipse.ui.preferences.WizardPropertyPage;
 /**
  * Embeds a working set wizard for a given working set into a property page.
  *
- * @since 3.4
+ * @since 1.1
  */
 public class WorkingSetPropertyPage extends WizardPropertyPage {
 	
@@ -53,8 +51,8 @@ public class WorkingSetPropertyPage extends WizardPropertyPage {
 	private static final class ReadOnlyPage extends WizardPage {
 		
 		protected ReadOnlyPage() {
-			super(WorkbenchMessages.WorkingSetPropertyPage_ReadOnlyWorkingSet_title);
-			setDescription(WorkbenchMessages.WorkingSetPropertyPage_ReadOnlyWorkingSet_description);
+			super(WorkbenchMessages.get().WorkingSetPropertyPage_ReadOnlyWorkingSet_title);
+			setDescription(WorkbenchMessages.get().WorkingSetPropertyPage_ReadOnlyWorkingSet_description);
 		}
 		
 		/**

@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.ui.themes.ITheme;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public class ThemeAdapter extends PropertyMapAdapter {
 

@@ -11,7 +11,7 @@
 package org.eclipse.ui.internal.preferences;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public interface IDynamicPropertyMap extends IPropertyMap {
     /**
@@ -19,7 +19,6 @@ public interface IDynamicPropertyMap extends IPropertyMap {
      * whenever one of the properties in the map is changed, added, or removed.
      *  
      * @param listener
-     * @since 3.1
      */
     public void addListener(IPropertyMapListener listener);
     
@@ -31,7 +30,6 @@ public interface IDynamicPropertyMap extends IPropertyMap {
      * 
      * @param listener
      * @param propertyIds
-     * @since 3.1
      */
     public void addListener(String[] propertyIds, IPropertyMapListener listener);
 
@@ -40,7 +38,6 @@ public interface IDynamicPropertyMap extends IPropertyMap {
      * be notified whenever one of the properties in the map is changed, added, or removed.
      *  
      * @param listener
-     * @since 3.1
      */
     public void removeListener(IPropertyMapListener listener);    
 }

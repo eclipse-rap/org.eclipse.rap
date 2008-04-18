@@ -26,7 +26,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 /**
  * Instances represent registered preference transfers.
  * 
- * @since 3.1
+ * @since 1.1
  */
 public class PreferenceTransferElement extends WorkbenchAdapter implements
         IPluginContribution {
