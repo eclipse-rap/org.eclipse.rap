@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<w4t:application xmlns:w4t="http://w4toolkit.com/" 
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://w4toolkit.com/ w4t.xsd ">
+	<initialisation>
+	</initialisation>
+</w4t:application>

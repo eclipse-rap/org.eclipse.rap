@@ -1,6 +1,6 @@
-#Tue Jul 17 14:50:20 EDT 2007
+#Fri Apr 18 05:50:41 CEST 2008
 eclipse.preferences.version=1
-internal.default.compliance=user
+instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true
 org.eclipse.jdt.ui.exception.name=e
 org.eclipse.jdt.ui.gettersetter.use.is=true
 org.eclipse.jdt.ui.javadoc=true
