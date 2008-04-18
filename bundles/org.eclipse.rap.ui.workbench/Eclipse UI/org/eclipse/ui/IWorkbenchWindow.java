@@ -53,6 +53,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * 
  * @see IWorkbenchPage
  * @noimplement This interface is not intended to be implemented by clients.
+ * @since 1.0
  */
 public interface IWorkbenchWindow extends IPageService, IRunnableContext,
 		IServiceLocator, IShellProvider {
@@ -193,8 +194,6 @@ public interface IWorkbenchWindow extends IPageService, IRunnableContext,
      * the runnable will run in the UI thread and it is the runnable's
      * responsibility to call <code>Display.readAndDispatch()</code>
      * to ensure UI responsiveness.
-     * 
-     * @since 3.2
      */
     public void run(boolean fork, boolean cancelable, IRunnableWithProgress runnable) throws InvocationTargetException, InterruptedException;
 
@@ -221,7 +220,6 @@ public interface IWorkbenchWindow extends IPageService, IRunnableContext,
 	 * @return the extension tracker
 	 * @see IWorkbench#getExtensionTracker()
 	 * @see IWorkbenchPage#getExtensionTracker()
-	 * @since 3.1
 	 */
     public IExtensionTracker getExtensionTracker();
 }

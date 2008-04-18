@@ -207,17 +207,17 @@ public class SwtUtil {
         return findControl(children, locationToFind);
     }
 
+    /**
+     * 
+     * Returns true iff the given rectangle is located in the client area of any
+     * monitor.
+     * 
+     * @param someRectangle a rectangle in display coordinates (not null)
+     * @return true iff the given point can be seen on any monitor
+     */
+    public static boolean intersectsAnyMonitor(Display display,
+            Rectangle someRectangle) {
 // RAP [rh] Monitor not implemented    
-//    /**
-//     * 
-//     * Returns true iff the given rectangle is located in the client area of any
-//     * monitor.
-//     * 
-//     * @param someRectangle a rectangle in display coordinates (not null)
-//     * @return true iff the given point can be seen on any monitor
-//     */
-//    public static boolean intersectsAnyMonitor(Display display,
-//            Rectangle someRectangle) {
 //        Monitor[] monitors = display.getMonitors();
 //    
 //        for (int idx = 0; idx < monitors.length; idx++) {
@@ -229,6 +229,8 @@ public class SwtUtil {
 //        }
 //    
 //        return false;
-//    }
+    	// rap alternative
+    	return display.getBounds().intersects(someRectangle);
+    }
 
 }

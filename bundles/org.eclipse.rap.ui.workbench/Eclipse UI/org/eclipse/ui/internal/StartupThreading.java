@@ -16,12 +16,13 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.internal.misc.StatusUtil;
 
 /**
- * @since 3.3
  * 
  */
 public final class StartupThreading {
 
-	static Workbench workbench;
+	// RAP [bm]: 
+//	static Workbench workbench;
+	// RAPEND: [bm] 
 
 	public static abstract class StartupRunnable implements Runnable {
 		private Throwable throwable;
@@ -41,13 +42,19 @@ public final class StartupThreading {
 		}
 	}
 
-	static void setWorkbench(Workbench wb) {
-		workbench = wb;
-	}
+	// RAP [bm]: 
+//	static void setWorkbench(Workbench wb) {
+//		workbench = wb;
+//	}
+	// RAPEND: [bm] 
 
 	public static void runWithWorkbenchExceptions(StartupRunnable r)
 			throws WorkbenchException {
-		workbench.getDisplay().syncExec(r);
+		// RAP [bm]: 
+//		workbench.getDisplay().syncExec(r);
+		Workbench.getInstance().getDisplay().syncExec(r);
+		// RAPEND: [bm] 
+
 		Throwable throwable = r.getThrowable();
 		if (throwable != null) {
 			if (throwable instanceof Error) {
@@ -65,7 +72,10 @@ public final class StartupThreading {
 
 	public static void runWithPartInitExceptions(StartupRunnable r)
 			throws PartInitException {
-		workbench.getDisplay().syncExec(r);
+		// RAP [bm]: 
+//		workbench.getDisplay().syncExec(r);
+		Workbench.getInstance().getDisplay().syncExec(r);
+		// RAPEND: [bm] 
 		Throwable throwable = r.getThrowable();
 		if (throwable != null) {
 			if (throwable instanceof Error) {
@@ -82,7 +92,11 @@ public final class StartupThreading {
 	}
 
 	public static void runWithThrowable(StartupRunnable r) throws Throwable {
-		workbench.getDisplay().syncExec(r);
+		// RAP [bm]: 
+//		workbench.getDisplay().syncExec(r);
+		Workbench.getInstance().getDisplay().syncExec(r);
+		// RAPEND: [bm] 
+
 		Throwable throwable = r.getThrowable();
 		if (throwable != null) {
 			throw throwable;
@@ -91,7 +105,11 @@ public final class StartupThreading {
 
 	public static void runWithoutExceptions(StartupRunnable r)
 			throws RuntimeException {
-		workbench.getDisplay().syncExec(r);
+		// RAP [bm]: 
+//		workbench.getDisplay().syncExec(r);
+		Workbench.getInstance().getDisplay().syncExec(r);
+		// RAPEND: [bm] 
+
 		Throwable throwable = r.getThrowable();
 		if (throwable != null) {
 			if (throwable instanceof Error) {

@@ -2,6 +2,24 @@
 <?eclipse version="3.0"?>
 <plugin>
 
+  <extension
+      id="org.eclipse.ui.workbench.adapterfactories"
+      point="org.eclipse.rap.ui.adapterfactory">
+    <factory
+        factoryClass="org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory"
+        adaptableClass="org.eclipse.swt.widgets.Widget"/>
+    <factory
+        factoryClass="org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory"
+        adaptableClass="org.eclipse.swt.widgets.Display"/>
+    <factory
+        factoryClass="org.eclipse.swt.internal.widgets.WidgetAdapterFactory"
+        adaptableClass="org.eclipse.swt.widgets.Widget"/>
+    <factory
+        factoryClass="org.eclipse.swt.internal.widgets.WidgetAdapterFactory"
+        adaptableClass="org.eclipse.swt.widgets.Display"/>
+  </extension>
+
+
      <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
