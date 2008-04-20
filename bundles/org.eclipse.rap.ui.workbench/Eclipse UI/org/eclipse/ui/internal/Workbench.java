@@ -133,7 +133,7 @@ import org.eclipse.ui.internal.contexts.ActiveContextSourceProvider;
 import org.eclipse.ui.internal.contexts.ContextService;
 import org.eclipse.ui.internal.contexts.WorkbenchContextSupport;
 import org.eclipse.ui.internal.dialogs.PropertyPageContributorManager;
-import org.eclipse.ui.internal.help.WorkbenchHelpSystem;
+//import org.eclipse.ui.internal.help.WorkbenchHelpSystem;
 import org.eclipse.ui.internal.intro.IIntroRegistry;
 import org.eclipse.ui.internal.intro.IntroDescriptor;
 import org.eclipse.ui.internal.keys.BindingService;
@@ -2759,7 +2759,8 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		serviceLocator.dispose();
 
 		workbenchActivitySupport.dispose();
-		WorkbenchHelpSystem.disposeIfNecessary();
+// RAP [rh] WorkbenchHelpSystem disabled
+//		WorkbenchHelpSystem.disposeIfNecessary();
 
 		// shutdown the rest of the workbench
 		WorkbenchColors.shutdown();

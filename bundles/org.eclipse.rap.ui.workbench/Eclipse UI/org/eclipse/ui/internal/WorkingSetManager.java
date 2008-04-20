@@ -112,14 +112,14 @@ public class WorkingSetManager extends AbstractWorkingSetManager implements
 				MessageDialog
 						.openError(
 								(Shell) null,
-								WorkbenchMessages.ProblemRestoringWorkingSetState_title,
-								WorkbenchMessages.ProblemRestoringWorkingSetState_message);
+								WorkbenchMessages.get().ProblemRestoringWorkingSetState_title,
+								WorkbenchMessages.get().ProblemRestoringWorkingSetState_message);
 			} catch (WorkbenchException e) {
 				ErrorDialog
 						.openError(
 								(Shell) null,
-								WorkbenchMessages.ProblemRestoringWorkingSetState_title,
-								WorkbenchMessages.ProblemRestoringWorkingSetState_message,
+								WorkbenchMessages.get().ProblemRestoringWorkingSetState_title,
+								WorkbenchMessages.get().ProblemRestoringWorkingSetState_message,
 								e.getStatus());
 			}
 		}
@@ -139,8 +139,8 @@ public class WorkingSetManager extends AbstractWorkingSetManager implements
 		} catch (IOException e) {
 			stateFile.delete();
 			MessageDialog.openError((Shell) null,
-					WorkbenchMessages.ProblemSavingWorkingSetState_title,
-					WorkbenchMessages.ProblemSavingWorkingSetState_message);
+					WorkbenchMessages.get().ProblemSavingWorkingSetState_title,
+					WorkbenchMessages.get().ProblemSavingWorkingSetState_message);
 		}
 	}
 

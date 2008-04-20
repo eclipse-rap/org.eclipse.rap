@@ -103,8 +103,9 @@ public class WorkingSetMenuContributionItem extends ContributionItem {
 	 * @since 3.3
 	 */
 	public void dispose() {
-		if (image != null && !image.isDisposed())
-			image.dispose();
+// RAP [rh] Image#dispose() missing	  
+//		if (image != null && !image.isDisposed())
+//			image.dispose();
 		image = null;
 
 		super.dispose();

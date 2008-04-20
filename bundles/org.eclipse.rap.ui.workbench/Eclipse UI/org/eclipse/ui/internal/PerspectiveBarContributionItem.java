@@ -14,10 +14,11 @@ import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.GC;
+//import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -62,10 +63,13 @@ public class PerspectiveBarContributionItem extends ContributionItem {
      */
     public void dispose() {
         super.dispose();
-        if (image != null && !image.isDisposed()) {
-            image.dispose();
-            image = null;
-        }
+// RAP [rh] Image#dispose() missing        
+//        if (image != null && !image.isDisposed()) {
+//            image.dispose();
+//            image = null;
+//        }
+        image = null;
+// RAP [rh] end         
         apiPreferenceStore = null;
         workbenchPage = null;
         perspective = null;
@@ -81,12 +85,13 @@ public class PerspectiveBarContributionItem extends ContributionItem {
 				toolItem = new ToolItem(parent, SWT.CHECK);
 			}
 
-            if (image == null || image.isDisposed()) {
+// RAP [rh] Image#isDisposed() missing            
+            if (image == null /*|| image.isDisposed()*/) {
                 createImage();
             }
             toolItem.setImage(image);
 
-            toolItem.setToolTipText(NLS.bind(WorkbenchMessages.PerspectiveBarContributionItem_toolTip, perspective.getLabel()));
+            toolItem.setToolTipText(NLS.bind(WorkbenchMessages.get().PerspectiveBarContributionItem_toolTip, perspective.getLabel()));
             toolItem.addSelectionListener(new SelectionAdapter() {
 
                 public void widgetSelected(SelectionEvent event) {
@@ -162,7 +167,7 @@ public class PerspectiveBarContributionItem extends ContributionItem {
                         ISharedImages.IMG_ETOOL_DEF_PERSPECTIVE)
                         .createImage());
             }
-            toolItem.setToolTipText(NLS.bind(WorkbenchMessages.PerspectiveBarContributionItem_toolTip, perspective.getLabel() ));
+            toolItem.setToolTipText(NLS.bind(WorkbenchMessages.get().PerspectiveBarContributionItem_toolTip, perspective.getLabel() ));
         }
         update();
     }
@@ -219,19 +224,22 @@ public class PerspectiveBarContributionItem extends ContributionItem {
 			return null;
 		}
         String returnText = textValue;
-        GC gc = new GC(item.getParent());
+// RAP [rh] Changes due to different text size determination         
+//        GC gc = new GC(item.getParent());
         int maxWidth = getMaxWidth(item.getImage());
-        if (gc.textExtent(textValue).x >= maxWidth) {
+//        if (gc.textExtent(textValue).x >= maxWidth) {
+        if (Graphics.stringExtent(item.getParent().getFont(), textValue).x >= maxWidth) {
             for (int i = textValue.length(); i > 0; i--) {
                 String test = textValue.substring(0, i);
                 test = test + ellipsis;
-                if (gc.textExtent(test).x < maxWidth) {
+//                if (gc.textExtent(test).x < maxWidth) {
+                  if (Graphics.stringExtent(item.getParent().getFont(), test).x < maxWidth) {
                     returnText = test;
                     break;
                 }
             }
         }
-        gc.dispose();
+//        gc.dispose();
         return returnText;
     }
 }

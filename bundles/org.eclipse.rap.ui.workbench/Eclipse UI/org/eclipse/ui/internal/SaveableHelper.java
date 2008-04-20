@@ -51,7 +51,6 @@ import org.eclipse.ui.statushandlers.StatusManager;
 /**
  * Helper class for prompting to save dirty views or editors.
  * 
- * @since 3.0.1
  */
 public class SaveableHelper {
 	
@@ -109,11 +108,11 @@ public class SaveableHelper {
 					choice = ((ISaveablePart2)saveable).promptToSaveOnClose();
 				}
 				if (choice == USER_RESPONSE || choice == ISaveablePart2.DEFAULT) {
-					String message = NLS.bind(WorkbenchMessages.EditorManager_saveChangesQuestion, part.getTitle()); 
+					String message = NLS.bind(WorkbenchMessages.get().EditorManager_saveChangesQuestion, part.getTitle()); 
 					// Show a dialog.
-					String[] buttons = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL };
+					String[] buttons = new String[] { IDialogConstants.get().YES_LABEL, IDialogConstants.get().NO_LABEL, IDialogConstants.get().CANCEL_LABEL };
 						MessageDialog d = new MessageDialog(
-							window.getShell(), WorkbenchMessages.Save_Resource,
+							window.getShell(), WorkbenchMessages.get().Save_Resource,
 							null, message, MessageDialog.QUESTION, buttons, 0);
 					choice = d.open();
 				}
@@ -145,7 +144,7 @@ public class SaveableHelper {
 		};
 
 		// Do the save.
-		return runProgressMonitorOperation(WorkbenchMessages.Save, progressOp, window); 
+		return runProgressMonitorOperation(WorkbenchMessages.get().Save, progressOp, window); 
 	}
 	
 	/**
@@ -174,7 +173,7 @@ public class SaveableHelper {
 		IRunnableWithProgress progressOp = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) {
 				IProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
-				monitorWrap.beginTask(WorkbenchMessages.Save, dirtyModels.size());
+				monitorWrap.beginTask(WorkbenchMessages.get().Save, dirtyModels.size());
 				for (Iterator i = dirtyModels.iterator(); i.hasNext();) {
 					Saveable model = (Saveable) i.next();
 					// handle case where this model got saved as a result of saving another
@@ -193,7 +192,7 @@ public class SaveableHelper {
 		};
 
 		// Do the save.
-		return runProgressMonitorOperation(WorkbenchMessages.Save, progressOp, window); 
+		return runProgressMonitorOperation(WorkbenchMessages.get().Save, progressOp, window); 
 	}
 
 	/**
@@ -238,7 +237,7 @@ public class SaveableHelper {
 		};
 
 		// Do the save.
-		if (!runProgressMonitorOperation(WorkbenchMessages.Save, progressOp,window)) {
+		if (!runProgressMonitorOperation(WorkbenchMessages.get().Save, progressOp,window)) {
 			return ISaveablePart2.CANCEL;
 		}
 		return ISaveablePart2.YES;
@@ -273,7 +272,7 @@ public class SaveableHelper {
 		try {
 			runnableContext.run(false, true, runnable);
 		} catch (InvocationTargetException e) {
-			String title = NLS.bind(WorkbenchMessages.EditorManager_operationFailed, opName ); 
+			String title = NLS.bind(WorkbenchMessages.get().EditorManager_operationFailed, opName ); 
 			Throwable targetExc = e.getTargetException();
 			WorkbenchPlugin.log(title, new Status(IStatus.WARNING,
 					PlatformUI.PLUGIN_ID, 0, title, targetExc));			
@@ -297,7 +296,6 @@ public class SaveableHelper {
 	 *            the model source
 	 * @return <code>true</code> if save is required, <code>false</code>
 	 *         otherwise
-	 * @since 3.2
 	 */
 	public static boolean needsSave(ISaveablesSource modelSource) {
 		Saveable[] selectedModels = modelSource.getActiveSaveables();
@@ -357,7 +355,7 @@ public class SaveableHelper {
 				// the family we can display the busy state with an animated tab
 				// (see the calls to showBusyForFamily() below).
 				Job saveJob = new Job(NLS.bind(
-						WorkbenchMessages.EditorManager_backgroundSaveJobName,
+						WorkbenchMessages.get().EditorManager_backgroundSaveJobName,
 						model.getName())) {
 					public boolean belongsTo(Object family) {
 						if (family instanceof DynamicFamily) {

@@ -154,12 +154,12 @@ public class ViewFactory implements IExtensionChangeHandler {
         IViewDescriptor desc = viewReg.find(id);
         // ensure that the view id is valid
         if (desc == null) {
-			throw new PartInitException(NLS.bind(WorkbenchMessages.ViewFactory_couldNotCreate,  id ));
+			throw new PartInitException(NLS.bind(WorkbenchMessages.get().ViewFactory_couldNotCreate,  id ));
 		}
         // ensure that multiple instances are allowed if a secondary id is given
         if (secondaryId != null) {
             if (!desc.getAllowMultiple()) {
-                throw new PartInitException(NLS.bind(WorkbenchMessages.ViewFactory_noMultiple, id)); 
+                throw new PartInitException(NLS.bind(WorkbenchMessages.get().ViewFactory_noMultiple, id)); 
             }
         }
         String key = getKey(id, secondaryId);
@@ -280,7 +280,7 @@ public class ViewFactory implements IExtensionChangeHandler {
      */
     public IStatus saveState(IMemento memento) {
         final MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID,
-                IStatus.OK, WorkbenchMessages.ViewFactory_problemsSavingViews, null); 
+                IStatus.OK, WorkbenchMessages.get().ViewFactory_problemsSavingViews, null); 
 
         final IViewReference refs[] = getViews();
         for (int i = 0; i < refs.length; i++) {
@@ -336,7 +336,7 @@ public class ViewFactory implements IExtensionChangeHandler {
                                     IStatus.ERROR,
                                     PlatformUI.PLUGIN_ID,
                                     0,
-                                    NLS.bind(WorkbenchMessages.ViewFactory_couldNotSave, viewRef.getTitle() ),
+                                    NLS.bind(WorkbenchMessages.get().ViewFactory_couldNotSave, viewRef.getTitle() ),
                                     e));
                 }
             });

@@ -46,8 +46,9 @@ public class PerspectiveBarNewContributionItem extends ContributionItem {
      */
     public void dispose() {
         super.dispose();
-        if (image != null && !image.isDisposed()) {
-            image.dispose();
+// RAP [rh] Image#dispose() missing        
+        if (image != null /*&& !image.isDisposed()*/) {
+//            image.dispose();
             image = null;
         }
     }
@@ -63,7 +64,8 @@ public class PerspectiveBarNewContributionItem extends ContributionItem {
             });
 
             toolItem = new ToolItem(parent, SWT.PUSH);
-            if (image == null || image.isDisposed()) {
+// RAP [rh] Image#isDisposed() missing
+            if (image == null /*|| image.isDisposed()*/) {
                 image = WorkbenchImages.getImageDescriptor(
                         IWorkbenchGraphicConstants.IMG_ETOOL_NEW_PAGE)
                         .createImage();
@@ -71,7 +73,7 @@ public class PerspectiveBarNewContributionItem extends ContributionItem {
             toolItem.setImage(image);
 
             toolItem.setText(""); //$NON-NLS-1$
-            toolItem.setToolTipText(WorkbenchMessages.PerspectiveBarNewContributionItem_toolTip); 
+            toolItem.setToolTipText(WorkbenchMessages.get().PerspectiveBarNewContributionItem_toolTip); 
             toolItem.addSelectionListener(new SelectionAdapter() {
 
                 public void widgetSelected(SelectionEvent event) {

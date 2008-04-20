@@ -36,23 +36,24 @@ public class ResetPerspectiveAction extends PerspectiveAction {
      */
     public ResetPerspectiveAction(IWorkbenchWindow window) {
         super(window);
-        setText(WorkbenchMessages.ResetPerspective_text);
+        setText(WorkbenchMessages.get().ResetPerspective_text);
         setActionDefinitionId("org.eclipse.ui.window.resetPerspective"); //$NON-NLS-1$
         // @issue missing action id
-        setToolTipText(WorkbenchMessages.ResetPerspective_toolTip); 
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.RESET_PERSPECTIVE_ACTION);
+        setToolTipText(WorkbenchMessages.get().ResetPerspective_toolTip);
+// RAP [rh] WorkbenchHelpSystem: help support left aside for now
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.RESET_PERSPECTIVE_ACTION);
     }
 
     /* (non-Javadoc)
      * Method declared on PerspectiveAction.
      */
     protected void run(IWorkbenchPage page, IPerspectiveDescriptor persp) {
-        String message = NLS.bind(WorkbenchMessages.ResetPerspective_message, persp.getLabel() );
-        String[] buttons = new String[] { IDialogConstants.OK_LABEL,
-                IDialogConstants.CANCEL_LABEL };
+        String message = NLS.bind(WorkbenchMessages.get().ResetPerspective_message, persp.getLabel() );
+        String[] buttons = new String[] { IDialogConstants.get().OK_LABEL,
+                IDialogConstants.get().CANCEL_LABEL };
         MessageDialog d = new MessageDialog(getWindow().getShell(),
-                WorkbenchMessages.ResetPerspective_title,
+                WorkbenchMessages.get().ResetPerspective_title,
                 null, message, MessageDialog.QUESTION, buttons, 0);
         if (d.open() == 0) {
 			page.resetPerspective();

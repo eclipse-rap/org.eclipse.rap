@@ -621,7 +621,6 @@ public class Perspective {
     /**
      * Returns true if a view is standalone.
      * 
-     * @since 3.0
      */
     public boolean isStandaloneView(IViewReference ref) {
         ViewLayoutRec rec = getViewLayoutRec(ref, false);
@@ -632,7 +631,6 @@ public class Perspective {
      * Returns whether the title for a view should
      * be shown.  This applies only to standalone views.
      * 
-     * @since 3.0
      */
     public boolean getShowTitleView(IViewReference ref) {
         ViewLayoutRec rec = getViewLayoutRec(ref, false);
@@ -653,7 +651,7 @@ public class Perspective {
             MultiStatus status = new MultiStatus(
                     PlatformUI.PLUGIN_ID,
                     IStatus.OK,
-                    NLS.bind(WorkbenchMessages.Perspective_unableToRestorePerspective, persp.getLabel()),
+                    NLS.bind(WorkbenchMessages.get().Perspective_unableToRestorePerspective, persp.getLabel()),
                     null);
             status.merge(restoreState(memento));
             status.merge(restoreState());
@@ -676,8 +674,8 @@ public class Perspective {
         // the perspective (we wouldn't want to).  But make sure to delete the
         // customized portion.
         persp.deleteCustomDefinition();
-        String title = WorkbenchMessages.Perspective_problemRestoringTitle;
-        String msg = WorkbenchMessages.Perspective_errorReadingState;
+        String title = WorkbenchMessages.get().Perspective_problemRestoringTitle;
+        String msg = WorkbenchMessages.get().Perspective_errorReadingState;
         if (status == null) {
             MessageDialog.openError((Shell) null, title, msg);
         } else {
@@ -696,14 +694,14 @@ public class Perspective {
         try {
             factory = persp.createFactory();
         } catch (CoreException e) {
-            throw new WorkbenchException(NLS.bind(WorkbenchMessages.Perspective_unableToLoad, persp.getId() ));
+            throw new WorkbenchException(NLS.bind(WorkbenchMessages.get().Perspective_unableToLoad, persp.getId() ));
         }
 		
 		/*
 		 * IPerspectiveFactory#createFactory() can return null
 		 */
 		if (factory == null) {
-			throw new WorkbenchException(NLS.bind(WorkbenchMessages.Perspective_unableToLoad, persp.getId() ));
+			throw new WorkbenchException(NLS.bind(WorkbenchMessages.get().Perspective_unableToLoad, persp.getId() ));
 		}		
 		
 		
@@ -1089,7 +1087,7 @@ public class Perspective {
         MultiStatus result = new MultiStatus(
                 PlatformUI.PLUGIN_ID,
                 IStatus.OK,
-                WorkbenchMessages.Perspective_problemsRestoringPerspective, null);
+                WorkbenchMessages.get().Perspective_problemsRestoringPerspective, null);
 
         // Create persp descriptor.
         descriptor = new PerspectiveDescriptor(null, null, null);
@@ -1116,7 +1114,7 @@ public class Perspective {
 
     IStatus createReferences(IMemento views[]) {
         MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
-                WorkbenchMessages.Perspective_problemsRestoringViews, null); 
+                WorkbenchMessages.get().Perspective_problemsRestoringViews, null); 
 
         for (int x = 0; x < views.length; x++) {
             // Get the view details.
@@ -1158,7 +1156,7 @@ public class Perspective {
         MultiStatus result = new MultiStatus(
                 PlatformUI.PLUGIN_ID,
                 IStatus.OK,
-                WorkbenchMessages.Perspective_problemsRestoringPerspective, null);
+                WorkbenchMessages.get().Perspective_problemsRestoringPerspective, null);
 
         IMemento memento = this.memento;
         this.memento = null;
@@ -1229,7 +1227,7 @@ public class Perspective {
             if (ref == null) {
                 String key = ViewFactory.getKey(id, secondaryId);
                 result.add(new Status(IStatus.ERROR, PlatformUI.PLUGIN_ID, 0,
-                        NLS.bind(WorkbenchMessages.Perspective_couldNotFind,  key ), null));
+                        NLS.bind(WorkbenchMessages.get().Perspective_couldNotFind,  key ), null));
                 continue;
             }
             boolean willPartBeVisible = pres.willPartBeVisible(ref.getId(),
@@ -1475,7 +1473,7 @@ public class Perspective {
                             IStatus.ERROR,
                             PlatformUI.PLUGIN_ID,
                             0,
-                            NLS.bind(WorkbenchMessages.Perspective_couldNotFind, key ),
+                            NLS.bind(WorkbenchMessages.get().Perspective_couldNotFind, key ),
                             null));
             return null;
         }
@@ -1541,8 +1539,8 @@ public class Perspective {
         XMLMemento memento = XMLMemento.createWriteRoot("perspective");//$NON-NLS-1$
         IStatus status = saveState(memento, realDesc, false);
         if (status.getSeverity() == IStatus.ERROR) {
-            ErrorDialog.openError((Shell) null, WorkbenchMessages.Perspective_problemSavingTitle, 
-                    WorkbenchMessages.Perspective_problemSavingMessage,
+            ErrorDialog.openError((Shell) null, WorkbenchMessages.get().Perspective_problemSavingTitle, 
+                    WorkbenchMessages.get().Perspective_problemSavingMessage,
                     status);
             return;
         }
@@ -1552,8 +1550,8 @@ public class Perspective {
             descriptor = realDesc;
         } catch (IOException e) {
             perspRegistry.deletePerspective(realDesc);
-            MessageDialog.openError((Shell) null, WorkbenchMessages.Perspective_problemSavingTitle, 
-                    WorkbenchMessages.Perspective_problemSavingMessage);
+            MessageDialog.openError((Shell) null, WorkbenchMessages.get().Perspective_problemSavingTitle, 
+                    WorkbenchMessages.get().Perspective_problemSavingMessage);
         }
     }
 
@@ -1564,7 +1562,7 @@ public class Perspective {
         MultiStatus result = new MultiStatus(
                 PlatformUI.PLUGIN_ID,
                 IStatus.OK,
-                WorkbenchMessages.Perspective_problemsSavingPerspective, null);
+                WorkbenchMessages.get().Perspective_problemsSavingPerspective, null);
 
         result.merge(saveState(memento, descriptor, true));
 
@@ -1579,7 +1577,7 @@ public class Perspective {
         MultiStatus result = new MultiStatus(
                 PlatformUI.PLUGIN_ID,
                 IStatus.OK,
-                WorkbenchMessages.Perspective_problemsSavingPerspective, null); 
+                WorkbenchMessages.get().Perspective_problemsSavingPerspective, null); 
 
         if (this.memento != null) {
             memento.putMemento(this.memento);
@@ -1708,12 +1706,12 @@ public class Perspective {
         }
 
         if (errors > 0) {
-            String message = WorkbenchMessages.Perspective_multipleErrors;
+            String message = WorkbenchMessages.get().Perspective_multipleErrors;
             if (errors == 1) {
-				message = WorkbenchMessages.Perspective_oneError;
+				message = WorkbenchMessages.get().Perspective_oneError;
 			}
             MessageDialog.openError(null,
-                    WorkbenchMessages.Error, message); 
+                    WorkbenchMessages.get().Error, message); 
         }
 
         // Save the layout.
@@ -2090,7 +2088,7 @@ public class Perspective {
         IViewReference ref = factory.createView(viewId, secondaryId);
         IViewPart part = (IViewPart) ref.getPart(true);
         if (part == null) {
-            throw new PartInitException(NLS.bind(WorkbenchMessages.ViewFactory_couldNotCreate, ref.getId()));
+            throw new PartInitException(NLS.bind(WorkbenchMessages.get().ViewFactory_couldNotCreate, ref.getId()));
         }
         ViewSite site = (ViewSite) part.getSite();
         ViewPane pane = (ViewPane) site.getPane();
@@ -2288,7 +2286,6 @@ public class Perspective {
     /**
      * Returns whether the given view is closeable in this perspective.
      * 
-     * @since 3.0
      */
     public boolean isCloseable(IViewReference reference) {
         ViewLayoutRec rec = getViewLayoutRec(reference, false);
@@ -2301,7 +2298,6 @@ public class Perspective {
     /**
      * Returns whether the given view is moveable in this perspective.
      * 
-     * @since 3.0
      */
     public boolean isMoveable(IViewReference reference) {
         ViewLayoutRec rec = getViewLayoutRec(reference, false);
