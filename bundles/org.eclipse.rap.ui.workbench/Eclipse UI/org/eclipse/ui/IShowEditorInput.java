@@ -21,7 +21,7 @@ package org.eclipse.ui;
  * than the one currently being shown.
  * </p> 
  *
- * @since 3.1
+ * @since 1.0
  */
 public interface IShowEditorInput {
     

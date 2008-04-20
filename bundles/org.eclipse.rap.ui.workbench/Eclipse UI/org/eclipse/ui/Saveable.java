@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.IShellProvider;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Cursor;
+//import org.eclipse.swt.SWT;
+//import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.internal.InternalSaveable;
@@ -40,12 +40,13 @@ import org.eclipse.ui.progress.IJobRunnable;
  * </p>
  * 
  * @see ISaveablesSource
- * @since 3.2
+ * @since 1.1
  */
 public abstract class Saveable extends InternalSaveable implements IAdaptable {
-
-	private Cursor waitCursor;
-	private Cursor originalCursor;
+  
+// RAP [rh] Cursor API missing
+//	private Cursor waitCursor;
+//	private Cursor originalCursor;
 
 	/**
 	 * Attempts to show this saveable in the given page and returns
@@ -55,7 +56,6 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * @param page
 	 *            the workbench page in which to show this saveable
 	 * @return <code>true</code> if this saveable is now visible to the user
-	 * @since 3.3
 	 */
 	public boolean show(IWorkbenchPage page) {
 		if (page == null) {
@@ -204,8 +204,6 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * @return <code>null</code> if this saveable has been saved successfully,
 	 *         or a job runnable that needs to be run to complete the save in
 	 *         the background.
-	 * 
-	 * @since 3.3
 	 */
 	public IJobRunnable doSave(IProgressMonitor monitor,
 			IShellProvider shellProvider) throws CoreException {
@@ -239,8 +237,6 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 *            a boolean flag indicating whether the save was triggered by a
 	 *            request to close a workbench part, and all of the given parts
 	 *            will be closed after the save operation finishes successfully.
-	 * 
-	 * @since 3.3
 	 */
 	public void disableUI(IWorkbenchPart[] parts, boolean closing) {
 		for (int i = 0; i < parts.length; i++) {
@@ -250,11 +246,12 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 			Control[] paneChildren = paneComposite.getChildren();
 			Composite toDisable = ((Composite) paneChildren[0]);
 			toDisable.setEnabled(false);
-			if (waitCursor == null) {
-				waitCursor = new Cursor(workbenchPart.getSite().getWorkbenchWindow().getShell().getDisplay(), SWT.CURSOR_WAIT);
-			}
-			originalCursor = paneComposite.getCursor();
-			paneComposite.setCursor(waitCursor);
+// RAP [rh] Cursor API missing			
+//			if (waitCursor == null) {
+//				waitCursor = new Cursor(workbenchPart.getSite().getWorkbenchWindow().getShell().getDisplay(), SWT.CURSOR_WAIT);
+//			}
+//			originalCursor = paneComposite.getCursor();
+//			paneComposite.setCursor(waitCursor);
 		}
 	}
 
@@ -269,8 +266,6 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * 
 	 * @param parts
 	 *            the workbench parts containing this saveable
-	 * 
-	 * @since 3.3
 	 */
 	public void enableUI(IWorkbenchPart[] parts) {
 		for (int i = 0; i < parts.length; i++) {
@@ -279,11 +274,12 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 					.getSite()).getPane().getControl();
 			Control[] paneChildren = paneComposite.getChildren();
 			Composite toEnable = ((Composite) paneChildren[0]);
-			paneComposite.setCursor(originalCursor);
-			if (waitCursor!=null && !waitCursor.isDisposed()) {
-				waitCursor.dispose();
-				waitCursor = null;
-			}
+// RAP [rh] Cursor API missing			
+//			paneComposite.setCursor(originalCursor);
+//			if (waitCursor!=null && !waitCursor.isDisposed()) {
+//				waitCursor.dispose();
+//				waitCursor = null;
+//			}
 			toEnable.setEnabled(true);
 		}
 	}
@@ -294,8 +290,6 @@ public abstract class Saveable extends InternalSaveable implements IAdaptable {
 	 * subclasses of Saveable to implement {@link #equals(Object)} and
 	 * {@link #hashCode()} based on an underlying implementation class that is
 	 * shared by both Saveable subclasses.
-	 * 
-	 * @since 3.3
 	 */
 	public Object getAdapter(Class adapter) {
 		return null;

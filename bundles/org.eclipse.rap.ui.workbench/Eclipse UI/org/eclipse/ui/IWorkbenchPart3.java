@@ -24,7 +24,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
  * Setting a property must fire a PropertyChangeEvent.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  */
 public interface IWorkbenchPart3 extends IWorkbenchPart2 {
 	/**

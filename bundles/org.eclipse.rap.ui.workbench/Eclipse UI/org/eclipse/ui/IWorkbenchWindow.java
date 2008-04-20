@@ -52,6 +52,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * </p>
  * 
  * @see IWorkbenchPage
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  * @since 1.0
  */

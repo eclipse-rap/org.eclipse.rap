@@ -45,6 +45,7 @@ package org.eclipse.ui;
  * </p>
  *
  * @see org.eclipse.core.runtime.IAdaptable
+ * @since 1.0
  */
 public interface IActionFilter {
     /**

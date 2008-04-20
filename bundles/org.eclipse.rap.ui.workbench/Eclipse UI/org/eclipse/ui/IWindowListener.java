@@ -15,6 +15,7 @@ package org.eclipse.ui;
  * <p>
  * This interface may be implemented by clients.
  * </p>
+ * @since 1.0
  */
 public interface IWindowListener {
     /**

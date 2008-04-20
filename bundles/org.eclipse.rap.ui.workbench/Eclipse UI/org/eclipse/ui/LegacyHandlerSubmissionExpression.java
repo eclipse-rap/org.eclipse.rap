@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Shell;
  * submissions.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  */
 public final class LegacyHandlerSubmissionExpression extends Expression {
 

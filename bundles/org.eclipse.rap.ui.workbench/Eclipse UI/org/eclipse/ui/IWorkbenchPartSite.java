@@ -21,6 +21,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * <p>
  * This interface is not intended to be implemented or extended by clients.
  * </p>
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IWorkbenchPartSite extends IWorkbenchSite {
@@ -117,7 +118,6 @@ public interface IWorkbenchPartSite extends IWorkbenchSite {
 	 * </p>
 	 * 
 	 * @return the key binding service in use
-	 * @since 2.1
 	 * @deprecated Use {@link IServiceLocator#getService(Class)} instead.
 	 * @see IContextService
 	 * @see IHandlerService
@@ -127,8 +127,6 @@ public interface IWorkbenchPartSite extends IWorkbenchSite {
     /**
      * Returns the part associated with this site 
      * 
-     * @since 3.1 
-     *
      * @return the part associated with this site
      */
     public IWorkbenchPart getPart(); 

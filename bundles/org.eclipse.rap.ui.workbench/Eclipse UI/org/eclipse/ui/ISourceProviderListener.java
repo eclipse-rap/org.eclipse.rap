@@ -21,7 +21,7 @@ import java.util.Map;
  * <code>ISourceProvider</code> instances that are registered with them.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  * @see org.eclipse.ui.ISources
  * @see org.eclipse.ui.ISourceProvider
  */

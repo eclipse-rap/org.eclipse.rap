@@ -16,7 +16,7 @@ package org.eclipse.ui;
  * code that can't be implemented using the normal contribution 
  * mechanisms.
  * 
- * @since 2.0
+ * @since 1.1
  */
 public interface IStartup {
     /**

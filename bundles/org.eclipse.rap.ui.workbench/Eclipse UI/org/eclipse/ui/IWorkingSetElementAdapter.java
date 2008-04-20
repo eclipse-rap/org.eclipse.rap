@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * extensions is optional.
  * </p>
  * 
- * @since 3.3
+ * @since 1.1
  */
 public interface IWorkingSetElementAdapter {
 

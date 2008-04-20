@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IWorkbenchPartReference {
@@ -72,7 +73,6 @@ public interface IWorkbenchPartReference {
      * 
      * @return the part name
      * 
-     * @since 3.0
      */
     public String getPartName();
 
@@ -81,7 +81,6 @@ public interface IWorkbenchPartReference {
      * 
      * @return the content description for the part
      * 
-     * @since 3.0  
      */
     public String getContentDescription();
     
@@ -91,7 +90,6 @@ public interface IWorkbenchPartReference {
      * 
      * @return <code>true</code> if the part is dirty, <code>false</code> otherwise
      * 
-     * @since 3.2 (previously existed on IEditorReference)
      */
     public boolean isDirty();
     
@@ -104,7 +102,6 @@ public interface IWorkbenchPartReference {
 	 * @param key
 	 *            The property to return. Must not be <code>null</code>.
 	 * @return The String property, or <code>null</code>.
-	 * @since 3.3
 	 */
     public String getPartProperty(String key);
     
@@ -113,7 +110,6 @@ public interface IWorkbenchPartReference {
 	 * 
 	 * @param listener
 	 *            Must not be <code>null</code>.
-	 * @since 3.3
 	 */
     public void addPartPropertyListener(IPropertyChangeListener listener);
     
@@ -122,7 +118,6 @@ public interface IWorkbenchPartReference {
 	 * 
 	 * @param listener
 	 *            Must not be <code>null</code>.
-	 * @since 3.3
 	 */
     public void removePartPropertyListener(IPropertyChangeListener listener);
 }

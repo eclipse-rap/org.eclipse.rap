@@ -18,13 +18,13 @@ import org.eclipse.core.runtime.IStatus;
  * <p>
  * This exception class is not intended to be subclassed by clients.
  * </p>
+ * @since 1.0
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class PartInitException extends WorkbenchException {
     
     /**
      * Generated serial version UID for this class.
-     * @since 3.1
      */
     private static final long serialVersionUID = 3257284721296684850L;
 

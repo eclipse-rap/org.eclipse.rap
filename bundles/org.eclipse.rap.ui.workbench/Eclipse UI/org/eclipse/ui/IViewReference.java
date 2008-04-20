@@ -16,6 +16,7 @@ package org.eclipse.ui;
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IViewReference extends IWorkbenchPartReference {
@@ -25,7 +26,6 @@ public interface IViewReference extends IWorkbenchPartReference {
      * 
      * @return the secondary ID, or <code>null</code> if there is no secondary id
      * @see IWorkbenchPage#showView(String, String, int)
-     * @since 3.0
      */
     public String getSecondaryId();
 

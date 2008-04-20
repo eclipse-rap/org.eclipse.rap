@@ -31,6 +31,7 @@ import org.eclipse.ui.dialogs.PropertyDialogAction;
  * &LT;/extension&GT;
  * </pre>
  * </p>
+ * @since 1.1
  */
 public interface IWorkbenchPropertyPage extends IPreferencePage {
     /**

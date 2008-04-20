@@ -18,7 +18,7 @@ package org.eclipse.ui;
  *
  * @see IWorkbench#addWorkbenchListener
  * @see IWorkbench#removeWorkbenchListener
- * @since 3.2
+ * @since 1.0
  */
 public interface IWorkbenchListener {
 	

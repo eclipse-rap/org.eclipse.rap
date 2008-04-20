@@ -48,7 +48,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * Please see the {@link #adaptElements(IWorkingSet, IAdaptable[])} method for
  * details on behavior of this implementation.
  * 
- * @since 3.3
+ * @since 1.1
  */
 public final class BasicWorkingSetElementAdapter implements
 		IWorkingSetElementAdapter, IExecutableExtension {

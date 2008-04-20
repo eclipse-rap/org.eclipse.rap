@@ -44,6 +44,7 @@ import org.eclipse.jface.viewers.ISelection;
  * 
  * @see org.eclipse.ui.actions.ActionDelegate
  * @see org.eclipse.ui.IActionDelegate2
+ * @since 1.0
  */
 public interface IActionDelegate {
     /**

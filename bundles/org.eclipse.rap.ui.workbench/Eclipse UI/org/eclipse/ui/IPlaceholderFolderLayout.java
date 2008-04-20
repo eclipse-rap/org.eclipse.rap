@@ -20,7 +20,7 @@ package org.eclipse.ui;
  * </p>
  *
  * @see IPageLayout#createPlaceholderFolder
- * @since 2.0
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IPlaceholderFolderLayout {

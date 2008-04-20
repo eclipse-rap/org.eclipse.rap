@@ -16,6 +16,8 @@ package org.eclipse.ui;
  * An editors may support changing its input so that 
  * the workbench may change its contents instead of 
  * opening a new editor.
+ * 
+ * @since 1.0
  */
 public interface IReusableEditor extends IEditorPart {
     /**

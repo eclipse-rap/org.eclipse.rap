@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.IPath;
  * create an instance of the launcher class and call <code>open</code> on it,
  * passing the input file.
  * </p>
+ * @since 1.1
  */
 public interface IEditorLauncher {
 

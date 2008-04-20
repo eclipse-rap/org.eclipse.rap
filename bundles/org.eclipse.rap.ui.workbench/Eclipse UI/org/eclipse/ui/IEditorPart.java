@@ -47,6 +47,7 @@ package org.eclipse.ui;
  *
  * @see org.eclipse.ui.IWorkbenchPage#openEditor(IEditorInput, String)
  * @see org.eclipse.ui.part.EditorPart
+ * @since 1.0
  */
 public interface IEditorPart extends IWorkbenchPart, ISaveablePart {
 

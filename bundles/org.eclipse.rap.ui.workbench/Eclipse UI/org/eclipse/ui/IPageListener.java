@@ -17,6 +17,7 @@ package org.eclipse.ui;
  * </p>
  *
  * @see IPageService#addPageListener
+ * @since 1.0
  */
 public interface IPageListener {
     /**

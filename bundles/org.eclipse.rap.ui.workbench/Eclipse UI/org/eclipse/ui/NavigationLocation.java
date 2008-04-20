@@ -14,7 +14,7 @@ package org.eclipse.ui;
 /**
  * Default implementation of INavigationLocation.
  * 
- * @since 2.1
+ * @since 1.1
  */
 public abstract class NavigationLocation implements INavigationLocation {
 

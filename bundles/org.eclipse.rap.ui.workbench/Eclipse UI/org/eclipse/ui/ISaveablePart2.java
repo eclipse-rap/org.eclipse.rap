@@ -24,7 +24,7 @@ package org.eclipse.ui;
  * user experience.
  * </p>
  *  
- * @since 3.1
+ * @since 1.0
  */
 public interface ISaveablePart2 extends ISaveablePart {
 	

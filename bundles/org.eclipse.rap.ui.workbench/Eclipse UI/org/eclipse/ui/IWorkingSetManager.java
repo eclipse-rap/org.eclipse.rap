@@ -29,8 +29,7 @@ import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
  * </p>
  * 
  * @see IWorkingSet
- * @since 2.0 initial version
- * @since 3.0 added createWorkingSet(IMemento)
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IWorkingSetManager {
@@ -77,7 +76,6 @@ public interface IWorkingSetManager {
      * oldValue will be null.
      *
      * @see IPropertyChangeListener
-     * @since 3.2
      */
     public static final String CHANGE_WORKING_SET_LABEL_CHANGE = "workingSetLabelChange"; //$NON-NLS-1$	
     
@@ -85,7 +83,6 @@ public interface IWorkingSetManager {
      * Change event id when a working set updater got installed.
      * NewValue of the PropertyChangeEvent will be the installed updater.
      * OldValue will be <code>null</code>
-     * @since 3.1
      */
     public static final String CHANGE_WORKING_SET_UPDATER_INSTALLED = "workingSetUpdaterInstalled"; //$NON-NLS-1$
     
@@ -93,7 +90,6 @@ public interface IWorkingSetManager {
      * Change event id when a working set updater got uninstalled.
      * NewValue will be <code>null</code>
      * OldValue of the PropertyChangeEvent will be the uninstalled updater.
-     * @since 3.3
      */
     public static final String CHANGE_WORKING_SET_UPDATER_UNINSTALLED = "workingSetUpdaterUninstalled"; //$NON-NLS-1$
 
@@ -149,8 +145,6 @@ public interface IWorkingSetManager {
 	 * @param components
 	 *            the component working sets
 	 * @return a new working set with the specified name and content
-	 * 
-	 * @since 3.2
 	 */
 	public IWorkingSet createAggregateWorkingSet(String name, String label,
 			IWorkingSet[] components);
@@ -161,8 +155,6 @@ public interface IWorkingSetManager {
      *
      * @param memento a memento containing the state for the working set
      * @return the restored working set, or <code>null</code> if it could not be created
-     * 
-     * @since 3.0
      */
     public IWorkingSet createWorkingSet(IMemento memento);
 
@@ -192,7 +184,6 @@ public interface IWorkingSetManager {
      *  not be loaded a default IResource based wizard will be returned. 
      * 	If the default edit wizard can not be loaded <code>null</code> is 
      *  returned.
-     * @since 2.1
      */
     public IWorkingSetEditWizard createWorkingSetEditWizard(
             IWorkingSet workingSet);
@@ -222,8 +213,6 @@ public interface IWorkingSetManager {
      *  are valid
      * 
      * @return the working set new wizard or <code>null</code>
-     * 
-     * @since 3.1
      */
     public IWorkingSetNewWizard createWorkingSetNewWizard(String[] workingSetIds);
     
@@ -271,7 +260,6 @@ public interface IWorkingSetManager {
      *  to be selected, created, removed or edited, or <code>null</code> if all currently
      *  available working set types are valid 
      * @return a working set selection dialog
-     * @since 3.1
      */
     public IWorkingSetSelectionDialog createWorkingSetSelectionDialog(
             Shell parentShell, boolean multi, String[] workingsSetIds);
@@ -309,7 +297,6 @@ public interface IWorkingSetManager {
 	 * 
 	 * @see IWorkingSet#isVisible()
 	 * @return the working sets stored in the receiver
-	 * @since 3.2
 	 */
     public IWorkingSet[] getAllWorkingSets();
 
@@ -329,8 +316,6 @@ public interface IWorkingSetManager {
     
     /**
      * Disposes the working set manager.
-     * 
-     * @since 3.1
      */
     public void dispose();
     
@@ -345,7 +330,6 @@ public interface IWorkingSetManager {
 	 *            the element to adapt and then add to the working sets
 	 * @param workingSets
 	 *            the working sets to add the element to
-	 * @since 3.4
 	 */
 	public void addToWorkingSets(IAdaptable element, IWorkingSet[] workingSets);
 }

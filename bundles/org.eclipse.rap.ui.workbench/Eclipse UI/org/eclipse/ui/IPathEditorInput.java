@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.IPath;
  * </p>
  *
  * @see org.eclipse.core.runtime.IPath
- * @since 3.0
+ * @since 1.0
  */
 public interface IPathEditorInput extends IEditorInput {
     /**

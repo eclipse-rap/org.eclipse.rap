@@ -14,7 +14,7 @@ package org.eclipse.ui;
 /**
  * A filter for selecting Saveables.
  * @see IWorkbench#saveAll(org.eclipse.jface.window.IShellProvider, org.eclipse.jface.operation.IRunnableContext, ISaveableFilter, boolean)
- * @since 3.3
+ * @since 1.1
  */
 public interface ISaveableFilter {
 	

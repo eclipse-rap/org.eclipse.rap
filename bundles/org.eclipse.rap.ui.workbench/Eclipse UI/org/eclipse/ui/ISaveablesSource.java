@@ -51,7 +51,7 @@ import org.eclipse.ui.part.EditorPart;
  * These conditions may be relaxed in future releases.
  * </p>
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface ISaveablesSource {
 

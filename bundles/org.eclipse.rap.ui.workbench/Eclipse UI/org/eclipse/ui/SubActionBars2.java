@@ -19,7 +19,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * sub class provides a sub cool bar manager for plugins to contribute multiple
  * cool items.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public class SubActionBars2 extends SubActionBars implements IActionBars2 {
 	private SubCoolBarManager coolBarMgr = null;
@@ -42,8 +42,6 @@ public class SubActionBars2 extends SubActionBars implements IActionBars2 {
 	 * @param serviceLocator
 	 *            The service locator for this action bar; must not be
 	 *            <code>null</code>.
-	 *            
-	 * @since 3.2
 	 */
 	public SubActionBars2(final IActionBars2 parent,
 			final IServiceLocator serviceLocator) {

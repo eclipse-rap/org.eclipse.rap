@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.internal.ShowInMenu;
-import org.eclipse.ui.internal.dialogs.ContentTypesPreferencePage;
+//import org.eclipse.ui.internal.dialogs.ContentTypesPreferencePage;
 import org.eclipse.ui.internal.dialogs.DecoratorsPreferencePage;
 import org.eclipse.ui.internal.dialogs.EditorsPreferencePage;
-import org.eclipse.ui.internal.dialogs.FileEditorsPreferencePage;
+//import org.eclipse.ui.internal.dialogs.FileEditorsPreferencePage;
 import org.eclipse.ui.internal.dialogs.PerspectivesPreferencePage;
 import org.eclipse.ui.internal.dialogs.ViewsPreferencePage;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferencePage;
@@ -39,7 +39,7 @@ import org.eclipse.ui.internal.wizards.preferences.PreferencesImportWizard;
  * without exposing their concrete implementation classes.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public class ExtensionFactory implements IExecutableExtensionFactory,
 		IExecutableExtension {
@@ -77,7 +77,6 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 	/**
 	 * Factory ID for the new (and improved) keys preference page.
 	 * 
-	 * @since 3.2
 	 */
 	public static final String NEW_KEYS_PREFERENCE_PAGE = "newKeysPreferencePage"; //$NON-NLS-1$
 
@@ -114,7 +113,7 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 	/**
 	 * Factory ID for the show in contribution.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static final String SHOW_IN_CONTRIBUTION = "showInContribution"; //$NON-NLS-1$
 
@@ -156,9 +155,10 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 		if (EDITORS_PREFERENCE_PAGE.equals(id)) {
 			return configure(new EditorsPreferencePage());
 		}
-		if (FILE_ASSOCIATIONS_PREFERENCE_PAGE.equals(id)) {
-			return configure(new FileEditorsPreferencePage());
-		}
+// RAP [rh] FileEditorsPreferencePage is disabled in RAP
+//		if (FILE_ASSOCIATIONS_PREFERENCE_PAGE.equals(id)) {
+//			return configure(new FileEditorsPreferencePage());
+//		}
 		if (KEYS_PREFERENCE_PAGE.equals(id)) {
 			return configure(new KeysPreferencePage());
 		}
@@ -180,9 +180,10 @@ public class ExtensionFactory implements IExecutableExtensionFactory,
 		if (WORKBENCH_PREFERENCE_PAGE.equals(id)) {
 			return configure(new WorkbenchPreferencePage());
 		}
-		if (CONTENT_TYPES_PREFERENCE_PAGE.equals(id)) {
-			return configure(new ContentTypesPreferencePage());
-		}
+// RAP [rh] ContentTypesPreferencePage disabled in RAP
+//		if (CONTENT_TYPES_PREFERENCE_PAGE.equals(id)) {
+//			return configure(new ContentTypesPreferencePage());
+//		}
 		if (SHOW_IN_CONTRIBUTION.equals(id)) {
 			ShowInMenu showInMenu = new ShowInMenu();
 			return showInMenu;

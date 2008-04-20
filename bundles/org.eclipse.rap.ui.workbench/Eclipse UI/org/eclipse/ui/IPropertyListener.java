@@ -16,6 +16,7 @@ package org.eclipse.ui;
  * This interface may be implemented by clients.
  * </p>
  *
+ * @since 1.0
  * @see IWorkbenchPart#addPropertyListener
  */
 public interface IPropertyListener {

@@ -24,7 +24,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * appropriate.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  */
 public abstract class AbstractSourceProvider implements ISourceProvider {
 
@@ -32,7 +32,6 @@ public abstract class AbstractSourceProvider implements ISourceProvider {
 	 * Whether source providers should print out debugging information to the
 	 * console when events arrive.
 	 * 
-	 * @since 3.2
 	 */
 	protected static boolean DEBUG = Policy.DEBUG_SOURCES;
 
@@ -108,7 +107,6 @@ public abstract class AbstractSourceProvider implements ISourceProvider {
 	 * @param message
 	 *            The debugging message to log; if <code>null</code>, then
 	 *            nothing is logged.
-	 * @since 3.2
 	 */
 	protected final void logDebuggingInfo(final String message) {
 		if (DEBUG && (message != null)) {
@@ -147,7 +145,7 @@ public abstract class AbstractSourceProvider implements ISourceProvider {
 	 * @param locator
 	 *            The global service locator. It can be used to retrieve
 	 *            services like the IContextService
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public void initialize(final IServiceLocator locator) {
 	}

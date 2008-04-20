@@ -35,6 +35,7 @@ package org.eclipse.ui;
  * @see org.eclipse.core.runtime.IAdaptable
  * @see org.eclipse.ui.IMemento
  * @see org.eclipse.ui.IElementFactory
+ * @since 1.1
  */
 public interface IPersistableElement extends IPersistable {
     /**

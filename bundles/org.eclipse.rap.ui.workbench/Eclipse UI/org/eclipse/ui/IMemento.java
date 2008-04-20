@@ -39,6 +39,7 @@ package org.eclipse.ui;
  *
  * @see IPersistableElement
  * @see IElementFactory
+ * @sicne 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IMemento {
@@ -111,7 +112,6 @@ public interface IMemento {
 	 * @return the memento type
 	 * @see #createChild(java.lang.String)
 	 * @see #createChild(java.lang.String,java.lang.String)
-	 * @since 3.4
 	 */
 	public String getType();
 
@@ -145,7 +145,6 @@ public interface IMemento {
 	 * 
 	 * @param key the key
 	 * @return the value, or <code>null</code> if the key was not found
-     * @since 3.4
 	 */
 	public Boolean getBoolean(String key);
 
@@ -155,7 +154,6 @@ public interface IMemento {
      * 
      * @return the data of the Text node of the memento, or <code>null</code>
      * if the memento has no Text node.
-     * @since 2.0
      */
     public String getTextData();
 	
@@ -164,7 +162,6 @@ public interface IMemento {
      * be <code>null</code>. If there are no keys, an array of length zero will
      * be returned. 
      * @return an array with all the attribute keys of the memento
-     * @since 3.4
      */
 	public String[] getAttributeKeys();
 
@@ -205,7 +202,6 @@ public interface IMemento {
 	 * 
 	 * @param key the key
 	 * @param value the value
-     * @since 3.4
 	 */
 	public void putBoolean(String key, boolean value);
 
@@ -215,7 +211,6 @@ public interface IMemento {
      * Each memento is allowed only one text node.
      * 
      * @param data the data to be placed on the Text node
-     * @since 2.0
      */
     public void putTextData(String data);
 }

@@ -17,6 +17,7 @@ package org.eclipse.ui;
  * </p>
  *
  * @see IPartService#addPartListener(IPartListener)
+ * @since 1.0
  */
 public interface IPartListener {
 

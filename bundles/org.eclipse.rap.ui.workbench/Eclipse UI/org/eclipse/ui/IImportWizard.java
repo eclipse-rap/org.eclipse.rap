@@ -32,6 +32,7 @@ package org.eclipse.ui;
  * </p>
  *
  * @see org.eclipse.jface.wizard.IWizard
+ * @since 1.1
  */
 public interface IImportWizard extends IWorkbenchWizard {
 }

@@ -66,6 +66,7 @@ package org.eclipse.ui;
  * action sets of a predefined perspective to create a custom perspective.  In such cases 
  * the layout is persisted by the workbench and the factory is not used.
  * </p>
+ * @since 1.0
  */
 public interface IPerspectiveFactory {
     /**

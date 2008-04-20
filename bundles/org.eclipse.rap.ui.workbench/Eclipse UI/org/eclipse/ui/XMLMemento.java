@@ -41,6 +41,7 @@ import org.xml.sax.SAXException;
  * </p>
  *
  * @see IMemento
+ * @since 1.1
  */
 public final class XMLMemento implements IMemento {
     private Document factory;
@@ -101,13 +102,13 @@ public final class XMLMemento implements IMemento {
             }
         } catch (ParserConfigurationException e) {
             exception = e;
-            errorMessage = WorkbenchMessages.XMLMemento_parserConfigError;
+            errorMessage = WorkbenchMessages.get().XMLMemento_parserConfigError;
         } catch (IOException e) {
             exception = e;
-            errorMessage = WorkbenchMessages.XMLMemento_ioError; 
+            errorMessage = WorkbenchMessages.get().XMLMemento_ioError; 
         } catch (SAXException e) {
             exception = e;
-            errorMessage = WorkbenchMessages.XMLMemento_formatError; 
+            errorMessage = WorkbenchMessages.get().XMLMemento_formatError; 
         }
 
         String problemText = null;
@@ -116,7 +117,7 @@ public final class XMLMemento implements IMemento {
 		}
         if (problemText == null || problemText.length() == 0) {
 			problemText = errorMessage != null ? errorMessage
-                    : WorkbenchMessages.XMLMemento_noElement;
+                    : WorkbenchMessages.get().XMLMemento_noElement;
 		} 
         throw new WorkbenchException(problemText, exception);
     }

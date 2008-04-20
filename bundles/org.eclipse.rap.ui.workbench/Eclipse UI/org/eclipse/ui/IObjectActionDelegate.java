@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IAction;
  * for a view or editor.  It extends <code>IActionDelegate</code>
  * and adds an initialization method for connecting the delegate to the 
  * part it should work with.
+ * @since 1.0
  */
 public interface IObjectActionDelegate extends IActionDelegate {
     /**

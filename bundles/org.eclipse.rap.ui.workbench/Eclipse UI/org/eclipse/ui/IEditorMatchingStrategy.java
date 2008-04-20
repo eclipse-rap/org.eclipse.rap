@@ -18,7 +18,7 @@ package org.eclipse.ui;
  * {@link org.eclipse.ui.IWorkbenchPage#openEditor(IEditorInput, String, boolean)} and
  * {@link org.eclipse.ui.IWorkbenchPage#findEditor(IEditorInput)}.
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IEditorMatchingStrategy {
     

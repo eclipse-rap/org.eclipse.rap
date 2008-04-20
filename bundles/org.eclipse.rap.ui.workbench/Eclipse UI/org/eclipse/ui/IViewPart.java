@@ -39,7 +39,7 @@ package org.eclipse.ui;
  * managed by the platform's adapter manager.
  * </p>
  * <p>
- * As of 3.4, views may optionally adapt to {@link ISizeProvider} if they have
+ * As of 1.1, views may optionally adapt to {@link ISizeProvider} if they have
  * a preferred size. The default presentation will make a best effort to
  * allocate the preferred size to a view if it is the only part in a stack. If
  * there is more than one part in the stack, the constraints will be disabled
@@ -48,6 +48,7 @@ package org.eclipse.ui;
  * and not all presentations may honor size constraints.
  * </p>
  * 
+ * @since 1.0
  * @see IWorkbenchPage#showView
  * @see org.eclipse.ui.part.ViewPart
  * @see ISizeProvider

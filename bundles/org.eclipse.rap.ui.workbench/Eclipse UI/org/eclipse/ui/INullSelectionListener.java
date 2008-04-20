@@ -25,7 +25,7 @@ package org.eclipse.ui;
  * @see IActionDelegate#selectionChanged
  * @see org.eclipse.ui.ISelectionListener
  * 
- * @since 2.0
+ * @since 1.0
  */
 public interface INullSelectionListener extends ISelectionListener {
 }

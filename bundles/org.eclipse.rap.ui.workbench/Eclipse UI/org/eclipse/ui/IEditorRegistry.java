@@ -35,6 +35,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * </p>
  * 
  * @see org.eclipse.ui.IWorkbench#getEditorRegistry()
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IEditorRegistry {
@@ -52,7 +53,6 @@ public interface IEditorRegistry {
      * Use {@link #findEditor findEditor} to access the editor descriptor for
      * this identifier.
      * 
-     * @since 3.0
      */
     public static final String SYSTEM_EXTERNAL_EDITOR_ID = "org.eclipse.ui.systemExternalEditor"; //$NON-NLS-1$
 
@@ -64,7 +64,6 @@ public interface IEditorRegistry {
      * {@link #findEditor findEditor} to access the editor descriptor for this
      * identifier.
      * 
-     * @since 3.0
      */
     public static final String SYSTEM_INPLACE_EDITOR_ID = "org.eclipse.ui.systemInPlaceEditor"; //$NON-NLS-1$
 
@@ -128,7 +127,6 @@ public interface IEditorRegistry {
      * @param contentType the content type or <code>null</code> for the unknown content type
      * @return the descriptor of the default editor, or <code>null</code> if not
      *   found
-     * @since 3.1
      */
     public IEditorDescriptor getDefaultEditor(String fileName, IContentType contentType);
 
@@ -161,7 +159,6 @@ public interface IEditorRegistry {
 	 *            the content type or <code>null</code> for the unknown
 	 *            content type
 	 * @return a list of editor descriptors
-	 * @since 3.1
 	 */
     public IEditorDescriptor[] getEditors(String fileName, IContentType contentType);
 
@@ -210,7 +207,6 @@ public interface IEditorRegistry {
 	 *            the content type of the file or <code>null</code> for the
 	 *            unknown content type
 	 * @return the descriptor of the image to display next to the file
-	 * @since 3.1
 	 */
     public ImageDescriptor getImageDescriptor(String filename, IContentType contentType);
 
@@ -239,7 +235,6 @@ public interface IEditorRegistry {
      * @param filename the file name
      * @return <code>true</code> if an in-place editor is available, and
      * <code>false</code> otherwise
-     * @since 3.0
      */
     public boolean isSystemInPlaceEditorAvailable(String filename);
 
@@ -250,7 +245,6 @@ public interface IEditorRegistry {
      * @param filename the file name
      * @return <code>true</code> if an external editor available, and
      * <code>false</code> otherwise
-     * @since 3.0
      */
     public boolean isSystemExternalEditorAvailable(String filename);
 
@@ -261,7 +255,6 @@ public interface IEditorRegistry {
      * @param filename the file name
      * @return the descriptor of the external editor image, or <code>null</code>
      * if none
-     * @since 3.0
      */
     public ImageDescriptor getSystemExternalEditorImageDescriptor(
             String filename);

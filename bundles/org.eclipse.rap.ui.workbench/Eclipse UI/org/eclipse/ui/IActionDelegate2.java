@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Event;
  *
  * @see org.eclipse.ui.actions.ActionDelegate
  * @see org.eclipse.ui.IActionDelegate
- * @since 2.1
+ * @since 1.0
  */
 public interface IActionDelegate2 extends IActionDelegate {
     /**
@@ -65,7 +65,6 @@ public interface IActionDelegate2 extends IActionDelegate {
      * @param action the action proxy that handles the presentation portion of
      * the action
      * @param event the SWT event which triggered this action being run
-     * @since 2.0
      */
     public void runWithEvent(IAction action, Event event);
 }

@@ -19,6 +19,7 @@ package org.eclipse.ui;
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IEditorReference extends IWorkbenchPartReference {
@@ -58,7 +59,6 @@ public interface IEditorReference extends IWorkbenchPartReference {
      *  
      * @return the editor input for the editor referenced by this object
      * @throws PartInitException if there was an error restoring the editor input
-     * @since 3.1
      */
     public IEditorInput getEditorInput() throws PartInitException;
 }

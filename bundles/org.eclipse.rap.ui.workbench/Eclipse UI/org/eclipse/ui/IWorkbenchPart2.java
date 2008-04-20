@@ -16,7 +16,7 @@ package org.eclipse.ui;
  * name and extra status text.  With this interface, the distinction is
  * made more explicit. 
  * 
- * @since 3.0 
+ * @since 1.0 
  */
 public interface IWorkbenchPart2 extends IWorkbenchPart {
     /**

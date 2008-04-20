@@ -26,7 +26,7 @@ package org.eclipse.ui;
  * </p>
  *
  * @see org.eclipse.ui.IInPlaceEditor
- * @since 3.0
+ * @since 1.1
  */
 public interface IInPlaceEditorInput extends IPathEditorInput {
     /**

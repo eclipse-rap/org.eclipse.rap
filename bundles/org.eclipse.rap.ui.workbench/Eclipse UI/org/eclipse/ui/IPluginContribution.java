@@ -16,7 +16,7 @@ package org.eclipse.ui;
  * a plugin contribution. This is useful in various activity filtering
  * scenarios.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public interface IPluginContribution {
 

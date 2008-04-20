@@ -16,7 +16,7 @@ package org.eclipse.ui;
  * Not intended to be implemented by clients. Clients should subclass NavigationLocation
  * instead.
  * 
- * @since 2.1
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface INavigationLocation {

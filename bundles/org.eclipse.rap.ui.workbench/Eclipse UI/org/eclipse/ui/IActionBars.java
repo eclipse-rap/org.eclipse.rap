@@ -53,6 +53,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * </p><p>
  * This interface is not intended to be implemented by clients.
  * </p>
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IActionBars {
@@ -94,7 +95,6 @@ public interface IActionBars {
 	 * by looking locally, and then ascending the action bar hierarchy.
 	 * 
 	 * @return The service locator; never <code>null</code>.
-	 * @since 3.2
 	 */
 	public IServiceLocator getServiceLocator();
 

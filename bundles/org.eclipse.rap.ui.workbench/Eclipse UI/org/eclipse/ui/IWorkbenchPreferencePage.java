@@ -27,6 +27,7 @@ import org.eclipse.jface.preference.IPreferencePage;
  * &LT;/extension&GT;
  * </pre>
  * </p>
+ * @since 1.1
  */
 public interface IWorkbenchPreferencePage extends IPreferencePage {
     /**

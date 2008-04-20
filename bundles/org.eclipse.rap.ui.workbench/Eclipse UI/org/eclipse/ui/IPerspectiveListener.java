@@ -18,6 +18,7 @@ package org.eclipse.ui;
  *
  * @see IPageService#addPerspectiveListener(IPerspectiveListener)
  * @see PerspectiveAdapter
+ * @since 1.0
  */
 public interface IPerspectiveListener {
     /**

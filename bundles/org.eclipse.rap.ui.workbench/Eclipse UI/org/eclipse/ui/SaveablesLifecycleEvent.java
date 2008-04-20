@@ -17,7 +17,7 @@ import java.util.EventObject;
 /**
  * Event object describing a change to a set of Saveable objects.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public class SaveablesLifecycleEvent extends EventObject {
 

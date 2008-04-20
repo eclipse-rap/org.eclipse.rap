@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Event;
  * Otherwise, they should simply implement <code>IActionDelegate</code> (or subinterface).
  * <p>
  *
- * @since 2.0
+ * @since 1.0
  * @deprecated Use org.eclipse.ui.IActionDelegate2 instead.
  */
 public interface IActionDelegateWithEvent {
@@ -40,7 +40,6 @@ public interface IActionDelegateWithEvent {
      *
      * @param action the action proxy that handles the presentation portion of the action
      * @param event the SWT event which triggered this action being run 
-     * @since  2.0
      * @deprecated Use org.eclipse.ui.IActionDelegate2 instead.
      */
     public void runWithEvent(IAction action, Event event);

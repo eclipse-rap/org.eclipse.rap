@@ -21,9 +21,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * This interface is not intended to be implemented by clients.
  * </p>
  * 
- * @since 2.0 initial version
- * @since 3.0 now extends {@link org.eclipse.ui.IPersistableElement}
- * @since 3.2 now extends {@link org.eclipse.core.runtime.IAdaptable}
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IWorkingSet extends IPersistableElement, IAdaptable {
@@ -44,7 +42,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
      * is used if this value is <code>null</code>.
      * 
      * @return the working set id. May be <code>null</code>
-     * @since 2.1 
      */
     public String getId();
 
@@ -58,7 +55,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
      * extension or if <code>getId()</code> returns <code>null</code>. 
      * 
      * @return the working set icon or <code>null</code>.
-     * @since 2.1 
      * @deprecated use {@link #getImageDescriptor()} instead
      */
     public ImageDescriptor getImage();
@@ -73,7 +69,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
      * extension or if <code>getId()</code> returns <code>null</code>. 
      * 
      * @return the working set icon or <code>null</code>.
-     * @since 3.3
      */
     public ImageDescriptor getImageDescriptor();
 
@@ -86,12 +81,12 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 
     /**
 	 * Sets the elements that are contained in this working set.
+	 * it is now recommended that all calls to this method pass
+	 *        through the results from calling
+	 *        {@link #adaptElements(IAdaptable[])} with the desired elements.
 	 * 
 	 * @param elements
 	 *            the elements to set in this working set
-	 * @since 3.3 it is now recommended that all calls to this method pass
-	 *        through the results from calling
-	 *        {@link #adaptElements(IAdaptable[])} with the desired elements.
 	 */
 	public void setElements(IAdaptable[] elements);
 
@@ -103,7 +98,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 	 * 
 	 * @param id
 	 *            the working set id. May be <code>null</code>
-	 * @since 2.1
 	 */
     public void setId(String id);
 
@@ -125,7 +119,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
      * @return <code>true</code> if the working set can be edited; otherwise
      *  <code>false</code>
      *  
-     * @since 3.1
      */
     public boolean isEditable();
  
@@ -136,7 +129,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 	 * @return <code>true</code> if the working set should be shown in the
 	 *         user interface; otherwise <code>false</code>
 	 * 
-	 * @since 3.2
 	 */
 	public boolean isVisible();
     
@@ -145,7 +137,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 	 * the same as the one returned from {@link #getName()}.
 	 * 
 	 * @return the name of this working set, formated for the end user
-	 * @since 3.2
 	 */
     public String getLabel();
     
@@ -155,7 +146,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 	 * @param label
 	 *            the label for this working set. If <code>null</code> is
 	 *            supplied then the value of {@link #getName()} will be used.
-	 * @since 3.2
 	 */
 	public void setLabel(String label);
 	
@@ -168,7 +158,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 	 * returns <code>false</code>.
 	 * 
 	 * @return whether the set is self-updating or not
-	 * @since 3.2
 	 */
 	public boolean isSelfUpdating();
 	
@@ -181,7 +170,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 	 * {@link IWorkbenchPage#getAggregateWorkingSet()} for details.
 	 * 
 	 * @return whether this working set is an aggregate working set or not
-	 * @since 3.2
 	 */
 	public boolean isAggregateWorkingSet();	
 	
@@ -189,7 +177,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 	 * Returns whether this working set is currently empty (has no elements).
 	 * 
 	 * @return whether this working set is currently empty
-	 * @since 3.2
 	 */
 	public boolean isEmpty();
 	
@@ -204,7 +191,6 @@ public interface IWorkingSet extends IPersistableElement, IAdaptable {
 	 *            the objects to transform
 	 * @return an array of transformed elements that be empty if no elements
 	 *         from the original array are suitable
-	 * @since 3.3
 	 * @see org.eclipse.ui.IWorkingSetElementAdapter
 	 * @see org.eclipse.ui.BasicWorkingSetElementAdapter
 	 */

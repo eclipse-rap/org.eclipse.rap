@@ -16,7 +16,7 @@ package org.eclipse.ui;
  * The workbench uses this interface in certain views
  * to test if a given resource is part of a working set.
  * 
- * @since 2.1
+ * @since 1.1
  */
 public interface IContainmentAdapter {
     /**

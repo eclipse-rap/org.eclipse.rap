@@ -67,6 +67,7 @@ package org.eclipse.ui;
  * layout.addView(IPageLayout.ID_TASK_LIST, IPageLayout.BOTTOM, 0.66f, editorArea);
  * </pre>
  * </p>
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IPageLayout {
@@ -99,13 +100,11 @@ public interface IPageLayout {
 
     /**
      * The view id for the workbench's Problems View standard component.
-     * @since 3.0
      */
     public static String ID_PROBLEM_VIEW = "org.eclipse.ui.views.ProblemView"; //$NON-NLS-1$
     
     /**
      * The view id for the workbench's Progress View standard component.
-     * @since 3.2
      */
     public static String ID_PROGRESS_VIEW = "org.eclipse.ui.views.ProgressView"; //$NON-NLS-1$
 
@@ -117,7 +116,6 @@ public interface IPageLayout {
     /**
      * Id of the navigate action set. 
      * (value <code>"org.eclipse.ui.NavigateActionSet"</code>)
-     * @since 2.1
      */
     public static final String ID_NAVIGATE_ACTION_SET = "org.eclipse.ui.NavigateActionSet"; //$NON-NLS-1$
 
@@ -147,37 +145,31 @@ public interface IPageLayout {
 
     /**
      * Minimum acceptable ratio value when adding a view
-     * @since 2.0
      */
     public static final float RATIO_MIN = 0.05f;
 
     /**
      * Maximum acceptable ratio value when adding a view
-     * @since 2.0
      */
     public static final float RATIO_MAX = 0.95f;
 
     /**
      * The default fast view ratio width.
-     * @since 2.0
      */
     public static final float DEFAULT_FASTVIEW_RATIO = 0.3f;
 
     /**
      * The default view ratio width for regular (non-fast) views.
-     * @since 2.0
      */
     public static final float DEFAULT_VIEW_RATIO = 0.5f;
 
     /**
      * A variable used to represent invalid  ratios.
-     * @since 2.0
      */
     public static final float INVALID_RATIO = -1f;
 
     /**
      * A variable used to represent a ratio which has not been specified.
-     * @since 2.0
      */
     public static final float NULL_RATIO = -2f;
 
@@ -197,7 +189,6 @@ public interface IPageLayout {
      * point (named <code>"org.eclipse.ui.views"</code>).
      * 
      * @param viewId the compound id of the view to be added
-     * @since 2.0
      */
     public void addFastView(String viewId);
 
@@ -210,7 +201,6 @@ public interface IPageLayout {
      * 
      * @param viewId the compound id of the view to be added
      * @param ratio the percentage of the workbench the fast view will cover
-     * @since 2.0
      */
     public void addFastView(String viewId, float ratio);
 
@@ -273,7 +263,6 @@ public interface IPageLayout {
      *
      * @param id the view id
      * 
-     * @since 2.1
      */
     public void addShowInPart(String id);
 
@@ -355,7 +344,6 @@ public interface IPageLayout {
      * @param refId the id of the reference part; either a view id, a folder id,
      *   or the special editor area id returned by <code>getEditorArea</code>
      * @return a placeholder for the new folder
-     * @since 2.0
      */
     public IPlaceholderFolderLayout createPlaceholderFolder(String folderId,
             int relationship, float ratio, String refId);
@@ -415,7 +403,6 @@ public interface IPageLayout {
      * set of views cannot be closed.
      *
      * @param isFixed <code>true</code> if this layout is fixed, <code>false</code> if not
-     * @since 3.0
      */
     public void setFixed(boolean isFixed);
 
@@ -426,7 +413,6 @@ public interface IPageLayout {
      * The default is <code>false</code>.
      * 
      * @return <code>true</code> if this layout is fixed, <code>false</code> if not.
-     * @since 3.0
      */
     public boolean isFixed();
 
@@ -438,7 +424,6 @@ public interface IPageLayout {
      * 
      * @param id the compound view id or placeholder
      * @return the view layout, or <code>null</code>
-     * @since 3.0
      */
     public IViewLayout getViewLayout(String id);
 
@@ -471,7 +456,6 @@ public interface IPageLayout {
      * @param refId the id of the reference part; either a view id, a folder id,
      *   or the special editor area id returned by <code>getEditorArea</code>
      * 
-     * @since 3.0
      */
     public void addStandaloneView(String viewId, boolean showTitle,
             int relationship, float ratio, String refId);
@@ -510,7 +494,6 @@ public interface IPageLayout {
 	 * @param showTitle
 	 *            true to show the view's title, false if not
 	 *            
-	 * @since 3.2
 	 */
     public void addStandaloneViewPlaceholder(String viewId, int relationship,
 			float ratio, String refId, boolean showTitle);
@@ -520,7 +503,6 @@ public interface IPageLayout {
 	 * Returns the perspective descriptor for the perspective being layed out.
 	 * 
 	 * @return the perspective descriptor for the perspective being layed out
-	 * @since 3.2
 	 */
     public IPerspectiveDescriptor getDescriptor();
     
@@ -535,7 +517,6 @@ public interface IPageLayout {
 	 *            the compound view id or placeholder. Must not be
 	 *            <code>null</code>.
 	 * @return the folder layout, or <code>null</code>
-	 * @since 3.3
 	 */
     public IPlaceholderFolderLayout getFolderForView(String id);
 }

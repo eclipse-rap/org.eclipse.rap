@@ -15,6 +15,8 @@ package org.eclipse.ui;
  * or tool bar. It extends <code>IActionDelegate</code> and adds an
  * initialization method for connecting the delegate to the workbench window it
  * should work with.
+ * 
+ * @since 1.0
  */
 public interface IWorkbenchWindowActionDelegate extends IActionDelegate {
     /**

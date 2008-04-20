@@ -47,6 +47,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * @see org.eclipse.ui.IEditorPart
  * @see org.eclipse.ui.IWorkbenchPage#openEditor(IEditorInput, String)
  * @see org.eclipse.ui.IWorkbenchPage#openEditor(IEditorInput, String, boolean)
+ * @since 1.0
  */
 public interface IEditorInput extends IAdaptable {
 	/**

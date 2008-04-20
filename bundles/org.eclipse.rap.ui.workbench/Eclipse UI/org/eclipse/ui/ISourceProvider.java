@@ -25,7 +25,7 @@ import java.util.Map;
  * instead, as this provides some common support for listeners.
  * </p>
  * 
- * @since 3.1
+ * @since 1.0
  * @see org.eclipse.ui.handlers.IHandlerService
  * @see org.eclipse.ui.ISources
  */

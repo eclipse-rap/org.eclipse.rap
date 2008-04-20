@@ -87,6 +87,7 @@ import org.eclipse.swt.widgets.Composite;
  * are managed by the platform's adapter manager.
  * </p>
  *
+ * @since 1.0
  * @see IViewPart
  * @see IEditorPart
  */

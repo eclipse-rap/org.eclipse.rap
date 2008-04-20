@@ -16,7 +16,7 @@ package org.eclipse.ui;
  * navigation history. The message <code>createNavigationLocation</code>
  * will be sent when a new location is marked in the history.
  * 
- * @since 2.1
+ * @since 1.1
  */
 public interface INavigationLocationProvider {
     /**

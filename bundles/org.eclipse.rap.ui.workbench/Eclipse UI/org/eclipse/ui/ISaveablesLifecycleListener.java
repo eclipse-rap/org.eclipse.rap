@@ -16,7 +16,7 @@ package org.eclipse.ui;
 /**
  * Listener for model lifecycle events.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface ISaveablesLifecycleListener {
 	

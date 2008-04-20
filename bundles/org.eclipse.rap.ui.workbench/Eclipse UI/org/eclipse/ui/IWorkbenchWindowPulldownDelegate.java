@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Menu;
  * Interface for a pulldown action that is contributed into the workbench window 
  * tool bar.  It extends <code>IWorkbenchWindowActionDelegate</code> and adds an
  * initialization method to define the menu creator for the action.
+ * 
+ * @since 1.0
  */
 public interface IWorkbenchWindowPulldownDelegate extends
         IWorkbenchWindowActionDelegate {

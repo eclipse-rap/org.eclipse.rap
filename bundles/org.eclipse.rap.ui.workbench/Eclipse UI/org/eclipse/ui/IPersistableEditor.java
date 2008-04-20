@@ -32,7 +32,7 @@ package org.eclipse.ui;
  * references are saved.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  */
 public interface IPersistableEditor extends IPersistable {
 	/**

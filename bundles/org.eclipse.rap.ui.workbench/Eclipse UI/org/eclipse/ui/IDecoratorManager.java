@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ILightweightLabelDecorator;
  * <p>
  * This class is not intended to be implemented by clients.
  * </p>
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IDecoratorManager extends IDelayedLabelDecorator{

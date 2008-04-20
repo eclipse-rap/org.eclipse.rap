@@ -15,6 +15,7 @@ package org.eclipse.ui;
  * pulldown menu, or popup menu. It extends <code>IActionDelegate</code>
  * and adds an initialization method for connecting the delegate to the view it
  * should work with.
+ * @since 1.0
  */
 public interface IViewActionDelegate extends IActionDelegate {
     /**

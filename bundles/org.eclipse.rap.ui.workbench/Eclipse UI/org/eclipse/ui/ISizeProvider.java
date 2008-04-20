@@ -15,7 +15,7 @@ package org.eclipse.ui;
  * Interface implemented by objects that are capable of computing 
  * a preferred size
  * 
- * @since 3.1
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ISizeProvider {

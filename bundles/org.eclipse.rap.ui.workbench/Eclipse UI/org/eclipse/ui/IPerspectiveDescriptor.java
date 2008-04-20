@@ -42,6 +42,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * This interface is not intended to be implemented by clients.
  * </p>
  * @see IPerspectiveRegistry
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IPerspectiveDescriptor {
@@ -50,7 +51,6 @@ public interface IPerspectiveDescriptor {
      * This is the value of its <code>"description"</code> attribute.
      *
      * @return the description
-     * @since 3.0
      */
     public String getDescription();
 

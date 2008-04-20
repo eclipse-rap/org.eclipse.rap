@@ -18,6 +18,7 @@ import org.eclipse.jface.action.IAction;
  * connecting the delegate to the editor it should work with. Since there is
  * always only one action delegate per editor type, this method supplies the
  * link to the currently active editor instance.
+ * @since 1.0
  */
 public interface IEditorActionDelegate extends IActionDelegate {
     /**

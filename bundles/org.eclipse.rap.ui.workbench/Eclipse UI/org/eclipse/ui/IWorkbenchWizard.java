@@ -19,6 +19,7 @@ import org.eclipse.jface.wizard.IWizard;
  * contributed to the workbench's creation wizard extension point.
  *
  * @see org.eclipse.jface.wizard.IWizard
+ * @since 1.1
  */
 public interface IWorkbenchWizard extends IWizard {
     /**

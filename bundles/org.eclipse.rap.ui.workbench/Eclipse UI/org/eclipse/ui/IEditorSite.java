@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
  * The workbench exposes its implemention of editor part sites via this 
  * interface, which is not intended to be implemented or extended by clients.
  * </p>
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IEditorSite extends IWorkbenchPartSite {
@@ -42,7 +43,6 @@ public interface IEditorSite extends IWorkbenchPartSite {
 	 * action bars are done by the <code>IEditorActionBarContributor</code>.
 	 * 
 	 * @return the action bars
-	 * @since 2.1
 	 */
     public IActionBars getActionBars();
 
@@ -73,7 +73,6 @@ public interface IEditorSite extends IWorkbenchPartSite {
      *            contributions to this context menu.
      * @see IWorkbenchPartSite#registerContextMenu(MenuManager,
      *      ISelectionProvider)
-     * @since 3.1
      */
     public void registerContextMenu(MenuManager menuManager,
             ISelectionProvider selectionProvider, boolean includeEditorInput);
@@ -108,7 +107,6 @@ public interface IEditorSite extends IWorkbenchPartSite {
      *            contributions to this context menu.
      * @see IWorkbenchPartSite#registerContextMenu(MenuManager,
      *      ISelectionProvider)
-     * @since 3.1
      */
     public void registerContextMenu(String menuId, MenuManager menuManager,
             ISelectionProvider selectionProvider, boolean includeEditorInput);

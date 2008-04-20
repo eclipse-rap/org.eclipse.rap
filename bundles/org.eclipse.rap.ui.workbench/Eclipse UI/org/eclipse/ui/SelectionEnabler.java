@@ -38,7 +38,7 @@ import org.osgi.framework.Bundle;
  * This class can be instantiated by clients. It is not intended to be extended.
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  * 
  * Note: The dependency on org.eclipse.jface.text for ITextSelection must be
  * severed It may be possible to do with IActionFilter generic workbench
@@ -115,7 +115,6 @@ public final class SelectionEnabler {
 	 * 
 	 * @return <code>ITextSelection.class</code> or <code>null</code> if
 	 *         class not available
-	 * @since 3.0
 	 */
 	private static Class getTextSelectionClass() {
 		if (iTextSelectionClass != null) {

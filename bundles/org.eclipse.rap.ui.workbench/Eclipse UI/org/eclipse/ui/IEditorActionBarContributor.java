@@ -32,6 +32,7 @@ package org.eclipse.ui;
  * </p>
  *
  * @see IEditorActionBarContributor
+ * @since 1.0
  */
 public interface IEditorActionBarContributor {
     /**

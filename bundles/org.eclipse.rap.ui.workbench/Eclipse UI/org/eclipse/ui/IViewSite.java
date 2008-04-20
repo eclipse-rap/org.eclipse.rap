@@ -16,6 +16,7 @@ package org.eclipse.ui;
  * The workbench exposes its implemention of view part sites via this interface,
  * which is not intended to be implemented or extended by clients.
  * </p>
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IViewSite extends IWorkbenchPartSite {
@@ -33,7 +34,6 @@ public interface IViewSite extends IWorkbenchPartSite {
      * or <code>null</code> if it has none.
      * 
      * @see IWorkbenchPage#showView(String, String, int)
-     * @since 3.0
      */
     public String getSecondaryId();
 }

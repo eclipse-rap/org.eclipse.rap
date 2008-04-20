@@ -15,7 +15,7 @@ package org.eclipse.ui;
  * Objects implementing this interface are capable of saving their
  * state in an {@link IMemento}. 
  * 
- * @since 3.1
+ * @since 1.0
  */
 public interface IPersistable {
     /**

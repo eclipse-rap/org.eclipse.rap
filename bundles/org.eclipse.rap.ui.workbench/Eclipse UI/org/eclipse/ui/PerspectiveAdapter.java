@@ -24,7 +24,7 @@ package org.eclipse.ui;
  * @see org.eclipse.ui.IPerspectiveListener2
  * @see org.eclipse.ui.IPerspectiveListener3
  * @see org.eclipse.ui.IPerspectiveListener4
- * @since 3.1
+ * @since 1.0
  */
 public class PerspectiveAdapter implements IPerspectiveListener4 {
 
@@ -111,7 +111,6 @@ public class PerspectiveAdapter implements IPerspectiveListener4 {
 
 	/**
 	 * {@inheritDoc}
-	 * @since 3.2
 	 */
 	public void perspectivePreDeactivate(IWorkbenchPage page,
 			IPerspectiveDescriptor perspective) {

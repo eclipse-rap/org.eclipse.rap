@@ -21,6 +21,7 @@ package org.eclipse.ui;
  * This interface is not intended to be implemented by clients.
  * </p>
  * @see IWorkbench#getPerspectiveRegistry
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IPerspectiveRegistry {
@@ -34,7 +35,6 @@ public interface IPerspectiveRegistry {
      * @return the cloned perspective descriptor
      * @throws IllegalArgumentException if there is already a perspective with the given id 
      * 
-     * @since 3.0
      */
     public IPerspectiveDescriptor clonePerspective(String id, String label,
             IPerspectiveDescriptor desc) throws IllegalArgumentException;
@@ -44,7 +44,6 @@ public interface IPerspectiveRegistry {
 	 * extension.
 	 * 
 	 * @param persp the perspective to delete
-	 * @since 3.2
 	 */
 	public void deletePerspective(IPerspectiveDescriptor persp);
     
@@ -102,7 +101,6 @@ public interface IPerspectiveRegistry {
      * 
      * @param perspToRevert the perspective to revert  
      * 
-     * @since 3.0
      */
     public void revertPerspective(IPerspectiveDescriptor perspToRevert);
 }

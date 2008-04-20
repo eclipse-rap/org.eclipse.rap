@@ -119,6 +119,7 @@ package org.eclipse.ui;
  * Note: many of the remaining non-deprecated constants here are IDE-specific
  *   and should be deprecated and moved to a constant pool at the IDE layer
  *   (e.g. IIDEActionConstants).
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IWorkbenchActionConstants {

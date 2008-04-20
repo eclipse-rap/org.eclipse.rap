@@ -26,6 +26,8 @@ import org.eclipse.jface.viewers.ISelection;
  * It can also be acquired from your service locator: e.g.
  * getSite().getService(ISelectionService.class)
  * </p>
+ * 
+ * @since 1.0
  * @see org.eclipse.ui.ISelectionListener
  * @see org.eclipse.ui.INullSelectionListener
  * @noimplement This interface is not intended to be implemented by clients.
@@ -66,7 +68,6 @@ public interface ISelectionService {
      *
      * @param partId the id of the part to track
      * @param listener a selection listener
-     * @since 2.0
      * @see #removeSelectionListener(String, ISelectionListener)
      */
     public void addSelectionListener(String partId, ISelectionListener listener);
@@ -110,7 +111,6 @@ public interface ISelectionService {
      *
      * @param partId the id of the part to track
      * @param listener a selection listener
-     * @since 2.0
      * @see #removePostSelectionListener(String, ISelectionListener)
      */
     public void addPostSelectionListener(String partId,
@@ -132,7 +132,6 @@ public interface ISelectionService {
      *
      * @param partId the id of the part
      * @return the current selection, or <code>null</code> if undefined
-     * @since 2.0
      */
     public ISelection getSelection(String partId);
 
@@ -150,7 +149,6 @@ public interface ISelectionService {
      *
      * @param partId the id of the part to track
      * @param listener a selection listener
-     * @since 2.0
      */
     public void removeSelectionListener(String partId,
             ISelectionListener listener);
@@ -169,7 +167,6 @@ public interface ISelectionService {
      *
      * @param partId the id of the part to track
      * @param listener a selection listener
-     * @since 2.0
      */
     public void removePostSelectionListener(String partId,
             ISelectionListener listener);
