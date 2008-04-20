@@ -216,7 +216,6 @@ class NewWizardNewPage implements ISelectionChangedListener {
     }
 
     /**
-     * @since 3.0
      */
     public void activate() {
         page.setDescription(WorkbenchMessages.get().NewWizardNewPage_description);
@@ -269,7 +268,6 @@ class NewWizardNewPage implements ISelectionChangedListener {
      * Create a new FilteredTree in the parent.
      * 
      * @param parent the parent <code>Composite</code>.
-     * @since 3.0
      */
     protected FilteredTree createFilteredTree(Composite parent){
         Composite composite = new Composite(parent, SWT.NONE);
@@ -452,7 +450,6 @@ class NewWizardNewPage implements ISelectionChangedListener {
      * Create the image controls.
      * 
      * @param parent the parent <code>Composite</code>.
-     * @since 3.0
      */
     private void createImage(Composite parent) {
         descImageCanvas = new CLabel(parent, SWT.NONE);
@@ -654,7 +651,6 @@ class NewWizardNewPage implements ISelectionChangedListener {
      * Update the current description controls.
      * 
      * @param selectedObject the new wizard
-     * @since 3.0
      */
     private void updateDescription(IWizardDescriptor selectedObject) {
         String string = ""; //$NON-NLS-1$

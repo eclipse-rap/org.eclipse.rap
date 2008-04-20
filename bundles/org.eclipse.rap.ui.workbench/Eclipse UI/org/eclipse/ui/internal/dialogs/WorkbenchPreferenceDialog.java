@@ -19,7 +19,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 
 /**
@@ -32,7 +32,6 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	 * This keeps a handle on this instance, so that attempts to create a second
 	 * dialog should just fail (or return the original instance).
 	 * 
-	 * @since 3.1
 	 */
 	private static WorkbenchPreferenceDialog instance = null;
 	
@@ -42,7 +41,6 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	 * different concrete implementations don't necessarily store their bounds 
 	 * in the same settings.
 	 * 
-	 * @since 3.2
 	 */
 	private static final String DIALOG_SETTINGS_SECTION = "WorkbenchPreferenceDialogSettings"; //$NON-NLS-1$
 
@@ -63,7 +61,6 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 	 *            <code>null</code>. If it is <code>null</code>, then the
 	 *            preference page is not selected or modified in any way.
 	 * @return The selected preference page.
-	 * @since 3.1
 	 */
 	public static final WorkbenchPreferenceDialog createDialogOn(Shell shell, final String preferencePageId) {
 		final WorkbenchPreferenceDialog dialog;
@@ -94,9 +91,10 @@ public class WorkbenchPreferenceDialog extends FilteredPreferenceDialog {
 				dialog.setSelectedNode(preferencePageId);
 			}
 			dialog.create();
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(
-					dialog.getShell(),
-					IWorkbenchHelpContextIds.PREFERENCE_DIALOG);
+// RAP [rh] IWorkbench#getHelpSystem not implemented			
+//			PlatformUI.getWorkbench().getHelpSystem().setHelp(
+//					dialog.getShell(),
+//					IWorkbenchHelpContextIds.PREFERENCE_DIALOG);
 
 		} else {
 			/*

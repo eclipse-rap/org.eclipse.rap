@@ -16,7 +16,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.activities.ws.WorkbenchTriggerPoints;
 import org.eclipse.ui.wizards.IWizardCategory;
@@ -86,8 +86,9 @@ class NewWizardSelectionPage extends WorkbenchWizardSelectionPage {
         newResourcePage.setDialogSettings(settings);
 
         Control control = newResourcePage.createControl(parent);
-        getWorkbench().getHelpSystem().setHelp(control,
-				IWorkbenchHelpContextIds.NEW_WIZARD_SELECTION_WIZARD_PAGE);
+// RAP [rh] IWorkbench#getHelpSystem not implemented        
+//        getWorkbench().getHelpSystem().setHelp(control,
+//				IWorkbenchHelpContextIds.NEW_WIZARD_SELECTION_WIZARD_PAGE);
         setControl(control);
     }
 
@@ -114,7 +115,6 @@ class NewWizardSelectionPage extends WorkbenchWizardSelectionPage {
      * Sets whether the selected wizard advertises that it does provide pages.
      * 
      * @param newValue whether the selected wizard has pages
-     * @since 3.1
      */
 	public void setHasPages(boolean newValue) {
 		hasPages = newValue;
@@ -124,7 +124,6 @@ class NewWizardSelectionPage extends WorkbenchWizardSelectionPage {
 	 * Sets whether the selected wizard advertises that it can finish early.
 	 * 
 	 * @param newValue whether the selected wizard can finish early
-	 * @since 3.1
 	 */
 	public void setCanFinishEarly(boolean newValue) {
 		canFinishEarly = newValue;
@@ -134,7 +133,6 @@ class NewWizardSelectionPage extends WorkbenchWizardSelectionPage {
 	 * Answers whether the currently selected page, if any, advertises that it may finish early.
 	 * 
 	 * @return whether the page can finish early
-	 * @since 3.1
 	 */
 	public boolean canFinishEarly() {
 		return canFinishEarly;

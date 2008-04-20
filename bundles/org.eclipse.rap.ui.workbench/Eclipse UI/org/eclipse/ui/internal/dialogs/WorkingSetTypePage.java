@@ -33,9 +33,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -46,7 +46,6 @@ import org.eclipse.ui.internal.registry.WorkingSetDescriptor;
  * wizard to select from a list of plugin defined working set 
  * types.
  * 
- * @since 2.0
  */
 public class WorkingSetTypePage extends WizardPage {
     private final static int SIZING_SELECTION_WIDGET_WIDTH = 50;
@@ -94,8 +93,9 @@ public class WorkingSetTypePage extends WizardPage {
         composite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         setControl(composite);
 
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite,
-				IWorkbenchHelpContextIds.WORKING_SET_TYPE_PAGE);
+// RAP [rh] IWorkbench#getHelpSystem not implemented
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite,
+//				IWorkbenchHelpContextIds.WORKING_SET_TYPE_PAGE);
         Label typesLabel = new Label(composite, SWT.NONE);
         typesLabel.setText(WorkbenchMessages.get().WorkingSetTypePage_typesLabel);
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
@@ -182,7 +182,6 @@ public class WorkingSetTypePage extends WizardPage {
      * Return the selected working set.
      *
 	 * @return the selected working set or <code>null</code>
-     * @since 3.4
 	 */
 	private WorkingSetDescriptor getSelectedWorkingSet() {
 		ISelection selection = typesListViewer.getSelection();

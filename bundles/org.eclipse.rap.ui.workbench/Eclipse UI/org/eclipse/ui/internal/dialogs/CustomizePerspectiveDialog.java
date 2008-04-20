@@ -86,7 +86,7 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.internal.ActionSetActionBars;
 import org.eclipse.ui.internal.ActionSetContributionItem;
 import org.eclipse.ui.internal.ActionSetMenuManager;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.Perspective;
 import org.eclipse.ui.internal.PluginActionContributionItem;
 import org.eclipse.ui.internal.PluginActionCoolBarContributionItem;
@@ -892,7 +892,6 @@ public class CustomizePerspectiveDialog extends TrayDialog {
     /**
      * Adds listeners for the Commands tab.
      * 
-     * @since 3.0
      */
     private void addActionSetsListeners() {
         tabFolder.addSelectionListener(new SelectionAdapter() {
@@ -936,7 +935,6 @@ public class CustomizePerspectiveDialog extends TrayDialog {
     /**
      * Adds listeners for the Shortcuts tab.
      * 
-     * @since 3.0
      */
     private void addShortcutListeners() {
         menusCombo.addSelectionListener(new SelectionListener() {
@@ -1034,8 +1032,9 @@ public class CustomizePerspectiveDialog extends TrayDialog {
         
         title = NLS.bind(WorkbenchMessages.get().ActionSetSelection_customize,title);
         shell.setText(title);
-        window.getWorkbench().getHelpSystem().setHelp(shell,
-				IWorkbenchHelpContextIds.ACTION_SET_SELECTION_DIALOG);
+// RAP [rh] IWorkbench#getHelpSystem not implemented        
+//        window.getWorkbench().getHelpSystem().setHelp(shell,
+//				IWorkbenchHelpContextIds.ACTION_SET_SELECTION_DIALOG);
     }
 
     boolean containsActionSet(MenuManager mgr, String actionSetId) {
@@ -1187,7 +1186,6 @@ public class CustomizePerspectiveDialog extends TrayDialog {
      * 
      * @return <code>true</code> if the shortcut tab should be shown,
      * and <code>false</code> otherwise
-     * @since 3.0
      */
     private boolean showShortcutTab() {
         return window.containsSubmenu(WorkbenchWindow.NEW_WIZARD_SUBMENU)

@@ -114,7 +114,6 @@ public class ViewContentProvider implements ITreeContentProvider {
      *  
      * @param list the list of view descriptors
      * @return the modified list.
-     * @since 3.0
      */
     private ArrayList removeIntroView(ArrayList list) {
         for (Iterator i = list.iterator(); i.hasNext();) {

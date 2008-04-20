@@ -17,7 +17,6 @@ import org.eclipse.ui.dialogs.PatternFilter;
  * A class that handles filtering wizard node items based on a supplied
  * matching string.
  *  
- * @since 3.2
  *
  */
 public class WizardPatternFilter extends PatternFilter {

@@ -24,7 +24,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.LegacyResourceSupport;
 import org.eclipse.ui.internal.PerspectiveTracker;
 import org.eclipse.ui.internal.WorkbenchMessages;
@@ -98,8 +98,9 @@ public class NewWizardAction extends Action implements
         setDisabledImageDescriptor(images
                 .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD_DISABLED));
         setToolTipText(WorkbenchMessages.get().NewWizardAction_toolTip); 
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.NEW_ACTION);
+// RAP [rh] Help system not supported        
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.NEW_ACTION);
     }
 
     /**
@@ -179,8 +180,9 @@ public class NewWizardAction extends Action implements
         dialog.getShell().setSize(
                 Math.max(SIZING_WIZARD_WIDTH, dialog.getShell().getSize().x),
                 SIZING_WIZARD_HEIGHT);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
-				IWorkbenchHelpContextIds.NEW_WIZARD);
+// RAP [rh] Help system not supported        
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
+//				IWorkbenchHelpContextIds.NEW_WIZARD);
         dialog.open();
     }
 

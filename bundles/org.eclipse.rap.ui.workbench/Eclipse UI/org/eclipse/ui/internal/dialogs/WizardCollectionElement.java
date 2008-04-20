@@ -72,7 +72,6 @@ public class WizardCollectionElement extends AdaptableList implements
      * 
      * @param element
      * @param parent
-     * @since 3.1
      */
     public WizardCollectionElement(IConfigurationElement element, WizardCollectionElement parent) {
 		configElement = element;
@@ -138,7 +137,6 @@ public class WizardCollectionElement extends AdaptableList implements
      * 
      * @param id the id for the child category
      * @return the category, or <code>null</code> if not found
-     * @since 3.1
      */
     public WizardCollectionElement findCategory(String id) {
         Object[] children = getChildren(null);
@@ -262,7 +260,6 @@ public class WizardCollectionElement extends AdaptableList implements
      * Return the wizards minus the wizards which failed the expressions check.
      * 
      * @return the wizards
-     * @since 3.1
      */
     public WorkbenchWizardElement [] getWorkbenchWizardElements() {        
     	return getWorkbenchWizardElementsExpression(
@@ -357,7 +354,6 @@ public class WizardCollectionElement extends AdaptableList implements
      * Return the collection elements.
      * 
      * @return the collection elements
-     * @since 3.1
      */
     public WizardCollectionElement [] getCollectionElements() {
     	return (WizardCollectionElement[]) getTypedChildren(WizardCollectionElement.class);
@@ -367,7 +363,6 @@ public class WizardCollectionElement extends AdaptableList implements
      * Return the raw adapted list of wizards.
      * 
      * @return the list of wizards
-     * @since 3.1
      */
     public AdaptableList getWizardAdaptableList() {
     	return wizards;
@@ -384,7 +379,6 @@ public class WizardCollectionElement extends AdaptableList implements
      * Return the configuration element.
      * 
      * @return the configuration element
-     * @since 3.1
      */
     public IConfigurationElement getConfigurationElement() {
     	return configElement;
@@ -394,7 +388,6 @@ public class WizardCollectionElement extends AdaptableList implements
      * Return the parent collection element.
      * 
      * @return the parent
-     * @since 3.1
      */
 	public WizardCollectionElement getParentCollection() {
 		return parent;

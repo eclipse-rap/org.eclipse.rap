@@ -25,7 +25,6 @@ import org.eclipse.ui.internal.registry.WorkingSetRegistry;
  * A new working set wizard allows the user to create a 
  * new working set using a plugin specified working set page.
  * 
- * @since 2.0
  * @see org.eclipse.ui.dialog.IWorkingSetPage
  */
 public class WorkingSetNewWizard extends Wizard implements IWorkingSetNewWizard {

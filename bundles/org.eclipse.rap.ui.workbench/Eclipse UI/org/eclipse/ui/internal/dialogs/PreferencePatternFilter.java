@@ -30,7 +30,6 @@ import org.eclipse.ui.internal.preferences.WorkbenchPreferenceExtensionNode;
  * A class that handles filtering preference node items based on a supplied
  * matching string.
  * 
- * @since 3.2
  * 
  */
 public class PreferencePatternFilter extends PatternFilter {

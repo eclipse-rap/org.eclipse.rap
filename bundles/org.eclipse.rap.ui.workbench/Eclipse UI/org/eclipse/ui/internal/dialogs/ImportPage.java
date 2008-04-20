@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.activities.ITriggerPoint;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.activities.ws.WorkbenchTriggerPoints;
@@ -27,7 +27,6 @@ import org.eclipse.ui.wizards.IWizardCategory;
 /**
  * Wizard page class from which an import wizard is selected.
  * 
- * @since 3.2
  *
  */
 public class ImportPage extends ImportExportPage {
@@ -51,9 +50,10 @@ public class ImportPage extends ImportExportPage {
 	}
 
 	protected void initialize() {
-        workbench.getHelpSystem().setHelp(
-				getControl(),
-				IWorkbenchHelpContextIds.IMPORT_WIZARD_SELECTION_WIZARD_PAGE); 		
+// RAP [rh] IWorkbench#getHelpSystem not implemented	  
+//        workbench.getHelpSystem().setHelp(
+//				getControl(),
+//				IWorkbenchHelpContextIds.IMPORT_WIZARD_SELECTION_WIZARD_PAGE); 		
 	}
 
 	protected Composite createTreeViewer(Composite parent) {

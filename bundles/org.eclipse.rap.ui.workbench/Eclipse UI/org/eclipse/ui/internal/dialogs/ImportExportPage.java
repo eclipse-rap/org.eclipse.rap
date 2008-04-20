@@ -44,7 +44,6 @@ import org.eclipse.ui.wizards.IWizardDescriptor;
 /**
  * Abstract wizard page class from which an import or export wizard can be chosen.
  * 
- * @since 3.2
  *
  */
 public abstract class ImportExportPage extends WorkbenchWizardSelectionPage{

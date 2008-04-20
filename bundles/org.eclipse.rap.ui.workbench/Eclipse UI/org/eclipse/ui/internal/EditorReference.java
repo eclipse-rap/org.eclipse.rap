@@ -195,7 +195,6 @@ public class EditorReference extends WorkbenchPartReference implements
     }
     
     /**
-     * @since 3.1
      *
      * @param id the id
      * @return the editor descriptor
@@ -336,7 +335,7 @@ public class EditorReference extends WorkbenchPartReference implements
         // Get the input factory.
         IMemento editorMem = getMemento();
         if (editorMem == null) {
-            throw new PartInitException(NLS.bind(WorkbenchMessages.EditorManager_no_persisted_state, getId(), getName()));
+            throw new PartInitException(NLS.bind(WorkbenchMessages.get().EditorManager_no_persisted_state, getId(), getName()));
         }
         IMemento inputMem = editorMem
                 .getChild(IWorkbenchConstants.TAG_INPUT);
@@ -346,7 +345,7 @@ public class EditorReference extends WorkbenchPartReference implements
                     .getString(IWorkbenchConstants.TAG_FACTORY_ID);
         }
         if (factoryID == null) {
-            throw new PartInitException(NLS.bind(WorkbenchMessages.EditorManager_no_input_factory_ID, getId(), getName()));
+            throw new PartInitException(NLS.bind(WorkbenchMessages.get().EditorManager_no_input_factory_ID, getId(), getName()));
         }
         IAdaptable input = null;
         String label = null; // debugging only
@@ -358,19 +357,19 @@ public class EditorReference extends WorkbenchPartReference implements
             IElementFactory factory = PlatformUI.getWorkbench()
                     .getElementFactory(factoryID);
             if (factory == null) {
-                throw new PartInitException(NLS.bind(WorkbenchMessages.EditorManager_bad_element_factory, new Object[] { factoryID, getId(), getName() }));
+                throw new PartInitException(NLS.bind(WorkbenchMessages.get().EditorManager_bad_element_factory, new Object[] { factoryID, getId(), getName() }));
             }
 
             // Get the input element.
             input = factory.createElement(inputMem);
             if (input == null) {
-                throw new PartInitException(NLS.bind(WorkbenchMessages.EditorManager_create_element_returned_null, new Object[] { factoryID, getId(), getName() }));
+                throw new PartInitException(NLS.bind(WorkbenchMessages.get().EditorManager_create_element_returned_null, new Object[] { factoryID, getId(), getName() }));
             }
         } finally {
             UIStats.end(UIStats.CREATE_PART_INPUT, input, label);
         }
         if (!(input instanceof IEditorInput)) {
-            throw new PartInitException(NLS.bind(WorkbenchMessages.EditorManager_wrong_createElement_result, new Object[] { factoryID, getId(), getName() }));
+            throw new PartInitException(NLS.bind(WorkbenchMessages.get().EditorManager_wrong_createElement_result, new Object[] { factoryID, getId(), getName() }));
         }
         restoredInput = (IEditorInput) input;
         return restoredInput;
@@ -440,7 +439,7 @@ public class EditorReference extends WorkbenchPartReference implements
                     NLS.bind("Unable to create editor ID {0}: {1}",  //$NON-NLS-1$
                             getId(), originalStatus.getMessage()));
             IStatus displayStatus = StatusUtil.newStatus(originalStatus,
-            		NLS.bind(WorkbenchMessages.EditorManager_unableToCreateEditor,
+            		NLS.bind(WorkbenchMessages.get().EditorManager_unableToCreateEditor,
             				originalStatus.getMessage()));
 
 			// Pass the error to the status handling facility
@@ -503,8 +502,6 @@ public class EditorReference extends WorkbenchPartReference implements
      * can't always be changed for an editor. Editors that don't implement IReusableEditor
      * can't have their input changed once they've been materialized.
      * 
-     * @since 3.1
-     *
      * @param input new input
      * @return true iff the input was actually changed
      */
@@ -556,8 +553,6 @@ public class EditorReference extends WorkbenchPartReference implements
      * something like failure to fire an expected property change. Only the first malfunction is
      * recorded to avoid spamming the system log with repeated failures in the same editor.
      * 
-     * @since 3.1
-     *
      * @param string
      */
     private void reportMalfunction(String string) {
@@ -595,7 +590,7 @@ public class EditorReference extends WorkbenchPartReference implements
             EditorDescriptor desc = getDescriptor();
             
             if (desc == null) {
-                throw new PartInitException(NLS.bind(WorkbenchMessages.EditorManager_missing_editor_descriptor, editorID));
+                throw new PartInitException(NLS.bind(WorkbenchMessages.get().EditorManager_missing_editor_descriptor, editorID));
             }
             
             
@@ -622,10 +617,10 @@ public class EditorReference extends WorkbenchPartReference implements
                 part = ComponentSupport.getSystemInPlaceEditor();
                 
                 if (part == null) {
-                    throw new PartInitException(WorkbenchMessages.EditorManager_no_in_place_support);
+                    throw new PartInitException(WorkbenchMessages.get().EditorManager_no_in_place_support);
                 }
             } else {
-                throw new PartInitException(NLS.bind(WorkbenchMessages.EditorManager_invalid_editor_descriptor, editorID));
+                throw new PartInitException(NLS.bind(WorkbenchMessages.get().EditorManager_invalid_editor_descriptor, editorID));
             }
             // Create a pane for this part
             PartPane pane = getPane();

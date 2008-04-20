@@ -18,7 +18,7 @@ import org.eclipse.ui.internal.ReopenEditorMenu;
 import org.eclipse.ui.internal.ShowInMenu;
 import org.eclipse.ui.internal.ShowViewMenu;
 import org.eclipse.ui.internal.SwitchToWindowMenu;
-import org.eclipse.ui.internal.actions.HelpSearchContributionItem;
+//import org.eclipse.ui.internal.actions.HelpSearchContributionItem;
 import org.eclipse.ui.internal.actions.PinEditorContributionItem;
 
 /**
@@ -200,7 +200,6 @@ public abstract class ContributionItemFactory {
      * promising new item wizards and an "Other" subitem. Selecting
      * one of the items invokes the corresponding new item wizard. 
      * This action dynamically maintains the new item wizard shortlist.
-     * @since 3.1
      */
     public static final ContributionItemFactory NEW_WIZARD_SHORTLIST = new ContributionItemFactory(
             "newWizardShortlist") { //$NON-NLS-1$
@@ -212,21 +211,22 @@ public abstract class ContributionItemFactory {
             return new BaseNewWizardMenu(window, getId());
         }
     };
-    
-    /**
-     * Workbench contribution item (id "helpSearch"): An editable field
-     * for entering help search queries.
-     * @since 3.1
-     */
-    public static final ContributionItemFactory HELP_SEARCH = new ContributionItemFactory(
-            "helpSearch") {//$NON-NLS-1$
-        public IContributionItem create(IWorkbenchWindow window) {
-            if (window == null) {
-                throw new IllegalArgumentException();
-            }
-            return new HelpSearchContributionItem(window, getId());
-        }
-    };
+
+// RAP [rh] HELP_SEARCH contribution item: help system not supported    
+//    /**
+//     * Workbench contribution item (id "helpSearch"): An editable field
+//     * for entering help search queries.
+//     * @since 3.1
+//     */
+//    public static final ContributionItemFactory HELP_SEARCH = new ContributionItemFactory(
+//            "helpSearch") {//$NON-NLS-1$
+//        public IContributionItem create(IWorkbenchWindow window) {
+//            if (window == null) {
+//                throw new IllegalArgumentException();
+//            }
+//            return new HelpSearchContributionItem(window, getId());
+//        }
+//    };
 
     
 }

@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.decorators.DecoratorDefinition;
@@ -62,8 +62,9 @@ public class DecoratorsPreferencePage extends PreferencePage implements
 
         Font font = parent.getFont();
 
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
-				IWorkbenchHelpContextIds.DECORATORS_PREFERENCE_PAGE);
+// RAP [rh] IWorkbench#getHelpSystem not implemented
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
+//				IWorkbenchHelpContextIds.DECORATORS_PREFERENCE_PAGE);
 
         Composite mainComposite = new Composite(parent, SWT.NONE);
         mainComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

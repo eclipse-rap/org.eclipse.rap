@@ -39,7 +39,6 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
 /**
  * History for navigating preference pages.
  * 
- * @since 3.1
  */
 class PreferencePageHistory {
 

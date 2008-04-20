@@ -52,9 +52,9 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPage;
@@ -165,8 +165,9 @@ public class WorkbenchEditorsDialog extends SelectionDialog {
      */
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
-				IWorkbenchHelpContextIds.WORKBENCH_EDITORS_DIALOG);
+// RAP [rh] IWorkbench#getHelpSystem not implemented        
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
+//				IWorkbenchHelpContextIds.WORKBENCH_EDITORS_DIALOG);
     }
 
     /*

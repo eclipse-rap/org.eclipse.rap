@@ -147,7 +147,6 @@ public abstract class WorkbenchWizardListSelectionPage extends
      * Layout the top control.
      * 
      * @param control the control.
-     * @since 3.0
      */
     private void layoutTopControl(Control control) {
         GridData data = new GridData(GridData.FILL_BOTH);

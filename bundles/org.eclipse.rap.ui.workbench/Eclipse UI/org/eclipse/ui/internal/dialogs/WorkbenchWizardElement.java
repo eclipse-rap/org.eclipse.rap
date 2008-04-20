@@ -63,7 +63,6 @@ public class WorkbenchWizardElement extends WorkbenchAdapter implements
      * Create a new instance of this class
      * 
      * @param configurationElement
-     * @since 3.1
      */
     public WorkbenchWizardElement(IConfigurationElement configurationElement) {
         this.configurationElement = configurationElement;
@@ -286,7 +285,6 @@ public class WorkbenchWizardElement extends WorkbenchAdapter implements
 	 * Return the collection.
 	 * 
 	 * @return the collection
-	 * @since 3.1
 	 */
 	public WizardCollectionElement getCollectionElement() {
 		return (WizardCollectionElement) getParent(this);
@@ -316,7 +314,6 @@ public class WorkbenchWizardElement extends WorkbenchAdapter implements
 	 * Set the parent category.
 	 * 
 	 * @param parent the parent category
-	 * @since 3.1
 	 */
 	public void setParent(WizardCollectionElement parent) {
 		parentCategory = parent;

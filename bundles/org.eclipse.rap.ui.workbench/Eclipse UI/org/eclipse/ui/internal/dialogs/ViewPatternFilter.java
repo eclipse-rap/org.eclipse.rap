@@ -19,7 +19,6 @@ import org.eclipse.ui.views.IViewDescriptor;
  * A class that handles filtering view node items based on a supplied
  * matching string.
  *  
- * @since 3.2
  *
  */
 public class ViewPatternFilter extends PatternFilter {

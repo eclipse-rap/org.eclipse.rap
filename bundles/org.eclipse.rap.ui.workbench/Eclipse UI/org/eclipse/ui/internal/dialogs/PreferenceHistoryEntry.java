@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.Assert;
 /**
  * A preference history entry.
  * 
- * @since 3.1
  */
 final class PreferenceHistoryEntry {
 	private String id;

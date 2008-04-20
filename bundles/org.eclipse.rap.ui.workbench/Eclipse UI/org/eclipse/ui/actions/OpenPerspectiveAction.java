@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.util.Util;
 
 /**
@@ -66,8 +66,9 @@ public final class OpenPerspectiveAction extends Action implements
         setToolTipText(label);
         setImageDescriptor(descriptor.getImageDescriptor());
 
-        window.getWorkbench().getHelpSystem().setHelp(this,
-                IWorkbenchHelpContextIds.OPEN_PERSPECTIVE_ACTION);
+// RAP [rh] Help system not supported
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//                IWorkbenchHelpContextIds.OPEN_PERSPECTIVE_ACTION);
     }
 
   

@@ -20,7 +20,6 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * A working set edit wizard allows the user to edit a 
  * working set using a plugin specified working set page.
  * 
- * @since 2.0
  * @see org.eclipse.ui.dialog.IWorkingSetPage
  */
 public class WorkingSetEditWizard extends Wizard implements

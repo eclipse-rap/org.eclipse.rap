@@ -22,7 +22,6 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * The import/export wizard allows users to choose whether to 
  * show the import wizard or the export wizard.
  * 
- * @since 3.2
  *
  */
 public class ImportExportWizard extends Wizard {

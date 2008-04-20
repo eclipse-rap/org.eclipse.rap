@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.misc.StatusUtil;
@@ -27,6 +27,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
  * the active perspective in the window which this
  * action is running in. The default input for the 
  * new window's page is application-specific.
+ * @since 1.1
  */
 public class OpenInNewWindowAction extends Action implements
         ActionFactory.IWorkbenchAction {
@@ -66,8 +67,9 @@ public class OpenInNewWindowAction extends Action implements
         // @issue missing action id
         setToolTipText(WorkbenchMessages.get().OpenInNewWindowAction_toolTip); 
         pageInput = input;
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.OPEN_NEW_WINDOW_ACTION);
+// RAP [rh] Help system not supported        
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.OPEN_NEW_WINDOW_ACTION);
     }
 
     /**

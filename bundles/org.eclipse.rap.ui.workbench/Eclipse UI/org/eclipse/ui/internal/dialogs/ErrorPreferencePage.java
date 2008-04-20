@@ -21,7 +21,6 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * A page that is used to indicate an error in loading a page within the
  * workbench.
  * 
- * @since 3.0
  */
 public class ErrorPreferencePage extends EmptyPreferencePage {
 

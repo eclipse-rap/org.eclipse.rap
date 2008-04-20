@@ -20,7 +20,6 @@ import org.eclipse.ui.wizards.IWizardDescriptor;
  * A viewer filter that will exclude all IWizardDescriptors that do not have at
  * least one tag in a provided set.
  * 
- * @since 3.1
  */
 public class WizardTagFilter extends ViewerFilter {
 

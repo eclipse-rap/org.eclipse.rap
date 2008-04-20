@@ -57,7 +57,6 @@ import org.osgi.service.prefs.BackingStoreException;
  * Baseclass for preference dialogs that will show two tabs of preferences -
  * filtered and unfiltered.
  * 
- * @since 3.0
  */
 public abstract class FilteredPreferenceDialog extends PreferenceDialog implements IWorkbenchPreferenceContainer{
 
@@ -146,7 +145,6 @@ public abstract class FilteredPreferenceDialog extends PreferenceDialog implemen
 	/**
 	 * The preference page history.
 	 * 
-	 * @since 3.1
 	 */
 	PreferencePageHistory history;
 

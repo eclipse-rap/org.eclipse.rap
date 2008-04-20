@@ -43,9 +43,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IPreferenceConstants;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -126,8 +126,9 @@ public class PerspectivesPreferencePage extends PreferencePage implements
 	protected Control createContents(Composite parent) {
 		// @issue if the product subclasses this page, then it should provide
 		// the help content
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
-				IWorkbenchHelpContextIds.PERSPECTIVES_PREFERENCE_PAGE);
+// RAP [rh] IWorkbench#getHelpSystem not implemented	  
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
+//				IWorkbenchHelpContextIds.PERSPECTIVES_PREFERENCE_PAGE);
 
 		Composite composite = createComposite(parent);
 

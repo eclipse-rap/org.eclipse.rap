@@ -26,7 +26,6 @@ import org.eclipse.ui.internal.registry.WizardsRegistryReader;
  *  with the reserved category name for General wizards will always be 
  *  placed at the beginning of the sorted result.
  *  
- *  @since 3.2
  */
 class DataTransferWizardCollectionComparator extends ViewerComparator {
 	/**

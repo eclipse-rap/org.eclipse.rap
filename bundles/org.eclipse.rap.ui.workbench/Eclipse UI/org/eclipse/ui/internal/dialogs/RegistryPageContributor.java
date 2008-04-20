@@ -316,7 +316,6 @@ public class RegistryPageContributor implements IPropertyPageContributor,
 	 * Get the id of the category.
 	 * 
 	 * @return String
-	 * @since 3.1
 	 */
 	public String getCategory() {
 		return pageElement
@@ -373,7 +372,6 @@ public class RegistryPageContributor implements IPropertyPageContributor,
 	/**
 	 * Parses child element and processes it.
 	 * 
-	 * @since 3.1
 	 */
 	private void processChildElement(Map map, IConfigurationElement element) {
 		String tag = element.getName();
@@ -403,7 +401,6 @@ public class RegistryPageContributor implements IPropertyPageContributor,
 
 	/**
 	 * @return the configuration element
-	 * @since 3.1
 	 */
 	IConfigurationElement getConfigurationElement() {
 		return pageElement;

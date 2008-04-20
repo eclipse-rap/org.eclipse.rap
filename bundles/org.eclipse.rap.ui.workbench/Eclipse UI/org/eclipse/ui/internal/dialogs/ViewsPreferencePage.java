@@ -55,7 +55,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IPreferenceConstants;
 import org.eclipse.ui.internal.IWorkbenchConstants;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -202,8 +202,9 @@ public class ViewsPreferencePage extends PreferencePage implements
 	protected Control createContents(Composite parent) {
 		initializeDialogUnits(parent);
 		
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
-				IWorkbenchHelpContextIds.VIEWS_PREFERENCE_PAGE);
+// RAP [rh] IWorkbench#getHelpSystem not implemented		
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent,
+//				IWorkbenchHelpContextIds.VIEWS_PREFERENCE_PAGE);
 
 		IPreferenceStore internalStore = PrefUtil.getInternalPreferenceStore();
 		IPreferenceStore apiStore = PrefUtil.getAPIPreferenceStore();

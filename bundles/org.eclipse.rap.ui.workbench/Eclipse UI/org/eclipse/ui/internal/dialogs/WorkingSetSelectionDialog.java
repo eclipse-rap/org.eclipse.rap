@@ -48,7 +48,7 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.internal.AggregateWorkingSet;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.util.Util;
@@ -59,7 +59,6 @@ import org.eclipse.ui.model.WorkbenchViewerComparator;
  * sets available in the workbench.
  * 
  * @see IWorkingSetSelectionDialog
- * @since 2.0
  */
 public class WorkingSetSelectionDialog extends AbstractWorkingSetDialog {
     private final static int SIZING_SELECTION_WIDGET_HEIGHT = 200;
@@ -115,7 +114,6 @@ public class WorkingSetSelectionDialog extends AbstractWorkingSetDialog {
 	 * Determine what window this dialog is being opened on. This impacts the
 	 * returned working set in the case where the user chooses the window set.
 	 * 
-	 * @since 3.2
 	 */
     private void initWorkbenchWindow() {
 		Shell shellToCheck = getShell();
@@ -143,8 +141,9 @@ public class WorkingSetSelectionDialog extends AbstractWorkingSetDialog {
      */
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
-				IWorkbenchHelpContextIds.WORKING_SET_SELECTION_DIALOG);
+// RAP [rh] IWorkbench#getHelpSystem not implemented        
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
+//				IWorkbenchHelpContextIds.WORKING_SET_SELECTION_DIALOG);
     }
 
     /**

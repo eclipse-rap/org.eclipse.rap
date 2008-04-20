@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
@@ -44,11 +44,12 @@ public class ImportWizard extends Wizard {
 
         public void createControl(Composite parent) {
             super.createControl(parent);
-            getWorkbench()
-					.getHelpSystem()
-					.setHelp(
-							getControl(),
-							IWorkbenchHelpContextIds.IMPORT_WIZARD_SELECTION_WIZARD_PAGE);
+// RAP [rh] IWorkbench#getHelpSystem not implemented            
+//            getWorkbench()
+//					.getHelpSystem()
+//					.setHelp(
+//							getControl(),
+//							IWorkbenchHelpContextIds.IMPORT_WIZARD_SELECTION_WIZARD_PAGE);
         }
 
         public IWizardNode createWizardNode(WorkbenchWizardElement element) {

@@ -13,7 +13,7 @@ package org.eclipse.ui.actions;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 
 /**
@@ -79,8 +79,9 @@ public class ExportResourcesAction extends BaseSelectionListenerAction
         setToolTipText(action.getToolTipText());
         setId(action.getId());
         setActionDefinitionId(action.getActionDefinitionId());
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.EXPORT_ACTION);
+// RAP [rh] Help system not supported          
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.EXPORT_ACTION);
         setImageDescriptor(action.getImageDescriptor());
     }
 

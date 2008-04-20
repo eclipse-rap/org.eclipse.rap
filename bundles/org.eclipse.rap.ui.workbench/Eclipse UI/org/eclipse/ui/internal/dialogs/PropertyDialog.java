@@ -18,8 +18,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.model.IContributionService;
@@ -82,9 +82,10 @@ public class PropertyDialog extends FilteredPreferenceDialog {
 		propertyDialog.create();
 
 		propertyDialog.getShell().setText(title);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(
-				propertyDialog.getShell(),
-				IWorkbenchHelpContextIds.PROPERTY_DIALOG);
+// RAP [rh] IWorkbench#getHelpSystem not implemented		
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(
+//				propertyDialog.getShell(),
+//				IWorkbenchHelpContextIds.PROPERTY_DIALOG);
 
 		return propertyDialog;
 
