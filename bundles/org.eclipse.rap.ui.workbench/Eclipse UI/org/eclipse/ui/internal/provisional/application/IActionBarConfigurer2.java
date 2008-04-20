@@ -20,7 +20,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
  * be decoupled from the implementation types for tool bar managers and tool bar
  * contribution items.
  * 
- * @since 3.2
+ * @since 1.0
  */
 public interface IActionBarConfigurer2 extends IActionBarConfigurer {
 	

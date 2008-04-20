@@ -27,7 +27,7 @@ import org.eclipse.jface.action.IStatusLineManager;
  * </p>
  * 
  * @see org.eclipse.ui.application.WorkbenchAdvisor#fillActionBars
- * @since 3.0
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IActionBarConfigurer {
@@ -37,7 +37,6 @@ public interface IActionBarConfigurer {
      * containing this configurer's action bars. 
      * 
      * @return the workbench window configurer
-     * @since 3.1
      */
     public IWorkbenchWindowConfigurer getWindowConfigurer();
     

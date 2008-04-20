@@ -45,7 +45,7 @@ import org.eclipse.ui.actions.ActionFactory;
  * 
  * @see WorkbenchWindowAdvisor#createActionBarAdvisor(IActionBarConfigurer)
  * 
- * @since 3.1
+ * @since 1.0
  */
 public class ActionBarAdvisor {
 
@@ -313,7 +313,6 @@ public class ActionBarAdvisor {
 	 * 
 	 * @param memento the memento in which to save the advisor's state
 	 * @return a status object indicating whether the save was successful
-	 * @since 3.1
 	 */
 	public IStatus saveState(IMemento memento) {
 		return Status.OK_STATUS;
@@ -329,7 +328,6 @@ public class ActionBarAdvisor {
 	 * 
      * @param memento the memento from which to restore the advisor's state
 	 * @return a status object indicating whether the restore was successful
-	 * @since 3.1
 	 */
 	public IStatus restoreState(IMemento memento) {
 		return Status.OK_STATUS;

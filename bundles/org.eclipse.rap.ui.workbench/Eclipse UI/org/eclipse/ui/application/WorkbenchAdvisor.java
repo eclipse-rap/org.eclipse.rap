@@ -26,8 +26,8 @@ import org.eclipse.ui.internal.UISynchronizer;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.WorkbenchWindowConfigurer;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
-import org.eclipse.ui.internal.application.CompatibilityWorkbenchWindowAdvisor;
-import org.eclipse.ui.internal.util.PrefUtil;
+//import org.eclipse.ui.internal.application.CompatibilityWorkbenchWindowAdvisor;
+//import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.model.ContributionComparator;
 import org.eclipse.ui.model.IContributionService;
 import org.eclipse.ui.statushandlers.AbstractStatusHandler;
@@ -112,7 +112,7 @@ import org.eclipse.ui.statushandlers.WorkbenchErrorHandler;
  * </ul>
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  */
 public abstract class WorkbenchAdvisor {
 
@@ -162,7 +162,8 @@ public abstract class WorkbenchAdvisor {
 	 */
 	private AbstractStatusHandler workbenchErrorHandler;
 
-	private boolean introOpened;
+// RAP [rh] unused code as openIntro code is disabled 	
+//	private boolean introOpened;
 
 	/**
 	 * Creates and initializes a new workbench advisor instance.
@@ -221,7 +222,6 @@ public abstract class WorkbenchAdvisor {
 	 * Returns the workbench error handler for the advisor.
 	 * 
 	 * @return the workbench error handler
-	 * @since 3.3
 	 */
 	public AbstractStatusHandler getWorkbenchErrorHandler() {
 		if (workbenchErrorHandler == null) {
@@ -378,11 +378,12 @@ public abstract class WorkbenchAdvisor {
 	 * @param configurer
 	 *            the workbench window configurer
 	 * @return a new workbench window advisor
-	 * @since 3.1
 	 */
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
 			IWorkbenchWindowConfigurer configurer) {
-		return new CompatibilityWorkbenchWindowAdvisor(this, configurer);
+// RAP [rh]	CompatibilityWorkbenchWindowAdvisor is disabled as in 1.0
+//		return new CompatibilityWorkbenchWindowAdvisor(this, configurer);
+	  return new WorkbenchWindowAdvisor( configurer );
 	}
 
 	/**
@@ -487,51 +488,52 @@ public abstract class WorkbenchAdvisor {
 		// do nothing
 	}
 
-	/**
-	 * Opens the introduction componenet.
-	 * <p>
-	 * Clients must not call this method directly (although super calls are
-	 * okay). The default implementation opens the intro in the first window
-	 * provided the preference IWorkbenchPreferences.SHOW_INTRO is
-	 * <code>true</code>. If an intro is shown then this preference will be
-	 * set to <code>false</code>. Subsequently, and intro will be shown only
-	 * if <code>WorkbenchConfigurer.getSaveAndRestore()</code> returns
-	 * <code>true</code> and the introduction was visible on last shutdown.
-	 * Subclasses may override.
-	 * </p>
-	 * 
-	 * @param configurer
-	 *            configurer an object for configuring the particular workbench
-	 *            window just created
-	 * 
-	 * @deprecated since 3.1, override
-	 *             {@link WorkbenchWindowAdvisor#openIntro()} instead
-	 * @see #createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
-	 */
-	public void openIntro(IWorkbenchWindowConfigurer configurer) {
-		if (introOpened) {
-			return;
-		}
-
-		introOpened = true;
-
-		boolean showIntro = PrefUtil.getAPIPreferenceStore().getBoolean(
-				IWorkbenchPreferenceConstants.SHOW_INTRO);
-
-		if (!showIntro) {
-			return;
-		}
-
-		if (getWorkbenchConfigurer().getWorkbench().getIntroManager()
-				.hasIntro()) {
-			getWorkbenchConfigurer().getWorkbench().getIntroManager()
-					.showIntro(configurer.getWindow(), false);
-
-			PrefUtil.getAPIPreferenceStore().setValue(
-					IWorkbenchPreferenceConstants.SHOW_INTRO, false);
-			PrefUtil.saveAPIPrefs();
-		}
-	}
+// RAP [rh] intro not yet supported	
+//	/**
+//	 * Opens the introduction componenet.
+//	 * <p>
+//	 * Clients must not call this method directly (although super calls are
+//	 * okay). The default implementation opens the intro in the first window
+//	 * provided the preference IWorkbenchPreferences.SHOW_INTRO is
+//	 * <code>true</code>. If an intro is shown then this preference will be
+//	 * set to <code>false</code>. Subsequently, and intro will be shown only
+//	 * if <code>WorkbenchConfigurer.getSaveAndRestore()</code> returns
+//	 * <code>true</code> and the introduction was visible on last shutdown.
+//	 * Subclasses may override.
+//	 * </p>
+//	 * 
+//	 * @param configurer
+//	 *            configurer an object for configuring the particular workbench
+//	 *            window just created
+//	 * 
+//	 * @deprecated since 3.1, override
+//	 *             {@link WorkbenchWindowAdvisor#openIntro()} instead
+//	 * @see #createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
+//	 */
+//	public void openIntro(IWorkbenchWindowConfigurer configurer) {
+//		if (introOpened) {
+//			return;
+//		}
+//
+//		introOpened = true;
+//
+//		boolean showIntro = PrefUtil.getAPIPreferenceStore().getBoolean(
+//				IWorkbenchPreferenceConstants.SHOW_INTRO);
+//
+//		if (!showIntro) {
+//			return;
+//		}
+//
+//		if (getWorkbenchConfigurer().getWorkbench().getIntroManager()
+//				.hasIntro()) {
+//			getWorkbenchConfigurer().getWorkbench().getIntroManager()
+//					.showIntro(configurer.getWindow(), false);
+//
+//			PrefUtil.getAPIPreferenceStore().setValue(
+//					IWorkbenchPreferenceConstants.SHOW_INTRO, false);
+//			PrefUtil.saveAPIPrefs();
+//		}
+//	}
 
 	/**
 	 * Performs arbitrary actions after the given workbench window has been
@@ -828,7 +830,6 @@ public abstract class WorkbenchAdvisor {
 	 * @param memento
 	 *            the memento in which to save the advisor's state
 	 * @return a status object indicating whether the save was successful
-	 * @since 3.1
 	 */
 	public IStatus saveState(IMemento memento) {
 		return Status.OK_STATUS;
@@ -845,7 +846,6 @@ public abstract class WorkbenchAdvisor {
 	 * @param memento
 	 *            the memento from which to restore the advisor's state
 	 * @return a status object indicating whether the restore was successful
-	 * @since 3.1
 	 */
 	public IStatus restoreState(IMemento memento) {
 		return Status.OK_STATUS;
