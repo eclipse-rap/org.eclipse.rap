@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.EditorDescriptor;
@@ -142,8 +142,9 @@ public final class EditorSelectionDialog extends Dialog {
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(WorkbenchMessages.get().EditorSelection_title);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
-				IWorkbenchHelpContextIds.EDITOR_SELECTION_DIALOG);
+// RAP [rh] IWorkbench#getHelpSystem not implemented		
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
+//				IWorkbenchHelpContextIds.EDITOR_SELECTION_DIALOG);
 	}
 
 	/**

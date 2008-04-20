@@ -13,8 +13,8 @@ package org.eclipse.ui.dialogs;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 
 /**
  * YesNoCancelListSelectionDialog is a list selection dialog that also allows
@@ -70,8 +70,9 @@ public class YesNoCancelListSelectionDialog extends ListSelectionDialog {
      */
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
-                IWorkbenchHelpContextIds.YES_NO_CANCEL_LIST_SELECTION_DIALOG);
+// RAP [rh] IWorkbench#getHelpSystem not implemented        
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell,
+//                IWorkbenchHelpContextIds.YES_NO_CANCEL_LIST_SELECTION_DIALOG);
     }
 
     /*
