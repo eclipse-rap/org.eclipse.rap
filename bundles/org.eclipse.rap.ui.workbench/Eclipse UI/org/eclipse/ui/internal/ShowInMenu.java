@@ -56,7 +56,9 @@ import org.eclipse.ui.views.IViewRegistry;
 public class ShowInMenu extends ContributionItem implements
 		IWorkbenchContribution {
 
-	private static final String NO_TARGETS_MSG = WorkbenchMessages.Workbench_showInNoTargets;
+// RAP [rh] Cannot reference NLS message from static field  
+//	private static final String NO_TARGETS_MSG = WorkbenchMessages.Workbench_showInNoTargets;
+	private final String NO_TARGETS_MSG = WorkbenchMessages.get().Workbench_showInNoTargets;
 
 	private IWorkbenchWindow window;
 

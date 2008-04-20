@@ -26,13 +26,14 @@ public class SaveAsAction extends BaseSaveAction {
      * @param window the window
      */
     public SaveAsAction(IWorkbenchWindow window) {
-        super(WorkbenchMessages.SaveAs_text, window); 
+        super(WorkbenchMessages.get().SaveAs_text, window); 
         setActionDefinitionId("org.eclipse.ui.file.saveAs"); //$NON-NLS-1$
-        setText(WorkbenchMessages.SaveAs_text); 
-        setToolTipText(WorkbenchMessages.SaveAs_toolTip); 
+        setText(WorkbenchMessages.get().SaveAs_text); 
+        setToolTipText(WorkbenchMessages.get().SaveAs_toolTip); 
         setId("saveAs"); //$NON-NLS-1$
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.SAVE_AS_ACTION);
+// RAP [rh] DynamicHelpAction: help support left aside for now
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.SAVE_AS_ACTION);
         setImageDescriptor(WorkbenchImages
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVEAS_EDIT));
         setDisabledImageDescriptor(WorkbenchImages

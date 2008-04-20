@@ -28,9 +28,9 @@ public class ToggleEditorsVisibilityAction extends PerspectiveAction implements
     public void perspectiveActivated(IWorkbenchPage page,
             IPerspectiveDescriptor perspective) {
         if (page.isEditorAreaVisible()) {
-            setText(WorkbenchMessages.ToggleEditor_hideEditors); 
+            setText(WorkbenchMessages.get().ToggleEditor_hideEditors); 
         } else {
-            setText(WorkbenchMessages.ToggleEditor_showEditors);
+            setText(WorkbenchMessages.get().ToggleEditor_showEditors);
         }
     }
 
@@ -43,9 +43,9 @@ public class ToggleEditorsVisibilityAction extends PerspectiveAction implements
                 || changeId == IWorkbenchPage.CHANGE_EDITOR_AREA_HIDE
                 || changeId == IWorkbenchPage.CHANGE_EDITOR_AREA_SHOW) {
             if (page.isEditorAreaVisible()) {
-                setText(WorkbenchMessages.ToggleEditor_hideEditors); 
+                setText(WorkbenchMessages.get().ToggleEditor_hideEditors); 
             } else {
-                setText(WorkbenchMessages.ToggleEditor_showEditors); 
+                setText(WorkbenchMessages.get().ToggleEditor_showEditors); 
             }
         }
     }
@@ -57,12 +57,13 @@ public class ToggleEditorsVisibilityAction extends PerspectiveAction implements
      */
     public ToggleEditorsVisibilityAction(IWorkbenchWindow window) {
         super(window);
-        setText(WorkbenchMessages.ToggleEditor_hideEditors);
+        setText(WorkbenchMessages.get().ToggleEditor_hideEditors);
         setActionDefinitionId("org.eclipse.ui.window.hideShowEditors"); //$NON-NLS-1$
         // @issue missing action id
-        setToolTipText(WorkbenchMessages.ToggleEditor_toolTip);
-        window.getWorkbench().getHelpSystem().setHelp(this,
-                IWorkbenchHelpContextIds.TOGGLE_EDITORS_VISIBILITY_ACTION);
+        setToolTipText(WorkbenchMessages.get().ToggleEditor_toolTip);
+// RAP [rh] IWorkbench#getHelpSystem() missing        
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//                IWorkbenchHelpContextIds.TOGGLE_EDITORS_VISIBILITY_ACTION);
         window.addPerspectiveListener(this);
     }
 
@@ -73,10 +74,10 @@ public class ToggleEditorsVisibilityAction extends PerspectiveAction implements
         boolean visible = page.isEditorAreaVisible();
         if (visible) {
             page.setEditorAreaVisible(false);
-            setText(WorkbenchMessages.ToggleEditor_showEditors); 
+            setText(WorkbenchMessages.get().ToggleEditor_showEditors); 
         } else {
             page.setEditorAreaVisible(true);
-            setText(WorkbenchMessages.ToggleEditor_hideEditors);
+            setText(WorkbenchMessages.get().ToggleEditor_hideEditors);
         }
     }
 

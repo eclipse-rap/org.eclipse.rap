@@ -31,12 +31,13 @@ public class SavePerspectiveAction extends PerspectiveAction {
      */
     public SavePerspectiveAction(IWorkbenchWindow window) {
         super(window);
-        setText(WorkbenchMessages.SavePerspective_text);
+        setText(WorkbenchMessages.get().SavePerspective_text);
         setActionDefinitionId("org.eclipse.ui.window.savePerspective"); //$NON-NLS-1$
         // @issue missing action id
-        setToolTipText(WorkbenchMessages.SavePerspective_toolTip); 
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_ACTION);
+        setToolTipText(WorkbenchMessages.get().SavePerspective_toolTip); 
+// RAP [rh] DynamicHelpAction: help support left aside for now
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_ACTION);
     }
 
     /* (non-Javadoc)
@@ -57,11 +58,11 @@ public class SavePerspectiveAction extends PerspectiveAction {
      * Save a singleton over itself.
      */
     private void saveSingleton(IWorkbenchPage page) {
-        String[] buttons = new String[] { IDialogConstants.OK_LABEL,
-                IDialogConstants.CANCEL_LABEL };
+        String[] buttons = new String[] { IDialogConstants.get().OK_LABEL,
+                IDialogConstants.get().CANCEL_LABEL };
         MessageDialog d = new MessageDialog(page.getWorkbenchWindow().getShell(),
-                WorkbenchMessages.SavePerspective_overwriteTitle,
-                null, WorkbenchMessages.SavePerspective_singletonQuestion,
+                WorkbenchMessages.get().SavePerspective_overwriteTitle,
+                null, WorkbenchMessages.get().SavePerspective_singletonQuestion,
                 MessageDialog.QUESTION, buttons, 0);
         if (d.open() == 0) {
             page.savePerspective();
@@ -93,8 +94,8 @@ public class SavePerspectiveAction extends PerspectiveAction {
             newDesc = reg.createPerspective(name,
                     (PerspectiveDescriptor) description);
             if (newDesc == null) {
-                MessageDialog.openError(dlg.getShell(), WorkbenchMessages.SavePerspective_errorTitle,
-                        WorkbenchMessages.SavePerspective_errorMessage); 
+                MessageDialog.openError(dlg.getShell(), WorkbenchMessages.get().SavePerspective_errorTitle,
+                        WorkbenchMessages.get().SavePerspective_errorMessage); 
                 return;
             }
         }

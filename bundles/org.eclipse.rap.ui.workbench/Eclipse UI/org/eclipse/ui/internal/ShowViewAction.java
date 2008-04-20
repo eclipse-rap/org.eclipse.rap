@@ -44,8 +44,9 @@ public class ShowViewAction extends Action implements IPluginContribution {
         setText(accel == null ? label : label + "@" + accel); //$NON-NLS-1$
         setImageDescriptor(desc.getImageDescriptor());
         setToolTipText(label);
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.SHOW_VIEW_ACTION);
+// RAP [rh] Workbench#getHelpSystem() missing            
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.SHOW_VIEW_ACTION);
         this.window = window;
         this.desc = desc;
         this.makeFast = makeFast;
@@ -90,7 +91,7 @@ public class ShowViewAction extends Action implements IPluginContribution {
                     page.showView(desc.getId());
                 }
             } catch (PartInitException e) {
-                ErrorDialog.openError(window.getShell(), WorkbenchMessages.ShowView_errorTitle,
+                ErrorDialog.openError(window.getShell(), WorkbenchMessages.get().ShowView_errorTitle,
                         e.getMessage(), e.getStatus());
             }
         }

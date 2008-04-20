@@ -63,7 +63,9 @@ public class ShowViewMenu extends ContributionItem {
 
 	private IWorkbenchWindow window;
 
-	private static final String NO_TARGETS_MSG = WorkbenchMessages.Workbench_showInNoTargets;
+// RAP [rh] Cannot referene NLS message with static field
+//	private static final String NO_TARGETS_MSG = WorkbenchMessages.Workbench_showInNoTargets;
+	private final String NO_TARGETS_MSG = WorkbenchMessages.get().Workbench_showInNoTargets;
 
 	private Comparator actionComparator = new Comparator() {
 		public int compare(Object o1, Object o2) {
@@ -125,7 +127,7 @@ public class ShowViewMenu extends ContributionItem {
 				.getService(ICommandService.class);
 		final ParameterizedCommand cmd = getCommand(commandService, makeFast);
 
-		showDlgAction = new Action(WorkbenchMessages.ShowView_title) {
+		showDlgAction = new Action(WorkbenchMessages.get().ShowView_title) {
 			public void run() {
 				try {
 					handlerService.executeCommand(cmd, null);
@@ -141,8 +143,8 @@ public class ShowViewMenu extends ContributionItem {
 			}
 		};
 
-		window.getWorkbench().getHelpSystem().setHelp(showDlgAction,
-				IWorkbenchHelpContextIds.SHOW_VIEW_OTHER_ACTION);
+//		window.getWorkbench().getHelpSystem().setHelp(showDlgAction,
+//				IWorkbenchHelpContextIds.SHOW_VIEW_OTHER_ACTION);
 		// indicate that a show views submenu has been created
 		((WorkbenchWindow) window)
 				.addSubmenu(WorkbenchWindow.SHOW_VIEW_SUBMENU);

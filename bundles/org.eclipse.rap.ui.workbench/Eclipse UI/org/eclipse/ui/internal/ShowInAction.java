@@ -40,8 +40,9 @@ public class ShowInAction extends Action {
     protected ShowInAction(IWorkbenchWindow window, IViewDescriptor desc) {
         super(desc.getLabel());
         setImageDescriptor(desc.getImageDescriptor());
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.SHOW_IN_ACTION);
+// RAP [rh] IWorkbench#getHelpSystem missing        
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.SHOW_IN_ACTION);
         this.window = window;
         this.desc = desc;
     }
@@ -137,7 +138,8 @@ public class ShowInAction extends Action {
      * Generates a system beep.
      */
     private void beep() {
-        window.getShell().getDisplay().beep();
+// RAP [rh] Display#beep() missing        
+//        window.getShell().getDisplay().beep();
     }
 
 }

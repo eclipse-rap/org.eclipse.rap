@@ -38,13 +38,14 @@ public class CloseAllSavedAction extends PageEventAction implements
      * @param window the window
      */
     public CloseAllSavedAction(IWorkbenchWindow window) {
-        super(WorkbenchMessages.CloseAllSavedAction_text, window);
-        setToolTipText(WorkbenchMessages.CloseAllSavedAction_toolTip);
+        super(WorkbenchMessages.get().CloseAllSavedAction_text, window);
+        setToolTipText(WorkbenchMessages.get().CloseAllSavedAction_toolTip);
         // @issue Should create a ID in IWorkbenchActionConstants when it becames API?
         setId("closeAllSaved"); //$NON-NLS-1$
         updateState();
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.CLOSE_ALL_SAVED_ACTION);
+// RAP [rh] DynamicHelpAction: help support left aside for now
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.CLOSE_ALL_SAVED_ACTION);
         setActionDefinitionId("org.eclipse.ui.file.closeAllSaved"); //$NON-NLS-1$
     }
 

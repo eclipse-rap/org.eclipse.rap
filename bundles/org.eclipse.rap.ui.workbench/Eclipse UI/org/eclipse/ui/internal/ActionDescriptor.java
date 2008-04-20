@@ -19,7 +19,7 @@ import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
+//import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -118,7 +118,8 @@ public class ActionDescriptor implements IPluginContribution {
         pluginId = actionElement.getNamespace();
         String label = actionElement.getAttribute(IWorkbenchRegistryConstants.ATT_LABEL);
         String tooltip = actionElement.getAttribute(IWorkbenchRegistryConstants.ATT_TOOLTIP);
-        String helpContextId = actionElement.getAttribute(IWorkbenchRegistryConstants.ATT_HELP_CONTEXT_ID);
+// RAP [rh] Workbench#getHelpSystem() missing            
+//        String helpContextId = actionElement.getAttribute(IWorkbenchRegistryConstants.ATT_HELP_CONTEXT_ID);
         String mpath = actionElement.getAttribute(IWorkbenchRegistryConstants.ATT_MENUBAR_PATH);
         String tpath = actionElement.getAttribute(IWorkbenchRegistryConstants.ATT_TOOLBAR_PATH);
         String style = actionElement.getAttribute(IWorkbenchRegistryConstants.ATT_STYLE);
@@ -135,7 +136,7 @@ public class ActionDescriptor implements IPluginContribution {
         if (label == null) {
             WorkbenchPlugin
                     .log("Invalid action declaration (label == null): " + id); //$NON-NLS-1$
-            label = WorkbenchMessages.ActionDescriptor_invalidLabel; 
+            label = WorkbenchMessages.get().ActionDescriptor_invalidLabel; 
         }
 
         // Calculate menu and toolbar paths.
@@ -180,16 +181,17 @@ public class ActionDescriptor implements IPluginContribution {
         if (action.getToolTipText() == null && tooltip != null) {
 			action.setToolTipText(tooltip);
 		}
-        if (helpContextId != null) {
-            String fullID = helpContextId;
-            if (helpContextId.indexOf(".") == -1) { //$NON-NLS-1$
-				// For backward compatibility we auto qualify the id if it is not
-                // qualified)
-                fullID = actionElement.getNamespace()
-                        + "." + helpContextId;//$NON-NLS-1$
-			}
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(action, fullID);
-        }
+// RAP [rh] Workbench#getHelpSystem() missing            
+//        if (helpContextId != null) {
+//            String fullID = helpContextId;
+//            if (helpContextId.indexOf(".") == -1) { //$NON-NLS-1$
+//				// For backward compatibility we auto qualify the id if it is not
+//                // qualified)
+//                fullID = actionElement.getNamespace()
+//                        + "." + helpContextId;//$NON-NLS-1$
+//			}
+//            PlatformUI.getWorkbench().getHelpSystem().setHelp(action, fullID);
+//        }
         if (description != null) {
 			action.setDescription(description);
 		}

@@ -33,14 +33,14 @@ public class LockToolBarAction extends Action implements
      * @param window the workbench window this action applies to
      */
     public LockToolBarAction(IWorkbenchWindow window) {
-        super(WorkbenchMessages.LockToolBarAction_text);
+        super(WorkbenchMessages.get().LockToolBarAction_text);
         if (window == null) {
             throw new IllegalArgumentException();
         }
         this.workbenchWindow = window;
         setActionDefinitionId("org.eclipse.ui.window.lockToolBar"); //$NON-NLS-1$
         // @issue missing action id
-        setToolTipText(WorkbenchMessages.LockToolBarAction_toolTip);
+        setToolTipText(WorkbenchMessages.get().LockToolBarAction_toolTip);
         setEnabled(true);
         // queue the update for the checked state since this action is created 
         // before the coolbar
@@ -52,8 +52,9 @@ public class LockToolBarAction extends Action implements
                 }
             }
         });
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.LOCK_TOOLBAR_ACTION);
+// RAP [rh] DynamicHelpAction: help support left aside for now
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.LOCK_TOOLBAR_ACTION);
     }
 
     /* (non-Javadoc)
