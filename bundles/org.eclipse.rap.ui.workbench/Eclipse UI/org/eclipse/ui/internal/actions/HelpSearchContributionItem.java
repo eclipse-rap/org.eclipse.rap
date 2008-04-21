@@ -28,8 +28,6 @@
 ///**
 // * This is the contribution item that is used to add a help search field to
 // * the cool bar.
-// * 
-// * @since 3.1
 // */
 //public class HelpSearchContributionItem extends ControlContribution {
 //	private static final String ID = "org.eclipse.ui.helpSearch"; //$NON-NLS-1$

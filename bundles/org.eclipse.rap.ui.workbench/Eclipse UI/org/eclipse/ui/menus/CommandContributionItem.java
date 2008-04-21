@@ -57,7 +57,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  */
 public final class CommandContributionItem extends ContributionItem {
 	/**
@@ -85,7 +85,7 @@ public final class CommandContributionItem extends ContributionItem {
 	 * present. If this mode bit is not set, text is only shown on tool items if
 	 * there is no image present.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static int MODE_FORCE_TEXT = 1;
 
@@ -149,7 +149,7 @@ public final class CommandContributionItem extends ContributionItem {
 	 * 
 	 * @param contributionParameters
 	 *            parameters necessary to render this contribution item.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public CommandContributionItem(
 			CommandContributionItemParameter contributionParameters) {
@@ -775,7 +775,7 @@ public final class CommandContributionItem extends ContributionItem {
 	}
 
 	/**
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public boolean isVisible() {
 		if (visibleEnabled) {

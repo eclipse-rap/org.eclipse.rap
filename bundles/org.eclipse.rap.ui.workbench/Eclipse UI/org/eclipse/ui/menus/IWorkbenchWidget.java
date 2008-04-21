@@ -23,7 +23,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  *
  * @see org.eclipse.jface.menus.IWidget
  *
- * @since 3.2
+ * @since 1.0
  */
 public interface IWorkbenchWidget extends IWidget {
     /**

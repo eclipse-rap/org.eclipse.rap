@@ -20,14 +20,11 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 
 /**
  * Displays an IWorkingSetSelectionDialog and sets the selected 
  * working set in the action group.
- * 
- * @since 2.1
  */
 public class SelectWorkingSetAction extends Action {
     private Shell shell;
@@ -48,8 +45,11 @@ public class SelectWorkingSetAction extends Action {
 
         this.shell = shell;
         this.actionGroup = actionGroup;
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.SELECT_WORKING_SET_ACTION);
+        // RAP [bm]: HelpSystem
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.SELECT_WORKING_SET_ACTION);
+        // RAPEND: [bm] 
+
     }
 
     /**

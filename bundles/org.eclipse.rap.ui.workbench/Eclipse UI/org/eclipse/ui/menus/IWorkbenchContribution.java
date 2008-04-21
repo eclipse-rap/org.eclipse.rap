@@ -17,7 +17,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * Allow a menu contribution to be initialized with the appropriate service
  * locator.
  * 
- * @since 3.4
+ * @since 1.1
  */
 public interface IWorkbenchContribution {
 	/**

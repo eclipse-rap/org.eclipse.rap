@@ -23,8 +23,6 @@
 //
 ///**
 // * Action to open the dynamic help.
-// * 
-// * @since 3.1
 // */
 //public class DynamicHelpAction extends Action implements IWorkbenchAction {
 //	/**

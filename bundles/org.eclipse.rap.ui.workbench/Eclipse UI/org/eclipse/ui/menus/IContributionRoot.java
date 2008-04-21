@@ -22,7 +22,7 @@ import org.eclipse.jface.action.IContributionManager;
  * interface should <b>NOT</b> be implemented by clients.
  * 
  * 
- * @since 3.3
+ * @since 1.0
  */
 public interface IContributionRoot {
 	/**

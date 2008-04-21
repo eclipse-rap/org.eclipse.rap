@@ -25,8 +25,6 @@
 //
 ///**
 // * Action to open the help contents.
-// * 
-// * @since 3.0
 // */
 //public class HelpContentsAction extends Action implements IWorkbenchAction {
 //    /**

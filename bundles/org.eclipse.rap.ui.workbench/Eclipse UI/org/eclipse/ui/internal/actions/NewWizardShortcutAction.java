@@ -26,7 +26,6 @@ import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.LegacyResourceSupport;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.util.Util;
@@ -124,9 +123,11 @@ public class NewWizardShortcutAction extends Action implements
         dialog.getShell().setSize(
                 Math.max(SIZING_WIZARD_WIDTH, defaultSize.x),
                 Math.max(SIZING_WIZARD_HEIGHT, defaultSize.y));
-        window.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
-				IWorkbenchHelpContextIds.NEW_WIZARD_SHORTCUT);
-        
+        // RAP [bm]: 
+//        window.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
+//				IWorkbenchHelpContextIds.NEW_WIZARD_SHORTCUT);
+        // RAPEND: [bm] 
+
         // if the wizard can finish early and doesn't have any pages, just finish it.
         if (wizardElement.canFinishEarly() && !wizardElement.hasPages()) {
 			wizard.performFinish();
@@ -162,7 +163,6 @@ public class NewWizardShortcutAction extends Action implements
      * Return the plugin contribution associated with the wizard.
      * 
      * @return the contribution or <code>null</code>
-     * @since 3.1
      */
     private IPluginContribution getPluginContribution() {
 		return (IPluginContribution) Util.getAdapter(wizardElement,

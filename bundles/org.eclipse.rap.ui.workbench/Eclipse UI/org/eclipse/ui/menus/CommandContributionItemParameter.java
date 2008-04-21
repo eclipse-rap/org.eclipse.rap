@@ -23,7 +23,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * contributions. Mandatory parameters are in the constructor, and public fields
  * can be set to fill in other parameters.
  * 
- * @since 3.4
+ * @since 1.1
  */
 public class CommandContributionItemParameter {
 	/**

@@ -21,7 +21,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  * method to inform the contributed widgets as to which
  * workbench window they're currently being hosted in.
  * 
- * @since 3.2
+ * @since 1.1
  *
  */
 public abstract class AbstractWorkbenchTrimWidget extends AbstractTrimWidget implements IWorkbenchWidget {
@@ -60,7 +60,7 @@ public abstract class AbstractWorkbenchTrimWidget extends AbstractTrimWidget imp
 	
 	/**
 	 * @return The preferred size of this item
-	 * @since 3.3
+	 * @since 1.1
 	 */
 	public Point getPreferredSize() {
 		return null;

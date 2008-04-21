@@ -34,8 +34,6 @@ import org.eclipse.ui.internal.registry.WorkingSetRegistry;
 
 /**
  * Baseclass for working set pulldown actions.
- * 
- * @since 3.3
  */
 public abstract class AbstractWorkingSetPulldownDelegate implements
 		IWorkbenchWindowActionDelegate, IWorkbenchWindowPulldownDelegate2 {

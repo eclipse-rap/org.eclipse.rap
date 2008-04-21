@@ -30,8 +30,6 @@ import org.eclipse.ui.internal.dialogs.SimpleWorkingSetSelectionDialog;
 
 /**
  * Action to select the visible working sets for a given workbench page.
- * 
- * @since 3.2
  */
 public class SelectWorkingSetsAction extends AbstractWorkingSetPulldownDelegate  {
 

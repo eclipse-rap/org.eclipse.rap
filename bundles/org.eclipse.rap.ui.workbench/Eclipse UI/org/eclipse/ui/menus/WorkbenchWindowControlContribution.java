@@ -32,7 +32,7 @@ import org.eclipse.ui.internal.menus.InternalControlContribution;
  * </ul>
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  *
  * @see ControlContribution
  */

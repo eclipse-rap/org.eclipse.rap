@@ -14,7 +14,7 @@ package org.eclipse.ui.menus;
 /**
  * Provides utilities and constants for use with the new menus API.
  * 
- * @since 3.3
+ * @since 1.0
  * 
  */
 public class MenuUtil {
@@ -41,7 +41,7 @@ public class MenuUtil {
 	 * Contributions of targets to this location will be included with the show
 	 * in menu.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public final static String SHOW_IN_MENU_ID = "popup:org.eclipse.ui.menus.showInMenu"; //$NON-NLS-1$
 

@@ -22,13 +22,10 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.dialogs.IWorkingSetEditWizard;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.WorkbenchMessages;
 
 /**
  * Displays an IWorkingSetEditWizard for editing a working set.
- * 
- * @since 2.1
  */
 public class EditWorkingSetAction extends Action {
     private Shell shell;
@@ -49,8 +46,11 @@ public class EditWorkingSetAction extends Action {
 
         this.shell = shell;
         this.actionGroup = actionGroup;
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.EDIT_WORKING_SET_ACTION);
+        // RAP [bm]: HelpSystem
+//        PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.EDIT_WORKING_SET_ACTION);
+        // RAPEND: [bm] 
+
     }
 
     /**

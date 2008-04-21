@@ -24,8 +24,6 @@ import org.eclipse.ui.internal.tweaklets.Tweaklets;
 /**
  * This contribution item controls the visibility of the pin editor
  * action based on the current preference value for reusing editors.
- * 
- * @since 3.0
  */
 public class PinEditorContributionItem extends ActionContributionItem {
     private IWorkbenchWindow window = null;

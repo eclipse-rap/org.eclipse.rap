@@ -24,7 +24,7 @@ import org.eclipse.ui.services.IServiceWithSources;
  * This interface should not be implemented or extended by clients.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  */
 public interface IMenuService extends IServiceWithSources {
 

@@ -53,7 +53,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * Only the abstract methods may be implemented.
  * </p>
  * 
- * @since 3.3
+ * @since 1.0
  * @see org.eclipse.ui.menus.IMenuService
  * @see org.eclipse.jface.action.MenuManager
  * @see org.eclipse.jface.action.ToolBarManager

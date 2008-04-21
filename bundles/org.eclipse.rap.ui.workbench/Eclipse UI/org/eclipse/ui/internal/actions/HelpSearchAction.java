@@ -25,8 +25,6 @@
 //
 ///**
 // * Action to open the help search.
-// * 
-// * @since 3.1
 // */
 //public class HelpSearchAction extends Action implements IWorkbenchAction {
 //    /**
