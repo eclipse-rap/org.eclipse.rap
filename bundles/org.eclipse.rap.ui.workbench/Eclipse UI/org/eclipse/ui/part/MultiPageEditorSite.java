@@ -24,14 +24,14 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IKeyBindingService;
-import org.eclipse.ui.INestableKeyBindingService;
+//import org.eclipse.ui.IKeyBindingService;
+//import org.eclipse.ui.INestableKeyBindingService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.PartSite;
 import org.eclipse.ui.internal.PopupMenuExtender;
-import org.eclipse.ui.internal.WorkbenchPlugin;
+//import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.part.IMultiPageEditorSiteHolder;
 import org.eclipse.ui.internal.services.INestable;
 import org.eclipse.ui.internal.services.IServiceLocatorCreator;
@@ -46,6 +46,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * The base implementation of <code>MultiPageEditor.createSite</code> creates
  * an instance of this class. This class may be instantiated or subclassed.
  * </p>
+ * @since 1.0
  */
 public class MultiPageEditorSite implements IEditorSite, INestable {
 
@@ -82,12 +83,13 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 	 */
 	private ISelectionProvider selectionProvider = null;
 
-	/**
-	 * The cached copy of the key binding service specific to this multi-page
-	 * editor site. This value is <code>null</code> if it is not yet
-	 * initialized.
-	 */
-	private IKeyBindingService service = null;
+// RAP [rh] unused code, since IKeyBindingService not implemented  
+//	/**
+//	 * The cached copy of the key binding service specific to this multi-page
+//	 * editor site. This value is <code>null</code> if it is not yet
+//	 * initialized.
+//	 */
+//	private IKeyBindingService service = null;
 
 	/**
 	 * The local service locator for this multi-page editor site. This value is
@@ -136,7 +138,6 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 	 * Notifies the multi page editor service that the component within which it 
 	 * exists has become active.
 	 * 
-	 * @since 3.2
 	 */
 	public final void activate() {
 		serviceLocator.activate();
@@ -146,7 +147,6 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 	 * Notifies the multi page editor service that the component within which it 
 	 * exists has been deactived.
 	 * 
-	 * @since 3.2
 	 */
 	public final void deactivate() {
 		serviceLocator.deactivate();
@@ -163,16 +163,17 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 			menuExtenders = null;
 		}
 
-		// Remove myself from the list of nested key binding services.
-		if (service != null) {
-			IKeyBindingService parentService = getEditor().getSite()
-					.getKeyBindingService();
-			if (parentService instanceof INestableKeyBindingService) {
-				INestableKeyBindingService nestableParent = (INestableKeyBindingService) parentService;
-				nestableParent.removeKeyBindingService(this);
-			}
-			service = null;
-		}
+// RAP [rh] unused code, since IKeyBindingService not implemented 
+//		// Remove myself from the list of nested key binding services.
+//		if (service != null) {
+//			IKeyBindingService parentService = getEditor().getSite()
+//					.getKeyBindingService();
+//			if (parentService instanceof INestableKeyBindingService) {
+//				INestableKeyBindingService nestableParent = (INestableKeyBindingService) parentService;
+//				nestableParent.removeKeyBindingService(this);
+//			}
+//			service = null;
+//		}
 
 		if (serviceLocator != null) {
 			serviceLocator.dispose();
@@ -243,29 +244,30 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 		return ""; //$NON-NLS-1$
 	}
 
-	/*
-	 * (non-Javadoc) Method declared on IEditorSite.
-	 */
-	public IKeyBindingService getKeyBindingService() {
-		if (service == null) {
-			service = getMultiPageEditor().getEditorSite()
-					.getKeyBindingService();
-			if (service instanceof INestableKeyBindingService) {
-				INestableKeyBindingService nestableService = (INestableKeyBindingService) service;
-				service = nestableService.getKeyBindingService(this);
-
-			} else {
-				/*
-				 * This is an internal reference, and should not be copied by
-				 * client code. If you are thinking of copying this, DON'T DO
-				 * IT.
-				 */
-				WorkbenchPlugin
-						.log("MultiPageEditorSite.getKeyBindingService()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
-		return service;
-	}
+// RAP [rh] IKeyBindingService (deprecated) not implemented	
+//	/*
+//	 * (non-Javadoc) Method declared on IEditorSite.
+//	 */
+//	public IKeyBindingService getKeyBindingService() {
+//		if (service == null) {
+//			service = getMultiPageEditor().getEditorSite()
+//					.getKeyBindingService();
+//			if (service instanceof INestableKeyBindingService) {
+//				INestableKeyBindingService nestableService = (INestableKeyBindingService) service;
+//				service = nestableService.getKeyBindingService(this);
+//
+//			} else {
+//				/*
+//				 * This is an internal reference, and should not be copied by
+//				 * client code. If you are thinking of copying this, DON'T DO
+//				 * IT.
+//				 */
+//				WorkbenchPlugin
+//						.log("MultiPageEditorSite.getKeyBindingService()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
+//			}
+//		}
+//		return service;
+//	}
 
 	/**
 	 * Returns the multi-page editor.
@@ -396,7 +398,6 @@ public class MultiPageEditorSite implements IEditorSite, INestable {
 	 * 
 	 * @param event  the event
 	 * 
-	 * @since 3.2
 	 */
 	protected void handlePostSelectionChanged(SelectionChangedEvent event) {
 		ISelectionProvider parentProvider = getMultiPageEditor().getSite()

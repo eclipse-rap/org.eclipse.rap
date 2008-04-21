@@ -19,7 +19,7 @@ package org.eclipse.ui.part;
  * 
  * @see org.eclipse.ui.IPageLayout#addShowInPart
  * 
- * @since 2.1
+ * @since 1.1
  */
 public interface IShowInTarget {
 

@@ -18,13 +18,13 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.action.IAction;
+//import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IKeyBindingService;
+//import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -127,7 +127,8 @@ public abstract class PartSite implements IWorkbenchPartSite {
 
 	private SubActionBars actionBars;
 
-	private KeyBindingService keyBindingService;
+// RAP [rh] unused code, since IKeyBindingService not implemented
+//	private KeyBindingService keyBindingService;
 
 	protected ArrayList menuExtenders;
 
@@ -191,10 +192,11 @@ public abstract class PartSite implements IWorkbenchPartSite {
 			menuExtenders = null;
 		}
 
-		 if (keyBindingService != null) {
-			keyBindingService.dispose();
-			keyBindingService = null;
-		 }
+// RAP [rh] IKeyBindingService not implemented
+//		 if (keyBindingService != null) {
+//			keyBindingService.dispose();
+//			keyBindingService = null;
+//		 }
 
 		if (progressService != null) {
 			progressService.dispose();
@@ -427,44 +429,45 @@ public abstract class PartSite implements IWorkbenchPartSite {
 		selectionProvider = provider;
 	}
 
-	/*
-	 * @see IWorkbenchPartSite#getKeyBindingService()
-	 */
-	public IKeyBindingService getKeyBindingService() {
-		if (keyBindingService == null) {
-			keyBindingService = new KeyBindingService(this);
-
-			// TODO why is this here? and it should be using HandlerSubmissions
-			// directly..
-			if (this instanceof EditorSite) {
-				EditorActionBuilder.ExternalContributor contributor = (EditorActionBuilder.ExternalContributor) ((EditorSite) this)
-						.getExtensionActionBarContributor();
-
-				if (contributor != null) {
-					ActionDescriptor[] actionDescriptors = contributor
-							.getExtendedActions();
-
-					if (actionDescriptors != null) {
-						for (int i = 0; i < actionDescriptors.length; i++) {
-							ActionDescriptor actionDescriptor = actionDescriptors[i];
-
-							if (actionDescriptor != null) {
-								IAction action = actionDescriptors[i]
-										.getAction();
-
-								if (action != null
-										&& action.getActionDefinitionId() != null) {
-									keyBindingService.registerAction(action);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return keyBindingService;
-	}
+// RAP [rh] IKeyBindingService not implemented	
+//	/*
+//	 * @see IWorkbenchPartSite#getKeyBindingService()
+//	 */
+//	public IKeyBindingService getKeyBindingService() {
+//		if (keyBindingService == null) {
+//			keyBindingService = new KeyBindingService(this);
+//
+//			// TODO why is this here? and it should be using HandlerSubmissions
+//			// directly..
+//			if (this instanceof EditorSite) {
+//				EditorActionBuilder.ExternalContributor contributor = (EditorActionBuilder.ExternalContributor) ((EditorSite) this)
+//						.getExtensionActionBarContributor();
+//
+//				if (contributor != null) {
+//					ActionDescriptor[] actionDescriptors = contributor
+//							.getExtendedActions();
+//
+//					if (actionDescriptors != null) {
+//						for (int i = 0; i < actionDescriptors.length; i++) {
+//							ActionDescriptor actionDescriptor = actionDescriptors[i];
+//
+//							if (actionDescriptor != null) {
+//								IAction action = actionDescriptors[i]
+//										.getAction();
+//
+//								if (action != null
+//										&& action.getActionDefinitionId() != null) {
+//									keyBindingService.registerAction(action);
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		return keyBindingService;
+//	}
 
 	protected String getInitialScopeId() {
 		return null;
@@ -525,7 +528,6 @@ public abstract class PartSite implements IWorkbenchPartSite {
 	 * Prints out the identifier, the plug-in identifier and the registered
 	 * name. This is for debugging purposes only.
 	 * 
-	 * @since 3.2
 	 */
 	public String toString() {
 		final StringBuffer buffer = new StringBuffer();

@@ -51,6 +51,7 @@ import com.ibm.icu.text.MessageFormat;
  * 
  * @see org.eclipse.ui.part.ViewPart
  * @see org.eclipse.ui.part.EditorPart
+ * @since 1.0
  * @noextend This class is not intended to be subclassed by clients.
  */
 public abstract class WorkbenchPart extends EventManager implements
@@ -281,7 +282,6 @@ public abstract class WorkbenchPart extends EventManager implements
      * The default implementation does nothing.
      * 
      * @param site the site to check
-     * @since 3.1
      */
     protected void checkSite(IWorkbenchPartSite site) {
         // do nothing
@@ -315,7 +315,8 @@ public abstract class WorkbenchPart extends EventManager implements
      * @param titleImage the title image, or <code>null</code> to clear
      */
     protected void setTitleImage(Image titleImage) {
-        Assert.isTrue(titleImage == null || !titleImage.isDisposed());
+// RAP [rh] Image#isDisposed() missing      
+//        Assert.isTrue(titleImage == null || !titleImage.isDisposed());
         //Do not send changes if they are the same
         if (this.titleImage == titleImage) {
 			return;
@@ -350,7 +351,6 @@ public abstract class WorkbenchPart extends EventManager implements
      * @param busy boolean to indicate that the busy state has started
      *  	or ended.
      * @see org.eclipse.ui.progress.IWorkbenchSiteProgressService#showBusyForFamily(Object)
-     * @since 3.0
      */
     public void showBusy(boolean busy) {
         //By default do nothing
@@ -379,7 +379,6 @@ public abstract class WorkbenchPart extends EventManager implements
      *
      * @param partName the part name, as it should be displayed in tabs.
      * 
-     * @since 3.0
      */
     protected void setPartName(String partName) {
 
@@ -396,7 +395,7 @@ public abstract class WorkbenchPart extends EventManager implements
         if (!Util.equals(description, "")) { //$NON-NLS-1$
             newTitle = MessageFormat
                     .format(
-                            WorkbenchMessages.WorkbenchPart_AutoTitleFormat, new String[] { name, description });
+                            WorkbenchMessages.get().WorkbenchPart_AutoTitleFormat, new String[] { name, description });
         }
 
         setTitle(newTitle);
@@ -429,7 +428,6 @@ public abstract class WorkbenchPart extends EventManager implements
      * 
      * @param description the content description
      * 
-     * @since 3.0
      */
     protected void setContentDescription(String description) {
         internalSetContentDescription(description);
@@ -488,7 +486,6 @@ public abstract class WorkbenchPart extends EventManager implements
     }
     
     /**
-	 * @since 3.3
 	 */
     protected void firePartPropertyChanged(String key, String oldValue, String newValue) {
     	final PropertyChangeEvent event = new PropertyChangeEvent(this, key, oldValue, newValue);

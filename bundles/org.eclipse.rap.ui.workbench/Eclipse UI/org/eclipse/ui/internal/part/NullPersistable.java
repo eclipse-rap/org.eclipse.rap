@@ -14,7 +14,6 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistable;
 
 /**
- * @since 3.1
  */
 public class NullPersistable implements IPersistable {
 

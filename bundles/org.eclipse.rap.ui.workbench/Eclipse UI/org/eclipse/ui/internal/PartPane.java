@@ -16,15 +16,15 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
+//import org.eclipse.swt.events.FocusAdapter;
+//import org.eclipse.swt.events.FocusEvent;
+//import org.eclipse.swt.events.KeyAdapter;
+//import org.eclipse.swt.events.KeyEvent;
+//import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
+//import org.eclipse.swt.events.TraverseEvent;
+//import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
@@ -71,34 +71,35 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
     protected Composite control;
 
     private boolean inLayout = true;
-    
-    private TraverseListener traverseListener = new TraverseListener() {
-        /* (non-Javadoc)
-         * @see org.eclipse.swt.events.TraverseListener#keyTraversed(org.eclipse.swt.events.TraverseEvent)
-         */
-        public void keyTraversed(TraverseEvent e) {
-            // Hack: Currently, SWT sets focus whenever we call Control.traverse. This doesn't
-            // cause too much of a problem for ctrl-pgup and ctrl-pgdn, but it is seriously unexpected
-            // for other traversal events. When (and if) it becomes possible to call traverse() without
-            // forcing a focus change, this if statement should be removed and ALL events should be
-            // forwarded to the container.
-            if (e.detail == SWT.TRAVERSE_PAGE_NEXT
-                    || e.detail == SWT.TRAVERSE_PAGE_PREVIOUS) {
-                ILayoutContainer container = getContainer();
-                if (container != null && container instanceof LayoutPart) {
-                    LayoutPart parent = (LayoutPart) container;
-                    Control parentControl = parent.getControl();
-                    if (parentControl != null && !parentControl.isDisposed()) {
-                        e.doit = parentControl.traverse(e.detail);
-                        if (e.doit) {
-							e.detail = SWT.TRAVERSE_NONE;
-						}
-                    }
-                }
-            }
-        }
 
-    };
+// RAP [rh] Traverse events not implemented    
+//    private TraverseListener traverseListener = new TraverseListener() {
+//        /* (non-Javadoc)
+//         * @see org.eclipse.swt.events.TraverseListener#keyTraversed(org.eclipse.swt.events.TraverseEvent)
+//         */
+//        public void keyTraversed(TraverseEvent e) {
+//            // Hack: Currently, SWT sets focus whenever we call Control.traverse. This doesn't
+//            // cause too much of a problem for ctrl-pgup and ctrl-pgdn, but it is seriously unexpected
+//            // for other traversal events. When (and if) it becomes possible to call traverse() without
+//            // forcing a focus change, this if statement should be removed and ALL events should be
+//            // forwarded to the container.
+//            if (e.detail == SWT.TRAVERSE_PAGE_NEXT
+//                    || e.detail == SWT.TRAVERSE_PAGE_PREVIOUS) {
+//                ILayoutContainer container = getContainer();
+//                if (container != null && container instanceof LayoutPart) {
+//                    LayoutPart parent = (LayoutPart) container;
+//                    Control parentControl = parent.getControl();
+//                    if (parentControl != null && !parentControl.isDisposed()) {
+//                        e.doit = parentControl.traverse(e.detail);
+//                        if (e.doit) {
+//							e.detail = SWT.TRAVERSE_NONE;
+//						}
+//                    }
+//                }
+//            }
+//        }
+//
+//    };
 
 	private boolean busy;
 
@@ -156,7 +157,8 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
         // When the pane or any child gains focus, notify the workbench.
         control.addListener(SWT.Activate, this);
 
-        control.addTraverseListener(traverseListener);
+// RAP [rh] Traverse events not implemented        
+//        control.addTraverseListener(traverseListener);
     }
 
     /**
@@ -172,7 +174,8 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
 
         if ((control != null) && (!control.isDisposed())) {
             control.removeListener(SWT.Activate, this);
-            control.removeTraverseListener(traverseListener);
+// RAP [rh] Traverse events not implemented            
+//            control.removeTraverseListener(traverseListener);
             control.dispose();
             control = null;
         }
@@ -429,27 +432,28 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
 
     public static void moveSash(final Sash sash,
             final LayoutPart toGetFocusWhenDone) {
-        final KeyListener listener = new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.character == SWT.ESC || e.character == '\r') {
-                    if (toGetFocusWhenDone != null) {
-						toGetFocusWhenDone.setFocus();
-					}
-                }
-            }
-        };
-        sash.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                sash.setBackground(sash.getDisplay().getSystemColor(
-                        SWT.COLOR_LIST_SELECTION));
-                sash.addKeyListener(listener);
-            }
-
-            public void focusLost(FocusEvent e) {
-                sash.setBackground(null);
-                sash.removeKeyListener(listener);
-            }
-        });
+// RAP [rh] Key events not implemented      
+//        final KeyListener listener = new KeyAdapter() {
+//            public void keyPressed(KeyEvent e) {
+//                if (e.character == SWT.ESC || e.character == '\r') {
+//                    if (toGetFocusWhenDone != null) {
+//						toGetFocusWhenDone.setFocus();
+//					}
+//                }
+//            }
+//        };
+//        sash.addFocusListener(new FocusAdapter() {
+//            public void focusGained(FocusEvent e) {
+//                sash.setBackground(sash.getDisplay().getSystemColor(
+//                        SWT.COLOR_LIST_SELECTION));
+//                sash.addKeyListener(listener);
+//            }
+//
+//            public void focusLost(FocusEvent e) {
+//                sash.setBackground(null);
+//                sash.removeKeyListener(listener);
+//            }
+//        });
         sash.setFocus();
 
     }

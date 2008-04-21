@@ -38,7 +38,8 @@ import org.eclipse.ui.themes.ITheme;
  * A MultiEditor is a composite of editors.
  * 
  * This class is intended to be subclassed.
- * 		
+ * 
+ * @since 1.0
  */
 public abstract class MultiEditor extends EditorPart {
 
@@ -168,7 +169,6 @@ public abstract class MultiEditor extends EditorPart {
      * Activates the given nested editor.
      * 
      * @param part the nested editor
-     * @since 3.0
      */
     protected void activateEditor(IEditorPart part) {
         IEditorPart oldEditor = getActiveEditor();
@@ -183,7 +183,6 @@ public abstract class MultiEditor extends EditorPart {
      * Returns the index of the given nested editor.
      * 
      * @return the index of the nested editor
-     * @since 3.0
      */
     protected int getIndex(IEditorPart editor) {
         for (int i = 0; i < innerEditors.length; i++) {
@@ -269,7 +268,6 @@ public abstract class MultiEditor extends EditorPart {
     /**
      * Set up the MultiEditor to propagate events like partClosed().
      *
-     * @since 3.2
      */
     private void setupEvents() {
 		propagationListener = new IPartListener2() {
@@ -325,7 +323,6 @@ public abstract class MultiEditor extends EditorPart {
     /**
      * Release the added listener.
      * 
-     * @since 3.2
      */
 	public void dispose() {
 		getSite().getPage().removePartListener(propagationListener);

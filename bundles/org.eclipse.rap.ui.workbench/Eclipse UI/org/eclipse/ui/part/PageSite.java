@@ -35,6 +35,7 @@ import org.eclipse.ui.internal.services.ServiceLocator;
  * This implementation of <code>IPageSite</code> provides a site for a page
  * within a <code>PageBookView</code>. Most methods are forwarded to the
  * view's site.
+ * @since 1.0
  */
 public class PageSite implements IPageSite, INestable {
 

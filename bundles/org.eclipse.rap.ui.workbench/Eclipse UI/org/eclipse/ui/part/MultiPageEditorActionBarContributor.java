@@ -26,6 +26,7 @@ import org.eclipse.ui.IEditorPart;
  *     status line</li>
  * </ul>
  * </p>
+ * @since 1.0
  */
 public abstract class MultiPageEditorActionBarContributor extends
         EditorActionBarContributor {

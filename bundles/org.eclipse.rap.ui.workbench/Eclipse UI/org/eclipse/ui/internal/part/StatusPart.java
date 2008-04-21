@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogConstants;
 
 /**
- * @since 3.1
  */
 public class StatusPart {
     
@@ -69,7 +68,8 @@ public class StatusPart {
         imageLabel.setBackground(bgColor);
         Image image = getImage();
         if (image != null) {
-            image.setBackground(bgColor);
+// RAP [rh] Image#setBackground() missing          
+//            image.setBackground(bgColor);
             imageLabel.setImage(image);
             imageLabel.setLayoutData(new GridData(
                     GridData.HORIZONTAL_ALIGN_CENTER
@@ -140,16 +140,17 @@ public class StatusPart {
         }
         
         if (showingDetails) {
-            detailsButton.setText(IDialogConstants.HIDE_DETAILS_LABEL);
+            detailsButton.setText(IDialogConstants.get().HIDE_DETAILS_LABEL);
+// RAP [rh] SWT#LEFT_TO_RIGHT missing            
             Text detailsText = new Text(detailsArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-                    | SWT.MULTI | SWT.READ_ONLY | SWT.LEFT_TO_RIGHT);
+                    | SWT.MULTI | SWT.READ_ONLY /*| SWT.LEFT_TO_RIGHT */ );
             detailsText.setText(getDetails(reason));
             detailsText.setBackground(detailsText.getDisplay().getSystemColor(
                     SWT.COLOR_LIST_BACKGROUND));
             details = detailsText;
             detailsArea.layout(true);
         } else {
-            detailsButton.setText(IDialogConstants.SHOW_DETAILS_LABEL);
+            detailsButton.setText(IDialogConstants.get().SHOW_DETAILS_LABEL);
         }
     }
 

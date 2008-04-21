@@ -11,7 +11,6 @@
 package org.eclipse.ui.internal.part;
 
 /**
- * @since 3.1
  */
 public interface IWorkbenchScopeConstants {
     public static final String PART_DELEGATOR_SCOPE = "org.eclipse.ui.part.delegator"; //$NON-NLS-1$

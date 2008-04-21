@@ -40,14 +40,14 @@ import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IKeyBindingService;
-import org.eclipse.ui.INestableKeyBindingService;
+//import org.eclipse.ui.IKeyBindingService;
+//import org.eclipse.ui.INestableKeyBindingService;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.internal.WorkbenchPlugin;
+//import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.misc.Policy;
 import org.eclipse.ui.internal.services.INestable;
 import org.eclipse.ui.internal.services.IServiceLocatorCreator;
@@ -79,6 +79,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * </p>
  * 
  * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor
+ * @since 1.0
  */
 public abstract class MultiPageEditorPart extends EditorPart {
 	
@@ -87,7 +88,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * this constant to get a site for the container that can be active while
 	 * the current page is deactivated.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 * @see #activateSite()
 	 * @see #deactivateSite(boolean, boolean)
 	 * @see #getPageSite(int)
@@ -328,7 +329,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * Clients can override this method with an empty body if they wish to
 	 * opt-out.
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected void initializePageSwitching() {
 		new PageSwitcher(this) {
@@ -376,7 +377,6 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * @return the parent for this editor's container. Must not be
 	 *         <code>null</code>.
 	 * 
-	 * @since 3.2
 	 */
 	protected Composite createPageContainer(Composite parent) {
 		return parent;
@@ -527,7 +527,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * @return the editor for the specified page, or <code>null</code> if the
 	 *         specified page was not created with
 	 *         <code>addPage(IEditorPart,IEditorInput)</code>
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	protected final IServiceLocator getPageSite(int pageIndex) {
 		if (pageIndex == PAGE_CONTAINER_SITE) {
@@ -555,7 +555,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 
 	/**
 	 * @return A site that can be used with a header.
-	 * @since 3.4
+	 * @since 1.1
 	 * @see #createPageContainer(Composite)
 	 * @see #PAGE_CONTAINER_SITE
 	 * @see #getPageSite(int)
@@ -779,7 +779,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 *            immediately deactivate the legacy keybinding service
 	 * @param containerSiteActive
 	 *            Leave the page container site active.
-	 * @since 3.4
+	 * @since 1.1
 	 * @see #activateSite()
 	 * @see #createPageContainer(Composite)
 	 * @see #getPageSite(int)
@@ -793,18 +793,19 @@ public abstract class MultiPageEditorPart extends EditorPart {
 			activeServiceLocator = null;
 		}
 
-		final int pageIndex = getActivePage();
-		final IKeyBindingService service = getSite().getKeyBindingService();
-		if (pageIndex < 0 || pageIndex >= getPageCount() || immediate) {
-			// There is no selected page, so deactivate the active service.
-			if (service instanceof INestableKeyBindingService) {
-				final INestableKeyBindingService nestableService = (INestableKeyBindingService) service;
-				nestableService.activateKeyBindingService(null);
-			} else {
-				WorkbenchPlugin
-						.log("MultiPageEditorPart.setFocus()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
+// RAP [rh] IKeyBindingService not implemented
+//		final int pageIndex = getActivePage();
+//		final IKeyBindingService service = getSite().getKeyBindingService();
+//		if (pageIndex < 0 || pageIndex >= getPageCount() || immediate) {
+//			// There is no selected page, so deactivate the active service.
+//			if (service instanceof INestableKeyBindingService) {
+//				final INestableKeyBindingService nestableService = (INestableKeyBindingService) service;
+//				nestableService.activateKeyBindingService(null);
+//			} else {
+//				WorkbenchPlugin
+//						.log("MultiPageEditorPart.setFocus()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
+//			}
+//		}
 		
 		if (containerSiteActive) {
 			IServiceLocator containerSite = getPageContainerSite();
@@ -828,7 +829,7 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * form.
 	 * </p>
 	 * 
-	 * @since 3.4
+	 * @since 1.1
 	 * @see #deactivateSite(boolean,boolean)
 	 * @see #createPageContainer(Composite)
 	 * @see #getPageSite(int)
@@ -839,21 +840,23 @@ public abstract class MultiPageEditorPart extends EditorPart {
 			activeServiceLocator = null;
 		}
 
-		final IKeyBindingService service = getSite().getKeyBindingService();
+// RAP [rh] IKeyBindingService not implemented
+//		final IKeyBindingService service = getSite().getKeyBindingService();
 		final int pageIndex = getActivePage();
 		final IEditorPart editor = getEditor(pageIndex);
 
 		if (editor != null) {
-			// active the service for this inner editor
-			if (service instanceof INestableKeyBindingService) {
-				final INestableKeyBindingService nestableService = (INestableKeyBindingService) service;
-				nestableService.activateKeyBindingService(editor
-						.getEditorSite());
-
-			} else {
-				WorkbenchPlugin
-						.log("MultiPageEditorPart.setFocus()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
-			}
+// RAP [rh] IKeyBindingService not implemented
+//			// active the service for this inner editor
+//			if (service instanceof INestableKeyBindingService) {
+//				final INestableKeyBindingService nestableService = (INestableKeyBindingService) service;
+//				nestableService.activateKeyBindingService(editor
+//						.getEditorSite());
+//
+//			} else {
+//				WorkbenchPlugin
+//						.log("MultiPageEditorPart.setFocus()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
+//			}
 			// Activate the services for the new service locator.
 			final IServiceLocator serviceLocator = editor.getEditorSite();
 			if (serviceLocator instanceof INestable) {
@@ -864,14 +867,15 @@ public abstract class MultiPageEditorPart extends EditorPart {
 		} else {
 			Item item = getItem(pageIndex);
 
-			// There is no selected editor, so deactivate the active service.
-			if (service instanceof INestableKeyBindingService) {
-				final INestableKeyBindingService nestableService = (INestableKeyBindingService) service;
-				nestableService.activateKeyBindingService(null);
-			} else {
-				WorkbenchPlugin
-						.log("MultiPageEditorPart.setFocus()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
-			}
+// RAP [rh] IKeyBindingService not implemented
+//			// There is no selected editor, so deactivate the active service.
+//			if (service instanceof INestableKeyBindingService) {
+//				final INestableKeyBindingService nestableService = (INestableKeyBindingService) service;
+//				nestableService.activateKeyBindingService(null);
+//			} else {
+//				WorkbenchPlugin
+//						.log("MultiPageEditorPart.setFocus()   Parent key binding service was not an instance of INestableKeyBindingService.  It was an instance of " + service.getClass().getName() + " instead."); //$NON-NLS-1$ //$NON-NLS-2$
+//			}
 
 			if (item.getData() instanceof INestable) {
 				activeServiceLocator = (INestable) item.getData();
@@ -1058,7 +1062,6 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * @param input the editor input
 	 * @return the editors contained in this multi-page editor
 	 * whose editor input match the provided input
-	 * @since 3.3
 	 */
 	public final IEditorPart[] findEditors(IEditorInput input) {
 		List result = new ArrayList();
@@ -1080,7 +1083,6 @@ public abstract class MultiPageEditorPart extends EditorPart {
 	 * no effect of the given editor part is not contained in this
 	 * multi-page editor.
 	 * @param editorPart the editor part
-	 * @since 3.3
 	 */
 	public final void setActiveEditor(IEditorPart editorPart) {
 		int count = getPageCount();

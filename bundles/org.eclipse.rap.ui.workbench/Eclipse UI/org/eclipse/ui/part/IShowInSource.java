@@ -19,7 +19,7 @@ package org.eclipse.ui.part;
  * 
  * @see IShowInTarget
  * 
- * @since 2.1
+ * @since 1.1
  */
 public interface IShowInSource {
 

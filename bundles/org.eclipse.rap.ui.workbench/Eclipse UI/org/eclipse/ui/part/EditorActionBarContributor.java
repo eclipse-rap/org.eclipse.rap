@@ -36,6 +36,7 @@ import org.eclipse.ui.IWorkbenchPage;
  *   <li><code>setActiveEditor</code> - reimplement to react to editor changes</li>
  * </ul>
  * </p>
+ * @since 1.0
  */
 public class EditorActionBarContributor implements IEditorActionBarContributor {
     /**
@@ -104,7 +105,6 @@ public class EditorActionBarContributor implements IEditorActionBarContributor {
      *
      * @param coolBarManager the manager that controls the workbench cool bar.
      * 
-     * @since 3.0
      */
     public void contributeToCoolBar(ICoolBarManager coolBarManager) {
     }

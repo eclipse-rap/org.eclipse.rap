@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * <li>Pass the second tree viewer into the composite by 
  *   calling <code>setChildTree</code>.</li>
  * </ol>
+ * @since 1.1
  */
 public class DrillDownComposite extends Composite {
     private ToolBarManager toolBarMgr;

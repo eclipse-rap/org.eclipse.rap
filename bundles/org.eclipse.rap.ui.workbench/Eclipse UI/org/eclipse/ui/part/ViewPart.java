@@ -59,6 +59,7 @@ import org.eclipse.ui.internal.util.Util;
  *   <li><code>getAdapter</code> - reimplement to make their view adaptable</li>
  * </ul>
  * </p>
+ * @since 1.0
  */
 public abstract class ViewPart extends WorkbenchPart implements IViewPart {
 
@@ -184,7 +185,6 @@ public abstract class ViewPart extends WorkbenchPart implements IViewPart {
      * The site for a view must be an <code>IViewSite</code>.
      * 
      * @param site the site to check
-     * @since 3.1
      */
     protected final void checkSite(IWorkbenchPartSite site) {
         super.checkSite(site);

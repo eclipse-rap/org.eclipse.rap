@@ -27,8 +27,6 @@ import org.eclipse.ui.IWorkbenchPart;
  * an <code>IPartPropertyProvider</code>. Otherwise, the new-style part will use the 
  * default implementation (<code>PartPropertyProvider</code>).
  * </p>
- * 
- * @since 3.1
  */
 public interface IPartPropertyProvider {
     public void addPropertyListener(IWorkbenchPart part, IPropertyListener l);

@@ -19,7 +19,6 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.internal.EditorReference;
 
 /**
- * @since 3.1
  */
 public class NullEditorInput implements IEditorInput {
 
@@ -36,7 +35,6 @@ public class NullEditorInput implements IEditorInput {
 	 * given editor reference.
 	 * 
 	 * @param editorReference the editor reference
-	 * @since 3.4
 	 */
 	public NullEditorInput(EditorReference editorReference) {
 		Assert.isLegal(editorReference != null);

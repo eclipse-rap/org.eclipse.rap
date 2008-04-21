@@ -23,7 +23,6 @@ import org.eclipse.ui.IPersistable;
  * Not intended to be subclassed by clients. 
  * </p>
  * 
- * @since 3.1
  */
 public abstract class Part implements IPersistable
 {

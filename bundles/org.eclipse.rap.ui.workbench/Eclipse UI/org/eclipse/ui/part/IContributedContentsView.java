@@ -18,6 +18,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * their contents.
  * The interface allows access to the part which contributed the current
  * contents.
+ * @since 1.0
  */
 public interface IContributedContentsView {
     /**

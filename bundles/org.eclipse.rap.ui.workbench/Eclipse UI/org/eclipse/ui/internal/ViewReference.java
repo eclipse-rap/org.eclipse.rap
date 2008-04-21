@@ -21,10 +21,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
 
 import org.eclipse.jface.action.ContributionManager;
-import org.eclipse.jface.action.IAction;
+//import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import org.eclipse.ui.IKeyBindingService;
+//import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
@@ -395,25 +395,26 @@ class ViewReference extends WorkbenchPartReference implements IViewReference {
 
 				actionBuilder = new ViewActionBuilder();
 				actionBuilder.readActionExtensions(view);
-				ActionDescriptor[] actionDescriptors = actionBuilder
-						.getExtendedActions();
-				IKeyBindingService keyBindingService = view.getSite()
-						.getKeyBindingService();
-
-				if (actionDescriptors != null) {
-					for (int i = 0; i < actionDescriptors.length; i++) {
-						ActionDescriptor actionDescriptor = actionDescriptors[i];
-
-						if (actionDescriptor != null) {
-							IAction action = actionDescriptors[i].getAction();
-
-							if (action != null
-									&& action.getActionDefinitionId() != null) {
-								keyBindingService.registerAction(action);
-							}
-						}
-					}
-				}
+// RAP [rh] IKeyBindingService not implemented				
+//				ActionDescriptor[] actionDescriptors = actionBuilder
+//						.getExtendedActions();
+//				IKeyBindingService keyBindingService = view.getSite()
+//						.getKeyBindingService();
+//
+//				if (actionDescriptors != null) {
+//					for (int i = 0; i < actionDescriptors.length; i++) {
+//						ActionDescriptor actionDescriptor = actionDescriptors[i];
+//
+//						if (actionDescriptor != null) {
+//							IAction action = actionDescriptors[i].getAction();
+//
+//							if (action != null
+//									&& action.getActionDefinitionId() != null) {
+//								keyBindingService.registerAction(action);
+//							}
+//						}
+//					}
+//				}
 
 				site.getActionBars().updateActionBars();
 			}

@@ -99,6 +99,7 @@ import org.eclipse.ui.internal.util.Util;
  * part in the workbench.</li>
  * </ul>
  * </p>
+ * @since 1.0
  */
 public abstract class PageBookView extends ViewPart implements IPartListener {
 	/**
@@ -592,7 +593,6 @@ public abstract class PageBookView extends ViewPart implements IPartListener {
 	 *            the adapter class to look up
 	 * @return a object castable to the given class, or <code>null</code> if
 	 *         this object does not have an adapter for the given class
-	 * @since 3.2
 	 */
 	protected Object getViewAdapter(Class adapter) {
 		return null;

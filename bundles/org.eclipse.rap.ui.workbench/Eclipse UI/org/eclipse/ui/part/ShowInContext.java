@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.ISelection;
  * @see IShowInSource
  * @see IShowInTarget
  * 
- * @since 2.1
+ * @since 1.1
  */
 public class ShowInContext {
 

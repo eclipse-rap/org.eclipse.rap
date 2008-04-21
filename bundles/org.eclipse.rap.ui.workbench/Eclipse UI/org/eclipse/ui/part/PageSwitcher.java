@@ -22,7 +22,7 @@ import org.eclipse.ui.internal.handlers.CyclePageHandler;
  * pages however it wishes. The view should subclass PageSwitcher to provide the
  * abstract methods, and then instantiate their page switcher once.
  * 
- * @since 3.4
+ * @since 1.1
  * 
  */
 public abstract class PageSwitcher {

@@ -19,6 +19,7 @@ import org.eclipse.ui.PartInitException;
  * </p>	
  * @see PageBookView
  * @see Page
+ * @since 1.0
  */
 public interface IPageBookViewPage extends IPage {
     /**

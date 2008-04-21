@@ -66,6 +66,7 @@ import org.eclipse.ui.PartInitException;
  *       adaptable</li>
  * </ul>
  * </p>
+ * @since 1.0
  */
 public abstract class EditorPart extends WorkbenchPart implements IEditorPart {
 
@@ -233,8 +234,6 @@ public abstract class EditorPart extends WorkbenchPart implements IEditorPart {
      * until the editor has fully updated its internal state to reflect the
      * new input.</p>
      * 
-     * @since 3.2
-     *
      * @param input the editor input
      */
     protected void setInputWithNotify(IEditorInput input) {
@@ -299,7 +298,6 @@ public abstract class EditorPart extends WorkbenchPart implements IEditorPart {
      * The site for an editor must be an <code>IEditorSite</code>.
      * 
      * @param site the site to check
-     * @since 3.1
      */
     protected final void checkSite(IWorkbenchPartSite site) {
         super.checkSite(site);

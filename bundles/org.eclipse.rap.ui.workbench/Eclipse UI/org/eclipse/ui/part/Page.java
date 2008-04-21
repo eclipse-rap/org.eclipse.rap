@@ -43,6 +43,7 @@ import org.eclipse.ui.IActionBars;
  * </p>
  *
  * @see PageBookView
+ * @since 1.0
  */
 public abstract class Page implements IPageBookViewPage {
     /**
@@ -104,7 +105,6 @@ public abstract class Page implements IPageBookViewPage {
      * Subclasses may extend.
      * </p>
      * 
-     * @since 2.0
      */
     public void init(IPageSite pageSite) {
         site = pageSite;

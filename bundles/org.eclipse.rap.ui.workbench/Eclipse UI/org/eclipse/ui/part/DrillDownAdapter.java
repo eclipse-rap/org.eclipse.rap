@@ -46,6 +46,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * state of the underlying viewer.
  * </p>
  * </p>
+ * @since 1.0
  */
 public class DrillDownAdapter implements ISelectionChangedListener {
     private TreeViewer fChildTree;
@@ -153,38 +154,38 @@ public class DrillDownAdapter implements ISelectionChangedListener {
 		}
 
         // Home.	
-        homeAction = new Action(WorkbenchMessages.GoHome_text) {
+        homeAction = new Action(WorkbenchMessages.get().GoHome_text) {
             public void run() {
                 goHome();
             }
         };
         homeAction
-                .setToolTipText(WorkbenchMessages.GoHome_toolTip);
+                .setToolTipText(WorkbenchMessages.get().GoHome_toolTip);
         homeAction
                 .setImageDescriptor(WorkbenchImages
                         .getImageDescriptor(ISharedImages.IMG_ETOOL_HOME_NAV));
 
         // Back.
         ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
-        backAction = new Action(WorkbenchMessages.GoBack_text) {
+        backAction = new Action(WorkbenchMessages.get().GoBack_text) {
             public void run() {
                 goBack();
             }
         };
         backAction
-                .setToolTipText(WorkbenchMessages.GoBack_toolTip); 
+                .setToolTipText(WorkbenchMessages.get().GoBack_toolTip); 
         backAction.setImageDescriptor(images
                 .getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
         backAction.setDisabledImageDescriptor(images
                 .getImageDescriptor(ISharedImages.IMG_TOOL_BACK_DISABLED));
 
         // Forward.
-        forwardAction = new Action(WorkbenchMessages.GoInto_text) { 
+        forwardAction = new Action(WorkbenchMessages.get().GoInto_text) { 
             public void run() {
                 goInto();
             }
         };
-        forwardAction.setToolTipText(WorkbenchMessages.GoInto_toolTip); 
+        forwardAction.setToolTipText(WorkbenchMessages.get().GoInto_toolTip); 
         forwardAction.setImageDescriptor(images
                 .getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
         forwardAction.setDisabledImageDescriptor(images

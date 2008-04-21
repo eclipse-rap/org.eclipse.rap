@@ -31,6 +31,7 @@ import org.eclipse.ui.IEditorPart;
  * The base implementation of <code>MultiPageEditor.init</code> creates 
  * an instance of this class.
  * </p>
+ * @since 1.0
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class MultiPageSelectionProvider implements IPostSelectionProvider {
@@ -72,7 +73,6 @@ public class MultiPageSelectionProvider implements IPostSelectionProvider {
      * Adds a listener for post selection changes in this multi page selection provider.
      *
      * @param listener a selection changed listener
-     * @since 3.2
      */
     public void addPostSelectionChangedListener(ISelectionChangedListener listener) {
     	postListeners.add(listener);
@@ -95,7 +95,6 @@ public class MultiPageSelectionProvider implements IPostSelectionProvider {
      * selection has changed.
      * 
      * @param event the event to propogate.
-     * @since 3.2
      */
     public void firePostSelectionChanged(final SelectionChangedEvent event) {
 		Object[] listeners = postListeners.getListeners();
@@ -148,7 +147,6 @@ public class MultiPageSelectionProvider implements IPostSelectionProvider {
      * Removes a listener for post selection changes in this multi page selection provider.
      *
      * @param listener a selection changed listener
-     * @since 3.2
      */
     public void removePostSelectionChangedListener(ISelectionChangedListener listener) {
     	postListeners.remove(listener);

@@ -55,7 +55,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * </li>
  * </ul>
  * </p>
- * @since 3.0
+ * @since 1.1
  */
 public abstract class IntroPart extends EventManager implements IIntroPart,
 		IExecutableExtension {
@@ -303,7 +303,8 @@ public abstract class IntroPart extends EventManager implements IIntroPart,
      *            the title image, or <code>null</code> to clear
      */
     protected void setTitleImage(Image titleImage) {
-        Assert.isTrue(titleImage == null || !titleImage.isDisposed());
+// RAP [rh] Image#isDisposed missing      
+//        Assert.isTrue(titleImage == null || !titleImage.isDisposed());
         //Do not send changes if they are the same
         if (this.titleImage == titleImage) {
 			return;
@@ -316,7 +317,6 @@ public abstract class IntroPart extends EventManager implements IIntroPart,
      * Set the title string for this part.
      * 
      * @param titleLabel the title string.  Must not be <code>null</code>.
-     * @since 3.2
      */
     protected void setTitle(String titleLabel) {
     	Assert.isNotNull(titleLabel);
