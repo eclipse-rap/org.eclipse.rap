@@ -36,6 +36,7 @@ import org.eclipse.ui.internal.util.Util;
  * images are cached until the label provider is explicitly disposed.
  * This class provides a facility for subclasses to define annotations
  * on the labels and icons of adaptable objects.
+ * @since 1.0
  */
 public class WorkbenchLabelProvider extends LabelProvider implements
         IColorProvider, IFontProvider {
@@ -46,6 +47,7 @@ public class WorkbenchLabelProvider extends LabelProvider implements
      * 
      * @return a new <code>DecoratingLabelProvider</code> which wraps a <code>
      *   new <code>WorkbenchLabelProvider</code>
+     * @since 1.1
      */
     public static ILabelProvider getDecoratingWorkbenchLabelProvider() {
         return new DecoratingLabelProvider(new WorkbenchLabelProvider(),

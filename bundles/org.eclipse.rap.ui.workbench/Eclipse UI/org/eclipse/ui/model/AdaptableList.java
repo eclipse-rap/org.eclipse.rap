@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * This class is not intended to be subclassed.
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  * @see org.eclipse.ui.model.IWorkbenchAdapter
  * @noextend This class is not intended to be subclassed by clients.
  */

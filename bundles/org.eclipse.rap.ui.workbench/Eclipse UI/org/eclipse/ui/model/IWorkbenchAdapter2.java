@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.RGB;
  * @see IWorkbenchAdapter
  * @see WorkbenchLabelProvider
  * @see BaseWorkbenchContentProvider
- * @since 3.0
+ * @since 1.0
  */
 public interface IWorkbenchAdapter2 {
 

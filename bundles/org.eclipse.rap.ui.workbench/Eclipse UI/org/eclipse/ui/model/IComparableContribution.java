@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * extension developers may wish to implement it as well for their own
  * extensions.
  * 
- * @since 3.4
+ * @since 1.1
  */
 public interface IComparableContribution extends IAdaptable {
 

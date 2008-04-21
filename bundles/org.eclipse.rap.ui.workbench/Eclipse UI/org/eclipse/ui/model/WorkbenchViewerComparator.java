@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
  * by this sorter, so a &gt; B &gt; c
  * 
  * @see IWorkbenchAdapter
- * @since 3.3
+ * @since 1.0
  */
 public class WorkbenchViewerComparator extends ViewerComparator {
 

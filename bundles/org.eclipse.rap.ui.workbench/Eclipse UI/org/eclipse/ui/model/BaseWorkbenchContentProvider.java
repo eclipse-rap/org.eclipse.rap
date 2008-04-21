@@ -22,7 +22,7 @@ import org.eclipse.ui.internal.util.Util;
  * </p>
  * 
  * @see IWorkbenchAdapter
- * @since 3.0
+ * @since 1.0
  */
 public class BaseWorkbenchContentProvider implements ITreeContentProvider {
 

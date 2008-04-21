@@ -22,6 +22,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * </p>
  * @see WorkbenchLabelProvider
  * @see BaseWorkbenchContentProvider
+ * @since 1.0
  */
 public interface IWorkbenchAdapter {
     /**

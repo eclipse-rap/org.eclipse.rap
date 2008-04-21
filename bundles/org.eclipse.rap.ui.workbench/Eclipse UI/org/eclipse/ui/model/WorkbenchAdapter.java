@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.RGB;
  * Abstract base class with basic implementations of the IWorkbenchAdapter
  * interface. Intended to be subclassed.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public abstract class WorkbenchAdapter implements IWorkbenchAdapter,
         IWorkbenchAdapter2 {

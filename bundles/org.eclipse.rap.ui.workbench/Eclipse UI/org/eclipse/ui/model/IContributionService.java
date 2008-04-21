@@ -16,7 +16,7 @@ package org.eclipse.ui.model;
  * clients may use to order, display, and generally work with contributions to
  * the Workbench.
  * 
- * @since 3.4
+ * @since 1.1
  * 
  */
 public interface IContributionService {

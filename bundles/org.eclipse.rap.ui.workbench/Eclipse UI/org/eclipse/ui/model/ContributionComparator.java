@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
  * 
  * @see IComparableContribution
  * 
- * @since 3.4
+ * @since 1.1
  */
 public class ContributionComparator extends ViewerComparator implements
 		Comparator {

@@ -32,7 +32,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * Clients may instantiate this class. It is not intended to be subclassed.
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  */
 public final class PerspectiveLabelProvider extends LabelProvider implements
         ITableLabelProvider {
