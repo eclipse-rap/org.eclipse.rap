@@ -69,8 +69,9 @@ public final class EditorSelectionDialog extends Dialog {
 
 	private String message = WorkbenchMessages.get().EditorSelection_chooseAnEditor;
 
+	// RAP [bm]: no external editors
 	// collection of IEditorDescriptor
-	private IEditorDescriptor[] externalEditors;
+//	private IEditorDescriptor[] externalEditors;
 
 	private IEditorDescriptor[] internalEditors;
 
@@ -268,37 +269,38 @@ public final class EditorSelectionDialog extends Dialog {
 		return section;
 	}
 
-	/**
-	 * Get a list of registered programs from the OS
-	 */
-	protected IEditorDescriptor[] getExternalEditors() {
-		if (externalEditors == null) {
-			// Since this can take a while, show the busy
-			// cursor. If the dialog is not yet visible,
-			// then use the parent shell.
-			Control shell = getShell();
-			if (!shell.isVisible()) {
-				Control topShell = shell.getParent();
-				if (topShell != null) {
-					shell = topShell;
-				}
-			}
+	// RAP [bm]: no external editors
+//	/**
+//	 * Get a list of registered programs from the OS
+//	 */
+//	protected IEditorDescriptor[] getExternalEditors() {
+//		if (externalEditors == null) {
+//			// Since this can take a while, show the busy
+//			// cursor. If the dialog is not yet visible,
+//			// then use the parent shell.
+//			Control shell = getShell();
+//			if (!shell.isVisible()) {
+//				Control topShell = shell.getParent();
+//				if (topShell != null) {
+//					shell = topShell;
+//				}
+//			}
 // RAP [rh] missing Cursor API			
 //			Cursor busy = new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT);
 //			shell.setCursor(busy);
-			// Get the external editors available
-			EditorRegistry reg = (EditorRegistry) WorkbenchPlugin.getDefault()
-					.getEditorRegistry();
-			externalEditors = reg.getSortedEditorsFromOS();
-			externalEditors = filterEditors(externalEditors);
-			externalEditorImages = getImages(externalEditors);
-			// Clean up
+//			// Get the external editors available
+//			EditorRegistry reg = (EditorRegistry) WorkbenchPlugin.getDefault()
+//					.getEditorRegistry();
+//			externalEditors = reg.getSortedEditorsFromOS();
+//			externalEditors = filterEditors(externalEditors);
+//			externalEditorImages = getImages(externalEditors);
+//			// Clean up
 // RAP [rh] missing Cursor API			
 //			shell.setCursor(null);
 //			busy.dispose();
-		}
-		return externalEditors;
-	}
+//		}
+//		return externalEditors;
+//	}
 
 	/**
 	 * Returns an array of editors which have been filtered according to the

@@ -25,7 +25,6 @@ import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -39,16 +38,13 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.commands.ICommandImageService;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementReference;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.services.IServiceLocator;
 
 /**
@@ -105,7 +101,8 @@ public final class CommandContributionItem extends ContributionItem {
 
 	private IHandlerService handlerService;
 
-	private IBindingService bindingService;
+	// RAP [bm]: 
+//	private IBindingService bindingService;
 
 	private ParameterizedCommand command;
 
@@ -115,9 +112,11 @@ public final class CommandContributionItem extends ContributionItem {
 
 	private String tooltip;
 
-	private ImageDescriptor disabledIcon;
-
-	private ImageDescriptor hoverIcon;
+	// RAP [bm]: 
+//	private ImageDescriptor disabledIcon;
+//
+//	private ImageDescriptor hoverIcon;
+	// RAPEND: [bm] 
 
 	private String mnemonic;
 
@@ -131,9 +130,11 @@ public final class CommandContributionItem extends ContributionItem {
 
 	private String dropDownMenuOverride;
 
-	private IWorkbenchHelpSystem workbenchHelpSystem;
+	// RAP [bm]: Helpsystem
+//	private IWorkbenchHelpSystem workbenchHelpSystem;
 
-	private String helpContextId;
+//	private String helpContextId;
+	// RAPEND: [bm] 
 
 	private int mode = 0;
 
@@ -155,13 +156,17 @@ public final class CommandContributionItem extends ContributionItem {
 		super(contributionParameters.id);
 
 		this.icon = contributionParameters.icon;
-		this.disabledIcon = contributionParameters.disabledIcon;
-		this.hoverIcon = contributionParameters.hoverIcon;
+		// RAP [bm]: 
+//		this.disabledIcon = contributionParameters.disabledIcon;
+//		this.hoverIcon = contributionParameters.hoverIcon;
+		// RAPEND: [bm] 
+
 		this.label = contributionParameters.label;
 		this.mnemonic = contributionParameters.mnemonic;
 		this.tooltip = contributionParameters.tooltip;
 		this.style = contributionParameters.style;
-		this.helpContextId = contributionParameters.helpContextId;
+		// RAP [bm]: 
+//		this.helpContextId = contributionParameters.helpContextId;
 		this.visibleEnabled = contributionParameters.visibleEnabled;
 		this.mode = contributionParameters.mode;
 
@@ -171,8 +176,9 @@ public final class CommandContributionItem extends ContributionItem {
 				.getService(ICommandService.class);
 		handlerService = (IHandlerService) contributionParameters.serviceLocator
 				.getService(IHandlerService.class);
-		bindingService = (IBindingService) contributionParameters.serviceLocator
-				.getService(IBindingService.class);
+		// RAP [bm]: Bindings
+//		bindingService = (IBindingService) contributionParameters.serviceLocator
+//				.getService(IBindingService.class);
 		createCommand(contributionParameters.commandId,
 				contributionParameters.parameters);
 
@@ -215,19 +221,21 @@ public final class CommandContributionItem extends ContributionItem {
 				setImages(contributionParameters.serviceLocator,
 						contributionParameters.iconStyle);
 
-				if (contributionParameters.helpContextId == null) {
-					try {
-						this.helpContextId = commandService
-								.getHelpContextId(contributionParameters.commandId);
-					} catch (NotDefinedException e) {
-						// it's OK to not have a helpContextId
-					}
-				}
-				IWorkbench workbench = (IWorkbench) contributionParameters.serviceLocator
-						.getService(IWorkbench.class);
-				if (workbench != null && helpContextId != null) {
-					this.workbenchHelpSystem = workbench.getHelpSystem();
-				}
+				// RAP [bm]: HelpSystem
+//				if (contributionParameters.helpContextId == null) {
+//					try {
+//						this.helpContextId = commandService
+//						.getHelpContextId(contributionParameters.commandId);
+//					} catch (NotDefinedException e) {
+//						// it's OK to not have a helpContextId
+//					}
+//				}
+//				IWorkbench workbench = (IWorkbench) contributionParameters.serviceLocator
+//						.getService(IWorkbench.class);
+//				if (workbench != null && helpContextId != null) {
+//					this.workbenchHelpSystem = workbench.getHelpSystem();
+//				}
+				// RAPEND: [bm] 
 			} catch (NotDefinedException e) {
 				WorkbenchPlugin
 						.log("Unable to register menu item \"" + getId() //$NON-NLS-1$
@@ -287,10 +295,12 @@ public final class CommandContributionItem extends ContributionItem {
 					.getService(ICommandImageService.class);
 			icon = service.getImageDescriptor(command.getId(),
 					ICommandImageService.TYPE_DEFAULT, iconStyle);
-			disabledIcon = service.getImageDescriptor(command.getId(),
-					ICommandImageService.TYPE_DISABLED, iconStyle);
-			hoverIcon = service.getImageDescriptor(command.getId(),
-					ICommandImageService.TYPE_HOVER, iconStyle);
+			// RAP [bm]: 
+//			disabledIcon = service.getImageDescriptor(command.getId(),
+//					ICommandImageService.TYPE_DISABLED, iconStyle);
+//			hoverIcon = service.getImageDescriptor(command.getId(),
+//					ICommandImageService.TYPE_HOVER, iconStyle);
+			// RAPEND: [bm] 
 		}
 	}
 
@@ -385,9 +395,12 @@ public final class CommandContributionItem extends ContributionItem {
 			item = new MenuItem(parent, tmpStyle);
 		}
 		item.setData(this);
-		if (workbenchHelpSystem != null) {
-			workbenchHelpSystem.setHelp(item, helpContextId);
-		}
+		// RAP [bm]: HelpSystem
+//		if (workbenchHelpSystem != null) {
+//			workbenchHelpSystem.setHelp(item, helpContextId);
+//		}
+		// RAPEND: [bm] 
+
 		item.addListener(SWT.Dispose, getItemListener());
 		item.addListener(SWT.Selection, getItemListener());
 		widget = item;
@@ -457,21 +470,25 @@ public final class CommandContributionItem extends ContributionItem {
 				}
 				text = updateMnemonic(text);
 
-				String keyBindingText = null;
-				if (command != null) {
-					TriggerSequence binding = bindingService
-							.getBestActiveBindingFor(command);
-					if (binding != null) {
-						keyBindingText = binding.format();
-					}
-				}
+				// RAP [bm]: Bindings
+//				String keyBindingText = null;
+//				if (command != null) {
+//					TriggerSequence binding = bindingService
+//							.getBestActiveBindingFor(command);
+//					if (binding != null) {
+//						keyBindingText = binding.format();
+//					}
+//				}
+				// RAPEND: [bm] 
+
 				if (text != null) {
-					if (keyBindingText == null) {
+//					if (keyBindingText == null) {
 						item.setText(text);
-					} else {
-						item.setText(text + '\t' + keyBindingText);
-					}
+//					} else {
+//						item.setText(text + '\t' + keyBindingText);
+//					}
 				}
+				// RAPEND: [bm] 
 
 				updateIcons();
 				if (item.getSelection() != checkedState) {
@@ -562,7 +579,8 @@ public final class CommandContributionItem extends ContributionItem {
 		}
 		command = null;
 		commandService = null;
-		bindingService = null;
+		// RAP [bm]: Bindings
+//		bindingService = null;
 		menuService = null;
 		handlerService = null;
 		disposeOldImages();
@@ -645,9 +663,12 @@ public final class CommandContributionItem extends ContributionItem {
 
 					final MenuManager menuManager = new MenuManager();
 					Menu menu = menuManager.createContextMenu(ti.getParent());
-					if (workbenchHelpSystem != null) {
-						workbenchHelpSystem.setHelp(menu, helpContextId);
-					}
+					// RAP [bm]: HelpSystem
+//					if (workbenchHelpSystem != null) {
+//						workbenchHelpSystem.setHelp(menu, helpContextId);
+//					}
+					// RAPEND: [bm] 
+
 					menuManager.addMenuListener(new IMenuListener() {
 						public void menuAboutToShow(IMenuManager manager) {
 							String id = getId();
@@ -690,10 +711,14 @@ public final class CommandContributionItem extends ContributionItem {
 			ToolItem item = (ToolItem) widget;
 			LocalResourceManager m = new LocalResourceManager(JFaceResources
 					.getResources());
-			item.setDisabledImage(disabledIcon == null ? null : m
-					.createImage(disabledIcon));
-			item.setHotImage(hoverIcon == null ? null : m
-					.createImage(hoverIcon));
+			// RAP [bm]: ToolItem#setDisabledImage
+			// RAP [bm]: ToolItem#setHotImage
+//			item.setDisabledImage(disabledIcon == null ? null : m
+//					.createImage(disabledIcon));
+//			item.setHotImage(hoverIcon == null ? null : m
+//					.createImage(hoverIcon));
+			// RAPEND: [bm] 
+
 			item.setImage(icon == null ? null : m.createImage(icon));
 			disposeOldImages();
 			localResourceManager = m;
@@ -725,12 +750,14 @@ public final class CommandContributionItem extends ContributionItem {
 	}
 
 	private void setDisabledIcon(ImageDescriptor desc) {
-		disabledIcon = desc;
+		// RAP [bm]: 
+//		disabledIcon = desc;
 		updateIcons();
 	}
 
 	private void setHoverIcon(ImageDescriptor desc) {
-		hoverIcon = desc;
+		// RAP [bm]: 
+//		hoverIcon = desc;
 		updateIcons();
 	}
 

@@ -14,9 +14,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.internal.WorkbenchWindow;
@@ -128,9 +125,10 @@ public abstract class AnimationItem {
      * @param imageData
      *            The array of ImageData. Required to show an animation.
      */
-    void paintImage(PaintEvent event, Image image, ImageData imageData) {
-        event.gc.drawImage(image, 0, 0);
-    }
+    // RAP [bm]: GC
+//    void paintImage(PaintEvent event, Image image, ImageData imageData) {
+//        event.gc.drawImage(image, 0, 0);
+//    }
 
     /**
      * Get the SWT control for the receiver.
