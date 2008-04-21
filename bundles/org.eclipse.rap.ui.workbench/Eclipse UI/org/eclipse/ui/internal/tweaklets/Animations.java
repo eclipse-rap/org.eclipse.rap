@@ -20,8 +20,6 @@ import org.eclipse.ui.internal.tweaklets.Tweaklets.TweakKey;
  * extension derived from this class to provide alternate animation
  * behavior. Currently only affects animations produced by the new
  * min / max behavior. 
- * 
- * @since 3.3
  *
  */
 public abstract class Animations {

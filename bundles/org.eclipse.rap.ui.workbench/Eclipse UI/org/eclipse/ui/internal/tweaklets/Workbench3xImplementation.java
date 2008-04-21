@@ -19,8 +19,6 @@ import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.internal.registry.PerspectiveDescriptor;
 
 /**
- * @since 3.4
- *
  */
 public class Workbench3xImplementation extends WorkbenchImplementation {
 

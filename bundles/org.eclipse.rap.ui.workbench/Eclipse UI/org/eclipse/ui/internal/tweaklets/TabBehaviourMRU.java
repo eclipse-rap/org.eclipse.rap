@@ -32,8 +32,6 @@ import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.eclipse.ui.internal.registry.EditorDescriptor;
 
 /**
- * @since 3.3
- * 
  */
 public class TabBehaviourMRU extends TabBehaviour {
 
@@ -84,13 +82,13 @@ public class TabBehaviourMRU extends TabBehaviour {
 
 		MessageDialog dialog = new MessageDialog(page.getWorkbenchWindow()
 				.getShell(),
-				WorkbenchMessages.EditorManager_reuseEditorDialogTitle,
+				WorkbenchMessages.get().EditorManager_reuseEditorDialogTitle,
 				null, // accept the default window icon
-				NLS.bind(WorkbenchMessages.EditorManager_saveChangesQuestion,
+				NLS.bind(WorkbenchMessages.get().EditorManager_saveChangesQuestion,
 						dirtyEditor.getName()), MessageDialog.QUESTION,
-				new String[] { IDialogConstants.YES_LABEL,
-						IDialogConstants.NO_LABEL,
-						WorkbenchMessages.EditorManager_openNewEditorLabel }, 0);
+				new String[] { IDialogConstants.get().YES_LABEL,
+						IDialogConstants.get().NO_LABEL,
+						WorkbenchMessages.get().EditorManager_openNewEditorLabel }, 0);
 		int result = dialog.open();
 		if (result == 0) { // YES
 			ProgressMonitorDialog pmd = new ProgressMonitorJobsDialog(dialog

@@ -17,8 +17,6 @@ import org.eclipse.ui.internal.RectangleAnimationFeedbackBase;
 
 /**
  * Return the default (legacy) animation.
- * 
- * @since 3.3
  *
  */
 public class LegacyAnimations extends Animations {

@@ -17,8 +17,6 @@ import org.eclipse.ui.internal.tweaklets.Tweaklets.TweakKey;
 
 /**
  * The tweaklet provider can prevent the workbench page from grabbing focus.
- * 
- * @since 3.3
  */
 public abstract class GrabFocus {
 	public static TweakKey KEY = new Tweaklets.TweakKey(GrabFocus.class);

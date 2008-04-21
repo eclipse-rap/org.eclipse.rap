@@ -23,8 +23,6 @@ import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
- * @since 3.3
- * 
  */
 public class Tweaklets {
 	

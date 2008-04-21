@@ -25,8 +25,6 @@ import org.eclipse.ui.internal.registry.EditorDescriptor;
 import org.eclipse.ui.internal.tweaklets.Tweaklets.TweakKey;
 
 /**
- * @since 3.3
- * 
  */
 public abstract class TabBehaviour {
 

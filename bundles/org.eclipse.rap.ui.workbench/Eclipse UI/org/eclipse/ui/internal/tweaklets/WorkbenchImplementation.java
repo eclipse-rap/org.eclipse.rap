@@ -21,8 +21,6 @@ import org.eclipse.ui.internal.tweaklets.Tweaklets.TweakKey;
 
 /**
  * Tweak that enables experimental Eclipse 4.0 functionality
- * 
- * @since 3.4
  *
  */
 public abstract class WorkbenchImplementation {
