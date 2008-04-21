@@ -24,8 +24,6 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Contains extensions defined on the <code>keywords</code> extension point.
- * 
- * @since 3.1
  */
 public final class KeywordRegistry implements IExtensionChangeHandler {
 
@@ -86,7 +84,7 @@ public final class KeywordRegistry implements IExtensionChangeHandler {
 
 	private IExtensionPoint getExtensionPointFilter() {
 		return Platform.getExtensionRegistry().getExtensionPoint(
-				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_KEYWORDS);
+				PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_KEYWORDS);
 	}
 	
 	/**

@@ -30,8 +30,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 /**
  * A working set descriptor stores the plugin registry data for 
  * a working set page extension.
- * 
- * @since 2.0
  */
 public class WorkingSetDescriptor implements IPluginContribution {
     private String id;
@@ -129,7 +127,6 @@ public class WorkingSetDescriptor implements IPluginContribution {
 	 * bundle that contains the referenced class.
 	 * 
 	 * @return the namespace
-	 * @since 3.3
 	 */
 	public String getUpdaterNamespace() {
 		return WorkbenchPlugin.getBundleForExecutableExtension(configElement,
@@ -142,7 +139,6 @@ public class WorkingSetDescriptor implements IPluginContribution {
 	 * another bundle that contains the referenced class.
 	 * 
 	 * @return the namespace
-	 * @since 3.3
 	 */
 	public String getElementAdapterNamespace() {
 		return WorkbenchPlugin.getBundleForExecutableExtension(configElement,
@@ -277,8 +273,6 @@ public class WorkingSetDescriptor implements IPluginContribution {
      * 
      * @return <code>true</code> if working sets based on this descriptor are editable; otherwise
      *  <code>false</code>
-     * 
-     * @since 3.1
      */
     public boolean isEditable() {
         return getPageClassName() != null;
@@ -296,7 +290,6 @@ public class WorkingSetDescriptor implements IPluginContribution {
 	 * Return the config element for this descriptor.
 	 * 
 	 * @return the config element
-	 * @since 3.3
 	 */
 	public IConfigurationElement getConfigurationElement() {
 		return configElement;
@@ -306,7 +299,6 @@ public class WorkingSetDescriptor implements IPluginContribution {
 	 * Return the description for this working set type.
 	 * 
 	 * @return the description for this type. May be an empty string.
-	 * @since 3.4
 	 */
 	public String getDescription() {
 		String description = configElement

@@ -36,7 +36,7 @@ public class Category implements IWorkbenchAdapter, IPluginContribution, IAdapta
     /**
      * Name of the miscellaneous category
      */
-    public final static String MISC_NAME = WorkbenchMessages.ICategory_other;
+    public final static String MISC_NAME = WorkbenchMessages.get().ICategory_other;
 
     /**
      * Identifier of the miscellaneous category
@@ -268,8 +268,6 @@ public class Category implements IWorkbenchAdapter, IPluginContribution, IAdapta
 
 	/**
 	 * Clear all elements from this category.
-	 * 
-	 * @since 3.1
 	 */
 	public void clear() {
 		if (elements != null) {

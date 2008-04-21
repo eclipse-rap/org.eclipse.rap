@@ -79,7 +79,7 @@ public class PerspectiveExtensionReader extends RegistryReader {
     	tracker = extensionTracker;
     	targetID = id;
         pageLayout = out;
-        readRegistry(Platform.getExtensionRegistry(), PlatformUI.PLUGIN_ID,
+        readRegistry(Platform.getExtensionRegistry(), PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
                 IWorkbenchRegistryConstants.PL_PERSPECTIVE_EXTENSIONS);
     }
 

@@ -24,8 +24,6 @@ import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
  * Command handler to show a particular view.
- * 
- * @since 3.0
  */
 public final class ShowViewHandler extends AbstractHandler {
 	

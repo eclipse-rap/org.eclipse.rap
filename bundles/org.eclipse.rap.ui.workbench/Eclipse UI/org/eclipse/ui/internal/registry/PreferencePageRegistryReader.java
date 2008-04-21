@@ -152,7 +152,7 @@ public class PreferencePageRegistryReader extends CategorizedPageRegistryReader 
 	public void loadFromRegistry(IExtensionRegistry registry) {
 		nodes = new ArrayList();
 
-		readRegistry(registry, PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_PREFERENCES);
+		readRegistry(registry, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_PREFERENCES);
 
 		processNodes();
 

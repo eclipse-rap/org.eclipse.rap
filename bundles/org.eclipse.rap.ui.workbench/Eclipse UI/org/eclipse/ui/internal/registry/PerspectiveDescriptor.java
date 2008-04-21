@@ -378,7 +378,6 @@ public class PerspectiveDescriptor implements IPerspectiveDescriptor,
 	 * was used.
 	 * 
 	 * @return the configuration element used to create this perspective
-	 * @since 3.0
 	 */
 	public IConfigurationElement getConfigElement() {
 		return configElement;
@@ -406,7 +405,6 @@ public class PerspectiveDescriptor implements IPerspectiveDescriptor,
 	 * Returns the factory class name for this descriptor.
 	 * 
 	 * @return the factory class name for this descriptor
-	 * @since 3.1
 	 */
 	public String getClassName() {
 		return configElement == null ? className : RegistryReader

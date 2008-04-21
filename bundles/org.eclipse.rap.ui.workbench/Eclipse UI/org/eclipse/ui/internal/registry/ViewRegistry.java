@@ -51,7 +51,6 @@ public class ViewRegistry extends SessionSingletonBase implements IViewRegistry,
 
 	
     /**
-	 * @since 3.4
 	 *
 	 */
 	private static final class ViewDescriptorComparator implements Comparator {
@@ -65,8 +64,6 @@ public class ViewRegistry extends SessionSingletonBase implements IViewRegistry,
 
 	/**
      * Proxies a Category implementation.
-     * 
-     * @since 3.1
      */
     private static class ViewCategoryProxy implements IViewCategory, IPluginContribution {
 
@@ -292,7 +289,6 @@ public class ViewRegistry extends SessionSingletonBase implements IViewRegistry,
      *
 	 * @param id the category id
 	 * @return the Category
-     * @since 3.1
 	 */
 	private Category internalFindCategory(String id) {
 		Iterator itr = categories.iterator();

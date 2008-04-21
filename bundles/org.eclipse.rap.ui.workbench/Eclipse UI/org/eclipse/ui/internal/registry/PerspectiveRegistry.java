@@ -306,7 +306,6 @@ public class PerspectiveRegistry extends SessionSingletonBase implements IPerspe
 	 * 
 	 * @param desc
 	 *            the perspective to delete
-	 * @since 3.1
 	 */
 	private void internalDeletePerspective(PerspectiveDescriptor desc) {
 		perspToRemove.add(desc.getId());

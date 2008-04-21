@@ -75,7 +75,6 @@ public interface IActionSetDescriptor {
      * Sets whether this action set is initially visible.
      * 
      * @param visible whether the action set should be visible initially.
-     * @since 3.0
      */
     public void setInitiallyVisible(boolean visible);
     
@@ -83,7 +82,6 @@ public interface IActionSetDescriptor {
      * Returns the conconfigurationfig element.
      * 
      * @return the configuration element
-     * @since 3.1
      */
     public IConfigurationElement getConfigurationElement();
 }

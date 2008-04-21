@@ -20,7 +20,6 @@ import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.views.IStickyViewDescriptor;
 
 /**
- * @since 3.0
  */
 public class StickyViewDescriptor implements IStickyViewDescriptor, 
 	IPluginContribution {

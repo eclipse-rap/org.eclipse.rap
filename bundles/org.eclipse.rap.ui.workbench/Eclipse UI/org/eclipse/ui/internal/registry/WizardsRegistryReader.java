@@ -63,7 +63,7 @@ public class WizardsRegistryReader extends RegistryReader {
      */
     final public static String GENERAL_WIZARD_CATEGORY = "org.eclipse.ui.Basic";	//$NON-NLS-1$
 
-    final private static String UNCATEGORIZED_WIZARD_CATEGORY_LABEL = WorkbenchMessages.NewWizardsRegistryReader_otherCategory;
+    final private static String UNCATEGORIZED_WIZARD_CATEGORY_LABEL = WorkbenchMessages.get().NewWizardsRegistryReader_otherCategory;
     
     private final static String CATEGORY_SEPARATOR = "/";//$NON-NLS-1$
 
@@ -137,7 +137,6 @@ public class WizardsRegistryReader extends RegistryReader {
      * 
      * @param parent
      * @param element
-     * @since 3.1
      */
     private WizardCollectionElement createCollectionElement(WizardCollectionElement parent, IConfigurationElement element) {
         WizardCollectionElement newElement = new WizardCollectionElement(
@@ -178,7 +177,6 @@ public class WizardsRegistryReader extends RegistryReader {
      * Set the initial wizard set for supplemental reading via dynamic plugin loading.
      * 
      * @param wizards the wizards
-     * @since 3.1
      */
     public void setInitialCollection(WizardCollectionElement wizards) {
     	wizardElements = wizards;

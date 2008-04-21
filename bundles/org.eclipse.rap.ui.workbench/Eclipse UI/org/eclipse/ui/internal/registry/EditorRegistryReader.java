@@ -39,7 +39,7 @@ public class EditorRegistryReader extends RegistryReader {
     protected void addEditors(EditorRegistry registry) {
         IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
         this.editorRegistry = registry;
-        readRegistry(extensionRegistry, PlatformUI.PLUGIN_ID,
+        readRegistry(extensionRegistry, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
                 IWorkbenchRegistryConstants.PL_EDITOR);
     }
 

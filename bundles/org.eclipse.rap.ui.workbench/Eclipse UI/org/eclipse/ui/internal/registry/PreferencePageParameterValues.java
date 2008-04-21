@@ -38,8 +38,6 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * This is only intended for use within the
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
- * 
- * @since 3.2
  */
 public final class PreferencePageParameterValues implements IParameterValues {
 
@@ -53,7 +51,7 @@ public final class PreferencePageParameterValues implements IParameterValues {
 					 * @see org.eclipse.core.runtime.IRegistryChangeListener#registryChanged(org.eclipse.core.runtime.IRegistryChangeEvent)
 					 */
 					public void registryChanged(IRegistryChangeEvent event) {
-						if (event.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+						if (event.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 								IWorkbenchRegistryConstants.PL_PREFERENCES).length > 0) {
 							preferenceMap = null;
 						}
@@ -88,7 +86,7 @@ public final class PreferencePageParameterValues implements IParameterValues {
 				name = preferenceNode.getLabelText();
 			} else {
 				name = namePrefix
-						+ WorkbenchMessages.PreferencePageParameterValues_pageLabelSeparator
+						+ WorkbenchMessages.get().PreferencePageParameterValues_pageLabelSeparator
 						+ preferenceNode.getLabelText();
 			}
 			final String value = preferenceNode.getId();

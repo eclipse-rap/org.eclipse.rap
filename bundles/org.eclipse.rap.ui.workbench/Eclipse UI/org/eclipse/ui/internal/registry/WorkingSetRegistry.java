@@ -51,11 +51,10 @@ public class WorkingSetRegistry implements IExtensionChangeHandler {
 	/**
 	 * 
 	 * @return
-	 * @since 3.3
 	 */
 	private IExtensionPoint getExtensionPointFilter() {
 		return Platform.getExtensionRegistry().getExtensionPoint(
-				PlatformUI.PLUGIN_ID,
+				PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 				IWorkbenchRegistryConstants.PL_WORKINGSETS);
 	}
 	

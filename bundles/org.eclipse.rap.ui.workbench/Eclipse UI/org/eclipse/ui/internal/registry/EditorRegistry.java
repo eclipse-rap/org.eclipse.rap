@@ -62,7 +62,6 @@ import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.editorsupport.ComponentSupport;
-import org.eclipse.ui.internal.misc.ExternalProgramImageDescriptor;
 import org.eclipse.ui.internal.misc.ProgramImageDescriptor;
 import org.eclipse.ui.internal.util.SessionSingletonEventManager;
 import org.eclipse.ui.internal.util.Util;
@@ -365,7 +364,6 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
 	 * 
 	 * @param filename the filename
 	 * @return the content type or <code>null</code> if it could not be determined
-	 * @since 3.1
 	 */
 	private IContentType guessAtContentType(String filename) {
 		return Platform.getContentTypeManager().findContentTypeFor(filename);
@@ -458,49 +456,50 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
         return mapping;
     }
 
-    /**
-     * Return the editor descriptors pulled from the OS.
-     * <p>
-     * WARNING! The image described by each editor descriptor is *not* known by
-     * the workbench's graphic registry. Therefore clients must take care to
-     * ensure that if they access any of the images held by these editors that
-     * they also dispose them
-     * </p>
-     * @return the editor descriptors
-     */
-    public IEditorDescriptor[] getSortedEditorsFromOS() {
-        List externalEditors = new ArrayList();
-        Program[] programs = Program.getPrograms();
-
-        for (int i = 0; i < programs.length; i++) {
-            //1FPLRL2: ITPUI:WINNT - NOTEPAD editor cannot be launched
-            //Some entries start with %SystemRoot%
-            //For such cases just use the file name as they are generally
-            //in directories which are on the path
-            /*
-             * if (fileName.charAt(0) == '%') { fileName = name + ".exe"; }
-             */
-
-            EditorDescriptor editor = new EditorDescriptor();
-            editor.setOpenMode(EditorDescriptor.OPEN_EXTERNAL);
-            editor.setProgram(programs[i]);
-
-            // determine the program icon this editor would need (do not let it
-            // be cached in the workbench registry)
-            ImageDescriptor desc = new ExternalProgramImageDescriptor(
-                    programs[i]);
-            editor.setImageDescriptor(desc);
-            externalEditors.add(editor);
-        }
-
-        Object[] tempArray = sortEditors(externalEditors);
-        IEditorDescriptor[] array = new IEditorDescriptor[externalEditors
-                .size()];
-        for (int i = 0; i < tempArray.length; i++) {
-            array[i] = (IEditorDescriptor) tempArray[i];
-        }
-        return array;
-    }
+    // RAP [bm]: 
+//    /**
+//     * Return the editor descriptors pulled from the OS.
+//     * <p>
+//     * WARNING! The image described by each editor descriptor is *not* known by
+//     * the workbench's graphic registry. Therefore clients must take care to
+//     * ensure that if they access any of the images held by these editors that
+//     * they also dispose them
+//     * </p>
+//     * @return the editor descriptors
+//     */
+//    public IEditorDescriptor[] getSortedEditorsFromOS() {
+//        List externalEditors = new ArrayList();
+//        Program[] programs = Program.getPrograms();
+//
+//        for (int i = 0; i < programs.length; i++) {
+//            //1FPLRL2: ITPUI:WINNT - NOTEPAD editor cannot be launched
+//            //Some entries start with %SystemRoot%
+//            //For such cases just use the file name as they are generally
+//            //in directories which are on the path
+//            /*
+//             * if (fileName.charAt(0) == '%') { fileName = name + ".exe"; }
+//             */
+//
+//            EditorDescriptor editor = new EditorDescriptor();
+//            editor.setOpenMode(EditorDescriptor.OPEN_EXTERNAL);
+//            editor.setProgram(programs[i]);
+//
+//            // determine the program icon this editor would need (do not let it
+//            // be cached in the workbench registry)
+//            ImageDescriptor desc = new ExternalProgramImageDescriptor(
+//                    programs[i]);
+//            editor.setImageDescriptor(desc);
+//            externalEditors.add(editor);
+//        }
+//
+//        Object[] tempArray = sortEditors(externalEditors);
+//        IEditorDescriptor[] array = new IEditorDescriptor[externalEditors
+//                .size()];
+//        for (int i = 0; i < tempArray.length; i++) {
+//            array[i] = (IEditorDescriptor) tempArray[i];
+//        }
+//        return array;
+//    }
 
     /**
      * Return the editors loaded from plugins.
@@ -1343,7 +1342,7 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
 	}
 
 	private IExtensionPoint getExtensionPointFilter() {
-		return Platform.getExtensionRegistry().getExtensionPoint(PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_EDITOR);
+		return Platform.getExtensionRegistry().getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_EDITOR);
 	}
 
 	/* (non-Javadoc)
@@ -1359,7 +1358,6 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
 	 * @param filename the file name
 	 * @param contentType the content type
 	 * @return the editor for a file with a given content type
-	 * @since 3.1
 	 */
 	private IEditorDescriptor getEditorForContentType(String filename,
 			IContentType contentType) {
@@ -1543,7 +1541,6 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
 	 * 
 	 * @param type the content type to check
 	 * @return the editors
-	 * @since 3.1
      *
      * TODO: this should be rolled in with the above findRelatedObjects code
 	 */
@@ -1586,7 +1583,6 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
 	 * Get filemappings for all defined filetypes, including those defined by content type.
 	 * 
 	 * @return the filetypes
-	 * @since 3.1
 	 */
 	public IFileEditorMapping [] getUnifiedMappings() {
         IFileEditorMapping[] standardMappings = PlatformUI.getWorkbench()

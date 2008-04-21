@@ -105,6 +105,6 @@ public class ViewRegistryReader extends RegistryReader {
     public void readViews(IExtensionRegistry in, ViewRegistry out) {
         // this does not seem to really ever be throwing an the exception
         viewRegistry = out;
-        readRegistry(in, PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_VIEWS);
+        readRegistry(in, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_VIEWS);
     }
 }

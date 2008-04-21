@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorMatchingStrategy;
@@ -43,7 +42,6 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
 
     /**
      * Generated serial version UID for this class.
-     * @since 3.1
      */
     private static final long serialVersionUID = 3905241225668998961L;
 
@@ -82,7 +80,8 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
     private boolean matchingStrategyChecked = false;
     private IEditorMatchingStrategy matchingStrategy;
 
-    private Program program;
+    // RAP [bm]: Program
+//    private Program program;
 
     //The id of the plugin which contributed this editor, null for external editors
     private String pluginIdentifier;
@@ -152,21 +151,22 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
         return editor;
     }
 
-    /**
-     * Return the program called programName. Return null if it is not found.
-     * @return org.eclipse.swt.program.Program
-     */
-    private static Program findProgram(String programName) {
-
-        Program[] programs = Program.getPrograms();
-        for (int i = 0; i < programs.length; i++) {
-            if (programs[i].getName().equals(programName)) {
-				return programs[i];
-			}
-        }
-
-        return null;
-    }
+    // RAP [bm]: 
+//    /**
+//     * Return the program called programName. Return null if it is not found.
+//     * @return org.eclipse.swt.program.Program
+//     */
+//    private static Program findProgram(String programName) {
+//
+//        Program[] programs = Program.getPrograms();
+//        for (int i = 0; i < programs.length; i++) {
+//            if (programs[i].getName().equals(programName)) {
+//				return programs[i];
+//			}
+//        }
+//
+//        return null;
+//    }
 
     /**
      * Create the editor action bar contributor for editors of this type.
@@ -240,13 +240,14 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
      * @return the file name to execute
      */
     public String getFileName() {
-        if (program == null) {
+    	// RAP [bm]: program 
+//        if (program == null) {
         	if (configurationElement == null) {
         		return fileName;
         	}
         	return configurationElement.getAttribute(IWorkbenchRegistryConstants.ATT_COMMAND);
-    	}
-        return program.getName();
+//    	}
+//        return program.getName();
     }
 
     /**
@@ -254,15 +255,16 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
      * 
      * @return the id
      */
-    public String getId() {        
-        if (program == null) {
+    public String getId() {
+    	// RAP [bm]: Program
+//        if (program == null) {
         	if (configurationElement == null) {
         		return Util.safeString(id);
         	}
         	return Util.safeString(configurationElement.getAttribute(IWorkbenchRegistryConstants.ATT_ID));
         	
-        }
-        return Util.safeString(program.getName());
+//        }
+//        return Util.safeString(program.getName());
     }
 
     /**
@@ -293,8 +295,6 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
     /**
 	 * Verifies that the image descriptor generates an image.  If not, the 
 	 * descriptor is replaced with the default image.
-	 * 
-	 * @since 3.1
 	 */
 	private void verifyImage() {
 		if (imageDesc == null) {
@@ -308,7 +308,8 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
 			    imageDesc = WorkbenchImages
 			            .getImageDescriptor(ISharedImages.IMG_OBJ_FILE);
 			} else {
-			    img.dispose();
+				// RAP [bm]: Image#dispose
+//			    img.dispose();
 			}
 		}
 	}
@@ -331,13 +332,14 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
      * @return the label
      */
     public String getLabel() {
-        if (program == null) {
+    	// RAP [bm]: Program
+//        if (program == null) {
         	if (configurationElement == null) {
         		return editorName;        		
         	}
         	return configurationElement.getAttribute(IWorkbenchRegistryConstants.ATT_NAME);
-        }
-        return program.getName();
+//        }
+//        return program.getName();
     }
 
     /**
@@ -364,13 +366,14 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
     	return pluginIdentifier;
     }
 
-    /**
-     * Get the program for the receiver if there is one.
-     * @return Program
-     */
-    public Program getProgram() {
-        return this.program;
-    }
+    // RAP [bm]: 
+//    /**
+//     * Get the program for the receiver if there is one.
+//     * @return Program
+//     */
+//    public Program getProgram() {
+//        return this.program;
+//    }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IEditorDescriptor#isInternal
@@ -436,11 +439,14 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
             return false;
         }
 
-        String programName = memento
-                .getString(IWorkbenchConstants.TAG_PROGRAM_NAME);
-        if (programName != null) {
-            this.program = findProgram(programName);
-        }
+        // RAP [bm]: 
+//        String programName = memento
+//                .getString(IWorkbenchConstants.TAG_PROGRAM_NAME);
+//        if (programName != null) {
+//            this.program = findProgram(programName);
+//        }
+        // RAPEND: [bm] 
+
         return true;
     }
 
@@ -463,17 +469,17 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
         memento.putString(IWorkbenchConstants.TAG_OPEN_IN_PLACE, String
                 .valueOf(isOpenInPlace()));
 
-        if (this.program != null) {
-			memento.putString(IWorkbenchConstants.TAG_PROGRAM_NAME,
-                    this.program.getName());
-		}
+        // RAP [bm]: Program
+//        if (this.program != null) {
+//			memento.putString(IWorkbenchConstants.TAG_PROGRAM_NAME,
+//                    this.program.getName());
+//		}
     }
 
     /**
      * Return the open mode of this editor.
      *
 	 * @return the open mode of this editor
-	 * @since 3.1
 	 */
 	private int getOpenMode() {
 		if (configurationElement == null) { // if we've been serialized, return our serialized value
@@ -575,17 +581,18 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
         pluginIdentifier = anID;
     }
 
-    /**
-     * Set the receivers program.
-     * @param newProgram
-     */
-    /* package */void setProgram(Program newProgram) {
-
-        this.program = newProgram;
-        if (editorName == null) {
-			setName(newProgram.getName());
-		}
-    }
+    // RAP [bm]: 
+//    /**
+//     * Set the receivers program.
+//     * @param newProgram
+//     */
+//    /* package */void setProgram(Program newProgram) {
+//
+//        this.program = newProgram;
+//        if (editorName == null) {
+//			setName(newProgram.getName());
+//		}
+//    }
 
     /**
      * For debugging purposes only.
@@ -614,7 +621,10 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
     public IEditorMatchingStrategy getEditorMatchingStrategy() {
         if (matchingStrategy == null && !matchingStrategyChecked) {
             matchingStrategyChecked = true;
-            if (program == null && configurationElement != null) {
+            // RAP [bm]: Program
+//            if (program == null && configurationElement != null) {
+            if (configurationElement != null) {
+            // RAPEND: [bm] 
                 if (configurationElement.getAttribute(IWorkbenchRegistryConstants.ATT_MATCHING_STRATEGY) != null) {
                     try {
                         matchingStrategy = (IEditorMatchingStrategy) WorkbenchPlugin.createExtension(configurationElement, IWorkbenchRegistryConstants.ATT_MATCHING_STRATEGY);

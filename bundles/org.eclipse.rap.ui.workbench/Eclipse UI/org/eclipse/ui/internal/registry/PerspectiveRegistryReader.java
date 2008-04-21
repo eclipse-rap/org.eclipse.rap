@@ -58,7 +58,7 @@ public class PerspectiveRegistryReader extends RegistryReader {
      * @param in the registry to read
      */
     public void readPerspectives(IExtensionRegistry in) {
-        readRegistry(in, PlatformUI.PLUGIN_ID,
+        readRegistry(in, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
                 IWorkbenchRegistryConstants.PL_PERSPECTIVES);
     }
 }

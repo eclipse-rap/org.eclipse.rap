@@ -25,8 +25,6 @@ import org.eclipse.ui.wizards.IWizardRegistry;
  * This class is only intended to be extended by the three inner classes (<code>Export</code>,
  * <code>Import</code> and <code>New</code>) defined here.
  * </p>
- * 
- * @since 3.2
  */
 public abstract class WizardParameterValues implements IParameterValues {
 

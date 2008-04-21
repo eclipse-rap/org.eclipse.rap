@@ -29,8 +29,6 @@ import org.eclipse.ui.internal.preferences.PreferenceTransferElement;
 /**
  * Preference Transfer registry reader to read extenders of the
  * preferenceTranser schema.
- * 
- * @since 3.1
  */
 public class PreferenceTransferRegistryReader extends RegistryReader {
 	private List preferenceTransfers;

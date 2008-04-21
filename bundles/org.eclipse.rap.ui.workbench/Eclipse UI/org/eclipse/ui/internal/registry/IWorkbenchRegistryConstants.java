@@ -17,8 +17,6 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Interface containing various registry constants (tag and attribute names).
- * 
- * @since 3.1
  */
 public interface IWorkbenchRegistryConstants {
 
@@ -477,8 +475,6 @@ public interface IWorkbenchRegistryConstants {
 	
 	/**
 	 * Splash id attribute.  Value <code>splashId</code>.
-	 * 
-	 * @since 3.3
 	 */
 	public static String ATT_SPLASH_ID = "splashId"; //$NON-NLS-1$
 
@@ -556,22 +552,16 @@ public interface IWorkbenchRegistryConstants {
 	/**
 	 * The legacy extension point (2.1.x and earlier) for specifying a key
 	 * binding scheme.
-	 * 
-	 * @since 3.1.1
 	 */
 	public static String PL_ACCELERATOR_CONFIGURATIONS = "acceleratorConfigurations"; //$NON-NLS-1$
 
 	/**
 	 * The legacy extension point (2.1.x and earlier) for specifying a context.
-	 * 
-	 * @since 3.1.1
 	 */
 	public static String PL_ACCELERATOR_SCOPES = "acceleratorScopes"; //$NON-NLS-1$
 
 	/**
 	 * The legacy extension point (2.1.x and earlier) for specifying a command.
-	 * 
-	 * @since 3.1.1
 	 */
 	public static String PL_ACTION_DEFINITIONS = "actionDefinitions"; //$NON-NLS-1$
 
@@ -586,8 +576,6 @@ public interface IWorkbenchRegistryConstants {
 	/**
 	 * The extension point (3.1 and later) for specifying bindings, such as
 	 * keyboard shortcuts.
-	 * 
-	 * @since 3.1.1
 	 */
 	public static String PL_BINDINGS = "bindings"; //$NON-NLS-1$
 
@@ -597,8 +585,6 @@ public interface IWorkbenchRegistryConstants {
 
 	/**
 	 * The extension point (3.2 and later) for associating images with commands.
-	 * 
-	 * @since 3.2
 	 */
 	public static String PL_COMMAND_IMAGES = "commandImages"; //$NON-NLS-1$
 
@@ -606,15 +592,11 @@ public interface IWorkbenchRegistryConstants {
 	 * The extension point (2.1.x and later) for specifying a command. A lot of
 	 * other things have appeared first in this extension point and then been
 	 * moved to their own extension point.
-	 * 
-	 * @since 3.1.1
 	 */
 	public static String PL_COMMANDS = "commands"; //$NON-NLS-1$
 
 	/**
 	 * The extension point (3.0 and later) for specifying a context.
-	 * 
-	 * @since 3.1.1
 	 */
 	public static String PL_CONTEXTS = "contexts"; //$NON-NLS-1$
 
@@ -639,8 +621,6 @@ public interface IWorkbenchRegistryConstants {
 
 	/**
 	 * The extension point (3.1 and later) for specifying handlers.
-	 * 
-	 * @since 3.1.1
 	 */
 	public static String PL_HANDLERS = "handlers"; //$NON-NLS-1$
 
@@ -652,22 +632,16 @@ public interface IWorkbenchRegistryConstants {
 
 	/**
 	 * The extension point for keyword definitions.
-	 * 
-	 * @since 3.1
 	 */
 	public static String PL_KEYWORDS = "keywords"; //$NON-NLS-1$
 
 	/**
 	 * The extension point (3.2 and later) for specifying menu contributions.
-	 * 
-	 * @since 3.2
 	 */
 	public static String PL_MENUS = "menus"; //$NON-NLS-1$
 
 	/**
 	 * The extension point (3.3 and later) for specifying menu contributions.
-	 * 
-	 * @since 3.3
 	 */
 	public static String PL_MENU_CONTRIBUTION = "menuContribution"; //$NON-NLS-1$
 
@@ -690,7 +664,6 @@ public interface IWorkbenchRegistryConstants {
 	public static String PL_STARTUP = "startup"; //$NON-NLS-1$
 	
 	/**
-	 * @since 3.3
 	 */
 	public static String PL_SPLASH_HANDLERS = "splashHandlers"; //$NON-NLS-1$
 
@@ -707,88 +680,88 @@ public interface IWorkbenchRegistryConstants {
 	/**
 	 * The name of the deprecated accelerator configurations extension point.
 	 */
-	public static String EXTENSION_ACCELERATOR_CONFIGURATIONS = PlatformUI.PLUGIN_ID
+	public static String EXTENSION_ACCELERATOR_CONFIGURATIONS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE
 			+ '.' + PL_ACCELERATOR_CONFIGURATIONS;
 
 	/**
 	 * The name of the accelerator scopes extension point.
 	 */
-	public static String EXTENSION_ACCELERATOR_SCOPES = PlatformUI.PLUGIN_ID
+	public static String EXTENSION_ACCELERATOR_SCOPES = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE
 			+ '.' + PL_ACCELERATOR_SCOPES;
 
 	/**
 	 * The name of the action definitions extension point.
 	 */
-	public static String EXTENSION_ACTION_DEFINITIONS = PlatformUI.PLUGIN_ID
+	public static String EXTENSION_ACTION_DEFINITIONS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE
 			+ '.' + PL_ACTION_DEFINITIONS;
 
 	/**
 	 * The name of the <code>org.eclipse.ui.actionSets</code> extension point.
 	 */
-	public static String EXTENSION_ACTION_SETS = PlatformUI.PLUGIN_ID
+	public static String EXTENSION_ACTION_SETS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE
 			+ '.' + IWorkbenchRegistryConstants.PL_ACTION_SETS;
 
 	/**
 	 * The name of the bindings extension point.
 	 */
-	public static String EXTENSION_BINDINGS = PlatformUI.PLUGIN_ID + '.'
+	public static String EXTENSION_BINDINGS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE + '.'
 			+ PL_BINDINGS;
 
 	/**
 	 * The name of the commands extension point.
 	 */
-	public static String EXTENSION_COMMAND_IMAGES = PlatformUI.PLUGIN_ID
+	public static String EXTENSION_COMMAND_IMAGES = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE
 			+ '.' + PL_COMMAND_IMAGES;
 
 	/**
 	 * The name of the commands extension point, and the name of the key for the
 	 * commands preferences.
 	 */
-	public static String EXTENSION_COMMANDS = PlatformUI.PLUGIN_ID + '.'
+	public static String EXTENSION_COMMANDS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE + '.'
 			+ PL_COMMANDS;
 
 	/**
 	 * The name of the contexts extension point.
 	 */
-	public static String EXTENSION_CONTEXTS = PlatformUI.PLUGIN_ID + '.'
+	public static String EXTENSION_CONTEXTS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE + '.'
 			+ PL_CONTEXTS;
 
 	/**
 	 * The name of the <code>org.eclipse.ui.editorActions</code> extension
 	 * point.
 	 */
-	public static String EXTENSION_EDITOR_ACTIONS = PlatformUI.PLUGIN_ID
+	public static String EXTENSION_EDITOR_ACTIONS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE
 			+ '.' + PL_EDITOR_ACTIONS;
 
 	/**
 	 * The name of the commands extension point.
 	 */
-	public static String EXTENSION_HANDLERS = PlatformUI.PLUGIN_ID + '.'
+	public static String EXTENSION_HANDLERS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE + '.'
 			+ PL_HANDLERS;
 
 	/**
 	 * The name of the <code>org.eclipse.ui.menus</code> extension point.
 	 */
-	public static String EXTENSION_MENUS = PlatformUI.PLUGIN_ID + '.'
+	public static String EXTENSION_MENUS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE + '.'
 			+ PL_MENUS;
 
 	/**
 	 * The name of the <code>org.eclipse.ui.menus2</code> extension point.
 	 */
-	public static String COMMON_MENU_ADDITIONS = PlatformUI.PLUGIN_ID + '.'
+	public static String COMMON_MENU_ADDITIONS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE + '.'
 			+ PL_MENUS + '2';
 
 	/**
 	 * The name of the <code>org.eclipse.ui.popupMenus</code> extension point.
 	 */
-	public static String EXTENSION_POPUP_MENUS = PlatformUI.PLUGIN_ID
+	public static String EXTENSION_POPUP_MENUS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE
 			+ '.' + PL_POPUP_MENU;
 
 	/**
 	 * The name of the <code>org.eclipse.ui.viewActions</code> extension
 	 * point.
 	 */
-	public static String EXTENSION_VIEW_ACTIONS = PlatformUI.PLUGIN_ID
+	public static String EXTENSION_VIEW_ACTIONS = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE
 			+ '.' + PL_VIEW_ACTIONS;
 
 	/**
@@ -1081,8 +1054,6 @@ public interface IWorkbenchRegistryConstants {
 	/**
 	 * The name of the element defining the insertion point for menu
 	 * additions.
-	 * 
-	 * @since 3.3
 	 */
 	public static String TAG_LOCATION_URI = "locationURI"; //$NON-NLS-1$
 
@@ -1191,7 +1162,6 @@ public interface IWorkbenchRegistryConstants {
 	/**
 	 * The name of the element describing splash handlers. Value
 	 * <code>splashHandler</code>.
-	 * @since 3.3
 	 */
 	public static String TAG_SPLASH_HANDLER = "splashHandler"; //$NON-NLS-1$
 	
@@ -1199,7 +1169,6 @@ public interface IWorkbenchRegistryConstants {
 	/**
 	 * The name of the element describing splash handler product bindings. Value
 	 * <code>splashHandlerProductBinding</code>.
-	 * @since 3.3
 	 */
 	public static String TAG_SPLASH_HANDLER_PRODUCT_BINDING = "splashHandlerProductBinding"; //$NON-NLS-1$
 	

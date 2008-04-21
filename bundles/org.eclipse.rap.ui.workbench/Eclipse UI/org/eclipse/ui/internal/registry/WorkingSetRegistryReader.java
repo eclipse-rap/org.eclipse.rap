@@ -71,7 +71,7 @@ public class WorkingSetRegistryReader extends RegistryReader {
      */
     public void readWorkingSets(IExtensionRegistry in, WorkingSetRegistry out) {
         registry = out;
-        readRegistry(in, PlatformUI.PLUGIN_ID,
+        readRegistry(in, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
                 IWorkbenchRegistryConstants.PL_WORKINGSETS);
     }
 }

@@ -34,7 +34,6 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
 public class ActionSetRegistry implements IExtensionChangeHandler {
     
     /** 
-     * @since 3.1
      */
     private class ActionSetPartAssociation {
         /**
@@ -78,12 +77,11 @@ public class ActionSetRegistry implements IExtensionChangeHandler {
      * Return the action set part association extension point.
      * 
      * @return the action set part association extension point
-     * @since 3.1
      */
     private IExtensionPoint getActionSetPartAssociationExtensionPoint() {
         return Platform
         .getExtensionRegistry().getExtensionPoint(
-                PlatformUI.PLUGIN_ID,
+                PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
                 IWorkbenchRegistryConstants.PL_ACTION_SET_PART_ASSOCIATIONS);
     }
 
@@ -91,12 +89,11 @@ public class ActionSetRegistry implements IExtensionChangeHandler {
      * Return the action set extension point.
      * 
      * @return the action set extension point
-     * @since 3.1
      */
     private IExtensionPoint getActionSetExtensionPoint() {
         return Platform
                 .getExtensionRegistry().getExtensionPoint(
-                        PlatformUI.PLUGIN_ID,
+                        PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
                         IWorkbenchRegistryConstants.PL_ACTION_SETS);
     }
 
