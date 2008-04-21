@@ -13,15 +13,6 @@ package org.eclipse.ui.internal.statushandlers;
 
 import org.eclipse.jface.util.Policy;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -29,8 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.statushandlers.AbstractStatusAreaProvider;
 import org.eclipse.ui.statushandlers.StatusAdapter;
@@ -48,7 +37,7 @@ import org.eclipse.ui.statushandlers.WorkbenchStatusDialogManager;
  * @see Policy#getErrorSupportProvider()
  * @see WorkbenchStatusDialogManager#enableDefaultSupportArea
  * @see WorkbenchErrorHandler
- * @since 3.4
+ * 
  */
 public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 
@@ -57,7 +46,8 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 	 */
 	private List list;
 
-	private Clipboard clipboard;
+	// RAP [bm]: Clipboard
+//	private Clipboard clipboard;
 
 	/*
 	 * (non-Javadoc)
@@ -69,7 +59,7 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 			StatusAdapter statusAdapter) {
 
 		Label label = new Label(parent, SWT.NONE);
-		label.setText(WorkbenchMessages.StackTraceSupportArea_Title);
+		label.setText(WorkbenchMessages.get().StackTraceSupportArea_Title);
 
 		list = new List(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 		GridData gd = new GridData(GridData.FILL_BOTH);
@@ -77,13 +67,16 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 		gd.grabExcessVerticalSpace = true;
 		gd.widthHint = 250;
 		list.setLayoutData(gd);
-		list.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				if (clipboard != null) {
-					clipboard.dispose();
-				}
-			}
-		});
+		// RAP [bm]: 
+//		list.addDisposeListener(new DisposeListener() {
+//			public void widgetDisposed(DisposeEvent e) {
+//				if (clipboard != null) {
+//					clipboard.dispose();
+//				}
+//			}
+//		});
+		// RAPEND: [bm] 
+
 		list.addSelectionListener(new SelectionAdapter() {
 			/*
 			 * (non-Javadoc)
@@ -106,61 +99,66 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 	 * Creates DND source for the list
 	 */
 	private void createDNDSource() {
-		DragSource ds = new DragSource(list, DND.DROP_COPY);
-		ds.setTransfer(new Transfer[] { TextTransfer.getInstance() });
-		ds.addDragListener(new DragSourceListener() {
-			public void dragFinished(DragSourceEvent event) {
-
-			}
-
-			public void dragSetData(DragSourceEvent event) {
-				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-					event.data = prepareCopyString();
-				}
-			}
-
-			public void dragStart(DragSourceEvent event) {
-				list.selectAll();
-			}
-		});
+		// RAP [bm]: 
+//		DragSource ds = new DragSource(list, DND.DROP_COPY);
+//		ds.setTransfer(new Transfer[] { TextTransfer.getInstance() });
+//		ds.addDragListener(new DragSourceListener() {
+//			public void dragFinished(DragSourceEvent event) {
+//
+//			}
+//
+//			public void dragSetData(DragSourceEvent event) {
+//				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+//					event.data = prepareCopyString();
+//				}
+//			}
+//
+//			public void dragStart(DragSourceEvent event) {
+//				list.selectAll();
+//			}
+//		});
+		// RAPEND: [bm] 
 	}
 
 	private void createCopyAction(final Composite parent) {
-		Menu menu = new Menu(parent.getShell(), SWT.POP_UP);
-		MenuItem copyAction = new MenuItem(menu, SWT.PUSH);
-		copyAction.setText("&Copy"); //$NON-NLS-1$
-		copyAction.addSelectionListener(new SelectionAdapter() {
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-			 */
-			public void widgetSelected(SelectionEvent e) {
-				clipboard = new Clipboard(parent.getDisplay());
-				clipboard.setContents(new Object[] { prepareCopyString() },
-						new Transfer[] { TextTransfer.getInstance() });
-				super.widgetSelected(e);
-			}
-		});
-		list.setMenu(menu);
+		// RAP [bm]: 
+//		Menu menu = new Menu(parent.getShell(), SWT.POP_UP);
+//		MenuItem copyAction = new MenuItem(menu, SWT.PUSH);
+//		copyAction.setText("&Copy"); //$NON-NLS-1$
+//		copyAction.addSelectionListener(new SelectionAdapter() {
+//			/*
+//			 * (non-Javadoc)
+//			 * 
+//			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+//			 */
+//			public void widgetSelected(SelectionEvent e) {
+//				clipboard = new Clipboard(parent.getDisplay());
+//				clipboard.setContents(new Object[] { prepareCopyString() },
+//						new Transfer[] { TextTransfer.getInstance() });
+//				super.widgetSelected(e);
+//			}
+//		});
+//		list.setMenu(menu);
+		// RAPEND: [bm] 
 	}
 
-	private String prepareCopyString() {
-		if (list == null || list.isDisposed()) {
-			return ""; //$NON-NLS-1$
-		}
-		StringBuffer sb = new StringBuffer();
-		String newLine = System.getProperty("line.separator"); //$NON-NLS-1$
-		for (int i = 0; i < list.getItemCount(); i++) {
-			sb.append(list.getItem(i));
-			sb.append(newLine);
-		}
-		return sb.toString();
-	}
+	// RAP [bm]: 
+//	private String prepareCopyString() {
+//		if (list == null || list.isDisposed()) {
+//			return ""; //$NON-NLS-1$
+//		}
+//		StringBuffer sb = new StringBuffer();
+//		String newLine = System.getProperty("line.separator"); //$NON-NLS-1$
+//		for (int i = 0; i < list.getItemCount(); i++) {
+//			sb.append(list.getItem(i));
+//			sb.append(newLine);
+//		}
+//		return sb.toString();
+//	}
 
 	private void populateList(Throwable t) {
 		if (t == null) {
-			list.add(WorkbenchMessages.StackTraceSupportArea_NoStackTrace);
+			list.add(WorkbenchMessages.get().StackTraceSupportArea_NoStackTrace);
 			return;
 		}
 		list.add(t.toString());
@@ -169,7 +167,7 @@ public class StackTraceSupportArea extends AbstractStatusAreaProvider {
 			list.add(ste[i].toString());
 		}
 		if (t.getCause() != null) {
-			list.add(WorkbenchMessages.StackTraceSupportArea_CausedBy);
+			list.add(WorkbenchMessages.get().StackTraceSupportArea_CausedBy);
 			populateList(t.getCause());
 		}
 	}

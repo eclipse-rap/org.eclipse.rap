@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Helper class supporting the prefix based status handling policy.
  * 
- * @since 3.3
+ * 
  */
 class StatusHandlerDescriptorsMap {
 

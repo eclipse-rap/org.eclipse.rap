@@ -28,7 +28,7 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
 /**
  * The registry of status handlers extensions.
  * 
- * @since 3.3
+ * 
  * 
  */
 public class StatusHandlerRegistry implements IExtensionChangeHandler {

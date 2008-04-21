@@ -23,7 +23,7 @@ import org.eclipse.ui.statushandlers.AbstractStatusHandler;
 /**
  * The status handler descriptor.
  * 
- * @since 3.3
+ * 
  */
 public class StatusHandlerDescriptor implements IPluginContribution {
 

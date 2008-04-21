@@ -18,7 +18,7 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 /**
  * The status handler product binding descriptor.
  * 
- * @since 3.3
+ * 
  */
 class StatusHandlerProductBindingDescriptor implements
 		IPluginContribution {

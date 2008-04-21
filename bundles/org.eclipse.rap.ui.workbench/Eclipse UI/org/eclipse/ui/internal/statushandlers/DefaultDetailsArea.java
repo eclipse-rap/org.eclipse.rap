@@ -15,18 +15,8 @@ import java.util.Date;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -34,8 +24,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.internal.progress.ProgressMessages;
 import org.eclipse.ui.statushandlers.AbstractStatusAreaProvider;
 import org.eclipse.ui.statushandlers.IStatusAdapterConstants;
@@ -47,7 +35,7 @@ import com.ibm.icu.text.DateFormat;
 /**
  * The default details area displaying a tree of statuses.
  * 
- * @since 3.4
+ * 
  */
 public class DefaultDetailsArea extends AbstractStatusAreaProvider {
 
@@ -73,7 +61,8 @@ public class DefaultDetailsArea extends AbstractStatusAreaProvider {
 	 */
 	private List list;
 
-	private Clipboard clipboard;
+	// RAP [bm]: Clipboard
+//	private Clipboard clipboard;
 
 	/*
 	 * (non-Javadoc)
@@ -103,13 +92,16 @@ public class DefaultDetailsArea extends AbstractStatusAreaProvider {
 		gd.widthHint = 250;
 		gd.heightHint = 100;
 		list.setLayoutData(gd);
-		list.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				if (clipboard != null) {
-					clipboard.dispose();
-				}
-			}
-		});
+		// RAP [bm]: 
+//		list.addDisposeListener(new DisposeListener() {
+//			public void widgetDisposed(DisposeEvent e) {
+//				if (clipboard != null) {
+//					clipboard.dispose();
+//				}
+//			}
+//		});
+		// RAPEND: [bm] 
+
 		list.addSelectionListener(new SelectionAdapter() {
 			/*
 			 * (non-Javadoc)
@@ -147,58 +139,63 @@ public class DefaultDetailsArea extends AbstractStatusAreaProvider {
 	 * Creates DND source for the list
 	 */
 	private void createDNDSource() {
-		DragSource ds = new DragSource(list, DND.DROP_COPY);
-		ds.setTransfer(new Transfer[] { TextTransfer.getInstance() });
-		ds.addDragListener(new DragSourceListener() {
-			public void dragFinished(DragSourceEvent event) {
-			}
-
-			public void dragSetData(DragSourceEvent event) {
-				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-					event.data = prepareCopyString();
-				}
-			}
-			
-			public void dragStart(DragSourceEvent event) {
-				list.selectAll();
-			}
-		});
+		// RAP [bm]: DnD
+//		DragSource ds = new DragSource(list, DND.DROP_COPY);
+//		ds.setTransfer(new Transfer[] { TextTransfer.getInstance() });
+//		ds.addDragListener(new DragSourceListener() {
+//			public void dragFinished(DragSourceEvent event) {
+//			}
+//
+//			public void dragSetData(DragSourceEvent event) {
+//				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+//					event.data = prepareCopyString();
+//				}
+//			}
+//			
+//			public void dragStart(DragSourceEvent event) {
+//				list.selectAll();
+//			}
+//		});
+		// RAPEND: [bm] 
 	}
 
 	private void createCopyAction(final Composite parent) {
-		Menu menu = new Menu(parent.getShell(), SWT.POP_UP);
-		MenuItem copyAction = new MenuItem(menu, SWT.PUSH);
-		copyAction.setText(JFaceResources.getString("copy")); //$NON-NLS-1$
-		copyAction.addSelectionListener(new SelectionAdapter() {
-
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-			 */
-			public void widgetSelected(SelectionEvent e) {
-				clipboard = new Clipboard(parent.getDisplay());
-				clipboard.setContents(new Object[] { prepareCopyString() },
-						new Transfer[] { TextTransfer.getInstance() });
-				super.widgetSelected(e);
-			}
-
-		});
-		list.setMenu(menu);
+		// RAP [bm]: Clipboard
+//		Menu menu = new Menu(parent.getShell(), SWT.POP_UP);
+//		MenuItem copyAction = new MenuItem(menu, SWT.PUSH);
+//		copyAction.setText(JFaceResources.getString("copy")); //$NON-NLS-1$
+//		copyAction.addSelectionListener(new SelectionAdapter() {
+//
+//			/*
+//			 * (non-Javadoc)
+//			 * 
+//			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+//			 */
+//			public void widgetSelected(SelectionEvent e) {
+//				clipboard = new Clipboard(parent.getDisplay());
+//				clipboard.setContents(new Object[] { prepareCopyString() },
+//						new Transfer[] { TextTransfer.getInstance() });
+//				super.widgetSelected(e);
+//			}
+//
+//		});
+//		list.setMenu(menu);
+		// RAPEND: [bm] 
 	}
 
-	private String prepareCopyString() {
-		if (list == null || list.isDisposed()) {
-			return ""; //$NON-NLS-1$
-		}
-		StringBuffer sb = new StringBuffer();
-		String newLine = System.getProperty("line.separator"); //$NON-NLS-1$
-		for (int i = 0; i < list.getItemCount(); i++) {
-			sb.append(list.getItem(i));
-			sb.append(newLine);
-		}
-		return sb.toString();
-	}
+	// RAP [bm]: 
+//	private String prepareCopyString() {
+//		if (list == null || list.isDisposed()) {
+//			return ""; //$NON-NLS-1$
+//		}
+//		StringBuffer sb = new StringBuffer();
+//		String newLine = System.getProperty("line.separator"); //$NON-NLS-1$
+//		for (int i = 0; i < list.getItemCount(); i++) {
+//			sb.append(list.getItem(i));
+//			sb.append(newLine);
+//		}
+//		return sb.toString();
+//	}
 
 	private void populateList(List list, IStatus status, int nesting) {
 		if (!status.matches(MASK)) {
