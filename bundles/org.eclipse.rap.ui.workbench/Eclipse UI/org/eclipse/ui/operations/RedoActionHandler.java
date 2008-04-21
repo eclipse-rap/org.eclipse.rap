@@ -27,7 +27,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * clients.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  */
 public final class RedoActionHandler extends OperationHistoryActionHandler {
 
@@ -53,19 +53,19 @@ public final class RedoActionHandler extends OperationHistoryActionHandler {
 	}
 
 	String getCommandString() {
-		return WorkbenchMessages.Operations_redoCommand;
+		return WorkbenchMessages.get().Operations_redoCommand;
 	}
 	
 	String getTooltipString() {
-		return WorkbenchMessages.Operations_redoTooltipCommand;
+		return WorkbenchMessages.get().Operations_redoTooltipCommand;
 	}
 	
 	String getSimpleCommandString() {
-		return WorkbenchMessages.Workbench_redo;
+		return WorkbenchMessages.get().Workbench_redo;
 	}
 	
 	String getSimpleTooltipString() {
-		return WorkbenchMessages.Workbench_redoToolTip;
+		return WorkbenchMessages.get().Workbench_redoToolTip;
 	}
 
 

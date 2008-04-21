@@ -69,7 +69,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
  * particular undo context are pruning the history when necessary.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  */
 public abstract class OperationHistoryActionHandler extends Action implements
 		ActionFactory.IWorkbenchAction, IAdaptable {
@@ -434,7 +434,7 @@ public abstract class OperationHistoryActionHandler extends Action implements
 					.getLabel()));
 		} else {
 			tooltipText = NLS.bind(
-					WorkbenchMessages.Operations_undoRedoCommandDisabled,
+					WorkbenchMessages.get().Operations_undoRedoCommandDisabled,
 					getSimpleTooltipString());
 			text = getSimpleCommandString();
 			/*
@@ -477,7 +477,7 @@ public abstract class OperationHistoryActionHandler extends Action implements
 		// Messages
 		String exceptionMessage = exception.getMessage();
 		if (exceptionMessage == null) {
-			exceptionMessage = WorkbenchMessages.WorkbenchWindow_exceptionMessage;
+			exceptionMessage = WorkbenchMessages.get().WorkbenchWindow_exceptionMessage;
 		}
 		IStatus status = StatusUtil.newStatus(WorkbenchPlugin.PI_WORKBENCH,
 				exceptionMessage, exception);

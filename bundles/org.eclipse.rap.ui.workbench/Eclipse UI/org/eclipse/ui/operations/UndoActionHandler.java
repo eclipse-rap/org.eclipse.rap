@@ -28,7 +28,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * instantiated by clients.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  */
 public final class UndoActionHandler extends OperationHistoryActionHandler {
 
@@ -54,19 +54,19 @@ public final class UndoActionHandler extends OperationHistoryActionHandler {
 	}
 
 	String getCommandString() {
-		return WorkbenchMessages.Operations_undoCommand;
+		return WorkbenchMessages.get().Operations_undoCommand;
 	}
 	
 	String getTooltipString() {
-		return WorkbenchMessages.Operations_undoTooltipCommand;
+		return WorkbenchMessages.get().Operations_undoTooltipCommand;
 	}
 	
 	String getSimpleCommandString() {
-		return WorkbenchMessages.Workbench_undo;
+		return WorkbenchMessages.get().Workbench_undo;
 	}
 	
 	String getSimpleTooltipString() {
-		return WorkbenchMessages.Workbench_undoToolTip;		
+		return WorkbenchMessages.get().Workbench_undoToolTip;		
 	}
 
 	IUndoableOperation getOperation() {

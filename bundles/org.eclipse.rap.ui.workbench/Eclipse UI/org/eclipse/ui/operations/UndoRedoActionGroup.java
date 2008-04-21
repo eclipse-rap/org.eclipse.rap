@@ -25,7 +25,7 @@ import org.eclipse.ui.actions.ActionGroup;
  * top of its history. This class may be instantiated by clients.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  */
 public final class UndoRedoActionGroup extends ActionGroup {
 

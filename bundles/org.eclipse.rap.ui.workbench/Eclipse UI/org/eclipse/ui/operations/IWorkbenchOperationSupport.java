@@ -22,7 +22,7 @@ import org.eclipse.core.commands.operations.IUndoContext;
  * This interface is not intended to be extended or implemented by clients.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  * 
  * @see org.eclipse.ui.IWorkbench#getOperationSupport()
  * @noimplement This interface is not intended to be implemented by clients.

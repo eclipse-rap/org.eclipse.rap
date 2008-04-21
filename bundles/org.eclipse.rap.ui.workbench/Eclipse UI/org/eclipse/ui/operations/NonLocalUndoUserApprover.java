@@ -51,7 +51,7 @@ import org.eclipse.ui.internal.util.Util;
  * </p>
  * 
  * 
- * @since 3.1
+ * @since 1.1
  */
 public final class NonLocalUndoUserApprover implements IOperationApprover {
 
@@ -116,9 +116,9 @@ public final class NonLocalUndoUserApprover implements IOperationApprover {
 		}
 
 		String message = NLS.bind(
-				WorkbenchMessages.Operations_nonLocalRedoWarning, operation
+				WorkbenchMessages.get().Operations_nonLocalRedoWarning, operation
 						.getLabel(), part.getEditorInput().getName());
-		return proceedWithOperation(operation, message, WorkbenchMessages.Operations_discardRedo, WorkbenchMessages.Workbench_redoToolTip);
+		return proceedWithOperation(operation, message, WorkbenchMessages.get().Operations_discardRedo, WorkbenchMessages.get().Workbench_redoToolTip);
 	}
 
 	/*
@@ -137,9 +137,9 @@ public final class NonLocalUndoUserApprover implements IOperationApprover {
 		}
 
 		String message = NLS.bind(
-				WorkbenchMessages.Operations_nonLocalUndoWarning, operation
+				WorkbenchMessages.get().Operations_nonLocalUndoWarning, operation
 						.getLabel(), part.getEditorInput().getName());
-		return proceedWithOperation(operation, message, WorkbenchMessages.Operations_discardUndo, WorkbenchMessages.Workbench_undoToolTip);
+		return proceedWithOperation(operation, message, WorkbenchMessages.get().Operations_discardUndo, WorkbenchMessages.get().Workbench_undoToolTip);
 
 	}
 
@@ -212,8 +212,8 @@ public final class NonLocalUndoUserApprover implements IOperationApprover {
 		Workbench.getInstance().getDisplay().syncExec(new Runnable() {
 			public void run() {
 				MessageDialog dialog = new MessageDialog(part.getSite().getShell(), title,
-						null, message, MessageDialog.QUESTION, new String[] { IDialogConstants.OK_LABEL,
-		                        discardButton, IDialogConstants.CANCEL_LABEL }, 0); // yes is the default
+						null, message, MessageDialog.QUESTION, new String[] { IDialogConstants.get().OK_LABEL,
+		                        discardButton, IDialogConstants.get().CANCEL_LABEL }, 0); // yes is the default
 		        answer[0] = dialog.open();
 		}});
 		switch (answer[0]) {

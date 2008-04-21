@@ -36,7 +36,7 @@ import org.eclipse.ui.internal.WorkbenchMessages;
  * This class may be instantiated by clients.
  * </p>
  * 
- * @since 3.1
+ * @since 1.1
  */
 public final class LinearUndoViolationUserApprover extends
 		LinearUndoViolationDetector {
@@ -77,7 +77,7 @@ public final class LinearUndoViolationUserApprover extends
 		}
 
 		final String message = NLS.bind(
-				WorkbenchMessages.Operations_linearRedoViolation,
+				WorkbenchMessages.get().Operations_linearRedoViolation,
 				getTitle(part), operation.getLabel());
 		final boolean [] proceed = new boolean[1];
 		Workbench.getInstance().getDisplay().syncExec(new Runnable() {
@@ -128,7 +128,7 @@ public final class LinearUndoViolationUserApprover extends
 		}
 
 		final String message = NLS.bind(
-				WorkbenchMessages.Operations_linearUndoViolation,
+				WorkbenchMessages.get().Operations_linearUndoViolation,
 				getTitle(part), operation.getLabel());
 		final boolean [] proceed = new boolean[1];
 		Workbench.getInstance().getDisplay().syncExec(new Runnable() {
