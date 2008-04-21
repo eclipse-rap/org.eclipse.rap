@@ -27,7 +27,6 @@ import org.eclipse.ui.commands.ICommandService;
  * Replacement for CyclePartAction
  * </p>
  * 
- * @since 3.3
  *
  */
 public class CycleViewHandler extends CycleBaseHandler {

@@ -14,14 +14,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Assert;
+//import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.misc.Policy;
-import org.eclipse.ui.internal.misc.ProgramImageDescriptor;
+//import org.eclipse.ui.internal.misc.ProgramImageDescriptor;
 import org.eclipse.ui.internal.util.BundleUtility;
 
 /**
@@ -502,33 +502,34 @@ public/*final*/class WorkbenchImages {
         return (ImageDescriptor) getDescriptors().get(symbolicName);
     }
 
-    /**
-     * Convenience Method.
-     * Returns an ImageDescriptor obtained from an external program.
-     * If there isn't any image then <code>null</code> is returned.
-     *
-     * This method is convenience and only intended for use by the workbench because it
-     * explicitly uses the workbench's registry for caching/retrieving images from other
-     * extensions -- other plugins must user their own registry. 
-     * This convenience method is subject to removal.
-     *
-     * Note:
-     * This consults the plugin for extension and obtains its installation location.
-     * all requested images are assumed to be in a directory below and relative to that
-     * plugins installation directory.
-     */
-
-    public static ImageDescriptor getImageDescriptorFromProgram(
-            String filename, int offset) {
-        Assert.isNotNull(filename);
-        String key = filename + "*" + offset; //use * as it is not a valid filename character//$NON-NLS-1$
-        ImageDescriptor desc = getImageDescriptor(key);
-        if (desc == null) {
-            desc = new ProgramImageDescriptor(filename, offset);
-            getDescriptors().put(key, desc);
-        }
-        return desc;
-    }
+// RAP [rh] external programs not suuported     
+//    /**
+//     * Convenience Method.
+//     * Returns an ImageDescriptor obtained from an external program.
+//     * If there isn't any image then <code>null</code> is returned.
+//     *
+//     * This method is convenience and only intended for use by the workbench because it
+//     * explicitly uses the workbench's registry for caching/retrieving images from other
+//     * extensions -- other plugins must user their own registry. 
+//     * This convenience method is subject to removal.
+//     *
+//     * Note:
+//     * This consults the plugin for extension and obtains its installation location.
+//     * all requested images are assumed to be in a directory below and relative to that
+//     * plugins installation directory.
+//     */
+//
+//    public static ImageDescriptor getImageDescriptorFromProgram(
+//            String filename, int offset) {
+//        Assert.isNotNull(filename);
+//        String key = filename + "*" + offset; //use * as it is not a valid filename character//$NON-NLS-1$
+//        ImageDescriptor desc = getImageDescriptor(key);
+//        if (desc == null) {
+//            desc = new ProgramImageDescriptor(filename, offset);
+//            getDescriptors().put(key, desc);
+//        }
+//        return desc;
+//    }
 
     /**
      * Returns the ImageRegistry.

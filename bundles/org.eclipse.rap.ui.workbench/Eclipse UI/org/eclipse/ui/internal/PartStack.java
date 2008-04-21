@@ -29,25 +29,25 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.Cursor;
+//import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
+//import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistable;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
-import org.eclipse.ui.PartInitException;
+//import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
-import org.eclipse.ui.internal.dnd.AbstractDropTarget;
-import org.eclipse.ui.internal.dnd.DragUtil;
-import org.eclipse.ui.internal.dnd.IDropTarget;
+//import org.eclipse.ui.internal.dnd.AbstractDropTarget;
+//import org.eclipse.ui.internal.dnd.DragUtil;
+//import org.eclipse.ui.internal.dnd.IDropTarget;
 import org.eclipse.ui.internal.dnd.SwtUtil;
 import org.eclipse.ui.internal.intro.IIntroConstants;
 import org.eclipse.ui.internal.layout.ITrimManager;
@@ -60,14 +60,13 @@ import org.eclipse.ui.internal.util.Util;
 import org.eclipse.ui.presentations.AbstractPresentationFactory;
 import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IStackPresentationSite;
-import org.eclipse.ui.presentations.StackDropResult;
+//import org.eclipse.ui.presentations.StackDropResult;
 import org.eclipse.ui.presentations.StackPresentation;
 
 /**
  * Implements the common behavior for stacks of Panes (ie: EditorStack and ViewStack)
  * This layout container has PartPanes as children and belongs to a PartSashContainer.
  * 
- * @since 3.0
  */
 public abstract class PartStack extends LayoutPart implements ILayoutContainer {
 
@@ -174,86 +173,88 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
         }
     };
 
-    private static final class PartStackDropResult extends AbstractDropTarget {
-        private PartPane pane;
-        
-        // Result of the presentation's dragOver method or null if we are stacking over the
-        // client area of the pane.
-        private StackDropResult dropResult;
-        private PartStack stack;
-        
-        /**
-         * Resets the target of this drop result (allows the same drop result object to be
-         * reused)
-         * 
-         * @param stack
-         * @param pane
-         * @param result result of the presentation's dragOver method, or null if we are
-         * simply stacking anywhere.
-         * @since 3.1
-         */
-        public void setTarget(PartStack stack, PartPane pane, StackDropResult result) {
-            this.pane = pane;
-            this.dropResult = result;
-            this.stack = stack;
-        }
-        
-        public void drop() {
-            // If we're dragging a pane over itself do nothing
-            //if (dropResult.getInsertionPoint() == pane.getPresentablePart()) { return; };
+// RAP [rh] PartStackDropResult disabled since DnD support is missing    
+//    private static final class PartStackDropResult extends AbstractDropTarget {
+//        private PartPane pane;
+//        
+//        // Result of the presentation's dragOver method or null if we are stacking over the
+//        // client area of the pane.
+//        private StackDropResult dropResult;
+//        private PartStack stack;
+//        
+//        /**
+//         * Resets the target of this drop result (allows the same drop result object to be
+//         * reused)
+//         * 
+//         * @param stack
+//         * @param pane
+//         * @param result result of the presentation's dragOver method, or null if we are
+//         * simply stacking anywhere.
+//         * @since 3.1
+//         */
+//        public void setTarget(PartStack stack, PartPane pane, StackDropResult result) {
+//            this.pane = pane;
+//            this.dropResult = result;
+//            this.stack = stack;
+//        }
+//        
+//        public void drop() {
+//            // If we're dragging a pane over itself do nothing
+//            //if (dropResult.getInsertionPoint() == pane.getPresentablePart()) { return; };
+//
+//            Object cookie = null;
+//            if (dropResult != null) {
+//                cookie = dropResult.getCookie();
+//            }
+//
+//            // Handle cross window drops by opening a new editor
+//            if (pane instanceof EditorPane) {
+//            	if (pane.getWorkbenchWindow() != stack.getWorkbenchWindow()) {
+//            		EditorPane editor = (EditorPane) pane;
+//            		try {
+//						IEditorInput input = editor.getEditorReference().getEditorInput();
+//						
+//						// Close the old editor and capture the actual closed state incase of a 'cancel'
+//						boolean editorClosed = editor.getPage().closeEditor(editor.getEditorReference(), true);
+//						
+//						// Only open open the new editor if the old one closed
+//						if (editorClosed)
+//							stack.getPage().openEditor(input, editor.getEditorReference().getId());
+//						return;
+//					} catch (PartInitException e) {
+//						e.printStackTrace();
+//					}
+//            		
+//            	}
+//            }
+//            
+//            if (pane.getContainer() != stack) {
+//                // Moving from another stack
+//                stack.derefPart(pane);
+//                pane.reparent(stack.getParent());
+//                stack.add(pane, cookie);
+//                stack.setSelection(pane);
+//                pane.setFocus();
+//            } else if (cookie != null) {
+//                // Rearranging within this stack
+//                stack.getPresentation().movePart(stack.getPresentablePart(pane), cookie);
+//            }
+//        }
+//
+//        public Cursor getCursor() {
+//            return DragCursors.getCursor(DragCursors.CENTER);
+//        }
+//
+//        public Rectangle getSnapRectangle() {
+//            if (dropResult == null) {
+//                return DragUtil.getDisplayBounds(stack.getControl());
+//            }
+//            return dropResult.getSnapRectangle();
+//        }
+//    }
 
-            Object cookie = null;
-            if (dropResult != null) {
-                cookie = dropResult.getCookie();
-            }
-
-            // Handle cross window drops by opening a new editor
-            if (pane instanceof EditorPane) {
-            	if (pane.getWorkbenchWindow() != stack.getWorkbenchWindow()) {
-            		EditorPane editor = (EditorPane) pane;
-            		try {
-						IEditorInput input = editor.getEditorReference().getEditorInput();
-						
-						// Close the old editor and capture the actual closed state incase of a 'cancel'
-						boolean editorClosed = editor.getPage().closeEditor(editor.getEditorReference(), true);
-						
-						// Only open open the new editor if the old one closed
-						if (editorClosed)
-							stack.getPage().openEditor(input, editor.getEditorReference().getId());
-						return;
-					} catch (PartInitException e) {
-						e.printStackTrace();
-					}
-            		
-            	}
-            }
-            
-            if (pane.getContainer() != stack) {
-                // Moving from another stack
-                stack.derefPart(pane);
-                pane.reparent(stack.getParent());
-                stack.add(pane, cookie);
-                stack.setSelection(pane);
-                pane.setFocus();
-            } else if (cookie != null) {
-                // Rearranging within this stack
-                stack.getPresentation().movePart(stack.getPresentablePart(pane), cookie);
-            }
-        }
-
-        public Cursor getCursor() {
-            return DragCursors.getCursor(DragCursors.CENTER);
-        }
-
-        public Rectangle getSnapRectangle() {
-            if (dropResult == null) {
-                return DragUtil.getDisplayBounds(stack.getControl());
-            }
-            return dropResult.getSnapRectangle();
-        }
-    }
-
-    private static final PartStackDropResult dropResult = new PartStackDropResult();
+// RAP [rh] unused code: PartStackDropResult is disabled
+//    private static final PartStackDropResult dropResult = new PartStackDropResult();
 
     protected boolean isMinimized;
 
@@ -577,39 +578,40 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
         getControl().moveBelow(null);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.internal.LayoutPart#getDropTarget(java.lang.Object, org.eclipse.swt.graphics.Point)
-     */
-    public IDropTarget getDropTarget(Object draggedObject, Point position) {
-
-        if (!(draggedObject instanceof PartPane)) {
-            return null;
-        }
-
-        final PartPane pane = (PartPane) draggedObject;
-        if (isStandalone() 
-                || !allowsDrop(pane)) {
-            return null;
-        }
-
-        // Don't allow views to be dragged between windows
-        boolean differentWindows = pane.getWorkbenchWindow() != getWorkbenchWindow();
-        boolean editorDropOK = ((pane instanceof EditorPane) && 
-        		pane.getWorkbenchWindow().getWorkbench() == 
-        			getWorkbenchWindow().getWorkbench());
-        if (differentWindows && !editorDropOK) {
-            return null;
-        }
-
-        StackDropResult dropResult = getPresentation().dragOver(
-                getControl(), position);
-        
-        if (dropResult == null) {
-        	return null;
-        }
-        
-        return createDropTarget(pane, dropResult); 
-    }
+// RAP [rh] DnD not supported    
+//    /* (non-Javadoc)
+//     * @see org.eclipse.ui.internal.LayoutPart#getDropTarget(java.lang.Object, org.eclipse.swt.graphics.Point)
+//     */
+//    public IDropTarget getDropTarget(Object draggedObject, Point position) {
+//
+//        if (!(draggedObject instanceof PartPane)) {
+//            return null;
+//        }
+//
+//        final PartPane pane = (PartPane) draggedObject;
+//        if (isStandalone() 
+//                || !allowsDrop(pane)) {
+//            return null;
+//        }
+//
+//        // Don't allow views to be dragged between windows
+//        boolean differentWindows = pane.getWorkbenchWindow() != getWorkbenchWindow();
+//        boolean editorDropOK = ((pane instanceof EditorPane) && 
+//        		pane.getWorkbenchWindow().getWorkbench() == 
+//        			getWorkbenchWindow().getWorkbench());
+//        if (differentWindows && !editorDropOK) {
+//            return null;
+//        }
+//
+//        StackDropResult dropResult = getPresentation().dragOver(
+//                getControl(), position);
+//        
+//        if (dropResult == null) {
+//        	return null;
+//        }
+//        
+//        return createDropTarget(pane, dropResult); 
+//    }
     
     public void setActive(boolean isActive) {
  
@@ -668,10 +670,11 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
         refreshPresentationSelection();
     }
 
-    public IDropTarget createDropTarget(PartPane pane, StackDropResult result) {
-        dropResult.setTarget(this, pane, result);
-        return dropResult;
-    }
+// RAP [rh] DnD support missing    
+//    public IDropTarget createDropTarget(PartPane pane, StackDropResult result) {
+//        dropResult.setTarget(this, pane, result);
+//        return dropResult;
+//    }
     
     /**
      * Saves the current state of the presentation to savedPresentationState, if the
@@ -884,7 +887,8 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
     public void reparent(Composite newParent) {
 
         Control control = getControl();
-        if ((control == null) || (control.getParent() == newParent) || !control.isReparentable()) {
+// RAP [rh] Control#isReparentable not implemented
+        if ((control == null) || (control.getParent() == newParent) /* || !control.isReparentable() */) {
 			return;
 		}
 
@@ -1727,10 +1731,11 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
                 	initialLocation.x = (int) (bounds.x + (xpct * bounds.width));
                 	initialLocation.y = (int) (bounds.y + (ypct * bounds.height));
                 }
-    
-                DragUtil.performDrag(PartStack.this, Geometry
-                        .toDisplay(getParent(), getPresentation().getControl()
-                                .getBounds()), initialLocation, !keyboard);
+
+// RAP [rh] DnD not supported                
+//                DragUtil.performDrag(PartStack.this, Geometry
+//                        .toDisplay(getParent(), getPresentation().getControl()
+//                                .getBounds()), initialLocation, !keyboard);
             }
         } else {
             if (presentationSite.getState() == IStackPresentationSite.STATE_MAXIMIZED) {
@@ -1750,9 +1755,10 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
             	initialLocation.y = (int) (bounds.y + (ypct * bounds.height));
             }
     
-            DragUtil.performDrag(pane, Geometry.toDisplay(getParent(),
-                    getPresentation().getControl().getBounds()),
-                    initialLocation, !keyboard);
+// RAP [rh] DnD not supported                
+//            DragUtil.performDrag(pane, Geometry.toDisplay(getParent(),
+//                    getPresentation().getControl().getBounds()),
+//                    initialLocation, !keyboard);
         }
     }
 

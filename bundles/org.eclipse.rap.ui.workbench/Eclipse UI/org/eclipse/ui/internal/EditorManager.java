@@ -21,9 +21,9 @@ import java.util.Map;
 
 import org.eclipse.osgi.util.NLS;
 
-import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.program.Program;
-import org.eclipse.swt.widgets.Display;
+//import org.eclipse.swt.custom.BusyIndicator;
+//import org.eclipse.swt.program.Program;
+//import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -63,7 +63,7 @@ import org.eclipse.ui.ActiveShellExpression;
 import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorLauncher;
+//import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.IEditorMatchingStrategy;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -91,8 +91,8 @@ import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.eclipse.ui.internal.editorsupport.ComponentSupport;
-import org.eclipse.ui.internal.misc.ExternalEditor;
+//import org.eclipse.ui.internal.editorsupport.ComponentSupport;
+//import org.eclipse.ui.internal.misc.ExternalEditor;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.internal.misc.UIStats;
 import org.eclipse.ui.internal.part.NullEditorInput;
@@ -539,12 +539,13 @@ public class EditorManager implements IExtensionChangeHandler {
 		}
 	}
 
-	/**
-	 * Returns the SWT Display.
-	 */
-	private Display getDisplay() {
-		return window.getShell().getDisplay();
-	}
+// RAP [rh] unused code, 	
+//	/**
+//	 * Returns the SWT Display.
+//	 */
+//	private Display getDisplay() {
+//		return window.getShell().getDisplay();
+//	}
 
 	/**
 	 * Answer the number of editors.
@@ -651,22 +652,23 @@ public class EditorManager implements IExtensionChangeHandler {
 			if (result == null) {
 				result = new EditorReference(this, input, desc, editorState);
 			}
-		} else if (desc.getId()
-				.equals(IEditorRegistry.SYSTEM_INPLACE_EDITOR_ID)) {
-			if (ComponentSupport.inPlaceEditorSupported()) {
-				result = new EditorReference(this, input, desc);
-			}
-		} else if (desc.getId().equals(
-				IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID)) {
-			IPathEditorInput pathInput = getPathEditorInput(input);
-			if (pathInput != null) {
-				result = openSystemExternalEditor(pathInput.getPath());
-			} else {
-				throw new PartInitException(
-						WorkbenchMessages.get().EditorManager_systemEditorError);
-			}
-		} else if (desc.isOpenExternal()) {
-			result = openExternalEditor(desc, input);
+// RAP [rh] Not supported: external editors, inplace editors			
+//		} else if (desc.getId()
+//				.equals(IEditorRegistry.SYSTEM_INPLACE_EDITOR_ID)) {
+//			if (ComponentSupport.inPlaceEditorSupported()) {
+//				result = new EditorReference(this, input, desc);
+//			}
+//		} else if (desc.getId().equals(
+//				IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID)) {
+//			IPathEditorInput pathInput = getPathEditorInput(input);
+//			if (pathInput != null) {
+//				result = openSystemExternalEditor(pathInput.getPath());
+//			} else {
+//				throw new PartInitException(
+//						WorkbenchMessages.get().EditorManager_systemEditorError);
+//			}
+//		} else if (desc.isOpenExternal()) {
+//			result = openExternalEditor(desc, input);
 		} else {
 			// this should never happen
 			throw new PartInitException(NLS.bind(
@@ -683,50 +685,51 @@ public class EditorManager implements IExtensionChangeHandler {
 		return result;
 	}
 
-	/**
-	 * Open a specific external editor on an file based on the descriptor.
-	 */
-	private IEditorReference openExternalEditor(final EditorDescriptor desc,
-			IEditorInput input) throws PartInitException {
-		final CoreException ex[] = new CoreException[1];
-
-		final IPathEditorInput pathInput = getPathEditorInput(input);
-		if (pathInput != null && pathInput.getPath() != null) {
-			BusyIndicator.showWhile(getDisplay(), new Runnable() {
-				public void run() {
-					try {
-						if (desc.getLauncher() != null) {
-							// open using launcher
-							Object launcher = WorkbenchPlugin.createExtension(
-									desc.getConfigurationElement(), "launcher"); //$NON-NLS-1$
-							((IEditorLauncher) launcher).open(pathInput
-									.getPath());
-						} else {
-							// open using command
-							ExternalEditor oEditor = new ExternalEditor(
-									pathInput.getPath(), desc);
-							oEditor.open();
-						}
-					} catch (CoreException e) {
-						ex[0] = e;
-					}
-				}
-			});
-		} else {
-			throw new PartInitException(NLS.bind(
-					WorkbenchMessages.get().EditorManager_errorOpeningExternalEditor,
-					desc.getFileName(), desc.getId()));
-		}
-
-		if (ex[0] != null) {
-			throw new PartInitException(NLS.bind(
-					WorkbenchMessages.get().EditorManager_errorOpeningExternalEditor,
-					desc.getFileName(), desc.getId()), ex[0]);
-		}
-
-		// we do not have an editor part for external editors
-		return null;
-	}
+// RAP [rh] external editors not supported	
+//	/**
+//	 * Open a specific external editor on an file based on the descriptor.
+//	 */
+//	private IEditorReference openExternalEditor(final EditorDescriptor desc,
+//			IEditorInput input) throws PartInitException {
+//		final CoreException ex[] = new CoreException[1];
+//
+//		final IPathEditorInput pathInput = getPathEditorInput(input);
+//		if (pathInput != null && pathInput.getPath() != null) {
+//			BusyIndicator.showWhile(getDisplay(), new Runnable() {
+//				public void run() {
+//					try {
+//						if (desc.getLauncher() != null) {
+//							// open using launcher
+//							Object launcher = WorkbenchPlugin.createExtension(
+//									desc.getConfigurationElement(), "launcher"); //$NON-NLS-1$
+//							((IEditorLauncher) launcher).open(pathInput
+//									.getPath());
+//						} else {
+//							// open using command
+//							ExternalEditor oEditor = new ExternalEditor(
+//									pathInput.getPath(), desc);
+//							oEditor.open();
+//						}
+//					} catch (CoreException e) {
+//						ex[0] = e;
+//					}
+//				}
+//			});
+//		} else {
+//			throw new PartInitException(NLS.bind(
+//					WorkbenchMessages.get().EditorManager_errorOpeningExternalEditor,
+//					desc.getFileName(), desc.getId()));
+//		}
+//
+//		if (ex[0] != null) {
+//			throw new PartInitException(NLS.bind(
+//					WorkbenchMessages.get().EditorManager_errorOpeningExternalEditor,
+//					desc.getFileName(), desc.getId()), ex[0]);
+//		}
+//
+//		// we do not have an editor part for external editors
+//		return null;
+//	}
 
 	/**
 	 * Create the part and reference for each inner editor.
@@ -858,33 +861,34 @@ public class EditorManager implements IExtensionChangeHandler {
 		}
 	}
 
-	/**
-	 * Open a system external editor on the input path.
-	 */
-	private IEditorReference openSystemExternalEditor(final IPath location)
-			throws PartInitException {
-		if (location == null) {
-			throw new IllegalArgumentException();
-		}
-
-		final boolean result[] = { false };
-		BusyIndicator.showWhile(getDisplay(), new Runnable() {
-			public void run() {
-				if (location != null) {
-					result[0] = Program.launch(location.toOSString());
-				}
-			}
-		});
-
-		if (!result[0]) {
-			throw new PartInitException(NLS.bind(
-					WorkbenchMessages.get().EditorManager_unableToOpenExternalEditor,
-					location));
-		}
-
-		// We do not have an editor part for external editors
-		return null;
-	}
+// RAP [rh] external editors not supported	
+//	/**
+//	 * Open a system external editor on the input path.
+//	 */
+//	private IEditorReference openSystemExternalEditor(final IPath location)
+//			throws PartInitException {
+//		if (location == null) {
+//			throw new IllegalArgumentException();
+//		}
+//
+//		final boolean result[] = { false };
+//		BusyIndicator.showWhile(getDisplay(), new Runnable() {
+//			public void run() {
+//				if (location != null) {
+//					result[0] = Program.launch(location.toOSString());
+//				}
+//			}
+//		});
+//
+//		if (!result[0]) {
+//			throw new PartInitException(NLS.bind(
+//					WorkbenchMessages.get().EditorManager_unableToOpenExternalEditor,
+//					location));
+//		}
+//
+//		// We do not have an editor part for external editors
+//		return null;
+//	}
 
 	ImageDescriptor findImage(EditorDescriptor desc, IPath path) {
 		if (desc == null) {
@@ -1410,13 +1414,14 @@ public class EditorManager implements IExtensionChangeHandler {
 		return editorPresentation.setVisibleEditor(newEd, setFocus);
 	}
 
-	private IPathEditorInput getPathEditorInput(IEditorInput input) {
-		if (input instanceof IPathEditorInput) {
-			return (IPathEditorInput) input;
-		}
-
-		return (IPathEditorInput) Util.getAdapter(input, IPathEditorInput.class);
-	}
+// RAP [rh] unused code	
+//	private IPathEditorInput getPathEditorInput(IEditorInput input) {
+//		if (input instanceof IPathEditorInput) {
+//			return (IPathEditorInput) input;
+//		}
+//
+//		return (IPathEditorInput) Util.getAdapter(input, IPathEditorInput.class);
+//	}
 
 	private class InnerEditor extends EditorReference {
 

@@ -13,7 +13,7 @@ package org.eclipse.ui.internal;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IKeyBindingService;
+//import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -24,7 +24,6 @@ import org.eclipse.ui.intro.IIntroSite;
  * Simple <code>IIntroSite</code> that wraps a <code>IViewSite</code>.  For use in conjunction with 
  * <code>ViewIntroAdapterPart</code>.
  * 
- * @since 3.0
  */
 final class ViewIntroAdapterSite implements IIntroSite {
     private IntroDescriptor descriptor;
@@ -57,12 +56,13 @@ final class ViewIntroAdapterSite implements IIntroSite {
         return descriptor.getId();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IWorkbenchPartSite#getKeyBindingService()
-     */
-    public IKeyBindingService getKeyBindingService() {
-        return viewSite.getKeyBindingService();
-    }
+// RAP [rh] IKeyBindingServivce not implemented    
+//    /* (non-Javadoc)
+//     * @see org.eclipse.ui.IWorkbenchPartSite#getKeyBindingService()
+//     */
+//    public IKeyBindingService getKeyBindingService() {
+//        return viewSite.getKeyBindingService();
+//    }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchSite#getPage()

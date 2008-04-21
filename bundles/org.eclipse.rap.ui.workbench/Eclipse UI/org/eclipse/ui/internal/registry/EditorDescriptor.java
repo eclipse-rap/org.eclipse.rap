@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.registry;
 
-import java.io.File;
+//import java.io.File;
 import java.io.Serializable;
 
 import org.eclipse.core.runtime.Assert;
@@ -28,7 +28,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.internal.IWorkbenchConstants;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.misc.ProgramImageDescriptor;
+//import org.eclipse.ui.internal.misc.ProgramImageDescriptor;
 import org.eclipse.ui.internal.tweaklets.InterceptContributions;
 import org.eclipse.ui.internal.tweaklets.Tweaklets;
 import org.eclipse.ui.internal.util.Util;
@@ -112,44 +112,45 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
 	}
 
 
-
-	/**
-     * Creates a descriptor for an external program.
-     * 
-     * @param filename the external editor full path and filename
-     * @return the editor descriptor
-     */
-    public static EditorDescriptor createForProgram(String filename) {
-        if (filename == null) {
-            throw new IllegalArgumentException();
-        }
-        EditorDescriptor editor = new EditorDescriptor();
-
-        editor.setFileName(filename);
-        editor.setID(filename);
-        editor.setOpenMode(OPEN_EXTERNAL);
-
-        //Isolate the program name (no directory or extension)
-        int start = filename.lastIndexOf(File.separator);
-        String name;
-        if (start != -1) {
-            name = filename.substring(start + 1);
-        } else {
-            name = filename;
-        }
-        int end = name.lastIndexOf('.');
-        if (end != -1) {
-            name = name.substring(0, end);
-        }
-        editor.setName(name);
-
-        // get the program icon without storing it in the registry
-        ImageDescriptor imageDescriptor = new ProgramImageDescriptor(filename,
-                0);
-        editor.setImageDescriptor(imageDescriptor);
-
-        return editor;
-    }
+    
+// RAP [rh] (external) program editors not supported
+//	/**
+//     * Creates a descriptor for an external program.
+//     * 
+//     * @param filename the external editor full path and filename
+//     * @return the editor descriptor
+//     */
+//    public static EditorDescriptor createForProgram(String filename) {
+//        if (filename == null) {
+//            throw new IllegalArgumentException();
+//        }
+//        EditorDescriptor editor = new EditorDescriptor();
+//
+//        editor.setFileName(filename);
+//        editor.setID(filename);
+//        editor.setOpenMode(OPEN_EXTERNAL);
+//
+//        //Isolate the program name (no directory or extension)
+//        int start = filename.lastIndexOf(File.separator);
+//        String name;
+//        if (start != -1) {
+//            name = filename.substring(start + 1);
+//        } else {
+//            name = filename;
+//        }
+//        int end = name.lastIndexOf('.');
+//        if (end != -1) {
+//            name = name.substring(0, end);
+//        }
+//        editor.setName(name);
+//
+//        // get the program icon without storing it in the registry
+//        ImageDescriptor imageDescriptor = new ProgramImageDescriptor(filename,
+//                0);
+//        editor.setImageDescriptor(imageDescriptor);
+//
+//        return editor;
+//    }
 
     // RAP [bm]: 
 //    /**
@@ -277,13 +278,15 @@ public final class EditorDescriptor implements IEditorDescriptor, Serializable,
     		testImage = false;
 			if (imageDesc == null) {
 				String imageFileName = getImageFilename();
-				String command = getFileName();
+// RAP [rh] unused code					
+//				String command = getFileName();
 				if (imageFileName != null && configurationElement != null) {
 					imageDesc = AbstractUIPlugin.imageDescriptorFromPlugin(
 							configurationElement.getNamespace(), imageFileName);
-				} else if (command != null) {
-					imageDesc = WorkbenchImages.getImageDescriptorFromProgram(
-							command, 0);
+// RAP [rh] program image descriptors not supported					
+//				} else if (command != null) {
+//					imageDesc = WorkbenchImages.getImageDescriptorFromProgram(
+//							command, 0);
 				}
 			}
 			verifyImage();    		

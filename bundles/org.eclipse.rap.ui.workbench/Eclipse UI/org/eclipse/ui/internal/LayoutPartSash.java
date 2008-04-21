@@ -62,10 +62,11 @@ class LayoutPartSash extends LayoutPart {
             public void widgetSelected(SelectionEvent e) { 
                 checkDragLimit(e);
                 
-                if (e.detail != SWT.DRAG) {    
+// RAP [rh] Selection event for Sash does not specify event detail               
+//                if (e.detail != SWT.DRAG) {    
                     LayoutPartSash.this.widgetSelected(e.x, e.y, e.width,
                             e.height);
-                }
+//                }
             }
         };
     }
@@ -118,7 +119,6 @@ class LayoutPartSash extends LayoutPart {
     /**
      * Creates the underlying SWT control.
      * 
-     * @since 3.1
      */
     private void doCreateControl() {         
         if (sash == null) {        	
@@ -287,7 +287,6 @@ class LayoutPartSash extends LayoutPart {
 
     /**
      * @param resizable
-     * @since 3.1
      */
     public void setEnabled(boolean resizable) {
         this.enabled = resizable;

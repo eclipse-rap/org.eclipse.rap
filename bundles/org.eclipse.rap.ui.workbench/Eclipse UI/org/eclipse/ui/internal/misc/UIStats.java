@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.misc;
 
-import java.util.HashMap;
+//import java.util.HashMap;
 
 import org.eclipse.core.runtime.PerformanceStats;
-import org.eclipse.core.runtime.Platform;
+//import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -24,8 +24,9 @@ import org.eclipse.ui.PlatformUI;
  * @see org.eclipse.core.runtime.PerformanceStats
  */
 public class UIStats {
-	
-	 private static HashMap operations = new HashMap();
+
+// RAP [rh] unused field	
+//	 private static HashMap operations = new HashMap();
 
     public static final int CREATE_PART = 0;
 
@@ -99,7 +100,9 @@ public class UIStats {
      * and <code>false</code> otherwise.
      */
     public static boolean isDebugging(int event) {
+// RAP [rh] keep public methods but disable their functionality     
         return debug[event];
+//        return false;
     }
     
     /**
@@ -109,9 +112,10 @@ public class UIStats {
      * @param label The event label
      */
     public static void start(int event, String label) {
-        if (debug[event]) {
-			operations.put(event + label, new Long(System.currentTimeMillis()));
-		}
+// RAP [rh] keep public methods but disable their functionality     
+//        if (debug[event]) {
+//			operations.put(event + label, new Long(System.currentTimeMillis()));
+//		}
     }
 
     /**
@@ -123,16 +127,17 @@ public class UIStats {
      * @param label The event label
      */
    	public static void end(int event, Object blame, String label) {
-        if (debug[event]) {
-            Long startTime = (Long) operations.remove(event + label);
-            if (startTime == null) {
-				return;
-			}
-            final long elapsed = System.currentTimeMillis() - startTime.longValue();
-//			System.out.println("Time - " + //$NON-NLS-1$
-//                    elapsed + events[event] + label);
-            PerformanceStats.getStats(events[event], blame).addRun(elapsed, label);
-        }
+// RAP [rh] keep public methods but disable their functionality     
+//        if (debug[event]) {
+//            Long startTime = (Long) operations.remove(event + label);
+//            if (startTime == null) {
+//				return;
+//			}
+//            final long elapsed = System.currentTimeMillis() - startTime.longValue();
+////			System.out.println("Time - " + //$NON-NLS-1$
+////                    elapsed + events[event] + label);
+//            PerformanceStats.getStats(events[event], blame).addRun(elapsed, label);
+//        }
     }
    	
    	/**
@@ -140,22 +145,23 @@ public class UIStats {
    	 * loop has started running.
    	 */
    	public static void startupComplete() {
-   		// We use a runtime debug option here for backwards compatibility (bug 96672)
-		// Note that this value is only relevant if the workspace chooser is not used.
-   		String option = Platform.getDebugOption(Platform.PI_RUNTIME + "/debug"); //$NON-NLS-1$
-		if (option == null || !"true".equalsIgnoreCase(option)) { //$NON-NLS-1$
-			return;
-		}
-		String startString = System.getProperty("eclipse.startTime"); //$NON-NLS-1$
-		if (startString == null) {
-			return;
-		}
-		try {
-			long start = Long.parseLong(startString);
-			long end = System.currentTimeMillis();
-			System.out.println("Startup complete: " + (end - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
-		} catch (NumberFormatException e) {
-			//this is just debugging code -- ok to swallow exception
-		}
+// RAP [rh] keep public methods but disable their functionality     
+//   		// We use a runtime debug option here for backwards compatibility (bug 96672)
+//		// Note that this value is only relevant if the workspace chooser is not used.
+//   		String option = Platform.getDebugOption(Platform.PI_RUNTIME + "/debug"); //$NON-NLS-1$
+//		if (option == null || !"true".equalsIgnoreCase(option)) { //$NON-NLS-1$
+//			return;
+//		}
+//		String startString = System.getProperty("eclipse.startTime"); //$NON-NLS-1$
+//		if (startString == null) {
+//			return;
+//		}
+//		try {
+//			long start = Long.parseLong(startString);
+//			long end = System.currentTimeMillis();
+//			System.out.println("Startup complete: " + (end - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+//		} catch (NumberFormatException e) {
+//			//this is just debugging code -- ok to swallow exception
+//		}
    	}
 }

@@ -139,12 +139,13 @@ public class PlatformUIPreferenceListener implements
 							IEditorDescriptor descriptor = descriptors[i];
 							editorMap.put(descriptor.getId(), descriptor);
 						}
-						// Get the external (OS) editors
-						descriptors = editorRegistry.getSortedEditorsFromOS();
-						for (i = 0; i < descriptors.length; i++) {
-							IEditorDescriptor descriptor = descriptors[i];
-							editorMap.put(descriptor.getId(), descriptor);
-						}
+// RAP [rh] external editors not supported						
+//						// Get the external (OS) editors
+//						descriptors = editorRegistry.getSortedEditorsFromOS();
+//						for (i = 0; i < descriptors.length; i++) {
+//							IEditorDescriptor descriptor = descriptors[i];
+//							editorMap.put(descriptor.getId(), descriptor);
+//						}
 						// Update the file to editor(s) mappings
 						editorRegistry.readResources(editorMap, reader);
 					}

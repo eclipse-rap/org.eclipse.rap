@@ -27,7 +27,6 @@ import org.eclipse.ui.model.PerspectiveLabelProvider;
  * Replacement for CyclePerspectiveAction
  * </p>
  * 
- * @since 3.3
  */
 public class CyclePerspectiveHandler extends CycleBaseHandler {
 	private PerspectiveLabelProvider labelProvider = new PerspectiveLabelProvider(

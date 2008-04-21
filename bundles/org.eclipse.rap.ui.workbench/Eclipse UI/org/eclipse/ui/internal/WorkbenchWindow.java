@@ -188,9 +188,10 @@ public class WorkbenchWindow extends ApplicationWindow implements
 	 */
 	private final ServiceLocator serviceLocator;
 
-	private HeapStatus heapStatus;
+// RAP [rh] HeapStatus not supported  
+//	private HeapStatus heapStatus;
 
-	private WindowTrimProxy heapStatusTrim = null;
+//	private WindowTrimProxy heapStatusTrim = null;
 
 	private boolean emptyWindowContentsCreated = false;
 
@@ -1051,9 +1052,10 @@ public class WorkbenchWindow extends ApplicationWindow implements
 
 		createProgressIndicator(shell);
 
-		if (getShowHeapStatus()) {
-			createHeapStatus(shell);
-		}
+// RAP [rh] HeapStatus not supported  
+//		if (getShowHeapStatus()) {
+//			createHeapStatus(shell);
+//		}
 		
 		// Insert any contributed trim into the layout
 		// Legacy (3.2) trim
@@ -1075,46 +1077,47 @@ public class WorkbenchWindow extends ApplicationWindow implements
 		// System.err.println(defaultLayout.displayTrim());
 	}
 
-	/**
-	 * Returns whether the heap status indicator should be shown.
-	 * 
-	 * @return <code>true</code> to show the heap status indicator,
-	 *         <code>false</code> otherwise
-	 */
-	private boolean getShowHeapStatus() {
-		return // Show if the preference is set or debug option is on
-		PrefUtil.getAPIPreferenceStore().getBoolean(
-				IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR)
-				|| Boolean.valueOf(
-						Platform.getDebugOption(PlatformUI.PLUGIN_ID
-								+ "/perf/showHeapStatus")).booleanValue(); //$NON-NLS-1$
-	}
-
-	/**
-	 * Creates the controls for the heap status indicator.
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 */
-	private void createHeapStatus(Composite parent) {
-		heapStatus = new HeapStatus(parent, PrefUtil
-				.getInternalPreferenceStore());
-
-		// Subclass the trim to allow closing...
-		heapStatusTrim = new WindowTrimProxy(heapStatus,
-				"org.eclipse.ui.internal.HeapStatus", //$NON-NLS-1$
-				WorkbenchMessages.get().TrimCommon_HeapStatus_TrimName, SWT.BOTTOM
-						| SWT.TOP) {
-
-			public void handleClose() {
-				getControl().dispose();
-			}
-
-			public boolean isCloseable() {
-				return true;
-			}
-		};
-	}
+// RAP [rh] HeapStatus not supported 
+//	/**
+//	 * Returns whether the heap status indicator should be shown.
+//	 * 
+//	 * @return <code>true</code> to show the heap status indicator,
+//	 *         <code>false</code> otherwise
+//	 */
+//	private boolean getShowHeapStatus() {
+//		return // Show if the preference is set or debug option is on
+//		PrefUtil.getAPIPreferenceStore().getBoolean(
+//				IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR)
+//				|| Boolean.valueOf(
+//						Platform.getDebugOption(PlatformUI.PLUGIN_ID
+//								+ "/perf/showHeapStatus")).booleanValue(); //$NON-NLS-1$
+//	}
+//
+//	/**
+//	 * Creates the controls for the heap status indicator.
+//	 * 
+//	 * @param parent
+//	 *            the parent composite
+//	 */
+//	private void createHeapStatus(Composite parent) {
+//		heapStatus = new HeapStatus(parent, PrefUtil
+//				.getInternalPreferenceStore());
+//
+//		// Subclass the trim to allow closing...
+//		heapStatusTrim = new WindowTrimProxy(heapStatus,
+//				"org.eclipse.ui.internal.HeapStatus", //$NON-NLS-1$
+//				WorkbenchMessages.get().TrimCommon_HeapStatus_TrimName, SWT.BOTTOM
+//						| SWT.TOP) {
+//
+//			public void handleClose() {
+//				getControl().dispose();
+//			}
+//
+//			public boolean isCloseable() {
+//				return true;
+//			}
+//		};
+//	}
 
     /**
 	 * <p>
@@ -3514,26 +3517,27 @@ public class WorkbenchWindow extends ApplicationWindow implements
 			getStatusLineManager().getControl().setVisible(false);
 		}
 
-		if (heapStatus != null) {
-			if (getShowHeapStatus()) {
-				if (heapStatus.getLayoutData() == null) {
-					heapStatusTrim.setWidthHint(heapStatus.computeSize(
-							SWT.DEFAULT, SWT.DEFAULT).x);
-					heapStatusTrim
-							.setHeightHint(getStatusLineManager().getControl()
-									.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-				}
-
-				if (defaultLayout.getTrim(heapStatusTrim.getId()) == null) {
-					defaultLayout.addTrim(SWT.BOTTOM, heapStatusTrim);
-				}
-				heapStatus.setVisible(true);
-			} else {
-
-				defaultLayout.removeTrim(heapStatusTrim);
-				heapStatus.setVisible(false);
-			}
-		}
+// RAP [rh] HeapStatus not supported  
+//		if (heapStatus != null) {
+//			if (getShowHeapStatus()) {
+//				if (heapStatus.getLayoutData() == null) {
+//					heapStatusTrim.setWidthHint(heapStatus.computeSize(
+//							SWT.DEFAULT, SWT.DEFAULT).x);
+//					heapStatusTrim
+//							.setHeightHint(getStatusLineManager().getControl()
+//									.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+//				}
+//
+//				if (defaultLayout.getTrim(heapStatusTrim.getId()) == null) {
+//					defaultLayout.addTrim(SWT.BOTTOM, heapStatusTrim);
+//				}
+//				heapStatus.setVisible(true);
+//			} else {
+//
+//				defaultLayout.removeTrim(heapStatusTrim);
+//				heapStatus.setVisible(false);
+//			}
+//		}
 
 		if (progressRegion != null) {
 			if (getWindowConfigurer().getShowProgressIndicator()) {
@@ -3746,26 +3750,27 @@ public class WorkbenchWindow extends ApplicationWindow implements
 		}
 	}
 
-	/**
-	 * Show the heap status
-	 * 
-	 * @param selection
-	 */
-	public void showHeapStatus(boolean selection) {
-		if (selection) {
-			if (heapStatus == null) {
-				createHeapStatus(getShell());
-				updateLayoutDataForContents();
-				getShell().layout();
-			}
-		} else {
-			if (heapStatus != null) {
-				heapStatus.dispose();
-				heapStatus = null;
-			}
-		}
-
-	}
+// RAP [rh] HeapStatus not supported	
+//	/**
+//	 * Show the heap status
+//	 * 
+//	 * @param selection
+//	 */
+//	public void showHeapStatus(boolean selection) {
+//		if (selection) {
+//			if (heapStatus == null) {
+//				createHeapStatus(getShell());
+//				updateLayoutDataForContents();
+//				getShell().layout();
+//			}
+//		} else {
+//			if (heapStatus != null) {
+//				heapStatus.dispose();
+//				heapStatus = null;
+//			}
+//		}
+//
+//	}
 
 	/*
 	 * (non-Javadoc)

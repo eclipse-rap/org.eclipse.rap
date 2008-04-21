@@ -2103,7 +2103,8 @@ public class Perspective {
             setActiveFastView(ref);
         } else if (openViewMode == IPreferenceConstants.OVM_FLOAT
                 && presentation.canDetach()) {
-            presentation.addDetachedPart(pane);
+// RAP [rh] DetachedWindow not swupported          
+//            presentation.addDetachedPart(pane);
         } else {
         	if (useNewMinMax(this)) {
             	// Is this view going to show in the trim?

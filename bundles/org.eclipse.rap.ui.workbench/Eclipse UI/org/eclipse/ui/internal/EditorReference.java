@@ -13,7 +13,7 @@ package org.eclipse.ui.internal;
 import org.eclipse.osgi.util.NLS;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
+//import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
@@ -403,7 +403,9 @@ public class EditorReference extends WorkbenchPartReference implements
 			return descriptor;
 		}
 
-        return new OverlayIcon(descriptor, pinDesc, new Point(16, 16));
+// RAP [rh] OverlayIcon missing        
+//        return new OverlayIcon(descriptor, pinDesc, new Point(16, 16));
+        return descriptor;
     }
 
     /**

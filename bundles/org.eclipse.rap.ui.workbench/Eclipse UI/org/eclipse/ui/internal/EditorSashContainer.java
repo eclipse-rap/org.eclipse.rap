@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTarget;
+//import org.eclipse.swt.dnd.DND;
+//import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -45,8 +45,9 @@ public class EditorSashContainer extends PartSashContainer {
     private ArrayList editorWorkbooks = new ArrayList(3);
 
     private EditorStack activeEditorWorkbook;
-
-    private DropTarget dropTarget;
+    
+// RAP [rh] DnD not supported
+//    private DropTarget dropTarget;
 
     public EditorSashContainer(String editorId, WorkbenchPage page, Composite parent) {
         super(editorId, page, parent);
@@ -530,27 +531,29 @@ public class EditorSashContainer extends PartSashContainer {
         super.createControl(parent);
 
         //let the user drop files/editor input on the editor area
-        addDropSupport();
+// RAP [rh] DnD not supported    
+//        addDropSupport();
     }
 
-    private void addDropSupport() {
-        if (dropTarget == null) {
-            WorkbenchWindowConfigurer winConfigurer = ((WorkbenchWindow) page
-                    .getWorkbenchWindow()).getWindowConfigurer();
-
-            dropTarget = new DropTarget(getControl(), DND.DROP_DEFAULT
-                    | DND.DROP_COPY | DND.DROP_LINK);
-            dropTarget.setTransfer(winConfigurer.getTransfers());
-            if (winConfigurer.getDropTargetListener() != null) {
-                dropTarget.addDropListener(winConfigurer
-                        .getDropTargetListener());
-            }
-        }
-    }
-
-    /* package */DropTarget getDropTarget() {
-        return dropTarget;
-    }
+// RAP [rh] DnD not supported    
+//    private void addDropSupport() {
+//        if (dropTarget == null) {
+//            WorkbenchWindowConfigurer winConfigurer = ((WorkbenchWindow) page
+//                    .getWorkbenchWindow()).getWindowConfigurer();
+//
+//            dropTarget = new DropTarget(getControl(), DND.DROP_DEFAULT
+//                    | DND.DROP_COPY | DND.DROP_LINK);
+//            dropTarget.setTransfer(winConfigurer.getTransfers());
+//            if (winConfigurer.getDropTargetListener() != null) {
+//                dropTarget.addDropListener(winConfigurer
+//                        .getDropTargetListener());
+//            }
+//        }
+//    }
+//
+//    /* package */DropTarget getDropTarget() {
+//        return dropTarget;
+//    }
 
     /**
      * @see org.eclipse.ui.internal.LayoutPart#getImportance()

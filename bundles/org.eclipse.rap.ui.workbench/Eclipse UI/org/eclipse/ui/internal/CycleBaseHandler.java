@@ -23,12 +23,12 @@ import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
+//import org.eclipse.swt.events.KeyEvent;
+//import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
+//import org.eclipse.swt.events.TraverseEvent;
+//import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -37,11 +37,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-import org.eclipse.jface.bindings.Trigger;
+//import org.eclipse.jface.bindings.Trigger;
 import org.eclipse.jface.bindings.TriggerSequence;
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.SWTKeySupport;
-import org.eclipse.jface.preference.IPreferenceStore;
+//import org.eclipse.jface.bindings.keys.KeyStroke;
+//import org.eclipse.jface.bindings.keys.SWTKeySupport;
+//import org.eclipse.jface.preference.IPreferenceStore;
 
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPerspectiveDescriptor;
@@ -51,12 +51,10 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.keys.IBindingService;
+//import org.eclipse.ui.keys.IBindingService;
 
 /**
  * Its a base class for switching between views/editors/perspectives.
- * 
- * @since 3.3
  * 
  */
 
@@ -129,7 +127,8 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 		final int MAX_ITEMS = 22;
 
 		selection = null;
-		final Shell dialog = new Shell(window.getShell(), SWT.MODELESS);
+// RAP [rh] SWT.MODELESS not implemented, use APPLICATION_MODAL instead		
+		final Shell dialog = new Shell(window.getShell(), SWT.APPLICATION_MODAL /*SWT.MODELESS*/);
 		Display display = dialog.getDisplay();
 		dialog.setLayout(new FillLayout());
 
@@ -221,11 +220,13 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 		Rectangle dialogBounds = dialog.getBounds();
 		Rectangle parentBounds = dialog.getParent().getBounds();
 
-		// the bounds of the monitor that contains the currently active part.
-		Rectangle monitorBounds = activePart == null ? display
-				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
-				.getSite()).getPane().getControl().getMonitor().getBounds();
-
+// RAP [rh] Monitor not implemented		
+//		// the bounds of the monitor that contains the currently active part.
+//		Rectangle monitorBounds = activePart == null ? display
+//				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
+//				.getSite()).getPane().getControl().getMonitor().getBounds();
+    Rectangle monitorBounds = display.getBounds();
+		
 		// Place it in the center of its parent;
 		dialogBounds.x = parentBounds.x
 				+ ((parentBounds.width - dialogBounds.width) / 2);
@@ -261,113 +262,115 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 		commandForward = getForwardCommand();
 		commandBackward = getBackwardCommand();
 
-		final IBindingService bindingService = (IBindingService) window
-				.getWorkbench().getService(IBindingService.class);
-		forwardTriggerSequences = bindingService
-				.getActiveBindingsFor(commandForward);
-		backwardTriggerSequences = bindingService
-				.getActiveBindingsFor(commandBackward);
+// RAP [rh] (key) bindings not supported		
+//		final IBindingService bindingService = (IBindingService) window
+//				.getWorkbench().getService(IBindingService.class);
+//		forwardTriggerSequences = bindingService
+//				.getActiveBindingsFor(commandForward);
+//		backwardTriggerSequences = bindingService
+//				.getActiveBindingsFor(commandBackward);
 	}
 
 	protected void addKeyListener(final Table table, final Shell dialog) {
-		table.addKeyListener(new KeyListener() {
-			private boolean firstKey = true;
-
-			private boolean quickReleaseMode = false;
-
-			public void keyPressed(KeyEvent e) {
-				int keyCode = e.keyCode;
-				char character = e.character;
-				int accelerator = SWTKeySupport
-						.convertEventToUnmodifiedAccelerator(e);
-				KeyStroke keyStroke = SWTKeySupport
-						.convertAcceleratorToKeyStroke(accelerator);
-
-				boolean acceleratorForward = false;
-				boolean acceleratorBackward = false;
-
-				if (commandForward != null) {
-					if (forwardTriggerSequences != null) {
-						final int forwardCount = forwardTriggerSequences.length;
-						for (int i = 0; i < forwardCount; i++) {
-							final TriggerSequence triggerSequence = forwardTriggerSequences[i];
-
-							// Compare the last key stroke of the binding.
-							final Trigger[] triggers = triggerSequence
-									.getTriggers();
-							final int triggersLength = triggers.length;
-							if ((triggersLength > 0)
-									&& (triggers[triggersLength - 1]
-											.equals(keyStroke))) {
-								acceleratorForward = true;
-								break;
-							}
-						}
-					}
-				}
-
-				if (commandBackward != null) {
-					if (backwardTriggerSequences != null) {
-						final int backwardCount = backwardTriggerSequences.length;
-						for (int i = 0; i < backwardCount; i++) {
-							final TriggerSequence triggerSequence = backwardTriggerSequences[i];
-
-							// Compare the last key stroke of the binding.
-							final Trigger[] triggers = triggerSequence
-									.getTriggers();
-							final int triggersLength = triggers.length;
-							if ((triggersLength > 0)
-									&& (triggers[triggersLength - 1]
-											.equals(keyStroke))) {
-								acceleratorBackward = true;
-								break;
-							}
-						}
-					}
-				}
-
-				if (character == SWT.CR || character == SWT.LF) {
-					ok(dialog, table);
-				} else if (acceleratorForward) {
-					if (firstKey && e.stateMask != 0) {
-						quickReleaseMode = true;
-					}
-
-					int index = table.getSelectionIndex();
-					table.setSelection((index + 1) % table.getItemCount());
-				} else if (acceleratorBackward) {
-					if (firstKey && e.stateMask != 0) {
-						quickReleaseMode = true;
-					}
-
-					int index = table.getSelectionIndex();
-					table.setSelection(index >= 1 ? index - 1 : table
-							.getItemCount() - 1);
-				} else if (keyCode != SWT.ALT && keyCode != SWT.COMMAND
-						&& keyCode != SWT.CTRL && keyCode != SWT.SHIFT
-						&& keyCode != SWT.ARROW_DOWN && keyCode != SWT.ARROW_UP
-						&& keyCode != SWT.ARROW_LEFT
-						&& keyCode != SWT.ARROW_RIGHT) {
-					cancel(dialog);
-				}
-
-				firstKey = false;
-			}
-
-			public void keyReleased(KeyEvent e) {
-				int keyCode = e.keyCode;
-				int stateMask = e.stateMask;
-
-				final IPreferenceStore store = WorkbenchPlugin.getDefault()
-						.getPreferenceStore();
-				final boolean stickyCycle = store
-						.getBoolean(IPreferenceConstants.STICKY_CYCLE);
-				if ((!stickyCycle && (firstKey || quickReleaseMode))
-						&& keyCode == stateMask) {
-					ok(dialog, table);
-				}
-			}
-		});
+// RAP [rh] key events not supported	  
+//		table.addKeyListener(new KeyListener() {
+//			private boolean firstKey = true;
+//
+//			private boolean quickReleaseMode = false;
+//
+//			public void keyPressed(KeyEvent e) {
+//				int keyCode = e.keyCode;
+//				char character = e.character;
+//				int accelerator = SWTKeySupport
+//						.convertEventToUnmodifiedAccelerator(e);
+//				KeyStroke keyStroke = SWTKeySupport
+//						.convertAcceleratorToKeyStroke(accelerator);
+//
+//				boolean acceleratorForward = false;
+//				boolean acceleratorBackward = false;
+//
+//				if (commandForward != null) {
+//					if (forwardTriggerSequences != null) {
+//						final int forwardCount = forwardTriggerSequences.length;
+//						for (int i = 0; i < forwardCount; i++) {
+//							final TriggerSequence triggerSequence = forwardTriggerSequences[i];
+//
+//							// Compare the last key stroke of the binding.
+//							final Trigger[] triggers = triggerSequence
+//									.getTriggers();
+//							final int triggersLength = triggers.length;
+//							if ((triggersLength > 0)
+//									&& (triggers[triggersLength - 1]
+//											.equals(keyStroke))) {
+//								acceleratorForward = true;
+//								break;
+//							}
+//						}
+//					}
+//				}
+//
+//				if (commandBackward != null) {
+//					if (backwardTriggerSequences != null) {
+//						final int backwardCount = backwardTriggerSequences.length;
+//						for (int i = 0; i < backwardCount; i++) {
+//							final TriggerSequence triggerSequence = backwardTriggerSequences[i];
+//
+//							// Compare the last key stroke of the binding.
+//							final Trigger[] triggers = triggerSequence
+//									.getTriggers();
+//							final int triggersLength = triggers.length;
+//							if ((triggersLength > 0)
+//									&& (triggers[triggersLength - 1]
+//											.equals(keyStroke))) {
+//								acceleratorBackward = true;
+//								break;
+//							}
+//						}
+//					}
+//				}
+//
+//				if (character == SWT.CR || character == SWT.LF) {
+//					ok(dialog, table);
+//				} else if (acceleratorForward) {
+//					if (firstKey && e.stateMask != 0) {
+//						quickReleaseMode = true;
+//					}
+//
+//					int index = table.getSelectionIndex();
+//					table.setSelection((index + 1) % table.getItemCount());
+//				} else if (acceleratorBackward) {
+//					if (firstKey && e.stateMask != 0) {
+//						quickReleaseMode = true;
+//					}
+//
+//					int index = table.getSelectionIndex();
+//					table.setSelection(index >= 1 ? index - 1 : table
+//							.getItemCount() - 1);
+//				} else if (keyCode != SWT.ALT && keyCode != SWT.COMMAND
+//						&& keyCode != SWT.CTRL && keyCode != SWT.SHIFT
+//						&& keyCode != SWT.ARROW_DOWN && keyCode != SWT.ARROW_UP
+//						&& keyCode != SWT.ARROW_LEFT
+//						&& keyCode != SWT.ARROW_RIGHT) {
+//					cancel(dialog);
+//				}
+//
+//				firstKey = false;
+//			}
+//
+//			public void keyReleased(KeyEvent e) {
+//				int keyCode = e.keyCode;
+//				int stateMask = e.stateMask;
+//
+//				final IPreferenceStore store = WorkbenchPlugin.getDefault()
+//						.getPreferenceStore();
+//				final boolean stickyCycle = store
+//						.getBoolean(IPreferenceConstants.STICKY_CYCLE);
+//				if ((!stickyCycle && (firstKey || quickReleaseMode))
+//						&& keyCode == stateMask) {
+//					ok(dialog, table);
+//				}
+//			}
+//		});
 	}
 
 	/**
@@ -378,17 +381,18 @@ public abstract class CycleBaseHandler extends AbstractHandler implements
 	 *            must not be <code>null</code>.
 	 */
 	protected final void addTraverseListener(final Table table) {
-		table.addTraverseListener(new TraverseListener() {
-			/**
-			 * Blocks all key traversal events.
-			 * 
-			 * @param event
-			 *            The trigger event; must not be <code>null</code>.
-			 */
-			public final void keyTraversed(final TraverseEvent event) {
-				event.doit = false;
-			}
-		});
+// RAP [rh] Traverse events not implemented	  
+//		table.addTraverseListener(new TraverseListener() {
+//			/**
+//			 * Blocks all key traversal events.
+//			 * 
+//			 * @param event
+//			 *            The trigger event; must not be <code>null</code>.
+//			 */
+//			public final void keyTraversed(final TraverseEvent event) {
+//				event.doit = false;
+//			}
+//		});
 	}
 
 	/**

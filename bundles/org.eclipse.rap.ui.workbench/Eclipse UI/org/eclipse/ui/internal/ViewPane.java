@@ -18,15 +18,15 @@ import org.eclipse.jface.internal.provisional.action.IToolBarManager2;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
+//import org.eclipse.swt.events.MouseAdapter;
+//import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.ToolBar;
+//import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.internal.dnd.DragUtil;
@@ -171,17 +171,18 @@ public class ViewPane extends PartPane {
         final Control isvToolBar = isvToolBarMgr.createControl2(parentControl.getParent());
         
         isvToolBarMgr.addPropertyChangeListener(new ISVPropListener(isvToolBar));
-        
-        isvToolBar.addMouseListener(new MouseAdapter() {
-            public void mouseDoubleClick(MouseEvent event) {
-                if (event.widget instanceof ToolBar) {
-                
-                    if (((ToolBar)event.widget).getItem(new Point(event.x, event.y)) == null) {
-						doZoom();
-					}
-                }
-            }
-        });
+
+// RAP [rh] ToolBar#getItem(Point) missing        
+//        isvToolBar.addMouseListener(new MouseAdapter() {
+//            public void mouseDoubleClick(MouseEvent event) {
+//                if (event.widget instanceof ToolBar) {
+//                
+//                    if (((ToolBar)event.widget).getItem(new Point(event.x, event.y)) == null) {
+//						doZoom();
+//					}
+//                }
+//            }
+//        });
 
         
         isvToolBar.addListener(SWT.Activate, this);
@@ -505,7 +506,8 @@ public class ViewPane extends PartPane {
         if (isvToolBarMgr != null) {
             Control bar = isvToolBarMgr.getControl2();
             if (bar != null) {
-                bar.setParent(newParent);
+// RAP [rh] Control.setParent() missing              
+//                bar.setParent(newParent);
                 bar.moveAbove(control);
             }
         }

@@ -45,8 +45,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
+//import org.eclipse.swt.graphics.ImageData;
+//import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -61,12 +61,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IPreferenceConstants;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
-import org.eclipse.ui.internal.OverlayIcon;
+//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
+//import org.eclipse.ui.internal.OverlayIcon;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.activities.ws.ActivityEnabler;
 import org.eclipse.ui.internal.activities.ws.ActivityMessages;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+//import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * Activities preference page that primarily shows categories and can optionally
@@ -82,7 +82,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @see #ACTIVITY_PROMPT_BUTTON
  * @see #ACTIVITY_PROMPT_BUTTON_TOOLTIP
  * 
- * @since 3.1
  */
 public final class ActivityCategoryPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage, IExecutableExtension {
@@ -191,7 +190,8 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         private LocalResourceManager manager = new LocalResourceManager(
                 JFaceResources.getResources());
 
-        private ImageDescriptor lockDescriptor;
+// RAP [rh] unused code due to missing OverlayIcon        
+//        private ImageDescriptor lockDescriptor;
 
         private boolean decorate;
 
@@ -200,8 +200,9 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
          */
         public CategoryLabelProvider(boolean decorate) {
             this.decorate = decorate;
-            lockDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
-                    PlatformUI.PLUGIN_ID, "icons/full/ovr16/lock_ovr.gif"); //$NON-NLS-1$
+// RAP [rh] unused code due to missing OverlayIcon            
+//            lockDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
+//                    PlatformUI.PLUGIN_ID, "icons/full/ovr16/lock_ovr.gif"); //$NON-NLS-1$
         }
 
         /*
@@ -217,15 +218,16 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
             if (descriptor != null) {
                 try {
                     if (decorate) {
-                        if (isLocked(category)) {
-                            ImageData originalImageData = descriptor
-                                    .getImageData();
-                            OverlayIcon overlay = new OverlayIcon(
-                                    descriptor, lockDescriptor, new Point(
-                                            originalImageData.width,
-                                            originalImageData.height));
-                            return manager.createImage(overlay);
-                        }
+// RAP [rh] OverlayIcon missing                      
+//                        if (isLocked(category)) {
+//                            ImageData originalImageData = descriptor
+//                                    .getImageData();
+//                            OverlayIcon overlay = new OverlayIcon(
+//                                    descriptor, lockDescriptor, new Point(
+//                                            originalImageData.width,
+//                                            originalImageData.height));
+//                            return manager.createImage(overlay);
+//                        }
                     }
 
                     return manager.createImage(descriptor);
@@ -384,8 +386,9 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         createDetailsArea(composite);
         createButtons(composite);
         
-        workbench.getHelpSystem().setHelp(parent,
-				IWorkbenchHelpContextIds.CAPABILITY_PREFERENCE_PAGE);
+// RAP [rh] IWorkbench#getHelpSystem()        
+//        workbench.getHelpSystem().setHelp(parent,
+//				IWorkbenchHelpContextIds.CAPABILITY_PREFERENCE_PAGE);
         
         Dialog.applyDialogFont(composite);
         
@@ -584,7 +587,6 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
 	/**
 	 * Updates the check and grey state of the categories in the category viewer.
 	 * 
-	 * @since 3.2
 	 */
 	private void updateCategoryCheckState() {
 		ICategory[] enabledCategories = getEnabledCategories();

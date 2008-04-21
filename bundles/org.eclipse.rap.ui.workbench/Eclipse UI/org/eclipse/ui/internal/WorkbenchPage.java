@@ -1603,8 +1603,9 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
 			return;
 		}
 		
-		PerspectiveHelper presentation = persp.getPresentation();		
-		presentation.detachPart(ref);
+// RAP [rh] PerspectiveHelper#detachPart not implemented		
+//		PerspectiveHelper presentation = persp.getPresentation();		
+//		presentation.detachPart(ref);
 	}
 	
 	/**

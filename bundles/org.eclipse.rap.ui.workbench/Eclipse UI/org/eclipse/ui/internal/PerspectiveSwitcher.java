@@ -67,7 +67,7 @@ import org.eclipse.ui.internal.layout.IWindowTrim;
 import org.eclipse.ui.internal.layout.LayoutUtil;
 import org.eclipse.ui.internal.layout.Row;
 import org.eclipse.ui.internal.util.PrefUtil;
-import org.eclipse.ui.presentations.PresentationUtil;
+//import org.eclipse.ui.presentations.PresentationUtil;
 
 /**
  * A utility class to manage the perspective switcher.  At some point, it might be nice to
@@ -545,8 +545,8 @@ public class PerspectiveSwitcher implements IWindowTrim {
 		if (bar == null || bar.isDisposed() || dragListener == null) {
 			return;
 		}
-		PresentationUtil.removeDragListener(bar, dragListener);
 		// RAP [bm]: 
+//		PresentationUtil.removeDragListener(bar, dragListener);
 //		DragUtil.removeDragTarget(perspectiveBar.getControl(), dragTarget);
 //		dragTarget = null;
 		// RAPEND: [bm] 

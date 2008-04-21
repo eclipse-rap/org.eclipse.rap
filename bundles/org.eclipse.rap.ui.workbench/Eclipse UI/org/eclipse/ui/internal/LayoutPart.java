@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISizeProvider;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.internal.dnd.IDropTarget;
+//import org.eclipse.ui.internal.dnd.IDropTarget;
 import org.eclipse.ui.internal.dnd.SwtUtil;
 
 /**
@@ -143,7 +143,6 @@ abstract public class LayoutPart implements ISizeProvider {
     /**
      * @see org.eclipse.ui.presentations.StackPresentation#getSizeFlags(boolean)
      * 
-     * @since 3.1
      */
     public int getSizeFlags(boolean horizontal) {
         return SWT.MIN;
@@ -152,16 +151,16 @@ abstract public class LayoutPart implements ISizeProvider {
     /**
      * @see org.eclipse.ui.presentations.StackPresentation#computePreferredSize(boolean, int, int, int)
      * 
-     * @since 3.1 
      */
     public int computePreferredSize(boolean width, int availableParallel, int availablePerpendicular, int preferredParallel) {
     	
     	return preferredParallel;    	
     }
-    
-    public IDropTarget getDropTarget(Object draggedObject, Point displayCoordinates) {
-        return null;
-    }
+
+// RAP [rh] DnD support missing    
+//    public IDropTarget getDropTarget(Object draggedObject, Point displayCoordinates) {
+//        return null;
+//    }
     
     public boolean isDocked() {
         Shell s = getShell();
@@ -194,10 +193,12 @@ abstract public class LayoutPart implements ISizeProvider {
         Object data = s.getData();
         if (data instanceof IWorkbenchWindow) {
             return (IWorkbenchWindow)data;
-        } else if (data instanceof DetachedWindow) {
-            return ((DetachedWindow) data).getWorkbenchPage()
-                .getWorkbenchWindow();
-        }
+        } 
+// RAP [rh] DetachedWindow not supported
+//        else if (data instanceof DetachedWindow) {
+//            return ((DetachedWindow) data).getWorkbenchPage()
+//                .getWorkbenchWindow();
+//        }
         
         return null;
         
@@ -213,23 +214,24 @@ abstract public class LayoutPart implements ISizeProvider {
      * Reparent a part.
      */
     public void reparent(Composite newParent) {
-        Control control = getControl();
-        if ((control == null) || (control.getParent() == newParent)) {
-            return;
-        }
-
-        if (control.isReparentable()) {
-            // make control small in case it is not resized with other controls
-            //control.setBounds(0, 0, 0, 0);
-            // By setting the control to disabled before moving it,
-            // we ensure that the focus goes away from the control and its children
-            // and moves somewhere else
-            boolean enabled = control.getEnabled();
-            control.setEnabled(false);
-            control.setParent(newParent);
-            control.setEnabled(enabled);
-            control.moveAbove(null);
-        }
+// RAP [rh] Control#isReparentable not implemented        
+//        Control control = getControl();
+//        if ((control == null) || (control.getParent() == newParent)) {
+//            return;
+//        }
+//
+//        if (control.isReparentable()) {
+//            // make control small in case it is not resized with other controls
+//            //control.setBounds(0, 0, 0, 0);
+//            // By setting the control to disabled before moving it,
+//            // we ensure that the focus goes away from the control and its children
+//            // and moves somewhere else
+//            boolean enabled = control.getEnabled();
+//            control.setEnabled(false);
+//            control.setParent(newParent);
+//            control.setEnabled(enabled);
+//            control.moveAbove(null);
+//        }
     }
 
     /**
@@ -452,7 +454,6 @@ abstract public class LayoutPart implements ISizeProvider {
     /**
      * Returns an id representing this part, suitable for use in a placeholder.
      * 
-     * @since 3.0
      */
     public String getPlaceHolderId() {
         return getID();
@@ -473,7 +474,6 @@ abstract public class LayoutPart implements ISizeProvider {
      * Returns true iff the given part can be added to this ILayoutContainer
      * @param toAdd
      * @return
-     * @since 3.1
      */
     public boolean allowsAdd(LayoutPart toAdd) {
         return false;

@@ -99,7 +99,7 @@ public class StatusUtil {
             return ce.getStatus().getMessage();
         }
         
-        return WorkbenchMessages.StatusUtil_errorOccurred;
+        return WorkbenchMessages.get().StatusUtil_errorOccurred;
     }
     
     /**
