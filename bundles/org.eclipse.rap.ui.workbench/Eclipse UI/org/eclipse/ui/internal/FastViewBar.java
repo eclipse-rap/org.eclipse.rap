@@ -25,11 +25,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.accessibility.AccessibleAdapter;
-import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -45,17 +42,13 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.dnd.AbstractDropTarget;
 import org.eclipse.ui.internal.dnd.DragUtil;
-import org.eclipse.ui.internal.dnd.IDragOverListener;
-import org.eclipse.ui.internal.dnd.IDropTarget;
 import org.eclipse.ui.internal.layout.CellData;
 import org.eclipse.ui.internal.layout.CellLayout;
 import org.eclipse.ui.internal.layout.IWindowTrim;
 import org.eclipse.ui.internal.layout.LayoutUtil;
 import org.eclipse.ui.internal.layout.Row;
 import org.eclipse.ui.internal.util.PrefUtil;
-import org.eclipse.ui.presentations.PresentationUtil;
 import org.osgi.framework.Bundle;
 
 /**
@@ -90,21 +83,23 @@ public class FastViewBar implements IWindowTrim {
 
     private int oldLength = 0;
     
-    private ViewDropTarget dropTarget;
-
-    private Listener dragListener = new Listener() {
-        public void handleEvent(Event event) {
-            Point position = DragUtil.getEventLoc(event);
-
-            IViewReference ref = getViewAt(position);
-
-            if (ref == null) {
-                startDraggingFastViewBar(position, false);
-            } else {
-                startDraggingFastView(ref, position, false);
-            }
-        }
-    };
+    // RAP [bm]: 
+//    private ViewDropTarget dropTarget;
+//
+//    private Listener dragListener = new Listener() {
+//        public void handleEvent(Event event) {
+//            Point position = DragUtil.getEventLoc(event);
+//
+//            IViewReference ref = getViewAt(position);
+//
+//            if (ref == null) {
+//                startDraggingFastViewBar(position, false);
+//            } else {
+//                startDraggingFastView(ref, position, false);
+//            }
+//        }
+//    };
+    // RAPEND: [bm] 
 
     // Map of string view IDs onto Booleans (true iff horizontally aligned)
     private Map viewOrientation = new HashMap();
@@ -112,7 +107,10 @@ public class FastViewBar implements IWindowTrim {
     private Listener addMenuListener = new Listener() {
         public void handleEvent(Event event) {
             Point loc = new Point(event.x, event.y);
-            if (event.type == SWT.MenuDetect) {
+            // RAP [bm]: SWT.MenuDetect
+//            if (event.type == SWT.MenuDetect) {
+            if (event.button == 2) {
+            // RAPEND: [bm] 
                 showAddFastViewPopup(loc);
             }
         }
@@ -121,7 +119,10 @@ public class FastViewBar implements IWindowTrim {
     private Listener menuListener = new Listener() {
         public void handleEvent(Event event) {
             Point loc = new Point(event.x, event.y);
-            if (event.type == SWT.MenuDetect) {
+            // RAP [bm]: 
+//            if (event.type == SWT.MenuDetect) {
+            if (event.button == 2) {
+            // RAPEND: [bm] 
                 showFastViewBarPopup(loc);
             }
         }
@@ -130,65 +131,67 @@ public class FastViewBar implements IWindowTrim {
 
 	private boolean hasNewFastViewDisabled = false;
 
-    class ViewDropTarget extends AbstractDropTarget {
-        List panes;
-
-        ToolItem position;
-
-        /**
-         * @param panesToDrop the list of ViewPanes to drop at the given position
-         */
-        public ViewDropTarget(List panesToDrop, ToolItem position) {
-            setTarget(panesToDrop, position);
-        }
-        
-        public void setTarget(List panesToDrop, ToolItem position) {
-            panes = panesToDrop;
-            this.position = position;            
-        }
-
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.internal.dnd.IDropTarget#drop()
-         */
-        public void drop() {
-            IViewReference view = getViewFor(position);
-
-            Iterator iter = panes.iterator();
-            while (iter.hasNext()) {
-                ViewPane pane = (ViewPane) iter.next();
-                IViewReference ref = pane.getViewReference();
-                getPerspective().getFastViewManager().addViewReference(FASTVIEWBAR_ID, getIndex(view), ref, true);
+	// RAP [bm]: 
+//    class ViewDropTarget extends AbstractDropTarget {
+//        List panes;
+//
+//        ToolItem position;
+//
+//        /**
+//         * @param panesToDrop the list of ViewPanes to drop at the given position
+//         */
+//        public ViewDropTarget(List panesToDrop, ToolItem position) {
+//            setTarget(panesToDrop, position);
+//        }
+//        
+//        public void setTarget(List panesToDrop, ToolItem position) {
+//            panes = panesToDrop;
+//            this.position = position;            
+//        }
+//
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.internal.dnd.IDropTarget#drop()
+//         */
+//        public void drop() {
+//            IViewReference view = getViewFor(position);
+//
+//            Iterator iter = panes.iterator();
+//            while (iter.hasNext()) {
+//                ViewPane pane = (ViewPane) iter.next();
+//                IViewReference ref = pane.getViewReference();
+//                getPerspective().getFastViewManager().addViewReference(FASTVIEWBAR_ID, getIndex(view), ref, true);
 //                getPage().addFastView(pane.getViewReference());
 //                getPage().getActivePerspective().moveFastView(
 //                        pane.getViewReference(), view);
-            }
-            update(true);
-        }
+//            }
+//            update(true);
+//        }
+//
+//        /* (non-Javadoc)
+//         * @see org.eclipse.ui.internal.dnd.IDropTarget#getCursor()
+//         */
+//        public Cursor getCursor() {
+//            return DragCursors.getCursor(DragCursors.FASTVIEW);
+//        }
+//
+//        public Rectangle getSnapRectangle() {
+//            if (position == null) {
+//                // As long as the toolbar is not empty, highlight the place
+//                // where this view will appear (we
+//                // may have compressed it to save space when empty, so the actual
+//                // icon location may not be over the toolbar when it is empty)
+//                if (getToolBar().getItemCount() > 0) {
+//                    return getLocationOfNextIcon();
+//                }
+//                // If the toolbar is empty, highlight the entire toolbar 
+//                return DragUtil.getDisplayBounds(getControl());
+//			}
+//
+//			return Geometry.toDisplay(getToolBar(), position.getBounds());
+//        }
+//    }
+	// RAPEND: [bm] 
 
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.internal.dnd.IDropTarget#getCursor()
-         */
-        public Cursor getCursor() {
-            return DragCursors.getCursor(DragCursors.FASTVIEW);
-        }
-
-        public Rectangle getSnapRectangle() {
-            if (position == null) {
-                // As long as the toolbar is not empty, highlight the place
-                // where this view will appear (we
-                // may have compressed it to save space when empty, so the actual
-                // icon location may not be over the toolbar when it is empty)
-                if (getToolBar().getItemCount() > 0) {
-                    return getLocationOfNextIcon();
-                }
-                // If the toolbar is empty, highlight the entire toolbar 
-                return DragUtil.getDisplayBounds(getControl());
-			}
-
-			return Geometry.toDisplay(getToolBar(), position.getBounds());
-        }
-    }
-    
     /**
      * Constructs a new fast view bar for the given workbench window.
      * 
@@ -207,13 +210,13 @@ public class FastViewBar implements IWindowTrim {
 
         if (!hasNewFastViewDisabled) {
         	// Add "New Fast View" submenu
-        	showViewMenuMgr = new MenuManager(WorkbenchMessages.FastViewBar_show_view, "showView"); //$NON-NLS-1$
+        	showViewMenuMgr = new MenuManager(WorkbenchMessages.get().FastViewBar_show_view, "showView"); //$NON-NLS-1$
         	IContributionItem showViewMenu = new ShowViewMenu(window, ShowViewMenu.class.getName(), true);
         	showViewMenuMgr.add(showViewMenu);
         	fastViewBarMenuManager.add(showViewMenuMgr);
 
         	// Construct the context menu for the "New Fast View" 'button'
-        	newFastViewMenuMgr = new MenuManager(WorkbenchMessages.FastViewBar_show_view, "showView"); //$NON-NLS-1$
+        	newFastViewMenuMgr = new MenuManager(WorkbenchMessages.get().FastViewBar_show_view, "showView"); //$NON-NLS-1$
         	showViewMenu = new ShowViewMenu(window, ShowViewMenu.class.getName(), true);
         	newFastViewMenuMgr.add(showViewMenu);
         }
@@ -328,11 +331,17 @@ public class FastViewBar implements IWindowTrim {
 				}
 				return size;
 			}};
-        String tip = WorkbenchMessages.FastViewBar_0; 
+        String tip = WorkbenchMessages.get().FastViewBar_0; 
         fvbComposite.setToolTipText(tip);
 
-        fvbComposite.addListener(SWT.MenuDetect, menuListener);
-        PresentationUtil.addDragListener(fvbComposite, dragListener);
+        // RAP [bm]: SWT.MenuDetect
+//        fvbComposite.addListener(SWT.MenuDetect, menuListener);
+        fvbComposite.addListener(SWT.MouseUp, menuListener);
+        // RAPEND: [bm] 
+
+        // RAP [bm]: DnD
+//        PresentationUtil.addDragListener(fvbComposite, dragListener);
+        // RAPEND: [bm] 
 
         createChildControls();
     }
@@ -377,15 +386,17 @@ public class FastViewBar implements IWindowTrim {
         	Image tbImage = WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_ETOOL_NEW_FASTVIEW);
         	menuItem.setImage(tbImage);
 
-        	final String menuTip = WorkbenchMessages.FastViewBar_0;
+        	final String menuTip = WorkbenchMessages.get().FastViewBar_0;
         	menuItem.setToolTipText(menuTip);
         	//new ToolItem(menuTB, SWT.SEPARATOR, 1);
         	
-        	menuTB.getAccessible().addAccessibleListener(new AccessibleAdapter() {
-            	public void getName(AccessibleEvent e) {
-            		e.result = menuTip;
-            	}
-            });
+        	// RAP [bm]: Accessibility
+//        	menuTB.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+//            	public void getName(AccessibleEvent e) {
+//            		e.result = menuTip;
+//            	}
+//            });
+        	// RAPEND: [bm] 
 
         	// Now that the ToolBar is populated calculate its size...
         	Point size = menuTB.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
@@ -393,8 +404,12 @@ public class FastViewBar implements IWindowTrim {
 
         	// Bring up the 'Add Fast View' menu on a left -or- right button click
         	// Right click (context menu)
-        	menuItem.addListener(SWT.MenuDetect, addMenuListener);        
-        	menuTB.addListener(SWT.MenuDetect, addMenuListener);
+        	// RAP [bm]: SWT.MenuDetect
+//        	menuItem.addListener(SWT.MenuDetect, addMenuListener);        
+//        	menuTB.addListener(SWT.MenuDetect, addMenuListener);
+        	menuItem.addListener(SWT.MouseUp, addMenuListener);        
+        	menuTB.addListener(SWT.MouseUp, addMenuListener);
+        	// RAPEND: [bm] 
 
         	// Left Click...
         	menuItem.addSelectionListener(new SelectionListener() {
@@ -420,77 +435,83 @@ public class FastViewBar implements IWindowTrim {
 
         fastViewBar.createControl(fvbComposite);
 
-        getToolBar().addListener(SWT.MenuDetect, menuListener);
+        // RAP [bm]: 
+//        getToolBar().addListener(SWT.MenuDetect, menuListener);
+        getToolBar().addListener(SWT.MouseUp, menuListener);
+        // RAPEND: [bm] 
 
-        IDragOverListener fastViewDragTarget = new IDragOverListener() {
-
-            public IDropTarget drag(Control currentControl,
-                    Object draggedObject, Point position,
-                    Rectangle dragRectangle) {
-                ToolItem targetItem = getToolItem(position);
-                if (draggedObject instanceof ViewPane) {
-                    ViewPane pane = (ViewPane) draggedObject;
-
-                    // Can't drag views between windows
-                    if (pane.getWorkbenchWindow() != window) {
-                        return null;
-                    }
-
-                    List newList = new ArrayList(1);
-                    newList.add(draggedObject);
-
-                    return createDropTarget(newList, targetItem);
-                }
-                if (draggedObject instanceof ViewStack) {
-                    ViewStack folder = (ViewStack) draggedObject;
-
-                    if (folder.getWorkbenchWindow() != window) {
-                        return null;
-                    }
-
-                    List viewList = new ArrayList(folder.getItemCount());
-                    LayoutPart[] children = folder.getChildren();
-
-                    for (int idx = 0; idx < children.length; idx++) {
-                        if (!(children[idx] instanceof PartPlaceholder)) {
-                            viewList.add(children[idx]);
-                        }
-                    }
-
-                    return createDropTarget(viewList, targetItem);
-                }
-
-                return null;
-            }
-
-        };
+        // RAP [bm]: DnD
+//        IDragOverListener fastViewDragTarget = new IDragOverListener() {
+//
+//            public IDropTarget drag(Control currentControl,
+//                    Object draggedObject, Point position,
+//                    Rectangle dragRectangle) {
+//                ToolItem targetItem = getToolItem(position);
+//                if (draggedObject instanceof ViewPane) {
+//                    ViewPane pane = (ViewPane) draggedObject;
+//
+//                    // Can't drag views between windows
+//                    if (pane.getWorkbenchWindow() != window) {
+//                        return null;
+//                    }
+//
+//                    List newList = new ArrayList(1);
+//                    newList.add(draggedObject);
+//
+//                    return createDropTarget(newList, targetItem);
+//                }
+//                if (draggedObject instanceof ViewStack) {
+//                    ViewStack folder = (ViewStack) draggedObject;
+//
+//                    if (folder.getWorkbenchWindow() != window) {
+//                        return null;
+//                    }
+//
+//                    List viewList = new ArrayList(folder.getItemCount());
+//                    LayoutPart[] children = folder.getChildren();
+//
+//                    for (int idx = 0; idx < children.length; idx++) {
+//                        if (!(children[idx] instanceof PartPlaceholder)) {
+//                            viewList.add(children[idx]);
+//                        }
+//                    }
+//
+//                    return createDropTarget(viewList, targetItem);
+//                }
+//
+//                return null;
+//            }
+//
+//        };
 
         toolBarData = new CellData();
         toolBarData.align(SWT.FILL, SWT.FILL);
 
         getToolBar().setLayoutData(toolBarData);
-        PresentationUtil.addDragListener(getToolBar(), dragListener);
-        DragUtil.addDragTarget(getControl(), fastViewDragTarget);
+        // RAP [bm]: Dnd
+//        PresentationUtil.addDragListener(getToolBar(), dragListener);
+//        DragUtil.addDragTarget(getControl(), fastViewDragTarget);
+        // RAPEND: [bm] 
 
         update(true);
     }
 
-    /**
-     * Creates and returns a drop target with the given properties. To save object allocation,
-     * the same instance is saved and reused wherever possible.
-     * 
-     * @param targetItem
-     * @param viewList
-     * @since 3.1
-     */
-    private IDropTarget createDropTarget(List viewList, ToolItem targetItem) {
-        if (dropTarget == null) {
-            dropTarget = new ViewDropTarget(viewList, targetItem);
-        } else {
-            dropTarget.setTarget(viewList, targetItem);
-        }
-        return dropTarget;
-    }
+    // RAP [bm]: 
+//    /**
+//     * Creates and returns a drop target with the given properties. To save object allocation,
+//     * the same instance is saved and reused wherever possible.
+//     * 
+//     * @param targetItem
+//     * @param viewList
+//     */
+//    private IDropTarget createDropTarget(List viewList, ToolItem targetItem) {
+//        if (dropTarget == null) {
+//            dropTarget = new ViewDropTarget(viewList, targetItem);
+//        } else {
+//            dropTarget.setTarget(viewList, targetItem);
+//        }
+//        return dropTarget;
+//    }
     
     /**
      * Begins dragging a particular fast view
@@ -530,8 +551,11 @@ public class FastViewBar implements IWindowTrim {
             page.zoomOut();
         }
 
-        boolean success = DragUtil.performDrag(toDrag, dragRect, position,
-                !usingKeyboard);
+        // RAP [bm]: 
+//        boolean success = DragUtil.performDrag(toDrag, dragRect, position,
+//                !usingKeyboard);
+        boolean success = false;
+        // RAPEND: [bm] 
 
         // If the drag was cancelled, reopen the old fast view
         if (!success && oldFastView != null && page != null) {
@@ -583,9 +607,12 @@ public class FastViewBar implements IWindowTrim {
      * @param position
      */
     private ToolItem getToolItem(Point position) {
-        ToolBar toolbar = getToolBar();
-        Point local = toolbar.toControl(position);
-        return toolbar.getItem(local);
+        // RAP [bm]: 
+//    	ToolBar toolbar = getToolBar();
+//        Point local = toolbar.toControl(position);
+//        return toolbar.getItem(local);
+        return null;
+        // RAPEND: [bm] 
     }
 
     /**
@@ -947,7 +974,7 @@ public class FastViewBar implements IWindowTrim {
 	 * @see org.eclipse.ui.internal.IWindowTrim#getDisplayName()
 	 */
 	public String getDisplayName() {
-		return WorkbenchMessages.TrimCommon_FastView_TrimName;
+		return WorkbenchMessages.get().TrimCommon_FastView_TrimName;
 	}
 
 	/**
@@ -955,7 +982,6 @@ public class FastViewBar implements IWindowTrim {
      * internal UI testing only.
      * 
      * @return the context menu contribution item
-     * @since 3.1.1
      */
     public FastViewBarContextMenuContribution testContextMenu() {
     	return contextContributionItem;

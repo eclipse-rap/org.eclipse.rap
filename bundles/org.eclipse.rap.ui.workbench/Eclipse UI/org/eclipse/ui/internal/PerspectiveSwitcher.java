@@ -13,8 +13,8 @@
 package org.eclipse.ui.internal;
 
 import java.util.Arrays;
-import java.util.StringTokenizer;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionException;
@@ -36,7 +36,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -61,10 +60,6 @@ import org.eclipse.ui.PerspectiveAdapter;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
-import org.eclipse.ui.internal.dnd.AbstractDropTarget;
-import org.eclipse.ui.internal.dnd.DragUtil;
-import org.eclipse.ui.internal.dnd.IDragOverListener;
-import org.eclipse.ui.internal.dnd.IDropTarget;
 import org.eclipse.ui.internal.layout.CacheWrapper;
 import org.eclipse.ui.internal.layout.CellLayout;
 import org.eclipse.ui.internal.layout.ITrimManager;
@@ -77,8 +72,6 @@ import org.eclipse.ui.presentations.PresentationUtil;
 /**
  * A utility class to manage the perspective switcher.  At some point, it might be nice to
  * move all this into PerspectiveViewBar.
- * 
- * @since 3.0
  */
 public class PerspectiveSwitcher implements IWindowTrim {
 
@@ -148,7 +141,10 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     private Listener popupListener = new Listener() {
         public void handleEvent(Event event) {
-            if (event.type == SWT.MenuDetect) {
+        	// RAP [bm]: SWT.MenuDetect
+//            if (event.type == SWT.MenuDetect) {
+        	if (event.button == 2) {
+        	// RAPEND: [bm] 
                 showPerspectiveBarPopup(new Point(event.x, event.y));
             }
         }
@@ -195,11 +191,13 @@ public class PerspectiveSwitcher implements IWindowTrim {
     
 	private Listener dragListener;
 
-	private IDragOverListener dragTarget;
+	// RAP [bm]: DnD
+//	private IDragOverListener dragTarget;
 
 	private DisposeListener toolBarListener;
 
-	private IReorderListener reorderListener;
+	// RAP [bm]: 
+//	private IReorderListener reorderListener;
 
 	/**
      * Creates an instance of the perspective switcher.
@@ -548,9 +546,12 @@ public class PerspectiveSwitcher implements IWindowTrim {
 			return;
 		}
 		PresentationUtil.removeDragListener(bar, dragListener);
-		DragUtil.removeDragTarget(perspectiveBar.getControl(), dragTarget);
+		// RAP [bm]: 
+//		DragUtil.removeDragTarget(perspectiveBar.getControl(), dragTarget);
+//		dragTarget = null;
+		// RAPEND: [bm] 
+
 		dragListener = null;
-		dragTarget = null;
 	}
 
     /**
@@ -558,156 +559,158 @@ public class PerspectiveSwitcher implements IWindowTrim {
 	 * the perspective switcher.
 	 */
 	 private void hookDragSupport() {
-        dragListener = new Listener() {
-        	/* (non-Javadoc)
-			 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-			 */
-			public void handleEvent(Event event) {
-				ToolBar toolbar = perspectiveBar.getControl();
-                ToolItem item = toolbar.getItem(new Point(event.x, event.y));
-                
-                if (item != null) {
-                	//ignore the first item, which remains in position Zero
-                    if (item.getData() instanceof PerspectiveBarNewContributionItem) {
-						return;
-					}
-                    
-                	Rectangle bounds = item.getBounds();
-                	Rectangle parentBounds = toolbar.getBounds();
-                	bounds.x += parentBounds.x;
-                	bounds.y += parentBounds.y;
-                	startDragging(item.getData(), toolbar.getDisplay().map(toolbar, null, bounds));
-                } else { 
-                    //startDragging(toolbar, toolbar.getDisplay().map(toolbar, null, toolbar.getBounds()));
-                }
-            }
-			
-			private void startDragging(Object widget, Rectangle bounds) {
-				if(!DragUtil.performDrag(widget, bounds, new Point(bounds.x, bounds.y), true)) {
-				       //currently do nothing on a failed drag 
-                }
-		    }
-        };
-
-		dragTarget = new IDragOverListener() {
-			protected PerspectiveDropTarget perspectiveDropTarget;
-
-			class PerspectiveDropTarget extends AbstractDropTarget {
-
-				private PerspectiveBarContributionItem perspective;
-
-				private Point location;
-
-                /**
-				 * @param location
-				 * @param draggedObject
-				 */
-				public PerspectiveDropTarget(Object draggedObject,
-						Point location) {
-					update(draggedObject, location);
-				}
-
-				/**
-				 * 
-				 * @param draggedObject
-				 * @param location
-				 */
-				private void update(Object draggedObject, Point location) {
-					this.location = location;
-					this.perspective = (PerspectiveBarContributionItem) draggedObject;
-				}
-
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see org.eclipse.ui.internal.dnd.IDropTarget#drop()
-				 */
-				public void drop() {
-					ToolBar toolBar = perspectiveBar.getControl();
-					ToolItem item = toolBar.getItem(toolBar.getDisplay().map(
-							null, toolBar, location));
-					if (toolBar.getItem(0) == item) {
-						return;
-					}
-					ToolItem[] items = toolBar.getItems();
-					ToolItem droppedItem = null;
-					int dropIndex = -1;
-					for (int i = 0; i < items.length; i++) {
-						if (item == items[i]) {
-							dropIndex = i;
-						}
-						if (items[i].getData() == perspective) {
-							droppedItem = items[i];
-						}
-					}
-					if (dropIndex != -1 && droppedItem != null && (droppedItem != item)) {
-						PerspectiveBarContributionItem barItem = (PerspectiveBarContributionItem) droppedItem.getData();
-						// policy is to insert at the beginning so mirror the value when indicating a 
-						// new position for the perspective
-						if (reorderListener != null) {
-							reorderListener.reorder(barItem.getPerspective(), Math.abs(dropIndex - (items.length - 1)));
-						}
-
-						perspectiveBar.relocate(barItem, dropIndex);
-					}
-				}
-
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see org.eclipse.ui.internal.dnd.IDropTarget#getCursor()
-				 */
-				public Cursor getCursor() {
-					return DragCursors.getCursor(DragCursors.CENTER);
-				}
-
-				boolean sameShell() {
-					return perspective.getToolItem().getParent().getShell().equals(perspectiveBar.getControl().getShell());
-				}
-				
-				public Rectangle getSnapRectangle() {
-					ToolBar toolBar = perspectiveBar.getControl();
-					ToolItem item = toolBar.getItem(toolBar.getDisplay().map(
-							null, toolBar, location));
-					Rectangle bounds;
-					if (item != null && item != toolBar.getItem(0)) {
-						bounds = item.getBounds();
-					} else {
-						// it should not be possible to start a drag with item 0
-						return null;
-					}
-					return toolBar.getDisplay().map(toolBar, null, bounds);
-				}
-			}
-
-			public IDropTarget drag(Control currentControl,
-					Object draggedObject, Point position,
-					Rectangle dragRectangle) {
-				if (draggedObject instanceof PerspectiveBarContributionItem) {
-					if (perspectiveDropTarget == null) {
-						perspectiveDropTarget = new PerspectiveDropTarget(
-								draggedObject, position);
-					} else {
-						perspectiveDropTarget.update(draggedObject, position);
-					}
-					// do not support drag to perspective bars between shells.
-					if (!perspectiveDropTarget.sameShell()) {
-						return null;
-					}
-					
-					return perspectiveDropTarget;
-				}// else if (draggedObject instanceof IPerspectiveBar) {
-				//	return new PerspectiveBarDropTarget();
-				//}
-
-				return null;
-			}
-
-		};
-
-		PresentationUtil.addDragListener(perspectiveBar.getControl(),
-				dragListener);
-		DragUtil.addDragTarget(perspectiveBar.getControl(), dragTarget);
+		 // RAP [bm]: Dnd
+//        dragListener = new Listener() {
+//        	/* (non-Javadoc)
+//			 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+//			 */
+//			public void handleEvent(Event event) {
+//				ToolBar toolbar = perspectiveBar.getControl();
+//                ToolItem item = toolbar.getItem(new Point(event.x, event.y));
+//                
+//                if (item != null) {
+//                	//ignore the first item, which remains in position Zero
+//                    if (item.getData() instanceof PerspectiveBarNewContributionItem) {
+//						return;
+//					}
+//                    
+//                	Rectangle bounds = item.getBounds();
+//                	Rectangle parentBounds = toolbar.getBounds();
+//                	bounds.x += parentBounds.x;
+//                	bounds.y += parentBounds.y;
+//                	startDragging(item.getData(), toolbar.getDisplay().map(toolbar, null, bounds));
+//                } else { 
+//                    //startDragging(toolbar, toolbar.getDisplay().map(toolbar, null, toolbar.getBounds()));
+//                }
+//            }
+//			
+//			private void startDragging(Object widget, Rectangle bounds) {
+//				if(!DragUtil.performDrag(widget, bounds, new Point(bounds.x, bounds.y), true)) {
+//				       //currently do nothing on a failed drag 
+//                }
+//		    }
+//        };
+//
+//		dragTarget = new IDragOverListener() {
+//			protected PerspectiveDropTarget perspectiveDropTarget;
+//
+//			class PerspectiveDropTarget extends AbstractDropTarget {
+//
+//				private PerspectiveBarContributionItem perspective;
+//
+//				private Point location;
+//
+//                /**
+//				 * @param location
+//				 * @param draggedObject
+//				 */
+//				public PerspectiveDropTarget(Object draggedObject,
+//						Point location) {
+//					update(draggedObject, location);
+//				}
+//
+//				/**
+//				 * 
+//				 * @param draggedObject
+//				 * @param location
+//				 */
+//				private void update(Object draggedObject, Point location) {
+//					this.location = location;
+//					this.perspective = (PerspectiveBarContributionItem) draggedObject;
+//				}
+//
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see org.eclipse.ui.internal.dnd.IDropTarget#drop()
+//				 */
+//				public void drop() {
+//					ToolBar toolBar = perspectiveBar.getControl();
+//					ToolItem item = toolBar.getItem(toolBar.getDisplay().map(
+//							null, toolBar, location));
+//					if (toolBar.getItem(0) == item) {
+//						return;
+//					}
+//					ToolItem[] items = toolBar.getItems();
+//					ToolItem droppedItem = null;
+//					int dropIndex = -1;
+//					for (int i = 0; i < items.length; i++) {
+//						if (item == items[i]) {
+//							dropIndex = i;
+//						}
+//						if (items[i].getData() == perspective) {
+//							droppedItem = items[i];
+//						}
+//					}
+//					if (dropIndex != -1 && droppedItem != null && (droppedItem != item)) {
+//						PerspectiveBarContributionItem barItem = (PerspectiveBarContributionItem) droppedItem.getData();
+//						// policy is to insert at the beginning so mirror the value when indicating a 
+//						// new position for the perspective
+//						if (reorderListener != null) {
+//							reorderListener.reorder(barItem.getPerspective(), Math.abs(dropIndex - (items.length - 1)));
+//						}
+//
+//						perspectiveBar.relocate(barItem, dropIndex);
+//					}
+//				}
+//
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see org.eclipse.ui.internal.dnd.IDropTarget#getCursor()
+//				 */
+//				public Cursor getCursor() {
+//					return DragCursors.getCursor(DragCursors.CENTER);
+//				}
+//
+//				boolean sameShell() {
+//					return perspective.getToolItem().getParent().getShell().equals(perspectiveBar.getControl().getShell());
+//				}
+//				
+//				public Rectangle getSnapRectangle() {
+//					ToolBar toolBar = perspectiveBar.getControl();
+//					ToolItem item = toolBar.getItem(toolBar.getDisplay().map(
+//							null, toolBar, location));
+//					Rectangle bounds;
+//					if (item != null && item != toolBar.getItem(0)) {
+//						bounds = item.getBounds();
+//					} else {
+//						// it should not be possible to start a drag with item 0
+//						return null;
+//					}
+//					return toolBar.getDisplay().map(toolBar, null, bounds);
+//				}
+//			}
+//
+//			public IDropTarget drag(Control currentControl,
+//					Object draggedObject, Point position,
+//					Rectangle dragRectangle) {
+//				if (draggedObject instanceof PerspectiveBarContributionItem) {
+//					if (perspectiveDropTarget == null) {
+//						perspectiveDropTarget = new PerspectiveDropTarget(
+//								draggedObject, position);
+//					} else {
+//						perspectiveDropTarget.update(draggedObject, position);
+//					}
+//					// do not support drag to perspective bars between shells.
+//					if (!perspectiveDropTarget.sameShell()) {
+//						return null;
+//					}
+//					
+//					return perspectiveDropTarget;
+//				}// else if (draggedObject instanceof IPerspectiveBar) {
+//				//	return new PerspectiveBarDropTarget();
+//				//}
+//
+//				return null;
+//			}
+//
+//		};
+//
+//		PresentationUtil.addDragListener(perspectiveBar.getControl(),
+//				dragListener);
+//		DragUtil.addDragTarget(perspectiveBar.getControl(), dragTarget);
+		 // RAPEND: [bm] 
 	}
 
 	private void setPropertyChangeListener() {
@@ -736,7 +739,11 @@ public class PerspectiveSwitcher implements IWindowTrim {
         perspectiveBar = createBarManager(SWT.VERTICAL);
 
         perspectiveBar.createControl(trimControl);
-        perspectiveBar.getControl().addListener(SWT.MenuDetect, popupListener);
+        // RAP [bm]: 
+//        perspectiveBar.getControl().addListener(SWT.MenuDetect, popupListener);
+        perspectiveBar.getControl().addListener(SWT.MouseUp, popupListener);
+        // RAPEND: [bm]
+        // the following code is commented out by Platform itself, not RAP
 
 //        trimSeparator = new Label(trimControl, SWT.SEPARATOR | SWT.HORIZONTAL);
 //        GridData sepData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
@@ -781,7 +788,11 @@ public class PerspectiveSwitcher implements IWindowTrim {
             }
         });
         coolItem.setMinimumSize(0, 0);
-        perspectiveBar.getControl().addListener(SWT.MenuDetect, popupListener);
+        // RAP [bm]: 
+//        perspectiveBar.getControl().addListener(SWT.MenuDetect, popupListener);
+        perspectiveBar.getControl().addListener(SWT.MouseUp, popupListener);
+        // RAPEND: [bm] 
+
     }
 
     /**
@@ -828,8 +839,11 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
         // Get the tool item under the mouse.
         ToolBar toolBar = perspectiveBar.getControl();
-        ToolItem toolItem = toolBar.getItem(toolBar.toControl(pt));
-        
+        // RAP [bm]: ToolBar#getItem(Point)
+//        ToolItem toolItem = toolBar.getItem(toolBar.toControl(pt));
+        ToolItem toolItem = null;
+        // RAPEND: [bm] 
+
         // Get the action for the tool item.
         Object data = null;
         if (toolItem != null){
@@ -925,9 +939,11 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     private void addCloseItem(Menu menu) {
         MenuItem menuItem = new MenuItem(menu, SWT.NONE);
-        menuItem.setText(WorkbenchMessages.WorkbenchWindow_close); 
-        window.getWorkbench().getHelpSystem().setHelp(menuItem,
-        		IWorkbenchHelpContextIds.CLOSE_PAGE_ACTION);
+        menuItem.setText(WorkbenchMessages.get().WorkbenchWindow_close);
+        // RAP [bm]: HelpSystem
+//        window.getWorkbench().getHelpSystem().setHelp(menuItem,
+//        		IWorkbenchHelpContextIds.CLOSE_PAGE_ACTION);
+        // RAPEND: [bm] 
         menuItem.addSelectionListener(new SelectionAdapter() {
 			private static final String COMMAND_CLOSE_PERSP = "org.eclipse.ui.window.closePerspective"; //$NON-NLS-1$
 			private static final String PARAMETER_CLOSE_PERSP_ID = "org.eclipse.ui.window.closePerspective.perspectiveId"; //$NON-NLS-1$
@@ -1016,27 +1032,30 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     private void addDockOnSubMenu(Menu menu) {
         MenuItem item = new MenuItem(menu, SWT.CASCADE);
-        item.setText(WorkbenchMessages.PerspectiveSwitcher_dockOn);
+        item.setText(WorkbenchMessages.get().PerspectiveSwitcher_dockOn);
 
         final Menu subMenu = new Menu(item);
 
         final MenuItem menuItemTopRight = new MenuItem(subMenu, SWT.RADIO);
-        menuItemTopRight.setText(WorkbenchMessages.PerspectiveSwitcher_topRight); 
-        
-        window.getWorkbench().getHelpSystem().setHelp(menuItemTopRight,
-        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
+        menuItemTopRight.setText(WorkbenchMessages.get().PerspectiveSwitcher_topRight); 
+
+        // RAP [bm]: HelpSystem
+//        window.getWorkbench().getHelpSystem().setHelp(menuItemTopRight,
+//        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
 
         final MenuItem menuItemTopLeft = new MenuItem(subMenu, SWT.RADIO);
-        menuItemTopLeft.setText(WorkbenchMessages.PerspectiveSwitcher_topLeft); 
-        
-        window.getWorkbench().getHelpSystem().setHelp(menuItemTopLeft,
-        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
+        menuItemTopLeft.setText(WorkbenchMessages.get().PerspectiveSwitcher_topLeft); 
+
+        // RAP [bm]: HelpSystem
+//        window.getWorkbench().getHelpSystem().setHelp(menuItemTopLeft,
+//        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
 
         final MenuItem menuItemLeft = new MenuItem(subMenu, SWT.RADIO);
-        menuItemLeft.setText(WorkbenchMessages.PerspectiveSwitcher_left); 
+        menuItemLeft.setText(WorkbenchMessages.get().PerspectiveSwitcher_left); 
         
-        window.getWorkbench().getHelpSystem().setHelp(menuItemLeft,
-        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
+        // RAP [bm]: HelpSystem
+//        window.getWorkbench().getHelpSystem().setHelp(menuItemLeft,
+//        		IWorkbenchHelpContextIds.DOCK_ON_PERSPECTIVE_ACTION);
 
         SelectionListener listener = new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -1074,9 +1093,10 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     private void addShowTextItem(Menu menu) {
         final MenuItem showtextMenuItem = new MenuItem(menu, SWT.CHECK);
-        showtextMenuItem.setText(WorkbenchMessages.PerspectiveBar_showText);
-        window.getWorkbench().getHelpSystem().setHelp(showtextMenuItem,
-        		IWorkbenchHelpContextIds.SHOW_TEXT_PERSPECTIVE_ACTION);
+        showtextMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_showText);
+        // RAP [bm]: HelpSystem
+//        window.getWorkbench().getHelpSystem().setHelp(showtextMenuItem,
+//        		IWorkbenchHelpContextIds.SHOW_TEXT_PERSPECTIVE_ACTION);
 
         showtextMenuItem.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -1108,9 +1128,10 @@ public class PerspectiveSwitcher implements IWindowTrim {
 
     private void addCustomizeItem(Menu menu) {
         final MenuItem customizeMenuItem = new MenuItem(menu, SWT.Activate);
-		customizeMenuItem.setText(WorkbenchMessages.PerspectiveBar_customize);
-		window.getWorkbench().getHelpSystem().setHelp(customizeMenuItem,
-				IWorkbenchHelpContextIds.EDIT_ACTION_SETS_ACTION);
+		customizeMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_customize);
+		// RAP [bm]: HelpSystem
+//		window.getWorkbench().getHelpSystem().setHelp(customizeMenuItem,
+//				IWorkbenchHelpContextIds.EDIT_ACTION_SETS_ACTION);
 		customizeMenuItem.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (perspectiveBar == null) {
@@ -1132,9 +1153,10 @@ public class PerspectiveSwitcher implements IWindowTrim {
     
     private void addSaveAsItem(Menu menu) {
         final MenuItem saveasMenuItem = new MenuItem(menu, SWT.Activate);
-        saveasMenuItem.setText(WorkbenchMessages.PerspectiveBar_saveAs); 
-        window.getWorkbench().getHelpSystem().setHelp(saveasMenuItem,
-        		IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_ACTION);
+        saveasMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_saveAs);
+        // RAP [bm]: HelpSystem
+//        window.getWorkbench().getHelpSystem().setHelp(saveasMenuItem,
+//        		IWorkbenchHelpContextIds.SAVE_PERSPECTIVE_ACTION);
         saveasMenuItem.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 if (perspectiveBar == null) {
@@ -1149,9 +1171,10 @@ public class PerspectiveSwitcher implements IWindowTrim {
     
     private void addResetItem(Menu menu) {
         final MenuItem resetMenuItem = new MenuItem(menu, SWT.Activate);
-        resetMenuItem.setText(WorkbenchMessages.PerspectiveBar_reset);
-        window.getWorkbench().getHelpSystem().setHelp(resetMenuItem,
-        		IWorkbenchHelpContextIds.RESET_PERSPECTIVE_ACTION);
+        resetMenuItem.setText(WorkbenchMessages.get().PerspectiveBar_reset);
+        // RAP [bm]: 
+//        window.getWorkbench().getHelpSystem().setHelp(resetMenuItem,
+//        		IWorkbenchHelpContextIds.RESET_PERSPECTIVE_ACTION);
         resetMenuItem.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 if (perspectiveBar == null) {
@@ -1264,7 +1287,8 @@ public class PerspectiveSwitcher implements IWindowTrim {
 	 * @param listener
 	 */
 	public void addReorderListener(IReorderListener listener) {
-		reorderListener = listener;	
+		// RAP [bm]: DnD
+//		reorderListener = listener;	
 	}
 
 	/* (non-Javadoc)
@@ -1291,7 +1315,7 @@ public class PerspectiveSwitcher implements IWindowTrim {
 	 * @see org.eclipse.ui.internal.IWindowTrim#getDisplayName()
 	 */
 	public String getDisplayName() {
-		return WorkbenchMessages.TrimCommon_PerspectiveSwitcher_TrimName;
+		return WorkbenchMessages.get().TrimCommon_PerspectiveSwitcher_TrimName;
 	}
 
 	/* (non-Javadoc)

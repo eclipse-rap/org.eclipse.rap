@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -73,11 +72,14 @@ public class ProgressRegion implements IWindowTrim {
         // If not then we'll 'force' the ProgressBar to always be
         // HORIZONTAL...
         //TODO: This should likely be at some 'global' level state
-        GC gc = new GC(parent);
-        gc.setAdvanced(true);
-        forceHorizontal = !gc.getAdvanced();
-        gc.dispose();
-        
+        // RAP [bm]: 
+//        GC gc = new GC(parent);
+//        gc.setAdvanced(true);
+//        forceHorizontal = !gc.getAdvanced();
+//        gc.dispose();
+        forceHorizontal = true;
+        // RAPEND: [bm] 
+
         region = new Composite(parent, SWT.NONE) {
 			/*
 			 * (non-Javadoc)
@@ -259,7 +261,7 @@ public class ProgressRegion implements IWindowTrim {
 	}
 
 	public String getDisplayName() {
-		return WorkbenchMessages.TrimCommon_Progress_TrimName;
+		return WorkbenchMessages.get().TrimCommon_Progress_TrimName;
 	}
 
 	/* (non-Javadoc)
