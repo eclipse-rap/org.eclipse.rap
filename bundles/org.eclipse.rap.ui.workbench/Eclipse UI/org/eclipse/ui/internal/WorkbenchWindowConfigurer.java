@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ui.internal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,16 +26,12 @@ import org.eclipse.jface.internal.provisional.action.IToolBarContributionItem;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.TextProcessor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetListener;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -59,8 +54,6 @@ import org.eclipse.ui.presentations.WorkbenchPresentationFactory;
  * <p>
  * This class is not intended to be instantiated or subclassed by clients.
  * </p>
- * 
- * @since 3.0
  */
 public final class WorkbenchWindowConfigurer implements
         IWorkbenchWindowConfigurer {
@@ -117,17 +110,19 @@ public final class WorkbenchWindowConfigurer implements
      */
     private Map extraData = new HashMap(1);
 
-    /**
-     * Holds the list drag and drop <code>Transfer</code> for the
-     * editor area
-     */
-    private ArrayList transferTypes = new ArrayList(3);
-
-    /**
-     * The <code>DropTargetListener</code> implementation for handling a
-     * drop into the editor area.
-     */
-    private DropTargetListener dropTargetListener = null;
+    // RAP [bm]: 
+//    /**
+//     * Holds the list drag and drop <code>Transfer</code> for the
+//     * editor area
+//     */
+//    private ArrayList transferTypes = new ArrayList(3);
+//
+//    /**
+//     * The <code>DropTargetListener</code> implementation for handling a
+//     * drop into the editor area.
+//     */
+//    private DropTargetListener dropTargetListener = null;
+    // RAPEND: [bm] 
 
     /**
      * Object for configuring this workbench window's action bars. 
@@ -458,59 +453,61 @@ public final class WorkbenchWindowConfigurer implements
     /* (non-Javadoc)
      * @see org.eclipse.ui.application.IWorkbenchWindowConfigurer#addEditorAreaTransfer
      */
-    public void addEditorAreaTransfer(Transfer tranfer) {
-        if (tranfer != null && !transferTypes.contains(tranfer)) {
-            transferTypes.add(tranfer);
-            Transfer[] transfers = new Transfer[transferTypes.size()];
-            transferTypes.toArray(transfers);
-            IWorkbenchPage[] pages = window.getPages();
-            for (int i = 0; i < pages.length; i++) {
-                WorkbenchPage page = (WorkbenchPage) pages[i];
-                DropTarget dropTarget = ((EditorSashContainer) page
-                        .getEditorPresentation().getLayoutPart())
-                        .getDropTarget();
-                if (dropTarget != null) {
-                    dropTarget.setTransfer(transfers);
-                }
-            }
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.application.IWorkbenchWindowConfigurer
-     */
-    public void configureEditorAreaDropListener(
-            DropTargetListener dropTargetListener) {
-        if (dropTargetListener != null) {
-            this.dropTargetListener = dropTargetListener;
-            IWorkbenchPage[] pages = window.getPages();
-            for (int i = 0; i < pages.length; i++) {
-                WorkbenchPage page = (WorkbenchPage) pages[i];
-                DropTarget dropTarget = ((EditorSashContainer) page
-                        .getEditorPresentation().getLayoutPart())
-                        .getDropTarget();
-                if (dropTarget != null) {
-                    dropTarget.addDropListener(this.dropTargetListener);
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns the array of <code>Transfer</code> added by the application
-     */
-    /* package */Transfer[] getTransfers() {
-        Transfer[] transfers = new Transfer[transferTypes.size()];
-        transferTypes.toArray(transfers);
-        return transfers;
-    }
-
-    /**
-     * Returns the drop listener provided by the application.
-     */
-    /* package */DropTargetListener getDropTargetListener() {
-        return dropTargetListener;
-    }
+    // RAP [bm]: DnD
+//    public void addEditorAreaTransfer(Transfer tranfer) {
+//        if (tranfer != null && !transferTypes.contains(tranfer)) {
+//            transferTypes.add(tranfer);
+//            Transfer[] transfers = new Transfer[transferTypes.size()];
+//            transferTypes.toArray(transfers);
+//            IWorkbenchPage[] pages = window.getPages();
+//            for (int i = 0; i < pages.length; i++) {
+//                WorkbenchPage page = (WorkbenchPage) pages[i];
+//                DropTarget dropTarget = ((EditorSashContainer) page
+//                        .getEditorPresentation().getLayoutPart())
+//                        .getDropTarget();
+//                if (dropTarget != null) {
+//                    dropTarget.setTransfer(transfers);
+//                }
+//            }
+//        }
+//    }
+//
+//    /* (non-Javadoc)
+//     * @see org.eclipse.ui.application.IWorkbenchWindowConfigurer
+//     */
+//    public void configureEditorAreaDropListener(
+//            DropTargetListener dropTargetListener) {
+//        if (dropTargetListener != null) {
+//            this.dropTargetListener = dropTargetListener;
+//            IWorkbenchPage[] pages = window.getPages();
+//            for (int i = 0; i < pages.length; i++) {
+//                WorkbenchPage page = (WorkbenchPage) pages[i];
+//                DropTarget dropTarget = ((EditorSashContainer) page
+//                        .getEditorPresentation().getLayoutPart())
+//                        .getDropTarget();
+//                if (dropTarget != null) {
+//                    dropTarget.addDropListener(this.dropTargetListener);
+//                }
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Returns the array of <code>Transfer</code> added by the application
+//     */
+//    /* package */Transfer[] getTransfers() {
+//        Transfer[] transfers = new Transfer[transferTypes.size()];
+//        transferTypes.toArray(transfers);
+//        return transfers;
+//    }
+//
+//    /**
+//     * Returns the drop listener provided by the application.
+//     */
+//    /* package */DropTargetListener getDropTargetListener() {
+//        return dropTargetListener;
+//    }
+    // RAPEND: [bm] 
 
     /* (non-javadoc)
      * @see org.eclipse.ui.application.IWorkbenchWindowConfigurer

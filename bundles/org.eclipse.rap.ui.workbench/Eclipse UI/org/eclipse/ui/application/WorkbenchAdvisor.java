@@ -22,12 +22,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.internal.StartupThreading;
-import org.eclipse.ui.internal.UISynchronizer;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.WorkbenchWindowConfigurer;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
-//import org.eclipse.ui.internal.application.CompatibilityWorkbenchWindowAdvisor;
-//import org.eclipse.ui.internal.util.PrefUtil;
 import org.eclipse.ui.model.ContributionComparator;
 import org.eclipse.ui.model.IContributionService;
 import org.eclipse.ui.statushandlers.AbstractStatusHandler;
@@ -764,14 +761,17 @@ public abstract class WorkbenchAdvisor {
 		// ourselves just like it's done in Workbench.
 		final boolean[] initDone = new boolean[]{false};
 		final Throwable [] error = new Throwable[1];
-		Thread initThread = new Thread() {
-			/* (non-Javadoc)
-			 * @see java.lang.Thread#run()
-			 */
-			public void run() {
-				try {
-					//declare us to be a startup thread so that our syncs will be executed 
-					UISynchronizer.startupThread.set(Boolean.TRUE);
+		// RAP [bm]: 
+//		Thread initThread = new Thread() {
+//			/* (non-Javadoc)
+//			 * @see java.lang.Thread#run()
+//			 */
+//			public void run() {
+//				try {
+//					//declare us to be a startup thread so that our syncs will be executed 
+//					UISynchronizer.startupThread.set(Boolean.TRUE);
+// RAPEND: [bm] 
+				try  {
 					final IWorkbenchConfigurer [] myConfigurer = new IWorkbenchConfigurer[1];
 					StartupThreading.runWithoutExceptions(new StartupRunnable() {
 	
@@ -784,7 +784,7 @@ public abstract class WorkbenchAdvisor {
 					if (!status.isOK()) {
 						if (status.getCode() == IWorkbenchConfigurer.RESTORE_CODE_EXIT) {
 							result[0] = false;
-							return;
+//							return;
 						}
 						if (status.getCode() == IWorkbenchConfigurer.RESTORE_CODE_RESET) {
 							myConfigurer[0].openFirstTimeWindow();
@@ -798,8 +798,10 @@ public abstract class WorkbenchAdvisor {
 					initDone[0] = true;
 					display.wake();
 				}
-			}};
-			initThread.start();
+			// RAP [bm]: 
+//			}};
+//			initThread.start();
+// RAPEND: [bm] 
 
 			while (true) {
 				if (!display.readAndDispatch()) {

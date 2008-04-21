@@ -17,12 +17,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.misc.Policy;
@@ -114,27 +109,28 @@ public/*final*/class WorkbenchImages {
         declareImage(key, desc, shared);
     }
 
-    private static void drawViewMenu(GC gc, GC maskgc) {
-    	Display display = Display.getCurrent();
-    	
-    	gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
-    	gc.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-    	
-	    int[] shapeArray = new int[] {1, 1, 10, 1, 6, 5, 5, 5};
-	    gc.fillPolygon(shapeArray);
-	    gc.drawPolygon(shapeArray);
-	    
-	    Color black = display.getSystemColor(SWT.COLOR_BLACK);
-	    Color white = display.getSystemColor(SWT.COLOR_WHITE);
-	    
-	    maskgc.setBackground(black);
-	    maskgc.fillRectangle(0,0,12,16);
-	    
-	    maskgc.setBackground(white);
-	    maskgc.setForeground(white);
-	    maskgc.fillPolygon(shapeArray);
-	    maskgc.drawPolygon(shapeArray);
-    }
+    // RAP [bm]: GC
+//    private static void drawViewMenu(GC gc, GC maskgc) {
+//    	Display display = Display.getCurrent();
+//    	
+//    	gc.setForeground(display.getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+//    	gc.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+//    	
+//	    int[] shapeArray = new int[] {1, 1, 10, 1, 6, 5, 5, 5};
+//	    gc.fillPolygon(shapeArray);
+//	    gc.drawPolygon(shapeArray);
+//	    
+//	    Color black = display.getSystemColor(SWT.COLOR_BLACK);
+//	    Color white = display.getSystemColor(SWT.COLOR_WHITE);
+//	    
+//	    maskgc.setBackground(black);
+//	    maskgc.fillRectangle(0,0,12,16);
+//	    
+//	    maskgc.setBackground(white);
+//	    maskgc.setForeground(white);
+//	    maskgc.fillPolygon(shapeArray);
+//	    maskgc.drawPolygon(shapeArray);
+//    }
     
     /**
      * Declares all the workbench's images, including both "shared" ones and
@@ -396,26 +392,30 @@ public/*final*/class WorkbenchImages {
         
         // Manually create the view menu
         
-        Display d = Display.getCurrent();
-        
-        Image viewMenu = new Image(d, 11, 16);
-        Image viewMenuMask = new Image(d, 11, 16);
-        
-        GC gc = new GC(viewMenu);
-        GC maskgc = new GC(viewMenuMask);
-        drawViewMenu(gc, maskgc);
-        gc.dispose();
-        maskgc.dispose();
-        
-        ImageData data = viewMenu.getImageData();
-        data.transparentPixel = data.getPixel(0,0);
-        
-        Image vm2 = new Image(d, viewMenu.getImageData(), viewMenuMask.getImageData());
-        viewMenu.dispose();
-        viewMenuMask.dispose();
-                
-        getImageRegistry().put(IWorkbenchGraphicConstants.IMG_LCL_RENDERED_VIEW_MENU, vm2);
-        
+		// RAP [bm]: 
+//        Display d = Display.getCurrent();
+//        
+//        Image viewMenu = new Image(d, 11, 16);
+//        Image viewMenuMask = new Image(d, 11, 16);
+//        
+//        GC gc = new GC(viewMenu);
+//        GC maskgc = new GC(viewMenuMask);
+//        drawViewMenu(gc, maskgc);
+//        gc.dispose();
+//        maskgc.dispose();
+//        
+//        ImageData data = viewMenu.getImageData();
+//        data.transparentPixel = data.getPixel(0,0);
+//        
+//        Image vm2 = new Image(d, viewMenu.getImageData(), viewMenuMask.getImageData());
+//        viewMenu.dispose();
+//        viewMenuMask.dispose();
+//                
+//        getImageRegistry().put(IWorkbenchGraphicConstants.IMG_LCL_RENDERED_VIEW_MENU, vm2);
+        // RAPEND: [bm] 
+		declareImage(IWorkbenchGraphicConstants.IMG_LCL_RENDERED_VIEW_MENU,
+				PATH_EVIEW + "view_menu.gif", true); //$NON-NLS-1$
+		
     }
 
     /**
@@ -452,7 +452,8 @@ public/*final*/class WorkbenchImages {
                 WorkbenchPlugin.log("Image not found in WorkbenchImages.declaredImage().  symbolicName=" + symbolicName + " descriptor=" + descriptor, new Exception("stack dump"));   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
             }
             else {
-                image.dispose();
+            	// RAP [bm]: Image#dispose
+//                image.dispose();
             }
         }
         getDescriptors().put(symbolicName, descriptor);
@@ -575,8 +576,6 @@ public/*final*/class WorkbenchImages {
     /**
      * Disposes and clears the workbench images.
      * Called when the workbench is shutting down.
-     *
-     * @since 3.1
      */
     public static void dispose() {
         if (imageRegistry != null) {
