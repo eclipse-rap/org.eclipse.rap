@@ -29,8 +29,6 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.internal.layout.TrimToolBarBase;
 
 /**
- * @since 3.3
- *
  */
 public class ViewStackTrimToolBar extends TrimToolBarBase {
 	private boolean restoreOnUnzoom = false;
@@ -70,7 +68,7 @@ public class ViewStackTrimToolBar extends TrimToolBarBase {
 		        ToolItem restoreItem = new  ToolItem(mgr.getControl(), SWT.PUSH, index);        
 		        Image tbImage = WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_ETOOL_RESTORE_TRIMPART);
 		        restoreItem.setImage(tbImage);       
-		        String menuTip = WorkbenchMessages.StandardSystemToolbar_Restore;
+		        String menuTip = WorkbenchMessages.get().StandardSystemToolbar_Restore;
 		        restoreItem.setToolTipText(menuTip);
 		        restoreItem.addSelectionListener(new SelectionListener() {
 					public void widgetDefaultSelected(SelectionEvent e) {
@@ -94,7 +92,7 @@ public class ViewStackTrimToolBar extends TrimToolBarBase {
 		final IContributionItem closeContrib = new ContributionItem() {
 			public void fill(Menu parent, int index) {
 		        MenuItem closeItem = new MenuItem(parent, SWT.NONE, index++);
-		        closeItem.setText(WorkbenchMessages.WorkbenchWindow_close); 
+		        closeItem.setText(WorkbenchMessages.get().WorkbenchWindow_close); 
 		        closeItem.addSelectionListener(new SelectionAdapter() {
 		            public void widgetSelected(SelectionEvent e) {
 		            	IViewReference selectedView = null;

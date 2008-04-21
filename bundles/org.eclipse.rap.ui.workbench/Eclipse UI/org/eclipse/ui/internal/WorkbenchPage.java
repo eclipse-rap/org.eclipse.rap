@@ -548,7 +548,7 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
             throws WorkbenchException {
         super();
         if (layoutID == null) {
-			throw new WorkbenchException(WorkbenchMessages.WorkbenchPage_UndefinedPerspective);
+			throw new WorkbenchException(WorkbenchMessages.get().WorkbenchPage_UndefinedPerspective);
 		}
         init(w, layoutID, input, true);
     }
@@ -607,7 +607,7 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * Activates a part. The part is given focus, the pane is hilighted.
      */
     private void activatePart(final IWorkbenchPart part) {
-        Platform.run(new SafeRunnable(WorkbenchMessages.WorkbenchPage_ErrorActivatingView) { 
+        Platform.run(new SafeRunnable(WorkbenchMessages.get().WorkbenchPage_ErrorActivatingView) { 
                     public void run() {
                         if (part != null) {
                             //part.setFocus();
@@ -683,7 +683,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * Implements IWorkbenchPage
      * 
      * @see org.eclipse.ui.IWorkbenchPage#addPropertyChangeListener(IPropertyChangeListener)
-     * @since 2.0
      * @deprecated individual views should store a working set if needed and
      *             register a property change listener directly with the
      *             working set manager to receive notification when the view
@@ -1170,8 +1169,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * Makes the given part active. Brings it in front if necessary. Permits null 
      * (indicating that no part should be active).
      * 
-     * @since 3.1 
-     *
      * @param ref new active part (or null)
      */
     private void makeActive(IWorkbenchPartReference ref) {
@@ -1191,8 +1188,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * Makes the given editor active. Brings it to front if necessary. Permits <code>null</code> 
      * (indicating that no editor is active).
      * 
-     * @since 3.1 
-     *
      * @param ref the editor to make active, or <code>null</code> for no active editor
      */
     private void makeActiveEditor(IEditorReference ref) {
@@ -1552,8 +1547,8 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
                 MessageDialog
                         .openError(
                                 window.getShell(),
-                                WorkbenchMessages.Error, 
-                                NLS.bind(WorkbenchMessages.Workbench_showPerspectiveError,desc.getId() )); 
+                                WorkbenchMessages.get().Error, 
+                                NLS.bind(WorkbenchMessages.get().Workbench_showPerspectiveError,desc.getId() )); 
             }
             return null;
         } finally {
@@ -2007,7 +2002,7 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * active perspective.
      */
     public String getLabel() {
-        String label = WorkbenchMessages.WorkbenchPage_UnknownLabel;
+        String label = WorkbenchMessages.get().WorkbenchPage_UnknownLabel;
         IWorkbenchAdapter adapter = (IWorkbenchAdapter) Util.getAdapter(input, 
                 IWorkbenchAdapter.class);
         if (adapter != null) {
@@ -2015,9 +2010,9 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
 		}
         Perspective persp = getActivePerspective();
         if (persp != null) {
-			label = NLS.bind(WorkbenchMessages.WorkbenchPage_PerspectiveFormat,  label, persp.getDesc().getLabel());
+			label = NLS.bind(WorkbenchMessages.get().WorkbenchPage_PerspectiveFormat,  label, persp.getDesc().getLabel());
 		} else if (deferredActivePersp != null) {
-			label = NLS.bind(WorkbenchMessages.WorkbenchPage_PerspectiveFormat,label, deferredActivePersp.getLabel());
+			label = NLS.bind(WorkbenchMessages.get().WorkbenchPage_PerspectiveFormat,label, deferredActivePersp.getLabel());
 		} 
         return label;
     }
@@ -2126,7 +2121,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
 	 * 
 	 * @param persp the perspective
 	 * @return an array of view parts
-	 * @since 3.1
 	 */
 	/*package*/IViewPart[] getViews(Perspective persp, boolean restore) {			
         if (persp == null) {
@@ -2159,7 +2153,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * Implements IWorkbenchPage
      * 
      * @see org.eclipse.ui.IWorkbenchPage#getWorkingSet()
-     * @since 2.0
      * @deprecated individual views should store a working set if needed
      */
     public IWorkingSet getWorkingSet() {
@@ -2313,7 +2306,7 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
                     .findPerspectiveWithId(layoutID);
             if (desc == null) {
 				throw new WorkbenchException(
-                        NLS.bind(WorkbenchMessages.WorkbenchPage_ErrorCreatingPerspective,layoutID ));
+                        NLS.bind(WorkbenchMessages.get().WorkbenchPage_ErrorCreatingPerspective,layoutID ));
 			}
             Perspective persp = findPerspective(desc);
             if (persp == null) {
@@ -2391,7 +2384,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * 
      * @param ref the view reference to check.  Must not be <code>null</code>.
      * @return true if the part is closeable.
-     * @since 3.1.1
      */
     public boolean isCloseable(IViewReference ref) {
 		Perspective persp = getActivePerspective();
@@ -2406,7 +2398,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * 
      * @param ref the view reference to check.  Must not be <code>null</code>.
      * @return true if the part is moveable.
-     * @since 3.1.1
      */
     public boolean isMoveable(IViewReference ref) {
 		Perspective persp = getActivePerspective();
@@ -2675,13 +2666,13 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
                 if (editor.isDirty()) {
                     MessageDialog dialog = new MessageDialog(
                             getWorkbenchWindow().getShell(),
-                            WorkbenchMessages.Save, 
+                            WorkbenchMessages.get().Save, 
                             null, // accept the default window icon
-                            NLS.bind(WorkbenchMessages.WorkbenchPage_editorAlreadyOpenedMsg,  input.getName()), 
+                            NLS.bind(WorkbenchMessages.get().WorkbenchPage_editorAlreadyOpenedMsg,  input.getName()), 
                             MessageDialog.QUESTION, new String[] {
-                                    IDialogConstants.YES_LABEL,
-                                    IDialogConstants.NO_LABEL,
-                                    IDialogConstants.CANCEL_LABEL }, 0);
+                                    IDialogConstants.get().YES_LABEL,
+                                    IDialogConstants.get().NO_LABEL,
+                                    IDialogConstants.get().CANCEL_LABEL }, 0);
                     int saveFile = dialog.open();
                     if (saveFile == 0) {
                         try {
@@ -2869,7 +2860,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * Implements IWorkbenchPage
      * 
      * @see org.eclipse.ui.IWorkbenchPage#removePropertyChangeListener(IPropertyChangeListener)
-     * @since 2.0
      * @deprecated individual views should store a working set if needed and
      *             register a property change listener directly with the
      *             working set manager to receive notification when the view
@@ -2982,7 +2972,7 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
                 final MultiStatus result = new MultiStatus(
                         PlatformUI.PLUGIN_ID,
                         IStatus.OK,
-                        NLS.bind(WorkbenchMessages.WorkbenchPage_unableToRestorePerspective, pageName ), 
+                        NLS.bind(WorkbenchMessages.get().WorkbenchPage_unableToRestorePerspective, pageName ), 
                         null);
     
                 String workingSetName = memento
@@ -3094,7 +3084,7 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
                                         IStatus.ERROR,
                                         PlatformUI.PLUGIN_ID,
                                         0,
-                                        NLS.bind(WorkbenchMessages.Workbench_showPerspectiveError, activeDescriptor.getId() ), 
+                                        NLS.bind(WorkbenchMessages.get().Workbench_showPerspectiveError, activeDescriptor.getId() ), 
                                         null));
                     }
                 }
@@ -3248,7 +3238,7 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
         MultiStatus result = new MultiStatus(
                 PlatformUI.PLUGIN_ID,
                 IStatus.OK,
-                NLS.bind(WorkbenchMessages.WorkbenchPage_unableToSavePerspective, getLabel()), 
+                NLS.bind(WorkbenchMessages.get().WorkbenchPage_unableToSavePerspective, getLabel()), 
                 null);
 
         // Save editor manager.
@@ -3442,8 +3432,8 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
 	        if (newPersp != null) {
 	            IStatus status = newPersp.restoreState();
 	            if (status.getSeverity() != IStatus.OK) {
-	                String title = WorkbenchMessages.WorkbenchPage_problemRestoringTitle; 
-	                String msg = WorkbenchMessages.WorkbenchPage_errorReadingState;
+	                String title = WorkbenchMessages.get().WorkbenchPage_problemRestoringTitle; 
+	                String msg = WorkbenchMessages.get().WorkbenchPage_errorReadingState;
 	                ErrorDialog.openError(getWorkbenchWindow().getShell(), title,
 	                        msg, status);
 	            }
@@ -3596,7 +3586,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * 
      * @param newWorkingSet
      *            the active working set for the page. May be null.
-     * @since 2.0
      * @deprecated individual views should store a working set if needed
      */
     public void setWorkingSet(IWorkingSet newWorkingSet) {
@@ -3654,11 +3643,11 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
         if (secondaryID != null) {
             if (secondaryID.length() == 0
                     || secondaryID.indexOf(ViewFactory.ID_SEP) != -1) {
-				throw new IllegalArgumentException(WorkbenchMessages.WorkbenchPage_IllegalSecondaryId);
+				throw new IllegalArgumentException(WorkbenchMessages.get().WorkbenchPage_IllegalSecondaryId);
 			} 
         }
         if (!certifyMode(mode)) {
-			throw new IllegalArgumentException(WorkbenchMessages.WorkbenchPage_IllegalViewMode);
+			throw new IllegalArgumentException(WorkbenchMessages.get().WorkbenchPage_IllegalViewMode);
 		}
 
         // Run op in busy cursor.
@@ -3677,14 +3666,13 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
 		} else if (result[0] instanceof PartInitException) {
 			throw (PartInitException) result[0];
 		} else {
-			throw new PartInitException(WorkbenchMessages.WorkbenchPage_AbnormalWorkbenchCondition);
+			throw new PartInitException(WorkbenchMessages.get().WorkbenchPage_AbnormalWorkbenchCondition);
 		} 
     }
 
     /**
      * @param mode the mode to test
      * @return whether the mode is recognized
-     * @since 3.0
      */
     private boolean certifyMode(int mode) {
         switch (mode) {
@@ -3930,7 +3918,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
      * Return all open Perspective objects.
      * 
      * @return all open Perspective objects
-     * @since 3.1
      */
     /*package*/Perspective [] getOpenInternalPerspectives() {
         return perspList.getOpenedPerspectives();
@@ -3943,7 +3930,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
 	 * 
 	 * @param part specified part to search for
 	 * @return the first sorted perspespective containing the part
-	 * @since 3.1
 	 */
 	/*package*/Perspective getFirstPerspectiveWithView(IViewPart part) {
 		Perspective [] perspectives = perspList.getSortedPerspectives();
@@ -4501,7 +4487,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
 	 * @param part
 	 *            the part
 	 * @return the stack of references
-	 * @since 3.0
 	 */
     private IViewReference[] getViewReferenceStack(IViewPart part) {
         // Sanity check.
@@ -4806,7 +4791,6 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
     }
     
     /**
-	 * @since 3.1
 	 */
 	private void suggestReset() {
 		final IWorkbench workbench = getWorkbenchWindow().getWorkbench();
@@ -4827,8 +4811,8 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
                 if (MessageDialog
                         .openQuestion(
                                 parentShell,
-                                WorkbenchMessages.Dynamic_resetPerspectiveTitle, 
-                                WorkbenchMessages.Dynamic_resetPerspectiveMessage)) { 
+                                WorkbenchMessages.get().Dynamic_resetPerspectiveTitle, 
+                                WorkbenchMessages.get().Dynamic_resetPerspectiveMessage)) { 
                     IWorkbenchPage page = window.getActivePage();
                     if (page == null) {
 						return;
@@ -4905,7 +4889,7 @@ public class WorkbenchPage extends CompatibleWorkbenchPage implements
 				aggregateWorkingSet = (AggregateWorkingSet) workingSetManager
 						.createAggregateWorkingSet(
 								getAggregateWorkingSetId(),
-								WorkbenchMessages.WorkbenchPage_workingSet_default_label,
+								WorkbenchMessages.get().WorkbenchPage_workingSet_default_label,
 								getWorkingSets());
 				workingSetManager.addWorkingSet(aggregateWorkingSet);
 			}

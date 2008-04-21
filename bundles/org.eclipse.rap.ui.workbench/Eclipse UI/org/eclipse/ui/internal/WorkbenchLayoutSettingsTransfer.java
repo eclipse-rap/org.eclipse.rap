@@ -46,8 +46,6 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
  * The WorkbenchSettings handles the recording and restoring of workbench
  * settings.
  * 
- * @since 3.3
- * 
  */
 public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 
@@ -75,8 +73,8 @@ public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 			// don't use newWindow as parent because it has not yet been opened
 			// (bug 76724)
 			ErrorDialog.openError(null,
-					WorkbenchMessages.Workbench_problemsSaving,
-					WorkbenchMessages.Workbench_problemsSavingMsg, status);
+					WorkbenchMessages.get().Workbench_problemsSaving,
+					WorkbenchMessages.get().Workbench_problemsSavingMsg, status);
 		}
 		return memento;
 	}
@@ -89,7 +87,7 @@ public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 	 */
 	private IStatus saveSettings(XMLMemento memento) {
 		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
-				WorkbenchMessages.Workbench_problemsSaving, null);
+				WorkbenchMessages.get().Workbench_problemsSaving, null);
 
 		// Save the version number.
 		memento.putString(IWorkbenchConstants.TAG_VERSION,
@@ -117,7 +115,7 @@ public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 	private IStatus saveState(WorkbenchWindow window, IMemento memento) {
 
 		MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID, IStatus.OK,
-				WorkbenchMessages.WorkbenchWindow_problemsSavingWindow, null);
+				WorkbenchMessages.get().WorkbenchWindow_problemsSavingWindow, null);
 
 		IWorkbenchPage activePage = window.getActivePage();
 		if (activePage != null
@@ -185,7 +183,7 @@ public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 				IStatus.OK,
 				NLS
 						.bind(
-								WorkbenchMessages.WorkbenchPage_unableToSavePerspective,
+								WorkbenchMessages.get().WorkbenchPage_unableToSavePerspective,
 								page.getLabel()), null);
 
 		saveEditorState( memento);
@@ -321,7 +319,7 @@ public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 				return new Status(
 						IStatus.ERROR,
 						WorkbenchPlugin.PI_WORKBENCH,
-						WorkbenchMessages.WorkbenchSettings_CouldNotCreateDirectories);
+						WorkbenchMessages.get().WorkbenchSettings_CouldNotCreateDirectories);
 
 			FileOutputStream stream = new FileOutputStream(workspaceFile);
 			OutputStreamWriter writer = new OutputStreamWriter(stream, "utf-8"); //$NON-NLS-1$
@@ -336,7 +334,7 @@ public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 
 		} catch (IOException e) {
 			return new Status(IStatus.ERROR, WorkbenchPlugin.PI_WORKBENCH,
-					WorkbenchMessages.Workbench_problemsSavingMsg, e);
+					WorkbenchMessages.get().Workbench_problemsSavingMsg, e);
 
 		}
 
@@ -372,7 +370,7 @@ public class WorkbenchLayoutSettingsTransfer extends WorkbenchSettingsTransfer {
 	 * @see org.eclipse.ui.preferences.SettingsTransfer#getName()
 	 */
 	public String getName() {
-		return WorkbenchMessages.WorkbenchLayoutSettings_Name;
+		return WorkbenchMessages.get().WorkbenchLayoutSettings_Name;
 	}
 
 }

@@ -23,8 +23,6 @@ import org.eclipse.ui.internal.util.PrefUtil;
  * This job creates an Animation Engine that uses an Animation Feedback to render
  * the animation. To begin the animation, instantiate this
  * object then call schedule().
- * @since 3.3
- *
  */
 public class AnimationEngine extends Job {
 	public static final int TICK_TIMER = 1;
@@ -57,7 +55,7 @@ public class AnimationEngine extends Job {
 	 */
 	public AnimationEngine(AnimationFeedbackBase animationFeedback,
 			int durationIn, long sleepAmountIn) {
-		super(WorkbenchMessages.RectangleAnimation_Animating_Rectangle);
+		super(WorkbenchMessages.get().RectangleAnimation_Animating_Rectangle);
 		sleepAmount = sleepAmountIn;
 		feedbackRenderer = animationFeedback;
 		duration = durationIn;

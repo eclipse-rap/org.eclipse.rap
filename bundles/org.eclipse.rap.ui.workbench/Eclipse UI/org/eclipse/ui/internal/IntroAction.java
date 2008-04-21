@@ -25,8 +25,6 @@ import org.eclipse.ui.internal.intro.IntroMessages;
 
 /**
  * Action that will launch the intro in the given window.
- * 
- * @since 3.0
  */
 public class IntroAction extends Action implements
         ActionFactory.IWorkbenchAction {
@@ -57,8 +55,9 @@ public class IntroAction extends Action implements
             throw new IllegalArgumentException();
         }
         this.workbenchWindow = window;
-        window.getWorkbench().getHelpSystem().setHelp(this,
-				IWorkbenchHelpContextIds.INTRO_ACTION);
+        // RAP [bm]: HelpSystem
+//        window.getWorkbench().getHelpSystem().setHelp(this,
+//				IWorkbenchHelpContextIds.INTRO_ACTION);
         
         IntroDescriptor introDescriptor = ((Workbench) workbenchWindow
                 .getWorkbench()).getIntroDescriptor();
