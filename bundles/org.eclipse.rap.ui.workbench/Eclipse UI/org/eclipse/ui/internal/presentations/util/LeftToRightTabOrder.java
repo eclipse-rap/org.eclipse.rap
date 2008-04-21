@@ -20,7 +20,6 @@ import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IPresentationSerializer;
 
 /**
- * @since 3.0
  */
 public class LeftToRightTabOrder extends TabOrder {
 

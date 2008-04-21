@@ -15,7 +15,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 
 /**
- * @since 3.1
  */
 public class TabFolderEvent {
     public static final int EVENT_PANE_MENU = 1;

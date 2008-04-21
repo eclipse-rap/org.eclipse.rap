@@ -20,7 +20,6 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.presentations.SystemMenuClose;
 import org.eclipse.ui.internal.presentations.SystemMenuMaximize;
 import org.eclipse.ui.internal.presentations.SystemMenuMinimize;
-import org.eclipse.ui.internal.presentations.SystemMenuMove;
 import org.eclipse.ui.internal.presentations.SystemMenuRestore;
 import org.eclipse.ui.internal.presentations.UpdatingActionContributionItem;
 import org.eclipse.ui.presentations.IPresentablePart;
@@ -29,14 +28,13 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
 /**
  * Implements the system context menu that is used by the default presentation. Not 
  * intended to be subclassed by clients.
- * 
- * @since 3.1
  */
 public class StandardViewSystemMenu implements ISystemMenu {
 
     /* package */ MenuManager menuManager = new MenuManager();
     private SystemMenuRestore restore;
-    private SystemMenuMove move; 
+    // RAP [bm]: 
+//    private SystemMenuMove move; 
     private SystemMenuMinimize minimize;
     private SystemMenuMaximize maximize;
     private SystemMenuClose close;
@@ -48,7 +46,8 @@ public class StandardViewSystemMenu implements ISystemMenu {
      */
     public StandardViewSystemMenu(IStackPresentationSite site) {
         restore = new SystemMenuRestore(site);
-        move = new SystemMenuMove(site, getMoveMenuText(), false);
+        // RAP [bm]: 
+//        move = new SystemMenuMove(site, getMoveMenuText(), false);
         minimize = new SystemMenuMinimize(site);
         maximize = new SystemMenuMaximize(site);
         close = new SystemMenuClose(site);
@@ -58,7 +57,8 @@ public class StandardViewSystemMenu implements ISystemMenu {
             menuManager.add(new GroupMarker("restore")); //$NON-NLS-1$
             menuManager.add(new UpdatingActionContributionItem(restore));
 
-            menuManager.add(move);
+            // RAP [bm]: 
+//            menuManager.add(move);
             menuManager.add(new GroupMarker("size")); //$NON-NLS-1$
             menuManager.add(new GroupMarker("state")); //$NON-NLS-1$
             menuManager.add(new UpdatingActionContributionItem(minimize));
@@ -73,7 +73,7 @@ public class StandardViewSystemMenu implements ISystemMenu {
     }
 
     String getMoveMenuText() {
-    	return WorkbenchMessages.ViewPane_moveView;
+    	return WorkbenchMessages.get().ViewPane_moveView;
     }
     
     /* (non-Javadoc)
@@ -81,8 +81,10 @@ public class StandardViewSystemMenu implements ISystemMenu {
      */
     public void show(Control parent, Point displayCoordinates, IPresentablePart currentSelection) {
         restore.update();
-        move.setTarget(currentSelection);
-        move.update();
+        // RAP [bm]: 
+//        move.setTarget(currentSelection);
+//        move.update();
+        // RAPEND: [bm] 
         minimize.update();
         maximize.update();
         close.setTarget(currentSelection);

@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.presentations.StackDropResult;
 
 /**
- * @since 3.0
  */
 public abstract class TabDragHandler {
 

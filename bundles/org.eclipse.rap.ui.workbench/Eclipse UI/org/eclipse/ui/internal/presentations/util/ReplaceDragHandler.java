@@ -18,7 +18,6 @@ import org.eclipse.ui.internal.dnd.DragUtil;
 import org.eclipse.ui.presentations.StackDropResult;
 
 /**
- * @since 3.0
  */
 public class ReplaceDragHandler extends TabDragHandler {
 

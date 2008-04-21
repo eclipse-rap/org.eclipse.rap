@@ -34,7 +34,6 @@ import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 
 /**
- * @since 3.1
  */
 public class StandardSystemToolbar extends EventManager {
     private ToolBarManager toolbarManager;
@@ -189,7 +188,7 @@ public class StandardSystemToolbar extends EventManager {
         toolbarManager.add(paneMenu);
         paneMenu.setImage(WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_LCL_VIEW_MENU_THIN));
         paneMenu.setVisible(showPaneMenu);
-        paneMenu.setToolTipText(WorkbenchMessages.Menu); 
+        paneMenu.setToolTipText(WorkbenchMessages.get().Menu); 
 
         toolbarManager.add(showToolbar);
         showToolbar.setImage(WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_LCL_HIDE_TOOLBAR_THIN));
@@ -244,24 +243,23 @@ public class StandardSystemToolbar extends EventManager {
     /**
      * Updates the icons on the state buttons to match the given state
      * @param newState
-     * @since 3.1
      */
     public void setState(int newState) {
         if (min != null) {
             if (newState == IStackPresentationSite.STATE_MINIMIZED) {
-            	min.setToolTipText(WorkbenchMessages.StandardSystemToolbar_Restore);
+            	min.setToolTipText(WorkbenchMessages.get().StandardSystemToolbar_Restore);
                 min.setImage(WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_LCL_RESTORE_VIEW_THIN));
             } else {
-            	min.setToolTipText(WorkbenchMessages.StandardSystemToolbar_Minimize); 
+            	min.setToolTipText(WorkbenchMessages.get().StandardSystemToolbar_Minimize); 
                 min.setImage(WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_LCL_MIN_VIEW_THIN));
             }
         }
         if (max != null) {
             if (newState == IStackPresentationSite.STATE_MAXIMIZED) {
-            	max.setToolTipText(WorkbenchMessages.StandardSystemToolbar_Restore);
+            	max.setToolTipText(WorkbenchMessages.get().StandardSystemToolbar_Restore);
                 max.setImage(WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_LCL_RESTORE_VIEW_THIN));
             } else {
-            	max.setToolTipText(WorkbenchMessages.StandardSystemToolbar_Maximize);
+            	max.setToolTipText(WorkbenchMessages.get().StandardSystemToolbar_Maximize);
                 max.setImage(WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_LCL_MAX_VIEW_THIN));
             }
         }

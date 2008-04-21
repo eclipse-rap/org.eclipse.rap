@@ -25,8 +25,6 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
 /**
  * Implements the standard system menu used by the default presentation.
  * Not intended to be subclassed by clients
- * 
- * @since 3.1
  */
 public class StandardEditorSystemMenu extends StandardViewSystemMenu {
 
@@ -50,7 +48,7 @@ public class StandardEditorSystemMenu extends StandardViewSystemMenu {
     }
 
     String getMoveMenuText() {
-    	return WorkbenchMessages.EditorPane_moveEditor;
+    	return WorkbenchMessages.get().EditorPane_moveEditor;
     }
     
     /* (non-Javadoc)

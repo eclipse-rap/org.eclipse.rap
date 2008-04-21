@@ -127,8 +127,8 @@ public class ProxyControl {
 	 * 
 	 * @param visible
 	 *            <code>true</code> - set it to visible
-	 * @since 3.2
 	 */
+	/// XXX [bm] commented out by platform
 	public void setVisible(boolean visible) {
 //		this.visible = visible;
 	}
@@ -160,7 +160,11 @@ public class ProxyControl {
 	 */
 	public ProxyControl(Composite parent) {
 	    // Create the invisible dummy composite
-		control = new Composite(parent, SWT.NO_BACKGROUND);
+		// RAP [bm]: 
+//		control = new Composite(parent, SWT.NO_BACKGROUND);
+		control = new Composite(parent, SWT.NONE);
+		// RAPEND: [bm] 
+
 		control.setVisible(false);
 		
 		// Attach a layout to the dummy composite. This is used to make the preferred

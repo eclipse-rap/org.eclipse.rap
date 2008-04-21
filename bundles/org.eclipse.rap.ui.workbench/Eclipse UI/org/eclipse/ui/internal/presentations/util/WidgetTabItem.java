@@ -13,7 +13,6 @@ package org.eclipse.ui.internal.presentations.util;
 import org.eclipse.swt.widgets.Widget;
 
 /**
- * @since 3.1
  */
 public abstract class WidgetTabItem extends AbstractTabItem {
 

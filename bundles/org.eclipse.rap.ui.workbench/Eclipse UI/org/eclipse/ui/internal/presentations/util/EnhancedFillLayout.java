@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
 
 /**
- * @since 3.1
  */
 public class EnhancedFillLayout extends Layout {
 

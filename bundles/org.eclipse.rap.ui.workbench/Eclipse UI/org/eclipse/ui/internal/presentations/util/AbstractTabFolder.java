@@ -28,7 +28,6 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
 import org.eclipse.ui.presentations.PresentationUtil;
 
 /**
- * @since 3.1
  */
 public abstract class AbstractTabFolder {
     
@@ -101,7 +100,6 @@ public abstract class AbstractTabFolder {
      * by a keyboard shortcut (display coordinates)
      * 
      * @return the location for the pane menu (display coordinates)
-     * @since 3.1
      */
     public Point getPaneMenuLocation() {
         return getControl().toDisplay(new Point(0,0));
@@ -112,7 +110,6 @@ public abstract class AbstractTabFolder {
      * by a keyboard shortcut (display coordinates)
      * 
      * @return the location for the part list (display coordinates)
-     * @since 3.1
      */
     public Point getPartListLocation() {
         return getSystemMenuLocation();
@@ -123,7 +120,6 @@ public abstract class AbstractTabFolder {
      * by a keyboard shortcut (display coordinates)
      * 
      * @return the location for the pane menu (display coordinates)
-     * @since 3.1
      */
     public Point getSystemMenuLocation() {
         return getControl().toDisplay(new Point(0,0));
@@ -134,8 +130,6 @@ public abstract class AbstractTabFolder {
      * Any control passed into setToolbar must have this composite as its parent.
      * 
      * @return the parent composite that should be used for creating the toolbar
-     * 
-     * @since 3.1
      */
     public abstract Composite getToolbarParent();
 
@@ -143,7 +137,6 @@ public abstract class AbstractTabFolder {
      * Returns the main control for this folder.
      * 
      * @return the main control for the folder
-     * @since 3.1
      */
     public abstract Control getControl();
     
@@ -371,7 +364,6 @@ public abstract class AbstractTabFolder {
      *  
      * @param toTest a point (display coordinates)
      * @return true iff the point is on the presentation border
-     * @since 3.1
      */
     public boolean isOnBorder(Point toTest) {
         return false;
@@ -383,7 +375,6 @@ public abstract class AbstractTabFolder {
 	 * 
 	 * @param visible
 	 *            <code>true</code> - the folder is visible.
-	 * @since 3.2
 	 */
     public void setVisible(boolean visible) {
 		getControl().setVisible(visible);
@@ -395,7 +386,6 @@ public abstract class AbstractTabFolder {
 	 * 
 	 * @param show
 	 *            <code>true</code> - the min/max buttons are visible.
-	 * @since 3.3
 	 */
 	public void showMinMax(boolean show) {
 	}

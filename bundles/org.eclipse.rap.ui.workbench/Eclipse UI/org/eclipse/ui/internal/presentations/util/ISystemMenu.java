@@ -15,15 +15,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.presentations.IPresentablePart;
 
 /**
- * @since 3.1
  */
 public interface ISystemMenu {
     void show(Control control, Point displayCoordinates, IPresentablePart currentSelection);
     
     /**
      * Disposes of this system menu.
-     * 
-     * @since 3.3
      */
     void dispose();
 }
