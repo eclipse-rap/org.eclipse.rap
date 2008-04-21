@@ -21,7 +21,7 @@ public class SystemMenuCloseAll extends Action implements ISelfUpdatingAction {
 
     public SystemMenuCloseAll(IStackPresentationSite presentation) {
         this.presentation = presentation;
-        setText(WorkbenchMessages.PartPane_closeAll);
+        setText(WorkbenchMessages.get().PartPane_closeAll);
     }
 
     public void dispose() {

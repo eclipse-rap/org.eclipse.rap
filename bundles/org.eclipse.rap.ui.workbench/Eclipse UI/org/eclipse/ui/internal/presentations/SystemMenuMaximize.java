@@ -21,7 +21,7 @@ public class SystemMenuMaximize extends SystemMenuStateChange {
      * @param state
      */
     public SystemMenuMaximize(IStackPresentationSite site) {
-        super(site, WorkbenchMessages.PartPane_maximize,
+        super(site, WorkbenchMessages.get().PartPane_maximize,
                 IStackPresentationSite.STATE_MAXIMIZED);
     }
 

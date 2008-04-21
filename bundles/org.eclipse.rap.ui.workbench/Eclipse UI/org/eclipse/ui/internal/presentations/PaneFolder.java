@@ -162,23 +162,25 @@ public final class PaneFolder {
      */
     private int mousedownState = -1;
     
-    /**
-     * Location of the last mousedown event. This is used to determine if the
-     * mouseup event occured on the same item.
-     */
-    private Point mousedownPoint = new Point(-1, -1);
-    
-    /**
-     * Time of the last mousedown event. This is used to determine if the
-     * mouseup event occurs within a reasonable time.
-     */
-    private long mousedownTime = 0L;
-    
-    /**
-	 * Timeout value for when a pair of mousedown, mouseup events should not be
-	 * interpreted as a click.
-	 */
-    private static long CLICK_TIME = 1000;
+    // RAP [bm]: not used
+//    /**
+//     * Location of the last mousedown event. This is used to determine if the
+//     * mouseup event occured on the same item.
+//     */
+//    private Point mousedownPoint = new Point(-1, -1);
+//    
+//    /**
+//     * Time of the last mousedown event. This is used to determine if the
+//     * mouseup event occurs within a reasonable time.
+//     */
+//    private long mousedownTime = 0L;
+//    
+//    /**
+//	 * Timeout value for when a pair of mousedown, mouseup events should not be
+//	 * interpreted as a click.
+//	 */
+//    private static long CLICK_TIME = 1000;
+    // RAPEND: [bm] 
 
     // CTabFolder listener
     private CTabFolder2Adapter expandListener = new CTabFolder2Adapter() {
@@ -216,22 +218,26 @@ public final class PaneFolder {
     private MouseListener mouseListener = new MouseAdapter() {
         public void mouseDown(MouseEvent e) {
             mousedownState = getState();
-            mousedownPoint = new Point(e.x, e.y);
-            mousedownTime = e.time & 0x0FFFFFFFFL;
+//            mousedownPoint = new Point(e.x, e.y);
+            // RAP [bm]: Event#time
+//            mousedownTime = e.time & 0x0FFFFFFFFL;
         }
 
         public void mouseUp(MouseEvent e) {
-			if (e.button == 2 && e.count == 1) {
-				Point mouseupPoint = new Point(e.x, e.y);
-				CTabItem item = tabFolder.getItem(mouseupPoint);
-				long mouseupTime = e.time & 0x0FFFFFFFFL;
-				if (item != null && (mouseupTime - mousedownTime <= CLICK_TIME)) {
-					CTabItem mousedownItem = tabFolder.getItem(mousedownPoint);
-					if (mousedownItem == item) {
-						notifyCloseListeners(item);
-					}
-				}
-			}
+        	// RAP [bm]: MouseEvent#count
+        	// RAP [bm]: Event#time
+        	// RAP [bm]: TabFolder#getItem(Point)
+//			if (e.button == 2 && e.count == 1) {
+//				Point mouseupPoint = new Point(e.x, e.y);
+//				CTabItem item = tabFolder.getItem(mouseupPoint);
+//				long mouseupTime = e.time & 0x0FFFFFFFFL;
+//				if (item != null && (mouseupTime - mousedownTime <= CLICK_TIME)) {
+//					CTabItem mousedownItem = tabFolder.getItem(mousedownPoint);
+//					if (mousedownItem == item) {
+//						notifyCloseListeners(item);
+//					}
+//				}
+//			}
         }
         
         public void mouseDoubleClick(MouseEvent e) {
@@ -264,7 +270,11 @@ public final class PaneFolder {
 			tabFolder.setMRUVisible(((TabBehaviour)Tweaklets.get(TabBehaviour.KEY)).enableMRUTabVisibility());
 
             // Create a proxy control to measure the title area of the tab folder
-            titleAreaProxy = new Composite(tabFolder, SWT.NO_BACKGROUND);
+			// RAP [bm]: SWT.NO_BACKGROUND
+//            titleAreaProxy = new Composite(tabFolder, SWT.NO_BACKGROUND);
+            titleAreaProxy = new Composite(tabFolder, SWT.NONE);
+            // RAPEND: [bm] 
+
             titleAreaProxy.setVisible(false);
             titleAreaProxy.addControlListener(new ControlListener() {
                 public void controlMoved(ControlEvent e) {
@@ -294,7 +304,10 @@ public final class PaneFolder {
 
         // Initialize view form
         {
-            viewForm = new ViewForm(tabFolder, SWT.NO_BACKGROUND);
+        	// RAP [bm]: 
+//            viewForm = new ViewForm(tabFolder, SWT.NO_BACKGROUND);
+            viewForm = new ViewForm(tabFolder, SWT.NONE);
+            // RAPEND: [bm] 
 
             // Only attach these to the viewForm when there's actually a control
             // to display
@@ -462,8 +475,10 @@ public final class PaneFolder {
         inLayout = true;
 		try {
 	        
-        	viewForm.setLayoutDeferred(true);
-	
+			// RAP [bm]: 
+//        	viewForm.setLayoutDeferred(true);
+			// RAPEND: [bm] 
+
 	        tabFolder.setMinimizeVisible(showButtons && minimizeVisible);
 	        tabFolder.setMaximizeVisible(showButtons && maximizeVisible);
 	
@@ -550,7 +565,10 @@ public final class PaneFolder {
 	        Rectangle newBounds = tabFolder.getClientArea();
 	        viewForm.setBounds(newBounds);
         } finally {
-        	viewForm.setLayoutDeferred(false);
+        	// RAP [bm]: 
+//        	viewForm.setLayoutDeferred(false);
+        	// RAPEND: [bm] 
+
         	inLayout = false;
         }
 
@@ -762,7 +780,15 @@ public final class PaneFolder {
      */
     public void setSelectionBackground(Color[] bgColors, int[] percentages,
             boolean vertical) {
-        tabFolder.setSelectionBackground(bgColors, percentages, vertical);
+    	// RAP [bm]: TabFolder#setSelectionBackground
+//        tabFolder.setSelectionBackground(bgColors, percentages, vertical);
+        if (bgColors == null) {
+			tabFolder.setSelectionBackground(null);
+		} else {
+			tabFolder.setSelectionBackground(bgColors[0]);
+		}
+    	// RAPEND: [bm]
+
     }
 
     public CTabItem getItem(int idx) {
@@ -799,9 +825,11 @@ public final class PaneFolder {
         return tabFolder.getItems();
     }
 
-    public CTabItem getItem(Point toGet) {
-        return tabFolder.getItem(toGet);
-    }
+    // RAP [bm]: TabFolder#getItem(Point)
+//    public CTabItem getItem(Point toGet) {
+//        return tabFolder.getItem(toGet);
+//    }
+    // RAPEND: [bm] 
 
     public CTabItem getSelection() {
         return tabFolder.getSelection();
@@ -841,14 +869,18 @@ public final class PaneFolder {
      * @param traditionalTab
      */
     public void setSimpleTab(boolean traditionalTab) {
-        tabFolder.setSimple(traditionalTab);
+    	// RAP [bm]: 
+//        tabFolder.setSimple(traditionalTab);
+    	// RAPEND: [bm] 
     }
 
     /**
      * @param b
      */
     public void setUnselectedImageVisible(boolean b) {
-        tabFolder.setUnselectedImageVisible(b);
+    	// RAP [bm]: 
+//        tabFolder.setUnselectedImageVisible(b);
+    	// RAPEND: [bm] 
     }
 
     /**

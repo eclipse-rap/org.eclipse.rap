@@ -33,7 +33,7 @@ public class SystemMenuSizeFastView extends ContributionItem {
 
     public void fill(Menu menu, int index) {
         MenuItem item = new MenuItem(menu, SWT.NONE, index);
-        item.setText(WorkbenchMessages.PartPane_size); 
+        item.setText(WorkbenchMessages.get().PartPane_size); 
         item.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {

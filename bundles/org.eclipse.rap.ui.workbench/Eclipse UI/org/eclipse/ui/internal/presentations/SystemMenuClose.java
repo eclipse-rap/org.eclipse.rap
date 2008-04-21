@@ -29,7 +29,7 @@ public final class SystemMenuClose extends Action implements ISelfUpdatingAction
 
     public SystemMenuClose(IStackPresentationSite site) {
         this.site = site;
-        setText(WorkbenchMessages.PartPane_close);
+        setText(WorkbenchMessages.get().PartPane_close);
     }
 
     public void dispose() {

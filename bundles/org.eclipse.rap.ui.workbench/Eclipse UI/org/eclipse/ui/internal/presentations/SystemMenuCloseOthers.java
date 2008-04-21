@@ -27,7 +27,7 @@ public class SystemMenuCloseOthers extends Action implements
 
     public SystemMenuCloseOthers(IStackPresentationSite stackPresentation) {
         this.stackPresentation = stackPresentation;
-        setText(WorkbenchMessages.PartPane_closeOthers); 
+        setText(WorkbenchMessages.get().PartPane_closeOthers); 
     }
 
     public void dispose() {

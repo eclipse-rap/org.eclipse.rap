@@ -31,7 +31,7 @@ public class SystemMenuFastView extends Action implements ISelfUpdatingAction {
     
     public SystemMenuFastView(IStackPresentationSite site) {
         this.site = site;
-        setText(WorkbenchMessages.ViewPane_fastView);
+        setText(WorkbenchMessages.get().ViewPane_fastView);
         update();
     }
 
@@ -58,10 +58,10 @@ public class SystemMenuFastView extends Action implements ISelfUpdatingAction {
 
         // it's 'restore' if we're not using a real fast view
         if (realFV) {
-        	setText(WorkbenchMessages.ViewPane_fastView);
+        	setText(WorkbenchMessages.get().ViewPane_fastView);
         }
         else {
-        	setText(WorkbenchMessages.StandardSystemToolbar_Restore);
+        	setText(WorkbenchMessages.get().StandardSystemToolbar_Restore);
         	setChecked(false);
         }
         

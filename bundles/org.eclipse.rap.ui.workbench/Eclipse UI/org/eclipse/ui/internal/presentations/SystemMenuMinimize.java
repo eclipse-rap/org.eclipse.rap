@@ -21,7 +21,7 @@ public class SystemMenuMinimize extends SystemMenuStateChange {
      * @param state
      */
     public SystemMenuMinimize(IStackPresentationSite site) {
-        super(site, WorkbenchMessages.ViewPane_minimizeView,
+        super(site, WorkbenchMessages.get().ViewPane_minimizeView,
                 IStackPresentationSite.STATE_MINIMIZED);
     }
 

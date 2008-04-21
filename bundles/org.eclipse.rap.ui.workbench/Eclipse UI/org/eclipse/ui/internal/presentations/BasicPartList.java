@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -115,10 +116,13 @@ public class BasicPartList extends AbstractTableInformationControl {
                 Font originalFont = control.getFont();
                 FontData fontData[] = originalFont.getFontData();
                 // Adding the bold attribute
-                for (int i = 0; i < fontData.length; i++) {
-					fontData[i].setStyle(fontData[i].getStyle() | SWT.BOLD);
-				}
-                boldFont = new Font(control.getDisplay(), fontData);
+                // RAP [bm]: FontData#setStyle
+//                for (int i = 0; i < fontData.length; i++) {
+//					fontData[i].setStyle(fontData[i].getStyle() | SWT.BOLD);
+//				}
+//                boldFont = new Font(control.getDisplay(), fontData);
+                boldFont = Graphics.getFont(fontData[0]);
+                // RAPEND: [bm] 
             }
             return boldFont;
         }
@@ -126,7 +130,8 @@ public class BasicPartList extends AbstractTableInformationControl {
         public void dispose() {
             super.dispose();
             if (boldFont != null) {
-				boldFont.dispose();
+            	// RAP [bm]: Font#dispose
+//				boldFont.dispose();
 			}
         }
     }

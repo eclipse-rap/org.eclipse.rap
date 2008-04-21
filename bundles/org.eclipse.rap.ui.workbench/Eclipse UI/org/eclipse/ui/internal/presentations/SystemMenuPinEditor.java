@@ -25,7 +25,7 @@ public class SystemMenuPinEditor extends Action implements ISelfUpdatingAction {
     private EditorPane editorPane;
 
     public SystemMenuPinEditor(EditorPane pane) {
-        setText(WorkbenchMessages.EditorPane_pinEditor);
+        setText(WorkbenchMessages.get().EditorPane_pinEditor);
         setPane(pane);
     }
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.presentations;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.internal.RAPDialogUtil;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -20,19 +20,14 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -40,7 +35,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Menu;
@@ -217,21 +211,23 @@ public abstract class AbstractTableInformationControl {
         fTableViewer = createTableViewer(fComposite, controlStyle);
 
         final Table table = fTableViewer.getTable();
-        table.addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
-                if (e.character == SWT.ESC) {
-					dispose();
-				} else if (e.character == SWT.DEL) {
-                    removeSelectedItems();
-                    e.character = SWT.NONE;
-                    e.doit = false;
-                }
-            }
-
-            public void keyReleased(KeyEvent e) {
-                // do nothing
-            }
-        });
+        // RAP [bm]: 
+//        table.addKeyListener(new KeyListener() {
+//            public void keyPressed(KeyEvent e) {
+//                if (e.character == SWT.ESC) {
+//					dispose();
+//				} else if (e.character == SWT.DEL) {
+//                    removeSelectedItems();
+//                    e.character = SWT.NONE;
+//                    e.doit = false;
+//                }
+//            }
+//
+//            public void keyReleased(KeyEvent e) {
+//                // do nothing
+//            }
+//        });
+        // RAPEND: [bm] 
 
         table.addSelectionListener(new SelectionListener() {
             public void widgetSelected(SelectionEvent e) {
@@ -254,46 +250,48 @@ public abstract class AbstractTableInformationControl {
          * TODO: remove this code once bug 62405 is fixed for the mainstream GTK
          * version
          */
-        final int ignoreEventCount = Platform.getWS().equals(Platform.WS_GTK) ? 4 : 1;
     
-        table.addMouseMoveListener(new MouseMoveListener() {
-            TableItem fLastItem = null;
-            int lastY = 0;
-            int itemHeightdiv4 = table.getItemHeight() / 4;
-            int tableHeight = table.getBounds().height;
-            Point tableLoc = table.toDisplay(0,0);
-            int divCount = 0;
-            public void mouseMove(MouseEvent e) {
-                if (divCount == ignoreEventCount) {
-					divCount = 0;
-				}
-                if (table.equals(e.getSource()) & ++divCount == ignoreEventCount) {
-                    Object o = table.getItem(new Point(e.x, e.y));
-                    if (o instanceof TableItem && lastY != e.y) {
-                        lastY = e.y;
-                        if (!o.equals(fLastItem)) {
-                            fLastItem = (TableItem) o;
-                            table.setSelection(new TableItem[] { fLastItem });
-                        } else if (e.y < itemHeightdiv4) {
-                            // Scroll up
-                            Item item = fTableViewer.scrollUp(e.x + tableLoc.x, e.y + tableLoc.y);
-                            if (item instanceof TableItem) {
-                                fLastItem = (TableItem) item;
-                                table.setSelection(new TableItem[] { fLastItem });
-                            }
-                        } else if (e.y > tableHeight - itemHeightdiv4) {
-                            // Scroll down
-                            Item item = fTableViewer.scrollDown(e.x + tableLoc.x, e.y + tableLoc.y);
-                            if (item instanceof TableItem) {
-                                fLastItem = (TableItem) item;
-                                table.setSelection(new TableItem[] { fLastItem });
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    
+        // RAP [bm]: 
+//        final int ignoreEventCount = Platform.getWS().equals(Platform.WS_GTK) ? 4 : 1;
+//        table.addMouseMoveListener(new MouseMoveListener() {
+//            TableItem fLastItem = null;
+//            int lastY = 0;
+//            int itemHeightdiv4 = table.getItemHeight() / 4;
+//            int tableHeight = table.getBounds().height;
+//            Point tableLoc = table.toDisplay(0,0);
+//            int divCount = 0;
+//            public void mouseMove(MouseEvent e) {
+//                if (divCount == ignoreEventCount) {
+//					divCount = 0;
+//				}
+//                if (table.equals(e.getSource()) & ++divCount == ignoreEventCount) {
+//                    Object o = table.getItem(new Point(e.x, e.y));
+//                    if (o instanceof TableItem && lastY != e.y) {
+//                        lastY = e.y;
+//                        if (!o.equals(fLastItem)) {
+//                            fLastItem = (TableItem) o;
+//                            table.setSelection(new TableItem[] { fLastItem });
+//                        } else if (e.y < itemHeightdiv4) {
+//                            // Scroll up
+//                            Item item = fTableViewer.scrollUp(e.x + tableLoc.x, e.y + tableLoc.y);
+//                            if (item instanceof TableItem) {
+//                                fLastItem = (TableItem) item;
+//                                table.setSelection(new TableItem[] { fLastItem });
+//                            }
+//                        } else if (e.y > tableHeight - itemHeightdiv4) {
+//                            // Scroll down
+//                            Item item = fTableViewer.scrollDown(e.x + tableLoc.x, e.y + tableLoc.y);
+//                            if (item instanceof TableItem) {
+//                                fLastItem = (TableItem) item;
+//                                table.setSelection(new TableItem[] { fLastItem });
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        });
+        // RAPEND: [bm] 
+
         table.addMouseListener(new MouseAdapter() {
             public void mouseUp(MouseEvent e) {
                 if (table.getSelectionCount() < 1) {
@@ -315,7 +313,7 @@ public abstract class AbstractTableInformationControl {
                     if (tItem != null) {
                         Menu menu = new Menu(fTableViewer.getTable());
                         MenuItem mItem = new MenuItem(menu, SWT.NONE);
-                        mItem.setText(WorkbenchMessages.PartPane_close);
+                        mItem.setText(WorkbenchMessages.get().PartPane_close);
                         mItem.addSelectionListener(new SelectionAdapter() {
                             public void widgetSelected(
                                     SelectionEvent selectionEvent) {
@@ -363,44 +361,52 @@ public abstract class AbstractTableInformationControl {
         fFilterText = new Text(parent, SWT.NONE);
 
         GridData data = new GridData();
-        GC gc = new GC(parent);
-        gc.setFont(parent.getFont());
-        FontMetrics fontMetrics = gc.getFontMetrics();
-        gc.dispose();
+        // RAP [bm]: 
+//        GC gc = new GC(parent);
+//        gc.setFont(parent.getFont());
+//        FontMetrics fontMetrics = gc.getFontMetrics();
+//        gc.dispose();
+//        data.heightHint = org.eclipse.jface.dialogs.Dialog
+//        .convertHeightInCharsToPixels(fontMetrics, 1);
+        data.heightHint = RAPDialogUtil.convertHeightInCharsToPixels(parent.getFont(), 1);
+        // RAPEND: [bm] 
 
-        data.heightHint = org.eclipse.jface.dialogs.Dialog
-                .convertHeightInCharsToPixels(fontMetrics, 1);
         data.horizontalAlignment = GridData.FILL;
         data.verticalAlignment = GridData.BEGINNING;
         fFilterText.setLayoutData(data);
 
-        fFilterText.addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
-                if (e.keyCode == 0x0D) {
-					gotoSelectedElement();
-				}
-                if (e.keyCode == SWT.ARROW_DOWN) {
-                    fTableViewer.getTable().setFocus();
-                    fTableViewer.getTable().setSelection(0);
-                }
-                if (e.keyCode == SWT.ARROW_UP) {
-                    fTableViewer.getTable().setFocus();
-                    fTableViewer.getTable().setSelection(
-                            fTableViewer.getTable().getItemCount() - 1);
-                }
-                if (e.character == 0x1B) {
-					dispose();
-				}
-            }
-
-            public void keyReleased(KeyEvent e) {
-                // do nothing
-            }
-        });
+        // RAP [bm]: 
+//        fFilterText.addKeyListener(new KeyListener() {
+//            public void keyPressed(KeyEvent e) {
+//                if (e.keyCode == 0x0D) {
+//					gotoSelectedElement();
+//				}
+//                if (e.keyCode == SWT.ARROW_DOWN) {
+//                    fTableViewer.getTable().setFocus();
+//                    fTableViewer.getTable().setSelection(0);
+//                }
+//                if (e.keyCode == SWT.ARROW_UP) {
+//                    fTableViewer.getTable().setFocus();
+//                    fTableViewer.getTable().setSelection(
+//                            fTableViewer.getTable().getItemCount() - 1);
+//                }
+//                if (e.character == 0x1B) {
+//					dispose();
+//				}
+//            }
+//
+//            public void keyReleased(KeyEvent e) {
+//                // do nothing
+//            }
+//        });
+        // RAPEND: [bm] 
 
         // Horizontal separator line
-        Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL
-                | SWT.LINE_DOT);
+        // RAP [bm]: SWT.LINE_DOT
+//        Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL
+//                | SWT.LINE_DOT);
+      Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+        // RAPEND: [bm] 
         separator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         return fFilterText;
