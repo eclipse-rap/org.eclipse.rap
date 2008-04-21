@@ -16,7 +16,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.ui.internal.presentations.BasicPartList;
 import org.eclipse.ui.internal.presentations.util.ISystemMenu;
 import org.eclipse.ui.internal.presentations.util.PresentablePartFolder;
@@ -24,7 +23,6 @@ import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 
 /**
- * @since 3.1
  */
 public class DefaultPartList implements ISystemMenu {
 
@@ -51,8 +49,12 @@ public class DefaultPartList implements ISystemMenu {
         int x = displayCoordinates.x;
         int y = displayCoordinates.y;
 
-        Monitor mon = folder.getTabFolder().getControl().getMonitor();
-        Rectangle bounds = mon.getClientArea();
+        // RAP [bm]: Monitor
+//        Monitor mon = folder.getTabFolder().getControl().getMonitor();
+//        Rectangle bounds = mon.getClientArea();
+        Rectangle bounds = folder.getTabFolder().getControl().getDisplay().getBounds();
+        // RAPEND: [bm] 
+
         if (x + size.x > bounds.x + bounds.width) {
 			x = bounds.x + bounds.width - size.x;
 		}

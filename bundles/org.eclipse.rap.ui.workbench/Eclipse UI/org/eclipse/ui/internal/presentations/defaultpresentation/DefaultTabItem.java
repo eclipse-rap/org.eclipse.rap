@@ -26,7 +26,6 @@ import org.eclipse.ui.internal.util.Util;
 import com.ibm.icu.text.MessageFormat;
 
 /**
- * @since 3.1
  */
 public class DefaultTabItem extends WidgetTabItem {
 
@@ -120,8 +119,6 @@ public class DefaultTabItem extends WidgetTabItem {
 	/**
 	 * Escapes all the ampersands in the given string such that they can be
 	 * displayed verbatim in an SWT label rather than treated as accelerators.
-	 * 
-	 * @since 3.1
 	 * 
 	 * @return a string where all ampersands are escaped
 	 */
@@ -225,7 +222,7 @@ public class DefaultTabItem extends WidgetTabItem {
 
 		if (!contentDescription.equals("")) { //$NON-NLS-1$
 			text = MessageFormat.format(
-					WorkbenchMessages.EditorPart_AutoTitleFormat, new String[] {
+					WorkbenchMessages.get().EditorPart_AutoTitleFormat, new String[] {
 							text, contentDescription });
 		}
 

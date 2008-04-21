@@ -11,9 +11,6 @@
 package org.eclipse.ui.internal.presentations.defaultpresentation;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -27,32 +24,34 @@ import org.eclipse.ui.internal.presentations.util.PartInfo;
  * Implements the AbstractTabFolder interface, however this object only displays
  * the content of the currently selected part. There are no tabs, no title, no toolbar,
  * etc. There is no means to select a different part, unless it is done programmatically.
- * 
- * @since 3.1
  */
 public class EmptyTabFolder extends AbstractTabFolder {
 
     private Composite control;
     private Control childControl;
-    private Color borderColor;
+    // RAP [bm]: 
+//    private Color borderColor;
     
     public EmptyTabFolder(Composite parent, boolean showborder) {
         control = new Composite(parent, SWT.NONE);
         EnhancedFillLayout layout = new EnhancedFillLayout();
         control.setLayout(layout);
-        borderColor = parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
+        // RAP [bm]: 
+//        borderColor = parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
         if (showborder) {
             layout.xmargin = 1;
             layout.ymargin = 1;
-	        control.addPaintListener(new PaintListener() {
-	        	public void paintControl(PaintEvent e) {
-	        		e.gc.setForeground(borderColor);
-	        		Rectangle rect = control.getClientArea();
-	        		rect.width--;
-	        		rect.height--;
-	        		e.gc.drawRectangle(rect);
-	        	}
-	        });
+            // RAP [bm]: 
+//	        control.addPaintListener(new PaintListener() {
+//	        	public void paintControl(PaintEvent e) {
+//	        		e.gc.setForeground(borderColor);
+//	        		Rectangle rect = control.getClientArea();
+//	        		rect.width--;
+//	        		rect.height--;
+//	        		e.gc.drawRectangle(rect);
+//	        	}
+//	        });
+            // RAPEND: [bm] 
         }
     }
     

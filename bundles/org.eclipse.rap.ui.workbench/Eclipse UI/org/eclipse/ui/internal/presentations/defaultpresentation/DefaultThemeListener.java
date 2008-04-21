@@ -22,7 +22,6 @@ import org.eclipse.ui.internal.themes.LightColorFactory;
 import org.eclipse.ui.presentations.StackPresentation;
 
 /**
- * @since 3.1
  */
 public class DefaultThemeListener extends AbstractPropertyListener {
 

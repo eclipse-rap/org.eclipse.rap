@@ -19,7 +19,6 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
 import org.eclipse.ui.presentations.StackPresentation;
 
 /**
- * @since 3.1
  */
 public class NativePresentationFactory extends AbstractPresentationFactory {
 

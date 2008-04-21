@@ -18,7 +18,6 @@ import org.eclipse.ui.internal.presentations.util.WidgetTabItem;
 import org.eclipse.ui.internal.util.Util;
 
 /**
- * @since 3.1
  */
 public class NativeTabItem extends WidgetTabItem {
     
@@ -39,14 +38,17 @@ public class NativeTabItem extends WidgetTabItem {
         if (!Util.equals(widget.getText(), info.name)) {
             widget.setText(info.name);
         }
-        String oldToolTip = Util.safeString(widget.getToolTipText());
-        
-        if (!Util.equals(info.toolTip, oldToolTip)) {
-            String toolTip = info.toolTip;
-            if (toolTip.length() == 0) {
-                toolTip = null;
-            }
-            widget.setToolTipText(toolTip);
-        }
+        // RAP [bm]: TabItem#setToolTipText
+//        String oldToolTip = Util.safeString(widget.getToolTipText());
+//        
+//        if (!Util.equals(info.toolTip, oldToolTip)) {
+//            String toolTip = info.toolTip;
+//            if (toolTip.length() == 0) {
+//                toolTip = null;
+//            }
+//            widget.setToolTipText(toolTip);
+//        }
+        // RAPEND: [bm] 
+
     }    
 }

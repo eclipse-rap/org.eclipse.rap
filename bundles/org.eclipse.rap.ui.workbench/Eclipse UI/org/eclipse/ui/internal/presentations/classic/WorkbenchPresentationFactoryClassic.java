@@ -29,8 +29,6 @@ import org.eclipse.ui.presentations.WorkbenchPresentationFactory;
 
 /**
  * The classic presentation factory for the Workbench (the 3.0 look).
- * 
- * @since 3.4
  *
  */
 public class WorkbenchPresentationFactoryClassic extends

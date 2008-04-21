@@ -14,7 +14,6 @@ import org.eclipse.ui.internal.preferences.AbstractBooleanListener;
 import org.eclipse.ui.internal.preferences.IDynamicPropertyMap;
 
 /**
- * @since 3.1
  */
 public final class DefaultMultiTabListener extends AbstractBooleanListener {
 

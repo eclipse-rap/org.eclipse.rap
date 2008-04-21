@@ -13,7 +13,6 @@ package org.eclipse.ui.internal.presentations.defaultpresentation;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * @since 3.1
  */
 public final class DefaultTabFolderColors {
     Color foreground;

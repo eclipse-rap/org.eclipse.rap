@@ -36,7 +36,6 @@ import org.eclipse.ui.internal.presentations.util.TabFolderEvent;
 import org.eclipse.ui.internal.util.Util;
 
 /**
- * @since 3.1
  */
 public class NativeTabFolder extends AbstractTabFolder {
 
@@ -168,7 +167,6 @@ public class NativeTabFolder extends AbstractTabFolder {
     /**
      * @param item
      * @return
-     * @since 3.1
      */
     private AbstractTabItem getTab(Widget item) {
         return (AbstractTabItem)item.getData();
@@ -278,7 +276,6 @@ public class NativeTabFolder extends AbstractTabFolder {
     
     /**
      * @return
-     * @since 3.1
      */
     public TabFolder getTabFolder() {
         return control;
@@ -287,7 +284,6 @@ public class NativeTabFolder extends AbstractTabFolder {
     /**
      * @param item
      * @param newTitle
-     * @since 3.1
      */
     /* protected */ void setSelectedTitle(String newTitle) {
         title.setText(newTitle);
@@ -295,7 +291,6 @@ public class NativeTabFolder extends AbstractTabFolder {
 
     /**
      * @param image
-     * @since 3.1
      */
     /* protected */ void setSelectedImage(Image image) {
         title.setImage(image);
@@ -310,7 +305,6 @@ public class NativeTabFolder extends AbstractTabFolder {
     
     /**
      * @param enabled
-     * @since 3.1
      */
     public void enablePaneMenu(boolean enabled) {
         systemToolbar.enablePaneMenu(enabled);

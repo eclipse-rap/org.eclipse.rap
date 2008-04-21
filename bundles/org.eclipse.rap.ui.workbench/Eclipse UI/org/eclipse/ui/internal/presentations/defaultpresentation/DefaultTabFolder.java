@@ -13,6 +13,7 @@ package org.eclipse.ui.internal.presentations.defaultpresentation;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.Geometry;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolderEvent;
@@ -22,7 +23,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -46,7 +46,6 @@ import org.eclipse.ui.internal.presentations.util.TabFolderEvent;
 import org.eclipse.ui.internal.util.Util;
 
 /**
- * @since 3.1
  */
 public class DefaultTabFolder extends AbstractTabFolder {
 
@@ -69,7 +68,6 @@ public class DefaultTabFolder extends AbstractTabFolder {
         }
         /**
          * 
-         * @since 3.0
          */
         public void showList(CTabFolderEvent event) {
             event.doit = false;
@@ -102,7 +100,10 @@ public class DefaultTabFolder extends AbstractTabFolder {
      * @param allowMax
      */
     public DefaultTabFolder(Composite parent, int flags, boolean allowMin, boolean allowMax) {
-        paneFolder = new PaneFolder(parent, flags | SWT.NO_BACKGROUND);
+    	// RAP [bm]: 
+//        paneFolder = new PaneFolder(parent, flags | SWT.NO_BACKGROUND);
+        paneFolder = new PaneFolder(parent, flags);
+        // RAPEND: [bm] 
         paneFolder.addButtonListener(buttonListener);
         paneFolder.setMinimizeVisible(allowMin);
         paneFolder.setMaximizeVisible(allowMax);
@@ -111,15 +112,19 @@ public class DefaultTabFolder extends AbstractTabFolder {
         
         // Initialize view menu dropdown
         {            
-            ToolBar actualToolBar = new ToolBar(paneFolder.getControl(), SWT.FLAT | SWT.NO_BACKGROUND);
+        	// RAP [bm]: 
+//        	ToolBar actualToolBar = new ToolBar(paneFolder.getControl(), SWT.FLAT | SWT.NO_BACKGROUND);
+            ToolBar actualToolBar = new ToolBar(paneFolder.getControl(), SWT.FLAT);
+            // RAPEND: [bm] 
             viewToolBar = actualToolBar;
             
 	        ToolItem pullDownButton = new ToolItem(actualToolBar, SWT.PUSH);
 	        Image hoverImage = WorkbenchImages
 	                .getImage(IWorkbenchGraphicConstants.IMG_LCL_RENDERED_VIEW_MENU);
-	        pullDownButton.setDisabledImage(hoverImage);
+	        // RAP [bm]: ToolItem#setDisabledImage
+//	        pullDownButton.setDisabledImage(hoverImage);
 	        pullDownButton.setImage(hoverImage);
-	        pullDownButton.setToolTipText(WorkbenchMessages.Menu); 
+	        pullDownButton.setToolTipText(WorkbenchMessages.get().Menu); 
             actualToolBar.addMouseListener(new MouseAdapter() {
                 public void mouseDown(MouseEvent e) {
                     fireEvent(TabFolderEvent.EVENT_PANE_MENU, getSelection(), getPaneMenuLocation());
@@ -158,7 +163,6 @@ public class DefaultTabFolder extends AbstractTabFolder {
      *            The number of characters to display in the tab folder; this
      *            value should be a positive integer.
      * @see org.eclipse.swt.custom.CTabFolder#setMinimumCharacters(int)
-     * @since 3.1
      */
     public void setMinimumCharacters(int count) {
         paneFolder.setMinimumCharacters(count);
@@ -171,7 +175,6 @@ public class DefaultTabFolder extends AbstractTabFolder {
     /**
      * @param item
      * @return
-     * @since 3.1
      */
     protected DefaultTabItem getTab(CTabItem item) {
         return (DefaultTabItem)item.getData();
@@ -278,7 +281,6 @@ public class DefaultTabFolder extends AbstractTabFolder {
 
     /**
      * @param enabled
-     * @since 3.1
      */
     public void enablePaneMenu(boolean enabled) {
         if (enabled) {
@@ -428,7 +430,6 @@ public class DefaultTabFolder extends AbstractTabFolder {
     
     /**
      * 
-     * @since 3.1
      */
     private void updateColors() {
         DefaultTabFolderColors currentColors = shellActive ? 
@@ -456,7 +457,6 @@ public class DefaultTabFolder extends AbstractTabFolder {
 
     /**
      * @param font
-     * @since 3.1
      */
     public void setFont(Font font) {
         if (font != paneFolder.getControl().getFont()) {
@@ -470,20 +470,23 @@ public class DefaultTabFolder extends AbstractTabFolder {
      * @return the required tab height for this folder.
      */
     protected int computeTabHeight() {
-        GC gc = new GC(getControl());
-
-        // Compute the tab height
+    	// RAP [bm]: 
+//        GC gc = new GC(getControl());
+//
+//        // Compute the tab height
+//        int tabHeight = Math.max(viewToolBar.computeSize(SWT.DEFAULT,
+//                SWT.DEFAULT).y, gc.getFontMetrics().getHeight());
+//
+//        gc.dispose();
         int tabHeight = Math.max(viewToolBar.computeSize(SWT.DEFAULT,
-                SWT.DEFAULT).y, gc.getFontMetrics().getHeight());
-
-        gc.dispose();
+              SWT.DEFAULT).y, Graphics.getCharHeight(getControl().getFont()));
+    	// RAPEND: [bm] 
 
         return tabHeight;
     }
 
     /**
      * @param b
-     * @since 3.1
      */
     public void setSingleTab(boolean b) {
         paneFolder.setSingleTab(b);
