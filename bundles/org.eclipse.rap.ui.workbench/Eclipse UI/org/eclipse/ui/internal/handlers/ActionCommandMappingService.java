@@ -26,8 +26,6 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
  * This class is not intended for use outside of the
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
- * 
- * @since 3.2
  */
 public final class ActionCommandMappingService implements
 		IActionCommandMappingService {

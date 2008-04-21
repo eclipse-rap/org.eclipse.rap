@@ -41,8 +41,6 @@ import org.eclipse.ui.services.IServiceLocator;
  * Provides services related to activating and deactivating handlers within the
  * workbench.
  * </p>
- * 
- * @since 3.1
  */
 public final class HandlerService implements IHandlerService {
 
@@ -238,7 +236,6 @@ public final class HandlerService implements IHandlerService {
 	 * @param context
 	 *            the context to use for activations
 	 * @return the correct IHandler or <code>null</code>
-	 * @since 3.3
 	 */
 	public final IHandler findHandler(String commandId,
 			IEvaluationContext context) {

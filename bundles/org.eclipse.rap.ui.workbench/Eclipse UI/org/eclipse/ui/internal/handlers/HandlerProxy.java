@@ -49,8 +49,6 @@ import org.eclipse.ui.services.IEvaluationService;
  * attributes defined publicly in this class will cause the proxy to instantiate
  * the proxied handler.
  * </p>
- * 
- * @since 3.0
  */
 public final class HandlerProxy extends AbstractHandler implements
 		IElementUpdater {
@@ -266,8 +264,8 @@ public final class HandlerProxy extends AbstractHandler implements
 		if (loadHandler()) {
 			if (!isEnabled()) {
 				MessageDialog.openInformation(Util.getShellToParentOn(),
-						WorkbenchMessages.Information,
-						WorkbenchMessages.PluginAction_disabledMessage);
+						WorkbenchMessages.get().Information,
+						WorkbenchMessages.get().PluginAction_disabledMessage);
 				return null;
 			}
 			return handler.execute(event);

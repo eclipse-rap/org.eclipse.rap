@@ -42,8 +42,6 @@ import org.eclipse.ui.internal.expressions.AndExpression;
  * This class is not intended for use outside of the
  * <code>org.eclipse.ui.workbench</code> plug-in.
  * </p>
- * 
- * @since 3.2
  */
 public class SlaveHandlerService implements IHandlerService {
 

@@ -28,7 +28,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
 import org.eclipse.ui.internal.LegacyResourceSupport;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.dialogs.ImportExportWizard;
@@ -43,8 +42,6 @@ import org.eclipse.ui.wizards.IWizardRegistry;
  * This class is only intended to be extended by the three inner classes (<code>Export</code>,
  * <code>Import</code> and <code>New</code>) defined here.
  * </p>
- * 
- * @since 3.2
  */
 public abstract class WizardHandler extends AbstractHandler {
 
@@ -92,8 +89,10 @@ public abstract class WizardHandler extends AbstractHandler {
 			dialog.getShell().setSize(
 					Math.max(SIZING_WIZARD_WIDTH, dialog.getShell()
 							.getSize().x), SIZING_WIZARD_HEIGHT);
-			activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
-					dialog.getShell(), IWorkbenchHelpContextIds.EXPORT_WIZARD);
+			// RAP [bm]: HelpSystem
+//			activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
+//					dialog.getShell(), IWorkbenchHelpContextIds.EXPORT_WIZARD);
+			// RAPEND: [bm] 
 			dialog.open();
 		}
 
@@ -141,8 +140,11 @@ public abstract class WizardHandler extends AbstractHandler {
 	        dialog.getShell().setSize(
 	                Math.max(SIZING_WIZARD_WIDTH, dialog.getShell().getSize().x),
 	                SIZING_WIZARD_HEIGHT);
-	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
-					dialog.getShell(), IWorkbenchHelpContextIds.IMPORT_WIZARD);
+	        // RAP [bm]: HelpSystem
+//	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
+//					dialog.getShell(), IWorkbenchHelpContextIds.IMPORT_WIZARD);
+	        // RAPEND: [bm] 
+
 	        dialog.open();
 		}
 
@@ -248,8 +250,11 @@ public abstract class WizardHandler extends AbstractHandler {
 	        dialog.getShell().setSize(
 	                Math.max(SIZING_WIZARD_WIDTH, dialog.getShell().getSize().x),
 	                SIZING_WIZARD_HEIGHT);
-	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
-					dialog.getShell(), IWorkbenchHelpContextIds.NEW_WIZARD);
+	        // RAP [bm]: 
+//	        activeWorkbenchWindow.getWorkbench().getHelpSystem().setHelp(
+//					dialog.getShell(), IWorkbenchHelpContextIds.NEW_WIZARD);
+	        // RAPEND: [bm] 
+
 	        dialog.open();
 		}
 

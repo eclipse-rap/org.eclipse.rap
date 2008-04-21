@@ -19,8 +19,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 
 /**
  * A handler that can be used to imitate a IWorkbenchWindowActionDelegate.
- * 
- * @since 3.1
  */
 public abstract class WorkbenchWindowHandlerDelegate extends
 		ExecutableExtensionHandler implements IWorkbenchWindowHandlerDelegate {

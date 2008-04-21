@@ -19,8 +19,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Closes all the perspectives.
- * 
- * @since 3.4
  */
 public class CloseAllPerspectivesHandler extends AbstractHandler {
 

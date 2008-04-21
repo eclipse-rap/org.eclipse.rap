@@ -23,8 +23,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * Provide a Handler for the Close Part command. This can then be bound to
  * whatever keybinding the user prefers.
- * 
- * @since 3.3
  */
 public class ClosePartHandler extends AbstractHandler {
 

@@ -28,9 +28,6 @@ import org.eclipse.ui.internal.dialogs.DialogUtil;
 
 /**
  * Open a new editor on the active editor's input.
- * 
- * @since 3.4
- * 
  */
 public class NewEditorHandler extends AbstractHandler {
 
@@ -67,7 +64,7 @@ public class NewEditorHandler extends AbstractHandler {
 			}
 		} catch (PartInitException e) {
 			DialogUtil.openError(activeWorkbenchWindow.getShell(),
-					WorkbenchMessages.Error, e.getMessage(), e);
+					WorkbenchMessages.get().Error, e.getMessage(), e);
 		}
 		return null;
 	}

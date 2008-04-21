@@ -32,8 +32,6 @@ import org.eclipse.ui.services.IEvaluationService;
  * <p>
  * A static class for accessing the registry.
  * </p>
- * 
- * @since 3.1
  */
 public final class HandlerPersistence extends RegistryPersistence {
 

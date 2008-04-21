@@ -31,8 +31,6 @@ import org.eclipse.ui.progress.UIJob;
  * <p>
  * This is experimental and should not be moved.
  * </p>
- * 
- * @since 3.4
  */
 public class QuickMenuHandler extends AbstractHandler implements IMenuListener2 {
 	private QuickMenuCreator creator = new QuickMenuCreator() {

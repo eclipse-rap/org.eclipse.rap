@@ -21,8 +21,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.presentations.IStackPresentationSite;
 
 /**
- * @since 3.4
- * 
  */
 public class MinimizePartHandler extends AbstractHandler {
 

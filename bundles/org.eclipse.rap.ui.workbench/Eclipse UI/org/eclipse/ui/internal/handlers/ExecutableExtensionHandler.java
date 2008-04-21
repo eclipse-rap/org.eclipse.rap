@@ -22,8 +22,6 @@ import org.eclipse.core.runtime.IExecutableExtension;
  * subclasses to never be used as executable extension. This default
  * implementation of <code>setInitializationData</code> is only intended as a
  * convenience for developers.
- * 
- * @since 3.1
  */
 public abstract class ExecutableExtensionHandler extends AbstractHandler
         implements IExecutableExtension {

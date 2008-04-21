@@ -31,8 +31,6 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
  * attributes defined publicly in this class will cause the proxy to instantiate
  * the proxied handler.
  * </p>
- * 
- * @since 3.0
  */
 public final class LegacyHandlerProxy extends AbstractHandler {
 

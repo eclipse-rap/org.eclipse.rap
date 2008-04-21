@@ -24,22 +24,17 @@ import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.AbstractAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.jface.bindings.TriggerSequence;
-import org.eclipse.jface.bindings.keys.KeySequence;
-import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.commands.RadioState;
 import org.eclipse.jface.commands.ToggleState;
 import org.eclipse.jface.menus.IMenuStateIds;
 import org.eclipse.jface.menus.TextState;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.Util;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.commands.ICommandImageService;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.internal.commands.CommandImageManager;
 import org.eclipse.ui.internal.commands.CommandImageService;
-import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.services.IServiceLocator;
 
 /**
@@ -60,8 +55,6 @@ import org.eclipse.ui.services.IServiceLocator;
  * This class is eventually intended to exist in
  * <code>org.eclipse.ui.handlers</code>.
  * </p>
- * 
- * @since 3.2
  */
 public final class CommandLegacyActionWrapper extends AbstractAction {
 
@@ -185,19 +178,21 @@ public final class CommandLegacyActionWrapper extends AbstractAction {
 	}
 
 	public final int getAccelerator() {
-		final String commandId = getActionDefinitionId();
-		final IBindingService bindingService = (IBindingService) serviceLocator
-				.getService(IBindingService.class);
-		final TriggerSequence triggerSequence = bindingService
-				.getBestActiveBindingFor(commandId);
-		if (triggerSequence instanceof KeySequence) {
-			final KeySequence keySequence = (KeySequence) triggerSequence;
-			final KeyStroke[] keyStrokes = keySequence.getKeyStrokes();
-			if (keyStrokes.length == 1) {
-				final KeyStroke keyStroke = keyStrokes[0];
-				return keyStroke.getModifierKeys() | keyStroke.getNaturalKey();
-			}
-		}
+		// RAP [bm]: Bindings
+//		final String commandId = getActionDefinitionId();
+//		final IBindingService bindingService = (IBindingService) serviceLocator
+//				.getService(IBindingService.class);
+//		final TriggerSequence triggerSequence = bindingService
+//				.getBestActiveBindingFor(commandId);
+//		if (triggerSequence instanceof KeySequence) {
+//			final KeySequence keySequence = (KeySequence) triggerSequence;
+//			final KeyStroke[] keyStrokes = keySequence.getKeyStrokes();
+//			if (keyStrokes.length == 1) {
+//				final KeyStroke keyStroke = keyStrokes[0];
+//				return keyStroke.getModifierKeys() | keyStroke.getNaturalKey();
+//			}
+//		}
+		// RAPEND: [bm] 
 
 		return 0;
 	}
@@ -222,10 +217,11 @@ public final class CommandLegacyActionWrapper extends AbstractAction {
 				CommandImageManager.TYPE_DISABLED, style);
 	}
 
-	public final HelpListener getHelpListener() {
-		// TODO Help. Addressing help on commands.
-		return null;
-	}
+	// RAP [bm]: Help
+//	public final HelpListener getHelpListener() {
+//		// TODO Help. Addressing help on commands.
+//		return null;
+//	}
 
 	public final ImageDescriptor getHoverImageDescriptor() {
 		final String commandId = getActionDefinitionId();
@@ -463,10 +459,11 @@ public final class CommandLegacyActionWrapper extends AbstractAction {
 		}
 	}
 
-	public final void setHelpListener(final HelpListener listener) {
-		// TODO Help Haven't even started to look at help yet.
-
-	}
+	// RAP [bm]: Help
+//	public final void setHelpListener(final HelpListener listener) {
+//		// TODO Help Haven't even started to look at help yet.
+//	}
+	// RAPEND: [bm] 
 
 	public final void setHoverImageDescriptor(final ImageDescriptor newImage) {
 		final String commandId = getActionDefinitionId();

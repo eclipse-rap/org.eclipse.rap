@@ -23,8 +23,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
 
 /**
- * @since 3.4
- * 
  */
 public class PropertyDialogHandler extends AbstractHandler {
 

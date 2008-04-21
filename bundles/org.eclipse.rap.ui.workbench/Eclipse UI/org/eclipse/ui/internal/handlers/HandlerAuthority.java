@@ -63,8 +63,6 @@ import org.eclipse.ui.services.ISourceProviderService;
  * the same command identifier. To resolve this conflict, the authority
  * considers which source the handler came from.
  * </p>
- * 
- * @since 3.1
  */
 final class HandlerAuthority {
 
@@ -471,7 +469,6 @@ final class HandlerAuthority {
 	 *            the command id to check
 	 * @param context
 	 *            the context to use for activations
-	 * @since 3.3
 	 */
 	public final IHandler findHandler(String commandId,
 			IEvaluationContext context) {
@@ -525,7 +522,6 @@ final class HandlerAuthority {
 	 * @return <code>true</code> if the handler expression can evaluate to
 	 *         true.
 	 * @throws CoreException
-	 * @since 3.3
 	 */
 	private boolean eval(IEvaluationContext context,
 			IHandlerActivation activation) throws CoreException {

@@ -42,8 +42,6 @@ import org.eclipse.ui.part.WorkbenchPart;
  * {@link PageSwitcher} object, {@link CyclePageHandler} will handle the cycling
  * of pages.
  * 
- * @since 3.4
- * 
  */
 public class CyclePageHandler extends CycleBaseHandler {
 
@@ -138,9 +136,12 @@ public class CyclePageHandler extends CycleBaseHandler {
 				.getShell().getBounds();
 
 		// the bounds of the monitor that contains the currently active part.
-		Rectangle monitorBounds = activePart == null ? display
-				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
-				.getSite()).getPane().getControl().getMonitor().getBounds();
+		// RAP [bm]: Monitors
+//		Rectangle monitorBounds = activePart == null ? display
+//				.getPrimaryMonitor().getBounds() : ((PartSite) activePart
+//				.getSite()).getPane().getControl().getMonitor().getBounds();
+		Rectangle monitorBounds = display.getBounds();
+		// RAPEND: [bm] 
 
 		// Place it in the center of its parent;
 		dialogBounds.x = parentBounds.x + viewBounds.x + (viewBounds.width / 2)

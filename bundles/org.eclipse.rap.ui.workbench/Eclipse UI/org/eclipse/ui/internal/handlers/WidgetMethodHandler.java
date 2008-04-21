@@ -28,8 +28,6 @@
 ///**
 // * Handles the cut command in both dialogs and windows. This handler is enabled
 // * if the focus control supports the "cut" method.
-// * 
-// * @since 3.0
 // */
 //public class WidgetMethodHandler extends AbstractHandler implements
 //		IExecutableExtension {

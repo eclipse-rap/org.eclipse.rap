@@ -28,8 +28,6 @@ import org.eclipse.ui.services.IServiceScopes;
 
 /**
  * Handler that toggles the visibility of the coolbar/perspective bar in a given window.
- * 
- * @since 3.3
  */
 public class ToggleCoolbarHandler extends AbstractHandler implements
 		IElementUpdater {
@@ -67,8 +65,8 @@ public class ToggleCoolbarHandler extends AbstractHandler implements
 		if (window == null || !(window instanceof WorkbenchWindow))
 			return;
 		element
-				.setText(isCoolbarVisible((WorkbenchWindow) window) ? WorkbenchMessages.ToggleCoolbarVisibilityAction_hide_text
-						: WorkbenchMessages.ToggleCoolbarVisibilityAction_show_text);
+				.setText(isCoolbarVisible((WorkbenchWindow) window) ? WorkbenchMessages.get().ToggleCoolbarVisibilityAction_hide_text
+						: WorkbenchMessages.get().ToggleCoolbarVisibilityAction_show_text);
 	}
 
 	/**

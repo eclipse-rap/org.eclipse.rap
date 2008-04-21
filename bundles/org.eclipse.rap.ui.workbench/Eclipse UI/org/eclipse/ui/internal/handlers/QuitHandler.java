@@ -20,8 +20,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * Quit (close the workbench).
  * 
- * @since 3.4
- * 
  */
 public class QuitHandler extends AbstractHandler {
 

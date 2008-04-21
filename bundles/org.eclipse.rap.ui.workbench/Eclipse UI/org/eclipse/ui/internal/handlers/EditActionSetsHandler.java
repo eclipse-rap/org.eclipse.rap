@@ -20,8 +20,6 @@ import org.eclipse.ui.internal.WorkbenchPage;
 
 /**
  * Customize the action sets and shortcuts.
- * 
- * @since 3.4
  */
 public class EditActionSetsHandler extends AbstractHandler {
 

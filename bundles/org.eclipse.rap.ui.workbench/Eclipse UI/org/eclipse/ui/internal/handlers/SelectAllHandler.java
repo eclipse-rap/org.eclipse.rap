@@ -29,8 +29,6 @@ import org.eclipse.ui.internal.ExceptionHandler;
  * all to work even in some cases where the "selectAll" method does not exist.
  * This handler attempts to use "getTextLimit" and "setSelection" to do select
  * all. If this doesn't work, then it finally fails.
- * 
- * @since 3.0
  */
 public class SelectAllHandler extends WidgetMethodHandler {
 

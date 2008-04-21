@@ -40,8 +40,6 @@ import org.eclipse.ui.services.IEvaluationReference;
  * <b>Note:</b> this class has a natural ordering that is inconsistent with
  * equals.
  * </p>
- * 
- * @since 3.1
  */
 final class HandlerActivation extends EvaluationResultCache implements
 		IHandlerActivation {

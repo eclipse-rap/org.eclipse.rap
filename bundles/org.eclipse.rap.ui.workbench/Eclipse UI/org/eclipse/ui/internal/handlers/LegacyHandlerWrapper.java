@@ -21,8 +21,6 @@ import org.eclipse.ui.internal.misc.Policy;
 /**
  * A handler that wraps a legacy handler. This provide backward compatibility
  * with the handlers release in Eclipse 3.0.
- * 
- * @since 3.1
  */
 public final class LegacyHandlerWrapper implements IHandler {
 
