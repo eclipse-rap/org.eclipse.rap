@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.Point;
  * 
  * This interface is not intended to be implemented by clients.
  * 
- * @since 3.0
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IPartMenu {
@@ -25,7 +25,6 @@ public interface IPartMenu {
      * Displays the local menu for this part as a popup at the given location.
      * 
      * @param location position to display the menu at (display coordinates, not null)
-     * @since 3.0
      */
     public void showMenu(Point location);
 }

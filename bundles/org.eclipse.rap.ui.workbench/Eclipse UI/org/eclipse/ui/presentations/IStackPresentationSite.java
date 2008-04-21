@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Point;
  * 
  * Not intended to be implemented by clients.
  * 
- * @since 3.0
+ * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IStackPresentationSite {
@@ -138,8 +138,6 @@ public interface IStackPresentationSite {
      * Notifies the workbench that the preferred size of the presentation has
      * changed. Hints to the workbench that it should trigger a layout at the
      * next opportunity.
-     * 
-     * @since 3.1
      */
     public void flushLayout();
     
@@ -147,7 +145,6 @@ public interface IStackPresentationSite {
      * Returns the list of presentable parts currently in this site
      * 
      * @return the list of presentable parts currently in this site
-     * @since 3.1
      */
     public IPresentablePart[] getPartList();
     
@@ -162,7 +159,6 @@ public interface IStackPresentationSite {
 	 *            Must not be <code>null</code>.
 	 * @return property value, or <code>null</code> if the property is not
 	 *         set.
-	 * @since 3.3
 	 */
     public String getProperty(String id);
 }

@@ -38,7 +38,7 @@ import org.eclipse.ui.ISizeProvider;
  * <code>StackPresentation.remove</code>. 
  * </p>
  * 
- * @since 3.0
+ * @since 1.0
  */
 public abstract class StackPresentation implements ISizeProvider {
 
@@ -148,8 +148,6 @@ public abstract class StackPresentation implements ISizeProvider {
      * switches to another perspective.
      * 
      * @param isVisible the state to set visibility to
-     * 
-     * @since 3.0
      */
     public abstract void setVisible(boolean isVisible);
 
@@ -202,7 +200,6 @@ public abstract class StackPresentation implements ISizeProvider {
      * 
      * @param toMove a part that already belongs to this presentation
      * @param cookie a drop cookie returned by <code>StackPresentation#dragOver</code> 
-     * @since 3.1
      */
     public void movePart(IPresentablePart toMove, Object cookie) {
         removePart(toMove);
@@ -222,18 +219,19 @@ public abstract class StackPresentation implements ISizeProvider {
      */
     public abstract void selectPart(IPresentablePart toSelect);
 
-    /**
-     * This method is invoked whenever a part is dragged over the stack's control.
-     * It returns a StackDropResult if and only if the part may be dropped in this
-     * location.
-     *
-     * @param currentControl the control being dragged over
-     * @param location cursor location (display coordinates)
-     * @return a StackDropResult or null if the presentation does not have
-     * a drop target in this location.
-     */
-    public abstract StackDropResult dragOver(Control currentControl,
-            Point location);
+    // RAP [bm]: 
+//    /**
+//     * This method is invoked whenever a part is dragged over the stack's control.
+//     * It returns a StackDropResult if and only if the part may be dropped in this
+//     * location.
+//     *
+//     * @param currentControl the control being dragged over
+//     * @param location cursor location (display coordinates)
+//     * @return a StackDropResult or null if the presentation does not have
+//     * a drop target in this location.
+//     */
+//    public abstract StackDropResult dragOver(Control currentControl,
+//            Point location);
 
     /**
      * Instructs the presentation to display the system menu

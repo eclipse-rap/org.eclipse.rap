@@ -22,28 +22,28 @@ import org.eclipse.swt.widgets.Sash;
  * This is a factory for presentation objects that control the appearance of
  * editors, views and other components in the workbench.
  * 
- * @since 3.0
+ * @since 1.0
  */
 public abstract class AbstractPresentationFactory {
 	
 	/**
 	 * Bit value for the createSash method's 'style' parameter.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static int SASHTYPE_NORMAL = 0;
 	/**
 	 * Bit value for the createSash method's 'style' parameter.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static int SASHTYPE_FLOATING = 1<<1;
 	/**
 	 * Bit value for the createSash method's 'style' parameter.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static int SASHORIENTATION_HORIZONTAL = SWT.HORIZONTAL; // 1<<8
 	/**
 	 * Bit value for the createSash method's 'style' parameter.
-	 * @since 3.4
+	 * @since 1.1
 	 */
 	public static int SASHORIENTATION_VERTICAL = SWT.VERTICAL; // 1<<9
 	
@@ -143,7 +143,7 @@ public abstract class AbstractPresentationFactory {
      * @param style A bit set giving both the 'type' of the desired sash and
      * its orientation (i.e. one 'SASHTYPE' value and one "SASHORIENTATION" value). 
      * @return the sash control
-     * @since 3.4
+     * @since 1.1
      */
     public Sash createSash(Composite parent, int style) {
     	int swtOrientation = style & (SASHORIENTATION_HORIZONTAL|SASHORIENTATION_VERTICAL);
@@ -157,7 +157,7 @@ public abstract class AbstractPresentationFactory {
      * @param style A bit set giving both the 'type' of the desired sash and
      * its orientation.
      * @return the sash size
-     * @since 3.4
+     * @since 1.1
      */
     public int getSashSize(int style) {
     	return SASH_SIZE;

@@ -26,8 +26,8 @@ import org.eclipse.ui.IWorkbenchPartConstants;
  * 
  * Not intended to be implemented by clients.
  * 
- * @since 3.0
- * @since 3.4 now extends {@link org.eclipse.ui.ISizeProvider}
+ * @since 1.0
+ * @since 1.1 now extends {@link org.eclipse.ui.ISizeProvider}
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IPresentablePart extends ISizeProvider {
@@ -81,7 +81,7 @@ public interface IPresentablePart extends ISizeProvider {
 
     /**
      * The property id for preferred size changes
-     * @since 3.4
+     * @since 1.1
      */
     public static final int PROP_PREFERRED_SIZE = IWorkbenchPartConstants.PROP_PREFERRED_SIZE;
     
@@ -207,7 +207,6 @@ public interface IPresentablePart extends ISizeProvider {
      * Returns true iff this part can be closed
      * 
      * @return true iff this part can be closed
-     * @since 3.1
      */
     public boolean isCloseable();
     
@@ -247,7 +246,6 @@ public interface IPresentablePart extends ISizeProvider {
 	 * @param key
 	 *            The property key to retrieve. Must not be <code>null</code>.
 	 * @return the property, or <code>null</code> if that property is not set.
-	 * @since 3.3
 	 */
 	public String getPartProperty(String key);
 	
@@ -260,7 +258,6 @@ public interface IPresentablePart extends ISizeProvider {
 	 * 
 	 * @param listener
 	 *            Must not be <code>null</code>.
-	 * @since 3.3
 	 */
 	public void addPartPropertyListener(IPropertyChangeListener listener);
 	
@@ -273,7 +270,6 @@ public interface IPresentablePart extends ISizeProvider {
 	 * 
 	 * @param listener
 	 *            Must not be <code>null</code>.
-	 * @since 3.3
 	 */
 	public void removePartPropertyListener(IPropertyChangeListener listener);
 }
