@@ -19,8 +19,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Contains various methods for manipulating layouts
- * 
- * @since 3.0
  */
 public class LayoutUtil {
 

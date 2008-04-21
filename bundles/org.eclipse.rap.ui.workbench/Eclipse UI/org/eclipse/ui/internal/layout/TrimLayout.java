@@ -55,8 +55,6 @@ import org.eclipse.ui.PlatformUI;
  * If the composite contains additional widgets, they will not be moved by the
  * layout and may be arranged through other means.
  * </p>
- * 
- * @since 3.0
  */
 public class TrimLayout extends Layout implements ICachingLayout, ITrimManager {
 
@@ -510,7 +508,6 @@ public class TrimLayout extends Layout implements ICachingLayout, ITrimManager {
 	 * @param areaId
 	 *            the side it's on
 	 * @return the area rectangle.
-	 * @since 3.2
 	 * @see #getAreaIds()
 	 */
 	public Rectangle getTrimRect(Composite window, int areaId) {
@@ -555,7 +552,6 @@ public class TrimLayout extends Layout implements ICachingLayout, ITrimManager {
 	 * @param trim
 	 *            the Control to find.
 	 * @return the trim descriptor, or <code>null</code> if not found.
-	 * @since 3.2
 	 */
 	private TrimDescriptor findTrimDescription(Control trim) {
 		Iterator d = fTrimDescriptors.values().iterator();

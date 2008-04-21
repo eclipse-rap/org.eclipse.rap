@@ -62,8 +62,6 @@ import org.eclipse.swt.widgets.Layout;
  * Composite myControl = new Composite(parent, SWT.NONE);
  * myControl.setLayout(new CellLayout(2).setMargins(10,10).setSpacing(5,5));
  * </code>
- * 
- * @since 3.0
  */
 public class CellLayout extends Layout {
 

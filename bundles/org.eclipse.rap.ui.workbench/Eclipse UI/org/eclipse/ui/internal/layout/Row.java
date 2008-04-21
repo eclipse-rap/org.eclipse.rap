@@ -13,8 +13,6 @@ package org.eclipse.ui.internal.layout;
 
 /**
  * Describes a single row (or column) in a CellLayout
- * 
- * @since 3.0
  */
 public class Row {
     /**

@@ -15,8 +15,6 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * Caches the preferred sizes of an array of controls
- * 
- * @since 3.0
  */
 public class LayoutCache {
     private SizeCache[] caches = new SizeCache[0];

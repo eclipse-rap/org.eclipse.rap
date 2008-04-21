@@ -51,8 +51,6 @@ import org.eclipse.swt.widgets.Layout;
  * MUST manually call flushCache() whenver the child's preferred size changes (and before
  * the parent is layed out).  
  * </p>
- * 
- * @since 3.0
  */
 public class CacheWrapper {
     private Composite proxy;

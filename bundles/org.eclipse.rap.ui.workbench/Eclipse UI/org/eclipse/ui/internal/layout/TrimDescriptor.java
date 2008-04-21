@@ -14,8 +14,6 @@ package org.eclipse.ui.internal.layout;
 
 /**
  * Manages the internal piece of trim for each trim area.
- * 
- * @since 3.2
  */
 public class TrimDescriptor {
 

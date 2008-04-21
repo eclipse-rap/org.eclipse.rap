@@ -23,8 +23,6 @@ import org.eclipse.swt.layout.GridData;
  * objects are optional. If you do not attach any layout data to a control,
  * it will behave just like attaching a CellData created using its default
  * constructor.
- * 
- * @since 3.0
  **/
 public final class CellData {
 
@@ -356,7 +354,6 @@ public final class CellData {
      * 
      * @param control 
      * @param cellBounds
-     * @since 3.0
      */
     public void positionControl(SizeCache cache, Rectangle cellBounds) {
 
@@ -401,7 +398,6 @@ public final class CellData {
      * @param controlWidth
      * @param controlHeight
      * @return
-     * @since 3.0
      */
     private Point computeControlSize(SizeCache toCompute, int controlWidth,
             int controlHeight) {

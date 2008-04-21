@@ -30,8 +30,6 @@ import org.eclipse.ui.internal.TrimDragPreferences;
  * NOTE: this is a test harness at this time. This class may be removed
  * before the release of 3.2.
  * </b></p>
- * 
- * @since 3.2
  *
  */
 public class TrimDragPreferenceDialog extends Dialog {

@@ -17,9 +17,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
@@ -34,8 +32,6 @@ import org.eclipse.ui.internal.IntModel;
 import org.eclipse.ui.internal.RadioMenu;
 import org.eclipse.ui.internal.WindowTrimProxy;
 import org.eclipse.ui.internal.WorkbenchMessages;
-import org.eclipse.ui.internal.dnd.DragUtil;
-import org.eclipse.ui.presentations.PresentationUtil;
 
 /**
  * This control provides common UI functionality for trim elements. Its
@@ -60,9 +56,6 @@ import org.eclipse.ui.presentations.PresentationUtil;
  * <li>A "Close" menu item is provided to allow the User to close (hide) the trim element,
  * based on the value returned by <code>IWindowTrim.isCloseable</code>
  * </ol>
- * </p>
- * <p>
- * @since 3.2
  * </p>
  */
 public class TrimCommonUIHandle extends Composite {
@@ -100,15 +93,16 @@ public class TrimCommonUIHandle extends Composite {
      * This listener starts a drag operation when
      * the Drag and Drop manager tells it to
      */
-    private Listener dragListener = new Listener() {
-        public void handleEvent(Event event) {
-        	// Only allow 'left mouse' drags...
-        	if (event.button != 3) {
-	            Point position = DragUtil.getEventLoc(event);
-	            startDraggingTrim(position);
-        	}
-        }
-    };
+    // RAP [bm]: DnD
+//    private Listener dragListener = new Listener() {
+//        public void handleEvent(Event event) {
+//        	// Only allow 'left mouse' drags...
+//        	if (event.button != 3) {
+//	            Point position = DragUtil.getEventLoc(event);
+//	            startDraggingTrim(position);
+//        	}
+//        }
+//    };
 
     /**
      * This listener brings up the context menu
@@ -185,7 +179,8 @@ public class TrimCommonUIHandle extends Composite {
     	setDragCursor();
     	
         // Set up the dragging behaviour
-        PresentationUtil.addDragListener(cb, dragListener);
+    	// RAP [bm]: 
+//        PresentationUtil.addDragListener(cb, dragListener);
     	
     	// Create the docking context menu
     	dockMenuManager = new MenuManager();
@@ -303,7 +298,8 @@ public class TrimCommonUIHandle extends Composite {
 		// Clean up the previous info in case we've changed orientation
 		if (cb != null) {
 			ci.dispose();
-	        PresentationUtil.removeDragListener(cb, dragListener);
+			// RAP [bm]: 
+//	        PresentationUtil.removeDragListener(cb, dragListener);
 			cb.dispose();
 		}
 		
@@ -322,8 +318,10 @@ public class TrimCommonUIHandle extends Composite {
 	 * trim can be dragged
 	 */
 	private void setDragCursor() {
-    	Cursor dragCursor = toDrag.getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
-    	setCursor(dragCursor);
+		// RAP [bm]: Cursor
+//    	Cursor dragCursor = toDrag.getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
+//    	setCursor(dragCursor);
+		// RAPEND: [bm] 
 	}
 	
 	/* (non-Javadoc)
@@ -356,7 +354,7 @@ public class TrimCommonUIHandle extends Composite {
     				// Add a 'Close' menu entry if the trim supports the operation
     				if (trim.isCloseable()) {
 	    				MenuItem closeItem = new MenuItem(menu, SWT.PUSH, index++);
-	    				closeItem.setText(WorkbenchMessages.TrimCommon_Close);
+	    				closeItem.setText(WorkbenchMessages.get().TrimCommon_Close);
 	    				
 	    				closeItem.addSelectionListener(new SelectionListener() {
 							public void widgetSelected(SelectionEvent e) {
@@ -389,15 +387,15 @@ public class TrimCommonUIHandle extends Composite {
     				// Create a cascading menu to allow the user to dock the trim
     				dockCascade = new MenuItem(menu, SWT.CASCADE, index++);
     				{
-    					dockCascade.setText(WorkbenchMessages.TrimCommon_DockOn); 
+    					dockCascade.setText(WorkbenchMessages.get().TrimCommon_DockOn); 
     					
     					sidesMenu = new Menu(dockCascade);
     					radioButtons = new RadioMenu(sidesMenu, radioVal);
     					
-						radioButtons.addMenuItem(WorkbenchMessages.TrimCommon_Top, new Integer(SWT.TOP));
-						radioButtons.addMenuItem(WorkbenchMessages.TrimCommon_Bottom, new Integer(SWT.BOTTOM));
-						radioButtons.addMenuItem(WorkbenchMessages.TrimCommon_Left, new Integer(SWT.LEFT));
-						radioButtons.addMenuItem(WorkbenchMessages.TrimCommon_Right, new Integer(SWT.RIGHT));
+						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Top, new Integer(SWT.TOP));
+						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Bottom, new Integer(SWT.BOTTOM));
+						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Left, new Integer(SWT.LEFT));
+						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Right, new Integer(SWT.RIGHT));
     					
     					dockCascade.setMenu(sidesMenu);
     				}
@@ -487,15 +485,16 @@ public class TrimCommonUIHandle extends Composite {
         super.dispose();
     }
 
-    /**
-     * Begins dragging the trim
-     * 
-     * @param position initial mouse position
-     */
-    protected void startDraggingTrim(Point position) {
-    	Rectangle fakeBounds = new Rectangle(100000, 0,0,0);
-        DragUtil.performDrag(trim, fakeBounds, position, true);
-    }
+    // RAP [bm]: 
+//    /**
+//     * Begins dragging the trim
+//     * 
+//     * @param position initial mouse position
+//     */
+//    protected void startDraggingTrim(Point position) {
+//    	Rectangle fakeBounds = new Rectangle(100000, 0,0,0);
+//        DragUtil.performDrag(trim, fakeBounds, position, true);
+//    }
 
     /**
      * Shows the popup menu for an item in the fast view bar.

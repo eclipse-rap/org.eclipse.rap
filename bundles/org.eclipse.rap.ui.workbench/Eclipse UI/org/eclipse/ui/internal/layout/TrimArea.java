@@ -25,17 +25,12 @@ import org.eclipse.ui.internal.WindowTrimProxy;
 
 /**
  * Represents one Trim Area.
- * 
- * @since 3.2
  */
 public class TrimArea {
 	
 	/**
 	 * This is a convenience class that caches information for a single 'tiled'
 	 * line of trim.
-	 * 
-	 * @since 3.2
-	 * 
 	 */
 	private class TrimLine {
 		/** The list of controls in this trim line */

@@ -16,9 +16,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
@@ -34,8 +32,6 @@ import org.eclipse.ui.internal.RadioMenu;
 import org.eclipse.ui.internal.TrimFrame;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchWindow;
-import org.eclipse.ui.internal.dnd.DragUtil;
-import org.eclipse.ui.presentations.PresentationUtil;
 
 /**
  * This control provides common UI functionality for trim elements
@@ -59,9 +55,6 @@ import org.eclipse.ui.presentations.PresentationUtil;
  * <li>A "Close" menu item is provided to allow the User to close (hide) the trim element,
  * based on the value returned by <code>IWindowTrim.isCloseable</code>
  * </ol>
- * </p>
- * <p>
- * @since 3.3
  * </p>
  */
 public abstract class TrimToolBarBase implements IWindowTrim {
@@ -113,19 +106,20 @@ public abstract class TrimToolBarBase implements IWindowTrim {
         }
     };
     
-    /**
-     * This listener starts a drag operation when
-     * the Drag and Drop manager tells it to
-     */
-    private Listener dragListener = new Listener() {
-        public void handleEvent(Event event) {
-        	// Only allow 'left mouse' drags...
-        	if (event.button != 3) {
-	            Point position = DragUtil.getEventLoc(event);
-	            startDraggingTrim(position);
-        	}
-        }
-    };
+    // RAP [bm]: DnD
+//    /**
+//     * This listener starts a drag operation when
+//     * the Drag and Drop manager tells it to
+//     */
+//    private Listener dragListener = new Listener() {
+//        public void handleEvent(Event event) {
+//        	// Only allow 'left mouse' drags...
+//        	if (event.button != 3) {
+//	            Point position = DragUtil.getEventLoc(event);
+//	            startDraggingTrim(position);
+//        	}
+//        }
+//    };
 
     /**
      * Create a new trim UI handle for a particular IWindowTrim item
@@ -211,17 +205,20 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 		update(true);
 		
     	// Set the cursor affordance
-    	Cursor dragCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
-    	cb.setCursor(dragCursor);
-    	
-    	// Now, we have to explicity set the arrow for the TB
-    	Cursor tbCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
-    	tb.setCursor(tbCursor);
-    	
+		// RAP [bm]: Cursor
+//    	Cursor dragCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
+//    	cb.setCursor(dragCursor);
+//    	
+//    	// Now, we have to explicity set the arrow for the TB
+//    	Cursor tbCursor = getControl().getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
+//    	tb.setCursor(tbCursor);
+    	// RAPEND: [bm] 
+
     	//cb.setBackground(cb.getDisplay().getSystemColor(SWT.COLOR_RED));
     	
         // Set up the dragging behaviour
-        PresentationUtil.addDragListener(cb, dragListener);
+		// RAP [bm]: DnD
+//        PresentationUtil.addDragListener(cb, dragListener);
     	
     	// Create the docking context menu
     	dockMenuManager = new MenuManager();
@@ -272,7 +269,8 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 		ci.setPreferredSize (ps);
 		ci.setSize(ps);
 		cb.pack();
-		cb.update();
+		// RAP [bm]: Control#update
+//		cb.update();
 		LayoutUtil.resize(getControl());
 	}
 	
@@ -293,7 +291,7 @@ public abstract class TrimToolBarBase implements IWindowTrim {
     				// Add a 'Close' menu entry if the trim supports the operation
     				if (isCloseable()) {
 	    				MenuItem closeItem = new MenuItem(menu, SWT.PUSH, index++);
-	    				closeItem.setText(WorkbenchMessages.TrimCommon_Close);
+	    				closeItem.setText(WorkbenchMessages.get().TrimCommon_Close);
 	    				
 	    				closeItem.addSelectionListener(new SelectionListener() {
 							public void widgetSelected(SelectionEvent e) {
@@ -326,15 +324,15 @@ public abstract class TrimToolBarBase implements IWindowTrim {
     				// Create a cascading menu to allow the user to dock the trim
     				dockCascade = new MenuItem(menu, SWT.CASCADE, index++);
     				{
-    					dockCascade.setText(WorkbenchMessages.TrimCommon_DockOn); 
+    					dockCascade.setText(WorkbenchMessages.get().TrimCommon_DockOn); 
     					
     					sidesMenu = new Menu(dockCascade);
     					radioButtons = new RadioMenu(sidesMenu, radioVal);
     					
-						radioButtons.addMenuItem(WorkbenchMessages.TrimCommon_Top, new Integer(SWT.TOP));
-						radioButtons.addMenuItem(WorkbenchMessages.TrimCommon_Bottom, new Integer(SWT.BOTTOM));
-						radioButtons.addMenuItem(WorkbenchMessages.TrimCommon_Left, new Integer(SWT.LEFT));
-						radioButtons.addMenuItem(WorkbenchMessages.TrimCommon_Right, new Integer(SWT.RIGHT));
+						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Top, new Integer(SWT.TOP));
+						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Bottom, new Integer(SWT.BOTTOM));
+						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Left, new Integer(SWT.LEFT));
+						radioButtons.addMenuItem(WorkbenchMessages.get().TrimCommon_Right, new Integer(SWT.RIGHT));
     					
     					dockCascade.setMenu(sidesMenu);
     				}
@@ -436,15 +434,16 @@ public abstract class TrimToolBarBase implements IWindowTrim {
         frame = null;
     }
 
-    /**
-     * Begins dragging the trim
-     * 
-     * @param position initial mouse position
-     */
-    private void startDraggingTrim(Point position) {
-    	Rectangle fakeBounds = new Rectangle(100000, 0,0,0);
-        DragUtil.performDrag(this, fakeBounds, position, true);
-    }
+    // RAP [bm]: 
+//    /**
+//     * Begins dragging the trim
+//     * 
+//     * @param position initial mouse position
+//     */
+//    private void startDraggingTrim(Point position) {
+//    	Rectangle fakeBounds = new Rectangle(100000, 0,0,0);
+//        DragUtil.performDrag(this, fakeBounds, position, true);
+//    }
 
     /**
      * Shows the popup menu for an item in the fast view bar.
