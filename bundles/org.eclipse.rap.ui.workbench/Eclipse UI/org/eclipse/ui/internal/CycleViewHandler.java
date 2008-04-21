@@ -45,7 +45,7 @@ public class CycleViewHandler extends CycleBaseHandler {
 				if (includeEditor) {
 					IEditorReference activeEditor = (IEditorReference) refs[i];
 					TableItem item = new TableItem(table, SWT.NONE);
-					item.setText(WorkbenchMessages.CyclePartAction_editor);
+					item.setText(WorkbenchMessages.get().CyclePartAction_editor);
 					item.setImage(activeEditor.getTitleImage());
 					item.setData(activeEditor);
 					includeEditor = false;
@@ -86,7 +86,7 @@ public class CycleViewHandler extends CycleBaseHandler {
 	 */
 	protected String getTableHeader(IWorkbenchPart activePart) {
 		// TODO Auto-generated method stub
-		return WorkbenchMessages.CyclePartAction_header;
+		return WorkbenchMessages.get().CyclePartAction_header;
 	}
 
 }

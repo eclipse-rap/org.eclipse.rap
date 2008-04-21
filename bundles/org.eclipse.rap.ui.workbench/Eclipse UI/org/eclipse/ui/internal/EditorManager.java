@@ -141,9 +141,9 @@ public class EditorManager implements IExtensionChangeHandler {
 	// Handler for the pin editor keyboard shortcut
 	private IHandlerActivation pinEditorHandlerActivation = null;
 
-	static final String RESOURCES_TO_SAVE_MESSAGE = WorkbenchMessages.EditorManager_saveResourcesMessage;
+	static final String RESOURCES_TO_SAVE_MESSAGE = WorkbenchMessages.get().EditorManager_saveResourcesMessage;
 
-	static final String SAVE_RESOURCES_TITLE = WorkbenchMessages.EditorManager_saveResourcesTitle;
+	static final String SAVE_RESOURCES_TITLE = WorkbenchMessages.get().EditorManager_saveResourcesTitle;
 
 	/**
 	 * EditorManager constructor comment.
@@ -632,7 +632,7 @@ public class EditorManager implements IExtensionChangeHandler {
 		EditorDescriptor desc = (EditorDescriptor) reg.findEditor(editorId);
 		if (desc == null) {
 			throw new PartInitException(NLS.bind(
-					WorkbenchMessages.EditorManager_unknownEditorIDMessage,
+					WorkbenchMessages.get().EditorManager_unknownEditorIDMessage,
 					editorId));
 		}
 
@@ -663,14 +663,14 @@ public class EditorManager implements IExtensionChangeHandler {
 				result = openSystemExternalEditor(pathInput.getPath());
 			} else {
 				throw new PartInitException(
-						WorkbenchMessages.EditorManager_systemEditorError);
+						WorkbenchMessages.get().EditorManager_systemEditorError);
 			}
 		} else if (desc.isOpenExternal()) {
 			result = openExternalEditor(desc, input);
 		} else {
 			// this should never happen
 			throw new PartInitException(NLS.bind(
-					WorkbenchMessages.EditorManager_invalidDescriptor, desc
+					WorkbenchMessages.get().EditorManager_invalidDescriptor, desc
 							.getId()));
 		}
 
@@ -714,13 +714,13 @@ public class EditorManager implements IExtensionChangeHandler {
 			});
 		} else {
 			throw new PartInitException(NLS.bind(
-					WorkbenchMessages.EditorManager_errorOpeningExternalEditor,
+					WorkbenchMessages.get().EditorManager_errorOpeningExternalEditor,
 					desc.getFileName(), desc.getId()));
 		}
 
 		if (ex[0] != null) {
 			throw new PartInitException(NLS.bind(
-					WorkbenchMessages.EditorManager_errorOpeningExternalEditor,
+					WorkbenchMessages.get().EditorManager_errorOpeningExternalEditor,
 					desc.getFileName(), desc.getId()), ex[0]);
 		}
 
@@ -757,7 +757,7 @@ public class EditorManager implements IExtensionChangeHandler {
 					.findEditor(editorArray[i]);
 			if (innerDesc == null) {
 				throw new PartInitException(NLS.bind(
-						WorkbenchMessages.EditorManager_unknownEditorIDMessage,
+						WorkbenchMessages.get().EditorManager_unknownEditorIDMessage,
 						editorArray[i]));
 			}
 			descArray[i] = innerDesc;
@@ -804,7 +804,7 @@ public class EditorManager implements IExtensionChangeHandler {
 			// Sanity-check the site
 			if (part.getSite() != site || part.getEditorSite() != site) {
 				throw new PartInitException(NLS.bind(
-						WorkbenchMessages.EditorManager_siteIncorrect, desc
+						WorkbenchMessages.get().EditorManager_siteIncorrect, desc
 								.getId()));
 			}
 
@@ -816,7 +816,7 @@ public class EditorManager implements IExtensionChangeHandler {
 			}
 
 			throw new PartInitException(
-					WorkbenchMessages.EditorManager_errorInInit, e);
+					WorkbenchMessages.get().EditorManager_errorInInit, e);
 		}
 
 		return site;
@@ -854,7 +854,7 @@ public class EditorManager implements IExtensionChangeHandler {
 		} catch (CoreException e) {
 			throw new PartInitException(StatusUtil.newStatus(
 					desc.getPluginID(),
-					WorkbenchMessages.EditorManager_instantiationError, e));
+					WorkbenchMessages.get().EditorManager_instantiationError, e));
 		}
 	}
 
@@ -878,7 +878,7 @@ public class EditorManager implements IExtensionChangeHandler {
 
 		if (!result[0]) {
 			throw new PartInitException(NLS.bind(
-					WorkbenchMessages.EditorManager_unableToOpenExternalEditor,
+					WorkbenchMessages.get().EditorManager_unableToOpenExternalEditor,
 					location));
 		}
 
@@ -907,7 +907,7 @@ public class EditorManager implements IExtensionChangeHandler {
 		// Restore the editor area workbooks layout/relationship
 		final MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID,
 				IStatus.OK,
-				WorkbenchMessages.EditorManager_problemsRestoringEditors, null);
+				WorkbenchMessages.get().EditorManager_problemsRestoringEditors, null);
 		final String activeWorkbookID[] = new String[1];
 		final ArrayList visibleEditors = new ArrayList(5);
 		final IEditorReference activeEditor[] = new IEditorReference[1];
@@ -966,7 +966,7 @@ public class EditorManager implements IExtensionChangeHandler {
 							IStatus.ERROR,
 							PlatformUI.PLUGIN_ID,
 							0,
-							WorkbenchMessages.EditorManager_exceptionRestoringEditor,
+							WorkbenchMessages.get().EditorManager_exceptionRestoringEditor,
 							t));
 		}
 		
@@ -1149,11 +1149,11 @@ public class EditorManager implements IExtensionChangeHandler {
             // Use a simpler dialog if there's only one
             if (modelsToSave.size() == 1) {
             	Saveable model = (Saveable) modelsToSave.get(0);
-				String message = NLS.bind(WorkbenchMessages.EditorManager_saveChangesQuestion, model.getName());
+				String message = NLS.bind(WorkbenchMessages.get().EditorManager_saveChangesQuestion, model.getName());
 				// Show a dialog.
-				String[] buttons = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL };
+				String[] buttons = new String[] { IDialogConstants.get().YES_LABEL, IDialogConstants.get().NO_LABEL, IDialogConstants.get().CANCEL_LABEL };
 				MessageDialog d = new MessageDialog(
-					shellProvider.getShell(), WorkbenchMessages.Save_Resource,
+					shellProvider.getShell(), WorkbenchMessages.get().Save_Resource,
 					null, message, MessageDialog.QUESTION, buttons, 0);
 				
 				int choice = SaveableHelper.testGetAutomatedResponse();
@@ -1228,7 +1228,7 @@ public class EditorManager implements IExtensionChangeHandler {
 
 		// Do the save.
 		return SaveableHelper.runProgressMonitorOperation(
-				WorkbenchMessages.Save_All, progressOp, runnableContext, shellProvider);
+				WorkbenchMessages.get().Save_All, progressOp, runnableContext, shellProvider);
 	}
 
 	/**
@@ -1357,7 +1357,7 @@ public class EditorManager implements IExtensionChangeHandler {
 
 		final MultiStatus result = new MultiStatus(PlatformUI.PLUGIN_ID,
 				IStatus.OK,
-				WorkbenchMessages.EditorManager_problemsSavingEditors, null);
+				WorkbenchMessages.get().EditorManager_problemsSavingEditors, null);
 
 		// Save the editor area workbooks layout/relationship
 		IMemento editorAreaMem = memento
@@ -1585,7 +1585,7 @@ public class EditorManager implements IExtensionChangeHandler {
 								0,
 								NLS
 										.bind(
-												WorkbenchMessages.EditorManager_unableToSaveEditor,
+												WorkbenchMessages.get().EditorManager_unableToSaveEditor,
 												editorRef.getTitle()), e));
 			}
 		});

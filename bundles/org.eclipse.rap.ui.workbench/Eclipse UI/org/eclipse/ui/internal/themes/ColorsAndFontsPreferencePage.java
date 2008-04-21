@@ -807,7 +807,7 @@ public final class ColorsAndFontsPreferencePage extends PreferencePage
         layout.marginWidth = 0;
         composite.setLayout(layout);
 
-        fontSystemButton = createButton(composite, WorkbenchMessages.FontsPreference_useSystemFont);
+        fontSystemButton = createButton(composite, WorkbenchMessages.get().FontsPreference_useSystemFont);
 
         fontChangeButton = createButton(composite, JFaceResources
                 .getString("openChange")); //$NON-NLS-1$

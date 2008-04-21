@@ -65,7 +65,7 @@ public final class ConfigurationInfo {
 	public static String getSystemSummary() {
 		StringWriter out = new StringWriter();
 		PrintWriter writer = new PrintWriter(out);
-		writer.println(NLS.bind(WorkbenchMessages.SystemSummary_timeStamp,
+		writer.println(NLS.bind(WorkbenchMessages.get().SystemSummary_timeStamp,
 				DateFormat
 						.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL)
 						.format(new Date())));
@@ -96,14 +96,14 @@ public final class ConfigurationInfo {
 
 			writer.println();
 			writer.println(NLS.bind(
-					WorkbenchMessages.SystemSummary_sectionTitle, element
+					WorkbenchMessages.get().SystemSummary_sectionTitle, element
 							.getAttribute("sectionTitle"))); //$NON-NLS-1$
 
 			if (obj instanceof ISystemSummarySection) {
 				ISystemSummarySection logSection = (ISystemSummarySection) obj;
 				logSection.write(writer);
 			} else {
-				writer.println(WorkbenchMessages.SystemSummary_sectionError);
+				writer.println(WorkbenchMessages.get().SystemSummary_sectionError);
 			}
 		}
 	}

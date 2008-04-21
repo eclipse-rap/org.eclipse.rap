@@ -158,7 +158,7 @@ public class EditorPane extends PartPane {
         final WorkbenchPartReference ref = (WorkbenchPartReference)getPartReference();
 
         final MenuItem item = new MenuItem(parent, SWT.CHECK);
-        item.setText(WorkbenchMessages.EditorPane_pinEditor);
+        item.setText(WorkbenchMessages.get().EditorPane_pinEditor);
         item.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 IWorkbenchPart part = getPartReference().getPart(true);

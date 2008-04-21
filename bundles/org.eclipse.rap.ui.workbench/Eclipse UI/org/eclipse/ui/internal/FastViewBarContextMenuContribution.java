@@ -47,23 +47,23 @@ public class FastViewBarContextMenuContribution extends ContributionItem {
 
         orientationItem = new MenuItem(menu, SWT.CASCADE, index++);
         {
-            orientationItem.setText(WorkbenchMessages.FastViewBar_view_orientation);
+            orientationItem.setText(WorkbenchMessages.get().FastViewBar_view_orientation);
 
             Menu orientationSwtMenu = new Menu(orientationItem);
             RadioMenu orientationMenu = new RadioMenu(orientationSwtMenu,
                     currentOrientation);
             orientationMenu
                     .addMenuItem(
-                            WorkbenchMessages.FastViewBar_horizontal, new Integer(SWT.HORIZONTAL)); 
+                            WorkbenchMessages.get().FastViewBar_horizontal, new Integer(SWT.HORIZONTAL)); 
             orientationMenu
                     .addMenuItem(
-                            WorkbenchMessages.FastViewBar_vertical, new Integer(SWT.VERTICAL)); 
+                            WorkbenchMessages.get().FastViewBar_vertical, new Integer(SWT.VERTICAL)); 
 
             orientationItem.setMenu(orientationSwtMenu);
         }
 
         restoreItem = new MenuItem(menu, SWT.CHECK, index++);
-        restoreItem.setText(WorkbenchMessages.ViewPane_fastView);
+        restoreItem.setText(WorkbenchMessages.get().ViewPane_fastView);
         restoreItem.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 bar.restoreView(selectedView);
@@ -71,7 +71,7 @@ public class FastViewBarContextMenuContribution extends ContributionItem {
         });
 
         closeItem = new MenuItem(menu, SWT.NONE, index++);
-        closeItem.setText(WorkbenchMessages.WorkbenchWindow_close); 
+        closeItem.setText(WorkbenchMessages.get().WorkbenchWindow_close); 
         closeItem.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {

@@ -76,7 +76,7 @@ public class CyclePerspectiveHandler extends CycleBaseHandler {
 	 * @see org.eclipse.ui.internal.CycleBaseHandler#getTableHeader()
 	 */
 	protected String getTableHeader(IWorkbenchPart activePart) {
-		return WorkbenchMessages.CyclePerspectiveAction_header;
+		return WorkbenchMessages.get().CyclePerspectiveAction_header;
 	}
 
 	/* (non-Javadoc)

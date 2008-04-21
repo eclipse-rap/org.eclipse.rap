@@ -53,7 +53,7 @@ public class EditorAreaTrimToolBar extends TrimToolBarBase {
 		        ToolItem restoreItem = new  ToolItem(mgr.getControl(), SWT.PUSH, index);        
 		        Image tbImage = WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_ETOOL_RESTORE_TRIMPART);
 		        restoreItem.setImage(tbImage);       
-		        String menuTip = WorkbenchMessages.StandardSystemToolbar_Restore;
+		        String menuTip = WorkbenchMessages.get().StandardSystemToolbar_Restore;
 		        restoreItem.setToolTipText(menuTip);
 		        restoreItem.addSelectionListener(new SelectionListener() {
 					public void widgetDefaultSelected(SelectionEvent e) {
@@ -73,7 +73,7 @@ public class EditorAreaTrimToolBar extends TrimToolBarBase {
 		        ToolItem editorAreaItem = new  ToolItem(mgr.getControl(), SWT.PUSH, index);        
 		        Image tbImage = WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_ETOOL_EDITOR_TRIMPART);
 		        editorAreaItem.setImage(tbImage);       
-		        String menuTip = WorkbenchMessages.EditorArea_Tooltip;
+		        String menuTip = WorkbenchMessages.get().EditorArea_Tooltip;
 		        editorAreaItem.setToolTipText(menuTip);
 		        editorAreaItem.addSelectionListener(new SelectionListener() {
 					public void widgetDefaultSelected(SelectionEvent e) {

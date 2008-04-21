@@ -125,7 +125,7 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
     public void addSizeMenuItem(Menu menu, int index) {
         //Add size menu
         MenuItem item = new MenuItem(menu, SWT.CASCADE, index);
-        item.setText(WorkbenchMessages.PartPane_size);
+        item.setText(WorkbenchMessages.get().PartPane_size);
         Menu sizeMenu = new Menu(menu);
         item.setMenu(sizeMenu);
         addSizeItems(sizeMenu);
@@ -482,12 +482,12 @@ public abstract class PartPane extends LayoutPart implements IPropertyListener,
     protected void addSizeItems(Menu sizeMenu) {
         Sashes sashes = findSashes();
         addSizeItem(sizeMenu,
-                WorkbenchMessages.PartPane_sizeLeft, sashes.left);
+                WorkbenchMessages.get().PartPane_sizeLeft, sashes.left);
         addSizeItem(sizeMenu,
-                WorkbenchMessages.PartPane_sizeRight, sashes.right); 
+                WorkbenchMessages.get().PartPane_sizeRight, sashes.right); 
         addSizeItem(sizeMenu,
-                WorkbenchMessages.PartPane_sizeTop, sashes.top); 
-        addSizeItem(sizeMenu, WorkbenchMessages.PartPane_sizeBottom, sashes.bottom);
+                WorkbenchMessages.get().PartPane_sizeTop, sashes.top); 
+        addSizeItem(sizeMenu, WorkbenchMessages.get().PartPane_sizeBottom, sashes.bottom);
     }
 
     /**

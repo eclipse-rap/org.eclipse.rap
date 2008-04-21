@@ -1584,7 +1584,7 @@ public abstract class PartStack extends LayoutPart implements ILayoutContainer {
 
         if (!(part instanceof PartPane)) {
 			WorkbenchPlugin.log(NLS.bind(
-					WorkbenchMessages.PartStack_incorrectPartInFolder, part
+					WorkbenchMessages.get().PartStack_incorrectPartInFolder, part
 							.getID()));
 			return;
 		}

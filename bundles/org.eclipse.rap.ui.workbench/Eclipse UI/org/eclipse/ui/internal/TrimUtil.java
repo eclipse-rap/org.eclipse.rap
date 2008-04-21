@@ -13,8 +13,8 @@ package org.eclipse.ui.internal;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -44,9 +44,12 @@ public class TrimUtil {
     	ti.setImage(JFaceResources.getImageRegistry().get(Dialog.DLG_IMG_MESSAGE_INFO));
     	s.layout();
     	int toolItemHeight = t.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-    	GC gc = new GC(s);
-    	Point fontSize = gc.textExtent("Wg"); //$NON-NLS-1$
-    	gc.dispose();
+    	// RAP [bm]: 
+//    	GC gc = new GC(s);
+//    	Point fontSize = gc.textExtent("Wg"); //$NON-NLS-1$
+//    	gc.dispose();
+    	Point fontSize = Graphics.textExtent(s.getFont(), "Wg", 0);
+    	// RAPEND: [bm] 
     	TRIM_DEFAULT_HEIGHT = Math.max(toolItemHeight, fontSize.y);
     	s.dispose();
     	
