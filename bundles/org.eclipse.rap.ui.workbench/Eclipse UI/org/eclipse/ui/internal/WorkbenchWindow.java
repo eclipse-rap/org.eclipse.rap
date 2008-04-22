@@ -3098,11 +3098,11 @@ public class WorkbenchWindow extends ApplicationWindow implements
 	 *            the parent shell
 	 */
 	private void createProgressIndicator(Shell shell) {
-		if (getWindowConfigurer().getShowProgressIndicator()) {
-			progressRegion = new ProgressRegion();
-			progressRegion.createContents(shell, this);
-		}
-
+//		if (getWindowConfigurer().getShowProgressIndicator()) {
+//			progressRegion = new ProgressRegion();
+//			progressRegion.createContents(shell, this);
+//		}
+		System.err.println("WorkbenchWindow#createProgressIndicator");
 	}
 
 	class PageList {

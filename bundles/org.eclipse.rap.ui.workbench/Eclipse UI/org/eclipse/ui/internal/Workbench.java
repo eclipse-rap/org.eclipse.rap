@@ -2174,7 +2174,7 @@ public final class Workbench extends SessionSingletonEventManager implements IWo
 		// compat, make sure to allow both missing class
 		// attribute and a missing startup element
 		IExtensionPoint point = registry.getExtensionPoint(
-				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_STARTUP);
+				PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_STARTUP);
 
 		final IExtension[] extensions = point.getExtensions();
 		if (extensions.length == 0) {

@@ -449,11 +449,19 @@ public class ThemeRegistryReader extends RegistryReader {
     public void readThemes(IExtensionRegistry in, ThemeRegistry out) {
         // this does not seem to really ever be throwing an the exception
         setRegistry(out);
-        readRegistry(in, PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_THEMES);
+        // RAP [bm]: 
+//        readRegistry(in, PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_THEMES);
+//
+//        // support for old font definitions
+//        readRegistry(in, PlatformUI.PLUGIN_ID,
+//                IWorkbenchRegistryConstants.PL_FONT_DEFINITIONS);
+        readRegistry(in, "foo", IWorkbenchRegistryConstants.PL_THEMES);
+        System.err.println("ThemeRegistryReader#readThemes");
 
         // support for old font definitions
-        readRegistry(in, PlatformUI.PLUGIN_ID,
+        readRegistry(in, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
                 IWorkbenchRegistryConstants.PL_FONT_DEFINITIONS);
+        // RAPEND: [bm] 
     }
 
     /**

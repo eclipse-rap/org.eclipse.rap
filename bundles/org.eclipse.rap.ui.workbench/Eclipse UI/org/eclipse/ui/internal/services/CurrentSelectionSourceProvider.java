@@ -26,7 +26,6 @@ import org.eclipse.ui.ISources;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.internal.DetachedWindow;
 import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.services.IServiceLocator;
 
@@ -61,10 +60,13 @@ public final class CurrentSelectionSourceProvider extends
 				IWorkbenchWindow window = null;
 				if (event.widget.getData() instanceof WorkbenchWindow) {
 					window = (IWorkbenchWindow) event.widget.getData();
-				} else if (event.widget.getData() instanceof DetachedWindow) {
-					window = ((DetachedWindow) event.widget.getData())
-							.getWorkbenchPage().getWorkbenchWindow();
+				// RAP [bm]: no detached windows
+//				} else if (event.widget.getData() instanceof DetachedWindow) {
+//					window = ((DetachedWindow) event.widget.getData())
+//							.getWorkbenchPage().getWorkbenchWindow();
+					// RAPEND: [bm] 
 				}
+
 				updateWindows(window);
 				break;
 			}

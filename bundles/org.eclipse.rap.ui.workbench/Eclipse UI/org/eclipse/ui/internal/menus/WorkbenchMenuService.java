@@ -908,8 +908,12 @@ public final class WorkbenchMenuService extends InternalMenuService {
 	}
 
 	private void handleMenuChanges(IRegistryChangeEvent event) {
+		// RAP [bm]: 
+//		final IExtensionDelta[] menuDeltas = event.getExtensionDeltas(
+//				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_MENUS);
 		final IExtensionDelta[] menuDeltas = event.getExtensionDeltas(
-				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_MENUS);
+				PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_MENUS);
+		// RAPEND: [bm] 
 		final List menuAdditions = new ArrayList();
 		final List menuRemovals = new ArrayList();
 		for (int i = 0; i < menuDeltas.length; i++) {
@@ -1003,8 +1007,12 @@ public final class WorkbenchMenuService extends InternalMenuService {
 //			}
 			// RAPEND: [bm] 
 			if (handlerPersistence.handlersNeedUpdating(event)) {
+				// RAP [bm]: 
+//				final IExtensionDelta[] handlerDeltas = event.getExtensionDeltas(
+//						PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_HANDLERS);
 				final IExtensionDelta[] handlerDeltas = event.getExtensionDeltas(
-						PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_HANDLERS);
+						PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_HANDLERS);
+				// RAPEND: [bm] 
 				for (int i = 0; i < handlerDeltas.length; i++) {
 					IConfigurationElement[] ices = handlerDeltas[i].getExtension().getConfigurationElements();
 					HandlerProxy.updateStaleCEs(ices);

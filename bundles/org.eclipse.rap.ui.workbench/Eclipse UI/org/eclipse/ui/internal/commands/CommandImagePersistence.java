@@ -163,9 +163,14 @@ final class CommandImagePersistence extends RegistryPersistence {
 	}
 
 	protected final boolean isChangeImportant(final IRegistryChangeEvent event) {
+		// RAP [bm]: 
+//		final IExtensionDelta[] imageDeltas = event.getExtensionDeltas(
+//				PlatformUI.PLUGIN_ID,
+//				IWorkbenchRegistryConstants.PL_COMMAND_IMAGES);
 		final IExtensionDelta[] imageDeltas = event.getExtensionDeltas(
-				PlatformUI.PLUGIN_ID,
+				PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 				IWorkbenchRegistryConstants.PL_COMMAND_IMAGES);
+		// RAPEND: [bm] 
 		return (imageDeltas.length != 0);
 	}
 

@@ -10,24 +10,18 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.commands;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.jface.bindings.BindingManager;
-import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.ui.commands.ExecutionException;
 import org.eclipse.ui.commands.ICommand;
 import org.eclipse.ui.commands.ICommandListener;
 import org.eclipse.ui.commands.NotDefinedException;
 import org.eclipse.ui.commands.NotHandledException;
-import org.eclipse.ui.internal.keys.KeySequenceBinding;
-import org.eclipse.ui.keys.KeySequence;
 
 /**
  * A wrapper around a core command so that it satisfies the deprecated
@@ -47,11 +41,12 @@ final class CommandLegacyWrapper implements ICommand {
 	 */
 	private final Command command;
 
-	/**
-	 * A parameterized representation of the command. This is created lazily. If
-	 * it has not yet been created, it is <code>null</code>.
-	 */
-	private ParameterizedCommand parameterizedCommand;
+	// RAP [bm]: 
+//	/**
+//	 * A parameterized representation of the command. This is created lazily. If
+//	 * it has not yet been created, it is <code>null</code>.
+//	 */
+//	private ParameterizedCommand parameterizedCommand;
 
 	/**
 	 * Constructs a new <code>CommandWrapper</code>
@@ -163,27 +158,29 @@ final class CommandLegacyWrapper implements ICommand {
 	 * 
 	 * @see org.eclipse.ui.commands.ICommand#getKeySequenceBindings()
 	 */
-	public final List getKeySequenceBindings() {
-		final List legacyBindings = new ArrayList();
-		if (parameterizedCommand == null) {
-			parameterizedCommand = new ParameterizedCommand(command, null);
-		}
-		final TriggerSequence[] activeBindings = bindingManager
-				.getActiveBindingsFor(parameterizedCommand);
-		final int activeBindingsCount = activeBindings.length;
-		for (int i = 0; i < activeBindingsCount; i++) {
-			final TriggerSequence triggerSequence = activeBindings[i];
-			if (triggerSequence instanceof org.eclipse.jface.bindings.keys.KeySequence) {
-				legacyBindings
-						.add(new KeySequenceBinding(
-								KeySequence
-										.getInstance((org.eclipse.jface.bindings.keys.KeySequence) triggerSequence),
-								0));
-			}
-		}
-
-		return legacyBindings;
-	}
+	// RAP [bm]: 
+//	public final List getKeySequenceBindings() {
+//		final List legacyBindings = new ArrayList();
+//		if (parameterizedCommand == null) {
+//			parameterizedCommand = new ParameterizedCommand(command, null);
+//		}
+//		final TriggerSequence[] activeBindings = bindingManager
+//				.getActiveBindingsFor(parameterizedCommand);
+//		final int activeBindingsCount = activeBindings.length;
+//		for (int i = 0; i < activeBindingsCount; i++) {
+//			final TriggerSequence triggerSequence = activeBindings[i];
+//			if (triggerSequence instanceof org.eclipse.jface.bindings.keys.KeySequence) {
+//				legacyBindings
+//						.add(new KeySequenceBinding(
+//								KeySequence
+//										.getInstance((org.eclipse.jface.bindings.keys.KeySequence) triggerSequence),
+//								0));
+//			}
+//		}
+//
+//		return legacyBindings;
+//	}
+	// RAPEND: [bm] 
 
 	/*
 	 * (non-Javadoc)

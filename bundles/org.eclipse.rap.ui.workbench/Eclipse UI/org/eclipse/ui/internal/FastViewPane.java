@@ -16,11 +16,6 @@ import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -31,7 +26,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Sash;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.ISizeProvider;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -71,16 +65,18 @@ public class FastViewPane {
     
     private AbstractPresentationFactory presFactory;
 
-    // Traverse listener -- listens to ESC and closes the active fastview 
-    private Listener escapeListener = new Listener() {
-        public void handleEvent(Event event) {
-            if (event.character == SWT.ESC) {
-                if (currentPane != null) {
-                    currentPane.getPane().getPage().hideFastView();
-                }
-            }
-        }
-    };
+    // Traverse listener -- listens to ESC and closes the active fastview
+    // RAP [bm]: 
+//    private Listener escapeListener = new Listener() {
+//        public void handleEvent(Event event) {
+//            if (event.character == SWT.ESC) {
+//                if (currentPane != null) {
+//                    currentPane.getPane().getPage().hideFastView();
+//                }
+//            }
+//        }
+//    };
+    // RAPEND: [bm] 
 
     private DefaultStackPresentationSite site = new DefaultStackPresentationSite() {
         /* (non-Javadoc)
@@ -146,10 +142,11 @@ public class FastViewPane {
 
             PartPane pane = currentPane.getPane();
 
-            Control control = this.getPresentation().getControl();
-
-            Rectangle bounds = Geometry.toDisplay(clientComposite, control
-                    .getBounds());
+            // RAP [bm]: 
+//            Control control = this.getPresentation().getControl();
+//
+//            Rectangle bounds = Geometry.toDisplay(clientComposite, control
+//                    .getBounds());
 
             WorkbenchPage page = pane.getPage();
 
@@ -158,7 +155,8 @@ public class FastViewPane {
                 page.zoomOut();
             }
 
-            DragUtil.performDrag(pane, bounds, initialPosition, !keyboard);
+            // RAP [bm]: 
+//            DragUtil.performDrag(pane, bounds, initialPosition, !keyboard);
         }
 
         public IPresentablePart getSelectedPart() {
@@ -281,14 +279,15 @@ public class FastViewPane {
                     return;
                 }
 
-                if (event.widget instanceof ToolBar) {
-                    // Ignore mouse down on actual tool bar buttons
-                    Point pt = new Point(event.x, event.y);
-                    ToolBar toolBar = (ToolBar) event.widget;
-                    if (toolBar.getItem(pt) != null) {
-						return;
-					}
-                }
+                // RAP [bm]: 
+//                if (event.widget instanceof ToolBar) {
+//                    // Ignore mouse down on actual tool bar buttons
+//                    Point pt = new Point(event.x, event.y);
+//                    ToolBar toolBar = (ToolBar) event.widget;
+//                    if (toolBar.getItem(pt) != null) {
+//						return;
+//					}
+//                }
 
                 Point loc = DragUtil.getEventLoc(event);
 
@@ -310,25 +309,29 @@ public class FastViewPane {
     };
 
     public void moveSash() {
-        final KeyListener listener = new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (e.character == SWT.ESC || e.character == '\r') {
-                    currentPane.setFocus();
-                }
-            }
-        };
-        sash.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                sash.setBackground(sash.getDisplay().getSystemColor(
-                        SWT.COLOR_LIST_SELECTION));
-                sash.addKeyListener(listener);
-            }
+    	// RAP [bm]: 
+//        final KeyListener listener = new KeyAdapter() {
+//            public void keyPressed(KeyEvent e) {
+//                if (e.character == SWT.ESC || e.character == '\r') {
+//                    currentPane.setFocus();
+//                }
+//            }
+//        };
+//
+//        sash.addFocusListener(new FocusAdapter() {
+//            public void focusGained(FocusEvent e) {
+//                sash.setBackground(sash.getDisplay().getSystemColor(
+//                        SWT.COLOR_LIST_SELECTION));
+//                sash.addKeyListener(listener);
+//            }
+//
+//            public void focusLost(FocusEvent e) {
+//                sash.setBackground(null);
+//                sash.removeKeyListener(listener);
+//            }
+//        });
+    	// RAPEND: [bm] 
 
-            public void focusLost(FocusEvent e) {
-                sash.setBackground(null);
-                sash.removeKeyListener(listener);
-            }
-        });
         sash.setFocus();
     }
 
@@ -355,14 +358,17 @@ public class FastViewPane {
 
                 setSize(distanceFromEdge);
 
-                if (e.detail != SWT.DRAG) {
-                    updateFastViewSashBounds();
-                    //					getPresentation().getControl().moveAbove(null);
-                    //					currentPane.moveAbove(null); 
-                    //					sash.moveAbove(null);
-                    //currentPane.getControl().redraw();
-                    sash.redraw();
-                }
+                // RAP [bm]: 
+//                if (e.detail != SWT.DRAG) {
+//                    updateFastViewSashBounds();
+//                    //					getPresentation().getControl().moveAbove(null);
+//                    //					currentPane.moveAbove(null); 
+//                    //					sash.moveAbove(null);
+//                    //currentPane.getControl().redraw();
+//                    sash.redraw();
+//                }
+                // RAPEND: [bm] 
+
             }
         }
     };
@@ -447,7 +453,8 @@ public class FastViewPane {
             ctrl = pane.getControl();
         }
 
-        ctrl.addListener(SWT.Traverse, escapeListener);
+        // RAP [bm]: 
+//        ctrl.addListener(SWT.Traverse, escapeListener);
 
         // Temporarily use the same appearance as docked views .. eventually, fastviews will
         // be independently pluggable.
@@ -571,7 +578,8 @@ public class FastViewPane {
         //hideFastViewSash();
         Control ctrl = currentPane.getControl();
 
-        ctrl.removeListener(SWT.Traverse, escapeListener);
+        // RAP [bm]: 
+//        ctrl.removeListener(SWT.Traverse, escapeListener);
 
         // Hide it completely.
         getPresentation().setVisible(false);

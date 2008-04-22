@@ -104,6 +104,7 @@
       </context>
    </extension>
    
+   <!-- RAP [bm] Bindings
    <extension point="org.eclipse.ui.bindings">
       <key
             commandId="org.eclipse.ui.newWizard"
@@ -263,7 +264,7 @@
             commandId="org.eclipse.ui.window.activateEditor"
             sequence="F12"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" />
-      <!-- F12 is the Dashboard on carbon -->
+      < !- - F12 is the Dashboard on carbon - - >
       <key
             platform="carbon"
             sequence="F12"
@@ -356,14 +357,14 @@
 	        commandId="org.eclipse.ui.edit.text.contentAssist.proposals"
 	        contextId="org.eclipse.ui.contexts.dialogAndWindow"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-	        sequence="CTRL+SPACE"/>	<!-- Command+SPACE+* is reserved on carbon, hardcode to CTRL -->
+	        sequence="CTRL+SPACE"/>	<!- - Command+SPACE+* is reserved on carbon, hardcode to CTRL - - >
 
 	  <key
 	        commandId="org.eclipse.ui.edit.text.contentAssist.contextInformation"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-	        sequence="CTRL+M2+SPACE"/>	<!-- Command+SPACE+* is reserved on carbon, hardcode to CTRL -->
+	        sequence="CTRL+M2+SPACE"/>	<!- - Command+SPACE+* is reserved on carbon, hardcode to CTRL - - >
 
-      <!-- Special content assist key bindings for the Chinese language to prevent conflict with IME -->
+      <!- - Special content assist key bindings for the Chinese language to prevent conflict with IME - - >
       <key
             locale="zh"
    	        contextId="org.eclipse.ui.contexts.dialogAndWindow"
@@ -391,7 +392,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
 
-      <!-- Content assist key binding for the Japanese language to prevent conflict with IME on GTK -->
+      <!- - Content assist key binding for the Japanese language to prevent conflict with IME on GTK - - >
       <key
             locale="ja"
             platform="gtk"
@@ -424,7 +425,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
 
-      <!-- Content assist key binding for the Korean language to prevent conflict with IME on GTK -->
+      <!- - Content assist key binding for the Korean language to prevent conflict with IME on GTK - - >
       <key
             locale="ko"
             platform="gtk"
@@ -457,7 +458,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
             
-      <!-- Content assist key binding for the Japanese language to prevent conflict with IME on Motif -->
+      < !- - Content assist key binding for the Japanese language to prevent conflict with IME on Motif - - >
       <key
             locale="ja"
             platform="motif"
@@ -490,7 +491,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M2+M3+?"/>
 
-      <!-- Content assist key binding for the Korean language to prevent conflict with IME on Motif -->
+      <!- - Content assist key binding for the Korean language to prevent conflict with IME on Motif - - >
       <key
             locale="ko"
             platform="motif"
@@ -643,7 +644,7 @@
             sequence="M1+M2+NUMPAD_DIVIDE">
       </key>
    </extension>
-   
+   -->
    <extension
          point="org.eclipse.ui.commands">
       <category
@@ -696,6 +697,7 @@
             description="%command.tipsAndTricks.description"
             categoryId="org.eclipse.ui.category.help"
             id="org.eclipse.ui.help.tipsAndTricksAction" />
+      <!-- RAP [rh] About dialog left out for the moment
       <command
             categoryId="org.eclipse.ui.category.help"
             defaultHandler="org.eclipse.ui.internal.about.AboutHandler"
@@ -703,6 +705,7 @@
             helpContextId="org.eclipse.ui.about_action_context"
             id="org.eclipse.ui.help.aboutAction"
             name="%command.aboutAction.name"/>
+      -->
       <command
             categoryId="org.eclipse.ui.category.file"
             defaultHandler="org.eclipse.ui.internal.handlers.WizardHandler$New"
@@ -807,6 +810,7 @@
             description="%command.redo.description"
             categoryId="org.eclipse.ui.category.edit"
             id="org.eclipse.ui.edit.redo" />
+      <!-- RAP [bm]: clipboard
       <command
             name="%command.cut.name"
             description="%command.cut.description"
@@ -825,6 +829,7 @@
             categoryId="org.eclipse.ui.category.edit"
             id="org.eclipse.ui.edit.paste"
             defaultHandler="org.eclipse.ui.internal.handlers.WidgetMethodHandler:paste" />
+      -->
       <command
             name="%command.delete.name"
             description="%command.delete.description"
@@ -852,12 +857,14 @@
             description="%command.rename.description"
             categoryId="org.eclipse.ui.category.file"
             id="org.eclipse.ui.edit.rename" />
+      <!-- RAP [bm]: not applicable at the moment
       <command
             name="%command.selectAll.name"
             description="%command.selectAll.description"
             categoryId="org.eclipse.ui.category.edit"
             id="org.eclipse.ui.edit.selectAll"
             defaultHandler="org.eclipse.ui.internal.handlers.SelectAllHandler" />
+      -->
       <command
             name="%command.findReplace.name"
             description="%command.findReplace.description"
@@ -1061,12 +1068,14 @@
             description="%command.savePerspective.description"
             categoryId="org.eclipse.ui.category.window"
             id="org.eclipse.ui.window.savePerspective" />
+      <!-- RAP [bm]: Bindings
       <command
       		name="%command.showKeyAssist.name"
       		description="%command.showKeyAssist.description"
       		categoryId="org.eclipse.ui.category.window"
       		id="org.eclipse.ui.window.showKeyAssist"
       		defaultHandler="org.eclipse.ui.internal.handlers.ShowKeyAssistHandler" />
+      -->
       <command
       		name="%command.showView.name"
       		description="%command.showView.description"
@@ -1083,6 +1092,7 @@
               optional="true">
         </commandParameter>
       </command>
+      <!-- RAP [bm] HelpSystem
       <command
             defaultHandler="org.eclipse.ui.internal.handlers.DisplayHelpHandler"
             description="%command.displayHelp.description"
@@ -1094,6 +1104,7 @@
                name="%command.displayHelp.hrefParameter"
                optional="true"/>
       </command>
+      -->
       <command
             categoryId="org.eclipse.ui.category.file"
             description="%command.closeOthers.description"
@@ -1160,6 +1171,7 @@
    
    <extension
          point="org.eclipse.ui.commandImages">
+      <!-- RAP [bm] clipboard
       <image
             commandId="org.eclipse.ui.edit.copy"
             icon="$nl$/icons/full/etool16/copy_edit.gif" />
@@ -1167,11 +1179,12 @@
             commandId="org.eclipse.ui.edit.cut"
             icon="$nl$/icons/full/etool16/cut_edit.gif" />
       <image
-            commandId="org.eclipse.ui.edit.delete"
-            icon="$nl$/icons/full/etool16/delete_edit.gif" />
-      <image
             commandId="org.eclipse.ui.edit.paste"
             icon="$nl$/icons/full/etool16/paste_edit.gif" />
+      -->
+      <image
+            commandId="org.eclipse.ui.edit.delete"
+            icon="$nl$/icons/full/etool16/delete_edit.gif" />
       <image
             commandId="org.eclipse.ui.file.print"
             icon="$nl$/icons/full/etool16/print_edit.gif" />
@@ -1629,6 +1642,7 @@
             class="org.eclipse.ui.internal.UIPreferenceInitializer">
       </initializer>
    </extension>
+   <!-- RAP [bm] about dialog disabled
    <extension
          point="org.eclipse.ui.systemSummarySections">
       <section
@@ -1637,6 +1651,7 @@
             id="10.DefaultSection">
       </section>
    </extension>
+   -->
    <extension
          point="org.eclipse.ui.presentationFactories">
       <factory
@@ -2167,5 +2182,41 @@
            class="org.eclipse.ui.internal.RAPHttpContext"
            id="org.eclipse.rap.httpcontext">
      </httpcontext>
+  </extension>
+  
+  <!-- RAP specific -->
+    <extension
+      id="org.eclipse.ui.workbench.adapterfactories"
+      point="org.eclipse.rap.ui.adapterfactory">
+    <factory
+        factoryClass="org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory"
+        adaptableClass="org.eclipse.swt.widgets.Widget"/>
+    <factory
+        factoryClass="org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory"
+        adaptableClass="org.eclipse.swt.widgets.Display"/>
+    <factory
+        factoryClass="org.eclipse.swt.internal.widgets.WidgetAdapterFactory"
+        adaptableClass="org.eclipse.swt.widgets.Widget"/>
+    <factory
+        factoryClass="org.eclipse.swt.internal.widgets.WidgetAdapterFactory"
+        adaptableClass="org.eclipse.swt.widgets.Display"/>
+  </extension>
+
+  <extension
+        id="org.eclipse.ui.workbench.preserveWidgetValues"
+        point="org.eclipse.rap.ui.phaselistener">
+     <listener class="org.eclipse.rwt.internal.lifecycle.PreserveWidgetsPhaseListener"/>
+  </extension>
+
+  <extension
+        id="org.eclipse.ui.workbench.currentPhase"
+        point="org.eclipse.rap.ui.phaselistener">
+     <listener class="org.eclipse.rwt.internal.lifecycle.CurrentPhase$Listener"/>
+  </extension>
+  
+  <extension id="preferences" 
+             point="org.eclipse.core.runtime.preferences">
+    <scope name="session" 
+           class="org.eclipse.ui.internal.preferences.SessionPreferencesFactory"/>
   </extension>
 </plugin>

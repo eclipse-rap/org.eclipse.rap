@@ -603,7 +603,7 @@ public class WorkbenchPlugin extends AbstractUIPlugin {
 //        IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
 //                .getExtensionPoint(PI_WORKBENCH, extensionPointId);
         IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-        .getExtensionPoint(PI_WORKBENCH, extensionPointId);
+        .getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, extensionPointId);
         // RAPEND: [bm] 
 
         if (extensionPoint == null) {

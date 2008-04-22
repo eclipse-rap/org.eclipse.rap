@@ -115,17 +115,32 @@ public final class HandlerPersistence extends RegistryPersistence {
 		 * handler extensions change (i.e., handlers, commands), or if any of
 		 * the command extensions change (i.e., action definitions).
 		 */
+		// RAP [bm]: 
+//		final IExtensionDelta[] handlerDeltas = event.getExtensionDeltas(
+//				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_HANDLERS);
 		final IExtensionDelta[] handlerDeltas = event.getExtensionDeltas(
-				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_HANDLERS);
+				PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_HANDLERS);
+		// RAPEND: [bm] 
 		if (handlerDeltas.length == 0) {
+			// RAP [bm]: 
+//			final IExtensionDelta[] commandDeltas = event.getExtensionDeltas(
+//					PlatformUI.PLUGIN_ID,
+//					IWorkbenchRegistryConstants.PL_COMMANDS);
 			final IExtensionDelta[] commandDeltas = event.getExtensionDeltas(
-					PlatformUI.PLUGIN_ID,
+					PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 					IWorkbenchRegistryConstants.PL_COMMANDS);
+			// RAPEND: [bm] 
+
 			if (commandDeltas.length == 0) {
+				// RAP [bm]: 
+//				final IExtensionDelta[] actionDefinitionDeltas = event
+//						.getExtensionDeltas(
+//								PlatformUI.PLUGIN_ID,
+//								IWorkbenchRegistryConstants.PL_ACTION_DEFINITIONS);
 				final IExtensionDelta[] actionDefinitionDeltas = event
-						.getExtensionDeltas(
-								PlatformUI.PLUGIN_ID,
-								IWorkbenchRegistryConstants.PL_ACTION_DEFINITIONS);
+				.getExtensionDeltas(
+						PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+						IWorkbenchRegistryConstants.PL_ACTION_DEFINITIONS);
 				if (actionDefinitionDeltas.length == 0) {
 					return false;
 				}

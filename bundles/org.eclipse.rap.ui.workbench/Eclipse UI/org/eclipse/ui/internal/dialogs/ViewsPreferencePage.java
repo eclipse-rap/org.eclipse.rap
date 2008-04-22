@@ -639,9 +639,14 @@ public class ViewsPreferencePage extends PreferencePage implements
 		// Workbench.getInstance().getPresentationId();
 
 		// update the sorted list of factories
+		// RAP [bm]: 
+//		presentationFactories = Platform.getExtensionRegistry()
+//				.getConfigurationElementsFor(PlatformUI.PLUGIN_ID,
+//						IWorkbenchRegistryConstants.PL_PRESENTATION_FACTORIES);
 		presentationFactories = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor(PlatformUI.PLUGIN_ID,
+				.getConfigurationElementsFor(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 						IWorkbenchRegistryConstants.PL_PRESENTATION_FACTORIES);
+		// RAPEND: [bm] 
 
 		// sort the array by name
 		Arrays.sort(presentationFactories, new Comparator() {

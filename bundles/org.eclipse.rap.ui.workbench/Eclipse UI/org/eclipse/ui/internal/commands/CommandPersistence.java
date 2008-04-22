@@ -442,12 +442,21 @@ public final class CommandPersistence extends RegistryPersistence {
 	}
 
 	public boolean commandsNeedUpdating(final IRegistryChangeEvent event) {
+		// RAP [bm]: 
+//		final IExtensionDelta[] commandDeltas = event.getExtensionDeltas(
+//				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_COMMANDS);
 		final IExtensionDelta[] commandDeltas = event.getExtensionDeltas(
-				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_COMMANDS);
+				PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_COMMANDS);
+		// RAPEND: [bm] 
 		if (commandDeltas.length == 0) {
+			// RAP [bm]: 
+//			final IExtensionDelta[] actionDefinitionDeltas = event
+//					.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+//							IWorkbenchRegistryConstants.PL_ACTION_DEFINITIONS);
 			final IExtensionDelta[] actionDefinitionDeltas = event
-					.getExtensionDeltas(PlatformUI.PLUGIN_ID,
-							IWorkbenchRegistryConstants.PL_ACTION_DEFINITIONS);
+			.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+					IWorkbenchRegistryConstants.PL_ACTION_DEFINITIONS);
+			// RAPEND: [bm] 
 			if (actionDefinitionDeltas.length == 0) {
 				return false;
 			}

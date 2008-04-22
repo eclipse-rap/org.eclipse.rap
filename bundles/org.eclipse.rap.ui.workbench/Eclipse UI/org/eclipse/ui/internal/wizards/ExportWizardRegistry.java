@@ -53,6 +53,9 @@ public class ExportWizardRegistry extends AbstractExtensionWizardRegistry {
 	 * @see org.eclipse.ui.internal.wizards.AbstractExtensionWizardRegistry#getPlugin()
 	 */
 	protected String getPlugin() {
-		return PlatformUI.PLUGIN_ID;
+		// RAP [bm]: 
+//		return PlatformUI.PLUGIN_ID;
+		return PlatformUI.PLUGIN_EXTENSION_NAME_SPACE;
+		// RAPEND: [bm] 
 	}
 }

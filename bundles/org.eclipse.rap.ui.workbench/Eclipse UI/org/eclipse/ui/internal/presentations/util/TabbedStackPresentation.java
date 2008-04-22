@@ -38,7 +38,6 @@ import org.eclipse.ui.presentations.IPartMenu;
 import org.eclipse.ui.presentations.IPresentablePart;
 import org.eclipse.ui.presentations.IPresentationSerializer;
 import org.eclipse.ui.presentations.IStackPresentationSite;
-import org.eclipse.ui.presentations.StackDropResult;
 import org.eclipse.ui.presentations.StackPresentation;
 
 /**
@@ -113,10 +112,12 @@ public final class TabbedStackPresentation extends StackPresentation {
                         IPresentablePart part = folder.getPartForTab(beingDragged);
                         
                         try {
-                            dragStart = folder.indexOf(part);
+                        	// RAP [bm]: 
+//                            dragStart = folder.indexOf(part);
                             getSite().dragStart(part, initialLocation, false);                    
                         } finally {
-                            dragStart = -1;
+                        	// RAP [bm]: 
+//                            dragStart = -1;
                         }
                     }
                     break;
@@ -161,7 +162,9 @@ public final class TabbedStackPresentation extends StackPresentation {
         }
     };
 
-    private int dragStart = -1;
+    // RAP [bm]: 
+//    private int dragStart = -1;
+    
     private Map prefs = new HashMap();
     
     public TabbedStackPresentation(IStackPresentationSite site, AbstractTabFolder widget, ISystemMenu systemMenu) {
@@ -169,7 +172,10 @@ public final class TabbedStackPresentation extends StackPresentation {
     }
     
     public TabbedStackPresentation(IStackPresentationSite site, PresentablePartFolder folder, ISystemMenu systemMenu) {
-        this(site, folder, new LeftToRightTabOrder(folder), new ReplaceDragHandler(folder.getTabFolder()), systemMenu);
+    	// RAP [bm]: 
+//        this(site, folder, new LeftToRightTabOrder(folder), new ReplaceDragHandler(folder.getTabFolder()), systemMenu);
+        this(site, folder, new LeftToRightTabOrder(folder), null, systemMenu);
+        // RAPEND: [bm] 
     }
     
     public TabbedStackPresentation(IStackPresentationSite site,
@@ -475,9 +481,10 @@ public final class TabbedStackPresentation extends StackPresentation {
     /* (non-Javadoc)
      * @see org.eclipse.ui.presentations.StackPresentation#dragOver(org.eclipse.swt.widgets.Control, org.eclipse.swt.graphics.Point)
      */
-    public StackDropResult dragOver(Control currentControl, Point location) {
-        return dragBehavior.dragOver(currentControl, location, dragStart);
-    }
+    // RAP [bm]: 
+//    public StackDropResult dragOver(Control currentControl, Point location) {
+//        return dragBehavior.dragOver(currentControl, location, dragStart);
+//    }
 
     public void showSystemMenu() {
         showSystemMenu(folder.getTabFolder().getSystemMenuLocation(), getSite().getSelectedPart());

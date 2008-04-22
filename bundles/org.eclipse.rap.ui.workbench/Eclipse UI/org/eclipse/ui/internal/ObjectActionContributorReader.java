@@ -64,8 +64,12 @@ public class ObjectActionContributorReader extends RegistryReader {
     public void readPopupContributors(ObjectActionContributorManager mng) {
         setManager(mng);
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        readRegistry(registry, PlatformUI.PLUGIN_ID,
-                IWorkbenchRegistryConstants.PL_POPUP_MENU);
+        // RAP [bm]: 
+//        readRegistry(registry, PlatformUI.PLUGIN_ID,
+//                IWorkbenchRegistryConstants.PL_POPUP_MENU);
+        readRegistry(registry, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+              IWorkbenchRegistryConstants.PL_POPUP_MENU);
+        // RAPEND: [bm] 
     }
 
     /**

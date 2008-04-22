@@ -285,7 +285,7 @@ public class DecorationScheduler {
 	 */
 	private void createDecorationJob() {
 		decorationJob = new Job(
-				WorkbenchMessages.DecorationScheduler_CalculationJobName) {
+				WorkbenchMessages.get().DecorationScheduler_CalculationJobName) {
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -311,7 +311,7 @@ public class DecorationScheduler {
 				}
 
 				monitor.beginTask(
-						WorkbenchMessages.DecorationScheduler_CalculatingTask,
+						WorkbenchMessages.get().DecorationScheduler_CalculatingTask,
 						100);
 				// will block if there are no resources to be decorated
 				DecorationReference reference;
@@ -454,7 +454,7 @@ public class DecorationScheduler {
 
 	private Job getClearJob() {
 		Job clear = new Job(
-				WorkbenchMessages.DecorationScheduler_ClearResultsJob) {
+				WorkbenchMessages.get().DecorationScheduler_ClearResultsJob) {
 
 			/*
 			 * (non-Javadoc)
@@ -488,7 +488,7 @@ public class DecorationScheduler {
 	 */
 	private WorkbenchJob getUpdateJob() {
 		WorkbenchJob job = new WorkbenchJob(
-				WorkbenchMessages.DecorationScheduler_UpdateJobName) {
+				WorkbenchMessages.get().DecorationScheduler_UpdateJobName) {
 
 			int currentIndex = NEEDS_INIT;
 
@@ -520,7 +520,7 @@ public class DecorationScheduler {
 				}
 
 				monitor.beginTask(
-						WorkbenchMessages.DecorationScheduler_UpdatingTask,
+						WorkbenchMessages.get().DecorationScheduler_UpdatingTask,
 						IProgressMonitor.UNKNOWN);
 
 				long startTime = System.currentTimeMillis();

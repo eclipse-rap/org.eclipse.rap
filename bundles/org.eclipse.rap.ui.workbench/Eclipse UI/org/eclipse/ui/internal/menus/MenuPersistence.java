@@ -68,8 +68,12 @@ final class MenuPersistence extends RegistryPersistence {
 	}
 
 	public boolean menusNeedUpdating(final IRegistryChangeEvent event) {
+		// RAP [bm]: 
+//		final IExtensionDelta[] menuDeltas = event.getExtensionDeltas(
+//				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_MENUS);
 		final IExtensionDelta[] menuDeltas = event.getExtensionDeltas(
-				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_MENUS);
+		PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_MENUS);
+		// RAPEND: [bm] 
 		if (menuDeltas.length == 0) {
 			return false;
 		}

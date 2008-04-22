@@ -576,14 +576,24 @@ public final class LegacyActionPersistence extends RegistryPersistence {
 	}
 
 	protected final boolean isChangeImportant(final IRegistryChangeEvent event) {
-		return !((event.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+		// RAP [bm]: 
+//		return !((event.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+//				IWorkbenchRegistryConstants.PL_ACTION_SETS).length == 0)
+//				&& (event.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+//						IWorkbenchRegistryConstants.PL_EDITOR_ACTIONS).length == 0)
+//				&& (event.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+//						IWorkbenchRegistryConstants.PL_POPUP_MENU).length == 0) && (event
+//				.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+//						IWorkbenchRegistryConstants.PL_VIEW_ACTIONS).length == 0));
+		return !((event.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 				IWorkbenchRegistryConstants.PL_ACTION_SETS).length == 0)
-				&& (event.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+				&& (event.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 						IWorkbenchRegistryConstants.PL_EDITOR_ACTIONS).length == 0)
-				&& (event.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+				&& (event.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 						IWorkbenchRegistryConstants.PL_POPUP_MENU).length == 0) && (event
-				.getExtensionDeltas(PlatformUI.PLUGIN_ID,
+				.getExtensionDeltas(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
 						IWorkbenchRegistryConstants.PL_VIEW_ACTIONS).length == 0));
+		// RAPEND: [bm] 
 	}
 
 	/**

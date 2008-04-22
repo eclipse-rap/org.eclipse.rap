@@ -109,8 +109,12 @@ public abstract class PluginActionBuilder extends RegistryReader {
         currentContribution = null;
         targetID = id;
         targetContributionTag = tag;
-        readRegistry(Platform.getExtensionRegistry(), PlatformUI.PLUGIN_ID,
+        // RAP [bm]: 
+//        readRegistry(Platform.getExtensionRegistry(), PlatformUI.PLUGIN_ID,
+//                extensionPoint);
+        readRegistry(Platform.getExtensionRegistry(), PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
                 extensionPoint);
+        // RAPEND: [bm] 
     }
 
     /**

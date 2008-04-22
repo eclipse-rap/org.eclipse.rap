@@ -86,9 +86,9 @@ class DecorationReference {
      */
     String getSubTask() {
         if (undecoratedText == null) {
-			return WorkbenchMessages.DecorationReference_EmptyReference;
+			return WorkbenchMessages.get().DecorationReference_EmptyReference;
 		}
-	return NLS.bind(WorkbenchMessages.DecorationScheduler_DecoratingSubtask, undecoratedText );
+	return NLS.bind(WorkbenchMessages.get().DecorationScheduler_DecoratingSubtask, undecoratedText );
     }
 
     /**

@@ -151,7 +151,11 @@ public class ViewRegistry extends SessionSingletonBase implements IViewRegistry,
 		}
     }
     
-	private static String EXTENSIONPOINT_UNIQUE_ID = WorkbenchPlugin.PI_WORKBENCH + "." + IWorkbenchRegistryConstants.PL_VIEWS; //$NON-NLS-1$
+    // RAP [bm]: 
+//	private static String EXTENSIONPOINT_UNIQUE_ID = WorkbenchPlugin.PI_WORKBENCH + "." + IWorkbenchRegistryConstants.PL_VIEWS; //$NON-NLS-1$
+	private static String EXTENSIONPOINT_UNIQUE_ID = PlatformUI.PLUGIN_EXTENSION_NAME_SPACE + "." + IWorkbenchRegistryConstants.PL_VIEWS; //$NON-NLS-1$
+	// RAPEND: [bm] 
+
 	
 	/**
 	 * A set that will only ever contain ViewDescriptors.

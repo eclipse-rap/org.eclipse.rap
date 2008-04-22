@@ -23,9 +23,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.presentations.IStackPresentationSite;
-import org.eclipse.ui.presentations.PresentationUtil;
 
 /**
  */
@@ -51,22 +49,24 @@ public abstract class AbstractTabFolder {
     public abstract void enablePaneMenu(boolean enabled);
     private int activeState = IStackPresentationSite.STATE_RESTORED;
     
-	private Listener menuListener = new Listener() {
-		/* (non-Javadoc)
-		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-		 */
-		public void handleEvent(Event event) {
-			Point globalPos = new Point(event.x, event.y);
-		    handleContextMenu(globalPos, event);			
-		}
-	};
+    // RAP [bm]: 
+//	private Listener menuListener = new Listener() {
+//		/* (non-Javadoc)
+//		 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+//		 */
+//		public void handleEvent(Event event) {
+//			Point globalPos = new Point(event.x, event.y);
+//		    handleContextMenu(globalPos, event);			
+//		}
+//	};
 
-    private Listener dragListener = new Listener() {
-        public void handleEvent(Event e) {
-            Point globalPos = ((Control)e.widget).toDisplay(e.x, e.y);
-            handleDragStarted(globalPos, e);
-        }
-    };
+    // RAP [bm]: 
+//    private Listener dragListener = new Listener() {
+//        public void handleEvent(Event e) {
+//            Point globalPos = ((Control)e.widget).toDisplay(e.x, e.y);
+//            handleDragStarted(globalPos, e);
+//        }
+//    };
 	
 	private MouseListener mouseListener = new MouseAdapter() {
 		
@@ -288,9 +288,11 @@ public abstract class AbstractTabFolder {
     }
     
     protected void attachListeners(Control theControl, boolean recursive) {
-        theControl.addListener(SWT.MenuDetect, menuListener);
+    	// RAP [bm]: 
+//        theControl.addListener(SWT.MenuDetect, menuListener);
         theControl.addMouseListener(mouseListener);
-        PresentationUtil.addDragListener(theControl, dragListener);
+        // RAP [bm]: 
+//        PresentationUtil.addDragListener(theControl, dragListener);
         
         if (recursive && theControl instanceof Composite) {
             Composite composite = (Composite) theControl;
@@ -305,9 +307,11 @@ public abstract class AbstractTabFolder {
     }
     
     protected void detachListeners(Control theControl, boolean recursive) {
-        theControl.removeListener(SWT.MenuDetect, menuListener);
+    	// RAP [bm]: 
+//        theControl.removeListener(SWT.MenuDetect, menuListener);
         theControl.removeMouseListener(mouseListener);
-        PresentationUtil.removeDragListener(theControl, dragListener);
+        // RAP [bm]: 
+//        PresentationUtil.removeDragListener(theControl, dragListener);
         
         if (recursive && theControl instanceof Composite) {
             Composite composite = (Composite) theControl;
