@@ -14,43 +14,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IProduct;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.dynamichelpers.ExtensionTracker;
-import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler;
-import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.dynamichelpers.*;
 import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.activities.ActivityManagerEvent;
-import org.eclipse.ui.activities.IActivity;
-import org.eclipse.ui.activities.IActivityManager;
-import org.eclipse.ui.activities.IActivityManagerListener;
-import org.eclipse.ui.activities.ICategory;
-import org.eclipse.ui.activities.IMutableActivityManager;
-import org.eclipse.ui.activities.ITriggerPointAdvisor;
-import org.eclipse.ui.activities.ITriggerPointManager;
-import org.eclipse.ui.activities.IWorkbenchActivitySupport;
-import org.eclipse.ui.activities.WorkbenchTriggerPointAdvisor;
-import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-import org.eclipse.ui.internal.WorkbenchImages;
-import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.WorkbenchWindow;
+import org.eclipse.ui.*;
+import org.eclipse.ui.activities.*;
+import org.eclipse.ui.internal.*;
 import org.eclipse.ui.internal.activities.MutableActivityManager;
 import org.eclipse.ui.internal.activities.ProxyActivityManager;
 import org.eclipse.ui.internal.misc.StatusUtil;
@@ -58,7 +32,7 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 
 /**
  * Implementation of {@link org.eclipse.ui.activities.IWorkbenchActivitySupport}.
- * @since 3.0
+ * @since 1.1
  */
 public class WorkbenchActivitySupport implements IWorkbenchActivitySupport, IExtensionChangeHandler {
     private MutableActivityManager mutableActivityManager;
@@ -142,17 +116,17 @@ public class WorkbenchActivitySupport implements IWorkbenchActivitySupport, IExt
                                             //two work units - updating the window bars, and updating view bars
                                             monitor
                                                     .beginTask(
-                                                            ActivityMessages.ManagerTask, 2);
+                                                            ActivityMessages.get().ManagerTask, 2);
 
                                             monitor
-                                                    .subTask(ActivityMessages.ManagerWindowSubTask); 
+                                                    .subTask(ActivityMessages.get().ManagerWindowSubTask); 
 
                                             //update window managers...
                                             updateWindowBars(window);
                                             monitor.worked(1);
 
                                             monitor
-                                                    .subTask(ActivityMessages.ManagerViewsSubTask); 
+                                                    .subTask(ActivityMessages.get().ManagerViewsSubTask); 
                                             // update all of the (realized) views in all of the pages
                                             IWorkbenchPage[] pages = window
                                                     .getPages();
@@ -355,7 +329,6 @@ public class WorkbenchActivitySupport implements IWorkbenchActivitySupport, IExt
 	 * Return the activity image registry.
 	 * 
 	 * @return the activity image registry
-	 * @since 3.1
 	 */
 	private ImageBindingRegistry getActivityImageBindingRegistry() {
 		if (activityImageBindingRegistry == null) {
@@ -375,7 +348,6 @@ public class WorkbenchActivitySupport implements IWorkbenchActivitySupport, IExt
 	 * Return the category image registry.
 	 * 
 	 * @return the category image registry
-	 * @since 3.1
 	 */
 	private ImageBindingRegistry getCategoryImageBindingRegistry() {
 		if (categoryImageBindingRegistry == null) {
@@ -393,8 +365,6 @@ public class WorkbenchActivitySupport implements IWorkbenchActivitySupport, IExt
 
 	/**
 	 * Dispose of the image registries.
-	 * 
-	 * @since 3.1
 	 */
 	public void dispose() {
 		if (activityImageBindingRegistry != null) {
@@ -406,6 +376,11 @@ public class WorkbenchActivitySupport implements IWorkbenchActivitySupport, IExt
 			PlatformUI.getWorkbench().getExtensionTracker().unregisterHandler(categoryImageBindingRegistry);
 		}
 		
+		// RAP [fappel]: unhook registry listeners to avoid memory leaks
+        if (mutableActivityManager != null) {
+	       mutableActivityManager.unhookRegistryListeners();
+        }
+	      
 		PlatformUI.getWorkbench().getExtensionTracker().unregisterHandler(this);
 	}
 	
@@ -415,25 +390,39 @@ public class WorkbenchActivitySupport implements IWorkbenchActivitySupport, IExt
 	 * TODO: should this be part of the interface?
 	 * 
 	 * @return the trigger point advisor
-	 * @since 3.1
 	 */
 	public ITriggerPointAdvisor getTriggerPointAdvisor() {
 		if (advisor != null) {
 			return advisor;
 		}
-		
-		IProduct product = Platform.getProduct();
-        if (product != null) {
-			TriggerPointAdvisorDescriptor descriptor = TriggerPointAdvisorRegistry
-					.getInstance().getAdvisorForProduct(product.getId());
-			if (descriptor != null) {
-				try {
-					advisor = descriptor.createAdvisor();					
-				} catch (CoreException e) {
-					WorkbenchPlugin.log("could not create trigger point advisor", e); //$NON-NLS-1$
-				}
-			}
-        }
+
+// RAP [fappel]: products not used in RAP		
+//		IProduct product = Platform.getProduct();
+//        if (product != null) {
+//			TriggerPointAdvisorDescriptor descriptor = TriggerPointAdvisorRegistry
+//					.getInstance().getAdvisorForProduct(product.getId());
+//			TriggerPointAdvisorDescriptor descriptor = TriggerPointAdvisorRegistry
+//			.getInstance().getAdvisorForProduct(product.getId());
+//			if (descriptor != null) {
+//				try {
+//					advisor = descriptor.createAdvisor();					
+//				} catch (CoreException e) {
+//					WorkbenchPlugin.log("could not create trigger point advisor", e); //$NON-NLS-1$
+//				}
+//			}
+//        }
+	      String brandingId = BrandingUtil.getCurrentBrandingId();
+	        if (brandingId != null) {
+	            TriggerPointAdvisorDescriptor descriptor = TriggerPointAdvisorRegistry
+	                    .getInstance().getAdvisorForBranding( brandingId );
+	            if (descriptor != null) {
+	                try {
+	                    advisor = descriptor.createAdvisor();                   
+	                } catch (CoreException e) {
+	                    WorkbenchPlugin.log("could not create trigger point advisor", e); //$NON-NLS-1$
+	                }
+	            }
+	      }
 		
 		if (advisor == null) {
 			advisor = new WorkbenchTriggerPointAdvisor();
@@ -465,11 +454,13 @@ public class WorkbenchActivitySupport implements IWorkbenchActivitySupport, IExt
      * Return the activity support extension point.
      * 
      * @return the activity support extension point.
-     * @since 3.1
      */
 	private IExtensionPoint getActivitySupportExtensionPoint() {
+// RAP [fappel]: ep name-space differs from bundle ids
+//		return Platform.getExtensionRegistry().getExtensionPoint(
+//				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
 		return Platform.getExtensionRegistry().getExtensionPoint(
-				PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
+                PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
 	}
 
 	/* (non-Javadoc)

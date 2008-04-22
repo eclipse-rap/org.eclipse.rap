@@ -25,7 +25,7 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.internal.registry.RegistryReader;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public class TriggerPointAdvisorRegistry {
 
@@ -56,9 +56,13 @@ public class TriggerPointAdvisorRegistry {
 	 * @return the advisors
 	 */
 	public TriggerPointAdvisorDescriptor[] getAdvisors() {
+// RAP [fappel]: ep name-space differs from bundle ids
+//		IExtensionPoint point = Platform.getExtensionRegistry()
+//				.getExtensionPoint(PlatformUI.PLUGIN_ID,
+//						IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
 		IExtensionPoint point = Platform.getExtensionRegistry()
-				.getExtensionPoint(PlatformUI.PLUGIN_ID,
-						IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
+		.getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+		                   IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
 		if (point == null) {
 			return new TriggerPointAdvisorDescriptor[0];
 		}
@@ -92,17 +96,30 @@ public class TriggerPointAdvisorRegistry {
 				.toArray(new TriggerPointAdvisorDescriptor[list.size()]);
 	}
 
-	/**
-	 * Return the trigger point advisor bound to a given product.
-	 * 
-	 * @param productId
-	 *            the product id
-	 * @return the advisor
-	 */
-	public TriggerPointAdvisorDescriptor getAdvisorForProduct(String productId) {
+// RAP [fappel]: product id not support, but branding id
+//	/**
+//	 * Return the trigger point advisor bound to a given product.
+//	 * 
+//	 * @param productId
+//	 *            the product id
+//	 * @return the advisor
+//	 */
+//	public TriggerPointAdvisorDescriptor getAdvisorForProduct(String productId) {
+	   /**
+     * Return the trigger point advisor bound to a given branding.
+     * 
+     * @param brandingId
+     *            the branding id
+     * @return the advisor
+     */
+    public TriggerPointAdvisorDescriptor getAdvisorForBranding(String brandingId) {
+// RAP [fappel]: ep name-space differs from bundle ids
+//		IExtensionPoint point = Platform.getExtensionRegistry()
+//				.getExtensionPoint(PlatformUI.PLUGIN_ID,
+//						IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
 		IExtensionPoint point = Platform.getExtensionRegistry()
-				.getExtensionPoint(PlatformUI.PLUGIN_ID,
-						IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
+		.getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+		                   IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
 		if (point == null) {
 			return null;
 		}
@@ -110,7 +127,9 @@ public class TriggerPointAdvisorRegistry {
 		IExtension[] extensions = point.getExtensions();
 		extensions = RegistryReader.orderExtensions(extensions);
 
-		String targetIntroId = getAdvisorForProduct(productId, extensions);
+
+//		String targetIntroId = getAdvisorForProduct(productId, extensions);
+		String targetIntroId = getAdvisorForBranding(brandingId, extensions);
 		if (targetIntroId == null) {
 			return null;
 		}
@@ -125,13 +144,21 @@ public class TriggerPointAdvisorRegistry {
 		return null;
 	}
 
-	/**
-	 * @param targetProductId
+// RAP [fappel]: ep name-space differs from bundle ids
+//	/**
+//	 * @param targetProductId
+//	 * @param extensions
+//	 * @return the advisor id
+//	 */
+//	private String getAdvisorForProduct(String targetProductId,
+//			IExtension[] extensions) {
+    /**
+	 * @param targetBrandingId
 	 * @param extensions
 	 * @return the advisor id
 	 */
-	private String getAdvisorForProduct(String targetProductId,
-			IExtension[] extensions) {
+    private String getAdvisorForBranding(String targetBrandingId,
+	        IExtension[] extensions) {
 		for (int i = 0; i < extensions.length; i++) {
 			IConfigurationElement[] elements = extensions[i]
 					.getConfigurationElements();
@@ -156,7 +183,7 @@ public class TriggerPointAdvisorRegistry {
 						continue;
 					}
 
-					if (targetProductId.equals(productId)) {
+					if (targetBrandingId.equals(productId)) {
 						return advisorId;
 					}
 				}

@@ -21,13 +21,12 @@ package org.eclipse.ui.activities;
  * 
  * @see IActivity
  * @see ICategory
- * @since 3.0
+ * @since 1.1
  */
 public final class NotDefinedException extends Exception {
 
     /**
      * Generated serial version UID for this class.
-     * @since 3.1
      */
     private static final long serialVersionUID = 4050201929596811061L;
 

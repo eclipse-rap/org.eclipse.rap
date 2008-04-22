@@ -17,13 +17,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.activities.IActivityManager;
 
 /**
- * @since 3.0
+ * @since 1.1
  */
 public class ActivityContentProvider implements IStructuredContentProvider {
 
-    /**
-     * @since 3.0
-     */
     public ActivityContentProvider() {
     }
 

@@ -21,7 +21,7 @@ import java.util.Set;
  * </p>
  * 
  * @see org.eclipse.ui.activities.ITriggerPoint
- * @since 3.1
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ITriggerPointManager {

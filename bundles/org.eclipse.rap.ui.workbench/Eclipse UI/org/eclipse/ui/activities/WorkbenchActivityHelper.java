@@ -26,14 +26,12 @@ import org.eclipse.ui.internal.activities.ws.WorkbenchActivitySupport;
  * A utility class that contains helpful methods for interacting with the
  * activities API.
  * 
- * @since 3.0
+ * @since 1.1
  */
 public final class WorkbenchActivityHelper {
 	/**
 	 * The ID of the trigger point that only returns activities with core
 	 * expressions.
-	 * 
-	 * @since 3.4
 	 */
 	public static final String TRIGGER_PRE_UI_POINT = "org.eclipse.ui.workbenchModel"; //$NON-NLS-1$
 	
@@ -48,7 +46,6 @@ public final class WorkbenchActivityHelper {
 	 * @param contribution
 	 *            the contribution
 	 * @return the identifier
-	 * @since 3.1
 	 */
 	public static IIdentifier getIdentifier(IPluginContribution contribution) {
 		IWorkbenchActivitySupport workbenchActivitySupport = PlatformUI
@@ -116,7 +113,6 @@ public final class WorkbenchActivityHelper {
 	 *            the object to restrict
 	 * @return <code>true</code> if this object is matched by a disabled
 	 *         activity with an expression.
-	 * @since 3.4
 	 */
 	public static boolean restrictUseOf(Object object) {
 		return !allowUseOf(getTriggerPoint(TRIGGER_PRE_UI_POINT), object);
@@ -247,7 +243,6 @@ public final class WorkbenchActivityHelper {
 	 *            the category to be enabled
 	 * @return a list of category ids that will become implicity enabled if the
 	 *         given category becomes enabled
-	 * @since 3.1
 	 */
 	public static Set getEnabledCategories(IActivityManager activityManager,
 			String categoryId) {
@@ -286,7 +281,6 @@ public final class WorkbenchActivityHelper {
 	 * @param baseActivities
 	 *            the set of activities to expand
 	 * @return the expanded activities
-	 * @since 3.1
 	 */
 	public static Set expandActivityDependencies(Set baseActivities) {
 		Set extendedActivities = new HashSet();
@@ -305,7 +299,6 @@ public final class WorkbenchActivityHelper {
 	 * @param activityId
 	 *            the activity id
 	 * @return the activities required for this activity
-	 * @since 3.1
 	 */
 	public static Set getRequiredActivityIds(String activityId) {
 		IActivityManager manager = PlatformUI.getWorkbench()
@@ -336,7 +329,6 @@ public final class WorkbenchActivityHelper {
 	 * @param category
 	 *            the category
 	 * @return the activities directly required by a given category
-	 * @since 3.1
 	 */
 	public static Set getActivityIdsForCategory(ICategory category) {
 		Set bindings = category.getCategoryActivityBindings();
@@ -361,7 +353,6 @@ public final class WorkbenchActivityHelper {
 	 *            the category to be enabled
 	 * @return a list of category ids that will become implicity enabled if the
 	 *         given category becomes enabled
-	 * @since 3.1
 	 */
 	public static Set getDisabledCategories(IActivityManager activityManager,
 			String categoryId) {
@@ -409,7 +400,6 @@ public final class WorkbenchActivityHelper {
 	 *            the category to be enabled
 	 * @return a list of category ids that will become implicity enabled if the
 	 *         given category becomes enabled
-	 * @since 3.1
 	 */
 	public static final Set getContainedCategories(
 			IActivityManager activityManager, String categoryId) {
@@ -450,7 +440,6 @@ public final class WorkbenchActivityHelper {
 	 * @param activityManager
 	 *            the activity manager to test against
 	 * @return the set of enabled categories.
-	 * @since 3.1
 	 */
 	public static Set getEnabledCategories(IActivityManager activityManager) {
 
@@ -471,7 +460,6 @@ public final class WorkbenchActivityHelper {
 	 * @param activityManager
 	 *            the activity manager to test against
 	 * @return the set of partially enabled categories
-	 * @since 3.2
 	 */
 	public static Set getPartiallyEnabledCategories(
 			IActivityManager activityManager) {
@@ -497,7 +485,6 @@ public final class WorkbenchActivityHelper {
 	 * @param categoryId
 	 *            the category id
 	 * @return whether the category is enabled
-	 * @since 3.2
 	 */
 	public static boolean isPartiallyEnabled(IActivityManager activityManager,
 			String categoryId) {
@@ -522,7 +509,6 @@ public final class WorkbenchActivityHelper {
 	 * @param activityId
 	 *            the activity id to query on
 	 * @return the set of enabled category ids that this activity belongs to
-	 * @since 3.1
 	 */
 	public static Set getEnabledCategoriesForActivity(
 			IActivityManager activityManager, String activityId) {
@@ -548,7 +534,6 @@ public final class WorkbenchActivityHelper {
 	 * @param categoryId
 	 *            the category id
 	 * @return whether the category is enabled
-	 * @since 3.1
 	 */
 	public static boolean isEnabled(IActivityManager activityManager,
 			String categoryId) {
@@ -574,7 +559,6 @@ public final class WorkbenchActivityHelper {
 	 *            the category ids
 	 * @return the array of category ids resolved to <code>ICategory</code>
 	 *         objects
-	 * @since 3.1
 	 */
 	public static ICategory[] resolveCategories(
 			IMutableActivityManager activityManager, Set categoryIds) {
@@ -594,8 +578,6 @@ public final class WorkbenchActivityHelper {
 	 * @param toBeFiltered the input collection
 	 * @param result the collection to which objects passing the test should be added
 	 * @return the <code>result</code> collection for convenience
-	 * 
-	 * @since 3.4
 	 */
 	public static Collection restrictCollection(Collection toBeFiltered, Collection result) {
 		for (Iterator iterator = toBeFiltered.iterator(); iterator.hasNext();) {
@@ -615,8 +597,6 @@ public final class WorkbenchActivityHelper {
 	 *            the input array
 	 * @return a new array of the same type as the argument array, containing
 	 *         objects that pass the test
-	 *         
-	 * @since 3.4
 	 */
 	public static Object[] restrictArray(Object[] array) {
 		ArrayList list = new ArrayList(array.length);
@@ -635,8 +615,6 @@ public final class WorkbenchActivityHelper {
 	 * @param toBeFiltered the input collection
 	 * @param result the collection to which objects passing the test should be added
 	 * @return the <code>result</code> collection for convenience
-	 * 
-	 * @since 3.4
 	 */
 	public static Collection filterCollection(Collection toBeFiltered, Collection result) {
 		for (Iterator iterator = toBeFiltered.iterator(); iterator.hasNext();) {
@@ -656,8 +634,6 @@ public final class WorkbenchActivityHelper {
 	 *            the input array
 	 * @return a new array of the same type as the argument array, containing
 	 *         objects that pass the test
-	 *         
-	 * @since 3.4
 	 */
 	public static Object[] filterArray(Object[] array) {
 		ArrayList list = new ArrayList(array.length);

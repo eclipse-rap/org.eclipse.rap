@@ -10,63 +10,28 @@
  *******************************************************************************/
 package org.eclipse.ui.activities;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.resource.DeviceResourceException;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.resource.*;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-//import org.eclipse.swt.graphics.ImageData;
-//import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
 import org.eclipse.ui.internal.IPreferenceConstants;
-//import org.eclipse.ui.internal.IWorkbenchHelpContextIds;
-//import org.eclipse.ui.internal.OverlayIcon;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.activities.ws.ActivityEnabler;
 import org.eclipse.ui.internal.activities.ws.ActivityMessages;
-//import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * Activities preference page that primarily shows categories and can optionally
@@ -82,6 +47,7 @@ import org.eclipse.ui.internal.activities.ws.ActivityMessages;
  * @see #ACTIVITY_PROMPT_BUTTON
  * @see #ACTIVITY_PROMPT_BUTTON_TOOLTIP
  * 
+ * @since 1.1
  */
 public final class ActivityCategoryPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage, IExecutableExtension {
@@ -135,10 +101,10 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
          */
         protected void configureShell(Shell newShell) {
             super.configureShell(newShell);
-            String activityName = strings.getProperty(ACTIVITY_NAME, ActivityMessages.ActivityEnabler_activities);
+            String activityName = strings.getProperty(ACTIVITY_NAME, ActivityMessages.get().ActivityEnabler_activities);
             activityName = activityName.replaceAll("&", ""); //strips possible mnemonic //$NON-NLS-1$ //$NON-NLS-2$
 			newShell.setText(NLS.bind(           		
-            		ActivityMessages.ActivitiesPreferencePage_advancedDialogTitle,
+            		ActivityMessages.get().ActivitiesPreferencePage_advancedDialogTitle,
             		activityName		
             ));
         }
@@ -164,8 +130,6 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         
     	/* (non-Javadoc)
          * @see org.eclipse.jface.window.Dialog#getDialogBoundsSettings()
-         * 
-         * @since 3.2
          */
     	protected IDialogSettings getDialogBoundsSettings() {
             IDialogSettings settings = WorkbenchPlugin.getDefault().getDialogSettings();
@@ -190,7 +154,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         private LocalResourceManager manager = new LocalResourceManager(
                 JFaceResources.getResources());
 
-// RAP [rh] unused code due to missing OverlayIcon        
+// RAP [fappel]: OverlayIcon not supported
 //        private ImageDescriptor lockDescriptor;
 
         private boolean decorate;
@@ -200,7 +164,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
          */
         public CategoryLabelProvider(boolean decorate) {
             this.decorate = decorate;
-// RAP [rh] unused code due to missing OverlayIcon            
+// RAP [fappel]: OverlayIcon not supported
 //            lockDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
 //                    PlatformUI.PLUGIN_ID, "icons/full/ovr16/lock_ovr.gif"); //$NON-NLS-1$
         }
@@ -217,18 +181,18 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
                     .getActivitySupport().getImageDescriptor(category);
             if (descriptor != null) {
                 try {
-                    if (decorate) {
-// RAP [rh] OverlayIcon missing                      
+// RAP [fappel]: OverlayIcon not supported
+//                    if (decorate) {
 //                        if (isLocked(category)) {
 //                            ImageData originalImageData = descriptor
-//                                    .getImageData();
+//                                    .getImageData();                          
 //                            OverlayIcon overlay = new OverlayIcon(
 //                                    descriptor, lockDescriptor, new Point(
 //                                            originalImageData.width,
 //                                            originalImageData.height));
 //                            return manager.createImage(overlay);
 //                        }
-                    }
+//                    }
 
                     return manager.createImage(descriptor);
                 } catch (DeviceResourceException e) {
@@ -250,7 +214,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
                 name = category.getId();
             }
             if (decorate && isLocked(category)) {
-                name = NLS.bind(ActivityMessages.ActivitiesPreferencePage_lockedMessage, name);
+                name = NLS.bind(ActivityMessages.get().ActivitiesPreferencePage_lockedMessage, name);
             }
             return name;
         }   
@@ -372,7 +336,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         composite.setLayout(layout);
         Label label = new Label(composite, SWT.WRAP);
         label
-                .setText(strings.getProperty(CAPTION_MESSAGE, ActivityMessages.ActivitiesPreferencePage_captionMessage));
+                .setText(strings.getProperty(CAPTION_MESSAGE, ActivityMessages.get().ActivitiesPreferencePage_captionMessage));
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.widthHint = 400;
         data.horizontalSpan = 2;        
@@ -386,7 +350,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         createDetailsArea(composite);
         createButtons(composite);
         
-// RAP [rh] IWorkbench#getHelpSystem()        
+// RAP [fappel]: help system not supported
 //        workbench.getHelpSystem().setHelp(parent,
 //				IWorkbenchHelpContextIds.CAPABILITY_PREFERENCE_PAGE);
         
@@ -400,8 +364,8 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
      */
     private void createPromptButton(Composite composite) {
         activityPromptButton = new Button(composite, SWT.CHECK);
-        activityPromptButton.setText(strings.getProperty(ACTIVITY_PROMPT_BUTTON, ActivityMessages.activityPromptButton));
-        activityPromptButton.setToolTipText(strings.getProperty(ACTIVITY_PROMPT_BUTTON_TOOLTIP, ActivityMessages.activityPromptToolTip));
+        activityPromptButton.setText(strings.getProperty(ACTIVITY_PROMPT_BUTTON, ActivityMessages.get().activityPromptButton));
+        activityPromptButton.setToolTipText(strings.getProperty(ACTIVITY_PROMPT_BUTTON_TOOLTIP, ActivityMessages.get().activityPromptToolTip));
         GridData data = new GridData();
         data.horizontalSpan = 2;
         activityPromptButton.setLayoutData(data);
@@ -434,7 +398,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
                         .getDefinedActivityIds());
             }
         });
-        enableAll.setText(ActivityMessages.ActivityEnabler_selectAll); 
+        enableAll.setText(ActivityMessages.get().ActivityEnabler_selectAll); 
         setButtonLayoutData(enableAll);
 
         Button disableAll = new Button(composite, SWT.PUSH);
@@ -448,7 +412,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
                 workingCopy.setEnabledActivityIds(Collections.EMPTY_SET);
             }
         });
-        disableAll.setText(ActivityMessages.ActivityEnabler_deselectAll); 
+        disableAll.setText(ActivityMessages.get().ActivityEnabler_deselectAll); 
         setButtonLayoutData(disableAll);
         
         if (allowAdvanced) {
@@ -468,7 +432,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
                     dialog.open(); // logic for updating the working copy is in the dialog class.                    
                 }
             });
-            advancedButton.setText(ActivityMessages.ActivitiesPreferencePage_advancedButton);
+            advancedButton.setText(ActivityMessages.get().ActivitiesPreferencePage_advancedButton);
             setButtonLayoutData(advancedButton);
         }
     }
@@ -485,14 +449,14 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         composite.setLayout(layout);
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        new Label(composite, SWT.NONE).setText(ActivityMessages.ActivityEnabler_description);
+        new Label(composite, SWT.NONE).setText(ActivityMessages.get().ActivityEnabler_description);
         descriptionText = new Text(composite, SWT.WRAP | SWT.READ_ONLY | SWT.BORDER);
         GridData data = new GridData(GridData.FILL_BOTH);
         data.heightHint = 100;
         data.widthHint = 200;
         descriptionText.setLayoutData(data);
 
-        new Label(composite, SWT.NONE).setText(ActivityMessages.ActivitiesPreferencePage_requirements);            
+        new Label(composite, SWT.NONE).setText(ActivityMessages.get().ActivitiesPreferencePage_requirements);            
         dependantViewer = new TableViewer(composite, SWT.BORDER);
         dependantViewer.getControl().setLayoutData(
                 new GridData(GridData.FILL_BOTH));
@@ -516,7 +480,7 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
         data.widthHint = 200;
         composite.setLayoutData(data);
         Label label = new Label(composite, SWT.NONE);
-        label.setText(strings.getProperty(CATEGORY_NAME, ActivityMessages.ActivityEnabler_categories) + ':');
+        label.setText(strings.getProperty(CATEGORY_NAME, ActivityMessages.get().ActivityEnabler_categories) + ':');
         Table table = new Table(composite, SWT.CHECK | SWT.BORDER | SWT.SINGLE);
         table.addSelectionListener(new SelectionAdapter() {
 
@@ -586,7 +550,6 @@ public final class ActivityCategoryPreferencePage extends PreferencePage impleme
 
 	/**
 	 * Updates the check and grey state of the categories in the category viewer.
-	 * 
 	 */
 	private void updateCategoryCheckState() {
 		ICategory[] enabledCategories = getEnabledCategories();

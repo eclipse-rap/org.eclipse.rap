@@ -25,7 +25,7 @@ import org.eclipse.ui.internal.util.Util;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see IActivityManagerListener#activityManagerChanged(ActivityManagerEvent)
  */
 public final class ActivityManagerEvent {

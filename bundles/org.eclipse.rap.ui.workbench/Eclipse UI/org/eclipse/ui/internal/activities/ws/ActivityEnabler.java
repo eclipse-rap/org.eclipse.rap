@@ -10,52 +10,28 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.activities.ws;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.internal.RAPDialogUtil;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.FontMetrics;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.activities.ActivitiesPreferencePage;
-import org.eclipse.ui.activities.IActivity;
-import org.eclipse.ui.activities.ICategory;
-import org.eclipse.ui.activities.ICategoryActivityBinding;
-import org.eclipse.ui.activities.IMutableActivityManager;
-import org.eclipse.ui.activities.NotDefinedException;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.activities.*;
 
 /**
  * A simple control provider that will allow the user to toggle on/off the
  * activities bound to categories.
  * 
- * @since 3.0
+ * @since 1.1
  */
 public class ActivityEnabler {
 
@@ -283,15 +259,18 @@ public class ActivityEnabler {
 	 * @return the composite in which the controls exist.
 	 */
 	public Control createControl(Composite parent) {
-        GC gc = new GC(parent);
-        gc.setFont(JFaceResources.getDialogFont());
-        FontMetrics fontMetrics = gc.getFontMetrics();
-        gc.dispose();
+// RAP [fappel]: GC and FontMetrics not supported
+//        GC gc = new GC(parent);
+//        gc.setFont(JFaceResources.getDialogFont());
+//        FontMetrics fontMetrics = gc.getFontMetrics();
+//        gc.dispose();
         
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(createGridLayoutWithoutMargins(1, fontMetrics));
+// RAP [fappel]: FontMetrics not supported
+//		composite.setLayout(createGridLayoutWithoutMargins(1, fontMetrics));
+		composite.setLayout(createGridLayoutWithoutMargins(1));
 
-		new Label(composite, SWT.NONE).setText(strings.getProperty(ActivitiesPreferencePage.ACTIVITY_NAME, ActivityMessages.ActivityEnabler_activities) + ':');
+		new Label(composite, SWT.NONE).setText(strings.getProperty(ActivitiesPreferencePage.ACTIVITY_NAME, ActivityMessages.get().ActivityEnabler_activities) + ':');
 
 		dualViewer = new CheckboxTreeViewer(composite);
 		dualViewer.setComparator(new ViewerComparator());
@@ -302,10 +281,12 @@ public class ActivityEnabler {
 		dualViewer.getControl().setLayoutData(data);
 
 		Composite buttonComposite = new Composite(composite, SWT.NONE);
-		buttonComposite.setLayout(createGridLayoutWithoutMargins(2, fontMetrics));
+// RAP [fappel]: FontMetrics not supported
+//		buttonComposite.setLayout(createGridLayoutWithoutMargins(2, fontMetrics));
+		buttonComposite.setLayout(createGridLayoutWithoutMargins(2));
 
 		Button selectAllButton = new Button(buttonComposite, SWT.PUSH);
-		selectAllButton.setText(ActivityMessages.ActivityEnabler_selectAll);
+		selectAllButton.setText(ActivityMessages.get().ActivityEnabler_selectAll);
 		selectAllButton.addSelectionListener(new SelectionAdapter() {
 			/*
 			 * (non-Javadoc)
@@ -316,10 +297,12 @@ public class ActivityEnabler {
 				toggleTreeEnablement(true);
 			}
 		});
-		setButtonLayoutData(selectAllButton, fontMetrics);
+// RAP [fappel]: FontMetrics not supported
+//		setButtonLayoutData(selectAllButton, fontMetrics);
+		setButtonLayoutData(selectAllButton);
 
 		Button deselectAllButton = new Button(buttonComposite, SWT.PUSH);
-		deselectAllButton.setText(ActivityMessages.ActivityEnabler_deselectAll); 
+		deselectAllButton.setText(ActivityMessages.get().ActivityEnabler_deselectAll); 
 		deselectAllButton.addSelectionListener(new SelectionAdapter() {
 			/*
 			 * (non-Javadoc)
@@ -330,14 +313,18 @@ public class ActivityEnabler {
 				toggleTreeEnablement(false);
 			}
 		});
-		setButtonLayoutData(deselectAllButton, fontMetrics);
+// RAP [fappel]: FontMetrics not supported
+//		setButtonLayoutData(deselectAllButton, fontMetrics);
+		setButtonLayoutData(deselectAllButton);
 
-		new Label(composite, SWT.NONE).setText(ActivityMessages.ActivityEnabler_description);
+		new Label(composite, SWT.NONE).setText(ActivityMessages.get().ActivityEnabler_description);
 
 		descriptionText = new Text(composite, SWT.READ_ONLY | SWT.WRAP | SWT.BORDER
 				| SWT.V_SCROLL);
 		data = new GridData(SWT.FILL, SWT.FILL, true, false);
-		data.heightHint = Dialog.convertHeightInCharsToPixels(fontMetrics, 5);
+// RAP [fappel]: FontMetrics not supported
+//		data.heightHint = Dialog.convertHeightInCharsToPixels(fontMetrics, 5);
+		data.heightHint = RAPDialogUtil.convertHeightInCharsToPixels(JFaceResources.getDialogFont(),5);
 		descriptionText.setLayoutData(data);
 		setInitialStates();
 
@@ -351,18 +338,27 @@ public class ActivityEnabler {
 		return composite;
 	}
 
-	private GridLayout createGridLayoutWithoutMargins(int nColumns, FontMetrics fontMetrics) {
+// RAP [fappel]: FontMetrics not supported	
+//	private GridLayout createGridLayoutWithoutMargins(int nColumns, FontMetrics fontMetrics) {
+	private GridLayout createGridLayoutWithoutMargins(int nColumns) {
 		GridLayout layout = new GridLayout(nColumns, false);
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
-		layout.horizontalSpacing = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.HORIZONTAL_SPACING);
-		layout.verticalSpacing = Dialog.convertVerticalDLUsToPixels(fontMetrics, IDialogConstants.VERTICAL_SPACING);
+// RAP [fappel]: FontMetrics not supported	
+//		layout.horizontalSpacing = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.HORIZONTAL_SPACING);
+//		layout.verticalSpacing = Dialog.convertVerticalDLUsToPixels(fontMetrics, IDialogConstants.VERTICAL_SPACING);
+		layout.horizontalSpacing = RAPDialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+		layout.verticalSpacing = RAPDialogUtil.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
 		return layout;
 	}
 
-    private GridData setButtonLayoutData(Button button, FontMetrics fontMetrics) {
+// RAP [fappel]: FontMetrics not supported	
+//    private GridData setButtonLayoutData(Button button, FontMetrics fontMetrics) {
+      private GridData setButtonLayoutData(Button button) {
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-        int widthHint = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.BUTTON_WIDTH);
+// RAP [fappel]: FontMetrics not supported	
+//        int widthHint = Dialog.convertHorizontalDLUsToPixels(fontMetrics, IDialogConstants.BUTTON_WIDTH);
+        int widthHint = RAPDialogUtil.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
         Point minSize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
         data.widthHint = Math.max(widthHint, minSize.x);
         button.setLayoutData(data);

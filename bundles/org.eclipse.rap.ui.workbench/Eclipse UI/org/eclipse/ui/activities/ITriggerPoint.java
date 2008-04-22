@@ -23,7 +23,7 @@ package org.eclipse.ui.activities;
  * 
  * @see org.eclipse.ui.activities.ITriggerPointAdvisor
  * @see org.eclipse.ui.activities.ITriggerPointManager
- * @since 3.1
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ITriggerPoint {
@@ -35,8 +35,6 @@ public interface ITriggerPoint {
 	
 	/**
 	 * A hint key for activities that are enabled based on core expressions.
-	 * 
-	 * @since 3.4
 	 */
 	public static final String HINT_PRE_UI = "pre_UI"; //$NON-NLS-1$
 	

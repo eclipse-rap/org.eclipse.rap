@@ -11,7 +11,7 @@
 package org.eclipse.ui.internal.activities.ws;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public interface WorkbenchTriggerPoints {
 

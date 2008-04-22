@@ -22,7 +22,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * This interface is not intended to be extended or implemented by clients.
  * </p>
  *  
- * @since 3.0
+ * @since 1.1
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IWorkbenchActivitySupport {
@@ -50,7 +50,6 @@ public interface IWorkbenchActivitySupport {
      * 
      * @param activity the activity
      * @return the image associated with this activity.  Never <code>null</code>.
-     * @since 3.1
      */
     ImageDescriptor getImageDescriptor(IActivity activity);
 
@@ -59,7 +58,6 @@ public interface IWorkbenchActivitySupport {
      * 
      * @param category the category
      * @return the image associated with this category.  Never <code>null</code>.
-     * @since 3.1
      */
     ImageDescriptor getImageDescriptor(ICategory category);
 	
@@ -67,7 +65,6 @@ public interface IWorkbenchActivitySupport {
 	 * Return the trigger point manager for this instance.
 	 * 
 	 * @return the trigger point manager.  Never <code>null</code>.
-	 * @since 3.1
 	 */
 	ITriggerPointManager getTriggerPointManager();
     
@@ -79,7 +76,6 @@ public interface IWorkbenchActivitySupport {
      * activity enablement state (such as preference pages).
      * 
      * @return a copy of the current activity set
-     * @since 3.1
      */
     IMutableActivityManager createWorkingCopy();
 }

@@ -32,6 +32,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.ActivityEvent;
 import org.eclipse.ui.activities.ActivityManagerEvent;
@@ -53,7 +55,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * An activity registry that may be altered.
  * 
- * @since 3.0
+ * @since 1.1
  */
 public final class MutableActivityManager extends AbstractActivityManager
         implements IMutableActivityManager, Cloneable {
@@ -511,8 +513,6 @@ public final class MutableActivityManager extends AbstractActivityManager
      * Regexp support will not be available when running against JCL Foundation (see bug 80053).
      * 
 	 * @return <code>true</code> if regexps are supported, <code>false</code> otherwise.
-	 * 
-	 * @since 3.1
 	 */
 	private boolean isRegexpSupported() {
 		try {
@@ -743,7 +743,14 @@ public final class MutableActivityManager extends AbstractActivityManager
             enabledChanged = identifier.setEnabled(enabled);
             identifier.setActivityIds(Collections.EMPTY_SET);
             deferredIdentifiers.add(identifier);
-            getUpdateJob().schedule();
+            // RAP [fappel]: associate job to display
+            Display display = Display.getCurrent();
+            UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+              public void run() {
+                getUpdateJob().schedule();                
+              }
+            } );
+            // RAP [fappel]: end
             if (enabledChanged) {
 				return new IdentifierEvent(identifier, activityIdsChanged,
                         enabledChanged);
@@ -805,8 +812,6 @@ public final class MutableActivityManager extends AbstractActivityManager
     
     /**
      * Unhook this manager from its registry.
-     *
-     * @since 3.1
      */
     public void unhookRegistryListeners() {
         activityRegistry.removeActivityRegistryListener(activityRegistryListener);
@@ -825,16 +830,29 @@ public final class MutableActivityManager extends AbstractActivityManager
      * Return the identifier update job.
      * 
      * @return the job
-     * @since 3.1
      */
     private Job getUpdateJob() {
         if (deferredIdentifierJob == null) {
+          // RAP [fappel]: map job execution to session context
+          final Display display = Display.getCurrent();
+          
             deferredIdentifierJob = new Job("Identifier Update Job") { //$NON-NLS-1$
-                
+              
+              // RAP [fappel]: map job execution to session context
+              protected IStatus run(final IProgressMonitor monitor) {
+                final IStatus[] result = new IStatus[ 1 ];
+                UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+                  public void run() {
+                    result[ 0 ] = doRun( monitor );
+                  }
+                } );
+                return result[ 0 ];
+              }          
+              
                 /* (non-Javadoc)
                  * @see org.eclipse.core.internal.jobs.InternalJob#run(org.eclipse.core.runtime.IProgressMonitor)
                  */
-                protected IStatus run(IProgressMonitor monitor) {
+                protected IStatus doRun(IProgressMonitor monitor) {
                     while (!deferredIdentifiers.isEmpty()) {
                         Identifier identifier = (Identifier) deferredIdentifiers.remove(0);
                         Set activityIds = new HashSet();
@@ -855,7 +873,7 @@ public final class MutableActivityManager extends AbstractActivityManager
                             final Map identifierEventsByIdentifierId = new HashMap(1);
                             identifierEventsByIdentifierId.put(identifier.getId(),
                                     identifierEvent);
-                            UIJob notifyJob = new UIJob("Identifier Update Job") { //$NON-NLS-1$
+                            final UIJob notifyJob = new UIJob("Identifier Update Job") { //$NON-NLS-1$
 
 								public IStatus runInUIThread(
 										IProgressMonitor monitor) {
@@ -864,7 +882,13 @@ public final class MutableActivityManager extends AbstractActivityManager
 								} 
                             };
                             notifyJob.setSystem(true);
-                            notifyJob.schedule();
+                            // RAP [fappel]: associate job with session
+                            final Display display = Display.getCurrent();
+                            UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+                              public void run() {
+                                notifyJob.schedule();
+                              }
+                            } );
                         }                
                     }
                     return Status.OK_STATUS;

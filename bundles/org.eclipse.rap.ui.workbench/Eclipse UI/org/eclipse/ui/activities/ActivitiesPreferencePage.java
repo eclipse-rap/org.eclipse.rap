@@ -40,7 +40,7 @@ import org.eclipse.ui.internal.activities.ws.ActivityMessages;
  * @see #ACTIVITY_NAME
  * @see #ACTIVITY_PROMPT_BUTTON
  * @see #ACTIVITY_PROMPT_BUTTON_TOOLTIP
- * @since 3.1
+ * @since 1.1
  */
 public final class ActivitiesPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage, IExecutableExtension {
@@ -77,8 +77,8 @@ public final class ActivitiesPreferencePage extends PreferencePage implements
      */
     protected void createActivityPromptPref(Composite composite) {
         activityPromptButton = new Button(composite, SWT.CHECK);
-        activityPromptButton.setText(strings.getProperty(ACTIVITY_PROMPT_BUTTON, ActivityMessages.activityPromptButton)); 
-        activityPromptButton.setToolTipText(strings.getProperty(ACTIVITY_PROMPT_BUTTON_TOOLTIP, ActivityMessages.activityPromptToolTip));
+        activityPromptButton.setText(strings.getProperty(ACTIVITY_PROMPT_BUTTON, ActivityMessages.get().activityPromptButton)); 
+        activityPromptButton.setToolTipText(strings.getProperty(ACTIVITY_PROMPT_BUTTON_TOOLTIP, ActivityMessages.get().activityPromptToolTip));
 
         setActivityButtonState();
     }

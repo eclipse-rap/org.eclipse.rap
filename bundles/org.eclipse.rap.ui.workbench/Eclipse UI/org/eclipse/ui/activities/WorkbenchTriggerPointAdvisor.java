@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.activities;
 
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
@@ -39,7 +35,7 @@ import org.eclipse.ui.internal.util.Util;
  * @see #PROCEED_SINGLE
  * @see #DONT_ASK
  * @see #NO_DETAILS
- * @since 3.1
+ * @since 1.1
  */
 public class WorkbenchTriggerPointAdvisor implements ITriggerPointAdvisor,
         IExecutableExtension {
@@ -159,7 +155,6 @@ public class WorkbenchTriggerPointAdvisor implements ITriggerPointAdvisor,
 	 * 
 	 * @return <code>true</code> if this identifier should be enabled,
 	 *         <code>false</code> otherwise
-	 * @since 3.4
 	 * 
 	 * @see WorkbenchTriggerPointAdvisor#doComputeEnablement(IActivityManager,
 	 *      IIdentifier, boolean)
@@ -186,7 +181,6 @@ public class WorkbenchTriggerPointAdvisor implements ITriggerPointAdvisor,
 	 * 
 	 * @return <code>true</code> if this identifier should be enabled,
 	 *         <code>false</code> otherwise
-	 * @since 3.4
 	 */
 	protected boolean doComputeEnablement(IActivityManager activityManager,
 			IIdentifier identifier, boolean disabledExpressionActivitiesTakePrecedence) {

@@ -19,7 +19,7 @@ package org.eclipse.ui.activities;
  * This interface is not intended to be extended or implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see IActivity
  * @see ICategory
  * @noimplement This interface is not intended to be implemented by clients.

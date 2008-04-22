@@ -12,16 +12,14 @@ package org.eclipse.ui.internal.activities.ws;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.activities.IActivity;
-import org.eclipse.ui.activities.IActivityManager;
-import org.eclipse.ui.activities.NotDefinedException;
+import org.eclipse.ui.activities.*;
 
 /**
  * Provides labels for <code>IActivity</code> objects. They may be passed
  * directly or as <code>String</code> identifiers that are matched against
  * the activity manager.
  * 
- * @since 3.0
+ * @since 1.1
  */
 public class ActivityLabelProvider extends LabelProvider {
 
@@ -31,7 +29,6 @@ public class ActivityLabelProvider extends LabelProvider {
      * Create a new instance of the receiver.
      * 
      * @param activityManager
-     * @since 3.0
      */
     public ActivityLabelProvider(IActivityManager activityManager) {
         this.activityManager = activityManager;

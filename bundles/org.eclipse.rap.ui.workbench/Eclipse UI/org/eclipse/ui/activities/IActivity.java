@@ -37,7 +37,7 @@ import org.eclipse.core.expressions.Expression;
  * This interface is not intended to be extended or implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see IActivityManager
  * @noimplement This interface is not intended to be implemented by clients.
  */
@@ -154,7 +154,6 @@ public interface IActivity extends Comparable {
      * @return <code>true</code>, iff this instance should be enabled by default.
      * @throws NotDefinedException
      *             if this instance is not defined. 
-     * @since 3.1 
      */
     boolean isDefaultEnabled() throws NotDefinedException;
 
@@ -176,7 +175,6 @@ public interface IActivity extends Comparable {
 	 * controlled by the expression state.
 	 * 
 	 * @return The core expression, or <code>null</code>
-	 * @since 3.4
 	 */
     Expression getExpression();
 }

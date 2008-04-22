@@ -21,7 +21,7 @@ package org.eclipse.ui.activities;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see IIdentifierListener#identifierChanged(IdentifierEvent)
  */
 public final class IdentifierEvent {

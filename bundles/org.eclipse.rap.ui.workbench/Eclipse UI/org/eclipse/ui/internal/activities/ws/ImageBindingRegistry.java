@@ -23,7 +23,7 @@ import org.eclipse.ui.internal.registry.IWorkbenchRegistryConstants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
- * @since 3.1
+ * @since 1.1
  */
 public class ImageBindingRegistry implements IExtensionChangeHandler {
 	private String tag; 
@@ -73,8 +73,11 @@ public class ImageBindingRegistry implements IExtensionChangeHandler {
      * @return the extension point
      */
 	public IExtensionPoint getExtensionPointFilter() {
-		return Platform.getExtensionRegistry().getExtensionPoint(
-                PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
+// RAP [fappel]: ep name-space differs from bundle ids
+//		return Platform.getExtensionRegistry().getExtensionPoint(
+//                PlatformUI.PLUGIN_ID, IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
+        return Platform.getExtensionRegistry().getExtensionPoint(
+                PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_ACTIVITYSUPPORT);
 	}
 
 	/* (non-Javadoc)

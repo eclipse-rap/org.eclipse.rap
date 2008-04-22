@@ -179,7 +179,6 @@ public final class ActivityPatternBinding implements IActivityPatternBinding {
 	 * 
 	 * @param toMatch the string to match
 	 * @return <code>true</code> if it matches, <code>false</code> if not
-     * @since 3.1
 	 */
 	public boolean isMatch(String toMatch) {
 		if (isEqualityPattern) {

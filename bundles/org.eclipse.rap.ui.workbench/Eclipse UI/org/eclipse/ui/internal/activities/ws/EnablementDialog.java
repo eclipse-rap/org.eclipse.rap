@@ -10,51 +10,39 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.activities.ws;
 
-import com.ibm.icu.text.MessageFormat;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.Window;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.activities.IActivity;
-import org.eclipse.ui.activities.IActivityManager;
-import org.eclipse.ui.activities.NotDefinedException;
-import org.eclipse.ui.activities.WorkbenchTriggerPointAdvisor;
+import org.eclipse.ui.activities.*;
+
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * Dialog that will prompt the user and confirm that they wish to activate a set
  * of activities.
  * 
- * @since 3.0
+ * @since 1.1
  */
 public class EnablementDialog extends Dialog {
 
 	/**
      * The translation bundle in which to look up internationalized text.
      */
-    private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-            .getBundle(EnablementDialog.class.getName());
+// RAP [fappel]: NLS must be session/request aware
+//    private final static ResourceBundle RESOURCE_BUNDLE = ResourceBundle
+//            .getBundle(EnablementDialog.class.getName());
+    private final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
+      .getBundle(EnablementDialog.class.getName(), RWT.getLocale());
 
     private Button dontAskButton;
 

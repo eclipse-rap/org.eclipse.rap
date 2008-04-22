@@ -20,7 +20,7 @@ package org.eclipse.ui.activities;
  * This class is not intended to be extended by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see IActivityListener#activityChanged(ActivityEvent)
  */
 public final class ActivityEvent {
@@ -41,7 +41,7 @@ public final class ActivityEvent {
     private boolean descriptionChanged;
 
     /**
-     * Creates a new instance of this class. Since 3.1 this method will assume
+     * Creates a new instance of this class. This method will assume
      * that the default enabled state has not changed.
      * 
      * @param activity
@@ -96,7 +96,6 @@ public final class ActivityEvent {
      *        <code>true</code>, iff the name property changed.
      * @param defaultEnabledChanged 
      * 		  <code>true</code>, iff the default enabled property changed.
-     * @since 3.1
      */
     public ActivityEvent(IActivity activity,
             boolean activityRequirementBindingsChanged,
@@ -151,7 +150,6 @@ public final class ActivityEvent {
      * Returns whether or not the default enabled property changed.
      * 
      * @return <code>true</code>, iff the default enabled property changed.
-     * @since 3.1
      */
     public boolean hasDefaultEnabledChanged() {
         return defaultEnabledChanged;

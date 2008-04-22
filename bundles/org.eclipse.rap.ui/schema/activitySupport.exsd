@@ -126,14 +126,14 @@
    <element name="triggerPointAdvisorProductBinding">
       <annotation>
          <documentation>
-            Specifies a binding between a product and an advisor.  These bindings determine which advisor is appropriate for the current product (as defined by &lt;code&gt;org.eclipse.core.runtime.Platform.getProduct()&lt;/code&gt;).
+            Specifies a binding between a &lt;b&gt;RAP branding&lt;/b&gt; and an advisor.  These bindings determine which advisor is appropriate for the current RAP branding (as defined by the id-attribute of a branding extension).
          </documentation>
       </annotation>
       <complexType>
          <attribute name="productId" type="string" use="required">
             <annotation>
                <documentation>
-                  unique id of a product
+                  unique id of a branding extension. To bind an advisor to the built-in branding use the value &quot;&lt;code&gt;org.eclipse.rap.rwt.branding.default&lt;/code&gt;&quot;.
                </documentation>
             </annotation>
          </attribute>
@@ -237,7 +237,8 @@
 &lt;/pre&gt;
 &lt;/p&gt;
 
-The following is an example of a trigger point advisor bound to a particular product:
+The following is an example of a trigger point advisor bound to the default RAP branding, thus replacing the default &lt;code&gt;WorkbenchTriggerPointAdvisor&lt;/code&gt;:
+
 &lt;p&gt;
 &lt;pre&gt;
   &lt;extension point=&quot;org.eclipse.ui.activitySupport&quot;&gt;
@@ -245,7 +246,29 @@ The following is an example of a trigger point advisor bound to a particular pro
         id=&quot;com.example.xyz.myTriggerPointAdvisor&quot; 
         class=&quot;com.example.xyz.AdvisorImpl&quot;/&gt;
      &lt;triggerPointAdvisorProductBinding 
-      productId=&quot;myProduct&quot;
+      productId=&quot;org.eclipse.rap.rwt.branding.default&quot;
+      triggerPointAdvisorId=&quot;com.example.xyz.myTriggerPointAdvisor&quot; /&gt;
+  &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+
+The following is an example of a trigger point advisor bound to a particular RAP branding:
+&lt;p&gt;
+&lt;pre&gt;
+  &lt;extension
+         point=&quot;org.eclipse.rap.ui.branding&quot;&gt;
+      &lt;branding
+            favicon=&quot;icons/eclipse.gif&quot;
+            id=&quot;example.activity.branding1&quot;
+            servletName=&quot;rap2&quot;
+            title=&quot;Activity Example&quot;/&gt;
+  &lt;/extension&gt;
+  &lt;extension point=&quot;org.eclipse.ui.activitySupport&quot;&gt;
+     &lt;triggerPointAdvisor
+        id=&quot;com.example.xyz.myTriggerPointAdvisor&quot; 
+        class=&quot;com.example.xyz.AdvisorImpl&quot;/&gt;
+     &lt;triggerPointAdvisorProductBinding 
+      productId=&quot;example.activity.branding1&quot;
       triggerPointAdvisorId=&quot;com.example.xyz.myTriggerPointAdvisor&quot; /&gt;
   &lt;/extension&gt;
 &lt;/pre&gt;

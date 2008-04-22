@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * This interface is not intended to be extended or implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * @since 1.1
  * @see IActivity
  * @see IIdentifier
  * @see IActivityManager#getIdentifier(String)
@@ -57,7 +57,6 @@ public interface IActivityPatternBinding extends Comparable {
 	 * 
 	 * @return The raw <em>pattern</em> string, or the string version of the
 	 *         compiled pattern, depending on {@link #isEqualityPattern()}.
-	 * @since 3.4
 	 */
 	String getString();
 
@@ -68,7 +67,6 @@ public interface IActivityPatternBinding extends Comparable {
 	 * rather than a regular expression match.
 	 * 
 	 * @return whether the pattern should be treated as regular string
-	 * @since 3.4
 	 */
 	boolean isEqualityPattern();
 }

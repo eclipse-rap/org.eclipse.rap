@@ -22,7 +22,7 @@ import java.util.Set;
  * @noextend This interface is not intended to be extended by clients.
  * @noimplement This interface is not intended to be implemented by clients.
  * 
- * @since 3.1
+ * @since 1.1
  * @see org.eclipse.ui.activities.ITriggerPoint
  */
 public interface ITriggerPointAdvisor {
@@ -62,7 +62,6 @@ public interface ITriggerPointAdvisor {
 	 * 
 	 * @return <code>true</code> if this identifier should be enabled,
 	 *         <code>false</code> otherwise
-	 * @since 3.4
 	 */
 	boolean computeEnablement(IActivityManager activityManager, IIdentifier identifier);
 }
