@@ -807,11 +807,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );        
       return {
-        border : states.rwt_BORDER ? "text.BORDER.border" : "text.border",
+        border : tv.getBorder( states.rwt_BORDER ? "text.BORDER.border" : "text.border" ),
         font : "widget.font",
         padding : tv.getBoxDimensions( "text.SINGLE.padding" ),
-        textColor : states.disabled ? "widget.graytext" : "list.foreground",
-        backgroundColor : "list.background"
+        textColor : tv.getColor( states.disabled ? "widget.graytext" : "list.foreground" ),
+        backgroundColor : tv.getColor( "list.background" )
       };
     }
   },
