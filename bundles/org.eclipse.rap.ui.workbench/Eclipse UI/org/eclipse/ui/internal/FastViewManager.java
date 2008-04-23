@@ -48,7 +48,7 @@ import org.eclipse.ui.presentations.IStackPresentationSite;
  * responsible for providing a single implementation for the methods relating to
  * fast views regardless of their UI presentation.
  * 
- * @since 3.3
+ * 
  * 
  */
 public class FastViewManager {
@@ -83,8 +83,8 @@ public class FastViewManager {
 	/**
 	 * Used for non-deferred animations
 	 */
-	private AnimationEngine oneShotAnimation = null;
-	//private RectangleAnimation oneShotAnimation = null;
+	// RAP [bm]: no animations
+//	private AnimationEngine oneShotAnimation = null;
 	
 	private IPerspectiveListener2 perspListener = new IPerspectiveListener2() {
 		public void perspectiveActivated(IWorkbenchPage page,
@@ -541,8 +541,9 @@ public class FastViewManager {
 		vs.deferUpdates(true);
 		
 		// animate the minimize
-		RectangleAnimationFeedbackBase animation = (RectangleAnimationFeedbackBase) getDeferrableAnimation().getFeedback();
-		animation.addStartRect(vs.getControl());
+		// RAP [bm]: no animation
+//		RectangleAnimationFeedbackBase animation = (RectangleAnimationFeedbackBase) getDeferrableAnimation().getFeedback();
+//		animation.addStartRect(vs.getControl());
 
 		//long startTick = System.currentTimeMillis();
 		// Update the model first
@@ -562,10 +563,12 @@ public class FastViewManager {
 		updateTrim(vstb.getId());
 		
 		//System.out.println("minimize time: " + (System.currentTimeMillis()-startTick)); //$NON-NLS-1$
-		if (vstb != null) {
-			animation.addEndRect(vstb.getControl());
-			scheduleDeferrableAnimation();
-		}
+		// RAP [bm]: no animation
+//		if (vstb != null) {
+//			animation.addEndRect(vstb.getControl());
+//			scheduleDeferrableAnimation();
+//		}
+		// RAPEND: [bm] 
 	}
 
 	/**
@@ -932,8 +935,10 @@ public class FastViewManager {
 		if (defer && !deferringUpdates) {
 			deferringUpdates = defer;
 			
-			deferAnimations(true);
-			
+			// RAP [bm]: no animations
+//			deferAnimations(true);
+			// RAPEND: [bm] 
+
 			return;
 		}
 		
@@ -964,31 +969,32 @@ public class FastViewManager {
 		batchAnimation = null;
 	}
 
-	/**
-	 * Returns the animation object appropriate for the deferred state
-	 * @return Either a 'one-shot' or a 'batch' animation object
-	 */
-	private AnimationEngine getDeferrableAnimation() {
-		if (deferringUpdates)
-			return batchAnimation;
-		
-		// Create a 'one-shot' animation
-		RectangleAnimationFeedbackBase feedback = ((Animations) Tweaklets
-				.get(Animations.KEY)).createFeedback(wbw.getShell());
-		oneShotAnimation = new AnimationEngine(feedback, 400);
-		return oneShotAnimation;
-	}
-	
-	private void scheduleDeferrableAnimation() {
-		if (deferringUpdates)
-			return;
-		
-		// We can only schedule the 'one-shot' animations
-		// the batch ones are sheduled at batch end
-		if (oneShotAnimation != null)
-			oneShotAnimation.schedule();
-		oneShotAnimation = null;
-	}
+	// RAP [bm]: no animations
+//	/**
+//	 * Returns the animation object appropriate for the deferred state
+//	 * @return Either a 'one-shot' or a 'batch' animation object
+//	 */
+//	private AnimationEngine getDeferrableAnimation() {
+//		if (deferringUpdates)
+//			return batchAnimation;
+//		
+//		// Create a 'one-shot' animation
+//		RectangleAnimationFeedbackBase feedback = ((Animations) Tweaklets
+//				.get(Animations.KEY)).createFeedback(wbw.getShell());
+//		oneShotAnimation = new AnimationEngine(feedback, 400);
+//		return oneShotAnimation;
+//	}
+//	
+//	private void scheduleDeferrableAnimation() {
+//		if (deferringUpdates)
+//			return;
+//		
+//		// We can only schedule the 'one-shot' animations
+//		// the batch ones are sheduled at batch end
+//		if (oneShotAnimation != null)
+//			oneShotAnimation.schedule();
+//		oneShotAnimation = null;
+//	}
 
 	/**
 	 * Returns the 'bottom/right' trim stack. This is used to

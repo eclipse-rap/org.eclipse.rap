@@ -16,7 +16,6 @@ import java.util.Hashtable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.themes.ColorUtil;
 import org.eclipse.ui.themes.IColorFactory;
 
@@ -24,7 +23,7 @@ import org.eclipse.ui.themes.IColorFactory;
  * LightColorFactory returns tab begin and end colours based on taking
  * a system color as input, analyzing it, and lightening it appropriately.
  * 
- * @since 3.3
+ * 
  * 
  */
 public class LightColorFactory implements IColorFactory,
@@ -105,9 +104,11 @@ public class LightColorFactory implements IColorFactory,
 	 * Return the Start (top of tab) color as an RGB
 	 */
 	private RGB getActiveFocusStartColor() {
-		if (Display.getCurrent().getDepth() < 15)
-				return getActiveFocusEndColor();
-
+		// RAP [bm]: Display#getDepth
+//		if (Display.getCurrent().getDepth() < 15)
+//				return getActiveFocusEndColor();
+		// RAPEND: [bm] 
+		
 		RGB startColor = ColorUtil.blend(white, getActiveFocusEndColor(), 75);
 		return startColor;
 	}
@@ -116,9 +117,11 @@ public class LightColorFactory implements IColorFactory,
 	 * Return the End (top of tab) color as an RGB
 	 */
 	private RGB getActiveFocusEndColor() {
-		if (Display.getCurrent().getDepth() < 15)
-			return ColorUtil.getColorValue(baseColorName);
-	
+		// RAP [bm]: Display#getDepth
+//		if (Display.getCurrent().getDepth() < 15)
+//			return ColorUtil.getColorValue(baseColorName);
+		// RAPEND: [bm] 
+		
 		return getLightenedColor(
 				ColorUtil.getColorValue(baseColorName));
 	}	
@@ -127,9 +130,11 @@ public class LightColorFactory implements IColorFactory,
 	 * Return the active focus tab text color as an RGB
 	 */
 	private RGB getActiveFocusTextColor() {
-		if (Display.getCurrent().getDepth() < 15)
-			return ColorUtil.getColorValue(baseColorName);  //typically TITLE_FOREGROUND
-	
+		// RAP [bm]: Display#getDepth
+//		if (Display.getCurrent().getDepth() < 15)
+//			return ColorUtil.getColorValue(baseColorName);  //typically TITLE_FOREGROUND
+		// RAPEND: [bm] 
+		
 		return ColorUtil.getColorValue("COLOR_BLACK"); //$NON-NLS-1$
 	}
 	/*
@@ -137,9 +142,11 @@ public class LightColorFactory implements IColorFactory,
 	 */
 	private RGB getActiveNofocusStartColor() {
 		RGB base = ColorUtil.getColorValue(baseColorName);
-		if (Display.getCurrent().getDepth() < 15)
-			return base;
-		
+		// RAP [bm]: Display#getDepth
+//		if (Display.getCurrent().getDepth() < 15)
+//			return base;
+		// RAPEND: [bm] 
+
 		return ColorUtil.blend(white, base, 40);
 	}
 	

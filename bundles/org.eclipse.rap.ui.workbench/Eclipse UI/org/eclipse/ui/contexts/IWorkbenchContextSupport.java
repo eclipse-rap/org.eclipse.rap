@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
  * This interface is not intended to be extended or implemented by clients.
  * </p>
  * 
- * @since 3.0
+ * 
  * @deprecated Please use <code>IBindingService</code> and
  *             <code>IContextService</code> instead.
  * @see org.eclipse.ui.contexts.IContextService
@@ -136,25 +136,27 @@ public interface IWorkbenchContextSupport {
 	 * @return <code>IWorkbenchContextSupport.TYPE_WINDOW</code>,
 	 *         <code>IWorkbenchContextSupport.TYPE_DIALOG</code>, or
 	 *         <code>IWorkbenchContextSupport.TYPE_NONE</code>.
-	 * @since 3.1
+	 * 
 	 */
 	public int getShellType(final Shell shell);
 
-	/**
-	 * Tests whether the global key binding architecture is currently active.
-	 * 
-	 * @return <code>true</code> if the key bindings are active;
-	 *         <code>false</code> otherwise.
-	 */
-	public boolean isKeyFilterEnabled();
-
-	/**
-	 * Opens the key assistant dialog positioned near the key binding entry in
-	 * the status bar.
-	 * 
-	 * @since 3.1
-	 */
-	public void openKeyAssistDialog();
+	// RAP [bm]: 
+//	/**
+//	 * Tests whether the global key binding architecture is currently active.
+//	 * 
+//	 * @return <code>true</code> if the key bindings are active;
+//	 *         <code>false</code> otherwise.
+//	 */
+//	public boolean isKeyFilterEnabled();
+//
+//	/**
+//	 * Opens the key assistant dialog positioned near the key binding entry in
+//	 * the status bar.
+//	 * 
+//	 * 
+//	 */
+//	public void openKeyAssistDialog();
+	// RAPEND: [bm] 
 
 	/**
 	 * <p>
@@ -229,23 +231,25 @@ public interface IWorkbenchContextSupport {
 	 */
 	void removeEnabledSubmissions(Collection enabledSubmissions);
 
-	/**
-	 * Enables or disables the global key binding architecture. The architecture
-	 * should be enabled by default.
-	 * 
-	 * When enabled, keyboard shortcuts are active, and that key events can
-	 * trigger commands. This also means that widgets may not see all key events
-	 * (as they might be trapped as a keyboard shortcut).
-	 * 
-	 * When disabled, no key events will trapped as keyboard shortcuts, and that
-	 * no commands can be triggered by keyboard events. (Exception: it is
-	 * possible that someone listening for key events on a widget could trigger
-	 * a command.)
-	 * 
-	 * @param enabled
-	 *            Whether the key filter should be enabled.
-	 */
-	public void setKeyFilterEnabled(final boolean enabled);
+	// RAP [bm]: 
+//	/**
+//	 * Enables or disables the global key binding architecture. The architecture
+//	 * should be enabled by default.
+//	 * 
+//	 * When enabled, keyboard shortcuts are active, and that key events can
+//	 * trigger commands. This also means that widgets may not see all key events
+//	 * (as they might be trapped as a keyboard shortcut).
+//	 * 
+//	 * When disabled, no key events will trapped as keyboard shortcuts, and that
+//	 * no commands can be triggered by keyboard events. (Exception: it is
+//	 * possible that someone listening for key events on a widget could trigger
+//	 * a command.)
+//	 * 
+//	 * @param enabled
+//	 *            Whether the key filter should be enabled.
+//	 */
+//	public void setKeyFilterEnabled(final boolean enabled);
+	// RAPEND: [bm] 
 
 	/**
 	 * <p>

@@ -96,7 +96,6 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.contexts.IContextService;
-import org.eclipse.ui.contexts.IWorkbenchContextSupport;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.internal.StartupThreading.StartupRunnable;
@@ -2399,9 +2398,11 @@ public class WorkbenchWindow extends ApplicationWindow implements
 	public void run(boolean fork, boolean cancelable,
 			IRunnableWithProgress runnable) throws InvocationTargetException,
 			InterruptedException {
-		IWorkbenchContextSupport contextSupport = getWorkbench()
-				.getContextSupport();
-		final boolean keyFilterEnabled = contextSupport.isKeyFilterEnabled();
+
+		// RAP [bm]: 
+//		IWorkbenchContextSupport contextSupport = getWorkbench()
+//				.getContextSupport();
+//		final boolean keyFilterEnabled = contextSupport.isKeyFilterEnabled();
 
 		Control fastViewBarControl = getFastViewBar() == null ? null
 				: getFastViewBar().getControl();
@@ -2425,10 +2426,12 @@ public class WorkbenchWindow extends ApplicationWindow implements
 					&& !perspectiveBarControl.isDisposed()) {
 				perspectiveBarControl.setEnabled(false);
 			}
-
-			if (keyFilterEnabled) {
-				contextSupport.setKeyFilterEnabled(false);
-			}
+			
+			// RAP [bm]: 
+//			if (keyFilterEnabled) {
+//				contextSupport.setKeyFilterEnabled(false);
+//			}
+			// RAPEND: [bm] 
 
 			// Disable all trim -except- the StatusLine
 			if (defaultLayout != null)
@@ -2445,10 +2448,12 @@ public class WorkbenchWindow extends ApplicationWindow implements
 				perspectiveBarControl.setEnabled(perspectiveBarWasEnabled);
 			}
 
-			if (keyFilterEnabled) {
-				contextSupport.setKeyFilterEnabled(true);
-			}
-			
+			// RAP [bm]: 
+//			if (keyFilterEnabled) {
+//				contextSupport.setKeyFilterEnabled(true);
+//			}
+			// RAPEND: [bm] 
+
 			// Re-enable any disabled trim
 			if (defaultLayout != null && disabledControls != null)
 				defaultLayout.enableTrim(disabledControls);

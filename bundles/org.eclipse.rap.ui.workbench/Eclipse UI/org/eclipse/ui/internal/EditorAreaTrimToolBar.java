@@ -95,7 +95,9 @@ public class EditorAreaTrimToolBar extends TrimToolBarBase {
 		// Hook a drop Listener to the control
 		// NOTE: the drop target is self-managing...it
 		// both hooks the new target and removes it on dispose
-		new FastViewDnDHandler(id, mgr, wbw);
+		// RAP [bm]: 
+//		new FastViewDnDHandler(id, mgr, wbw);
+		// RAPEND: [bm] 
 	}
 	
 	/**

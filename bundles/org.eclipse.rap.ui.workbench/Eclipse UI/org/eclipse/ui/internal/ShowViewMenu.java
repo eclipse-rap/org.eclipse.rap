@@ -143,8 +143,10 @@ public class ShowViewMenu extends ContributionItem {
 			}
 		};
 
+		// RAP [bm]: 
 //		window.getWorkbench().getHelpSystem().setHelp(showDlgAction,
 //				IWorkbenchHelpContextIds.SHOW_VIEW_OTHER_ACTION);
+		
 		// indicate that a show views submenu has been created
 		((WorkbenchWindow) window)
 				.addSubmenu(WorkbenchWindow.SHOW_VIEW_SUBMENU);

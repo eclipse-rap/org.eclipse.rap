@@ -25,13 +25,12 @@ import org.eclipse.ui.contexts.IContextManager;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.contexts.IWorkbenchContextSupport;
 import org.eclipse.ui.internal.Workbench;
-import org.eclipse.ui.keys.IBindingService;
 
 /**
  * Provides support for contexts within the workbench -- including key bindings,
  * and some default contexts for shell types.
  * 
- * @since 3.0
+ * 
  */
 public class WorkbenchContextSupport implements IWorkbenchContextSupport {
 
@@ -42,11 +41,12 @@ public class WorkbenchContextSupport implements IWorkbenchContextSupport {
 	 */
 	private Map activationsBySubmission = null;
 
-	/**
-	 * The binding service for the workbench. This value is never
-	 * <code>null</code>.
-	 */
-	private IBindingService bindingService;
+	// RAP [bm]: 
+//	/**
+//	 * The binding service for the workbench. This value is never
+//	 * <code>null</code>.
+//	 */
+//	private IBindingService bindingService;
 
 	/**
 	 * The context service for the workbench. This value is never
@@ -81,7 +81,9 @@ public class WorkbenchContextSupport implements IWorkbenchContextSupport {
 			final ContextManager contextManager) {
 		workbench = workbenchToSupport;
 		contextService = (IContextService) workbench.getService(IContextService.class);
-		bindingService = (IBindingService) workbench.getService(IBindingService.class);
+		// RAP [bm]: 
+//		bindingService = (IBindingService) workbench.getService(IBindingService.class);
+		// RAPEND: [bm] 
 		contextManagerWrapper = ContextManagerFactory
 				.getContextManagerWrapper(contextManager);
 	}
@@ -129,13 +131,15 @@ public class WorkbenchContextSupport implements IWorkbenchContextSupport {
 		return contextService.getShellType(shell);
 	}
 
-	public final boolean isKeyFilterEnabled() {
-		return bindingService.isKeyFilterEnabled();
-	}
-
-	public final void openKeyAssistDialog() {
-		bindingService.openKeyAssistDialog();
-	}
+	// RAP [bm]: 
+//	public final boolean isKeyFilterEnabled() {
+//		return bindingService.isKeyFilterEnabled();
+//	}
+//
+//	public final void openKeyAssistDialog() {
+//		bindingService.openKeyAssistDialog();
+//	}
+	// RAPEND: [bm] 
 
 	public final boolean registerShell(final Shell shell, final int type) {
 		return contextService.registerShell(shell, type);
@@ -162,9 +166,10 @@ public class WorkbenchContextSupport implements IWorkbenchContextSupport {
 		}
 	}
 
-	public final void setKeyFilterEnabled(final boolean enabled) {
-		bindingService.setKeyFilterEnabled(enabled);
-	}
+	// RAP [bm]: 
+//	public final void setKeyFilterEnabled(final boolean enabled) {
+//		bindingService.setKeyFilterEnabled(enabled);
+//	}
 
 	public final boolean unregisterShell(final Shell shell) {
 		return contextService.unregisterShell(shell);

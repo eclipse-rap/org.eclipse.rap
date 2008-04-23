@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.dynamichelpers.ExtensionTracker;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionChangeHandler;
 import org.eclipse.core.runtime.dynamichelpers.IExtensionTracker;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.WorkbenchPlugin;
 
 /**
  * The registry of status handlers extensions.
@@ -55,9 +54,14 @@ public class StatusHandlerRegistry implements IExtensionChangeHandler {
 	private StatusHandlerRegistry() {
 		IExtensionTracker tracker = PlatformUI.getWorkbench()
 				.getExtensionTracker();
+		// RAP [bm]: 
+//		IExtensionPoint handlersPoint = Platform.getExtensionRegistry()
+//				.getExtensionPoint(WorkbenchPlugin.PI_WORKBENCH,
+//						STATUSHANDLERS_POINT_NAME);
 		IExtensionPoint handlersPoint = Platform.getExtensionRegistry()
-				.getExtensionPoint(WorkbenchPlugin.PI_WORKBENCH,
-						STATUSHANDLERS_POINT_NAME);
+		.getExtensionPoint(PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,
+				STATUSHANDLERS_POINT_NAME);
+		// RAPEND: [bm] 
 		IExtension[] extensions = handlersPoint.getExtensions();
 
 		statusHandlerDescriptorsMap = new StatusHandlerDescriptorsMap();

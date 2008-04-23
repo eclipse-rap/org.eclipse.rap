@@ -29,7 +29,7 @@ import org.eclipse.ui.themes.IColorFactory;
 /**
  * Registry reader for themes.
  *
- * @since 3.0
+ * 
  */
 public class ThemeRegistryReader extends RegistryReader {
 
@@ -455,8 +455,7 @@ public class ThemeRegistryReader extends RegistryReader {
 //        // support for old font definitions
 //        readRegistry(in, PlatformUI.PLUGIN_ID,
 //                IWorkbenchRegistryConstants.PL_FONT_DEFINITIONS);
-        readRegistry(in, "foo", IWorkbenchRegistryConstants.PL_THEMES);
-        System.err.println("ThemeRegistryReader#readThemes");
+        readRegistry(in, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE, IWorkbenchRegistryConstants.PL_THEMES);
 
         // support for old font definitions
         readRegistry(in, PlatformUI.PLUGIN_EXTENSION_NAME_SPACE,

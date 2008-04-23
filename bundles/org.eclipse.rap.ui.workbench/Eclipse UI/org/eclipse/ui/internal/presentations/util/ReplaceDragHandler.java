@@ -1,44 +1,38 @@
-// RAP [bm]: DnD
-///*******************************************************************************
-// * Copyright (c) 2004, 2005 IBM Corporation and others.
-// * All rights reserved. This program and the accompanying materials
-// * are made available under the terms of the Eclipse Public License v1.0
-// * which accompanies this distribution, and is available at
-// * http://www.eclipse.org/legal/epl-v10.html
-// *
-// * Contributors:
-// *     IBM Corporation - initial API and implementation
-// *******************************************************************************/
-//package org.eclipse.ui.internal.presentations.util;
-//
-//import org.eclipse.jface.util.Geometry;
-//import org.eclipse.swt.graphics.Point;
-//import org.eclipse.swt.graphics.Rectangle;
-//import org.eclipse.swt.widgets.Control;
-//import org.eclipse.ui.internal.dnd.DragUtil;
-//import org.eclipse.ui.presentations.StackDropResult;
-//
-///**
-// */
-//public class ReplaceDragHandler extends TabDragHandler {
-//
-//    private final class DragCookie {
-//        int insertPosition;
-//
-//        public DragCookie(int pos) {
-//            insertPosition = pos;
-//        }
-//    }
-//
-//    private AbstractTabFolder tabFolder;
-//
-//    public ReplaceDragHandler(AbstractTabFolder folder) {
-//        this.tabFolder = folder;
-//    }
-//    
-//    /* (non-Javadoc)
-//     * @see org.eclipse.ui.internal.presentations.util.TabDragHandler#dragOver(org.eclipse.swt.widgets.Control, org.eclipse.swt.graphics.Point)
-//     */
+/*******************************************************************************
+ * Copyright (c) 2004, 2005 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.ui.internal.presentations.util;
+
+
+/**
+ */
+public class ReplaceDragHandler extends TabDragHandler {
+
+    private final class DragCookie {
+        int insertPosition;
+
+        public DragCookie(int pos) {
+            insertPosition = pos;
+        }
+    }
+
+    private AbstractTabFolder tabFolder;
+
+    public ReplaceDragHandler(AbstractTabFolder folder) {
+        this.tabFolder = folder;
+    }
+    
+    // RAP [bm]: 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.internal.presentations.util.TabDragHandler#dragOver(org.eclipse.swt.widgets.Control, org.eclipse.swt.graphics.Point)
+     */
 //    public StackDropResult dragOver(Control currentControl, Point location,
 //            int dragStart) {
 //
@@ -112,17 +106,17 @@
 //        return new StackDropResult(tabBounds, new DragCookie(tabFolder
 //                .indexOf(tabUnderPointer)));
 //    }
-//
-//    /* (non-Javadoc)
-//     * @see org.eclipse.ui.internal.presentations.util.TabDragHandler#getInsertionPosition(java.lang.Object)
-//     */
-//    public int getInsertionPosition(Object cookie) {
-//        if (cookie instanceof DragCookie) {
-//            return Math.min(tabFolder.getItemCount(),
-//                    ((DragCookie) cookie).insertPosition);
-//        }
-//
-//        return tabFolder.getItemCount();
-//    }
-//
-//}
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.internal.presentations.util.TabDragHandler#getInsertionPosition(java.lang.Object)
+     */
+    public int getInsertionPosition(Object cookie) {
+        if (cookie instanceof DragCookie) {
+            return Math.min(tabFolder.getItemCount(),
+                    ((DragCookie) cookie).insertPosition);
+        }
+
+        return tabFolder.getItemCount();
+    }
+
+}

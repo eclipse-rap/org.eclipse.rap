@@ -30,7 +30,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * org.eclipse.core.runtime.compatibility. For more details, see bug 58975 - New
  * preference mechanism does not properly initialize defaults.
  * 
- * @since 3.0
+ * 
  */
 public class WorkbenchPreferenceInitializer extends
 		AbstractPreferenceInitializer {
@@ -98,7 +98,7 @@ public class WorkbenchPreferenceInitializer extends
 		node.putInt(IHeapStatusConstants.PREF_UPDATE_INTERVAL, 500);
 		node.putBoolean(IHeapStatusConstants.PREF_SHOW_MAX, false);
 		node.putBoolean(IPreferenceConstants.OVERRIDE_PRESENTATION, false);
-		
+
 		IEclipsePreferences rootNode = (IEclipsePreferences) Platform
 				.getPreferencesService().getRootNode()
 				.node(InstanceScope.SCOPE);

@@ -173,8 +173,8 @@ public final class TabbedStackPresentation extends StackPresentation {
     
     public TabbedStackPresentation(IStackPresentationSite site, PresentablePartFolder folder, ISystemMenu systemMenu) {
     	// RAP [bm]: 
-//        this(site, folder, new LeftToRightTabOrder(folder), new ReplaceDragHandler(folder.getTabFolder()), systemMenu);
-        this(site, folder, new LeftToRightTabOrder(folder), null, systemMenu);
+        this(site, folder, new LeftToRightTabOrder(folder), new ReplaceDragHandler(folder.getTabFolder()), systemMenu);
+//        this(site, folder, new LeftToRightTabOrder(folder), null, systemMenu);
         // RAPEND: [bm] 
     }
     

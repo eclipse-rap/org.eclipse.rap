@@ -62,7 +62,6 @@ import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.editorsupport.ComponentSupport;
-import org.eclipse.ui.internal.misc.ProgramImageDescriptor;
 import org.eclipse.ui.internal.util.SessionSingletonEventManager;
 import org.eclipse.ui.internal.util.Util;
 
@@ -696,10 +695,10 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
                         editorTable.put(validEditorDescritor.getId(),
                                 validEditorDescritor);
                     }
-                } else { //This is either from a program or a user defined
-                    // editor
-                    ImageDescriptor descriptor;
                     // RAP [bm]: no external programs
+//                } else { //This is either from a program or a user defined
+                    // editor
+//                    ImageDescriptor descriptor;
 //                    if (editor.getProgram() == null) {
 //						descriptor = new ProgramImageDescriptor(editor
 //                                .getFileName(), 0);
@@ -707,12 +706,13 @@ public class EditorRegistry extends SessionSingletonEventManager implements IEdi
 //						descriptor = new ExternalProgramImageDescriptor(editor
 //                                .getProgram());
 //					}
-                    descriptor = new ProgramImageDescriptor(editor
-                          .getFileName(), 0);
+//                    descriptor = new ProgramImageDescriptor(editor
+//                          .getFileName(), 0);
                     // RAPEND: [bm] 
 
-                    editor.setImageDescriptor(descriptor);
-                    editorTable.put(editor.getId(), editor);
+//                    editor.setImageDescriptor(descriptor);
+//                    editorTable.put(editor.getId(), editor);
+                    // RAPEND: [bm] 
                 }
             }
         } catch (IOException e) {

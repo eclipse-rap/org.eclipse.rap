@@ -20,8 +20,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
@@ -85,26 +83,29 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 	 * Listeners...
 	 */
 
-    private Listener tbListener = new Listener() {
-        public void handleEvent(Event event) {
-            Point loc = new Point(event.x, event.y);
-            if (event.type == SWT.MenuDetect) {
-                showToolBarPopup(loc);
-            }
-        }
-    };
+    // RAP [bm]: SWT.MenuDetect
+//    private Listener tbListener = new Listener() {
+//        public void handleEvent(Event event) {
+//            Point loc = new Point(event.x, event.y);
+//            if (event.type == SWT.MenuDetect) {
+//                showToolBarPopup(loc);
+//            }
+//        }
+//    };
+//
+//    /**
+//     * This listener brings up the context menu
+//     */
+//    private Listener cbListener = new Listener() {
+//        public void handleEvent(Event event) {
+//            Point loc = new Point(event.x, event.y);
+//            if (event.type == SWT.MenuDetect) {
+//                showDockTrimPopup(loc);
+//            }
+//        }
+//    };
+    // RAPEND: [bm] 
 
-    /**
-     * This listener brings up the context menu
-     */
-    private Listener cbListener = new Listener() {
-        public void handleEvent(Event event) {
-            Point loc = new Point(event.x, event.y);
-            if (event.type == SWT.MenuDetect) {
-                showDockTrimPopup(loc);
-            }
-        }
-    };
     
     // RAP [bm]: DnD
 //    /**
@@ -137,16 +138,17 @@ public abstract class TrimToolBarBase implements IWindowTrim {
     /**
 	 * @param loc
 	 */
-	private void showToolBarPopup(Point loc) {
-		Point tbLoc = tbMgr.getControl().toControl(loc);
-		contextToolItem = tbMgr.getControl().getItem(tbLoc);
-		MenuManager mm = tbMgr.getContextMenuManager();
-		if (mm != null) {
-			Menu menu = mm.createContextMenu(wbw.getShell());
-	        menu.setLocation(loc.x, loc.y);
-	        menu.setVisible(true);
-		}
-	}
+    // RAP [bm]: 
+//	private void showToolBarPopup(Point loc) {
+//		Point tbLoc = tbMgr.getControl().toControl(loc);
+//		contextToolItem = tbMgr.getControl().getItem(tbLoc);
+//		MenuManager mm = tbMgr.getContextMenuManager();
+//		if (mm != null) {
+//			Menu menu = mm.createContextMenu(wbw.getShell());
+//	        menu.setLocation(loc.x, loc.y);
+//	        menu.setVisible(true);
+//		}
+//	}
 
 	/**
      * Initialize the ToolBarManger for this instance. We create a
@@ -225,9 +227,11 @@ public abstract class TrimToolBarBase implements IWindowTrim {
     	dockContributionItem = getDockingContribution();
         dockMenuManager.add(dockContributionItem);
 
-        tb.addListener(SWT.MenuDetect, tbListener);
-        cb.addListener(SWT.MenuDetect, cbListener);
-        
+        // RAP [bm]: 
+//        tb.addListener(SWT.MenuDetect, tbListener);
+//        cb.addListener(SWT.MenuDetect, cbListener);
+        // RAPEND: [bm] 
+
         //tbMgr.getControl().setBackground(cb.getDisplay().getSystemColor(SWT.COLOR_GREEN));
         //tbMgr.getControl().pack(true);
         cb.pack(true);
@@ -425,7 +429,8 @@ public abstract class TrimToolBarBase implements IWindowTrim {
         }
 
         // tidy up...
-        getControl().removeListener(SWT.MenuDetect, cbListener);
+        // RAP [bm]: 
+//        getControl().removeListener(SWT.MenuDetect, cbListener);
         
         tbMgr.dispose();
         tbMgr = null;
@@ -445,14 +450,14 @@ public abstract class TrimToolBarBase implements IWindowTrim {
 //        DragUtil.performDrag(this, fakeBounds, position, true);
 //    }
 
-    /**
-     * Shows the popup menu for an item in the fast view bar.
-     */
-    private void showDockTrimPopup(Point pt) {
-        Menu menu = dockMenuManager.createContextMenu(this.getControl());
-        menu.setLocation(pt.x, pt.y);
-        menu.setVisible(true);
-    }
+//    /**
+//     * Shows the popup menu for an item in the fast view bar.
+//     */
+//    private void showDockTrimPopup(Point pt) {
+//        Menu menu = dockMenuManager.createContextMenu(this.getControl());
+//        menu.setLocation(pt.x, pt.y);
+//        menu.setVisible(true);
+//    }
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.internal.layout.IWindowTrim#dock(int)
